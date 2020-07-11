@@ -76,7 +76,7 @@ public:
         Return the current progress.
         \return the current progress in percent
     */
-    double getProgress() const noexcept {
+    [[nodiscard]] double getProgress() const noexcept {
         return percent;
     }
 
@@ -203,7 +203,7 @@ public:
         Get the text of this progress bar.
         \return the text of this button
     */
-    const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this progress bar.
@@ -221,7 +221,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(text.empty()) {
             return Point(4,4);
@@ -316,7 +316,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(!pBackground) {
             return Point(4,4);

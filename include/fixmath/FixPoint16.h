@@ -48,21 +48,21 @@ public:
         return x;
     }
 
-    fix16_t getRawValue() const { return value; }
+    [[nodiscard]] fix16_t getRawValue() const { return value; }
 
-    double toDouble() const { return fix16_to_dbl(value);   }
+    [[nodiscard]] double toDouble() const { return fix16_to_dbl(value);   }
 
-    float toFloat() const   { return fix16_to_float(value); }
+    [[nodiscard]] float toFloat() const   { return fix16_to_float(value); }
 
-    std::string toString() const {
+    [[nodiscard]] std::string toString() const {
         char buffer[16];
         fix16_to_str(value, buffer, 7);
         return std::string(buffer);
     }
 
-    int lround() const       { return fix16_to_int(value);   }
-    int floor() const { return (value >> 16); }
-    int ceil() const { return ((value + 0x0000FFFF) >> 16); }
+    [[nodiscard]] int lround() const       { return fix16_to_int(value);   }
+    [[nodiscard]] int floor() const { return (value >> 16); }
+    [[nodiscard]] int ceil() const { return ((value + 0x0000FFFF) >> 16); }
 
     FixPoint16 & operator>>=(const int rhs)     { value >>= rhs; return *this; }
     FixPoint16 & operator<<=(const int rhs)     { value <<= rhs; return *this; }

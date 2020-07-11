@@ -63,7 +63,7 @@ public:
         Returns the number of pictures in this SHP-File.
         \return Number of pictures in this SHP-File.
     */
-    int getNumFiles() const { return static_cast<int>(shpfileEntries.size()); };
+    [[nodiscard]] int getNumFiles() const { return static_cast<int>(shpfileEntries.size()); };
 
 private:
     void readIndex();

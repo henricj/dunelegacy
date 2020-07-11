@@ -65,7 +65,7 @@ namespace sdl2
                 SDL_UnlockTexture(texture_);
         }
 
-        void * pixels() const { return pixels_; }
+        [[nodiscard]] void * pixels() const { return pixels_; }
 
         texture_lock(const texture_lock &) = delete;
         texture_lock(texture_lock &&) = delete;
@@ -96,7 +96,7 @@ namespace sdl2
                 SDL_UnlockSurface(surface_);
         }
 
-        void * pixels() const { return pixels_; }
+        [[nodiscard]] void * pixels() const { return pixels_; }
 
         surface_lock(const surface_lock &) = delete;
         surface_lock(surface_lock &&) = delete;
@@ -128,7 +128,7 @@ namespace sdl2
                 SDL_UnlockSurface(surface_);
         }
 
-        void * pixels() const { return pixels_; }
+        [[nodiscard]] void * pixels() const { return pixels_; }
 
         surface_try_lock(const surface_try_lock &) = delete;
         surface_try_lock(surface_try_lock &&) = delete;

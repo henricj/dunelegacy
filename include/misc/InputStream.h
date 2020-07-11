@@ -240,7 +240,7 @@ public:
         eof& operator=(const eof &) = default;
         eof& operator=(eof &&) = default;
 
-        const char* what() const noexcept override { return str.c_str(); }
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;
@@ -256,7 +256,7 @@ public:
         error& operator=(const error &) = default;
         error& operator=(error &&) = default;
 
-        const char* what() const noexcept override { return str.c_str(); };
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); };
 
     private:
         std::string str;

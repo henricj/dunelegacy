@@ -105,13 +105,13 @@ public:
     Mix_Chunk*      getSound(Sound_enum id);
 
 private:
-    sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME/2) const;
+    [[nodiscard]] sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME/2) const;
 
     void            loadEnglishVoice();
-    Mix_Chunk* getEnglishVoice(Voice_enum id, HOUSETYPE house) const;
+    [[nodiscard]] Mix_Chunk* getEnglishVoice(Voice_enum id, HOUSETYPE house) const;
 
     void            loadNonEnglishVoice(const std::string& languagePrefix);
-    Mix_Chunk*      getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const;
+    [[nodiscard]] Mix_Chunk*      getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const;
 
     std::vector<sdl2::mix_chunk_ptr> lngVoice;
     std::array<sdl2::mix_chunk_ptr, NUM_SOUNDCHUNK> soundChunk;

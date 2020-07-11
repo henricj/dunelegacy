@@ -73,7 +73,7 @@ class Palette
             return pSDLPalette->colors[i];
         }
 
-        inline SDL_Palette* getSDLPalette() const {
+        [[nodiscard]] inline SDL_Palette* getSDLPalette() const {
             return pSDLPalette.get();
         }
 
@@ -88,7 +88,7 @@ class Palette
             this->pSDLPalette = std::move(pNewSDLPalette);
         }
 
-        inline int getNumColors() const {
+        [[nodiscard]] inline int getNumColors() const {
             if(pSDLPalette == nullptr) {
                 return 0;
             }

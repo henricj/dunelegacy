@@ -44,7 +44,7 @@ public:
         Returns that this button can be set active.
         \return true(= activatable)
     */
-    bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); };
 
     /**
         Enable or disable this button. A disabled button is not responding
@@ -79,7 +79,7 @@ public:
         Returns the current tooltip text.
         \return the current tooltip text
     */
-    const std::string& getTooltipText() const noexcept {
+    [[nodiscard]] const std::string& getTooltipText() const noexcept {
         return tooltipText;
     }
 
@@ -103,7 +103,7 @@ public:
         Returns whether this button is a toggle button
         \return true = toggle button, false = normal button
     */
-    bool isToggleButton() const noexcept {
+    [[nodiscard]] bool isToggleButton() const noexcept {
         return bToggleButton;
     }
 
@@ -122,7 +122,7 @@ public:
         This method returns whether this button is currently toggled or not.
         \return true = toggled, false = untoggled
     */
-    bool getToggleState() const {
+    [[nodiscard]] bool getToggleState() const {
         return bToggleState;
     }
 

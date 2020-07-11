@@ -53,10 +53,10 @@ private:
 
 
     TileData& getMapData(const Coord& coord) noexcept { return mapData[coord.y * sizeX + coord.x]; }
-    const TileData& getMapData(const Coord& coord) const noexcept { return mapData[coord.y * sizeX + coord.x]; }
+    [[nodiscard]] const TileData& getMapData(const Coord& coord) const noexcept { return mapData[coord.y * sizeX + coord.x]; }
 
     TileData& getMapData(int key) noexcept { return mapData[key]; }
-    const TileData& getMapData(int key) const noexcept { return mapData[key]; }
+    [[nodiscard]] const TileData& getMapData(int key) const noexcept { return mapData[key]; }
 
     //void trickleUp(size_t openListIndex);
     void putOnOpenListIfBetter(int key, const Coord& coord, TileData* parentKey, FixPoint g, FixPoint h);

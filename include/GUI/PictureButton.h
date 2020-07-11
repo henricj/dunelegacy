@@ -76,7 +76,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this button
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(pUnpressedTexture) {
             return getTextureSize(pUnpressedTexture.get());

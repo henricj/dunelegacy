@@ -431,7 +431,7 @@ public:
         Returns whether one of this container's children can be set active.
         \return true = activatable, false = not activatable
     */
-    inline bool isActivatable() const override
+    [[nodiscard]] inline bool isActivatable() const override
     {
         if(isEnabled() == false) {
             return false;
@@ -450,7 +450,7 @@ public:
         Returns whether this widget is an container.
         \return true = container, false = any other widget
     */
-    inline bool isContainer() const override { return true; }
+    [[nodiscard]] inline bool isContainer() const override { return true; }
 
 protected:
     /**

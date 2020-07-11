@@ -73,7 +73,7 @@ public:
     */
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
-    Uint32 getAlreadyShownTutorialHints() const {
+    [[nodiscard]] Uint32 getAlreadyShownTutorialHints() const {
         return alreadyShownTutorialHints;
     }
 
@@ -125,8 +125,8 @@ public:
 private:
     void triggerStructureTutorialHint(ItemID_enum itemID);
 
-    bool hasConcreteOfSize(const Coord& concreteSize) const;
-    bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
+    [[nodiscard]] bool hasConcreteOfSize(const Coord& concreteSize) const;
+    [[nodiscard]] bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
 
     Uint32 lastAttackNotificationCycle;                     ///< When was the last time that the player was informed about an attack
 

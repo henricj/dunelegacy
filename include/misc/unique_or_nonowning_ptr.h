@@ -105,7 +105,7 @@ public:
         return ptr.operator->();
     }
 
-    pointer get() const noexcept
+    [[nodiscard]] pointer get() const noexcept
     {
         return ptr.get();
     }
@@ -115,7 +115,7 @@ public:
         return ptr.get_deleter();
     }
 
-    const deleter_type& get_deleter() const noexcept
+    [[nodiscard]] const deleter_type& get_deleter() const noexcept
     {
         return ptr.get_deleter();
     }

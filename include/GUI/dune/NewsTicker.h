@@ -29,7 +29,7 @@ public:
     NewsTicker();
     virtual ~NewsTicker();
 
-    bool hasMessage() const { return !messages.empty(); };
+    [[nodiscard]] bool hasMessage() const { return !messages.empty(); };
     void addMessage(const std::string& msg);
     void addUrgentMessage(const std::string& msg);
 
@@ -44,7 +44,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this widget
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         if(pBackground != nullptr) {
             return getTextureSize(pBackground);
@@ -58,12 +58,12 @@ private:
     class unique_queue {
         std::deque<T> queue_;
     public:
-        bool empty() const noexcept { return queue_.empty(); }
-        bool contains(const T& value) const { return std::end(queue_) != std::find(std::begin(queue_), std::end(queue_), value); }
+        [[nodiscard]] bool empty() const noexcept { return queue_.empty(); }
+        [[nodiscard]] bool contains(const T& value) const { return std::end(queue_) != std::find(std::begin(queue_), std::end(queue_), value); }
         void clear() { queue_.clear(); }
-        auto size() const { return queue_.size(); }
+        [[nodiscard]] auto size() const { return queue_.size(); }
         auto& front() { return queue_.front(); }
-        auto& front() const { return queue_.front(); }
+        [[nodiscard]] auto& front() const { return queue_.front(); }
         void push(const T& value) { queue_.push_back(value); }
         void push(T&& value) { queue_.push_back(value); }
         void pop() { queue_.pop_front(); }

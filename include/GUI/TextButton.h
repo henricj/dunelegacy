@@ -57,7 +57,7 @@ public:
         Get the text of this button.
         \return the text of this button
     */
-    const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; };
 
     /**
         Sets the text color for this button.
@@ -97,7 +97,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    Point getMinimumSize() const override
+    [[nodiscard]] Point getMinimumSize() const override
     {
         return GUIStyle::getInstance().getMinimumButtonSize(text);
     }

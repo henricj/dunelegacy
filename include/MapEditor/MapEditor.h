@@ -221,7 +221,7 @@ public:
         return it == structures.end() ? nullptr : &(*it);
     }
 
-    std::vector<int> getMirrorStructures(int unitID) const;
+    [[nodiscard]] std::vector<int> getMirrorStructures(int unitID) const;
 
     [[nodiscard]] int getSelectedStructureID() const { return selectedStructureID; }
 
@@ -232,7 +232,7 @@ public:
         return units;
     }
 
-    const Unit* getUnit(int unitID) const {
+    [[nodiscard]] const Unit* getUnit(int unitID) const {
         for(const auto& unit : units) {
             if(unit.id == unitID) { return &unit; }
         }
@@ -249,13 +249,13 @@ public:
     }
 
 
-    std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false) const;
+    [[nodiscard]] std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false) const;
 
     [[nodiscard]] int getSelectedUnitID() const {
         return selectedUnitID;
     }
 
-    const Unit* getSelectedUnit() const { return getUnit(selectedUnitID); }
+    [[nodiscard]] const Unit* getSelectedUnit() const { return getUnit(selectedUnitID); }
 
     Unit* getSelectedUnit() { return getUnit(selectedUnitID); }
 
@@ -292,7 +292,7 @@ private:
     void processInput();
     void drawCursor();
     void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const;
-    TERRAINTYPE getTerrain(int x, int y) const;
+    [[nodiscard]] TERRAINTYPE getTerrain(int x, int y) const;
     void saveMapshot();
 
 private:

@@ -65,7 +65,7 @@ public:
         This method returns a list of all the managed triggers.
         \return a list of all the triggers
     */
-    const std::deque<std::unique_ptr<Trigger>>& getTriggers() const { return triggers; }
+    [[nodiscard]] const std::deque<std::unique_ptr<Trigger>>& getTriggers() const { return triggers; }
 
 private:
     std::deque<std::unique_ptr<Trigger>> triggers;  ///< list of all triggers. sorted by the time when they shall be triggered.

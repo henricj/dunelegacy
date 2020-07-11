@@ -537,18 +537,18 @@ public:
     Animation*       getAnimation(unsigned int id);
 
 private:
-    std::unique_ptr<Animation>  loadAnimationFromWsa(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Animation>  loadAnimationFromWsa(const std::string& filename) const;
     sdl2::surface_ptr           generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const;
     sdl2::surface_ptr           generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
 
-    std::unique_ptr<Shpfile>  loadShpfile(const std::string& filename) const;
-    std::unique_ptr<Wsafile>  loadWsafile(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Shpfile>  loadShpfile(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Wsafile>  loadWsafile(const std::string& filename) const;
 
-    sdl2::texture_ptr   extractSmallDetailPic(const std::string& filename) const;
+    [[nodiscard]] sdl2::texture_ptr   extractSmallDetailPic(const std::string& filename) const;
 
 
-    sdl2::surface_ptr   generateDoubledObjPic(unsigned int id, int h) const;
-    sdl2::surface_ptr   generateTripledObjPic(unsigned int id, int h) const;
+    [[nodiscard]] sdl2::surface_ptr   generateDoubledObjPic(unsigned int id, int h) const;
+    [[nodiscard]] sdl2::surface_ptr   generateTripledObjPic(unsigned int id, int h) const;
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
     std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS> objPic;

@@ -41,35 +41,35 @@ public:
     Wsafile& operator=(Wsafile&& wsafile) = delete;
     virtual ~Wsafile();
 
-    sdl2::surface_ptr getPicture(Uint32 FrameNumber) const;
-    sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
-    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true) const;
+    [[nodiscard]] sdl2::surface_ptr getPicture(Uint32 FrameNumber) const;
+    [[nodiscard]] sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
+    [[nodiscard]] std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true) const;
 
     /// Returns the number of frames
     /**
         This method returns the number of frames in this animation
         \return Number of frames.
     */
-    int getNumFrames() const noexcept { return static_cast<int>(numFrames); };
+    [[nodiscard]] int getNumFrames() const noexcept { return static_cast<int>(numFrames); };
 
     /**
         Get the width of this video
         \return the width in pixels
     */
-    Uint16 getWidth() const noexcept { return sizeX; };
+    [[nodiscard]] Uint16 getWidth() const noexcept { return sizeX; };
 
     /**
         Get the height of this video
         \return the height in pixels
     */
-    Uint16 getHeight() const noexcept { return sizeY; };
+    [[nodiscard]] Uint16 getHeight() const noexcept { return sizeY; };
 
     /// Returns whether the animation is looped or not.
     /**
         This method returns whether this animation is looped or not.
         \return true if looped, false if not
     */
-    bool isAnimationLooped() const noexcept { return looped; };
+    [[nodiscard]] bool isAnimationLooped() const noexcept { return looped; };
 
 private:
     void decodeFrames(const unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const;

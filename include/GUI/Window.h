@@ -76,13 +76,13 @@ public:
         This method checks whether this window has a child window.
         \return true if child window present, false otherwise
     */
-    bool hasChildWindow() const { return (pChildWindow != nullptr); };
+    [[nodiscard]] bool hasChildWindow() const { return (pChildWindow != nullptr); };
 
     /**
         Get the current position of this window.
         \return current position of this window
     */
-    const Point& getPosition() const noexcept { return position; };
+    [[nodiscard]] const Point& getPosition() const noexcept { return position; };
 
     /**
         Sets the current window position and size.

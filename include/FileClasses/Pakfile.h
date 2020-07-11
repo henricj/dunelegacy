@@ -55,18 +55,18 @@ public:
     Pakfile(const std::filesystem::path& pakfilename, bool write = false);
     ~Pakfile();
 
-    const std::filesystem::path& getFilename(unsigned int index) const;
+    [[nodiscard]] const std::filesystem::path& getFilename(unsigned int index) const;
 
     /// Number of files in this pak-File.
     /**
         Returns the number of files in this pak-File.
         \return Number of files.
     */
-    inline int getNumFiles() const { return fileEntries.size(); };
+    [[nodiscard]] inline int getNumFiles() const { return fileEntries.size(); };
 
     sdl2::RWops_ptr openFile(const std::filesystem::path& filename);
 
-    bool exists(const std::filesystem::path& filename) const;
+    [[nodiscard]] bool exists(const std::filesystem::path& filename) const;
 
     void addFile(SDL_RWops* rwop, const std::string& filename);
 

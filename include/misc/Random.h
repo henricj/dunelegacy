@@ -65,7 +65,7 @@ public:
         Returns the current seed value.
         \return the current seed value
     */
-    std::vector<Uint32> getSeed() const;
+    [[nodiscard]] std::vector<Uint32> getSeed() const;
 
     /**
         Returns the maximum integer returned by rand()
@@ -144,9 +144,9 @@ public:
     RandomFactory(gsl::span<Uint8> seed) { setSeed(seed); }
 
     void               setSeed(gsl::span<const Uint8> seed);
-    std::vector<Uint8> getSeed() const;
+    [[nodiscard]] std::vector<Uint8> getSeed() const;
 
-    Random create(const std::string_view& name) const;
+    [[nodiscard]] Random create(const std::string_view& name) const;
 
     static std::vector<Uint8> createRandomSeed(const std::string_view& name);
 

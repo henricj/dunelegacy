@@ -97,13 +97,13 @@ public:
         Returns whether music is on or off
         \return true = on, false = off
     */
-    bool isMusicOn() const { return musicOn; }
+    [[nodiscard]] bool isMusicOn() const { return musicOn; }
 
     /**
         Gets the current music volume.
         \return the current volume
     */
-    inline int getMusicVolume() const { return musicVolume; };
+    [[nodiscard]] inline int getMusicVolume() const { return musicVolume; };
 
     /**
         Sets the volume of the music channel

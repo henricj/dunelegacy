@@ -69,7 +69,7 @@ public:
         \param  n       the number of the entry to return
         \return the nth entry in the file.
     */
-    const MentatEntry& getMentatEntry(unsigned int n) const {
+    [[nodiscard]] const MentatEntry& getMentatEntry(unsigned int n) const {
         if(n >= mentatEntries.size()) {
             THROW(std::invalid_argument, "MentatTextFile:getMentatEntry(): Invalid index!");
         }
@@ -81,7 +81,7 @@ public:
     /**
     \return the number of strings in this file
     */
-    unsigned int getNumEntries() const {
+    [[nodiscard]] unsigned int getNumEntries() const {
         return mentatEntries.size();
     }
 

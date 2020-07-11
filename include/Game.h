@@ -121,13 +121,13 @@ public:
         Returns the current game cycle number.
         \return the current game cycle
     */
-    Uint32 getGameCycleCount() const noexcept { return gameCycleCount; };
+    [[nodiscard]] Uint32 getGameCycleCount() const noexcept { return gameCycleCount; };
 
     /**
         Return the game time in milliseconds.
         \return the current game time in milliseconds
     */
-    Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; };
+    [[nodiscard]] Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; };
 
     /**
         Get the command manager of this game
@@ -149,7 +149,7 @@ public:
         explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
 
-    int getHouseIndex(HOUSETYPE houseID) const {
+    [[nodiscard]] int getHouseIndex(HOUSETYPE houseID) const {
         const auto int_house = static_cast<int>(houseID);
 
         if(int_house < 0 || int_house >= house.size())
@@ -163,7 +163,7 @@ public:
         \param  houseID the id of the house to return
         \return the house with id houseID
     */
-    House* getHouse(HOUSETYPE houseID) const {
+    [[nodiscard]] House* getHouse(HOUSETYPE houseID) const {
         const auto int_house = getHouseIndex(houseID);
 
         return house[int_house].get();
@@ -266,10 +266,10 @@ public:
     static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
 
     ObjectManager& getObjectManager() noexcept { return objectManager; };
-    const ObjectManager& getObjectManager() const noexcept { return objectManager; };
-    GameInterface& getGameInterface() const noexcept { return *pInterface; };
+    [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; };
+    [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; };
 
-    const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
+    [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
     void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
 
     /**
@@ -323,7 +323,7 @@ public:
         \return list of currently selected units/structures
     */
     Dune::selected_set_type& getSelectedList() noexcept { return selectedList; }
-    const Dune::selected_set_type& getSelectedList() const noexcept { return selectedList; }
+    [[nodiscard]] const Dune::selected_set_type& getSelectedList() const noexcept { return selectedList; }
 
     /**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
@@ -344,7 +344,7 @@ public:
         \return list of currently selected units/structures by the other player
     */
     Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList; };
-    const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; };
+    [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; };
 
     /**
         Called when a peer disconnects the game.
@@ -375,25 +375,25 @@ public:
         This method returns wether the game is currently paused
         \return true, if paused, false otherwise
     */
-    bool isGamePaused() const noexcept { return bPause; }
+    [[nodiscard]] bool isGamePaused() const noexcept { return bPause; }
 
     /**
         This method returns wether the game is finished
         \return true, if paused, false otherwise
     */
-    bool isGameFinished() const noexcept { return finished; }
+    [[nodiscard]] bool isGameFinished() const noexcept { return finished; }
 
     /**
         Are cheats enabled?
         \return true = cheats enabled, false = cheats disabled
     */
-    bool areCheatsEnabled() const noexcept { return bCheatsEnabled; }
+    [[nodiscard]] bool areCheatsEnabled() const noexcept { return bCheatsEnabled; }
 
     /**
         Returns the name of the local player; this method should be used instead of using settings.general.playerName directly
         \return the local player name
     */
-    const std::string& getLocalPlayerName() const noexcept { return localPlayerName; }
+    [[nodiscard]] const std::string& getLocalPlayerName() const noexcept { return localPlayerName; }
 
     /**
         Register a new player in this game.
@@ -423,7 +423,7 @@ public:
         \param  playername  the name of the player
         \return the player or nullptr if none was found
     */
-    Player* getPlayerByName(const std::string& playername) const {
+    [[nodiscard]] Player* getPlayerByName(const std::string& playername) const {
         const auto iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
@@ -437,7 +437,7 @@ public:
         \param  playerID  the name of the player
         \return the player or nullptr if none was found
     */
-    Player* getPlayerByID(Uint8 playerID) const {
+    [[nodiscard]] Player* getPlayerByID(Uint8 playerID) const {
         const auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
@@ -468,7 +468,7 @@ private:
         \param  mouseY  y-coordinate of cursor
         \return true if on radar view
     */
-    bool isOnRadarView(int mouseX, int mouseY) const;
+    [[nodiscard]] bool isOnRadarView(int mouseX, int mouseY) const;
 
     /**
         Handles the press of one key while chatting
@@ -545,7 +545,7 @@ private:
         can be set by the person creating the game.
         \return the current game speed
     */
-    int getGameSpeed() const;
+    [[nodiscard]] int getGameSpeed() const;
 
     bool removeFromSelectionLists(ObjectBase* pObject);
     void removeFromQuickSelectionLists(Uint32 objectID);

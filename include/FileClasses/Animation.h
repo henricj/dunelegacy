@@ -41,7 +41,7 @@ public:
 
     void setCurrentFrameNumber(unsigned int newCurrentFrame) noexcept { curFrame = newCurrentFrame; }
 
-    unsigned int getNumberOfFrames() const noexcept { return static_cast<unsigned int>(frames.size()); }
+    [[nodiscard]] unsigned int getNumberOfFrames() const noexcept { return static_cast<unsigned int>(frames.size()); }
 
     template<typename Visitor>
     void for_each_frame(Visitor&& visitor) {
@@ -67,7 +67,7 @@ public:
         this->frameDurationTime = frameDurationTime;
     }
 
-    Uint32 getFrameDurationTime() const noexcept {
+    [[nodiscard]] Uint32 getFrameDurationTime() const noexcept {
         return frameDurationTime;
     }
 
@@ -80,11 +80,11 @@ public:
         loopsLeft = loops;
     };
 
-    int getLoopsLeft() const noexcept {
+    [[nodiscard]] int getLoopsLeft() const noexcept {
         return loopsLeft;
     };
 
-    bool isFinished() const noexcept {
+    [[nodiscard]] bool isFinished() const noexcept {
         if(loopsLeft == -1 || loopsLeft > 0) {
             return false;
         } else {
@@ -96,7 +96,7 @@ public:
 
     void resetFrameOverride() noexcept { curFrameOverride = INVALID_FRAME; };
 
-    unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; };
+    [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; };
 
 private:
     Uint32 curFrameStartTime;

@@ -92,13 +92,13 @@ public:
     */
     virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) { }
 
-    const House* getHouse() const { return pHouse; }
-    Uint8 getPlayerID() const { return playerID; }
+    [[nodiscard]] const House* getHouse() const { return pHouse; }
+    [[nodiscard]] Uint8 getPlayerID() const { return playerID; }
 
-    std::string getPlayername() const { return playername; }
+    [[nodiscard]] std::string getPlayername() const { return playername; }
     void setPlayername(const std::string& playername) { this->playername = playername; }
 
-    std::string getPlayerclass() const { return playerclass; }
+    [[nodiscard]] std::string getPlayerclass() const { return playerclass; }
     void setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; }
 
 protected:
@@ -118,17 +118,17 @@ protected:
     void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
 
     Random& getRandomGen();
-    const GameInitSettings& getGameInitSettings() const;
-    Uint32 getGameCycleCount() const;
-    int getTechLevel() const;
+    [[nodiscard]] const GameInitSettings& getGameInitSettings() const;
+    [[nodiscard]] Uint32 getGameCycleCount() const;
+    [[nodiscard]] int getTechLevel() const;
 
     Map&              getMap();
-    const Map&        getMap() const;
+    [[nodiscard]] const Map&        getMap() const;
 
-    const ObjectBase* getObject(Uint32 objectID) const;
+    [[nodiscard]] const ObjectBase* getObject(Uint32 objectID) const;
 
     const RobustList<const StructureBase*>& getStructureList();
-    const RobustList<const UnitBase*>& getUnitList() const;
+    [[nodiscard]] const RobustList<const UnitBase*>& getUnitList() const;
 
     const House* getHouse(HOUSETYPE houseID);
 

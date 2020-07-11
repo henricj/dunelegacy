@@ -140,7 +140,7 @@ public:
         Returns the parent of this widget
         \return the parent of this widget or nullptr if it has no parent.
     */
-    Widget* getParent() const noexcept { return parent; };
+    [[nodiscard]] Widget* getParent() const noexcept { return parent; };
 
     /**
         Enable or disable this widget. A disabled widget is not responding
@@ -158,7 +158,7 @@ public:
         Returns whether this widget is enabled or not.
         \return true = widget is enabled, false = widget is disabled
     */
-    bool isEnabled() const noexcept { return enabled; };
+    [[nodiscard]] bool isEnabled() const noexcept { return enabled; };
 
     /**
         Sets this widget visible or invisible. An invisible widget does not
@@ -171,7 +171,7 @@ public:
         Returns whether this widget is visible or not.
         \return true = visible, false = invisible
     */
-    bool isVisible() const noexcept { return visible; };
+    [[nodiscard]] bool isVisible() const noexcept { return visible; };
 
     /**
         Sets this widget active. The parent widgets are also activated and the
@@ -188,26 +188,26 @@ public:
         Returns whether this widget is currently active.
         \return true = currently active, false = currently inactive
     */
-    bool isActive() const noexcept { return active; };
+    [[nodiscard]] bool isActive() const noexcept { return active; };
 
     /**
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    virtual bool isActivatable() const { return false; };
+    [[nodiscard]] virtual bool isActivatable() const { return false; };
 
 
     /**
         Returns whether this widget is an container.
         \return true = container, false = any other widget
     */
-    virtual bool isContainer() const { return false; };
+    [[nodiscard]] virtual bool isContainer() const { return false; };
 
     /**
         Returns the current size of this widget.
         \return current size of this widget
     */
-    const Point& getSize() const noexcept { return size; };
+    [[nodiscard]] const Point& getSize() const noexcept { return size; };
 
     /**
         Returns the minimum size of this widget. The widget should not
@@ -215,21 +215,21 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    virtual Point getMinimumSize() const { return Point(0,0); };
+    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0,0); };
 
     /**
         Returns whether this widget is allowed to be resized in X direction.
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in X direction, false = not resizeable in X direction
     */
-    bool resizingXAllowed() const { return resizeX; };
+    [[nodiscard]] bool resizingXAllowed() const { return resizeX; };
 
     /**
         Returns whether this widget is allowed to be resized in Y direction.
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in Y direction, false = not resizeable in Y direction
     */
-    bool resizingYAllowed() const { return resizeY; };
+    [[nodiscard]] bool resizingYAllowed() const { return resizeY; };
 
     /**
         This method resizes the widget. This method should only be
