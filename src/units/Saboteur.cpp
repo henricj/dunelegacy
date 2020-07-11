@@ -60,7 +60,7 @@ Saboteur::~Saboteur() = default;
 
 
 void Saboteur::checkPos(const GameContext& context) {
-    InfantryBase::checkPos(context);
+    parent::checkPos(context);
 
     if(!active)
         return;
@@ -80,39 +80,25 @@ void Saboteur::checkPos(const GameContext& context) {
 }
 
 bool Saboteur::update(const GameContext& context) {
-    if(active) {
-        if(!moving) {
-            //check to see if close enough to blow up target
-            if(target.getObjPointer() != nullptr){ //&& target.getObjPointer()->isAStructure()
-                if(getOwner()->getTeamID() != target.getObjPointer()->getOwner()->getTeamID())
-                {
-                    Coord   closestPoint;
-                    closestPoint = target.getObjPointer()->getClosestPoint(location);
+    if(active && !moving) {
+        // check to see if close enough to blow up target
+        if(auto* pObject = target.getObjPointer()) { //&& target.getObjPointer()->isAStructure()
+            if(getOwner()->getTeamID() != pObject->getOwner()->getTeamID()) {
+                const auto closestPoint = pObject->getClosestPoint(location);
 
-
-                    if(blockDistance(location, closestPoint) <= 1.5_fix) {
-                        if(isVisible(getOwner()->getTeamID())) {
-                            screenborder->shakeScreen(18);
-                        }
-
-                        ObjectBase* pObject = target.getObjPointer();
-                        destroy(context);
-                        pObject->setHealth(0);
-                        pObject->destroy(context);
-                        return false;
-                    }
-
-                    auto *pObject = target.getObjPointer();
-                    destroy(context);
-                    pObject->setHealth(0);
-                    pObject->destroy(context);
-                    return false;
+                if(blockDistance(location, closestPoint) <= 1.5_fix) {
+                    if(isVisible(getOwner()->getTeamID())) { screenborder->shakeScreen(18); }
                 }
+
+                destroy(context);
+                pObject->setHealth(0);
+                pObject->destroy(context);
+                return false;
             }
         }
     }
 
-    return InfantryBase::update(context);
+    return parent::update(context);
 }
 
 void Saboteur::deploy(const GameContext& context, const Coord& newLocation) {
@@ -140,5 +126,5 @@ void Saboteur::destroy(const GameContext& context)
         soundPlayer->playSoundAt(Sound_ExplosionLarge,location);
     }
 
-    InfantryBase::destroy(context);
+    parent::destroy(context);
 }

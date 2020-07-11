@@ -18,12 +18,8 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include <globals.h>
-
 #include <ObjectPointer.h>
 #include <DataTypes.h>
-#include <ScreenBorder.h>
-#include <FileClasses/GFXManager.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <fixmath/FixPoint.h>

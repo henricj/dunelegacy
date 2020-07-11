@@ -137,7 +137,7 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
     Uint32 numPlayers = stream.readUint32();
     for(Uint32 i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
-        const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
+        const auto* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if(pPlayerData == nullptr) {
             SDL_Log("Warning: Cannot load player '%s'", playerclass.c_str());
         } else {
@@ -308,11 +308,11 @@ void House::printStat() const {
 
 
 void House::updateBuildLists() {
-    for(auto *pStructure : structureList) {
-        if(pStructure->isABuilder() && (pStructure->getOwner() == this)) {
-            assert(nullptr != dynamic_cast<BuilderBase*>(pStructure));
-            static_cast<BuilderBase*>(pStructure)->updateBuildList();  // NOLINT
-        }
+    for(auto* pStructure : structureList) {
+        auto* builder = dune_cast<BuilderBase>(pStructure);
+        if(!builder || builder->getOwner() != this) continue;
+
+        builder->updateBuildList();
     }
 }
 
@@ -407,7 +407,7 @@ void House::incrementStructures(ItemID_enum itemID) {
     assert(numUnits + numStructures == std::accumulate(std::begin(numItem), std::end(numItem), 0));
 
     // change power requirements
-    int currentItemPower = context.game.objectData.data[itemID][static_cast<int>(houseID)].power;
+    const auto currentItemPower = context.game.objectData.data[itemID][static_cast<int>(houseID)].power;
     if(currentItemPower >= 0) {
         powerRequirement += currentItemPower;
     }
@@ -471,7 +471,7 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID
     \param pObject   the object that was built
 */
 void House::informWasBuilt(ObjectBase* pObject) {
-    ItemID_enum itemID = pObject->getItemID();
+    auto itemID = pObject->getItemID();
     if(pObject->isAStructure()) {
         structureBuiltValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltStructures++;
@@ -637,10 +637,10 @@ void House::freeHarvester(int xPos, int yPos) {
 
 StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos,
                                      bool byScenario, bool bForcePlacing) {
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     auto* const tile = map.tryGetTile(xPos, yPos);
-    if(!tile) { return nullptr; }
+    if(!tile) return nullptr;
 
     auto* pBuilder = builderID == NONE_ID ? nullptr : objectManager.getObject<BuilderBase>(builderID);
 
@@ -749,12 +749,12 @@ StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int x
 
                 if(itemID == Structure_Palace) {
                     // cancel all other palaces
-                    for(StructureBase* pStructure : structureList) {
-                        if(pStructure->getOwner() == this && pStructure->getItemID() == Structure_ConstructionYard) {
-                            auto* pConstructionYard = static_cast<ConstructionYard*>(pStructure);
-                            if(pBuilder != pConstructionYard) {
-                                pConstructionYard->doCancelItem(Structure_Palace, false);
-                            }
+                    for(auto* pStructure : structureList) {
+                        if(pStructure->getOwner() != this) continue;
+
+                        auto* pConstructionYard = dune_cast<ConstructionYard>(pStructure);
+                        if(pConstructionYard && pBuilder != pConstructionYard) {
+                            pConstructionYard->doCancelItem(Structure_Palace, false);
                         }
                     }
                 }
@@ -771,12 +771,11 @@ StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int x
                 pBuilder->getOwner()->informWasBuilt(newStructure);
             }
 
-            if(newStructure->isABuilder()) {
-                static_cast<BuilderBase*>(newStructure)->updateBuildList();
+            if(auto* builder = dune_cast<BuilderBase>(newStructure)) {
+                builder->updateBuildList();
             }
 
             return newStructure;
-
         }
     }
 }

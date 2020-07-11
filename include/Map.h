@@ -112,7 +112,7 @@ public:
     }
 
     [[nodiscard]] const Tile* getTile(int xPos, int yPos) const {
-        const auto tile = tryGetTile(xPos, yPos);
+        const auto* const tile = tryGetTile(xPos, yPos);
 
         if (!tile)
             THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
@@ -121,7 +121,7 @@ public:
     }
 
     Tile* getTile(int xPos, int yPos) {
-        const auto tile = tryGetTile(xPos, yPos);
+        auto* const tile = tryGetTile(xPos, yPos);
 
         if (!tile)
             THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
@@ -157,26 +157,22 @@ public:
 protected:
     template<typename F>
     void location_for_each(int x1, int y1, int x2, int y2, F&& f) const {
-        if (x1 < 0)
-            x1 = 0;
-        if (x2 < x1)
-            x2 = x1;
-        else if (x2 >= sizeX)
+        static_assert(std::is_invocable<F, int, int>::value,
+                      "The function must of the form void F(int, int)");
+
+        if(x1 < 0) x1 = 0;
+        else if(x2 > sizeX)
             x2 = sizeX;
-        if (x1 > x2)
-            x1 = x2;
 
-        if (y1 < 0)
-            y1 = 0;
-        if (y2 < y1)
-            y2 = y1;
-        else if (y2 >= sizeY)
+        if(y1 < 0) y1 = 0;
+        else if(y2 > sizeY)
             y2 = sizeY;
-        if (y1 > y2)
-            y1 = y2;
 
-        for (auto x = x1; x < x2; ++x) {
-            for (auto y = y1; y < y2; ++y) {
+        assert(x1 >= 0 && x2 < sizeX);
+        assert(y1 >= 0 && y2 < sizeY);
+
+        for(auto x = x1; x < x2; ++x) {
+            for(auto y = y1; y < y2; ++y) {
                 f(x, y);
             }
         }
@@ -268,7 +264,7 @@ protected:
     SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator, Predicate&& predicate) const {
 
         if (0 == depth) {
-            const auto tile = tryGetTile(x, y);
+            const auto* const tile = tryGetTile(x, y);
             if (!tile)
                 return SearchResult::NotDone;
 
@@ -430,7 +426,7 @@ public:
     void removeSelection(Uint32 objectID) { removedObjects.push(objectID); }
 
     bool trySetTileType(const GameContext& context, int x, int y, TERRAINTYPE type) {
-        const auto tile = tryGetTile(x, y);
+        auto* const tile = tryGetTile(x, y);
         if(!tile) return false;
 
         tile->setType(context, type);

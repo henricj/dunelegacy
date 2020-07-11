@@ -44,10 +44,10 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu
     repeatButton.setTextures(pMentatRepeat, pMentatRepeatPressed);
     repeatButton.setEnabled(false);
     repeatButton.setVisible(false);
-    repeatButton.setOnClick(std::bind(&BriefingMenu::onRepeat, this));
+    repeatButton.setOnClick([&] { onRepeat(); });
     windowWidget.addWidget(&repeatButton,Point(500,340), getTextureSize(pMentatRepeat));
 
-    int missionnumber = 0;
+    int missionnumber;
     if(mission != 22) {
         missionnumber = ((mission+1)/3)+1;
     } else {
