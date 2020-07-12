@@ -93,6 +93,7 @@ set(GUI_SOURCES
 	GUI/dune/WaitingForOtherPlayers.cpp)
 
 set(INIMAP_SOURCES
+	INIMap/INIMap.cpp
 	INIMap/INIMapEditorLoader.cpp
 	INIMap/INIMapLoader.cpp
 	INIMap/INIMapPreviewCreator.cpp)
