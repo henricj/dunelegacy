@@ -32,72 +32,67 @@ typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 class Coord final {
 public:
-    Coord() noexcept
-     : x(0), y(0) {
-    }
+    constexpr Coord() noexcept : x(0), y(0) { }
 
-    Coord(int x,int y) noexcept
-     : x(x), y(y)
-    {
-    }
+    constexpr Coord(int x, int y) noexcept : x(x), y(y) { }
 
-    bool operator==(const Coord& c) const noexcept {
+    constexpr bool operator==(const Coord& c) const noexcept {
         return (x == c.x && y == c.y);
     }
 
-    bool operator!=(const Coord& c) const noexcept {
+    constexpr bool operator!=(const Coord& c) const noexcept {
         return !operator==(c);
     }
 
-    Coord& operator+=(const Coord& c) noexcept {
+    constexpr Coord& operator+=(const Coord& c) noexcept {
         x += c.x;
         y += c.y;
         return *this;
     }
 
-    Coord operator+(const Coord& c) const noexcept {
+    constexpr Coord operator+(const Coord& c) const noexcept {
         Coord ret = *this;
         ret += c;
         return ret;
     }
 
-    Coord& operator-=(const Coord& c) noexcept {
+    constexpr Coord& operator-=(const Coord& c) noexcept {
         x -= c.x;
         y -= c.y;
         return *this;
     }
 
-    Coord operator-(const Coord& c) const {
+    constexpr Coord operator-(const Coord& c) const noexcept  {
         Coord ret = *this;
         ret -= c;
         return ret;
     }
 
-    Coord& operator*=(int c) noexcept {
+    constexpr Coord& operator*=(int c) noexcept {
         x *= c;
         y *= c;
         return *this;
     }
 
-    Coord operator*(int c) const {
-        Coord ret = *this;
+    constexpr Coord operator*(int c) const noexcept {
+        auto ret = *this;
         ret *= c;
         return ret;
     }
 
-    Coord& operator/=(int c) noexcept {
+    constexpr Coord& operator/=(int c) {
         x /= c;
         y /= c;
         return *this;
     }
 
-    Coord operator/(int c) const {
-        Coord ret = *this;
+    constexpr Coord operator/(int c) const {
+        auto ret = *this;
         ret /= c;
         return ret;
     }
 
-    void invalidate() {
+    void invalidate() noexcept {
         x = INVALID_POS;
         y = INVALID_POS;
     }
@@ -110,11 +105,11 @@ public:
         return ((x == INVALID_POS) || (y == INVALID_POS));
     }
 
-    static const Coord Invalid() {
+    static constexpr Coord Invalid() noexcept {
         return Coord(INVALID_POS, INVALID_POS);
     }
 
-    explicit operator bool() const {
+    explicit constexpr operator bool() const noexcept {
         return isValid();
     }
 
