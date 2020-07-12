@@ -518,27 +518,31 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
     for(const INIFile::Key& key : inifile->getSection("UNITS")) {
         if(key.getKeyName().find("ID") == 0) {
-            std::string HouseStr, UnitStr, health, PosStr, rotation, mode;
-            splitString(key.getStringValue(), HouseStr, UnitStr, health, PosStr, rotation, mode);
+            std::string_view HouseStr, UnitStr, health, PosStr, rotation, mode;
+            if(!splitString(key.getStringView(), &HouseStr, &UnitStr, &health, &PosStr, &rotation, &mode)) {
+                logWarning(key.getLineNumber(), fmt::format("Invalid unit string '{}'!", key.getStringValue()));
+                continue;
+            }
 
             const auto houseID = getHouseID(HouseStr);
             if(houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip unit for unused house
                 continue;
-            } else if(houseID == HOUSETYPE::HOUSE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
+            }
+            if(houseID == HOUSETYPE::HOUSE_INVALID) {
+                logWarning(key.getLineNumber(), fmt::format("Invalid house string for '{}': '{}'!", UnitStr, HouseStr));
                 continue;
             }
 
             int pos = 0;
             if(!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid position string for '{}': '{}'!", UnitStr, PosStr));
                 continue;
             }
 
             int int_angle = 0;
             if(!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
-                logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid rotation string: '{}'!", rotation));
                 int_angle = 64;
             }
             int_angle = (int_angle+16)/32;
@@ -549,7 +553,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
             int Num2Place = 1;
             ItemID_enum itemID = getItemIDByName(UnitStr);
             if((itemID == ItemID_Invalid) || !isUnit(itemID)) {
-                logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid unit string: '{}'!", UnitStr));
                 continue;
             }
 
@@ -602,25 +606,30 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
             int iHealth = 0;
             if(!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid health string: '{}'!", health));
                 iHealth = 256;
             }
 
             const auto percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
-            ATTACKMODE attackmode = getAttackModeByName(mode);
+            auto attackmode = getAttackModeByName(mode);
             if(attackmode == ATTACKMODE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid attackmode string: '" + mode + "'!");
+                logWarning(key.getLineNumber(), fmt::format("Invalid attackmode string: '{}'!", mode));
                 attackmode = AREAGUARD;
             }
 
-            for(int i = 0; i < Num2Place; i++) {
-                auto* newUnit = getOrCreateHouse(context, houseID)->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
-                if(newUnit == nullptr) {
-                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}' ({}x{})!",
-                                                                UnitStr, PosStr, getXPos(pos), getYPos(pos)));
-                    continue;
-                } else {
+            if(auto* house = getOrCreateHouse(context, houseID)) {
+                for(auto i = 0; i < Num2Place; i++) {
+                    auto* newUnit =
+                        house->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
+
+                    if(newUnit == nullptr) {
+                        logWarning(key.getLineNumber(),
+                                   fmt::format("Invalid or occupied position for '{}': '{}' ({}x{})!", UnitStr, PosStr,
+                                               getXPos(pos), getYPos(pos)));
+                        continue;
+                    }
+
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
                     newUnit->doSetAttackMode(context, attackmode);
                     newUnit->setAngle(angle);
@@ -970,12 +979,10 @@ House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE hous
     return pHouse.get();
 }
 
-HOUSETYPE INIMapLoader::getHouseID(const std::string& name) {
+HOUSETYPE INIMapLoader::getHouseID(std::string_view name) {
     const auto lowerName = strToLower(name);
 
-    if(housename2house.count(lowerName) > 0) {
-        return housename2house[lowerName];
-    }         return getHouseByName(lowerName);
+    if(!housename2house.empty()) { return housename2house[lowerName]; }
 
-   
+    return getHouseByName(lowerName);
 }

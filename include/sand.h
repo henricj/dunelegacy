@@ -37,25 +37,25 @@ int             getAnimByFilename(const std::string& filename);
 
 Coord           getStructureSize(ItemID_enum itemID);
 
-ItemID_enum     getItemIDByName(const std::string& name);
+ItemID_enum     getItemIDByName(std::string_view name);
 std::string     getItemNameByID(ItemID_enum itemID);
 SDL_Texture*    resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
-HOUSETYPE       getHouseByName(const std::string& name);
+HOUSETYPE       getHouseByName(std::string_view name);
 std::string     getHouseNameByNumber(HOUSETYPE house);
 
-ATTACKMODE      getAttackModeByName(const std::string& name);
+ATTACKMODE      getAttackModeByName(std::string_view name);
 std::string     getAttackModeNameByMode(ATTACKMODE attackMode);
 
-DropLocation    getDropLocationByName(const std::string& name);
+DropLocation    getDropLocationByName(std::string_view name);
 std::string     getDropLocationNameByID(DropLocation dropLocation);
 std::string     resolveDropLocationName(DropLocation dropLocation);
 
 
-AITeamBehavior    getAITeamBehaviorByName(const std::string& name);
+AITeamBehavior  getAITeamBehaviorByName(const std::string& name);
 std::string     getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);
 
-AITeamType        getAITeamTypeByName(const std::string& name);
+AITeamType      getAITeamTypeByName(const std::string& name);
 std::string     getAITeamTypeNameByID(AITeamType aiTeamType);
 
 
