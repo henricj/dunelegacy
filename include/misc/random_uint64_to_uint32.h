@@ -61,7 +61,7 @@ public:
 private:
     Generator   generator_;
     result_type pending_;
-    bool        have_pending_;
+    bool        have_pending_{};
 };
 
 } // namespace ExtraGenerators
