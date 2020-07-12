@@ -778,7 +778,11 @@ StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int x
                 builder->updateBuildList();
             }
 
-            return newStructure;
+            auto* const ret = newStructure;
+
+            newStructure = nullptr; // Prevent gsl::finally() from deleting it.
+
+            return ret;
         }
     }
 }
