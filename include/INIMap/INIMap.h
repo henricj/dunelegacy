@@ -33,7 +33,7 @@
 
 
 class INIMap {
-public:
+protected:
     typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
 
     explicit INIMap(inifile_ptr pINIFile)
@@ -41,21 +41,10 @@ public:
 
     }
 
-    INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "") : mapname(mapname.u8string()) {
+    INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "");
 
-        if(gameType == GameType::Campaign || gameType == GameType::Skirmish) {
-            // load from PAK-File
-            inifile = std::make_unique<INIFile>(pFileManager->openFile(this->mapname).get());
-        } else if(gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
-            SDL_RWops* RWops = SDL_RWFromConstMem(mapdata.c_str(), mapdata.size());
-            inifile = std::make_unique<INIFile>(RWops);
-            SDL_RWclose(RWops);
-        } else {
-            inifile = std::make_unique<INIFile>(mapname);
-        }
-    }
-
-    ~INIMap() = default;
+public:
+    virtual ~INIMap();
 
 protected:
 
@@ -102,18 +91,7 @@ protected:
     /**
     Checks if all map features of this map are supported.
     */
-    void checkFeatures() {
-        if(!inifile->hasSection("FEATURES")) {
-            return;
-        }
-
-        for(const INIFile::Key& key : inifile->getSection("FEATURES")) {
-            if(key.getBoolValue(true) == true) {
-                logError(key.getLineNumber(), "Unsupported feature \"" + key.getKeyName() + "\"!");
-                return;
-            }
-        }
-    }
+    void checkFeatures();
 
 
     [[nodiscard]] inline int getXPos(int pos) const { return (pos % logicalSizeX) - logicalOffsetX; };
