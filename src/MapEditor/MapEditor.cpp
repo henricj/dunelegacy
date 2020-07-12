@@ -432,7 +432,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         loadedINIFile->setIntValue("BASIC", "TacticalPos", tacticalPos);
 
         // field, spice bloom and special bloom
-        std::string strSpiceBloom = "";
+        std::string strSpiceBloom;
         for(size_t i=0;i<spiceBlooms.size();++i) {
             if(i>0) {
                 strSpiceBloom += ",";
@@ -449,7 +449,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
 
 
-        std::string strSpecialBloom = "";
+        std::string strSpecialBloom;
         for(size_t i=0;i<specialBlooms.size();++i) {
             if(i>0) {
                 strSpecialBloom += ",";
@@ -466,7 +466,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
 
 
-        std::string strFieldBloom = "";
+        std::string strFieldBloom;
         for(size_t i=0;i<spiceFields.size();++i) {
             if(i>0) {
                 strFieldBloom += ",";
@@ -496,7 +496,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         for(int y = 0; y < map.getSizeY(); y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
-            std::string row = "";
+            std::string row;
             for(int x = 0; x < map.getSizeX(); x++) {
                 switch(map(x,y)) {
 
