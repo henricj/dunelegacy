@@ -52,7 +52,7 @@ private:
     void loadView(const GameContext& context);
 
     House*    getOrCreateHouse(const GameContext& context, HOUSETYPE house);
-    HOUSETYPE getHouseID(const std::string& name);
+    HOUSETYPE getHouseID(std::string_view name);
 
     Game* pGame;
     std::unique_ptr<Map> map;

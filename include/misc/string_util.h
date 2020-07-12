@@ -38,29 +38,62 @@
 #endif
 
 /**
-    Splits a string into several substrings. These strings are separated with ','.
+    Splits a string_view into several substrings. These strings are separated with ','.
         Example:<br>
         std::string first, second;<br>
         SplitString("abc,xyz",first, second);<br>
     \param parseString  the string to parse
     \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited substrings).
 */
-template<class ...Args>
-bool splitString(const std::string& parseString, Args & ... args) {
-    std::vector<std::string*> pStrings = { &args... };
+template<class... Args>
+bool splitString(std::string_view parseString, std::string& arg0, Args&... args) {
+    std::array<std::string*, sizeof...(Args) + 1> pStrings = {&arg0, &args...};
 
-	std::istringstream iss(parseString);
-	for(std::string* pString : pStrings) {
-		if(!std::getline(iss, *pString, ',')) {
-			return false;
-		}
-	}
+    auto**       p           = &pStrings[0];
+    auto** const strings_end = p + pStrings.size();
 
-	if(!iss.eof()) {
-		return false;
-	}
+    for(auto previous = parseString.data(), current = previous, end = previous + parseString.size();
+        current != end && previous != end; previous = current + 1) {
+        current = std::find(previous, end, ',');
 
-    return true;
+        if(previous != current) {
+            **p = std::string{previous, static_cast<std::string::size_type>(current - previous)};
+            if(++p == strings_end) return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+    Splits a string_view into several substrings. These strings are separated with ','.
+        Example:<br>
+        std::string_view* first, second;<br>
+        SplitString("abc,xyz", &first, &second);<br>
+    \param parseString  the string to parse
+    \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited
+   substrings).
+*/
+template<class... Args>
+bool splitString(std::string_view parseString, std::string_view* arg0, Args*... args) {
+    std::array<std::string_view*, sizeof...(Args) + 1> pStrings = {arg0, args...};
+
+    if(pStrings.empty()) return true;
+
+    auto**       p           = &pStrings[0];
+    auto** const strings_end = p + pStrings.size();
+
+    for(auto previous = parseString.data(), current = previous, end = previous + parseString.size();
+        current != end && previous != end; previous = current + 1) {
+        current = std::find(previous, end, ',');
+
+        if(previous != current) {
+            **p = std::string_view{previous, static_cast<std::string::size_type>(current - previous)};
+            if(++p == strings_end) return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -75,41 +108,41 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
 
 template<typename T>
-inline bool parseString(const std::string& str, T& t) {
-    std::istringstream is(str);
-    is >> t;
-    return !is.fail();
+inline bool parseString(std::string_view str, T& t) {
+    auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
+
+    return ec == std::errc{};
 }
 
 
 inline void convertToLower(std::string& str) {
-    std::transform(str.begin(),str.end(), str.begin(), (int(*)(int)) tolower);
+    std::transform(str.begin(),str.end(), str.begin(), static_cast<int(*)(int)>(tolower));
 }
 
-inline std::string strToLower(const std::string& str) {
-    std::string result = str;
+inline std::string strToLower(std::string_view str) {
+    std::string result{str};
     convertToLower(result);
     return result;
 }
 
 inline void convertToUpper(std::string& str) {
-    std::transform(str.begin(),str.end(), str.begin(), (int(*)(int)) toupper);
+    std::transform(str.begin(),str.end(), str.begin(), static_cast<int(*)(int)>(toupper));
 }
 
-inline std::string strToUpper(const std::string& str) {
-    std::string result = str;
+inline std::string strToUpper(std::string_view str) {
+    std::string result{str};
     convertToUpper(result);
     return result;
 }
 
-inline std::string trim(const std::string& str) {
-    size_t firstChar = str.find_first_not_of(" \t");
-    size_t lastChar = str.find_last_not_of(" \t");
+inline std::string trim(std::string_view str) {
+    const size_t firstChar = str.find_first_not_of(" \t");
+    const size_t lastChar = str.find_last_not_of(" \t");
 
     if((firstChar == std::string::npos) || (lastChar == std::string::npos)) {
         return "";
     } else {
-        return str.substr(firstChar, lastChar - firstChar + 1);
+        return std::string{str.substr(firstChar, lastChar - firstChar + 1)};
     }
 }
 
