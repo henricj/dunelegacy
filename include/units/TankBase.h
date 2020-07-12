@@ -76,4 +76,23 @@ private:
     void init();
 };
 
+template<>
+inline TankBase* dune_cast(ObjectBase* base) {
+    auto* unit = dune_cast<UnitBase>(base);
+
+    if(unit && unit->isTurreted()) return static_cast<TankBase*>(unit);
+
+    return nullptr;
+}
+
+template<>
+inline const TankBase* dune_cast(const ObjectBase* base) {
+    const auto* unit = dune_cast<UnitBase>(base);
+
+    if(unit && unit->isTurreted()) return static_cast<const TankBase*>(unit);
+
+    return nullptr;
+}
+
+
 #endif // TANKBASE_H

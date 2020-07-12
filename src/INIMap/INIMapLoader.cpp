@@ -48,9 +48,9 @@ std::unique_ptr<Map> INIMapLoader::load() {
 
     // TODO: Facepalm.  globals...
     currentGameMap = map.get();
-    gsl::final_action cleanup{[] { currentGameMap = nullptr; }};
+    auto cleanup   = gsl::finally([]{ currentGameMap = nullptr; });
 
-    GameContext context{*pGame, *map.get(), pGame->getObjectManager()};
+    const GameContext context{*pGame, *map, pGame->getObjectManager()};
 
     loadHouses(context);
     loadUnits(context);
@@ -625,15 +625,13 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     newUnit->doSetAttackMode(context, attackmode);
                     newUnit->setAngle(angle);
 
-                    auto* pTankBase = dynamic_cast<TankBase*>(newUnit);
-                    if(pTankBase != nullptr) {
-                        pTankBase->setTurretAngle(angle);
-                    }
+                    if(auto* pTankBase = dune_cast<TankBase>(newUnit)) { pTankBase->setTurretAngle(angle); }
                 }
+            } else {
+                logWarning(key.getLineNumber(), fmt::format("Unable to get or create house {}!", houseID));
             }
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
-            continue;
         }
     }
 }
