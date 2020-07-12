@@ -122,7 +122,7 @@ void INIMapEditorLoader::loadMap() {
         // field, spice bloom and special bloom
 
         std::string BloomString = inifile->getStringValue("MAP","Bloom");
-        if(BloomString != "") {
+        if(!BloomString.empty()) {
             std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
 
             for(auto & BloomPosition : BloomPositions) {
@@ -140,7 +140,7 @@ void INIMapEditorLoader::loadMap() {
         }
 
         std::string SpecialString = inifile->getStringValue("MAP","Special");
-        if(SpecialString != "") {
+        if(!SpecialString.empty()) {
             std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
 
             for(auto & SpecialPosition : SpecialPositions) {
@@ -158,7 +158,7 @@ void INIMapEditorLoader::loadMap() {
         }
 
         std::string FieldString = inifile->getStringValue("MAP","Field");
-        if(FieldString != "") {
+        if(!FieldString.empty()) {
             std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
 
             for(auto & FieldPosition : FieldPositions) {
@@ -277,7 +277,7 @@ void INIMapEditorLoader::loadMap() {
 void INIMapEditorLoader::loadHouses()
 {
     for(int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
-        std::string houseName = getHouseNameByNumber((HOUSETYPE) houseID);
+        std::string houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(houseID));
 
         if(inifile->hasSection(houseName)) {
             auto& player = pMapEditor->getPlayers()[houseID];
@@ -289,7 +289,7 @@ void INIMapEditorLoader::loadHouses()
             player.maxunit = inifile->hasKey(houseName, "MaxUnit") ? inifile->getIntValue(houseName, "MaxUnit", 0) : inifile->getIntValue(houseName, "MaxUnits", 0);
 
             std::string brain = inifile->getStringValue(houseName, "Brain", "");
-            if(brain != "") {
+            if(!brain.empty()) {
                 player.brain = brain;
             }
         }

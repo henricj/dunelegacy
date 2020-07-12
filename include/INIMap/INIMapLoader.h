@@ -32,6 +32,7 @@
 
 // forward declarations
 class Game;
+class GameContext;
 class House;
 
 class INIMapLoader : public INIMap {
