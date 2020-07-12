@@ -109,7 +109,7 @@ public:
             return ret;
         }
 
-#ifdef NEED_FLOAT_TO_CHARS
+#ifdef NEED_FLOAT_FROM_CHARS
         [[nodiscard]] auto getValue(float defaultValue) const noexcept -> float {
             auto view = getStringView();
             if(view.empty()) return defaultValue;
@@ -127,7 +127,7 @@ public:
         }
 #endif
 
-#ifdef NEED_DOUBLE_TO_CHARS
+#ifdef NEED_DOUBLE_FROM_CHARS
         [[nodiscard]] auto getValue(double defaultValue) const noexcept -> double {
             auto view = getStringView();
             if(view.empty()) return defaultValue;
