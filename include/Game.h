@@ -115,7 +115,7 @@ public:
     /**
         This method processes all the user input.
     */
-    void doInput(const GameContext& context);
+    void doInput(const GameContext& context, SDL_Event& event);
 
     /**
         Returns the current game cycle number.
@@ -549,6 +549,11 @@ private:
 
     bool removeFromSelectionLists(ObjectBase* pObject);
     void removeFromQuickSelectionLists(Uint32 objectID);
+
+    void serviceNetwork(bool& bWaitForNetwork);
+    void updateGame(const GameContext& context);
+
+    void doEventsUntil(const GameContext& context, int until);
 
 public:
     enum {
