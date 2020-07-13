@@ -48,7 +48,7 @@ std::unique_ptr<Map> INIMapLoader::load() {
 
     // TODO: Facepalm.  globals...
     currentGameMap = map.get();
-    auto cleanup   = gsl::finally([]{ currentGameMap = nullptr; });
+    auto cleanup = gsl::finally([]{ currentGameMap = nullptr; });
 
     const GameContext context{*pGame, *map, pGame->getObjectManager()};
 
@@ -518,8 +518,10 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
     for(const INIFile::Key& key : inifile->getSection("UNITS")) {
         if(key.getKeyName().find("ID") == 0) {
+            const auto keyView = key.getStringView();
+
             std::string_view HouseStr, UnitStr, health, PosStr, rotation, mode;
-            if(!splitString(key.getStringView(), &HouseStr, &UnitStr, &health, &PosStr, &rotation, &mode)) {
+            if(!splitString(keyView, &HouseStr, &UnitStr, &health, &PosStr, &rotation, &mode)) {
                 logWarning(key.getLineNumber(), fmt::format("Invalid unit string '{}'!", key.getStringValue()));
                 continue;
             }
@@ -622,13 +624,17 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                 for(auto i = 0; i < Num2Place; i++) {
                     auto* newUnit =
                         house->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
-
                     if(newUnit == nullptr) {
                         logWarning(key.getLineNumber(),
-                                   fmt::format("Invalid or occupied position for '{}': '{}' ({}x{})!", UnitStr, PosStr,
-                                               getXPos(pos), getYPos(pos)));
+                                   fmt::format("Invalid or occupied position for '{}': '{}' ({}x{}/{}) after parsing {}!", UnitStr, PosStr,
+                                               getXPos(pos), getYPos(pos), PosStr, keyView));
                         continue;
                     }
+
+                    SDL_Log(fmt::format("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
+                                        newUnit->getObjectID(), itemID, newUnit->getLocation().x,
+                                        newUnit->getLocation().y, pos, PosStr, keyView)
+                                .c_str());
 
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
                     newUnit->doSetAttackMode(context, attackmode);
