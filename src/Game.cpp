@@ -515,7 +515,7 @@ void Game::drawScreen()
     }
 
     if(bShowFPS) {
-        const auto strFPS = fmt::sprintf("fps: %.1f ", 1000.0f/averageFrameTime);
+        const auto strFPS = fmt::sprintf("fps: %.1f render: %.1fms update: %.1fms", 1000.0f/averageFrameTime, averageRenderTime, averageUpdateTime);
 
         sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, 14);
         SDL_Rect drawLocation = calcDrawingRect(pFPSTexture.get(),sideBarPos.x - strFPS.length()*8, 60);
@@ -1215,6 +1215,8 @@ void Game::runMainLoop(const GameContext& context) {
 
     SDL_Event event;
 
+    const auto performanceScaleMs = 1000.0f / SDL_GetPerformanceFrequency();
+
     //SDL_Log("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     //main game loop
@@ -1228,6 +1230,8 @@ void Game::runMainLoop(const GameContext& context) {
             if(now - finishedLevelTime > END_WAIT_TIME) { finishedLevel = true; }
         }
 
+        const auto renderStart = SDL_GetPerformanceCounter();
+
         // clear whole screen
         SDL_SetRenderDrawColor(renderer, 100, 50, 0, 255);
         SDL_RenderClear(renderer);
@@ -1235,6 +1239,10 @@ void Game::runMainLoop(const GameContext& context) {
         drawScreen();
 
         SDL_RenderPresent(renderer);
+
+        const auto renderElapsed = SDL_GetPerformanceCounter() - renderStart;
+
+        if(bShowFPS) { averageRenderTime = 0.97f * averageRenderTime + 0.03f * performanceScaleMs * renderElapsed; }
 
         numFrames++;
 
@@ -1285,7 +1293,13 @@ void Game::runMainLoop(const GameContext& context) {
             // Reset in case of some massive discontinuity (e.g., computer sleep or debugger break).
             if(targetGameCycle - gameCycleCount > 250) targetGameCycle = gameCycleCount;
 
+            const auto updateStart = SDL_GetPerformanceCounter();
+
             updateGame(context);
+
+            const auto updateElapsed = SDL_GetPerformanceCounter() - renderStart;
+
+            if(bShowFPS) { averageUpdateTime = 0.97f * averageUpdateTime + 0.03f * performanceScaleMs * updateElapsed; }
 
             if(takePeriodicalScreenshots && ((gameCycleCount % (MILLI2CYCLES(10 * 1000))) == 0)) { takeScreenshot(); }
 
