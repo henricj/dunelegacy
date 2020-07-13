@@ -1107,7 +1107,6 @@ void Game::runMainLoop(const GameContext& context) {
 
     //main game loop
     do {
-        SDL_SetRenderTarget(renderer, screenTexture);
 
         // clear whole screen
         SDL_SetRenderDrawColor(renderer, 100, 50, 0, 255);
@@ -1115,11 +1114,6 @@ void Game::runMainLoop(const GameContext& context) {
 
         drawScreen();
 
-        SDL_SetRenderTarget(renderer, nullptr);
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
         SDL_RenderPresent(renderer);
 
         const int frameEnd = static_cast<int>(SDL_GetTicks());
