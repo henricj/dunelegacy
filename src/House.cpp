@@ -711,7 +711,7 @@ StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int x
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
-            gsl::finally([&] {
+            auto cleanup = gsl::finally([&] {
                 if(!newStructure) return;
 
                 context.objectManager.removeObject(newStructure->getObjectID());
