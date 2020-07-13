@@ -43,7 +43,7 @@ public:
 
     void save(OutputStream& stream) const;
 
-    void blitToScreen() const;
+    void blitToScreen(Uint32 cycleCount) const;
 
     bool update(const GameContext& context);
     void destroy(const GameContext& context) const;
