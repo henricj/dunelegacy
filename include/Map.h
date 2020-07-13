@@ -161,12 +161,10 @@ protected:
                       "The function must be of the form void F(int, int)");
 
         if(x1 < 0) x1 = 0;
-        else if(x2 > sizeX)
-            x2 = sizeX;
+        if(x2 > sizeX) x2 = sizeX;
 
         if(y1 < 0) y1 = 0;
-        else if(y2 > sizeY)
-            y2 = sizeY;
+        if(y2 > sizeY) y2 = sizeY;
 
         assert(x1 >= 0 && x2 <= sizeX);
         assert(y1 >= 0 && y2 <= sizeY);
@@ -184,12 +182,10 @@ protected:
                       "The Predicate must be of the form bool Predicate(int, int)");
 
         if(x1 < 0) x1 = 0;
-        else if(x2 > sizeX)
-            x2 = sizeX;
+        if(x2 > sizeX) x2 = sizeX;
 
         if(y1 < 0) y1 = 0;
-        else if(y2 > sizeY)
-            y2 = sizeY;
+        if(y2 > sizeY) y2 = sizeY;
 
         assert(x1 >= 0 && x2 <= sizeX);
         assert(y1 >= 0 && y2 <= sizeY);
