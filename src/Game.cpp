@@ -312,7 +312,7 @@ void Game::drawScreen()
 
     /* draw bullets */
     for (const auto& pBullet : bulletList) {
-        pBullet->blitToScreen();
+        pBullet->blitToScreen(gameCycleCount);
     }
 
 

@@ -262,8 +262,7 @@ void Bullet::save(OutputStream& stream) const
 }
 
 
-void Bullet::blitToScreen() const
-{
+void Bullet::blitToScreen(Uint32 cycleCount) const {
     const auto imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     const auto imageH = getHeight(graphic[currentZoomlevel]);
 
@@ -294,7 +293,7 @@ void Bullet::blitToScreen() const
         // now copy r,g,b colors from screen but don't change alpha values in mask
         SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
         auto source = dest;
-        const auto shimmerOffsetIndex = ((currentGame->getGameCycleCount() + getBulletID()) % 24)/3;
+        const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24)/3;
         source.x += shimmerOffset[shimmerOffsetIndex%8]*2;
         SDL_RenderCopy(renderer, screenTexture, &source, nullptr);
         SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
