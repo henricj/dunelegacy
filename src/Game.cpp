@@ -560,274 +560,261 @@ void Game::drawScreen()
 }
 
 
-void Game::doInput(const GameContext& context) {
+void Game::doInput(const GameContext& context, SDL_Event& event) {
+    // check for a key press
 
-    SDL_Event event;
-    while(SDL_PollEvent(&event)) {
-        // check for a key press
+    // first of all update mouse
+    if(event.type == SDL_MOUSEMOTION) {
+        SDL_MouseMotionEvent* mouse = &event.motion;
+        drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width-1));
+        drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height-1));
+    }
 
-        // first of all update mouse
-        if(event.type == SDL_MOUSEMOTION) {
-            SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
-            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
-        }
+    if(pInGameMenu != nullptr) {
+        pInGameMenu->handleInput(event);
 
-        if (pInGameMenu != nullptr) {
-            pInGameMenu->handleInput(event);
+        if(!bMenu) { pInGameMenu.reset(); }
 
-            if(!bMenu) {
-                pInGameMenu.reset();
-            }
+    } else if(pInGameMentat != nullptr) {
+        pInGameMentat->doInput(event);
 
-        }
-        else if (pInGameMentat != nullptr) {
-            pInGameMentat->doInput(event);
+        if(!bMenu) { pInGameMentat.reset(); }
 
-            if(!bMenu) {
-                pInGameMentat.reset();
-            }
+    } else if(pWaitingForOtherPlayers != nullptr) {
+        pWaitingForOtherPlayers->handleInput(event);
 
-        }
-        else if (pWaitingForOtherPlayers != nullptr) {
-            pWaitingForOtherPlayers->handleInput(event);
+        if(!bMenu) { pWaitingForOtherPlayers.reset(); }
+    } else {
+        /* Look for a keypress */
+        switch (event.type) {
 
-            if(!bMenu) {
-                pWaitingForOtherPlayers.reset();
-            }
+            case SDL_KEYDOWN: {
+                if(chatMode) {
+                    handleChatInput(context, event.key);
+                } else {
+                    handleKeyInput(context, event.key);
+                }
+            } break;
 
-        } else {
-            /* Look for a keypress */
-            switch (event.type) {
-
-                case SDL_KEYDOWN: {
-                    if(chatMode) {
-                        handleChatInput(context, event.key);
-                    } else {
-                        handleKeyInput(context, event.key);
+            case SDL_TEXTINPUT: {
+                if(chatMode) {
+                    auto *const newText = event.text.text;
+                    if(utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
+                        typingChatMessage += newText;
                     }
-                } break;
+                }
+            } break;
 
-                case SDL_TEXTINPUT: {
-                    if(chatMode) {
-                        auto *const newText = event.text.text;
-                        if(utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
-                            typingChatMessage += newText;
-                        }
-                    }
-                } break;
+            case SDL_MOUSEWHEEL: {
+                if (event.wheel.y != 0) {
+                    pInterface->handleMouseWheel(drawnMouseX,drawnMouseY,(event.wheel.y > 0));
+                }
+            } break;
 
-                case SDL_MOUSEWHEEL: {
-                    if (event.wheel.y != 0) {
-                        pInterface->handleMouseWheel(drawnMouseX,drawnMouseY,(event.wheel.y > 0));
-                    }
-                } break;
+            case SDL_MOUSEBUTTONDOWN: {
+                auto *const mouse = &event.button;
 
-                case SDL_MOUSEBUTTONDOWN: {
-                    auto *const mouse = &event.button;
+                switch(mouse->button) {
+                    case SDL_BUTTON_LEFT: {
+                        pInterface->handleMouseLeft(mouse->x, mouse->y, true);
+                    } break;
 
-                    switch(mouse->button) {
-                        case SDL_BUTTON_LEFT: {
-                            pInterface->handleMouseLeft(mouse->x, mouse->y, true);
-                        } break;
+                    case SDL_BUTTON_RIGHT: {
+                        pInterface->handleMouseRight(mouse->x, mouse->y, true);
+                    } break;
 
-                        case SDL_BUTTON_RIGHT: {
-                            pInterface->handleMouseRight(mouse->x, mouse->y, true);
-                        } break;
-
-                        default:
-                            break;
-                    }
-
-                    switch(mouse->button) {
-
-                        case SDL_BUTTON_LEFT: {
-
-                            switch(currentCursorMode) {
-
-                                case CursorMode_Placing: {
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handlePlacementClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
-                                    }
-                                } break;
-
-                                case CursorMode_Attack: {
-
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
-                                    }
-
-                                } break;
-
-                                case CursorMode_Move: {
-
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
-                                    }
-
-                                } break;
-
-                                case CursorMode_CarryallDrop: {
-
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsRequestCarryallDropClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
-                                    }
-
-                                } break;
-
-                                case CursorMode_Capture: {
-
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
-                                    }
-
-                                } break;
-
-                                case CursorMode_Normal:
-                                default: {
-
-                                    if (mouse->x < sideBarPos.x && mouse->y >= topBarPos.h) {
-                                        // it isn't on the gamebar
-
-                                        if(!selectionMode) {
-                                            // if we have started the selection rectangle
-                                            // the starting point of the selection rectangele
-                                            selectionRect.x = screenborder->screen2worldX(mouse->x);
-                                            selectionRect.y = screenborder->screen2worldY(mouse->y);
-                                        }
-                                        selectionMode = true;
-
-                                    }
-                                } break;
-                            }
-                        } break;    //end of SDL_BUTTON_LEFT
-
-                        case SDL_BUTTON_RIGHT: {
-                            //if the right mouse button is pressed
-
-                            if(currentCursorMode != CursorMode_Normal) {
-                                //cancel special cursor mode
-                                currentCursorMode = CursorMode_Normal;
-                            } else if((!selectedList.empty()
-                                            && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse))
-                                            && (((objectManager.getObject(*selectedList.begin()))->isRespondable())) ) )
-                            {
-                                //if user has a controlable unit selected
-
-                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    if(handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
-                                        indicatorFrame = 0;
-                                        indicatorPosition.x = screenborder->screen2worldX(mouse->x);
-                                        indicatorPosition.y = screenborder->screen2worldY(mouse->y);
-                                    }
-                                }
-                            }
-                        } break;    //end of SDL_BUTTON_RIGHT
-                        default:
-                            break;
-                    }
-                } break;
-
-                case SDL_MOUSEMOTION: {
-                    auto *const mouse = &event.motion;
-
-                    pInterface->handleMouseMovement(mouse->x,mouse->y);
-                } break;
-
-                case SDL_MOUSEBUTTONUP: {
-                    auto *const mouse = &event.button;
-
-                    switch(mouse->button) {
-                        case SDL_BUTTON_LEFT: {
-                            pInterface->handleMouseLeft(mouse->x, mouse->y, false);
-                        } break;
-
-                        case SDL_BUTTON_RIGHT: {
-                            pInterface->handleMouseRight(mouse->x, mouse->y, false);
-                        } break;
                     default:
                         break;
-                    }
+                }
 
-                    if(selectionMode && (mouse->button == SDL_BUTTON_LEFT)) {
-                        //this keeps the box on the map, and not over game bar
-                        int finalMouseX = mouse->x;
-                        int finalMouseY = mouse->y;
+                switch(mouse->button) {
 
-                        if(finalMouseX >= sideBarPos.x) {
-                            finalMouseX = sideBarPos.x-1;
-                        }
+                    case SDL_BUTTON_LEFT: {
 
-                        if(finalMouseY < topBarPos.y+topBarPos.h) {
-                            finalMouseY = topBarPos.x+topBarPos.h;
-                        }
+                        switch(currentCursorMode) {
 
-                        int rectFinishX = screenborder->screen2MapX(finalMouseX);
-                        if(rectFinishX > (map->getSizeX()-1)) {
-                            rectFinishX = map->getSizeX()-1;
-                        }
+                            case CursorMode_Placing: {
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    handlePlacementClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                }
+                            } break;
 
-                        int rectFinishY = screenborder->screen2MapY(finalMouseY);
+                            case CursorMode_Attack: {
 
-                        // convert start also to map coordinates
-                        int rectStartX = selectionRect.x/TILESIZE;
-                        int rectStartY = selectionRect.y/TILESIZE;
-
-                        map->selectObjects(  pLocalHouse,
-                                                        rectStartX, rectStartY, rectFinishX, rectFinishY,
-                                                        screenborder->screen2worldX(finalMouseX),
-                                                        screenborder->screen2worldY(finalMouseY),
-                                                        SDL_GetModState() & KMOD_SHIFT);
-
-                        if(selectedList.size() == 1) {
-                            auto *pObject = objectManager.getObject( *selectedList.begin());
-                            if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
-                                auto *pHarvester = static_cast<Harvester*>(pObject);
-
-                                auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
-
-                                int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
-                                if(percent > 0) {
-                                    if(pHarvester->isAwaitingPickup()) {
-                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
-                                    } else if(pHarvester->isReturning()) {
-                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|123#full and returning"), percent);
-                                    } else if(pHarvester->isHarvesting()) {
-                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|122#full and harvesting"), percent);
-                                    } else {
-                                        harvesterMessage += fmt::sprintf(_("@DUNE.ENG|121#full"), percent);
-                                    }
-
-                                } else {
-                                    if(pHarvester->isAwaitingPickup()) {
-                                        harvesterMessage += _("@DUNE.ENG|128#empty and awaiting pickup");
-                                    } else if(pHarvester->isReturning()) {
-                                        harvesterMessage += _("@DUNE.ENG|127#empty and returning");
-                                    } else if(pHarvester->isHarvesting()) {
-                                        harvesterMessage += _("@DUNE.ENG|126#empty and harvesting");
-                                    } else {
-                                        harvesterMessage += _("@DUNE.ENG|125#empty");
-                                    }
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
                                 }
 
-                                if(!pInterface->newsTickerHasMessage()) {
-                                    pInterface->addToNewsTicker(harvesterMessage);
+                            } break;
+
+                            case CursorMode_Move: {
+
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                }
+
+                            } break;
+
+                            case CursorMode_CarryallDrop: {
+
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    handleSelectedObjectsRequestCarryallDropClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                }
+
+                            } break;
+
+                            case CursorMode_Capture: {
+
+                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                }
+
+                            } break;
+
+                            case CursorMode_Normal:
+                            default: {
+
+                                if (mouse->x < sideBarPos.x && mouse->y >= topBarPos.h) {
+                                    // it isn't on the gamebar
+
+                                    if(!selectionMode) {
+                                        // if we have started the selection rectangle
+                                        // the starting point of the selection rectangele
+                                        selectionRect.x = screenborder->screen2worldX(mouse->x);
+                                        selectionRect.y = screenborder->screen2worldY(mouse->y);
+                                    }
+                                    selectionMode = true;
+
+                                }
+                            } break;
+                        }
+                    } break; //end of SDL_BUTTON_LEFT
+
+                    case SDL_BUTTON_RIGHT: {
+                        //if the right mouse button is pressed
+
+                        if(currentCursorMode != CursorMode_Normal) {
+                            //cancel special cursor mode
+                            currentCursorMode = CursorMode_Normal;
+                        } else if((!selectedList.empty()
+                                   && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse))
+                                   && (((objectManager.getObject(*selectedList.begin()))->isRespondable())) ) )
+                        {
+                            //if user has a controlable unit selected
+
+                            if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                if(handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
+                                    indicatorFrame      = 0;
+                                    indicatorPosition.x = screenborder->screen2worldX(mouse->x);
+                                    indicatorPosition.y = screenborder->screen2worldY(mouse->y);
                                 }
                             }
                         }
+                    } break; //end of SDL_BUTTON_RIGHT
+                    default:
+                        break;
+                }
+            } break;
+
+            case SDL_MOUSEMOTION: {
+                auto *const mouse = &event.motion;
+
+                pInterface->handleMouseMovement(mouse->x,mouse->y);
+            } break;
+
+            case SDL_MOUSEBUTTONUP: {
+                auto *const mouse = &event.button;
+
+                switch(mouse->button) {
+                    case SDL_BUTTON_LEFT: {
+                        pInterface->handleMouseLeft(mouse->x, mouse->y, false);
+                    } break;
+
+                    case SDL_BUTTON_RIGHT: {
+                        pInterface->handleMouseRight(mouse->x, mouse->y, false);
+                    } break;
+                    default:
+                        break;
+                }
+
+                if(selectionMode && (mouse->button == SDL_BUTTON_LEFT)) {
+                    //this keeps the box on the map, and not over game bar
+                    int finalMouseX = mouse->x;
+                    int finalMouseY = mouse->y;
+
+                    if(finalMouseX >= sideBarPos.x) {
+                        finalMouseX = sideBarPos.x-1;
                     }
 
-                    selectionMode = false;
+                    if(finalMouseY < topBarPos.y+topBarPos.h) {
+                        finalMouseY = topBarPos.x+topBarPos.h;
+                    }
 
-                } break;
+                    int rectFinishX = screenborder->screen2MapX(finalMouseX);
+                    if(rectFinishX > (map->getSizeX()-1)) {
+                        rectFinishX = map->getSizeX()-1;
+                    }
 
-                case (SDL_QUIT): {
-                    bQuitGame = true;
-                } break;
+                    int rectFinishY = screenborder->screen2MapY(finalMouseY);
 
-                default:
-                    break;
-            }
+                    // convert start also to map coordinates
+                    int rectStartX = selectionRect.x/TILESIZE;
+                    int rectStartY = selectionRect.y/TILESIZE;
+
+                    map->selectObjects(  pLocalHouse,
+                                         rectStartX, rectStartY, rectFinishX, rectFinishY,
+                                         screenborder->screen2worldX(finalMouseX),
+                                         screenborder->screen2worldY(finalMouseY),
+                                         SDL_GetModState() & KMOD_SHIFT);
+
+                    if(selectedList.size() == 1) {
+                        auto * pObject = objectManager.getObject( *selectedList.begin());
+                        if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
+                            auto * pHarvester = static_cast<Harvester*>(pObject);
+
+                            auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
+
+                            int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
+                            if(percent > 0) {
+                                if(pHarvester->isAwaitingPickup()) {
+                                    harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
+                                } else if(pHarvester->isReturning()) {
+                                    harvesterMessage += fmt::sprintf(_("@DUNE.ENG|123#full and returning"), percent);
+                                } else if(pHarvester->isHarvesting()) {
+                                    harvesterMessage += fmt::sprintf(_("@DUNE.ENG|122#full and harvesting"), percent);
+                                } else {
+                                    harvesterMessage += fmt::sprintf(_("@DUNE.ENG|121#full"), percent);
+                                }
+
+                            } else {
+                                if(pHarvester->isAwaitingPickup()) {
+                                    harvesterMessage += _("@DUNE.ENG|128#empty and awaiting pickup");
+                                } else if(pHarvester->isReturning()) {
+                                    harvesterMessage += _("@DUNE.ENG|127#empty and returning");
+                                } else if(pHarvester->isHarvesting()) {
+                                    harvesterMessage += _("@DUNE.ENG|126#empty and harvesting");
+                                } else {
+                                    harvesterMessage += _("@DUNE.ENG|125#empty");
+                                }
+                            }
+
+                            if(!pInterface->newsTickerHasMessage()) {
+                                pInterface->addToNewsTicker(harvesterMessage);
+                            }
+                        }
+                    }
+                }
+
+                selectionMode = false;
+
+            } break;
+
+            case (SDL_QUIT): {
+                bQuitGame = true;
+            } break;
+
+            default:
+                break;
         }
     }
 
@@ -1029,6 +1016,97 @@ void Game::setupView(const GameContext& context) const
 }
 
 
+void Game::serviceNetwork(bool& bWaitForNetwork)
+{
+    pNetworkManager->update();
+
+    // test if we need to wait for data to arrive
+    for(const auto& playername : pNetworkManager->getConnectedPeers()) {
+        auto *const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
+        if(pPlayer != nullptr) {
+            if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
+                //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
+                bWaitForNetwork = true;
+                break;
+            }
+        }
+    }
+
+    if(bWaitForNetwork) {
+        if(startWaitingForOtherPlayersTime == 0) {
+            // we just started waiting
+            startWaitingForOtherPlayersTime = SDL_GetTicks();
+        } else {
+            if(SDL_GetTicks() - startWaitingForOtherPlayersTime > 1000) {
+                // we waited for more than one second
+
+                if(pWaitingForOtherPlayers == nullptr) {
+                    pWaitingForOtherPlayers = std::make_unique<WaitingForOtherPlayers>();
+                    bMenu                   = true;
+                }
+            }
+        }
+
+        SDL_Delay(10);
+    } else {
+        startWaitingForOtherPlayersTime = 0;
+        pWaitingForOtherPlayers.reset();
+    }
+}
+
+void Game::updateGame(const GameContext& context)
+{
+    pInterface->getRadarView().update();
+    cmdManager.executeCommands(context, gameCycleCount);
+
+    // SDL_Log("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
+
+#ifdef TEST_SYNC
+    // add every gamecycles one test sync command
+    if(bReplay == false) {
+        cmdManager.addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TEST_SYNC, randomGen.getSeed()));
+    }
+#endif
+
+    std::for_each(house.begin(), house.end(), [](auto& h) { if (h) h->update(); });
+
+    screenborder->update();
+
+    triggerManager.trigger(context, gameCycleCount);
+
+    processObjects();
+
+    if ((indicatorFrame != NONE_ID) && (--indicatorTimer <= 0)) {
+        indicatorTimer = indicatorTime;
+
+        if (++indicatorFrame > 2) {
+            indicatorFrame = NONE_ID;
+        }
+    }
+
+    gameCycleCount++;
+}
+
+void Game::doEventsUntil(const GameContext& context, const int until) {
+    SDL_Event event;
+    // valgrind reports errors in SDL_PollEvent if event is not initialized
+    memset(&event, 0, sizeof(event));
+
+    while(!bQuitGame && !finishedLevel) {
+        const auto remaining = until - static_cast<int>(SDL_GetTicks());
+
+        if(remaining <= 0 || remaining >= 100) return;
+
+        if(SDL_WaitEventTimeout(&event, remaining)) {
+            doInput(context, event);
+
+            while(SDL_PollEvent(&event)) {
+                doInput(context, event);
+            }
+        }
+    }
+}
+
 void Game::runMainLoop(const GameContext& context) {
     SDL_Log("Starting game...");
 
@@ -1098,15 +1176,27 @@ void Game::runMainLoop(const GameContext& context) {
     // Change music to ingame music
     musicPlayer->changeMusic(MUSIC_PEACE);
 
+    int gameStart       = static_cast<int>(SDL_GetTicks());
+    Uint32 targetGameCycle = gameCycleCount;
+    int    lastTargetGameCycleTime = gameStart;
 
-    int     frameStart = SDL_GetTicks();
     int     frameTime = 0;
     int     numFrames = 0;
+
+    SDL_Event event;
 
     //SDL_Log("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     //main game loop
     do {
+        auto now = static_cast<int>(SDL_GetTicks());
+
+        const auto frameStart = now;
+
+        if(finished) {
+            // end timer for the ending message
+            if(now - finishedLevelTime > END_WAIT_TIME) { finishedLevel = true; }
+        }
 
         // clear whole screen
         SDL_SetRenderDrawColor(renderer, 100, 50, 0, 255);
@@ -1116,145 +1206,78 @@ void Game::runMainLoop(const GameContext& context) {
 
         SDL_RenderPresent(renderer);
 
-        const int frameEnd = static_cast<int>(SDL_GetTicks());
-
-        if(frameEnd == frameStart) {
-            SDL_Delay(1);
-        }
-
-        frameTime += frameEnd - frameStart; // find difference to get frametime
-        frameStart = SDL_GetTicks();
-
         numFrames++;
 
-        if (bShowFPS) {
-            averageFrameTime = 0.99f * averageFrameTime + 0.01f * frameTime;
-        }
+        const auto gameSpeed = getGameSpeed();
 
-        if(settings.video.frameLimit) {
-            if(frameTime >= 0 && frameTime < 32) {
-                SDL_Delay(32 - frameTime);
+        bool bWaitForNetwork = false;
+
+        if(pNetworkManager != nullptr) { serviceNetwork(bWaitForNetwork); }
+
+        while(SDL_PollEvent(&event))
+            doInput(context, event);
+
+        pInterface->updateObjectInterface();
+
+        if(pNetworkManager != nullptr) {
+            if(bSelectionChanged) {
+                pNetworkManager->sendSelectedList(selectedList);
+
+                bSelectionChanged = false;
             }
         }
 
-        if(finished) {
-            // end timer for the ending message
-            if(SDL_GetTicks() - finishedLevelTime > END_WAIT_TIME) {
-                finishedLevel = true;
+        if(pInGameMentat != nullptr) { pInGameMentat->update(); }
+
+        if(pWaitingForOtherPlayers != nullptr) { pWaitingForOtherPlayers->update(); }
+
+        cmdManager.update();
+
+        while(!bWaitForNetwork && !bPause) {
+            now  = static_cast<int>(SDL_GetTicks());
+
+            auto pendingTicks = now - lastTargetGameCycleTime;
+
+            // Watch for discontinuities...
+            if(pendingTicks > 2500) {
+                pendingTicks            = 2 * gameSpeed;
+                lastTargetGameCycleTime = now - pendingTicks;
             }
+
+            while(pendingTicks >= gameSpeed) {
+                pendingTicks -= gameSpeed;
+                lastTargetGameCycleTime += gameSpeed;
+                ++targetGameCycle;
+            }
+
+            if(gameCycleCount >= targetGameCycle) break;
+
+            // Reset in case of some massive discontinuity (e.g., computer sleep or debugger break).
+            if(targetGameCycle - gameCycleCount > 250) targetGameCycle = gameCycleCount;
+
+            updateGame(context);
+
+            if(takePeriodicalScreenshots && ((gameCycleCount % (MILLI2CYCLES(10 * 1000))) == 0)) { takeScreenshot(); }
+
+            now = static_cast<int>(SDL_GetTicks());
+            // Don't block the UI for more than 75ms, even if we are behind.
+            if(now - frameStart > 75) break;
         }
 
-        if(takePeriodicalScreenshots && ((gameCycleCount % (MILLI2CYCLES(10*1000))) == 0)) {
-            takeScreenshot();
-        }
+        while(SDL_PollEvent(&event))
+            doInput(context, event);
 
+        const auto until = frameStart + (settings.video.frameLimit ? 32 : 5);
 
-        while( frameTime <= getGameSpeed() || !finished && !bPause && gameCycleCount < skipToGameCycle )  {
+        doEventsUntil(context, until);
 
-            bool bWaitForNetwork = false;
+        musicPlayer->musicCheck();         // if song has finished, start playing next one
 
-            if(pNetworkManager != nullptr) {
-                pNetworkManager->update();
+        now = static_cast<int>(SDL_GetTicks());
+        const auto frameElapsed = now - frameStart;
 
-                // test if we need to wait for data to arrive
-                for(const auto& playername : pNetworkManager->getConnectedPeers()) {
-                    auto *const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
-                    if(pPlayer != nullptr) {
-                        if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
-                            //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
-                            bWaitForNetwork = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(bWaitForNetwork) {
-                    if(startWaitingForOtherPlayersTime == 0) {
-                        // we just started waiting
-                        startWaitingForOtherPlayersTime = SDL_GetTicks();
-                    } else {
-                        if(SDL_GetTicks() - startWaitingForOtherPlayersTime > 1000) {
-                            // we waited for more than one second
-
-                            if(pWaitingForOtherPlayers == nullptr) {
-                                pWaitingForOtherPlayers = std::make_unique<WaitingForOtherPlayers>();
-                                bMenu = true;
-                            }
-                        }
-                    }
-
-                    SDL_Delay(10);
-                } else {
-                    startWaitingForOtherPlayersTime = 0;
-                    pWaitingForOtherPlayers.reset();
-                }
-            }
-
-            doInput(context);
-            pInterface->updateObjectInterface();
-
-            if(pNetworkManager != nullptr) {
-                if(bSelectionChanged) {
-                    pNetworkManager->sendSelectedList(selectedList);
-
-                    bSelectionChanged = false;
-                }
-            }
-
-            if(pInGameMentat != nullptr) {
-                pInGameMentat->update();
-            }
-
-            if(pWaitingForOtherPlayers != nullptr) {
-                pWaitingForOtherPlayers->update();
-            }
-
-            cmdManager.update();
-
-            if(!bWaitForNetwork && !bPause) {
-                pInterface->getRadarView().update();
-                cmdManager.executeCommands(context, gameCycleCount);
-
-//              SDL_Log("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
-
-#ifdef TEST_SYNC
-                // add every gamecycles one test sync command
-                if(bReplay == false) {
-                    cmdManager.addCommand(Command(pLocalPlayer->getPlayerID(), CMD_TEST_SYNC, randomGen.getSeed()));
-                }
-#endif
-
-                std::for_each(house.begin(), house.end(), [](auto& h) { if (h) h->update(); });
-
-                screenborder->update();
-
-                triggerManager.trigger(context, gameCycleCount);
-
-                processObjects();
-
-                if ((indicatorFrame != NONE_ID) && (--indicatorTimer <= 0)) {
-                    indicatorTimer = indicatorTime;
-
-                    if (++indicatorFrame > 2) {
-                        indicatorFrame = NONE_ID;
-                    }
-                }
-
-                gameCycleCount++;
-            }
-
-            if(gameCycleCount <= skipToGameCycle) {
-                frameTime = 0;
-            } else {
-                if (frameTime > 200)
-                    frameTime = 0;
-                else
-                    frameTime -= getGameSpeed();
-            }
-        }
-
-        musicPlayer->musicCheck();  //if song has finished, start playing next one
-    } while (!bQuitGame && !finishedLevel);//not sure if we need this extra bool
+        if(bShowFPS) { averageFrameTime = 0.97f * averageFrameTime + 0.03f * frameElapsed; }
+    } while(!bQuitGame && !finishedLevel); // not sure if we need this extra bool
 
 
 
