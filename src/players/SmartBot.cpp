@@ -392,7 +392,7 @@ void SmartBot::build(const GameContext& context) {
         if(!pStructure->isRepairing() && pStructure->getHealth() < pStructure->getMaxHealth()) { doRepair(pStructure); }
 
         const auto* pBuilder = dune_cast<BuilderBase>(pStructure);
-        if(!pStructure) continue;
+        if(!pBuilder) continue;
 
         switch (pBuilder->getItemID()) {
 
