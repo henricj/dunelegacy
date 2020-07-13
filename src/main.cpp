@@ -176,6 +176,10 @@ void setVideoMode(int displayIndex)
     if(settings.video.renderer != "default") SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
 
+#if defined(_WIN32) && defined(_DEBUG)
+    SDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG, "1");
+#endif
+
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     { // Scope
         SDL_RendererInfo info;
