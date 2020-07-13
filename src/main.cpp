@@ -263,13 +263,13 @@ std::filesystem::path getLogFilepath()
 void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
     SDL_Log("Creating config file '%s'", configfilepath.c_str());
 
-
-    auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.u8string().c_str(), "w") };
+    const auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.u8string().c_str(), "w") };
     if(!file) {
         THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
 
-    const char configfile[] =   "[General]\n"
+    static constexpr char configfile[] =
+                                "[General]\n"
                                 "Play Intro = false          # Play the intro when starting the game?\n"
                                 "Player Name = %s            # The name of the player\n"
                                 "Language = %s               # en = English, fr = French, de = German\n"
