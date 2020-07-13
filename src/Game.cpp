@@ -1297,7 +1297,7 @@ void Game::runMainLoop(const GameContext& context) {
 
             updateGame(context);
 
-            const auto updateElapsed = SDL_GetPerformanceCounter() - renderStart;
+            const auto updateElapsed = SDL_GetPerformanceCounter() - updateStart;
 
             if(bShowFPS) { averageUpdateTime = 0.97f * averageUpdateTime + 0.03f * performanceScaleMs * updateElapsed; }
 
