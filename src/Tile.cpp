@@ -294,12 +294,12 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     SDL_Rect source = { indexX*zoomed_tilesize, indexY*zoomed_tilesize, zoomed_tilesize, zoomed_tilesize };
     SDL_Rect drawLocation = { xPos, yPos, zoomed_tilesize, zoomed_tilesize };
 
-    //draw terrain
+    // draw terrain
     if (destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
         SDL_RenderCopy(renderer, sprite[currentZoomlevel], &source, &drawLocation);
     }
 
-    if (destroyedStructureTile != DestroyedStructure_None) {
+    if(destroyedStructureTile != DestroyedStructure_None) {
         SDL_Texture* pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
         SDL_Rect source2 = { destroyedStructureTile*zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize };
         SDL_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);

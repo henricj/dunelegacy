@@ -113,7 +113,7 @@ public:
     void drawScreen();
 
     /**
-        This method proccesses all the user input.
+        This method processes all the user input.
     */
     void doInput(const GameContext& context);
 
