@@ -1137,11 +1137,39 @@ void Game::runMainLoop(const GameContext& context) {
     if(bReplay) {
         cmdManager.setReadOnly(true);
     } else {
-        const auto [ok, replayname] = fnkdat("replay/auto.rpl", FNKDAT_USER | FNKDAT_CREAT);
-
         auto pStream = std::make_unique<OFileStream>();
 
-        if (pStream->open(replayname)) {
+        const auto [ok, replayname] = fnkdat("replay/auto.rpl", FNKDAT_USER | FNKDAT_CREAT);
+
+        auto isOpen = ok && pStream->open(replayname);
+
+        if(!isOpen) {
+            const std::error_code replay_error{errno, std::generic_category()};
+
+            SDL_LogError(
+                SDL_LOG_CATEGORY_APPLICATION,
+                fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message().c_str())
+                    .c_str());
+
+            for(auto i = 0; i < 10; ++i) {
+                const auto [ok2, replayname2] =
+                    fnkdat(fmt::format("replay/auto-{}.rpl", uiRandomGen.rand()), FNKDAT_USER | FNKDAT_CREAT);
+
+                if(pStream->open(replayname2)) {
+                    isOpen = true;
+                    break;
+                }
+
+                const std::error_code replay2_error{errno, std::generic_category()};
+
+                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                             fmt::format("Unable to open the replay file {}: {}",
+                                         std::filesystem::path{replayname2}.filename(), replay2_error.message())
+                                 .c_str());
+            }
+        }
+
+        if(isOpen) {
             pStream->writeString(getLocalPlayerName());
 
             gameInitSettings.save(*pStream);
@@ -1154,11 +1182,13 @@ void Game::runMainLoop(const GameContext& context) {
 
             // now all new commands might be added
             cmdManager.setStream(std::move(pStream));
-        }
-        else
-        {
-            // Should we throw instead?
+        } else {
+            // This can happen if another instance of the game is running or if the disk is full.
             // TODO: Report problem to user...?
+            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
+
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(), _("Unable to open the replay log file.").c_str(), window);
+
             quitGame();
         }
     }
