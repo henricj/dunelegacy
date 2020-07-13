@@ -1148,8 +1148,7 @@ void Game::runMainLoop(const GameContext& context) {
 
             SDL_LogError(
                 SDL_LOG_CATEGORY_APPLICATION,
-                fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message().c_str())
-                    .c_str());
+                fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message()).c_str());
 
             for(auto i = 0; i < 10; ++i) {
                 const auto [ok2, replayname2] =
