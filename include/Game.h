@@ -599,6 +599,8 @@ private:
     Coord       indicatorPosition = Coord::Invalid();
 
     float       averageFrameTime = 31.25f;      ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
+    float       averageRenderTime = 10.0f;      ///< The weighted average of the render time
+    float       averageUpdateTime = 10.0f;      ///< The weighted average of the update time
 
     Uint32      gameCycleCount = 0;
 
