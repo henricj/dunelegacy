@@ -44,6 +44,32 @@ if(MSVC)
 
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>")
 
+    set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
+    set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
+
+    if(${DUNE_TARGET_ARCHITECTURE} MATCHES "^(x86|x64)$")
+      set(DUNE_TARGET_ARCHITECTURE_EXTENSION "" CACHE STRING "Enable the avx, avx2, or avx512 exensions (avx2 implies avx, avx512 implies avx and avx2")
+      set_property(CACHE DUNE_TARGET_ARCHITECTURE_EXTENSION PROPERTY STRINGS "" avx avx2 avx512)
+
+      if("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx")
+         set(HAVE_AVX ON)
+         message(STATUS "Enabling AVX instructions")
+         string(APPEND DUNELEGACY_MSVC_FLAGS " /arch:AVX")
+      elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx2")
+         set(HAVE_AVX2 ON)
+         message(STATUS "Enabling AVX and AVX2 instructions")
+         string(APPEND DUNELEGACY_MSVC_FLAGS " /arch:AVX2")
+      elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx512")
+         set(HAVE_AVX512 ON)
+         message(STATUS "Enabling AVX, AVX2, and AVX512 instructions")
+         string(APPEND DUNELEGACY_MSVC_FLAGS " /arch:AVX512")
+      elseif (NOT "${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "")
+         message (FATAL_ERROR "Unknown architecture extensions: ${DUNE_TARGET_ARCHITECTURE_EXTENSION}")
+      else()
+         message(STATUS "Using default instructions (SSE2)")
+      endif()
+   endif()
+
     foreach( config ${build_list} )
         string( TOUPPER "${config}" config )
 
