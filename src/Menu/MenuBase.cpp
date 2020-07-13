@@ -44,6 +44,29 @@ void MenuBase::quit(int returnVal) {
     quiting = true;
 }
 
+bool MenuBase::doEventsUntil(const int until) {
+    SDL_Event event;
+    // valgrind reports errors in SDL_PollEvent if event is not initialized
+    memset(&event, 0, sizeof(event));
+
+    while(!quiting) {
+        const auto remaining = until - SDL_GetTicks();
+
+        if(remaining <= 0 || remaining >= 32) return true;
+
+        if(SDL_WaitEventTimeout(&event, remaining)) {
+            if(!doInput(event)) return false;
+
+            while(SDL_PollEvent(&event)) {
+                // check the events
+                if(!doInput(event)) return false;
+            }
+        }
+    }
+
+    return true;
+}
+
 int MenuBase::showMenu() {
     SDL_Event   event;
     // valgrind reports errors in SDL_PollEvent if event is not initialized
@@ -52,7 +75,7 @@ int MenuBase::showMenu() {
     quiting = false;
 
     while(!quiting) {
-        int frameStart = SDL_GetTicks();
+        const auto frameStart = static_cast<int>(SDL_GetTicks());
 
         update();
 
@@ -73,18 +96,14 @@ int MenuBase::showMenu() {
         SDL_RenderPresent(renderer);
 
         while(SDL_PollEvent(&event)) {
-            //check the events
-            if(!doInput(event)) {
+            // check the events
+            if(!doInput(event))
                 break;
-            }
         }
 
-        const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        if(settings.video.frameLimit) {
-            if(frameTime >= 0 && frameTime < 32) {
-                SDL_Delay(32 - frameTime);
-            }
-        }
+        if(!settings.video.frameLimit) continue;
+
+        if(!doEventsUntil(frameStart + 32)) break;
     }
 
     return retVal;
