@@ -51,6 +51,9 @@ public:
         this->bClearScreen = bClearScreen;
     };
 
+protected:
+    bool doEventsUntil(int until);
+
 private:
     bool bClearScreen;
     bool bAllowQuiting;
