@@ -94,8 +94,10 @@ protected:
     void checkFeatures();
 
 
-    [[nodiscard]] inline int getXPos(int pos) const { return (pos % logicalSizeX) - logicalOffsetX; };
-    [[nodiscard]] inline int getYPos(int pos) const { return (pos / logicalSizeX) - logicalOffsetY; };
+    [[nodiscard]] inline int getXPos(int pos) const { return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX; };
+    [[nodiscard]] inline int getYPos(int pos) const { return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY; };
+
+    bool save(const std::filesystem::path& filename) const;
 
     std::string mapname;
     inifile_ptr inifile;
