@@ -242,6 +242,7 @@ public:
     void pauseGame() {
         if(gameType != GameType::CustomMultiplayer) {
             bPause = true;
+            pauseGameTime = SDL_GetTicks();
         }
     }
 
@@ -602,6 +603,8 @@ private:
     float       averageRenderTime = 10.0f;      ///< The weighted average of the render time
     float       averageUpdateTime = 10.0f;      ///< The weighted average of the update time
 
+    int         lastTargetGameCycleTime{};              //< Remember the last time the target gameCycleCount was updated
+
     Uint32      gameCycleCount = 0;
 
     Uint32      skipToGameCycle = 0;            ///< skip to this game cycle
@@ -628,8 +631,9 @@ private:
 
     std::unique_ptr<Map> map;
 
-    bool    bQuitGame = false;                  ///< Should the game be quited after this game tick
+    bool    bQuitGame = false;                  ///< Should the game quit after this game tick
     bool    bPause = false;                     ///< Is the game currently halted
+    int     pauseGameTime{};                    ///< Remember when the game was paused
     bool    bMenu = false;                      ///< Is there currently a menu shown (options or mentat menu)
     bool    bReplay = false;                    ///< Is this game actually a replay
 
