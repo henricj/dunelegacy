@@ -515,11 +515,15 @@ void Game::drawScreen()
     }
 
     if(bShowFPS) {
-        const auto strFPS = fmt::sprintf("fps: %.1f render: %.1fms update: %.1fms", 1000.0f/averageFrameTime, averageRenderTime, averageUpdateTime);
+        const auto str = fmt::sprintf("fps: %4.1f\nrenderer: %4.1fms\nupdate: %4.1fms", 1000.0f / averageFrameTime,
+                                      averageRenderTime, averageUpdateTime);
 
-        sdl2::texture_ptr pFPSTexture = pFontManager->createTextureWithText(strFPS, COLOR_WHITE, 14);
-        SDL_Rect drawLocation = calcDrawingRect(pFPSTexture.get(),sideBarPos.x - strFPS.length()*8, 60);
-        SDL_RenderCopy(renderer, pFPSTexture.get(), nullptr, &drawLocation);
+        const auto pTexture = pFontManager->createTextureWithMultilineText(str, COLOR_WHITE, 14);
+
+        const auto drawLocation =
+            calcDrawingRect(pTexture.get(), static_cast<int>(sideBarPos.x - 14 * 8), 60);
+
+        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
     }
 
     if(bShowTime) {
