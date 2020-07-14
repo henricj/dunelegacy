@@ -859,22 +859,34 @@ GFXManager::GFXManager() {
 
 GFXManager::~GFXManager() = default;
 
-SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) {
+SDL_Surface* GFXManager::getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
     if(id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "GFXManager::getZoomedObjPic(): Unit Picture with ID %u is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getZoomedObjSurface(): Unit Picture with ID %u is not available!", id);
     }
 
-    auto idx = static_cast<int>(house);
+    const auto idx = static_cast<int>(house);
 
-    if(objPic[id][idx][z] == nullptr) {
+    auto& surface = objPic[id][idx][z];
+
+    if(surface == nullptr) {
+        const auto harkonnen = static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN);
+
         // remap to this color
-        if(objPic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)][z] == nullptr) {
+        if(objPic[id][harkonnen][z] == nullptr) {
             THROW(std::runtime_error, "GFXManager::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
         }
 
-        objPic[id][idx][z] = mapSurfaceColorRange(objPic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)][z].get(),
+        surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(),
                                                   PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
     }
+
+    return surface.get();
+}
+
+SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) {
+    auto* surface = getZoomedObjSurface(id, house, z);
+
+    const auto idx = static_cast<int>(house);
 
     if(objPicTex[id][idx][z] == nullptr) {
         auto make_shadow_texture = [](SDL_Surface* surface, Uint32 oldColor, Uint32 newColor) {
@@ -893,32 +905,29 @@ SDL_Texture* GFXManager::getZoomedObjPic(unsigned int id, HOUSETYPE house, unsig
         // now convert to display format
         if(id == ObjPic_Windtrap) {
             // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
-            objPicTex[id][idx][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(objPic[id][idx][z].get()));
+            objPicTex[id][idx][z] = convertSurfaceToTexture(generateWindtrapAnimationFrames(surface));
 #if 1
         } else if(id == ObjPic_Terrain_HiddenFog) {
-            auto pHiddenFog       = convertSurfaceToDisplayFormat(objPic[id][idx][z].get());
+            const auto pHiddenFog       = convertSurfaceToDisplayFormat(surface);
             objPicTex[id][idx][z] = make_shadow_texture(pHiddenFog.get(), COLOR_BLACK, COLOR_FOG_TRANSPARENT);
         } else if(id == ObjPic_CarryallShadow) {
-            auto pShadow          = convertSurfaceToDisplayFormat(objPic[id][idx][z].get());
+            const auto pShadow          = convertSurfaceToDisplayFormat(surface);
             objPicTex[id][idx][z] = make_shadow_texture(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
         } else if(id == ObjPic_FrigateShadow) {
-            auto pShadow          = convertSurfaceToDisplayFormat(objPic[id][idx][z].get());
+            const auto pShadow          = convertSurfaceToDisplayFormat(surface);
             objPicTex[id][idx][z] = make_shadow_texture(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
         } else if(id == ObjPic_OrnithopterShadow) {
-            auto pShadow          = convertSurfaceToDisplayFormat(objPic[id][idx][z].get());
+            const auto pShadow          = convertSurfaceToDisplayFormat(surface);
             objPicTex[id][idx][z] = make_shadow_texture(pShadow.get(), COLOR_BLACK, COLOR_SHADOW_TRANSPARENT);
 #endif // 0
         } else if(id == ObjPic_Bullet_SonicTemp) {
             objPicTex[id][idx][z] = sdl2::texture_ptr{SDL_CreateTexture(
-                renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][idx][z]->w, objPic[id][idx][z]->h)};
+                renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, surface->w, surface->h)};
         } else if(id == ObjPic_SandwormShimmerTemp) {
             objPicTex[id][idx][z] = sdl2::texture_ptr{SDL_CreateTexture(
-                renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][idx][z]->w, objPic[id][idx][z]->h)};
-        } else if(id == ObjPic_Bullet_SonicTemp) {
-            objPicTex[id][idx][z] = sdl2::texture_ptr{SDL_CreateTexture(
-                renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, objPic[id][idx][z]->w, objPic[id][idx][z]->h)};
+                renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, surface->w, surface->h)};
         } else {
-            objPicTex[id][idx][z] = convertSurfaceToTexture(objPic[id][idx][z].get());
+            objPicTex[id][idx][z] = convertSurfaceToTexture(surface);
         }
     }
 
