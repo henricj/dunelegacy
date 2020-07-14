@@ -65,7 +65,8 @@ namespace sdl2
                 SDL_UnlockTexture(texture_);
         }
 
-        [[nodiscard]] void * pixels() const { return pixels_; }
+        [[nodiscard]] constexpr void* pixels() const noexcept { return pixels_; }
+        [[nodiscard]] constexpr int   pitch() const noexcept { return pitch_; }
 
         texture_lock(const texture_lock &) = delete;
         texture_lock(texture_lock &&) = delete;
@@ -75,10 +76,14 @@ namespace sdl2
 
     class surface_lock final
     {
-        SDL_Surface * const surface_;
+        SDL_Surface* const surface_;
+
         void* const pixels_;
+        const int   pitch_;
+
     public:
-        explicit surface_lock(SDL_Surface* surface) : surface_(SDL_MUSTLOCK(surface) ? surface : nullptr), pixels_(surface->pixels)
+        explicit surface_lock(SDL_Surface* surface)
+            : surface_(SDL_MUSTLOCK(surface) ? surface : nullptr), pixels_{surface->pixels}, pitch_{surface->pitch}
         {
             assert(surface);
 
@@ -96,7 +101,8 @@ namespace sdl2
                 SDL_UnlockSurface(surface_);
         }
 
-        [[nodiscard]] void * pixels() const { return pixels_; }
+        [[nodiscard]] constexpr void * pixels() const noexcept { return pixels_; }
+        [[nodiscard]] constexpr int pitch() const noexcept { return pitch_; }
 
         surface_lock(const surface_lock &) = delete;
         surface_lock(surface_lock &&) = delete;
