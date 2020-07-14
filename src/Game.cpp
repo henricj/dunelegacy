@@ -1205,12 +1205,15 @@ void Game::runMainLoop(const GameContext& context) {
     // Change music to ingame music
     musicPlayer->changeMusic(MUSIC_PEACE);
 
-    int gameStart       = static_cast<int>(SDL_GetTicks());
-    Uint32 targetGameCycle = gameCycleCount;
-    int    lastTargetGameCycleTime = gameStart;
+    const int gameStart = static_cast<int>(SDL_GetTicks());
 
-    int     frameTime = 0;
-    int     numFrames = 0;
+
+    int frameTime = 0;
+    int numFrames = 0;
+
+    auto targetGameCycle = gameCycleCount;
+
+    lastTargetGameCycleTime = gameStart;
 
     SDL_Event event;
 
@@ -1355,6 +1358,12 @@ void Game::resumeGame()
     bMenu = false;
     if(gameType != GameType::CustomMultiplayer) {
         bPause = false;
+
+        // Remove the time spent paused from the targetGameCycle update.
+        const auto now       = static_cast<int>(SDL_GetTicks());
+        const auto pauseTime = now - pauseGameTime;
+        if(pauseTime > 0) lastTargetGameCycleTime += pauseTime;
+        else lastTargetGameCycleTime = now;
     }
 }
 
