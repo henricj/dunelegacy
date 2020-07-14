@@ -676,8 +676,14 @@ void startSinglePlayerGame(const GameInitSettings& init) {
     auto cleanup = gsl::finally([&] { currentGame.reset(); });
 
     while(true) {
+        // Make sure to delete the old game (if any) before creating a new one since
+        // its destructor has global side effects.  If we let std::unique_ptr<> handle
+        // this responsibility, then the new Game instance will be constructed before the
+        // assignment to currentGame causes the old one to be deleted.
+        currentGame.reset();
 
         SDL_Log("Initializing game...");
+
         currentGame = std::make_unique<Game>();
         currentGame->initGame(currentGameInitInfo);
 
@@ -686,6 +692,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
         GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
         context.game.runMainLoop(context);
+
+        SDL_Log("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
 
         bool bGetNext = true;
         while(bGetNext) {
