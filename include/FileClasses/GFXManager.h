@@ -510,7 +510,7 @@ typedef enum {
 } Animation_enum;
 
 
-class GFXManager {
+class GFXManager final {
 public:
     GFXManager();
     ~GFXManager();
@@ -524,6 +524,9 @@ public:
     SDL_Texture*     getZoomedObjPic(unsigned int id, unsigned int z) { return getZoomedObjPic(id, HOUSETYPE::HOUSE_HARKONNEN, z); };
     zoomable_texture getObjPic(unsigned int id, HOUSETYPE house= HOUSETYPE::HOUSE_HARKONNEN);
 
+    SDL_Surface*     getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z);
+    SDL_Surface*     getZoomedObjSurface(unsigned int id, unsigned int z) { return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z); };
+
     SDL_Texture*     getSmallDetailPic(unsigned int id);
     SDL_Texture*     getTinyPicture(unsigned int id);
     SDL_Texture*     getUIGraphic(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
@@ -532,7 +535,7 @@ public:
     SDL_Surface*     getUIGraphicSurface(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     SDL_Surface*     getMapChoicePieceSurface(unsigned int num, HOUSETYPE house);
 
-    SDL_Surface*     getBackgroundSurface() { return pBackgroundSurface.get(); };
+    SDL_Surface*     getBackgroundSurface() const { return pBackgroundSurface.get(); };
 
     Animation*       getAnimation(unsigned int id);
 
