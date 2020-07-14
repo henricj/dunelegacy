@@ -114,7 +114,7 @@ public:
 
 
     /**
-        This method calculates the scale and the offsets that are neccessary to show a minimap centered inside a 128x128 rectangle.
+        This method calculates the scale and the offsets that are necessary to show a minimap centered inside a 128x128 rectangle.
         \param  MapSizeX    The width of the map in tiles
         \param  MapSizeY    The height of the map in tiles
         \param  scale       The scale factor is saved here
