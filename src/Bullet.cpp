@@ -274,11 +274,59 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
         numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
-        static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
+        static constexpr Uint8 shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-        SDL_Texture* shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_SonicTemp, currentZoomlevel);
-        SDL_Texture* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_Sonic, currentZoomlevel);
+        auto* const shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_SonicTemp, currentZoomlevel);
+        auto* const shimmerMaskSurface = pGFXManager->getZoomedObjSurface(ObjPic_Bullet_Sonic, currentZoomlevel);
 
+        auto source = dest;
+
+        const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24) / 3;
+        source.x += shimmerOffset[shimmerOffsetIndex % 8] * 2;
+
+        Uint32 format;
+        int    access, w, h;
+        SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
+
+        float scaleX, scaleY;
+        SDL_RenderGetScale(renderer, &scaleX, &scaleY);
+
+        // Even after this scale adjustment, there is an unknown offset between the effective coordinates
+        // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
+        // Note also that if we are partly off the screen, we will get the mask's black appearing in the
+        // transparent areas of surface_copy.
+        SDL_Rect scaled_source{lround(source.x * scaleX), lround(source.y * scaleY), lround(w * scaleX), lround(h * scaleY)};
+
+        const sdl2::surface_ptr screen_copy{
+            SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+
+        { // Scope
+            const sdl2::surface_lock lock{screen_copy.get()};
+
+            if(SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
+                                    lock.pitch())) {
+                const auto sdl_error = SDL_GetError();
+            }
+        }
+
+        // If we are close
+        const sdl2::surface_ptr shimmer_work{
+            SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+
+        SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
+
+        SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BlendMode::SDL_BLENDMODE_NONE);
+        const auto blit1_ret = SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr);
+        SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BlendMode::SDL_BLENDMODE_ADD);
+        const auto blit2_ret = SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr);
+
+        { // Scope
+            const sdl2::surface_lock src{shimmer_work.get()};
+
+            const auto update_ret = SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch());
+        }
+
+#if 0
         // switch to texture 'shimmerTex' for rendering
         auto *const oldRenderTarget = SDL_GetRenderTarget(renderer);
         SDL_SetRenderTarget(renderer, shimmerTex);
@@ -300,6 +348,7 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
 
         // switch back to old rendering target (from texture 'shimmerTex')
         SDL_SetRenderTarget(renderer, oldRenderTarget);
+#endif // 0
 
         // now blend shimmerTex to screen (= make use of alpha values in mask)
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
