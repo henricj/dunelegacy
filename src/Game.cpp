@@ -1280,18 +1280,23 @@ void Game::runMainLoop(const GameContext& context) {
         while(!bWaitForNetwork && !bPause) {
             now  = static_cast<int>(SDL_GetTicks());
 
-            auto pendingTicks = now - lastTargetGameCycleTime;
+            if(gameCycleCount < skipToGameCycle) {
+                targetGameCycle         = skipToGameCycle;
+                lastTargetGameCycleTime = now;
+            } else {
+                auto pendingTicks = now - lastTargetGameCycleTime;
 
-            // Watch for discontinuities...
-            if(pendingTicks > 2500) {
-                pendingTicks            = 2 * gameSpeed;
-                lastTargetGameCycleTime = now - pendingTicks;
-            }
+                // Watch for discontinuities...
+                if(pendingTicks > 2500) {
+                    pendingTicks            = 2 * gameSpeed;
+                    lastTargetGameCycleTime = now - pendingTicks;
+                }
 
-            while(pendingTicks >= gameSpeed) {
-                pendingTicks -= gameSpeed;
-                lastTargetGameCycleTime += gameSpeed;
-                ++targetGameCycle;
+                while(pendingTicks >= gameSpeed) {
+                    pendingTicks -= gameSpeed;
+                    lastTargetGameCycleTime += gameSpeed;
+                    ++targetGameCycle;
+                }
             }
 
             if(gameCycleCount >= targetGameCycle) break;
@@ -2161,7 +2166,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         } break;
 
         case SDLK_F4: {
-            // skip a 30 seconds
+            // skip a 10 seconds
             if(gameType != GameType::CustomMultiplayer || bReplay) {
                 skipToGameCycle = gameCycleCount + (10*1000)/GAMESPEED_DEFAULT;
             }
