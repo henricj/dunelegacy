@@ -509,8 +509,8 @@ void Game::drawScreen()
 
     // draw chat message currently typed
     if(chatMode) {
-        sdl2::texture_ptr pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
-        SDL_Rect drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
+        const auto pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
+        const auto drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
         SDL_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
 
@@ -527,13 +527,30 @@ void Game::drawScreen()
     }
 
     if(bShowTime) {
-        const int seconds = getGameTime() / 1000;
+        const int seconds = static_cast<int>(getGameTime()) / 1000;
         const auto strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600)/60, (seconds % 60) );
 
-        sdl2::texture_ptr pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
-        SDL_Rect drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
+        const auto pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
+        auto drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
         SDL_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
+    }
+
+    if(bPause) {
+        auto height = getRendererHeight();
+
+        SDL_SetRenderDrawColor(renderer, 0, 242, 0, 128);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        const std::array<SDL_Rect, 2> rects{{{10, height - 20 - 36, 12, 36}, {10 + 12 + 8, height - 20 - 36, 12, 36}}};
+
+        SDL_RenderFillRects(renderer, rects.data(), rects.size());
+    } else if(gameCycleCount < skipToGameCycle) {
+        // Cache this texture...
+        const auto pTexture     = pFontManager->createTextureWithText(">>", COLOR_RGBA(0, 242, 0, 128), 48);
+        auto       drawLocation = calcAlignedDrawingRect(pTexture.get(), HAlign::Left, VAlign::Bottom);
+        drawLocation.x += 10;
+        drawLocation.y -= 12;
+        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
     }
 
     if(finished) {
@@ -545,8 +562,8 @@ void Game::drawScreen()
             message = _("You Have Failed Your Mission.");
         }
 
-        sdl2::texture_ptr pFinishMessageTexture = pFontManager->createTextureWithText(message.c_str(), COLOR_WHITE, 28);
-        SDL_Rect drawLocation = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
+        const auto pFinishMessageTexture = pFontManager->createTextureWithText(message, COLOR_WHITE, 28);
+        const auto drawLocation = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
         SDL_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
     }
 
