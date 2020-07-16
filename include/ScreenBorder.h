@@ -183,7 +183,7 @@ public:
         This method checks if some object is (partly) inside or completely outside the current view.
         \param objectPosition   object position in world coordinates
         \param objectSize       the size of the object (in world coordinates)
-        \return true if (partly) inside, false if completly outside
+        \return true if (partly) inside, false if completely outside
     */
     [[nodiscard]] bool isInsideScreen(const Coord& objectPosition, const Coord& objectSize) const
     {
@@ -196,7 +196,7 @@ public:
     /**
         This method checks if a tile is (partly) inside the current view.
         \param tileLocation the location of the tile in map coordinates
-        \return true if (partly) inside, false if completly outside
+        \return true if (partly) inside, false if completely outside
     */
     [[nodiscard]] bool isTileInsideScreen(const Coord& tileLocation) const
     {

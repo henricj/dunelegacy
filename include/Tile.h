@@ -442,7 +442,7 @@ public:
     bool isExploredByTeam(const Game* game, int teamID) const;
             
     bool isFoggedByHouse(bool fogOfWarEnabled, Uint32 gameCycleCount, HOUSETYPE houseID) const noexcept;
-    bool isFoggedByTeam(const Game* game, int teamID) const noexcept;
+    bool isFoggedByTeam(const Game* game, int teamID) const;
     bool isMountain() const noexcept { return (type == TERRAINTYPE::Terrain_Mountain); }
     bool isRock() const noexcept {
         return ((type == TERRAINTYPE::Terrain_Rock) || (type == TERRAINTYPE::Terrain_Slab) ||

@@ -21,7 +21,7 @@
 #include <GUI/Widget.h>
 #include <FileClasses/Animation.h>
 
-/// A widget for showning an animation
+/// A widget for showing an animation
 class AnimationLabel : public Widget
 {
 public:
