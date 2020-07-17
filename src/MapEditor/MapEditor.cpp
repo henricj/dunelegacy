@@ -1275,7 +1275,7 @@ void MapEditor::processInput() {
         }
     }
 
-    if((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
         const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
