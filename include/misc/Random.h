@@ -121,7 +121,7 @@ public:
     T getRandOf(const T& first, const Args&... args) {
         std::array<T, sizeof...(Args) + 1> a{first, args...};
 
-        return a[rand(0, a.size() - 1)];
+        return a[rand(0u, a.size() - 1u)];
     }
 
 private:
