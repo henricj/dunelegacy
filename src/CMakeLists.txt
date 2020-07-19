@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 set(TOP_SOURCES
 	AStarSearch.cpp
 	Bullet.cpp
@@ -596,3 +598,5 @@ add_custom_command(
 if(WIN32)
    set_target_properties(dunelegacy PROPERTIES WIN32_EXECUTABLE ON)
 endif()
+
+install(TARGETS dunelegacy RUNTIME DESTINATION .)
