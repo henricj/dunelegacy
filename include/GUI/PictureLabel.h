@@ -22,7 +22,7 @@
 #include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
 
-/// A class for showning a static picture
+/// A class for showing a static picture
 class PictureLabel : public Widget {
 public:
 

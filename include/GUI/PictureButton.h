@@ -24,7 +24,7 @@
 /// A class for a picture button
 class PictureButton : public Button {
 public:
-    /// Default contructor
+    /// Default constructor
     PictureButton() {
         enableResizing(false,false);
     }
