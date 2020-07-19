@@ -59,14 +59,14 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu()
     windowWidget.addWidget(&menuButtonsVBox,Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 64), Point(160,111));
 
     startButton.setText(_("Start"));
-    startButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onStart, this));
+    startButton.setOnClick([&] { onStart(); });
     menuButtonsVBox.addWidget(&startButton);
     startButton.setActive();
 
     menuButtonsVBox.addWidget(VSpacer::create(79));
 
     backButton.setText(_("Back"));
-    backButton.setOnClick(std::bind(&SinglePlayerSkirmishMenu::onCancel, this));
+    backButton.setOnClick([&]{ onCancel(); });
     menuButtonsVBox.addWidget(&backButton);
 
     // set up house choice
@@ -119,7 +119,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu()
     onSelectHouseButton(1);
 
 
-    // setup +/- Buttons to select misson
+    // setup +/- Buttons to select mission
 
     missionCounter.setCount(mission);
     windowWidget.addWidget( &missionCounter,
@@ -161,8 +161,8 @@ void SinglePlayerSkirmishMenu::onStart()
             humanHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS) );
             init.addHouseInfo(humanHouseInfo);
         } else {
-            GameInitSettings::HouseInfo aiHouseInfo((HOUSETYPE) houseID, 2);
-            aiHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(getHouseNameByNumber( (HOUSETYPE) houseID), settings.ai.campaignAI) );
+            GameInitSettings::HouseInfo aiHouseInfo(static_cast<HOUSETYPE>(houseID), 2);
+            aiHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(getHouseNameByNumber( static_cast<HOUSETYPE>(houseID)), settings.ai.campaignAI) );
             init.addHouseInfo(aiHouseInfo);
         }
     }
