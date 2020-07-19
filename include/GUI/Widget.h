@@ -234,7 +234,7 @@ public:
     /**
         This method resizes the widget. This method should only be
         called if the new size is a valid size for this widget (See resizingXAllowed,
-        resizingYAllowed, getMinumumSize).
+        resizingYAllowed, getMinimumSize).
         \param  newSize the new size of this widget
     */
     virtual void resize(Point newSize) {
@@ -244,7 +244,7 @@ public:
     /**
         This method resizes the widget to width and height. This method should only be
         called if the new size is a valid size for this widget (See resizingXAllowed,
-        resizingYAllowed, getMinumumSize).
+        resizingYAllowed, getMinimumSize).
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
@@ -371,14 +371,14 @@ public:
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
-        \param  Position    Position to draw the widget to
+        \param  position    Position to draw the widget to
     */
     virtual void draw(Point position) { ; };
 
     /**
         This method draws the parts of this widget that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
-        \param  Position    Position to draw the widget to
+        \param  position    Position to draw the widget to
     */
     virtual void drawOverlay(Point position) { ; };
 
@@ -428,7 +428,7 @@ protected:
         This method is called by containers to enable a widget or disable a widget explicitly.
         It is the responsibility of the container to take care that there is only one active
         widget.
-        \param  bActive true = activate this widget, false = deactiviate this widget
+        \param  bActive true = activate this widget, false = deactivate this widget
     */
     virtual void setActive(bool bActive) {
         const auto oldActive = active;
@@ -445,7 +445,7 @@ protected:
 
     /**
         This method enables or disables resizing of a widget. By default resizing in both directions is not allowed
-        and this method should be called by all constructors of a concrete widget that is resizible.
+        and this method should be called by all constructors of a concrete widget that is resizable.
         \param  bResizeX    true = resizing in x direction allowed, false = resizing in x direction not allowed
         \param  bResizeY    true = resizing in y direction allowed, false = resizing in y direction not allowed
     */

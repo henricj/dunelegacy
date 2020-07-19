@@ -71,7 +71,7 @@ public:
         Returns the minimum size of a label with this text
         \param  text    The text for the label
         \param  fontSize  The size of the font to use
-        \return the mimimum size of this label
+        \return the minimum size of this label
     */
     virtual Point getMinimumLabelSize(const std::string& text, int fontSize) = 0;
 
@@ -95,7 +95,7 @@ public:
     /**
         Returns the minimum size of a checkbox with this text
         \param  text    The text for the checkbox
-        \return the mimimum size of this checkbox
+        \return the minimum size of this checkbox
     */
     virtual Point getMinimumCheckboxSize(const std::string& text) = 0;
 
@@ -118,7 +118,7 @@ public:
     /**
         Returns the minimum size of a radio button with this text
         \param  text    The text for the radio button
-        \return the mimimum size of this radio button
+        \return the minimum size of this radio button
     */
     virtual Point getMinimumRadioButtonSize(const std::string& text) = 0;
 
@@ -151,9 +151,9 @@ public:
 
 
     /**
-        Returns the minumum size of a button with this text
+        Returns the minimum size of a button with this text
         \param  text    The text for the button
-        \return the mimimum size of this button
+        \return the minimum size of this button
     */
     virtual Point getMinimumButtonSize(const std::string& text) = 0;
 
@@ -174,9 +174,9 @@ public:
 
 
     /**
-        Returns the minumum size of a text box
+        Returns the minimum size of a text box
         \param  fontSize  The size of the font to use
-        \return the mimimum size of a text box
+        \return the minimum size of a text box
     */
     virtual Point getMinimumTextBoxSize(int fontSize) = 0;
 
@@ -185,7 +185,7 @@ public:
         \param  width           the width of the text box
         \param  height          the height of the text box
         \param  text            the text for this text box
-        \param  carret          true if a carret should be shown
+        \param  caret           true if a caret should be shown
         \param  fontSize        the size of the font to use
         \param  alignment       the alignment for this text box
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
@@ -198,8 +198,8 @@ public:
 
 
     /**
-        Returns the minumum size of a scroll bar arrow button.
-        \return the mimimum size of a scroll bar arrow
+        Returns the minimum size of a scroll bar arrow button.
+        \return the minimum size of a scroll bar arrow
     */
     virtual Point getMinimumScrollBarArrowButtonSize() = 0;
 
@@ -217,8 +217,8 @@ public:
 
 
     /**
-        Returns the minumum height of a list box entry.
-        \return the mimimum height of a list box entry
+        Returns the minimum height of a list box entry.
+        \return the minimum height of a list box entry
     */
     virtual Uint32 getListBoxEntryHeight() = 0;
 
@@ -287,7 +287,7 @@ public:
     virtual unsigned int getTextHeight(unsigned int FontNum) = 0;
 
     /**
-        Get the weidth of the text with the font specified by fontnum
+        Get the width of the text with the font specified by fontnum
         \param  text        the text to get the width from
         \param  FontNum     the font
         \return the width of the text
