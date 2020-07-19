@@ -1248,7 +1248,7 @@ void Game::runMainLoop(const GameContext& context) {
 
         const auto frameStart = now;
 
-        if(finished) {
+        if(finished && !bPause) {
             // end timer for the ending message
             if(now - finishedLevelTime > END_WAIT_TIME) { finishedLevel = true; }
         }
