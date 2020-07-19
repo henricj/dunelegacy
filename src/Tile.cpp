@@ -295,6 +295,8 @@ void Tile::blitGround(int xPos, int yPos) {
     if (isFoggedByTeam(pLocalHouse->getTeamID()))
         return;
 
+    source.y = 0;
+
     // tracks
     SDL_Texture* pTracks = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Tracks, currentZoomlevel);
     for (auto i = 0; i < NUM_ANGLES; i++) {
