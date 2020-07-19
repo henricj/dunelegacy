@@ -29,7 +29,7 @@
 /// A abstract base class for all buttons
 class Button : public Widget {
 public:
-    /// Default contructor
+    /// Default constructor
     Button();
 
     /// destructor
