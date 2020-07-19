@@ -2342,10 +2342,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if(gameType != GameType::CustomMultiplayer) {
                 if(bPause) {
                     resumeGame();
-                    pInterface->getChatManager().addInfoMessage(_("Game resumed!"));
                 } else {
                     pauseGame();
-                    pInterface->getChatManager().addInfoMessage(_("Game paused!"));
                 }
             }
         } break;
