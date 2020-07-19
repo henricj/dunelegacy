@@ -265,7 +265,7 @@ Random RandomFactory::create(const std::string_view& name) const {
 
     const auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
 
-    digestpp::kmac256 kmac{ 8 * seed_bytes };
+    digestpp::kmac128 kmac{ 8 * seed_bytes };
 
     kmac.set_key(key_.data(), key_.size());
     kmac.set_customization(&generate_customization[0], sizeof(generate_customization));
