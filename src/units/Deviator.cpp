@@ -58,33 +58,26 @@ Deviator::~Deviator() = default;
 
 void Deviator::blitToScreen()
 {
-    int x1 = screenborder->world2screenX(realX);
-    int y1 = screenborder->world2screenY(realY);
+    const auto x1 = screenborder->world2screenX(realX);
+    const auto y1 = screenborder->world2screenY(realY);
 
-    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    const Coord deviatorTurretOffset[] =    {   Coord(0, -12),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -12),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -8)
-                                            };
+    static constexpr Coord deviatorTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                     Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-    SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
-    SDL_Rect     source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect     dest2          = calcSpriteDrawingRect(
+    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
+    const auto     source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto     dest2          = calcSpriteDrawingRect(
         pTurretGraphic, screenborder->world2screenX(realX + deviatorTurretOffset[static_cast<int>(drawnAngle)].x),
         screenborder->world2screenY(realY + deviatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
         HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
     if(isBadlyDamaged()) {
         drawSmoke(x1, y1);
@@ -92,10 +85,10 @@ void Deviator::blitToScreen()
 }
 
 void Deviator::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if(context.map.tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
-        currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
+        Uint32 explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
+        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
@@ -104,13 +97,9 @@ void Deviator::destroy(const GameContext& context) {
     parent::destroy(context);
 }
 
-bool Deviator::canAttack(const ObjectBase* object) const
-{
-    return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit()
-
-        && (object->getOwner()->getTeamID() != owner->getTeamID())
-
-        && object->isVisible(getOwner()->getTeamID());
+bool Deviator::canAttack(const ObjectBase* object) const {
+    return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit() &&
+           (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID());
 }
 
 void Deviator::playAttackSound() {

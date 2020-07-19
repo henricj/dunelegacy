@@ -49,7 +49,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     planetAnimation.setAnimation(anim);
     windowWidget.addWidget(&planetAnimation, Point(256,96), planetAnimation.getMinimumSize());
 
-    SDL_Texture* pQuestionTexture = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
+    const auto* const pQuestionTexture = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
     questionLabel.setTexture(pQuestionTexture);
     windowWidget.addWidget(&questionLabel, Point(0,0), getTextureSize(pQuestionTexture));
     questionLabel.setVisible(false);
@@ -59,8 +59,8 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     int linebreak = desc.find("\n",0) + 1;
     setText(desc.substr(linebreak,desc.length()-linebreak));
 
-    SDL_Texture* pMentatYes = pGFXManager->getUIGraphic(UI_MentatYes);
-    SDL_Texture* pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
+    const auto* const pMentatYes = pGFXManager->getUIGraphic(UI_MentatYes);
+    const auto* const pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
 
     yesButton.setTextures(pMentatYes, pMentatYesPressed);
     yesButton.setEnabled(false);
@@ -68,13 +68,13 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
     windowWidget.addWidget(&yesButton,Point(370,340), getTextureSize(pMentatYes));
 
-    SDL_Texture* pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
-    SDL_Texture* pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
+    const auto* const pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
+    const auto* const pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
 
     noButton.setTextures(pMentatNo, pMentatNoPressed);
     noButton.setEnabled(false);
     noButton.setVisible(false);
-    noButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onNo, this));
+    noButton.setOnClick([&]{ onNo();});
     windowWidget.addWidget(&noButton,Point(480,340), getTextureSize(pMentatNo));
 }
 

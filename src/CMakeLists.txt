@@ -57,6 +57,7 @@ set(FILE_CLASSES_SOURCES
 	FileClasses/SFXManager.cpp
 	FileClasses/SaveTextureAsBmp.cpp
 	FileClasses/Shpfile.cpp
+	FileClasses/SurfaceLoader.cpp
 	FileClasses/TTFFont.cpp
 	FileClasses/TextManager.cpp
 	FileClasses/Vocfile.cpp
@@ -75,11 +76,13 @@ set(GUI_SOURCES
 	GUI/DropDownBox.cpp
 	GUI/GUIStyle.cpp
 	GUI/ListBox.cpp
+	GUI/PictureLabel.cpp
 	GUI/RadioButtonManager.cpp
 	GUI/ScrollBar.cpp
 	GUI/TextButton.cpp
 	GUI/TextView.cpp
 	GUI/Widget.cpp
+	GUI/WidgetWithBackground.cpp
 	GUI/Window.cpp
 	GUI/dune/BuilderList.cpp
 	GUI/dune/ChatManager.cpp
@@ -90,7 +93,8 @@ set(GUI_SOURCES
 	GUI/dune/LoadSaveWindow.cpp
 	GUI/dune/MessageTicker.cpp
 	GUI/dune/NewsTicker.cpp
-	GUI/dune/WaitingForOtherPlayers.cpp)
+	GUI/dune/WaitingForOtherPlayers.cpp
+	GUI/ObjectInterfaces/PalaceInterface.cpp)
 
 set(INIMAP_SOURCES
 	INIMap/INIMap.cpp
@@ -200,6 +204,11 @@ set(STRUCTURES_SOURCES
 	structures/Wall.cpp
 	structures/WindTrap.cpp)
 
+set(RENDERER_SOURCES
+	Renderer/DuneRenderer.cpp
+	Renderer/DuneTextures.cpp
+)
+
 set(UNITS_SOURCES
 	units/AirUnit.cpp
 	units/Carryall.cpp
@@ -284,6 +293,7 @@ set(HEADERS
 ../include/FileClasses/SaveTextureAsBmp.h
 ../include/FileClasses/SFXManager.h
 ../include/FileClasses/Shpfile.h
+../include/FileClasses/SurfaceLoader.h
 ../include/FileClasses/TextManager.h
 ../include/FileClasses/TTFFont.h
 ../include/FileClasses/Vocfile.h
@@ -352,6 +362,7 @@ set(HEADERS
 ../include/GUI/TextView.h
 ../include/GUI/VBox.h
 ../include/GUI/Widget.h
+../include/GUI/WidgetWithBackground.h
 ../include/GUI/Window.h
 ../include/House.h
 ../include/INIMap/INIMap.h
@@ -445,6 +456,8 @@ set(HEADERS
 ../include/players/SmartBot.h
 ../include/RadarView.h
 ../include/RadarViewBase.h
+../include/Renderer/DuneRenderer.h
+../include/Renderer/DuneTextures.h
 ../include/sand.h
 ../include/ScreenBorder.h
 ../include/SoundPlayer.h
@@ -514,6 +527,7 @@ set(SOURCES
 	${MISC_SOURCES}
 	${PLAYERS_SOURCES}
 	${STRUCTURES_SOURCES}
+	${RENDERER_SOURCES}
 	${UNITS_SOURCES})
 
 find_package(SDL2 CONFIG REQUIRED)
@@ -533,6 +547,7 @@ set(LIBS
 	fmt::fmt
 	Microsoft.GSL::GSL
 	digestpp
+	rectpack2D
 	enet)
 
 if(WIN32)

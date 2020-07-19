@@ -126,7 +126,7 @@ void ScrollBar::draw(Point position) {
 
     if(pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     arrow1.draw(position);

@@ -63,7 +63,7 @@ public:
 
         if(isVisible()) {
             SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-            SDL_RenderCopy(renderer, tex, nullptr, &dest);
+            Dune_RenderCopy(renderer, tex, nullptr, &dest);
         }
     };
 

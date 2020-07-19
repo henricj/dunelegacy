@@ -123,33 +123,33 @@ void Button::draw(Point position) {
 
     updateTextures();
 
-    SDL_Texture* tex = nullptr;
+    const DuneTexture* tex = nullptr;
     if(bToggleState) {
         if(pPressedTexture) {
-            tex = pPressedTexture.get();
+            tex = pPressedTexture;
         } else {
             if(isActive() && pActiveTexture) {
-                tex = pActiveTexture.get();
+                tex = pActiveTexture;
             } else {
-                tex = pUnpressedTexture.get();
+                tex = pUnpressedTexture;
             }
         }
     } else {
         if(bPressed) {
             if(pPressedTexture) {
-                tex = pPressedTexture.get();
+                tex = pPressedTexture;
             } else {
                 if(isActive() && pActiveTexture) {
-                    tex = pActiveTexture.get();
+                    tex = pActiveTexture;
                 } else {
-                    tex = pUnpressedTexture.get();
+                    tex = pUnpressedTexture;
                 }
             }
         } else {
             if((isActive() || bHover) && pActiveTexture) {
-                tex = pActiveTexture.get();
+                tex = pActiveTexture;
             } else {
-                tex = pUnpressedTexture.get();
+                tex = pUnpressedTexture;
             }
         }
     }
@@ -158,8 +158,8 @@ void Button::draw(Point position) {
         return;
     }
 
-    SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-    SDL_RenderCopy(renderer, tex, nullptr, &dest);
+    const auto dest = calcDrawingRect(tex, position.x, position.y);
+    Dune_RenderCopy(renderer, tex, nullptr, &dest);
 }
 
 void Button::drawOverlay(Point position) {
@@ -167,8 +167,8 @@ void Button::drawOverlay(Point position) {
 
     if(SDL_GetTicks() - tooltipLastMouseMotion <= 750) return;
 
-    SDL_Rect renderRect = getRendererSize();
-    SDL_Rect dest = calcDrawingRect(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    const auto renderRect = getRendererSize();
+    auto dest = calcDrawingRect(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
     if(dest.x + dest.w >= renderRect.w) {
         // do not draw tooltip outside screen
         dest.x = renderRect.w - dest.w;
@@ -182,28 +182,39 @@ void Button::drawOverlay(Point position) {
         dest.y = renderRect.h - dest.h;
     }
 
-    SDL_RenderCopy(renderer, tooltipTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(renderer, tooltipTexture.get(), nullptr, &dest);
 }
 
 void Button::invalidateTextures() {
-    pUnpressedTexture.reset();
-    pPressedTexture.reset();
-    pActiveTexture.reset();
+    pUnpressedTexture = nullptr;
+    pPressedTexture   = nullptr;
+    pActiveTexture    = nullptr;
+
+    localDuneUnpressed_ = DuneTexture{};
+    localDunePressed_   = DuneTexture{};
+    localDuneActive_    = DuneTexture{};
+
+    localUnpressed_.reset();
+    localPressed_.reset();
+    localActive_.reset();
 }
 
-void Button::setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
-                            sdl2::surface_unique_or_nonowning_ptr pPressedSurface,
-                            sdl2::surface_unique_or_nonowning_ptr pActiveSurface) {
+void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface,
+                         sdl2::surface_ptr pActiveSurface) {
+    localUnpressed_ = convertSurfaceToTexture(pUnpressedSurface.get());
+    localPressed_   = convertSurfaceToTexture(pPressedSurface.get());
+    localActive_    = convertSurfaceToTexture(pActiveSurface.get());
 
-    setTextures(    convertSurfaceToTexture(pUnpressedSurface.get()),
-                    convertSurfaceToTexture(pPressedSurface.get()),
-                    convertSurfaceToTexture(pActiveSurface.get()) );
+    localDuneUnpressed_ = DuneTexture{localUnpressed_.get()};
+    localDunePressed_   = DuneTexture{localPressed_.get()};
+    localDuneActive_    = DuneTexture{localActive_.get()};
+
+    setTextures(&localDuneUnpressed_, &localDunePressed_, localActive_ ? &localDuneActive_ : nullptr);
 }
 
-void Button::setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
-                            sdl2::texture_unique_or_nonowning_ptr pPressedTexture,
-                            sdl2::texture_unique_or_nonowning_ptr pActiveTexture) {
-    this->pUnpressedTexture = std::move(pUnpressedTexture);
-    this->pPressedTexture = std::move(pPressedTexture);
-    this->pActiveTexture = std::move(pActiveTexture);
+void Button::setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
+                         const DuneTexture* pActiveTexture) {
+    this->pUnpressedTexture = pUnpressedTexture;
+    this->pPressedTexture = pPressedTexture;
+    this->pActiveTexture = pActiveTexture;
 }

@@ -35,13 +35,13 @@
 CustomGameStatsMenu::CustomGameStatsMenu()  
 {
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
 
-    Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
+    const Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
 
     windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 

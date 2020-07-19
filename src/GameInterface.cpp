@@ -38,14 +38,14 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
     Window::setWindowWidget(&windowWidget);
 
     // top bar
-    SDL_Texture* pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
+    const auto* const pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
     topBar.setTexture(pTopBarTex);
     windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
 
     // side bar
-    SDL_Texture* pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
+    const auto* const pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
     sideBar.setTexture(pSideBarTex);
-    SDL_Rect dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
+    const auto dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
     windowWidget.addWidget(&sideBar, dest);
 
     // add buttons
@@ -166,7 +166,7 @@ void GameInterface::draw(Point position) {
     for(int i=NumDigits-1; i>=0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
         auto dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
-        SDL_RenderCopy(renderer, digitsTex, &source, &dest);
+        Dune_RenderCopy(renderer, digitsTex, &source, &dest);
     }
 }
 

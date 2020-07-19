@@ -37,7 +37,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -49,7 +49,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Player Settings"));
     mainVBox.addWidget(&titleLabel);
 
@@ -62,7 +62,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         const auto& playerInfo = players[i];
 
-        Uint32 currentColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
+        const Uint32 currentColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
 
         centralVBox.addWidget(VSpacer::create(15));
 

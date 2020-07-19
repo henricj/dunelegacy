@@ -33,7 +33,7 @@
 MainMenu::MainMenu()
 {
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
@@ -41,21 +41,21 @@ MainMenu::MainMenu()
 
     // set up pictures in the background
     // set up pictures in the background
-    SDL_Texture* pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
+    const auto * const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
-    SDL_Rect dest1 = calcAlignedDrawingRect(pPlanetBackground);
+    auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
     dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
     windowWidget.addWidget(&planetPicture, dest1);
 
-    SDL_Texture* pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
+    const auto * const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
-    SDL_Rect dest2 = calcAlignedDrawingRect(pDuneLegacy);
+    auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
     dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
     windowWidget.addWidget(&duneLegacy, dest2);
 
-    SDL_Texture* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
+    const auto * const pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
-    SDL_Rect dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
+    auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
     dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
     windowWidget.addWidget(&buttonBorder, dest3);
 

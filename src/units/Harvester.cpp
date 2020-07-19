@@ -103,14 +103,14 @@ void Harvester::blitToScreen()
     int y = screenborder->world2screenY(realY);
 
     auto *pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+    Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
     if(isHarvesting()) {
 
-        const Coord harvesterSandOffset[] = {   Coord(-56, 4),
+        static constexpr Coord harvesterSandOffset[] = {   Coord(-56, 4),
                                                 Coord(-28, 20),
                                                 Coord(0, 24),
                                                 Coord(28, 20),
@@ -120,21 +120,21 @@ void Harvester::blitToScreen()
                                                 Coord(-36, -24)
                                             };
 
-        SDL_Texture* pSandGraphic = pGFXManager->getZoomedObjPic(ObjPic_Harvester_Sand, getOwner()->getHouseID(), currentZoomlevel);
+        const auto* const pSandGraphic = pGFXManager->getZoomedObjPic(ObjPic_Harvester_Sand, getOwner()->getHouseID(), currentZoomlevel);
 
         int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / HARVESTERDELAY) % (2*LASTSANDFRAME);
         if(frame > LASTSANDFRAME) {
             frame -= LASTSANDFRAME;
         }
 
-        SDL_Rect sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
-        SDL_Rect sandDest = calcSpriteDrawingRect(  pSandGraphic,
+        auto sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
+        auto sandDest = calcSpriteDrawingRect(  pSandGraphic,
                                                     screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
                                                     screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
                                                     static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME+1,
                                                     HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopy(renderer, pSandGraphic, &sandSource, &sandDest);
+        Dune_RenderCopy(renderer, pSandGraphic, &sandSource, &sandDest);
     }
 
     if(isBadlyDamaged()) {
@@ -317,7 +317,7 @@ void Harvester::destroy(const GameContext& context)
 
 void Harvester::drawSelectionBox()
 {
-    SDL_Texture* selectionBox = nullptr;
+    const DuneTexture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -326,8 +326,8 @@ void Harvester::drawSelectionBox()
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-    SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
 
     for(int i=1;i<=currentZoomlevel+1;i++) {
         renderDrawHLine(renderer, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());

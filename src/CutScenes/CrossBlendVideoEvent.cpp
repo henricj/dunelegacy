@@ -45,7 +45,7 @@ int CrossBlendVideoEvent::draw()
 
     auto dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    SDL_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

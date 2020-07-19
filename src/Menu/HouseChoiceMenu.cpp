@@ -46,26 +46,26 @@ HouseChoiceMenu::HouseChoiceMenu()
     windowWidget.addWidget(&selectYourHouseLabel, Point(0,0), Point(100, 640));
 
     // set up buttons
-    house1Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 0));
+    house1Button.setOnClick([&]{ onHouseButton(0); });
     windowWidget.addWidget(&house1Button, Point(40,108),    Point(168,182));
 
-    house2Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 1));
+    house2Button.setOnClick([&] { onHouseButton(1); });
     windowWidget.addWidget(&house2Button, Point(235,108),   Point(168,182));
 
-    house3Button.setOnClick(std::bind(&HouseChoiceMenu::onHouseButton, this, 2));
+    house3Button.setOnClick([&] { onHouseButton(2); });
     windowWidget.addWidget(&house3Button, Point(430,108),   Point(168,182));
 
-    SDL_Texture *pArrowLeft = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftLarge);
-    SDL_Texture *pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
+    const auto* const pArrowLeft = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftLarge);
+    const auto* const pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
     houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
-    houseLeftButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseLeft, this));
+    houseLeftButton.setOnClick([&] { onHouseLeft(); });
     houseLeftButton.setVisible(false);
     windowWidget.addWidget( &houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
 
-    SDL_Texture *pArrowRight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightLarge);
-    SDL_Texture *pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
+    const auto* const pArrowRight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightLarge);
+    const auto* const pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
     houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
-    houseRightButton.setOnClick(std::bind(&HouseChoiceMenu::onHouseRight, this));
+    houseRightButton.setOnClick([&]{ onHouseRight();});
     windowWidget.addWidget( &houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
 
     updateHouseChoice();

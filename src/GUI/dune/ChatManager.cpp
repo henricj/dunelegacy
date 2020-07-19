@@ -47,7 +47,8 @@ void ChatManager::draw(Point position)
     int maxTimeSizeY = 0;
     for(const auto& chatMessage : chatMessages) {
         if(chatMessage.messageType == MessageType::MSGTYPE_NORMAL) {
-            maxUsernameSizeY = std::max(maxUsernameSizeY, getWidth(chatMessage.pUsernameOrPictureTexture.get()));
+            maxUsernameSizeY =
+                std::max(maxUsernameSizeY, chatMessage.getUsernamePictureHeight());
             maxTimeSizeY = std::max(maxTimeSizeY, getWidth(chatMessage.pTimeTexture.get()));
         }
     }
@@ -61,36 +62,65 @@ void ChatManager::draw(Point position)
             timeDest.w = getWidth(chatMessage.pTimeTexture.get());
             timeDest.h = getHeight(chatMessage.pTimeTexture.get());
             SDL_Rect tmpDest1 = timeDest;
-            SDL_RenderCopy(renderer, chatMessage.pTimeTexture.get(), nullptr, &tmpDest1);
+            Dune_RenderCopy(renderer, chatMessage.pTimeTexture.get(), nullptr, &tmpDest1);
 
-            usernameOrPictureDest.w = getWidth(chatMessage.pUsernameOrPictureTexture.get());
-            usernameOrPictureDest.h = getHeight(chatMessage.pUsernameOrPictureTexture.get());
-            usernameOrPictureDest.x = position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY - getWidth(chatMessage.pUsernameOrPictureTexture.get());
-            SDL_Rect tmpDest2 = usernameOrPictureDest;
-            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture.get(), nullptr, &tmpDest2);
+            if(chatMessage.pUsernameTexture)
+            {
+                usernameOrPictureDest.w = getWidth(chatMessage.pUsernameTexture.get());
+                usernameOrPictureDest.h = getWidth(chatMessage.pUsernameTexture.get());
+                usernameOrPictureDest.x =
+                    position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY - getWidth(chatMessage.pUsernameTexture.get());
+                SDL_Rect tmpDest2 = usernameOrPictureDest;
+                Dune_RenderCopy(renderer, chatMessage.pUsernameTexture.get(), nullptr, &tmpDest2);
+            } else
+            {
+                usernameOrPictureDest.w = getWidth(chatMessage.pPictureTexture);
+                usernameOrPictureDest.h = getHeight(chatMessage.pPictureTexture);
+                usernameOrPictureDest.x =
+                    position.x + LEFT_BORDER_WIDTH + maxUsernameSizeY - getWidth(chatMessage.pPictureTexture);
+                SDL_Rect tmpDest2 = usernameOrPictureDest;
+                Dune_RenderCopy(renderer, chatMessage.pPictureTexture, nullptr, &tmpDest2);
+            }
 
             messageDest.w = getWidth(chatMessage.pMessageTexture.get());
             messageDest.h = getHeight(chatMessage.pMessageTexture.get());
             SDL_Rect tmpDest3 = messageDest;
-            SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &tmpDest3);
+            Dune_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &tmpDest3);
 
 
         } else if(chatMessage.messageType == MessageType::MSGTYPE_INFO) {
             SDL_Rect infoDest = calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
-            SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
+            Dune_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
 
             messageDest.h = getHeight(chatMessage.pMessageTexture.get());
         } else {
+
+            auto infoDest =
+                calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
+
+            int maxHeight;
+
             // MSGTYPE_PICTURE
-            SDL_Rect pictureDest = calcDrawingRect(chatMessage.pUsernameOrPictureTexture.get(), position.x + LEFT_BORDER_WIDTH - 30, messageDest.y, HAlign::Right);
-            SDL_Rect infoDest = calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
-            int maxHeight = std::max(pictureDest.h, infoDest.h);
+            if(chatMessage.pUsernameTexture) {
+                auto pictureDest = calcDrawingRect(chatMessage.pUsernameTexture.get(),
+                                                   position.x + LEFT_BORDER_WIDTH - 30, messageDest.y, HAlign::Right);
+                maxHeight        = std::max(pictureDest.h, infoDest.h);
 
-            pictureDest.y = pictureDest.y + (maxHeight - pictureDest.h)/2;
-            infoDest.y = infoDest.y + (maxHeight - infoDest.h)/2;
+                pictureDest.y = pictureDest.y + (maxHeight - pictureDest.h) / 2;
 
-            SDL_RenderCopy(renderer, chatMessage.pUsernameOrPictureTexture.get(), nullptr, &pictureDest);
-            SDL_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
+                Dune_RenderCopy(renderer, chatMessage.pUsernameTexture.get(), nullptr, &pictureDest);
+            } else {
+                auto pictureDest = calcDrawingRect(chatMessage.pPictureTexture, position.x + LEFT_BORDER_WIDTH - 30,
+                                                   messageDest.y, HAlign::Right);
+                maxHeight        = std::max(pictureDest.h, infoDest.h);
+
+                pictureDest.y = pictureDest.y + (maxHeight - pictureDest.h) / 2;
+
+                Dune_RenderCopy(renderer, chatMessage.pPictureTexture, nullptr, &pictureDest);
+            }
+
+            infoDest.y = infoDest.y + (maxHeight - infoDest.h) / 2;
+            Dune_RenderCopy(renderer, chatMessage.pMessageTexture.get(), nullptr, &infoDest);
 
             messageDest.h = maxHeight + 10;
         }
@@ -128,7 +158,7 @@ void ChatManager::addInfoMessage(const std::string& message)
     prune_messages();
 }
 
-void ChatManager::addHintMessage(const std::string& message, SDL_Texture* pTexture)
+void ChatManager::addHintMessage(const std::string& message, const DuneTexture* pTexture)
 {
     const auto width = settings.video.width - SIDEBARWIDTH - LEFT_BORDER_WIDTH - 20;
 
