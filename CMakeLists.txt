@@ -151,6 +151,16 @@ enable_testing()
 
 add_subdirectory(tests)
 
+set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
+
+if(WIN32)
+    if(TARGET_MSI_NAME)
+        set(CPACK_PACKAGE_FILE_NAME "${TARGET_MSI_NAME}")
+    else()
+        set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${DUNE_TARGET_ARCHITECTURE}")
+    endif()
+endif()
+
 include(CPack)
 
 message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")

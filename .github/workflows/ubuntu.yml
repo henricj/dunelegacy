@@ -1,0 +1,36 @@
+name: Ubuntu
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "apt-get"
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get dist-upgrade -y
+          sudo apt-get install -y gettext ninja-build gcc-10 g++-10
+          #sudo apt-get install -y gettext ninja-build gcc-10 g++-10 clang-tidy-10
+
+      - name: Fetch repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: vcpkg
+        run: IDE/VC/vcpkg/build_vcpkg.sh
+
+      - name: Build
+        uses: ashutoshvarma/action-cmake-build@master
+        with:
+          build-dir: ${{ runner.workspace }}/build
+          cc: gcc-10
+          cxx: g++-10
+          configure-options: -v -G Ninja -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
+          build-type: Release
+          parallel: 8
