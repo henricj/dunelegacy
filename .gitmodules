@@ -7,3 +7,6 @@
 [submodule "external/digestpp/digestpp"]
 	path = external/digestpp/digestpp
 	url = https://github.com/henricj/digestpp.git
+[submodule "external/rectpack2D"]
+	path = external/rectpack2D/rectpack2D
+	url = https://github.com/TeamHypersomnia/rectpack2D.git
