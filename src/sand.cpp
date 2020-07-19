@@ -47,9 +47,9 @@ void drawCursor() {
         return;
     }
 
-    SDL_Texture* tex = pGFXManager->getUIGraphic(cursorFrame);
+    const auto* const tex = pGFXManager->getUIGraphic(cursorFrame);
 
-    SDL_Rect dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
+    auto dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
 
     //reposition image so pointing on right spot
 
@@ -64,7 +64,7 @@ void drawCursor() {
         dest.y -= dest.h/2;
     }
 
-    SDL_RenderCopy(renderer, tex, nullptr, &dest);
+    Dune_RenderCopy(renderer, tex, nullptr, &dest);
 }
 
 /**
@@ -72,7 +72,7 @@ void drawCursor() {
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
     \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
-SDL_Texture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
+const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
     int newPicID = 0;
 
     // clang-format off

@@ -93,7 +93,7 @@ int MenuBase::showMenu() {
         }
         draw();
         drawCursor();
-        SDL_RenderPresent(renderer);
+        Dune_RenderPresent(renderer);
 
         while(SDL_PollEvent(&event)) {
             // check the events

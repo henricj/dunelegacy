@@ -35,7 +35,7 @@ CutScene::~CutScene()
     // Fixes some flickering
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    Dune_RenderPresent(renderer);
 }
 
 void CutScene::run()
@@ -59,7 +59,7 @@ void CutScene::run()
                         // Fixes some flickering
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
-                        SDL_RenderPresent(renderer);
+                        Dune_RenderPresent(renderer);
                         quiting = true;
                     }
                 }

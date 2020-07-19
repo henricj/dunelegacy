@@ -49,7 +49,7 @@ int FadeOutVideoEvent::draw()
         SDL_RenderFillRect(renderer, &dest);
     }
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
-    SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

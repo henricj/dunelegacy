@@ -58,7 +58,7 @@ void TextView::draw(Point position) {
 
     if(pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     if(pForeground != nullptr) {
@@ -73,7 +73,7 @@ void TextView::draw(Point position) {
                             position.y + 1,
                             getWidth(pForeground.get()),
                             std::min(getHeight(pForeground.get()), getSize().y - 2) };
-        SDL_RenderCopy(renderer, pForeground.get(), &src, &dest);
+        Dune_RenderCopy(renderer, pForeground.get(), &src, &dest);
     }
 
     Point scrollBarPos = position;

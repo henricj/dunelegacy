@@ -76,5 +76,5 @@ void MessageTicker::draw(Point position) {
 
     textLocation.w = cut.w = getWidth(tex);
     textLocation.h = cut.h = getHeight(tex) - cut.y;
-    SDL_RenderCopy(renderer, tex, &cut, &textLocation);
+    Dune_RenderCopy(renderer, tex, &cut, &textLocation);
 }

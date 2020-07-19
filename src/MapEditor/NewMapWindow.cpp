@@ -43,7 +43,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -55,7 +55,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("New Map"));
     mainVBox.addWidget(&titleLabel);
 

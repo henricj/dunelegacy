@@ -276,7 +276,7 @@ void UnitBase::blitToScreen() {
     const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+    Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
     if(isBadlyDamaged()) {
         drawSmoke(x, y);
@@ -375,7 +375,7 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
     }
 
     // Adding this in as a surrogate for damage inflicted upon deviation.. Still not sure what the best value
-    // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithoper
+    // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithopter
     // which is likely to get killed
     if(getItemID() == Unit_Devastator || getItemID() == Unit_Ornithopter){
         newOwner->informHasDamaged(Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
@@ -386,7 +386,7 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
 
 void UnitBase::drawSelectionBox() {
 
-    SDL_Texture* selectionBox = nullptr;
+    const DuneTexture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -395,18 +395,22 @@ void UnitBase::drawSelectionBox() {
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-    SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    const auto screenX = screenborder->world2screenX(realX);
+    const auto screenY = screenborder->world2screenY(realY);
 
-    int x = screenborder->world2screenX(realX) - getWidth(selectionBox)/2;
-    int y = screenborder->world2screenY(realY) - getHeight(selectionBox)/2;
-    for(int i=1;i<=currentZoomlevel+1;i++) {
-        renderDrawHLine(renderer, x+1, y-i, x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
-    }
+    auto dest = calcDrawingRect(selectionBox, screenX, screenY, HAlign::Center, VAlign::Center);
+    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+
+    const auto width = getWidth(selectionBox);
+    const auto x = screenX - width/2;
+    const auto y = screenY - getHeight(selectionBox)/2;
+
+    const auto healthWidth = (lround((getHealth() / getMaxHealth()) * (width - 3)));
+    renderFillRect(renderer, x + 1, y - currentZoomlevel - 1, x + 1 + healthWidth, y - 1, getHealthColor());
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
-    SDL_Texture* selectionBox = nullptr;
+    const DuneTexture* selectionBox = nullptr;
 
     switch(currentZoomlevel) {
         case 0:     selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0);   break;
@@ -415,8 +419,8 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default:    selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2);   break;
     }
 
-    SDL_Rect dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-    SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
 }
 
 
@@ -1439,17 +1443,16 @@ bool UnitBase::SearchPathWithAStar() {
    
 }
 
-void UnitBase::drawSmoke(int x, int y) {
-    int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / SMOKEDELAY) % (2*2);
-    if(frame == 3) {
-        frame = 1;
-    }
+void UnitBase::drawSmoke(int x, int y) const {
+    int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / SMOKEDELAY) % (2 * 2);
+    if(frame == 3) { frame = 1; }
 
-    SDL_Texture* pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
-    SDL_Rect dest = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
-    SDL_Rect source = calcSpriteSourceRect(pSmokeTex, frame, 3);
+    const auto* const pSmokeTex =
+        pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+    const auto dest   = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
+    const auto source = calcSpriteSourceRect(pSmokeTex, frame, 3);
 
-    SDL_RenderCopy(renderer, pSmokeTex, &source, &dest);
+    Dune_RenderCopy(renderer, pSmokeTex, &source, &dest);
 }
 
 void UnitBase::playAttackSound() {

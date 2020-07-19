@@ -117,11 +117,11 @@ void ListBox::draw(Point position) {
 
     if(pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 1);
-    SDL_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
+    Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
 
     Point ScrollBarPos = position;
     ScrollBarPos.x += getSize().x - scrollbar.getSize().x;

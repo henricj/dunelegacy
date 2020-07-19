@@ -69,13 +69,13 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     animation.setVisible(false);
     animation.setEnabled(false);
     itemDescriptionLabel.setTextFontSize(12);
-    itemDescriptionLabel.setAlignment((Alignment_Enum) (Alignment_Left | Alignment_Top));
+    itemDescriptionLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top));
     itemDescriptionLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-    SDL_Texture* pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
-    SDL_Texture* pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
+    const auto* const pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
+    const auto* const pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
     exitButton.setTextures(pMentatExit, pMentatExitPressed);
 
     exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));

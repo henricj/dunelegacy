@@ -147,7 +147,7 @@ void Explosion::blitToScreen() const
                                                 numFrames, 1,
                                                 HAlign::Center, VAlign::Center);
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], currentFrame, numFrames);
-        SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+        Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 

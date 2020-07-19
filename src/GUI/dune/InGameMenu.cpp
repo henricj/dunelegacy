@@ -35,7 +35,7 @@
 InGameMenu::InGameMenu(bool bMultiplayer, int color)
  : Window(0,0,0,0), bMultiplayer(bMultiplayer), color(color) {
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
+    const auto *pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

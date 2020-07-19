@@ -106,7 +106,7 @@ private:
 
     sdl2::surface_ptr radarSurface;         ///< contains the image to be drawn when the radar is active
     sdl2::texture_ptr radarTexture;         ///< streaming texture to be used when the radar is active
-    SDL_Texture* radarStaticAnimation;      ///< holds the animation graphic for radar static
+    const DuneTexture* radarStaticAnimation; ///< holds the animation graphic for radar static
 
 };
 

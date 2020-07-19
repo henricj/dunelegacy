@@ -37,7 +37,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0,0,0,0) {
     Uint32 color2 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)]+3]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
+    const auto *pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

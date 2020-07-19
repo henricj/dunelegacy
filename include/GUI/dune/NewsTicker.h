@@ -69,7 +69,7 @@ private:
         void pop() { queue_.pop_front(); }
     };
 
-    SDL_Texture* pBackground;
+    const DuneTexture* pBackground;
     unique_queue<std::string> messages;
     std::string currentMessage;
     sdl2::texture_ptr pCurrentMessageTexture;

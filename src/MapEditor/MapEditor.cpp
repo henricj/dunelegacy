@@ -945,7 +945,7 @@ void MapEditor::drawScreen() {
     // Cursor
     drawCursor();
 
-    SDL_RenderPresent(renderer);
+    Dune_RenderPresent(renderer);
 }
 
 void MapEditor::processInput() {
@@ -1311,7 +1311,7 @@ void MapEditor::drawCursor() {
         return;
     }
 
-    SDL_Texture* pCursor = nullptr;
+    const DuneTexture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
     if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
@@ -1340,7 +1340,7 @@ void MapEditor::drawCursor() {
 
         if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
 
-            SDL_Texture* pMirrorIcon = nullptr;
+            const DuneTexture* pMirrorIcon = nullptr;
             switch(currentMirrorMode) {
                 case MirrorModeHorizontal:  pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);  break;
                 case MirrorModeVertical:    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);    break;
@@ -1349,12 +1349,12 @@ void MapEditor::drawCursor() {
                 default:                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon);       break;
             }
 
-            SDL_Rect dest2 = calcDrawingRect(pMirrorIcon, drawnMouseX + 5, drawnMouseY + 5);
-            SDL_RenderCopy(renderer, pMirrorIcon, nullptr, &dest2);
+            auto dest2 = calcDrawingRect(pMirrorIcon, drawnMouseX + 5, drawnMouseY + 5);
+            Dune_RenderCopy(renderer, pMirrorIcon, nullptr, &dest2);
         }
     }
 
-    SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
+    Dune_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
@@ -1394,7 +1394,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
-    SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+    const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
     /* draw ground */
     for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
@@ -1481,7 +1481,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                 zoomedTilesize, zoomedTilesize };
             SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                         zoomedTilesize, zoomedTilesize };
-            SDL_RenderCopy(renderer, TerrainSprite, &source, &drawLocation);
+            Dune_RenderCopy(renderer, TerrainSprite, &source, &drawLocation);
         }
     }
 
@@ -1495,18 +1495,18 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         SDL_Rect selectionDest;
         if(structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
-            SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
                                zoomedTilesize};
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-            SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
+            Dune_RenderCopy(renderer, TerrainSprite, &source, &dest);
 
             selectionDest = dest;
         } else if(structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
-            SDL_Texture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
@@ -1514,7 +1514,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                        zoomedTilesize};
                     SDL_Rect dest = { pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-                    SDL_RenderCopy(renderer, TerrainSprite, &source, &dest);
+                    Dune_RenderCopy(renderer, TerrainSprite, &source, &dest);
                 }
             }
 
@@ -1572,17 +1572,18 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
 
             // Load Wall texture
-            SDL_Texture* WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
+            const DuneTexture* WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
             SDL_Rect source = { maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
 
-            SDL_RenderCopy(renderer, WallSprite, &source, &dest);
+            Dune_RenderCopy(renderer, WallSprite, &source, &dest);
 
             selectionDest = dest;
         } else {
 
             int objectPic = 0;
+            // clang-format off
             switch(structure.itemID) {
                 case Structure_Barracks:            objectPic = ObjPic_Barracks;            break;
                 case Structure_ConstructionYard:    objectPic = ObjPic_ConstructionYard;    break;
@@ -1603,15 +1604,16 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 case Structure_WOR:                 objectPic = ObjPic_WOR;                 break;
                 default:                            objectPic = 0;                          break;
             }
+            // clang-format on
 
-            SDL_Texture* ObjectSprite = pGFXManager->getZoomedObjPic(objectPic, structure.house, currentZoomlevel);
+            const auto* ObjectSprite = pGFXManager->getZoomedObjPic(objectPic, structure.house, currentZoomlevel);
 
             Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID)*TILESIZE);
 
             SDL_Rect source = { frameSize.x*(structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y };
             SDL_Rect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), frameSize.x, frameSize.y };
 
-            SDL_RenderCopy(renderer, ObjectSprite, &source, &dest);
+            Dune_RenderCopy(renderer, ObjectSprite, &source, &dest);
 
             selectionDest = dest;
         }
@@ -1710,6 +1712,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         int objectPicGun = -1;
         const Coord* gunOffset = nullptr;
 
+        // clang-format off
         switch(unit.itemID) {
             case Unit_Carryall:         objectPicBase = ObjPic_Carryall;        framesY = 2;                                                                    break;
             case Unit_Devastator:       objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = devastatorTurretOffset;     break;
@@ -1733,8 +1736,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             case Unit_Infantry:         objectPicBase = ObjPic_Infantry;         framesX = 4;    framesY = 4;                                                   break;
             case Unit_Troopers:         objectPicBase = ObjPic_Troopers;         framesX = 4;    framesY = 4;                                                   break;
         }
+        // clang-format on
 
-        SDL_Texture* pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
+        const auto* const pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
 
         int angle = static_cast<int>(unit.angle) / (static_cast<int>(ANGLETYPE::NUM_ANGLES)/framesX);
 
@@ -1748,32 +1752,32 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                         pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
                                                         framesX, framesY, HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopy(renderer, pObjectSprite, &source, &drawLocation);
+        Dune_RenderCopy(renderer, pObjectSprite, &source, &drawLocation);
 
         if(objectPicGun >= 0) {
-            SDL_Texture* pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
+            const auto* const pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
 
-            SDL_Rect source2 = calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
+            auto source2 = calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
 
             const auto& gun = gunOffset[static_cast<int>(unit.angle)];
             const auto  sx  = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
             const auto  sy  = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
 
-            SDL_Rect drawLocation2 = calcSpriteDrawingRect(pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
+            auto drawLocation2 = calcSpriteDrawingRect(pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
                                                            HAlign::Center, VAlign::Center);
 
-            SDL_RenderCopy(renderer, pGunSprite, &source2, &drawLocation2);
+            Dune_RenderCopy(renderer, pGunSprite, &source2, &drawLocation2);
         }
 
         if(unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
-            SDL_Texture* pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
+            const auto* const pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
 
-            SDL_Rect drawLocation2 = calcDrawingRect(   pStarSprite,
+            auto drawLocation2 = calcDrawingRect(   pStarSprite,
                                                         pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) + frameSizeX/2 - 1,
                                                         pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) + frameSizeY/2 - 1,
                                                         HAlign::Right, VAlign::Bottom);
 
-            SDL_RenderCopy(renderer, pStarSprite, nullptr, &drawLocation2);
+            Dune_RenderCopy(renderer, pStarSprite, nullptr, &drawLocation2);
         }
 
     }
@@ -1790,9 +1794,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         renderDrawRect(renderer, &dest, COLOR_DARKGREY);
     }
 
-    SDL_Texture* validPlace = nullptr;
-    SDL_Texture* invalidPlace = nullptr;
-    SDL_Texture* greyPlace = nullptr;
+    const DuneTexture* validPlace = nullptr;
+    const DuneTexture* invalidPlace = nullptr;
+    const DuneTexture* greyPlace    = nullptr;
 
     switch(currentZoomlevel) {
         case 0: {
@@ -1870,7 +1874,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                 for(int x = position.x; x < (position.x + structureSize.x); x++) {
                     for(int y = position.y; y < (position.y + structureSize.y); y++) {
-                        SDL_Texture* image = validPlace;
+                        const auto* image = validPlace;
 
                         // check if mirroring of the original (!) position is possible
                         if(!mapMirror->mirroringPossible( Coord(xPos, yPos), structureSize)) {
@@ -1890,7 +1894,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                         SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
                                                     zoomedTilesize, zoomedTilesize };
-                        SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
+                        Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
@@ -1899,7 +1903,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                 Coord position = mapMirror->getCoord( Coord(xPos, yPos), m);
 
-                SDL_Texture* image = validPlace;
+                const auto* image = validPlace;
                 // check all mirrored places
                 for(int k=0;k<mapMirror->getSize();k++) {
                     Coord pos = mapMirror->getCoord( position, k);
@@ -1908,8 +1912,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                         image = invalidPlace;
                     }
                 }
-                SDL_Rect drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE));
-                SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
+                auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE));
+                Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
             }
         } else if(currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
@@ -1930,7 +1934,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             if(std::find(selectedUnits.begin(), selectedUnits.end(), unit.id) != selectedUnits.end()) {
                 const Coord& position = unit.position;
 
-                SDL_Texture* selectionBox = nullptr;
+                const DuneTexture* selectionBox = nullptr;
 
                 switch(currentZoomlevel) {
                     case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -1944,7 +1948,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                 pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
                                                 HAlign::Center, VAlign::Center);
 
-                SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+                Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
             }
         }
     }
@@ -1955,7 +1959,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
             || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()) )) {
 
-        SDL_Texture* selectionBox = nullptr;
+        const DuneTexture* selectionBox = nullptr;
 
         switch(currentZoomlevel) {
             case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
@@ -1969,7 +1973,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                         pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)),
                                         HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopy(renderer, selectionBox, nullptr, &dest);
+        Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
     }
 }
 
