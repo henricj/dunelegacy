@@ -28,7 +28,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-static const ItemID_enum choamUnits[] = { Unit_Carryall,  Unit_Ornithopter,
+static constexpr ItemID_enum choamUnits[] = { Unit_Carryall,  Unit_Ornithopter,
                                            Unit_Harvester, Unit_MCV,
                                            Unit_Trike,     Unit_RaiderTrike,
                                            Unit_Quad,      Unit_Tank,
@@ -42,7 +42,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -54,7 +54,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Choam"));
     mainVBox.addWidget(&titleLabel);
 

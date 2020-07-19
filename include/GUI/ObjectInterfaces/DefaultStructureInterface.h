@@ -37,14 +37,14 @@ public:
 
 protected:
     DefaultStructureInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
-        SDL_Texture* pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
-        SDL_Texture* pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
+        const auto* const pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
+        const auto* const pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
         repairButton.setTextures(pUIRepair, pUIRepairPressed);
         repairButton.setToggleButton(true);
         repairButton.setVisible(false);
         repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
-        repairButton.setOnClick(std::bind(&DefaultStructureInterface::OnRepair, this));
+        repairButton.setOnClick([&] { OnRepair(); });
 
         topBox.addWidget(&repairButton, Point(2,2), getTextureSize(pUIRepair));
     }

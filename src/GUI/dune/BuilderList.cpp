@@ -234,24 +234,24 @@ void BuilderList::draw(Point position) {
 
                 if(pTexture != nullptr) {
                     SDL_Rect tmpDest = dest;
-                    SDL_RenderCopy(renderer, pTexture, nullptr, &tmpDest);
+                    Dune_RenderCopy(renderer, pTexture, nullptr, &tmpDest);
                 }
 
                 if(isStructure(buildItem.itemID)) {
                     auto *const pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice);
                     SDL_Rect destLattice = calcDrawingRect(pLattice, dest.x + 2, dest.y + 2);
-                    SDL_RenderCopy(renderer, pLattice, nullptr, &destLattice);
+                    Dune_RenderCopy(renderer, pLattice, nullptr, &destLattice);
 
                     auto *const pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete);
                     SDL_Rect srcConcrete = { 0, 0, 1 + getStructureSize(buildItem.itemID).x*6, 1 + getStructureSize(buildItem.itemID).y*6 };
                     SDL_Rect destConcrete = { dest.x + 2, dest.y + 2, srcConcrete.w, srcConcrete.h };
-                    SDL_RenderCopy(renderer, pConcrete, &srcConcrete, &destConcrete);
+                    Dune_RenderCopy(renderer, pConcrete, &srcConcrete, &destConcrete);
                 }
 
                 // draw price
                 sdl2::texture_ptr pPriceTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
                 SDL_Rect drawLocation = calcDrawingRect(pPriceTexture.get(), dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture.get()) + 3);
-                SDL_RenderCopy(renderer, pPriceTexture.get(), nullptr, &drawLocation);
+                Dune_RenderCopy(renderer, pPriceTexture.get(), nullptr, &drawLocation);
 
                 if(pStarport != nullptr) {
                     const auto bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
@@ -263,7 +263,7 @@ void BuilderList::draw(Point position) {
 
                     if(bSoldOut) {
                         SDL_Rect drawLocationSoldOut = calcDrawingRect(pSoldOutTextTexture.get(), dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                        SDL_RenderCopy(renderer, pSoldOutTextTexture.get(), nullptr, &drawLocationSoldOut);
+                        Dune_RenderCopy(renderer, pSoldOutTextTexture.get(), nullptr, &drawLocationSoldOut);
                     }
 
                 } else if(currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && buildItem.itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
@@ -272,7 +272,7 @@ void BuilderList::draw(Point position) {
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
                     SDL_Rect drawLocationAlreadyBuilt = calcDrawingRect(pAlreadyBuiltTextTexture.get(), dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                    SDL_RenderCopy(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
+                    Dune_RenderCopy(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
                 } else if(buildItem.itemID == pBuilder->getCurrentProducedItem()) {
                     FixPoint progress = pBuilder->getProductionProgress();
                     FixPoint price = buildItem.price;
@@ -283,13 +283,13 @@ void BuilderList::draw(Point position) {
 
                     if(pBuilder->isWaitingToPlace()) {
                         SDL_Rect drawLocationWaitingToPlace = calcDrawingRect(pPlaceItTextTexture.get(), dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                        SDL_RenderCopy(renderer, pPlaceItTextTexture.get(), nullptr, &drawLocationWaitingToPlace);
+                        Dune_RenderCopy(renderer, pPlaceItTextTexture.get(), nullptr, &drawLocationWaitingToPlace);
                     } else if(pBuilder->isOnHold()) {
                         SDL_Rect drawLocationOnHold = calcDrawingRect(pOnHoldTextTexture.get(), dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                        SDL_RenderCopy(renderer, pOnHoldTextTexture.get(), nullptr, &drawLocationOnHold);
+                        Dune_RenderCopy(renderer, pOnHoldTextTexture.get(), nullptr, &drawLocationOnHold);
                     } else if(pBuilder->isUnitLimitReached(buildItem.itemID)) {
                         SDL_Rect drawLocationUnitLimitReached = calcDrawingRect(pUnitLimitReachedTextTexture.get(), dest.x + BUILDERBTN_WIDTH/2, dest.y + BUILDERBTN_HEIGHT/2, HAlign::Center, VAlign::Center);
-                        SDL_RenderCopy(renderer, pUnitLimitReachedTextTexture.get(), nullptr, &drawLocationUnitLimitReached);
+                        Dune_RenderCopy(renderer, pUnitLimitReachedTextTexture.get(), nullptr, &drawLocationUnitLimitReached);
                     }
                 }
 
@@ -297,7 +297,7 @@ void BuilderList::draw(Point position) {
                     // draw number of this in build list
                     sdl2::texture_ptr pNumberTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
                     SDL_Rect drawLocationNumber = calcDrawingRect(pNumberTexture.get(), dest.x + BUILDERBTN_WIDTH - 3, dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
-                    SDL_RenderCopy(renderer, pNumberTexture.get(), nullptr, &drawLocationNumber);
+                    Dune_RenderCopy(renderer, pNumberTexture.get(), nullptr, &drawLocationNumber);
                 }
             }
 
@@ -305,13 +305,13 @@ void BuilderList::draw(Point position) {
         }
     }
 
-    SDL_Texture* pBuilderListUpperCap = pGFXManager->getUIGraphic(UI_BuilderListUpperCap);
-    SDL_Rect builderListUpperCapDest = calcDrawingRect(pBuilderListUpperCap, blackRectDest.x - 3, blackRectDest.y - 13 + 4);
-    SDL_RenderCopy(renderer, pBuilderListUpperCap, nullptr, &builderListUpperCapDest);
+    const auto* const pBuilderListUpperCap = pGFXManager->getUIGraphic(UI_BuilderListUpperCap);
+    const auto builderListUpperCapDest = calcDrawingRect(pBuilderListUpperCap, blackRectDest.x - 3, blackRectDest.y - 13 + 4);
+    Dune_RenderCopy(renderer, pBuilderListUpperCap, nullptr, &builderListUpperCapDest);
 
-    SDL_Texture* pBuilderListLowerCap = pGFXManager->getUIGraphic(UI_BuilderListLowerCap);
-    SDL_Rect builderListLowerCapDest = calcDrawingRect(pBuilderListLowerCap, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
-    SDL_RenderCopy(renderer, pBuilderListLowerCap, nullptr, &builderListLowerCapDest);
+    const auto* const pBuilderListLowerCap = pGFXManager->getUIGraphic(UI_BuilderListLowerCap);
+    const auto builderListLowerCapDest = calcDrawingRect(pBuilderListLowerCap, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
+    Dune_RenderCopy(renderer, pBuilderListLowerCap, nullptr, &builderListLowerCapDest);
 
     renderDrawVLine(renderer, builderListUpperCapDest.x + builderListUpperCapDest.w - 8, builderListUpperCapDest.y + builderListUpperCapDest.h, builderListLowerCapDest.y, COLOR_RGB(125,80,0));
 
@@ -347,7 +347,7 @@ void BuilderList::drawOverlay(Point position) {
         }
 
         SDL_Rect dest = calcDrawingRect(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6, position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
-        SDL_RenderCopy(renderer, pLastTooltip.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }
 

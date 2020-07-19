@@ -50,7 +50,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level)
     Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
+    const auto *pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 

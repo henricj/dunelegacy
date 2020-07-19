@@ -21,6 +21,8 @@
 #include <Colors.h>
 #include <misc/SDL2pp.h>
 
+#include <Renderer/DuneRenderer.h>
+
 #include <misc/sdl_support.h>
 
 /**
@@ -82,6 +84,7 @@ inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y
     SDL_Rect rect = { x1, y1, x2-x1+1, y2-y1+1 };
     renderFillRect(renderer, &rect, color);
 }
+
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 

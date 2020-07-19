@@ -93,11 +93,11 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, con
     }
 
     for (const std::string& textLine : textLines) {
-        sdl2::surface_ptr textSurface1 = createSurfaceWithText(textLine, textshadowcolor, fontSize);
-        sdl2::surface_ptr textSurface2 = createSurfaceWithText(textLine, textcolor, fontSize);
+        auto textSurface1 = createSurfaceWithText(textLine, textshadowcolor, fontSize);
+        auto textSurface2 = createSurfaceWithText(textLine, textcolor, fontSize);
 
-        SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, textpos_y + 4);
-        SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 0, textpos_y + 3);
+        auto textRect1 = calcDrawingRect(textSurface1.get(), 0, textpos_y + 4);
+        auto textRect2 = calcDrawingRect(textSurface2.get(), 0, textpos_y + 3);
         if(alignment & Alignment_Left) {
             textRect1.x = 4;
             textRect2.x = 3;

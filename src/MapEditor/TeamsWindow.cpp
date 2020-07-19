@@ -37,7 +37,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

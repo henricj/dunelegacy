@@ -170,9 +170,8 @@ protected:
         \param  pPressedSurface         This surface is shown when the button is pressed
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
     */
-    virtual void setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
-                                sdl2::surface_unique_or_nonowning_ptr pPressedSurface,
-                                sdl2::surface_unique_or_nonowning_ptr pActiveSurface = nullptr);
+    virtual void setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface,
+                             sdl2::surface_ptr pActiveSurface = nullptr);
 
     /**
         This method is used for setting the different textures for this button.
@@ -180,20 +179,19 @@ protected:
         \param  pPressedTexture         This texture is shown when the button is pressed
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
     */
-    virtual void setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
-                                sdl2::texture_unique_or_nonowning_ptr pPressedTexture,
-                                sdl2::texture_unique_or_nonowning_ptr pActiveTexture = nullptr);
+    virtual void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
+                             const DuneTexture* pActiveTexture = nullptr);
 
-    sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture;     ///< Texture that is normally shown
-    sdl2::texture_unique_or_nonowning_ptr pPressedTexture;       ///< Texture that is shown when the button is pressed
-    sdl2::texture_unique_or_nonowning_ptr pActiveTexture;        ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+    const DuneTexture* pUnpressedTexture;   ///< Texture that is normally shown
+    const DuneTexture* pPressedTexture;     ///< Texture that is shown when the button is pressed
+    const DuneTexture* pActiveTexture;      ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
     /**
         This method frees all textures that are used by this button
     */
     void invalidateTextures() override;
 
-    std::string tooltipText = "";           ///< the tooltip text
+    std::string tooltipText;                ///< the tooltip text
     sdl2::texture_ptr tooltipTexture;       ///< the tooltip texture
     Uint32 tooltipLastMouseMotion = 0;      ///< the last time the mouse was moved
 
@@ -202,6 +200,14 @@ protected:
     bool bHover;                        ///< true = currently mouse hover, false = currently no mouse hover
     bool bToggleButton;                 ///< true = toggle button, false = normal button
     bool bToggleState;                  ///< true = currently toggled, false = currently not toggled
+
+private:
+    sdl2::texture_ptr localUnpressed_;
+    sdl2::texture_ptr localPressed_;
+    sdl2::texture_ptr localActive_;
+    DuneTexture       localDuneUnpressed_;
+    DuneTexture       localDunePressed_;
+    DuneTexture       localDuneActive_;
 };
 
 

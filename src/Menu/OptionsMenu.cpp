@@ -55,7 +55,7 @@ OptionsMenu::OptionsMenu()
     currentGameOptions = settings.gameOptions;
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 

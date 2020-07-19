@@ -129,13 +129,14 @@ void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
 }
 
 void Sandworm::blitToScreen() {
-    static const int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
+    static constexpr int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
     if(shimmerOffsetIndex >= 0) {
         // render sandworm's shimmer
 
-        SDL_Texture* shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerTemp, currentZoomlevel);
-        SDL_Texture* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
+        const auto* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
+        auto*       shimmerTex =
+            pGFXManager->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
 
         for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
             if(lastLocs[i].isInvalid()) {
@@ -151,15 +152,15 @@ void Sandworm::blitToScreen() {
             // copy complete mask
             // contains solid black (0,0,0,255) for pixels to take from screen
             // and transparent (0,0,0,0) for pixels that should not be copied over
-            SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
-            SDL_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
-            SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_NONE);
+            Dune_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
+            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_BLEND);
 
             // now copy r,g,b colors from screen but don't change alpha values in mask
             SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
             SDL_Rect source = dest;
             source.x += shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
-            SDL_RenderCopy(renderer, screenTexture, &source, nullptr);
+            Dune_RenderCopy(renderer, screenTexture, &source, nullptr);
             SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
             // switch back to old rendering target (from texture 'shimmerTex')
@@ -167,7 +168,7 @@ void Sandworm::blitToScreen() {
 
             // now blend shimmerTex to screen (= make use of alpha values in mask)
             SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-            SDL_RenderCopy(renderer, shimmerTex, nullptr, &dest);
+            Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
 
         }
     }
@@ -179,7 +180,7 @@ void Sandworm::blitToScreen() {
                                                 numImagesX, numImagesY,
                                                 HAlign::Center, VAlign::Center);
         SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
-        SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+        Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 

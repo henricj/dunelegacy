@@ -211,16 +211,16 @@ public:
 
         if(isActive()) {
             if((SDL_GetTicks() - lastCarretTime) < 500) {
-                SDL_RenderCopy(renderer, pTextureWithCarret.get(), nullptr, &dest);
+                Dune_RenderCopy(renderer, pTextureWithCarret.get(), nullptr, &dest);
             } else {
-                SDL_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
+                Dune_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
             }
 
             if(SDL_GetTicks() - lastCarretTime >= 1000) {
                 lastCarretTime = SDL_GetTicks();
             }
         } else {
-            SDL_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
+            Dune_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
         }
     }
 

@@ -122,7 +122,7 @@ public:
 
     explicit operator bool() const noexcept
     {
-        return (bool) ptr;
+        return nullptr != ptr;
     }
 
     pointer release() noexcept

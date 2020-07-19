@@ -26,10 +26,6 @@ Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : position(x,y) {
     pChildWindowAlreadyClosed = false;
     pWindowWidget = nullptr;
 
-    bTransparentBackground = false;
-    pBackground = nullptr;
-    bSelfGeneratedBackground = true;
-
     resize(w,h);
 }
 
@@ -167,47 +163,39 @@ void Window::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
 }
 
 bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
-    if(pChildWindow != nullptr) {
-        return pChildWindow->handleMouseLeft(x, y, pressed);
-    }
+    if(pChildWindow != nullptr) { return pChildWindow->handleMouseLeft(x, y, pressed); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
-        bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
-                            || pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
+        bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
+                          pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
         if(pressed && (!bProcessed)) {
             pWindowWidget->setActive(false);
             pWindowWidget->setActive(true);
         }
         return bProcessed;
-    }         return false;
+    }
 
-   
+    return false;
 }
 
 bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
-    if(pChildWindow != nullptr) {
-        return pChildWindow->handleMouseRight(x, y, pressed);
-    }
+    if(pChildWindow != nullptr) { return pChildWindow->handleMouseRight(x, y, pressed); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
-                || pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
-    }         return false;
-
-   
+        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
+               pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
+    }
+    return false;
 }
 
-bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
-    if(pChildWindow != nullptr) {
-        return pChildWindow->handleMouseWheel(x, y, up);
-    }
+bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+    if(pChildWindow != nullptr) { return pChildWindow->handleMouseWheel(x, y, up); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
-                || pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
-    }         return false;
-
-   
+        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up) ||
+               pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
+    }
+    return false;
 }
 
 bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -236,17 +224,13 @@ bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
 
 void Window::draw(Point position) {
     if(isVisible()) {
-        if(!bTransparentBackground) {
+        WidgetWithBackground::draw(position);
 
-            if(bSelfGeneratedBackground && !pBackground) {
-                pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createBackground(getSize().x,getSize().y));
-            }
-
-            if(pBackground) {
-                // Draw background
-                SDL_Rect dest = calcDrawingRect(pBackground.get(), getPosition().x + getSize().x/2, getPosition().y + getSize().y/2, HAlign::Center, VAlign::Center);
-                SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
-            }
+        if(const auto* const background = getBackground()) {
+            // Draw background
+            const auto dest = calcDrawingRect(background, getPosition().x + getSize().x / 2,
+                                              getPosition().y + getSize().y / 2, HAlign::Center, VAlign::Center);
+            Dune_RenderCopy(renderer, background, nullptr, &dest);
         }
 
         if(pWindowWidget != nullptr) {
@@ -268,36 +252,10 @@ void Window::drawOverlay(Point position) {
 }
 
 void Window::resize(Uint32 width, Uint32 height) {
-    Widget::resize(width,height);
+    WidgetWithBackground::resize(width,height);
     if(pWindowWidget != nullptr) {
         pWindowWidget->resize(width,height);
     }
-
-    if(bSelfGeneratedBackground) {
-        pBackground.reset();
-
-        // the new background is created when the window is drawn next time
-    }
 }
 
-void Window::setBackground(sdl2::surface_unique_or_nonowning_ptr pBackground) {
-    if(!pBackground) {
-        setBackground(sdl2::texture_unique_or_nonowning_ptr(nullptr));
-    } else {
-        setBackground(convertSurfaceToTexture(pBackground.get()));
-    }
-}
 
-void Window::setBackground(sdl2::texture_unique_or_nonowning_ptr pBackground) {
-    if(!pBackground) {
-        bSelfGeneratedBackground = true;
-        this->pBackground = nullptr;
-    } else {
-        bSelfGeneratedBackground = false;
-        this->pBackground = std::move(pBackground);
-    }
-}
-
-void Window::setTransparentBackground(bool bTransparent) {
-    bTransparentBackground = bTransparent;
-}

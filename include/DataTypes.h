@@ -25,8 +25,9 @@
 #include <string>
 #include <array>
 
+class DuneTexture;
 
-typedef std::array<SDL_Texture*, NUM_ZOOMLEVEL> zoomable_texture;
+typedef std::array<const DuneTexture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 #include <unordered_set>
 

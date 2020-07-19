@@ -78,11 +78,11 @@ void Devastator::blitToScreen()
     int x1 = screenborder->world2screenX(realX);
     int y1 = screenborder->world2screenY(realY);
 
-    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    auto source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
     const Coord devastatorTurretOffset[] =  {
                                                 Coord(8, -16),
@@ -95,14 +95,14 @@ void Devastator::blitToScreen()
                                                 Coord(0, -12)
                                             };
 
-    SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
-    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic,
-                                            screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
-                                            screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y),
-                                            numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
+    auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    auto dest2 = calcSpriteDrawingRect(pTurretGraphic,
+                                        screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
+                                        screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y),
+                                        numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
     if(isBadlyDamaged()) {
         drawSmoke(x1, y1);

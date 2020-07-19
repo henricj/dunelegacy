@@ -39,7 +39,7 @@ int HoldPictureVideoEvent::draw()
 {
     if(pTexture != nullptr) {
         SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
-        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 
     currentFrame++;

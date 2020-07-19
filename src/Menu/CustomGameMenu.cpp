@@ -44,7 +44,7 @@
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
  :  bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 

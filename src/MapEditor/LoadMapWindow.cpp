@@ -39,7 +39,7 @@
 LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

@@ -24,7 +24,7 @@
 #include <string>
 
 /// A class for a checkbox implemented as a toggle button
-class Checkbox : public Button {
+class Checkbox final : public Button {
 public:
     /// Default constructor
     Checkbox() {
@@ -96,27 +96,27 @@ public:
 
         updateTextures();
 
-        SDL_Texture* tex = nullptr;
+        DuneTexture tex;
         if(isChecked()) {
             if((isActive() || bHover) && pCheckedActiveTexture) {
-                tex = pCheckedActiveTexture.get();
+                tex = DuneTexture{pCheckedActiveTexture.get()};
             } else {
-                tex = pPressedTexture.get();
+                tex = *pPressedTexture;
             }
         } else {
             if((isActive() || bHover) && pActiveTexture) {
-                tex = pActiveTexture.get();
+                tex = *pActiveTexture;
             } else {
-                tex = pUnpressedTexture.get();
+                tex = *pUnpressedTexture;
             }
         }
 
-        if(tex == nullptr) {
+        if(!tex) {
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-        SDL_RenderCopy(renderer, tex, nullptr, &dest);
+        const auto dest = calcDrawingRect(&tex, position.x, position.y);
+        Dune_RenderCopy(renderer, &tex, nullptr, &dest);
     }
 
     /**

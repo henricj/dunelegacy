@@ -81,7 +81,7 @@ void RadarView::draw(Point position)
             SDL_UpdateTexture(radarTexture.get(), nullptr, radarSurface->pixels, radarSurface->pitch);
 
             SDL_Rect dest = calcDrawingRect(radarTexture.get(), radarPosition.x, radarPosition.y);
-            SDL_RenderCopy(renderer, radarTexture.get(), nullptr, &dest);
+            Dune_RenderCopy(renderer, radarTexture.get(), nullptr, &dest);
 
             SDL_Rect radarRect;
             radarRect.x = (screenborder->getLeft() * mapSizeX*scale) / (mapSizeX*TILESIZE) + offsetX;
@@ -130,7 +130,7 @@ void RadarView::draw(Point position)
                                                 radarPosition.y,
                                                 NUM_STATIC_ANIMATIONS_PER_ROW,
                                                 (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            SDL_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
+            Dune_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
 }

@@ -37,7 +37,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
     house = newHouse;
 
     // set up window
-    SDL_Texture *pBackground = nullptr;
+    const DuneTexture *pBackground = nullptr;
     if(house == HOUSETYPE::HOUSE_INVALID) {
         pBackground = pGFXManager->getUIGraphic(UI_MentatBackgroundBene);
     } else {

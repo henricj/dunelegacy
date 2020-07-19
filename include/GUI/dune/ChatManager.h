@@ -57,7 +57,7 @@ public:
 
     void addInfoMessage(const std::string& message);
 
-    void addHintMessage(const std::string& message, SDL_Texture* pTexture);
+    void addHintMessage(const std::string& message, const DuneTexture* pTexture);
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -71,27 +71,36 @@ private:
 
     struct ChatMessage final {
 
-        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
-         : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
-        }
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+            : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
-        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pTimeTexture, sdl2::texture_unique_or_nonowning_ptr _pUsernameTexture,
-                    sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
-         : pTimeTexture(std::move(_pTimeTexture)), pUsernameOrPictureTexture(std::move(_pUsernameTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
-        }
+        ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
+                    sdl2::texture_ptr _pMessageTexture, Uint32 _messageTime, MessageType _messageType)
+            : pTimeTexture(std::move(_pTimeTexture)), pUsernameTexture(std::move(_pUsernameTexture)),
+              pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
-        ChatMessage(sdl2::texture_unique_or_nonowning_ptr _pMessageTexture, sdl2::texture_unique_or_nonowning_ptr _pPictureTexture, Uint32 _messageTime, MessageType _messageType)
-         : pUsernameOrPictureTexture(std::move(_pPictureTexture)), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) {
-        }
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, const DuneTexture* _pPictureTexture, Uint32 _messageTime,
+                    MessageType _messageType)
+            : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)),
+              messageTime(_messageTime), messageType(_messageType) { }
 
         ChatMessage(const ChatMessage&) = delete;
         ChatMessage(ChatMessage&&) = default;
         ChatMessage& operator=(const ChatMessage&) = delete;
         ChatMessage& operator=(ChatMessage&&) = default;
 
-        sdl2::texture_unique_or_nonowning_ptr    pTimeTexture;
-        sdl2::texture_unique_or_nonowning_ptr    pUsernameOrPictureTexture;
-        sdl2::texture_unique_or_nonowning_ptr    pMessageTexture;
+        auto getUsernamePictureWidth() const {
+            return pUsernameTexture ? getWidth(pUsernameTexture.get()) : getWidth(pPictureTexture);
+        }
+
+        auto getUsernamePictureHeight() const {
+            return pUsernameTexture ? getHeight(pUsernameTexture.get()) : getHeight(pPictureTexture);
+        }
+
+        sdl2::texture_ptr  pTimeTexture;
+        sdl2::texture_ptr  pUsernameTexture;
+        const DuneTexture* pPictureTexture{};
+        sdl2::texture_ptr  pMessageTexture;
 
         Uint32      messageTime;
         MessageType messageType;

@@ -39,7 +39,7 @@ Coord           getStructureSize(ItemID_enum itemID);
 
 ItemID_enum     getItemIDByName(std::string_view name);
 std::string     getItemNameByID(ItemID_enum itemID);
-SDL_Texture*    resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
+const DuneTexture*    resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
 HOUSETYPE       getHouseByName(std::string_view name);
 std::string     getHouseNameByNumber(HOUSETYPE house);

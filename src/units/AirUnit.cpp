@@ -94,8 +94,8 @@ void AirUnit::checkPos(const GameContext& context) {
 
 void AirUnit::blitToScreen()
 {
-    auto *const shadow = shadowGraphic[currentZoomlevel];
-    auto *const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const shadow = shadowGraphic[currentZoomlevel];
+    const auto *const pUnitGraphic = graphic[currentZoomlevel];
 
     if(settings.video.rotateUnitGraphics) {
         const auto rotationAngleDeg = -angle.toDouble()*360.0/8.0;
@@ -107,7 +107,7 @@ void AirUnit::blitToScreen()
             SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
             SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            SDL_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+            Dune_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
         }
 
         int x = screenborder->world2screenX(realX);
@@ -116,7 +116,7 @@ void AirUnit::blitToScreen()
         SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+        Dune_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
     } else {
         if(shadow != nullptr) {
             int x = screenborder->world2screenX(realX + 4);
@@ -125,7 +125,7 @@ void AirUnit::blitToScreen()
             SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
             SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            SDL_RenderCopy(renderer, shadow, &source, &dest);
+            Dune_RenderCopy(renderer, shadow, &source, &dest);
         }
 
         int x = screenborder->world2screenX(realX);
@@ -134,7 +134,7 @@ void AirUnit::blitToScreen()
         SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
         SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-        SDL_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+        Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
     }
 }
 

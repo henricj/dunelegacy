@@ -48,14 +48,14 @@ protected:
     */
     bool update() override
     {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        auto* pObject = currentGame->getObjectManager().getObject(objectID);
         if(pObject == nullptr) {
             return false;
         }
 
-        auto* pRepairYard = dynamic_cast<RepairYard*>(pObject);
+        auto* const pRepairYard = dune_cast<RepairYard>(pObject);
         if(pRepairYard != nullptr) {
-            UnitBase* pUnit = pRepairYard->getRepairUnit();
+            auto* pUnit = pRepairYard->getRepairUnit();
 
             if(pUnit != nullptr) {
                 repairUnitProgressBar.setVisible(true);

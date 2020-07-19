@@ -234,7 +234,7 @@ void DropDownBox::draw(Point position) {
 
     if(pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        SDL_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
+        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     updateForeground();
@@ -242,10 +242,10 @@ void DropDownBox::draw(Point position) {
     if(pForeground != nullptr && pActiveForeground != nullptr) {
         if(((bHover) && pOnClick) || isActive()) {
             SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
-            SDL_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
+            Dune_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
         } else {
             SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 2);
-            SDL_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
+            Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
         }
     }
 

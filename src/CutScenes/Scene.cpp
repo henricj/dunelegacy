@@ -73,7 +73,7 @@ int Scene::draw()
     }
 
     // 3.: Render everything
-    SDL_RenderPresent(renderer);
+    Dune_RenderPresent(renderer);
 
     // 4.: Process Triggers
     while(!triggerList.empty()) {

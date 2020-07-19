@@ -64,7 +64,7 @@ void NewsTicker::draw(Point position) {
     }
 
     SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-    SDL_RenderCopy(renderer, pBackground, nullptr, &dest);
+    Dune_RenderCopy(renderer, pBackground, nullptr, &dest);
 
     // draw message
     if(!messages.empty()) {
@@ -101,7 +101,7 @@ void NewsTicker::draw(Point position) {
 
             textLocation.w = cut.w = getWidth(pCurrentMessageTexture.get());
             textLocation.h = cut.h = getHeight(pCurrentMessageTexture.get()) - cut.y;
-            SDL_RenderCopy(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
+            Dune_RenderCopy(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
         }
     };
 }

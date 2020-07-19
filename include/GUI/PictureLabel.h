@@ -27,33 +27,38 @@ class PictureLabel : public Widget {
 public:
 
     /// default constructor
-    PictureLabel() {
-    }
+    PictureLabel();
 
     /// destructor
-    virtual ~PictureLabel() {
-    }
+    virtual ~PictureLabel() = default;
 
     /**
         This method sets the surface for this picture label.
         \param  pSurface    This surface is shown
     */
     virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
-        setTexture(convertSurfaceToTexture(pSurface.get()));
+        localTexture_.reset();  // Free the old one before we try to create another.
+        localTexture_ = convertSurfaceToTexture(pSurface.get());
+
+        privateDuneTexture_ = DuneTexture{localTexture_.get()};
+
+        setTexture(&privateDuneTexture_);
     }
 
     /**
         This method sets the texture for this picture label.
         \param  pTexture        This texture is shown
     */
-    virtual void setTexture(sdl2::texture_unique_or_nonowning_ptr pTexture) {
-        this->pTexture = std::move(pTexture);
+    virtual void setTexture(const DuneTexture* pTexture) {
+        this->pTexture = pTexture;
 
         if(this->pTexture) {
-            resize(getTextureSize(this->pTexture.get()));
+            resize(getTextureSize(this->pTexture));
         } else {
             resize(0,0);
         }
+
+        if(this->pTexture->texture_ != localTexture_.get()) localTexture_.reset();
     }
 
     /**
@@ -61,13 +66,10 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this picture label
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        if(pTexture) {
-            return getTextureSize(pTexture.get());
-        } else {
-            return Point(0,0);
-        }
+    [[nodiscard]] Point getMinimumSize() const override {
+        if(pTexture) { return getTextureSize(pTexture); }
+
+        return Point(0, 0);
     }
 
     /**
@@ -84,13 +86,15 @@ public:
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x, position.y);
-        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+        const auto dest = calcDrawingRect(pTexture, position.x, position.y);
+        Dune_RenderCopy(renderer, pTexture, nullptr, &dest);
     }
 
 
 private:
-    sdl2::texture_unique_or_nonowning_ptr pTexture;  ///< The texture that is shown
+    const DuneTexture* pTexture{};  ///< The texture that is shown
+    sdl2::texture_ptr  localTexture_;
+    DuneTexture        privateDuneTexture_;
 };
 
 #endif // PICTURELABEL_H

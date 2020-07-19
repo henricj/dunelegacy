@@ -38,15 +38,15 @@ public:
         \param  pPressedSurface         This surface is shown when the button is pressed
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
     */
-    virtual void setSurfaces(   sdl2::surface_unique_or_nonowning_ptr pUnpressedSurface,
-                                sdl2::surface_unique_or_nonowning_ptr pPressedSurface = nullptr,
-                                sdl2::surface_unique_or_nonowning_ptr pActiveSurface = nullptr) override
+    virtual void setSurfaces(   sdl2::surface_ptr pUnpressedSurface,
+                                sdl2::surface_ptr pPressedSurface = nullptr,
+                                sdl2::surface_ptr pActiveSurface = nullptr) override
     {
 
         Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
 
         if(this->pUnpressedTexture) {
-            resize(getTextureSize(this->pUnpressedTexture.get()));
+            resize(getTextureSize(pUnpressedTexture));
         } else {
             resize(0,0);
         }
@@ -58,14 +58,13 @@ public:
         \param  pPressedTexture         This texture is shown when the button is pressed
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
     */
-    void setTextures(   sdl2::texture_unique_or_nonowning_ptr pUnpressedTexture,
-                        sdl2::texture_unique_or_nonowning_ptr pPressedTexture = nullptr,
-                        sdl2::texture_unique_or_nonowning_ptr pActiveTexture = nullptr) override
+    void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture = nullptr,
+                     const DuneTexture* pActiveTexture = nullptr) override
     {
-        Button::setTextures(std::move(pUnpressedTexture), std::move(pPressedTexture), std::move(pActiveTexture));
+        Button::setTextures(pUnpressedTexture, pPressedTexture, pActiveTexture);
 
-        if(this->pUnpressedTexture) {
-            resize(getTextureSize(this->pUnpressedTexture.get()));
+        if(pUnpressedTexture) {
+            resize(getTextureSize(pUnpressedTexture));
         } else {
             resize(0,0);
         }
@@ -78,11 +77,9 @@ public:
     */
     [[nodiscard]] Point getMinimumSize() const override
     {
-        if(pUnpressedTexture) {
-            return getTextureSize(pUnpressedTexture.get());
-        } else {
-            return Point(0,0);
-        }
+        if(pUnpressedTexture) { return getTextureSize(pUnpressedTexture); }
+
+        return Point(0, 0);
     }
 };
 

@@ -46,7 +46,7 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 oldAlr
     house = newHouse;
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);
+    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
@@ -125,7 +125,7 @@ int MapChoice::showMenu()
 
 void MapChoice::drawSpecificStuff() {
     SDL_UpdateTexture(mapTexture.get(), nullptr, mapSurface->pixels, mapSurface->pitch);
-    SDL_RenderCopy(renderer, mapTexture.get(), nullptr, &centerAreaRect);
+    Dune_RenderCopy(renderer, mapTexture.get(), nullptr, &centerAreaRect);
 
     switch(mapChoiceState) {
 
@@ -270,24 +270,24 @@ void MapChoice::drawSpecificStuff() {
                 }
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
-                SDL_Texture* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 const int arrowFrame = (SDL_GetTicks() / 128) % 4;
-                SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                SDL_Rect dest = calcSpriteDrawingRect(  arrow,
+                const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                const auto dest = calcSpriteDrawingRect(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
                                                         group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
                                                         4, 1);
 
-                SDL_RenderCopy(renderer, arrow, &src, &dest);
+                Dune_RenderCopy(renderer, arrow, &src, &dest);
             }
         } break;
 
         case MAPCHOICESTATE_BLINKING:
         {
             if(((SDL_GetTicks() - selectionTime) % 900) < 450) {
-                SDL_Texture* pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion,house);
-                SDL_Rect dest = calcDrawingRect(pieceTexture, piecePosition[selectedRegion].x + centerAreaRect.x, piecePosition[selectedRegion].y + centerAreaRect.y);
-                SDL_RenderCopy(renderer, pieceTexture, nullptr, &dest);
+                const auto* const pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion, house);
+                const auto dest = calcDrawingRect(pieceTexture, piecePosition[selectedRegion].x + centerAreaRect.x, piecePosition[selectedRegion].y + centerAreaRect.y);
+                Dune_RenderCopy(renderer, pieceTexture, nullptr, &dest);
             }
 
             for(int i = 0; i < 4; i++) {
@@ -296,15 +296,15 @@ void MapChoice::drawSpecificStuff() {
                 }
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
-                SDL_Texture* arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 const int arrowFrame = (SDL_GetTicks() / 128) % 4;
-                SDL_Rect src = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                SDL_Rect dest = calcSpriteDrawingRect(  arrow,
+                const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                const auto dest = calcSpriteDrawingRect(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
                                                         group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
                                                         4, 1);
 
-                SDL_RenderCopy(renderer, arrow, &src, &dest);
+                Dune_RenderCopy(renderer, arrow, &src, &dest);
             }
 
             if((SDL_GetTicks() - selectionTime) > 2000) {

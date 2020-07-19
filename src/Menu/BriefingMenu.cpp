@@ -29,44 +29,44 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu
     this->mission = mission;
     this->type = type;
 
-    Animation* anim = nullptr;
-
-    SDL_Texture* pMentatProceed = pGFXManager->getUIGraphic(UI_MentatProceed);
-    SDL_Texture* pMentatProceedPressed = pGFXManager->getUIGraphic(UI_MentatProceed_Pressed);
+    const auto* const pMentatProceed = pGFXManager->getUIGraphic(UI_MentatProceed);
+    const auto* const pMentatProceedPressed = pGFXManager->getUIGraphic(UI_MentatProceed_Pressed);
     proceedButton.setTextures(pMentatProceed, pMentatProceedPressed);
     proceedButton.setEnabled(false);
     proceedButton.setVisible(false);
     proceedButton.setOnClick([&] { onProceed(); });
     windowWidget.addWidget(&proceedButton, Point(350,340), getTextureSize(pMentatProceed));
 
-    SDL_Texture* pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
-    SDL_Texture* pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
+    const auto* const pMentatRepeat = pGFXManager->getUIGraphic(UI_MentatRepeat);
+    const auto* const pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
     repeatButton.setTextures(pMentatRepeat, pMentatRepeatPressed);
     repeatButton.setEnabled(false);
     repeatButton.setVisible(false);
     repeatButton.setOnClick([&] { onRepeat(); });
     windowWidget.addWidget(&repeatButton,Point(500,340), getTextureSize(pMentatRepeat));
 
-    int missionnumber;
+    int mission_number;
     if(mission != 22) {
-        missionnumber = ((mission+1)/3)+1;
+        mission_number = ((mission+1)/3)+1;
     } else {
-        missionnumber = 9;
+        mission_number = 9;
     }
+
+    Animation* anim = nullptr;
 
     switch(type) {
         case DEBRIEFING_WIN: {
             anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Win1 : Anim_Win2);
-            text = pTextManager->getBriefingText(missionnumber,MISSION_WIN,house);
+            text = pTextManager->getBriefingText(mission_number,MISSION_WIN,house);
         } break;
         case DEBRIEFING_LOST: {
             anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Lose1 : Anim_Lose2);
-            text = pTextManager->getBriefingText(missionnumber,MISSION_LOSE,house);
+            text = pTextManager->getBriefingText(mission_number,MISSION_LOSE,house);
         } break;
         default:
         case BRIEFING: {
-            anim = pGFXManager->getAnimation(getMissionSpecificAnim(missionnumber));
-            text = pTextManager->getBriefingText(missionnumber,MISSION_DESCRIPTION,house);
+            anim = pGFXManager->getAnimation(getMissionSpecificAnim(mission_number));
+            text = pTextManager->getBriefingText(mission_number,MISSION_DESCRIPTION,house);
         } break;
     }
     setText(text);

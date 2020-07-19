@@ -36,7 +36,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
     // set up window
-    SDL_Texture *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
+    const auto *pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
     setBackground(pBackground);
 
     Window::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

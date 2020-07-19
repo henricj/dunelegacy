@@ -98,8 +98,20 @@ inline Point getSurfaceSize(SDL_Surface* pSurface) {
 */
 inline Point getTextureSize(SDL_Texture* pTexture) {
     Point p;
+    if(pTexture != nullptr) { SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y); }
+    return p;
+}
+
+/**
+    Return the dimensions of the given texture
+    \param  pTexture    the texture to measure
+    \return the size of pTexture
+*/
+inline Point getTextureSize(const DuneTexture* pTexture) {
+    Point p;
     if(pTexture != nullptr) {
-        SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y);
+        p.x = pTexture->source_.w;
+        p.y = pTexture->source_.h;
     }
     return p;
 }
@@ -412,7 +424,7 @@ public:
         \param  pOnGainFocus    A function to call on focus gain
     */
     void setOnGainFocus(std::function<void ()> pOnGainFocus) {
-        this->pOnGainFocus = pOnGainFocus;
+        this->pOnGainFocus = std::move(pOnGainFocus);
     }
 
     /**
@@ -420,7 +432,7 @@ public:
         \param  pOnLostFocus    A function to call on focus loss
     */
     void setOnLostFocus(std::function<void ()> pOnLostFocus) {
-        this->pOnLostFocus = pOnLostFocus;
+        this->pOnLostFocus = std::move(pOnLostFocus);
     }
 
 protected:
@@ -478,7 +490,7 @@ protected:
     }
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true
-    bool pAllocated;
+    bool pAllocated{};
 
 private:
     bool    visible{true}; ///< Is this widget visible?

@@ -372,7 +372,7 @@ void Game::drawScreen()
 
                     if (hideTile != 0) {
                         SDL_Rect source = { hideTile*zoomedTileSize, 0, zoomedTileSize, zoomedTileSize };
-                        SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                        Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                     }
 
                     if (fogOfWar) {
@@ -381,13 +381,13 @@ void Game::drawScreen()
                         if (fogTile != 0) {
                             SDL_Rect source = { fogTile*zoomedTileSize, 0,
                                                 zoomedTileSize, zoomedTileSize };
-                            SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                            Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                         }
                     }
                 } else {
                     if (!debug) {
                         SDL_Rect source = { zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize };
-                        SDL_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                        Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                     }
                 }
             });
@@ -421,8 +421,8 @@ void Game::drawScreen()
                         }
                     }
 
-                    SDL_Texture* validPlace = nullptr;
-                    SDL_Texture* invalidPlace = nullptr;
+                    const DuneTexture* validPlace = nullptr;
+                    const DuneTexture* invalidPlace = nullptr;
 
                     switch(currentZoomlevel) {
                         case 0: {
@@ -445,7 +445,7 @@ void Game::drawScreen()
 
                     for(int i = xPos; i < (xPos + structuresize.x); i++) {
                         for(int j = yPos; j < (yPos + structuresize.y); j++) {
-                            SDL_Texture* image = nullptr;
+                            const DuneTexture* image = nullptr;
 
                             if(!withinRange || !map->tileExists(i,j) || !map->getTile(i,j)->isRock()
                                 || map->getTile(i,j)->isMountain() || map->getTile(i,j)->hasAGroundObject()
@@ -455,8 +455,8 @@ void Game::drawScreen()
                                 image = validPlace;
                             }
 
-                            SDL_Rect drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
-                            SDL_RenderCopy(renderer, image, nullptr, &drawLocation);
+                            const auto drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
+                            Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
                         }
                     }
                 }
@@ -499,7 +499,7 @@ void Game::drawScreen()
                                                         screenborder->world2screenY(indicatorPosition.y),
                                                         3, 1,
                                                         HAlign::Center, VAlign::Center);
-        SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+        Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
     }
 
 
@@ -511,7 +511,7 @@ void Game::drawScreen()
     if(chatMode) {
         const auto pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
         const auto drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
-        SDL_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
+        Dune_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
 
     if(bShowFPS) {
@@ -523,7 +523,7 @@ void Game::drawScreen()
         const auto drawLocation =
             calcDrawingRect(pTexture.get(), static_cast<int>(sideBarPos.x - 14 * 8), 60);
 
-        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
+        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
     }
 
     if(bShowTime) {
@@ -533,7 +533,7 @@ void Game::drawScreen()
         const auto pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
         auto drawLocation = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
         drawLocation.y++;
-        SDL_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
+        Dune_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
     }
 
     if(bPause) {
@@ -550,7 +550,7 @@ void Game::drawScreen()
         auto       drawLocation = calcAlignedDrawingRect(pTexture.get(), HAlign::Left, VAlign::Bottom);
         drawLocation.x += 10;
         drawLocation.y -= 12;
-        SDL_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
+        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
     }
 
     if(finished) {
@@ -564,7 +564,7 @@ void Game::drawScreen()
 
         const auto pFinishMessageTexture = pFontManager->createTextureWithText(message, COLOR_WHITE, 28);
         const auto drawLocation = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x/2, topBarPos.h + (getRendererHeight()-topBarPos.h)/2, HAlign::Center, VAlign::Center);
-        SDL_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
+        Dune_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
     }
 
     if(pWaitingForOtherPlayers != nullptr) {
@@ -877,7 +877,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
         return;
     }
 
-    SDL_Texture* pCursor = nullptr;
+    const DuneTexture* pCursor = nullptr;
     SDL_Rect dest = { 0, 0, 0, 0};
     if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if(scrollLeftMode && !scrollRightMode) {
@@ -997,7 +997,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
         }
     }
 
-    SDL_RenderCopy(renderer, pCursor, nullptr, &dest);
+    Dune_RenderCopy(renderer, pCursor, nullptr, &dest);
 }
 
 void Game::setupView(const GameContext& context) const
@@ -1261,7 +1261,7 @@ void Game::runMainLoop(const GameContext& context) {
 
         drawScreen();
 
-        SDL_RenderPresent(renderer);
+        Dune_RenderPresent(renderer);
 
         const auto renderElapsed = SDL_GetPerformanceCounter() - renderStart;
 

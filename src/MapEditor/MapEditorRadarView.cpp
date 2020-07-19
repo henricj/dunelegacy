@@ -65,7 +65,7 @@ void MapEditorRadarView::draw(Point position)
 
     SDL_UpdateTexture(radarTexture.get(), nullptr, radarSurface->pixels, radarSurface->pitch);
 
-    SDL_RenderCopy(renderer, radarTexture.get(), nullptr, &radarPosition);
+    Dune_RenderCopy(renderer, radarTexture.get(), nullptr, &radarPosition);
 
     // draw viewport rect on radar
     SDL_Rect radarRect;

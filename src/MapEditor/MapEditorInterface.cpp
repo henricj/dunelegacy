@@ -67,17 +67,17 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     setWindowWidget(&windowWidget);
 
     // top bar
-    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSETYPE::HOUSE_HARKONNEN);
+    const auto* const pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSETYPE::HOUSE_HARKONNEN);
     topBar.setTexture(pTopBarTexture);
     windowWidget.addWidget(&topBar, calcAlignedDrawingRect(pTopBarTexture, HAlign::Left, VAlign::Top));
 
     // side bar
-    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSETYPE::HOUSE_HARKONNEN);
+    const auto* const pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, HOUSETYPE::HOUSE_HARKONNEN);
     sideBar.setTexture(pSideBarTexture);
     windowWidget.addWidget(&sideBar, calcAlignedDrawingRect(pSideBarTexture, HAlign::Right, VAlign::Top));
 
     // bottom bar
-    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSETYPE::HOUSE_HARKONNEN);
+    const auto* const pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, HOUSETYPE::HOUSE_HARKONNEN);
     bottomBar.setTexture(pBottomBarTexture);
     windowWidget.addWidget(&bottomBar, calcAlignedDrawingRect(pBottomBarTexture, HAlign::Left, VAlign::Bottom));
 
@@ -1264,14 +1264,14 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     houseDropDownBox.setColor(color);
 
     // top bar
-    SDL_Texture* pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, newHouse);
+    const auto* const pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, newHouse);
     topBar.setTexture(pTopBarTexture);
     // side bar
-    SDL_Texture* pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, newHouse);
+    const auto* const pSideBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_SideBar, newHouse);
     sideBar.setTexture(pSideBarTexture);
 
     // bottom bar
-    SDL_Texture* pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, newHouse);
+    const auto* const pBottomBarTexture = pGFXManager->getUIGraphic(UI_MapEditor_BottomBar, newHouse);
     bottomBar.setTexture(pBottomBarTexture);
 
     editorModeTerrain_Sand.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Sand, newHouse));

@@ -51,5 +51,5 @@ void TextEvent::draw(int currentFrameNumber) const
     }
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
-    SDL_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
 }

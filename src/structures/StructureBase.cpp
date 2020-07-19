@@ -145,25 +145,25 @@ void StructureBase::blitToScreen() {
                                             numImagesX, numImagesY);
     auto source = calcSpriteSourceRect(graphic[currentZoomlevel],indexX,numImagesX,indexY,numImagesY);
 
-    SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+    Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
     if(!fogged) {
-        SDL_Texture* pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
-        SDL_Rect smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
-        for(const StructureSmoke& structureSmoke : smoke) {
-            SDL_Rect smokeDest = calcSpriteDrawingRect( pSmokeTex,
+        const auto* const pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+        auto smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
+        for(const auto& structureSmoke : smoke) {
+            const auto smokeDest = calcSpriteDrawingRect( pSmokeTex,
                                                         screenborder->world2screenX(structureSmoke.realPos.x),
                                                         screenborder->world2screenY(structureSmoke.realPos.y),
                                                         3, 1, HAlign::Center, VAlign::Bottom);
-            Uint32 cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
+            const auto cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
-            Uint32 smokeFrame = (cycleDiff/25) % 4;
+            auto smokeFrame = static_cast<int>((cycleDiff/25) % 4);
             if(smokeFrame == 3) {
                 smokeFrame = 1;
             }
 
             smokeSource.x = smokeFrame * smokeSource.w;
-            SDL_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
+            Dune_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
         }
     }
 }
@@ -268,8 +268,8 @@ void StructureBase::drawGatheringPointLine() {
                                                      HAlign::Center, VAlign::Center);
 
     // Render twice
-    SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
-    SDL_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
 }
 
 /**

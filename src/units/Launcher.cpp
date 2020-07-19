@@ -55,46 +55,38 @@ void Launcher::init() {
 Launcher::~Launcher() = default;
 
 void Launcher::blitToScreen() {
-    int x1 = screenborder->world2screenX(realX);
-    int y1 = screenborder->world2screenY(realY);
+    const auto x1 = screenborder->world2screenX(realX);
+    const auto y1 = screenborder->world2screenY(realY);
 
-    SDL_Texture* pUnitGraphic = graphic[currentZoomlevel];
-    SDL_Rect     source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    const Coord launcherTurretOffset[] =    {   Coord(0, -12),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -12),
-                                                Coord(0, -8),
-                                                Coord(0, -8),
-                                                Coord(0, -8)
-                                            };
+    static constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                     Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-    SDL_Texture* pTurretGraphic = turretGraphic[currentZoomlevel];
-    SDL_Rect source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    SDL_Rect dest2 = calcSpriteDrawingRect( pTurretGraphic, screenborder->world2screenX(realX + launcherTurretOffset[static_cast<int>(drawnAngle)].x),
-        screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y),
-                                            numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
+    const auto        source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto        dest2          = calcSpriteDrawingRect(
+        pTurretGraphic, screenborder->world2screenX(realX + launcherTurretOffset[static_cast<int>(drawnAngle)].x),
+        screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+        HAlign::Center, VAlign::Center);
 
-    SDL_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
-    if(isBadlyDamaged()) {
-        drawSmoke(x1, y1);
-    }
+    if(isBadlyDamaged()) { drawSmoke(x1, y1); }
 }
 
 void Launcher::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
-        currentGame->addExplosion(explosionID, realPos, owner->getHouseID());
+    if(context.map.tileExists(location) && isVisible()) {
+        const Coord realPos(lround(realX), lround(realY));
+        const auto  explosionID =
+            context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
+        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
+        if(isVisible(getOwner()->getTeamID())) soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
     }
 
     parent::destroy(context);

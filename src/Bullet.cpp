@@ -276,8 +276,9 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
     if(bulletID == Bullet_Sonic) {
         static constexpr Uint8 shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
 
-        auto* const shimmerTex = pGFXManager->getZoomedObjPic(ObjPic_Bullet_SonicTemp, currentZoomlevel);
         auto* const shimmerMaskSurface = pGFXManager->getZoomedObjSurface(ObjPic_Bullet_Sonic, currentZoomlevel);
+        auto* const shimmerTex =
+            pGFXManager->getTempStreamingTexture(renderer, shimmerMaskSurface->w, shimmerMaskSurface->h);
 
         auto source = dest;
 
@@ -335,7 +336,7 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
         // contains solid black (0,0,0,255) for pixels to take from screen
         // and transparent (0,0,0,0) for pixels that should not be copied over
         SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_NONE);
-        SDL_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
+        Dune_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
         SDL_SetTextureBlendMode(shimmerMaskTex, SDL_BLENDMODE_BLEND);
 
         // now copy r,g,b colors from screen but don't change alpha values in mask
@@ -343,7 +344,7 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
         auto source = dest;
         const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24)/3;
         source.x += shimmerOffset[shimmerOffsetIndex%8]*2;
-        SDL_RenderCopy(renderer, screenTexture, &source, nullptr);
+        Dune_RenderCopy(renderer, screenTexture, &source, nullptr);
         SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
 
         // switch back to old rendering target (from texture 'shimmerTex')
@@ -352,10 +353,10 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
 
         // now blend shimmerTex to screen (= make use of alpha values in mask)
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-        SDL_RenderCopy(renderer, shimmerTex, nullptr, &dest);
+        Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
     } else {
         const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
-        SDL_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+        Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 
