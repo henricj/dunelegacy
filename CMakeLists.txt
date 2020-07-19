@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "IDE/VC/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 endif()
 
-project(dunelegacy)
+project(dunelegacy VERSION 0.96.4)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -143,10 +143,15 @@ check_cxx_source_compiles(
 
 add_subdirectory(external)
 add_subdirectory(src)
+add_subdirectory(data)
+
+install(FILES README DESTINATION .)
 
 enable_testing()
 
 add_subdirectory(tests)
+
+include(CPack)
 
 message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
 message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")

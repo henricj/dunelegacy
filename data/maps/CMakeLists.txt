@@ -1,0 +1,57 @@
+cmake_minimum_required(VERSION 3.16)
+
+set(MpMaps
+	"multiplayer/2P - 32x128 - Gatekeeper.ini"
+	"multiplayer/2P - 32x32 - X-Factor.ini"
+	"multiplayer/2P - 64x32 - Cliffs Of Rene.ini"
+	"multiplayer/2P - 64x64 - Bottle Neck.ini"
+	"multiplayer/2P - 64x64 - Broken Mountains.ini"
+	"multiplayer/2P - 64x64 - David's Pass.ini"
+	"multiplayer/2P - 64x64 - Face Off.ini"
+	"multiplayer/2P - 64x64 - Great Divide.ini"
+	"multiplayer/2P - 64x64 - Sanctuarys.ini"
+	"multiplayer/4P - 128x128 - Deserted.ini"
+	"multiplayer/4P - 128x128 - Equilibrium.ini"
+	"multiplayer/4P - 128x128 - Four Cities.ini"
+	"multiplayer/4P - 128x128 - Hungry Hippos.ini"
+	"multiplayer/4P - 128x128 - Silicon Valley XL.ini"
+	"multiplayer/4P - 128x128 - Snake Pass.ini"
+	"multiplayer/4P - 128x128 - Spicestorm.ini"
+	"multiplayer/4P - 128x128 - The Sardaukar Outpost.ini"
+	"multiplayer/4P - 128x128 - Worm Investation.ini"
+	"multiplayer/4P - 128x128 - Wormhole.ini"
+	"multiplayer/4P - 128x64 - Gamma Sector.ini"
+	"multiplayer/4P - 64x64 - Channels.ini"
+	"multiplayer/4P - 64x64 - Clear Path.ini"
+	"multiplayer/4P - 64x64 - Combed.ini"
+	"multiplayer/4P - 64x64 - Four Chambers.ini"
+	"multiplayer/4P - 64x64 - Four Courners.ini"
+	"multiplayer/4P - 64x64 - Sietch Stefan.ini"
+	"multiplayer/4P - 64x64 - Silicon Valley.ini"
+	"multiplayer/4P - 64x64 - Stronghold.ini"
+	"multiplayer/4P - 64x64 - Vast Armies Have Arrived.ini"
+	"multiplayer/5P - 128x128 - Fortress.ini"
+	"multiplayer/5P - 128x128 - Gridlocked.ini"
+	"multiplayer/5P - 128x128 - Hellvetika.ini"
+	"multiplayer/5P - 128x128 - Kragetam.ini"
+	"multiplayer/5P - 128x128 - Meadow.ini"
+	"multiplayer/5P - 128x64 - Watch Your Track.ini"
+	"multiplayer/6P - 128x128 - Gargantuan Mountains.ini"
+	"multiplayer/6P - 64x128 - Rocking Fields.ini"
+	"multiplayer/6P - 64x64 - Fertile Basin.ini"
+)
+
+set(SpMaps
+	"singleplayer/2P - 32x128 - Canyon.ini"
+	"singleplayer/2P - 64x64 - Duality.ini"
+	"singleplayer/2P - 64x64 - North vs. South.ini"
+	"singleplayer/2P - 64x64 - Twin Fists.ini"
+	"singleplayer/3P - 64x32 - Middle Man.ini"
+	"singleplayer/4P - 64x64 - 3 vs 1.ini"
+	"singleplayer/5P - 128x128 - All against Atreides.ini"
+	"singleplayer/5P - 128x128 - Sardaukar Base Easy.ini"
+	"singleplayer/5P - 128x128 - Sardaukar Base.ini"
+)
+
+install(FILES ${MpMaps} DESTINATION maps/multiplayer)
+install(FILES ${SpMaps} DESTINATION maps/singleplayer)
