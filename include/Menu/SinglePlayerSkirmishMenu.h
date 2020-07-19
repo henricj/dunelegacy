@@ -25,11 +25,8 @@
 #include <GUI/TextButton.h>
 #include <GUI/PictureButton.h>
 #include <GUI/InvisibleButton.h>
-#include <GUI/Spacer.h>
 #include <GUI/PictureLabel.h>
 #include <GUI/dune/DigitsCounter.h>
-
-#include <misc/string_util.h>
 
 class SinglePlayerSkirmishMenu : public MenuBase
 {
