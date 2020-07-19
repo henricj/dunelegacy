@@ -310,6 +310,8 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
 
     const auto gameCycleCount = game->getGameCycleCount();
 
+    source.y = 0;
+
     // tracks
     const auto* const pTracks = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Tracks, currentZoomlevel);
     for (auto i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
