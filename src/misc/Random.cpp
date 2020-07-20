@@ -227,13 +227,13 @@ std::vector<Uint8> RandomFactory::createRandomSeed(const std::string_view& name)
     static std::atomic<int> nonce;
     buffer.push_back(++nonce);
 
-    const auto hr_now = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    buffer.push_back(hr_now & ~0U);
-    buffer.push_back((hr_now >> 32) & ~0U);
+    const auto system_now = std::chrono::system_clock::now().time_since_epoch().count();
+    buffer.push_back(system_now & ~0U);
+    buffer.push_back((system_now >> 32) & ~0U);
 
-    const auto sc_now = std::chrono::system_clock::now().time_since_epoch().count();
-    buffer.push_back(sc_now & ~0U);
-    buffer.push_back((sc_now >> 32) & ~0U);
+    const auto steady_now = std::chrono::steady_clock::now().time_since_epoch().count();
+    buffer.push_back(steady_now & ~0U);
+    buffer.push_back((steady_now >> 32) & ~0U);
 
     std::generate_n(std::back_inserter(buffer), size, [&]{ return rd(); });
 
@@ -282,7 +282,7 @@ Random RandomFactory::create(const std::string_view& name) const {
     std::array<state_type, Random::generator_type::state_words> state;
     for(auto& s : state) {
         auto n = 0ull;
-        for(auto i = 0; i < sizeof(state_type); ++i) {
+        for(auto i = 0u; i < sizeof(state_type); ++i) {
             const auto b = state_type{*it++};
             n |= b << (8 * i);
         }
