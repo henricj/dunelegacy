@@ -1,7 +1,5 @@
 SET Packages=sdl2 sdl2-mixer sdl2-ttf fmt ms-gsl gtest
 
-copy "%~dp0triplets\*.*" "%~dp0vcpkg\triplets\"
-
 if NOT EXIST "%~dp0vcpkg\vcpkg.exe" call "%~dp0vcpkg\bootstrap-vcpkg.bat"
 
 if [%1] == [] GOTO buildAll
@@ -10,9 +8,10 @@ if [%1] == [] GOTO buildAll
 
 exit 0
 
-buildAll:
+:buildAll
 "%~dp0vcpkg\vcpkg.exe" install --triplet x64-windows %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x64-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x86-windows %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x86-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet arm64-windows-ltcg %Packages%
+"%~dp0vcpkg\vcpkg.exe" install --triplet x64-avx2-windows-ltcg %Packages%
