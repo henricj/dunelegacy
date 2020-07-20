@@ -104,6 +104,27 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
     return true;
 }
 
+// There is only one kind of these items, stored in the Harkonnen slot.
+const std::set<Uint32> harkonnenOnly = {
+    ObjPic_ExplosionSmall,
+    ObjPic_ExplosionMedium1,
+    ObjPic_ExplosionMedium2,
+    ObjPic_ExplosionLarge1,
+    ObjPic_ExplosionLarge2,
+    ObjPic_ExplosionSmallUnit,
+    ObjPic_ExplosionFlames,
+    ObjPic_ExplosionSpiceBloom,
+    ObjPic_SandwormShimmerMask,
+    ObjPic_Terrain,
+    ObjPic_DestroyedStructure,
+    ObjPic_RockDamage,
+    ObjPic_SandDamage,
+    ObjPic_Terrain_Hidden,
+    ObjPic_Terrain_HiddenFog,
+    ObjPic_Terrain_Tracks,
+    ObjPic_Star,
+};
+
 void add_object_pictures(SurfaceLoader* surfaceLoader, std::vector<rect_type>& rectangles,
                  std::vector<std::tuple<int, Uint32, HOUSETYPE, SDL_Surface*>>& object_pictures, int zoom) {
     if(rectangles.size() + NUM_OBJPICS < rectangles.capacity()) rectangles.reserve(rectangles.size() + NUM_OBJPICS);
@@ -111,9 +132,13 @@ void add_object_pictures(SurfaceLoader* surfaceLoader, std::vector<rect_type>& r
     for(auto id = 0u; id < NUM_OBJPICS; ++id) {
         if(id == ObjPic_Bullet_SonicTemp || id == ObjPic_SandwormShimmerTemp) continue;
 
+        const auto harkonnen_only = harkonnenOnly.end() != harkonnenOnly.find(id);
+
         SDL_Surface* harkonnen       = nullptr;
         auto         harkonnen_index = 0;
         for(auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
+            if(h > 0 && harkonnen_only) continue;
+
             auto* surface = surfaceLoader->getZoomedObjSurface(id, static_cast<HOUSETYPE>(h), zoom);
 
             if(!surface) continue;
