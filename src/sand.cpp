@@ -64,7 +64,7 @@ void drawCursor() {
         dest.y -= dest.h/2;
     }
 
-    Dune_RenderCopy(renderer, tex, nullptr, &dest);
+    tex->draw(renderer, dest.x, dest.y);
 }
 
 /**

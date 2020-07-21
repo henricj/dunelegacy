@@ -102,11 +102,11 @@ void Harvester::blitToScreen()
     int x = screenborder->world2screenX(realX);
     int y = screenborder->world2screenY(realY);
 
-    auto *pUnitGraphic = graphic[currentZoomlevel];
+    const auto* pUnitGraphic = graphic[currentZoomlevel];
     const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest = calcSpriteDrawingRectF( pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
 
     if(isHarvesting()) {
 
@@ -128,13 +128,13 @@ void Harvester::blitToScreen()
         }
 
         auto sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
-        auto sandDest = calcSpriteDrawingRect(  pSandGraphic,
+        auto sandDest = calcSpriteDrawingRectF(  pSandGraphic,
                                                     screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
                                                     screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
                                                     static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME+1,
                                                     HAlign::Center, VAlign::Center);
 
-        Dune_RenderCopy(renderer, pSandGraphic, &sandSource, &sandDest);
+        Dune_RenderCopyF(renderer, pSandGraphic, &sandSource, &sandDest);
     }
 
     if(isBadlyDamaged()) {
@@ -164,8 +164,8 @@ void Harvester::checkPos(const GameContext& context) {
                     setReturned(context);
                 } else {
                     // the repair yard is already in use by some other unit => move out
-                    Coord newDestination = map.findDeploySpot(this, target.getObjPointer()->getLocation(),
-                                                                          getLocation(), pRefinery->getStructureSize());
+                    const auto newDestination = map.findDeploySpot(this, target.getObjPointer()->getLocation(),
+                                                                   getLocation(), pRefinery->getStructureSize());
                     doMove2Pos(context, newDestination, true);
                     requestCarryall(context);
                 }
@@ -326,17 +326,20 @@ void Harvester::drawSelectionBox()
         default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
     }
 
-    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    auto dest = calcDrawingRectF(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 
-    for(int i=1;i<=currentZoomlevel+1;i++) {
-        renderDrawHLine(renderer, dest.x+1, dest.y-i, dest.x+1 + (lround((getHealth()/getMaxHealth())*(getWidth(selectionBox)-3))), getHealthColor());
-    }
+    dest.x += 1;
+    dest.y -= static_cast<float>(currentZoomlevel + 1);
+    dest.h = static_cast<float>(currentZoomlevel + 1);
+    dest.w = static_cast<float>(lround((getHealth() / getMaxHealth()) * (getWidth(selectionBox) - 3)));
+
+    renderFillRectF(renderer, &dest, getHealthColor());
 
     if((getOwner() == pLocalHouse) && (spice > 0)) {
-        for(int i=1;i<=currentZoomlevel+1;i++) {
-            renderDrawHLine(renderer, dest.x+1, dest.y-i-(currentZoomlevel+1), dest.x+1 + (lround(((spice)/HARVESTERMAXSPICE)*(getWidth(selectionBox)-3))), COLOR_ORANGE);
-        }
+        dest.y -= static_cast<float>(currentZoomlevel + 1);
+        dest.w = static_cast<float>(lround(((spice) / HARVESTERMAXSPICE) * (getWidth(selectionBox) - 3)));
+        renderFillRectF(renderer, &dest, COLOR_ORANGE);
     }
 }
 
