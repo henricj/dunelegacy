@@ -208,6 +208,9 @@ set(STRUCTURES_SOURCES
 
 set(RENDERER_SOURCES
 	Renderer/DuneRenderer.cpp
+	Renderer/DuneTexture.cpp
+	Renderer/DuneTileTexture.cpp
+	Renderer/DuneRotateTexture.cpp
 	Renderer/DuneTextures.cpp
 )
 
@@ -459,6 +462,9 @@ set(HEADERS
 ../include/RadarView.h
 ../include/RadarViewBase.h
 ../include/Renderer/DuneRenderer.h
+../include/Renderer/DuneTexture.h
+../include/Renderer/DuneRotateTexture.h
+../include/Renderer/DuneTileTexture.h
 ../include/Renderer/DuneTextures.h
 ../include/sand.h
 ../include/ScreenBorder.h
