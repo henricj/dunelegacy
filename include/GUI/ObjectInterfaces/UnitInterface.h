@@ -45,7 +45,7 @@ public:
 
 protected:
     explicit UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(HSpacer::create(4));
 
@@ -198,32 +198,28 @@ protected:
     }
 
     void OnSendToRepair() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        auto* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
+        auto* const pGroundUnit = currentGame->getObjectManager().getObject<GroundUnit>(objectID);
         if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
             pGroundUnit->handleSendToRepairClick();
         }
     }
 
     void onReturn() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        auto* pHarvester = dynamic_cast<Harvester*>(pObject);
+        auto* const pHarvester = currentGame->getObjectManager().getObject<Harvester>(objectID);
         if(pHarvester != nullptr) {
             pHarvester->handleReturnClick(context_);
         }
     }
 
     void onDeploy() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        MCV* pMCV = dynamic_cast<MCV*>(pObject);
+        auto* const pMCV = currentGame->getObjectManager().getObject<MCV>(objectID);
         if(pMCV != nullptr) {
             pMCV->handleDeployClick();
         }
     }
 
     void onDestruct() {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        auto* pDevastator = dynamic_cast<Devastator*>(pObject);
+        auto* const pDevastator = currentGame->getObjectManager().getObject<Devastator>(objectID);
         if(pDevastator != nullptr) {
             pDevastator->handleStartDevastateClick();
         }

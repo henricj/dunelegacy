@@ -167,7 +167,7 @@ void Button::drawOverlay(Point position) {
     if(SDL_GetTicks() - tooltipLastMouseMotion <= 750) return;
 
     const auto renderRect = getRendererSize();
-    auto dest = calcDrawingRect(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    auto dest = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
     if(dest.x + dest.w >= renderRect.w) {
         // do not draw tooltip outside screen
         dest.x = renderRect.w - dest.w;

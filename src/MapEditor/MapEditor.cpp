@@ -1393,7 +1393,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
-    const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+    const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
     /* draw ground */
     for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
@@ -1411,7 +1411,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_Rock: {
-                    //determine which surounding tiles are rock
+                    //determine which surrounding tiles are rock
                     const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Rock) || (getTerrain(x, y-1) == Terrain_Slab) || (getTerrain(x, y-1) == Terrain_Mountain);
                     const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Rock) || (getTerrain(x+1, y) == Terrain_Slab) || (getTerrain(x+1, y) == Terrain_Mountain);
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Rock) || (getTerrain(x, y+1) == Terrain_Slab) || (getTerrain(x, y+1) == Terrain_Mountain);
@@ -1421,7 +1421,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_Dunes: {
-                    //determine which surounding tiles are dunes
+                    //determine which surrounding tiles are dunes
                     const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Dunes);
                     const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Dunes);
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Dunes);
@@ -1431,7 +1431,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_Mountain: {
-                    //determine which surounding tiles are mountains
+                    //determine which surrounding tiles are mountains
                     const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Mountain);
                     const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Mountain);
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Mountain);
@@ -1442,7 +1442,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_Spice: {
-                    //determine which surounding tiles are spice
+                    //determine which surrounding tiles are spice
                     const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Spice) || (getTerrain(x, y-1) == Terrain_ThickSpice);
                     const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Spice) || (getTerrain(x+1, y) == Terrain_ThickSpice);
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Spice) || (getTerrain(x, y+1) == Terrain_ThickSpice);
@@ -1452,7 +1452,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_ThickSpice: {
-                    //determine which surounding tiles are thick spice
+                    //determine which surrounding tiles are thick spice
                     const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_ThickSpice);
                     const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_ThickSpice);
                     const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_ThickSpice);
@@ -1494,7 +1494,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         SDL_Rect selectionDest;
         if(structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
-            const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
                                zoomedTilesize};
@@ -1502,9 +1502,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
+            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w), static_cast<int>(dest.h)};
         } else if(structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
-            const DuneTexture* TerrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             for(int y = position.y; y < position.y+2; y++) {
                 for(int x = position.x; x < position.x+2; x++) {
@@ -1525,16 +1526,16 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             bool down = false;
             bool right = false;
             bool up = false;
-            for(const Structure& structure : structures) {
-                if(structure.itemID == Structure_Wall) {
-                    if((structure.position.x == position.x - 1) && (structure.position.y == position.y))  left = true;
-                    if((structure.position.x == position.x) && (structure.position.y == position.y + 1))  down = true;
-                    if((structure.position.x == position.x + 1) && (structure.position.y == position.y))  right = true;
-                    if((structure.position.x == position.x) && (structure.position.y == position.y - 1))  up = true;
+            for(const Structure& structure1 : structures) {
+                if(structure1.itemID == Structure_Wall) {
+                    if((structure1.position.x == position.x - 1) && (structure1.position.y == position.y))  left = true;
+                    if((structure1.position.x == position.x) && (structure1.position.y == position.y + 1))  down = true;
+                    if((structure1.position.x == position.x + 1) && (structure1.position.y == position.y))  right = true;
+                    if((structure1.position.x == position.x) && (structure1.position.y == position.y - 1))  up = true;
                 }
             }
 
-            int maketile = 0;
+            auto maketile = 0;
             if((left) && (right) && (up) && (down)) {
                 maketile = Wall::Wall_Full; //solid wall
             } else if((!left) && (right) && (up) && (down)) {
@@ -1570,7 +1571,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
 
             // Load Wall texture
-            const DuneTexture* WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
+            const auto* const WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
             SDL_Rect source = { maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
             SDL_FRect dest = { pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE), zoomedTilesize, zoomedTilesize };
@@ -1631,7 +1632,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const Coord& position = unit.position;
 
-        const Coord tankTurretOffset[] =    {   Coord(0, 0),
+        constexpr Coord tankTurretOffset[] =    {   Coord(0, 0),
                                                 Coord(0, 0),
                                                 Coord(0, 0),
                                                 Coord(0, 0),
@@ -1641,7 +1642,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                 Coord(0, 0)
                                             };
 
-        const Coord siegeTankTurretOffset[] =   {   Coord(8, -12),
+        constexpr Coord siegeTankTurretOffset[] =   {   Coord(8, -12),
                                                     Coord(0, -20),
                                                     Coord(0, -20),
                                                     Coord(-4, -20),
@@ -1651,7 +1652,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                     Coord(8, -4)
                                             };
 
-        const Coord sonicTankTurretOffset[] =   {   Coord(0, -8),
+        constexpr Coord sonicTankTurretOffset[] =   {   Coord(0, -8),
                                                     Coord(0, -8),
                                                     Coord(0, -8),
                                                     Coord(0, -8),
@@ -1661,7 +1662,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                     Coord(0, -8)
                                                 };
 
-        const Coord launcherTurretOffset[] =    {   Coord(0, -12),
+        constexpr Coord launcherTurretOffset[] =    {   Coord(0, -12),
                                                     Coord(0, -8),
                                                     Coord(0, -8),
                                                     Coord(0, -8),
@@ -1671,7 +1672,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                     Coord(0, -8)
                                                 };
 
-        const Coord devastatorTurretOffset[] =  {
+        constexpr Coord devastatorTurretOffset[] =  {
                                                     Coord(8, -16),
                                                     Coord(-4, -12),
                                                     Coord(0, -16),
@@ -1757,7 +1758,6 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             pStarSprite->draw(renderer, drawLocation2.x, drawLocation2.y);
         }
-
     }
 
     // draw tactical pos rectangle (the starting screen)
@@ -1809,7 +1809,6 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             for(int m=0;m<mapMirror->getSize();m++) {
 
                 Coord position = mapMirror->getCoord( Coord(xPos, yPos), m);
-
 
                 SDL_Rect dest;
                 dest.x = pScreenborder->world2screenX( (position.x-halfsize)*TILESIZE);

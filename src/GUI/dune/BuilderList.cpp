@@ -228,13 +228,12 @@ void BuilderList::draw(Point position) {
         for(const auto& buildItem : pBuilder->getBuildList()) {
 
             if((i >= currentListPos) && (i < currentListPos+getNumButtons(getSize().y) )) {
-                auto *pTexture = resolveItemPicture(buildItem.itemID);
+                const auto* pTexture = resolveItemPicture(buildItem.itemID);
 
-                const SDL_Rect dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
+                const auto dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
 
                 if(pTexture != nullptr) {
-                    SDL_Rect tmpDest = dest;
-                    Dune_RenderCopy(renderer, pTexture, nullptr, &tmpDest);
+                    pTexture->draw(renderer, dest.x, dest.y);
                 }
 
                 if(isStructure(buildItem.itemID)) {
@@ -333,16 +332,16 @@ void BuilderList::drawOverlay(Point position) {
     if(SDL_GetTicks() - lastMouseMovement <= 800) return;
 
     // Draw tooltip
-    int btn = getButton(lastMousePos.x,lastMousePos.y);
+    const auto btn = getButton(lastMousePos.x,lastMousePos.y);
     if(btn != -1) {
-        auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+        auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
         if(!pBuilder) {
             return;
         }
 
         const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), btn);
 
-        std::string text = resolveItemName(buildItemIter->itemID);
+        auto text = resolveItemName(buildItemIter->itemID);
 
         if(buildItemIter->itemID == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
             text += " (Hotkey: P)";
@@ -378,8 +377,7 @@ void BuilderList::resize(Uint32 width, Uint32 height) {
     if(!currentGame) return;
 
     // move list to show currently produced item
-    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
-    if(pBuilder != nullptr) {
+    if(auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         const auto & buildList = pBuilder->getBuildList();
         const auto currentProducedItemIter = std::find_if(buildList.begin(),
                                                     buildList.end(),

@@ -39,7 +39,7 @@ private:
 
     template<typename F>
     void for_each_stat(Game* pGame, F&& f) {
-        for (auto i = 0; i < houseStat.size(); ++i) {
+        for (auto i = 0u; i < houseStat.size(); ++i) {
             auto *pHouse = pGame->getHouse(static_cast<HOUSETYPE>(i));
 
             if(!pHouse) continue;
