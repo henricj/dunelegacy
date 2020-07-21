@@ -259,7 +259,7 @@ void BuilderList::draw(Point position) {
                     const auto bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
 
                     if(!pStarport->okToOrder() || bSoldOut) {
-                        SDL_FRect progressBar = { dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT };
+                        SDL_FRect progressBar = { static_cast<float>(dest.x), static_cast<float>(dest.y), static_cast<float>(BUILDERBTN_WIDTH), static_cast<float>(BUILDERBTN_HEIGHT) };
                         renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
                     }
 
