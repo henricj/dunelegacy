@@ -129,10 +129,7 @@ public:
 
         updateTextures();
 
-        if(const auto* const background = getBackground()) {
-            auto dest = calcDrawingRect(background, position.x, position.y);
-            Dune_RenderCopy(renderer, background, nullptr, &dest);
-        }
+        WidgetWithBackground::draw(position);
 
         if(pForeground) {
             auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
@@ -153,6 +150,8 @@ protected:
     */
     void updateTextures() override
     {
+        WidgetWithBackground::updateTextures();
+
         if(!pForeground) {
             pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
         }

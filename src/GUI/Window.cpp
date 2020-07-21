@@ -224,14 +224,7 @@ bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
 
 void Window::draw(Point position) {
     if(isVisible()) {
-        WidgetWithBackground::draw(position);
-
-        if(const auto* const background = getBackground()) {
-            // Draw background
-            const auto dest = calcDrawingRect(background, getPosition().x + getSize().x / 2,
-                                              getPosition().y + getSize().y / 2, HAlign::Center, VAlign::Center);
-            Dune_RenderCopy(renderer, background, nullptr, &dest);
-        }
+        WidgetWithBackground::draw(getPosition());
 
         if(pWindowWidget != nullptr) {
             pWindowWidget->draw(Point(position.x+getPosition().x,position.y+getPosition().y));

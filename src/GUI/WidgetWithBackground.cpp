@@ -46,6 +46,21 @@ void WidgetWithBackground::resize(Uint32 width, Uint32 height)
     }
 }
 
+void WidgetWithBackground::draw(Point position)
+{
+    const auto* background = getBackground();
+    if(!background) return;
+
+    SDL_Rect dst{position.x, position.y, background->source_.w, background->source_.h};
+
+    const auto size = getSize();
+
+    if(dst.w != size.x) dst.x += (size.x - dst.w) / 2;
+    if(dst.h != size.y) dst.y += (size.y - dst.h) / 2;
+
+    background->draw(renderer, dst.x, dst.y);
+}
+
 void WidgetWithBackground::invalidateTextures()
 {
     pBackground = nullptr;
