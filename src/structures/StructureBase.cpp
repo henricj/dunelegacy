@@ -184,9 +184,11 @@ void StructureBase::drawSelectionBox() {
     DuneDrawSelectionBox(renderer, dest);
 
     // health bar
-    for(int i=1;i<=currentZoomlevel+1;i++) {
-        renderDrawHLine(renderer, dest.x, dest.y-i-1, dest.x + (lround((getHealth()/getMaxHealth())*(world2zoomedWorld(TILESIZE)*structureSize.x - 1))), getHealthColor());
-    }
+    const SDL_FRect healthRect{static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
+                               static_cast<float>(lround((getHealth() / getMaxHealth()) *
+                                                         (world2zoomedWorld(TILESIZE) * structureSize.x - 1))),
+                               static_cast<float>(currentZoomlevel + 1)};
+    renderFillRectF(renderer, &healthRect, getHealthColor());
 }
 
 void StructureBase::drawOtherPlayerSelectionBox() {

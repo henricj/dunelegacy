@@ -273,24 +273,25 @@ void MapChoice::drawSpecificStuff() {
                 const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 const int arrowFrame = (SDL_GetTicks() / 128) % 4;
                 const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                const auto dest = calcSpriteDrawingRect(  arrow,
+                const auto dest = calcSpriteDrawingRectF(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
                                                         group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
                                                         4, 1);
 
-                Dune_RenderCopy(renderer, arrow, &src, &dest);
+                Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
         } break;
 
         case MAPCHOICESTATE_BLINKING:
         {
             if(((SDL_GetTicks() - selectionTime) % 900) < 450) {
-                const auto* const pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion, house);
-                const auto dest = calcDrawingRect(pieceTexture, piecePosition[selectedRegion].x + centerAreaRect.x, piecePosition[selectedRegion].y + centerAreaRect.y);
-                Dune_RenderCopy(renderer, pieceTexture, nullptr, &dest);
+                if(const auto* const pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion, house)) {
+                    pieceTexture->draw(renderer, piecePosition[selectedRegion].x + centerAreaRect.x,
+                                       piecePosition[selectedRegion].y + centerAreaRect.y);
+                }
             }
 
-            for(int i = 0; i < 4; i++) {
+            for(auto i = 0; i < 4; i++) {
                 if(group[lastScenario].attackRegion[i].regionNum != selectedRegion) {
                     continue;
                 }
@@ -299,12 +300,12 @@ void MapChoice::drawSpecificStuff() {
                 const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 const int arrowFrame = (SDL_GetTicks() / 128) % 4;
                 const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                const auto dest = calcSpriteDrawingRect(  arrow,
+                const auto dest = calcSpriteDrawingRectF(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
                                                         group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y,
                                                         4, 1);
 
-                Dune_RenderCopy(renderer, arrow, &src, &dest);
+                Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
 
             if((SDL_GetTicks() - selectionTime) > 2000) {

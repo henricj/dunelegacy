@@ -63,8 +63,7 @@ void NewsTicker::draw(Point position) {
         return;
     }
 
-    SDL_Rect dest = calcDrawingRect(pBackground, position.x, position.y);
-    Dune_RenderCopy(renderer, pBackground, nullptr, &dest);
+    pBackground->draw(renderer, position.x, position.y);
 
     // draw message
     if(!messages.empty()) {
@@ -86,8 +85,8 @@ void NewsTicker::draw(Point position) {
         }
 
         if(pCurrentMessageTexture != nullptr) {
-            SDL_Rect textLocation = { position.x + 10, position.y + 6, 0, 0 };
-            SDL_Rect cut = { 0, 0, 0, 0 };
+            SDL_FRect textLocation { position.x + 10, position.y + 6, 0, 0 };
+            SDL_Rect cut { 0, 0, 0, 0 };
 
             if(timer>0) {
                 // start scrolling the text
@@ -101,7 +100,7 @@ void NewsTicker::draw(Point position) {
 
             textLocation.w = cut.w = getWidth(pCurrentMessageTexture.get());
             textLocation.h = cut.h = getHeight(pCurrentMessageTexture.get()) - cut.y;
-            Dune_RenderCopy(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
+            Dune_RenderCopyF(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
         }
     };
 }
