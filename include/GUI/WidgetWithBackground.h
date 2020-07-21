@@ -52,11 +52,16 @@ public:
     void resize(Uint32 width, Uint32 height) override;
 
     /**
+        Draws this progress bar to screen
+        \param  position    Position to draw the progress bar to
+    */
+    void draw(Point position) override;
+
+protected:
+    /**
         This method frees all textures that are used by this widget
     */
     void invalidateTextures() override;
-
-protected:
 
     [[nodiscard]] const DuneTexture* getBackground() const noexcept { return pBackground; }
     [[nodiscard]] const DuneTexture* getBackground();
