@@ -181,6 +181,47 @@ namespace sdl2
     typedef std::unique_ptr<SDL_RWops, implementation::RWops_deleter> RWops_ptr;
 
     typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
+
+    template<typename... Args>
+    void log_message(int category, SDL_LogPriority priority, std::string_view format, Args&&... args) {
+        SDL_LogMessage(category, priority, "%s", fmt::sprintf(format, std::forward<Args>(args)...).c_str());
+    }
+
+    template<typename... Args>
+    void log_message(SDL_LogPriority priority, std::string_view format, Args&&... args) {
+        log_message(SDL_LOG_CATEGORY_APPLICATION, priority, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_info(int category, std::string_view format, Args&&... args) {
+        log_message(category, SDL_LOG_PRIORITY_INFO, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_info(std::string_view format, Args&&... args) {
+        log_info(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_warn(int category, std::string_view format, Args&&... args) {
+        log_message(category, SDL_LOG_PRIORITY_WARN, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_warn(std::string_view format, Args&&... args) {
+        log_warn(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_error(int category, std::string_view format, Args&&... args) {
+        log_message(category, SDL_LOG_PRIORITY_ERROR, format, std::forward<Args>(args)...);
+    }
+
+    template<typename... Args>
+    void log_error(std::string_view format, Args&&... args) {
+        log_error(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+    }
+
 }
 
 #endif // SDL2PP_H
