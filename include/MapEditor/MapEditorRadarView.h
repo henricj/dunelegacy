@@ -55,7 +55,7 @@ public:
 
     /**
         Draws the radar to screen. This method is called before drawOverlay().
-        \param  Position    Position to draw the radar to
+        \param  position    Position to draw the radar to
     */
     void draw(Point position) override;
 

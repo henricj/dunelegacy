@@ -137,8 +137,8 @@ void Explosion::save(OutputStream& stream) const
 
 void Explosion::blitToScreen() const
 {
-    Uint16 width = getWidth(graphic[currentZoomlevel])/numFrames;
-    Uint16 height = getHeight(graphic[currentZoomlevel]);
+    const Uint16 width = getWidth(graphic[currentZoomlevel])/numFrames;
+    const Uint16 height = getHeight(graphic[currentZoomlevel]);
 
     if(screenborder->isInsideScreen(position, Coord(width, height))) {
         SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],

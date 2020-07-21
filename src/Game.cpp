@@ -491,7 +491,7 @@ void Game::drawScreen()
 ///////////draw action indicator
 
     if((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)))) {
-        auto *const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         auto source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
         auto drawLocation = calcSpriteDrawingRectF(  pUIIndicator,
                                                         screenborder->world2screenX(indicatorPosition.x),
@@ -699,7 +699,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                                     if(!selectionMode) {
                                         // if we have started the selection rectangle
-                                        // the starting point of the selection rectangele
+                                        // the starting point of the selection rectangle
                                         selectionRect.x = screenborder->screen2worldX(mouse->x);
                                         selectionRect.y = screenborder->screen2worldY(mouse->y);
                                     }
@@ -720,7 +720,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                                    && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse))
                                    && (((objectManager.getObject(*selectedList.begin()))->isRespondable())) ) )
                         {
-                            //if user has a controlable unit selected
+                            //if user has a controllable unit selected
 
                             if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                 if(handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
@@ -788,13 +788,12 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                                          SDL_GetModState() & KMOD_SHIFT);
 
                     if(selectedList.size() == 1) {
-                        auto * pObject = objectManager.getObject( *selectedList.begin());
-                        if(pObject != nullptr && pObject->getOwner() == pLocalHouse && pObject->getItemID() == Unit_Harvester) {
-                            auto * pHarvester = static_cast<Harvester*>(pObject);
+                        auto * pHarvester = objectManager.getObject<Harvester>( *selectedList.begin());
+                        if(pHarvester != nullptr && pHarvester->getOwner() == pLocalHouse) {
 
                             auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
-                            int percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
+                            const auto percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                             if(percent > 0) {
                                 if(pHarvester->isAwaitingPickup()) {
                                     harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
@@ -956,7 +955,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
                         xPos = screenborder->screen2MapX(drawnMouseX);
                         yPos = screenborder->screen2MapY(drawnMouseY);
                     } else if(isOnRadarView(drawnMouseX, drawnMouseY)) {
-                        Coord position = pInterface->getRadarView().getWorldCoords(drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
+                        const auto position = pInterface->getRadarView().getWorldCoords(drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
 
                         xPos = position.x / TILESIZE;
                         yPos = position.y / TILESIZE;
@@ -967,10 +966,10 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
 
                         if(pTile->isExploredByTeam(this, pLocalHouse->getTeamID())) {
 
-                            auto *const pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject(objectManager));
+                            auto *const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
 
                             if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
-                                dest.y += ((getGameCycleCount() / 10) % 5);
+                                dest.y += static_cast<int>(getGameCycleCount() / 10) % 5;
                             }
                         }
                     }
@@ -1008,7 +1007,7 @@ void Game::setupView(const GameContext& context) const
     //setup start location/view
     i = j = count = 0;
 
-    for(const UnitBase* pUnit : unitList) {
+    for(const auto* pUnit : unitList) {
         if((pUnit->getOwner() == pLocalHouse) && (pUnit->getItemID() != Unit_Sandworm)) {
             i += pUnit->getX();
             j += pUnit->getY();
@@ -1016,7 +1015,7 @@ void Game::setupView(const GameContext& context) const
         }
     }
 
-    for(const StructureBase* pStructure : structureList) {
+    for(const auto* pStructure : structureList) {
         if(pStructure->getOwner() == pLocalHouse) {
             i += pStructure->getX();
             j += pStructure->getY();
@@ -1227,8 +1226,6 @@ void Game::runMainLoop(const GameContext& context) {
 
     const int gameStart = static_cast<int>(SDL_GetTicks());
 
-
-    int frameTime = 0;
     int numFrames = 0;
 
     auto targetGameCycle = gameCycleCount;
@@ -1338,7 +1335,7 @@ void Game::runMainLoop(const GameContext& context) {
         while(SDL_PollEvent(&event))
             doInput(context, event);
 
-        const auto until = frameStart + (settings.video.frameLimit ? 32 : 5);
+        const auto until = frameStart + (settings.video.frameLimit ? 16 : 5);
 
         doEventsUntil(context, until);
 
@@ -2278,9 +2275,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_h: {
             for(Uint32 objectID : selectedList) {
-                ObjectBase* pObject = objectManager.getObject(objectID);
-                if(pObject->getItemID() == Unit_Harvester) {
-                    static_cast<Harvester*>(pObject)->handleReturnClick(context);
+                if(auto* const pObject = objectManager.getObject<Harvester>(objectID)) {
+                    pObject->handleReturnClick(context);
                 }
             }
         } break;
@@ -2288,11 +2284,11 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_r: {
             for(Uint32 objectID : selectedList) {
-                ObjectBase* pObject = objectManager.getObject(objectID);
-                if(pObject->isAStructure()) {
-                    static_cast<StructureBase*>(pObject)->handleRepairClick();
-                } else if(pObject->isAGroundUnit() && pObject->getHealth() < pObject->getMaxHealth()) {
-                    static_cast<GroundUnit*>(pObject)->handleSendToRepairClick();
+                auto* const pObject = objectManager.getObject(objectID);
+                if(auto* const structure = dune_cast<StructureBase>(pObject)) {
+                    structure->handleRepairClick();
+                } else if(auto* const groundUnit = dune_cast<GroundUnit>(pObject); groundUnit && groundUnit->getHealth() < pObject->getMaxHealth()) {
+                    groundUnit->handleSendToRepairClick();
                 }
             }
         } break;
@@ -2301,8 +2297,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_d: {
             if(currentCursorMode != CursorMode_CarryallDrop){
                 for(Uint32 objectID : selectedList) {
-                    ObjectBase* pObject = objectManager.getObject(objectID);
-                    if(pObject->isAGroundUnit() && pObject->getOwner()->hasCarryalls()) {
+                    auto* const pObject = objectManager.getObject<GroundUnit>(objectID);
+                    if(pObject && pObject->getOwner()->hasCarryalls()) {
                         currentCursorMode = CursorMode_CarryallDrop;
                     }
                 }
@@ -2312,9 +2308,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_u: {
             for(Uint32 objectID : selectedList) {
-                ObjectBase* pObject = objectManager.getObject(objectID);
-                if(pObject->isABuilder()) {
-                    auto* pBuilder = static_cast<BuilderBase*>(pObject);
+                if(auto* const pBuilder = objectManager.getObject<BuilderBase>(objectID)) {
                     if(pBuilder->getHealth() >= pBuilder->getMaxHealth() && pBuilder->isAllowedToUpgrade()) {
                         pBuilder->handleUpgradeClick();
                     }
@@ -2326,7 +2320,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if(SDL_GetModState() & KMOD_ALT) {
                 toogleFullscreen();
             } else {
-                typingChatMessage = "";
+                typingChatMessage.clear();
                 chatMode = true;
             }
         } break;

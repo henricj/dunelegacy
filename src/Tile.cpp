@@ -300,7 +300,7 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     }
 
     if(destroyedStructureTile != DestroyedStructure_None) {
-        auto* const pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
+        const auto* const pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
         SDL_Rect source2 = { destroyedStructureTile*zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize };
         Dune_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
