@@ -569,6 +569,10 @@ add_library(dune ${SOURCES} ${HEADERS})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include)
 target_link_libraries(dune PUBLIC ${LIBS})
 
+include(CheckIncludeFile)
+
+CHECK_INCLUDE_FILE_CXX(cxxabi.h, HAVE_CXXABI_H)
+
 if(NOT HAVE_FLOAT_TO_CHARS)
 	target_compile_definitions(dune PUBLIC NEED_FLOAT_TO_CHARS)
 endif()
@@ -586,6 +590,11 @@ target_precompile_headers(dune PRIVATE ../IDE/VC/stdafx.h)
 
 add_executable(dunelegacy ${EXE_SOURCES} ../include/main.h)
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
+
+if(HAVE_CXXABI_H)
+	target_compile_definitions(dunelegacy PUBLIC HAVE_CXXABI_H)
+endif()
+
 
 target_precompile_headers(dunelegacy REUSE_FROM dune)
 
