@@ -272,7 +272,7 @@ void UnitBase::blitToScreen() {
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);
 
-    auto *const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 

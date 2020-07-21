@@ -325,10 +325,10 @@ bool MapChoice::doInput(SDL_Event &event) {
             int y = event.button.y-centerAreaRect.y;
 
             if((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
-                SDL_Surface* clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
+                auto* const clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
                 Uint8 regionNum = 0;
-                {
+                { // Scope
                     sdl2::surface_lock lock{ clickmap };
 
                     regionNum = static_cast<Uint8*>(clickmap->pixels)[y * clickmap->pitch + x];

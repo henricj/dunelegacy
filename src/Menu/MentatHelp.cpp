@@ -34,7 +34,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
 
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
 
-    Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)]+3]);
+    const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)]+3]);
 
     if(mission == 0) {
         auto iter = mentatEntries.begin();
@@ -61,7 +61,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
         }
     }
     mentatTopicsList.setHighlightSelectedElement(false);
-    mentatTopicsList.setOnSingleClick(std::bind(&MentatHelp::onListBoxClick, this));
+    mentatTopicsList.setOnSingleClick([&] { onListBoxClick(); });
     mentatTopicsList.setColor(color);
     windowWidget.addWidget(&mentatTopicsList,Point(256+7, 96+7),Point(368 - 14, 224 - 14));
 
@@ -78,7 +78,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     const auto* const pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
     exitButton.setTextures(pMentatExit, pMentatExitPressed);
 
-    exitButton.setOnClick(std::bind(&MentatHelp::onExit, this));
+    exitButton.setOnClick([&] { onExit(); });
     windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
 }
 
@@ -88,10 +88,10 @@ void MentatHelp::drawSpecificStuff()
 {
     MentatMenu::drawSpecificStuff();
 
-    int x1 = getPosition().x;
-    int x2 = getPosition().x + getSize().x - 1;
-    int y1 = getPosition().y;
-    int y2 = getPosition().y + getSize().y - 1;
+    const int x1 = getPosition().x;
+    const int x2 = getPosition().x + getSize().x - 1;
+    const int y1 = getPosition().y;
+    const int y2 = getPosition().y + getSize().y - 1;
 
     renderDrawRect(renderer, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
     renderDrawHLine(renderer, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);

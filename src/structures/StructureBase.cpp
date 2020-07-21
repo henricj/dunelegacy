@@ -214,8 +214,7 @@ void StructureBase::drawGatheringPointLine() {
                     screenborder->world2screenX(indicatorPosition.x), screenborder->world2screenY(indicatorPosition.y),
                     COLOR_HALF_TRANSPARENT);
 
-
-    auto *const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+    const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
     const auto source = calcSpriteSourceRect(pUIIndicator, 0, 3);
     const auto drawLocation = calcSpriteDrawingRect( pUIIndicator,
                                                      screenborder->world2screenX(indicatorPosition.x),

@@ -256,8 +256,9 @@ enum class HOUSETYPE : Sint8 {
     HOUSE_LAST  = HOUSE_MERCENARY
 };
 
+
 template<typename F>
-inline void for_each_housetype(F&& f) {
+void for_each_housetype(F&& f) {
     for(auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++i)
         f(static_cast<HOUSETYPE>(i));
 }
