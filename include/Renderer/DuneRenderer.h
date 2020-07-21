@@ -38,8 +38,16 @@ inline int Dune_RenderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, const
                              const SDL_Rect* dstrect, const double angle, const SDL_Point* center,
                              const SDL_RendererFlip flip) {
     DuneRendererImplementation::countRenderCopy(texture);
- 
+
     return SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center, flip);
+}
+
+inline int Dune_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect,
+                             const SDL_FRect* dstrect, const double angle, const SDL_FPoint* center,
+                             const SDL_RendererFlip flip) {
+    DuneRendererImplementation::countRenderCopy(texture);
+
+    return SDL_RenderCopyExF(renderer, texture, srcrect, dstrect, angle, center, flip);
 }
 
 inline int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
@@ -58,12 +66,15 @@ inline int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture,
         SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
         return SDL_RenderCopyEx(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
-    } else
-        return SDL_RenderCopyEx(renderer, texture->texture_, &texture->source_, dstrect, angle, center, flip);
+    }
+
+    const auto source = texture->source_rect();
+    return SDL_RenderCopyEx(renderer, texture->texture_, &source, dstrect, angle, center, flip);
 }
 
-inline int Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
-                           const SDL_Rect* dstrect) {
+inline int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
+                             const SDL_FRect* dstrect, const double angle, const SDL_FPoint* center,
+                             const SDL_RendererFlip flip) {
     assert(texture && texture->texture_);
     assert(texture->source_.x >= 0 && texture->source_.y >= 0 && texture->source_.w > 0 && texture->source_.h > 0);
 
@@ -76,16 +87,78 @@ inline int Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, c
 
         SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
-        return SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect);
-    } else
-        return SDL_RenderCopy(renderer, texture->texture_, &texture->source_, dstrect);
+        return SDL_RenderCopyExF(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
+    }
+
+    const auto source = texture->source_rect();
+    return SDL_RenderCopyExF(renderer, texture->texture_, &source, dstrect, angle, center, flip);
 }
 
-inline int Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect,
-                           const SDL_Rect* dstrect) {
+inline void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
+                            const SDL_Rect* dstrect) {
+    assert(texture && texture->texture_);
+    assert(texture->source_.x >= 0 && texture->source_.y >= 0 && texture->source_.w > 0 && texture->source_.h > 0);
+
+    DuneRendererImplementation::countRenderCopy(texture->texture_);
+
+    if(srcrect) {
+        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+        assert(srcrect->x + srcrect->w <= texture->source_.w);
+        assert(srcrect->y + srcrect->h <= texture->source_.h);
+
+        SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+
+        SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect);
+    } else {
+        const auto src = texture->source_.as_sdl();
+        SDL_RenderCopy(renderer, texture->texture_, &src, dstrect);
+    }
+}
+
+inline void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
+                            const SDL_FRect* dstrect) {
+    assert(texture && texture->texture_);
+    assert(texture->source_.x >= 0 && texture->source_.y >= 0 && texture->source_.w > 0 && texture->source_.h > 0);
+
+    DuneRendererImplementation::countRenderCopy(texture->texture_);
+
+    if(srcrect) {
+        assert(srcrect->x >= 0 && srcrect->y >= 0 && srcrect->w > 0 && srcrect->h > 0);
+        assert(srcrect->x + srcrect->w <= texture->source_.w);
+        assert(srcrect->y + srcrect->h <= texture->source_.h);
+
+        SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+
+        SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect);
+    } else {
+        const auto src = texture->source_.as_sdl();
+        SDL_RenderCopyF(renderer, texture->texture_, &src, dstrect);
+    }
+}
+
+inline void Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y) {
     DuneRendererImplementation::countRenderCopy(texture);
 
-    return SDL_RenderCopy(renderer, texture, srcrect, dstrect);
+    int w, h;
+    SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+
+    SDL_FRect dest{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+
+    SDL_RenderCopyF(renderer, texture, nullptr, &dest);
+}
+
+inline void Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect,
+                            const SDL_Rect* dstrect) {
+    DuneRendererImplementation::countRenderCopy(texture);
+
+    SDL_RenderCopy(renderer, texture, srcrect, dstrect);
+}
+
+inline void Dune_RenderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect,
+                            const SDL_FRect* dstrect) {
+    DuneRendererImplementation::countRenderCopy(texture);
+
+    SDL_RenderCopyF(renderer, texture, srcrect, dstrect);
 }
 
 inline void Dune_RenderPresent(SDL_Renderer* renderer) {

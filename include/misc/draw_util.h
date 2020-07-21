@@ -65,26 +65,37 @@ inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, Uint3
     renderDrawLine(renderer, x, y1, x, y2, color);
 }
 
-inline void renderDrawRect(SDL_Renderer* renderer, SDL_Rect* rect, Uint32 color) {
+inline void renderDrawRect(SDL_Renderer* renderer, const SDL_Rect* rect, Uint32 color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderDrawRect(renderer, rect);
 }
 
-inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
-    SDL_Rect rect = { x1, y1, x2-x1+1, y2-y1+1 };
-    renderDrawRect(renderer, &rect, color);
+inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderDrawRectF(renderer, rect);
 }
 
-inline void renderFillRect(SDL_Renderer* renderer, SDL_Rect* rect, Uint32 color) {
+inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+    SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
+                      static_cast<float> (y2 - y1 + 1)};
+    renderDrawRectF(renderer, &rect, color);
+}
+
+inline void renderFillRect(SDL_Renderer* renderer, const SDL_Rect* rect, Uint32 color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderFillRect(renderer, rect);
 }
 
-inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
-    SDL_Rect rect = { x1, y1, x2-x1+1, y2-y1+1 };
-    renderFillRect(renderer, &rect, color);
+inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderFillRectF(renderer, rect);
 }
 
+inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+    SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
+                      static_cast<float> (y2 - y1 + 1)};
+    renderFillRectF(renderer, &rect, color);
+}
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 

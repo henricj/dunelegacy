@@ -210,12 +210,82 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int n
    (default is VAlign::Top) \return the rectangle for drawing pTexture at the specified position when passed to
    SDL_RenderCopy
 */
+inline SDL_FRect calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int numCols, int numRows = 1,
+                                      HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    int w, h;
+    SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
+
+    if (numCols > 1) w /= numCols;
+    if (numRows > 1) h /= numRows;
+
+    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+
+    switch(halign) {
+        case HAlign::Left: /*nothing*/ break;
+        case HAlign::Center: rect.x -= rect.w / 2; break;
+        case HAlign::Right: rect.x -= rect.w - 1; break;
+    }
+
+    switch(valign) {
+        case VAlign::Top: /*nothing*/ break;
+        case VAlign::Center: rect.y -= rect.h / 2; break;
+        case VAlign::Bottom: rect.y -= rect.h - 1; break;
+    }
+
+    return rect;
+}
+
+/**
+    Calculates the drawing rectangle for drawing a sprite from pTexture at (x,y). The parameters halign and valign
+   determine which coordinate in the sprite is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the
+   bottom right corner of the sprite is drawn at position (x,y) \param  pTexture    the texture to calculate the rect
+   for \param  x           the x-coordinate \param  y           the y-coordinate \param  numCols     the number of
+   sprites in each column \param  numRows     the number of sprites in each row (default is 1) \param  halign      the
+   horizontal alignment of pTexture (default is HAlign::Left) \param  valign      the vertical alignment of pTexture
+   (default is VAlign::Top) \return the rectangle for drawing pTexture at the specified position when passed to
+   SDL_RenderCopy
+*/
 inline SDL_Rect calcSpriteDrawingRect(const DuneTexture* pTexture, int x, int y, int numCols, int numRows = 1,
                                       HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
     SDL_Rect rect = {x, y, pTexture->source_.w, pTexture->source_.h};
 
     rect.w /= numCols;
     rect.h /= numRows;
+
+    switch(halign) {
+        case HAlign::Left: /*nothing*/ break;
+        case HAlign::Center: rect.x -= rect.w / 2; break;
+        case HAlign::Right: rect.x -= rect.w - 1; break;
+    }
+
+    switch(valign) {
+        case VAlign::Top: /*nothing*/ break;
+        case VAlign::Center: rect.y -= rect.h / 2; break;
+        case VAlign::Bottom: rect.y -= rect.h - 1; break;
+    }
+
+    return rect;
+}
+
+/**
+    Calculates the drawing rectangle for drawing a sprite from pTexture at (x,y). The parameters halign and valign
+   determine which coordinate in the sprite is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the
+   bottom right corner of the sprite is drawn at position (x,y) \param  pTexture    the texture to calculate the rect
+   for \param  x           the x-coordinate \param  y           the y-coordinate \param  numCols     the number of
+   sprites in each column \param  numRows     the number of sprites in each row (default is 1) \param  halign      the
+   horizontal alignment of pTexture (default is HAlign::Left) \param  valign      the vertical alignment of pTexture
+   (default is VAlign::Top) \return the rectangle for drawing pTexture at the specified position when passed to
+   SDL_RenderCopy
+*/
+inline SDL_FRect calcSpriteDrawingRectF(const DuneTexture* pTexture, int x, int y, int numCols, int numRows = 1,
+                                      HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    auto w = pTexture->source_.w;
+    auto h = pTexture->source_.h;
+
+    if (numCols > 1) w /= numCols;
+    if (numRows > 1) h /= numRows;
+
+    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
     switch(halign) {
         case HAlign::Left: /*nothing*/ break;
@@ -267,9 +337,35 @@ inline SDL_Rect calcDrawingRect(SDL_Texture* pTexture, int x, int y, HAlign hali
    is HAlign::Left) \param  valign      the vertical alignment of pTexture (default is VAlign::Top) \return the
    rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
+inline SDL_FRect calcDrawingRectF(SDL_Texture* pTexture, int x, int y, HAlign halign = HAlign::Left,
+                                VAlign valign = VAlign::Top) {
+    return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
+}
+
+/**
+    Calculates the drawing rectangle for drawing pTexture at (x,y). The parameters halign and valign determine which
+   coordinate in pTexture is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the bottom right corner
+   of pTexture is drawn at position (x,y) \param  pTexture    the texture to calculate the rect for \param  x the
+   x-coordinate \param  y           the y-coordinate \param  halign      the horizontal alignment of pTexture (default
+   is HAlign::Left) \param  valign      the vertical alignment of pTexture (default is VAlign::Top) \return the
+   rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
+*/
 inline SDL_Rect calcDrawingRect(const DuneTexture* pTexture, int x, int y, HAlign halign = HAlign::Left,
                                 VAlign valign = VAlign::Top) {
     return calcSpriteDrawingRect(pTexture, x, y, 1, 1, halign, valign);
+}
+
+/**
+    Calculates the drawing rectangle for drawing pTexture at (x,y). The parameters halign and valign determine which
+   coordinate in pTexture is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the bottom right corner
+   of pTexture is drawn at position (x,y) \param  pTexture    the texture to calculate the rect for \param  x the
+   x-coordinate \param  y           the y-coordinate \param  halign      the horizontal alignment of pTexture (default
+   is HAlign::Left) \param  valign      the vertical alignment of pTexture (default is VAlign::Top) \return the
+   rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
+*/
+inline SDL_FRect calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAlign::Left,
+                                VAlign valign = VAlign::Top) {
+    return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
 }
 
 /**
