@@ -105,4 +105,10 @@ inline void Dune_RenderPresent(SDL_Renderer* renderer) {
     SDL_RenderPresent(renderer);
 }
 
+void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, Uint32 color = COLOR_WHITE);
+
+inline void DuneDrawSelectionBox(SDL_Renderer* renderer, const SDL_Rect& rect, Uint32 color = COLOR_WHITE) {
+    DuneDrawSelectionBox(renderer, rect.x, rect.y, rect.w, rect.h, color);
+}
+
 #endif // DUNERENDERER_H

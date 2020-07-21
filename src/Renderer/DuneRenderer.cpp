@@ -1,5 +1,47 @@
 #include <Renderer/DuneRenderer.h>
 
+
+void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, Uint32 color) {
+    setRenderDrawColor(renderer, color);
+
+    std::array<SDL_FPoint, 3> points;
+
+    const auto to_pt = [](int u, int v) { return SDL_FPoint{static_cast<float>(u), static_cast<float>(v)}; };
+
+    // now draw the box with parts at all corners
+    for(auto i = 0; i <= currentZoomlevel; i++) {
+        const auto offset = (currentZoomlevel + 1) * 3;
+
+        // top left bit
+        points[0] = to_pt(x + i, y + offset);
+        points[1] = to_pt(x + i, y + i);
+        points[2] = to_pt(x + offset, y + i);
+
+        SDL_RenderDrawLinesF(renderer, points.data(), points.size());
+
+        // top right bit
+        points[0] = to_pt(x + w - 1 - i, y + offset);
+        points[1] = to_pt(x + w - 1 - i, y + i);
+        points[2] = to_pt(x + w - 1 - offset, y + i);
+
+        SDL_RenderDrawLinesF(renderer, points.data(), points.size());
+
+        // bottom left bit
+        points[0] = to_pt(x + i, y + h - 1 - offset);
+        points[1] = to_pt(x + i, y + h - i);
+        points[2] = to_pt(x + offset, y + h - i);
+
+        SDL_RenderDrawLinesF(renderer, points.data(), points.size());
+
+        // bottom right bit
+        points[0] = to_pt(x + w - 1 - offset, y + h - 1 - i);
+        points[1] = to_pt(x + w - 1 - i, y + h - 1 - i);
+        points[2] = to_pt(x + w - 1 - i, y + h - 1 - offset);
+
+        SDL_RenderDrawLinesF(renderer, points.data(), points.size());
+    }
+}
+
 #if _DEBUG
 
 void Dune_RenderDump() {

@@ -1622,29 +1622,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id) != selectedStructures.end()) ) {
             //now draw the selection box thing, with parts at all corners of structure
 
-            // top left bit
-            for(int i=0;i<=currentZoomlevel;i++) {
-                renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-            }
-
-            // top right bit
-            for(int i=0;i<=currentZoomlevel;i++) {
-                renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y+i, selectionDest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-            }
-
-            // bottom left bit
-            for(int i=0;i<=currentZoomlevel;i++) {
-                renderDrawHLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                renderDrawVLine(renderer, selectionDest.x+i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            }
-
-            // bottom right bit
-            for(int i=0;i<=currentZoomlevel;i++) {
-                renderDrawHLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.x + selectionDest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                renderDrawVLine(renderer, selectionDest.x + selectionDest.w-1 - i, selectionDest.y + selectionDest.h-1 - i, selectionDest.y + selectionDest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-            }
+            DuneDrawSelectionBox(renderer, selectionDest);
         }
 
     }
@@ -1839,30 +1817,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 dest.w = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
                 dest.h = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
 
-                // now draw the box with parts at all corners
-                // top left bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                }
-
-                // top right bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-                }
-
-                // bottom left bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                }
-
-                // bottom right bit
-                for(int i=0;i<=currentZoomlevel;i++) {
-                    renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                    renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-                }
+                DuneDrawSelectionBox(renderer, dest);
             }
 
         } else if(currentEditorMode.mode == EditorMode::EditorMode_Structure) {

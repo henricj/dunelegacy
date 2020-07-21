@@ -181,30 +181,7 @@ void StructureBase::drawSelectionBox() {
     dest.h = getHeight(graphic[currentZoomlevel])/numImagesY;
 
     //now draw the selection box thing, with parts at all corners of structure
-
-    // top left bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-    }
-
-    // top right bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*3, COLOR_WHITE);
-    }
-
-    // bottom left bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*3, COLOR_WHITE);
-        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-    }
-
-    // bottom right bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*3, COLOR_WHITE);
-    }
+    DuneDrawSelectionBox(renderer, dest);
 
     // health bar
     for(int i=1;i<=currentZoomlevel+1;i++) {
@@ -220,30 +197,7 @@ void StructureBase::drawOtherPlayerSelectionBox() {
     dest.h = getHeight(graphic[currentZoomlevel])/numImagesY - 2*(currentZoomlevel+1);
 
     //now draw the selection box thing, with parts at all corners of structure
-
-    // top left bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x+i, dest.y+i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        renderDrawVLine(renderer, dest.x+i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-    }
-
-    // top right bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y+i, dest.y+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-    }
-
-    // bottom left bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.x+(currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        renderDrawVLine(renderer, dest.x+i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-    }
-
-    // bottom right bit
-    for(int i=0;i<=currentZoomlevel;i++) {
-        renderDrawHLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.x + dest.w-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-        renderDrawVLine(renderer, dest.x + dest.w-1 - i, dest.y + dest.h-1 - i, dest.y + dest.h-1 - (currentZoomlevel+1)*2, COLOR_LIGHTBLUE);
-    }
+    DuneDrawSelectionBox(renderer, dest, COLOR_LIGHTBLUE);
 }
 
 void StructureBase::drawGatheringPointLine() {
