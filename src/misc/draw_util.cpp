@@ -277,8 +277,14 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
         THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") + std::string(SDL_GetError()));
     }
 
-    if(SDL_HasColorKey(inSurface)) {
-        if(SDL_SetTextureBlendMode(pTexture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
+    SDL_BlendMode blendMode;
+    SDL_GetSurfaceBlendMode(inSurface, &blendMode);
+
+    if(blendMode == SDL_BlendMode::SDL_BLENDMODE_NONE && SDL_HasColorKey(inSurface))
+        blendMode = SDL_BlendMode::SDL_BLENDMODE_BLEND;
+
+    if(blendMode != SDL_BlendMode::SDL_BLENDMODE_NONE) {
+        if(SDL_SetTextureBlendMode(pTexture.get(), blendMode)) {
             THROW(std::invalid_argument,
                   std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") +
                       std::string(SDL_GetError()));
