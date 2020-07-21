@@ -25,7 +25,7 @@
 #include <string>
 #include <array>
 
-class DuneTexture;
+struct DuneTexture;
 
 typedef std::array<const DuneTexture*, NUM_ZOOMLEVEL> zoomable_texture;
 
