@@ -152,7 +152,7 @@ void InGameSettingsMenu::onOK() {
     myINIFile.setIntValue("Audio","SFX Volume", settings.audio.sfxVolume);
     myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
     if(!myINIFile.saveChangesTo(getConfigFilepath())) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                      getConfigFilepath().u8string().c_str());
     }
 

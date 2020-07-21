@@ -101,7 +101,7 @@ const DuneTexture* GFXManager::getSmallDetailPic(unsigned int id) const {
 
     const auto& texture = duneTextures.get_small_object(id);
 
-    if(!texture) SDL_Log("Unable to get small detail picture %u", id);
+    if(!texture) sdl2::log_info("Unable to get small detail picture %u", id);
 
     return texture ? &texture : nullptr;
 }
@@ -111,7 +111,7 @@ const DuneTexture* GFXManager::getTinyPicture(unsigned int id) const {
 
     const auto& texture = duneTextures.get_tiny_picture(id);
 
-    if(!texture) SDL_Log("Unable to get tiny picture %u", id);
+    if(!texture) sdl2::log_info("Unable to get tiny picture %u", id);
 
     return texture ? &texture : nullptr;
 }
@@ -124,7 +124,7 @@ const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
 
     const auto& texture = duneTextures.get_generated_picture(id);
 
-    if(!texture) SDL_Log("Unable to get generated picture %u", id);
+    if(!texture) sdl2::log_info("Unable to get generated picture %u", id);
 
     return texture ? &texture : nullptr;
 }
@@ -136,7 +136,7 @@ const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) co
 
     const auto& texture = duneTextures.get_ui_graphic(id, house);
 
-    if(!texture) SDL_Log("Unable to get ui graphic %u for house %d", id, house);
+    if(!texture) sdl2::log_info("Unable to get ui graphic %u for house %d", id, house);
 
     return texture ? &texture : nullptr;
 }
@@ -148,7 +148,7 @@ const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE hou
 
     const auto& texture = duneTextures.get_ui_graphic(num, house);
 
-    if(!texture) SDL_Log("Unable to get map choice piece %u for house %d", num, house);
+    if(!texture) sdl2::log_info("Unable to get map choice piece %u for house %d", num, house);
 
     return texture ? &texture : nullptr;
 }

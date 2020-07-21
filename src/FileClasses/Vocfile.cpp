@@ -169,11 +169,11 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 len -= 2;
                 const auto tmp_rate = getSampleRateFromVOCRate(time_constant);
                 if((rate != 0) && (rate != tmp_rate)) {
-                    SDL_Log("This voc-file contains data blocks with different sampling rates: old rate: %d, new rate: %d",rate,tmp_rate);
+                    sdl2::log_info("This voc-file contains data blocks with different sampling rates: old rate: %d, new rate: %d",rate,tmp_rate);
                 }
                 rate = tmp_rate;
 
-                //SDL_Log("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
+                //sdl2::log_info("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
 
                 if (packing == 0) {
                     auto* tmp_ret_sound = (Uint8 *) SDL_realloc(ret_sound.get(), decsize + len);
@@ -213,7 +213,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 if(rate != 0) {
                     length = static_cast<Uint32>((static_cast<double>(SilenceRate) / static_cast<double>(rate)) * SilenceLength) + 1;
                 } else {
-                    SDL_Log("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
+                    sdl2::log_info("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
                     length = SilenceLength;
                 }
 

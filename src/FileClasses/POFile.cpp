@@ -43,7 +43,7 @@ static std::string extractString(const std::string& str, const std::string& file
     size_t lastQuote = str.find_last_of('\"');
 
     if(firstQuote == std::string::npos || lastQuote == std::string::npos) {
-        SDL_Log("%s:%d: Missing opening or closing quotes!", filename.c_str(), lineNum);
+        sdl2::log_info("%s:%d: Missing opening or closing quotes!", filename.c_str(), lineNum);
         return "";
     }
 
@@ -55,7 +55,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
     std::map<std::string, std::string> mapping;
 
     if(rwop == nullptr) {
-        SDL_Log("%s: Cannot find this file!", filename.c_str());
+        sdl2::log_info("%s: Cannot find this file!", filename.c_str());
         return mapping;
     }
 
@@ -99,7 +99,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
 
         if(completeLine.substr(lineStart, 5) == "msgid") {
             if(msgidMode) {
-                SDL_Log("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
+                sdl2::log_info("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
             } else if(msgstrMode) {
                 // we have finished the previous translation
                 mapping[msgid] = msgstr;

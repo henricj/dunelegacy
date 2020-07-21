@@ -147,7 +147,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
         return pic;
     } catch (std::exception &e) {
-        SDL_Log("%s", e.what());
+        sdl2::log_info("%s", e.what());
 
         return nullptr;
     }
@@ -182,7 +182,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
 
     const auto error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
     if(error != 0) {
-        SDL_Log("%s", lodepng_error_text(error));
+        sdl2::log_info("%s", lodepng_error_text(error));
         free(ppngFile);
         return -1;
     }
@@ -190,7 +190,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     lodepng_ptr ppngFile_ptr{ ppngFile };
 
     if(SDL_RWwrite(RWop, ppngFile_ptr.get(), 1, pngFileSize) != pngFileSize) {
-        SDL_Log("%s", SDL_GetError());
+        sdl2::log_info("%s", SDL_GetError());
         return -1;
     }
 

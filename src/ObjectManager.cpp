@@ -50,7 +50,7 @@ void ObjectManager::load(InputStream& stream) {
 
         auto pObject = loadObject(stream, objectID);
         if(objectID != pObject->getObjectID()) {
-            SDL_Log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!", objectID,
+            sdl2::log_info("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!", objectID,
                     pObject->getObjectID());
         }
 
@@ -65,7 +65,7 @@ bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
 
     if(hint->second.get() != pObject) {
         // there is already such an object in the list
-        SDL_Log("ObjectManager::addObject(): The object with this id already exists (%d)!",
+        sdl2::log_info("ObjectManager::addObject(): The object with this id already exists (%d)!",
                 hint->second->getObjectID());
         return false;
     }

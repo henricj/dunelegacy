@@ -25,13 +25,13 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
 
     /* Get information about texture we want to save */
     if(SDL_QueryTexture(texture, &format, nullptr, &w, &h)) {
-        SDL_Log("Failed querying texture: %s\n", SDL_GetError());
+        sdl2::log_info("Failed querying texture: %s\n", SDL_GetError());
         return;
     }
 
     const auto ren_tex = sdl2::texture_ptr{SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
     if(!ren_tex) {
-        SDL_Log("Failed creating render texture: %s\n", SDL_GetError());
+        sdl2::log_info("Failed creating render texture: %s\n", SDL_GetError());
         return;
     }
 
@@ -42,7 +42,7 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
      * can access
      */
     if(SDL_SetRenderTarget(renderer, ren_tex.get())) {
-        SDL_Log("Failed setting render target: %s\n", SDL_GetError());
+        sdl2::log_info("Failed setting render target: %s\n", SDL_GetError());
         return;
     }
 
@@ -54,7 +54,7 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
 
     if(SDL_RenderCopy(renderer, texture, nullptr, nullptr)) {
-        SDL_Log("Failed copying texture data: %s\n", SDL_GetError());
+        sdl2::log_info("Failed copying texture data: %s\n", SDL_GetError());
         return;
     }
 
@@ -66,16 +66,16 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
         const sdl2::surface_lock lock{surface.get()};
 
         if(SDL_RenderReadPixels(renderer, nullptr, format, lock.pixels(), lock.pitch())) {
-            SDL_Log("Failed reading pixel data: %s\n", SDL_GetError());
+            sdl2::log_info("Failed reading pixel data: %s\n", SDL_GetError());
             return;
         }
     }
 
     /* Save result to an image */
     if(SDL_SaveBMP(surface.get(), filename)) {
-        SDL_Log("Failed saving image: %s\n", SDL_GetError());
+        sdl2::log_info("Failed saving image: %s\n", SDL_GetError());
         return;
     }
 
-    SDL_Log("Saved texture as BMP to \"%s\"\n", filename);
+    sdl2::log_info("Saved texture as BMP to \"%s\"\n", filename);
 }

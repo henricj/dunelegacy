@@ -104,7 +104,7 @@ void CommandManager::addCommandList(const std::string& playername, const Command
 
         for(const auto& command : commandListEntry.commands) {
             if(command.getPlayerID() != pPlayer->getPlayerID()) {
-                SDL_Log("Warning: Player '%s' send a command which he is not allowed to give!", playername.c_str());
+                sdl2::log_info("Warning: Player '%s' send a command which he is not allowed to give!", playername.c_str());
             }
 
             addCommand(command, commandListEntry.cycle);

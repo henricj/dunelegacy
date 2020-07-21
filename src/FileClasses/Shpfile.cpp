@@ -95,7 +95,7 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
             DecodeDestination.resize(size);
 
             if(decode80(Fileheader + 10, &DecodeDestination[0], size) == -1) {
-                SDL_Log("Warning: Checksum-Error in Shp-File!");
+                sdl2::log_info("Warning: Checksum-Error in Shp-File!");
             }
 
             shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
@@ -107,7 +107,7 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
             DecodeDestination.resize(size);
 
             if(decode80(Fileheader + 10 + 16, &DecodeDestination[0], size) == -1) {
-                SDL_Log("Warning: Checksum-Error in Shp-File!");
+                sdl2::log_info("Warning: Checksum-Error in Shp-File!");
             }
 
             shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
@@ -242,7 +242,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
                     DecodeDestination.resize(size);
 
                     if(decode80(Fileheader + 10,&DecodeDestination[0],size) == -1) {
-                        SDL_Log("Warning: Checksum-Error in Shp-File!");
+                        sdl2::log_info("Warning: Checksum-Error in Shp-File!");
                     }
 
                     shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);
@@ -254,7 +254,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
                     DecodeDestination.resize(size);
 
                     if(decode80(Fileheader + 10 + 16, &DecodeDestination[0], size) == -1) {
-                        SDL_Log("Warning: Checksum-Error in Shp-File!");
+                        sdl2::log_info("Warning: Checksum-Error in Shp-File!");
                     }
 
                     shpCorrectLF(&DecodeDestination[0], ImageOut.get(), size);

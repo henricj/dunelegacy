@@ -139,7 +139,7 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
         std::string playerclass = stream.readString();
         const auto* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if(pPlayerData == nullptr) {
-            SDL_Log("Warning: Cannot load player '%s'", playerclass.c_str());
+            sdl2::log_info("Warning: Cannot load player '%s'", playerclass.c_str());
         } else {
             addPlayer(pPlayerData->load(context, stream, this));
         }
@@ -279,29 +279,29 @@ FixPoint House::takeCredits(FixPoint amount) {
 
 
 void House::printStat() const {
-    SDL_Log("House %s: (Number of Units: %d, Number of Structures: %d)", getHouseNameByNumber(getHouseID()).c_str(),
+    sdl2::log_info("House %s: (Number of Units: %d, Number of Structures: %d)", getHouseNameByNumber(getHouseID()).c_str(),
             numUnits, numStructures);
-    SDL_Log("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks], numItem[Structure_WOR]);
-    SDL_Log("Light Factories: %d\tHeavy Factories: %d", numItem[Structure_LightFactory],
+    sdl2::log_info("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks], numItem[Structure_WOR]);
+    sdl2::log_info("Light Factories: %d\tHeavy Factories: %d", numItem[Structure_LightFactory],
             numItem[Structure_HeavyFactory]);
-    SDL_Log("IXs: %d\t\t\tPalaces: %d", numItem[Structure_IX], numItem[Structure_Palace]);
-    SDL_Log("Repair Yards: %d\t\tHigh-Tech Factories: %d", numItem[Structure_RepairYard],
+    sdl2::log_info("IXs: %d\t\t\tPalaces: %d", numItem[Structure_IX], numItem[Structure_Palace]);
+    sdl2::log_info("Repair Yards: %d\t\tHigh-Tech Factories: %d", numItem[Structure_RepairYard],
             numItem[Structure_HighTechFactory]);
-    SDL_Log("Refineries: %d\t\tStarports: %d", numItem[Structure_Refinery], numItem[Structure_StarPort]);
-    SDL_Log("Walls: %d\t\tRocket Turrets: %d", numItem[Structure_Wall], numItem[Structure_RocketTurret]);
-    SDL_Log("Gun Turrets: %d\t\tConstruction Yards: %d", numItem[Structure_GunTurret],
+    sdl2::log_info("Refineries: %d\t\tStarports: %d", numItem[Structure_Refinery], numItem[Structure_StarPort]);
+    sdl2::log_info("Walls: %d\t\tRocket Turrets: %d", numItem[Structure_Wall], numItem[Structure_RocketTurret]);
+    sdl2::log_info("Gun Turrets: %d\t\tConstruction Yards: %d", numItem[Structure_GunTurret],
             numItem[Structure_ConstructionYard]);
-    SDL_Log("Windtraps: %d\t\tRadars: %d", numItem[Structure_WindTrap], numItem[Structure_Radar]);
-    SDL_Log("Silos: %d", numItem[Structure_Silo]);
-    SDL_Log("Carryalls: %d\t\tFrigates: %d", numItem[Unit_Carryall], numItem[Unit_Frigate]);
-    SDL_Log("Devastators: %d\t\tDeviators: %d", numItem[Unit_Devastator], numItem[Unit_Deviator]);
-    SDL_Log("Soldiers: %d\t\tTrooper: %d", numItem[Unit_Soldier], numItem[Unit_Trooper]);
-    SDL_Log("Saboteur: %d\t\tSandworms: %d", numItem[Unit_Saboteur], numItem[Unit_Sandworm]);
-    SDL_Log("Quads: %d\t\tTrikes: %d", numItem[Unit_Quad], numItem[Unit_Trike]);
-    SDL_Log("Raiders: %d\t\tTanks: %d", numItem[Unit_RaiderTrike], numItem[Unit_Tank]);
-    SDL_Log("Siege Tanks : %d\t\tSonic Tanks: %d", numItem[Unit_SiegeTank], numItem[Unit_SonicTank]);
-    SDL_Log("Harvesters: %d\t\tMCVs: %d", numItem[Unit_Harvester], numItem[Unit_MCV]);
-    SDL_Log("Ornithopters: %d\t\tRocket Launchers: %d", numItem[Unit_Ornithopter], numItem[Unit_Launcher]);
+    sdl2::log_info("Windtraps: %d\t\tRadars: %d", numItem[Structure_WindTrap], numItem[Structure_Radar]);
+    sdl2::log_info("Silos: %d", numItem[Structure_Silo]);
+    sdl2::log_info("Carryalls: %d\t\tFrigates: %d", numItem[Unit_Carryall], numItem[Unit_Frigate]);
+    sdl2::log_info("Devastators: %d\t\tDeviators: %d", numItem[Unit_Devastator], numItem[Unit_Deviator]);
+    sdl2::log_info("Soldiers: %d\t\tTrooper: %d", numItem[Unit_Soldier], numItem[Unit_Trooper]);
+    sdl2::log_info("Saboteur: %d\t\tSandworms: %d", numItem[Unit_Saboteur], numItem[Unit_Sandworm]);
+    sdl2::log_info("Quads: %d\t\tTrikes: %d", numItem[Unit_Quad], numItem[Unit_Trike]);
+    sdl2::log_info("Raiders: %d\t\tTanks: %d", numItem[Unit_RaiderTrike], numItem[Unit_Tank]);
+    sdl2::log_info("Siege Tanks : %d\t\tSonic Tanks: %d", numItem[Unit_SiegeTank], numItem[Unit_SonicTank]);
+    sdl2::log_info("Harvesters: %d\t\tMCVs: %d", numItem[Unit_Harvester], numItem[Unit_MCV]);
+    sdl2::log_info("Ornithopters: %d\t\tRocket Launchers: %d", numItem[Unit_Ornithopter], numItem[Unit_Launcher]);
 }
 
 
@@ -547,7 +547,7 @@ void House::lose(bool bSilent) const {
         try {
             context.game.addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
         } catch (std::exception& e) {
-            SDL_Log("House::lose(): %s", e.what());
+            sdl2::log_info("House::lose(): %s", e.what());
         }
     }
 
