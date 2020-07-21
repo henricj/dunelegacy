@@ -1,12 +1,8 @@
 #include <Renderer/DuneTextures.h>
 
-#include <globals.h>
-
 #include <FileClasses/SurfaceLoader.h>
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 #include <rectpack2D/finders_interface.h>
-
-#include <FileClasses/SaveTextureAsBmp.h>
 
 DuneTextures::DuneTextures() = default;
 
@@ -16,6 +12,7 @@ DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pic
     : object_pictures_{std::move(object_pictures)}, small_details_{std::move(small_details)},
       tiny_pictures_{std::move(tiny_pictures)}, ui_graphics_{std::move(ui_graphics)},
       generated_pictures_{std::move(generated_pictures)}, textures_{std::move(textures)} { }
+
 
 DuneTextures::~DuneTextures() = default;
 
@@ -158,17 +155,20 @@ void add_object_pictures(SurfaceLoader* surfaceLoader, std::vector<rect_type>& r
     }
 }
 
+template<typename Predicate>
 void add_ui_graphics(SurfaceLoader* surfaceLoader, HOUSETYPE house, std::vector<rect_type>& rectangles,
-                     std::vector<std::tuple<int, Uint32, SDL_Surface*>>& ui_graphics) {
+                     std::vector<std::tuple<int, Uint32, HOUSETYPE, SDL_Surface*>>& ui_graphics, Predicate&& predicate) {
+    static_assert(std::is_invocable_r<bool, Predicate, Uint32, HOUSETYPE, SDL_Surface*>::value);
+
     if(rectangles.size() + NUM_UIGRAPHICS < rectangles.capacity())
         rectangles.reserve(rectangles.size() + NUM_UIGRAPHICS);
 
     for(auto id = 0u; id < NUM_UIGRAPHICS; ++id) {
         auto* surface = surfaceLoader->getUIGraphicSurface(id, house);
 
-        if(!surface) continue;
+        if(!surface || !predicate(id, house, surface)) continue;
 
-        ui_graphics.emplace_back(rectangles.size(), id, surface);
+        ui_graphics.emplace_back(rectangles.size(), id, house, surface);
         rectangles.emplace_back(0, 0, surface->w, surface->h);
     }
 }
@@ -228,9 +228,9 @@ bool draw_object_pictures(Uint32 format, const std::vector<rect_type>& rectangle
 }
 
 bool draw_ui_graphics(SDL_Surface* atlas_surface, Uint32 format,
-                      HOUSETYPE house, const std::vector<rect_type>& rectangles,
-                      const std::vector<std::tuple<int, Uint32, SDL_Surface*>>& ui_graphics) {
-    for(const auto& [idx, objectID, surface] : ui_graphics) {
+                      const std::vector<rect_type>& rectangles,
+                      const std::vector<std::tuple<int, Uint32, HOUSETYPE, SDL_Surface*>>& ui_graphics) {
+    for(const auto& [idx, objectID, house, surface] : ui_graphics) {
         if(!surface) continue; // We use the same graphics as another object_picture.
 
         const auto& r = rectangles[idx];
@@ -296,7 +296,8 @@ class AtlasFactory final {
 
 public:
     template<typename Add, typename Draw, typename Update>
-    sdl2::texture_ptr create_surface(SDL_Renderer* renderer, Uint32 format, int max_side, Add&& add, Draw&& draw, Update&& update) {
+    sdl2::texture_ptr create_surface(SDL_Renderer* renderer, Uint32 format, int max_side, Add&& add, Draw&& draw,
+                                     Update&& update) {
         static_assert(std::is_invocable_r<bool, Add, std::vector<rect_type>&>::value);
         static_assert(std::is_invocable_r<bool, Draw, SDL_Surface*, const std::vector<rect_type>&>::value);
         static_assert(std::is_invocable_r<bool, Update, SDL_Texture*, const std::vector<rect_type>&>::value);
