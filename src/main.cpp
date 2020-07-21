@@ -80,7 +80,7 @@
 #define HAS_ASYNC
 #endif
 
-#if defined( __clang__ ) || defined(__GNUG__) || defined( __GLIBCXX__ ) || defined( __GLIBCPP__ )
+#if HAVE_CXXBI_H
 #include <cxxabi.h>
 inline std::string demangleSymbol(const char* symbolname) {
     int status = 0;
