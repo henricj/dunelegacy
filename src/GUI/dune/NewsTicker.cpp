@@ -85,7 +85,7 @@ void NewsTicker::draw(Point position) {
         }
 
         if(pCurrentMessageTexture != nullptr) {
-            SDL_FRect textLocation { position.x + 10, position.y + 6, 0, 0 };
+            SDL_FRect textLocation { static_cast<float>(position.x + 10), static_cast<float>(position.y + 6), 0.f, 0.f };
             SDL_Rect cut { 0, 0, 0, 0 };
 
             if(timer>0) {
