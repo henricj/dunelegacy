@@ -19,7 +19,7 @@
 #define SDL2PP_H
 
 #include <memory>
-#include <assert.h>
+#include <cassert>
 #include <misc/exceptions.h>
 #include <misc/unique_or_nonowning_ptr.h>
 #include <SDL2/SDL.h>
