@@ -86,8 +86,7 @@ public:
             return;
         }
 
-        const auto dest = calcDrawingRect(pTexture, position.x, position.y);
-        Dune_RenderCopy(renderer, pTexture, nullptr, &dest);
+        pTexture->draw(renderer, position.x, position.y);
     }
 
 

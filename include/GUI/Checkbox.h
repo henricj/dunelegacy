@@ -115,8 +115,7 @@ public:
             return;
         }
 
-        const auto dest = calcDrawingRect(&tex, position.x, position.y);
-        Dune_RenderCopy(renderer, &tex, nullptr, &dest);
+        tex.draw(renderer, position.x, position.y);
     }
 
     /**

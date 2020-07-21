@@ -158,8 +158,7 @@ void Button::draw(Point position) {
         return;
     }
 
-    const auto dest = calcDrawingRect(tex, position.x, position.y);
-    Dune_RenderCopy(renderer, tex, nullptr, &dest);
+    tex->draw(renderer, position.x, position.y);
 }
 
 void Button::drawOverlay(Point position) {
@@ -182,7 +181,7 @@ void Button::drawOverlay(Point position) {
         dest.y = renderRect.h - dest.h;
     }
 
-    Dune_RenderCopy(renderer, tooltipTexture.get(), nullptr, &dest);
+    Dune_RenderCopyF(renderer, tooltipTexture.get(), nullptr, &dest);
 }
 
 void Button::invalidateTextures() {

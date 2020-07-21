@@ -455,8 +455,7 @@ void Game::drawScreen()
                                 image = validPlace;
                             }
 
-                            const auto drawLocation = calcDrawingRect(image, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
-                            Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
+                            image ->draw(renderer, screenborder->world2screenX(i*TILESIZE), screenborder->world2screenY(j*TILESIZE));
                         }
                     }
                 }
@@ -494,12 +493,12 @@ void Game::drawScreen()
     if((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE,TILESIZE)))) {
         auto *const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         auto source = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
-        auto drawLocation = calcSpriteDrawingRect(  pUIIndicator,
+        auto drawLocation = calcSpriteDrawingRectF(  pUIIndicator,
                                                         screenborder->world2screenX(indicatorPosition.x),
                                                         screenborder->world2screenY(indicatorPosition.y),
                                                         3, 1,
                                                         HAlign::Center, VAlign::Center);
-        Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+        Dune_RenderCopyF(renderer, pUIIndicator, &source, &drawLocation);
     }
 
 
@@ -997,7 +996,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const
         }
     }
 
-    Dune_RenderCopy(renderer, pCursor, nullptr, &dest);
+    if(pCursor) pCursor->draw(renderer, dest.x, dest.y);
 }
 
 void Game::setupView(const GameContext& context) const
