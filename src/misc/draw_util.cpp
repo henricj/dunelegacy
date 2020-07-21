@@ -555,7 +555,7 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
     if (!source)
         THROW(std::runtime_error, "mapSurfaceColorRange(): Null source!");
 
-    sdl2::surface_ptr retPic{ SDL_ConvertSurface(source,source->format,source->flags) };
+    sdl2::surface_ptr retPic{SDL_ConvertSurface(source, source->format, 0)};
 
     if (!source)
         THROW(std::runtime_error, "mapSurfaceColorRange(): Cannot copy image!");
