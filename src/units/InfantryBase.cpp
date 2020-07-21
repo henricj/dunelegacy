@@ -458,7 +458,7 @@ void InfantryBase::setLocation(const GameContext& context, int xPos, int yPos) {
 
 void InfantryBase::setSpeeds(const GameContext& context) {
     if(oldTilePosition == INVALID_POS) {
-        SDL_Log("Warning: InfantryBase::setSpeeds(context): Infantry tile position == INVALID_POS.");
+        sdl2::log_info("Warning: InfantryBase::setSpeeds(context): Infantry tile position == INVALID_POS.");
     } else if(tilePosition == oldTilePosition) {
         // haven't changed infantry position
         parent::setSpeeds(context);

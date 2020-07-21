@@ -2478,7 +2478,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
   uint8 *file_data = nullptr;
   const Sint64 endOffset = SDL_RWsize(rwop);
   if(endOffset <= 0) {
-    SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
+    sdl2::log_info("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
     return;
   }
   auto file_size = static_cast<size_t>(endOffset);
@@ -2488,7 +2488,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
 
   file_data = new uint8[file_size];
   if(SDL_RWread(rwop,file_data,1,file_size) != (unsigned int) file_size) {
-    SDL_Log("SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!");
+    sdl2::log_info("SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!");
     delete [] file_data;
     return;
   }
@@ -2550,7 +2550,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
         }
 
         if(bufSize > 1024*1024*16) {
-            SDL_Log("SoundAdlibPC::getSubsong(): Decoding aborted after 16MB have been decoded.");
+            sdl2::log_info("SoundAdlibPC::getSubsong(): Decoding aborted after 16MB have been decoded.");
             break;
         }
 

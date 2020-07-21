@@ -158,7 +158,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
 
             if(!bReplay && gameInitSettings.getGameType() != GameType::CustomGame && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
-                SDL_Log("Briefing...");
+                sdl2::log_info("Briefing...");
                 BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(),BRIEFING).showMenu();
             }
         } break;
@@ -1044,7 +1044,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork)
         auto *const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
         if(pPlayer != nullptr) {
             if(pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
-                //SDL_Log("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
+                //sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
                 bWaitForNetwork = true;
                 break;
             }
@@ -1078,7 +1078,7 @@ void Game::updateGame(const GameContext& context)
     pInterface->getRadarView().update();
     cmdManager.executeCommands(context, gameCycleCount);
 
-    // SDL_Log("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
+    // sdl2::log_info("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
 
 #ifdef TEST_SYNC
     // add every gamecycles one test sync command
@@ -1127,7 +1127,7 @@ void Game::doEventsUntil(const GameContext& context, const int until) {
 }
 
 void Game::runMainLoop(const GameContext& context) {
-    SDL_Log("Starting game...");
+    sdl2::log_info("Starting game...");
 
     // add interface
     if(pInterface == nullptr) {
@@ -1141,7 +1141,7 @@ void Game::runMainLoop(const GameContext& context) {
         }
     }
 
-    SDL_Log("Sizes: Tile %s UnitBase %s StructureBase %s", std::to_string(sizeof(Tile)).c_str(), std::to_string(sizeof(UnitBase)).c_str(), std::to_string(sizeof(StructureBase)).c_str());
+    sdl2::log_info("Sizes: Tile %s UnitBase %s StructureBase %s", std::to_string(sizeof(Tile)).c_str(), std::to_string(sizeof(UnitBase)).c_str(), std::to_string(sizeof(StructureBase)).c_str());
 
     gameState = GameState::Running;
 
@@ -1165,7 +1165,7 @@ void Game::runMainLoop(const GameContext& context) {
         if(!isOpen) {
             const std::error_code replay_error{errno, std::generic_category()};
 
-            SDL_LogError(
+            sdl2::log_error(
                 SDL_LOG_CATEGORY_APPLICATION,
                 fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message()).c_str());
 
@@ -1180,7 +1180,7 @@ void Game::runMainLoop(const GameContext& context) {
 
                 const std::error_code replay2_error{errno, std::generic_category()};
 
-                SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
                              fmt::format("Unable to open the replay file {}: {}",
                                          std::filesystem::path{replayname2}.filename(), replay2_error.message())
                                  .c_str());
@@ -1203,7 +1203,7 @@ void Game::runMainLoop(const GameContext& context) {
         } else {
             // This can happen if another instance of the game is running or if the disk is full.
             // TODO: Report problem to user...?
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
 
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(), _("Unable to open the replay log file.").c_str(), window);
 
@@ -1236,7 +1236,7 @@ void Game::runMainLoop(const GameContext& context) {
 
     const auto performanceScaleMs = 1000.0f / SDL_GetPerformanceFrequency();
 
-    //SDL_Log("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
+    //sdl2::log_info("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     //main game loop
     do {
@@ -1371,7 +1371,7 @@ void Game::runMainLoop(const GameContext& context) {
     }
 
     gameState = GameState::Deinitialize;
-    SDL_Log("Game finished!");
+    sdl2::log_info("Game finished!");
 }
 
 
@@ -1429,7 +1429,7 @@ GameInitSettings Game::getNextGameInitSettings()
             Uint32 alreadyPlayedRegions = gameInitSettings.getAlreadyPlayedRegions();
             if(currentMission >= -1) {
                 // do map choice
-                SDL_Log("Map Choice...");
+                sdl2::log_info("Map Choice...");
                 MapChoice mapChoice(gameInitSettings.getHouseID(), currentMission, alreadyPlayedRegions);
                 mapChoice.showMenu();
                 nextMission = mapChoice.getSelectedMission();
@@ -1441,7 +1441,7 @@ GameInitSettings Game::getNextGameInitSettings()
         } break;
 
         default: {
-            SDL_Log("Game::getNextGameInitClass(): Wrong gameType for next Game.");
+            sdl2::log_info("Game::getNextGameInitClass(): Wrong gameType for next Game.");
             return GameInitSettings();
         } break;
     }
@@ -1529,13 +1529,13 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     Uint32 magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
-        SDL_Log("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
         return false;
     }
 
     Uint32 savegameVersion = stream.readUint32();
     if (savegameVersion != SAVEGAMEVERSION) {
-        SDL_Log("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
         return false;
     }
 
@@ -1686,7 +1686,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     OFileStream fs;
 
     if(!fs.open(filename)) {
-        SDL_Log("Game::saveGame(): %s", strerror(errno));
+        sdl2::log_info("Game::saveGame(): %s", strerror(errno));
         currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename.u8string() + "\".");
         return false;
     }
@@ -2095,7 +2095,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
                 if(!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                  getConfigFilepath().u8string().c_str());
                 }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
@@ -2110,7 +2110,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options","Game Speed", settings.gameOptions.gameSpeed);
                 if(!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                  getConfigFilepath().u8string().c_str());
                 }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));

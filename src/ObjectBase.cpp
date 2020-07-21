@@ -589,7 +589,7 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
         case RaiderTrike::item_id:         return makeObject<RaiderTrike>(args...);
         case Trooper::item_id:             return makeObject<Trooper>(args...);
 
-        default:                            SDL_Log("ObjectBase::makeObject(): %d is no valid ItemID!",itemID);
+        default:                            sdl2::log_info("ObjectBase::makeObject(): %d is no valid ItemID!",itemID);
                                             return std::unique_ptr<ObjectBase>{};
     }
     // clang-format on

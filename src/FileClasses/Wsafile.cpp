@@ -316,7 +316,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         if(index[i][0] == 0) {
             // extended animation
             if(i == 0) {
-                SDL_Log("Extended WSA-File!");
+                sdl2::log_info("Extended WSA-File!");
             }
             index[i]++;
             numberOfFrames[i]--;
@@ -333,7 +333,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
             } else {
                 // index[numberOfFrames[0]] point to loop frame
                 // => looped animation
-                //  SDL_Log("Looped WSA-File!");
+                //  sdl2::log_info("Looped WSA-File!");
                 looped = true;
             }
         }

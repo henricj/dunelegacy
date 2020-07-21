@@ -35,8 +35,8 @@
 #include <mutex>
 
 FileManager::FileManager() {
-    SDL_Log("\nFileManager is loading PAK-Files...");
-    SDL_Log("\nMD5-Checksum                      Filename");
+    sdl2::log_info("\nFileManager is loading PAK-Files...");
+    sdl2::log_info("\nMD5-Checksum                      Filename");
 
     const auto search_path = getSearchPath();
 
@@ -45,7 +45,7 @@ FileManager::FileManager() {
             auto filepath = sp / filename;
             if(getCaseInsensitiveFilename(filepath)) {
                 try {
-                    SDL_Log("%s  %s", md5FromFilename(filepath).c_str(), filepath.u8string().c_str());
+                    sdl2::log_info("%s  %s", md5FromFilename(filepath).c_str(), filepath.u8string().c_str());
                     pakFiles.push_back(std::make_unique<Pakfile>(filepath));
                 } catch (std::exception &e) {
                     pakFiles.clear();
@@ -60,7 +60,7 @@ FileManager::FileManager() {
 
     }
 
-    SDL_Log("%s", "");
+    sdl2::log_info("%s", "");
 }
 
 FileManager::~FileManager() = default;

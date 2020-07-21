@@ -146,7 +146,7 @@ namespace sdl2 {
     {
         char text[1024];
 
-        SDL_Log("  Renderer %s:\n", info->name);
+        sdl2::log_info("  Renderer %s:\n", info->name);
 
         SDL_snprintf(text, sizeof(text), "    Flags: 0x%8.8X", info->flags);
         SDL_snprintfcat(text, sizeof(text), " (");
@@ -162,7 +162,7 @@ namespace sdl2 {
             }
         }
         SDL_snprintfcat(text, sizeof(text), ")");
-        SDL_Log("%s\n", text);
+        sdl2::log_info("%s\n", text);
 
         SDL_snprintf(text, sizeof(text), "    Texture formats (%d): ", info->num_texture_formats);
         for (auto i = 0; i < (int)info->num_texture_formats; ++i) {
@@ -171,10 +171,10 @@ namespace sdl2 {
             }
             SDLTest_PrintPixelFormat(text, sizeof(text), info->texture_formats[i]);
         }
-        SDL_Log("%s\n", text);
+        sdl2::log_info("%s\n", text);
 
         if (info->max_texture_width || info->max_texture_height) {
-            SDL_Log("    Max Texture Size: %dx%d\n",
+            sdl2::log_info("    Max Texture Size: %dx%d\n",
                 info->max_texture_width, info->max_texture_height);
         }
     }

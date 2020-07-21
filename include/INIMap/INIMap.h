@@ -53,7 +53,7 @@ protected:
         \param  warning the warning message
     */
     void logWarning(const std::string& warning) {
-        SDL_Log("%s: %s", mapname.c_str(), warning.c_str());
+        sdl2::log_info("%s: %s", mapname.c_str(), warning.c_str());
     }
 
 
@@ -63,7 +63,7 @@ protected:
         \param  warning the warning message
     */
     void logWarning(int line, const std::string& warning) {
-        SDL_Log("%s:%d: %s", mapname.c_str(), line, warning.c_str());
+        sdl2::log_info("%s:%d: %s", mapname.c_str(), line, warning.c_str());
     }
 
 

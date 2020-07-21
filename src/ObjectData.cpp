@@ -122,7 +122,7 @@ void ObjectData::loadFromINIFile(const std::string& filename)
         auto itemID = getItemIDByName(sectionName);
 
         if(itemID == ItemID_Invalid) {
-            SDL_Log("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName.c_str());
+            sdl2::log_info("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName.c_str());
             continue;
         }
 
@@ -251,7 +251,7 @@ int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& sec
     ItemID_enum itemID = getItemIDByName(strItem);
 
     if(itemID == ItemID_Invalid) {
-        SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!", section.c_str(), key.c_str(), strItem.c_str() );
+        sdl2::log_info("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!", section.c_str(), key.c_str(), strItem.c_str() );
         return defaultValue;
     }
 
@@ -279,7 +279,7 @@ std::bitset<Structure_LastID + 1> ObjectData::loadPrerequisiteStructuresSet(cons
 
         ItemID_enum itemID = getItemIDByName(strItem2);
         if(itemID == ItemID_Invalid || !isStructure(itemID)) {
-            SDL_Log("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem2.c_str() );
+            sdl2::log_info("Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!", section.c_str(), key.c_str(), strItem2.c_str() );
             return defaultValue;
         }
 

@@ -631,7 +631,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                         continue;
                     }
 
-                    SDL_Log(fmt::format("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
+                    sdl2::log_info(fmt::format("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
                                         newUnit->getObjectID(), itemID, newUnit->getLocation().x,
                                         newUnit->getLocation().y, pos, PosStr, keyView)
                                 .c_str());

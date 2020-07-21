@@ -145,7 +145,7 @@ void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
         game.getHouse(originalHouseID)->decrementUnits(itemID);
 
         unitList.remove(this);
-    } catch(std::exception& e) { SDL_Log("UnitBase::cleanup(): %s", e.what()); }
+    } catch(std::exception& e) { sdl2::log_info("UnitBase::cleanup(): %s", e.what()); }
 
     parent::cleanup(context, humanPlayer);
 }

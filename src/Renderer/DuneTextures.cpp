@@ -46,20 +46,20 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
             runtime_flipping_mode));
 
     if(failed) {
-        SDL_Log("Packing failed ");
+        sdl2::log_info("Packing failed ");
         return {false, rectpack2D::rect_wh{}};
     }
 
-    SDL_Log(fmt::format("Packed in {}x{}", result_size.w, result_size.h).c_str());
+    sdl2::log_info(fmt::format("Packed in {}x{}", result_size.w, result_size.h).c_str());
 
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
-    SDL_Log(fmt::format("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
+    sdl2::log_info(fmt::format("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
                         100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h))
                 .c_str());
 
     // for(const auto& r : rectangles) {
-    //    SDL_Log(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y).c_str());
+    //    sdl2::log_info(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y).c_str());
     //}
 
 #if _DEBUG
@@ -71,7 +71,7 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
             const auto& b = rectangles[j];
             SDL_Rect    sb{b.x, b.y, b.w, b.h};
 
-            if(SDL_HasIntersection(&sa, &sb)) { SDL_Log("Failed packing"); }
+            if(SDL_HasIntersection(&sa, &sb)) { sdl2::log_info("Failed packing"); }
         }
     }
 #endif // _DEBUG
@@ -212,13 +212,13 @@ bool draw_object_pictures(Uint32 format, const std::vector<rect_type>& rectangle
             sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
             if(!copy) {
-                SDL_Log("Unable to copy surface for object %u for house %d: %s", objectID, static_cast<int>(house),
+                sdl2::log_info("Unable to copy surface for object %u for house %d: %s", objectID, static_cast<int>(house),
                         SDL_GetError());
                 return false;
             }
 
             if(SDL_BlitSurface(copy.get(), nullptr, atlas_surface, &dest)) {
-                SDL_Log("Unable to blit object %u for house %d: %s", objectID, static_cast<int>(house), SDL_GetError());
+                sdl2::log_info("Unable to blit object %u for house %d: %s", objectID, static_cast<int>(house), SDL_GetError());
                 return false;
             }
         }
@@ -242,13 +242,13 @@ bool draw_ui_graphics(SDL_Surface* atlas_surface, Uint32 format,
             sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
             if(!copy) {
-                SDL_Log("Unable to copy surface for object %u for house %d: %s", objectID, static_cast<int>(house),
+                sdl2::log_info("Unable to copy surface for object %u for house %d: %s", objectID, static_cast<int>(house),
                         SDL_GetError());
                 return false;
             }
 
             if(SDL_BlitSurface(copy.get(), nullptr, atlas_surface, &dest)) {
-                SDL_Log("Unable to blit object %u for house %d: %s", objectID, static_cast<int>(house), SDL_GetError());
+                sdl2::log_info("Unable to blit object %u for house %d: %s", objectID, static_cast<int>(house), SDL_GetError());
                 return false;
             }
         }
@@ -265,7 +265,7 @@ bool draw_small_details(SDL_Surface* atlas_surface, const std::vector<rect_type>
         SDL_Rect dest{r.x, r.y, r.w, r.h};
 
         if(SDL_BlitSurface(surface, nullptr, atlas_surface, &dest)) {
-            SDL_Log("Unable to blit object %d", id);
+            sdl2::log_info("Unable to blit object %d", id);
             return false;
         }
     }
@@ -282,7 +282,7 @@ bool draw_tiny_pictures(SDL_Surface*                                           a
         SDL_Rect dest{r.x, r.y, r.w, r.h};
 
         if(SDL_BlitSurface(surface, nullptr, atlas_surface, &dest)) {
-            SDL_Log("Unable to blit tiny picture %u", id);
+            sdl2::log_info("Unable to blit tiny picture %u", id);
             return false;
         }
     }
@@ -500,12 +500,12 @@ public:
                 const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
                 if(!copy) {
-                    SDL_Log("Unable to copy surface: %s", SDL_GetError());
+                    sdl2::log_info("Unable to copy surface: %s", SDL_GetError());
                     return false;
                 }
 
                 if(SDL_BlitSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
-                    SDL_Log("Unable to blit object %u for house %d: %s", SDL_GetError());
+                    sdl2::log_info("Unable to blit object %u for house %d: %s", SDL_GetError());
                     return false;
                 }
             }
@@ -813,7 +813,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                     SDL_Rect dest{r.x, r.y, r.w, r.h};
 
                     if(SDL_BlitSurface(surface, nullptr, atlas_surface, &dest)) {
-                        SDL_Log("Unable to generated picture %u", id);
+                        sdl2::log_info("Unable to generated picture %u", id);
                         return false;
                     }
                 }

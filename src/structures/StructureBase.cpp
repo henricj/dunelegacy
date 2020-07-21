@@ -81,7 +81,7 @@ void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer
         context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
         structureList.remove(this);
         owner->decrementStructures(itemID, location);
-    } catch(std::exception& e) { SDL_Log("StructureBase::cleanup(): %s", e.what()); }
+    } catch(std::exception& e) { sdl2::log_info("StructureBase::cleanup(): %s", e.what()); }
 
     parent::cleanup(context, humanPlayer);
 }

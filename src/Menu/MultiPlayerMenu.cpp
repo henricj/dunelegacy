@@ -107,7 +107,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
     buttonHBox.addWidget(HSpacer::create(90));
 
     // Start Network Manager
-    SDL_Log("Starting network...");
+    sdl2::log_info("Starting network...");
     pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
@@ -120,7 +120,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
 
 MultiPlayerMenu::~MultiPlayerMenu() {
-    SDL_Log("Stopping network...");
+    sdl2::log_info("Stopping network...");
     pNetworkManager.reset();
 }
 

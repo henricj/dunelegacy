@@ -195,7 +195,7 @@ SurfaceLoader::SurfaceLoader() {
     Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL").get());
 
     const auto elapsed = std::chrono::steady_clock::now() - start;
-    SDL_Log("SurfaceLoader load time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
+    sdl2::log_info("SurfaceLoader load time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
 
     // create PictureFactory
     auto PicFactory = std::make_unique<PictureFactory>();
@@ -1407,7 +1407,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     }
 
     if((returnPic->w > 2048) || (returnPic->h > 2048)) {
-        SDL_Log("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
+        sdl2::log_info("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
     return returnPic;
@@ -1448,7 +1448,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
-            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
+            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
             pSurface = sdl2::surface_ptr{ Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
         }
     } else {
@@ -1456,7 +1456,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     }
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;
@@ -1479,7 +1479,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
-            SDL_Log("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
+            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
             pSurface = sdl2::surface_ptr{ Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
         }
     } else {
@@ -1488,7 +1488,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
 
 
     if((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        SDL_Log("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;

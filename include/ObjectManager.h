@@ -129,19 +129,19 @@ public:
 
         auto object = ObjectBase::createObject(itemID, nextFreeObjectID, initializer);
         if(!object) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() could not build item type %d",
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() could not build item type %d",
                          itemID);
             return nullptr;
         }
 
         auto* const pObject = dune_cast<ObjectType>(object.get());
         if(!pObject) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() created the wrong type of object for build item type %d", itemID);
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() created the wrong type of object for build item type %d", itemID);
             return nullptr;
         }
 
         if(!addObject(std::move(object))) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
                          "createObjectFromItemId() unable to add object of item type %d", itemID);
             return nullptr;
         }

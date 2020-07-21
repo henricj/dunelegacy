@@ -175,7 +175,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     const SDL_Rect rendererSize = getRendererSize();
     sdl2::surface_ptr pScreen{ SDL_CreateRGBSurface(0, rendererSize.w, rendererSize.h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if((pScreen == nullptr) || (SDL_RenderReadPixels(renderer, nullptr, SCREEN_FORMAT, pScreen->pixels, pScreen->pitch) != 0)) {
-        SDL_Log("Warning: renderReadSurface() failed: %s", SDL_GetError());
+        sdl2::log_info("Warning: renderReadSurface() failed: %s", SDL_GetError());
         return nullptr;
     }
 
@@ -268,7 +268,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     }
 
     if(inSurface->w > 2048 || inSurface->h > 2048) {
-        SDL_Log("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware limits on older GPUs!", inSurface->w, inSurface->h);
+        sdl2::log_info("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware limits on older GPUs!", inSurface->w, inSurface->h);
     }
 
     sdl2::texture_ptr pTexture{ SDL_CreateTextureFromSurface(renderer, inSurface) };
