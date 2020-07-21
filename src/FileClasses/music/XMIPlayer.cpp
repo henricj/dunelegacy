@@ -32,11 +32,11 @@ XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.mu
 
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,2)
     if((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
-        SDL_Log("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
+        sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
 #else
     if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
-        SDL_Log("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
+        sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
 #endif
 }
@@ -239,13 +239,13 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         music = Mix_LoadMUS(tmpFilename.u8string().c_str());
         if(music != nullptr) {
             if(Mix_PlayMusic(music, -1) == -1) {
-                SDL_Log("XMIPlayer: Playing music failed: %s", SDL_GetError());
+                sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
             } else {
                 Mix_VolumeMusic(musicVolume);
-                SDL_Log("Now playing %s!", tmpFilename.c_str());
+                sdl2::log_info("Now playing %s!", tmpFilename.u8string());
             }
         } else {
-            SDL_Log("Unable to play %s: %s!", filename.c_str(), Mix_GetError());
+            sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());
         }
 
     }

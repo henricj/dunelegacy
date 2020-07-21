@@ -145,7 +145,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
     std::error_code ec;
     for(const auto& entry : std::filesystem::directory_iterator(directory, ec)) {
         if(ec) {
-            SDL_Log("Scanning directory %s failed with %s", directory.u8string().c_str(), ec.message().c_str());
+            sdl2::log_info("Scanning directory %s failed with %s", directory.u8string().c_str(), ec.message().c_str());
             break;
         }
 
@@ -169,13 +169,13 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
             const auto size = std::filesystem::file_size(full_path, ec);
 
             if(ec) {
-                SDL_Log("Getting size of %s failed with %s", full_path.u8string().c_str(), ec.message().c_str());
+                sdl2::log_info("Getting size of %s failed with %s", full_path.u8string().c_str(), ec.message().c_str());
                 continue;
             }
 
             const auto modified = std::filesystem::last_write_time(full_path, ec);
             if(ec) {
-                SDL_Log("Getting last modified time of %s failed with %s", full_path.u8string().c_str(),
+                sdl2::log_info("Getting last modified time of %s failed with %s", full_path.u8string().c_str(),
                         ec.message().c_str());
                 continue;
             }

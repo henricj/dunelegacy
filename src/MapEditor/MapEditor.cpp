@@ -693,7 +693,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     if (!loadedINIFile->saveChangesTo(filepath, getMapVersion() < 2)) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s", filepath.u8string().c_str());
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s", filepath.u8string().c_str());
     }
 
     lastSaveName = filepath;
@@ -1950,14 +1950,14 @@ void MapEditor::saveMapshot() {
 
     auto renderTarget = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY) };
     if(renderTarget == nullptr) {
-        SDL_Log("SDL_CreateTexture() failed: %s", SDL_GetError());
+        sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
     SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
     if(SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
-        SDL_Log("SDL_SetRenderTarget() failed: %s", SDL_GetError());
+        sdl2::log_info("SDL_SetRenderTarget() failed: %s", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
         currentZoomlevel = oldCurrentZoomlevel;
         return;

@@ -250,7 +250,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
 
         default: {
-            SDL_Log("ReinforcementTrigger::trigger(): Invalid drop location!");
+            sdl2::log_info("ReinforcementTrigger::trigger(): Invalid drop location!");
         } break;
     }
 

@@ -439,7 +439,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
             }
         } catch(std::exception& e) {
-            SDL_Log("MetaServerClient::connectionThreadMain(): %s", e.what());
+            sdl2::log_info("MetaServerClient::connectionThreadMain(): %s", e.what());
         }
     }
 }

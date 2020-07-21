@@ -647,7 +647,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     \param  filename    the filename of the replay file
 */
 void startReplay(const std::filesystem::path& filename) {
-    SDL_Log("Initializing replay...");
+    sdl2::log_info("Initializing replay...");
 
     auto cleanup = gsl::finally([&] { currentGame.reset(); });
 
@@ -682,7 +682,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
         // assignment to currentGame causes the old one to be deleted.
         currentGame.reset();
 
-        SDL_Log("Initializing game...");
+        sdl2::log_info("Initializing game...");
 
         currentGame = std::make_unique<Game>();
         currentGame->initGame(currentGameInitInfo);
@@ -693,20 +693,20 @@ void startSinglePlayerGame(const GameInitSettings& init) {
         GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
         context.game.runMainLoop(context);
 
-        SDL_Log("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
+        sdl2::log_info("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
 
         bool bGetNext = true;
         while(bGetNext) {
             switch(context.game.whatNext()) {
                 case GAME_DEBRIEFING_WIN: {
-                    SDL_Log("Debriefing...");
+                    sdl2::log_info("Debriefing...");
                     { // Scope
                         BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
                                               DEBRIEFING_WIN);
                         briefing.showMenu();
                     }
 
-                    SDL_Log("Game statistics...");
+                    sdl2::log_info("Game statistics...");
                     { // Scope
                         CampaignStatsMenu campaignStats(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
                         campaignStats.showMenu();
@@ -719,17 +719,17 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                         if(level == 4 && (houseID == HOUSETYPE::HOUSE_HARKONNEN ||
                                           houseID == HOUSETYPE::HOUSE_ATREIDES || houseID == HOUSETYPE::HOUSE_ORDOS)) {
-                            SDL_Log("Playing meanwhile...");
+                            sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, true);
                             meanwhile.run();
                         } else if(level == 8 &&
                                   (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES ||
                                    houseID == HOUSETYPE::HOUSE_ORDOS)) {
-                            SDL_Log("Playing meanwhile...");
+                            sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, false);
                             meanwhile.run();
                         } else if(level == 9) {
-                            SDL_Log("Playing finale.....");
+                            sdl2::log_info("Playing finale.....");
                             Finale finale(houseID);
                             finale.run();
                         }
@@ -737,14 +737,14 @@ void startSinglePlayerGame(const GameInitSettings& init) {
                 } break;
 
                 case GAME_DEBRIEFING_LOST: {
-                    SDL_Log("Debriefing...");
+                    sdl2::log_info("Debriefing...");
                     BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
                                           DEBRIEFING_LOST);
                     briefing.showMenu();
                 } break;
 
                 case GAME_CUSTOM_GAME_STATS: {
-                    SDL_Log("Game statistics...");
+                    sdl2::log_info("Game statistics...");
                     CustomGameStatsMenu stats;
                     stats.showMenu();
                 } break;
@@ -774,7 +774,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 void startMultiPlayerGame(const GameInitSettings& init) {
     auto currentGameInitInfo = init;
 
-    SDL_Log("Initializing game...");
+    sdl2::log_info("Initializing game...");
     currentGame = std::make_unique<Game>();
 
     auto cleanup = gsl::finally([&] { currentGame.reset(); });
@@ -788,7 +788,7 @@ void startMultiPlayerGame(const GameInitSettings& init) {
     currentGame->runMainLoop(context);
 
     if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
-        SDL_Log("Game statistics...");
+        sdl2::log_info("Game statistics...");
         CustomGameStatsMenu stats;
         stats.showMenu();
     }

@@ -460,7 +460,7 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, 
     if (found)
         return closestPoint;
 
-    SDL_Log("Warning: Cannot find deploy position because the map is full!");
+    sdl2::log_info("Warning: Cannot find deploy position because the map is full!");
 
     return Coord::Invalid();
 }
