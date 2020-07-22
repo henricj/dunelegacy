@@ -15,15 +15,18 @@ public:
 
     static DuneTextures create(SDL_Renderer* renderer, SurfaceLoader* manager);
 
-    const DuneTexture& get_object_picture(unsigned int id, HOUSETYPE house, int zoom) const {
+    [[nodiscard]] const DuneTexture& get_object_picture(unsigned int id, HOUSETYPE house, int zoom) const {
         return object_pictures_.at(zoom).at(id).at(static_cast<int>(house));
     }
-    const DuneTexture& get_small_object(unsigned int id) const { return small_details_.at(id); }
-    const DuneTexture& get_tiny_picture(unsigned int id) const { return tiny_pictures_.at(id); }
-    const DuneTexture& get_ui_graphic(unsigned int id, HOUSETYPE house) const {
+
+    [[nodiscard]] const DuneTexture& get_small_object(unsigned int id) const { return small_details_.at(id); }
+    [[nodiscard]] const DuneTexture& get_tiny_picture(unsigned int id) const { return tiny_pictures_.at(id); }
+
+    [[nodiscard]] const DuneTexture& get_ui_graphic(unsigned int id, HOUSETYPE house) const {
         return ui_graphics_.at(static_cast<int>(house)).at(id);
     }
-    const DuneTexture& get_generated_picture(GeneratedPicture id) const { return generated_pictures_.at(static_cast<int>(id)); }
+
+    [[nodiscard]] const DuneTexture& get_generated_picture(GeneratedPicture id) const { return generated_pictures_.at(static_cast<int>(id)); }
 
     using object_pictures_type =
         std::array<std::array<std::array<DuneTexture, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS>,
