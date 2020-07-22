@@ -58,7 +58,7 @@ void Dune_RenderDump() {
         int h, w;
         if(SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h)) continue;
 
-        sdl2::log_info("texture %x of size %dx%d rendered %d times", reinterpret_cast<void*>(it.first), w, h, it.second);
+        sdl2::log_info("texture %x of size %dx%d rendered %d times", reinterpret_cast<intptr_t>(it.first), w, h, it.second);
 
         if(w > max_w) max_w = w;
         if(h > max_h) max_h = h;
@@ -68,7 +68,7 @@ void Dune_RenderDump() {
 
     const auto square = static_cast<int>(std::ceil(std::sqrt(pixels)));
 
-    sdl2::log_info("%ld textures max_w=%d max_h=%d pixels=%d (%dx%d)", render_textures.size(), max_w, max_h, pixels, square);
+    sdl2::log_info("%ld textures max_w=%d max_h=%d pixels=%d (%dx%d)", render_textures.size(), max_w, max_h, pixels, square, square);
 }
 
 namespace DuneRendererImplementation {
