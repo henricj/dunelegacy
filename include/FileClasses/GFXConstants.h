@@ -9,7 +9,7 @@
 #define NUM_STATIC_ANIMATIONS_PER_ROW   7
 //
 // ObjPics
-typedef enum {
+enum ObjPic_enum {
     ObjPic_Tank_Base,
     ObjPic_Tank_Gun,
     ObjPic_Siegetank_Base,
@@ -86,10 +86,10 @@ typedef enum {
     ObjPic_Terrain_Tracks,
     ObjPic_Star,
     NUM_OBJPICS
-} ObjPic_enum;
+};
 
 // SmallDetailPics
-typedef enum {
+enum SmallDetailPics_Enum {
     Picture_Barracks,
     Picture_ConstructionYard,
     Picture_Carryall,
@@ -132,10 +132,10 @@ typedef enum {
     Picture_WindTrap,
     Picture_WOR,
     NUM_SMALLDETAILPICS
-} SmallDetailPics_Enum;
+};
 
 // tiny pictures used for tutorial hints (has the same order as ItemID_enum, except the first entry)
-typedef enum {
+enum TinyPicture_Enum {
     TinyPicture_Spice            = 0,
     TinyPicture_Barracks         = 1,
     TinyPicture_ConstructionYard = 2,
@@ -178,10 +178,10 @@ typedef enum {
     TinyPicture_Infantry         = 39,
     TinyPicture_Troopers         = 40,
     NUM_TINYPICTURE
-} TinyPicture_Enum;
+};
 
 // UI Graphics
-typedef enum {
+enum UIGraphics_Enum {
     UI_RadarAnimation,
     UI_CursorNormal,
     UI_CursorUp,
@@ -379,13 +379,13 @@ typedef enum {
     UI_MapEditor_Pen3x3,
     UI_MapEditor_Pen5x5,
     NUM_UIGRAPHICS
-} UIGraphics_Enum;
+};
 
 enum class GeneratedPicture { PalaceReadyText };
 inline constexpr int NUM_GENERATEDPICTURES = 1;
 
 // Animation
-typedef enum {
+enum Animation_enum {
     Anim_HarkonnenEyes,
     Anim_HarkonnenMouth,
     Anim_HarkonnenShoulder,
@@ -461,6 +461,6 @@ typedef enum {
     Anim_Frigate,
     Anim_Slab4,
     NUM_ANIMATION
-} Animation_enum;
+};
 
 #endif // GFXCONSTANTS_H

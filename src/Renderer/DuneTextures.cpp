@@ -13,7 +13,6 @@ DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pic
       tiny_pictures_{std::move(tiny_pictures)}, ui_graphics_{std::move(ui_graphics)},
       generated_pictures_{std::move(generated_pictures)}, textures_{std::move(textures)} { }
 
-
 DuneTextures::~DuneTextures() = default;
 
 namespace {
@@ -55,8 +54,8 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
     sdl2::log_info(fmt::format("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
-                        100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h))
-                .c_str());
+                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h))
+                       .c_str());
 
     // for(const auto& r : rectangles) {
     //    sdl2::log_info(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y).c_str());
@@ -82,13 +81,13 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
     if(a->w != b->w || a->h != b->h) return false;
 
-    if (a == b) return true;
+    if(a == b) return true;
 
     const sdl2::surface_lock lock_a{a};
     const sdl2::surface_lock lock_b{b};
 
-    const auto* pa = static_cast<const char *>(lock_a.pixels());
-    const auto* pb = static_cast<const char *>(lock_b.pixels());
+    const auto* pa = static_cast<const char*>(lock_a.pixels());
+    const auto* pb = static_cast<const char*>(lock_b.pixels());
 
     if(lock_a.pitch() != lock_b.pitch()) return false;
 
