@@ -306,10 +306,12 @@ public:
             set.for_each(packer_, draw);
         }
 
-        auto path = std::filesystem::path{"c:/temp/"} / fmt::format("surface_f23_{}.bmp", count_++);
-        path      = path.lexically_normal().make_preferred();
+        //auto [ok, cache_path] = fnkdat("cache/", FNKDAT_USER | FNKDAT_CREAT);
 
-        SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
+        //auto path = cache_path / fmt::format("f23_{}.bmp", texture_identifier);
+        //path      = path.lexically_normal().make_preferred();
+
+        //SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
         auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
 
@@ -340,8 +342,6 @@ private:
     Packer packer_;
 
     std::vector<PackableSet> surface_sets_;
-
-    int count_{};
 };
 
 class ObjectPicturePacker final {
@@ -692,7 +692,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                     ui_graphic_packer.add(factory23, [&](const auto& identifier, SDL_Surface* surface) {
                         const auto& [id, h] = identifier;
 
-                        return house == h &&!combined_ui_graphic(identifier, surface);
+                        return house == h && !combined_ui_graphic(identifier, surface);
                     });
 
                 keys.push_back(ugp_key);

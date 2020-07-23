@@ -1173,16 +1173,21 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
         THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not available!", id);
     }
 
-    if(uiGraphic[id][static_cast<int>(house)] == nullptr) {
-        // remap to this color
-        if(uiGraphic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] == nullptr) {
+    auto& target = uiGraphic[id][static_cast<int>(house)];
+
+    if(target == nullptr) {
+        auto* const harkonnen = uiGraphic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
+
+        if(harkonnen == nullptr) {
             THROW(std::runtime_error, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
         }
 
-        uiGraphic[id][static_cast<int>(house)] = mapSurfaceColorRange(uiGraphic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
+        // remap to this color
+        target =
+            mapSurfaceColorRange(harkonnen, PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
     }
 
-    return uiGraphic[id][static_cast<int>(house)].get();
+    return target.get();
 }
 
 SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE house) {
