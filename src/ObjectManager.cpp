@@ -54,19 +54,22 @@ void ObjectManager::load(InputStream& stream) {
                     pObject->getObjectID());
         }
 
-        hint = objectMap.emplace_hint(hint, objectID, std::move(pObject));
+        const auto& [_, ok] = objectMap.emplace(objectID, std::move(pObject));
+        if(!ok) {
+            // there is already such an object
+            sdl2::log_info("ObjectManager::load(): The object with this id already exists (%d)!",
+                           objectID);
+        }
     }
 }
 
 
 bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
-    auto* const pObject = object.get();
-    hint                = objectMap.emplace_hint(hint, nextFreeObjectID, std::move(object));
+    const auto& [_, ok] = objectMap.emplace(nextFreeObjectID, std::move(object));
 
-    if(hint->second.get() != pObject) {
+    if(!ok) {
         // there is already such an object in the list
-        sdl2::log_info("ObjectManager::addObject(): The object with this id already exists (%d)!",
-                hint->second->getObjectID());
+        sdl2::log_info("ObjectManager::addObject(): The object with this id already exists (%d)!", nextFreeObjectID);
         return false;
     }
 

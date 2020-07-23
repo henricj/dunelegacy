@@ -169,7 +169,6 @@ private:
 
     Uint32                    nextFreeObjectID = 1;
     ObjectMap objectMap;
-    ObjectMap::const_iterator hint = objectMap.end();
     std::queue<std::unique_ptr<ObjectBase>> pendingDelete;
 };
 
