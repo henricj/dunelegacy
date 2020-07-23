@@ -10,6 +10,7 @@
 |   [Ubuntu](../../actions?query=workflow%3AUbuntu)    | ![Ubuntu](../../workflows/Ubuntu/badge.svg) |
 
 ### Binaries
+
 Binaries are built automatically from the latest source and can be found here:
 
 **[Windows arm64](../../releases/tag/latest-arm64)**  
@@ -93,7 +94,7 @@ too few tests):
 ```bat
 mkdir out\build\x64-avx2-Release
 cd out\build\x64-avx2-Release
-cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DDUNE_TARGET_ARCHITECTURE:STRING=x64 -DDUNE_TARGET_ARCHTECTURE_EXTENSION=avx2 -DVCPKG_TARGET_TRIPLET:STRING=x64-avx2-windows-ltcg ../../.._
+cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DDUNE_TARGET_ARCHITECTURE:STRING=x64 -DDUNE_TARGET_ARCHTECTURE_EXTENSION=avx2 -DVCPKG_TARGET_TRIPLET:STRING=x64-avx2-windows-ltcg ../../..
 cmake --build .
 ctest
 ```
@@ -110,6 +111,7 @@ git clone https://github.com/henricj/dunelegacy.git
 cd dunelegacy
 git submodule update --init --recursive -j 8
 ```
+
 Build the vcpkg packages,
 
 ```sh
@@ -124,13 +126,12 @@ too few tests):
 ```sh
 mkdir -p out/build/x64-Release
 cd out/build/x64-Release
-cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DVCPKG_TARGET_TRIPLET:STRING=x64-linux ../../.._
+cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DVCPKG_TARGET_TRIPLET:STRING=x64-linux ../../..
 cmake --build .
 ctest
 ```
 
 There should now be a working dunelegacy executable in `out/build/x64-Release\src`.
-
 
 ### Notes
 
@@ -140,13 +141,14 @@ Builds for macOS have not been tested, but should be similar to the Linux instru
 
 ## Original README
 
+```text
               /-------------------------------\
               |                               |
               |    Dune Legacy 0.96 readme    |
               |    -----------------------    |
               |                               |
               \-------------------------------/
-
+```
 
 IMPORTANT:
 This software is provided as is, and you are running it at your own risk.  I'm not responsible if any harm results
