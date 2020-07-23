@@ -295,10 +295,15 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
 }
 
 void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
-    SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0, source->format->palette->ncolors);
+    if(source->format->BitsPerPixel == 8 && target->format->BitsPerPixel == 8 && target->format->padding && source->format->palette) {
+        if(SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0,
+                                source->format->palette->ncolors)) {
+            THROW(std::runtime_error,
+                  "copySurfaceAttributes(): unable to copy palette: " + std::string(SDL_GetError()));
+        }
+    }
 
-    const auto has_ckey = SDL_HasColorKey(source);
-    if(has_ckey) {
+    if(const auto has_ckey = SDL_HasColorKey(source)) {
         Uint32 ckey = 0;
         if(SDL_GetColorKey(source, &ckey)) {
             THROW(std::runtime_error, "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
@@ -381,12 +386,12 @@ sdl2::surface_ptr combinePictures(SDL_Surface* basePicture, SDL_Surface* topPict
         return nullptr;
     }
 
-    sdl2::surface_ptr dest{ copySurface(basePicture) };
+    auto dest{ copySurface(basePicture) };
     if(dest == nullptr) {
         return nullptr;
     }
 
-    SDL_Rect destRect = calcDrawingRect(topPicture, x, y);
+    auto destRect = calcDrawingRect(topPicture, x, y);
     SDL_BlitSurface(topPicture, nullptr, dest.get(), &destRect);
 
     return dest;
@@ -407,14 +412,16 @@ sdl2::surface_ptr rotateSurfaceLeft(SDL_Surface* inputPic) {
 
     copySurfaceAttributes(returnPic.get(), inputPic);
 
-    sdl2::surface_lock lock_pic{ returnPic.get() };
-    sdl2::surface_lock lock_input{ inputPic };
+    const sdl2::surface_lock lock_pic{returnPic.get()};
+    const sdl2::surface_lock lock_input{inputPic};
 
-    //Now we can copy pixel by pixel
-    for(int y = 0; y < inputPic->h;y++) {
-        for(int x = 0; x < inputPic->w; x++) {
-            char val = *( ((char*) (inputPic->pixels)) + y*inputPic->pitch + x);
-            *( ((char*) (returnPic->pixels)) + (returnPic->h - x - 1)*returnPic->pitch + y) = val;
+    const auto* const RESTRICT input_pixels  = static_cast<char*>(lock_input.pixels());
+    auto* const RESTRICT       return_pixels = static_cast<char*>(lock_pic.pixels());
+
+    // Now we can copy pixel by pixel
+    for(auto y = 0; y < inputPic->h; ++y) {
+        for(auto x = 0; x < inputPic->w; ++x) {
+            return_pixels[(returnPic->h - x - 1) * lock_pic.pitch() + y] = input_pixels[y * lock_input.pitch() + x];
         }
     }
 
@@ -433,16 +440,17 @@ sdl2::surface_ptr rotateSurfaceRight(SDL_Surface* inputPic) {
         THROW(std::runtime_error, "rotateSurface(): Cannot create new Picture!");
     }
 
+    const sdl2::surface_lock lock_pic{returnPic.get()};
+    const sdl2::surface_lock lock_input{inputPic};
     copySurfaceAttributes(returnPic.get(), inputPic);
 
-    sdl2::surface_lock lock_pic{ returnPic.get() };
-    sdl2::surface_lock lock_input{ inputPic };
+    const auto* const RESTRICT input_pixels  = static_cast<char*>(lock_input.pixels());
+    auto* const RESTRICT       return_pixels = static_cast<char*>(lock_pic.pixels());
 
-    //Now we can copy pixel by pixel
-    for(int y = 0; y < inputPic->h;y++) {
-        for(int x = 0; x < inputPic->w; x++) {
-            char val = *( ((char*) (inputPic->pixels)) + y*inputPic->pitch + x);
-            *( ((char*) (returnPic->pixels)) + x*returnPic->pitch + (returnPic->w - y - 1)) = val;
+    // Now we can copy pixel by pixel
+    for(auto y = 0; y < inputPic->h; ++y) {
+        for(auto x = 0; x < inputPic->w; ++x) {
+            return_pixels[x * lock_pic.pitch() + (returnPic->w - y - 1)] = input_pixels[y * inputPic->pitch + x];
         }
     }
 
@@ -513,8 +521,8 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic) {
     sdl2::surface_lock lock_pic{ returnPic.get() };
     sdl2::surface_lock lock_input{ inputPic };
 
-    //Now we can copy pixel by pixel
-    for(auto y = 0; y < inputPic->h;y++) {
+    // Now we can copy pixel by pixel
+    for(auto y = 0; y < inputPic->h; y++) {
         for(auto x = 0; x < inputPic->w; x++) {
             putPixel(returnPic.get(), inputPic->w - x - 1, y, getPixel(inputPic, x, y));
         }
@@ -539,10 +547,12 @@ sdl2::surface_ptr createShadowSurface(SDL_Surface* source) {
         SDL_SetSurfaceBlendMode(retPic.get(), SDL_BLENDMODE_NONE);
     }
 
-    sdl2::surface_lock lock{ retPic.get() };
+    const sdl2::surface_lock lock{ retPic.get() };
+
+    auto* const pixels = static_cast<Uint8*>(lock.pixels());
 
     for (auto j = 0; j < retPic->h; ++j) {
-        Uint8 * const RESTRICT p = static_cast<Uint8*>(retPic->pixels) + j * retPic->pitch;
+        auto* const p = &pixels[j * lock.pitch()];
         for(auto i = 0; i < retPic->w; ++i) {
             if(p[i] != PALCOLOR_TRANSPARENT) {
                 p[i] = PALCOLOR_BLACK;
@@ -570,13 +580,15 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
         SDL_SetSurfaceBlendMode(retPic.get(), SDL_BLENDMODE_NONE);
     }
 
-    sdl2::surface_lock lock{ retPic.get() };
+    const sdl2::surface_lock lock{ retPic.get() };
+
+    auto* const pixels = static_cast<Uint8*>(lock.pixels());
 
     for(auto y = 0; y < retPic->h; ++y) {
-        Uint8* RESTRICT p = static_cast<Uint8*>(retPic->pixels) + y * retPic->pitch;
+        auto* p = &pixels[y * lock.pitch()];
         for(auto x = 0; x < retPic->w; ++x, ++p) {
             if ((*p >= srcColor) && (*p < srcColor + 7))
-                *p = *p - srcColor + destColor;
+                *p -= srcColor - destColor;
         }
     }
 
