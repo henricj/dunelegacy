@@ -75,6 +75,40 @@
           "type": "STRING"
         }
       ]
+    },
+    {
+      "name": "x86-ASAN",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86_x64" ],
+      "addressSanitizerEnabled": true,
+      "variables": [
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x86-windows",
+          "type": "STRING"
+        },
+        {
+          "name": "DUNE_TARGET_ARCHITECTURE",
+          "value": "x86",
+          "type": "STRING"
+        },
+        {
+          "name": "DUNE_MSVC_RELEASE_FLAGS",
+          "value": " /Zi /Od /DNDEBUG",
+          "type": "STRING"
+        },
+        {
+          "name": "DUNE_MSVC_RUNTIME_LIBRARY",
+          "value": "MultiThreadedDLL",
+          "type": "STRING"
+        }
+      ]
     }
   ]
 }
