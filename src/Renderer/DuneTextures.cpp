@@ -279,22 +279,20 @@ public:
         const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
-        SDL_SetSurfaceBlendMode(atlas_surface.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
-
         const auto draw = [&](const auto r, int s_idx, SDL_Surface* surface) {
             SDL_Rect dst{r.x, r.y, r.w, r.h};
 
-            if(SDL_BlitSurface(surface, nullptr, atlas_surface.get(), &dst)) {
+            if(!drawSurface(surface, nullptr, atlas_surface.get(), &dst)) {
                 // Retry after converting from palette to 32-bit surface...
                 const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
                 if(!copy) {
-                    sdl2::log_info("Unable to copy surface: %s", SDL_GetError());
+                    sdl2::log_warn("Unable to copy surface: %s", SDL_GetError());
                     return false;
                 }
 
-                if(SDL_BlitSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
-                    sdl2::log_info("Unable to blit object %u for house %d: %s", SDL_GetError());
+                if(!drawSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
+                    sdl2::log_warn("Unable to draw object %u for house %d");
                     return false;
                 }
             }
@@ -314,6 +312,10 @@ public:
         //SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
         auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
+
+        if(texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
+            sdl2::log_warn("Unable to set texture atlas blend mode");
+        }
 
         return texture;
     }
@@ -652,6 +654,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
             factory23.clear();
         }
 
+        assert(factory23.empty());
+
         static const std::set<Uint32> force_combine_ui_graphic = {
             UI_RadarAnimation,   UI_DuneLegacy,           UI_MenuBackground,  UI_GameMenu,
             UI_MapChoiceMap,     UI_MapChoiceMapOnly,     UI_MapChoicePlanet, UI_MapChoiceClickMap,
@@ -706,6 +710,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
             if(!factory23.empty()) { flush_factory(); }
         }
+
+        assert(factory23.empty());
 
         // Combine everything else
         { // Scope
