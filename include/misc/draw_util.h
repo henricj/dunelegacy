@@ -140,4 +140,26 @@ sdl2::surface_ptr    createShadowSurface(SDL_Surface* source);
 */
 sdl2::surface_ptr    mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor);
 
+/**
+    This function create a new blank surface with the same format and other attributes as the model surface.
+    \param  model      The model surface
+    \param  width      The width of the new surface (if 0, then it will be copied from the model surface).
+    \param  height     The height of the new surface (if 0, then it will be copied from the model surface).
+    \return The new surface
+*/
+sdl2::surface_ptr createSurface(SDL_Surface* model, int width = 0, int height = 0);
+
+/**
+    This function create a new surface with the same format and other attributes as the model surface containing
+    a copy of the data from the source surface in the srcrect.
+    \param  source     The source surface
+    \param  srcrect    The rectangle containing the data to be copied (if it is nullptr, the the entire source will be copied.
+    \return The new surface
+*/
+sdl2::surface_ptr cloneSurface(SDL_Surface* source, const SDL_Rect* srcrect);
+
+bool drawSurface(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect,
+             SDL_BlendMode blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE);
+
+
 #endif // DRAW_UTIL_H
