@@ -30,8 +30,11 @@ INIFile::INIFileLine::INIFileLine(const std::string& completeLine, int lineNumbe
  : completeLine(completeLine), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
 }
 
+INIFile::INIFileLine::~INIFileLine() = default;
+
 INIFile::Key::Key(const std::string& completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength)
  :  INIFileLine(completeLine, lineNumber), keyStringBegin(keystringbegin), keyStringLength(keystringlength),
+
     valueStringBegin(valuestringbegin), valueStringLength(valuestringlength),
     nextKey(nullptr), prevKey(nullptr) {
 }
@@ -41,6 +44,9 @@ INIFile::Key::Key(const std::string& keyname, const std::string& value, bool bEs
     valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)), valueStringLength(value.size()),
     nextKey(nullptr), prevKey(nullptr) {
 }
+
+
+INIFile::Key::~Key() = default;
 
 std::string INIFile::Key::getKeyName() const {
     return completeLine.substr(keyStringBegin,keyStringLength);
@@ -164,6 +170,8 @@ INIFile::Section::Section(const std::string& sectionname, bool bWhitespace)
  :  INIFileLine("[" + sectionname + "]", INVALID_LINE), sectionStringBegin(1), sectionStringLength(sectionname.size()),
     nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
+
+INIFile::Section::~Section() = default;
 
 /// Get the name for this section
 /**

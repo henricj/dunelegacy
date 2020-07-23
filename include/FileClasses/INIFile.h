@@ -58,6 +58,7 @@ public:
     {
     public:
         INIFileLine(const std::string& completeLine, int lineNumber);
+        virtual ~INIFileLine();
 
         inline int getLineNumber() const { return line; };
 
@@ -85,6 +86,7 @@ public:
     public:
         Key(const std::string& completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength);
         Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
+        ~Key();
 
         std::string getKeyName() const;
         std::string getStringValue() const;
@@ -157,6 +159,7 @@ public:
     public:
         Section(const std::string& completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace = true);
         Section(const std::string& sectionname, bool bWhitespace = true);
+        ~Section();
 
         std::string getSectionName() const;
         KeyIterator begin() const;
