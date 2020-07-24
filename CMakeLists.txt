@@ -161,4 +161,13 @@ include(CPack)
 
 message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
 message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS " CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "   VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
+
+foreach( config ${build_list} )
+    string( TOUPPER "${config}" config )
+
+    message(STATUS "          CMAKE_C_FLAGS_${config}: ${CMAKE_C_FLAGS_${config}}")
+    message(STATUS "        CMAKE_CXX_FLAGS_${config}: ${CMAKE_CXX_FLAGS_${config}}")
+    message(STATUS " CMAKE_EXE_LINKER_FLAGS_${config}: ${CMAKE_EXE_LINKER_FLAGS_${config}}")
+endforeach()
