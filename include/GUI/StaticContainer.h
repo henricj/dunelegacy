@@ -132,7 +132,7 @@ protected:
 
     void setWidgetGeometry(Widget* pWidget, Point position, Point size) {
         StaticContainer_WidgetData* pWidgetData = getWidgetDataFromWidget(pWidget);
-        if(pWidgetData != 0) {
+        if(pWidgetData != nullptr) {
             pWidgetData->position = position;
             pWidgetData->size = size;
             pWidget->resize(size.x, size.y);
