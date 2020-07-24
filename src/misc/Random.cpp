@@ -1,4 +1,8 @@
-#include "misc/Random.h"
+#include <misc/Random.h>
+
+#include <atomic>
+#include <array>
+#include <chrono>
 
 #include <digestpp/digestpp.hpp>
 
@@ -125,8 +129,14 @@ std::string to_hex(gsl::span<const Uint8> data) {
     std::string s;
     s.reserve(data.size() * 2 + 1);
 
+    auto count = 0;
     char buffer[2];
     for(auto n : data) {
+        if(++count > 8) {
+            count = 0;
+            s.append(1, '-');
+        }
+
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
         if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
         const auto length = p - std::begin(buffer);
@@ -203,7 +213,7 @@ public:
     template<typename Iterator>
     void generate(Iterator begin, Iterator end) {
         const auto count = end - begin;
-        if(count > buffer_.size()) throw std::invalid_argument{"Insufficient size for seeding."};
+        if(count > buffer_.size()) THROW(std::invalid_argument, "Insufficient size for seeding.");
 
         std::copy_n(&buffer_[0], count, begin);
     }
@@ -218,7 +228,7 @@ std::vector<Uint32> Random::getSeed() const {
     std::vector<Uint32> output;
     output.resize(seed_words);
 
-    gsl::span<Uint32, seed_words> span(&output[0], output.size());
+    const gsl::span<Uint32, seed_words> span(&output[0], output.size());
 
     getSeed(span);
 
@@ -239,9 +249,13 @@ void Random::getSeed(gsl::span<Uint32, Random::seed_words> seed) const {
         *it++ = s & ~0u;
         *it++ = (s >> 32) & ~0u;
     }
+
+    sdl2::log_info("Getting state %s", to_hex(seed));
 }
 
 void Random::setSeed(const gsl::span<const Uint32, Random::seed_words> seed) {
+    sdl2::log_info("Setting state %s", to_hex(seed));
+
     std::array<generator_type::state_type, generator_type::state_words> state;
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
@@ -257,7 +271,8 @@ void Random::setSeed(const gsl::span<const Uint32, Random::seed_words> seed) {
 }
 
 void RandomFactory::setSeed(gsl::span<const Uint8> seed) {
-    SDL_Log("Setting RandomFactory seed to ");
+    sdl2::log_info("Setting RandomFactory seed to %s", to_hex(seed));
+
     seed_.clear();
     seed_.reserve(seed.size());
 
@@ -276,16 +291,18 @@ void RandomFactory::setSeed(gsl::span<const Uint8> seed) {
 }
 
 std::vector<Uint8> RandomFactory::getSeed() const {
-    if(!initialized_) throw std::runtime_error{"RandomFactor::getSeed(): not initialized"};
+    if(!initialized_) THROW(std::runtime_error, "RandomFactor::getSeed(): not initialized");
 
     std::vector<Uint8> seed;
     seed.reserve(seed_.size());
     std::copy(seed_.begin(), seed_.end(), std::back_inserter(seed));
 
+    sdl2::log_info("Getting RandomFactory seed %s", to_hex(seed));
+
     return seed;
 };
 
-std::vector<Uint8> RandomFactory::createRandomSeed(const std::string_view& name) {
+std::vector<Uint8> RandomFactory::createRandomSeed(std::string_view name) {
     std::random_device rd;
 
     auto entropy_estimate = rd.entropy();
@@ -331,15 +348,15 @@ std::vector<Uint8> RandomFactory::createRandomSeed(const std::string_view& name)
 
     kmac.digest(std::back_inserter(output));
 
-    sdl2::log_info("Created seed for %s: %s", name, to_hex(output));
+    sdl2::log_info("Created seed for \"%s\": %s", name, to_hex(output));
 
     return output;
 }
 
-Random RandomFactory::create(const std::string_view& name) const {
+Random RandomFactory::create(std::string_view name) const {
     using state_type = Random::generator_type::state_type;
 
-    if(!initialized_) throw std::runtime_error{"RandomFactor::create(): not initialized"};
+    if(!initialized_) THROW(std::runtime_error, "RandomFactor::create(): not initialized");
 
     const auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
 
@@ -370,7 +387,7 @@ Random RandomFactory::create(const std::string_view& name) const {
 
     Random::generator_type generator;
 
-    sdl2::log_info("Setting state of %s to %s", name, to_hex(state));
+    sdl2::log_info("Created state for \"%s\": %s", name, to_hex(state));
 
     generator.set_state(state);
 
