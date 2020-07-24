@@ -18,6 +18,8 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+#include <string_view>
+
 #include <fixmath/FixPoint.h>
 
 #include <misc/SDL2pp.h>
@@ -146,9 +148,9 @@ public:
     void setSeed(gsl::span<const Uint8> seed);
     [[nodiscard]] std::vector<Uint8> getSeed() const;
 
-    [[nodiscard]] Random create(const std::string_view& name) const;
+    [[nodiscard]] Random create(std::string_view name) const;
 
-    static std::vector<Uint8> createRandomSeed(const std::string_view& name);
+    static std::vector<Uint8> createRandomSeed(std::string_view name);
 
 private:
     std::vector<Uint8> seed_;
