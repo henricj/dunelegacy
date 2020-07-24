@@ -710,28 +710,25 @@ int main(int argc, char *argv[]) {
             sdl2::log_info("Loading graphics and sounds...");
 
 #ifdef HAS_ASYNC
-            auto gfxManagerFut = std::async(std::launch::async,
-                [] {
-                const auto start = std::chrono::steady_clock::now();
-                auto ret = std::make_unique<GFXManager>();
+            // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
+            auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
+                const auto start   = std::chrono::steady_clock::now();
+                auto       ret     = std::make_unique<SFXManager>();
                 const auto elapsed = std::chrono::steady_clock::now() - start;
                 return std::make_pair(std::move(ret), elapsed);
             });
+#else
+            // g++ does not provide std::launch::async on all platforms
+            pSFXManager = std::make_unique<SFXManager>();
+#endif
 
-            auto sfxManagerFut = std::async(std::launch::async,
-                [] {
-                const auto start = std::chrono::steady_clock::now();
-                auto ret = std::make_unique<SFXManager>();
-                const auto elapsed = std::chrono::steady_clock::now() - start;
-                return std::make_pair(std::move(ret), elapsed);
-            } );
+            const auto start = std::chrono::steady_clock::now();
+            pGFXManager = std::make_unique<GFXManager>();
+            const auto elapsed = std::chrono::steady_clock::now() - start;
 
-            auto gfxResult = gfxManagerFut.get();
+            sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
 
-            pGFXManager = std::move(gfxResult.first);
-
-            sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(gfxResult.second).count()).c_str());
-
+#ifdef HAS_ASYNC
             try {
                 auto sfxResult = sfxManagerFut.get();
                 pSFXManager = std::move(sfxResult.first);
@@ -741,11 +738,6 @@ int main(int argc, char *argv[]) {
                 const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was thrown:\n\n%s\n\nDune Legacy is unable to play sound!", demangleSymbol(typeid(e).name()), e.what());
                 SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
             }
-
-#else
-            // g++ does not provide std::launch::async on all platforms
-            pGFXManager = std::make_unique<GFXManager>();
-            pSFXManager = std::make_unique<SFXManager>();
 #endif
 
             GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
