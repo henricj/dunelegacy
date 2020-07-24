@@ -23,9 +23,9 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
 if(CMAKE_BUILD_TYPE)
     message(STATUS "CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE}")
-    set(build_list ${CMAKE_BUILD_TYPE} )
-elseif(CMAKE_CONFIGURATION_TYPES )
-    message( STATUS "CMAKE_CONFIGURATION_TYPES ${CMAKE_CONFIGURATION_TYPES}")
+    set(build_list ${CMAKE_BUILD_TYPE})
+elseif(CMAKE_CONFIGURATION_TYPES)
+    message(STATUS "CMAKE_CONFIGURATION_TYPES ${CMAKE_CONFIGURATION_TYPES}")
     set(build_list ${CMAKE_CONFIGURATION_TYPES})
 endif()
 
@@ -43,7 +43,7 @@ if(MSVC)
     set(DUNE_MSVC_RELEASE_FLAGS " /Zi /O2 /Ob3 /DNDEBUG" CACHE STRING  "Release compiler flags")
 
     set(DUNE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" CACHE STRING "MSVC Runtime")
-    set_property(CACHE DUNE_MSVC_RUNTIME_LIBRARY PROPERTY STRINGS MultiThreaded MultiThreadedDLL MultiThreadedDebug MultiThreadedDLL )
+    set_property(CACHE DUNE_MSVC_RUNTIME_LIBRARY PROPERTY STRINGS MultiThreaded MultiThreadedDLL MultiThreadedDebug MultiThreadedDLL)
 
     set(CMAKE_MSVC_RUNTIME_LIBRARY ${DUNE_MSVC_RUNTIME_LIBRARY})
 
@@ -77,23 +77,23 @@ if(MSVC)
         string(APPEND CMAKE_EXE_LINKER_FLAGS " /LARGEADDRESSAWARE")
     endif()
 
-    foreach( config ${build_list} )
-        string( TOUPPER "${config}" config )
+    foreach(config ${build_list})
+        string(TOUPPER "${config}" config)
 
-        if( config MATCHES "DEBUG"  )
-            message( STATUS "Appending Debug build flags" )
-            set( CMAKE_C_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}" )
-            set( CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}" )
+        if(config MATCHES "DEBUG")
+            message(STATUS "Appending Debug build flags")
+            set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
+            set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
             continue()
         endif()
 
-        message( STATUS "Appending Release build flags" )
-        set( CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}" )
-        set( CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}" )
+        message(STATUS "Appending Release build flags")
+        set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
+        set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
     endforeach()
 
-    string( APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS} )
-    string( APPEND CMAKE_CXX_FLAGS ${DUNE_MSVC_FLAGS} )
+    string(APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS})
+    string(APPEND CMAKE_CXX_FLAGS ${DUNE_MSVC_FLAGS})
 endif()
 
 
@@ -164,8 +164,8 @@ message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS " CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "   VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
-foreach( config ${build_list} )
-    string( TOUPPER "${config}" config )
+foreach(config ${build_list})
+    string(TOUPPER "${config}" config)
 
     message(STATUS "          CMAKE_C_FLAGS_${config}: ${CMAKE_C_FLAGS_${config}}")
     message(STATUS "        CMAKE_CXX_FLAGS_${config}: ${CMAKE_CXX_FLAGS_${config}}")
