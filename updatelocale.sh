@@ -1,6 +1,6 @@
 #!/bin/bash
 
-find . -iname "*.cpp" -or -iname "*.h" | sort | xargs xgettext -k_ --add-comments=/ -o data/locale/dunelegacy.pot
+find src include \( -iname "*.cpp" -or -iname "*.h" \) -type f | sort | xargs xgettext -k_ --add-comments=/ -o data/locale/dunelegacy.pot
 
 cd data/locale
 
