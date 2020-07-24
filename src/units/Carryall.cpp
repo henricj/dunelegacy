@@ -83,7 +83,7 @@ void Carryall::save(OutputStream& stream) const
 }
 
 bool Carryall::update(const GameContext& context) {
-    const auto& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    const auto& maxSpeed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
     auto *const pTarget = target.getObjPointer();
@@ -115,9 +115,10 @@ bool Carryall::update(const GameContext& context) {
     // check if this carryall has to be removed because it has just brought something
     // to the map (e.g. new harvester)
     if (active) {
+        const auto& map = context.map;
         if(aDropOfferer && droppedOffCargo && (!hasCargo())
-            && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX()+1)*TILESIZE)
-                || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY()+1)*TILESIZE))) {
+            && ((getRealX() < -TILESIZE) || (getRealX() > (map.getSizeX()+1)*TILESIZE)
+                || (getRealY() < -TILESIZE) || (getRealY() > (map.getSizeY()+1)*TILESIZE))) {
             setVisible(VIS_ALL, false);
             destroy(context);
             return false;
@@ -137,7 +138,7 @@ void Carryall::checkPos(const GameContext& context) {
 
     if (!active) return;
 
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     if (hasCargo()) {
         if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
@@ -170,11 +171,11 @@ void Carryall::checkPos(const GameContext& context) {
             if(!pickedUpUnitList.empty()) {
                 // find next place to drop
                 for(auto i=8;i<18;i++) {
-                    auto r = currentGame->randomGen.rand(3,i/2);
-                    const auto angle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
+                    auto r = game.randomGen.rand(3,i/2);
+                    const auto angle = 2 * FixPt_PI * game.randomGen.randFixPoint();
 
                     auto dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
-                    if(currentGameMap->tileExists(dropCoord) && !currentGameMap->getTile(dropCoord)->hasAGroundObject()) {
+                    if(map.tileExists(dropCoord) && !map.getTile(dropCoord)->hasAGroundObject()) {
                         setDestination(dropCoord);
                         break;
                     }
@@ -231,10 +232,9 @@ void Carryall::deployUnit(const GameContext& context, Uint32 unitID) {
 
 void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit) {
     if(tile->hasANonInfantryGroundObject()) {
-        auto* const object = tile->getNonInfantryGroundObject(currentGame->getObjectManager());
-        if(object->getOwner() == getOwner()) {
-            if(object->getItemID() == Structure_RepairYard) {
-                auto* repair_yard = static_cast<RepairYard*>(object);
+        auto* const object = tile->getNonInfantryGroundObject(context.objectManager);
+        if(object && object->getOwner() == getOwner()) {
+            if(auto* const repair_yard = dune_cast<RepairYard>(object)) {
 
                 if(repair_yard->isFree()) {
                     pUnit->setTarget(object); // unit books repair yard again
@@ -245,22 +245,22 @@ void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUni
                 // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
 
                 repair_yard->book();
+            } else if(auto* const refinery = dune_cast<Refinery>(object)) {
+                if(refinery->isFree()) {
+                    if(auto* const harvester = dune_cast<Harvester>(pUnit)) {
+                        harvester->setTarget(object);
+                        harvester->setReturned(context);
+                        goingToRepairYard = false;
 
-            } else if((object->getItemID() == Structure_Refinery) && (pUnit->getItemID() == Unit_Harvester)) {
-                if(static_cast<Refinery*>(object)->isFree()) {
-                    auto* harvester = static_cast<Harvester*>(pUnit);
-                    harvester->setTarget(object);
-                    harvester->setReturned(context);
-                    goingToRepairYard = false;
-
-                    return;
+                        return;
+                    }
                 }
             }
         }
     }
 
     pUnit->setAngle(drawnAngle);
-    const auto deployPos = currentGameMap->findDeploySpot(pUnit, location);
+    const auto deployPos = context.map.findDeploySpot(pUnit, location);
     pUnit->setForced(false); // Stop units being forced if they are deployed
     pUnit->deploy(context, deployPos);
     if(pUnit->getItemID() == Unit_Saboteur) {
@@ -289,7 +289,7 @@ void Carryall::destroy(const GameContext& context)
 {
     // destroy cargo
     for(const auto pickedUpUnitID : pickedUpUnitList) {
-        if (auto* pPickedUpUnit = context.objectManager.getObject<UnitBase>(pickedUpUnitID)) {
+        if (auto* const pPickedUpUnit = context.objectManager.getObject<UnitBase>(pickedUpUnitID)) {
             pPickedUpUnit->destroy(context);
         }
     }
@@ -297,7 +297,7 @@ void Carryall::destroy(const GameContext& context)
 
     // place wreck
     if(isVisible()) {
-        if(auto* pTile = context.map.tryGetTile(location.x, location.y)) {
+        if(auto* const pTile = context.map.tryGetTile(location.x, location.y)) {
             pTile->assignDeadUnit(DeadUnit_Carrall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
         }
     }
