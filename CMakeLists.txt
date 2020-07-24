@@ -73,6 +73,10 @@ if(MSVC)
       endif()
     endif()
 
+    if(${DUNE_TARGET_ARCHITECTURE} STREQUAL "x86")
+        string(APPEND CMAKE_EXE_LINKER_FLAGS " /LARGEADDRESSAWARE")
+    endif()
+
     foreach( config ${build_list} )
         string( TOUPPER "${config}" config )
 
