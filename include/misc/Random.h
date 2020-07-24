@@ -143,7 +143,7 @@ public:
 
     RandomFactory(gsl::span<Uint8> seed) { setSeed(seed); }
 
-    void               setSeed(gsl::span<const Uint8> seed);
+    void setSeed(gsl::span<const Uint8> seed);
     [[nodiscard]] std::vector<Uint8> getSeed() const;
 
     [[nodiscard]] Random create(const std::string_view& name) const;
