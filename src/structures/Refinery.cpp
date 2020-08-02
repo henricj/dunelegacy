@@ -33,7 +33,11 @@
 /* how fast is spice extracted */
 #define MAXIMUMHARVESTEREXTRACTSPEED (0.625_fix)
 
-Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants refinery_constants{Refinery::item_id, Coord{3, 2}};
+}
+
+Refinery::Refinery(Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -47,7 +51,7 @@ Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     lastAnimFrame = 3;
 }
 
-Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+Refinery::Refinery(Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     auto& stream = initializer.Stream;
@@ -72,9 +76,6 @@ Refinery::Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitia
 void Refinery::init() {
     assert(itemID == Structure_Refinery);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 3;
-    structureSize.y = 2;
 
     graphicID = ObjPic_Refinery;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
@@ -136,7 +137,7 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pHarvester->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, structureSize);
+        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
         pHarvester->deploy(context, deployPos);
     }
 

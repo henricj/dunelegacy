@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Silo;
     using parent = StructureBase;
 
-    Silo(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Silo(Uint32 objectID, const ObjectInitializer& initializer);
+    Silo(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Silo() override;
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;

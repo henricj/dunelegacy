@@ -24,22 +24,25 @@
 
 #include <GUI/ObjectInterfaces/WindTrapInterface.h>
 
-WindTrap::WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants wind_trap_constants{WindTrap::item_id, Coord{2, 2}};
+}
+
+WindTrap::WindTrap(Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(wind_trap_constants, objectID, initializer) {
     WindTrap::init();
 
     setHealth(getMaxHealth());
 }
 
-WindTrap::WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+WindTrap::WindTrap(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(wind_trap_constants, objectID, initializer) {
     WindTrap::init();
 }
 
 void WindTrap::init() {
     assert(itemID == Structure_WindTrap);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_Windtrap;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

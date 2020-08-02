@@ -31,7 +31,12 @@
 #include <structures/ConstructionYard.h>
 #include <units/Harvester.h>
 
-Carryall::Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+namespace {
+constexpr AirUnitConstants carryall_constants{Carryall::item_id};
+} // namespace
+
+Carryall::Carryall(Uint32 objectID, const ObjectInitializer& initializer)
+    : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -43,7 +48,8 @@ Carryall::Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     respondable = false;
 }
 
-Carryall::Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+Carryall::Carryall(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
     auto& stream = initializer.Stream;
@@ -60,8 +66,6 @@ void Carryall::init()
 {
     assert(itemID == Unit_Carryall);
     owner->incrementUnits(itemID);
-
-    canAttackStuff = false;
 
     graphicID = ObjPic_Carryall;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

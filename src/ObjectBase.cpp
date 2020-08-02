@@ -71,7 +71,9 @@
 
 #include <array>
 
-ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID) {
+ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
+                       const ObjectInitializer& initializer)
+    : ObjectBase(object_constants, objectID) {
     originalHouseID = initializer.Owner->getHouseID();
     owner           = initializer.Owner;
     byScenario      = initializer.ByScenario;
@@ -102,8 +104,9 @@ ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitiali
     setVisible(VIS_ALL, false);
 }
 
-ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
-    : ObjectBase(itemID, objectID) {
+ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
+                       const ObjectStreamInitializer& initializer)
+    : ObjectBase(object_constants, objectID) {
     auto& stream    = initializer.Stream;
     originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
     owner = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
@@ -148,19 +151,8 @@ ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamIn
         visible[i] = b[i];
 }
 
-ObjectBase::ObjectBase(ItemID_enum itemID, Uint32 objectID) : itemID{itemID}, objectID{objectID}
-{
-    aFlyingUnit = false;
-    aGroundUnit = false;
-    aStructure  = false;
-    aUnit       = false;
-    infantry    = false;
-    aBuilder    = false;
-
-    canAttackStuff = false;
-
-    radius = TILESIZE / 2;
-
+ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID)
+    : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
     graphicID  = -1;
     numImagesX = 0;
     numImagesY = 0;
@@ -540,12 +532,12 @@ namespace
 {
 template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
-    static_assert(std::is_constructible<ObjectType, ItemID_enum, Args...>::value, "ObjectType is not constructible");
+    static_assert(std::is_constructible<ObjectType, Args...>::value, "ObjectType is not constructible");
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
     static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
     static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
 
-    return std::make_unique<ObjectType>(ObjectType::item_id, std::forward<Args>(args)...);
+    return std::make_unique<ObjectType>(std::forward<Args>(args)...);
 }
 
 template<typename... Args>
@@ -601,7 +593,8 @@ std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, Uint32 
     return objectFactory(itemID, objectID, initializer);
 }
 
-std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) {
+std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, Uint32 objectID,
+                                                   const ObjectStreamInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 

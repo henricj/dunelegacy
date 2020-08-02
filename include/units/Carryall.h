@@ -28,8 +28,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Carryall;
     using parent = AirUnit;
 
-    Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Carryall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Carryall(Uint32 objectID, const ObjectInitializer& initializer);
+    Carryall(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
     Carryall(const Carryall &) = delete;

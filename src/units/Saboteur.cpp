@@ -27,8 +27,18 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
+namespace {
+class SaboteurConstants : public InfantryBaseConstants {
+public:
+    constexpr SaboteurConstants() : InfantryBaseConstants{Saboteur::item_id} { canAttackStuff_ = true; }
+};
 
-Saboteur::Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
+constexpr SaboteurConstants saboteur_constants;
+}
+
+
+Saboteur::Saboteur(Uint32 objectID, const ObjectInitializer& initializer)
+    : InfantryBase(saboteur_constants, objectID, initializer) {
     Saboteur::init();
 
     setHealth(getMaxHealth());
@@ -38,7 +48,8 @@ Saboteur::Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     attackMode = GUARD;
 }
 
-Saboteur::Saboteur(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
+Saboteur::Saboteur(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : InfantryBase(saboteur_constants, objectID, initializer) {
     Saboteur::init();
 }
 
@@ -52,8 +63,6 @@ void Saboteur::init()
 
     numImagesX = 4;
     numImagesY = 3;
-
-    numWeapons = 0;
 }
 
 Saboteur::~Saboteur() = default;

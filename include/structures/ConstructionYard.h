@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_ConstructionYard;
     using parent = BuilderBase;
 
-    ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    ConstructionYard(Uint32 objectID, const ObjectInitializer& initializer);
+    ConstructionYard(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~ConstructionYard() override;
 
     /**

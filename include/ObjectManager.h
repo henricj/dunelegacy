@@ -151,7 +151,7 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
-        static_assert(std::is_constructible<ObjectType, ItemID_enum, Uint32, const ObjectInitializer &>::value,
+        static_assert(std::is_constructible<ObjectType, Uint32, const ObjectInitializer &>::value,
                       "ObjectType is not constructible");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 

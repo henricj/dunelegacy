@@ -27,22 +27,25 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-SiegeTank::SiegeTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TankBase(itemID, objectID, initializer) {
+namespace {
+constexpr TankBaseConstants siege_tank_constants{SiegeTank::item_id, 2, Bullet_ShellLarge};
+}
+
+SiegeTank::SiegeTank(Uint32 objectID, const ObjectInitializer& initializer)
+    : TankBase(siege_tank_constants, objectID, initializer) {
     SiegeTank::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-SiegeTank::SiegeTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TankBase(itemID, objectID, initializer) {
+SiegeTank::SiegeTank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TankBase(siege_tank_constants, objectID, initializer) {
     SiegeTank::init();
 }
 
 void SiegeTank::init() {
     assert(itemID == Unit_SiegeTank);
     owner->incrementUnits(itemID);
-
-    numWeapons = 2;
-    bulletType = Bullet_ShellLarge;
 
     graphicID = ObjPic_Siegetank_Base;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

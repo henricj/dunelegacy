@@ -29,26 +29,21 @@
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
-GroundUnit::GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : UnitBase(itemID, objectID, initializer) {
-
-    GroundUnit::init();
+GroundUnit::GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : UnitBase(constants, objectID, initializer) {
 
     awaitingPickup = false;
-    bookedCarrier = NONE_ID;
+    bookedCarrier  = NONE_ID;
 }
 
-GroundUnit::GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : UnitBase(itemID, objectID, initializer) {
-
-    GroundUnit::init();
+GroundUnit::GroundUnit(const GroundUnitConstants& constants, Uint32 objectID,
+                       const ObjectStreamInitializer& initializer)
+    : UnitBase(constants, objectID, initializer) {
 
     auto& stream   = initializer.Stream;
 
     awaitingPickup = stream.readBool();
     bookedCarrier = stream.readUint32();
-}
-
-void GroundUnit::init() {
-    aGroundUnit = true;
 }
 
 GroundUnit::~GroundUnit() = default;

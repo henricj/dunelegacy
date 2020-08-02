@@ -36,9 +36,11 @@
 
 #define STARPORT_NO_ARRIVAL_AWAITED -1
 
+namespace {
+constexpr BuilderBaseConstants star_port_constants{StarPort::item_id, Coord{3, 3}};
+}
 
-
-StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+StarPort::StarPort(Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -47,7 +49,7 @@ StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     deploying = false;
 }
 
-StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+StarPort::StarPort(Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     auto& stream = initializer.Stream;
@@ -63,9 +65,6 @@ StarPort::StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitia
 void StarPort::init() {
     assert(itemID == Structure_StarPort);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 3;
-    structureSize.y = 3;
 
     graphicID = ObjPic_Starport;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
@@ -298,7 +297,7 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                             unitDestination = destination;
                         }
 
-                        const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, structureSize);
+                        const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
                         newUnit->deploy(context, spot);
 
                         if(unitDestination.isValid()) {

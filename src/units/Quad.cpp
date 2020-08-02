@@ -26,22 +26,24 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
-Quad::Quad(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+namespace {
+constexpr GroundUnitConstants quad_constants{Quad::item_id, 2, Bullet_ShellSmall};
+}
+
+Quad::Quad(Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 
     setHealth(getMaxHealth());
 }
 
-Quad::Quad(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+Quad::Quad(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 }
 
 void Quad::init() {
     assert(itemID == Unit_Quad);
     owner->incrementUnits(itemID);
-
-    numWeapons = 2;
-    bulletType = Bullet_ShellSmall;
 
     graphicID = ObjPic_Quad;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

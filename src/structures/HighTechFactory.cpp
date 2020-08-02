@@ -23,21 +23,24 @@
 #include <House.h>
 #include <Game.h>
 
-HighTechFactory::HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace {
+constexpr BuilderBaseConstants high_tech_factory_constants{HighTechFactory::item_id, Coord{3, 2}};
+}
+
+HighTechFactory::HighTechFactory(Uint32 objectID, const ObjectInitializer& initializer)
+    : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-HighTechFactory::HighTechFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+HighTechFactory::HighTechFactory(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 }
 
 void HighTechFactory::init() {
     owner->incrementStructures(itemID);
-
-    structureSize.x = 3;
-    structureSize.y = 2;
 
     graphicID = ObjPic_HighTechFactory;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

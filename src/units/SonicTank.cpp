@@ -27,23 +27,25 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
+namespace {
+constexpr TrackedUnitConstants sonic_tank_constants{SonicTank::item_id, 1, Bullet_Sonic};
+}
 
-SonicTank::SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+SonicTank::SonicTank(Uint32 objectID, const ObjectInitializer& initializer)
+    : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 
     setHealth(getMaxHealth());
 }
 
-SonicTank::SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+SonicTank::SonicTank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 }
 
 void SonicTank::init() {
     assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
-
-    numWeapons = 1;
-    bulletType = Bullet_Sonic;
 
     graphicID = ObjPic_Tank_Base;
     gunGraphicID = ObjPic_Sonictank_Gun;

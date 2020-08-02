@@ -28,11 +28,39 @@
 // forward declarations
 class Tile;
 
+class UnitBaseConstants : public ObjectBaseConstants {
+public:
+    constexpr explicit UnitBaseConstants(ItemID_enum itemID, int num_weapons = 0,
+                                         BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : ObjectBaseConstants{itemID} {
+        aUnit_          = true;
+        canAttackStuff_ = 0 != num_weapons;
+
+        numWeapons_ = num_weapons;
+        bulletType_ = bullet_id;
+    }
+
+    bool isTracked() const noexcept { return tracked_; }
+
+    bool isTurreted() const noexcept { return turreted_; }
+
+    int numWeapons() const noexcept { return numWeapons_; }
+
+    int bulletType() const noexcept { return bulletType_; }
+
+protected:
+    // constant for all units of the same type
+    bool tracked_{};    ///< Does this unit have tracks?
+    bool turreted_{};   ///< Does this unit have a turret?
+    int  numWeapons_{}; ///< How many weapons do we have?
+    int  bulletType_{Bullet_DRocket}; ///< Type of bullet to shot with
+};
+
 class UnitBase : public ObjectBase
 {
 protected:
-    UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     ~UnitBase() override = 0;
@@ -225,29 +253,37 @@ public:
 
     void clearPath() {
         pathList.clear();
-        nextSpotFound = false;
+        nextSpotFound        = false;
         recalculatePathTimer = 0;
-        nextSpotAngle = ANGLETYPE::INVALID_ANGLE;;
+        nextSpotAngle        = ANGLETYPE::INVALID_ANGLE;
+        ;
         noCloserPointCount = 0;
     }
 
-    bool isTracked() const { return tracked; }
+    bool isTracked() const { return unit_constants().isTracked(); }
 
-     bool isTurreted() const noexcept { return turreted; }
+    bool isTurreted() const noexcept { return unit_constants().isTurreted(); }
 
-     bool isMoving() const noexcept { return moving; }
+    int numWeapons() const noexcept { return unit_constants().numWeapons(); }
 
-     bool wasDeviated() const noexcept { return (owner->getHouseID() != originalHouseID); }
+    int bulletType() const noexcept { return unit_constants().bulletType(); }
 
-     ANGLETYPE getAngle() const noexcept { return drawnAngle; }
+    bool isMoving() const noexcept { return moving; }
 
-     ATTACKMODE getAttackMode() const noexcept { return attackMode; }
+    bool wasDeviated() const noexcept { return (owner->getHouseID() != originalHouseID); }
 
-     const Coord& getGuardPoint() const noexcept { return guardPoint; }
+    ANGLETYPE getAngle() const noexcept { return drawnAngle; }
+
+    ATTACKMODE getAttackMode() const noexcept { return attackMode; }
+
+    const Coord& getGuardPoint() const noexcept { return guardPoint; }
 
     virtual void playAttackSound();
 
 protected:
+    const UnitBaseConstants& unit_constants() const noexcept {
+        return *static_cast<const UnitBaseConstants*>(&constants_);
+    }
 
     void updateVisibleUnits(const GameContext& context);
 
@@ -279,12 +315,6 @@ protected:
     bool SearchPathWithAStar();
 
     void drawSmoke(int x, int y) const;
-
-    // constant for all units of the same type
-    bool     tracked;                ///< Does this unit have tracks?
-    bool     turreted;               ///< Does this unit have a turret?
-    int      numWeapons;             ///< How many weapons do we have?
-    int      bulletType;             ///< Type of bullet to shot with
 
     // unit state/properties
     Coord    guardPoint;             ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit

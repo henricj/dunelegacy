@@ -30,27 +30,18 @@
 
 #include <misc/draw_util.h>
 
-#include <structures/RepairYard.h>
 
-AirUnit::AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : UnitBase(itemID, objectID, initializer)
-{
-    AirUnit::initAirUnit();
 
+AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : UnitBase(constants, objectID, initializer) {
     currentMaxSpeed = 2;
 }
 
-AirUnit::AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : UnitBase(itemID, objectID, initializer)
-{
-    AirUnit::initAirUnit();
-
-    auto& stream    = initializer.Stream;
+AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : UnitBase(constants, objectID, initializer) {
+    auto& stream = initializer.Stream;
 
     currentMaxSpeed = stream.readFixPoint();
-}
-
-void AirUnit::initAirUnit()
-{
-    aFlyingUnit = true;
 }
 
 AirUnit::~AirUnit() = default;

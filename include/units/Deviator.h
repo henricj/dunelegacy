@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Deviator;
     using parent                     = TrackedUnit;
 
-    Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Deviator(Uint32 objectID, const ObjectInitializer& initializer);
+    Deviator(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Deviator() override;
 
     void blitToScreen() override;

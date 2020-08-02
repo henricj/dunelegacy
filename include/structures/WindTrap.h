@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_WindTrap;
     using parent = StructureBase;
 
-    WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    WindTrap(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    WindTrap(Uint32 objectID, const ObjectInitializer& initializer);
+    WindTrap(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~WindTrap() override;
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;

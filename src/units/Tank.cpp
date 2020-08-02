@@ -28,22 +28,25 @@
 #include <SoundPlayer.h>
 
 
-Tank::Tank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TankBase(itemID, objectID, initializer) {
+namespace {
+constexpr TankBaseConstants tank_constants{Tank::item_id, 1, Bullet_ShellMedium};
+}
+
+
+Tank::Tank(Uint32 objectID, const ObjectInitializer& initializer) : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 
     setHealth(getMaxHealth());
 }
 
-Tank::Tank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TankBase(itemID, objectID, initializer) {
+Tank::Tank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 }
 
 void Tank::init() {
     assert(itemID == Unit_Tank);
     owner->incrementUnits(itemID);
-
-    numWeapons = 1;
-    bulletType = Bullet_ShellMedium;
 
     graphicID = ObjPic_Tank_Base;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

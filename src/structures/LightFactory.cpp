@@ -23,22 +23,25 @@
 #include <House.h>
 #include <Game.h>
 
-LightFactory::LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace {
+constexpr BuilderBaseConstants light_factory_constants{LightFactory::item_id, Coord{2, 2}};
+}
+
+LightFactory::LightFactory(Uint32 objectID, const ObjectInitializer& initializer)
+    : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-LightFactory::LightFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+LightFactory::LightFactory(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 }
 
 void LightFactory::init() {
     assert(itemID == Structure_LightFactory);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_LightFactory;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

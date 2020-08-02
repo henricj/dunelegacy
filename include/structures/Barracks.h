@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_Barracks;
     using parent = BuilderBase;
 
-    Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Barracks(Uint32 objectID, const ObjectInitializer& initializer);
+    Barracks(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Barracks() override;
 
     /**

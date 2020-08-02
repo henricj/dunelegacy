@@ -22,21 +22,24 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-WOR::WOR(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace {
+constexpr BuilderBaseConstants wor_constants{WOR::item_id, Coord{2, 2}};
+}
+
+WOR::WOR(Uint32 objectID, const ObjectInitializer& initializer)
+    : BuilderBase(wor_constants, objectID, initializer) {
     WOR::init();
 
     setHealth(getMaxHealth());
 }
 
-WOR::WOR(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+WOR::WOR(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(wor_constants, objectID, initializer) {
     WOR::init();
 }
 
 void WOR::init() {
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_WOR;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Quad;
     using parent = GroundUnit;
 
-    Quad(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Quad(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Quad(Uint32 objectID, const ObjectInitializer& initializer);
+    Quad(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Quad() override;
 
     void playAttackSound() override;

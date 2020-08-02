@@ -90,12 +90,20 @@ public:
     Uint32 price;
 };
 
+class BuilderBaseConstants : public StructureBaseConstants
+{
+public:
+    constexpr explicit BuilderBaseConstants(ItemID_enum itemID, Coord structureSize)
+        : StructureBaseConstants{itemID, structureSize} {
+        aBuilder_ = true;
+    }
+};
 
 class BuilderBase : public StructureBase
 {
 protected:
-    BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = StructureBase;

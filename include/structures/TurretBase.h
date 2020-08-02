@@ -22,13 +22,28 @@
 
 #include <FileClasses/SFXManager.h>
 
+class TurretBaseConstants : public StructureBaseConstants {
+public:
+    constexpr explicit TurretBaseConstants(ItemID_enum itemID, BulletID_enum bullet_type)
+        : StructureBaseConstants{itemID, Coord{1, 1}}, bulletType_{bullet_type} {
+        canAttackStuff_ = true;
+    }
+
+    BulletID_enum bulletType() const noexcept { return bulletType_; }
+
+private:
+    // constant for all turrets of the same type
+    BulletID_enum bulletType_; ///< The type of bullet used
+};
+
 class TurretBase : public StructureBase
 {
     void init();
 
 protected:
-    explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    explicit TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    explicit TurretBase(const TurretBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    explicit TurretBase(const TurretBaseConstants& constants, Uint32 objectID,
+                        const ObjectStreamInitializer& initializer);
 
 public:
     using parent = StructureBase;
@@ -65,6 +80,10 @@ public:
     inline int getTurretAngle() const { return lround(angle); }
 
 protected:
+    const TurretBaseConstants& turret_constants() const noexcept {
+        return *static_cast<const TurretBaseConstants*>(&constants_);
+    }
+
     /**
         Used for updating things that are specific to that particular structure. Is called from
         StructureBase::update() before the check if this structure is still alive.
@@ -72,7 +91,6 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
     // constant for all turrets of the same type
-    int bulletType;             ///< The type of bullet used
     Sound_enum attackSound;     ///< The id of the sound to play when attack
 
     // turret state

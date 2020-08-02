@@ -20,10 +20,19 @@
 
 #include <units/GroundUnit.h>
 
+class TrackedUnitConstants : public GroundUnitConstants {
+public:
+    constexpr explicit TrackedUnitConstants(ItemID_enum itemID, int num_weapons = 0,
+                                            BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : GroundUnitConstants{itemID, num_weapons, bullet_id} {
+        tracked_ = true;
+    }
+};
+
 class TrackedUnit : public GroundUnit {
 protected:
-    TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = GroundUnit;
@@ -52,8 +61,6 @@ public:
     }
 
 private:
-    void init();
-
     static const std::array<FixPoint, Terrain_SpecialBloom + 1> terrain_difficulty; // TODO:: get better constant...
 };
 

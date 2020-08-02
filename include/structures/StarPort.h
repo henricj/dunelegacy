@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_StarPort;
     using parent = BuilderBase;
 
-    StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    StarPort(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    StarPort(Uint32 objectID, const ObjectInitializer& initializer);
+    StarPort(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~StarPort() override;
 
     void save(OutputStream& stream) const override;

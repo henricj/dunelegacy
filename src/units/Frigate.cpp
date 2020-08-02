@@ -28,7 +28,12 @@
 
 #include <structures/StarPort.h>
 
-Frigate::Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+namespace {
+constexpr AirUnitConstants frigate_constants{Frigate::item_id};
+} // namespace
+
+Frigate::Frigate(Uint32 objectID, const ObjectInitializer& initializer)
+    : AirUnit(frigate_constants, objectID, initializer) {
     Frigate::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -39,7 +44,8 @@ Frigate::Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& i
     droppedOffCargo = false;
 }
 
-Frigate::Frigate(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+Frigate::Frigate(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : AirUnit(frigate_constants, objectID, initializer) {
     Frigate::init();
 
     auto& stream    = initializer.Stream;
@@ -51,8 +57,6 @@ void Frigate::init()
 {
     assert(itemID == Unit_Frigate);
     owner->incrementUnits(itemID);
-
-    canAttackStuff = false;
 
     graphicID = ObjPic_Frigate;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

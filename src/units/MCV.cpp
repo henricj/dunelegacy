@@ -30,22 +30,25 @@
 
 #include <players/HumanPlayer.h>
 
-MCV::MCV(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+namespace {
+constexpr GroundUnitConstants mcv_constants{MCV::item_id, false};
+}
+
+MCV::MCV(Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
     setHealth(getMaxHealth());
     attackMode = GUARD;
 }
 
-MCV::MCV(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+MCV::MCV(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 }
 
 void MCV::init() {
     assert(itemID == Unit_MCV);
     owner->incrementUnits(itemID);
-
-    canAttackStuff = false;
 
     graphicID = ObjPic_MCV;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

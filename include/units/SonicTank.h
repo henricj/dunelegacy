@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_SonicTank;
     using parent = TrackedUnit;
 
-    SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    SonicTank(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    SonicTank(Uint32 objectID, const ObjectInitializer& initializer);
+    SonicTank(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~SonicTank() override;
 
     void blitToScreen() override;

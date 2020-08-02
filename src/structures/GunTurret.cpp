@@ -23,13 +23,19 @@
 #include <FileClasses/SFXManager.h>
 #include <House.h>
 
-GunTurret::GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
+namespace {
+constexpr TurretBaseConstants gun_turret_constants{GunTurret::item_id, Bullet_ShellTurret};
+}
+
+GunTurret::GunTurret(Uint32 objectID, const ObjectInitializer& initializer)
+    : TurretBase(gun_turret_constants, objectID, initializer) {
     GunTurret::init();
 
     setHealth(getMaxHealth());
 }
 
-GunTurret::GunTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
+GunTurret::GunTurret(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TurretBase(gun_turret_constants, objectID, initializer) {
     GunTurret::init();
 }
 
@@ -38,7 +44,6 @@ void GunTurret::init() {
     owner->incrementStructures(itemID);
 
     attackSound = Sound_ExplosionSmall;
-    bulletType = Bullet_ShellTurret;
 
     graphicID = ObjPic_GunTurret;
     graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());

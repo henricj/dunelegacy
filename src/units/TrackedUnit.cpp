@@ -28,19 +28,13 @@
 #include <Map.h>
 #include <Game.h>
 
-TrackedUnit::TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer)
-{
-    TrackedUnit::init();
+TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : GroundUnit(constants, objectID, initializer) {
 }
 
-TrackedUnit::TrackedUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer)
-{
-    TrackedUnit::init();
-}
-
-void TrackedUnit::init()
-{
-    tracked = true;
+TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID,
+                         const ObjectStreamInitializer& initializer)
+    : GroundUnit(constants, objectID, initializer) {
 }
 
 TrackedUnit::~TrackedUnit() = default;

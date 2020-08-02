@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_IX;
     using parent = StructureBase;
 
-    IX(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    IX(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    IX(Uint32 objectID, const ObjectInitializer& initializer);
+    IX(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~IX() override;
 
     /**

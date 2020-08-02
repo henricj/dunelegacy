@@ -21,11 +21,20 @@
 #include <units/UnitBase.h>
 #include <FileClasses/GFXManager.h>
 
+class AirUnitConstants : public UnitBaseConstants {
+public:
+    constexpr explicit AirUnitConstants(ItemID_enum itemID, int num_weapons = 0,
+                                        BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
+        aFlyingUnit_ = true;
+    }
+};
+
 class AirUnit : public UnitBase
 {
 protected:
-    AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    AirUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = UnitBase;

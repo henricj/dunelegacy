@@ -28,8 +28,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Sandworm;
     using parent = GroundUnit;
 
-    Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Sandworm(Uint32 objectID, const ObjectInitializer& initializer);
+    Sandworm(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Sandworm() override;
 
     void save(OutputStream& stream) const override;
