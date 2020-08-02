@@ -57,7 +57,7 @@ void AirUnit::destroy(const GameContext& context)
 {
     if(isVisible()) {
         Coord position(lround(realX), lround(realY));
-        currentGame->addExplosion(Explosion_Medium2, position, owner->getHouseID());
+        context.game.addExplosion(Explosion_Medium2, position, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
@@ -157,8 +157,10 @@ FixPoint AirUnit::getDestinationAngle() const {
 }
 
 void AirUnit::turn(const GameContext& context) {
+    const auto turn_speed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+
     if(destination.isValid()) {
-        FixPoint destinationAngle = getDestinationAngle();
+        const auto destinationAngle = getDestinationAngle();
 
         FixPoint angleLeft  = 0;
         FixPoint angleRight = 0;
@@ -173,17 +175,17 @@ void AirUnit::turn(const GameContext& context) {
 
         if(angleLeft <= angleRight) {
             angle +=
-                std::min(currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed, angleLeft);
+                std::min(turn_speed, angleLeft);
             if(angle > static_cast<int>(ANGLETYPE::NUM_ANGLES)) { angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         } else {
             angle -=
-                std::min(currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed, angleRight);
+                std::min(turn_speed, angleRight);
             if(angle < 0) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         }
     } else {
-        angle -= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed / 8;
+        angle -= turn_speed / 8;
         if(angle < 0) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
         drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
     }

@@ -65,7 +65,7 @@ void GroundUnit::assignToMap(const GameContext& context, const Coord& pos) {
 void GroundUnit::checkPos(const GameContext& context) {
     auto* pTile = currentGameMap->getTile(location);
     if(!moving && !justStoppedMoving && !isInfantry()) {
-        pTile->setTrack(drawnAngle, currentGame->getGameCycleCount());
+        pTile->setTrack(drawnAngle, context.game.getGameCycleCount());
     }
 
     if(justStoppedMoving)
@@ -107,20 +107,20 @@ void GroundUnit::checkPos(const GameContext& context) {
 
             clearPath();
         } else {
-            ObjectBase *pObject = pTile->getGroundObject(currentGame->getObjectManager());
+            auto* const pObject = pTile->getGroundObject(context.objectManager);
 
             if( justStoppedMoving
                 && (pObject != nullptr)
-                && (pObject->getObjectID() == target.getObjectID())
-                && (target.getObjPointer()->getItemID() == Structure_RepairYard))
+                && (pObject->getObjectID() == target.getObjectID()))
             {
-                auto* pRepairYard = static_cast<RepairYard*>(target.getObjPointer());
-                if(pRepairYard->isFree()) {
-                    setGettingRepaired();
-                } else {
-                    // the repair yard is already in use by some other unit => move out
-                    Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
-                    doMove2Pos(context, newDestination, true);
+                if(auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {
+                    if(pRepairYard->isFree()) {
+                        setGettingRepaired();
+                    } else {
+                        // the repair yard is already in use by some other unit => move out
+                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
+                        doMove2Pos(context, newDestination, true);
+                    }
                 }
             }
         }
@@ -213,7 +213,7 @@ bool GroundUnit::hasBookedCarrier() const {
 }
 
 const UnitBase* GroundUnit::getCarrier() const {
-    return static_cast<UnitBase*>(currentGame->getObjectManager().getObject(bookedCarrier));
+    return currentGame->getObjectManager().getObject<UnitBase>(bookedCarrier);
 }
 
 FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const
@@ -234,8 +234,8 @@ FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const
 }
 
 void GroundUnit::move(const GameContext& context) {
-    if(!moving && !justStoppedMoving && (((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
+    if(!moving && !justStoppedMoving && (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0)) {
+        context.map.viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     parent::move(context);

@@ -88,7 +88,7 @@ void SiegeTank::blitToScreen() {
 void SiegeTank::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
         const Coord realPos(lround(realX), lround(realY));
-        const auto explosionID = currentGame->randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
+        const auto explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID())) {

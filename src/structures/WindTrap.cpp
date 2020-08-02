@@ -65,7 +65,7 @@ bool WindTrap::update(const GameContext& context) {
     if(bResult) {
         // we are still alive
         if(justPlacedTimer <= 0 || curAnimFrame != 0) {
-            curAnimFrame = 2 + ((currentGame->getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
+            curAnimFrame = 2 + ((context.game.getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
         }
     }
 

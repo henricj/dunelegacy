@@ -48,7 +48,7 @@ bool PalaceInterface::update() {
     auto* const pObject = currentGame->getObjectManager().getObject(objectID);
     if(pObject == nullptr) { return false; }
 
-    auto* pPalace = dynamic_cast<Palace*>(pObject);
+    auto* pPalace = dune_cast<Palace>(pObject);
     if(pPalace != nullptr) {
         int picID = 0;
 

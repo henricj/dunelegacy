@@ -281,8 +281,8 @@ void StructureBase::setJustPlaced() {
 }
 
 bool StructureBase::update(const GameContext& context) {
-    if(((currentGame->getGameCycleCount() + getObjectID()) % 512) == 0) {
-        currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
+    if(((context.game.getGameCycleCount() + getObjectID()) % 512) == 0) {
+        context.map.viewMap(owner->getHouseID(), location, getViewRange());
     }
 
     if(!fogged) {
@@ -290,22 +290,22 @@ bool StructureBase::update(const GameContext& context) {
     }
 
     // degrade
-    if((degradeTimer >= 0) && currentGame->getGameInitSettings().getGameOptions().concreteRequired && (owner->getPowerRequirement() > owner->getProducedPower())) {
+    if((degradeTimer >= 0) && context.game.getGameInitSettings().getGameOptions().concreteRequired && (owner->getPowerRequirement() > owner->getProducedPower())) {
         degradeTimer--;
         if(degradeTimer <= 0) {
             degradeTimer = MILLI2CYCLES(15*1000);
 
-            int damageMultiplyer = 1;
+            int damageMultiplier = 1;
             if(owner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN || owner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
-                damageMultiplyer = 3;
+                damageMultiplier = 3;
             } else if(owner->getHouseID() == HOUSETYPE::HOUSE_ORDOS) {
-                damageMultiplyer = 2;
+                damageMultiplier = 2;
             } else if(owner->getHouseID() == HOUSETYPE::HOUSE_MERCENARY) {
-                damageMultiplyer = 5;
+                damageMultiplier = 5;
             }
 
             if(getHealth() > getMaxHealth() / 2) {
-                setHealth( getHealth() - FixPoint(damageMultiplyer * getMaxHealth())/100);
+                setHealth( getHealth() - FixPoint(damageMultiplier * getMaxHealth())/100);
             }
         }
     }
@@ -322,7 +322,7 @@ bool StructureBase::update(const GameContext& context) {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
             const auto fraction = (2*256)/getMaxHealth();
-            const FixPoint repairprice = FixPoint(fraction * currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price) / 256;
+            const FixPoint repairprice = FixPoint(fraction * context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
             const auto repairHealth = 5_fix/30_fix;
@@ -341,10 +341,14 @@ bool StructureBase::update(const GameContext& context) {
         doRepair(context);
     }
 
+    const auto game_cycle_count = context.game.getGameCycleCount();
+
     // check smoke
     smoke.erase(std::remove_if(std::begin(smoke), std::end(smoke),
-        [](const StructureSmoke& s) { return currentGame->getGameCycleCount() - s.startGameCycle >= MILLI2CYCLES(8 * 1000); }),
-        std::end(smoke));
+                               [game_cycle_count](const StructureSmoke& s) {
+                                   return game_cycle_count - s.startGameCycle >= MILLI2CYCLES(8 * 1000);
+                               }),
+                std::end(smoke));
 
     // update animations
     animationCounter++;

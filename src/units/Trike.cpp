@@ -58,7 +58,7 @@ Trike::~Trike() = default;
 void Trike::destroy(const GameContext& context) {
     if(currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
-        currentGame->addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
+        context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))
             soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
