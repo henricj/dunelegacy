@@ -69,7 +69,7 @@
 #include <sstream>
 #include <iomanip>
 
-Game::Game() : randomGen{randomFactory.create("Game")}, uiRandomGen{RandomFactory{}.create("UI")} {
+Game::Game() : randomGen{randomFactory.create("Game")} {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
     localPlayerName = settings.general.playerName;
@@ -1169,9 +1169,11 @@ void Game::runMainLoop(const GameContext& context) {
                 SDL_LOG_CATEGORY_APPLICATION,
                 fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message()).c_str());
 
+            auto& uiRandom = pGFXManager->random();
+
             for(auto i = 0; i < 10; ++i) {
                 const auto [ok2, replayname2] =
-                    fnkdat(fmt::format("replay/auto-{}.rpl", uiRandomGen.rand()), FNKDAT_USER | FNKDAT_CREAT);
+                    fnkdat(fmt::format("replay/auto-{}.rpl", uiRandom.rand()), FNKDAT_USER | FNKDAT_CREAT);
 
                 if(pStream->open(replayname2)) {
                     isOpen = true;
@@ -2423,6 +2425,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
 
                 // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
 
+                auto& uiRandom = pGFXManager->random();
+
                 for(int y = yPos; y < yPos + structuresize.y; y++) {
                     for(int x = xPos; x < xPos + structuresize.x; x++) {
                         auto *const pTile = map->getTile(x,y);
@@ -2430,14 +2434,14 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
                             auto *const pObject = pTile->getNonInfantryGroundObject(objectManager);
                             if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
                                 auto* pUnit = static_cast<UnitBase*>(pObject);
-                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandomGen, pUnit->getLocation(), structuresize);
+                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandom, pUnit->getLocation(), structuresize);
                                 pUnit->handleMoveClick(context, newDestination.x, newDestination.y);
                             }
                         } else if(pTile->hasInfantry()) {
                             for(auto objectID : pTile->getInfantryList()) {
-                                auto *pInfantry = dynamic_cast<InfantryBase*>(getObjectManager().getObject(objectID));
+                                auto *pInfantry = getObjectManager().getObject<InfantryBase>(objectID);
                                 if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandomGen, pInfantry->getLocation(), structuresize);
+                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom, pInfantry->getLocation(), structuresize);
                                     pInfantry->handleMoveClick(context, newDestination.x, newDestination.y);
                                 }
                             }

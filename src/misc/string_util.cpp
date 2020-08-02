@@ -324,3 +324,82 @@ std::string decodeString(const std::string& text) {
     }
     return out;
 }
+
+std::string to_hex(gsl::span<const Uint8> data) {
+    std::string s;
+    s.reserve(data.size() * 2 + 1);
+
+    auto count = -1;
+    char buffer[2];
+    for(auto n : data) {
+        if(++count > 7) {
+            count = 0;
+            s.append(1, '-');
+        }
+
+        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
+        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+        const auto length = p - std::begin(buffer);
+        if(length > 1) s.append(buffer, 2);
+        else {
+            s.append(1, '0');
+            s.append(std::begin(buffer), 1);
+        }
+    }
+
+    return s;
+}
+
+std::string to_hex(gsl::span<const Uint32> data) {
+    std::string s;
+    s.reserve(data.size() * 9 + 1);
+
+    auto first = true;
+    char buffer[8];
+    for(auto n : data) {
+        if(first) {
+            first = false;
+        } else
+            s.append(1, '-');
+
+        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
+
+        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+
+        const auto length = p - std::begin(buffer);
+        if(length > 7) s.append(buffer, 8);
+        else {
+            s.append(8 - length, '0');
+            s.append(std::begin(buffer), length);
+        }
+    }
+
+    return s;
+}
+
+std::string to_hex(gsl::span<const Uint64> data) {
+    std::string s;
+    s.reserve(data.size() * 17 + 1);
+
+    auto first = true;
+    char buffer[16];
+    for(auto n : data) {
+        if(first) {
+            first = false;
+        } else
+            s.append(1, '-');
+
+        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
+
+        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+
+        const auto length = p - std::begin(buffer);
+        if(length > 15) s.append(buffer, 16);
+        else {
+            s.append(16 - length, '0');
+            s.append(std::begin(buffer), length);
+        }
+    }
+
+    return s;
+}

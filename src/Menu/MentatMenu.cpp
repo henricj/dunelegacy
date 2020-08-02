@@ -29,7 +29,7 @@
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
  :  currentMentatTextIndex(-1), nextMentatTextSwitch(0)
 {
-    nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
+    nextSpecialAnimation = SDL_GetTicks() + pGFXManager->random().rand(8000, 20000);
 
     Animation* anim = nullptr;
 
@@ -221,7 +221,7 @@ void MentatMenu::update() {
     if(specialAnim.getAnimation() != nullptr && specialAnim.getAnimation()->isFinished()) {
         if(nextSpecialAnimation < SDL_GetTicks()) {
             specialAnim.getAnimation()->setNumLoops(1);
-            nextSpecialAnimation = SDL_GetTicks() + getRandomInt(8000, 20000);
+            nextSpecialAnimation = SDL_GetTicks() + pGFXManager->random().rand(8000, 20000);
         }
     }
 
@@ -257,7 +257,7 @@ void MentatMenu::update() {
     if(bPressed) {
         if((abs(mouseMouthPos.x) <= mouthSize.x/2) && (abs(mouseMouthPos.y) <= mouthSize.y/2)) {
             if(mouthAnim.getAnimation()->getCurrentFrameOverride() == INVALID_FRAME) {
-                mouthAnim.getAnimation()->setFrameOverride(getRandomOf(MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
+                mouthAnim.getAnimation()->setFrameOverride(pGFXManager->random().getRandOf(MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
             }
         } else {
             mouthAnim.getAnimation()->resetFrameOverride();
