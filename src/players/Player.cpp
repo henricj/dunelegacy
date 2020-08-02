@@ -65,28 +65,6 @@ void Player::save(OutputStream& stream) const {
     stream.writeUint32Vector(random_.getSeed());
 }
 
-void Player::logDebug(const char* fmt, ...) const {
-//#ifdef DEBUG_AI
-    std::string house = getHouseNameByNumber((HOUSETYPE) pHouse->getHouseID());
-    fprintf(stderr, "%s (%s):   ", playername.c_str(), house.c_str());
-    va_list arg;
-    va_start(arg, fmt);
-    vfprintf(stderr, fmt, arg);
-    va_end(arg);
-    fprintf(stderr, "\n");
-//#endif
-}
-
-void Player::logWarn(const char* fmt, ...) const {
-    const auto house = getHouseNameByNumber(static_cast<HOUSETYPE>(pHouse->getHouseID()));
-    fprintf(stderr, "%s (%s):   ", playername.c_str(), house.c_str());
-    va_list arg;
-    va_start(arg, fmt);
-    vfprintf(stderr, fmt, arg);
-    va_end(arg);
-    fprintf(stderr, "\n");
-}
-
 Random& Player::getRandomGen() { return random_; }
 
 const GameInitSettings& Player::getGameInitSettings() const {
