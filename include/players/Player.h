@@ -106,16 +106,19 @@ protected:
     /**
         Logs a debug message
         \param  fmt the format string of the debug message
-        \param ...
+        \param  args the arguments to be formatted
     */
-    void logDebug(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
+    template<typename... Args>
+    void logDebug(std::string_view fmt, Args&&... args) const;
 
     /**
         Logs a warning message
         \param  fmt the format string of the debug message
-        \param ...
+        \param  args the arguments to be formatted
         */
-    void logWarn(PRINTF_FORMAT_STRING const char* fmt, ...) const PRINTF_VARARG_FUNC(2);
+    template<typename... Args>
+    void logWarn(std::string_view fmt, Args&&... args) const;
+
 
     Random& getRandomGen();
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const;
@@ -314,5 +317,23 @@ private:
 protected:
     const GameContext context_;
 };
+
+#include <sand.h>
+#include <House.h>
+
+template<typename... Args>
+void Player::logDebug(std::string_view fmt, Args&&... args) const {
+#ifdef DEBUG_AI
+    const auto house = getHouseNameByNumber(static_cast<HOUSETYPE>(pHouse->getHouseID()));
+    sdl2::log_info("%s (%s):   %s", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
+#endif
+}
+
+template<typename ... Args>
+void Player::logWarn(std::string_view fmt, Args&&...args) const
+{
+    const auto house = getHouseNameByNumber(static_cast<HOUSETYPE>(pHouse->getHouseID()));
+    sdl2::log_warn("%s (%s):   %s", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
+}
 
 #endif // PLAYER_H
