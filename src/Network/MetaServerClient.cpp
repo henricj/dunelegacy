@@ -68,10 +68,17 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 
     stopAnnounce();
 
+    const auto rng_name =
+        fmt::format("MetaServerClient {}:{} {} {}/{}", serverName, serverPort, mapName, numPlayers, maxPlayers);
+
+    auto secret_key = RandomFactory::createRandomSeed(rng_name);
+
+    if(secret_key.size() > 16) secret_key.resize(16);
+
     this->serverName = serverName;
     this->serverPort = serverPort;
-    this->secret = std::to_string(getRandomInt()) + std::to_string(getRandomInt());
-    this->mapName = mapName;
+    this->secret     = to_hex(secret_key);
+    this->mapName    = mapName;
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;
 

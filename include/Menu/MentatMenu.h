@@ -32,7 +32,7 @@
 
 class MentatMenu : public MenuBase {
 public:
-    explicit MentatMenu(HOUSETYPE newHouse);
+    MentatMenu(HOUSETYPE newHouse);
     ~MentatMenu() override;
 
     void setText(const std::string& text);
@@ -89,7 +89,6 @@ protected:
     AnimationLabel  specialAnim;
     AnimationLabel  shoulderAnim;
     Label           textLabel;
-
 };
 
 #endif // MENTATMENU_H

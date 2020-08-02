@@ -24,7 +24,7 @@
 
 #include <mmath.h>
 
-ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
+ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer") {
     pSoundAdlibPC = nullptr;
 }
 
@@ -51,7 +51,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
     {
         case MUSIC_ATTACK: {
 
-            switch(getRandomInt(0, 5)) {
+            switch(random().rand(0, 5)) {
                 case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.ADL";    musicNum = 7;   break;
                 case 2:     filename = "DUNE12.ADL";    musicNum = 7;   break;
@@ -64,7 +64,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
         case MUSIC_PEACE: {
 
-            switch(getRandomInt(0, 8)) {
+            switch(random().rand(0, 8)) {
                 case 0:     filename = "DUNE1.ADL";     musicNum = 6;   break;
                 case 1:     filename = "DUNE2.ADL";     musicNum = 6;   break;
                 case 2:     filename = "DUNE3.ADL";     musicNum = 6;   break;
@@ -166,7 +166,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
         case MUSIC_RANDOM:
         default: {
 
-            switch(getRandomInt(0, 14)) {
+            switch(random().rand(0, 14)) {
                 // attack
                 case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.ADL";    musicNum = 7;   break;

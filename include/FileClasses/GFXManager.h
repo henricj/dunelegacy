@@ -26,6 +26,8 @@
 #include "Animation.h"
 #include "Shpfile.h"
 #include "Wsafile.h"
+#include "misc/Random.h"
+
 #include <DataTypes.h>
 
 #include <misc/SDL2pp.h>
@@ -77,7 +79,10 @@ public:
 
     [[nodiscard]] SDL_Texture* getTempStreamingTexture(SDL_Renderer* renderer, int width, int height);
 
+    Random& random() noexcept { return random_; }
 private:
+    Random random_; ///< This random number generator is for use by the UI so that the game RNGs will not be disrupted.
+
     [[nodiscard]] sdl2::texture_ptr extractSmallDetailPicTex(const std::string& filename) const;
 
     SurfaceLoader surfaceLoader;

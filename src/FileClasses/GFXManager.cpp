@@ -27,8 +27,7 @@
 
 
 GFXManager::GFXManager()
-    : duneTextures{DuneTextures::create(renderer, &surfaceLoader)} {
-}
+    : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} { }
 
 GFXManager::~GFXManager() = default;
 

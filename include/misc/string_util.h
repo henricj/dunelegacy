@@ -27,6 +27,7 @@
 #include <functional>
 #include <sstream>
 
+#include <gsl/gsl>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
 #include <sal.h>
@@ -230,5 +231,10 @@ std::string convertCP850ToUTF8(const std::string& text);
     \return The decoded text
 */
 std::string decodeString(const std::string& text);
+
+
+std::string to_hex(gsl::span<const Uint8> data);
+std::string to_hex(gsl::span<const Uint32> data);
+std::string to_hex(gsl::span<const Uint64> data);
 
 #endif // STRING_UTIL_H

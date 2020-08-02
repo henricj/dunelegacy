@@ -26,28 +26,6 @@ class Coord;
 #include <cmath>
 #include <algorithm>
 
-int getRandomInt();
-
-inline bool getRandomBool() {
-    return getRandomInt() % 2;
-}
-
-
-inline int getRandomInt(int min, int max) {
-    max++;
-    return ((getRandomInt() % (max-min)) + min);
-}
-
-/**
-    This method returns randomly one of the given parameters.
-    \return one of the parameters, e.g. getRanomdOf({13,17,19}) returns 13, 17 or 19
-*/
-template<typename T, typename... Args>
-T getRandomOf(T&& t, Args&&... args) {
-    std::array<T, sizeof...(Args) + 1> all{t, args...};
-    return all[getRandomInt(0, all.size() - 1)];
-}
-
 inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2)
 {
 

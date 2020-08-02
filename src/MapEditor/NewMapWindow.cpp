@@ -125,7 +125,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     rngSeedLabel.setTextColor(color);
     rngHBox.addWidget(&rngSeedLabel);
     rngSeedTextBox.setMinMax(0, 32767);
-    rngSeedTextBox.setValue(getRandomInt(0, 32768));
+    rngSeedTextBox.setValue(pGFXManager->random().rand(0, 32767));
     rngSeedTextBox.setColor(house, color);
     rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
     rngHBox.addWidget(&rngSeedTextBox,80);

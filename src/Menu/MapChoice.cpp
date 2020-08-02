@@ -161,7 +161,7 @@ void MapChoice::drawSpecificStuff() {
             if(curBlendBlitter == nullptr) {
                 sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly));
                 SDL_Rect dest = { 0, 0, getWidth(pSurface.get()), getHeight(pSurface.get()) };
-                curBlendBlitter = std::make_unique< BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
+                curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
 
             if(curBlendBlitter != nullptr) {

@@ -25,7 +25,7 @@
 
 #include <filesystem>
 
-DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
+DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "DirectoryPlayer") {
     // determine path to config file
     auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 
@@ -84,7 +84,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
     }
 
     if(musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
-        musicNum = getRandomInt(0, musicFileList[musicType].size()-1);
+        musicNum = random().rand(0, musicFileList[musicType].size() - 1);
         filename = musicFileList[musicType][musicNum];
         currentMusicType = musicType;
     } else {
@@ -92,7 +92,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
         int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
 
         if(maxnum > 0) {
-            unsigned int randnum = getRandomInt(0, maxnum-1);
+            unsigned int randnum = random().rand(0, maxnum - 1);
 
             if(randnum < musicFileList[MUSIC_ATTACK].size()) {
                 musicNum = randnum;
