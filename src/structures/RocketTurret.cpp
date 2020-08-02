@@ -74,37 +74,37 @@ bool RocketTurret::canAttack(const ObjectBase* object) const {
         && object->isVisible(getOwner()->getTeamID());
 }
 
-void RocketTurret::attack() {
+void RocketTurret::attack(const GameContext& context) {
     if ((weaponTimer != 0) || (target.getObjPointer() == nullptr)) return;
 
     const auto centerPoint = getCenterPoint();
     auto *const pObject = target.getObjPointer();
     const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
-    auto* const game = currentGame.get();
-    auto* const map = currentGameMap;
+    auto& game = context.game;
+    auto& map  = context.map;
 
     if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
         // we are just shooting a bullet as a gun turret would do
         // for air units do nothing
         if (!pObject->isAFlyingUnit()) {
-            const auto& turret_data = game->objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID)];
+            const auto& turret_data = game.objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID)];
 
 
-            map->add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
+            map.add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
                 turret_data.weapondamage, false, pObject);
 
-            map->viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
+            map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
             soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
             weaponTimer = turret_data.weaponreloadtime;
         }
     } else {
         // we are in normal shooting mode
-        map->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
-                                          game->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
+        map.add_bullet(objectID, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
+                                          game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
                                           pObject->isAFlyingUnit(), nullptr);
 
-        map->viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
+        map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
         soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }

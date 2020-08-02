@@ -75,9 +75,9 @@ public:
     void turnLeft(const GameContext& context);
     void turnRight(const GameContext& context);
 
-    virtual void attack();
+    virtual void attack(const GameContext& context);
 
-    inline int getTurretAngle() const { return lround(angle); }
+    int getTurretAngle() const { return lround(angle); }
 
 protected:
     const TurretBaseConstants& turret_constants() const noexcept {
