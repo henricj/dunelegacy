@@ -357,9 +357,9 @@ void InfantryBase::destroy(const GameContext& context) {
             pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), Coord(lround(realX), lround(realY)));
 
             if(isVisible(getOwner()->getTeamID())) {
-                soundPlayer->playSoundAt(getRandomOf(Sound_Scream1, Sound_Scream2, Sound_Scream3, Sound_Scream4,
-                                                     Sound_Scream5, Sound_Trumpet),
-                                         location);
+                const auto sound_id = pGFXManager->random().getRandOf(Sound_Scream1, Sound_Scream2, Sound_Scream3,
+                                                                      Sound_Scream4, Sound_Scream5, Sound_Trumpet);
+                soundPlayer->playSoundAt(sound_id, location);
             }
         }
     }
@@ -500,7 +500,7 @@ void InfantryBase::squash(const GameContext& context) {
 }
 
 void InfantryBase::playConfirmSound() {
-    soundPlayer->playVoice(getRandomOf(MovingOut,InfantryOut), getOwner()->getHouseID());
+    soundPlayer->playVoice(pGFXManager->random().getRandOf(MovingOut, InfantryOut), getOwner()->getHouseID());
 }
 
 void InfantryBase::playSelectSound() {

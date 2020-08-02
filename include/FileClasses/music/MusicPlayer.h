@@ -52,7 +52,9 @@ typedef enum {  MUSIC_ATTACK = 0,   /*!< Played when at least one of player's un
 class MusicPlayer
 {
 public:
-    MusicPlayer(bool bMusicOn, int newMusicVolume) : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID), currentMusicType(MUSIC_RANDOM) {
+    MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
+        : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID),
+          currentMusicType(MUSIC_RANDOM), random_{RandomFactory{}.create(name)} {
         Mix_VolumeMusic(musicVolume);
     };
 
@@ -116,6 +118,8 @@ public:
     }
 
 protected:
+    Random& random() noexcept { return random_; }
+
     //! whether music should be played
     bool    musicOn;
 
@@ -126,6 +130,9 @@ protected:
     int thisMusicID;
 
     MUSICTYPE currentMusicType;
+
+private:
+    Random random_;
 };
 
 #endif // MUSICPLAYER_H

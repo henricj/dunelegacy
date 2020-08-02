@@ -27,7 +27,7 @@
 
 #include <iostream>
 
-XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume) {
+XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "XMIPlayer") {
     music = nullptr;
 
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,2)
@@ -70,7 +70,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
     switch(musicType) {
         case MUSIC_ATTACK: {
 
-            switch(getRandomInt(0, 5)) {
+            switch(random().rand(0, 5)) {
                 case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.XMI";    musicNum = 7;   break;
                 case 2:     filename = "DUNE12.XMI";    musicNum = 7;   break;
@@ -83,7 +83,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 
         case MUSIC_PEACE: {
 
-            switch(getRandomInt(0, 8)) {
+            switch(random().rand(0, 8)) {
                 case 0:     filename = "DUNE1.XMI";     musicNum = 6;   break;
                 case 1:     filename = "DUNE2.XMI";     musicNum = 6;   break;
                 case 2:     filename = "DUNE3.XMI";     musicNum = 6;   break;
@@ -185,7 +185,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         case MUSIC_RANDOM:
         default: {
 
-            switch(getRandomInt(0, 14)) {
+            switch(random().rand(0, 14)) {
                 // attack
                 case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
                 case 1:     filename = "DUNE11.XMI";    musicNum = 7;   break;

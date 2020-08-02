@@ -56,11 +56,11 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse,int mission,int type) : MentatMenu
 
     switch(type) {
         case DEBRIEFING_WIN: {
-            anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Win1 : Anim_Win2);
+            anim = pGFXManager->getAnimation(pGFXManager->random().randBool() ? Anim_Win1 : Anim_Win2);
             text = pTextManager->getBriefingText(mission_number,MISSION_WIN,house);
         } break;
         case DEBRIEFING_LOST: {
-            anim = pGFXManager->getAnimation(getRandomBool() ? Anim_Lose1 : Anim_Lose2);
+            anim = pGFXManager->getAnimation(pGFXManager->random().randBool() ? Anim_Lose1 : Anim_Lose2);
             text = pTextManager->getBriefingText(mission_number,MISSION_LOSE,house);
         } break;
         default:

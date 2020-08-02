@@ -27,7 +27,7 @@
 
 class HouseChoiceInfoMenu : public MentatMenu {
 public:
-    explicit HouseChoiceInfoMenu(HOUSETYPE newHouse);
+    HouseChoiceInfoMenu(HOUSETYPE newHouse);
     ~HouseChoiceInfoMenu() override;
 
     void onMentatTextFinished() override;

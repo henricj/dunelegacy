@@ -701,8 +701,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
                 case GAME_DEBRIEFING_WIN: {
                     sdl2::log_info("Debriefing...");
                     { // Scope
-                        BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
-                                              DEBRIEFING_WIN);
+                        BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN};
                         briefing.showMenu();
                     }
 
@@ -738,8 +737,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                 case GAME_DEBRIEFING_LOST: {
                     sdl2::log_info("Debriefing...");
-                    BriefingMenu briefing(currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
-                                          DEBRIEFING_LOST);
+                    BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
+                                          DEBRIEFING_LOST};
                     briefing.showMenu();
                 } break;
 
