@@ -156,7 +156,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                 // calculate maximum number of tiles in a square shape
                 // you could look at without success around a destination x,y
                 // with a specific k distance before knowing that it is
-                // imposible to get to the destination.  Each time the astar
+                // impossible to get to the destination.  Each time the astar
                 // algorithm pushes a node with a max diff of k,
                 // depthcheckcount(k) is incremented, if it reaches the
                 // value in depthcheckmax(x,y,k), we know we have done a full
