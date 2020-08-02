@@ -31,7 +31,7 @@ public:
 
     bool canAttack(const ObjectBase* object) const override;
 
-    void attack() override;
+    void attack(const GameContext& context) override;
 
 protected:
     /**

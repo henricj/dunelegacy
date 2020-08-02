@@ -96,7 +96,7 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
             }
 
             if(drawnAngle == wantedAngle) {
-                attack();
+                attack(context);
             }
 
         } else {
@@ -157,17 +157,19 @@ void TurretBase::turnRight(const GameContext& context) {
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
-void TurretBase::attack() {
+void TurretBase::attack(const GameContext& context) {
     if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
         const auto centerPoint = getCenterPoint();
         auto *const pObject = target.getObjPointer();
         const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
-        currentGameMap->add_bullet(objectID, &centerPoint, &targetCenterPoint, bulletType,
-                                   currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
+        const auto& [game, map, objectManager] = context;
+
+        map.add_bullet(objectID, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
+                                   game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
                                    pObject->isAFlyingUnit(), pObject);
 
-        currentGameMap->viewMap(pObject->getOwner()->getHouseID(), location, 2);
+        map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
         soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }
