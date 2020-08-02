@@ -23,22 +23,25 @@
 #include <House.h>
 #include <Game.h>
 
-HeavyFactory::HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace {
+const BuilderBaseConstants heavy_factory_constants{HeavyFactory::item_id, Coord{3, 2}};
+}
+
+HeavyFactory::HeavyFactory(Uint32 objectID, const ObjectInitializer& initializer)
+    : BuilderBase(heavy_factory_constants, objectID, initializer) {
     HeavyFactory::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-HeavyFactory::HeavyFactory(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+HeavyFactory::HeavyFactory(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(heavy_factory_constants, objectID, initializer) {
     HeavyFactory::init();
 }
 
 void HeavyFactory::init() {
     assert(itemID == Structure_HeavyFactory);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 3;
-    structureSize.y = 2;
 
     graphicID = ObjPic_HeavyFactory;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

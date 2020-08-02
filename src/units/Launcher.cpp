@@ -27,13 +27,19 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-Launcher::Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+namespace {
+constexpr TrackedUnitConstants launcher_constants{Launcher::item_id, 2, Bullet_Rocket};
+}
+
+Launcher::Launcher(Uint32 objectID, const ObjectInitializer& initializer)
+    : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 
     setHealth(getMaxHealth());
 }
 
-Launcher::Launcher(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+Launcher::Launcher(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 }
 void Launcher::init() {
@@ -47,9 +53,6 @@ void Launcher::init() {
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
-
-    numWeapons = 2;
-    bulletType = Bullet_Rocket;
 }
 
 Launcher::~Launcher() = default;

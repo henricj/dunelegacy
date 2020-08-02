@@ -43,14 +43,34 @@ struct StructureSmoke {
     Uint32  startGameCycle;
 };
 
+class StructureBaseConstants : public ObjectBaseConstants
+{
+public:
+    constexpr explicit StructureBaseConstants(ItemID_enum itemID, Coord structureSize)
+        : ObjectBaseConstants(itemID), structureSize{structureSize}
+    {
+        aStructure_ = true;
+    }
+
+    const Coord& getStructureSize() const noexcept { return structureSize; }
+
+private:
+    // constant for all structures of the same type
+    Coord structureSize; ///< The size of this structure in tile coordinates (e.g. (3,2) for a refinery)
+};
+
 class StructureBase : public ObjectBase
 {
 public:
     using parent = ObjectBase;
 
 protected:
-    StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID, const ObjectInitializer& initializer);
+    StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
+                  const ObjectStreamInitializer& initializer);
+
+    const StructureBaseConstants& structure_constants() const noexcept
+    { return *static_cast<const StructureBaseConstants*>(&constants_); }
 
 public:
     virtual ~StructureBase() = 0;
@@ -124,9 +144,10 @@ public:
 
     Coord getClosestPoint(const Coord& objectLocation) const override;
 
-    short getStructureSizeX() const noexcept { return structureSize.x; }
-    short getStructureSizeY() const noexcept { return structureSize.y; }
-    const Coord& getStructureSize() const noexcept { return structureSize; }
+    const Coord& getStructureSize() const noexcept { return structure_constants().getStructureSize(); }
+
+    short getStructureSizeX() const noexcept { return getStructureSize().x; }
+    short getStructureSizeY() const noexcept { return getStructureSize().y; }
 
     void addSmoke(const Coord& pos, Uint32 gameCycle) {
         const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
@@ -149,9 +170,6 @@ protected:
     */
     virtual void updateStructureSpecificStuff(const GameContext& context) { }
 
-
-    // constant for all structures of the same type
-    Coord   structureSize;      ///< The size of this structure in tile coordinates (e.g. (3,2) for a refinery)
 
     // structure state
     bool    repairing;          ///< currently repairing?

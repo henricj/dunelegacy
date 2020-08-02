@@ -29,8 +29,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_RepairYard;
     using parent = StructureBase;
 
-    RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    RepairYard(Uint32 objectID, const ObjectInitializer& initializer);
+    RepairYard(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~RepairYard() override;
 
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;

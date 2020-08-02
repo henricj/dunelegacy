@@ -41,8 +41,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Wall;
     using parent = StructureBase;
 
-    Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Wall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Wall(Uint32 objectID, const ObjectInitializer& initializer);
+    Wall(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Wall() override;
 
     void save(OutputStream& stream) const override;

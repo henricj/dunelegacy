@@ -27,31 +27,33 @@
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
-Deviator::Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+namespace {
+constexpr TrackedUnitConstants deviator_constants{Deviator::item_id, 1, Bullet_DRocket};
+}
+
+Deviator::Deviator(Uint32 objectID, const ObjectInitializer& initializer)
+    : TrackedUnit(deviator_constants, objectID, initializer) {
     Deviator::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-Deviator::Deviator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+Deviator::Deviator(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(deviator_constants, objectID, initializer) {
     Deviator::init();
 }
 
-void Deviator::init()
-{
+void Deviator::init() {
     assert(itemID == Unit_Deviator);
     owner->incrementUnits(itemID);
 
-    graphicID = ObjPic_Tank_Base;
-    gunGraphicID = ObjPic_Launcher_Gun;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID     = ObjPic_Tank_Base;
+    gunGraphicID  = ObjPic_Launcher_Gun;
+    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
-
-    numWeapons = 1;
-    bulletType = Bullet_DRocket;
 }
 
 Deviator::~Deviator() = default;

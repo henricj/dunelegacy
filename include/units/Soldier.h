@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Soldier;
     using parent = InfantryBase;
 
-    Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Soldier(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Soldier(Uint32 objectID, const ObjectInitializer& initializer);
+    Soldier(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Soldier() override;
 
     bool canAttack(const ObjectBase* object) const override;

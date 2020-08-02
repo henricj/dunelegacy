@@ -23,7 +23,11 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants wall_constants{Wall::item_id, Coord{1, 1}};
+}
+
+Wall::Wall(Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
     setHealth(getMaxHealth());
@@ -36,7 +40,8 @@ Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initial
     setWallTile(Wall_LeftRight);
 }
 
-Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+Wall::Wall(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
     auto& stream = initializer.Stream;
@@ -49,9 +54,6 @@ Wall::Wall(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& i
 void Wall::init() {
     assert(itemID == Structure_Wall);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 1;
-    structureSize.y = 1;
 
     graphicID = ObjPic_Wall;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

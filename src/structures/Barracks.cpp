@@ -22,21 +22,25 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-Barracks::Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace
+{
+const BuilderBaseConstants barracks_constants{Barracks::item_id, Coord{2, 2}};
+}
+
+Barracks::Barracks(Uint32 objectID, const ObjectInitializer& initializer)
+    : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 
     setHealth(getMaxHealth());
 }
 
-Barracks::Barracks(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+Barracks::Barracks(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 }
 
 void Barracks::init() {
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_Barracks,
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

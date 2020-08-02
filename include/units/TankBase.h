@@ -20,11 +20,19 @@
 
 #include <units/TrackedUnit.h>
 
+class TankBaseConstants : public TrackedUnitConstants {
+public:
+    constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0, BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : TrackedUnitConstants{itemID, num_weapons, bullet_id} {
+        turreted_ = true;
+    }
+};
+
 class TankBase : public TrackedUnit
 {
 protected:
-    TankBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    TankBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = TrackedUnit;
@@ -71,9 +79,6 @@ protected:
     // drawing information
     zoomable_texture turretGraphic{};   ///< The turret graphic
     int              gunGraphicID = -1; ///< The id of the turret graphic (needed if we want to reload the graphic)
-
-private:
-    void init();
 };
 
 template<>

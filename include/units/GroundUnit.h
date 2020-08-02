@@ -21,11 +21,20 @@
 #include <units/UnitBase.h>
 
 
+class GroundUnitConstants : public UnitBaseConstants {
+public:
+    constexpr explicit GroundUnitConstants(ItemID_enum itemID, int num_weapons = 0,
+                                           BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
+        aGroundUnit_ = true;
+    }
+};
+
 class GroundUnit : public UnitBase
 {
 protected:
-    GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    GroundUnit(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = UnitBase;
@@ -76,8 +85,6 @@ protected:
 
     bool    awaitingPickup;     ///< Is this unit waiting for pickup?
     Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?
-private:
-    void init();
 };
 
 template<>

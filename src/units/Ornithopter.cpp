@@ -27,7 +27,12 @@
 
 #define ORNITHOPTER_FRAMETIME 3
 
-Ornithopter::Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+namespace {
+constexpr AirUnitConstants ornithopter_constants{Ornithopter::item_id, 1, Bullet_SmallRocket};
+} // namespace
+
+Ornithopter::Ornithopter(Uint32 objectID, const ObjectInitializer& initializer)
+    : AirUnit(ornithopter_constants, objectID, initializer) {
 
     Ornithopter::init();
 
@@ -36,7 +41,8 @@ Ornithopter::Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectInitia
     timeLastShot = 0;
 }
 
-Ornithopter::Ornithopter(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : AirUnit(itemID, objectID, initializer) {
+Ornithopter::Ornithopter(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : AirUnit(ornithopter_constants, objectID, initializer) {
     Ornithopter::init();
 
     auto& stream = initializer.Stream;
@@ -54,9 +60,6 @@ void Ornithopter::init() {
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 3;
-
-    numWeapons = 1;
-    bulletType = Bullet_SmallRocket;
 
     currentMaxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 }

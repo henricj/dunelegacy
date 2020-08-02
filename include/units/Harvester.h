@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Harvester;
     using parent = TrackedUnit;
 
-    Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Harvester(Uint32 objectID, const ObjectInitializer& initializer);
+    Harvester(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Harvester() override;
 
     void save(OutputStream& stream) const override;

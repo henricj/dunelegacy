@@ -24,22 +24,25 @@
 
 #include <GUI/ObjectInterfaces/RadarInterface.h>
 
-Radar::Radar(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants radar_constants{Radar::item_id, Coord{2, 2}};
+}
+
+Radar::Radar(Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 
     setHealth(getMaxHealth());
 }
 
-Radar::Radar(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+Radar::Radar(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 }
 
 void Radar::init() {
     assert(itemID == Structure_Radar);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_Radar;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

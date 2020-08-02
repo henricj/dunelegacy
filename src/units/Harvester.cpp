@@ -34,8 +34,6 @@
 
 #include <misc/draw_util.h>
 
-#include <algorithm>
-
 /* how often is the same sandframe redrawn */
 #define HARVESTERDELAY 30
 
@@ -48,7 +46,12 @@
 /* number spice output frames - 1 */
 #define LASTSANDFRAME 2
 
-Harvester::Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+namespace {
+constexpr TrackedUnitConstants harvester_constants{Harvester::item_id};
+}
+
+Harvester::Harvester(Uint32 objectID, const ObjectInitializer& initializer)
+    : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
     setHealth(getMaxHealth());
@@ -61,7 +64,8 @@ Harvester::Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectInitialize
     attackMode = GUARD;
 }
 
-Harvester::Harvester(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+Harvester::Harvester(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
     auto& stream = initializer.Stream;
@@ -76,8 +80,6 @@ void Harvester::init()
 {
     assert(itemID == Unit_Harvester);
     owner->incrementUnits(itemID);
-
-    canAttackStuff = false;
 
     graphicID = ObjPic_Harvester;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

@@ -22,22 +22,23 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-IX::IX(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants ix_constants{IX::item_id, Coord{2, 2}};
+}
+
+IX::IX(Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 
     setHealth(getMaxHealth());
 }
 
-IX::IX(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+IX::IX(Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 }
 
 void IX::init() {
     assert(itemID == Structure_IX);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_IX;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

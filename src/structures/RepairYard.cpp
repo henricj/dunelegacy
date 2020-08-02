@@ -30,7 +30,12 @@
 
 #include <GUI/ObjectInterfaces/RepairYardInterface.h>
 
-RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants repair_yard_constants{RepairYard::item_id, Coord{3, 2}};
+}
+
+RepairYard::RepairYard(Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(repair_yard_constants, objectID, initializer) {
     RepairYard::init();
 
     setHealth(getMaxHealth());
@@ -38,7 +43,8 @@ RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitiali
     repairingAUnit = false;
 }
 
-RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+RepairYard::RepairYard(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(repair_yard_constants, objectID, initializer) {
     RepairYard::init();
 
     auto& stream = initializer.Stream;
@@ -51,9 +57,6 @@ RepairYard::RepairYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamIn
 void RepairYard::init() {
     assert(itemID == Structure_RepairYard);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 3;
-    structureSize.y = 2;
 
     graphicID = ObjPic_RepairYard;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
@@ -102,7 +105,7 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, structureSize);
+        Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, getStructureSize());
 
         pRepairUnit->setForced(false);
         pRepairUnit->doSetAttackMode(context, (pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);

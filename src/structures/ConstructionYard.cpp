@@ -23,21 +23,23 @@
 #include <House.h>
 #include <Game.h>
 
-ConstructionYard::ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+namespace {
+const BuilderBaseConstants construction_yard_constants{ConstructionYard::item_id, Coord{2, 2}};
+}
+
+ConstructionYard::ConstructionYard(Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(construction_yard_constants, objectID, initializer) {
     ConstructionYard::init();
 
     setHealth(getMaxHealth());
 }
 
-ConstructionYard::ConstructionYard(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(itemID, objectID, initializer) {
+ConstructionYard::ConstructionYard(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(construction_yard_constants, objectID, initializer) {
     ConstructionYard::init();
 }
 
 void ConstructionYard::init() {
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_ConstructionYard;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
