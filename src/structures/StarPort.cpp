@@ -260,7 +260,7 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 
             if(getOwner() == pLocalHouse) {
                 soundPlayer->playVoice(FrigateHasArrived,getOwner()->getHouseID());
-                currentGame->addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
+                context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
             }
 
         }

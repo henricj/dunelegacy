@@ -349,7 +349,7 @@ void Command::executeCommand(const GameContext& context) const {
             if(currentSeed[0] != parameter[0]) {
                 sdl2::log_info("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud", game.getGameCycleCount(), parameter[0], currentSeed[0]);
 #ifdef TEST_SYNC
-                currentGame->saveGame("test.sav");
+                context.game.saveGame("test.sav");
                 exit(0);
 #endif
             }

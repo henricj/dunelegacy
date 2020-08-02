@@ -193,7 +193,7 @@ public:
     UnitType* createUnit(bool byScenario = false) {
         static_assert(std::is_base_of<UnitBase, UnitType>::value, "UnitType not derived from UnitBase");
 
-        return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer{this, byScenario});
+        return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer{context.game, this, byScenario});
     }
 
     UnitBase* createUnit(ItemID_enum itemID, bool byScenario = false);
@@ -205,7 +205,7 @@ public:
 
     [[nodiscard]] Coord getStrongestUnitPosition() const;
 
-    [[nodiscard]] const std::vector<AITeamInfo> getAITeams() const { return aiteams; };
+    [[nodiscard]] const std::vector<AITeamInfo>& getAITeams() const { return aiteams; };
     void addAITeam(AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits) {
         aiteams.emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }

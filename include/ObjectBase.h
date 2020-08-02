@@ -54,7 +54,7 @@ struct GameContext {
 
 class ObjectInitializer final {
 public:
-    ObjectInitializer(House* owner, bool byScenario) : Owner{owner}, ByScenario{byScenario} { }
+    ObjectInitializer(Game& game, House* owner, bool byScenario) : Game{game}, Owner{owner}, ByScenario{byScenario} { }
 
     ObjectInitializer()                         = delete;
     ObjectInitializer(const ObjectInitializer&) = delete;
@@ -62,6 +62,9 @@ public:
     ObjectInitializer& operator=(const ObjectInitializer&) = delete;
     ObjectInitializer& operator=(ObjectInitializer&&) = delete;
 
+    ~ObjectInitializer() = default;
+
+    Game& Game;
     House* const Owner;
     const bool   ByScenario;
 };
@@ -75,6 +78,8 @@ public:
     ObjectStreamInitializer(ObjectStreamInitializer&&)      = delete;
     ObjectStreamInitializer& operator=(const ObjectStreamInitializer&) = delete;
     ObjectStreamInitializer& operator=(ObjectStreamInitializer&&) = delete;
+
+    ~ObjectStreamInitializer() = default;
 
     InputStream& Stream;
 };
@@ -313,7 +318,7 @@ private:
 };
 
 template<typename ObjectType>
-inline ObjectType* dune_cast(ObjectBase* base) {
+ObjectType* dune_cast(ObjectBase* base) {
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "UnitType not derived from UnitBase");
     static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
 
@@ -323,7 +328,7 @@ inline ObjectType* dune_cast(ObjectBase* base) {
 }
 
 template<typename ObjectType>
-inline const ObjectType* dune_cast(const ObjectBase* base) {
+const ObjectType* dune_cast(const ObjectBase* base) {
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "UnitType not derived from UnitBase");
     static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
 

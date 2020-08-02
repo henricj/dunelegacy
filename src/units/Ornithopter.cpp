@@ -88,7 +88,7 @@ void Ornithopter::checkPos(const GameContext& context) {
         }
     }
 
-    drawnFrame = ((currentGame->getGameCycleCount() + getObjectID())/ORNITHOPTER_FRAMETIME) % numImagesY;
+    drawnFrame = ((context.game.getGameCycleCount() + getObjectID())/ORNITHOPTER_FRAMETIME) % numImagesY;
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {

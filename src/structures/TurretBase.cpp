@@ -32,7 +32,7 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID, co
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
-    angle = currentGame->randomGen.rand(0, 7);
+    angle = initializer.Game.randomGen.rand(0, 7);
     drawnAngle = static_cast<ANGLETYPE>(lround(angle));
 
     findTargetTimer = 0;

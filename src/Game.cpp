@@ -1078,7 +1078,7 @@ void Game::updateGame(const GameContext& context)
     pInterface->getRadarView().update();
     cmdManager.executeCommands(context, gameCycleCount);
 
-    // sdl2::log_info("cycle %d : %d", gameCycleCount, currentGame->randomGen.getSeed());
+    // sdl2::log_info("cycle %d : %d", gameCycleCount, context.game.randomGen.getSeed());
 
 #ifdef TEST_SYNC
     // add every gamecycles one test sync command
@@ -1351,7 +1351,7 @@ void Game::runMainLoop(const GameContext& context) {
 
     // Game is finished
 
-    if(!bReplay && currentGame->won) {
+    if(!bReplay && context.game.won) {
         // save replay
 
         auto mapnameBase = getBasename(gameInitSettings.getFilename(), true);
@@ -1560,7 +1560,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     const short mapSizeY = stream.readUint32();
 
     //create the new map
-    map = std::make_unique<Map>(mapSizeX, mapSizeY);
+    map = std::make_unique<Map>(*this, mapSizeX, mapSizeY);
     currentGameMap = map.get();
 
     const GameContext context{*this, *map, this->getObjectManager()};

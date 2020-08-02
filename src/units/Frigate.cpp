@@ -98,10 +98,10 @@ void Frigate::checkPos(const GameContext& context) {
 }
 
 bool Frigate::update(const GameContext& context) {
-    const FixPoint& maxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    const FixPoint& maxSpeed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
     FixPoint dist = -1;
-    ObjectBase* pTarget = target.getObjPointer();
+    auto* const pTarget = target.getObjPointer();
     if(pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if((pTarget != nullptr) || !droppedOffCargo) {

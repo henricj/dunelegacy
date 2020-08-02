@@ -435,7 +435,7 @@ bool BuilderBase::update(const GameContext& context) {
     if(upgrading) {
         const FixPoint totalUpgradePrice = getUpgradeCost(context);
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
+        if(context.game.getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
             upgradeProgress += owner->takeCredits(upgradePriceLeft);
         } else {
