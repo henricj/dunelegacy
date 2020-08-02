@@ -1141,7 +1141,7 @@ void Game::runMainLoop(const GameContext& context) {
         }
     }
 
-    sdl2::log_info("Sizes: Tile %s UnitBase %s StructureBase %s", std::to_string(sizeof(Tile)).c_str(), std::to_string(sizeof(UnitBase)).c_str(), std::to_string(sizeof(StructureBase)).c_str());
+    sdl2::log_info("Sizes: Tile %d UnitBase %d StructureBase %d Harvester %d ConstructionYard %d Palace %d", sizeof(Tile), sizeof(UnitBase), sizeof(StructureBase), sizeof(Harvester), sizeof(ConstructionYard), sizeof(Palace));
 
     gameState = GameState::Running;
 
