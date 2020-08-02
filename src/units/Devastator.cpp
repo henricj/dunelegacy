@@ -29,8 +29,11 @@
 
 #include <players/HumanPlayer.h>
 
+namespace {
+constexpr TrackedUnitConstants devastator_constants{Devastator::item_id, 2, Bullet_ShellLarge};
+}
 
-Devastator::Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(itemID, objectID, initializer) {
+Devastator::Devastator(Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -38,8 +41,8 @@ Devastator::Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitiali
     devastateTimer = 0;
 }
 
-Devastator::Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
-    : TrackedUnit(itemID, objectID, initializer) {
+Devastator::Devastator(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
     auto& stream = initializer.Stream;
@@ -51,9 +54,6 @@ void Devastator::init()
 {
     assert(itemID == Unit_Devastator);
     owner->incrementUnits(itemID);
-
-    numWeapons = 2;
-    bulletType = Bullet_ShellLarge;
 
     graphicID = ObjPic_Devastator_Base;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

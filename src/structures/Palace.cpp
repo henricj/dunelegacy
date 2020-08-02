@@ -37,7 +37,17 @@
 
 #define PALACE_DEATHHAND_WEAPONDAMAGE       100
 
-Palace::Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+class PalaceConstants : public StructureBaseConstants {
+public:
+    constexpr PalaceConstants() : StructureBaseConstants(Palace::item_id, Coord{3, 3}) { canAttackStuff_ = true; }
+};
+
+constexpr PalaceConstants palace_constants;
+} // namespace
+
+Palace::Palace(Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(palace_constants, objectID, initializer) {
     Palace::init();
 
     setHealth(getMaxHealth());
@@ -47,7 +57,8 @@ Palace::Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& ini
     //specialTimer = 1; // we want the special weapon to be immediately ready
 }
 
-Palace::Palace(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+Palace::Palace(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(palace_constants, objectID, initializer) {
     Palace::init();
 
     auto& stream = initializer.Stream;
@@ -59,17 +70,12 @@ void Palace::init() {
     assert(itemID == Structure_Palace);
     owner->incrementStructures(itemID);
 
-    structureSize.x = 3;
-    structureSize.y = 3;
-
     graphicID = ObjPic_Palace;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
     numImagesX = 4;
     numImagesY = 1;
     firstAnimFrame = 2;
     lastAnimFrame = 3;
-
-    canAttackStuff = true;
 }
 
 Palace::~Palace() = default;

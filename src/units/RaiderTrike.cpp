@@ -26,22 +26,25 @@
 #include <Explosion.h>
 #include <SoundPlayer.h>
 
-RaiderTrike::RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+namespace {
+constexpr GroundUnitConstants raider_trike_constants{RaiderTrike::item_id, 2, Bullet_ShellSmall};
+}
+
+RaiderTrike::RaiderTrike(Uint32 objectID, const ObjectInitializer& initializer)
+    : GroundUnit(raider_trike_constants, objectID, initializer) {
     RaiderTrike::init();
 
     setHealth(getMaxHealth());
 }
 
-RaiderTrike::RaiderTrike(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+RaiderTrike::RaiderTrike(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : GroundUnit(raider_trike_constants, objectID, initializer) {
     RaiderTrike::init();
 }
 
 void RaiderTrike::init() {
     assert(itemID == Unit_RaiderTrike);
     owner->incrementUnits(itemID);
-
-    numWeapons = 2;
-    bulletType = Bullet_ShellSmall;
 
     graphicID = ObjPic_Trike;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

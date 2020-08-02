@@ -30,8 +30,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Refinery;
     using parent = StructureBase;
 
-    Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Refinery(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Refinery(Uint32 objectID, const ObjectInitializer& initializer);
+    Refinery(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Refinery() override;
 
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;

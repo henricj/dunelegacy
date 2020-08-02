@@ -41,7 +41,8 @@
 #define SMOKEDELAY 30
 #define UNITIDLETIMER (GAMESPEED_DEFAULT *  315)  // about every 5s
 
-UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
+UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : ObjectBase(constants, objectID, initializer) {
 
     UnitBase::init();
 
@@ -78,7 +79,8 @@ UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     deviationTimer = INVALID;
 }
 
-UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
+UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : ObjectBase(constants, objectID, initializer) {
 
     UnitBase::init();
 
@@ -121,14 +123,6 @@ UnitBase::UnitBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitia
 }
 
 void UnitBase::init() {
-    aUnit = true;
-    canAttackStuff = true;
-
-    tracked = false;
-    turreted = false;
-    numWeapons = 0;
-    bulletType = Bullet_DRocket;
-
     drawnFrame = 0;
 
     unitList.push_back(this);
@@ -190,9 +184,9 @@ void UnitBase::save(OutputStream& stream) const {
 
 bool UnitBase::attack(const GameContext& context) {
 
-    if(!numWeapons) return false;
+    if(!numWeapons()) return false;
 
-    if(primaryWeaponTimer != 0 && (numWeapons != 2 || secondaryWeaponTimer != 0 || isBadlyDamaged())) return false;
+    if(primaryWeaponTimer != 0 && (numWeapons() != 2 || secondaryWeaponTimer != 0 || isBadlyDamaged())) return false;
 
     Coord targetCenterPoint;
     Coord centerPoint = getCenterPoint();
@@ -207,7 +201,7 @@ bool UnitBase::attack(const GameContext& context) {
         bAirBullet        = false;
     }
 
-    int    currentBulletType   = bulletType;
+    int    currentBulletType   = bulletType();
     Sint32 currentWeaponDamage = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
 
     if(getItemID() == Unit_Trooper && !bAirBullet) {
@@ -245,7 +239,7 @@ bool UnitBase::attack(const GameContext& context) {
         }
     }
 
-    if((numWeapons == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
+    if((numWeapons() == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
         bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
         if(pObject != nullptr) {
             context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);

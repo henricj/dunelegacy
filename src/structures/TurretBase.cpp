@@ -27,8 +27,9 @@
 
 #include <players/HumanPlayer.h>
 
-TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer)
-{
+
+TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
     angle = currentGame->randomGen.rand(0, 7);
@@ -38,7 +39,9 @@ TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitiali
     weaponTimer = 0;
 }
 
-TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID,
+                       const ObjectStreamInitializer& initializer)
+    : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
     auto& stream    = initializer.Stream;
@@ -49,12 +52,7 @@ TurretBase::TurretBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamIn
 
 void TurretBase::init() {
     attackSound = Sound_Gun;
-    bulletType = Bullet_ShellTurret;
 
-    structureSize.x = 1;
-    structureSize.y = 1;
-
-    canAttackStuff = true;
     attackMode = AREAGUARD;
 }
 

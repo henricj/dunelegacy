@@ -25,10 +25,10 @@ class Devastator final : public TrackedUnit
 {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Devastator;
-    using parent                     = TrackedUnit;
+    using parent                                = TrackedUnit;
 
-    Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Devastator(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Devastator(Uint32 objectID, const ObjectInitializer& initializer);
+    Devastator(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Devastator() override;
 
     void save(OutputStream& stream) const override;

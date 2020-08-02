@@ -34,14 +34,14 @@
 
 namespace {
 // the position on the tile
-const Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILESIZE / 4),
+constexpr Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILESIZE / 4),
                                      Coord(TILESIZE / 4, -TILESIZE / 4), Coord(-TILESIZE / 4, TILESIZE / 4),
                                      Coord(TILESIZE / 4, TILESIZE / 4)};
 } // namespace
 
-InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
-
-    InfantryBase::init();
+InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID,
+                           const ObjectInitializer& initializer)
+    : GroundUnit(constants, objectID, initializer) {
 
     setHealth(getMaxHealth());
 
@@ -49,17 +49,15 @@ InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInit
     oldTilePosition = INVALID_POS;
 }
 
-InfantryBase::InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
-
-    InfantryBase::init();
+InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID,
+                           const ObjectStreamInitializer& initializer)
+    : GroundUnit(constants, objectID, initializer) {
 
     auto& stream = initializer.Stream;
 
     tilePosition = stream.readSint8();
     oldTilePosition = stream.readSint8();
 }
-
-void InfantryBase::init() { infantry = true; }
 
 InfantryBase::~InfantryBase() = default;
 

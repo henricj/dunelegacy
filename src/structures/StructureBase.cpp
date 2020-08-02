@@ -34,7 +34,9 @@
 
 #include <GUI/ObjectInterfaces/DefaultStructureInterface.h>
 
-StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : ObjectBase(itemID, objectID, initializer) {
+StructureBase::StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
+                             const ObjectInitializer& initializer)
+    : ObjectBase(structure_constants, objectID, initializer) {
     StructureBase::init();
 
     repairing = false;
@@ -42,8 +44,9 @@ StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectIn
     degradeTimer = MILLI2CYCLES(15*1000);
 }
 
-StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer)
-    : ObjectBase(itemID, objectID, initializer) {
+StructureBase::StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
+                             const ObjectStreamInitializer& initializer)
+    : ObjectBase(structure_constants, objectID, initializer) {
     StructureBase::init();
 
     auto& stream = initializer.Stream;
@@ -61,11 +64,6 @@ StructureBase::StructureBase(ItemID_enum itemID, Uint32 objectID, const ObjectSt
 }
 
 void StructureBase::init() {
-    aStructure = true;
-
-    structureSize.x = 0;
-    structureSize.y = 0;
-
     justPlacedTimer = 0;
 
     lastVisibleFrame = firstAnimFrame = lastAnimFrame = curAnimFrame = 2;
@@ -108,7 +106,7 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
 
     auto& game = context.game;
 
-    map->for_each(pos.x, pos.y, pos.x + structureSize.x, pos.y + structureSize.y,
+    map->for_each(pos.x, pos.y, pos.x + getStructureSizeX(), pos.y + getStructureSizeY(),
         [&](Tile& t) {
             t.assignNonInfantryGroundObject(getObjectID());
 
@@ -116,7 +114,7 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
                 bFoundNonConcreteTile = true;
 
                 if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
-                    setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * structureSize.x*structureSize.y));
+                    setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * getStructureSizeX()*getStructureSizeY()));
                 }
             }
             t.setType(context, Terrain_Rock);
@@ -186,7 +184,7 @@ void StructureBase::drawSelectionBox() {
     // health bar
     const SDL_FRect healthRect{static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
                                static_cast<float>(lround((getHealth() / getMaxHealth()) *
-                                                         (world2zoomedWorld(TILESIZE) * structureSize.x - 1))),
+                                                         (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
                                static_cast<float>(currentZoomlevel + 1)};
     renderFillRectF(renderer, &healthRect, getHealthColor());
 }
@@ -232,8 +230,8 @@ void StructureBase::drawGatheringPointLine() {
     \return the center point in world coordinates
 */
 Coord StructureBase::getCenterPoint() const {
-    return Coord( lround(realX + structureSize.x*TILESIZE/2),
-                  lround(realY + structureSize.y*TILESIZE/2));
+    return Coord( lround(realX + getStructureSizeX()*TILESIZE/2),
+                  lround(realY + getStructureSizeY()*TILESIZE/2));
 }
 
 Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
@@ -241,8 +239,8 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
-    if((xPos < location.x) || (xPos >= (location.x + structureSize.x)) || (yPos < location.y) ||
-       (yPos >= (location.y + structureSize.y))) {
+    if((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y) ||
+       (yPos >= (location.y + getStructureSizeY()))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
                                                             (Uint32)xPos, (Uint32)yPos));
@@ -384,17 +382,17 @@ void StructureBase::destroy(const GameContext& context) {
         pDestroyedStructureTiles = DestroyedStructureTilesWall;
         DestroyedStructureTilesSizeY = 1;
     } else {
-        switch(structureSize.y) {
+        switch(getStructureSizeY()) {
             case 1: {
                 pDestroyedStructureTiles = DestroyedStructureTiles1x1;
                 DestroyedStructureTilesSizeY = 1;
             } break;
 
             case 2: {
-                if(structureSize.x == 2) {
+                if(getStructureSizeX() == 2) {
                     pDestroyedStructureTiles = DestroyedStructureTiles2x2;
                     DestroyedStructureTilesSizeY = 2;
-                } else if(structureSize.x == 3) {
+                } else if(getStructureSizeX() == 3) {
                     pDestroyedStructureTiles = DestroyedStructureTiles3x2;
                     DestroyedStructureTilesSizeY = 3;
                 } else {
@@ -416,8 +414,8 @@ void StructureBase::destroy(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
     if(itemID != Structure_Wall) {
-        for(int j = 0; j < structureSize.y; j++) {
-            for(int i = 0; i < structureSize.x; i++) {
+        for(int j = 0; j < getStructureSizeY(); j++) {
+            for(int i = 0; i < getStructureSizeX(); i++) {
                 auto *pTile = map.getTile(location.x + i, location.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
@@ -448,9 +446,9 @@ Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {
         // if we are left of the structure
         // set destination, left most point
         closestPoint.x = location.x;
-    } else if(objectLocation.x >= (location.x + structureSize.x-1)) {
+    } else if(objectLocation.x >= (location.x + getStructureSizeX()-1)) {
         //vica versa
-        closestPoint.x = location.x + structureSize.x-1;
+        closestPoint.x = location.x + getStructureSizeX()-1;
     } else {
         //we are above or below at least one tile of the structure, closest path is straight
         closestPoint.x = objectLocation.x;
@@ -459,8 +457,8 @@ Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {
     //same deal but with y
     if(objectLocation.y <= location.y) {
         closestPoint.y = location.y;
-    } else if(objectLocation.y >= (location.y + structureSize.y-1)) {
-        closestPoint.y = location.y + structureSize.y-1;
+    } else if(objectLocation.y >= (location.y + getStructureSizeY()-1)) {
+        closestPoint.y = location.y + getStructureSizeY()-1;
     } else {
         closestPoint.y = objectLocation.y;
     }

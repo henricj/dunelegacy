@@ -24,22 +24,25 @@
 
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
-Silo::Silo(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+namespace {
+constexpr StructureBaseConstants silo_constants{Silo::item_id, Coord{2, 2}};
+}
+
+Silo::Silo(Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 
     setHealth(getMaxHealth());
 }
 
-Silo::Silo(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+Silo::Silo(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 }
 
 void Silo::init() {
     assert(itemID == Structure_Silo);
     owner->incrementStructures(itemID);
-
-    structureSize.x = 2;
-    structureSize.y = 2;
 
     graphicID = ObjPic_Silo;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

@@ -79,19 +79,47 @@ public:
     InputStream& Stream;
 };
 
+class ObjectBaseConstants
+{
+public:
+    bool canAttack() const noexcept { return canAttackStuff_; }
+    bool isAFlyingUnit() const noexcept { return aFlyingUnit_; }
+    bool isAGroundUnit() const noexcept { return aGroundUnit_; }
+    bool isAStructure() const noexcept { return aStructure_; }
+    bool isABuilder() const noexcept { return aBuilder_; }
+    bool isInfantry() const noexcept { return infantry_; }
+    bool isAUnit() const noexcept { return aUnit_; }
+
+    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID{itemID} { }
+
+    // constant for all objects of the same type
+    const ItemID_enum itemID; ///< The ItemID of this object.
+
+protected:
+    bool aStructure_{};      ///< Is this a structure?
+    bool aBuilder_{};        ///< Is this a builder?
+
+    bool aUnit_{};           ///< Is this a unit?
+    bool aFlyingUnit_{};     ///< Is this a flying unit?
+    bool aGroundUnit_{};     ///< Is this a ground unit?
+    bool infantry_{};        ///< Is this an infantry unit?
+
+    bool canAttackStuff_{};  ///< Can this unit/structure attack?
+};
+
 /*!
     Class from which all structure and unit classes are derived
 */
 class ObjectBase
 {
-    ObjectBase(ItemID_enum itemID, Uint32 objectID);
+    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID);
 
 protected:
-    ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    ObjectBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID, const ObjectInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
-    using parent          = ObjectBase;
+    using parent = ObjectBase;
 
     virtual ~ObjectBase() = 0;
 
@@ -124,6 +152,7 @@ public:
 
     /**
         This method is called when an object is ordered by a right click
+        \param context  the game context
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
@@ -170,6 +199,14 @@ public:
     const ObjectBase* findClosestTarget() const;
     virtual const ObjectBase* findTarget() const;
 
+    bool canAttack() const noexcept { return constants_.canAttack(); }
+    bool isAFlyingUnit() const noexcept { return constants_.isAFlyingUnit(); }
+    bool isAGroundUnit() const noexcept { return constants_.isAGroundUnit(); }
+    bool isAStructure() const noexcept { return constants_.isAStructure(); }
+    bool isABuilder() const noexcept { return constants_.isABuilder(); }
+    bool isInfantry() const noexcept { return constants_.isInfantry(); }
+    bool isAUnit() const noexcept { return constants_.isAUnit(); }
+
     void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
     void setActive(bool status) noexcept { active = status; }
     void setForced(bool status) noexcept { forced = status; }
@@ -178,16 +215,9 @@ public:
     void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
     void setDestination(const Coord& location) { setDestination(location.x, location.y); }
     void setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
-    bool canAttack() const noexcept { return canAttackStuff; }
     bool hasATarget() const noexcept { return (target); }
     bool hasObjectID(Uint32 id) const noexcept { return (objectID == id); }
     bool isActive() const noexcept { return active; }
-    bool isAFlyingUnit() const noexcept { return aFlyingUnit; }
-    bool isAGroundUnit() const noexcept { return aGroundUnit; }
-    bool isAStructure() const noexcept { return aStructure; }
-    bool isABuilder() const noexcept { return aBuilder; }
-    bool isInfantry() const noexcept { return infantry; }
-    bool isAUnit() const noexcept { return aUnit; }
     bool isRespondable() const noexcept { return respondable; }
     bool isByScenario() const noexcept { return byScenario; }
     bool isSelected() const noexcept { return selected; }
@@ -238,18 +268,9 @@ protected:
     bool targetInWeaponRange() const;
 
     // constant for all objects of the same type
+    const ObjectBaseConstants& constants_;
+
     const ItemID_enum itemID = ItemID_Invalid; ///< The ItemID of this object.
-    int      radius = TILESIZE/2;    ///< The radius of this object
-
-    bool     aStructure{};           ///< Is this a structure?
-    bool     aBuilder{};             ///< Is this a builder?
-
-    bool     aUnit{};                ///< Is this a unit?
-    bool     aFlyingUnit{};          ///< Is this a flying unit?
-    bool     aGroundUnit{};          ///< Is this a ground unit?
-    bool     infantry{true};         ///< Is this an infantry unit?
-
-    bool     canAttackStuff{};       ///< Can this unit/structure attack?
 
     // object state/properties
     const Uint32   objectID;               ///< The unique object ID of this object

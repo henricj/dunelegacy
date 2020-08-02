@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Palace;
     using parent = StructureBase;
 
-    Palace(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    Palace(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Palace(Uint32 objectID, const ObjectInitializer& initializer);
+    Palace(Uint32 objectID, const ObjectStreamInitializer& initializer);
     ~Palace() override;
 
     void save(OutputStream& stream) const override;

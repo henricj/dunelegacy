@@ -71,13 +71,16 @@ const ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
                                               Unit_Saboteur,
                                               ItemID_Invalid};
 
-BuilderBase::BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+BuilderBase::BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+    : StructureBase(constants, objectID, initializer) {
     BuilderBase::init();
 
     buildSpeedLimit = 1.0_fix;
 }
 
-BuilderBase::BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(itemID, objectID, initializer) {
+BuilderBase::BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID,
+                         const ObjectStreamInitializer& initializer)
+    : StructureBase(constants, objectID, initializer) {
     BuilderBase::init();
 
     auto& stream = initializer.Stream;
@@ -105,7 +108,6 @@ BuilderBase::BuilderBase(ItemID_enum itemID, Uint32 objectID, const ObjectStream
 }
 
 void BuilderBase::init() {
-    aBuilder = true;
 }
 
 BuilderBase::~BuilderBase() = default;
@@ -402,7 +404,7 @@ void BuilderBase::produce_item(const GameContext& context)
                 unitDestination = destination;
             }
 
-            const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, structureSize);
+            const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
 
             newUnit->deploy(context, spot);
 

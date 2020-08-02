@@ -28,13 +28,19 @@
 #include <Game.h>
 #include <Map.h>
 
-RocketTurret::RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
+namespace {
+constexpr TurretBaseConstants gun_turret_constants{RocketTurret::item_id, Bullet_TurretRocket};
+}
+
+RocketTurret::RocketTurret(Uint32 objectID, const ObjectInitializer& initializer)
+    : TurretBase(gun_turret_constants, objectID, initializer) {
     RocketTurret::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-RocketTurret::RocketTurret(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : TurretBase(itemID, objectID, initializer) {
+RocketTurret::RocketTurret(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : TurretBase(gun_turret_constants, objectID, initializer) {
     RocketTurret::init();
 }
 
@@ -43,7 +49,6 @@ void RocketTurret::init() {
     owner->incrementStructures(itemID);
 
     attackSound = Sound_Rocket;
-    bulletType = Bullet_TurretRocket;
 
     graphicID = ObjPic_RocketTurret;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

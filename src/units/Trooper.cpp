@@ -23,22 +23,25 @@
 #include <House.h>
 #include <SoundPlayer.h>
 
-Trooper::Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
+namespace {
+constexpr InfantryBaseConstants trooper_constants{Trooper::item_id, 1, Bullet_SmallRocket};
+}
+
+Trooper::Trooper(Uint32 objectID, const ObjectInitializer& initializer)
+    : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 
     setHealth(getMaxHealth());
 }
 
-Trooper::Trooper(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : InfantryBase(itemID, objectID, initializer) {
+Trooper::Trooper(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 }
 
 void Trooper::init() {
     assert(itemID == Unit_Trooper);
     owner->incrementUnits(itemID);
-
-    numWeapons = 1;
-    bulletType = Bullet_SmallRocket;
 
     graphicID = ObjPic_Trooper;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

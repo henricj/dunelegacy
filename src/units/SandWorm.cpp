@@ -35,7 +35,17 @@
 
 #define SANDWORM_ATTACKFRAMETIME 10
 
-Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+namespace {
+class SandwormConstants : public GroundUnitConstants {
+public:
+    constexpr SandwormConstants() : GroundUnitConstants{Sandworm::item_id} { canAttackStuff_ = true; }
+};
+
+constexpr SandwormConstants sandworm_constants;
+}
+
+Sandworm::Sandworm(Uint32 objectID, const ObjectInitializer& initializer)
+    : GroundUnit(sandworm_constants, objectID, initializer) {
 
     Sandworm::init();
 
@@ -53,7 +63,8 @@ Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer&
     shimmerOffsetIndex = -1;
 }
 
-Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer) : GroundUnit(itemID, objectID, initializer) {
+Sandworm::Sandworm(Uint32 objectID, const ObjectStreamInitializer& initializer)
+    : GroundUnit(sandworm_constants, objectID, initializer) {
 
     Sandworm::init();
 
@@ -73,8 +84,6 @@ Sandworm::Sandworm(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitia
 void Sandworm::init() {
     assert(itemID == Unit_Sandworm);
     owner->incrementUnits(itemID);
-
-    numWeapons = 0;
 
     graphicID = ObjPic_Sandworm;
     graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());

@@ -20,10 +20,20 @@
 
 #include <units/GroundUnit.h>
 
+class InfantryBaseConstants : public GroundUnitConstants
+{
+public:
+    constexpr explicit InfantryBaseConstants(ItemID_enum itemID, int num_weapons = 0,
+                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+        : GroundUnitConstants{itemID, num_weapons, bullet_id} {
+        infantry_ = true;
+    }
+};
+
 class InfantryBase : public GroundUnit {
 protected:
-    InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer);
-    InfantryBase(ItemID_enum itemID, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
+    InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = GroundUnit;
@@ -82,9 +92,6 @@ protected:
 
     // drawing information
     int walkFrame{}; ///< What frame to draw
-
-private:
-    void init();
 };
 
 
