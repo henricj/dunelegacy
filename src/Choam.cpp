@@ -82,29 +82,30 @@ void Choam::update(const GameContext& context) {
         return;
     }
 
-    if((currentGame->getGameCycleCount() % CHOAM_CHANGE_AMOUNT) == 0) {
-        int index = currentGame->randomGen.rand((Uint32) 0, availableItems.size() - 1);
-        availableItems[index].num = std::min(availableItems[index].num + 1, (Uint32) 10);
+    auto& game = context.game;
+
+    if((game.getGameCycleCount() % CHOAM_CHANGE_AMOUNT) == 0) {
+        int index = game.randomGen.rand(0u, availableItems.size() - 1);
+        availableItems[index].num = std::min(availableItems[index].num + 1, 10u);
     }
 
 
-    if((currentGame->getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {
+    if((game.getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {
         for(BuildItem& buildItem : availableItems) {
-            int price = currentGame->objectData.data[buildItem.itemID][static_cast<int>(house->getHouseID())].price;
+            int price = game.objectData.data[buildItem.itemID][static_cast<int>(house->getHouseID())].price;
 
             const int min_mod = 2;
             const int max_mod = 8;
 
-            int rand1 = currentGame->randomGen.rand(min_mod, max_mod);
-            int rand2 = currentGame->randomGen.rand(min_mod, max_mod);
+            int rand1 = game.randomGen.rand(min_mod, max_mod);
+            int rand2 = game.randomGen.rand(min_mod, max_mod);
 
             price = std::min((rand1+rand2)*(price/10), 999);
 
             buildItem.price = price;
         }
 
-        if((pLocalHouse == house) && (house->hasStarPort())) {
-            currentGame->addToNewsTicker(_("New Starport prices"));
+        if((pLocalHouse == house) && (house->hasStarPort())) { game.addToNewsTicker(_("New Starport prices"));
         }
     }
 }

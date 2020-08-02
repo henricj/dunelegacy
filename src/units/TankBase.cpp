@@ -33,7 +33,7 @@
 
 TankBase::TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer) {
-    drawnTurretAngle = static_cast<ANGLETYPE>(currentGame->randomGen.rand(0, 7));
+    drawnTurretAngle = static_cast<ANGLETYPE>(initializer.Game.randomGen.rand(0, 7));
     turretAngle = static_cast<int>(drawnTurretAngle);
 }
 

@@ -71,8 +71,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
                 return static_cast<const RepairYard*>(pObject)->isFree();
             }
 
-            if(getItemID() == Unit_Harvester) {
-                const auto* const pHarvester = static_cast<const Harvester*>(this);
+            if(const auto* const pHarvester = dune_cast<Harvester>(this)) {
                 return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) &&
                         static_cast<const Refinery*>(pObject)->isFree());
             }

@@ -33,12 +33,12 @@
 #include <stack>
 #include <set>
 
-Map::Map(int xSize, int ySize)
-    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this), random_{currentGame->randomFactory.create("Map")} {
+Map::Map(Game& game, int xSize, int ySize)
+    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this), random_{game.randomFactory.create("Map")} {
 
     tiles.resize(sizeX * sizeY);
 
-    if(currentGame->getGameInitSettings().getGameOptions().startWithExploredMap) {
+    if(game.getGameInitSettings().getGameOptions().startWithExploredMap) {
         this->for_all([](auto& tile) {
             for(auto h = 0; h < NUM_TEAMS; ++h)
                 tile.setExplored(static_cast<HOUSETYPE>(h), true);

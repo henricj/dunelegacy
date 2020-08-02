@@ -129,7 +129,8 @@ QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std
     retreatTimer = MILLI2CYCLES(60000); //turning off
 
     // Different AI logic for Campaign. Assumption is if player is loading they are playing a campaign game
-    if((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::LoadSavegame) || (currentGame->gameType == GameType::Skirmish)) {
+    if((context.game.gameType == GameType::Campaign) || (context.game.gameType == GameType::LoadSavegame) ||
+       (context.game.gameType == GameType::Skirmish)) {
         gameMode = GameMode::Campaign;
     }else{
         gameMode = GameMode::Custom;

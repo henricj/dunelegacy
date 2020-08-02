@@ -129,7 +129,7 @@ void INIMapLoader::loadMap() {
         Uint16 SeedMap[64*64];
         createMapWithSeed(SeedNum,SeedMap);
 
-        map = std::make_unique<Map>(sizeX, sizeY);
+        map = std::make_unique<Map>(*pGame, sizeX, sizeY);
 
         GameContext context{*pGame, *map, pGame->getObjectManager()};
 
@@ -261,7 +261,7 @@ void INIMapLoader::loadMap() {
         logicalOffsetX = 0;
         logicalOffsetY = 0;
 
-        map = std::make_unique<Map>(sizeX, sizeY);
+        map = std::make_unique<Map>(*pGame, sizeX, sizeY);
 
         GameContext context{*pGame, *map, pGame->getObjectManager()};
 

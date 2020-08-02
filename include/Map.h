@@ -31,7 +31,7 @@ public:
     /**
         Creates a map of size xSize x ySize. The map is initialized with all tiles of type Terrain_Sand.
     */
-    Map(int xSize, int ySize);
+    Map(Game& game, int xSize, int ySize);
     Map(const Map& o) = delete;
     Map(Map&& o) = delete;
     ~Map();
