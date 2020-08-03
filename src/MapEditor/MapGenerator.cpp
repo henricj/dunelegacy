@@ -30,13 +30,10 @@
 class MapGenerator {
 
 public:
-    MapGenerator(int sizeX, int sizeY, Random&& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
-        : map(sizeX, sizeY), randGen{std::move(random)}, rockfields(rockfields),
+    MapGenerator(int sizeX, int sizeY, const Random& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
+        : map(sizeX, sizeY), randGen{random}, rockfields(rockfields),
           spicefields(spicefields) {
-
-        std::array<Uint32, Random::seed_words> seed;
-        randGen.getSeed(seed);
-        sdl2::log_info("Using random [%x, %x, %x, %x]", seed[0], seed[1], seed[2], seed[3]);
+        sdl2::log_info("Using random %s", to_hex(randGen.getState()));
 
         mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
     }

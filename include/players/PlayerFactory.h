@@ -29,8 +29,8 @@ class PlayerFactory {
 public:
     class PlayerData {
     public:
-        using create_functor = std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, Random&&)>;
-        using load_functor = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*, Random&&)>;
+        using create_functor = std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, const Random&)>;
+        using load_functor = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*)>;
 
         PlayerData(std::string&& playerclass, std::string&& name, create_functor&& pCreate, load_functor&& pLoad)
          : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
@@ -51,7 +51,7 @@ public:
         }
 
         std::unique_ptr<Player> load(const GameContext& context, InputStream& stream, House* associatedHouse) const {
-            auto pPlayer = pLoad(context, stream, associatedHouse, create_random(context, associatedHouse,  "Default"));
+            auto pPlayer = pLoad(context, stream, associatedHouse);
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
@@ -126,11 +126,11 @@ private:
 
         playerDataList.emplace_back(
             std::move(playerclass), std::move(name),
-            [=](const GameContext& context, House* house, const std::string& playername, Random&& random) {
-                return std::make_unique<PlayerType>(context, house, playername, std::move(random), args...);
+            [=](const GameContext& context, House* house, const std::string& playername, const Random& random) {
+                return std::make_unique<PlayerType>(context, house, playername, random, args...);
             },
-            [](const GameContext& context, InputStream& inputStream, House* house, Random&& random) {
-                return std::make_unique<PlayerType>(context, inputStream, house, std::move(random));
+            [](const GameContext& context, InputStream& inputStream, House* house) {
+                return std::make_unique<PlayerType>(context, inputStream, house);
             });
     }
 

@@ -38,8 +38,8 @@
 #define REFINERYLIMIT 10
 
 
-SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty)
-    : Player(context, associatedHouse, playername, std::move(random)), difficulty(difficulty)
+SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
+    : Player(context, associatedHouse, playername, random), difficulty(difficulty)
 {
     SmartBot::init();
 
@@ -48,8 +48,8 @@ SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std
 }
 
 
-SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
-    : Player(context, stream, associatedHouse, std::move(random)) {
+SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse)
+    : Player(context, stream, associatedHouse) {
     SmartBot::init();
 
     difficulty = static_cast<Difficulty>(stream.readUint8());

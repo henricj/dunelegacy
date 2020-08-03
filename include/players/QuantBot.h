@@ -39,8 +39,8 @@ public:
         Campaign = 5
     };
 
-    QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty);
-    QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
+    QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse);
     void init();
     ~QuantBot() override;
     void save(OutputStream& stream) const override;

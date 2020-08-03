@@ -6,7 +6,6 @@
 
 #include <digestpp/digestpp.hpp>
 
-Random::~Random() = default;
 
 const FixPoint Random::rand_scale_ = 1_fix / (0x7fff'ffff & decltype(generator_)::max());
 
@@ -124,71 +123,64 @@ constexpr char seed_stir[] = u8R"(
 )";
 } // namespace
 
-namespace {
-template<int N>
-class RawSeedSeq {
-private:
-    std::array<unsigned int, N> buffer_;
+std::array<Uint8, Random::state_bytes> Random::getState() const {
+    std::array<Uint8, Random::state_bytes> state;
 
-public:
-    template<typename Iterator>
-    void generate(Iterator begin, Iterator end) {
-        const auto count = end - begin;
-        if(count > buffer_.size()) THROW(std::invalid_argument, "Insufficient size for seeding.");
+    get_generator_state(generator_, state);
 
-        std::copy_n(&buffer_[0], count, begin);
-    }
+    sdl2::log_info("Getting state %s", to_hex(state));
 
-    constexpr size_t size() noexcept { return buffer_.size(); }
-    unsigned int&    operator[](size_t index) { return buffer_[index]; }
-};
-} // namespace
-
-
-std::vector<Uint32> Random::getSeed() const {
-    std::vector<Uint32> output;
-    output.resize(seed_words);
-
-    const gsl::span<Uint32, seed_words> span(&output[0], output.size());
-
-    getSeed(span);
-
-    return output;
+    return state;
 }
 
-void Random::getSeed(gsl::span<Uint32, Random::seed_words> seed) const {
-    std::array<generator_type::state_type, generator_type::state_words> state;
+void Random::setState(const gsl::span<const Uint8, state_bytes> state) {
+    sdl2::log_info("Setting state %s", to_hex(state));
 
-    generator_.get_state(state);
-
-    static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
-    static_assert(seed.size() * sizeof(seed[0]) == state.size() * sizeof(state[0]));
-
-    auto it = seed.begin();
-
-    for (const auto& s : state) {
-        *it++ = s & ~0u;
-        *it++ = (s >> 32) & ~0u;
-    }
-
-    sdl2::log_info("Getting state %s", to_hex(seed));
+    set_generator_state(generator_, state);
 }
 
-void Random::setSeed(const gsl::span<const Uint32, Random::seed_words> seed) {
-    sdl2::log_info("Setting state %s", to_hex(seed));
-
-    std::array<generator_type::state_type, generator_type::state_words> state;
+void Random::set_generator_state(generator_type& generator, gsl::span<const Uint8, state_bytes> state)
+{
+    std::array<generator_type::state_type, generator_type::state_words> words;
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
 
-    auto it = seed.begin();
+    auto it = state.begin();
 
-    for(const auto& s : state) {
-        auto n = generator_type::state_type{*it++};
-        n |= static_cast<generator_type::state_type>(*it++) << 32;
+    for(auto& word : words) {
+        generator_type::state_type n = 0;
+        for(auto i = 0u; i < sizeof(decltype(n)); ++i) {
+            if(it == state.end()) THROW(std::runtime_error, "Invalid state buffer");
+
+            n <<= 8;
+            n |= *it++;
+        }
+
+        word = n;
     }
 
-    generator_.set_state(state);
+    generator.set_state(words);
+}
+
+void Random::get_generator_state(const generator_type& generator, gsl::span<Uint8, state_bytes> state)
+{
+    std::array<generator_type::state_type, generator_type::state_words> words;
+
+    static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
+
+    generator.get_state(words);
+    
+    auto it = state.begin();
+
+    for(const auto& word : words) {
+        auto n = word;
+        for(auto i = 0u; i < sizeof(decltype(n)); ++i) {
+            if(it == state.end()) THROW(std::runtime_error, "Invalid state buffer");
+
+            *it++ = static_cast<Uint8>(n >> (8 * (sizeof(decltype(n)) - 1)));
+            n <<= 8;
+        }
+    }
 }
 
 void RandomFactory::setSeed(gsl::span<const Uint8> seed) {
@@ -293,24 +285,7 @@ Random RandomFactory::create(std::string_view name) const {
 
     kmac.digest(std::back_inserter(buffer));
 
-    auto it = buffer.begin();
+    sdl2::log_info("Created state for \"%s\": %s", name, to_hex(buffer));
 
-    std::array<state_type, Random::generator_type::state_words> state;
-    for(auto& s : state) {
-        auto n = 0ull;
-        for(auto i = 0u; i < sizeof(state_type); ++i) {
-            const auto b = state_type{*it++};
-            n |= b << (8 * i);
-        }
-
-        s = n;
-    }
-
-    Random::generator_type generator;
-
-    sdl2::log_info("Created state for \"%s\": %s", name, to_hex(state));
-
-    generator.set_state(state);
-
-    return Random{generator};
+    return Random::create(buffer);
 }

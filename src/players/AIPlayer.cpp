@@ -37,15 +37,14 @@
 
 #define AIUPDATEINTERVAL 50
 
-AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty)
- : Player(context, associatedHouse, playername, std::move(random)), difficulty(difficulty) {
+AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
+ : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
     attackTimer = ((2-static_cast<Uint8>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
     buildTimer = getRandomGen().rand(0,3) * 50;
 }
 
-AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
-    : Player(context, stream, associatedHouse, std::move(random)) {
-    AIPlayer::init();
+AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
+    : Player(context, stream, associatedHouse) {
 
     difficulty = static_cast<Difficulty>(stream.readUint8());
     attackTimer = stream.readSint32();
@@ -59,10 +58,6 @@ AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* assoc
         placeLocations.emplace_back(x, y);
     }
 }
-
-void AIPlayer::init() {
-}
-
 
 AIPlayer::~AIPlayer() = default;
 
