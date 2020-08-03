@@ -26,13 +26,11 @@
 #include <globals.h>
 
 GameInitSettings::GameInitSettings() {
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::Campaign), houseID(newHouseID), mission(1), alreadyShownTutorialHints(0), gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions, Uint32 alreadyShownTutorialHints) {
@@ -41,23 +39,19 @@ GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass
     this->alreadyPlayedRegions = alreadyPlayedRegions;
     this->alreadyShownTutorialHints = alreadyShownTutorialHints;
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::Skirmish), houseID(newHouseID), mission(newMission), gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomGame), filename(std::move(mapfile)), filedata(std::move(filedata)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::CustomMultiplayer), filename(std::move(mapfile)), filedata(std::move(filedata)), servername(std::move(serverName)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-    randomSeed = RandomFactory::createRandomSeed("game master seed");
 }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& savegame)

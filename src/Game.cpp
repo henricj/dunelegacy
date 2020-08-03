@@ -143,7 +143,6 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
         case GameType::CustomMultiplayer: {
             gameType = gameInitSettings.getGameType();
             randomFactory.setSeed({gameInitSettings.getRandomSeed()});
-            //randomGen.setSeed(gameInitSettings.getRandomSeed());
 
             objectData.loadFromINIFile("ObjectData.ini");
 
