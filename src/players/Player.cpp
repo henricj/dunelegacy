@@ -51,7 +51,7 @@ Player::Player(const GameContext& context, InputStream& stream, House* associate
     playername = stream.readString();
     const auto state  = stream.readUint8Vector();
     if(state.size() != decltype(random_)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
-    random_ = Random::create(state);
+    random_.setState(state);
 }
 
 Player::~Player() {
