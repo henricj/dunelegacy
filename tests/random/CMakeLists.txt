@@ -1,6 +1,6 @@
 
-add_executable(lemier_test lemier_test.cpp)
-target_include_directories(lemier_test PRIVATE ../../include)
-target_link_libraries(lemier_test PRIVATE GTest::gtest GTest::gtest_main)
+add_executable(lemire_test lemire_test.cpp)
+target_include_directories(lemire_test PRIVATE ../../include)
+target_link_libraries(lemire_test PRIVATE GTest::gtest GTest::gtest_main)
 
-add_test(NAME lemier COMMAND lemier_test)
+add_test(NAME lemire COMMAND lemire_test)
