@@ -50,7 +50,7 @@ void ReinforcementTrigger::save(OutputStream& stream) const
 {
     Trigger::save(stream);
 
-    stream.writeUint32Vector(droppedUnits);
+    stream.writeUint32Vector<ItemID_enum>(droppedUnits);
     stream.writeUint32(static_cast<const Uint32>(dropLocation));
     stream.writeSint32(static_cast<const Sint32>(houseID));
     stream.writeUint32(repeatCycle);

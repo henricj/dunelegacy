@@ -1574,9 +1574,9 @@ bool Game::loadSaveGame(InputStream& stream) {
     gameType = static_cast<GameType>(stream.readSint8());
     techLevel = stream.readUint8();
     randomFactory.setSeed(stream.readUint8Vector());
-    auto seed = stream.readUint32Vector();
-    if(seed.size() != decltype(randomGen)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
-    randomGen.setSeed(seed);
+    auto seed = stream.readUint8Vector();
+    if(seed.size() != decltype(randomGen)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
+    randomGen.setState(seed);
 
     // read in the unit/structure data
     objectData.load(stream);
@@ -1718,7 +1718,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     fs.writeSint8(static_cast<Sint8>(gameType));
     fs.writeUint8(techLevel);
     fs.writeUint8Vector(randomFactory.getSeed());
-    fs.writeUint32Vector(randomGen.getSeed());
+    fs.writeUint8Vector(randomGen.getState());
 
     // write out the unit/structure data
     objectData.save(fs);

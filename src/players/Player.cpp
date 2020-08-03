@@ -41,17 +41,17 @@
  #include <utility>
 
 
-Player::Player(const GameContext& context, House* associatedHouse, std::string playername, Random&& random)
+Player::Player(const GameContext& context, House* associatedHouse, std::string playername, const Random& random)
     : pHouse(associatedHouse), playerID(0), playername(std::move(playername)), random_{random},
       context_{context} { }
 
-Player::Player(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random)
-    : pHouse(associatedHouse), random_{random}, context_{context} {
+Player::Player(const GameContext& context, InputStream& stream, House* associatedHouse)
+    : pHouse(associatedHouse), context_{context} {
     playerID   = stream.readUint8();
     playername = stream.readString();
-    auto seed  = stream.readUint32Vector();
-    if(seed.size() != decltype(random_)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
-    random_.setSeed(seed);
+    const auto state  = stream.readUint8Vector();
+    if(state.size() != decltype(random_)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
+    random_ = Random::create(state);
 }
 
 Player::~Player() {
@@ -62,7 +62,7 @@ Player::~Player() {
 void Player::save(OutputStream& stream) const {
     stream.writeUint8(playerID);
     stream.writeString(playername);
-    stream.writeUint32Vector(random_.getSeed());
+    stream.writeUint8Vector(random_.getState());
 }
 
 Random& Player::getRandomGen() { return random_; }

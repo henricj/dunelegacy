@@ -45,8 +45,8 @@ class MCV;
 
 class Player {
 protected:
-    Player(const GameContext& context, House* associatedHouse, std::string playername, Random&& random);
-    Player(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
+    Player(const GameContext& context, House* associatedHouse, std::string playername, const Random& random);
+    Player(const GameContext& context, InputStream& stream, House* associatedHouse);
 
 public:
     virtual ~Player() = 0;

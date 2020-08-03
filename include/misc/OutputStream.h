@@ -24,9 +24,6 @@
 
 #include <string>
 #include <list>
-#include <utility>
-#include <vector>
-#include <set>
 #include <exception>
 
 class OutputStream
@@ -115,8 +112,8 @@ public:
         Writes out a complete vector of Uint8
         \param  dataVector the vector to write
     */
-    void writeUint8Vector(const std::vector<Uint8>& dataVector) {
-        writeUint32(static_cast<Uint8>(dataVector.size()));
+    void writeUint8Vector(gsl::span<const Uint8> dataVector) {
+        writeUint32(static_cast<Uint32>(dataVector.size()));
         for(const auto data : dataVector) {
             writeUint8(data);
         }
@@ -137,7 +134,7 @@ public:
         Writes out a complete vector of Uint32
         \param  dataVector the vector to write
     */
-    void writeUint32Vector(const std::vector<Uint32>& dataVector) {
+    void writeUint32Vector(gsl::span<const Uint32> dataVector) {
         writeUint32(static_cast<Uint32>(dataVector.size()));
         for(const auto data : dataVector) {
             writeUint32(data);
@@ -149,7 +146,7 @@ public:
         \param  dataVector the vector to write
     */
     template<typename T>
-    void writeUint32Vector(const std::vector<T>& dataVector) {
+    void writeUint32Vector(gsl::span<const T> dataVector) {
         writeUint32(static_cast<Uint32>(dataVector.size()));
         for(const auto data : dataVector) {
             writeUint32(static_cast<Uint32>(data));

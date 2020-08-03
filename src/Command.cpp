@@ -345,7 +345,7 @@ void Command::executeCommand(const GameContext& context) const {
                 THROW(std::invalid_argument, "Command::executeCommand(): CMD_TEST_SYNC needs 1 Parameters!");
             }
 
-            const auto currentSeed = game.randomGen.getSeed();
+            const auto currentSeed = game.randomGen.getState();
             if(currentSeed[0] != parameter[0]) {
                 sdl2::log_info("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud", game.getGameCycleCount(), parameter[0], currentSeed[0]);
 #ifdef TEST_SYNC

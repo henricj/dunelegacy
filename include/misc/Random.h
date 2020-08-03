@@ -36,38 +36,40 @@ class RandomFactory;
 class Random final {
 public:
     using generator_type = ExtraGenerators::uint64_to_uint32<ExtraGenerators::xoshiro256starstar>;
-    static constexpr size_t seed_words =
-        generator_type::state_words * sizeof(generator_type::state_type) / sizeof(Uint32);
+
+    static constexpr size_t state_bytes = generator_type::state_words * sizeof(generator_type::state_type);
 
 protected:
     explicit Random(const generator_type& generator) : generator_{generator} { }
-    explicit Random(generator_type&& generator) : generator_{std::move(generator)} { }
 
 public:
+    Random() = default;
+
     explicit Random(const Random& random) = default;
     Random& operator=(const Random& random) = default;
 
-    /**
-        Constructor which inits the seed value to seed
-        \param  seed    the initial seed value
-    */
-    // explicit Random(Uint32 seed) : generator_{seed} { }
-
     /// Destructor
-    ~Random();
+    ~Random() = default;
+
+    static Random create(gsl::span<const Uint8, state_bytes> state) {
+        generator_type generator;
+
+        set_generator_state(generator, state);
+
+        return Random(generator);
+    }
 
     /**
-        Sets the seed value to newSeed
-        \param newSeed  the new seed value
+        Sets the generator state to state
+        \param state  the new state value
     */
-    void setSeed(gsl::span<const Uint32, seed_words> newSeed);
-    void getSeed(gsl::span<Uint32, seed_words> seed) const;
+    void setState(gsl::span<const Uint8, state_bytes> state);
 
     /**
-        Returns the current seed value.
-        \return the current seed value
+        Returns the current generator state.
+        \return the current state
     */
-    [[nodiscard]] std::vector<Uint32> getSeed() const;
+    [[nodiscard]] std::array<Uint8, state_bytes> getState() const;
 
     /**
         Returns the maximum integer returned by rand()
@@ -127,6 +129,9 @@ public:
     }
 
 private:
+    static void set_generator_state(generator_type& generator, gsl::span<const Uint8, state_bytes> state);
+    static void get_generator_state(const generator_type& generator, gsl::span<Uint8, state_bytes> state);
+
     generator_type generator_;
     static const FixPoint rand_scale_;
 

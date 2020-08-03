@@ -35,9 +35,8 @@
 class CampaignAIPlayer : public Player
 {
 public:
-    CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random);
-    CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
-    void init();
+    CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
+    CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~CampaignAIPlayer() override;
     void save(OutputStream& stream) const override;
 
