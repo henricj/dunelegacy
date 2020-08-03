@@ -595,6 +595,12 @@ if(HAVE_CXXABI_H)
 	target_compile_definitions(dunelegacy PUBLIC HAVE_CXXABI_H)
 endif()
 
+if(MSVC)
+   if(${DUNE_TARGET_ARCHITECTURE} STREQUAL "x86")
+      target_link_options(dunelegacy PRIVATE /LARGEADDRESSAWARE )
+   endif()
+endif()
+
 
 target_precompile_headers(dunelegacy REUSE_FROM dune)
 
