@@ -32,7 +32,7 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID, co
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
-    angle = initializer.Game.randomGen.rand(0, 7);
+    angle = initializer.game().randomGen.rand(0, 7);
     drawnAngle = static_cast<ANGLETYPE>(lround(angle));
 
     findTargetTimer = 0;
@@ -44,7 +44,7 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID,
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
-    auto& stream    = initializer.Stream;
+    auto& stream = initializer.stream();
 
     findTargetTimer = stream.readSint32();
     weaponTimer = stream.readSint32();

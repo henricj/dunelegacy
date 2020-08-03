@@ -68,7 +68,7 @@ Harvester::Harvester(Uint32 objectID, const ObjectStreamInitializer& initializer
     : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     harvestingMode = stream.readBool();
     returningToRefinery = stream.readBool();

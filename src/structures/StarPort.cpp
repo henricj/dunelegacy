@@ -52,7 +52,7 @@ StarPort::StarPort(Uint32 objectID, const ObjectInitializer& initializer) : Buil
 StarPort::StarPort(Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     arrivalTimer = stream.readSint32();
     if(stream.readBool()) {

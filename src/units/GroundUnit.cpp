@@ -40,7 +40,7 @@ GroundUnit::GroundUnit(const GroundUnitConstants& constants, Uint32 objectID,
                        const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
 
-    auto& stream   = initializer.Stream;
+    auto& stream   = initializer.stream();
 
     awaitingPickup = stream.readBool();
     bookedCarrier = stream.readUint32();

@@ -39,7 +39,7 @@ AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const Objec
 
 AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     currentMaxSpeed = stream.readFixPoint();
 }

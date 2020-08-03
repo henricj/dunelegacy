@@ -68,7 +68,7 @@ Sandworm::Sandworm(Uint32 objectID, const ObjectStreamInitializer& initializer)
 
     Sandworm::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     kills = stream.readSint32();
     attackFrameTimer = stream.readSint32();

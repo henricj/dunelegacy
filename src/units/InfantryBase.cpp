@@ -53,7 +53,7 @@ InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 object
                            const ObjectStreamInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     tilePosition = stream.readSint8();
     oldTilePosition = stream.readSint8();

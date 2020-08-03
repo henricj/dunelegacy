@@ -44,7 +44,7 @@ Wall::Wall(Uint32 objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     stream.readBools(&bWallDestroyedUp, &bWallDestroyedRight, &bWallDestroyedDown, &bWallDestroyedLeft);
 

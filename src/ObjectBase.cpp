@@ -74,9 +74,9 @@
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
                        const ObjectInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
-    originalHouseID = initializer.Owner->getHouseID();
-    owner           = initializer.Owner;
-    byScenario      = initializer.ByScenario;
+    originalHouseID = initializer.owner()->getHouseID();
+    owner           = initializer.owner();
+    byScenario      = initializer.byScenario();
 
     health = 0;
     badlyDamaged = false;
@@ -107,7 +107,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objec
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
                        const ObjectStreamInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
-    auto& stream    = initializer.Stream;
+    auto& stream    = initializer.stream();
     originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
     owner = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 

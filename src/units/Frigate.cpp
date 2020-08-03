@@ -48,7 +48,7 @@ Frigate::Frigate(Uint32 objectID, const ObjectStreamInitializer& initializer)
     : AirUnit(frigate_constants, objectID, initializer) {
     Frigate::init();
 
-    auto& stream    = initializer.Stream;
+    auto& stream    = initializer.stream();
 
     droppedOffCargo = stream.readBool();
 }

@@ -49,7 +49,7 @@ StructureBase::StructureBase(const StructureBaseConstants& structure_constants, 
     : ObjectBase(structure_constants, objectID, initializer) {
     StructureBase::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     repairing        = stream.readBool();
     fogged = stream.readBool();

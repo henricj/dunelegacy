@@ -54,7 +54,7 @@ struct GameContext {
 
 class ObjectInitializer final {
 public:
-    ObjectInitializer(Game& game, House* owner, bool byScenario) : Game{game}, Owner{owner}, ByScenario{byScenario} { }
+    ObjectInitializer(Game& game, House* owner, bool byScenario) : game_{game}, owner_{owner}, byScenario_{byScenario} { }
 
     ObjectInitializer()                         = delete;
     ObjectInitializer(const ObjectInitializer&) = delete;
@@ -64,14 +64,19 @@ public:
 
     ~ObjectInitializer() = default;
 
-    Game& Game;
-    House* const Owner;
-    const bool   ByScenario;
+    Game&  game() const noexcept { return game_; }
+    House* owner() const noexcept { return owner_; }
+    bool   byScenario() const noexcept { return byScenario_; }
+
+private:
+    Game& game_;
+    House* const owner_;
+    const bool   byScenario_;
 };
 
 class ObjectStreamInitializer final {
 public:
-    ObjectStreamInitializer(InputStream& inputStream) : Stream{inputStream} { }
+    ObjectStreamInitializer(InputStream& inputStream) : stream_{inputStream} { }
 
     ObjectStreamInitializer()                               = delete;
     ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
@@ -81,7 +86,10 @@ public:
 
     ~ObjectStreamInitializer() = default;
 
-    InputStream& Stream;
+    InputStream& stream() const noexcept { return stream_; }
+
+private:
+    InputStream& stream_;
 };
 
 class ObjectBaseConstants
