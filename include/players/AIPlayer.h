@@ -33,8 +33,8 @@ public:
         Hard = 2
     };
 
-    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random, Difficulty difficulty);
-    AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
+    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~AIPlayer() override;
     void save(OutputStream& stream) const override;
 
@@ -45,7 +45,6 @@ public:
     void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
 
 private:
-    void init();
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
 
     Coord findPlaceLocation(ItemID_enum itemID);

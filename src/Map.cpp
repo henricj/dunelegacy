@@ -64,9 +64,9 @@ void Map::load(InputStream& stream) {
     for (auto& tile : tiles)
         tile.load(stream);
 
-    auto seed = stream.readUint32Vector();
-    if(seed.size() != decltype(random_)::seed_words) THROW(std::runtime_error, "Random seed size mismatch!");
-    random_.setSeed(seed);
+    auto state = stream.readUint8Vector();
+    if(state.size() != decltype(random_)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
+    random_.setState(state);
 
     init_tile_location();
 }
@@ -78,7 +78,7 @@ void Map::save(OutputStream& stream, Uint32 gameCycleCount) const {
     for (const auto & tile : tiles)
         tile.save(stream, gameCycleCount);
 
-    stream.writeUint32Vector(random_.getSeed());
+    stream.writeUint8Vector(random_.getState());
 }
 
 void Map::init_tile_location() {

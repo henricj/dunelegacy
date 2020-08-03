@@ -31,8 +31,8 @@ public:
         Hard = 2
     };
 
-    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, Random&&, Difficulty difficulty);
-    SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse, Random&&);
+    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~SmartBot() override;
     void save(OutputStream& stream) const override;
 

@@ -58,8 +58,8 @@ public:
         NotEnoughConrete = 20,
     };
 
-    HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, Random&& random);
-    HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse, Random&& random);
+    HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
+    HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     virtual ~HumanPlayer();
     void save(OutputStream& stream) const override;
 
@@ -116,7 +116,7 @@ public:
     */
     void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
 public:
-    Uint32 nextExpectedCommandsCycle;                       ///< The next cycle we expect commands for (using for network games)
+    Uint32 nextExpectedCommandsCycle{};                       ///< The next cycle we expect commands for (using for network games)
 
     Dune::selected_set_type selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
 
@@ -129,8 +129,6 @@ private:
     [[nodiscard]] bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
 
     Uint32 lastAttackNotificationCycle;                     ///< When was the last time that the player was informed about an attack
-
-    void   init();
 };
 
 
