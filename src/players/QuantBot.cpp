@@ -108,11 +108,11 @@
  1. Add them with some logic =50%=
  2. fix force ratio optimisation algorithm,
  need to make it based off kill / death ratio instead of just losses =50%=
- 3. create a retreate mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
+ 3. create a retreat mechanism = 50% = still need to add retreat timer, say 1 retreat per minute, max
  - fix rally point and ybut deploy logic
 
 
- 2. Make carryalls and ornithopers easier to hit
+ 2. Make carryalls and ornithopters easier to hit
 
  ====> FIX WORM CRASH GAME BUG
 
