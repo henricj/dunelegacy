@@ -173,7 +173,6 @@ public:
     [[nodiscard]] const std::filesystem::path& getFilename() const noexcept { return filename; };
     [[nodiscard]] const std::string& getFiledata() const noexcept { return filedata; };
     [[nodiscard]] const std::string& getServername() const noexcept { return servername; };
-    [[nodiscard]] const std::vector<Uint8>& getRandomSeed() const noexcept { return randomSeed; };
 
     [[nodiscard]] bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; };
     void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; };
@@ -185,6 +184,13 @@ public:
     [[nodiscard]] const HouseInfoList& getHouseInfoList() const noexcept { return houseInfoList; };
 
     void setHouseID(HOUSETYPE houseID) noexcept { this->houseID = houseID; };
+
+    [[nodiscard]] const std::vector<Uint8>& getRandomSeed() noexcept {
+        if(randomSeed.empty()) randomSeed = RandomFactory::createRandomSeed("game master seed");
+
+        return randomSeed;
+    }
+
 
 private:
     static std::string getScenarioFilename(HOUSETYPE newHouse, int mission);
