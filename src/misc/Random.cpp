@@ -285,7 +285,7 @@ Random RandomFactory::create(std::string_view name) const {
 
     kmac.digest(std::back_inserter(buffer));
 
-    sdl2::log_info("Created state for \"%s\": %s", name, to_hex(buffer));
+    sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
     return Random::create(buffer);
 }
