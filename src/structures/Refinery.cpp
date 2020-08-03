@@ -54,7 +54,7 @@ Refinery::Refinery(Uint32 objectID, const ObjectInitializer& initializer) : Stru
 Refinery::Refinery(Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     extractingSpice = stream.readBool();
     harvester.load(stream);

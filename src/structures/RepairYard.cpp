@@ -47,7 +47,7 @@ RepairYard::RepairYard(Uint32 objectID, const ObjectStreamInitializer& initializ
     : StructureBase(repair_yard_constants, objectID, initializer) {
     RepairYard::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     repairingAUnit = stream.readBool();
     repairUnit.load(stream);

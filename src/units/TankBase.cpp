@@ -33,13 +33,13 @@
 
 TankBase::TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer) {
-    drawnTurretAngle = static_cast<ANGLETYPE>(initializer.Game.randomGen.rand(0, 7));
+    drawnTurretAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
     turretAngle = static_cast<int>(drawnTurretAngle);
 }
 
 TankBase::TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer) {
-    auto& stream     = initializer.Stream;
+    auto& stream = initializer.stream();
 
     turretAngle      = stream.readFixPoint();
     drawnTurretAngle = static_cast<ANGLETYPE>(stream.readSint8());
