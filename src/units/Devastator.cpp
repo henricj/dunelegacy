@@ -45,7 +45,7 @@ Devastator::Devastator(Uint32 objectID, const ObjectStreamInitializer& initializ
     : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     devastateTimer = stream.readSint32();
 }

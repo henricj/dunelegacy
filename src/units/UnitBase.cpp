@@ -46,7 +46,7 @@ UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const Ob
 
     UnitBase::init();
 
-    drawnAngle = static_cast<ANGLETYPE>(initializer.Game.randomGen.rand(0, 7));
+    drawnAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
     angle      = static_cast<int>(drawnAngle);
 
     goingToRepairYard = false;
@@ -84,7 +84,7 @@ UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const Ob
 
     UnitBase::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     stream.readBools(&goingToRepairYard, &pickedUp, &bFollow);
     guardPoint.x = stream.readSint32();

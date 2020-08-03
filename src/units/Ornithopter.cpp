@@ -45,7 +45,7 @@ Ornithopter::Ornithopter(Uint32 objectID, const ObjectStreamInitializer& initial
     : AirUnit(ornithopter_constants, objectID, initializer) {
     Ornithopter::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     timeLastShot = stream.readUint32();
 }

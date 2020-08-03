@@ -83,7 +83,7 @@ BuilderBase::BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID,
     : StructureBase(constants, objectID, initializer) {
     BuilderBase::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     upgrading       = stream.readBool();
     upgradeProgress = stream.readFixPoint();

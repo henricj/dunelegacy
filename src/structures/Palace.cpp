@@ -61,7 +61,7 @@ Palace::Palace(Uint32 objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(palace_constants, objectID, initializer) {
     Palace::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     specialWeaponTimer = stream.readSint32();
 }

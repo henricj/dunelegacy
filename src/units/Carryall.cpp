@@ -52,7 +52,7 @@ Carryall::Carryall(Uint32 objectID, const ObjectStreamInitializer& initializer)
     : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
-    auto& stream = initializer.Stream;
+    auto& stream = initializer.stream();
 
     pickedUpUnitList = stream.readUint32Vector();
     if(!pickedUpUnitList.empty()) {
