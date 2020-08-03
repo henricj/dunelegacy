@@ -69,7 +69,7 @@
 #include <sstream>
 #include <iomanip>
 
-Game::Game() : randomGen{randomFactory.create("Game")} {
+Game::Game() {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
     localPlayerName = settings.general.playerName;
@@ -143,6 +143,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
         case GameType::CustomMultiplayer: {
             gameType = gameInitSettings.getGameType();
             randomFactory.setSeed({gameInitSettings.getRandomSeed()});
+
+            randomGen = randomFactory.create("Game");
 
             objectData.loadFromINIFile("ObjectData.ini");
 
