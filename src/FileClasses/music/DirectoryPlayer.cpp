@@ -84,7 +84,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
     }
 
     if(musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
-        musicNum = random().rand(0, musicFileList[musicType].size() - 1);
+        musicNum = random().rand(0u, musicFileList[musicType].size() - 1u);
         filename = musicFileList[musicType][musicNum];
         currentMusicType = musicType;
     } else {
