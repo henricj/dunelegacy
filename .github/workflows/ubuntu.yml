@@ -12,6 +12,7 @@ jobs:
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
+          sudo apt-mark hold msodbcsql17 mssql-tools
           sudo apt-get dist-upgrade -y
           sudo apt-get install -y gettext ninja-build gcc-10 g++-10
           #sudo apt-get install -y gettext ninja-build gcc-10 g++-10 clang-tidy-10
