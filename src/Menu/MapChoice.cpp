@@ -218,7 +218,7 @@ void MapChoice::drawSpecificStuff() {
 
                 while(curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit >= blitThreshold()) {
                     curRegion2Blit = 0;
-                    curHouse2Blit  = static_cast<HOUSETYPE>((static_cast<int>(curHouse2Blit) + 1) % num_houses);
+                    curHouse2Blit  = static_cast<HOUSETYPE>(static_cast<int>(curHouse2Blit) + 1);
                 }
 
                 if(curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
