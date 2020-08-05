@@ -1467,7 +1467,8 @@ int Game::whatNext()
         case GameType::Campaign: {
             if(bQuitGame) {
                 return GAME_RETURN_TO_MENU;
-            } else if(won) {
+            }
+            if(won) {
                 if(gameInitSettings.getMission() == 22) {
                     // there is no mission after this mission
                     whatNextParam = GAME_RETURN_TO_MENU;
@@ -1476,34 +1477,32 @@ int Game::whatNext()
                     whatNextParam = GAME_NEXTMISSION;
                 }
                 return GAME_DEBRIEFING_WIN;
-            } else {
-                // we need to play this mission again
-                whatNextParam = GAME_NEXTMISSION;
-
-                return GAME_DEBRIEFING_LOST;
             }
+            // we need to play this mission again
+            whatNextParam = GAME_NEXTMISSION;
+
+            return GAME_DEBRIEFING_LOST;
         } break;
 
         case GameType::Skirmish: {
             if(bQuitGame) {
                 return GAME_RETURN_TO_MENU;
-            } else if(won) {
+            }
+            if(won) {
                 whatNextParam = GAME_RETURN_TO_MENU;
                 return GAME_DEBRIEFING_WIN;
-            } else {
-                whatNextParam = GAME_RETURN_TO_MENU;
-                return GAME_DEBRIEFING_LOST;
             }
+            whatNextParam = GAME_RETURN_TO_MENU;
+            return GAME_DEBRIEFING_LOST;
         } break;
 
         case GameType::CustomGame:
         case GameType::CustomMultiplayer: {
             if(bQuitGame) {
                 return GAME_RETURN_TO_MENU;
-            } else {
-                whatNextParam = GAME_RETURN_TO_MENU;
-                return GAME_CUSTOM_GAME_STATS;
             }
+            whatNextParam = GAME_RETURN_TO_MENU;
+            return GAME_CUSTOM_GAME_STATS;
         } break;
 
         default: {
@@ -1619,9 +1618,8 @@ bool Game::loadSaveGame(InputStream& stream) {
 
                                     ++playerIter;
                                     break;
-                                } else {
-                                    ++playerIter;
                                 }
+                                ++playerIter;
                             }
                         }
                     }
@@ -1875,41 +1873,37 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
         }
 
         return false;
-    } else {
+    }
+    if(bDrag) {
+        screenborder->setNewScreenCenter(worldPosition);
+        return true;
+    }
+    switch(currentCursorMode) {
+        case CursorMode_Attack: {
+            handleSelectedObjectsAttackClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+            return false;
+        } break;
 
-        if(bDrag) {
+        case CursorMode_Move: {
+            handleSelectedObjectsMoveClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+            return false;
+        } break;
+
+        case CursorMode_Capture: {
+            handleSelectedObjectsCaptureClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+            return false;
+        } break;
+
+        case CursorMode_CarryallDrop: {
+            handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+            return false;
+        } break;
+
+        case CursorMode_Normal:
+        default: {
             screenborder->setNewScreenCenter(worldPosition);
             return true;
-        } else {
-
-            switch(currentCursorMode) {
-                case CursorMode_Attack: {
-                    handleSelectedObjectsAttackClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
-                    return false;
-                } break;
-
-                case CursorMode_Move: {
-                    handleSelectedObjectsMoveClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
-                    return false;
-                } break;
-
-                case CursorMode_Capture: {
-                    handleSelectedObjectsCaptureClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
-                    return false;
-                } break;
-
-                case CursorMode_CarryallDrop: {
-                    handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
-                    return false;
-                } break;
-
-                case CursorMode_Normal:
-                default: {
-                    screenborder->setNewScreenCenter(worldPosition);
-                    return true;
-                } break;
-            }
-        }
+        } break;
     }
 }
 
@@ -2142,7 +2136,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable() && pObject->canAttack()) {
                         currentCursorMode = CursorMode_Attack;
                         break;
-                    } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
+                    }
+                    if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
                         if(static_cast<Palace*>(pObject)->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
@@ -2381,19 +2376,19 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
-        } else {
-            //the user has tried to place but clicked on impossible point
-            currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
-            return false;
         }
-    } else if(placeItem == Structure_Slab4) {
+        //the user has tried to place but clicked on impossible point
+        currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
+        soundPlayer->playSound(Sound_InvalidAction); //can't place noise
+        return false;
+    }
+    if(placeItem == Structure_Slab4) {
         if( (map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || map->isWithinBuildRange(xPos+1, yPos, pBuilder->getOwner())
-                || map->isWithinBuildRange(xPos+1, yPos+1, pBuilder->getOwner()) || map->isWithinBuildRange(xPos, yPos+1, pBuilder->getOwner()))
+             || map->isWithinBuildRange(xPos+1, yPos+1, pBuilder->getOwner()) || map->isWithinBuildRange(xPos, yPos+1, pBuilder->getOwner()))
             && ((map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())
-                || map->okayToPlaceStructure(xPos+1, yPos, 1, 1, false, pBuilder->getOwner())
-                || map->okayToPlaceStructure(xPos+1, yPos+1, 1, 1, false, pBuilder->getOwner())
-                || map->okayToPlaceStructure(xPos, yPos, 1, 1+1, false, pBuilder->getOwner())))
+                 || map->okayToPlaceStructure(xPos+1, yPos, 1, 1, false, pBuilder->getOwner())
+                 || map->okayToPlaceStructure(xPos+1, yPos+1, 1, 1, false, pBuilder->getOwner())
+                 || map->okayToPlaceStructure(xPos, yPos, 1, 1+1, false, pBuilder->getOwner())))
             && ((!map->getTile(xPos, yPos)->isConcrete()) || (!map->getTile(xPos+1, yPos)->isConcrete())
                 || (!map->getTile(xPos, yPos+1)->isConcrete()) || (!map->getTile(xPos+1, yPos+1)->isConcrete())) ) {
 
@@ -2402,73 +2397,75 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
-        } else {
-            //the user has tried to place but clicked on impossible point
-            currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
-            return false;
         }
-    } else {
-        if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
-            //the user has tried to place and has been successful
-            soundPlayer->playSound(Sound_PlaceStructure);
-            currentCursorMode = CursorMode_Normal;
-            return true;
-        } else {
-            //the user has tried to place but clicked on impossible point
-            currentGame->addToNewsTicker(fmt::sprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem)));
-            soundPlayer->playSound(Sound_InvalidAction);    //can't place noise
+        //the user has tried to place but clicked on impossible point
+        currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
+        soundPlayer->playSound(Sound_InvalidAction); //can't place noise
+        return false;
+    }
+    if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
+        getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,pBuilder->getObjectID(), xPos, yPos));
+        //the user has tried to place and has been successful
+        soundPlayer->playSound(Sound_PlaceStructure);
+        currentCursorMode = CursorMode_Normal;
+        return true;
+    }
+    //the user has tried to place but clicked on impossible point
+    currentGame->addToNewsTicker(fmt::sprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem)));
+    soundPlayer->playSound(Sound_InvalidAction); //can't place noise
 
-            // is this building area only blocked by units?
-            if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
-                // then we try to move all units outside the building area
+    // is this building area only blocked by units?
+    if(map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
+        // then we try to move all units outside the building area
 
-                // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
+        // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
 
-                auto& uiRandom = pGFXManager->random();
+        auto& uiRandom = pGFXManager->random();
 
-                for(int y = yPos; y < yPos + structuresize.y; y++) {
-                    for(int x = xPos; x < xPos + structuresize.x; x++) {
-                        auto *const pTile = map->getTile(x,y);
-                        if(pTile->hasANonInfantryGroundObject()) {
-                            auto *const pObject = pTile->getNonInfantryGroundObject(objectManager);
-                            if(pObject->isAUnit() && pObject->getOwner() == pBuilder->getOwner()) {
-                                auto* pUnit = static_cast<UnitBase*>(pObject);
-                                Coord newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandom, pUnit->getLocation(), structuresize);
-                                pUnit->handleMoveClick(context, newDestination.x, newDestination.y);
-                            }
-                        } else if(pTile->hasInfantry()) {
-                            for(auto objectID : pTile->getInfantryList()) {
-                                auto *pInfantry = getObjectManager().getObject<InfantryBase>(objectID);
-                                if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                                    const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom, pInfantry->getLocation(), structuresize);
-                                    pInfantry->handleMoveClick(context, newDestination.x, newDestination.y);
-                                }
-                            }
+        for(int y = yPos; y < yPos + structuresize.y; y++) {
+            for(int x = xPos; x < xPos + structuresize.x; x++) {
+                auto *const pTile = map->getTile(x,y);
+                if(pTile->hasANonInfantryGroundObject()) {
+                    auto *const pObject = pTile->getNonInfantryGroundObject(objectManager);
+                    if(pObject && pObject->getOwner() == pBuilder->getOwner()) {
+                        if(auto* pUnit = dune_cast<UnitBase>(pObject)) {
+                            const auto newDestination = map->findDeploySpot(pUnit, Coord(xPos, yPos), uiRandom,
+                                                                            pUnit->getLocation(), structuresize);
+                            pUnit->handleMoveClick(context, newDestination.x, newDestination.y);
+                        }
+                    }
+                } else if(pTile->hasInfantry()) {
+                    for(auto objectID : pTile->getInfantryList()) {
+                        auto * pInfantry = getObjectManager().getObject<InfantryBase>(objectID);
+                        if((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
+                            const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom, pInfantry->getLocation(), structuresize);
+                            pInfantry->handleMoveClick(context, newDestination.x, newDestination.y);
                         }
                     }
                 }
             }
-
-            return false;
         }
     }
+
+    return false;
 }
 
 
 bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
-    for(Uint32 objectID : selectedList) {
-        ObjectBase* pObject = objectManager.getObject(objectID);
-        House* pOwner = pObject->getOwner();
+    for(auto objectID : selectedList) {
+        auto* const pObject = objectManager.getObject(objectID);
+        if(!pObject) continue;
+
+        auto* const pOwner = pObject->getOwner();
         if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
-            pResponder = static_cast<UnitBase*>(pObject);
-            pResponder->handleAttackClick(context, xPos,yPos);
+            pResponder = dune_cast<UnitBase>(pObject);
+            if (pResponder) pResponder->handleAttackClick(context, xPos,yPos);
         } else if((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
-            auto* pPalace = static_cast<Palace*>(pObject);
-            if(pPalace->isSpecialWeaponReady()) {
-                pPalace->handleDeathhandClick(context, xPos, yPos);
+            if(auto* const pPalace = dune_cast<Palace>(pObject)) {
+                if(pPalace->isSpecialWeaponReady()) {
+                    pPalace->handleDeathhandClick(context, xPos, yPos);
+                }
             }
         }
     }
@@ -2477,18 +2474,18 @@ bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos
     if(pResponder) {
         pResponder->playConfirmSound();
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 bool Game::handleSelectedObjectsMoveClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
 
-    for(Uint32 objectID : selectedList) {
-        ObjectBase* pObject = objectManager.getObject(objectID);
-        if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
-            pResponder = static_cast<UnitBase*>(pObject);
+    for(auto objectID : selectedList) {
+        auto* const pObject = objectManager.getObject<UnitBase>(objectID);
+        if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+            pResponder = pObject;
             pResponder->handleMoveClick(context, xPos, yPos);
         }
     }
@@ -2497,9 +2494,9 @@ bool Game::handleSelectedObjectsMoveClick(const GameContext& context, int xPos, 
     if(pResponder) {
         pResponder->playConfirmSound();
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -2517,11 +2514,11 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& cont
         return false;
     }
 
-    for(Uint32 objectID : selectedList) {
-        ObjectBase* pObject = objectManager.getObject(objectID);
-        if (pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
-            pResponder = static_cast<UnitBase*>(pObject);
-            pResponder->handleRequestCarryallDropClick(context, xPos,yPos);
+    for(auto objectID : selectedList) {
+        auto* const pObject = objectManager.getObject<UnitBase>(objectID);
+        if (pObject && pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+            pResponder = pObject;
+            pResponder->handleRequestCarryallDropClick(context, xPos, yPos);
         }
     }
 
@@ -2529,28 +2526,28 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& cont
     if(pResponder) {
         pResponder->playConfirmSound();
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 
 
 bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPos, int yPos) {
-    Tile* pTile = map->getTile(xPos, yPos);
+    auto* const pTile = map->tryGetTile(xPos, yPos);
 
     if(pTile == nullptr) {
         return false;
     }
 
-    auto* pStructure = dynamic_cast<StructureBase*>(pTile->getGroundObject(objectManager));
+    auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
     if((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 
-        for(Uint32 objectID : selectedList) {
-            ObjectBase* pObject = objectManager.getObject(objectID);
-            if (pObject->isInfantry() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
-                pResponder = static_cast<InfantryBase*>(pObject);
+        for(auto objectID : selectedList) {
+            auto* const pObject = objectManager.getObject<InfantryBase>(objectID);
+            if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+                pResponder = pObject;
                 pResponder->handleCaptureClick(context, xPos, yPos);
             }
         }
@@ -2559,9 +2556,9 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
         if(pResponder) {
             pResponder->playConfirmSound();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     return false;
@@ -2571,9 +2568,9 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
 bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos) {
     //let unit handle right click on map or target
     ObjectBase  *pResponder = nullptr;
-    for(Uint32 objectID : selectedList) {
-        ObjectBase* pObject = objectManager.getObject(objectID);
-        if(pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
+    for(auto objectID : selectedList) {
+        auto* const pObject = objectManager.getObject(objectID);
+        if(pObject && pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
             pObject->handleActionClick(context, xPos, yPos);
 
             //if this object obey the command
@@ -2585,9 +2582,9 @@ bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos
     if(pResponder) {
         pResponder->playConfirmSound();
         return true;
-    } else {
-        return false;
     }
+
+    return false;
 }
 
 
@@ -2656,7 +2653,6 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 int Game::getGameSpeed() const {
     if(gameType == GameType::CustomMultiplayer) {
         return gameInitSettings.getGameOptions().gameSpeed;
-    } else {
-        return settings.gameOptions.gameSpeed;
     }
+    return settings.gameOptions.gameSpeed;
 }

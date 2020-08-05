@@ -46,7 +46,7 @@ public:
 
     int showMenu() override;
 
-    [[nodiscard]] inline int getSelectedMission() const {
+    [[nodiscard]] int getSelectedMission() const {
         int regionIndex = 0;
         for(regionIndex = 0; regionIndex < 4; regionIndex++) {
             if(group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
@@ -65,7 +65,7 @@ public:
         return newMission;
     };
 
-    [[nodiscard]] inline Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
+    [[nodiscard]] Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
     void drawSpecificStuff() override;
     bool doInput(SDL_Event &event) override;
