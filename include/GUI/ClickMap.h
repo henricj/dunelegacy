@@ -37,7 +37,7 @@ public:
         Sets the function that should be called when this click map is clicked on.
         \param  pOnClick    A function to call when this map is clicked on
     */
-    inline void setOnClick(std::function<void (int, int)> pOnClick) {
+    void setOnClick(std::function<void (int, int)> pOnClick) {
         this->pOnClick = pOnClick;
     }
 
