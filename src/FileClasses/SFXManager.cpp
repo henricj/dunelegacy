@@ -131,7 +131,7 @@ void SFXManager::loadEnglishVoice() {
                 concat3Chunks(HouseNameChunk.get(), Unit.get(), Launched.get());
         }
 
-        // "Contruction complete"
+        // "Construction complete"
         lngVoice[ConstructionComplete * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
             getChunkFromFile(HouseString + "CONST.VOC");
 
@@ -298,7 +298,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     // "Unit launched"
     lngVoice[UnitLaunched] = getChunkFromFile(languagePrefix + "VEHICLE.VOC");
 
-    // "Contruction complete"
+    // "Construction complete"
     lngVoice[ConstructionComplete] = getChunkFromFile(languagePrefix + "CONST.VOC");
 
     // "Vehicle repaired"
@@ -356,7 +356,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     // "Infantry out"
     lngVoice[InfantryOut] = getChunkFromFile(languagePrefix + "OVEROUT.VOC");
 
-    // "Somthing's under the sand"
+    // "Something's under the sand"
     lngVoice[SomethingUnderTheSand] = getChunkFromFile("SANDBUG.VOC");
 
     // "House Atreides"
