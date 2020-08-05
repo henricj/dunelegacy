@@ -162,6 +162,7 @@ set(FIX_MATH_SOURCES
 	fixmath/fix32_trig.c)
 
 set(MISC_SOURCES
+	misc/BlendBlitter.cpp
 	misc/FileSystem.cpp
 	misc/IFileStream.cpp
 	misc/OFileStream.cpp
