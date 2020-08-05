@@ -1129,6 +1129,26 @@ SurfaceLoader::SurfaceLoader() {
             }
         }
     }
+
+    // Create map choice arrows
+    { // Scope
+        for(auto id = UI_MapChoiceArrow_None; id <= UI_MapChoiceArrow_Left; id = static_cast<UIGraphics_Enum>(id + 1)) {
+            sdl2::surface_ptr source;
+
+            for_each_housetype([&](const auto& house) {
+                auto& surface = uiGraphic[static_cast<int>(id)][static_cast<int>(house)];
+
+                if(HOUSETYPE::HOUSE_HARKONNEN == house)
+                    source = std::move(surface);
+
+                if(!source) THROW(std::runtime_error, "No source surface for generating id %d for house %d", id, house);
+
+                assert(!surface);
+
+                surface = std::move(generateMapChoiceArrowFrames(source.get(), house));
+            });
+        }
+    }
 }
 
 SurfaceLoader::~SurfaceLoader() = default;
@@ -1419,8 +1439,8 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
 }
 
 
-sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) const {
-    auto returnPic = createSurface(arrowPic, arrowPic->w * 4);
+sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) {
+    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 
