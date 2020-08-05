@@ -1420,7 +1420,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
 
 
 sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) const {
-    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    auto returnPic = createSurface(arrowPic, arrowPic->w * 4);
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 

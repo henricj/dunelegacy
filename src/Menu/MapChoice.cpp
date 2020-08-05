@@ -223,11 +223,11 @@ void MapChoice::drawSpecificStuff() {
 
                 if(curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
                     // there is still some region to blend in
-                    const int pieceNum =
+                    const auto pieceNum =
                         (group[lastScenario].newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses])[curRegion2Blit];
-                    sdl2::surface_ptr pPieceSurface = convertSurfaceToDisplayFormat(
+                    auto pPieceSurface = convertSurfaceToDisplayFormat(
                         pGFXManager->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>((static_cast<int>(curHouse2Blit) + int_house) % num_houses)));
-                    SDL_Rect dest = calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
+                    auto dest = calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                     curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pPieceSurface), mapSurface.get(), dest);
                     curRegion2Blit++;
 
@@ -270,8 +270,8 @@ void MapChoice::drawSpecificStuff() {
                 }
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
-                const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                const int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                const int arrowFrame = static_cast<int>((SDL_GetTicks() / 128) % 4);
                 const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
@@ -298,7 +298,7 @@ void MapChoice::drawSpecificStuff() {
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow      = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                const int arrowFrame = (SDL_GetTicks() / 128) % 4;
+                const int arrowFrame = static_cast<int>((SDL_GetTicks() / 128) % 4);
                 const auto src = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(  arrow,
                                                         group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
