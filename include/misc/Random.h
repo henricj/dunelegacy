@@ -24,7 +24,6 @@
 
 #include <misc/SDL2pp.h>
 
-#include "misc/RngSupport.h"
 #include "misc/lemire_uniform_uint32_distribution.h"
 #include "misc/random_uint64_to_uint32.h"
 #include "misc/random_xoshiro256starstar.h"
