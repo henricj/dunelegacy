@@ -15,3 +15,4 @@ exit 0
 "%~dp0vcpkg\vcpkg.exe" install --triplet x86-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet arm64-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x64-avx2-windows-ltcg %Packages%
+"%~dp0vcpkg\vcpkg.exe" install --triplet x86-avx2-windows-ltcg %Packages%
