@@ -17,20 +17,6 @@
 
 #include <mmath.h>
 
-#include <algorithm>
-#include <random>
-#include <limits>
-
-#include "misc/RngSupport.h"
-
-
-
-int getRandomInt() {
-    static std::random_device randdev;
-    static std::minstd_rand randgen(randdev());
-
-    return randgen() - randgen.min();
-}
 
 int world2zoomedWorld(int x) {
     if(x<0) {
@@ -41,14 +27,14 @@ int world2zoomedWorld(int x) {
             case 3:
             default:    return x;
         }
-    } else {
-        switch(currentZoomlevel) {
-            case 0:     return x/4;
-            case 1:     return x/2;
-            case 2:     return (x*3)/4;
-            case 3:
-            default:    return x;
-        }
+    }
+
+    switch(currentZoomlevel) {
+        case 0:     return x/4;
+        case 1:     return x/2;
+        case 2:     return (x*3)/4;
+        case 3:
+        default:    return x;
     }
 }
 

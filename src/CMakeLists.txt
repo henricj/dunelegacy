@@ -167,7 +167,6 @@ set(MISC_SOURCES
 	misc/IFileStream.cpp
 	misc/OFileStream.cpp
 	misc/Random.cpp
-	misc/RngSupport.cpp
 	misc/SDL_LogRenderer.cpp
 	misc/Scaler.cpp
 	misc/draw_util.cpp
@@ -429,7 +428,7 @@ set(HEADERS
 ../include/misc/random_xorshift1024star.h
 ../include/misc/random_xoshiro256starstar.h
 ../include/misc/reverse.h
-../include/misc/RngSupport.h
+
 ../include/misc/RobustList.h
 ../include/misc/Scaler.h
 ../include/misc/SDL2pp.h

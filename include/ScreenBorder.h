@@ -28,8 +28,6 @@
 
 #include <algorithm>
 
-#include "misc/RngSupport.h"
-
 #define SCROLLBORDER 3
 
 /// This class manages everything that is related to the current view onto the map.
@@ -355,14 +353,13 @@ public:
         }
     }
 
-    void update() {
+    void update(Random& uiRandom) {
         if(numShakingCycles <= 0) return;
 
         const auto offsetMax = std::min(TILESIZE - 1, numShakingCycles);
-        std::uniform_int_distribution<> uniform{ -offsetMax / 2, offsetMax / 2 };
 
-        shakingOffset.x = uniform(generator_);
-        shakingOffset.y = uniform(generator_);
+        shakingOffset.x = uiRandom.rand(-offsetMax / 2, offsetMax / 2);
+        shakingOffset.y = uiRandom.rand(-offsetMax / 2, offsetMax / 2);
 
         numShakingCycles--;
     }
@@ -382,7 +379,6 @@ private:
     Coord bottomRightCornerOnScreen;///< the position of the bottom right corner in screen coordinates
 
     int numShakingCycles{};         ///< the number of cycles the screen will shake
-    Dune::NyqEngine generator_;
 };
 
 #endif //SCREENBORDER

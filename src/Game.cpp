@@ -1090,7 +1090,7 @@ void Game::updateGame(const GameContext& context)
 
     std::for_each(house.begin(), house.end(), [](auto& h) { if (h) h->update(); });
 
-    screenborder->update();
+    screenborder->update(pGFXManager->random());
 
     triggerManager.trigger(context, gameCycleCount);
 
