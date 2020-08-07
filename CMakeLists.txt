@@ -90,6 +90,7 @@ if(MSVC)
         message(STATUS "Appending Release build flags")
         set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
         set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
+        string(APPEND CMAKE_EXE_LINKER_FLAGS_${config} " /OPT:REF,ICF=3")
     endforeach()
 
     string(APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS})
