@@ -1,6 +1,6 @@
 #!/bin/sh
 
-Packages="sdl2 sdl2-mixer sdl2-ttf fmt ms-gsl gtest"
+Packages="sdl2 sdl2-mixer sdl2-ttf fmt ms-gsl gtest soxr"
 
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P)
 

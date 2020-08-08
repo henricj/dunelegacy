@@ -1,4 +1,4 @@
-SET Packages=sdl2 sdl2-mixer sdl2-ttf fmt ms-gsl gtest
+SET Packages=sdl2 sdl2-mixer sdl2-ttf fmt ms-gsl gtest soxr
 
 if NOT EXIST "%~dp0vcpkg\vcpkg.exe" call "%~dp0vcpkg\bootstrap-vcpkg.bat"
 
