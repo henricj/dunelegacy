@@ -548,6 +548,9 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 #find_path(ICU_INCLUDE_DIR unicode/unistr.h REQUIRED)
 #find_library(ICU_COMMON_LIBRARY lib/icuuc.lib REQUIRED)
 
+find_path(SOXR_INCLUDE_DIR soxr.h)
+find_library(SOXR_LIBRARY_DIR soxr)
+
 set(LIBS
 	SDL2::SDL2
 	SDL2::SDL2_mixer
@@ -556,7 +559,9 @@ set(LIBS
 	Microsoft.GSL::GSL
 	digestpp
 	rectpack2D
+	${SOXR_LIBRARY_DIR}
 	enet)
+
 
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
@@ -566,7 +571,7 @@ endif()
 
 
 add_library(dune ${SOURCES} ${HEADERS})
-target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include)
+target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC ${LIBS})
 
 include(CheckIncludeFile)
