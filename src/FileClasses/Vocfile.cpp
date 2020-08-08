@@ -24,6 +24,9 @@
 #include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_mixer.h>
+
+#include <soxr.h>
+
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
@@ -358,34 +361,50 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Convert to audio device frequency
-    float ConversionRatio = ((float) TargetFrequency) / ((float) RawData_Frequency);
-    auto TargetDataFloat_Samples = (Uint32) ((float) RawData_Samples * ConversionRatio);
+    const auto ConversionRatio = TargetFrequency / static_cast<double>(RawData_Frequency);
+    auto TargetDataFloat_Samples = static_cast<size_t>(RawData_Samples * ConversionRatio + 0.5);
     std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
-    for(Uint32 x=0;x<TargetDataFloat_Samples;x++) {
-        const auto pos = x/ConversionRatio;
-        const auto i = static_cast<int>(pos); //lrint(floor(pos));
-        TargetDataFloat[x] = RawDataFloat[i] * ((i+1)-pos) + RawDataFloat[i+1] * (pos-i);
+    size_t odone;
+
+    const auto* const serror = soxr_oneshot(RawData_Frequency, TargetFrequency, 1,
+                                            &RawDataFloat[0], RawData_Samples, nullptr,
+                                            &TargetDataFloat[0], TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
+
+    if(serror) {
+        sdl2::log_error("Unable to resample from %g to %g: %s", RawData_Frequency, TargetFrequency, serror);
+
+        for(Uint32 x = 0; x < TargetDataFloat_Samples; x++) {
+            const auto pos     = x / ConversionRatio;
+            const auto i       = static_cast<int>(pos); // lrint(floor(pos));
+            TargetDataFloat[x] = RawDataFloat[i] * ((i + 1) - pos) + RawDataFloat[i + 1] * (pos - i);
+        }
+    } else {
+        if(odone != TargetDataFloat.size()) TargetDataFloat.resize(odone);
+        TargetDataFloat_Samples = TargetDataFloat.size();
     }
+
 
     Uint32 TargetData_Samples = TargetDataFloat_Samples;
 
     RawDataFloat.clear();
 
 
-    // Equalize if neccessary
+    // Normalize if necessary
     auto distance = 0.0f;
-    for(Uint32 i=0; i < TargetData_Samples; i++) {
-        if(std::abs(TargetDataFloat[i]) > distance) {
-            distance = std::abs(TargetDataFloat[i]);
+    for(const auto s : TargetDataFloat) {
+        auto abs_s = std::abs(s);
+        if(abs_s > distance) {
+            distance = abs_s;
         }
     }
 
     if(distance > 1.0f) {
-        //Equalize
-        for(Uint32 i=0; i < TargetData_Samples; i++) {
-            TargetDataFloat[i] = TargetDataFloat[i] / distance;
-        }
+        const auto scale = 1.0f / distance;
+
+        // Normalize
+        for(auto& s : TargetDataFloat)
+            s *= scale;
     }
 
 
@@ -393,15 +412,17 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     const auto ThreeQuaterSilenceLength = static_cast<int>((NUM_SAMPLES_OF_SILENCE * ConversionRatio) * (3.0f / 4.0f));
     TargetData_Samples -= 2*ThreeQuaterSilenceLength;
 
-    auto myChunk = sdl2::mix_chunk_ptr{ (Mix_Chunk*) SDL_calloc(sizeof(Mix_Chunk),1) };
+    auto myChunk = sdl2::mix_chunk_ptr{ static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1)) };
     if(myChunk == nullptr) {
         throw std::bad_alloc();
     }
 
-    myChunk->allocated = 1;
-    myChunk->volume = 128;
+    memset(myChunk.get(), 0, sizeof(Mix_Chunk));
 
-    int SizeOfTargetSample = 0;
+    myChunk->allocated = 1;
+    myChunk->volume    = 128;
+
+    size_t SizeOfTargetSample = 0;
     switch(TargetFormat) {
         case AUDIO_U8:      SizeOfTargetSample = sizeof(Uint8) * channels;      break;
         case AUDIO_S8:      SizeOfTargetSample = sizeof(Sint8) * channels;      break;
@@ -414,7 +435,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         } break;
     }
 
-    if((myChunk->abuf = (Uint8*) SDL_malloc(TargetData_Samples * SizeOfTargetSample)) == nullptr) {
+    if((myChunk->abuf = static_cast<Uint8*>(SDL_malloc(TargetData_Samples * SizeOfTargetSample))) == nullptr) {
         throw std::bad_alloc();
     }
     myChunk->alen = TargetData_Samples * SizeOfTargetSample;
