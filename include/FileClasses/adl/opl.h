@@ -29,10 +29,7 @@ class Copl
     TYPE_OPL2, TYPE_OPL3, TYPE_DUAL_OPL2
   } ChipType;
 
-  Copl() noexcept
-     
-    = default;
-
+  Copl() noexcept = default;
   Copl(const Copl &) = delete;
   Copl(Copl &&) = delete;
   Copl& operator=(const Copl &) = delete;
@@ -40,19 +37,19 @@ class Copl
 
   virtual ~Copl() = default;
 
-  virtual void write(int reg, int val) = 0; // combined register select + data write
-  virtual void setchip(int n) noexcept      // select OPL chip
+  virtual void write(int reg, int val) = 0;	// combined register select + data write
+  virtual void setchip(int n) noexcept			// select OPL chip
     {
-      if(n < 2)
-    currChip = n;
+      if(n >= 0 && n < 2)
+        currChip = n;
     }
 
-  [[nodiscard]] virtual int getchip() const noexcept            // returns current OPL chip
+  [[nodiscard]] virtual int getchip() const noexcept // returns current OPL chip
     {
       return currChip;
     }
 
-  virtual void init(void) = 0;          // reinitialize OPL chip(s)
+  virtual void init(void) = 0;			// reinitialize OPL chip(s)
 
   // return this OPL chip's type
   [[nodiscard]] ChipType gettype() const noexcept
@@ -63,9 +60,12 @@ class Copl
   // Emulation only: fill buffer
   virtual void update(short *buf, int samples) {}
 
+  // Set surroundopl offset
+  virtual void set_offset(double offset) {}
+
  protected:
-  int       currChip{0};       // currently selected OPL chip number
-  ChipType  currType{TYPE_OPL2};       // this OPL chip's type
+  int		currChip{};		// currently selected OPL chip number
+  ChipType	currType{TYPE_OPL2};		// this OPL chip's type
 };
 
 #endif

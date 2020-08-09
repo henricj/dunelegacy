@@ -26,8 +26,8 @@
 #ifndef H_ADPLUG_SURROUNDOPL
 #define H_ADPLUG_SURROUNDOPL
 
+#include <stdint.h> // for uintxx_t
 #include "opl.h"
-#include <cstdint> // for uintxx_t
 
 // The right-channel is increased in frequency by itself divided by this amount.
 // The right value should not noticeably change the pitch, but it should provide
@@ -42,28 +42,46 @@
 // one block is too high and the adjacent block is too low ;-)
 #define NEWBLOCK_LIMIT  32
 
-class CSurroundopl: public Copl
-{
-    private:
-        bool use16bit;
-        short bufsize;
-        short *lbuf, *rbuf;
-        Copl *a, *b;
-        uint8_t iFMReg[2][256];
-        uint8_t iTweakedFMReg[2][256];
-        uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
-        uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
-
-    public:
-
-        CSurroundopl(Copl *a, Copl *b, bool use16bit);
-        ~CSurroundopl() override;
-
-        void update(short *buf, int samples) override;
-        void write(int reg, int val) override;
-
-        void init() override;
-        void setchip(int n) noexcept override;
+struct COPLprops {
+	Copl *opl;
+	bool use16bit; // false == 8bit
+	bool stereo; // false == mono
 };
 
-#endif
+class CSurroundopl: public Copl
+{
+	private:
+		COPLprops oplA, oplB;
+		short bufsize;
+		short *lbuf, *rbuf;
+		bool output16bit;
+		uint8_t iFMReg[2][256];
+		uint8_t iTweakedFMReg[2][256];
+		uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
+		uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
+		double offset;                      // User configurable frequency offset for surroundopl
+
+	public:
+
+		// Takes ownership of a->opl and b->opl
+		CSurroundopl(COPLprops *a, COPLprops *b, bool output16bit);
+		~CSurroundopl();
+
+		void update(short *buf, int samples);
+		void write(int reg, int val);
+
+		void init();
+		void setchip(int n) noexcept;
+		void set_offset(double offset);
+};
+
+inline void AdPlug_LogFile([[maybe_unused]] std::string_view filename) { }
+
+template<typename... Args>
+void AdPlug_LogWrite(std::string_view fmt, Args&&... args) {
+#    ifndef DEBUG
+    sdl2::log_info(fmt, std::forward<Args>(args)...);
+#    endif
+}
+
+#endif // H_ADPLUG_SURROUNDOPL

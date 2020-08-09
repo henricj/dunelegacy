@@ -48,7 +48,7 @@
 #include <cinttypes>
 #include <vector>
 
-class AdlibDriver;
+class AdLibDriver;
 
 /**
  * AdLib implementation of the sound output device.
@@ -58,8 +58,8 @@ class AdlibDriver;
  * Kyrandia 1 are using exact the same format, the
  * one of Kyrandia 2 slightly differs.
  *
- * See AdlibDriver for more information.
- * @see AdlibDriver
+ * See AdLibDriver for more information.
+ * @see AdLibDriver
  */
 class SoundAdlibPC {
 public:
@@ -103,17 +103,16 @@ private:
     void unk1();
     void unk2();
 
-    AdlibDriver *_driver;
+    AdLibDriver *_driver{};
 
     uint8_t _trackEntries[500];
-    uint8_t *_soundDataPtr;
-    int _sfxPlayingSound;
+    int _sfxPlayingSound{};
 
     uint8_t _sfxPriority;
     uint8_t _sfxFourthByteOfSong;
 
-    int _numSoundTriggers;
-    const int *_soundTriggers;
+    int _numSoundTriggers{};
+    const int *_soundTriggers{};
 
     [[nodiscard]] unsigned char getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);

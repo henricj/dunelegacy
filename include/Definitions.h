@@ -24,8 +24,8 @@
 #define SCREEN_MIN_HEIGHT           480
 #define SCREEN_DEFAULT_DISPLAYINDEX 0
 
-// Yamaha's OPL used an interesting sampling frequency.
-#define AUDIO_FREQUENCY     49716
+#define AUDIO_FREQUENCY     49716   // Yamaha's OPL uses an interesting sampling frequency (14318180.0 / 288.0 = ~49715.9).  We round to the nearest integer.
+
 
 #define DEFAULT_PORT        28747
 #define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
