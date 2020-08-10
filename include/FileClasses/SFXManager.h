@@ -64,6 +64,7 @@ typedef enum {
     Sound_ButtonClick,
     Sound_InvalidAction,
     Sound_CreditsTick,
+    Sound_CreditsTickDown,
     Sound_Tick,
     Sound_RadarNoise,
     Sound_ExplosionGas,
