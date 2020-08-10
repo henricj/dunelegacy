@@ -125,10 +125,12 @@ public:
     int readBuffer(int16 *buffer, const int numSamples) {
         int32 samplesLeft = numSamples;
         memset(buffer, 0, sizeof(int16) * numSamples);
+        // Why does this make things sound more like the original game running under DOSBox?  Why 8?
+        constexpr auto scale = 8;
         while (samplesLeft) {
-            if (!_samplesTillCallback) {
+            if (_samplesTillCallback < scale) {
                 callback();
-                _samplesTillCallback = _samplesPerCallback;
+                _samplesTillCallback += _samplesPerCallback;
                 _samplesTillCallbackRemainder += _samplesPerCallbackRemainder;
                 if (_samplesTillCallbackRemainder >= CALLBACKS_PER_SECOND) {
                     _samplesTillCallback++;
@@ -136,9 +138,9 @@ public:
                 }
             }
 
-            const int32 render = std::min(samplesLeft, _samplesTillCallback);
+            const int32 render = std::min(samplesLeft, _samplesTillCallback / scale);
             samplesLeft -= render;
-            _samplesTillCallback -= render;
+            _samplesTillCallback -= render * scale;
             //YM3812UpdateOne(_adlib, buffer, render);
             opl->update(buffer, render);
             buffer += render*2;
