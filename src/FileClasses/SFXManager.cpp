@@ -357,6 +357,7 @@ void SFXManager::loadSounds() {
     soundChunk[Sound_ButtonClick]        = getChunkFromFile("BUTTON.VOC");
     soundChunk[Sound_InvalidAction]      = loadMixFromADL("DUNE1.ADL", 47);
     soundChunk[Sound_CreditsTick]        = loadMixFromADL("DUNE1.ADL", 52, MIX_MAX_VOLUME);
+    soundChunk[Sound_CreditsTickDown]    = loadMixFromADL("DUNE1.ADL", 53, MIX_MAX_VOLUME);
     soundChunk[Sound_Tick]               = loadMixFromADL("DUNE1.ADL", 38);
     soundChunk[Sound_RadarNoise]         = getChunkFromFile("STATICP.VOC");
     soundChunk[Sound_ExplosionGas]       = getChunkFromFile("EXGAS.VOC");

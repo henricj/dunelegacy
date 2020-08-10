@@ -323,11 +323,13 @@ void House::update() {
     numVisibleEnemyUnits = 0;
     numVisibleFriendlyUnits = 0;
 
-    if (oldCredits != getCredits()) {
-        if((this == pLocalHouse) && (getCredits() > 0)) {
-            soundPlayer->playSound(Sound_CreditsTick);
+    const auto credits = getCredits();
+    if (oldCredits != credits) {
+        if((this == pLocalHouse) && (credits > 0)) {
+            soundPlayer->playSound(credits > oldCredits ? Sound_CreditsTick : Sound_CreditsTickDown);
         }
-        oldCredits = getCredits();
+        oldCredits = credits;
+
     }
 
     if(storedCredits > capacity) {
