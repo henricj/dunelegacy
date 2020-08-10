@@ -125,6 +125,7 @@ jobs:
           path: ${{env.PROJECT_INSTALLER}}
 
       - name: Prepare for release
+        if: contains(github.ref, 'modernize')
         shell: cmd
         run: |
           cd "%PROJECT_SOURCE%"
@@ -134,6 +135,7 @@ jobs:
 
       - name: Create Release
         id: create_release
+        if: contains(github.ref, 'modernize')
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -144,6 +146,7 @@ jobs:
           prerelease: true
 
       - name: Upload Release ZIP
+        if: contains(github.ref, 'modernize')
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
