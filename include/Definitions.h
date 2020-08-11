@@ -18,20 +18,20 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define SCREEN_FORMAT               SDL_PIXELFORMAT_ARGB8888
-#define SCREEN_BPP                  SDL_BITSPERPIXEL(SCREEN_FORMAT)
-#define SCREEN_MIN_WIDTH            640
-#define SCREEN_MIN_HEIGHT           480
-#define SCREEN_DEFAULT_DISPLAYINDEX 0
+#include <engine/EngineDefinitions.h>
+#include <SDL.h>
+
+inline constexpr uint32_t SCREEN_FORMAT               = SDL_PIXELFORMAT_ARGB8888;
+inline constexpr int      SCREEN_BPP                  = SDL_BITSPERPIXEL(SCREEN_FORMAT);
+inline constexpr int      SCREEN_MIN_WIDTH            = 640;
+inline constexpr int      SCREEN_MIN_HEIGHT           = 480;
+inline constexpr int      SCREEN_DEFAULT_DISPLAYINDEX = 0;
 
 // Yamaha's OPL used an interesting sampling frequency.
-#define AUDIO_FREQUENCY     49716
+inline constexpr int AUDIO_FREQUENCY = 49716;
 
-#define DEFAULT_PORT        28747
-#define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
-
-#define SAVEMAGIC           8675309
-#define SAVEGAMEVERSION     9704
+inline constexpr int DEFAULT_PORT = 28747;
+inline constexpr const char* const DEFAULT_METASERVER = "http://dunelegacy.sourceforge.net/metaserver/metaserver.php";
 
 #define MAX_PLAYERNAMELENGTH    24
 

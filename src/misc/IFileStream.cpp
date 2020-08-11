@@ -22,12 +22,10 @@
 #include <SDL2/SDL_endian.h>
 
 
-#include "math.h"
+#include <cmath>
 
+#include <filesystem>
 
-#ifdef _WIN32
-    #include <windows.h>
-#endif
 
 IFileStream::IFileStream()
 {
@@ -64,7 +62,7 @@ void IFileStream::close()
 
 std::string IFileStream::readString()
 {
-    Uint32 length = 0;
+    uint32_t length = 0;
 
     length = readUint32();
 
@@ -87,10 +85,10 @@ std::string IFileStream::readString()
     }
 }
 
-Uint8 IFileStream::readUint8()
+uint8_t IFileStream::readUint8()
 {
-    Uint8 tmp = 0;
-    if(fread(&tmp,sizeof(Uint8),1,fp) != 1) {
+    uint8_t tmp = 0;
+    if(fread(&tmp,sizeof(uint8_t),1,fp) != 1) {
         if(feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint8(): End-of-File reached!");
         } else {
@@ -115,10 +113,10 @@ Uint16 IFileStream::readUint16()
     return SDL_SwapLE16(tmp);
 }
 
-Uint32 IFileStream::readUint32()
+uint32_t IFileStream::readUint32()
 {
-    Uint32 tmp = 0;
-    if(fread(&tmp,sizeof(Uint32),1,fp) != 1) {
+    uint32_t tmp = 0;
+    if(fread(&tmp,sizeof(uint32_t),1,fp) != 1) {
         if(feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint32(): End-of-File reached!");
         } else {
@@ -149,8 +147,8 @@ bool IFileStream::readBool()
 
 float IFileStream::readFloat()
 {
-    Uint32 tmp = readUint32();
+    uint32_t tmp = readUint32();
     float tmp2 = NAN;
-    memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+    memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     return tmp2;
 }

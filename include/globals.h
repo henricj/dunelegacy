@@ -22,7 +22,6 @@
 #include <Definitions.h>
 #include <Colors.h>
 #include <FileClasses/Palette.h>
-#include <data.h>
 #include <misc/RobustList.h>
 #include <misc/DrawingRectHelper.h>
 
@@ -94,6 +93,5 @@ extern bool debug;                                      ///< is set for debuggin
 
 // constants
 inline static constexpr int houseToPaletteIndex[static_cast<int>(HOUSETYPE::NUM_HOUSES)] = { PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY };    ///< the base colors for the different houses
-inline static constexpr char houseChar[] = { 'H', 'A', 'O', 'F', 'S', 'M' };   ///< character for each house
 
 #endif //GLOBALS_H

@@ -75,9 +75,9 @@ void OFileStream::writeString(const std::string& str)
     }
 }
 
-void OFileStream::writeUint8(Uint8 x)
+void OFileStream::writeUint8(uint8_t x)
 {
-    if(fwrite(&x,sizeof(Uint8),1,fp) != 1) {
+    if(fwrite(&x,sizeof(uint8_t),1,fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint8(): An I/O-Error occurred!");
     }
 }
@@ -91,11 +91,11 @@ void OFileStream::writeUint16(Uint16 x)
     }
 }
 
-void OFileStream::writeUint32(Uint32 x)
+void OFileStream::writeUint32(uint32_t x)
 {
     x = SDL_SwapLE32(x);
 
-    if(fwrite(&x,sizeof(Uint32),1,fp) != 1) {
+    if(fwrite(&x,sizeof(uint32_t),1,fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint32(): An I/O-Error occurred!");
     }
 }
@@ -115,7 +115,7 @@ void OFileStream::writeBool(bool x)
 
 void OFileStream::writeFloat(float x)
 {
-    Uint32 tmp = 0;
-    memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+    uint32_t tmp = 0;
+    memcpy(&tmp,&x,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     writeUint32(tmp);
 }

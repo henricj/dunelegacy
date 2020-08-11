@@ -4,19 +4,12 @@ set(TOP_SOURCES
 	AStarSearch.cpp
 	Bullet.cpp
 	Choam.cpp
-	Command.cpp
-	CommandManager.cpp
 	Explosion.cpp
 	Game.cpp
-	GameInitSettings.cpp
 	GameInterface.cpp
 	House.cpp
 	Map.cpp
 	MapSeed.cpp
-	ObjectBase.cpp
-	ObjectData.cpp
-	ObjectManager.cpp
-	ObjectPointer.cpp
 	RadarView.cpp
 	ScreenBorder.cpp
 	SoundPlayer.cpp
@@ -47,7 +40,6 @@ set(FILE_CLASSES_SOURCES
 	FileClasses/FileManager.cpp
 	FileClasses/FontManager.cpp
 	FileClasses/GFXManager.cpp
-	FileClasses/INIFile.cpp
 	FileClasses/Icnfile.cpp
 	FileClasses/IndexedTextFile.cpp
 	FileClasses/LoadSavePNG.cpp
@@ -144,45 +136,18 @@ set(NETWORK_SOURCES
 	Network/MetaServerClient.cpp
 	Network/NetworkManager.cpp)
 
-set(TRIGGER_SOURCES
-	Trigger/ReinforcementTrigger.cpp
-	Trigger/TimeoutTrigger.cpp
-	Trigger/TriggerManager.cpp)
-
-set(FIX_MATH_SOURCES
-	fixmath/fix16.c
-	fixmath/fix16_exp.c
-	fixmath/fix16_sqrt.c
-	fixmath/fix16_str.c
-	fixmath/fix16_trig.c
-	fixmath/fix32.c
-	fixmath/fix32_exp.c
-	fixmath/fix32_sqrt.c
-	fixmath/fix32_str.c
-	fixmath/fix32_trig.c)
-
 set(MISC_SOURCES
 	misc/BlendBlitter.cpp
-	misc/FileSystem.cpp
 	misc/IFileStream.cpp
+	misc/FileSystem.cpp
 	misc/OFileStream.cpp
-	misc/Random.cpp
 	misc/SDL_LogRenderer.cpp
 	misc/Scaler.cpp
 	misc/draw_util.cpp
 	misc/fnkdat.cpp
 	misc/md5.cpp
 	misc/sound_util.cpp
-	misc/string_util.cpp)
-
-set(PLAYERS_SOURCES
-	players/AIPlayer.cpp
-	players/CampaignAIPlayer.cpp
-	players/HumanPlayer.cpp
-	players/Player.cpp
-	players/PlayerFactory.cpp
-	players/QuantBot.cpp
-	players/SmartBot.cpp)
+)
 
 set(STRUCTURES_SOURCES
 	structures/Barracks.cpp
@@ -241,13 +206,10 @@ set(UNITS_SOURCES
 	units/UnitBase.cpp)
 
 set(HEADERS
-../include/AITeamInfo.h
 ../include/AStarSearch.h
 ../include/Bullet.h
 ../include/Choam.h
 ../include/Colors.h
-../include/Command.h
-../include/CommandManager.h
 ../include/config.h
 ../include/CutScenes/CrossBlendVideoEvent.h
 ../include/CutScenes/CutScene.h
@@ -264,8 +226,6 @@ set(HEADERS
 ../include/CutScenes/TextEvent.h
 ../include/CutScenes/VideoEvent.h
 ../include/CutScenes/WSAVideoEvent.h
-../include/data.h
-../include/DataTypes.h
 ../include/Definitions.h
 ../include/Explosion.h
 ../include/FileClasses/adl/opl.h
@@ -282,7 +242,6 @@ set(HEADERS
 ../include/FileClasses/GFXManager.h
 ../include/FileClasses/Icnfile.h
 ../include/FileClasses/IndexedTextFile.h
-../include/FileClasses/INIFile.h
 ../include/FileClasses/LoadSavePNG.h
 ../include/FileClasses/lodepng.h
 ../include/FileClasses/MentatTextFile.h
@@ -305,16 +264,7 @@ set(HEADERS
 ../include/FileClasses/Wsafile.h
 ../include/FileClasses/xmidi/databuf.h
 ../include/FileClasses/xmidi/xmidi.h
-../include/fixmath/fix16.h
-../include/fixmath/fix16_trig_sin_lut.h
-../include/fixmath/fix32.h
-../include/fixmath/fixmath.h
-../include/fixmath/FixPoint.h
-../include/fixmath/FixPoint16.h
-../include/fixmath/FixPoint32.h
-../include/fixmath/int64.h
 ../include/Game.h
-../include/GameInitSettings.h
 ../include/GameInterface.h
 ../include/globals.h
 ../include/GUI/Button.h
@@ -412,33 +362,21 @@ set(HEADERS
 ../include/misc/BlendBlitter.h
 ../include/misc/DrawingRectHelper.h
 ../include/misc/draw_util.h
-../include/misc/exceptions.h
 ../include/misc/FileSystem.h
 ../include/misc/fnkdat.h
 ../include/misc/generator.h
-../include/misc/IFileStream.h
-../include/misc/IMemoryStream.h
-../include/misc/InputStream.h
 ../include/misc/md5.h
+../include/misc/IFileStream.h
 ../include/misc/OFileStream.h
+../include/misc/IMemoryStream.h
 ../include/misc/OMemoryStream.h
-../include/misc/OutputStream.h
-../include/misc/Random.h
-../include/misc/random_xoroshiro128plus.h
-../include/misc/random_xorshift1024star.h
-../include/misc/random_xoshiro256starstar.h
 ../include/misc/reverse.h
-
-../include/misc/RobustList.h
 ../include/misc/Scaler.h
 ../include/misc/SDL2pp.h
 ../include/misc/sdl_support.h
 ../include/misc/sound_util.h
-../include/misc/string_util.h
 ../include/misc/unique_or_nonowning_ptr.h
-../include/mmath.h
 ../include/Network/ChangeEventList.h
-../include/Network/CommandList.h
 ../include/Network/ENetHelper.h
 ../include/Network/ENetHttp.h
 ../include/Network/ENetPacketIStream.h
@@ -449,16 +387,6 @@ set(HEADERS
 ../include/Network/MetaServerCommands.h
 ../include/Network/NetworkManager.h
 ../include/ObjectBase.h
-../include/ObjectData.h
-../include/ObjectManager.h
-../include/ObjectPointer.h
-../include/players/AIPlayer.h
-../include/players/CampaignAIPlayer.h
-../include/players/HumanPlayer.h
-../include/players/Player.h
-../include/players/PlayerFactory.h
-../include/players/QuantBot.h
-../include/players/SmartBot.h
 ../include/RadarView.h
 ../include/RadarViewBase.h
 ../include/Renderer/DuneRenderer.h
@@ -490,10 +418,6 @@ set(HEADERS
 ../include/structures/WindTrap.h
 ../include/structures/WOR.h
 ../include/Tile.h
-../include/Trigger/ReinforcementTrigger.h
-../include/Trigger/TimeoutTrigger.h
-../include/Trigger/Trigger.h
-../include/Trigger/TriggerManager.h
 ../include/units/AirUnit.h
 ../include/units/Carryall.h
 ../include/units/Devastator.h
@@ -551,13 +475,17 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 find_path(SOXR_INCLUDE_DIR soxr.h)
 find_library(SOXR_LIBRARY_DIR soxr)
 
+add_subdirectory(utility)
+add_subdirectory(engine)
+
 set(LIBS
+	utility
+	engine
 	SDL2::SDL2
 	SDL2::SDL2_mixer
 	SDL2::SDL2_ttf
 	fmt::fmt
 	Microsoft.GSL::GSL
-	digestpp
 	rectpack2D
 	${SOXR_LIBRARY_DIR}
 	enet)
@@ -565,7 +493,6 @@ set(LIBS
 
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
-	list(APPEND SOURCES fixmath/fixmath.natvis)
 	list(APPEND EXE_SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
