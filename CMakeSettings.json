@@ -1,4 +1,4 @@
-﻿{
+{
   "configurations": [
     {
       "name": "x64-Debug",
@@ -22,6 +22,18 @@
       "name": "x64-Clang-Release",
       "generator": "Ninja",
       "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "clang_cl_x64_x64" ],
+      "variables": []
+    },
+    {
+      "name": "x64-Clang-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
@@ -109,6 +121,25 @@
           "type": "STRING"
         }
       ]
+    },
+    {
+      "name": "x64-ASAN",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "variables": [
+        {
+          "name": "DUNE_TARGET_ARCHITECTURE",
+          "value": "x64",
+          "type": "STRING"
+        }
+      ],
+      "addressSanitizerEnabled": true
     }
   ]
 }
