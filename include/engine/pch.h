@@ -1,10 +1,14 @@
 
-#ifndef STDAFX_H
-#define STDAFX_H
+#ifndef PCH_H
+#define PCH_H
 
 #ifdef _WIN32
-#    define WINDDI_VERSION WINDDI_VERSION_VISTASP2
-#    define _WIN32_WINNT   _WIN32_WINNT_VISTA
+#    ifndef WINDDI_VERSION
+#        define WINDDI_VERSION WINDDI_VERSION_VISTASP2
+#    endif
+#    ifndef _WIN32_WINNT
+#        define _WIN32_WINNT _WIN32_WINNT_VISTA
+#    endif
 #    ifndef WIN32_LEAN_AND_MEAN
 #        define WIN32_LEAN_AND_MEAN
 #    endif
@@ -13,48 +17,16 @@
 #    endif
 #endif // _WIN32
 
-#include <config.h>
-
 #ifdef __cplusplus
-
-#    include <globals.h>
-
-#    include <FileClasses/FileManager.h>
-#    include <FileClasses/FontManager.h>
-#    include <FileClasses/GFXManager.h>
-#    include <FileClasses/Palfile.h>
-#    include <FileClasses/SFXManager.h>
-#    include <FileClasses/TextManager.h>
-#    include <FileClasses/music/ADLPlayer.h>
-#    include <FileClasses/music/DirectoryPlayer.h>
-#    include <FileClasses/music/XMIPlayer.h>
-
-#    include <GUI/GUIStyle.h>
-#    include <GUI/dune/DuneStyle.h>
-
-#    include <Menu/MainMenu.h>
-
-#    include <Explosion.h>
-#    include <Game.h>
-#    include <House.h>
-#    include <Map.h>
-#    include <ScreenBorder.h>
-#    include <SoundPlayer.h>
 
 #    include <fmt/format.h>
 #    include <fmt/printf.h>
-#    include <misc/FileSystem.h>
+#include <gsl/gsl>
+
 #    include <misc/Random.h>
-#    include <misc/SDL2pp.h>
-#    include <misc/Scaler.h>
 #    include <misc/exceptions.h>
-#    include <misc/fnkdat.h>
-#    include <misc/sdl_support.h>
-#    include <misc/string_util.h>
 
-#    include <SoundPlayer.h>
-
-#    include <mmath.h>
+#    include "engine_mmath.h"
 
 #    include <algorithm>
 #    include <array>
@@ -95,19 +67,12 @@
 #    include <cstdlib>
 #    include <cstring>
 
-#    include <gsl/gsl>
-
 #else // __cplusplus
 #    include <inttypes.h>
 #    include <stdio.h>
 #    include <stdlib.h>
 #    include <string.h>
 #endif // __cplusplus
-
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_rwops.h>
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -119,5 +84,4 @@
 #    include <winsock2.h>
 #endif // _WIN32
 
-
-#endif // STDAFX_H
+#endif // PCH_H

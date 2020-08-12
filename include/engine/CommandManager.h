@@ -18,38 +18,41 @@
 #ifndef COMMANDMANAGER_H
 #define COMMANDMANAGER_H
 
-#include <Command.h>
+#include "Command.h"
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
 #include <vector>
 
+
+namespace Dune::Engine {
+
 class CommandList;
 
 /**
-    The command manager collects all the given user commands (e.g. move unit u to position (x,y)) . These commands might be transferred over a network.
+    The command manager collects all the given user commands (e.g. move unit u to position (x,y)) . These commands might
+   be transferred over a network.
 */
 class CommandManager final {
 public:
-
     /**
         default constructor
     */
     CommandManager();
 
-    CommandManager(CommandManager&&) = delete;
+    CommandManager(CommandManager&&)      = delete;
     CommandManager(const CommandManager&) = delete;
-    CommandManager& operator=(const CommandManager &) = delete;
-    CommandManager& operator=(CommandManager &&) = delete;
+    CommandManager& operator=(const CommandManager&) = delete;
+    CommandManager& operator=(CommandManager&&) = delete;
 
     /// destructor
     ~CommandManager();
 
     /**
-        This method sets a stream where all commands are written when they are added to the command manager. This can be used for
-        logging the complete game and enable a replay afterwards.
-        \param  pStream     pointer to a stream all new commands will be written to (the stream must be created with new). nullptr for disabling.
+        This method sets a stream where all commands are written when they are added to the command manager. This can be
+       used for logging the complete game and enable a replay afterwards. \param  pStream     pointer to a stream all
+       new commands will be written to (the stream must be created with new). nullptr for disabling.
     */
     void setStream(std::unique_ptr<OutputStream> pStream) { this->pStream = std::move(pStream); }
 
@@ -83,9 +86,7 @@ public:
     */
     void load(InputStream& stream);
 
-
     [[nodiscard]] uint32_t getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
-
 
     void setNetworkCycleBuffer(uint32_t newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; };
 
@@ -124,11 +125,14 @@ public:
     void executeCommands(const GameContext& context, uint32_t CycleNumber) const;
 
 private:
-    std::vector< std::vector<Command> > timeslot;   ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.
-    std::unique_ptr<OutputStream> pStream;          ///< a stream all added commands will be written to. May be nullptr
-    bool bReadOnly{};                               ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
-    uint32_t networkCycleBuffer{};                    ///< the number of frames a command is given in advance
+    std::vector<std::vector<Command>> timeslot; ///< a vector of vectors containing the scheduled commands. At index x
+                                                ///< is a list of all commands scheduled for game cycle x.
+    std::unique_ptr<OutputStream> pStream;      ///< a stream all added commands will be written to. May be nullptr
+    bool     bReadOnly{};          ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
+    uint32_t networkCycleBuffer{}; ///< the number of frames a command is given in advance
 };
+
+} // namespace Dune::Engine
 
 #endif // COMMANDMANAGER_H
 

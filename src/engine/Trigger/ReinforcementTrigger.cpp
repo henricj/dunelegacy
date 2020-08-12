@@ -29,25 +29,25 @@
 #include <units/UnitBase.h>
 #include <units/Carryall.h>
 
+namespace Dune::Engine {
 
 ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
                                            Uint32 triggerCycleNumber)
- : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
+    : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID),
+      repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
 }
 
-ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream)
-{
+ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream) {
     droppedUnits = stream.readUint32Vector<ItemID_enum>();
     dropLocation = static_cast<DropLocation>(stream.readUint32());
-    houseID = static_cast<HOUSETYPE>(stream.readSint32());
-    repeatCycle = stream.readUint32();
+    houseID      = static_cast<HOUSETYPE>(stream.readSint32());
+    repeatCycle  = stream.readUint32();
 }
 
 ReinforcementTrigger::~ReinforcementTrigger() = default;
 
-void ReinforcementTrigger::save(OutputStream& stream) const
-{
+void ReinforcementTrigger::save(OutputStream& stream) const {
     Trigger::save(stream);
 
     stream.writeUint32Vector<ItemID_enum>(droppedUnits);
@@ -59,11 +59,9 @@ void ReinforcementTrigger::save(OutputStream& stream) const
 void ReinforcementTrigger::trigger(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
-    auto *dropHouse = game.getHouse(houseID);
+    auto* dropHouse = game.getHouse(houseID);
 
-    if(dropHouse == nullptr) {
-        return;
-    }
+    if(dropHouse == nullptr) { return; }
 
     switch(dropLocation) {
         case DropLocation::Drop_North:
@@ -95,10 +93,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                 } break;
             }
 
-
-            if(placeCoord.isInvalid()) {
-                break;
-            }
+            if(placeCoord.isInvalid()) { break; }
 
             auto it = droppedUnits.begin();
 
@@ -107,33 +102,31 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
             while(it != droppedUnits.end() && ++r < 64) {
                 auto newCoord = placeCoord;
                 if(dropLocation == DropLocation::Drop_North || dropLocation == DropLocation::Drop_South) {
-                    newCoord += Coord(game.randomGen.rand(-r,r), 0);
+                    newCoord += Coord(game.randomGen.rand(-r, r), 0);
                 } else {
-                    newCoord += Coord(0, game.randomGen.rand(-r,r));
+                    newCoord += Coord(0, game.randomGen.rand(-r, r));
                 }
 
                 auto* const tile = map.tryGetTile(newCoord.x, newCoord.y);
 
-                if(tile
-                    && (!tile->hasAGroundObject())
-                    && ((*it != Unit_Sandworm) || (tile->isSand()))) {
-                    auto *pUnit2Drop = dropHouse->createUnit(*it);
+                if(tile && (!tile->hasAGroundObject()) && ((*it != Unit_Sandworm) || (tile->isSand()))) {
+                    auto* pUnit2Drop = dropHouse->createUnit(*it);
                     ++it;
 
                     pUnit2Drop->deploy(context, newCoord);
 
-                    if (newCoord.x == 0) {
+                    if(newCoord.x == 0) {
                         pUnit2Drop->setAngle(ANGLETYPE::RIGHT);
-                        pUnit2Drop->setDestination(newCoord + Coord(1,0));
-                    } else if (newCoord.x == map.getSizeX()-1) {
+                        pUnit2Drop->setDestination(newCoord + Coord(1, 0));
+                    } else if(newCoord.x == map.getSizeX() - 1) {
                         pUnit2Drop->setAngle(ANGLETYPE::LEFT);
-                        pUnit2Drop->setDestination(newCoord + Coord(-1,0));
-                    } else if (newCoord.y == 0) {
+                        pUnit2Drop->setDestination(newCoord + Coord(-1, 0));
+                    } else if(newCoord.y == 0) {
                         pUnit2Drop->setAngle(ANGLETYPE::DOWN);
-                        pUnit2Drop->setDestination(newCoord + Coord(0,1));
-                    } else if (newCoord.y == map.getSizeY()-1) {
+                        pUnit2Drop->setDestination(newCoord + Coord(0, 1));
+                    } else if(newCoord.y == map.getSizeY() - 1) {
                         pUnit2Drop->setAngle(ANGLETYPE::UP);
-                        pUnit2Drop->setDestination(newCoord + Coord(0,-1));
+                        pUnit2Drop->setDestination(newCoord + Coord(0, -1));
                     }
                 }
             }
@@ -148,8 +141,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
             switch(dropLocation) {
                 case DropLocation::Drop_Air: {
-                    int x = game.randomGen.rand(0,map.getSizeX()-1);
-                    int y = game.randomGen.rand(0,map.getSizeY()-1);
+                    int x     = game.randomGen.rand(0, map.getSizeX() - 1);
+                    int y     = game.randomGen.rand(0, map.getSizeY() - 1);
                     dropCoord = Coord(x, y);
                 } break;
 
@@ -184,7 +177,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                 } break;
 
-                case DropLocation::Drop_Homebase : {
+                case DropLocation::Drop_Homebase: {
                     if(dropHouse->getNumStructures() != 0) {
                         dropCoord = dropHouse->getCenterOfMainBase();
                     } else {
@@ -194,8 +187,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                             dropCoord = dropHouse->getStrongestUnitPosition();
                         } else {
                             // house has no units => random position
-                            int x = game.randomGen.rand(0,currentGameMap->getSizeX()-1);
-                            int y = game.randomGen.rand(0,currentGameMap->getSizeY()-1);
+                            int x     = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
+                            int y     = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
                             dropCoord = Coord(x, y);
                         }
                     }
@@ -205,9 +198,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                 } break;
             }
 
-            if(dropCoord.isInvalid()) {
-                break;
-            }
+            if(dropCoord.isInvalid()) { break; }
 
             // try 32 times
             for(auto i = 0; i < 32; i++) {
@@ -248,15 +239,16 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
         } break;
 
-
         default: {
             sdl2::log_info("ReinforcementTrigger::trigger(): Invalid drop location!");
         } break;
     }
 
     if(isRepeat()) {
-        auto pReinforcementTrigger =  std::make_unique<ReinforcementTrigger>(*this);
+        auto pReinforcementTrigger = std::make_unique<ReinforcementTrigger>(*this);
         pReinforcementTrigger->cycleNumber += repeatCycle;
         game.getTriggerManager().addTrigger(std::move(pReinforcementTrigger));
     }
 }
+
+} // namespace Dune::Engine

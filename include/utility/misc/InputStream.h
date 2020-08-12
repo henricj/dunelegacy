@@ -30,7 +30,7 @@ class InputStream
 {
 public:
     InputStream() = default;
-    virtual ~InputStream() = default;
+    virtual ~InputStream() = 0;
 
     /**
         readString reads in a strings from the stream.

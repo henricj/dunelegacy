@@ -22,6 +22,8 @@
 #include <SoundPlayer.h>
 #include <globals.h>
 
+namespace Dune::Engine {
+
 TimeoutTrigger::TimeoutTrigger(Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber) { }
 
 TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream) { }
@@ -43,3 +45,5 @@ void TimeoutTrigger::trigger(const GameContext& context) {
         soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }
+
+} // namespace Dune::Engine

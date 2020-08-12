@@ -133,6 +133,8 @@ enum HIDDENTYPE {
     Terrain_HiddenFull      = 0xF
 };
 
+namespace Dune::Engine {
+
 /**
     This function determines if the specified itemID is an unit or not.
     \param itemID   the ID of the item (e.g. Unit_Harvester)
@@ -145,22 +147,29 @@ constexpr bool isUnit(ItemID_enum itemID) noexcept { return (itemID >= Unit_Firs
     \param itemID   the ID of the item (e.g. Structure_ConstructionYard)
     \return true if it is a structure, false otherwise
 */
-constexpr bool isStructure(ItemID_enum itemID) noexcept { return (itemID >= Structure_FirstID && itemID <= Structure_LastID); }
-
+constexpr bool isStructure(ItemID_enum itemID) noexcept {
+    return (itemID >= Structure_FirstID && itemID <= Structure_LastID);
+}
 
 /**
     This function determines if the specified itemID is a flying unit or not.
     \param itemID   the ID of the item (e.g. Unit_Carryall)
     \return true if it is a flying unit, false otherwise
 */
-constexpr bool isFlyingUnit(ItemID_enum itemID) noexcept { return (itemID == Unit_Carryall) || (itemID == Unit_Ornithopter) || (itemID == Unit_Frigate); }
+constexpr bool isFlyingUnit(ItemID_enum itemID) noexcept {
+    return (itemID == Unit_Carryall) || (itemID == Unit_Ornithopter) || (itemID == Unit_Frigate);
+}
 
 /**
     This function determines if the specified itemID is an infantry unit or not.
     \param itemID   the ID of the item (e.g. Unit_Carryall)
     \return true if it is an infantry unit, false otherwise
 */
-constexpr bool isInfantryUnit(ItemID_enum itemID) noexcept { return (itemID == Unit_Soldier) || (itemID == Unit_Trooper) || (itemID == Unit_Infantry) || (itemID == Unit_Troopers) || (itemID == Unit_Saboteur); }
+constexpr bool isInfantryUnit(ItemID_enum itemID) noexcept {
+    return (itemID == Unit_Soldier) || (itemID == Unit_Trooper) || (itemID == Unit_Infantry) ||
+           (itemID == Unit_Troopers) || (itemID == Unit_Saboteur);
+}
 
+} // namespace Dune::Engine
 
 #endif // DATA_H

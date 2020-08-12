@@ -25,17 +25,17 @@
 
 #include <vector>
 
+namespace Dune::Engine {
+
 class CommandList {
 public:
     class CommandListEntry {
     public:
         CommandListEntry(uint32_t cycle, std::vector<Command>&& commands)
-         : cycle(cycle), commands(std::move(commands)) {
-
-        }
+            : cycle(cycle), commands(std::move(commands)) { }
 
         explicit CommandListEntry(InputStream& stream) {
-            cycle = stream.readUint32();
+            cycle                  = stream.readUint32();
             const auto numCommands = stream.readUint32();
             for(uint32_t i = 0; i < numCommands; i++) {
                 commands.emplace_back(stream);
@@ -51,13 +51,13 @@ public:
             }
         }
 
-        uint32_t      cycle;
+        uint32_t             cycle;
         std::vector<Command> commands;
     };
 
-    CommandList() = default;
-    CommandList(const CommandList &) = delete;
-    CommandList(CommandList &&) = delete;
+    CommandList()                   = default;
+    CommandList(const CommandList&) = delete;
+    CommandList(CommandList&&)      = delete;
 
     explicit CommandList(InputStream& stream) {
         const auto numCommandListEntries = stream.readUint32();
@@ -68,8 +68,8 @@ public:
 
     ~CommandList() = default;
 
-    CommandList& operator=(const CommandList &) = delete;
-    CommandList& operator=(CommandList &&) = delete;
+    CommandList& operator=(const CommandList&) = delete;
+    CommandList& operator=(CommandList&&) = delete;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(static_cast<uint32_t>(commandList.size()));
@@ -80,5 +80,7 @@ public:
 
     std::vector<CommandListEntry> commandList;
 };
+
+} // namespace Dune::Engine
 
 #endif //COMMANDLIST_H

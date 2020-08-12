@@ -20,6 +20,7 @@
 
 #include <units/UnitBase.h>
 
+namespace Dune::Engine {
 
 class GroundUnitConstants : public UnitBaseConstants {
 public:
@@ -30,8 +31,7 @@ public:
     }
 };
 
-class GroundUnit : public UnitBase
-{
+class GroundUnit : public UnitBase {
 protected:
     GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,10 +41,10 @@ public:
 
     ~GroundUnit() override = 0;
 
-    GroundUnit(const GroundUnit &) = delete;
-    GroundUnit(GroundUnit &&) = delete;
-    GroundUnit& operator=(const GroundUnit &) = delete;
-    GroundUnit& operator=(GroundUnit &&) = delete;
+    GroundUnit(const GroundUnit&) = delete;
+    GroundUnit(GroundUnit&&)      = delete;
+    GroundUnit& operator=(const GroundUnit&) = delete;
+    GroundUnit& operator=(GroundUnit&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -67,9 +67,9 @@ public:
 
     void doRepair(const GameContext& context) noexcept override;
 
-    void setAwaitingPickup(bool status) { awaitingPickup = status; }
-    bool isAwaitingPickup() const noexcept { return awaitingPickup; }
-    bool hasBookedCarrier() const;
+    void            setAwaitingPickup(bool status) { awaitingPickup = status; }
+    bool            isAwaitingPickup() const noexcept { return awaitingPickup; }
+    bool            hasBookedCarrier() const;
     const UnitBase* getCarrier() const;
 
     /**
@@ -83,8 +83,8 @@ protected:
     void move(const GameContext& context) override;
     void navigate(const GameContext& context) override;
 
-    bool    awaitingPickup;     ///< Is this unit waiting for pickup?
-    uint32_t  bookedCarrier;      ///< What is the carrier if waiting for pickup?
+    bool     awaitingPickup; ///< Is this unit waiting for pickup?
+    uint32_t bookedCarrier;  ///< What is the carrier if waiting for pickup?
 };
 
 template<>
@@ -101,5 +101,6 @@ inline const GroundUnit* dune_cast(const ObjectBase* base) {
     return nullptr;
 }
 
+} // namespace Dune::Engine
 
 #endif // GROUNDUNIT_H

@@ -21,9 +21,10 @@
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <Map.h>
-#include <sand.h>
 #include <House.h>
 
+#include <misc/InputStream.h>
+#include <misc/OutputStream.h>
 #include <structures/StructureBase.h>
 #include <structures/BuilderBase.h>
 #include <structures/StarPort.h>
@@ -35,23 +36,30 @@
 #include <algorithm>
 #include <array>
 
-#define AIUPDATEINTERVAL 50
+namespace
+{
+inline constexpr int AIUPDATEINTERVAL = 50;
+} // namespace
 
-AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
- : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
-    attackTimer = ((2-static_cast<Uint8>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
-    buildTimer = getRandomGen().rand(0,3) * 50;
+namespace Dune::Engine {
+
+AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
+                   const Random& random, Difficulty difficulty)
+    : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
+    attackTimer = ((2 - static_cast<uint8_t>(difficulty)) * MILLI2CYCLES(2 * 60 * 1000)) +
+                  getRandomGen().rand(MILLI2CYCLES(8 * 60 * 1000), MILLI2CYCLES(11 * 60 * 1000));
+    buildTimer = getRandomGen().rand(0, 3) * 50;
 }
 
 AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
 
-    difficulty = static_cast<Difficulty>(stream.readUint8());
+    difficulty  = static_cast<Difficulty>(stream.readUint8());
     attackTimer = stream.readSint32();
-    buildTimer = stream.readSint32();
+    buildTimer  = stream.readSint32();
 
     const auto NumPlaceLocations = stream.readUint32();
-    for (auto i = decltype(NumPlaceLocations){0}; i < NumPlaceLocations; ++i) {
+    for(auto i = decltype(NumPlaceLocations){0}; i < NumPlaceLocations; ++i) {
         const auto x = stream.readSint32();
         const auto y = stream.readSint32();
 
@@ -64,7 +72,7 @@ AIPlayer::~AIPlayer() = default;
 void AIPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(static_cast<Uint8>(difficulty));
+    stream.writeUint8(static_cast<uint8_t>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
@@ -75,10 +83,8 @@ void AIPlayer::save(OutputStream& stream) const {
     }
 }
 
-
-
 void AIPlayer::update() {
-    if( (getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
+    if((getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }
@@ -98,24 +104,20 @@ void AIPlayer::update() {
     }
 }
 
-void AIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
-}
+void AIPlayer::onObjectWasBuilt(const ObjectBase* pObject) { }
 
-void AIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
-}
+void AIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) { }
 
-void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
-    const auto *pDamager = getObject(damagerID);
+void AIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
+    const auto* pDamager = getObject(damagerID);
 
-    if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) {
-        return;
-    }
+    if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) { return; }
 
     if(pObject->isAStructure()) {
-        //scramble some free units to defend
+        // scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
     } else if(pObject->getItemID() == Unit_Harvester) {
-        //scramble some free units to defend
+        // scramble some free units to defend
         scrambleUnitsAndDefend(pDamager);
 
         if((pDamager != nullptr) && pDamager->isInfantry()) {
@@ -134,12 +136,12 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 }
 
 void AIPlayer::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
-    for(const auto *pUnit : getUnitList()) {
+    for(const auto* pUnit : getUnitList()) {
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
             if((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
                 const auto itemID = pUnit->getItemID();
-                if((itemID != Unit_Harvester) && (itemID != Unit_MCV) && (itemID != Unit_Carryall)
-                    && (itemID != Unit_Frigate) && (itemID != Unit_Saboteur) && (itemID != Unit_Sandworm)) {
+                if((itemID != Unit_Harvester) && (itemID != Unit_MCV) && (itemID != Unit_Carryall) &&
+                   (itemID != Unit_Frigate) && (itemID != Unit_Saboteur) && (itemID != Unit_Sandworm)) {
                     doAttackObject(pUnit, pIntruder, true);
                 }
             }
@@ -163,33 +165,30 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
         maxX = getMap().getSizeX() - 1;
         maxY = getMap().getSizeY() - 1;
     } else {
-        for(const auto *pStructure : getStructureList()) {
-            if (pStructure->getOwner() == getHouse()) {
-                if (pStructure->getX() < minX)
-                    minX = pStructure->getX();
-                if (pStructure->getX() > maxX)
-                    maxX = pStructure->getX();
-                if (pStructure->getY() < minY)
-                    minY = pStructure->getY();
-                if (pStructure->getY() > maxY)
-                    maxY = pStructure->getY();
+        for(const auto* pStructure : getStructureList()) {
+            if(pStructure->getOwner() == getHouse()) {
+                if(pStructure->getX() < minX) minX = pStructure->getX();
+                if(pStructure->getX() > maxX) maxX = pStructure->getX();
+                if(pStructure->getY() < minY) minY = pStructure->getY();
+                if(pStructure->getY() > maxY) maxY = pStructure->getY();
             }
         }
     }
 
-    // make search rect a bit bigger to make it possible to build on places far off the main base and only connected through slab
+    // make search rect a bit bigger to make it possible to build on places far off the main base and only connected
+    // through slab
     minX -= structureSizeX + 5;
     maxX += 5;
     minY -= structureSizeY + 5;
     maxY += 5;
-    if (minX < 0) minX = 0;
-    if (maxX >= getMap().getSizeX()) maxX = getMap().getSizeX() - structureSizeX;
-    if (minY < 0) minY = 0;
-    if (maxY >= getMap().getSizeY()) maxY = getMap().getSizeY() - structureSizeY;
+    if(minX < 0) minX = 0;
+    if(maxX >= getMap().getSizeX()) maxX = getMap().getSizeX() - structureSizeX;
+    if(minY < 0) minY = 0;
+    if(maxY >= getMap().getSizeY()) maxY = getMap().getSizeY() - structureSizeY;
 
-    FixPoint bestrating = 0;
-    Coord bestLocation = Coord::Invalid();
-    int count = 0;
+    FixPoint bestrating   = 0;
+    Coord    bestLocation = Coord::Invalid();
+    int      count        = 0;
     do {
         int x = getRandomGen().rand(minX, maxX);
         int y = getRandomGen().rand(minY, maxY);
@@ -198,7 +197,8 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
 
         count++;
 
-        if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())) {
+        if(getMap().okayToPlaceStructure(pos.x, pos.y, structureSizeX, structureSizeY, false,
+                                         (itemID == Structure_ConstructionYard) ? nullptr : getHouse())) {
             FixPoint rating;
 
             switch(itemID) {
@@ -216,15 +216,12 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                     }
                 } break;
 
-
                 case Structure_ConstructionYard: {
                     FixPoint nearestUnit = 10000000;
-                    for(const auto *pUnit : getUnitList()) {
+                    for(const auto* pUnit : getUnitList()) {
                         if(pUnit->getOwner() == getHouse()) {
                             const auto distance = blockDistance(pos, pUnit->getLocation());
-                            if(distance < nearestUnit) {
-                                nearestUnit = distance;
-                            }
+                            if(distance < nearestUnit) { nearestUnit = distance; }
                         }
                     }
 
@@ -239,19 +236,17 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_WOR: {
                     // place near sand
                     FixPoint nearestSand = 10000000;
-                    for(int y = 0 ; y < currentGameMap->getSizeY(); y++) {
+                    for(int y = 0; y < currentGameMap->getSizeY(); y++) {
                         for(int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if(!currentGameMap->getTile(x,y)->isRock()) {
-                                const auto distance = blockDistance(pos, Coord(x,y));
-                                if(distance < nearestSand) {
-                                    nearestSand = distance;
-                                }
+                            if(!currentGameMap->getTile(x, y)->isRock()) {
+                                const auto distance = blockDistance(pos, Coord(x, y));
+                                if(distance < nearestSand) { nearestSand = distance; }
                             }
                         }
                     }
 
                     rating = 10000000 - nearestSand;
-                    rating *= (1+getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
+                    rating *= (1 + getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
                 } break;
 
                 case Structure_Wall:
@@ -259,12 +254,10 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_RocketTurret: {
                     // place towards enemy
                     FixPoint nearestEnemy = 10000000;
-                    for(const auto *const pStructure : getStructureList()) {
+                    for(const auto* const pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             const auto distance = blockDistance(pos, pStructure->getLocation());
-                            if(distance < nearestEnemy) {
-                                nearestEnemy = distance;
-                            }
+                            if(distance < nearestEnemy) { nearestEnemy = distance; }
                         }
                     }
 
@@ -280,23 +273,21 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                 default: {
                     // place at a save place
                     FixPoint nearestEnemy = 10000000;
-                    for(const auto *const pStructure : getStructureList()) {
+                    for(const auto* const pStructure : getStructureList()) {
                         if(pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             const auto distance = blockDistance(pos, pStructure->getLocation());
-                            if(distance < nearestEnemy) {
-                                nearestEnemy = distance;
-                            }
+                            if(distance < nearestEnemy) { nearestEnemy = distance; }
                         }
                     }
 
                     rating = nearestEnemy;
-                    rating *= (1+getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
+                    rating *= (1 + getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
                 } break;
             }
 
             if(rating > bestrating) {
                 bestLocation = pos;
-                bestrating = rating;
+                bestrating   = rating;
             }
         }
 
@@ -327,7 +318,7 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 void AIPlayer::build() {
     bool bConstructionYardChecked = false;
     for(const StructureBase* pStructure : getStructureList()) {
-        //if this players structure, and its a heavy factory, build something
+        // if this players structure, and its a heavy factory, build something
         if(pStructure->getOwner() == getHouse()) {
 
             if((!pStructure->isRepairing()) && (pStructure->getHealth() < pStructure->getMaxHealth())) {
@@ -337,16 +328,19 @@ void AIPlayer::build() {
             if(pStructure->isABuilder()) {
                 const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
 
-                if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) &&
+                   (!pBuilder->isUpgrading()) &&
+                   (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                     doUpgrade(pBuilder);
                     continue;
                 }
 
-                switch (pStructure->getItemID()) {
+                switch(pStructure->getItemID()) {
 
                     case Structure_Barracks: {
                         if(isAllowedToArm() && (!getHouse()->hasLightFactory()) && (!getHouse()->hasHeavyFactory())) {
-                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
+                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) &&
+                               (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
                         }
@@ -354,7 +348,8 @@ void AIPlayer::build() {
 
                     case Structure_LightFactory: {
                         if(isAllowedToArm() && !getHouse()->hasHeavyFactory()) {
-                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
+                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) &&
+                               (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
                         }
@@ -362,30 +357,39 @@ void AIPlayer::build() {
 
                     case Structure_WOR: {
                         if(isAllowedToArm() && !getHouse()->hasHeavyFactory()) {
-                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
+                            if((getHouse()->getCredits() > 1500) && (pBuilder->getProductionQueueSize() < 1) &&
+                               (pBuilder->getBuildListSize() > 0)) {
                                 doBuildRandom(pBuilder);
                             }
                         }
                     } break;
 
                     case Structure_HeavyFactory: {
-                        if(isAllowedToArm() && (pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
+                        if(isAllowedToArm() && (pBuilder->getProductionQueueSize() < 1) &&
+                           (pBuilder->getBuildListSize() > 0)) {
 
                             if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester()) {
                                 doProduceItem(pBuilder, Unit_Harvester);
                             } else if(getHouse()->getCredits() > 1500) {
-                                const auto numTanks = getHouse()->getNumItems(Unit_Devastator) + getHouse()->getNumItems(Unit_SiegeTank) + getHouse()->getNumItems(Unit_Tank);
-                                const auto numLauncher = getHouse()->getNumItems(Unit_Launcher) + getHouse()->getNumItems(Unit_Deviator);
+                                const auto numTanks = getHouse()->getNumItems(Unit_Devastator) +
+                                                      getHouse()->getNumItems(Unit_SiegeTank) +
+                                                      getHouse()->getNumItems(Unit_Tank);
+                                const auto numLauncher =
+                                    getHouse()->getNumItems(Unit_Launcher) + getHouse()->getNumItems(Unit_Deviator);
 
                                 if(pBuilder->isAvailableToBuild(Unit_SonicTank)) {
                                     doProduceItem(pBuilder, Unit_SonicTank);
-                                } else if(pBuilder->isAvailableToBuild(Unit_Devastator) && numTanks <= 5*numLauncher && getHouse()->getNumItems(Unit_Devastator) < getHouse()->getNumItems(Unit_SiegeTank)) {
+                                } else if(pBuilder->isAvailableToBuild(Unit_Devastator) &&
+                                          numTanks <= 5 * numLauncher &&
+                                          getHouse()->getNumItems(Unit_Devastator) <
+                                              getHouse()->getNumItems(Unit_SiegeTank)) {
                                     doProduceItem(pBuilder, Unit_Devastator);
-                                } else if(pBuilder->isAvailableToBuild(Unit_Deviator) && 5*getHouse()->getNumItems(Unit_Deviator) <= numTanks) {
+                                } else if(pBuilder->isAvailableToBuild(Unit_Deviator) &&
+                                          5 * getHouse()->getNumItems(Unit_Deviator) <= numTanks) {
                                     doProduceItem(pBuilder, Unit_Deviator);
-                                } else if(pBuilder->isAvailableToBuild(Unit_SiegeTank) && numTanks <= 5*numLauncher) {
+                                } else if(pBuilder->isAvailableToBuild(Unit_SiegeTank) && numTanks <= 5 * numLauncher) {
                                     doProduceItem(pBuilder, Unit_SiegeTank);
-                                } else if(pBuilder->isAvailableToBuild(Unit_Launcher) && 5*numLauncher <= numTanks) {
+                                } else if(pBuilder->isAvailableToBuild(Unit_Launcher) && 5 * numLauncher <= numTanks) {
                                     doProduceItem(pBuilder, Unit_Launcher);
                                 } else if(pBuilder->isAvailableToBuild(Unit_SiegeTank)) {
                                     doProduceItem(pBuilder, Unit_SiegeTank);
@@ -397,9 +401,11 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_HighTechFactory: {
-                        if(isAllowedToArm() && (getHouse()->getCredits() > 800) && (pBuilder->getProductionQueueSize() < 1)) {
+                        if(isAllowedToArm() && (getHouse()->getCredits() > 800) &&
+                           (pBuilder->getProductionQueueSize() < 1)) {
 
-                            if(getHouse()->getNumItems(Unit_Carryall) < (getHouse()->getNumItems(Unit_Harvester)+1)/2) {
+                            if(getHouse()->getNumItems(Unit_Carryall) <
+                               (getHouse()->getNumItems(Unit_Harvester) + 1) / 2) {
                                 doProduceItem(pBuilder, Unit_Carryall);
                             } else if(getHouse()->getCredits() > 2500) {
                                 doProduceItem(pBuilder, Unit_Ornithopter);
@@ -409,10 +415,11 @@ void AIPlayer::build() {
 
                     case Structure_StarPort: {
                         const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
-                        if(isAllowedToArm() && pStarPort->okToOrder())  {
+                        if(isAllowedToArm() && pStarPort->okToOrder()) {
                             const auto& choam = getHouse()->getChoam();
 
-                            if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester() && choam.getNumAvailable(Unit_Harvester) > 0) {
+                            if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester() &&
+                               choam.getNumAvailable(Unit_Harvester) > 0) {
                                 if(getHouse()->getCredits() > 300) {
                                     doProduceItem(pBuilder, Unit_Harvester);
                                     if(getHouse()->getCredits() > 300 && choam.getNumAvailable(Unit_Harvester) > 0) {
@@ -420,7 +427,9 @@ void AIPlayer::build() {
                                     }
                                     doPlaceOrder(pStarPort);
                                 }
-                            } else if(getHouse()->getNumItems(Unit_Carryall) < (getHouse()->getNumItems(Unit_Harvester)+1)/2 && choam.getNumAvailable(Unit_Carryall) > 0) {
+                            } else if(getHouse()->getNumItems(Unit_Carryall) <
+                                          (getHouse()->getNumItems(Unit_Harvester) + 1) / 2 &&
+                                      choam.getNumAvailable(Unit_Carryall) > 0) {
                                 if(getHouse()->getCredits() > 800) {
                                     doProduceItem(pBuilder, Unit_Carryall);
                                     doPlaceOrder(pStarPort);
@@ -429,15 +438,21 @@ void AIPlayer::build() {
                                 // order max 6 units
                                 auto num = 6;
                                 while((num > 0) && (getHouse()->getCredits() > 2000)) {
-                                    if(pStarPort->isAvailableToBuild(Unit_SiegeTank) && choam.getNumAvailable(Unit_SiegeTank) > 0 && choam.isCheap(Unit_SiegeTank)) {
+                                    if(pStarPort->isAvailableToBuild(Unit_SiegeTank) &&
+                                       choam.getNumAvailable(Unit_SiegeTank) > 0 && choam.isCheap(Unit_SiegeTank)) {
                                         doProduceItem(pBuilder, Unit_SiegeTank);
-                                    } else if(pStarPort->isAvailableToBuild(Unit_Launcher) && choam.getNumAvailable(Unit_Launcher) > 0 && choam.isCheap(Unit_Launcher)) {
+                                    } else if(pStarPort->isAvailableToBuild(Unit_Launcher) &&
+                                              choam.getNumAvailable(Unit_Launcher) > 0 &&
+                                              choam.isCheap(Unit_Launcher)) {
                                         doProduceItem(pBuilder, Unit_Launcher);
-                                    } else if(pStarPort->isAvailableToBuild(Unit_Tank) && choam.getNumAvailable(Unit_Tank) > 0 && choam.isCheap(Unit_Tank)) {
+                                    } else if(pStarPort->isAvailableToBuild(Unit_Tank) &&
+                                              choam.getNumAvailable(Unit_Tank) > 0 && choam.isCheap(Unit_Tank)) {
                                         doProduceItem(pBuilder, Unit_Tank);
-                                    } else if(pStarPort->isAvailableToBuild(Unit_Quad) && choam.getNumAvailable(Unit_Quad) > 0 && choam.isCheap(Unit_Quad)) {
+                                    } else if(pStarPort->isAvailableToBuild(Unit_Quad) &&
+                                              choam.getNumAvailable(Unit_Quad) > 0 && choam.isCheap(Unit_Quad)) {
                                         doProduceItem(pBuilder, Unit_Quad);
-                                    } else if(pStarPort->isAvailableToBuild(Unit_Trike) && choam.getNumAvailable(Unit_Trike) > 0 && choam.isCheap(Unit_Trike)) {
+                                    } else if(pStarPort->isAvailableToBuild(Unit_Trike) &&
+                                              choam.getNumAvailable(Unit_Trike) > 0 && choam.isCheap(Unit_Trike)) {
                                         doProduceItem(pBuilder, Unit_Trike);
                                     }
                                     num--;
@@ -448,10 +463,10 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_ConstructionYard: {
-                        if((getHouse()->getCredits() > 900) && ((pBuilder->getCurrentUpgradeLevel() == 0) || (getHouse()->hasRadar()))
-                            && (pBuilder->getHealth() >= pBuilder->getMaxHealth())
-                            && (!pBuilder->isUpgrading())
-                            && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) ) {
+                        if((getHouse()->getCredits() > 900) &&
+                           ((pBuilder->getCurrentUpgradeLevel() == 0) || (getHouse()->hasRadar())) &&
+                           (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (!pBuilder->isUpgrading()) &&
+                           (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
                             auto upgrading = doUpgrade(pBuilder);
                         }
 
@@ -460,55 +475,87 @@ void AIPlayer::build() {
                             if(getHouse()->getCredits() > 100) {
                                 if((pBuilder->getProductionQueueSize() < 1) && (pBuilder->getBuildListSize() > 0)) {
                                     auto itemID = ItemID_enum::ItemID_Invalid;
-                                    if(getHouse()->getProducedPower() - getHouse()->getPowerRequirement() < 50 && pBuilder->isAvailableToBuild(Structure_WindTrap)) {
+                                    if(getHouse()->getProducedPower() - getHouse()->getPowerRequirement() < 50 &&
+                                       pBuilder->isAvailableToBuild(Structure_WindTrap)) {
                                         itemID = Structure_WindTrap;
-                                    } else if(getHouse()->getNumItems(Structure_Refinery) < 3 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                    } else if(getHouse()->getNumItems(Structure_Refinery) < 3 &&
+                                              pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
-                                    } else if((!getHouse()->hasRadar()) && pBuilder->isAvailableToBuild(Structure_Radar)) {
+                                    } else if((!getHouse()->hasRadar()) &&
+                                              pBuilder->isAvailableToBuild(Structure_Radar)) {
                                         itemID = Structure_Radar;
-                                    } else if((getHouse()->getNumItems(Structure_StarPort) <= 0) && pBuilder->isAvailableToBuild(Structure_StarPort)) {
+                                    } else if((getHouse()->getNumItems(Structure_StarPort) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_StarPort)) {
                                         itemID = Structure_StarPort;
-                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 1) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 1) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if((!getHouse()->hasLightFactory()) && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
+                                    } else if((!getHouse()->hasLightFactory()) &&
+                                              pBuilder->isAvailableToBuild(Structure_LightFactory)) {
                                         itemID = Structure_LightFactory;
-                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) <= 0) && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
+                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;
                                     } else if(getHouse()->getCredits() < 1000) {
                                         // we don't need any more buildings if we have such few credits
-                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 3) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 3) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if((getHouse()->getNumItems(Structure_IX) <= 0) && pBuilder->isAvailableToBuild(Structure_IX)) {
+                                    } else if((getHouse()->getNumItems(Structure_IX) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_IX)) {
                                         itemID = Structure_IX;
-                                    } else if((getHouse()->getNumItems(Structure_RepairYard) <= 0) && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
+                                    } else if((getHouse()->getNumItems(Structure_RepairYard) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_RepairYard)) {
                                         itemID = Structure_RepairYard;
-                                    } else if((getHouse()->getNumItems(Structure_Palace) <= 0) && pBuilder->isAvailableToBuild(Structure_Palace)) {
+                                    } else if((getHouse()->getNumItems(Structure_Palace) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_Palace)) {
                                         itemID = Structure_Palace;
-                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 4) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 4) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if((getHouse()->getNumItems(Structure_WOR) <= 0) && pBuilder->isAvailableToBuild(Structure_WOR)) {
+                                    } else if((getHouse()->getNumItems(Structure_WOR) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_WOR)) {
                                         itemID = Structure_WOR;
-                                    } else if((getHouse()->getNumItems(Structure_HighTechFactory) <= 0) && pBuilder->isAvailableToBuild(Structure_HighTechFactory)) {
+                                    } else if((getHouse()->getNumItems(Structure_HighTechFactory) <= 0) &&
+                                              pBuilder->isAvailableToBuild(Structure_HighTechFactory)) {
                                         itemID = Structure_HighTechFactory;
-                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 5) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if((getHouse()->getNumItems(Structure_RocketTurret) < 5) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if(!pBuilder->isAvailableToBuild(Structure_HeavyFactory) && (getHouse()->getNumItems(Structure_LightFactory) < 2) && pBuilder->isAvailableToBuild(Structure_LightFactory)) {
+                                    } else if(!pBuilder->isAvailableToBuild(Structure_HeavyFactory) &&
+                                              (getHouse()->getNumItems(Structure_LightFactory) < 2) &&
+                                              pBuilder->isAvailableToBuild(Structure_LightFactory)) {
                                         itemID = Structure_LightFactory;
-                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) < 2) && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
+                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) < 2) &&
+                                              pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;
-                                    } else if(getHouse()->getCredits() > 2000 && (getHouse()->getNumItems(Structure_Silo) < 2) && pBuilder->isAvailableToBuild(Structure_Silo)) {
+                                    } else if(getHouse()->getCredits() > 2000 &&
+                                              (getHouse()->getNumItems(Structure_Silo) < 2) &&
+                                              pBuilder->isAvailableToBuild(Structure_Silo)) {
                                         itemID = Structure_Silo;
-                                    } else if(getHouse()->getCredits() > 2000 && (getHouse()->getNumItems(Structure_RepairYard) < 2) && pBuilder->isAvailableToBuild(Structure_RepairYard)) {
+                                    } else if(getHouse()->getCredits() > 2000 &&
+                                              (getHouse()->getNumItems(Structure_RepairYard) < 2) &&
+                                              pBuilder->isAvailableToBuild(Structure_RepairYard)) {
                                         itemID = Structure_RepairYard;
-                                    } else if(((difficulty == Difficulty::Medium) || (difficulty == Difficulty::Hard)) && getHouse()->getNumItems(Structure_Refinery) < 4 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                    } else if(((difficulty == Difficulty::Medium) ||
+                                               (difficulty == Difficulty::Hard)) &&
+                                              getHouse()->getNumItems(Structure_Refinery) < 4 &&
+                                              pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
-                                    } else if((difficulty == Difficulty::Hard) && getHouse()->getNumItems(Structure_Refinery) < 5 && pBuilder->isAvailableToBuild(Structure_Refinery)) {
+                                    } else if((difficulty == Difficulty::Hard) &&
+                                              getHouse()->getNumItems(Structure_Refinery) < 5 &&
+                                              pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                         itemID = Structure_Refinery;
-                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) < 3) && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
+                                    } else if((getHouse()->getNumItems(Structure_HeavyFactory) < 3) &&
+                                              pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
                                         itemID = Structure_HeavyFactory;
-                                    } else if(getHouse()->getCredits() > 2000 && (getHouse()->getNumItems(Structure_RocketTurret) < 10) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if(getHouse()->getCredits() > 2000 &&
+                                              (getHouse()->getNumItems(Structure_RocketTurret) < 10) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
-                                    } else if(getHouse()->getCredits() > 3000 && (getHouse()->getNumItems(Structure_RocketTurret) < 20) && pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
+                                    } else if(getHouse()->getCredits() > 3000 &&
+                                              (getHouse()->getNumItems(Structure_RocketTurret) < 20) &&
+                                              pBuilder->isAvailableToBuild(Structure_RocketTurret)) {
                                         itemID = Structure_RocketTurret;
                                     }
 
@@ -518,34 +565,47 @@ void AIPlayer::build() {
                                         if(location.isValid()) {
                                             Coord placeLocation = location;
                                             if(getGameInitSettings().getGameOptions().concreteRequired) {
-                                                int incI = 0;
-                                                int incJ = 0;
+                                                int incI   = 0;
+                                                int incJ   = 0;
                                                 int startI = 0;
                                                 int startJ = 0;
 
                                                 if(getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
                                                     startI = location.x, startJ = location.y, incI = 1, incJ = 1;
-                                                } else if(getMap().isWithinBuildRange(location.x + getStructureSize(itemID).x - 1, location.y, getHouse())) {
-                                                    startI = location.x + getStructureSize(itemID).x - 1, startJ = location.y, incI = -1, incJ = 1;
-                                                } else if(getMap().isWithinBuildRange(location.x, location.y + getStructureSize(itemID).y - 1, getHouse())) {
-                                                    startI = location.x, startJ = location.y + getStructureSize(itemID).y - 1, incI = 1, incJ = -1;
+                                                } else if(getMap().isWithinBuildRange(
+                                                              location.x + getStructureSize(itemID).x - 1, location.y,
+                                                              getHouse())) {
+                                                    startI = location.x + getStructureSize(itemID).x - 1,
+                                                    startJ = location.y, incI = -1, incJ = 1;
+                                                } else if(getMap().isWithinBuildRange(
+                                                              location.x, location.y + getStructureSize(itemID).y - 1,
+                                                              getHouse())) {
+                                                    startI = location.x,
+                                                    startJ = location.y + getStructureSize(itemID).y - 1, incI = 1,
+                                                    incJ = -1;
                                                 } else {
-                                                    startI = location.x + getStructureSize(itemID).x - 1, startJ = location.y + getStructureSize(itemID).y - 1, incI = -1, incJ = -1;
+                                                    startI = location.x + getStructureSize(itemID).x - 1,
+                                                    startJ = location.y + getStructureSize(itemID).y - 1, incI = -1,
+                                                    incJ = -1;
                                                 }
 
-                                                for(int i = startI; abs(i - startI) < getStructureSize(itemID).x; i += incI) {
-                                                    for(int j = startJ; abs(j - startJ) < getStructureSize(itemID).y; j += incJ) {
-                                                        const Tile *pTile = getMap().getTile(i, j);
+                                                for(int i = startI; abs(i - startI) < getStructureSize(itemID).x;
+                                                    i += incI) {
+                                                    for(int j = startJ; abs(j - startJ) < getStructureSize(itemID).y;
+                                                        j += incJ) {
+                                                        const Tile* pTile = getMap().getTile(i, j);
 
-                                                        if((getStructureSize(itemID).x > 1) && (getStructureSize(itemID).y > 1)
-                                                            && pBuilder->isAvailableToBuild(Structure_Slab4)
-                                                            && (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
-                                                            if( (i == location.x) && (j == location.y) && pTile->getType() != Terrain_Slab) {
-                                                                placeLocations.emplace_back(i,j);
+                                                        if((getStructureSize(itemID).x > 1) &&
+                                                           (getStructureSize(itemID).y > 1) &&
+                                                           pBuilder->isAvailableToBuild(Structure_Slab4) &&
+                                                           (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
+                                                            if((i == location.x) && (j == location.y) &&
+                                                               pTile->getType() != Terrain_Slab) {
+                                                                placeLocations.emplace_back(i, j);
                                                                 doProduceItem(pBuilder, Structure_Slab4);
                                                             }
                                                         } else if(pTile->getType() != Terrain_Slab) {
-                                                            placeLocations.emplace_back(i,j);
+                                                            placeLocations.emplace_back(i, j);
                                                             doProduceItem(pBuilder, Structure_Slab1);
                                                         }
                                                     }
@@ -557,7 +617,8 @@ void AIPlayer::build() {
                                         } else {
                                             // we havn't found a placing location => build some random slabs
                                             location = findPlaceLocation(Structure_Slab1);
-                                            if(location.isValid() && getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
+                                            if(location.isValid() &&
+                                               getMap().isWithinBuildRange(location.x, location.y, getHouse())) {
                                                 placeLocations.push_back(location);
                                                 doProduceItem(pBuilder, Structure_Slab1);
                                             }
@@ -568,27 +629,28 @@ void AIPlayer::build() {
                         }
 
                         if(pBuilder->isWaitingToPlace()) {
-                            //find total region of possible placement and place in random ok position
-                            const auto itemID = pBuilder->getCurrentProducedItem();
+                            // find total region of possible placement and place in random ok position
+                            const auto itemID   = pBuilder->getCurrentProducedItem();
                             const auto itemsize = getStructureSize(itemID);
 
-                            //see if there is already a spot to put it stored
+                            // see if there is already a spot to put it stored
                             if(!placeLocations.empty()) {
-                                Coord location = placeLocations.front();
+                                Coord       location   = placeLocations.front();
                                 const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                                if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
+                                if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false,
+                                                                 pConstYard->getOwner())) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
                                     placeLocations.pop_front();
                                 } else if(itemID == Structure_Slab1) {
-                                    //forget about concrete
+                                    // forget about concrete
                                     doCancelItem(pConstYard, Structure_Slab1);
                                     placeLocations.pop_front();
                                 } else if(itemID == Structure_Slab4) {
-                                    //forget about concrete
+                                    // forget about concrete
                                     doCancelItem(pConstYard, Structure_Slab4);
                                     placeLocations.pop_front();
                                 } else {
-                                    //cancel item
+                                    // cancel item
                                     doCancelItem(pConstYard, itemID);
                                     placeLocations.pop_front();
                                 }
@@ -603,38 +665,35 @@ void AIPlayer::build() {
                 }
             }
         }
-
     }
 
-    buildTimer = getRandomGen().rand(0,3)*50;
+    buildTimer = getRandomGen().rand(0, 3) * 50;
 }
 
 void AIPlayer::attack() {
-    Coord destination;
+    Coord           destination;
     const UnitBase* pLeaderUnit = nullptr;
-    for(const auto *pUnit : getUnitList()) {
-        if (pUnit->isRespondable()
-            && (pUnit->getOwner() == getHouse())
-            && pUnit->isActive()
-            /*&& !(pUnit->getAttackMode() == HUNT)*/
-            && (pUnit->getAttackMode() == AREAGUARD || pUnit->getAttackMode() == GUARD || pUnit->getAttackMode() == AMBUSH)
-            && (pUnit->getItemID() != Unit_Harvester)
-            && (pUnit->getItemID() != Unit_MCV)
-            && (pUnit->getItemID() != Unit_Carryall)
-            && (pUnit->getItemID() != Unit_Saboteur)) {
+    for(const auto* pUnit : getUnitList()) {
+        if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse()) &&
+           pUnit->isActive()
+           /*&& !(pUnit->getAttackMode() == HUNT)*/
+           && (pUnit->getAttackMode() == AREAGUARD || pUnit->getAttackMode() == GUARD ||
+               pUnit->getAttackMode() == AMBUSH) &&
+           (pUnit->getItemID() != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) &&
+           (pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Saboteur)) {
 
             if(pLeaderUnit == nullptr) {
                 pLeaderUnit = pUnit;
 
-                //default destination
+                // default destination
                 destination.x = pLeaderUnit->getX();
                 destination.y = pLeaderUnit->getY();
 
-                const auto *const closestStructure = pLeaderUnit->findClosestTargetStructure();
+                const auto* const closestStructure = pLeaderUnit->findClosestTargetStructure();
                 if(closestStructure) {
                     destination = closestStructure->getClosestPoint(pLeaderUnit->getLocation());
                 } else {
-                    const auto *closestUnit = pLeaderUnit->findClosestTargetUnit();
+                    const auto* closestUnit = pLeaderUnit->findClosestTargetUnit();
                     if(closestUnit) {
                         destination.x = closestUnit->getX();
                         destination.y = closestUnit->getY();
@@ -647,29 +706,27 @@ void AIPlayer::attack() {
         }
     }
 
-    //reset timer for next attack
+    // reset timer for next attack
     attackTimer = getRandomGen().rand(10000, 20000);
 }
 
 void AIPlayer::checkAllUnits() {
-    for(const auto *pUnit : getUnitList()) {
+    for(const auto* pUnit : getUnitList()) {
         if(pUnit->getItemID() == Unit_Sandworm) {
-                for(const auto *pUnit2 : getUnitList()) {
-                    if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                        const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
-                        if( getMap().tileExists(pHarvester->getLocation())
-                            && !getMap().getTile(pHarvester->getLocation())->isRock()
-                            && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
-                            doReturn(pHarvester);
-                            scrambleUnitsAndDefend(pUnit);
-                        }
+            for(const auto* pUnit2 : getUnitList()) {
+                if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
+                    const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
+                    if(getMap().tileExists(pHarvester->getLocation()) &&
+                       !getMap().getTile(pHarvester->getLocation())->isRock() &&
+                       blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
+                        doReturn(pHarvester);
+                        scrambleUnitsAndDefend(pUnit);
                     }
                 }
+            }
         }
 
-        if(pUnit->getOwner() != getHouse()) {
-            continue;
-        }
+        if(pUnit->getOwner() != getHouse()) { continue; }
 
         switch(pUnit->getItemID()) {
             case Unit_MCV: {
@@ -686,7 +743,8 @@ void AIPlayer::checkAllUnits() {
 
             case Unit_Harvester: {
                 const auto* pHarvester = static_cast<const Harvester*>(pUnit);
-                if(getHouse()->getNumItems(Unit_Harvester) < 3 && pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/2) {
+                if(getHouse()->getNumItems(Unit_Harvester) < 3 &&
+                   pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE / 2) {
                     doReturn(pHarvester);
                 }
             } break;
@@ -717,17 +775,15 @@ bool AIPlayer::isAllowedToArm() const {
         } break;
 
         case Difficulty::Medium: {
-            return (ownTeamScore < 2*maxTeamScore);
+            return (ownTeamScore < 2 * maxTeamScore);
         } break;
 
         case Difficulty::Hard:
         default: {
             return true;
         } break;
-
     }
 }
-
 
 int AIPlayer::getMaxHarvester() const {
     switch(difficulty) {
@@ -736,12 +792,14 @@ int AIPlayer::getMaxHarvester() const {
         }
 
         case Difficulty::Medium: {
-            return (2*getHouse()->getNumItems(Structure_Refinery)+1)/3;
+            return (2 * getHouse()->getNumItems(Structure_Refinery) + 1) / 3;
         }
 
         case Difficulty::Hard:
         default: {
-            return 2*getHouse()->getNumItems(Structure_Refinery);
+            return 2 * getHouse()->getNumItems(Structure_Refinery);
         }
     }
 }
+
+} // namespace Dune::Engine

@@ -24,6 +24,8 @@
 
 #include <vector>
 
+namespace Dune::Engine {
+
 class House;
 
 class Choam final {
@@ -34,9 +36,9 @@ public:
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    [[nodiscard]] int getPrice(ItemID_enum itemID) const;
+    [[nodiscard]] int  getPrice(ItemID_enum itemID) const;
     [[nodiscard]] bool isCheap(ItemID_enum itemID) const;
-    [[nodiscard]] int getNumAvailable(ItemID_enum itemID) const;
+    [[nodiscard]] int  getNumAvailable(ItemID_enum itemID) const;
 
     bool setNumAvailable(ItemID_enum itemID, int newValue);
 
@@ -45,8 +47,10 @@ public:
     void update(const GameContext& context);
 
 private:
-    House*                  house;               ///< The house of this choam
-    std::vector<BuildItem>  availableItems;      ///< This list contains all the things that can be bought from a Starport
+    House*                 house;          ///< The house of this choam
+    std::vector<BuildItem> availableItems; ///< This list contains all the things that can be bought from a Starport
 };
+
+} // namespace Dune::Engine
 
 #endif // CHOAM_H

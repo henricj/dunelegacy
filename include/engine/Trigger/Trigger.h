@@ -20,32 +20,30 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <misc/SDL2pp.h>
+
+namespace Dune::Engine {
 
 /**
     This class is the base class for all triggers.
 */
 class Trigger {
 public:
-
     /**
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
     explicit Trigger(uint32_t triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
 
-    Trigger(const Trigger &) = default;
-    Trigger(Trigger &&) = default;
-    Trigger& operator=(const Trigger &) = default;
-    Trigger& operator=(Trigger &&) = default;
+    Trigger(const Trigger&) = default;
+    Trigger(Trigger&&)      = default;
+    Trigger& operator=(const Trigger&) = default;
+    Trigger& operator=(Trigger&&) = default;
 
     /**
         This constructor constructs the trigger from a stream.
         \param  stream  the stream to read from
     */
-    explicit Trigger(InputStream& stream) {
-        cycleNumber = stream.readUint32();
-    }
+    explicit Trigger(InputStream& stream) { cycleNumber = stream.readUint32(); }
 
     /// destructor
     virtual ~Trigger() = default;
@@ -54,9 +52,7 @@ public:
         This method saves this trigger to a stream.
         \param  stream  the stream to save to
     */
-    virtual void save(OutputStream& stream) const {
-        stream.writeUint32(cycleNumber);
-    }
+    virtual void save(OutputStream& stream) const { stream.writeUint32(cycleNumber); }
 
     /**
         This method returns the game cycle this trigger shall be triggered.
@@ -70,7 +66,9 @@ public:
     virtual void trigger(const GameContext& context) = 0;
 
 protected:
-    uint32_t cycleNumber;     ///< the game cycle this trigger shall be triggered
+    uint32_t cycleNumber; ///< the game cycle this trigger shall be triggered
 };
+
+} // namespace Dune::Engine
 
 #endif // TRIGGER_H

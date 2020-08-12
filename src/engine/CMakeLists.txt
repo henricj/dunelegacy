@@ -1,7 +1,9 @@
 set(SOURCES
+	AStarSearch.cpp
 	Command.cpp
 	CommandManager.cpp
 	DuneLegacyEngine.cpp
+	engine_sand.cpp
 	GameInitSettings.cpp
 	ObjectBase.cpp
 	ObjectData.cpp
@@ -27,6 +29,7 @@ set(TRIGGER_SOURCES
 	)
 
 set(HEADERS
+	../../include/engine/AStarSearch.h
 	../../include/engine/AITeamInfo.h
 	../../include/engine/Command.h
 	../../include/engine/CommandList.h
@@ -35,6 +38,7 @@ set(HEADERS
 	../../include/engine/DuneLegacyEngine.h
 	../../include/engine/EngineDataTypes.h
 	../../include/engine/EngineDefinitions.h
+	../../include/engine/engine_sand.h
 	../../include/engine/GameInitSettings.h
 	../../include/engine/ObjectBase.h
 	../../include/engine/ObjectData.h
@@ -63,3 +67,6 @@ set(TRIGGER_HEADERS
 add_library(engine ${SOURCES} ${PLAYERS_SOURCES} ${HEADERS})
 target_link_libraries(engine PUBLIC utility)
 target_include_directories(engine PRIVATE ../../include/engine)
+
+target_precompile_headers(engine PRIVATE ../../include/engine/pch.h)
+

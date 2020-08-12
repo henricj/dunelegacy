@@ -26,9 +26,18 @@
 #include <misc/string_util.h>
 #include <misc/Random.h>
 
+#include <string>
+#include <string_view>
+
+inline constexpr int xyz4 = 123;
+namespace {
+inline constexpr int abc4 = ::xyz4;
+}
+
+namespace Dune::Engine {
+
 struct GameContext;
 class GameInitSettings;
-class Random;
 class Map;
 class House;
 class ObjectBase;
@@ -53,10 +62,10 @@ protected:
 public:
     virtual ~Player() = 0;
 
-    Player(const Player &) = delete;
-    Player(Player &&) = delete;
-    Player& operator=(const Player &) = delete;
-    Player& operator=(Player &&) = delete;
+    Player(const Player&) = delete;
+    Player(Player&&)      = delete;
+    Player& operator=(const Player&) = delete;
+    Player& operator=(Player&&) = delete;
 
     virtual void save(OutputStream& stream) const;
 
@@ -66,7 +75,7 @@ public:
         Notifies that a structure or unit was built.
         \param  pObject  the object that was built
     */
-    virtual void onObjectWasBuilt(const ObjectBase* pObject) { }
+    virtual void onObjectWasBuilt(const ::Dune::Engine::ObjectBase* pObject) { }
 
     /**
         Notifies that a structure of type itemID was destroyed at the specified location.
@@ -92,19 +101,18 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) { }
+    virtual void onDamage(const ::Dune::Engine::ObjectBase* pObject, int damage, uint32_t damagerID) { }
 
     [[nodiscard]] const House* getHouse() const { return pHouse; }
-    [[nodiscard]] uint8_t getPlayerID() const { return playerID; }
+    [[nodiscard]] uint8_t      getPlayerID() const { return playerID; }
 
     [[nodiscard]] std::string getPlayername() const { return playername; }
-    void setPlayername(const std::string& playername) { this->playername = playername; }
+    void                      setPlayername(const std::string& playername) { this->playername = playername; }
 
     [[nodiscard]] std::string getPlayerclass() const { return playerclass; }
-    void setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; }
+    void                      setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; }
 
 protected:
-
     /**
         Logs a debug message
         \param  fmt the format string of the debug message
@@ -121,18 +129,17 @@ protected:
     template<typename... Args>
     void logWarn(std::string_view fmt, Args&&... args) const;
 
-
-    Random& getRandomGen();
+    Random&                               getRandomGen();
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const;
-    [[nodiscard]] uint32_t getGameCycleCount() const;
-    [[nodiscard]] int getTechLevel() const;
+    [[nodiscard]] uint32_t                getGameCycleCount() const;
+    [[nodiscard]] int                     getTechLevel() const;
 
-    Map&              getMap();
-    [[nodiscard]] const Map&        getMap() const;
+    Map&                     getMap();
+    [[nodiscard]] const Map& getMap() const;
 
     [[nodiscard]] const ObjectBase* getObject(uint32_t objectID) const;
 
-    const RobustList<const StructureBase*>& getStructureList();
+    const RobustList<const StructureBase*>&          getStructureList();
     [[nodiscard]] const RobustList<const UnitBase*>& getUnitList() const;
 
     const House* getHouse(HOUSETYPE houseID);
@@ -230,7 +237,6 @@ protected:
     */
     void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject) const;
 
-
     /**
         Moves the unit pUnit to x,y.
         \param  pUnit   the unit to move
@@ -262,8 +268,7 @@ protected:
         \param  pTargetObject   the object to attack
         \param  bForced         true, if the unit should ignore everything else
     */
-    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject,
-                        bool bForced) const;
+    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) const;
 
     /**
         Change the attack mode of pUnit to attackMode.
@@ -298,7 +303,6 @@ protected:
     */
     bool doDeploy(const MCV* pMCV) const;
 
-
     /**
         Request a carryall to take unit to location
         This isn't in the original game but will make it fun
@@ -309,8 +313,8 @@ protected:
 private:
     friend class House;
 
-    House* pHouse;
-    uint8_t playerID;
+    House*      pHouse;
+    uint8_t     playerID;
     std::string playername;
     std::string playerclass;
 
@@ -320,7 +324,11 @@ protected:
     const GameContext context_;
 };
 
+} // namespace Dune::Engine
+
 #include <House.h>
+
+namespace Dune::Engine {
 
 template<typename... Args>
 void Player::logDebug(std::string_view fmt, Args&&... args) const {
@@ -330,10 +338,11 @@ void Player::logDebug(std::string_view fmt, Args&&... args) const {
 #endif
 }
 
-template<typename ... Args>
-void Player::logWarn(std::string_view fmt, Args&&...args) const
-{
+template<typename... Args>
+void Player::logWarn(std::string_view fmt, Args&&... args) const {
     Dune::Logger.log("%s (%s):   %s", playername, pHouse->name(), fmt::sprintf(fmt, std::forward<Args>(args)...));
 }
+
+} // namespace Dune::Engine
 
 #endif // PLAYER_H

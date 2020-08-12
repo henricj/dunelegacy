@@ -30,8 +30,8 @@
 class OutputStream
 {
 public:
-    OutputStream() { ; };
-    virtual ~OutputStream() = default;
+    OutputStream()          = default;
+    virtual ~OutputStream() = 0;
     /**
         This method flushes all caches and finally writes out all cached output.
     */

@@ -19,7 +19,8 @@
 #define ENGINE_OBJECTBASE_H
 
 #include "data.h"
-#include <ObjectPointer.h>
+
+#include "ObjectPointer.h"
 #include "EngineDefinitions.h"
 #include "EngineDataTypes.h"
 #include <fixmath/FixPoint.h>
@@ -27,23 +28,24 @@
 #include <bitset>
 #include <cassert>
 
-// forward declarations
+class InputStream;
+class OutputStream;
+
+namespace Dune::Engine {
+
 class Game;
 class House;
 class HumanPlayer;
-class InputStream;
-class OutputStream;
 class ObjectInterface;
 class ObjectManager;
 class Map;
-class Coord;
-
 
 #define VIS_ALL -1
 
 class ObjectInitializer final {
 public:
-    ObjectInitializer(Game& game, House* owner, bool byScenario) : game_{game}, owner_{owner}, byScenario_{byScenario} { }
+    ObjectInitializer(Game& game, House* owner, bool byScenario)
+        : game_{game}, owner_{owner}, byScenario_{byScenario} { }
 
     ObjectInitializer()                         = delete;
     ObjectInitializer(const ObjectInitializer&) = delete;
@@ -58,7 +60,7 @@ public:
     bool   byScenario() const noexcept { return byScenario_; }
 
 private:
-    Game& game_;
+    Game&        game_;
     House* const owner_;
     const bool   byScenario_;
 };
@@ -81,8 +83,7 @@ private:
     InputStream& stream_;
 };
 
-class ObjectBaseConstants
-{
+class ObjectBaseConstants {
 public:
     bool canAttack() const noexcept { return canAttackStuff_; }
     bool isAFlyingUnit() const noexcept { return aFlyingUnit_; }
@@ -98,37 +99,37 @@ public:
     const ItemID_enum itemID; ///< The ItemID of this object.
 
 protected:
-    bool aStructure_{};      ///< Is this a structure?
-    bool aBuilder_{};        ///< Is this a builder?
+    bool aStructure_{}; ///< Is this a structure?
+    bool aBuilder_{};   ///< Is this a builder?
 
-    bool aUnit_{};           ///< Is this a unit?
-    bool aFlyingUnit_{};     ///< Is this a flying unit?
-    bool aGroundUnit_{};     ///< Is this a ground unit?
-    bool infantry_{};        ///< Is this an infantry unit?
+    bool aUnit_{};       ///< Is this a unit?
+    bool aFlyingUnit_{}; ///< Is this a flying unit?
+    bool aGroundUnit_{}; ///< Is this a ground unit?
+    bool infantry_{};    ///< Is this an infantry unit?
 
-    bool canAttackStuff_{};  ///< Can this unit/structure attack?
+    bool canAttackStuff_{}; ///< Can this unit/structure attack?
 };
 
 /*!
     Class from which all structure and unit classes are derived
 */
-class ObjectBase
-{
+class ObjectBase {
     ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID);
 
 protected:
     ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectInitializer& initializer);
-    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
+               const ObjectStreamInitializer& initializer);
 
 public:
     using parent = ObjectBase;
 
     virtual ~ObjectBase() = 0;
 
-    ObjectBase(const ObjectBase &) = delete;
-    ObjectBase(ObjectBase &&) = delete;
-    ObjectBase& operator=(const ObjectBase &) = delete;
-    ObjectBase& operator=(ObjectBase &&) = delete;
+    ObjectBase(const ObjectBase&) = delete;
+    ObjectBase(ObjectBase&&)      = delete;
+    ObjectBase& operator=(const ObjectBase&) = delete;
+    ObjectBase& operator=(ObjectBase&&) = delete;
 
     virtual void save(OutputStream& stream) const;
 
@@ -154,7 +155,7 @@ public:
     virtual void setLocation(const GameContext& context, int xPos, int yPos);
 
     virtual void setTarget(const ObjectBase* newTarget);
-    void setVisible(int teamID, bool status);
+    void         setVisible(int teamID, bool status);
 
     /**
         Updates this object.
@@ -164,9 +165,9 @@ public:
 
     void unassignFromMap(const Coord& location) const;
 
-    bool isOnScreen() const;
-    bool isVisible(int teamID) const;
-    bool isVisible() const;
+    bool     isOnScreen() const;
+    bool     isVisible(int teamID) const;
+    bool     isVisible() const;
     uint32_t getHealthColor() const;
 
     /**
@@ -177,9 +178,9 @@ public:
     */
     virtual Coord getClosestPoint(const Coord& objectLocation) const;
 
-    const StructureBase* findClosestTargetStructure() const;
-    const UnitBase* findClosestTargetUnit() const;
-    const ObjectBase* findClosestTarget() const;
+    const StructureBase*      findClosestTargetStructure() const;
+    const UnitBase*           findClosestTargetUnit() const;
+    const ObjectBase*         findClosestTarget() const;
     virtual const ObjectBase* findTarget() const;
 
     bool canAttack() const noexcept { return constants_.canAttack(); }
@@ -190,31 +191,34 @@ public:
     bool isInfantry() const noexcept { return constants_.isInfantry(); }
     bool isAUnit() const noexcept { return constants_.isAUnit(); }
 
-    void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
+    void addHealth() {
+        if(health < getMaxHealth()) setHealth(health + 1);
+    }
     void setActive(bool status) noexcept { active = status; }
     void setForced(bool status) noexcept { forced = status; }
     void setRespondable(bool status) noexcept { respondable = status; }
     void setSelected(bool value) noexcept { selected = value; }
     void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
     void setDestination(const Coord& location) { setDestination(location.x, location.y); }
-    void setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
-    bool hasATarget() const noexcept { return (target); }
-    bool hasObjectID(uint32_t id) const noexcept { return (objectID == id); }
-    bool isActive() const noexcept { return active; }
-    bool isRespondable() const noexcept { return respondable; }
-    bool isByScenario() const noexcept { return byScenario; }
-    bool isSelected() const noexcept { return selected; }
-    bool isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
-    bool isBadlyDamaged() const noexcept { return badlyDamaged; };
-    bool wasForced() const noexcept { return forced; }
+    void setLocation(const GameContext& context, const Coord& location) {
+        setLocation(context, location.x, location.y);
+    }
+    bool        hasATarget() const noexcept { return (target); }
+    bool        hasObjectID(uint32_t id) const noexcept { return (objectID == id); }
+    bool        isActive() const noexcept { return active; }
+    bool        isRespondable() const noexcept { return respondable; }
+    bool        isByScenario() const noexcept { return byScenario; }
+    bool        isSelected() const noexcept { return selected; }
+    bool        isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
+    bool        isBadlyDamaged() const noexcept { return badlyDamaged; };
+    bool        wasForced() const noexcept { return forced; }
     ItemID_enum getItemID() const noexcept { return itemID; }
-    int getX() const noexcept { return location.x; }
-    int getY() const noexcept { return location.y; }
+    int         getX() const noexcept { return location.x; }
+    int         getY() const noexcept { return location.y; }
 
     FixPoint getHealth() const noexcept { return health; }
-    int getMaxHealth() const;
+    int      getMaxHealth() const;
     uint32_t getObjectID() const noexcept { return objectID; }
-
 
     int getViewRange() const;
     int getAreaGuardRange() const;
@@ -222,14 +226,16 @@ public:
     int getWeaponReloadTime() const;
     int getInfSpawnProp() const;
 
-    FixPoint getRealX() const noexcept { return realX; }
-    FixPoint getRealY() const noexcept { return realY; }
+    FixPoint     getRealX() const noexcept { return realX; }
+    FixPoint     getRealY() const noexcept { return realY; }
     const Coord& getLocation() const noexcept { return location; }
     const Coord& getDestination() const noexcept { return destination; }
-    ObjectBase* getTarget(const ObjectManager& objectManager) noexcept { return target.getObjPointer(objectManager); }
-    const ObjectBase* getTarget(const ObjectManager& objectManager) const noexcept { return target.getObjPointer(objectManager); }
+    ObjectBase*  getTarget(const ObjectManager& objectManager) noexcept { return target.getObjPointer(objectManager); }
+    const ObjectBase* getTarget(const ObjectManager& objectManager) const noexcept {
+        return target.getObjPointer(objectManager);
+    }
 
-    HOUSETYPE getOriginalHouseID() const noexcept { return originalHouseID; }
+    HOUSETYPE    getOriginalHouseID() const noexcept { return originalHouseID; }
     virtual void setOriginalHouseID(HOUSETYPE i) { originalHouseID = i; }
 
     House* getOwner() const noexcept {
@@ -256,38 +262,39 @@ protected:
     const ItemID_enum itemID = ItemID_Invalid; ///< The ItemID of this object.
 
     // object state/properties
-    const uint32_t   objectID;               ///< The unique object ID of this object
-    HOUSETYPE      originalHouseID;  ///< for takeover/deviation, we still want to keep track of what the original house was
-    House    *owner;                 ///< The owner of this object
+    const uint32_t objectID;   ///< The unique object ID of this object
+    HOUSETYPE originalHouseID; ///< for takeover/deviation, we still want to keep track of what the original house was
+    House*    owner;           ///< The owner of this object
 
-    Coord    location;               ///< The current position of this object in tile coordinates
-    Coord    oldLocation;            ///< The previous position of this object in tile coordinates (used when moving from one tile to the next tile)
-    Coord    destination;            ///< The destination tile
-    FixPoint realX;                  ///< The x-coordinate of this object in world coordinates
-    FixPoint realY;                  ///< The y-coordinate of this object in world coordinates
+    Coord location;    ///< The current position of this object in tile coordinates
+    Coord oldLocation; ///< The previous position of this object in tile coordinates (used when moving from one tile to
+                       ///< the next tile)
+    Coord    destination; ///< The destination tile
+    FixPoint realX;       ///< The x-coordinate of this object in world coordinates
+    FixPoint realY;       ///< The y-coordinate of this object in world coordinates
 
-    FixPoint angle;                  ///< The current angle of this unit/structure (8 = 360°)
-    ANGLETYPE drawnAngle;           ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
+    FixPoint  angle;      ///< The current angle of this unit/structure (8 = 360°)
+    ANGLETYPE drawnAngle; ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
 
-    bool     active;                 ///< Is this unit/structure active?
-    bool     respondable;            ///< Is this unit/structure respondable to commands?
-    bool     byScenario;             ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
-    bool     selected;               ///< Is this object currently selected?
-    bool     selectedByOtherPlayer;  ///< This is only used in multiplayer games where two players control one house
+    bool active;      ///< Is this unit/structure active?
+    bool respondable; ///< Is this unit/structure respondable to commands?
+    bool byScenario;  ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
+    bool selected;    ///< Is this object currently selected?
+    bool selectedByOtherPlayer; ///< This is only used in multiplayer games where two players control one house
 
-    bool          forced;            ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
-    bool          targetFriendly;    ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
-    ObjectPointer target;            ///< The target to attack or move to
-    ATTACKMODE    attackMode;        ///< The attack mode of this unit/structure
+    bool forced; ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
+    bool targetFriendly;      ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
+    ObjectPointer target;     ///< The target to attack or move to
+    ATTACKMODE    attackMode; ///< The attack mode of this unit/structure
 
-    std::bitset<NUM_TEAMS> visible;  ///< To which teams is this unit visible?
+    std::bitset<NUM_TEAMS> visible; ///< To which teams is this unit visible?
 
     // drawing information
-    bool     badlyDamaged;           ///< Is the health below 50%?
+    bool badlyDamaged; ///< Is the health below 50%?
 
 private:
-    FixPoint health;                 ///< The health of this object
-    void init();
+    FixPoint health; ///< The health of this object
+    void     init();
 };
 
 template<typename ObjectType>
@@ -309,5 +316,7 @@ const ObjectType* dune_cast(const ObjectBase* base) {
 
     return nullptr;
 }
+
+} // namespace Dune::Engine
 
 #endif // ENGINE_OBJECTBASE_H

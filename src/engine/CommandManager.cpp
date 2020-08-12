@@ -17,12 +17,29 @@
 
 #include <CommandManager.h>
 
+inline constexpr int xyz7 = 123;
+namespace {
+inline constexpr int abc7 = ::xyz7;
+}
+
 #include <players/HumanPlayer.h>
+
+inline constexpr int xyz8 = 123;
+namespace {
+inline constexpr int abc8 = ::xyz8;
+}
 
 #include <Game.h>
 
+inline constexpr int xyz9 = 123;
+namespace {
+inline constexpr int abc9 = ::xyz9;
+}
+
 #include <algorithm>
 
+
+namespace Dune::Engine {
 
 CommandManager::CommandManager() = default;
 
@@ -31,23 +48,19 @@ CommandManager::~CommandManager() = default;
 void CommandManager::addCommand(const Command& cmd) {
     auto CycleNumber = currentGame->getGameCycleCount();
 
-    if (pNetworkManager != nullptr) {
-        CycleNumber += networkCycleBuffer;
-    }
+    if(pNetworkManager != nullptr) { CycleNumber += networkCycleBuffer; }
     addCommand(cmd, CycleNumber);
 }
 
 void CommandManager::addCommand(Command&& cmd) {
     auto CycleNumber = currentGame->getGameCycleCount();
 
-    if (pNetworkManager != nullptr) {
-        CycleNumber += networkCycleBuffer;
-    }
+    if(pNetworkManager != nullptr) { CycleNumber += networkCycleBuffer; }
     addCommand(std::move(cmd), CycleNumber);
 }
 
 void CommandManager::save(OutputStream& stream) const {
-    for(auto i=0u;i<timeslot.size();i++) {
+    for(auto i = 0u; i < timeslot.size(); i++) {
         for(const auto& command : timeslot[i]) {
             stream.writeUint32(i);
             command.save(stream);
@@ -59,25 +72,22 @@ void CommandManager::load(InputStream& stream) {
     try {
         while(true) {
             const auto cycle = stream.readUint32();
-            addCommand(Command{ stream }, cycle);
+            addCommand(Command{stream}, cycle);
         }
-    } catch (InputStream::exception&) {
-        ;
-    }
+    } catch(InputStream::exception&) { ; }
 }
 
 void CommandManager::update() {
     if(pNetworkManager == nullptr) return;
 
-    CommandList commandList;
+    CommandList          commandList;
     std::vector<Command> commands;
-    for(uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
+    for(uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
+        i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
 
         if(i < timeslot.size()) {
             for(auto& command : timeslot[i]) {
-                if(command.getPlayerID() == pLocalPlayer->getPlayerID()) {
-                    commands.push_back(command);
-                }
+                if(command.getPlayerID() == pLocalPlayer->getPlayerID()) { commands.push_back(command); }
             }
         }
 
@@ -89,75 +99,63 @@ void CommandManager::update() {
 }
 
 void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
-    auto *const pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
-    if(pPlayer == nullptr) {
-        return;
-    }
+    auto* const pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
+    if(pPlayer == nullptr) { return; }
 
     for(const auto& commandListEntry : commandList.commandList) {
-        if(pPlayer->nextExpectedCommandsCycle > commandListEntry.cycle) {
-            continue;
-        }
+        if(pPlayer->nextExpectedCommandsCycle > commandListEntry.cycle) { continue; }
 
         for(const auto& command : commandListEntry.commands) {
             if(command.getPlayerID() != pPlayer->getPlayerID()) {
-                sdl2::log_info("Warning: Player '%s' send a command which he is not allowed to give!", playername.c_str());
+                sdl2::log_info("Warning: Player '%s' send a command which he is not allowed to give!",
+                               playername.c_str());
             }
 
             addCommand(command, commandListEntry.cycle);
         }
 
-        pPlayer->nextExpectedCommandsCycle = std::max(pPlayer->nextExpectedCommandsCycle, commandListEntry.cycle+1);
+        pPlayer->nextExpectedCommandsCycle = std::max(pPlayer->nextExpectedCommandsCycle, commandListEntry.cycle + 1);
     }
 }
 
 void CommandManager::addCommand(const Command& cmd, uint32_t CycleNumber) {
-    if (bReadOnly) return;
+    if(bReadOnly) return;
 
-    if (CycleNumber >= timeslot.size()) {
-        timeslot.resize(CycleNumber + 1);
-    }
+    if(CycleNumber >= timeslot.size()) { timeslot.resize(CycleNumber + 1); }
 
     timeslot[CycleNumber].push_back(cmd);
-    std::stable_sort(timeslot[CycleNumber].begin(),
-        timeslot[CycleNumber].end(),
-        [](const Command& cmd1, const Command& cmd2) {
-            return (cmd1.getPlayerID() < cmd2.getPlayerID());
-        });
+    std::stable_sort(
+        timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(),
+        [](const Command& cmd1, const Command& cmd2) { return (cmd1.getPlayerID() < cmd2.getPlayerID()); });
 
-    if (pStream != nullptr) {
+    if(pStream != nullptr) {
         pStream->writeUint32(CycleNumber);
         cmd.save(*pStream);
     }
 }
 
 void CommandManager::addCommand(Command&& cmd, uint32_t CycleNumber) {
-    if (bReadOnly) return;
+    if(bReadOnly) return;
 
-    if (CycleNumber >= timeslot.size()) {
-        timeslot.resize(CycleNumber + 1);
-    }
+    if(CycleNumber >= timeslot.size()) { timeslot.resize(CycleNumber + 1); }
 
-    if (pStream != nullptr) {
+    if(pStream != nullptr) {
         pStream->writeUint32(CycleNumber);
         cmd.save(*pStream);
     }
 
     timeslot[CycleNumber].push_back(std::move(cmd));
-    std::stable_sort(timeslot[CycleNumber].begin(),
-        timeslot[CycleNumber].end(),
-        [](const Command& cmd1, const Command& cmd2) {
-            return (cmd1.getPlayerID() < cmd2.getPlayerID());
-        });
+    std::stable_sort(
+        timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(),
+        [](const Command& cmd1, const Command& cmd2) { return (cmd1.getPlayerID() < cmd2.getPlayerID()); });
 }
 
 void CommandManager::executeCommands(const GameContext& context, uint32_t CycleNumber) const {
-    if(CycleNumber >= timeslot.size()) {
-        return;
-    }
+    if(CycleNumber >= timeslot.size()) { return; }
 
     for(const Command& command : timeslot[CycleNumber]) {
         command.executeCommand(context);
     }
 }
 
+} // namespace Dune::Engine

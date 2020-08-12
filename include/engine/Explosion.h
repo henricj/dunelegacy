@@ -15,44 +15,39 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef EXPLOSION_H
-#define EXPLOSION_H
+#ifndef ENGINE_EXPLOSION_H
+#define ENGINE_EXPLOSION_H
 
 #include <DataTypes.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <misc/SDL2pp.h>
 
-class Explosion final
-{
+namespace Dune::Engine {
+
+class Explosion final {
 public:
     Explosion();
     Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     explicit Explosion(InputStream& stream);
     ~Explosion();
 
-    Explosion(const Explosion &) = delete;
-    Explosion(Explosion &&) = delete;
-    Explosion& operator=(const Explosion &) = delete;
-    Explosion& operator=(Explosion &&) = delete;
+    Explosion(const Explosion&) = delete;
+    Explosion(Explosion&&)      = delete;
+    Explosion& operator=(const Explosion&) = delete;
+    Explosion& operator=(Explosion&&) = delete;
 
     void save(OutputStream& stream) const;
-
-    void blitToScreen() const;
 
     bool update();
 
 private:
-    uint32_t explosionID;
-    Coord position;
-    HOUSETYPE house;
-    zoomable_texture graphic{};
-    int numFrames = 0;
-    int currentFrame;
-    int frameTimer;
+    uint32_t         explosionID;
+    Coord            position;
+    HOUSETYPE        house;
 
     void init();
 };
 
+} // namespace Dune::Engine
 
-#endif // EXPLOSION_H
+#endif // ENGINE_EXPLOSION_H

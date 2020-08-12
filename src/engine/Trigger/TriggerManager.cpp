@@ -21,6 +21,8 @@
 
 #include <misc/exceptions.h>
 
+namespace Dune::Engine {
+
 TriggerManager::TriggerManager() = default;
 
 TriggerManager::~TriggerManager() = default;
@@ -35,22 +37,19 @@ void TriggerManager::save(OutputStream& stream) const {
 void TriggerManager::load(InputStream& stream) {
     const auto numTriggers = stream.readUint32();
 
-    for (auto i = 0u; i < numTriggers; i++) {
+    for(auto i = 0u; i < numTriggers; i++) {
         triggers.push_back(loadTrigger(stream));
     }
 }
 
 void TriggerManager::trigger(const GameContext& context, Uint32 CycleNumber) {
-    if (triggers.empty()) return;
+    if(triggers.empty()) return;
 
     auto clear = true;
 
-    for (auto it = std::begin(triggers); it != std::end(triggers); ++it)
-    {
-        if ((*it)->getCycleNumber() != CycleNumber)
-        {
-            if (it != std::begin(triggers))
-                triggers.erase(std::begin(triggers), it);
+    for(auto it = std::begin(triggers); it != std::end(triggers); ++it) {
+        if((*it)->getCycleNumber() != CycleNumber) {
+            if(it != std::begin(triggers)) triggers.erase(std::begin(triggers), it);
 
             clear = false;
 
@@ -60,17 +59,15 @@ void TriggerManager::trigger(const GameContext& context, Uint32 CycleNumber) {
         active_trigger.push_back(std::move(*it));
     }
 
-    if (clear)
-        triggers.clear();
+    if(clear) triggers.clear();
 
-    for (auto& t : active_trigger)
+    for(auto& t : active_trigger)
         t->trigger(context);
 
     active_trigger.clear();
 }
 
-void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
-{
+void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger) {
     for(auto iter = triggers.begin(); iter != triggers.end(); ++iter) {
         if((*iter)->getCycleNumber() > newTrigger->getCycleNumber()) {
             triggers.insert(iter, std::move(newTrigger));
@@ -81,8 +78,7 @@ void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
     triggers.push_back(std::move(newTrigger));
 }
 
-void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t)
-{
+void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) {
     if(dynamic_cast<const ReinforcementTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_ReinforcementTrigger);
         t->save(stream);
@@ -92,8 +88,7 @@ void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t)
     }
 }
 
-std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const
-{
+std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const {
     const auto type = stream.readUint32();
 
     switch(type) {
@@ -105,7 +100,8 @@ std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const
             return std::make_unique<TimeoutTrigger>(stream);
         } break;
 
-    default:
-        THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
+        default: THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
     }
 }
+
+} // namespace Dune::Engine

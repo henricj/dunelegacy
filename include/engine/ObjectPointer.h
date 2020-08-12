@@ -18,46 +18,47 @@
 #ifndef OBJECTPOINTER_H
 #define OBJECTPOINTER_H
 
-#include <EngineDefinitions.h>
+#include "EngineDefinitions.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+
+
+namespace Dune::Engine {
 
 class ObjectManager;
 class ObjectBase;
 class UnitBase;
 class StructureBase;
 
-class ObjectPointer
-{
+class ObjectPointer {
 public:
     ObjectPointer() { objectID = NONE_ID; };
-    explicit ObjectPointer(uint32_t newItemID) : objectID(newItemID) { };
+    explicit ObjectPointer(uint32_t newItemID) : objectID(newItemID){};
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
     ~ObjectPointer() = default;
 
-    ObjectPointer(const ObjectPointer &) = default;
-    ObjectPointer(ObjectPointer &&) = default;
-    ObjectPointer& operator=(const ObjectPointer &) = default;
-    ObjectPointer& operator=(ObjectPointer &&) = default;
+    ObjectPointer(const ObjectPointer&) = default;
+    ObjectPointer(ObjectPointer&&)      = default;
+    ObjectPointer& operator=(const ObjectPointer&) = default;
+    ObjectPointer& operator=(ObjectPointer&&) = default;
 
     void pointTo(uint32_t newItemID) { objectID = newItemID; };
     void pointTo(const ObjectBase* newObject);
 
-    uint32_t getObjectID() const noexcept { return objectID; };
-    ObjectBase* getObjPointer(const ObjectManager& objectManager) const;
-    UnitBase* getUnitPointer() const;
-    StructureBase* getStructurePointer() const;
+    uint32_t       getObjectID() const noexcept { return objectID; };
+    ObjectBase*    getObjPointer(const ObjectManager& objectManager) const;
+    UnitBase*      getUnitPointer(const ObjectManager& objectManager) const;
+    StructureBase* getStructurePointer(const ObjectManager& objectManager) const;
 
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    operator bool() const {
-        return (objectID != NONE_ID);
-    };
+    operator bool() const { return (objectID != NONE_ID); };
 
 private:
     mutable uint32_t objectID;
 };
 
+} // namespace Dune::Engine
 
 #endif // OBJECTPOINTER_H

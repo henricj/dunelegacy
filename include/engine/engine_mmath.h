@@ -15,46 +15,41 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MMATH_H
-#define MMATH_H
+#ifndef ENGINE_MMATH_H
+#define ENGINE_MMATH_H
 
-// forward declaration
-class Coord;
-
-#include <DataTypes.h>
+#include <EngineDataTypes.h>
 #include <fixmath/FixPoint.h>
 #include <cmath>
 #include <algorithm>
+#include <cassert>
 
-inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2)
-{
+namespace Dune::Engine {
 
-    FixPoint diffX = x2 - x1;
-    FixPoint diffY = -(y2 - y1);    // flip y
+inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
+    const auto diffX = x2 - x1;
+    const auto diffY = -(y2 - y1); // flip y
 
-    if(diffX == 0 && diffY == 0) {
-        return FixPt_PI/2;
-    }
+    if(diffX == 0 && diffY == 0) { return FixPt_PI / 2; }
 
-    FixPoint destAngle = FixPoint::atan2(diffY, diffX);
+    auto destAngle = FixPoint::atan2(diffY, diffX);
 
     if(destAngle < 0) {
-        destAngle += (FixPt_PI << 1);   // add 360°
+        destAngle += (FixPt_PI << 1); // add 360°
     }
 
     return destAngle;
 }
 
-inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
-{
+inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
     return destinationAngleRad(p1.x, p1.y, p2.x, p2.y);
 }
 
 inline FixPoint RadToDeg256(FixPoint angleRad) {
-    return (angleRad << 7)/FixPt_PI; // angleRad*256/(2*FixPt_PI)
+    return (angleRad << 7) / FixPt_PI; // angleRad*256/(2*FixPt_PI)
 }
 
-inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   // angle*2*FixPt_PI/256;
+inline FixPoint Deg256ToRad(FixPoint angle) { return (angle * FixPt_PI) >> 7; } // angle*2*FixPt_PI/256;
 
 /**
     Calculates the smaller angle between angle1 and angle2. The result is always positive,
@@ -64,34 +59,32 @@ inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   
     \return the angle between angle1 and angle2.
 */
 inline int angleDiff(ANGLETYPE angle1, ANGLETYPE angle2) {
-    int diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
+    const auto diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
     return std::min(diff, static_cast<int>(ANGLETYPE::NUM_ANGLES) - diff);
 }
 
 inline ANGLETYPE angleToDrawnAngle(FixPoint angle) {
-    return static_cast<ANGLETYPE>(lround(angle >> 5) & 0x7);  //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
+    return static_cast<ANGLETYPE>(lround(angle >> 5) & 0x7); //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
 }
 
 inline ANGLETYPE destinationDrawnAngle(const Coord& p1, const Coord& p2) {
     return angleToDrawnAngle(RadToDeg256(destinationAngleRad(p1, p2)));
 }
 
-inline FixPoint distanceFrom(const Coord& p1, const Coord& p2)
-{
-    FixPoint first = (p1.x - p2.x);
-    FixPoint second = (p1.y - p2.y);
+inline FixPoint distanceFrom(const Coord& p1, const Coord& p2) {
+    const FixPoint first  = p1.x - p2.x;
+    const FixPoint second = p1.y - p2.y;
 
-    FixPoint z = FixPoint::sqrt(first*first + second*second);
+    const auto z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
 
-inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y)
-{
-    FixPoint first = (x - to_x);
-    FixPoint second = (y - to_y);
+inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y) {
+    const auto first  = (x - to_x);
+    const auto second = (y - to_y);
 
-    FixPoint z = FixPoint::sqrt(first*first + second*second);
+    const auto z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
@@ -102,9 +95,7 @@ inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_
     \param  p2  second coordinate
     \return the distance
 */
-inline int maximumDistance(const Coord& p1, const Coord& p2) {
-    return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y));
-}
+inline int maximumDistance(const Coord& p1, const Coord& p2) { return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y)); }
 
 /**
     Calculates the block distance, that is the distance when moving along blocks
@@ -112,47 +103,44 @@ inline int maximumDistance(const Coord& p1, const Coord& p2) {
     \param  p2  second coordinate
     \return the distance
 */
-inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
-    int diffX = abs(p1.x - p2.x);
-    int diffY = abs(p1.y - p2.y);
+inline FixPoint blockDistance(const Coord& p1, const Coord& p2) noexcept {
+    const auto diffX = abs(p1.x - p2.x);
+    const auto diffY = abs(p1.y - p2.y);
 
     if(diffX > diffY) {
-        return diffX + diffY*(FixPt_SQRT2 - 1);
-    } else {
-        return diffX*(FixPt_SQRT2 - 1) + diffY;
+        return diffX + diffY * (FixPt_SQRT2 - 1);
     }
+
+    return diffX * (FixPt_SQRT2 - 1) + diffY;
 }
 
 /**
-    Calculates the block distance the same as the original, that is diffX + diffY/2 for diffX > diffY and diffX/2 + diffY for diffX <= diffY
-    \param  p1  first coordinate
-    \param  p2  second coordinate
-    \return the distance
+    Calculates the block distance the same as the original, that is diffX + diffY/2 for diffX > diffY and diffX/2 +
+   diffY for diffX <= diffY \param  p1  first coordinate \param  p2  second coordinate \return the distance
 */
-inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
-    int diffX = abs(p1.x - p2.x);
-    int diffY = abs(p1.y - p2.y);
+inline int blockDistanceApprox(const Coord& p1, const Coord& p2) noexcept {
+    const auto diffX = abs(p1.x - p2.x);
+    const auto diffY = abs(p1.y - p2.y);
 
     if(diffX > diffY) {
-        return ((diffX*2 + diffY) + 1)/2;
-    } else {
-        return ((diffX + diffY*2) + 1)/2;
+        return ((diffX * 2 + diffY) + 1) / 2;
     }
+
+    return ((diffX + diffY * 2) + 1) / 2;
 }
 
-inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
-    auto int_angle = static_cast<int>(angle);
+constexpr ANGLETYPE normalizeAngle(ANGLETYPE angle) noexcept {
+    const auto int_angle = static_cast<int>(angle);
 
-    if (int_angle >= 0 && int_angle < static_cast<int>(ANGLETYPE::NUM_ANGLES))
-        return angle;
+    if(int_angle >= 0 && int_angle < static_cast<int>(ANGLETYPE::NUM_ANGLES)) return angle;
 
     auto mod_angle = int_angle % static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    if (int_angle < 0) mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    if(int_angle < 0) mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
 
     return static_cast<ANGLETYPE>(mod_angle);
 }
 
-inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
+constexpr ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) noexcept {
     angle = normalizeAngle(angle);
 
     // clang-format off
@@ -172,9 +160,7 @@ inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
     // clang-format on
 }
 
-
-
-inline ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) {
+constexpr ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) noexcept {
     angle = normalizeAngle(angle);
 
     // clang-format off
@@ -229,5 +215,7 @@ int zoomedWorld2world(int x);
 */
 Coord zoomedWorld2world(const Coord& coord);
 
+} // namespace Dune::Engine
 
-#endif //MMATH_H
+#endif // ENGINE_MMATH_H
+

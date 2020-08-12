@@ -18,33 +18,34 @@
 #ifndef REINFORCEMENTTRIGGER_H
 #define REINFORCEMENTTRIGGER_H
 
-#include <Trigger/Trigger.h>
+#include "Trigger.h"
 
 #include <DataTypes.h>
 
 #include <vector>
+
+namespace Dune::Engine {
 
 /**
     This trigger is used for delivering reinforcements at specific game cycles.
 */
 class ReinforcementTrigger final : public Trigger {
 public:
-
     /**
         Constructor
         \param  houseID             the owner of the new unit
         \param  itemID              the itemID of the new unit
         \param  location            the kind of drop
-        \param  bRepeat             true = repeat the dropping (every triggerCycleNumber game cycles), false = do not repeat
-        \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
+        \param  bRepeat             true = repeat the dropping (every triggerCycleNumber game cycles), false = do not
+       repeat \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
     */
     ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
                          uint32_t triggerCycleNumber);
-    ReinforcementTrigger(const ReinforcementTrigger &) = default;
-    ReinforcementTrigger(ReinforcementTrigger &&) = default;
+    ReinforcementTrigger(const ReinforcementTrigger&) = default;
+    ReinforcementTrigger(ReinforcementTrigger&&)      = default;
 
-    ReinforcementTrigger& operator=(const ReinforcementTrigger &&);
-    ReinforcementTrigger& operator=(ReinforcementTrigger &&);
+    ReinforcementTrigger& operator=(const ReinforcementTrigger&&);
+    ReinforcementTrigger& operator=(ReinforcementTrigger&&);
 
     /**
         This constructor constructs the trigger from a stream.
@@ -74,7 +75,7 @@ public:
     [[nodiscard]] DropLocation getDropLocation() const { return dropLocation; }
 
     /**
-        Return if this Reinforcment is repeated.
+        Return if this Reinforcement is repeated.
         \return true = is repeated, false = not repeated
     */
     [[nodiscard]] bool isRepeat() const { return (repeatCycle != 0); }
@@ -97,10 +98,13 @@ public:
     void trigger(const GameContext& context) override;
 
 private:
-    std::vector<ItemID_enum> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units
-    DropLocation        dropLocation;   ///< the kind of drop
-    HOUSETYPE           houseID;        ///< the owner of the new unit
-    uint32_t              repeatCycle;    ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the beginning of the game. repeatCycle = 0 if there is no repeat
+    std::vector<ItemID_enum> droppedUnits; ///< a vector of the itemIDs of the to be dropped units
+    DropLocation             dropLocation; ///< the kind of drop
+    HOUSETYPE                houseID;      ///< the owner of the new unit
+    uint32_t repeatCycle; ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the
+                          ///< beginning of the game. repeatCycle = 0 if there is no repeat
 };
+
+} // namespace Dune::Engine
 
 #endif // REINFORCEMENTTRIGGER_H

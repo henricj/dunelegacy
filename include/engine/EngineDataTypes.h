@@ -21,22 +21,26 @@
 #include "EngineDefinitions.h"
 
 // Libraries
-#include <string>
 
-struct DuneTexture;
+namespace Dune::Engine {
+
 class Game;
 class House;
 class Map;
 class ObjectManager;
 
-#include <unordered_set>
+struct GameContext {
+    GameContext(Game& game, Map& map, ObjectManager& objectManager)
+        : game{game}, map{map}, objectManager{objectManager} { }
 
-enum class GameState {
-    Start,
-    Loading,
-    Running,
-    Deinitialize
+    Game&          game;
+    Map&           map;
+    ObjectManager& objectManager;
 };
+
+} // namespace Dune::Engine
+
+enum class GameState { Start, Loading, Running, Deinitialize };
 
 enum class GameType {
     Invalid           = -1,
@@ -48,20 +52,15 @@ enum class GameType {
     LoadMultiplayer   = 5
 };
 
-
 class Coord final {
 public:
     constexpr Coord() noexcept : x(0), y(0) { }
 
     constexpr Coord(int x, int y) noexcept : x(x), y(y) { }
 
-    constexpr bool operator==(const Coord& c) const noexcept {
-        return (x == c.x && y == c.y);
-    }
+    constexpr bool operator==(const Coord& c) const noexcept { return (x == c.x && y == c.y); }
 
-    constexpr bool operator!=(const Coord& c) const noexcept {
-        return !operator==(c);
-    }
+    constexpr bool operator!=(const Coord& c) const noexcept { return !operator==(c); }
 
     constexpr Coord& operator+=(const Coord& c) noexcept {
         x += c.x;
@@ -81,7 +80,7 @@ public:
         return *this;
     }
 
-    constexpr Coord operator-(const Coord& c) const noexcept  {
+    constexpr Coord operator-(const Coord& c) const noexcept {
         Coord ret = *this;
         ret -= c;
         return ret;
@@ -116,27 +115,18 @@ public:
         y = INVALID_POS;
     }
 
-    [[nodiscard]] constexpr bool isValid() const noexcept {
-        return ((x != INVALID_POS) && (y != INVALID_POS));
-    }
+    [[nodiscard]] constexpr bool isValid() const noexcept { return ((x != INVALID_POS) && (y != INVALID_POS)); }
 
-    [[nodiscard]] constexpr bool isInvalid() const noexcept {
-        return ((x == INVALID_POS) || (y == INVALID_POS));
-    }
+    [[nodiscard]] constexpr bool isInvalid() const noexcept { return ((x == INVALID_POS) || (y == INVALID_POS)); }
 
-    static constexpr Coord Invalid() noexcept {
-        return Coord(INVALID_POS, INVALID_POS);
-    }
+    static constexpr Coord Invalid() noexcept { return Coord(INVALID_POS, INVALID_POS); }
 
-    explicit constexpr operator bool() const noexcept {
-        return isValid();
-    }
+    explicit constexpr operator bool() const noexcept { return isValid(); }
 
 public:
     int x;
     int y;
 };
-
 
 class GameOptionsClass {
 public:
@@ -173,28 +163,24 @@ public:
     int  maximumNumberOfUnitsOverride;
 };
 
-
-struct GameContext {
-    GameContext(Game& game, Map& map, ObjectManager& objectManager)
-        : game{game}, map{map}, objectManager{objectManager} { }
-
-    Game&          game;
-    Map&           map;
-    ObjectManager& objectManager;
-};
-
 typedef enum : int8_t {
     ATTACKMODE_INVALID = -1,
-    GUARD = 0,      ///< The unit will attack enemy units but will not move or follow enemy units.
-    AREAGUARD = 1,  ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a relatively large radius, and return to their original position after their target was either destroyed or left the immediate area.
-    AMBUSH = 2,     ///< Ambush means a unit will remain in position until sighted by the enemy, and then proceed to attack any enemy units it might find on the map.
-    HUNT = 3,       ///< Hunt makes a unit start from its position towards enemy units, even if the player has not sighted the AI (normally the AI will not attack until there has been a contact between the player's and the AI's units). Also works for human units, they'll go towards any enemy units on the map just as the mission starts.
-    HARVEST = 4,    ///< Only used by the map editor
-    SABOTAGE = 5,   ///< Only used by the map editor
-    STOP = 6,
-    CAPTURE = 7,    ///< Capture is only used for infantry units when ordered to capture a building
+    GUARD              = 0, ///< The unit will attack enemy units but will not move or follow enemy units.
+    AREAGUARD = 1, ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a
+                   ///< relatively large radius, and return to their original position after their target was either
+                   ///< destroyed or left the immediate area.
+    AMBUSH = 2, ///< Ambush means a unit will remain in position until sighted by the enemy, and then proceed to attack
+                ///< any enemy units it might find on the map.
+    HUNT = 3, ///< Hunt makes a unit start from its position towards enemy units, even if the player has not sighted the
+              ///< AI (normally the AI will not attack until there has been a contact between the player's and the AI's
+              ///< units). Also works for human units, they'll go towards any enemy units on the map just as the mission
+              ///< starts.
+    HARVEST           = 4, ///< Only used by the map editor
+    SABOTAGE          = 5, ///< Only used by the map editor
+    STOP              = 6,
+    CAPTURE           = 7, ///< Capture is only used for infantry units when ordered to capture a building
     CARRYALLREQUESTED = 8, ///< This allows a unit to keep requesting a carryall even if one isn't available right now
-    RETREAT = 9,           ///< Ignore other units
+    RETREAT           = 9, ///< Ignore other units
     ATTACKMODE_MAX
 } ATTACKMODE;
 
@@ -211,7 +197,6 @@ enum class HOUSETYPE : int8_t {
     HOUSE_FIRST = HOUSE_HARKONNEN,
     HOUSE_LAST  = HOUSE_MERCENARY
 };
-
 
 template<typename F>
 void for_each_housetype(F&& f) {
@@ -234,23 +219,23 @@ enum class ANGLETYPE : int8_t {
 
 enum class DropLocation : int8_t {
     Drop_Invalid = -1,
-    Drop_North,         ///< unit will appear at a random position at the top of the map
-    Drop_East,          ///< unit will appear at a random position on the right side of the map
-    Drop_South,         ///< unit will appear at a random position at the bottom of the map
-    Drop_West,          ///< unit will appear at a random position on the left side of the map
-    Drop_Air,           ///< unit will be dropped at a random position
-    Drop_Visible,       ///< unit will be dropped at a random position in the middle of the map
-    Drop_Enemybase,     ///< unit will be dropped near the enemy base
-    Drop_Homebase       ///< unit will be dropped near the base of the owner of the new unit
+    Drop_North,     ///< unit will appear at a random position at the top of the map
+    Drop_East,      ///< unit will appear at a random position on the right side of the map
+    Drop_South,     ///< unit will appear at a random position at the bottom of the map
+    Drop_West,      ///< unit will appear at a random position on the left side of the map
+    Drop_Air,       ///< unit will be dropped at a random position
+    Drop_Visible,   ///< unit will be dropped at a random position in the middle of the map
+    Drop_Enemybase, ///< unit will be dropped near the enemy base
+    Drop_Homebase   ///< unit will be dropped near the base of the owner of the new unit
 };
 
 enum class AITeamBehavior {
     AITeamBehavior_Invalid = -1,
-    AITeamBehavior_Normal,            ///< Attack units and/or structures when building up the team is complete
-    AITeamBehavior_Guard,             ///< Same as AITeamBehavior_Normal
-    AITeamBehavior_Kamikaze,          ///< Directly attack structures when building up the team is complete
-    AITeamBehavior_Staging,           ///< A team in the process of being built up
-    AITeamBehavior_Flee               ///< Do nothing (Unimplemented in Dune II?)
+    AITeamBehavior_Normal,   ///< Attack units and/or structures when building up the team is complete
+    AITeamBehavior_Guard,    ///< Same as AITeamBehavior_Normal
+    AITeamBehavior_Kamikaze, ///< Directly attack structures when building up the team is complete
+    AITeamBehavior_Staging,  ///< A team in the process of being built up
+    AITeamBehavior_Flee      ///< Do nothing (Unimplemented in Dune II?)
 };
 
 enum class AITeamType {
@@ -262,7 +247,6 @@ enum class AITeamType {
     AITeamType_Slither,
     AITeamType_Harvester
 };
-
 
 namespace Dune {
     typedef uint32_t object_id_type;

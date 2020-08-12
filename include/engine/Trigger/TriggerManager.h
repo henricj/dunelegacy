@@ -18,19 +18,20 @@
 #ifndef TRIGGERMANAGER_H
 #define TRIGGERMANAGER_H
 
-#include <Trigger/Trigger.h>
+#include "Trigger.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
 #include <memory>
 #include <deque>
 
+namespace Dune::Engine {
+
 /**
     This class manages triggers for the game play. A trigger is triggered at a specific game cycle.
 */
 class TriggerManager {
 public:
-
     /// default constructor
     TriggerManager();
 
@@ -68,12 +69,13 @@ public:
     [[nodiscard]] const std::deque<std::unique_ptr<Trigger>>& getTriggers() const { return triggers; }
 
 private:
-    std::deque<std::unique_ptr<Trigger>> triggers;  ///< list of all triggers. sorted by the time when they shall be triggered.
+    std::deque<std::unique_ptr<Trigger>>
+                                          triggers; ///< list of all triggers. sorted by the time when they shall be triggered.
     std::vector<std::unique_ptr<Trigger>> active_trigger;
 
     typedef enum {
-        Type_ReinforcementTrigger = 1,      ///< the trigger is of type ReinforcementTrigger
-        Type_TimeoutTrigger = 2             ///< the trigger is of type TimeoutTrigger
+        Type_ReinforcementTrigger = 1, ///< the trigger is of type ReinforcementTrigger
+        Type_TimeoutTrigger       = 2  ///< the trigger is of type TimeoutTrigger
     } TriggerType;
 
     /**
@@ -90,5 +92,7 @@ private:
     */
     std::unique_ptr<Trigger> loadTrigger(InputStream& stream) const;
 };
+
+} // namespace Dune::Engine
 
 #endif // TRIGGERMANAGER_H

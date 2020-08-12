@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(TOP_SOURCES
-	AStarSearch.cpp
 	Bullet.cpp
 	Choam.cpp
 	Explosion.cpp
@@ -206,7 +205,6 @@ set(UNITS_SOURCES
 	units/UnitBase.cpp)
 
 set(HEADERS
-../include/AStarSearch.h
 ../include/Bullet.h
 ../include/Choam.h
 ../include/Colors.h

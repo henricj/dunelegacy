@@ -30,6 +30,8 @@
 #include <queue>
 #include <unordered_map>
 
+namespace Dune::Engine {
+
 // forward declarations
 class ObjectBase;
 
@@ -43,16 +45,15 @@ public:
     */
     ObjectManager();
 
-    ObjectManager(const ObjectManager &) = delete;
-    ObjectManager(ObjectManager &&) = delete;
-    ObjectManager& operator=(const ObjectManager &) = delete;
-    ObjectManager& operator=(ObjectManager &&) = delete;
+    ObjectManager(const ObjectManager&) = delete;
+    ObjectManager(ObjectManager&&)      = delete;
+    ObjectManager& operator=(const ObjectManager&) = delete;
+    ObjectManager& operator=(ObjectManager&&) = delete;
 
     /**
         Default destructor
     */
     ~ObjectManager();
-
 
     /**
         Saves all objects to a stream
@@ -110,7 +111,7 @@ public:
 
     template<typename F>
     void consume_pending_deletes(F&& f) {
-        while (!pendingDelete.empty()) {
+        while(!pendingDelete.empty()) {
             auto object = std::move(pendingDelete.front());
 
             pendingDelete.pop();
@@ -121,7 +122,7 @@ public:
 
     template<typename Visitor>
     void for_each(Visitor&& visitor) {
-        for (auto& pair : objectMap) {
+        for(auto& pair : objectMap) {
             assert(pair.first == pair.second->getObjectID());
             visitor(pair.second);
         }
@@ -154,7 +155,7 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
-        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer &>::value,
+        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer&>::value,
                       "ObjectType is not constructible");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
@@ -167,12 +168,14 @@ private:
         \param  pObject A pointer to the object.
         \return ObjectID of the added object.
     */
-    bool addObject(std::unique_ptr<ObjectBase> pObject);
+    bool                               addObject(std::unique_ptr<ObjectBase> pObject);
     static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
 
-    uint32_t                    nextFreeObjectID = 1;
-    ObjectMap objectMap;
+    uint32_t                                nextFreeObjectID = 1;
+    ObjectMap                               objectMap;
     std::queue<std::unique_ptr<ObjectBase>> pendingDelete;
 };
+
+} // namespace Dune::Engine
 
 #endif //OBJECTMANAGER_H

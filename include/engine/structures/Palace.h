@@ -15,24 +15,23 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PALACE_H
-#define PALACE_H
+#ifndef ENGINE_PALACE_H
+#define ENGINE_PALACE_H
 
 #include <structures/StructureBase.h>
 
-class Palace final : public StructureBase
-{
+namespace Dune::Engine {
+
+class Palace final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Palace;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Palace(uint32_t objectID, const ObjectInitializer& initializer);
     Palace(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Palace() override;
 
     void save(OutputStream& stream) const override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     void handleSpecialClick(const GameContext& context);
 
@@ -50,29 +49,24 @@ public:
     */
     void doLaunchDeathhand(const GameContext& context, int x, int y);
 
-
     /**
         Can this structure be captured by infantry units?
         \return true, if this structure can be captured, false otherwise
     */
     bool canBeCaptured() const noexcept override { return false; }
 
-    int getPercentComplete() const {
-        return specialWeaponTimer*100/getMaxSpecialWeaponTimer();
-    }
+    int getPercentComplete() const { return specialWeaponTimer * 100 / getMaxSpecialWeaponTimer(); }
 
     bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
-    int getSpecialWeaponTimer() const { return specialWeaponTimer; }
+    int  getSpecialWeaponTimer() const { return specialWeaponTimer; }
 
     int getMaxSpecialWeaponTimer() const {
         if(originalHouseID == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR) {
             // 10 min
-            return MILLI2CYCLES(10*60*1000);
-        }             // 5 min
+            return MILLI2CYCLES(10 * 60 * 1000);
+        } // 5 min
 
-            return MILLI2CYCLES(5*60*1000);
-
-       
+        return MILLI2CYCLES(5 * 60 * 1000);
     }
 
 protected:
@@ -86,9 +80,11 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
-    void   init();
+    void init();
 
     int32_t specialWeaponTimer; ///< When is the special weapon ready?
 };
 
-#endif // PALACE_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_PALACE_H

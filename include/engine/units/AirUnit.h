@@ -19,8 +19,8 @@
 #define AIRUNIT_H
 
 #include <units/UnitBase.h>
-#include <FileClasses/GFXManager.h>
 
+namespace Dune::Engine {
 class AirUnitConstants : public UnitBaseConstants {
 public:
     constexpr explicit AirUnitConstants(ItemID_enum itemID, int num_weapons = 0,
@@ -30,8 +30,7 @@ public:
     }
 };
 
-class AirUnit : public UnitBase
-{
+class AirUnit : public UnitBase {
 protected:
     AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,10 +40,10 @@ public:
 
     ~AirUnit() override = 0;
 
-    AirUnit(const AirUnit &) = delete;
-    AirUnit(AirUnit &&) = delete;
-    AirUnit& operator=(const AirUnit &) = delete;
-    AirUnit& operator=(AirUnit &&) = delete;
+    AirUnit(const AirUnit&) = delete;
+    AirUnit(AirUnit&&)      = delete;
+    AirUnit& operator=(const AirUnit&) = delete;
+    AirUnit& operator=(AirUnit&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -59,9 +58,7 @@ public:
     void checkPos(const GameContext& context) override;
     bool canPassTile(const Tile* pTile) const override;
 
-    FixPoint getMaxSpeed(const GameContext& context) const override {
-        return currentMaxSpeed;
-    }
+    FixPoint getMaxSpeed(const GameContext& context) const override { return currentMaxSpeed; }
 
 protected:
     virtual FixPoint getDestinationAngle() const;
@@ -70,9 +67,7 @@ protected:
     void move(const GameContext& context) override;
     void turn(const GameContext& context) override;
 
-    FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
-
-    zoomable_texture shadowGraphic{};       ///< The graphic for the shadow of this air unit
+    FixPoint currentMaxSpeed; ///< The current maximum allowed speed
 
 private:
     void initAirUnit();
@@ -91,5 +86,7 @@ inline const AirUnit* dune_cast(const ObjectBase* base) {
 
     return nullptr;
 }
+
+} // namespace Dune::Engine
 
 #endif // AIRUNIT_H

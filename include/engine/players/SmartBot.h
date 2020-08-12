@@ -20,18 +20,15 @@
 
 #include <players/Player.h>
 
-#include <DataTypes.h>
+#include <EngineDataTypes.h>
 
-class SmartBot : public Player
-{
+namespace Dune::Engine {
+class SmartBot : public Player {
 public:
-    enum class Difficulty {
-        Normal = 0,
-        Defense = 1,
-        Hard = 2
-    };
+    enum class Difficulty { Normal = 0, Defense = 1, Hard = 2 };
 
-    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+             Difficulty difficulty);
     SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~SmartBot() override;
     void save(OutputStream& stream) const override;
@@ -59,17 +56,19 @@ private:
 
     [[nodiscard]] int getMaxHarvester() const;
 
-    Difficulty difficulty;  ///< difficulty level
-    int32_t  attackTimer;    ///< When to attack?
-    int32_t  buildTimer;     ///< When to build the next structure/unit
-    int harvesterLimit = 4; ///< maximum number of harvesters
+    Difficulty difficulty;         ///< difficulty level
+    int32_t    attackTimer;        ///< When to attack?
+    int32_t    buildTimer;         ///< When to build the next structure/unit
+    int        harvesterLimit = 4; ///< maximum number of harvesters
 
-    std::list<Coord> placeLocations;    ///< Where to place structures
+    std::list<Coord> placeLocations; ///< Where to place structures
 
     bool focusEconomy();
     bool focusMilitary();
     bool focusFactory();
     bool focusBase();
 };
+
+} // namespace Dune::Engine
 
 #endif //SmartBot_H

@@ -20,20 +20,18 @@
 
 #include <players/Player.h>
 
-#include <DataTypes.h>
+#include <EngineDataTypes.h>
 
 #include <deque>
 
-class AIPlayer : public Player
-{
-public:
-    enum class Difficulty {
-        Easy = 0,
-        Medium = 1,
-        Hard = 2
-    };
+namespace Dune::Engine {
 
-    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+class AIPlayer : public Player {
+public:
+    enum class Difficulty { Easy = 0, Medium = 1, Hard = 2 };
+
+    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+             Difficulty difficulty);
     AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~AIPlayer() override;
     void save(OutputStream& stream) const override;
@@ -60,10 +58,12 @@ private:
     [[nodiscard]] int getMaxHarvester() const;
 
     Difficulty difficulty;  ///< difficulty level
-    int32_t  attackTimer;    ///< When to attack?
-    int32_t  buildTimer;     ///< When to build the next structure/unit
+    int32_t    attackTimer; ///< When to attack?
+    int32_t    buildTimer;  ///< When to build the next structure/unit
 
-    std::deque<Coord> placeLocations;    ///< Where to place structures
+    std::deque<Coord> placeLocations; ///< Where to place structures
 };
+
+} // namespace Dune::Engine
 
 #endif //AIPLAYER_H

@@ -20,11 +20,12 @@
 
 #include <units/GroundUnit.h>
 
-class MCV final : public GroundUnit
-{
+namespace Dune::Engine {
+
+class MCV final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_MCV;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     MCV(uint32_t objectID, const ObjectInitializer& initializer);
     MCV(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -42,14 +43,14 @@ public:
 
     void destroy(const GameContext& context) override;
 
-    bool canDeploy() const {
-        return canDeploy(getLocation().x, getLocation().y);
-    }
+    bool canDeploy() const { return canDeploy(getLocation().x, getLocation().y); }
 
 private:
     void init();
 
     static bool canDeploy(int x, int y);
 };
+
+} // namespace Dune::Engine
 
 #endif // MCV_H

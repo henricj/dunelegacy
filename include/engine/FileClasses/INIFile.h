@@ -24,7 +24,9 @@
 #include <functional>
 #include <string>
 
-#define INVALID_LINE (-1)
+namespace Dune::Engine {
+
+inline constexpr int INVALID_LINE = -1;
 
 //!  A class for reading and writing *.ini configuration files.
 /*!
@@ -42,10 +44,8 @@
     <br>
     The section names and key names are treated case insensitive.
 */
-class INIFile
-{
+class INIFile {
 public:
-
     //\cond
     class INIFileLine;
     class Key;
@@ -53,11 +53,9 @@ public:
     class Section;
     class SectionIterator;
 
-
-    class INIFileLine
-    {
+    class INIFileLine {
     public:
-        INIFileLine(std::string  completeLine, int lineNumber);
+        INIFileLine(std::string completeLine, int lineNumber);
         virtual ~INIFileLine();
 
         [[nodiscard]] int getLineNumber() const noexcept { return line; };
@@ -74,17 +72,16 @@ public:
             }
         }
 
-        std::string completeLine;
-        int line;
+        std::string  completeLine;
+        int          line;
         INIFileLine* nextLine;
         INIFileLine* prevLine;
     };
 
-
-    class Key : public INIFileLine
-    {
+    class Key : public INIFileLine {
     public:
-        Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength);
+        Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin,
+            int valuestringlength);
         Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
         ~Key();
 
@@ -150,8 +147,7 @@ public:
         void setBoolValue(bool newValue);
 
         template<typename T>
-        void setValue(T newValue)
-        {
+        void setValue(T newValue) {
             std::array<char, 128> buffer;
             const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
 
@@ -177,7 +173,6 @@ public:
         void setIntValue(int newValue) { setValue(newValue); }
         void setDoubleValue(double newValue) { setValue(newValue); }
 
-
         friend class INIFile;
         friend class INIFile::KeyIterator;
         friend class INIFile::Section;
@@ -187,55 +182,40 @@ public:
         static bool        escapingValueNeeded(std::string_view value);
         static std::string escapeValue(const std::string& value);
 
-        int keyStringBegin;
-        int keyStringLength;
-        int valueStringBegin;
-        int valueStringLength;
+        int  keyStringBegin;
+        int  keyStringLength;
+        int  valueStringBegin;
+        int  valueStringLength;
         Key* nextKey;
         Key* prevKey;
     };
 
-
-    class KeyIterator
-    {
+    class KeyIterator {
     public:
-        KeyIterator() noexcept : key(nullptr) {
-        }
+        KeyIterator() noexcept : key(nullptr) { }
 
-        explicit KeyIterator(Key* pKey) noexcept : key(pKey) {
-        }
+        explicit KeyIterator(Key* pKey) noexcept : key(pKey) { }
 
-        Key& operator*() const noexcept {
-            return *key;
-        }
+        Key& operator*() const noexcept { return *key; }
 
-        Key* operator->() const noexcept {
-            return key;
-        }
+        Key* operator->() const noexcept { return key; }
 
-        bool operator==(const KeyIterator& other) const noexcept {
-            return (key == other.key);
-        }
+        bool operator==(const KeyIterator& other) const noexcept { return (key == other.key); }
 
-        bool operator!=(const KeyIterator& other) const noexcept {
-            return !(operator==(other));
-        }
+        bool operator!=(const KeyIterator& other) const noexcept { return !(operator==(other)); }
 
         void operator++() {
-            if(key != nullptr) {
-                key = key->nextKey;
-            }
+            if(key != nullptr) { key = key->nextKey; }
         }
 
     private:
         Key* key;
     };
 
-
-    class Section : public INIFileLine
-    {
+    class Section : public INIFileLine {
     public:
-        Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace = true);
+        Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength,
+                bool bWhitespace = true);
         Section(const std::string& sectionname, bool bWhitespace = true);
         ~Section();
 
@@ -257,44 +237,30 @@ public:
     protected:
         void insertKey(Key* newKey);
 
-        int sectionStringBegin;
-        int sectionStringLength;
+        int      sectionStringBegin;
+        int      sectionStringLength;
         Section* nextSection;
         Section* prevSection;
-        Key* keyRoot;
-        bool bWhitespace;
+        Key*     keyRoot;
+        bool     bWhitespace;
     };
 
-
-    class SectionIterator
-    {
+    class SectionIterator {
     public:
-        SectionIterator() noexcept : section(nullptr) {
-        }
+        SectionIterator() noexcept : section(nullptr) { }
 
-        explicit SectionIterator(Section* pSection) noexcept : section(pSection) {
-        }
+        explicit SectionIterator(Section* pSection) noexcept : section(pSection) { }
 
-        Section& operator*() const noexcept {
-            return *section;
-        }
+        Section& operator*() const noexcept { return *section; }
 
-        Section* operator->() const noexcept {
-            return section;
-        }
+        Section* operator->() const noexcept { return section; }
 
-        bool operator==(const SectionIterator& other) const noexcept {
-            return (section == other.section);
-        }
+        bool operator==(const SectionIterator& other) const noexcept { return (section == other.section); }
 
-        bool operator!=(const SectionIterator& other) const noexcept {
-            return !(operator==(other));
-        }
+        bool operator!=(const SectionIterator& other) const noexcept { return !(operator==(other)); }
 
         void operator++() noexcept {
-            if(section != nullptr) {
-                section = section->nextSection;
-            }
+            if(section != nullptr) { section = section->nextSection; }
         }
 
     private:
@@ -302,30 +268,32 @@ public:
     };
     //\endcond
 
-
-
 public:
-
     INIFile(bool bWhitespace, const std::string& firstLineComment);
     INIFile(std::function<int()> getchar, bool bWhitespace = true);
     INIFile(const INIFile& o) = delete;
     ~INIFile();
 
-    [[nodiscard]] bool hasSection(const std::string& section) const;
+    [[nodiscard]] bool           hasSection(const std::string& section) const;
     [[nodiscard]] const Section& getSection(const std::string& sectionname) const;
-    bool removeSection(const std::string& sectionname);
-    bool clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
-    [[nodiscard]] bool hasKey(const std::string& section, const std::string& key) const;
-    [[nodiscard]] const Key* getKey(const std::string& sectionname, const std::string& keyname) const;
-    bool removeKey(const std::string& section, const std::string& key);
+    bool                         removeSection(const std::string& sectionname);
+    bool                         clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd = true);
+    [[nodiscard]] bool           hasKey(const std::string& section, const std::string& key) const;
+    [[nodiscard]] const Key*     getKey(const std::string& sectionname, const std::string& keyname) const;
+    bool                         removeKey(const std::string& section, const std::string& key);
 
-    [[nodiscard]] std::string getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue = "") const;
-    [[nodiscard]] int getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
-    [[nodiscard]] bool getBoolValue(const std::string& section, const std::string& key, bool defaultValue = false) const;
-    [[nodiscard]] float getFloatValue(const std::string& section, const std::string& key, float defaultValue = 0.0f) const;
-    [[nodiscard]] double getDoubleValue(const std::string& section, const std::string& key, double defaultValue = 0.0) const;
+    [[nodiscard]] std::string getStringValue(const std::string& section, const std::string& key,
+                                             const std::string& defaultValue = "") const;
+    [[nodiscard]] int    getIntValue(const std::string& section, const std::string& key, int defaultValue = 0) const;
+    [[nodiscard]] bool   getBoolValue(const std::string& section, const std::string& key,
+                                      bool defaultValue = false) const;
+    [[nodiscard]] float  getFloatValue(const std::string& section, const std::string& key,
+                                       float defaultValue = 0.0f) const;
+    [[nodiscard]] double getDoubleValue(const std::string& section, const std::string& key,
+                                        double defaultValue = 0.0) const;
 
-    void setStringValue(const std::string& section, const std::string& key, const std::string& value, bool bEscapeIfNeeded = true);
+    void setStringValue(const std::string& section, const std::string& key, const std::string& value,
+                        bool bEscapeIfNeeded = true);
     void setIntValue(const std::string& section, const std::string& key, int value);
     void setBoolValue(const std::string& section, const std::string& key, bool value);
     void setDoubleValue(const std::string& section, const std::string& key, double value);
@@ -341,8 +309,8 @@ public:
 
 private:
     INIFileLine* firstLine;
-    Section* sectionRoot;
-    bool bWhitespace;
+    Section*     sectionRoot;
+    bool         bWhitespace;
 
     void flush() const;
     void readfile(std::function<int()> getchar);
@@ -350,22 +318,24 @@ private:
     void insertSection(Section* newSection);
 
     [[nodiscard]] const Section* getSectionInternal(const std::string& sectionname) const;
-    Section* getSectionOrCreate(const std::string& sectionname);
+    Section*                     getSectionOrCreate(const std::string& sectionname);
 
     static bool isValidSectionName(const std::string& sectionname);
     static bool isValidKeyName(const std::string& keyname);
 
     static int getNextChar(const unsigned char* line, int startpos);
-    static int skipName(const unsigned char* line,int startpos);
-    static int skipValue(const unsigned char* line,int startpos);
-    static int skipKey(const unsigned char* line,int startpos);
-    static int getNextQuote(const unsigned char* line,int startpos);
+    static int skipName(const unsigned char* line, int startpos);
+    static int skipValue(const unsigned char* line, int startpos);
+    static int skipKey(const unsigned char* line, int startpos);
+    static int getNextQuote(const unsigned char* line, int startpos);
 
     static bool isWhitespace(unsigned char s);
     static bool isNormalChar(unsigned char s);
 
-    static int strncicmp(const char *s1, const char *s2, size_t n);
+    static int strncicmp(const char* s1, const char* s2, size_t n);
 };
+
+} // namespace Dune::Engine
 
 #endif // INIFILE_H
 

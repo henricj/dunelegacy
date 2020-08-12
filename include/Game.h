@@ -19,29 +19,23 @@
 #define GAME_H
 
 #include <misc/Random.h>
-#include <misc/RobustList.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <ObjectData.h>
-#include <ObjectManager.h>
-#include <CommandManager.h>
+#include <engine/ObjectData.h>
+#include <engine/ObjectManager.h>
+#include <engine/CommandManager.h>
 #include <GameInterface.h>
 #include <INIMap/INIMapLoader.h>
-#include <GameInitSettings.h>
-#include <Trigger/TriggerManager.h>
-#include <players/Player.h>
-#include <players/HumanPlayer.h>
-#include <misc/SDL2pp.h>
+#include <engine/Trigger/TriggerManager.h>
+#include <engine/players/Player.h>
+#include <engine/players/HumanPlayer.h>
 
 #include <DataTypes.h>
 
-#include <stdarg.h>
 #include <string>
 
 #include <array>
 #include <filesystem>
-#include <map>
-#include <utility>
 #include <unordered_set>
 
 // forward declarations
@@ -89,7 +83,7 @@ public:
         Initializes a game with the specified settings
         \param  newGameInitSettings the game init settings to initialize the game
     */
-    void initGame(const GameInitSettings& newGameInitSettings);
+    void initGame(const Dune::Engine::GameInitSettings& newGameInitSettings);
 
     /**
         Initializes a replay from the specified filename
@@ -133,7 +127,7 @@ public:
         Get the command manager of this game
         \return the command manager
     */
-    CommandManager& getCommandManager() noexcept { return cmdManager; };
+    Dune::Engine::CommandManager& getCommandManager() noexcept { return cmdManager; };
 
     /**
         Get the trigger manager of this game
@@ -270,8 +264,8 @@ public:
     [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; };
     [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; };
 
-    [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
-    void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
+    [[nodiscard]] const Dune::Engine::GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
+    void setNextGameInitSettings(const Dune::Engine::GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
 
     /**
         This method should be called if whatNext() returns GAME_NEXTMISSION or GAME_LOAD. You should
@@ -279,7 +273,7 @@ public:
         that was returned previously by getNextGameInitSettings().
         \return a GameInitSettings-Object that describes the next game.
     */
-    GameInitSettings getNextGameInitSettings();
+    Dune::Engine::GameInitSettings getNextGameInitSettings();
 
     /**
         This method should be called after startGame() has returned. whatNext() will tell the caller
@@ -400,7 +394,7 @@ public:
         Register a new player in this game.
         \param  player      the player to register
     */
-    void registerPlayer(Player* player) {
+    void registerPlayer(Dune::Engine::Player* player) {
         playerName2Player.emplace(player->getPlayername(), player);
         playerID2Player[player->getPlayerID()] = player;
     }
@@ -409,7 +403,7 @@ public:
         Unregisters the specified player
         \param  player
     */
-    void unregisterPlayer(Player* player) {
+    void unregisterPlayer(Dune::Engine::Player* player) {
         playerID2Player.erase(player->getPlayerID());
 
         const auto iter = std::find_if(playerName2Player.begin(), playerName2Player.end(),
@@ -424,7 +418,7 @@ public:
         \param  playername  the name of the player
         \return the player or nullptr if none was found
     */
-    [[nodiscard]] Player* getPlayerByName(const std::string& playername) const {
+    [[nodiscard]] Dune::Engine::Player* getPlayerByName(const std::string& playername) const {
         const auto iter = playerName2Player.find(playername);
         if(iter != playerName2Player.end()) {
             return iter->second;
@@ -438,7 +432,7 @@ public:
         \param  playerID  the name of the player
         \return the player or nullptr if none was found
     */
-    [[nodiscard]] Player* getPlayerByID(Uint8 playerID) const {
+    [[nodiscard]] Dune::Engine::Player* getPlayerByID(Uint8 playerID) const {
         const auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;

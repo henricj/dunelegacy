@@ -23,45 +23,35 @@
 #include "units/UnitBase.h"
 #include "structures/StructureBase.h"
 
-ObjectBase* ObjectPointer::getObjPointer(const ObjectManager& objectManager) const
-{
-    if(objectID == NONE_ID) {
-        return nullptr;
-    }
+namespace Dune::Engine {
+
+ObjectBase* ObjectPointer::getObjPointer(const ObjectManager& objectManager) const {
+    if(objectID == NONE_ID) { return nullptr; }
 
     auto* ObjPointer = objectManager.getObject(objectID);
-    if(ObjPointer == nullptr) {
-        objectID = NONE_ID;
-    }
+    if(ObjPointer == nullptr) { objectID = NONE_ID; }
 
     return ObjPointer;
 }
 
-UnitBase* ObjectPointer::getUnitPointer() const
-{
-    return dynamic_cast<UnitBase*>(getObjPointer());
+UnitBase* ObjectPointer::getUnitPointer(const ObjectManager& objectManager) const {
+    return dune_cast<UnitBase>(getObjPointer(objectManager));
 }
 
-StructureBase* ObjectPointer::getStructurePointer() const
-{
-    return dynamic_cast<StructureBase*>(getObjPointer());
+StructureBase* ObjectPointer::getStructurePointer(const ObjectManager& objectManager) const {
+    return dune_cast<StructureBase>(getObjPointer(objectManager));
 }
 
-void ObjectPointer::save(OutputStream& stream) const
-{
-    stream.writeUint32(objectID);
-}
+void ObjectPointer::save(OutputStream& stream) const { stream.writeUint32(objectID); }
 
-void ObjectPointer::load(InputStream& stream)
-{
-    pointTo(stream.readUint32());
-}
+void ObjectPointer::load(InputStream& stream) { pointTo(stream.readUint32()); }
 
-void ObjectPointer::pointTo(const ObjectBase* newObject)
-{
+void ObjectPointer::pointTo(const ObjectBase* newObject) {
     if(newObject != nullptr) {
         objectID = newObject->getObjectID();
     } else {
         objectID = NONE_ID;
     }
 }
+
+} // namespace Dune::Engine

@@ -18,29 +18,27 @@
 #ifndef GAMEINITINFOCLASS_H
 #define GAMEINITINFOCLASS_H
 
-#include "EngineDefinitions.h"
-#include "EngineDataTypes.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/Random.h>
+
+#include "EngineDataTypes.h"
 
 #include <filesystem>
 #include <string>
 #include <utility>
 
+namespace Dune::Engine {
 
-class GameInitSettings final
-{
+class GameInitSettings final {
 public:
-
     class PlayerInfo {
     public:
         PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
-         : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) {
-        }
+            : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) { }
 
         explicit PlayerInfo(InputStream& stream) {
-            playerName = stream.readString();
+            playerName  = stream.readString();
             playerClass = stream.readString();
         }
 
@@ -55,16 +53,14 @@ public:
 
     class HouseInfo {
     public:
-        HouseInfo(HOUSETYPE newHouseID, int newTeam)
-         : houseID(newHouseID), team(newTeam) {
-        }
+        HouseInfo(HOUSETYPE newHouseID, int newTeam) : houseID(newHouseID), team(newTeam) { }
 
         explicit HouseInfo(InputStream& stream) {
             houseID = static_cast<HOUSETYPE>(stream.readSint32());
-            team = stream.readSint32();
+            team    = stream.readSint32();
 
             const auto numPlayerInfo = stream.readUint32();
-            for(uint32_t i=0;i<numPlayerInfo;i++) {
+            for(uint32_t i = 0; i < numPlayerInfo; i++) {
                 playerInfoList.push_back(PlayerInfo(stream));
             }
         }
@@ -83,13 +79,12 @@ public:
 
         typedef std::vector<PlayerInfo> PlayerInfoList;
 
-        HOUSETYPE       houseID;
-        int             team;
-        PlayerInfoList  playerInfoList;
+        HOUSETYPE      houseID;
+        int            team;
+        PlayerInfoList playerInfoList;
     };
 
     typedef std::vector<HouseInfo> HouseInfoList;
-
 
     /**
         Default constructor.
@@ -108,10 +103,12 @@ public:
         Constructor for continuing a campaign at the specified mission
         \param  prevGameInitInfoClass       the init settings of the previous mission in the campaign
         \param  nextMission                 the number of the mission to continue the campaign
-        \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid playing these again)
-        \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum HumanPlayer::TutorialHint)
+        \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid
+       playing these again) \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum
+       HumanPlayer::TutorialHint)
     */
-    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, uint32_t alreadyPlayedRegions, uint32_t alreadyShownTutorialHints);
+    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, uint32_t alreadyPlayedRegions,
+                     uint32_t alreadyShownTutorialHints);
 
     /**
         Constructor for specifying the start of a skirmish mission in the campaign
@@ -129,7 +126,8 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const GameOptionsClass& gameOptions);
+    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName,
+                     bool multiplePlayersPerHouse, const GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
@@ -138,24 +136,24 @@ public:
     */
     explicit GameInitSettings(std::filesystem::path&& savegame);
 
-  /**
-        Load the game init info from a stream
-        \param  stream  the stream to load from
-    */
+    /**
+          Load the game init info from a stream
+          \param  stream  the stream to load from
+      */
     explicit GameInitSettings(InputStream& stream);
 
     ~GameInitSettings();
 
     void save(OutputStream& stream) const;
 
-    [[nodiscard]] GameType getGameType() const noexcept { return gameType; }
+    [[nodiscard]] GameType  getGameType() const noexcept { return gameType; }
     [[nodiscard]] HOUSETYPE getHouseID() const noexcept { return houseID; }
-    [[nodiscard]] int getMission() const noexcept { return mission; }
-    [[nodiscard]] uint32_t getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
-    [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; }
+    [[nodiscard]] int       getMission() const noexcept { return mission; }
+    [[nodiscard]] uint32_t  getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
+    [[nodiscard]] uint32_t  getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; }
     [[nodiscard]] const std::filesystem::path& getFilename() const noexcept { return filename; }
-    [[nodiscard]] const std::string& getFiledata() const noexcept { return filedata; }
-    [[nodiscard]] const std::string& getServername() const noexcept { return servername; }
+    [[nodiscard]] const std::string&           getFiledata() const noexcept { return filedata; }
+    [[nodiscard]] const std::string&           getServername() const noexcept { return servername; }
 
     [[nodiscard]] const std::vector<uint8_t>& getRandomSeed() noexcept {
         if(randomSeed.empty()) randomSeed = RandomFactory::createRandomSeed("game master seed");
@@ -164,9 +162,11 @@ public:
     }
 
     [[nodiscard]] bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; }
-    void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; }
+    void               setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept {
+        this->multiplePlayersPerHouse = multiplePlayersPerHouse;
+    }
     [[nodiscard]] const GameOptionsClass& getGameOptions() const noexcept { return gameOptions; }
-    void setGameSpeed(int gameSpeed) noexcept { gameOptions.gameSpeed = gameSpeed; }
+    void                                  setGameSpeed(int gameSpeed) noexcept { gameOptions.gameSpeed = gameSpeed; }
 
     void addHouseInfo(const HouseInfo& newHouseInfo) { houseInfoList.push_back(newHouseInfo); }
     void clearHouseInfo() { houseInfoList.clear(); }
@@ -178,38 +178,37 @@ private:
     static std::string getScenarioFilename(HOUSETYPE newHouse, int mission);
 
     /**
-        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
-        \param savegame the name of the file to check
+        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error
+       an exception is thrown. \param savegame the name of the file to check
     */
     static void checkSaveGame(const std::filesystem::path& savegame);
 
-
     /**
-        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
-        \param stream the stream to read the data from
+        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error
+       an exception is thrown. \param stream the stream to read the data from
     */
     static void checkSaveGame(InputStream& stream);
 
+    GameType gameType = GameType::Invalid;
 
-    GameType        gameType = GameType::Invalid;
+    HOUSETYPE houseID                   = HOUSETYPE::HOUSE_INVALID;
+    int       mission                   = 0;
+    uint32_t  alreadyPlayedRegions      = 0;
+    uint32_t  alreadyShownTutorialHints = 0xFFFFFFFF;
 
-    HOUSETYPE       houseID = HOUSETYPE::HOUSE_INVALID;
-    int             mission = 0;
-    uint32_t          alreadyPlayedRegions = 0;
-    uint32_t          alreadyShownTutorialHints = 0xFFFFFFFF;
-
-    std::filesystem::path     filename;
-    std::string     filedata;
-    std::string     servername;
+    std::filesystem::path filename;
+    std::string           filedata;
+    std::string           servername;
 
     std::vector<uint8_t> randomSeed;
 
-    bool            multiplePlayersPerHouse = false;
+    bool multiplePlayersPerHouse = false;
 
     GameOptionsClass gameOptions;
 
-
-    HouseInfoList   houseInfoList;
+    HouseInfoList houseInfoList;
 };
+
+} // namespace Dune::Engine
 
 #endif // GAMEINITINFOCLASS_H

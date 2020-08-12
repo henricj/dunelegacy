@@ -18,16 +18,18 @@
 #ifndef TIMEOUTTRIGGER_H
 #define TIMEOUTTRIGGER_H
 
-#include <Trigger/Trigger.h>
+#include "Trigger.h"
 
 #include <vector>
 
+namespace Dune::Engine {
+
 /**
-    This trigger is used for ending the game when the game has run for the specified time. What player has won is determined by the Lose-Flags.
+    This trigger is used for ending the game when the game has run for the specified time. What player has won is
+   determined by the Lose-Flags.
 */
 class TimeoutTrigger final : public Trigger {
 public:
-
     /**
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
@@ -54,5 +56,7 @@ public:
     */
     void trigger(const GameContext& context) override;
 };
+
+} // namespace Dune::Engine
 
 #endif // TIMEOUTTRIGGER_H

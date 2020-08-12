@@ -28,6 +28,7 @@
 #include <utility>
 #include <cstdio>
 
+namespace Dune::Engine {
 
 INIFile::INIFileLine::INIFileLine(std::string completeLine, int lineNumber)
  : completeLine(std::move(completeLine)), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
@@ -73,11 +74,8 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
 
         return false;
 
-    } else {
-
-        return defaultValue;
-
     }
+    return defaultValue;
 }
 
 void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeIfNeeded) {
@@ -118,9 +116,8 @@ bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
 std::string INIFile::Key::escapeValue(const std::string& value) {
     if(escapingValueNeeded(value)) {
         return "\"" + value + "\"";
-    } else {
-        return value;
     }
+    return value;
 }
 
 
@@ -349,9 +346,8 @@ const INIFile::Section& INIFile::getSection(const std::string& sectionname) cons
 
     if(curSection == nullptr) {
         throw std::out_of_range("There is no section '" + sectionname + "' in this INI file");
-    } else {
-        return *curSection;
     }
+    return *curSection;
 }
 
 
@@ -1141,6 +1137,6 @@ int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {
     if(s1 + n == p1) {
         return 0;
     }         return (toupper(*p1) - toupper(*p2));
-
-   
 }
+
+} // namespace Dune::Engine

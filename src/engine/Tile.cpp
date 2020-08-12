@@ -36,7 +36,12 @@
 #include <units/InfantryBase.h>
 #include <units/AirUnit.h>
 
-#define FOGTIME MILLI2CYCLES(10 * 1000)
+namespace
+{
+constexpr int FOGTIME = MILLI2CYCLES(10 * 1000);
+}
+
+namespace Dune::Engine {
 
 Tile::Tile() {
     type = Terrain_Sand;
@@ -1227,3 +1232,5 @@ void Tile::forEachUnit(Visitor&& visitor) const
     for (auto i : assignedAirUnitList)
         visitor(i);
 }
+
+} // namspace Dune::Engine

@@ -21,7 +21,7 @@
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <Map.h>
-#include <sand.h>
+#include <engine_sand.h>
 #include <House.h>
 
 #include <structures/StructureBase.h>
@@ -39,9 +39,13 @@
 
 #include <algorithm>
 
-#define AIUPDATEINTERVAL 50
+namespace
+{
+constexpr inline int AIUPDATEINTERVAL = 50;
+}
 
 
+namespace Dune::Engine {
 
 /**
  TODO
@@ -1888,3 +1892,5 @@ void QuantBot::checkAllUnits() {
         }
     }
 }
+
+} // namespace Dune::Engine

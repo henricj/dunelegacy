@@ -22,18 +22,20 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+namespace Dune::Engine {
+
 class AITeamInfo {
 public:
     AITeamInfo(HOUSETYPE houseID, AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits)
-     : houseID(houseID), aiTeamBehavior(aiTeamBehavior), aiTeamType(aiTeamType), minUnits(minUnits), maxUnits(maxUnits) {
-    }
+        : houseID(houseID), aiTeamBehavior(aiTeamBehavior), aiTeamType(aiTeamType), minUnits(minUnits),
+          maxUnits(maxUnits) { }
 
     explicit AITeamInfo(InputStream& stream) {
-        houseID = static_cast<HOUSETYPE>(stream.readUint32());
+        houseID        = static_cast<HOUSETYPE>(stream.readUint32());
         aiTeamBehavior = static_cast<AITeamBehavior>(stream.readUint32());
-        aiTeamType = static_cast<AITeamType>(stream.readUint32());
-        minUnits = stream.readUint32();
-        maxUnits = stream.readUint32();
+        aiTeamType     = static_cast<AITeamType>(stream.readUint32());
+        minUnits       = stream.readUint32();
+        maxUnits       = stream.readUint32();
     }
 
     void save(OutputStream& stream) const {
@@ -44,11 +46,13 @@ public:
         stream.writeUint32(maxUnits);
     }
 
-    HOUSETYPE          houseID;
+    HOUSETYPE      houseID;
     AITeamBehavior aiTeamBehavior;
     AITeamType     aiTeamType;
-    int          minUnits;
-    int          maxUnits;
+    int            minUnits;
+    int            maxUnits;
 };
+
+} // namespace Dune::Engine
 
 #endif // AITEAMINFO_H
