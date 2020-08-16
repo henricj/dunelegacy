@@ -15,54 +15,51 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HARVESTER_H
-#define HARVESTER_H
+#ifndef ENGINE_HARVESTER_H
+#define ENGINE_HARVESTER_H
 
 #include <units/TrackedUnit.h>
 
-class Harvester final : public TrackedUnit
-{
+namespace Dune::Engine {
+
+class Harvester final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Harvester;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Harvester(uint32_t objectID, const ObjectInitializer& initializer);
     Harvester(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Harvester() override;
 
-    void save(OutputStream& stream) const override;
-
-    void blitToScreen() override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void checkPos(const GameContext& context) override;
     void deploy(const GameContext& context, const Coord& newLocation) override;
     void destroy(const GameContext& context) override;
-    void drawSelectionBox() override;
     void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
-    void handleReturnClick(const GameContext& context);
 
     /**
         Order this harvester to return to a refinery.
     */
-    void doReturn();
+    void doReturn(const GameContext& );
 
     void move(const GameContext& context) override;
     void setAmountOfSpice(FixPoint newSpice);
     void setReturned(const GameContext& context);
 
     using ObjectBase::setDestination;
-    void setDestination(int newX, int newY) override;
+    void setDestination(const GameContext& context, int newX, int newY) override;
 
-    void setTarget(const ObjectBase* newTarget) override;
+    void setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) override;
 
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
     FixPoint extractSpice(FixPoint extractionSpeed);
 
     FixPoint getAmountOfSpice() const { return spice; }
-    bool isReturning() const { return returningToRefinery; }
-    bool isHarvesting() const;
+    bool     isReturning() const { return returningToRefinery; }
+    bool     isHarvesting(const GameContext& context) const;
 
 private:
     void init();
@@ -70,10 +67,12 @@ private:
     void setSpeeds(const GameContext& context) override;
 
     // harvester state
-    bool     harvestingMode;         ///< currently harvesting
-    bool     returningToRefinery;    ///< currently on the way back to the refinery
-    FixPoint spice;                  ///< loaded spice
-    uint32_t   spiceCheckCounter;      ///< Check for available spice on map to harvest
+    bool     harvestingMode;      ///< currently harvesting
+    bool     returningToRefinery; ///< currently on the way back to the refinery
+    FixPoint spice;               ///< loaded spice
+    uint32_t spiceCheckCounter;   ///< Check for available spice on map to harvest
 };
 
-#endif // HARVESTER_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_HARVESTER_H

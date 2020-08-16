@@ -15,33 +15,29 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LAUNCHER_H
-#define LAUNCHER_H
+#ifndef ENGINE_LAUNCHER_H
+#define ENGINE_LAUNCHER_H
 
 #include <units/TrackedUnit.h>
 
-class Launcher final : public TrackedUnit
-{
+namespace Dune::Engine {
+
+class Launcher final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Launcher;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Launcher(uint32_t objectID, const ObjectInitializer& initializer);
     Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Launcher() override;
 
-    void blitToScreen() override;
     void destroy(const GameContext& context) override;
-    bool canAttack(const ObjectBase* object) const override;
-
-    void playAttackSound() override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
 private:
     void init();
-
-    // drawing information
-    zoomable_texture turretGraphic{};    ///< The turret graphic
-    int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //LAUNCHER_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_LAUNCHER_H

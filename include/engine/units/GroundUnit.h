@@ -15,10 +15,10 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GROUNDUNIT_H
-#define GROUNDUNIT_H
+#ifndef ENGINE_GROUNDUNIT_H
+#define ENGINE_GROUNDUNIT_H
 
-#include <units/UnitBase.h>
+#include "UnitBase.h"
 
 namespace Dune::Engine {
 
@@ -46,12 +46,9 @@ public:
     GroundUnit& operator=(const GroundUnit&) = delete;
     GroundUnit& operator=(GroundUnit&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void assignToMap(const GameContext& context, const Coord& pos) override;
-
-    void playConfirmSound() override;
-    void playSelectSound() override;
 
     void bookCarrier(UnitBase* newCarrier);
     void checkPos(const GameContext& context) override;
@@ -60,17 +57,12 @@ public:
     bool requestCarryall(const GameContext& context);
     void setPickedUp(const GameContext& context, UnitBase* newCarrier) override;
 
-    /**
-        This method is called when the user clicks on the repair button for this unit
-    */
-    virtual void handleSendToRepairClick();
-
     void doRepair(const GameContext& context) noexcept override;
 
-    void            setAwaitingPickup(bool status) { awaitingPickup = status; }
-    bool            isAwaitingPickup() const noexcept { return awaitingPickup; }
-    bool            hasBookedCarrier() const;
-    const UnitBase* getCarrier() const;
+    void setAwaitingPickup(bool status) { awaitingPickup = status; }
+    bool isAwaitingPickup() const noexcept { return awaitingPickup; }
+    bool hasBookedCarrier(const ObjectManager& objectManager) const { return nullptr != getCarrier(objectManager); }
+    const UnitBase* getCarrier(const ObjectManager& objectManager) const;
 
     /**
         Returns how fast a unit can move over the specified terrain type.
@@ -84,7 +76,7 @@ protected:
     void navigate(const GameContext& context) override;
 
     bool     awaitingPickup; ///< Is this unit waiting for pickup?
-    uint32_t bookedCarrier;  ///< What is the carrier if waiting for pickup?
+    ObjectPointer bookedCarrier;  ///< What is the carrier if waiting for pickup?
 };
 
 template<>
@@ -103,4 +95,4 @@ inline const GroundUnit* dune_cast(const ObjectBase* base) {
 
 } // namespace Dune::Engine
 
-#endif // GROUNDUNIT_H
+#endif // ENGINE_GROUNDUNIT_H

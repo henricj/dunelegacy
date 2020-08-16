@@ -17,23 +17,24 @@
 
 #include <units/Quad.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
 #include <Explosion.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr GroundUnitConstants quad_constants{Quad::item_id, 2, Bullet_ShellSmall};
 }
 
-Quad::Quad(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(quad_constants, objectID, initializer) {
+namespace Dune::Engine {
+
+Quad::Quad(uint32_t objectID, const ObjectInitializer& initializer)
+    : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 
-    setHealth(getMaxHealth());
+    Quad::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Quad::Quad(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -44,28 +45,17 @@ Quad::Quad(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Quad::init() {
     assert(itemID == Unit_Quad);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Quad;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 Quad::~Quad() = default;
 
-void Quad::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_MachineGun,location);
-}
-
 void Quad::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if(context.map.tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
-    GroundUnit::destroy(context);
+    parent::destroy(context);
 }
+
+} // namespace Dune::Engine

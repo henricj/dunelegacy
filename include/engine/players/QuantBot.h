@@ -27,16 +27,15 @@
 
 namespace Dune::Engine {
 
-class QuantBot : public Player {
+class QuantBot final : public Player {
 public:
     enum class Difficulty { Easy = 0, Medium = 1, Hard = 2, Brutal = 3, Defend = 4 };
 
     enum class GameMode { Custom = 4, Campaign = 5 };
 
-    QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+    QuantBot(const GameContext& context, House* associatedHouse, const std::string_view playername, const Random& random,
              Difficulty difficulty);
     QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse);
-    void init();
     ~QuantBot() override;
     void save(OutputStream& stream) const override;
 

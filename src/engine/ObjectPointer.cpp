@@ -20,8 +20,8 @@
 #include <Game.h>
 #include <ObjectBase.h>
 
-#include "units/UnitBase.h"
-#include "structures/StructureBase.h"
+#include <units/UnitBase.h>
+#include <structures/StructureBase.h>
 
 namespace Dune::Engine {
 

@@ -180,41 +180,6 @@ constexpr ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) noexcept {
     // clang-format on
 }
 
-/**
-    This method converts between world coordinates and zoomed world coordinates.
-    \param  x   a coordinate in world coordinates
-    \return a coordinate which is converted by the current zoom level
-*/
-int world2zoomedWorld(int x);
-
-/**
-    This method converts between world coordinates and zoomed world coordinates.
-    \param  x   a coordinate in world coordinates
-    \return a coordinate which is converted by the current zoom level
-*/
-int world2zoomedWorld(float x);
-
-/**
-    This method converts between world coordinates and zoomed world coordinates.
-    \param  coord   a coordinate in world coordinates
-    \return a coordinate which is converted by the current zoom level
-*/
-Coord world2zoomedWorld(const Coord& coord);
-
-/**
-    This method converts between world coordinates and zoomed world coordinates.
-    \param  x   a coordinate in world coordinates
-    \return a coordinate which is converted by the current zoom level
-*/
-int zoomedWorld2world(int x);
-
-/**
-    This method converts between world coordinates and zoomed world coordinates.
-    \param  coord   a coordinate in world coordinates
-    \return a coordinate which is converted by the current zoom level
-*/
-Coord zoomedWorld2world(const Coord& coord);
-
 } // namespace Dune::Engine
 
 #endif // ENGINE_MMATH_H

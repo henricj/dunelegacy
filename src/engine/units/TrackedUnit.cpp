@@ -22,27 +22,22 @@
 #include <structures/RepairYard.h>
 #include <structures/Refinery.h>
 
-#include <globals.h>
-
 #include <House.h>
 #include <Map.h>
 #include <Game.h>
 
+namespace Dune::Engine {
+
 TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : GroundUnit(constants, objectID, initializer) {
-}
+    : GroundUnit(constants, objectID, initializer) { }
 
 TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID,
                          const ObjectStreamInitializer& initializer)
-    : GroundUnit(constants, objectID, initializer) {
-}
+    : GroundUnit(constants, objectID, initializer) { }
 
 TrackedUnit::~TrackedUnit() = default;
 
-void TrackedUnit::save(OutputStream& stream) const
-{
-    GroundUnit::save(stream);
-}
+void TrackedUnit::save(const Game& game, OutputStream& stream) const { GroundUnit::save(game, stream); }
 
 void TrackedUnit::checkPos(const GameContext& context) {
     GroundUnit::checkPos(context);
@@ -54,15 +49,15 @@ void TrackedUnit::checkPos(const GameContext& context) {
     }
 }
 
-bool TrackedUnit::canPassTile(const Tile* pTile) const {
+bool TrackedUnit::canPassTile(const GameContext& context, const Tile* pTile) const {
     if(!pTile || pTile->isMountain()) { return false; }
 
-    const auto ground_object_result = pTile->getGroundObjectID();
+    const auto [ok, ground_object_id] = pTile->getGroundObjectID();
 
-    if(!ground_object_result.first) return true;
+    if(!ok) return true;
 
-    if(ground_object_result.second == target.getObjectID()) {
-        auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+    if(ground_object_id == target.getObjectID()) {
+        auto* const pObject = context.objectManager.getObject(ground_object_id);
 
         if((pObject != nullptr) && targetFriendly && pObject->isAStructure() &&
            (pObject->getOwner()->getTeamID() == owner->getTeamID()) && pObject->isVisible(getOwner()->getTeamID())) {
@@ -84,7 +79,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         // The tile does not have a non-infantry ground object, therefore the ground object ID must
         // be for an infantry unit.  We have complicated this function since profiling puts it in
         // the hotpath...
-        auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        auto* const pObject = context.objectManager.getObject(ground_object_id);
         if(pObject && pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
             // possibly squashing this unit
             return true;
@@ -95,14 +90,16 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
     return false;
 }
 
-const std::array<FixPoint, Terrain_SpecialBloom + 1> TrackedUnit::terrain_difficulty = {
-    1_fix,      //Terrain_Slab
-    1.5625_fix, //Terrain_Sand
-    1.375_fix,  //Terrain_Rock
-    1.375_fix,  //Terrain_Dunes
-    1.0_fix,    //Terrain_Mountain
-    1.375_fix,  //Terrain_Spice
-    1.375_fix,  //Terrain_ThickSpice
-    1.5625_fix, //Terrain_SpiceBloom
-    1.5625_fix  //Terrain_SpecialBloom
+constexpr std::array<FixPoint, Terrain_SpecialBloom + 1> TrackedUnit::terrain_difficulty = {
+    1_fix,      // Terrain_Slab
+    1.5625_fix, // Terrain_Sand
+    1.375_fix,  // Terrain_Rock
+    1.375_fix,  // Terrain_Dunes
+    1.0_fix,    // Terrain_Mountain
+    1.375_fix,  // Terrain_Spice
+    1.375_fix,  // Terrain_ThickSpice
+    1.5625_fix, // Terrain_SpiceBloom
+    1.5625_fix  // Terrain_SpecialBloom
 };
+
+} // namespace Dune::Engine

@@ -15,22 +15,21 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QUAD_H
-#define QUAD_H
+#ifndef ENGINE_QUAD_H
+#define ENGINE_QUAD_H
 
 #include <units/GroundUnit.h>
 
-class Quad final : public GroundUnit
-{
+namespace Dune::Engine {
+
+class Quad final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Quad;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     Quad(uint32_t objectID, const ObjectInitializer& initializer);
     Quad(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Quad() override;
-
-    void playAttackSound() override;
 
     void destroy(const GameContext& context) override;
 
@@ -40,4 +39,6 @@ private:
     void init();
 };
 
-#endif //QUAD_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_QUAD_H

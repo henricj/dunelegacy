@@ -17,22 +17,22 @@
 
 #include <structures/WindTrap.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
+#include <Game.h>
 #include <House.h>
 
-#include <GUI/ObjectInterfaces/WindTrapInterface.h>
-
 namespace {
+using namespace Dune::Engine;
+
 constexpr StructureBaseConstants wind_trap_constants{WindTrap::item_id, Coord{2, 2}};
 }
+
+namespace Dune::Engine {
 
 WindTrap::WindTrap(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(wind_trap_constants, objectID, initializer) {
     WindTrap::init();
 
-    setHealth(getMaxHealth());
+    WindTrap::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 WindTrap::WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -43,46 +43,34 @@ WindTrap::WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer
 void WindTrap::init() {
     assert(itemID == Structure_WindTrap);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Windtrap;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-    numImagesY = (2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-    firstAnimFrame = 2;
-    lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
 }
 
 WindTrap::~WindTrap() = default;
 
-std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return WindTrapInterface::create(context, objectID); }
-    return DefaultObjectInterface::create(context, objectID);
-}
-
 bool WindTrap::update(const GameContext& context) {
-    bool bResult = StructureBase::update(context);
+    bool bResult = parent::update(context);
 
     if(bResult) {
         // we are still alive
-        if(justPlacedTimer <= 0 || curAnimFrame != 0) {
-            curAnimFrame = 2 + ((context.game.getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
-        }
     }
 
     return bResult;
 }
 
-void WindTrap::setHealth(FixPoint newHealth) {
-    int producedPowerBefore = getProducedPower();
-    StructureBase::setHealth(newHealth);
-    int producedPowerAfterwards = getProducedPower();
+void WindTrap::setHealth(const Game& game, FixPoint newHealth) {
+    const auto producedPowerBefore = getProducedPower(game);
+    parent::setHealth(game, newHealth);
+    const auto producedPowerAfterwards = getProducedPower(game);
 
     owner->setProducedPower(owner->getProducedPower() - producedPowerBefore + producedPowerAfterwards);
 }
 
-int WindTrap::getProducedPower() const {
-    int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
+int WindTrap::getProducedPower(const Game& game) const {
+    const auto windTrapProducedPower = abs(game.getObjectData(Structure_WindTrap, originalHouseID).power);
 
-    FixPoint ratio = getHealth() / getMaxHealth();
+    const auto ratio = getHealth() / getMaxHealth(game);
+
     return lround(ratio * windTrapProducedPower);
 }
+
+} // namespace Dune::Engine

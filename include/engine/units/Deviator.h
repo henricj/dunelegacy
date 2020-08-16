@@ -15,33 +15,29 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEVIATOR_H
-#define DEVIATOR_H
+#ifndef ENGINE_DEVIATOR_H
+#define ENGINE_DEVIATOR_H
 
 #include <units/TrackedUnit.h>
 
-class Deviator final : public TrackedUnit
-{
+namespace Dune::Engine {
+
+class Deviator final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Deviator;
-    using parent                     = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Deviator(uint32_t objectID, const ObjectInitializer& initializer);
     Deviator(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Deviator() override;
 
-    void blitToScreen() override;
     void destroy(const GameContext& context) override;
-    bool canAttack(const ObjectBase* object) const override;
-
-    void playAttackSound() override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
 private:
     void init();
-
-    // drawing information
-    zoomable_texture turretGraphic{};   ///< The turret graphic
-    int              gunGraphicID;      ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //DEVIATOR_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_DEVIATOR_H

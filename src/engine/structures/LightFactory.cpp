@@ -17,21 +17,22 @@
 
 #include <structures/LightFactory.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr BuilderBaseConstants light_factory_constants{LightFactory::item_id, Coord{2, 2}};
 }
+
+namespace Dune::Engine {
 
 LightFactory::LightFactory(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 
-    setHealth(getMaxHealth());
+    setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 LightFactory::LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -42,23 +43,8 @@ LightFactory::LightFactory(uint32_t objectID, const ObjectStreamInitializer& ini
 void LightFactory::init() {
     assert(itemID == Structure_LightFactory);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_LightFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 6;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 LightFactory::~LightFactory() = default;
 
-void LightFactory::updateStructureSpecificStuff(const GameContext& context) {
-    if(deployTimer > 0) {
-        firstAnimFrame = 4;
-        lastAnimFrame = 5;
-    } else {
-        firstAnimFrame = 2;
-        lastAnimFrame = 3;
-    }
-}
+} // namespace Dune::Engine

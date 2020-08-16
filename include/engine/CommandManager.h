@@ -51,8 +51,9 @@ public:
 
     /**
         This method sets a stream where all commands are written when they are added to the command manager. This can be
-       used for logging the complete game and enable a replay afterwards. \param  pStream     pointer to a stream all
-       new commands will be written to (the stream must be created with new). nullptr for disabling.
+       used for logging the complete game and enable a replay afterwards.
+       \param  pStream     pointer to a stream all new commands will be written to (the stream must be created with new).
+       nullptr for disabling.
     */
     void setStream(std::unique_ptr<OutputStream> pStream) { this->pStream = std::move(pStream); }
 
@@ -86,29 +87,6 @@ public:
     */
     void load(InputStream& stream);
 
-    [[nodiscard]] uint32_t getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
-
-    void setNetworkCycleBuffer(uint32_t newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; };
-
-    /**
-        Updates the command manager and sends commands to other peers
-    */
-    void update();
-
-    /**
-        Adds a complete command list. The commands are checked for validity with the given playername.
-        \param  playername  the name of the player sending the command list
-        \param  commandList the list of commands
-    */
-    void addCommandList(const std::string& playername, const CommandList& commandList);
-
-    /**
-        Adds a command at the next possible game cycle
-        \param  cmd     the command to add
-    */
-    void addCommand(const Command& cmd);
-    void addCommand(Command&& cmd);
-
     /**
         Adds a command at the game cycle CycleNumber
         \param  cmd         the command to add
@@ -129,7 +107,6 @@ private:
                                                 ///< is a list of all commands scheduled for game cycle x.
     std::unique_ptr<OutputStream> pStream;      ///< a stream all added commands will be written to. May be nullptr
     bool     bReadOnly{};          ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
-    uint32_t networkCycleBuffer{}; ///< the number of frames a command is given in advance
 };
 
 } // namespace Dune::Engine

@@ -21,17 +21,15 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-#include "Command.h"
+#include "engine/Command.h"
 
 #include <vector>
-
-namespace Dune::Engine {
 
 class CommandList {
 public:
     class CommandListEntry {
     public:
-        CommandListEntry(uint32_t cycle, std::vector<Command>&& commands)
+        CommandListEntry(uint32_t cycle, std::vector<Dune::Engine::Command>&& commands)
             : cycle(cycle), commands(std::move(commands)) { }
 
         explicit CommandListEntry(InputStream& stream) {
@@ -51,8 +49,8 @@ public:
             }
         }
 
-        uint32_t             cycle;
-        std::vector<Command> commands;
+        uint32_t                           cycle;
+        std::vector<Dune::Engine::Command> commands;
     };
 
     CommandList()                   = default;
@@ -80,7 +78,5 @@ public:
 
     std::vector<CommandListEntry> commandList;
 };
-
-} // namespace Dune::Engine
 
 #endif //COMMANDLIST_H

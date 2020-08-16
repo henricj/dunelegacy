@@ -15,12 +15,12 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TURRETBASE_H
-#define TURRETBASE_H
+#ifndef ENGINE_TURRETBASE_H
+#define ENGINE_TURRETBASE_H
 
 #include <structures/StructureBase.h>
 
-#include <FileClasses/SFXManager.h>
+namespace Dune::Engine {
 
 class TurretBaseConstants : public StructureBaseConstants {
 public:
@@ -36,8 +36,7 @@ private:
     BulletID_enum bulletType_; ///< The type of bullet used
 };
 
-class TurretBase : public StructureBase
-{
+class TurretBase : public StructureBase {
     void init();
 
 protected:
@@ -50,12 +49,12 @@ public:
 
     ~TurretBase() override;
 
-    TurretBase(const TurretBase &) = delete;
-    TurretBase(TurretBase &&) = delete;
-    TurretBase& operator=(const TurretBase &) = delete;
-    TurretBase& operator=(TurretBase &&) = delete;
+    TurretBase(const TurretBase&) = delete;
+    TurretBase(TurretBase&&)      = delete;
+    TurretBase& operator=(const TurretBase&) = delete;
+    TurretBase& operator=(TurretBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     virtual void handleActionCommand(const GameContext& context, int xPos, int yPos);
 
@@ -69,8 +68,7 @@ public:
         Set pObject as the attack target for this turret.
         \param  pObject  the object to attack
     */
-    virtual void doAttackObject(const ObjectBase* pObject);
-
+    virtual void doAttackObject(const GameContext& context, const ObjectBase* pObject);
 
     void turnLeft(const GameContext& context);
     void turnRight(const GameContext& context);
@@ -90,14 +88,10 @@ protected:
     */
     void updateStructureSpecificStuff(const GameContext& context) override;
 
-    // constant for all turrets of the same type
-    Sound_enum attackSound;     ///< The id of the sound to play when attack
-
     // turret state
-    int32_t  findTargetTimer;    ///< Timer used for finding a new target
-    int32_t  weaponTimer;        ///< Time until we can shot again
+    int32_t findTargetTimer; ///< Timer used for finding a new target
+    int32_t weaponTimer;     ///< Time until we can shot again
 };
-
 
 template<>
 inline TurretBase* dune_cast(ObjectBase* base) {
@@ -109,4 +103,6 @@ inline const TurretBase* dune_cast(const ObjectBase* base) {
     return dynamic_cast<const TurretBase*>(base);
 }
 
-#endif //TURRETBASE_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_TURRETBASE_H

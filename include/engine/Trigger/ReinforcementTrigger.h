@@ -18,9 +18,10 @@
 #ifndef REINFORCEMENTTRIGGER_H
 #define REINFORCEMENTTRIGGER_H
 
+#include "data.h"
 #include "Trigger.h"
 
-#include <DataTypes.h>
+#include "../EngineDataTypes.h"
 
 #include <vector>
 

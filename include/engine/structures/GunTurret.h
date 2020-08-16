@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GUNTURRET_H
-#define GUNTURRET_H
+#ifndef ENGINE_GUNTURRET_H
+#define ENGINE_GUNTURRET_H
 
 #include <structures/TurretBase.h>
+
+namespace Dune::Engine {
 
 class GunTurret final : public TurretBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_GunTurret;
-    using parent = TurretBase;
+    using parent                                = TurretBase;
 
     GunTurret(uint32_t objectID, const ObjectInitializer& initializer);
     GunTurret(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -33,4 +35,6 @@ private:
     void init();
 };
 
-#endif // GUNTURRET_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_GUNTURRET_H

@@ -15,16 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HEAVYFACTORY_H
-#define HEAVYFACTORY_H
+#ifndef ENGINE_HEAVYFACTORY_H
+#define ENGINE_HEAVYFACTORY_H
 
 #include <structures/BuilderBase.h>
 
-class HeavyFactory final : public BuilderBase
-{
+namespace Dune::Engine {
+
+class HeavyFactory final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HeavyFactory;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer);
     HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -32,16 +33,10 @@ public:
 
     void doBuildRandom(const GameContext& context) override;
 
-protected:
-    /**
-        Used for updating things that are specific to that particular structure. Is called from
-        StructureBase::update() before the check if this structure is still alive.
-    */
-
-    void updateStructureSpecificStuff(const GameContext& context) override;
-
 private:
     void init();
 };
 
-#endif //HEAVYFACTORY_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_HEAVYFACTORY_H

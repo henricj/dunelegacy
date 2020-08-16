@@ -17,24 +17,7 @@
 
 #include <CommandManager.h>
 
-inline constexpr int xyz7 = 123;
-namespace {
-inline constexpr int abc7 = ::xyz7;
-}
-
-#include <players/HumanPlayer.h>
-
-inline constexpr int xyz8 = 123;
-namespace {
-inline constexpr int abc8 = ::xyz8;
-}
-
 #include <Game.h>
-
-inline constexpr int xyz9 = 123;
-namespace {
-inline constexpr int abc9 = ::xyz9;
-}
 
 #include <algorithm>
 
@@ -44,20 +27,6 @@ namespace Dune::Engine {
 CommandManager::CommandManager() = default;
 
 CommandManager::~CommandManager() = default;
-
-void CommandManager::addCommand(const Command& cmd) {
-    auto CycleNumber = currentGame->getGameCycleCount();
-
-    if(pNetworkManager != nullptr) { CycleNumber += networkCycleBuffer; }
-    addCommand(cmd, CycleNumber);
-}
-
-void CommandManager::addCommand(Command&& cmd) {
-    auto CycleNumber = currentGame->getGameCycleCount();
-
-    if(pNetworkManager != nullptr) { CycleNumber += networkCycleBuffer; }
-    addCommand(std::move(cmd), CycleNumber);
-}
 
 void CommandManager::save(OutputStream& stream) const {
     for(auto i = 0u; i < timeslot.size(); i++) {
@@ -75,47 +44,6 @@ void CommandManager::load(InputStream& stream) {
             addCommand(Command{stream}, cycle);
         }
     } catch(InputStream::exception&) { ; }
-}
-
-void CommandManager::update() {
-    if(pNetworkManager == nullptr) return;
-
-    CommandList          commandList;
-    std::vector<Command> commands;
-    for(uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
-        i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
-
-        if(i < timeslot.size()) {
-            for(auto& command : timeslot[i]) {
-                if(command.getPlayerID() == pLocalPlayer->getPlayerID()) { commands.push_back(command); }
-            }
-        }
-
-        commandList.commandList.emplace_back(i, std::move(commands));
-        commands.clear();
-    }
-
-    pNetworkManager->sendCommandList(commandList);
-}
-
-void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
-    auto* const pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
-    if(pPlayer == nullptr) { return; }
-
-    for(const auto& commandListEntry : commandList.commandList) {
-        if(pPlayer->nextExpectedCommandsCycle > commandListEntry.cycle) { continue; }
-
-        for(const auto& command : commandListEntry.commands) {
-            if(command.getPlayerID() != pPlayer->getPlayerID()) {
-                sdl2::log_info("Warning: Player '%s' send a command which he is not allowed to give!",
-                               playername.c_str());
-            }
-
-            addCommand(command, commandListEntry.cycle);
-        }
-
-        pPlayer->nextExpectedCommandsCycle = std::max(pPlayer->nextExpectedCommandsCycle, commandListEntry.cycle + 1);
-    }
 }
 
 void CommandManager::addCommand(const Command& cmd, uint32_t CycleNumber) {

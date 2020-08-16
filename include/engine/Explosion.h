@@ -18,7 +18,7 @@
 #ifndef ENGINE_EXPLOSION_H
 #define ENGINE_EXPLOSION_H
 
-#include <DataTypes.h>
+#include <EngineDataTypes.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
@@ -29,7 +29,7 @@ public:
     Explosion();
     Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     explicit Explosion(InputStream& stream);
-    ~Explosion();
+    ~Explosion() = default;
 
     Explosion(const Explosion&) = delete;
     Explosion(Explosion&&)      = delete;
@@ -44,8 +44,7 @@ private:
     uint32_t         explosionID;
     Coord            position;
     HOUSETYPE        house;
-
-    void init();
+    uint32_t         timer;
 };
 
 } // namespace Dune::Engine

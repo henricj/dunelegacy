@@ -17,21 +17,21 @@
 
 #include <units/Soldier.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr InfantryBaseConstants soldier_constants{Soldier::item_id, 1, Bullet_ShellSmall};
 }
+
+namespace Dune::Engine {
 
 Soldier::Soldier(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(soldier_constants, objectID, initializer) {
     Soldier::init();
 
-    setHealth(getMaxHealth());
+    Soldier::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Soldier::Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -42,31 +42,15 @@ Soldier::Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Soldier::init() {
     assert(itemID == Unit_Soldier);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Soldier;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = 4;
-    numImagesY = 3;
 }
 
 Soldier::~Soldier() = default;
 
-bool Soldier::canAttack(const ObjectBase* object) const {
+bool Soldier::canAttack(const GameContext& context, const ObjectBase* object) const {
     return (object != nullptr)
-
-        && (object->isAStructure()
-
-            || !object->isAFlyingUnit())
-
-        && ((object->getOwner()->getTeamID() != owner->getTeamID())
-
-            || object->getItemID() == Unit_Sandworm)
-
-        && object->isVisible(getOwner()->getTeamID());
+           && (object->isAStructure() || !object->isAFlyingUnit())
+           && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+           && object->isVisible(getOwner()->getTeamID());
 }
 
-
-void Soldier::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Gun,location);
-}
+} // namespace Dune::Engine

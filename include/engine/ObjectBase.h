@@ -55,9 +55,9 @@ public:
 
     ~ObjectInitializer() = default;
 
-    Game&  game() const noexcept { return game_; }
-    House* owner() const noexcept { return owner_; }
-    bool   byScenario() const noexcept { return byScenario_; }
+    [[nodiscard]] Game&  game() const noexcept { return game_; }
+    [[nodiscard]] House* owner() const noexcept { return owner_; }
+    [[nodiscard]] bool   byScenario() const noexcept { return byScenario_; }
 
 private:
     Game&        game_;
@@ -67,7 +67,7 @@ private:
 
 class ObjectStreamInitializer final {
 public:
-    ObjectStreamInitializer(InputStream& inputStream) : stream_{inputStream} { }
+    ObjectStreamInitializer(Game& game, InputStream& inputStream) : game_{game}, stream_{inputStream} { }
 
     ObjectStreamInitializer()                               = delete;
     ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
@@ -77,9 +77,11 @@ public:
 
     ~ObjectStreamInitializer() = default;
 
-    InputStream& stream() const noexcept { return stream_; }
+    [[nodiscard]] Game&        game() const noexcept { return game_; }
+    [[nodiscard]] InputStream& stream() const noexcept { return stream_; }
 
 private:
+    Game&        game_;
     InputStream& stream_;
 };
 
@@ -131,7 +133,7 @@ public:
     ObjectBase& operator=(const ObjectBase&) = delete;
     ObjectBase& operator=(ObjectBase&&) = delete;
 
-    virtual void save(OutputStream& stream) const;
+    virtual void save(const Game& game, OutputStream& stream) const;
 
     virtual void assignToMap(const GameContext& context, const Coord& pos) = 0;
 
@@ -141,7 +143,7 @@ public:
 
     virtual Coord getClosestCenterPoint(const Coord& objectLocation) const;
 
-    virtual bool canAttack(const ObjectBase* object) const;
+    virtual bool canAttack(const GameContext& context, const ObjectBase* object) const;
 
     virtual Coord getCenterPoint() const;
 
@@ -149,12 +151,12 @@ public:
 
     virtual void doRepair(const GameContext& context) = 0;
 
-    virtual void setDestination(int newX, int newY);
-    virtual void setHealth(FixPoint newHealth);
+    virtual void setDestination(const GameContext& context, int newX, int newY);
+    virtual void setHealth(const Game& game, FixPoint newHealth);
 
     virtual void setLocation(const GameContext& context, int xPos, int yPos);
 
-    virtual void setTarget(const ObjectBase* newTarget);
+    virtual void setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget);
     void         setVisible(int teamID, bool status);
 
     /**
@@ -163,12 +165,10 @@ public:
     */
     virtual bool update(const GameContext& context) = 0;
 
-    void unassignFromMap(const Coord& location) const;
+    void unassignFromMap(const GameContext& context, const Coord& location) const;
 
-    bool     isOnScreen() const;
     bool     isVisible(int teamID) const;
     bool     isVisible() const;
-    uint32_t getHealthColor() const;
 
     /**
         This method returns the closest coordinate of this object to objectLocation. If this is a building
@@ -176,12 +176,12 @@ public:
         \param objectLocation the location of the other object
         \return the coordinate that is closest in tile coordinates
     */
-    virtual Coord getClosestPoint(const Coord& objectLocation) const;
+    virtual Coord getClosestPoint(const Coord& point) const;
 
-    const StructureBase*      findClosestTargetStructure() const;
-    const UnitBase*           findClosestTargetUnit() const;
-    const ObjectBase*         findClosestTarget() const;
-    virtual const ObjectBase* findTarget() const;
+    const StructureBase*      findClosestTargetStructure(const GameContext& context) const;
+    const UnitBase*           findClosestTargetUnit(const GameContext& context) const;
+    const ObjectBase*         findClosestTarget(const GameContext& context) const;
+    virtual const ObjectBase* findTarget(const GameContext& context) const;
 
     bool canAttack() const noexcept { return constants_.canAttack(); }
     bool isAFlyingUnit() const noexcept { return constants_.isAFlyingUnit(); }
@@ -191,15 +191,13 @@ public:
     bool isInfantry() const noexcept { return constants_.isInfantry(); }
     bool isAUnit() const noexcept { return constants_.isAUnit(); }
 
-    void addHealth() {
-        if(health < getMaxHealth()) setHealth(health + 1);
+    void addHealth(const Game& game) {
+        if(health < getMaxHealth(game)) setHealth(game, health + 1);
     }
     void setActive(bool status) noexcept { active = status; }
     void setForced(bool status) noexcept { forced = status; }
     void setRespondable(bool status) noexcept { respondable = status; }
-    void setSelected(bool value) noexcept { selected = value; }
-    void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
-    void setDestination(const Coord& location) { setDestination(location.x, location.y); }
+    void setDestination(const GameContext& context, const Coord& location) { setDestination(context, location.x, location.y); }
     void setLocation(const GameContext& context, const Coord& location) {
         setLocation(context, location.x, location.y);
     }
@@ -208,8 +206,6 @@ public:
     bool        isActive() const noexcept { return active; }
     bool        isRespondable() const noexcept { return respondable; }
     bool        isByScenario() const noexcept { return byScenario; }
-    bool        isSelected() const noexcept { return selected; }
-    bool        isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
     bool        isBadlyDamaged() const noexcept { return badlyDamaged; };
     bool        wasForced() const noexcept { return forced; }
     ItemID_enum getItemID() const noexcept { return itemID; }
@@ -217,14 +213,14 @@ public:
     int         getY() const noexcept { return location.y; }
 
     FixPoint getHealth() const noexcept { return health; }
-    int      getMaxHealth() const;
+    int      getMaxHealth(const Game& game) const;
     uint32_t getObjectID() const noexcept { return objectID; }
 
-    int getViewRange() const;
-    int getAreaGuardRange() const;
-    int getWeaponRange() const;
-    int getWeaponReloadTime() const;
-    int getInfSpawnProp() const;
+    int getViewRange(const Game& game) const;
+    int getAreaGuardRange(const Game& game) const;
+    int getWeaponRange(const Game& game) const;
+    int getWeaponReloadTime(const Game& game) const;
+    int getInfSpawnProp(const Game& game) const;
 
     FixPoint     getRealX() const noexcept { return realX; }
     FixPoint     getRealY() const noexcept { return realY; }
@@ -236,7 +232,7 @@ public:
     }
 
     HOUSETYPE    getOriginalHouseID() const noexcept { return originalHouseID; }
-    virtual void setOriginalHouseID(HOUSETYPE i) { originalHouseID = i; }
+    virtual void setOriginalHouseID(const Game& game, HOUSETYPE i) { originalHouseID = i; }
 
     House* getOwner() const noexcept {
         assert(owner);
@@ -254,7 +250,7 @@ public:
                                                   const ObjectStreamInitializer& initializer);
 
 protected:
-    bool targetInWeaponRange() const;
+    bool targetInWeaponRange(const GameContext& context) const;
 
     // constant for all objects of the same type
     const ObjectBaseConstants& constants_;
@@ -279,8 +275,6 @@ protected:
     bool active;      ///< Is this unit/structure active?
     bool respondable; ///< Is this unit/structure respondable to commands?
     bool byScenario;  ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
-    bool selected;    ///< Is this object currently selected?
-    bool selectedByOtherPlayer; ///< This is only used in multiplayer games where two players control one house
 
     bool forced; ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
     bool targetFriendly;      ///< Is the current target a friendly unit/structure to follow/move to instead to attack?

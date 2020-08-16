@@ -15,29 +15,30 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SOLDIER_H
-#define SOLDIER_H
+#ifndef ENGINE_SOLDIER_H
+#define ENGINE_SOLDIER_H
 
 #include <units/InfantryBase.h>
 
-class Soldier final : public InfantryBase
-{
+namespace Dune::Engine {
+
+class Soldier final : public InfantryBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Soldier;
-    using parent = InfantryBase;
+    using parent                                = InfantryBase;
 
     Soldier(uint32_t objectID, const ObjectInitializer& initializer);
     Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Soldier() override;
 
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
     bool hasBumpyMovementOnRock() const override { return true; }
-
-    void playAttackSound() override;
 
 private:
     void init();
 };
 
-#endif // SOLDIER_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_SOLDIER_H

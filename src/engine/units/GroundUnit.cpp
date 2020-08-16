@@ -15,70 +15,71 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <units/GroundUnit.h>
+#include "engine_mmath.h"
 
-#include <globals.h>
+#include <units/GroundUnit.h>
 
 #include <Game.h>
 #include <House.h>
 #include <Map.h>
-#include <SoundPlayer.h>
 
 #include <players/HumanPlayer.h>
 
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
+namespace Dune::Engine {
+
 GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
 
     awaitingPickup = false;
-    bookedCarrier  = NONE_ID;
 }
 
 GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
 
-    auto& stream   = initializer.stream();
+    auto& stream = initializer.stream();
 
     awaitingPickup = stream.readBool();
-    bookedCarrier = stream.readUint32();
+    bookedCarrier.load(stream);
 }
 
 GroundUnit::~GroundUnit() = default;
 
-void GroundUnit::save(OutputStream& stream) const {
-    UnitBase::save(stream);
+void GroundUnit::save(const Game& game, OutputStream& stream) const {
+    UnitBase::save(game, stream);
 
     stream.writeBool(awaitingPickup);
-    stream.writeUint32(bookedCarrier);
+    bookedCarrier.save(stream);
 }
 
 void GroundUnit::assignToMap(const GameContext& context, const Coord& pos) {
-    if (currentGameMap->tileExists(pos)) {
-        currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-        currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
+    auto* const tile = context.map.tryGetTile(pos.x, pos.y);
+
+    if(tile) {
+        tile->assignNonInfantryGroundObject(getObjectID());
+        context.map.viewMap(owner->getHouseID(), pos, getViewRange(context.game));
     }
 }
 
 void GroundUnit::checkPos(const GameContext& context) {
-    auto* pTile = currentGameMap->getTile(location);
+    auto* pTile = context.map.getTile(location);
     if(!moving && !justStoppedMoving && !isInfantry()) {
         pTile->setTrack(drawnAngle, context.game.getGameCycleCount());
     }
 
-    if(justStoppedMoving)
-    {
-        realX = location.x*TILESIZE + TILESIZE/2;
-        realY = location.y*TILESIZE + TILESIZE/2;
-        //findTargetTimer = 0;  //allow a scan for new targets now
+    if(justStoppedMoving) {
+        realX = location.x * TILESIZE + TILESIZE / 2;
+        realY = location.y * TILESIZE + TILESIZE / 2;
+        // findTargetTimer = 0;  //allow a scan for new targets now
 
         if(pTile->isSpiceBloom()) {
-            setHealth(0);
+            setHealth(context.game, 0);
             setVisible(VIS_ALL, false);
             pTile->triggerSpiceBloom(context, getOwner());
-        } else if(pTile->isSpecialBloom()){
+        } else if(pTile->isSpecialBloom()) {
             pTile->triggerSpecialBloom(context, getOwner());
         }
     }
@@ -86,39 +87,34 @@ void GroundUnit::checkPos(const GameContext& context) {
     /*
         Go to repair yard if low on health
     */
-    if(active && (getHealth() < getMaxHealth()/2)
-            && !goingToRepairYard
-            && owner->hasRepairYard()
-            && !pickedUp
-            && owner->hasCarryalls()
-            && owner->getHouseID() == originalHouseID // stop deviated units from being repaired
-            && !isInfantry()
-            && !forced ) { // Stefan - Allow units with targets to be picked up for repairs
+    if(active && (getHealth() < getMaxHealth(context.game) / 2) && !goingToRepairYard && owner->hasRepairYard() &&
+       !pickedUp && owner->hasCarryalls() &&
+       owner->getHouseID() == originalHouseID // stop deviated units from being repaired
+       && !isInfantry() && !forced) {         // Stefan - Allow units with targets to be picked up for repairs
 
         doRepair(context);
     }
 
-
     if(goingToRepairYard) {
-        if(target.getObjPointer() == nullptr) {
+        auto* const pTarget = target.getObjPointer(context.objectManager);
+
+        if(pTarget == nullptr) {
             goingToRepairYard = false;
-            awaitingPickup = false;
-            bookedCarrier = NONE_ID;
+            awaitingPickup    = false;
+            bookedCarrier.reset();
 
             clearPath();
         } else {
             auto* const pObject = pTile->getGroundObject(context.objectManager);
 
-            if( justStoppedMoving
-                && (pObject != nullptr)
-                && (pObject->getObjectID() == target.getObjectID()))
-            {
-                if(auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {
+            if(justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target.getObjectID())) {
+                if(auto* const pRepairYard = dune_cast<RepairYard>(pTarget)) {
                     if(pRepairYard->isFree()) {
-                        setGettingRepaired();
+                        setGettingRepaired(context);
                     } else {
                         // the repair yard is already in use by some other unit => move out
-                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
+                        const auto newDestination = context.map.findDeploySpot(
+                            this, pRepairYard->getLocation(), getLocation(), pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
                 }
@@ -127,7 +123,7 @@ void GroundUnit::checkPos(const GameContext& context) {
     }
 
     // If we are awaiting a pickup try book a carryall if we have one
-    if(!pickedUp && attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
+    if(!pickedUp && attackMode == CARRYALLREQUESTED && !bookedCarrier) {
         if(getOwner()->hasCarryalls() && (target || (destination != location))) {
             requestCarryall(context);
         } else {
@@ -140,40 +136,31 @@ void GroundUnit::checkPos(const GameContext& context) {
     }
 }
 
-
-void GroundUnit::playConfirmSound() {
-    soundPlayer->playVoice(pGFXManager->random().getRandOf(Acknowledged, Affirmative), getOwner()->getHouseID());
-}
-
-void GroundUnit::playSelectSound() {
-    soundPlayer->playVoice(Reporting, getOwner()->getHouseID());
-}
-
 /**
     Request a Carryall to drop at target location
 **/
 
 void GroundUnit::doRequestCarryallDrop(const GameContext& context, int xPos, int yPos) {
-    if(getOwner()->hasCarryalls() && !awaitingPickup && context.map.tileExists(xPos, yPos)){
+    if(getOwner()->hasCarryalls() && !awaitingPickup && context.map.tileExists(xPos, yPos)) {
         doMove2Pos(context, xPos, yPos, true);
         requestCarryall(context);
     }
 }
 
 bool GroundUnit::requestCarryall(const GameContext& context) {
-    if (getOwner()->hasCarryalls() && !awaitingPickup)  {
+    if(getOwner()->hasCarryalls() && !awaitingPickup) {
 
         // This allows a unit to keep requesting a carryall even if one isn't available right now
         doSetAttackMode(context, CARRYALLREQUESTED);
 
-        for(auto* pUnit : unitList) {
+        for(auto* pUnit : context.game.unitList) {
             if(pUnit->getOwner() != owner) continue;
 
             auto* carryall = dune_cast<Carryall>(pUnit);
             if(!carryall) continue;
 
             if(!carryall->isBooked()) {
-                carryall->setTarget(this);
+                carryall->setTarget(context.objectManager, this);
                 carryall->clearPath();
                 bookCarrier(carryall);
 
@@ -190,7 +177,7 @@ bool GroundUnit::requestCarryall(const GameContext& context) {
 void GroundUnit::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
     UnitBase::setPickedUp(context, newCarrier);
     awaitingPickup = false;
-    bookedCarrier = NONE_ID;
+    bookedCarrier.reset();
 
     clearPath(); // Stefan: I don't think this is right
                  // but there is definitely something to it
@@ -199,27 +186,20 @@ void GroundUnit::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
 
 void GroundUnit::bookCarrier(UnitBase* newCarrier) {
     if(newCarrier == nullptr) {
-        bookedCarrier = NONE_ID;
+        bookedCarrier.reset();
         awaitingPickup = false;
     } else {
-        bookedCarrier = newCarrier->getObjectID();
+        bookedCarrier.pointTo(newCarrier->getObjectID());
         awaitingPickup = true;
     }
 }
 
-bool GroundUnit::hasBookedCarrier() const {
-    if(bookedCarrier == NONE_ID) { return false; }
-    return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
+const UnitBase* GroundUnit::getCarrier(const ObjectManager& objectManager) const {
+    return bookedCarrier.getUnitPointer(objectManager);
 }
 
-const UnitBase* GroundUnit::getCarrier() const {
-    return currentGame->getObjectManager().getObject<UnitBase>(bookedCarrier);
-}
-
-FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const
-{
-    switch(terrainType)
-    {
+FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const {
+    switch(terrainType) {
         case Terrain_Slab: return 1.0_fix;
         case Terrain_Sand: return 1.375_fix;
         case Terrain_Rock: return 1.5625_fix;
@@ -235,7 +215,7 @@ FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const
 
 void GroundUnit::move(const GameContext& context) {
     if(!moving && !justStoppedMoving && (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        context.map.viewMap(owner->getHouseID(), location, getViewRange());
+        context.map.viewMap(owner->getHouseID(), location, getViewRange(context.game));
     }
 
     parent::move(context);
@@ -245,24 +225,18 @@ void GroundUnit::navigate(const GameContext& context) {
     // Lets keep units moving even if they are awaiting a pickup
     // Could potentially make this distance based depending on how
     // far away the booked carrier is
-    if(!awaitingPickup) {
-        parent::navigate(context);
-    }
-}
-
-void GroundUnit::handleSendToRepairClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR,objectID));
+    if(!awaitingPickup) { parent::navigate(context); }
 }
 
 void GroundUnit::doRepair(const GameContext& context) noexcept {
-    if(getHealth() >= getMaxHealth()) return;
+    if(getHealth() >= getMaxHealth(context.game)) return;
 
-    //find a repair yard to return to
+    // find a repair yard to return to
 
-    FixPoint closestLeastBookedRepairYardDistance = 1000000;
-    RepairYard* pBestRepairYard = nullptr;
+    FixPoint    closestLeastBookedRepairYardDistance = 1000000;
+    RepairYard* pBestRepairYard                      = nullptr;
 
-    for(auto *pStructure : structureList) {
+    for(auto* pStructure : context.game.structureList) {
         auto* const pRepairYard = dune_cast<RepairYard>(pStructure);
         if(pRepairYard && (pStructure->getOwner() == owner)) {
 
@@ -270,14 +244,16 @@ void GroundUnit::doRepair(const GameContext& context) noexcept {
                 const auto tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
                 if(tempDistance < closestLeastBookedRepairYardDistance) {
                     closestLeastBookedRepairYardDistance = tempDistance;
-                    pBestRepairYard = pRepairYard;
+                    pBestRepairYard                      = pRepairYard;
                 }
             }
         }
     }
 
-    if (pBestRepairYard) {
+    if(pBestRepairYard) {
         requestCarryall(context);
         doMove2Object(context, pBestRepairYard);
     }
 }
+
+} // namespace Dune::Engine

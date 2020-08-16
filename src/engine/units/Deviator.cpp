@@ -17,25 +17,23 @@
 
 #include <units/Deviator.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <Explosion.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr TrackedUnitConstants deviator_constants{Deviator::item_id, 1, Bullet_DRocket};
 }
+
+namespace Dune::Engine {
 
 Deviator::Deviator(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(deviator_constants, objectID, initializer) {
     Deviator::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    Deviator::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Deviator::Deviator(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -46,64 +44,23 @@ Deviator::Deviator(uint32_t objectID, const ObjectStreamInitializer& initializer
 void Deviator::init() {
     assert(itemID == Unit_Deviator);
     owner->incrementUnits(itemID);
-
-    graphicID     = ObjPic_Tank_Base;
-    gunGraphicID  = ObjPic_Launcher_Gun;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 Deviator::~Deviator() = default;
 
-void Deviator::blitToScreen()
-{
-    const auto x1 = screenborder->world2screenX(realX);
-    const auto y1 = screenborder->world2screenY(realY);
-
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect( pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
-
-    static constexpr Coord deviatorTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                     Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
-
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto     source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto     dest2          = calcSpriteDrawingRect(
-        pTurretGraphic, screenborder->world2screenX(realX + deviatorTurretOffset[static_cast<int>(drawnAngle)].x),
-        screenborder->world2screenY(realY + deviatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-        HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
-
-    if(isBadlyDamaged()) {
-        drawSmoke(x1, y1);
-    }
-}
-
 void Deviator::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
+        Coord    realPos(lround(realX), lround(realY));
+        uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
     parent::destroy(context);
 }
 
-bool Deviator::canAttack(const ObjectBase* object) const {
+bool Deviator::canAttack(const GameContext& context, const ObjectBase* object) const {
     return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit() &&
            (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID());
 }
 
-void Deviator::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Rocket,location);
-}
+} // namespace Dune::Engine

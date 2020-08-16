@@ -42,6 +42,7 @@ set(HEADERS
 	../../include/utility/misc/random_xoroshiro128plus.h
 	../../include/utility/misc/random_xorshift1024star.h
 	../../include/utility/misc/random_xoshiro256starstar.h
+	../../include/utility/misc/reverse.h
 )
 
 find_package(fmt CONFIG REQUIRED)

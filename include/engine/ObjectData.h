@@ -113,9 +113,16 @@ public:
         int8_t upgradeLevel; ///< How many upgrades must the builder already have made
     };
 
-    ObjectDataStruct data[Num_ItemID]
-                         [static_cast<int>(HOUSETYPE::NUM_HOUSES)]; ///< here is all the data stored. It is public for
-                                                                    ///< easy and fast access. Use only read-only.
+    const ObjectDataStruct& getData(ItemID_enum itemID, HOUSETYPE house) const {
+#if NDEBUG
+        return data[static_cast<unsigned int>(itemID)][static_cast<unsigned int>(house)];
+#else
+        return data.at(static_cast<unsigned int>(itemID)).at(static_cast<unsigned int>(house));
+#endif
+    }
+
+    // here is all the data stored. It is public for easy and fast access. Use only read-only.
+    std::array<std::array<ObjectDataStruct, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, Num_ItemID> data;
 
 private:
     int  loadIntValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar,

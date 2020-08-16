@@ -18,9 +18,9 @@
 #ifndef ENGINE_BUILDERBASE_H
 #define ENGINE_BUILDERBASE_H
 
-#include <structures/StructureBase.h>
+#include "StructureBase.h"
 
-#include <data.h>
+#include "../data.h"
 
 #include <list>
 #include <string>
@@ -108,26 +108,26 @@ public:
     BuilderBase& operator=(const BuilderBase&) = delete;
     BuilderBase& operator=(BuilderBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void setOwner(House* no);
 
-    void setOriginalHouseID(HOUSETYPE i) override {
-        StructureBase::setOriginalHouseID(i);
-        updateBuildList();
+    void setOriginalHouseID(const Game& game, HOUSETYPE i) override {
+        parent::setOriginalHouseID(game, i);
+        updateBuildList(game);
     }
 
     /**
         This method returns the maximum number of upgrades available in this building.
         \return the maximum number of upgrades available (0 if none)
     */
-    int getMaxUpgradeLevel() const;
+    int getMaxUpgradeLevel(const Game& game) const;
 
     /**
         This method checks what is available for purchase in this builder. It shall
         modify buildList appropriately.
     */
-    virtual void updateBuildList();
+    virtual void updateBuildList(const Game& game);
 
     void setWaitingToPlace();
     void unSetWaitingToPlace();
@@ -153,7 +153,7 @@ public:
         \param  itemID          the item to produce
         \param  multipleMode    false = 1 item, true = 5 items
     */
-    virtual void doProduceItem(ItemID_enum itemID, bool multipleMode = false);
+    virtual void doProduceItem(const GameContext& context, ItemID_enum itemID, bool multipleMode = false);
 
     /**
         Cancel production of the specified item.
@@ -183,9 +183,9 @@ public:
     }
 
     bool     isUpgrading() const noexcept { return upgrading; }
-    bool     isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
+    bool     isAllowedToUpgrade(const Game& game) const { return (curUpgradeLev < getMaxUpgradeLevel(game)); }
     int      getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
-    int      getUpgradeCost(const GameContext& context) const;
+    int      getUpgradeCost(const Game& game) const;
     void     produce_item(const GameContext& context);
     FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
 
@@ -205,11 +205,11 @@ public:
     FixPoint getBuildSpeedLimit() const { return buildSpeedLimit; }
 
 protected:
-    virtual void updateProductionProgress();
+    virtual void updateProductionProgress(const Game& game);
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+    virtual void insertItem(const Game& game, std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
                             ItemID_enum itemID, int price = -1);
 
     void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID);

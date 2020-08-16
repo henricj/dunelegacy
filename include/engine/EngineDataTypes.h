@@ -29,16 +29,17 @@ class House;
 class Map;
 class ObjectManager;
 
-struct GameContext {
-    GameContext(Game& game, Map& map, ObjectManager& objectManager)
-        : game{game}, map{map}, objectManager{objectManager} { }
-
-    Game&          game;
-    Map&           map;
-    ObjectManager& objectManager;
-};
 
 } // namespace Dune::Engine
+
+struct GameContext {
+    GameContext(Dune::Engine::Game& game, Dune::Engine::Map& map, Dune::Engine::ObjectManager& objectManager)
+        : game{game}, map{map}, objectManager{objectManager} { }
+
+    Dune::Engine::Game& game;
+    Dune::Engine::Map&  map;
+    Dune::Engine::ObjectManager& objectManager;
+};
 
 enum class GameState { Start, Loading, Running, Deinitialize };
 

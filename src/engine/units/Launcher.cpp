@@ -17,70 +17,36 @@
 
 #include <units/Launcher.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <Explosion.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr TrackedUnitConstants launcher_constants{Launcher::item_id, 2, Bullet_Rocket};
 }
+
+namespace Dune::Engine {
 
 Launcher::Launcher(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 
-    setHealth(getMaxHealth());
+    Launcher::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Launcher::Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 }
+
 void Launcher::init() {
     assert(itemID == Unit_Launcher);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Tank_Base;
-    gunGraphicID = ObjPic_Launcher_Gun;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 Launcher::~Launcher() = default;
-
-void Launcher::blitToScreen() {
-    const auto x1 = screenborder->world2screenX(realX);
-    const auto y1 = screenborder->world2screenY(realY);
-
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
-
-    static constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                     Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
-
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto        source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto        dest2          = calcSpriteDrawingRect(
-        pTurretGraphic, screenborder->world2screenX(realX + launcherTurretOffset[static_cast<int>(drawnAngle)].x),
-        screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-        HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
-
-    if(isBadlyDamaged()) { drawSmoke(x1, y1); }
-}
 
 void Launcher::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
@@ -88,19 +54,15 @@ void Launcher::destroy(const GameContext& context) {
         const auto  explosionID =
             context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID())) soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
     }
 
     parent::destroy(context);
 }
 
-bool Launcher::canAttack(const ObjectBase* object) const {
-    return ((object != nullptr)
-            && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
-            && object->isVisible(getOwner()->getTeamID()));
+bool Launcher::canAttack(const GameContext& context, const ObjectBase* object) const {
+    return ((object != nullptr) &&
+            ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm) &&
+            object->isVisible(getOwner()->getTeamID()));
 }
 
-void Launcher::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Rocket,location);
-}
+} // namespace Dune::Engine

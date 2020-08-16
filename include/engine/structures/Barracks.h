@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BARRACKS_H
-#define BARRACKS_H
+#ifndef ENGINE_BARRACKS_H
+#define ENGINE_BARRACKS_H
 
 #include <structures/BuilderBase.h>
+
+namespace Dune::Engine {
 
 class Barracks final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_Barracks;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     Barracks(uint32_t objectID, const ObjectInitializer& initializer);
     Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -39,4 +41,6 @@ private:
     void init();
 };
 
-#endif // BARRACKS_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_BARRACKS_H

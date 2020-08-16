@@ -20,23 +20,24 @@
 
 #include <Network/MetaServerCommands.h>
 #include <Network/GameServerInfo.h>
-#include <misc/SDL2pp.h>
 
 #include <memory>
 #include <functional>
 
-#include <enet/enet.h>
-#include <string>
+#include <condition_variable>
 #include <list>
+#include <mutex>
+#include <thread>
+#include <string>
 
-#define SERVERLIST_UPDATE_INTERVAL  (8*1000)
-#define GAMESERVER_UPDATE_INTERVAL  (10*1000)
+inline constexpr int SERVERLIST_UPDATE_INTERVAL = 8 * 1000;
+inline constexpr int GAMESERVER_UPDATE_INTERVAL = 10 * 1000;
 
 
-class MetaServerClient {
+class MetaServerClient final {
 public:
 
-    explicit MetaServerClient(std::string metaServerURL);
+    explicit MetaServerClient(std::string_view metaServerURL);
     ~MetaServerClient();
 
     MetaServerClient(const MetaServerClient &) = delete;
@@ -58,11 +59,12 @@ public:
         Sets the function that shall be called if the metaserver reports an error
         \param  pOnMetaServerError  Function to call on metaserver error
     */
-    void setOnMetaServerError(std::function<void (int, const std::string&)> pOnMetaServerError) {
+    void setOnMetaServerError(std::function<void(int, std::string_view)> pOnMetaServerError) {
         this->pOnMetaServerError = pOnMetaServerError;
     }
 
-    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers);
+    void startAnnounce(std::string_view serverName, int serverPort, std::string_view mapName, Uint8 numPlayers,
+                       Uint8 maxPlayers);
 
     void updateAnnounce(Uint8 numPlayers);
 
@@ -76,11 +78,10 @@ public:
 private:
 
     /**
-        The main function of the thread that performes the complete communication with the metaserver.
-        \param  data    this void pointer should point to an instance of this MetaServerClient class
+        The main function of the thread that performs the complete communication with the metaserver.
         \return returns 0
     */
-    static int connectionThreadMain(void* data);
+    int connectionThreadMain();
 
 
     /**
@@ -113,24 +114,24 @@ private:
     // Shared data (used by main thread and connection thread):
 
     std::list<std::unique_ptr<MetaServerCommand> > metaServerCommandList;       ///< The command queue for the metaserver connection thread (shared between main thread and metaserver connection thread, \see sharedDataMutex)
-    SDL_sem*    availableMetaServerCommandsSemaphore;                           ///< This semaphore counts how many commands are available in the metaServerCommandList
+    std::condition_variable metaServerCommandListCv;                            ///< This semaphore counts how many commands are available in the metaServerCommandList
 
     int metaserverErrorCause = 0;                                               ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
-    std::string metaserverError = "";                                           ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
+    std::string metaserverError;                                                ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
     bool bUpdatedGameServerInfoList = false;                                    ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to false in the main thread (\see sharedDataMutex)
-    std::list<GameServerInfo> gameServerInfoList;                               ///< A list of all available game servers. Writen by the metaserver connection thread and read by the main thread (\see sharedDataMutex)
+    std::list<GameServerInfo> gameServerInfoList;                               ///< A list of all available game servers. Written by the metaserver connection thread and read by the main thread (\see sharedDataMutex)
 
-    SDL_mutex* sharedDataMutex;                                                 ///< This mutex must be locked before any shared data structures between the main thread and the metaserver connection thread is read or modified)
+    std::mutex sharedDataMutex;                                                 ///< This mutex must be locked before any shared data structures between the main thread and the metaserver connection thread is read or modified)
 
-    SDL_Thread* connectionThread;                                               ///< The metaserver connection thread that processes all the metaserver communication
+    std::thread connectionThread;                                               ///< The metaserver connection thread that processes all the metaserver communication
 
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName = "";                                                ///< The name of the game server
+    std::string serverName;                                                     ///< The name of the game server
     int serverPort = 0;                                                         ///< The port of the game server
-    std::string secret = "";                                                    ///< The secret used for the metaserver updates
-    std::string mapName = "";                                                   ///< The name of the map for which a game is currently set up
+    std::string secret;                                                         ///< The secret used for the metaserver updates
+    std::string mapName;                                                        ///< The name of the map for which a game is currently set up
     Uint8 numPlayers = 0;                                                       ///< The current number of players in the currently set up game
     Uint8 maxPlayers = 0;                                                       ///< The maximum number of players in the currently set up game
 

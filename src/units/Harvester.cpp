@@ -357,7 +357,7 @@ void Harvester::handleDamage(const GameContext& context, int damage, Uint32 dama
 }
 
 void Harvester::handleReturnClick(const GameContext& context) {
-    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_HARVESTER_RETURN,objectID));
+    context.game.getCommandManager().addCommand(Dune::Engine::Command(pLocalPlayer->getPlayerID(), Dune::Engine::CMDTYPE::CMD_HARVESTER_RETURN,objectID));
 }
 
 void Harvester::doReturn()

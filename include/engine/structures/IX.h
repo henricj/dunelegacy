@@ -15,16 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IX_H
-#define IX_H
+#ifndef ENGINE_IX_H
+#define ENGINE_IX_H
 
 #include <structures/StructureBase.h>
 
-class IX final : public StructureBase
-{
+namespace Dune::Engine {
+
+class IX final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_IX;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     IX(uint32_t objectID, const ObjectInitializer& initializer);
     IX(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +41,6 @@ private:
     void init();
 };
 
-#endif //IX_H
+} // namespace Dune::Engine
+
+#endif //ENGINE_IX_H

@@ -15,29 +15,29 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "engine_sand.h"
+
 #include <units/MCV.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
-#include <FileClasses/TextManager.h>
 #include <House.h>
 #include <Explosion.h>
 #include <Game.h>
-#include <SoundPlayer.h>
 #include <Map.h>
-#include <sand.h>
 
 #include <players/HumanPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr GroundUnitConstants mcv_constants{MCV::item_id, false};
 }
+
+namespace Dune::Engine {
 
 MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
-    setHealth(getMaxHealth());
+    MCV::setHealth(initializer.game(), getMaxHealth(initializer.game()));
     attackMode = GUARD;
 }
 
@@ -49,79 +49,60 @@ MCV::MCV(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void MCV::init() {
     assert(itemID == Unit_MCV);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_MCV;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 MCV::~MCV() = default;
 
-void MCV::handleDeployClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY,objectID));
-}
-
-bool MCV::doDeploy() {
+bool MCV::doDeploy(const GameContext& context) {
     // check if there is enough room for construction yard
-    if(canDeploy()) {
-        // save needed values
-        House* pOwner = getOwner();
-        Coord newLocation = getLocation();
+    if(!canDeploy(context)) { return false; }
 
-        // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
+    // save needed values
+    auto* const pOwner      = getOwner();
+    const auto  newLocation = getLocation();
 
-        // place construction yard (force placing to place on still existing MCV)
-        if(pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) != nullptr) {
-            // we hide the MVC so we don't get a soldier on destroy
-            setVisible(VIS_ALL, false);
+    // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
-            // destroy MCV but with base class method since we want no explosion
-            GroundUnit::destroy(GameContext{*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
+    // place construction yard (force placing to place on still existing MCV)
+    if(pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) !=
+       nullptr) {
+        // we hide the MVC so we don't get a soldier on destroy
+        setVisible(VIS_ALL, false);
 
-            return true;
-        }
-    }
+        // destroy MCV but with base class method since we want no explosion
+        parent::destroy(context);
 
-    if(getOwner() == pLocalHouse) {
-        currentGame->addToNewsTicker(_("You cannot deploy here."));
+        return true;
     }
 
     return false;
 }
 
-bool MCV::canAttack(const ObjectBase* object) const {
-    return((object != nullptr)
-            && object->isInfantry()
-            && (object->getOwner()->getTeamID() != owner->getTeamID())
-            && object->isVisible(getOwner()->getTeamID()));
+bool MCV::canAttack(const GameContext& context, const ObjectBase* object) const {
+    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID()) &&
+            object->isVisible(getOwner()->getTeamID()));
 }
 
 void MCV::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if(context.map.tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
     GroundUnit::destroy(context);
 }
 
-bool MCV::canDeploy(int x, int y) {
-    for(int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
-        for(int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
-            if(!currentGameMap->tileExists(x+i, y+j)) {
-                return false;
-            }
-            const Tile* pTile = currentGameMap->getTile(x+i, y+j);
-            if(!pTile->isBlocked() || ((i == 0) && (j == 0))) {
+bool MCV::canDeploy(const GameContext& context, int x, int y) const {
+    const auto structure_size = getStructureSize(Structure_ConstructionYard);
+
+    for(int i = 0; i < structure_size.x; i++) {
+        for(int j = 0; j < structure_size.y; j++) {
+            const Tile* pTile = context.map.tryGetTile(x + i, y + j);
+            if(!pTile) return false;
+
+            if(i == 0 && j == 0 || !pTile->isBlocked()) {
                 // tile is not blocked or we're checking the tile with the MCV on
-                if(!pTile->isRock()) {
-                    return false;
-                }
+                if(!pTile->isRock()) { return false; }
             } else {
                 return false;
             }
@@ -130,3 +111,5 @@ bool MCV::canDeploy(int x, int y) {
 
     return true;
 }
+
+} // namespace Dune::Engine

@@ -65,7 +65,7 @@ void AStarSearch::Search(const GameContext& context, UnitBase* pUnit, Coord star
     bestCoord                    = nullptr;
 
     // if the unit is not directly next to its destination or it is and the destination is unblocked
-    if(heuristic <= 1.5_fix && !pUnit->canPassTile(destinationTile)) return;
+    if(heuristic <= 1.5_fix && !pUnit->canPassTile(context, destinationTile)) return;
 
     putOnOpenListIfBetter(context.map.getKey(start.x, start.y), start, nullptr, 0, heuristic);
 
@@ -92,7 +92,7 @@ void AStarSearch::Search(const GameContext& context, UnitBase* pUnit, Coord star
         if(numNodesChecked < MAX_NODES_CHECKED) {
             // push a node for each direction we could go
             context.map.for_each_angle(currentCoord.x, currentCoord.y, [&](ANGLETYPE angle, Tile& nextTile) {
-                if(!pUnit->canPassTile(&nextTile)) return;
+                if(!pUnit->canPassTile(context, &nextTile)) return;
 
                 const auto& nextCoord = nextTile.location;
                 const auto  nextKey   = context.map.getKey(nextTile);

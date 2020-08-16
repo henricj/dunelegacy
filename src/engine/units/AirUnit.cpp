@@ -15,22 +15,16 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <units/AirUnit.h>
+#include "engine_mmath.h"
 
-#include <globals.h>
+#include <units/AirUnit.h>
 
 #include <House.h>
 #include <Game.h>
 #include <Explosion.h>
-#include <SoundPlayer.h>
 #include <Map.h>
-#include <ScreenBorder.h>
 
-#include <FileClasses/GFXManager.h>
-
-#include <misc/draw_util.h>
-
-
+namespace Dune::Engine {
 
 AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
@@ -46,105 +40,53 @@ AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const Obj
 
 AirUnit::~AirUnit() = default;
 
-void AirUnit::save(OutputStream& stream) const
-{
-    UnitBase::save(stream);
+void AirUnit::save(const Game& game, OutputStream& stream) const {
+    UnitBase::save(game, stream);
 
     stream.writeFixPoint(currentMaxSpeed);
 }
 
-void AirUnit::destroy(const GameContext& context)
-{
+void AirUnit::destroy(const GameContext& context) {
     if(isVisible()) {
         Coord position(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_Medium2, position, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium,location);
     }
 
-    UnitBase::destroy(context);
+    parent::destroy(context);
 }
 
-void AirUnit::assignToMap(const GameContext& context, const Coord& pos)
-{
-    if(currentGameMap->tileExists(pos)) {
-        if(guardPoint.isInvalid()) {
-            guardPoint = pos;
-        }
+void AirUnit::assignToMap(const GameContext& context, const Coord& pos) {
+    auto* const tile = context.map.tryGetTile(pos.x, pos.y);
+    if(!tile) return;
 
-        currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
-        // do not reveal map for air units
-        // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
-    }
+    if(guardPoint.isInvalid()) { guardPoint = pos; }
+
+    tile->assignAirUnit(getObjectID());
+
+    // do not reveal map for air units
+    // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
 }
 
 void AirUnit::checkPos(const GameContext& context) {
     // do nothing
 }
 
-void AirUnit::blitToScreen()
-{
-    const auto* const shadow = shadowGraphic[currentZoomlevel];
-    const auto *const pUnitGraphic = graphic[currentZoomlevel];
-
-    if(settings.video.rotateUnitGraphics) {
-        const auto rotationAngleDeg = -angle.toDouble()*360.0/8.0;
-
-        if(shadow != nullptr) {
-            int x = screenborder->world2screenX(realX + 4);
-            int y = screenborder->world2screenY(realY + 12);
-
-            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
-
-            Dune_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
-        }
-
-        int x = screenborder->world2screenX(realX);
-        int y = screenborder->world2screenY(realY);
-
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-        SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
-
-        Dune_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
-    } else {
-        if(shadow != nullptr) {
-            int x = screenborder->world2screenX(realX + 4);
-            int y = screenborder->world2screenY(realY + 12);
-
-            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
-
-            Dune_RenderCopy(renderer, shadow, &source, &dest);
-        }
-
-        int x = screenborder->world2screenX(realX);
-        int y = screenborder->world2screenY(realY);
-
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-        SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
-
-        Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
-    }
-}
-
 void AirUnit::navigate(const GameContext& context) {
-    moving = true;
+    moving            = true;
     justStoppedMoving = false;
 }
 
 void AirUnit::move(const GameContext& context) {
     FixPoint angleRad = (angle * (FixPt_PI << 1)) / 8;
-    FixPoint speed = getMaxSpeed(context);
+    FixPoint speed    = getMaxSpeed(context);
 
-    realX += FixPoint::cos(angleRad)*speed;
-    realY += -FixPoint::sin(angleRad)*speed;
+    realX += FixPoint::cos(angleRad) * speed;
+    realY += -FixPoint::sin(angleRad) * speed;
 
-    Coord newLocation = Coord(realX.lround()/TILESIZE, realY.lround()/TILESIZE);
+    Coord newLocation = Coord(realX.lround() / TILESIZE, realY.lround() / TILESIZE);
 
     if(newLocation != location) {
-        unassignFromMap(location);
+        unassignFromMap(context, location);
         assignToMap(context, newLocation);
         location = newLocation;
     }
@@ -152,15 +94,17 @@ void AirUnit::move(const GameContext& context) {
     checkPos(context);
 }
 
-FixPoint AirUnit::getDestinationAngle() const {
-    return destinationAngleRad(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2)*8 / (FixPt_PI << 1);;
+FixPoint AirUnit::getDestinationAngle(const Game& game) const {
+    return destinationAngleRad(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
+                               destination.y * TILESIZE + TILESIZE / 2) *
+           8 / (FixPt_PI << 1);
 }
 
 void AirUnit::turn(const GameContext& context) {
-    const auto turn_speed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+    const auto turn_speed = context.game.getObjectData(itemID, originalHouseID).turnspeed;
 
     if(destination.isValid()) {
-        const auto destinationAngle = getDestinationAngle();
+        const auto destinationAngle = getDestinationAngle(context.game);
 
         FixPoint angleLeft  = 0;
         FixPoint angleRight = 0;
@@ -174,13 +118,11 @@ void AirUnit::turn(const GameContext& context) {
         }
 
         if(angleLeft <= angleRight) {
-            angle +=
-                std::min(turn_speed, angleLeft);
+            angle += std::min(turn_speed, angleLeft);
             if(angle > static_cast<int>(ANGLETYPE::NUM_ANGLES)) { angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         } else {
-            angle -=
-                std::min(turn_speed, angleRight);
+            angle -= std::min(turn_speed, angleRight);
             if(angle < 0) { angle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         }
@@ -191,8 +133,7 @@ void AirUnit::turn(const GameContext& context) {
     }
 }
 
-bool AirUnit::canPassTile(const Tile* pTile) const
-{
-    return pTile;
-}
+bool AirUnit::canPassTile(const GameContext& context, const Tile* pTile) const { return pTile; }
+
+} // namespace Dune::Engine
 

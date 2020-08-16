@@ -18,7 +18,8 @@
 #ifndef AITEAMINFO_H
 #define AITEAMINFO_H
 
-#include <EngineDataTypes.h>
+#include "EngineDataTypes.h"
+
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 

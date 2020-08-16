@@ -19,7 +19,7 @@
 
 #include <Network/ENetHelper.h>
 
-#include <GameInitSettings.h>
+#include <engine/GameInitSettings.h>
 
 #include <misc/exceptions.h>
 
@@ -28,7 +28,19 @@
 #include <algorithm>
 #include <cstdio>
 
-NetworkManager::NetworkManager(int port, const std::string& metaserver) {
+
+namespace
+{
+template<typename... Args>
+void debugNetwork(const char* fmt, Args&&... args) {
+    if(!settings.network.debugNetwork) return;
+
+    Dune::Logger.log(fmt, std::forward<Args>(args)...);
+}
+}
+
+
+NetworkManager::NetworkManager(int port, std::string_view metaserver) {
 
     if(enet_initialize() != 0) {
         THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
@@ -750,11 +762,3 @@ int NetworkManager::getMaxPeerRoundTripTime() {
     return maxPeerRTT;
 }
 
-void NetworkManager::debugNetwork(const char* fmt, ...) {
-    if(settings.network.debugNetwork) {
-        va_list args;
-        va_start(args, fmt);
-        vfprintf(stderr, fmt, args);
-        va_end(args);
-    }
-}

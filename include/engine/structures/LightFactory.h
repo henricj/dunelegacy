@@ -15,30 +15,26 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIGHTFACTORY_H
-#define LIGHTFACTORY_H
+#ifndef ENGINE_LIGHTFACTORY_H
+#define ENGINE_LIGHTFACTORY_H
 
 #include <structures/BuilderBase.h>
 
-class LightFactory final : public BuilderBase
-{
+namespace Dune::Engine {
+
+class LightFactory final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_LightFactory;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     LightFactory(uint32_t objectID, const ObjectInitializer& initializer);
     LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~LightFactory() override;
 
-protected:
-    /**
-        Used for updating things that are specific to that particular structure. Is called from
-        StructureBase::update() before the check if this structure is still alive.
-    */
-    void updateStructureSpecificStuff(const GameContext& context) override;
-
 private:
     void init();
 };
 
-#endif //LIGHTFACTORY_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_LIGHTFACTORY_H

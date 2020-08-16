@@ -15,16 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INFANTRYBASE_H
-#define INFANTRYBASE_H
+#ifndef ENGINE_INFANTRYBASE_H
+#define ENGINE_INFANTRYBASE_H
 
 #include <units/GroundUnit.h>
 
-class InfantryBaseConstants : public GroundUnitConstants
-{
+namespace Dune::Engine {
+
+class InfantryBaseConstants : public GroundUnitConstants {
 public:
     constexpr explicit InfantryBaseConstants(ItemID_enum itemID, int num_weapons = 0,
-                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+                                             BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
         : GroundUnitConstants{itemID, num_weapons, bullet_id} {
         infantry_ = true;
     }
@@ -45,7 +46,7 @@ public:
     InfantryBase& operator=(const InfantryBase&) = delete;
     InfantryBase& operator=(InfantryBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     /**
         This method is called when an unit is ordered to capture
@@ -67,7 +68,6 @@ public:
     virtual void doCaptureStructure(const GameContext& context, const StructureBase* pStructure);
 
     void assignToMap(const GameContext& context, const Coord& pos) override;
-    void blitToScreen() override;
     void checkPos(const GameContext& context) override;
     void destroy(const GameContext& context) override;
     void move(const GameContext& context) override;
@@ -76,10 +76,7 @@ public:
 
     void squash(const GameContext& context);
 
-    void playConfirmSound() override;
-    void playSelectSound() override;
-
-    bool canPassTile(const Tile* pTile) const override;
+    bool canPassTile(const GameContext& context, const Tile* pTile) const override;
 
     int getTilePosition() const { return tilePosition; }
 
@@ -93,7 +90,6 @@ protected:
     // drawing information
     int walkFrame{}; ///< What frame to draw
 };
-
 
 template<>
 inline InfantryBase* dune_cast(ObjectBase* base) {
@@ -109,4 +105,6 @@ inline const InfantryBase* dune_cast(const ObjectBase* base) {
     return nullptr;
 }
 
-#endif // INFANTRYBASE_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_INFANTRYBASE_H

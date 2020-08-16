@@ -15,21 +15,21 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SIEGETANK_H
-#define SIEGETANK_H
+#ifndef ENGINE_SIEGETANK_H
+#define ENGINE_SIEGETANK_H
 
 #include <units/TankBase.h>
+
+namespace Dune::Engine {
 
 class SiegeTank final : public TankBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_SiegeTank;
-    using parent = TankBase;
+    using parent                                = TankBase;
 
     SiegeTank(uint32_t objectID, const ObjectInitializer& initializer);
     SiegeTank(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~SiegeTank() override;
-
-    void blitToScreen() override;
 
     void destroy(const GameContext& context) override;
 
@@ -39,4 +39,6 @@ private:
     void init();
 };
 
-#endif // SIEGETANK_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_SIEGETANK_H

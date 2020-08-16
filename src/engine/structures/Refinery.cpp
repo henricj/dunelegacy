@@ -17,41 +17,38 @@
 
 #include <structures/Refinery.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
-#include <SoundPlayer.h>
 #include <Map.h>
 
 #include <units/UnitBase.h>
 #include <units/Harvester.h>
 #include <units/Carryall.h>
 
-#include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
+namespace {
+using namespace Dune::Engine;
 
 /* how fast is spice extracted */
-#define MAXIMUMHARVESTEREXTRACTSPEED (0.625_fix)
+constexpr auto MAXIMUMHARVESTEREXTRACTSPEED = 0.625_fix;
 
-namespace {
 constexpr StructureBaseConstants refinery_constants{Refinery::item_id, Coord{3, 2}};
 }
 
-Refinery::Refinery(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
+namespace Dune::Engine {
+
+Refinery::Refinery(uint32_t objectID, const ObjectInitializer& initializer)
+    : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    ObjectBase::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 
     extractingSpice = false;
-    bookings = 0;
+    bookings        = 0;
 
     firstRun = true;
-
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
-Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
+Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     auto& stream = initializer.stream();
@@ -61,9 +58,6 @@ Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer
     bookings = stream.readUint32();
 
     if(extractingSpice) {
-        firstAnimFrame = 8;
-        lastAnimFrame = 9;
-        curAnimFrame = 8;
     } else if(bookings == 0) {
         stopAnimate();
     } else {
@@ -76,18 +70,13 @@ Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer
 void Refinery::init() {
     assert(itemID == Structure_Refinery);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Refinery;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
 }
 
 Refinery::~Refinery() = default;
 
 void Refinery::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     if(extractingSpice && harvester) {
-        auto* pHarvester = harvester.getUnitPointer();
+        auto* pHarvester = harvester.getUnitPointer(context.objectManager);
         if(pHarvester) pHarvester->destroy(context);
         harvester.pointTo(NONE_ID);
     }
@@ -95,49 +84,36 @@ void Refinery::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     parent::cleanup(context, humanPlayer);
 }
 
-
-void Refinery::save(OutputStream& stream) const {
-    StructureBase::save(stream);
+void Refinery::save(const Game& game, OutputStream& stream) const {
+    StructureBase::save(game, stream);
 
     stream.writeBool(extractingSpice);
     harvester.save(stream);
     stream.writeUint32(bookings);
 }
 
-std::unique_ptr<ObjectInterface> Refinery::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return RefineryAndSiloInterface::create(context, objectID); }
-    return DefaultObjectInterface::create(context, objectID);
-}
-
 void Refinery::assignHarvester(Harvester* newHarvester) {
     extractingSpice = true;
     harvester.pointTo(newHarvester);
     drawnAngle = static_cast<ANGLETYPE>(1);
-    firstAnimFrame = 8;
-    lastAnimFrame = 9;
-    curAnimFrame = 8;
 }
 
 void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) {
     unBook();
-    drawnAngle = static_cast<ANGLETYPE>(0);
+    drawnAngle      = static_cast<ANGLETYPE>(0);
     extractingSpice = false;
 
-    if(firstRun) {
-        if(getOwner() == pLocalHouse) {
-            soundPlayer->playVoice(HarvesterDeployed,getOwner()->getHouseID());
-        }
-    }
+    if(firstRun) { }
 
     firstRun = false;
 
-    auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
+    auto* pHarvester = dune_cast<Harvester>(harvester.getObjPointer(context.objectManager));
     if((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
         pCarryall->giveCargo(context, pHarvester);
-        pCarryall->setTarget(nullptr);
-        pCarryall->setDestination(pHarvester->getGuardPoint());
+        pCarryall->setTarget(context.objectManager, nullptr);
+        pCarryall->setDestination(context, pHarvester->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
+        const Coord deployPos = context.map.findDeploySpot(pHarvester, location, destination, getStructureSize());
         pHarvester->deploy(context, deployPos);
     }
 
@@ -149,45 +125,37 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
 }
 
 void Refinery::startAnimate() {
-    if(!extractingSpice) {
-        firstAnimFrame = 2;
-        lastAnimFrame = 7;
-        curAnimFrame = 2;
-        justPlacedTimer = 0;
-        animationCounter = 0;
-    }
+    if(!extractingSpice) { justPlacedTimer = 0; }
 }
 
-void Refinery::stopAnimate() {
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
-    curAnimFrame = 2;
-}
+void Refinery::stopAnimate() { }
 
 void Refinery::updateStructureSpecificStuff(const GameContext& context) {
     if(extractingSpice) {
-        auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
+        auto* pHarvester = dune_cast<Harvester>(harvester.getObjPointer(context.objectManager));
+
+        if(!pHarvester) {
+            harvester.reset();
+            return;
+        }
 
         if(pHarvester->getAmountOfSpice() > 0) {
             FixPoint extractionSpeed = MAXIMUMHARVESTEREXTRACTSPEED;
 
-            int scale = floor(5*getHealth()/getMaxHealth());
-            if(scale == 0) {
-                scale = 1;
-            }
+            int scale = floor(5 * getHealth() / getMaxHealth(context.game));
+            if(scale == 0) { scale = 1; }
 
             extractionSpeed = (extractionSpeed * scale) / 5;
-
 
             owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
         } else if((!pHarvester->isAwaitingPickup()) && (pHarvester->getGuardPoint().isValid())) {
             // find carryall
             Carryall* pCarryall = nullptr;
-            if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls())   {
-                for(UnitBase* pUnit : unitList) {
-                    if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
-                        auto* pTmpCarryall = static_cast<Carryall*>(pUnit);
-                        if (!pTmpCarryall->isBooked()) {
+            if((pHarvester->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
+                for(auto* pUnit : context.game.unitList) {
+                    if((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
+                        auto* const pTmpCarryall = dune_cast<Carryall>(pUnit);
+                        if(pTmpCarryall && !pTmpCarryall->isBooked()) {
                             pCarryall = pTmpCarryall;
                             break;
                         }
@@ -196,16 +164,18 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
             }
 
             if(pCarryall != nullptr) {
-                pCarryall->setTarget(this);
+                pCarryall->setTarget(context.objectManager, this);
                 pCarryall->clearPath();
                 pHarvester->bookCarrier(pCarryall);
-                pHarvester->setTarget(nullptr);
-                pHarvester->setDestination(pHarvester->getGuardPoint());
+                pHarvester->setTarget(context.objectManager, nullptr);
+                pHarvester->setDestination(context, pHarvester->getGuardPoint());
             } else {
                 deployHarvester(context);
             }
-        } else if(!pHarvester->hasBookedCarrier()) {
+        } else if(!pHarvester->hasBookedCarrier(context.objectManager)) {
             deployHarvester(context);
         }
     }
 }
+
+} // namespace Dune::Engine

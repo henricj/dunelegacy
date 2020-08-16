@@ -18,8 +18,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <data.h>
-#include <EngineDataTypes.h>
+#include "../data.h"
+#include "../EngineDataTypes.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/RobustList.h>
@@ -29,14 +29,10 @@
 #include <string>
 #include <string_view>
 
-inline constexpr int xyz4 = 123;
-namespace {
-inline constexpr int abc4 = ::xyz4;
-}
+struct GameContext;
 
 namespace Dune::Engine {
 
-struct GameContext;
 class GameInitSettings;
 class Map;
 class House;
@@ -56,7 +52,7 @@ class MCV;
 
 class Player {
 protected:
-    Player(const GameContext& context, House* associatedHouse, std::string playername, const Random& random);
+    Player(const GameContext& context, House* associatedHouse, std::string_view playername, const Random& random);
     Player(const GameContext& context, InputStream& stream, House* associatedHouse);
 
 public:
@@ -75,7 +71,7 @@ public:
         Notifies that a structure or unit was built.
         \param  pObject  the object that was built
     */
-    virtual void onObjectWasBuilt(const ::Dune::Engine::ObjectBase* pObject) { }
+    virtual void onObjectWasBuilt(const ObjectBase* pObject) { }
 
     /**
         Notifies that a structure of type itemID was destroyed at the specified location.
@@ -101,7 +97,7 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    virtual void onDamage(const ::Dune::Engine::ObjectBase* pObject, int damage, uint32_t damagerID) { }
+    virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) { }
 
     [[nodiscard]] const House* getHouse() const { return pHouse; }
     [[nodiscard]] uint8_t      getPlayerID() const { return playerID; }
@@ -142,10 +138,10 @@ protected:
     const RobustList<const StructureBase*>&          getStructureList();
     [[nodiscard]] const RobustList<const UnitBase*>& getUnitList() const;
 
-    const House* getHouse(HOUSETYPE houseID);
+    const House* getHouse(HOUSETYPE houseID) const;
 
     /**
-        Start repairing the structure pObject or sending the unit pObject to the rapair yard.
+        Start repairing the structure pObject or sending the unit pObject to the repair yard.
         \param  pObject  the structure or unit to repair
     */
     void doRepair(const ObjectBase* pObject) const;

@@ -17,26 +17,23 @@
 
 #include <units/Tank.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <Explosion.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
 
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr TankBaseConstants tank_constants{Tank::item_id, 1, Bullet_ShellMedium};
 }
 
+namespace Dune::Engine {
 
 Tank::Tank(uint32_t objectID, const ObjectInitializer& initializer) : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 
-    setHealth(getMaxHealth());
+    Tank::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Tank::Tank(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -47,39 +44,9 @@ Tank::Tank(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Tank::init() {
     assert(itemID == Unit_Tank);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Tank_Base;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    gunGraphicID = ObjPic_Tank_Gun;
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 Tank::~Tank() = default;
-
-
-void Tank::blitToScreen() {
-    const auto x = screenborder->world2screenX(realX);
-    const auto y = screenborder->world2screenY(realY);
-
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto        dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
-
-    const auto* pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto  source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
-                                              static_cast<int>(ANGLETYPE::NUM_ANGLES));
-    const auto  dest2          = calcSpriteDrawingRect(pTurretGraphic, x, y, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
-                                             HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
-
-    if(isBadlyDamaged()) { drawSmoke(x, y); }
-}
 
 void Tank::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
@@ -87,11 +54,9 @@ void Tank::destroy(const GameContext& context) {
         const auto  explosionID =
             context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID())) soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
     }
 
     TankBase::destroy(context);
 }
 
-void Tank::playAttackSound() { soundPlayer->playSoundAt(Sound_ExplosionSmall, location); }
+} // namespace Dune::Engine

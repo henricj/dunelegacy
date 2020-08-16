@@ -17,20 +17,20 @@
 
 #include <structures/WOR.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr BuilderBaseConstants wor_constants{WOR::item_id, Coord{2, 2}};
 }
 
-WOR::WOR(uint32_t objectID, const ObjectInitializer& initializer)
-    : BuilderBase(wor_constants, objectID, initializer) {
+namespace Dune::Engine {
+
+WOR::WOR(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(wor_constants, objectID, initializer) {
     WOR::init();
 
-    setHealth(getMaxHealth());
+    WOR::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 WOR::WOR(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -38,15 +38,8 @@ WOR::WOR(uint32_t objectID, const ObjectStreamInitializer& initializer)
     WOR::init();
 }
 
-void WOR::init() {
-    owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_WOR;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
-}
+void WOR::init() { owner->incrementStructures(itemID); }
 
 WOR::~WOR() = default;
+
+} // namespace Dune::Engine

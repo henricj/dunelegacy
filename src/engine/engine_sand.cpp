@@ -17,11 +17,6 @@
 
 #include <engine_sand.h>
 
-inline constexpr int xyz6 = 123;
-namespace {
-inline constexpr int abc6 = ::xyz6;
-}
-
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <data.h>
@@ -33,7 +28,7 @@ inline constexpr int abc6 = ::xyz6;
 /**
     This function returns the size of the specified item.
     \param ItemID   the id of the item (e.g. Structure_HeavyFactory)
-    \return a Coord containg the size (e.g. (3,2) ). Returns (0,0) on error.
+    \return a Coord containing the size (e.g. (3,2) ). Returns (0,0) on error.
 */
 Coord getStructureSize(ItemID_enum itemID) {
 
@@ -354,7 +349,7 @@ std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
     This function returns the house-dependent weakness of a unit to get deviated
     \param  house   the house of the unit (choose the real owner);
 */
-FixPoint getDeviateWeakness(const Dune::Engine::GameContext& context, HOUSETYPE house) {
+FixPoint getDeviateWeakness(const GameContext& context, HOUSETYPE house) {
 
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // so that Ordos is playable for Humans

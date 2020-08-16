@@ -59,13 +59,13 @@ public:
         Saves all objects to a stream
         \param  stream  Stream to save to
     */
-    void save(OutputStream& stream) const;
+    void save(const Game& game, OutputStream& stream) const;
 
     /**
         Loads all objects from a stream
         \param  stream  Stream to load from
     */
-    void load(InputStream& stream);
+    void load(Game& game, InputStream& stream);
 
     /**
         This method searches for the object with ObjectID.
@@ -169,7 +169,7 @@ private:
         \return ObjectID of the added object.
     */
     bool                               addObject(std::unique_ptr<ObjectBase> pObject);
-    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
+    static std::unique_ptr<ObjectBase> loadObject(Game& game, InputStream& stream, uint32_t objectID);
 
     uint32_t                                nextFreeObjectID = 1;
     ObjectMap                               objectMap;

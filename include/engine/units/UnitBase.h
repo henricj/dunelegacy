@@ -18,15 +18,9 @@
 #ifndef ENGINE_UNITBASE_H
 #define ENGINE_UNITBASE_H
 
-#include <ObjectBase.h>
-#include <Map.h>
+#include "../ObjectBase.h"
 
-#include <House.h>
-
-inline constexpr int xyz5 = 123;
-namespace {
-inline constexpr int abc5 = ::xyz5;
-}
+#include "../House.h"
 
 namespace Dune::Engine {
 
@@ -67,18 +61,14 @@ protected:
     UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
-    virtual ~UnitBase() override = 0;
+    ~UnitBase() override = 0;
 
     UnitBase(const UnitBase&) = delete;
     UnitBase(UnitBase&&)      = delete;
     UnitBase& operator=(const UnitBase&) = delete;
     UnitBase& operator=(UnitBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
-
-    void blitToScreen() override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     virtual void checkPos(const GameContext& context) = 0;
     virtual void deploy(const GameContext& context, const Coord& newLocation);
@@ -86,44 +76,7 @@ public:
     void destroy(const GameContext& context) override;
     void deviate(const GameContext& context, House* newOwner);
 
-    void drawSelectionBox() override;
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
-
-    void drawOtherPlayerSelectionBox() override;
-
-    /**
-        This method is called when an unit is ordered by a right click
-        \param  xPos    the x position on the map
-        \param  yPos    the y position on the map
-    */
-    void handleActionClick(const GameContext& context, int xPos, int yPos) override;
-
-    /**
-        This method is called when an unit is ordered to attack
-        \param  xPos    the x position on the map
-        \param  yPos    the y position on the map
-    */
-    virtual void handleAttackClick(const GameContext& context, int xPos, int yPos);
-
-    /**
-        This method is called when an unit is ordered to move
-        \param  xPos    the x position on the map
-        \param  yPos    the y position on the map
-    */
-    virtual void handleMoveClick(const GameContext& context, int xPos, int yPos);
-
-    /**
-        This method is called when an unit is ordered to be in a new attack mode
-        \param  newAttackMode   the new attack mode the unit is put in.
-    */
-    virtual void handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode);
-
-    /**
-        This method is called when an unit is ordered to request a carryall drop
-        \param  xPos    the x position on the map
-        \param  yPos    the y position on the map
-    */
-    virtual void handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit should move to (xPos,yPos)
@@ -188,37 +141,39 @@ public:
         Is this object in a range we are guarding. If yes we shall react.
         \param  object  the object to check
     */
-    bool isInGuardRange(const ObjectBase* object) const;
+    bool isInGuardRange(const Game& game, const ObjectBase* object) const;
 
     /**
         Is this object in a range we want to attack. If no, we should stop following it.
         \param  object  the object to check
     */
-    bool isInAttackRange(const ObjectBase* object) const;
+    bool isInAttackRange(const Game& game, const ObjectBase* object) const;
 
     /**
         Is this object in a range we can attack.
         \param  object  the object to check
     */
-    bool isInWeaponRange(const ObjectBase* object) const;
+    bool isInWeaponRange(const GameContext& context, const ObjectBase* object) const;
 
     void setAngle(ANGLETYPE newAngle);
 
-    void setTarget(const ObjectBase* newTarget) override;
+    void setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) override;
 
-    void setGettingRepaired();
+    void setGettingRepaired(const GameContext& context);
 
-    void setGuardPoint(const Coord& newGuardPoint) { setGuardPoint(newGuardPoint.x, newGuardPoint.y); }
+    void setGuardPoint(const GameContext& context, const Coord& newGuardPoint) {
+        setGuardPoint(context, newGuardPoint.x, newGuardPoint.y);
+    }
 
-    void setGuardPoint(int newX, int newY);
+    void setGuardPoint(const GameContext& context, int newX, int newY);
 
     using ObjectBase::setLocation;
     void setLocation(const GameContext& context, int xPos, int yPos) override;
 
     using ObjectBase::setDestination;
-    void setDestination(int newX, int newY) override {
+    void setDestination(const GameContext& context, int newX, int newY) override {
         if((destination.x != newX) || (destination.y != newY)) {
-            ObjectBase::setDestination(newX, newY);
+            ObjectBase::setDestination(context, newX, newY);
             clearPath();
         }
     }
@@ -231,13 +186,9 @@ public:
     */
     bool update(const GameContext& context) override;
 
-    bool canPass(int xPos, int yPos) const {
-        auto* const pTile = currentGameMap->tryGetTile(xPos, yPos);
+    bool canPass(const GameContext& context, int xPos, int yPos) const;
 
-        return pTile ? canPassTile(pTile) : false;
-    }
-
-    virtual bool canPassTile(const Tile* pTile) const;
+    virtual bool canPassTile(const GameContext& context, const Tile* pTile) const;
 
     virtual bool hasBumpyMovementOnRock() const { return false; }
 
@@ -290,11 +241,12 @@ protected:
 
     virtual bool attack(const GameContext& context);
 
-    virtual void releaseTarget();
+    virtual void releaseTarget(const GameContext& context);
     virtual void engageTarget(const GameContext& context);
     virtual void move(const GameContext& context);
 
-    virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX,
+    virtual void bumpyMovementOnRock(const GameContext& context, FixPoint fromDistanceX, FixPoint fromDistanceY,
+                                     FixPoint toDistanceX,
                                      FixPoint toDistanceY);
 
     virtual void navigate(const GameContext& context);
@@ -314,9 +266,7 @@ protected:
 
     void quitDeviation(const GameContext& context);
 
-    bool SearchPathWithAStar();
-
-    void drawSmoke(int x, int y) const;
+    bool SearchPathWithAStar(const GameContext& context);
 
     // unit state/properties
     Coord guardPoint;        ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
@@ -355,7 +305,7 @@ protected:
     int drawnFrame; ///< Which row in the picture should be drawn
 
 private:
-    void init();
+    void init(Game& game);
 };
 
 template<>

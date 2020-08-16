@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SABOTEUR_H
-#define SABOTEUR_H
+#ifndef ENGINE_SABOTEUR_H
+#define ENGINE_SABOTEUR_H
 
 #include <units/InfantryBase.h>
+
+namespace Dune::Engine {
 
 class Saboteur final : public InfantryBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Saboteur;
-    using parent = InfantryBase;
+    using parent                                = InfantryBase;
 
     Saboteur(uint32_t objectID, const ObjectInitializer& initializer);
     Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -38,7 +40,7 @@ public:
     bool update(const GameContext& context) override;
 
     void deploy(const GameContext& context, const Coord& newLocation) override;
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
     void destroy(const GameContext& context) override;
 
@@ -46,4 +48,6 @@ private:
     void init();
 };
 
-#endif // SABOTEUR_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_SABOTEUR_H

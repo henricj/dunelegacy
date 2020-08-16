@@ -17,22 +17,21 @@
 
 #include <structures/Radar.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
-#include <GUI/ObjectInterfaces/RadarInterface.h>
-
 namespace {
+using namespace Dune::Engine;
+
 constexpr StructureBaseConstants radar_constants{Radar::item_id, Coord{2, 2}};
 }
+
+namespace Dune::Engine {
 
 Radar::Radar(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 
-    setHealth(getMaxHealth());
+    setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Radar::Radar(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -43,22 +42,8 @@ Radar::Radar(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Radar::init() {
     assert(itemID == Structure_Radar);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Radar;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 6;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 5;
 }
 
 Radar::~Radar() = default;
 
-std::unique_ptr<ObjectInterface> Radar::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return RadarInterface::create(context, objectID); }
-    return DefaultObjectInterface::create(context, objectID);
-}
-
-void Radar::destroy(const GameContext& context) {
-    StructureBase::destroy(context);
-}
+} // namespace Dune::Engine

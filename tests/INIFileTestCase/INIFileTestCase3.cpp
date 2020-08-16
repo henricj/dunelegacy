@@ -4,7 +4,7 @@
 
 
 TEST_F(INIFileTestCase3, removeKey) {
-	INIFile inifile("INIFileTestCase3.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase3.ini");
 
     EXPECT_NE(inifile.begin(), inifile.end());
 
@@ -19,7 +19,7 @@ TEST_F(INIFileTestCase3, removeKey) {
 }
 
 TEST_F(INIFileTestCase3, clearSection) {
-    INIFile inifile("INIFileTestCase3.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase3.ini");
 
     EXPECT_NE(inifile.begin(), inifile.end());
 
@@ -33,7 +33,7 @@ TEST_F(INIFileTestCase3, clearSection) {
 }
 
 TEST_F(INIFileTestCase3, removeSection) {
-	INIFile inifile("INIFileTestCase3.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase3.ini");
 
     EXPECT_NE(inifile.begin(), inifile.end());
 
@@ -47,7 +47,7 @@ TEST_F(INIFileTestCase3, removeSection) {
 }
 
 TEST_F(INIFileTestCase3, clearSectionAndAddKeys) {
-	INIFile inifile("INIFileTestCase3.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase3.ini");
 
     EXPECT_NE(inifile.begin(), inifile.end());
 

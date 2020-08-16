@@ -17,21 +17,22 @@
 
 #include <structures/Barracks.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
 namespace
 {
+using namespace Dune::Engine;
+
 const BuilderBaseConstants barracks_constants{Barracks::item_id, Coord{2, 2}};
 }
+
+namespace Dune::Engine {
 
 Barracks::Barracks(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 
-    setHealth(getMaxHealth());
+    setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -41,13 +42,8 @@ Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer
 
 void Barracks::init() {
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Barracks,
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 Barracks::~Barracks() = default;
+
+} // namespace Dune::Engine

@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONSTRUCTIONYARD_H
-#define CONSTRUCTIONYARD_H
+#ifndef ENGINE_CONSTRUCTIONYARD_H
+#define ENGINE_CONSTRUCTIONYARD_H
 
 #include <structures/BuilderBase.h>
+
+namespace Dune::Engine {
 
 class ConstructionYard final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_ConstructionYard;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     ConstructionYard(uint32_t objectID, const ObjectInitializer& initializer);
     ConstructionYard(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,4 +43,6 @@ private:
     void init();
 };
 
-#endif // CONSTRUCTIONYARD_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_CONSTRUCTIONYARD_H

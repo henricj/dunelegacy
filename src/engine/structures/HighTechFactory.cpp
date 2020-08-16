@@ -17,21 +17,22 @@
 
 #include <structures/HighTechFactory.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr BuilderBaseConstants high_tech_factory_constants{HighTechFactory::item_id, Coord{3, 2}};
 }
+
+namespace Dune::Engine {
 
 HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 
-    setHealth(getMaxHealth());
+    HighTechFactory::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -41,13 +42,8 @@ HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectStreamInitialize
 
 void HighTechFactory::init() {
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_HighTechFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 8;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 HighTechFactory::~HighTechFactory() = default;
+
+} // namespace Dune::Engine

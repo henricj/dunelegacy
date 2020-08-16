@@ -252,14 +252,14 @@ void Tile::assignNonInfantryGroundObject(uint32_t newObjectID) {
     assignedNonInfantryGroundObjectList.push_back(newObjectID);
 }
 
-int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition) {
+int8_t Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition) {
     auto newPosition = currentPosition;
 
     if (currentPosition < 0) {
         std::array<bool, NUM_INFANTRY_PER_TILE> used{};
 
         for (auto objectID : assignedInfantryList) {
-            auto *const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
+            auto *const pInfantry = objectManager.getObject<InfantryBase>(objectID);
             if (pInfantry == nullptr) {
                 continue;
             }

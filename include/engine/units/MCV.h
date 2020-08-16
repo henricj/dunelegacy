@@ -15,8 +15,8 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MCV_H
-#define MCV_H
+#ifndef ENGINE_MCV_H
+#define ENGINE_MCV_H
 
 #include <units/GroundUnit.h>
 
@@ -31,26 +31,23 @@ public:
     MCV(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~MCV() override;
 
-    void handleDeployClick();
-
     /**
         Deploy this MCV. If deploying was successful this unit does not exist anymore.
         \return true, if deploying was successful, false otherwise.
     */
-    bool doDeploy();
+    bool doDeploy(const GameContext& context);
 
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
     void destroy(const GameContext& context) override;
 
-    bool canDeploy() const { return canDeploy(getLocation().x, getLocation().y); }
-
+    bool canDeploy(const GameContext& context) const { return canDeploy(context, getLocation().x, getLocation().y); }
 private:
     void init();
 
-    static bool canDeploy(int x, int y);
+    bool canDeploy(const GameContext& context, int x, int y) const;
 };
 
 } // namespace Dune::Engine
 
-#endif // MCV_H
+#endif // ENGINE_MCV_H

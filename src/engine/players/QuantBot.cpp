@@ -22,6 +22,7 @@
 #include <GameInitSettings.h>
 #include <Map.h>
 #include <engine_sand.h>
+#include <engine_mmath.h>
 #include <House.h>
 
 #include <structures/StructureBase.h>
@@ -124,7 +125,7 @@ namespace Dune::Engine {
 
 
 
-QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
+QuantBot::QuantBot(const GameContext& context, House* associatedHouse, std::string_view playername, const Random& random, Difficulty difficulty)
     : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
 
     buildTimer = getRandomGen().rand(0,3) * 50;
@@ -144,7 +145,7 @@ QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std
     if(gameMode == GameMode::Campaign){
         // Wait a while if it is a campaign game
 
-        switch(currentGame->techLevel){
+        switch(context.game.techLevel){
             case 6: {
                 attackTimer = MILLI2CYCLES(540000);
             }break;
@@ -168,7 +169,6 @@ QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std
 
 QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player{context, stream, associatedHouse} {
-    QuantBot::init();
 
     difficulty = static_cast<Difficulty>(stream.readUint8());
     gameMode = static_cast<GameMode>(stream.readUint8());
@@ -176,7 +176,7 @@ QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* assoc
     attackTimer = stream.readSint32();
     retreatTimer = stream.readSint32();
 
-    for (Uint32 i = ItemID_FirstID; i <= Structure_LastID; i++ ){
+    for (uint32_t i = ItemID_FirstID; i <= Structure_LastID; i++ ){
        initialItemCount[i] = stream.readUint32();
     }
     initialMilitaryValue = stream.readSint32();
@@ -191,32 +191,27 @@ QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* assoc
 
     // Need to add in a building array for when people save and load
     // So that it keeps the count of buildings that should be on the map.
-    Uint32 NumPlaceLocations = stream.readUint32();
-    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
-        Sint32 x = stream.readSint32();
-        Sint32 y = stream.readSint32();
+    uint32_t NumPlaceLocations = stream.readUint32();
+    for(uint32_t i = 0; i < NumPlaceLocations; i++) {
+        int32_t x = stream.readSint32();
+        int32_t y = stream.readSint32();
 
         placeLocations.emplace_back(x,y);
     }
 }
-
-
-void QuantBot::init() {
-}
-
 
 QuantBot::~QuantBot() = default;
 
 void QuantBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(static_cast<Uint8>(difficulty));
-    stream.writeUint8(static_cast<Uint8>(gameMode));
+    stream.writeUint8(static_cast<uint8_t>(difficulty));
+    stream.writeUint8(static_cast<uint8_t>(gameMode));
     stream.writeSint32(buildTimer);
     stream.writeSint32(attackTimer);
     stream.writeSint32(retreatTimer);
 
-    for (Uint32 i = ItemID_FirstID; i <= Structure_LastID; i++ ){
+    for (uint32_t i = ItemID_FirstID; i <= Structure_LastID; i++ ){
         stream.writeUint32(initialItemCount[i]);
     }
     stream.writeSint32(initialMilitaryValue);
@@ -249,7 +244,7 @@ void QuantBot::update() {
             logDebug("Initial: Item: %d  Count: %d", i, initialItemCount[i]);
         }
 
-        if((initialItemCount[Structure_RepairYard] == 0) && gameMode == GameMode::Campaign && currentGame->techLevel > 4) {
+        if((initialItemCount[Structure_RepairYard] == 0) && gameMode == GameMode::Campaign && context_.game.techLevel > 4) {
                 initialItemCount[Structure_RepairYard] = 1;
                 if(initialItemCount[Structure_Radar] == 0){
                     initialItemCount[Structure_Radar] = 1;
@@ -264,10 +259,12 @@ void QuantBot::update() {
 
         // Calculate the total military value of the player
         initialMilitaryValue = 0;
-        for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
+        for(uint32_t i = Unit_FirstID; i <= Unit_LastID; i++){
             if(i != Unit_Carryall && i != Unit_Harvester){
                 // Used for campaign mode.
-                initialMilitaryValue += initialItemCount[i] * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
+                initialMilitaryValue +=
+                    initialItemCount[i] *
+                    context_.game.objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
             }
         }
 
@@ -277,7 +274,7 @@ void QuantBot::update() {
                  switch(difficulty) {
                     case Difficulty::Easy: {
                         harvesterLimit = initialItemCount[Structure_Refinery];
-                        if(currentGame->techLevel == 8){
+                        if(context_.game.techLevel == 8) {
                             militaryValueLimit = 4000;
 
                         } else {
@@ -290,7 +287,7 @@ void QuantBot::update() {
                     case Difficulty::Medium: {
                         harvesterLimit = 2 * initialItemCount[Structure_Refinery];
                         militaryValueLimit = lround(initialMilitaryValue * 1.2_fix);
-                        if(militaryValueLimit < 4000 && currentGame->techLevel == 8) {
+                        if(militaryValueLimit < 4000 && context_.game.techLevel == 8) {
                             militaryValueLimit = 4000;
                         }
 
@@ -298,7 +295,7 @@ void QuantBot::update() {
                     } break;
 
                     case Difficulty::Hard: {
-                        if(currentGame->techLevel == 8) {
+                        if(context_.game.techLevel == 8) {
                             harvesterLimit = 3;
                             initialItemCount[Structure_Refinery] = 2;
                             militaryValueLimit = 5000;
@@ -311,7 +308,7 @@ void QuantBot::update() {
                     } break;
 
                     case Difficulty::Brutal: {
-                        harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512);
+                        harvesterLimit     = (context_.map.getSizeX() * context_.map.getSizeY() / 512);
                         militaryValueLimit = 25000;
 
                         logDebug("Brutal Campaign  ");
@@ -328,8 +325,9 @@ void QuantBot::update() {
             } break;
 
             case GameMode::Custom: {
+                const auto area = context_.map.getSizeX() * context_.map.getSizeY();
 
-                 switch(difficulty) {
+                switch(difficulty) {
                     case Difficulty::Brutal: {
                         harvesterLimit = 60;
                         militaryValueLimit = 100000;
@@ -337,34 +335,34 @@ void QuantBot::update() {
                     } break;
 
                     case Difficulty::Easy: {
-                        harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 2048);
+                        harvesterLimit = area / 2048;
 
                         militaryValueLimit = 10000;
                         //logDebug("BUILD EASY SKIRM ");
                     } break;
 
                     case Difficulty::Medium: {
-                        harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 1024);
+                        harvesterLimit = area / 1024;
                         militaryValueLimit = 25000;
                         //logDebug("BUILD MEDIUM SKIRM ");
                     } break;
 
                     case Difficulty::Hard: {
-                        harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512);
+                        harvesterLimit = area / 512;
                         militaryValueLimit = 50000;
                         //logDebug("BUILD HARD SKIRM ");
                     } break;
 
                     case Difficulty::Defend: {
-                        harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 1024);
+                        harvesterLimit = area / 1024;
                         militaryValueLimit = 25000;
                         //logDebug("BUILD MEDIUM SKIRM ");
                     } break;
                 }
 
                 // what is this useful for?
-                if((currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512) < harvesterLimit && difficulty != Difficulty::Brutal) {
-                    harvesterLimit = currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512;
+                if(area / 512 < harvesterLimit && difficulty != Difficulty::Brutal) {
+                    harvesterLimit = area / 512;
                 }
 
             } break;
@@ -380,9 +378,9 @@ void QuantBot::update() {
 
     // Calculate the total military value of the player
     int militaryValue = 0;
-    for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
+    for(uint32_t i = Unit_FirstID; i <= Unit_LastID; i++){
         if(i != Unit_Carryall && i != Unit_Harvester){
-            militaryValue += getHouse()->getNumItems(static_cast<ItemID_enum>(i)) * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
+            militaryValue += getHouse()->getNumItems(static_cast<ItemID_enum>(i)) * context_.game.objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
         }
     }
     //logDebug("Military Value %d  Initial Military Value %d", militaryValue, initialMilitaryValue);
@@ -422,7 +420,7 @@ void QuantBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) 
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(ItemID_enum itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<Uint8>(difficulty)+1) );
+        attackTimer += MILLI2CYCLES(context_.game.objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<uint8_t>(difficulty)+1) );
         //logDebug("loss ");
     }
 }
@@ -431,12 +429,13 @@ void QuantBot::onDecrementUnits(ItemID_enum itemID) {
 /// When we get kills we should re-attack sooner...
 void QuantBot::onIncrementUnitKills(ItemID_enum itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
+        attackTimer -=
+            MILLI2CYCLES(context_.game.objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
         //logDebug("kill ");
     }
 }
 
-void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner() == getHouse() || pObject->getItemID() == Unit_Sandworm) {
@@ -445,7 +444,8 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
     // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
     // Don't trigger with fremen or saboteur
-    bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES) && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
+    bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES) &&
+                              (pObject->getItemID() == Unit_Trooper) && (context_.game.techLevel > 7);
     if(gameMode == GameMode::Campaign && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag && !bPossiblyOwnFremen && (pObject->getItemID() != Unit_Saboteur)) {
         campaignAIAttackFlag = true;
     } else if (pObject->isAStructure()) {
@@ -483,7 +483,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         if (pGroundUnit->getItemID() == Unit_Harvester) {
             // Always keep Harvesters away from harm
             // Defend the harvester!
-            const auto* pHarvester = static_cast<const Harvester*>(pGroundUnit);
+            const auto* pHarvester = dune_cast<const Harvester>(pGroundUnit);
             if(pHarvester->isActive() && (!pHarvester->isReturning()) && pHarvester->getAmountOfSpice() > 0) {
                 int numHarvesterDefenders = 0;
                 switch(difficulty) {
@@ -503,7 +503,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             doSetAttackMode(pGroundUnit, AREAGUARD);
             doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
-        } else if(  (currentGame->techLevel > 3)
+        } else if((context_.game.techLevel > 3)
                     && (pGroundUnit->getItemID() == Unit_Quad)
                     && !pDamager->isInfantry()
                     && (pDamager->getItemID() != Unit_RaiderTrike)
@@ -513,7 +513,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
             // Quads flee from every unit except trikes, infantry and other quads (but only if quads are not our main vehicle for that techlevel)
             doSetAttackMode(pGroundUnit, AREAGUARD);
             doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
-        } else if(  (currentGame->techLevel > 3)
+        } else if((context_.game.techLevel > 3)
                     && ((pGroundUnit->getItemID() == Unit_RaiderTrike) || (pGroundUnit->getItemID() == Unit_Trike))
                     && !pDamager->isInfantry()
                     && (pDamager->getItemID() != Unit_RaiderTrike)
@@ -531,7 +531,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
         // If the unit is at 60% health or less and is not being forced to move anywhere
         // repair them, if they are eligible to be repaired
         if(difficulty == Difficulty::Brutal) {
-            if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 60
+            if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth(context_.game) < 60
                 && !pGroundUnit->isInfantry()
                 && pGroundUnit->isVisible()) {
 
@@ -702,7 +702,7 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
 
 void QuantBot::build(int militaryValue) {
     const auto houseID = getHouse()->getHouseID();
-    auto& data = currentGame->objectData.data;
+    auto&      data    = context_.game.objectData.data;
 
     int itemCount[Num_ItemID];
     for (int i = ItemID_FirstID; i <= ItemID_LastID; i++ ) {
@@ -723,36 +723,33 @@ void QuantBot::build(int militaryValue) {
     }
 
     // Next add in the objects we are building
-    for(const StructureBase* pStructure : getStructureList()) {
-        if(pStructure->getOwner() == getHouse()) {
-            if(pStructure->isABuilder()) {
-                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
-                if(pBuilder->getProductionQueueSize() > 0){
-                    itemCount[pBuilder->getCurrentProducedItem()]++;
-                    if(pBuilder->getItemID() == Structure_HeavyFactory){
-                        activeHeavyFactoryCount++;
-                    }
-                }
-            } else if(pStructure->getItemID() == Structure_RepairYard) {
-                const auto* pRepairYard= static_cast<const RepairYard*>(pStructure);
-                if(!pRepairYard->isFree()) {
-                    activeRepairYardCount++;
-                }
+    for(const auto* const pStructure : getStructureList()) {
+        if(pStructure->getOwner() != getHouse()) continue;
 
+        if(const auto* pBuilder = dune_cast<BuilderBase>(pStructure)) {
+            if(pBuilder->getProductionQueueSize() > 0){
+                itemCount[pBuilder->getCurrentProducedItem()]++;
+                if(pBuilder->getItemID() == Structure_HeavyFactory){
+                    activeHeavyFactoryCount++;
+                }
             }
-
-            // Set unit deployment position
-            if(pStructure->getItemID() == Structure_Barracks
-               || pStructure->getItemID() == Structure_WOR
-               || pStructure->getItemID() == Structure_LightFactory
-               || pStructure->getItemID() == Structure_HeavyFactory
-               || pStructure->getItemID() == Structure_RepairYard
-               || pStructure->getItemID() == Structure_StarPort) {
-                doSetDeployPosition(pStructure, squadRallyLocation.x, squadRallyLocation.y);
+        } else if(const auto* pRepairYard = dune_cast<RepairYard>(pStructure)) {
+            if(!pRepairYard->isFree()) {
+                activeRepairYardCount++;
             }
         }
 
+        auto item_id = pStructure->getItemID();
 
+        // Set unit deployment position
+        if(item_id == Structure_Barracks
+           || item_id == Structure_WOR
+           || item_id == Structure_LightFactory
+           || item_id == Structure_HeavyFactory
+           || item_id == Structure_RepairYard
+           || item_id == Structure_StarPort) {
+            doSetDeployPosition(pStructure, squadRallyLocation.x, squadRallyLocation.y);
+        }
     }
 
     int money = getHouse()->getCredits();
@@ -779,7 +776,7 @@ void QuantBot::build(int militaryValue) {
     FixPoint dlrLauncher = getHouse()->getNumItemDamageInflicted(Unit_Launcher) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Launcher)) * data[Unit_Launcher][static_cast<int>(houseID)].price);
     FixPoint dlrOrnithopter = getHouse()->getNumItemDamageInflicted(Unit_Ornithopter) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Ornithopter)) * data[Unit_Ornithopter][static_cast<int>(houseID)].price);
 
-    Sint32 totalDamage =    getHouse()->getNumItemDamageInflicted(Unit_Tank)
+    int32_t totalDamage =    getHouse()->getNumItemDamageInflicted(Unit_Tank)
                             + getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
                             + getHouse()->getNumItemDamageInflicted(Unit_Devastator)
                             + getHouse()->getNumItemDamageInflicted(Unit_Launcher)
@@ -862,8 +859,7 @@ void QuantBot::build(int militaryValue) {
 
     for(const auto *const pStructure : getStructureList()) {
         if(pStructure->getOwner() == getHouse()) {
-            if((!pStructure->isRepairing())
-               && (pStructure->getHealth() < pStructure->getMaxHealth())
+            if((!pStructure->isRepairing()) && (pStructure->getHealth() < pStructure->getMaxHealth(context_.game))
                 && (!getGameInitSettings().getGameOptions().concreteRequired
                      || pStructure->getItemID() == Structure_Palace) // Palace repairs for free
                 && (pStructure->getItemID() != Structure_Refinery
@@ -872,8 +868,8 @@ void QuantBot::build(int militaryValue) {
                     && pStructure->getItemID() != Structure_WindTrap))
             {
                 doRepair(pStructure);
-            } else if(  (!pStructure->isRepairing())
-                        && (pStructure->getHealth() < pStructure->getMaxHealth() * 0.45_fix)
+            } else if(  (!pStructure->isRepairing()) &&
+                      (pStructure->getHealth() < pStructure->getMaxHealth(context_.game) * 0.45_fix)
                         && !getGameInitSettings().getGameOptions().concreteRequired
                         && money > 1000) {
                 doRepair(pStructure);
@@ -898,7 +894,7 @@ void QuantBot::build(int militaryValue) {
                         auto enemyHouseID = HOUSETYPE::HOUSE_INVALID;
                         int enemyHouseBuildingCount = 0;
 
-                        currentGame->for_each_house([&](const auto& house) {
+                        context_.game.for_each_house([&](const auto& house) {
                                 if(house.getTeamID() != getHouse()->getTeamID() && house.getNumStructures() > enemyHouseBuildingCount) {
                                     enemyHouseBuildingCount = house.getNumStructures();
                                     enemyHouseID = house.getHouseID();
@@ -994,7 +990,7 @@ void QuantBot::build(int militaryValue) {
                            && pBuilder->getBuildListSize() > 0
                            && militaryValue < militaryValueLimit) {
 
-                            if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel() && getHouse()->getCredits() > 1500){
+                            if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game) && getHouse()->getCredits() > 1500){
                                 doUpgrade(pBuilder);
                             } else if(!getHouse()->isGroundUnitLimitReached()) {
                                 auto itemID = ItemID_enum::ItemID_Invalid;
@@ -1059,8 +1055,8 @@ void QuantBot::build(int militaryValue) {
                            && itemCount[Unit_Carryall] * 5 < getHouse()->getMaxUnits()){
                             doProduceItem(pBuilder, Unit_Carryall);
                             itemCount[Unit_Carryall]++;
-                        } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
-                            if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {
+                        } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game))) {
+                            if(pBuilder->getHealth() >= pBuilder->getMaxHealth(context_.game)) {
                                 doUpgrade(pBuilder);
                             } else {
                                 doRepair(pBuilder);
@@ -1124,8 +1120,8 @@ void QuantBot::build(int militaryValue) {
                                 //itemCount[Unit_Harvester], harvesterLimit, money);
                                 doProduceItem(pBuilder, Unit_Harvester);
                                 itemCount[Unit_Harvester]++;
-                            } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
-                                if (pBuilder->getHealth() >= pBuilder->getMaxHealth()){
+                            } else if((money > 500) && (!pBuilder->isUpgrading()) && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game))) {
+                                if(pBuilder->getHealth() >= pBuilder->getMaxHealth(context_.game)) {
                                     doUpgrade(pBuilder);
                                 } else {
                                     doRepair(pBuilder);
@@ -1305,9 +1301,9 @@ void QuantBot::build(int militaryValue) {
 
                                 // If Campaign AI can't build military, let it build up its cash reserves and defenses
 
-                                if(pStructure->getHealth() < pStructure->getMaxHealth()) {
+                                if(pStructure->getHealth() < pStructure->getMaxHealth(context_.game)) {
                                     doRepair(pBuilder);
-                                } else if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
+                                } else if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game)
                                           && !pBuilder->isUpgrading()
                                           && itemCount[Unit_Harvester] >= harvesterLimit) {
 
@@ -1423,7 +1419,7 @@ void QuantBot::build(int militaryValue) {
                                     // Let's build one palace if its available
                                     itemID = Structure_Palace;
                                 } else if(money > 1200
-                                        && pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
+                                        && pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game)
                                         && !getGameInitSettings().getGameOptions().rocketTurretsNeedPower) {
                                     // First off we need to upgrade the construction yard
                                     doUpgrade(pBuilder);
@@ -1502,10 +1498,10 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits)
                         && pUnit->isAGroundUnit()
                         && (pUnit->getItemID() != Unit_Deviator)
                         && (pUnit->getItemID() != Unit_Launcher)
-                        && (blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10)
-                        && (pUnit->getHealth() / pUnit->getMaxHealth() > BADLYDAMAGEDRATIO)) {
-
-                        doRequestCarryallDrop(static_cast<const GroundUnit*>(pUnit)); //do request carryall to defend unit
+                        && (blockDistance(pUnit->getLocation(), pUnit->getDestination()) >= 10) &&
+                       (pUnit->getHealth() / pUnit->getMaxHealth(context_.game) > BADLYDAMAGEDRATIO)) {
+                        if (const auto* const ground_unit = dune_cast<GroundUnit>(pUnit))
+                            (void)doRequestCarryallDrop(ground_unit); //do request carryall to defend unit
                     }
 
                     if(--numUnits == 0) {
@@ -1541,7 +1537,8 @@ void QuantBot::attack(int militaryValue) {
     attackTimer = MILLI2CYCLES(90000);
 
     // only attack if we have 35% of maximum military power on max sized map. Required military power scales down accordingly
-    if(militaryValue < militaryValueLimit * 0.35_fix * currentGameMap->getSizeX() * currentGameMap->getSizeY() / 16384 && militaryValue < 20000) {
+    if(militaryValue < militaryValueLimit * 0.35_fix * context_.map.getSizeX() * context_.map.getSizeY() / 16384 &&
+       militaryValue < 20000) {
         return;
     }
 
@@ -1575,7 +1572,7 @@ void QuantBot::attack(int militaryValue) {
     }
 
     logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
-                static_cast<int>(getHouse()->getHouseID()), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
+                static_cast<int>(getHouse()->getHouseID()), static_cast<uint8_t>(difficulty), militaryValue, militaryValueLimit, attackTimer);
 
     Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
@@ -1589,7 +1586,7 @@ void QuantBot::attack(int militaryValue) {
             && pUnit->getItemID() != Unit_Carryall
             && (pUnit->getItemID() != Unit_Ornithopter || getHouse()->getNumItems(Unit_Ornithopter) > 15)
             && (pUnit->getItemID() != Unit_Deviator || getHouse()->getNumItems(Unit_Deviator) > 10)
-            && pUnit->getHealth() / pUnit->getMaxHealth() > 0.6_fix
+            && pUnit->getHealth() / pUnit->getMaxHealth(context_.game) > 0.6_fix
             // Only units within the squad should hunt, safety in numbers
             && blockDistance(pUnit->getLocation(), squadCenterLocation) < FixPoint::sqrt(getHouse()->getNumUnits()
                                                                                          - getHouse()->getNumItems(Unit_Harvester)
@@ -1599,7 +1596,7 @@ void QuantBot::attack(int militaryValue) {
                                                                                          - getHouse()->getNumItems(Unit_MCV)) + 6)
         {
             doSetAttackMode(pUnit, HUNT);
-            militaryValueToAttackWith -= currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(getHouse()->getHouseID())].price;
+            militaryValueToAttackWith -= context_.game.getObjectData(pUnit->getItemID(), getHouse()->getHouseID()).price;
             if(militaryValueToAttackWith < 0) {
                 break;
             }
@@ -1701,7 +1698,7 @@ Coord QuantBot::findSquadCenter(HOUSETYPE houseID) {
             && pCurrentUnit->getItemID() != Unit_MCV
 
             // Stop freeman making tanks roll forward
-            && !(currentGame->techLevel > 6 && pCurrentUnit->getItemID() == Unit_Trooper)
+            && !(context_.game.techLevel > 6 && pCurrentUnit->getItemID() == Unit_Trooper)
             && pCurrentUnit->getItemID() != Unit_Saboteur
             && pCurrentUnit->getItemID() != Unit_Sandworm
 
@@ -1782,7 +1779,7 @@ void QuantBot::checkAllUnits() {
                         //logDebug("MCV: forced: %d  moving: %d  canDeploy: %d",
                         //pMCV->wasForced(), pMCV->isMoving(), pMCV->canDeploy());
 
-                        if (pMCV->canDeploy() && !pMCV->wasForced() && !pMCV->isMoving()) {
+                        if (pMCV->canDeploy(context_) && !pMCV->wasForced() && !pMCV->isMoving()) {
                             //logDebug("MCV: Deployed");
                             doDeploy(pMCV);
                         } else if(!pMCV->isMoving() && !pMCV->wasForced()) {
@@ -1824,16 +1821,14 @@ void QuantBot::checkAllUnits() {
 
                     if(pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()) {
                         // If its a devastator and its not ours, blow it up!!
-                        if(pUnit->getItemID() == Unit_Devastator){
-                            const auto* pDevastator = static_cast<const Devastator*>(pUnit);
+                        if(const auto* const pDevastator = dune_cast<const Devastator>(pUnit)) {
                             doStartDevastate(pDevastator);
                             doSetAttackMode(pDevastator, HUNT);
                         } else if(pUnit->getItemID() == Unit_Ornithopter) {
                             if(pUnit->getAttackMode() != HUNT){
                                 doSetAttackMode(pUnit, HUNT);
                             }
-                        } else if(pUnit->getItemID() == Unit_Harvester) {
-                            const auto* pHarvester = static_cast<const Harvester*>(pUnit);
+                        } else if(const auto* const pHarvester = dune_cast<const Harvester>(pUnit)) {
                             if(pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE/5) {
                                 doReturn(pHarvester);
                             } else {
@@ -1852,8 +1847,8 @@ void QuantBot::checkAllUnits() {
                     } else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator || pUnit->getItemID() == Unit_SonicTank)
                                 && pUnit->hasATarget() && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)) {
                         // Special logic to keep launchers away from harm
-                        if(pUnit->getTarget() != nullptr){
-                            if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 5 && pUnit->getTarget()->getItemID() != Unit_Ornithopter) {
+                        if(const auto* const target = pUnit->getTarget(context_.objectManager)) {
+                            if(blockDistance(pUnit->getLocation(), target->getLocation()) <= 5 && target->getItemID() != Unit_Ornithopter) {
                                 doSetAttackMode(pUnit, AREAGUARD);
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
                             }
@@ -1867,7 +1862,7 @@ void QuantBot::checkAllUnits() {
                             }
                         } else if (pUnit->getAttackMode() == RETREAT) {
                             if(blockDistance(pUnit->getLocation(), squadRetreatLocation) > squadRadius + 2 && !pUnit->wasForced()) {
-                               if(pUnit->getHealth() < pUnit->getMaxHealth()) {
+                               if(pUnit->getHealth() < pUnit->getMaxHealth(context_.game)) {
                                    doRepair(pUnit);
                                }
                                doMove2Pos(pUnit, squadRetreatLocation.x, squadRetreatLocation.y, true );

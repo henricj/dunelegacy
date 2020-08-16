@@ -19,7 +19,7 @@
 #define ENGINE_BULLET_H
 
 #include "ObjectPointer.h"
-#include <DataTypes.h>
+#include "EngineDataTypes.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <fixmath/FixPoint.h>
@@ -31,11 +31,11 @@ class House;
 
 class Bullet final {
 public:
-    Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID,
+    Bullet(const GameContext& context, uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID,
            int damage, bool air, const ObjectBase* pTarget);
-    explicit Bullet(InputStream& stream);
+    explicit Bullet(Game& game, InputStream& stream);
     void init();
-    ~Bullet();
+    ~Bullet() = default;
 
     Bullet(const Bullet&) = delete;
     Bullet(Bullet&&)      = delete;
@@ -47,7 +47,7 @@ public:
     bool update(const GameContext& context);
     void destroy(const GameContext& context) const;
 
-    int      getBulletID() const noexcept { return bulletID; }
+    uint32_t getBulletID() const noexcept { return bulletID; }
     FixPoint getRealX() const noexcept { return realX; }
     FixPoint getRealY() const noexcept { return realY; }
 
@@ -76,7 +76,6 @@ private:
     FixPoint ySpeed; ///< Speed in x direction
 
     FixPoint angle;      ///< the angle of the bullet
-    int8_t   drawnAngle; ///< the drawn angle of the bullet
 
     bool          airAttack; ///< Is this an air attack?
     ObjectPointer target;    ///< The target to hit

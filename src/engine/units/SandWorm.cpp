@@ -15,27 +15,24 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "engine_mmath.h"
+
 #include <units/SandWorm.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
-
-#include <misc/draw_util.h>
 
 #include <units/InfantryBase.h>
 
-#define MAX_SANDWORMSLEEPTIME 50000
-#define MIN_SANDWORMSLEEPTIME 10000
-
-#define SANDWORM_ATTACKFRAMETIME 10
-
 namespace {
+using namespace Dune::Engine;
+
+constexpr int MAX_SANDWORMSLEEPTIME = 50000;
+constexpr int MIN_SANDWORMSLEEPTIME = 10000;
+
+constexpr int SANDWORM_ATTACKFRAMETIME = 10;
+
 class SandwormConstants : public GroundUnitConstants {
 public:
     constexpr SandwormConstants() : GroundUnitConstants{Sandworm::item_id} { canAttackStuff_ = true; }
@@ -44,20 +41,22 @@ public:
 constexpr SandwormConstants sandworm_constants;
 }
 
+namespace Dune::Engine {
+
 Sandworm::Sandworm(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(sandworm_constants, objectID, initializer) {
 
     Sandworm::init();
 
-    setHealth(getMaxHealth());
+    Sandworm::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 
-    kills = 0;
-    attackFrameTimer = 0;
-    sleepTimer = 0;
+    kills                      = 0;
+    attackFrameTimer           = 0;
+    sleepTimer                 = 0;
     warningWormSignPlayedFlags = 0;
-    respondable = false;
+    respondable                = false;
 
-    for(auto & lastLoc : lastLocs) {
+    for(auto& lastLoc : lastLocs) {
         lastLoc.invalidate();
     }
     shimmerOffsetIndex = -1;
@@ -70,12 +69,12 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer
 
     auto& stream = initializer.stream();
 
-    kills = stream.readSint32();
-    attackFrameTimer = stream.readSint32();
-    sleepTimer = stream.readSint32();
+    kills                      = stream.readSint32();
+    attackFrameTimer           = stream.readSint32();
+    sleepTimer                 = stream.readSint32();
     warningWormSignPlayedFlags = stream.readUint8();
-    shimmerOffsetIndex = stream.readSint32();
-    for(auto & lastLoc : lastLocs) {
+    shimmerOffsetIndex         = stream.readSint32();
+    for(auto& lastLoc : lastLocs) {
         lastLoc.x = stream.readSint32();
         lastLoc.y = stream.readSint32();
     }
@@ -85,19 +84,13 @@ void Sandworm::init() {
     assert(itemID == Unit_Sandworm);
     owner->incrementUnits(itemID);
 
-    graphicID = ObjPic_Sandworm;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = 1;
-    numImagesY = 9;
-
     drawnFrame = INVALID;
 }
 
 Sandworm::~Sandworm() = default;
 
-void Sandworm::save(OutputStream& stream) const {
-    GroundUnit::save(stream);
+void Sandworm::save(const Game& game, OutputStream& stream) const {
+    GroundUnit::save(game, stream);
 
     stream.writeSint32(kills);
     stream.writeSint32(attackFrameTimer);
@@ -121,10 +114,9 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
 bool Sandworm::attack(const GameContext& context) {
     if(primaryWeaponTimer == 0) {
         if(target) {
-            soundPlayer->playSoundAt(Sound_WormAttack, location);
-            drawnFrame = 0;
-            attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
-            primaryWeaponTimer = getWeaponReloadTime();
+            drawnFrame         = 0;
+            attackFrameTimer   = SANDWORM_ATTACKFRAMETIME;
+            primaryWeaponTimer = getWeaponReloadTime(context.game);
             return true;
         }
     }
@@ -137,79 +129,17 @@ void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
     respondable = false;
 }
 
-void Sandworm::blitToScreen() {
-    static constexpr int shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
-
-    if(shimmerOffsetIndex >= 0) {
-        // render sandworm's shimmer
-
-        const auto* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
-        auto*       shimmerTex =
-            pGFXManager->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
-
-        for(int i = 0; i < SANDWORM_SEGMENTS; i++) {
-            if(lastLocs[i].isInvalid()) {
-                continue;
-            }
-
-            SDL_Rect dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x), screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
-
-            // switch to texture 'shimmerTex' for rendering
-            SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
-            SDL_SetRenderTarget(renderer, shimmerTex);
-
-            // copy complete mask
-            // contains solid black (0,0,0,255) for pixels to take from screen
-            // and transparent (0,0,0,0) for pixels that should not be copied over
-            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_NONE);
-            Dune_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
-            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_BLEND);
-
-            // now copy r,g,b colors from screen but don't change alpha values in mask
-            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
-            SDL_Rect source = dest;
-            source.x += shimmerOffset[(shimmerOffsetIndex+i)%8]*2;
-            Dune_RenderCopy(renderer, screenTexture, &source, nullptr);
-            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
-
-            // switch back to old rendering target (from texture 'shimmerTex')
-            SDL_SetRenderTarget(renderer, oldRenderTarget);
-
-            // now blend shimmerTex to screen (= make use of alpha values in mask)
-            SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-            Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
-
-        }
-    }
-
-    if(drawnFrame != INVALID) {
-        SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
-                                                screenborder->world2screenX(realX),
-                                                screenborder->world2screenY(realY),
-                                                numImagesX, numImagesY,
-                                                HAlign::Center, VAlign::Center);
-        SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
-        Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
-    }
-}
-
 void Sandworm::checkPos(const GameContext& context) {
     if(justStoppedMoving) {
-        realX = location.x*TILESIZE + TILESIZE/2;
-        realY = location.y*TILESIZE + TILESIZE/2;
+        realX = location.x * TILESIZE + TILESIZE / 2;
+        realY = location.y * TILESIZE + TILESIZE / 2;
 
         const auto* const infantry = context.map.tryGetInfantry(context, location.x, location.y);
-
-        if (infantry && infantry->getOwner() == pLocalHouse) {
-            soundPlayer->playVoice(SomethingUnderTheSand, infantry->getOwner()->getHouseID());
-        }
     }
 }
 
 void Sandworm::engageTarget(const GameContext& context) {
-    if(isEating()) {
-        return;
-    }
+    if(isEating()) { return; }
 
     parent::engageTarget(context);
 
@@ -222,7 +152,7 @@ void Sandworm::engageTarget(const GameContext& context) {
             switch(attackMode) {
                 case GUARD:
                 case AMBUSH: {
-                    maxDistance = getViewRange();
+                    maxDistance = getViewRange(context.game);
                 } break;
 
                 case AREAGUARD:
@@ -240,14 +170,14 @@ void Sandworm::engageTarget(const GameContext& context) {
 
         if(targetDistance > maxDistance) {
             // give up
-            setDestination(guardPoint);
-            setTarget(nullptr);
+            setDestination(context, guardPoint);
+            setTarget(context.objectManager, nullptr);
         }
     }
 }
 
 void Sandworm::setLocation(const GameContext& context, int xPos, int yPos) {
-    if(currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
+    if(context.map.tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
         parent::setLocation(context, xPos, yPos);
     }
 }
@@ -260,15 +190,15 @@ void Sandworm::sleep(const GameContext& context) {
     setActive(false);
     setVisible(VIS_ALL, false);
     setForced(false);
-    context.map.removeObjectFromMap(getObjectID()); //no map point will reference now
+    context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
     setLocation(context, INVALID_POS, INVALID_POS);
-    setHealth(getMaxHealth());
-    kills = 0;
+    setHealth(context.game, getMaxHealth(context.game));
+    kills                      = 0;
     warningWormSignPlayedFlags = 0;
-    drawnFrame = INVALID;
-    attackFrameTimer = 0;
-    shimmerOffsetIndex = -1;
-    for(auto & lastLoc : lastLocs) {
+    drawnFrame                 = INVALID;
+    attackFrameTimer           = 0;
+    shimmerOffsetIndex         = -1;
+    for(auto& lastLoc : lastLocs) {
         lastLoc.invalidate();
     }
 }
@@ -289,67 +219,53 @@ bool Sandworm::sleepOrDie(const GameContext& context) {
     return false;
 }
 
-void Sandworm::setTarget(const ObjectBase* newTarget) {
-    parent::setTarget(newTarget);
-
-    if( (newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
-        && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0) ) {
-        soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
-        warningWormSignPlayedFlags |= (1 << static_cast<int>(pLocalHouse->getHouseID()));
-    }
+void Sandworm::setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) {
+    parent::setTarget(objectManager, newTarget);
 }
 
 void Sandworm::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
-    if(damage > 0) {
-        attackMode = HUNT;
-    }
+    if(damage > 0) { attackMode = HUNT; }
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
 bool Sandworm::update(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
-    if(getHealth() <= getMaxHealth()/2) {
-        if(!sleepOrDie(context)) {
-            return false;
-        }
+    if(getHealth() <= getMaxHealth(context.game) / 2) {
+        if(!sleepOrDie(context)) { return false; }
     } else {
-        if(!parent::update(context)) {
-            return false;
-        }
+        if(!parent::update(context)) { return false; }
 
-        if(isActive() && (moving || justStoppedMoving) && !game.isGamePaused() && !game.isGameFinished()) {
-            Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+        if(isActive() && (moving || justStoppedMoving) && !game.isGameFinished()) {
+            Coord realLocation = getLocation() * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
             if(lastLocs[1] != realLocation) {
-                for(int i = (SANDWORM_SEGMENTS-1); i > 0 ; i--) {
-                    lastLocs[i] = lastLocs[i-1];
+                for(int i = (SANDWORM_SEGMENTS - 1); i > 0; i--) {
+                    lastLocs[i] = lastLocs[i - 1];
                 }
                 lastLocs[1] = realLocation;
             }
-            lastLocs[0].x = lround(realX);
-            lastLocs[0].y = lround(realY);
-            shimmerOffsetIndex = ((game.getGameCycleCount() + getObjectID()) % 48)/6;
+            lastLocs[0].x      = lround(realX);
+            lastLocs[0].y      = lround(realY);
+            shimmerOffsetIndex = ((game.getGameCycleCount() + getObjectID()) % 48) / 6;
         }
 
         if(attackFrameTimer > 0) {
             attackFrameTimer--;
 
-            //death frame has started
+            // death frame has started
             if(attackFrameTimer == 0) {
                 drawnFrame++;
                 if(drawnFrame >= 9) {
                     drawnFrame = INVALID;
                     if(kills >= 3) {
-                        if(!sleepOrDie(context)) {
-                            return false;
-                        }
+                        if(!sleepOrDie(context)) { return false; }
                     }
                 } else {
                     attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
                     if(drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
                         if(target) {
-                            auto* object = target.getObjPointer();
+                            auto* object = target.getObjPointer(objectManager);
 
                             if(object) {
                                 bool wasAlive =
@@ -357,10 +273,14 @@ bool Sandworm::update(const GameContext& context) {
                                 Coord realPos = Coord(lround(realX), lround(realY));
                                 map.damage(context, objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
                                            false);
-                                // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive() method?
-                                if(wasAlive && target &&
-                                   (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
-                                    kills++;
+                                // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive()
+                                // method?
+                                if(wasAlive) {
+                                    auto* const object2 = target.getObjPointer(objectManager);
+
+                                    if(object2 && !object2->isVisible(getOwner()->getTeamID())) {
+                                        kills++;
+                                    }
                                 }
                             }
                         }
@@ -375,11 +295,11 @@ bool Sandworm::update(const GameContext& context) {
             if(sleepTimer == 0) {
                 // awaken the worm!
 
-                for(int tries = 0 ; tries < 1000 ; tries++) {
-                    int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                    int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                for(int tries = 0; tries < 1000; tries++) {
+                    int x = game.randomGen.rand(0, map.getSizeX() - 1);
+                    int y = game.randomGen.rand(0, map.getSizeY() - 1);
 
-                    if(canPass(x, y)) {
+                    if(canPass(context, x, y)) {
                         deploy(context, map.getTile(x, y)->getLocation());
                         break;
                     }
@@ -387,9 +307,7 @@ bool Sandworm::update(const GameContext& context) {
 
                 if(!isActive()) {
                     // no room for sandworm on map => take another nap
-                    if(!sleepOrDie(context)) {
-                        return false;
-                    }
+                    if(!sleepOrDie(context)) { return false; }
                 }
             }
         }
@@ -398,47 +316,43 @@ bool Sandworm::update(const GameContext& context) {
     return true;
 }
 
-bool Sandworm::canAttack(const ObjectBase* object) const {
-    if (!object || !object->isAGroundUnit() || object->getItemID() == Unit_Sandworm)
-        return false;
+bool Sandworm::canAttack(const GameContext& context, const ObjectBase* object) const {
+    if(!object || !object->isAGroundUnit() || object->getItemID() == Unit_Sandworm) return false;
 
-    auto *map = currentGameMap;
+    auto& map = context.map;
 
-    if (!map->tileExists(object->getLocation()))
-        return false;
+    const auto  pos         = object->getLocation();
+    auto* const object_tile = map.tryGetTile(pos.x, pos.y);
 
-    auto *const pTile = map->getTile(object->getLocation());
+    if(!object_tile || !canPassTile(context, object_tile)) return false;
 
-    if (!canPassTile(pTile))
-        return false;
+    auto* const this_tile = map.tryGetTile(location.x, location.y);
+    if(!this_tile) return false;
 
-    return pTile->getSandRegion() == map->getTile(location)->getSandRegion();
+    return object_tile->getSandRegion() == this_tile->getSandRegion();
 }
 
-bool Sandworm::canPassTile(const Tile* pTile) const {
-    return !pTile->isRock()
-        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(currentGame->getObjectManager()) == this));
+bool Sandworm::canPassTile(const GameContext& context, const Tile* pTile) const {
+    return !pTile->isRock() &&
+           (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(context.objectManager) == this));
 }
 
-const ObjectBase* Sandworm::findTarget() const {
-    if(isEating()) {
-        return nullptr;
-    }
+const ObjectBase* Sandworm::findTarget(const GameContext& context) const {
+    if(isEating()) { return nullptr; }
 
     const ObjectBase* closestTarget = nullptr;
 
     if((attackMode == HUNT) || (attackMode == AREAGUARD)) {
         auto closestDistance = FixPt_MAX;
 
-        for(auto *pUnit : unitList) {
-            if (canAttack(pUnit)
-                && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
-                closestTarget = pUnit;
+        for(auto* pUnit : context.game.unitList) {
+            if(canAttack(context, pUnit) && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
+                closestTarget   = pUnit;
                 closestDistance = blockDistance(location, pUnit->getLocation());
             }
         }
     } else {
-        closestTarget = ObjectBase::findTarget();
+        closestTarget = parent::findTarget(context);
     }
 
     return closestTarget;
@@ -449,6 +363,4 @@ ANGLETYPE Sandworm::getCurrentAttackAngle() const {
     return targetAngle;
 }
 
-void Sandworm::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_WormAttack,location);
-}
+} // namespace Dune::Engine

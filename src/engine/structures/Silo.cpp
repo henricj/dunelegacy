@@ -17,22 +17,21 @@
 
 #include <structures/Silo.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
-#include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
-
 namespace {
+using namespace Dune::Engine;
+
 constexpr StructureBaseConstants silo_constants{Silo::item_id, Coord{2, 2}};
 }
+
+namespace Dune::Engine {
 
 Silo::Silo(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 
-    setHealth(getMaxHealth());
+    Silo::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Silo::Silo(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -43,19 +42,8 @@ Silo::Silo(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Silo::init() {
     assert(itemID == Structure_Silo);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Silo;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 Silo::~Silo() = default;
 
-std::unique_ptr<ObjectInterface> Silo::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return RefineryAndSiloInterface::create(context, objectID); }
-    return DefaultObjectInterface::create(context, objectID);
-}
-
+} // namespace Dune::Engine

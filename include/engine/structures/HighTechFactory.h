@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef HIGHTECHFACTORY_H
-#define HIGHTECHFACTORY_H
+#ifndef ENGINE_HIGHTECHFACTORY_H
+#define ENGINE_HIGHTECHFACTORY_H
 
 #include <structures/BuilderBase.h>
+
+namespace Dune::Engine {
 
 class HighTechFactory final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HighTechFactory;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     HighTechFactory(uint32_t objectID, const ObjectInitializer& initializer);
     HighTechFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -33,4 +35,6 @@ private:
     void init();
 };
 
-#endif // HIGHTECHFACTORY_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_HIGHTECHFACTORY_H

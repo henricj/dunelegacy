@@ -51,7 +51,7 @@ public:
         aStructure_ = true;
     }
 
-    const Coord& getStructureSize() const noexcept { return structureSize; }
+    [[nodiscard]] const Coord& getStructureSize() const noexcept { return structureSize; }
 
 private:
     // constant for all structures of the same type
@@ -80,25 +80,18 @@ public:
     StructureBase& operator=(const StructureBase&) = delete;
     StructureBase& operator=(StructureBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void assignToMap(const GameContext& context, const Coord& pos) override;
 
     void destroy(const GameContext& context) override;
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
 
-    virtual void drawGatheringPointLine();
-
     Coord getCenterPoint() const override;
     Coord getClosestCenterPoint(const Coord& objectLocation) const override;
-    void  setDestination(int newX, int newY) override;
+    void  setDestination(const GameContext& context, int newX, int newY) override;
     void  setJustPlaced();
     void  setFogged(bool bFogged) { fogged = bFogged; }
-
-    /**
-        This method is called when the user clicks on the repair button for this building
-    */
-    virtual void handleRepairClick();
 
     /**
         Set the deploy position of this structure. Units produced in this structure will move directly to
@@ -106,7 +99,7 @@ public:
         \param  x           the x coordinate (in tile coordinates)
         \param  y           the y coordinate (in tile coordinates)
     */
-    virtual void doSetDeployPosition(int xPos, int yPos);
+    virtual void doSetDeployPosition(const GameContext& context, int xPos, int yPos);
 
     /**
         Start repairing this structure.
@@ -162,14 +155,13 @@ protected:
     // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden
     // building disappear when being destroyed)
     bool fogged;           ///< Currently fogged?
-    int  lastVisibleFrame; ///< store picture drawn before fogged
 
     // drawing information
-    int                         justPlacedTimer; ///< When the structure is justed placed, we draw some special graphic
+    int                         justPlacedTimer; ///< When the structure is just placed, we draw some special graphic
     std::vector<StructureSmoke> smoke;           ///< A vector containing all the smoke for this structure
 
 private:
-    void init();
+    void init(Game& game);
 };
 
 template<>

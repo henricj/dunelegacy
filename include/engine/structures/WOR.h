@@ -15,16 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WOR_H
-#define WOR_H
+#ifndef ENGINE_WOR_H
+#define ENGINE_WOR_H
 
 #include <structures/BuilderBase.h>
 
-class WOR final : public BuilderBase
-{
+namespace Dune::Engine {
+
+class WOR final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_WOR;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     WOR(uint32_t objectID, const ObjectInitializer& initializer);
     WOR(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +41,6 @@ private:
     void init();
 };
 
-#endif //WOR_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_WOR_H

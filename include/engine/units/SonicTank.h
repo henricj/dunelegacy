@@ -15,37 +15,32 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SONICTANK_H
-#define SONICTANK_H
+#ifndef ENGINE_SONICTANK_H
+#define ENGINE_SONICTANK_H
 
 #include <units/TrackedUnit.h>
 
-class SonicTank final : public TrackedUnit
-{
+namespace Dune::Engine {
+
+class SonicTank final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_SonicTank;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     SonicTank(uint32_t objectID, const ObjectInitializer& initializer);
     SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~SonicTank() override;
 
-    void blitToScreen() override;
-
     void destroy(const GameContext& context) override;
 
     void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
-    bool canAttack(const ObjectBase* object) const override;
-
-    void playAttackSound() override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
 private:
     void init();
-
-    // drawing information
-    zoomable_texture turretGraphic{};    ///< The turret graphic
-    int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //SONICTANK_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_SONICTANK_H

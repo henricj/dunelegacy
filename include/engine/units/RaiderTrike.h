@@ -15,16 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RAIDERTRIKE_H
-#define RAIDERTRIKE_H
+#ifndef ENGINE_RAIDERTRIKE_H
+#define ENGINE_RAIDERTRIKE_H
 
 #include <units/GroundUnit.h>
 
-class RaiderTrike final : public GroundUnit
-{
+namespace Dune::Engine {
+
+class RaiderTrike final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_RaiderTrike;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer);
     RaiderTrike(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +41,6 @@ private:
     void init();
 };
 
-#endif //RAIDERTRIKE_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_RAIDERTRIKE_H

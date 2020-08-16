@@ -18,7 +18,7 @@
 #ifndef INIMAPLOADER_H
 #define INIMAPLOADER_H
 
-#include <FileClasses/INIFile.h>
+#include <engine/FileClasses/INIFile.h>
 #include <DataTypes.h>
 
 #include <INIMap/INIMap.h>

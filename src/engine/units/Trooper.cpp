@@ -17,21 +17,21 @@
 
 #include <units/Trooper.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr InfantryBaseConstants trooper_constants{Trooper::item_id, 1, Bullet_SmallRocket};
 }
+
+namespace Dune::Engine {
 
 Trooper::Trooper(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 
-    setHealth(getMaxHealth());
+    Trooper::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Trooper::Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -42,25 +42,14 @@ Trooper::Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Trooper::init() {
     assert(itemID == Unit_Trooper);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Trooper;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = 4;
-    numImagesY = 3;
 }
 
 Trooper::~Trooper() = default;
 
-bool Trooper::canAttack(const ObjectBase* object) const {
+bool Trooper::canAttack(const GameContext& context, const ObjectBase* object) const {
     return (object != nullptr)
-
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || (object->getItemID() == Unit_Sandworm))
-
-        && object->isVisible(getOwner()->getTeamID());
+           && ((object->getOwner()->getTeamID() != owner->getTeamID()) || (object->getItemID() == Unit_Sandworm))
+           && object->isVisible(getOwner()->getTeamID());
 }
 
-
-void Trooper::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_RocketSmall,location);
-}
+} // namespace Dune::Engine

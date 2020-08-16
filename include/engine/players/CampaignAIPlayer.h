@@ -34,7 +34,7 @@ namespace Dune::Engine {
      - Structures are only build when they were destroyed before (queue of at most 5 structures)
      - Special weapons are launched as soon as they get ready
 */
-class CampaignAIPlayer : public Player {
+class CampaignAIPlayer final : public Player {
 public:
     CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
                      const Random& random);

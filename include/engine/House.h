@@ -23,7 +23,7 @@
 #include <EngineDefinitions.h>
 #include <EngineDataTypes.h>
 #include <AITeamInfo.h>
-#include <data.h>
+#include "data.h"
 #include <Choam.h>
 #include "ObjectManager.h"
 
@@ -35,6 +35,7 @@ namespace Dune::Engine {
 class UnitBase;
 class StructureBase;
 class ObjectBase;
+class Player;
 class HumanPlayer;
 
 class House final {

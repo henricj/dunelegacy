@@ -368,13 +368,13 @@ set(HEADERS
 ../include/misc/OFileStream.h
 ../include/misc/IMemoryStream.h
 ../include/misc/OMemoryStream.h
-../include/misc/reverse.h
 ../include/misc/Scaler.h
 ../include/misc/SDL2pp.h
 ../include/misc/sdl_support.h
 ../include/misc/sound_util.h
 ../include/misc/unique_or_nonowning_ptr.h
 ../include/Network/ChangeEventList.h
+../include/Network/CommandList.h
 ../include/Network/ENetHelper.h
 ../include/Network/ENetHttp.h
 ../include/Network/ENetPacketIStream.h

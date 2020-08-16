@@ -15,37 +15,38 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WALL_H
-#define WALL_H
+#ifndef ENGINE_WALL_H
+#define ENGINE_WALL_H
 
 #include <structures/StructureBase.h>
 
-class Wall final : public StructureBase
-{
+namespace Dune::Engine {
+
+class Wall final : public StructureBase {
 public:
     typedef enum {
-        Wall_Standalone     = 1,
-        Wall_LeftRight      = 2,
-        Wall_UpRight        = 3,
-        Wall_UpDown         = 4,
-        Wall_DownRight      = 5,
-        Wall_UpDownRight    = 6,
-        Wall_UpLeft         = 7,
-        Wall_UpLeftRight    = 8,
-        Wall_DownLeft       = 9,
-        Wall_UpDownLeft     = 10,
-        Wall_DownLeftRight  = 11,
-        Wall_Full           = 12
+        Wall_Standalone    = 1,
+        Wall_LeftRight     = 2,
+        Wall_UpRight       = 3,
+        Wall_UpDown        = 4,
+        Wall_DownRight     = 5,
+        Wall_UpDownRight   = 6,
+        Wall_UpLeft        = 7,
+        Wall_UpLeftRight   = 8,
+        Wall_DownLeft      = 9,
+        Wall_UpDownLeft    = 10,
+        Wall_DownLeftRight = 11,
+        Wall_Full          = 12
     } WALLTYPE;
 
     inline static constexpr ItemID_enum item_id = Structure_Wall;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Wall(uint32_t objectID, const ObjectInitializer& initializer);
     Wall(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Wall() override;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void destroy(const GameContext& context) override;
 
@@ -59,11 +60,7 @@ public:
     void setLocation(const GameContext& context, int xPos, int yPos) override;
 
 private:
-    void        init();
-
-    void setWallTile(int newTile) {
-        curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
-    }
+    void init();
 
     void fixWall(const GameContext& context);
 
@@ -71,7 +68,8 @@ private:
     bool bWallDestroyedRight;
     bool bWallDestroyedDown;
     bool bWallDestroyedLeft;
-
 };
 
-#endif //WALL_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_WALL_H

@@ -19,12 +19,10 @@
 
 #include <Game.h>
 #include <House.h>
-#include <SoundPlayer.h>
-#include <globals.h>
 
 namespace Dune::Engine {
 
-TimeoutTrigger::TimeoutTrigger(Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber) { }
+TimeoutTrigger::TimeoutTrigger(uint32_t triggerCycleNumber) : Trigger(triggerCycleNumber) { }
 
 TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream) { }
 
@@ -38,11 +36,9 @@ void TimeoutTrigger::trigger(const GameContext& context) {
     if((game.loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
         // player has won
         game.setGameWon();
-        soundPlayer->playVoice(YourMissionIsComplete, pLocalHouse->getHouseID());
     } else {
         // ai has won
         game.setGameLost();
-        soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }
 

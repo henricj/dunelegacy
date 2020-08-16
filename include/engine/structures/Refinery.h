@@ -15,11 +15,13 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REFINERY_H
-#define REFINERY_H
+#ifndef ENGINE_REFINERY_H
+#define ENGINE_REFINERY_H
 
 #include <ObjectPointer.h>
 #include <structures/StructureBase.h>
+
+namespace Dune::Engine {
 
 // forward declarations
 class Harvester;
@@ -28,16 +30,14 @@ class Carryall;
 class Refinery final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Refinery;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Refinery(uint32_t objectID, const ObjectInitializer& initializer);
     Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Refinery() override;
 
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
-    void save(OutputStream& stream) const override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void assignHarvester(Harvester* newHarvester);
     void deployHarvester(const GameContext& context, Carryall* pCarryall = nullptr);
@@ -54,10 +54,12 @@ public:
         if(bookings == 0) { stopAnimate(); }
     }
 
-    bool isFree() const noexcept { return !extractingSpice; }
-    int  getNumBookings() const noexcept { return bookings; } // number of units goings there
-    const Harvester* getHarvester() const { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
-    Harvester*       getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+    bool             isFree() const noexcept { return !extractingSpice; }
+    int              getNumBookings() const noexcept { return bookings; } // number of units goings there
+    const Harvester* getHarvester(const ObjectManager& objectManager) const { return reinterpret_cast<Harvester*>(harvester.getObjPointer(objectManager)); }
+    Harvester* getHarvester(const ObjectManager& objectManager) {
+        return reinterpret_cast<Harvester*>(harvester.getObjPointer(objectManager));
+    }
 
 protected:
     /**
@@ -71,9 +73,11 @@ private:
 
     bool          extractingSpice; ///< Currently extracting spice?
     ObjectPointer harvester;       ///< The harvester currently in the refinery
-    uint32_t        bookings;        ///< How many bookings?
+    uint32_t      bookings;        ///< How many bookings?
 
     bool firstRun; ///< On first deploy of a harvester we tell it to the user
 };
 
-#endif // REFINERY_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_REFINERY_H

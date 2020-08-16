@@ -15,16 +15,13 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "engine_mmath.h"
+
 #include <units/Carryall.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
-#include <FileClasses/SFXManager.h>
 #include <House.h>
 #include <Map.h>
 #include <Game.h>
-#include <SoundPlayer.h>
 
 #include <structures/RepairYard.h>
 #include <structures/Refinery.h>
@@ -32,20 +29,24 @@
 #include <units/Harvester.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr AirUnitConstants carryall_constants{Carryall::item_id};
 } // namespace
+
+namespace Dune::Engine {
 
 Carryall::Carryall(uint32_t objectID, const ObjectInitializer& initializer)
     : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    Carryall::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 
     owned = true;
 
-    aDropOfferer = false;
+    aDropOfferer    = false;
     droppedOffCargo = false;
-    respondable = false;
+    respondable     = false;
 }
 
 Carryall::Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -55,31 +56,20 @@ Carryall::Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer
     auto& stream = initializer.stream();
 
     pickedUpUnitList = stream.readUint32Vector();
-    if(!pickedUpUnitList.empty()) {
-        drawnFrame = 1;
-    }
+    if(!pickedUpUnitList.empty()) { drawnFrame = 1; }
 
     stream.readBools(&owned, &aDropOfferer, &droppedOffCargo);
 }
 
-void Carryall::init()
-{
+void Carryall::init() {
     assert(itemID == Unit_Carryall);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Carryall;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    shadowGraphic = pGFXManager->getObjPic(ObjPic_CarryallShadow,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 2;
 }
 
 Carryall::~Carryall() = default;
 
-void Carryall::save(OutputStream& stream) const
-{
-    AirUnit::save(stream);
+void Carryall::save(const Game& game, OutputStream& stream) const {
+    AirUnit::save(game, stream);
 
     stream.writeUint32Vector(pickedUpUnitList);
 
@@ -87,42 +77,41 @@ void Carryall::save(OutputStream& stream) const
 }
 
 bool Carryall::update(const GameContext& context) {
-    const auto& maxSpeed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    const auto& maxSpeed = context.game.getObjectData(itemID, originalHouseID).maxspeed;
 
-    FixPoint dist = -1;
-    auto *const pTarget = target.getObjPointer();
+    FixPoint    dist    = -1;
+    auto* const pTarget = target.getObjPointer(context.objectManager);
     if(pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if((pTarget != nullptr) || hasCargo()) {
-        dist = distanceFrom(realX, realY, destination.x*TILESIZE + TILESIZE/2, destination.y*TILESIZE + TILESIZE/2);
+        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
+                            destination.y * TILESIZE + TILESIZE / 2);
     }
 
     if(dist >= 0) {
-        static const FixPoint minSpeed = FixPoint32(TILESIZE/32);
-        if(dist < TILESIZE/2) {
+        static const FixPoint minSpeed = FixPoint32(TILESIZE / 32);
+        if(dist < TILESIZE / 2) {
             currentMaxSpeed = std::min(dist, minSpeed);
-        } else if(dist >= 10*TILESIZE) {
+        } else if(dist >= 10 * TILESIZE) {
             currentMaxSpeed = maxSpeed;
         } else {
-            FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
-            FixPoint t = minSpeed-(TILESIZE/2)*m;
-            currentMaxSpeed = dist*m+t;
+            FixPoint m      = (maxSpeed - minSpeed) / ((10 * TILESIZE) - (TILESIZE / 2));
+            FixPoint t      = minSpeed - (TILESIZE / 2) * m;
+            currentMaxSpeed = dist * m + t;
         }
     } else {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
     }
 
-    if(!AirUnit::update(context)) {
-        return false;
-    }
+    if(!AirUnit::update(context)) { return false; }
 
     // check if this carryall has to be removed because it has just brought something
     // to the map (e.g. new harvester)
-    if (active) {
+    if(active) {
         const auto& map = context.map;
-        if(aDropOfferer && droppedOffCargo && (!hasCargo())
-            && ((getRealX() < -TILESIZE) || (getRealX() > (map.getSizeX()+1)*TILESIZE)
-                || (getRealY() < -TILESIZE) || (getRealY() > (map.getSizeY()+1)*TILESIZE))) {
+        if(aDropOfferer && droppedOffCargo && (!hasCargo()) &&
+           ((getRealX() < -TILESIZE) || (getRealX() > (map.getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE) ||
+            (getRealY() > (map.getSizeY() + 1) * TILESIZE))) {
             setVisible(VIS_ALL, false);
             destroy(context);
             return false;
@@ -140,21 +129,19 @@ void Carryall::deploy(const GameContext& context, const Coord& newLocation) {
 void Carryall::checkPos(const GameContext& context) {
     parent::checkPos(context);
 
-    if (!active) return;
+    if(!active) return;
 
     const auto& [game, map, objectManager] = context;
 
-    if (hasCargo()) {
-        if((location == destination) && (currentMaxSpeed <= 0.5_fix) ) {
+    if(hasCargo()) {
+        if((location == destination) && (currentMaxSpeed <= 0.5_fix)) {
             // drop up to 3 infantry units at once or one other unit
             auto droppedUnits = 0;
             do {
-                const auto unitID = pickedUpUnitList.front();
+                const auto  unitID = pickedUpUnitList.front();
                 auto* const pUnit  = objectManager.getObject<UnitBase>(unitID);
 
-                if(pUnit == nullptr) {
-                    return;
-                }
+                if(pUnit == nullptr) { return; }
 
                 if((!pUnit->isInfantry()) && (droppedUnits > 0)) {
                     // we already dropped infantry and this is no infantry
@@ -174,38 +161,32 @@ void Carryall::checkPos(const GameContext& context) {
 
             if(!pickedUpUnitList.empty()) {
                 // find next place to drop
-                for(auto i=8;i<18;i++) {
-                    auto r = game.randomGen.rand(3,i/2);
+                for(auto i = 8; i < 18; i++) {
+                    auto       r     = game.randomGen.rand(3, i / 2);
                     const auto angle = 2 * FixPt_PI * game.randomGen.randFixPoint();
 
-                    auto dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
+                    auto dropCoord =
+                        location + Coord(lround(r * FixPoint::sin(angle)), lround(-r * FixPoint::cos(angle)));
                     if(map.tileExists(dropCoord) && !map.getTile(dropCoord)->hasAGroundObject()) {
-                        setDestination(dropCoord);
+                        setDestination(context, dropCoord);
                         break;
                     }
                 }
             } else {
-                setTarget(nullptr);
-                setDestination(guardPoint);
+                setTarget(context.objectManager, nullptr);
+                setDestination(context, guardPoint);
             }
         }
     } else if(!isBooked()) {
         if(destination.isValid()) {
-            if(blockDistance(location, destination) <= 2) {
-                destination.invalidate();
-            }
+            if(blockDistance(location, destination) <= 2) { destination.invalidate(); }
         } else {
-            if(blockDistance(location, guardPoint) > 17) {
-                setDestination(guardPoint);
-            }
+            if(blockDistance(location, guardPoint) > 17) { setDestination(context, guardPoint); }
         }
     }
 }
 
-void Carryall::pre_deployUnits(const GameContext& context)
-{
-    soundPlayer->playSoundAt(Sound_Drop, location);
-
+void Carryall::pre_deployUnits(const GameContext& context) {
     currentMaxSpeed = 0;
     setSpeeds(context);
 }
@@ -213,15 +194,13 @@ void Carryall::pre_deployUnits(const GameContext& context)
 void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
     const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
 
-    if (pickedUpUnitList.cend() == iter)
-        return;
+    if(pickedUpUnitList.cend() == iter) return;
 
     pickedUpUnitList.erase(iter);
 
-    auto *const pUnit = context.objectManager.getObject<UnitBase>(unitID);
+    auto* const pUnit = context.objectManager.getObject<UnitBase>(unitID);
 
-    if(pUnit == nullptr)
-        return;
+    if(pUnit == nullptr) return;
 
     pre_deployUnits(context);
 
@@ -229,9 +208,9 @@ void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
 
     if(tile) deployUnit(context, tile, pUnit);
     else
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location %d, %d", location.x, location.y);
+        Dune::Logger.log("Carryall deploy failed for location %d, %d", location.x, location.y);
 
-    post_deployUnits();
+    post_deployUnits(context);
 }
 
 void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit) {
@@ -241,8 +220,8 @@ void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUni
             if(auto* const repair_yard = dune_cast<RepairYard>(object)) {
 
                 if(repair_yard->isFree()) {
-                    pUnit->setTarget(object); // unit books repair yard again
-                    pUnit->setGettingRepaired();
+                    pUnit->setTarget(context.objectManager, object); // unit books repair yard again
+                    pUnit->setGettingRepaired(context);
 
                     return;
                 }
@@ -252,7 +231,7 @@ void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUni
             } else if(auto* const refinery = dune_cast<Refinery>(object)) {
                 if(refinery->isFree()) {
                     if(auto* const harvester = dune_cast<Harvester>(pUnit)) {
-                        harvester->setTarget(object);
+                        harvester->setTarget(context.objectManager, object);
                         harvester->setReturned(context);
                         goingToRepairYard = false;
 
@@ -276,24 +255,23 @@ void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUni
     }
 }
 
-void Carryall::post_deployUnits() {
-    if (!pickedUpUnitList.empty()) return;
+void Carryall::post_deployUnits(const GameContext& context) {
+    if(!pickedUpUnitList.empty()) return;
 
-    if (!aDropOfferer) {
-        setTarget(nullptr);
-        setDestination(guardPoint);
+    if(!aDropOfferer) {
+        setTarget(context.objectManager, nullptr);
+        setDestination(context, guardPoint);
     }
     droppedOffCargo = true;
-    drawnFrame = 0;
+    drawnFrame      = 0;
 
     clearPath();
 }
 
-void Carryall::destroy(const GameContext& context)
-{
+void Carryall::destroy(const GameContext& context) {
     // destroy cargo
     for(const auto pickedUpUnitID : pickedUpUnitList) {
-        if (auto* const pPickedUpUnit = context.objectManager.getObject<UnitBase>(pickedUpUnitID)) {
+        if(auto* const pPickedUpUnit = context.objectManager.getObject<UnitBase>(pickedUpUnitID)) {
             pPickedUpUnit->destroy(context);
         }
     }
@@ -309,12 +287,10 @@ void Carryall::destroy(const GameContext& context)
     parent::destroy(context);
 }
 
-void Carryall::releaseTarget() {
-    setTarget(nullptr);
+void Carryall::releaseTarget(const GameContext& context) {
+    setTarget(context.objectManager, nullptr);
 
-    if(!hasCargo()) {
-        setDestination(guardPoint);
-    }
+    if(!hasCargo()) { setDestination(context, guardPoint); }
 }
 
 void Carryall::engageTarget(const GameContext& context) {
@@ -323,65 +299,63 @@ void Carryall::engageTarget(const GameContext& context) {
         return;
     }
 
-    auto* object = target.getObjPointer();
+    auto* object = target.getObjPointer(context.objectManager);
     if(object == nullptr) {
         // the target does not exist anymore
-        releaseTarget();
+        releaseTarget(context);
         return;
     }
 
     if(!object->isActive()) {
         // the target changed its state to inactive
-        releaseTarget();
+        releaseTarget(context);
         return;
     }
 
     if(auto* groundUnit = dune_cast<GroundUnit>(object); groundUnit && !groundUnit->isAwaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
-        releaseTarget();
+        releaseTarget(context);
         return;
     }
 
     if(object->getOwner()->getTeamID() != owner->getTeamID()) {
         // the target changed its owner (e.g. was deviated)
-        releaseTarget();
+        releaseTarget(context);
         return;
     }
 
     Coord targetLocation;
     if(object->getItemID() == Structure_Refinery) {
-        targetLocation = object->getLocation() + Coord(2,0);
+        targetLocation = object->getLocation() + Coord(2, 0);
     } else {
         targetLocation = object->getClosestPoint(location);
     }
 
-    const Coord realLocation = Coord(lround(realX), lround(realY));
-    const Coord realDestination = targetLocation * TILESIZE + Coord(TILESIZE/2,TILESIZE/2);
+    const Coord realLocation    = Coord(lround(realX), lround(realY));
+    const Coord realDestination = targetLocation * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
 
     targetDistance = distanceFrom(realLocation, realDestination);
 
-    if (targetDistance <= TILESIZE/32) {
+    if(targetDistance <= TILESIZE / 32) {
         if(hasCargo()) {
             if(object->isAStructure()) {
                 while(!pickedUpUnitList.empty()) {
                     deployUnit(context, pickedUpUnitList.back());
                 }
 
-                setTarget(nullptr);
-                setDestination(guardPoint);
+                setTarget(context.objectManager, nullptr);
+                setDestination(context, guardPoint);
             }
         } else {
             pickupTarget(context);
         }
     } else {
-        setDestination(targetLocation);
+        setDestination(context, targetLocation);
     }
 }
 
 void Carryall::giveCargo(const GameContext& context, UnitBase* newUnit) {
-    if(newUnit == nullptr) {
-        return;
-    }
+    if(newUnit == nullptr) { return; }
 
     pickedUpUnitList.push_back(newUnit->getObjectID());
 
@@ -396,27 +370,28 @@ void Carryall::pickupTarget(const GameContext& context) {
     currentMaxSpeed = 0;
     setSpeeds(context);
 
-    auto* pTarget = target.getObjPointer();
-
+    auto* pTarget = target.getObjPointer(context.objectManager);
     if(!pTarget) return;
 
     if(auto* pGroundUnitTarget = dune_cast<GroundUnit>(pTarget)) {
 
         if(pTarget->getHealth() <= 0) {
             // unit died just in the moment we tried to pick it up => carryall also crushes
-            setHealth(0);
+            setHealth(context.game, 0);
             return;
         }
 
-        if (  pGroundUnitTarget->hasATarget()
-            || ( pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation())
-            || pGroundUnitTarget->isBadlyDamaged()) {
+        if(pGroundUnitTarget->hasATarget() ||
+           (pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation()) ||
+           pGroundUnitTarget->isBadlyDamaged()) {
 
-            if(pGroundUnitTarget->isBadlyDamaged() || (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester))   {
+            if(pGroundUnitTarget->isBadlyDamaged() ||
+               (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester)) {
                 pGroundUnitTarget->doRepair(context);
             }
 
-            auto *newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
+            auto* const newTarget =
+                pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget(context.objectManager) : nullptr;
 
             pickedUpUnitList.push_back(target.getObjectID());
             pGroundUnitTarget->setPickedUp(context, this);
@@ -424,15 +399,17 @@ void Carryall::pickupTarget(const GameContext& context) {
             drawnFrame = 1;
 
             if(newTarget && (newTarget->getItemID() == Structure_Refinery)) {
-                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
-                setTarget(newTarget);
-                setDestination(target.getObjPointer()->getLocation() + Coord(2,0));
+                pGroundUnitTarget->setGuardPoint(context, pGroundUnitTarget->getLocation());
+                setTarget(context.objectManager, newTarget);
+                if (auto* const existing_target = target.getObjPointer(context.objectManager))
+                    setDestination(context, existing_target->getLocation() + Coord(2, 0));
             } else if(newTarget && (newTarget->getItemID() == Structure_RepairYard)) {
-                pGroundUnitTarget->setGuardPoint(pGroundUnitTarget->getLocation());
-                setTarget(newTarget);
-                setDestination(target.getObjPointer()->getClosestPoint(location));
-            } else if (pGroundUnitTarget->getDestination().isValid()) {
-                setDestination(pGroundUnitTarget->getDestination());
+                pGroundUnitTarget->setGuardPoint(context, pGroundUnitTarget->getLocation());
+                setTarget(context.objectManager, newTarget);
+                if(auto* const existing_target = target.getObjPointer(context.objectManager))
+                    setDestination(context, existing_target->getClosestPoint(location));
+            } else if(pGroundUnitTarget->getDestination().isValid()) {
+                setDestination(context, pGroundUnitTarget->getDestination());
             }
 
             clearPath();
@@ -442,59 +419,59 @@ void Carryall::pickupTarget(const GameContext& context) {
             if(pGroundUnitTarget->getAttackMode() == CARRYALLREQUESTED) {
                 pGroundUnitTarget->doSetAttackMode(context, STOP);
             }
-            releaseTarget();
+            releaseTarget(context);
         }
     } else {
         // get unit from structure
-        if(auto* refinery = dune_cast<Refinery>(pTarget)) {
+        if(auto* const refinery = dune_cast<Refinery>(pTarget)) {
             // get harvester
             refinery->deployHarvester(context, this);
-        } else if(auto* repairYard = dune_cast<RepairYard>(pTarget)) {
+        } else if(auto* const repairYard = dune_cast<RepairYard>(pTarget)) {
             // get repaired unit
             repairYard->deployRepairUnit(context, this);
         }
     }
 }
 
-void Carryall::setTarget(const ObjectBase* newTarget) {
-    auto* pTarget = target.getObjPointer();
+void Carryall::setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) {
+    auto* pTarget = target.getObjPointer(objectManager);
 
     if(pTarget) {
         if(targetFriendly) {
             auto* groundUnit = dune_cast<GroundUnit>(pTarget);
-            if(groundUnit && groundUnit->getCarrier() == this) groundUnit->bookCarrier(nullptr);
+            if(groundUnit && groundUnit->getCarrier(objectManager) == this) groundUnit->bookCarrier(nullptr);
         }
 
-        if(auto* refinery = dune_cast<Refinery>(pTarget)) refinery->unBook();
+        if(auto* const refinery = dune_cast<Refinery>(pTarget)) refinery->unBook();
     }
 
-    parent::setTarget(newTarget);
+    parent::setTarget(objectManager, newTarget);
 
-    pTarget = target.getObjPointer();
+    pTarget = target.getObjPointer(objectManager);
     if(!pTarget) return;
 
-    if(auto* refinery = dune_cast<Refinery>(pTarget)) refinery->book();
+    if(auto* const refinery = dune_cast<Refinery>(pTarget)) refinery->book();
 
     if(targetFriendly) {
-        if(auto* groundUnit = dune_cast<GroundUnit>(pTarget)) groundUnit->setAwaitingPickup(true);
+        if(auto* const groundUnit = dune_cast<GroundUnit>(pTarget)) groundUnit->setAwaitingPickup(true);
     }
 }
 
 void Carryall::targeting(const GameContext& context) {
-    if(target) {
-        engageTarget(context);
-    }
+    if(target) { engageTarget(context); }
 }
 
 void Carryall::turn(const GameContext& context) {
     auto& map = context.map;
 
-    if (active && aDropOfferer && droppedOffCargo && (!hasCargo())
-        && ((getRealX() < TILESIZE/2) || (getRealX() > map.getSizeX()*TILESIZE - TILESIZE/2)
-            || (getRealY() < TILESIZE/2) || (getRealY() > map.getSizeY()*TILESIZE - TILESIZE/2))) {
+    if(active && aDropOfferer && droppedOffCargo && (!hasCargo()) &&
+       ((getRealX() < TILESIZE / 2) || (getRealX() > map.getSizeX() * TILESIZE - TILESIZE / 2) ||
+        (getRealY() < TILESIZE / 2) || (getRealY() > map.getSizeY() * TILESIZE - TILESIZE / 2))) {
         // already partially outside the map => do not turn
         return;
     }
 
     parent::turn(context);
 }
+
+} // namespace Dune::Engine

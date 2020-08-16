@@ -15,21 +15,23 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ROCKETTURRET_H
-#define ROCKETTURRET_H
+#ifndef ENGINE_ROCKETTURRET_H
+#define ENGINE_ROCKETTURRET_H
 
 #include <structures/TurretBase.h>
+
+namespace Dune::Engine {
 
 class RocketTurret final : public TurretBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_RocketTurret;
-    using parent = TurretBase;
+    using parent                                = TurretBase;
 
     RocketTurret(uint32_t objectID, const ObjectInitializer& initializer);
     RocketTurret(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~RocketTurret() override;
 
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
     void attack(const GameContext& context) override;
 
@@ -44,4 +46,6 @@ private:
     void init();
 };
 
-#endif // ROCKETTURRET_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_ROCKETTURRET_H

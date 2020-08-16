@@ -18,7 +18,7 @@
 #ifndef INIMAP_H
 #define INIMAP_H
 
-#include <FileClasses/INIFile.h>
+#include <engine/FileClasses/INIFile.h>
 #include <FileClasses/FileManager.h>
 
 #include <DataTypes.h>
@@ -34,7 +34,7 @@
 
 class INIMap {
 protected:
-    typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
+    typedef unique_or_nonowning_ptr<Dune::Engine::INIFile> inifile_ptr;
 
     explicit INIMap(inifile_ptr pINIFile)
      : inifile(std::move(pINIFile)) {

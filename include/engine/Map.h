@@ -21,6 +21,7 @@
 #include "Tile.h"
 #include "AStarSearch.h"
 #include "ObjectBase.h"
+#include "Bullet.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/exceptions.h>
@@ -29,11 +30,6 @@
 #include <memory>
 #include <queue>
 #include <vector>
-
-inline constexpr int xyz = 123;
-namespace {
-inline constexpr int abc = ::xyz;
-}
 
 namespace Dune::Engine {
 
@@ -135,14 +131,9 @@ public:
         return tile;
     }
 
-    [[nodiscard]] const ::Dune::Engine::Tile* getTile(const Coord& location) const { return getTile(location.x, location.y); }
+    [[nodiscard]] const Tile* getTile(const Coord& location) const { return getTile(location.x, location.y); }
 
-    ::Dune::Engine::Tile* getTile(const Coord& location) { return getTile(location.x, location.y); }
-
-    template<class... Args>
-    void add_bullet(Args&&... args) {
-        bulletList.push_back(std::make_unique<Bullet>(std::forward<Args>(args)...));
-    }
+    Tile* getTile(const Coord& location) { return getTile(location.x, location.y); }
 
     template<typename F>
     void for_all(F&& f) {
@@ -459,7 +450,7 @@ public:
         return tile->hasAStructure(context.objectManager);
     }
 
-    [[nodiscard]] ::Dune::Engine::ObjectBase* getGroundObject(const GameContext& context, int x, int y) const {
+    [[nodiscard]] ObjectBase* getGroundObject(const GameContext& context, int x, int y) const {
         const auto* const tile = tryGetTile(x, y);
         if(!tile) return nullptr;
 

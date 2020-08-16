@@ -17,21 +17,22 @@
 
 #include <structures/HeavyFactory.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 
 namespace {
+using namespace Dune::Engine;
+
 const BuilderBaseConstants heavy_factory_constants{HeavyFactory::item_id, Coord{3, 2}};
 }
+
+namespace Dune::Engine {
 
 HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(heavy_factory_constants, objectID, initializer) {
     HeavyFactory::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    HeavyFactory::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -42,19 +43,12 @@ HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& ini
 void HeavyFactory::init() {
     assert(itemID == Structure_HeavyFactory);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_HeavyFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 8;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 HeavyFactory::~HeavyFactory() = default;
 
 void HeavyFactory::doBuildRandom(const GameContext& context) {
-    if(isAllowedToUpgrade() && (getUpgradeCost(context) <= owner->getCredits())) {
+    if(isAllowedToUpgrade(context.game) && (getUpgradeCost(context.game) <= owner->getCredits())) {
         doUpgrade(context);
         return;
     }
@@ -63,19 +57,13 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
+            item2Produce =
+                std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
+                    ->itemID;
         } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
-        doProduceItem(item2Produce);
+        doProduceItem(context, item2Produce);
     }
 }
 
-void HeavyFactory::updateStructureSpecificStuff(const GameContext& context) {
-    if(deployTimer > 0) {
-        firstAnimFrame = 4;
-        lastAnimFrame = 5;
-    } else {
-        firstAnimFrame = 2;
-        lastAnimFrame = 3;
-    }
-}
+} // namespace Dune::Engine

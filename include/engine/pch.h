@@ -21,12 +21,7 @@
 
 #    include <fmt/format.h>
 #    include <fmt/printf.h>
-#include <gsl/gsl>
-
-#    include <misc/Random.h>
-#    include <misc/exceptions.h>
-
-#    include "engine_mmath.h"
+#    include <gsl/gsl>
 
 #    include <algorithm>
 #    include <array>
@@ -80,8 +75,8 @@
 
 #ifdef _WIN32
 #    include <io.h>
-#    include <windows.h>
-#    include <winsock2.h>
+#    include <Windows.h>
+#    include <WinSock2.h>
 #endif // _WIN32
 
 #endif // PCH_H

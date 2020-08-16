@@ -18,26 +18,27 @@
 #include <structures/Wall.h>
 
 #include <Map.h>
-#include <globals.h>
 
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr StructureBaseConstants wall_constants{Wall::item_id, Coord{1, 1}};
 }
 
-Wall::Wall(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(wall_constants, objectID, initializer) {
+namespace Dune::Engine {
+
+Wall::Wall(uint32_t objectID, const ObjectInitializer& initializer)
+    : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
-    setHealth(getMaxHealth());
+    Wall::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 
-    bWallDestroyedUp = false;
+    bWallDestroyedUp    = false;
     bWallDestroyedRight = false;
-    bWallDestroyedDown = false;
-    bWallDestroyedLeft = false;
-
-    setWallTile(Wall_LeftRight);
+    bWallDestroyedDown  = false;
+    bWallDestroyedLeft  = false;
 }
 
 Wall::Wall(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -47,33 +48,23 @@ Wall::Wall(uint32_t objectID, const ObjectStreamInitializer& initializer)
     auto& stream = initializer.stream();
 
     stream.readBools(&bWallDestroyedUp, &bWallDestroyedRight, &bWallDestroyedDown, &bWallDestroyedLeft);
-
-    setWallTile(stream.readSint32());
 }
 
 void Wall::init() {
     assert(itemID == Structure_Wall);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_Wall;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 25;
-    numImagesY = 3;
 }
 
 Wall::~Wall() = default;
 
-void Wall::save(OutputStream& stream) const {
-    StructureBase::save(stream);
+void Wall::save(const Game& game, OutputStream& stream) const {
+    parent::save(game, stream);
 
     stream.writeBools(bWallDestroyedUp, bWallDestroyedRight, bWallDestroyedDown, bWallDestroyedLeft);
-
-    // save current wall tile
-    stream.writeSint32(curAnimFrame);
 }
 
 void Wall::destroy(const GameContext& context) {
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     // fix wall to the north
     if(auto* tile = map.tryGetTile(location.x, location.y - 1)) {
@@ -112,6 +103,7 @@ void Wall::destroy(const GameContext& context) {
 
 /**
     Sets the place for this wall and fixes the wall and their surrounding walls.
+    \param context  the execution context
     \param  xPos    the x position of this wall
     \param  yPos    the y position of this wall
 */
@@ -176,45 +168,47 @@ void Wall::fixWall(const GameContext& context) {
 
     // calculate destroyed tile index
     int destroyedTileIndex = 0;
-    if(left)    destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedLeft);
-    if(down)    destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedDown);
-    if(right)   destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedRight);
-    if(up)      destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedUp);
+    if(left) destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedLeft);
+    if(down) destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedDown);
+    if(right) destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedRight);
+    if(up) destroyedTileIndex = (destroyedTileIndex << 1) | static_cast<int>(bWallDestroyedUp);
 
     // Now perform the test
-    if ((left) && (right) && (up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_Full : 59 + destroyedTileIndex; //solid wall
-    } else if ((!left) && (right) && (up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpDownRight : 31 + destroyedTileIndex; //missing left edge
-    } else if ((left) && (!right)&& (up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpDownLeft : 45 + destroyedTileIndex; //missing right edge
-    } else if ((left) && (right) && (!up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_DownLeftRight : 38 + destroyedTileIndex; //missing top edge
-    } else if ((left) && (right) && (up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpLeftRight : 52 + destroyedTileIndex; //missing bottom edge
-    } else if ((!left) && (right) && (!up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_DownRight : 22 + destroyedTileIndex; //missing top left edge
-    } else if ((left) && (!right) && (up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpLeft : 28 + destroyedTileIndex; //missing bottom right edge
-    } else if ((left) && (!right) && (!up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_DownLeft : 25 + destroyedTileIndex; //missing top right edge
-    } else if ((!left) && (right) && (up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpRight : 19 + destroyedTileIndex; //missing bottom left edge
-    } else if ((left) && (!right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 14 + destroyedTileIndex; //missing above, right and below
-    } else if ((!left) && (right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; //missing above, left and below
-    } else if ((!left) && (!right) && (up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; //only up
-    } else if ((!left) && (!right) && (!up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 17 + destroyedTileIndex; //only down
-    } else if ((left) && (right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; //missing above and below
-    } else if ((!left) && (!right) && (up) && (down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; //missing left and right
-    } else if ((!left) && (!right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_Standalone : 12 + destroyedTileIndex; //missing left and right
+    if((left) && (right) && (up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_Full : 59 + destroyedTileIndex; // solid wall
+    } else if((!left) && (right) && (up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpDownRight : 31 + destroyedTileIndex; // missing left edge
+    } else if((left) && (!right) && (up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpDownLeft : 45 + destroyedTileIndex; // missing right edge
+    } else if((left) && (right) && (!up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_DownLeftRight : 38 + destroyedTileIndex; // missing top edge
+    } else if((left) && (right) && (up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpLeftRight : 52 + destroyedTileIndex; // missing bottom edge
+    } else if((!left) && (right) && (!up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_DownRight : 22 + destroyedTileIndex; // missing top left edge
+    } else if((left) && (!right) && (up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpLeft : 28 + destroyedTileIndex; // missing bottom right edge
+    } else if((left) && (!right) && (!up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_DownLeft : 25 + destroyedTileIndex; // missing top right edge
+    } else if((!left) && (right) && (up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpRight : 19 + destroyedTileIndex; // missing bottom left edge
+    } else if((left) && (!right) && (!up) && (!down)) {
+        maketile =
+            (destroyedTileIndex == 0) ? Wall_LeftRight : 14 + destroyedTileIndex; // missing above, right and below
+    } else if((!left) && (right) && (!up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; // missing above, left and
+                                                                                         // below
+    } else if((!left) && (!right) && (up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; // only up
+    } else if((!left) && (!right) && (!up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 17 + destroyedTileIndex; // only down
+    } else if((left) && (right) && (!up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; // missing above and below
+    } else if((!left) && (!right) && (up) && (down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; // missing left and right
+    } else if((!left) && (!right) && (!up) && (!down)) {
+        maketile = (destroyedTileIndex == 0) ? Wall_Standalone : 12 + destroyedTileIndex; // missing left and right
     }
-
-    setWallTile(maketile);
 }
+
+} // namespace Dune::Engine

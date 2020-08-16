@@ -2656,3 +2656,4 @@ int Game::getGameSpeed() const {
     }
     return settings.gameOptions.gameSpeed;
 }
+

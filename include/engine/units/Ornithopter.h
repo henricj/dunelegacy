@@ -15,41 +15,42 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ORNITHOPTER_H
-#define ORNITHOPTER_H
+#ifndef ENGINE_ORNITHOPTER_H
+#define ENGINE_ORNITHOPTER_H
 
 #include <units/AirUnit.h>
 
-class Ornithopter final : public AirUnit
-{
+namespace Dune::Engine {
+
+class Ornithopter final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Ornithopter;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Ornithopter(uint32_t objectID, const ObjectInitializer& initializer);
     Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Ornithopter() override;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void checkPos(const GameContext& context) override;
-    bool canAttack(const ObjectBase* object) const override;
+    bool canAttack(const GameContext& context, const ObjectBase* object) const override;
 
-    bool canPassTile(const Tile* pTile) const override;
+    bool canPassTile(const GameContext& context, const Tile* pTile) const override;
 
     void destroy(const GameContext& context) override;
 
-    void playAttackSound() override;
-
 protected:
-    FixPoint getDestinationAngle() const override;
+    FixPoint getDestinationAngle(const Game& game) const override;
 
     bool attack(const GameContext& context) override;
 
 private:
-    void   init();
+    void init(const Game& game);
 
     uint32_t timeLastShot;
 };
 
-#endif //ORNITHOPTER_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_ORNITHOPTER_H

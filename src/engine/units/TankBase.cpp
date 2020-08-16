@@ -15,26 +15,26 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "engine_mmath.h"
+
 #include <units/TankBase.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <Explosion.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
 
 #include <structures/StructureBase.h>
 
-#define RANDOMTURRETTURNTIMER 8000    //less of this makes tank turrets randomly turn more
+namespace {
+constexpr int RANDOMTURRETTURNTIMER = 8000; // less of this makes tank turrets randomly turn more
+} // namespace
+
+namespace Dune::Engine {
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer) {
     drawnTurretAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
-    turretAngle = static_cast<int>(drawnTurretAngle);
+    turretAngle      = static_cast<int>(drawnTurretAngle);
 }
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -49,8 +49,8 @@ TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const 
 
 TankBase::~TankBase() = default;
 
-void TankBase::save(OutputStream& stream) const {
-    parent::save(stream);
+void TankBase::save(const Game& game, OutputStream& stream) const {
+    parent::save(game, stream);
 
     stream.writeFixPoint(turretAngle);
     stream.writeSint8(static_cast<int8_t>(drawnTurretAngle));
@@ -61,13 +61,11 @@ void TankBase::save(OutputStream& stream) const {
 void TankBase::setTurretAngle(ANGLETYPE newAngle) {
     if((static_cast<int>(newAngle) >= 0) && (newAngle < ANGLETYPE::NUM_ANGLES)) {
         drawnTurretAngle = newAngle;
-        turretAngle = static_cast<int>(drawnTurretAngle);
+        turretAngle      = static_cast<int>(drawnTurretAngle);
     }
 }
 
-ANGLETYPE TankBase::getCurrentAttackAngle() const {
-    return drawnTurretAngle;
-}
+ANGLETYPE TankBase::getCurrentAttackAngle() const { return drawnTurretAngle; }
 
 void TankBase::navigate(const GameContext& context) {
     if(moving && !justStoppedMoving) {
@@ -109,53 +107,54 @@ void TankBase::engageTarget(const GameContext& context) {
 
     parent::engageTarget(context);
 
+    auto* const pCloseTarget = closeTarget.getObjPointer(context.objectManager);
 
-    if(closeTarget && (closeTarget.getObjPointer() == nullptr)) {
+    if(closeTarget && (pCloseTarget == nullptr)) {
         // the target does not exist anymore
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget && !closeTarget.getObjPointer()->isActive()) {
+    if(!pCloseTarget) return;
+
+    if(!pCloseTarget->isActive()) {
         // the target changed its state to inactive
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget && !canAttack(closeTarget.getObjPointer())) {
+    if(!canAttack(context, pCloseTarget)) {
         // the target cannot be attacked anymore
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(target && (targetDistance <= getWeaponRange()) && !targetFriendly) {
+    if((targetDistance <= getWeaponRange(context.game)) && !targetFriendly) {
         // we already have a (non-friendly) target in weapon range
         // => we need no close temporary target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget) {
-        Coord targetLocation = closeTarget.getObjPointer()->getClosestPoint(location);
-        FixPoint closeTargetDistance = blockDistance(location, targetLocation);
+    const auto targetLocation      = pCloseTarget->getClosestPoint(location);
+    const auto closeTargetDistance = blockDistance(location, targetLocation);
 
-        if(closeTargetDistance > getWeaponRange()) {
-            // we are too far away
-            closeTarget.pointTo(NONE_ID);
-            return;
-        }
+    if(closeTargetDistance > getWeaponRange(context.game)) {
+        // we are too far away
+        closeTarget.pointTo(NONE_ID);
+        return;
+    }
 
-        targetAngle = destinationDrawnAngle(location, targetLocation);
+    targetAngle = destinationDrawnAngle(location, targetLocation);
 
-        if(drawnTurretAngle == targetAngle) {
-            ObjectPointer temp = target;
-            target = closeTarget;
-            attack(context);
-            target = temp;
-        }
+    if(drawnTurretAngle == targetAngle) {
+        ObjectPointer temp = target;
+        target             = closeTarget;
+        attack(context);
+        target = temp;
     }
 }
 
@@ -163,7 +162,7 @@ void TankBase::targeting(const GameContext& context) {
     if(findTargetTimer == 0) {
         if(attackMode != STOP && !closeTarget && !moving && !justStoppedMoving) {
             // find a temporary target
-            closeTarget = findTarget();
+            closeTarget = findTarget(context);
         }
     }
 
@@ -171,17 +170,17 @@ void TankBase::targeting(const GameContext& context) {
 }
 
 void TankBase::turn(const GameContext& context) {
-    FixPoint angleLeft = 0;
+    FixPoint angleLeft  = 0;
     FixPoint angleRight = 0;
 
     if(!moving && !justStoppedMoving) {
         if(nextSpotAngle != ANGLETYPE::INVALID_ANGLE) {
             if(angle > static_cast<int>(nextSpotAngle)) {
                 angleRight = angle - static_cast<int>(nextSpotAngle);
-                angleLeft = FixPoint::abs(8-angle) + static_cast<int>(nextSpotAngle);
-            } else if (angle < static_cast<int>(nextSpotAngle)) {
-                angleRight = FixPoint::abs(8-static_cast<int>(nextSpotAngle)) + angle;
-                angleLeft = static_cast<int>(nextSpotAngle) - angle;
+                angleLeft  = FixPoint::abs(8 - angle) + static_cast<int>(nextSpotAngle);
+            } else if(angle < static_cast<int>(nextSpotAngle)) {
+                angleRight = FixPoint::abs(8 - static_cast<int>(nextSpotAngle)) + angle;
+                angleLeft  = static_cast<int>(nextSpotAngle) - angle;
             }
 
             if(angleLeft <= angleRight) {
@@ -195,10 +194,10 @@ void TankBase::turn(const GameContext& context) {
     if(targetAngle != ANGLETYPE::INVALID_ANGLE) {
         if(turretAngle > static_cast<int>(targetAngle)) {
             angleRight = turretAngle - static_cast<int>(targetAngle);
-            angleLeft = FixPoint::abs(8-turretAngle) + static_cast<int>(targetAngle);
-        } else if (turretAngle < static_cast<int>(targetAngle)) {
-            angleRight = FixPoint::abs(8-static_cast<int>(targetAngle)) + turretAngle;
-            angleLeft = static_cast<int>(targetAngle) - turretAngle;
+            angleLeft  = FixPoint::abs(8 - turretAngle) + static_cast<int>(targetAngle);
+        } else if(turretAngle < static_cast<int>(targetAngle)) {
+            angleRight = FixPoint::abs(8 - static_cast<int>(targetAngle)) + turretAngle;
+            angleLeft  = static_cast<int>(targetAngle) - turretAngle;
         }
 
         if(angleLeft <= angleRight) {
@@ -222,3 +221,6 @@ void TankBase::turnTurretRight() {
 
     drawnTurretAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(turretAngle)));
 }
+
+} // namespace Dune::Engine
+

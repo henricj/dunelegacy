@@ -22,6 +22,8 @@
 #include <Map.h>
 #include <players/HumanPlayer.h>
 
+#include <engine_mmath.h>
+
 //structures
 #include <structures/Barracks.h>
 #include <structures/ConstructionYard.h>
@@ -63,6 +65,8 @@
 
 #include <array>
 
+namespace Dune::Engine {
+
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
@@ -70,28 +74,25 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
     owner           = initializer.owner();
     byScenario      = initializer.byScenario();
 
-    health = 0;
+    health       = 0;
     badlyDamaged = false;
 
-    location = Coord::Invalid();
+    location    = Coord::Invalid();
     oldLocation = Coord::Invalid();
     destination = Coord::Invalid();
-    realX = 0;
-    realY = 0;
+    realX       = 0;
+    realY       = 0;
 
     drawnAngle = static_cast<ANGLETYPE>(0);
-    angle = static_cast<int>(drawnAngle);
+    angle      = static_cast<int>(drawnAngle);
 
-    active = false;
-    respondable = true;
-    byScenario = false;
-    selected = false;
-    selectedByOtherPlayer = false;
+    active                = false;
+    respondable           = true;
+    byScenario            = false;
 
     forced = false;
-    setTarget(nullptr);
     targetFriendly = false;
-    attackMode = GUARD;
+    attackMode     = GUARD;
 
     setVisible(VIS_ALL, false);
 }
@@ -99,53 +100,46 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
+    auto&  game     = initializer.game();
     auto& stream    = initializer.stream();
-    originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
-    owner = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 
-    health = stream.readFixPoint();
+    originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
+    owner           = game.getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
+
+    health       = stream.readFixPoint();
     badlyDamaged = stream.readBool();
 
-    location.x = stream.readSint32();
-    location.y = stream.readSint32();
+    location.x    = stream.readSint32();
+    location.y    = stream.readSint32();
     oldLocation.x = stream.readSint32();
     oldLocation.y = stream.readSint32();
     destination.x = stream.readSint32();
     destination.y = stream.readSint32();
-    realX = stream.readFixPoint();
-    realY = stream.readFixPoint();
+    realX         = stream.readFixPoint();
+    realY         = stream.readFixPoint();
 
-    angle = stream.readFixPoint();
+    angle      = stream.readFixPoint();
     drawnAngle = static_cast<ANGLETYPE>(stream.readSint8());
 
-    active = stream.readBool();
+    active      = stream.readBool();
     respondable = stream.readBool();
-    byScenario = stream.readBool();
-
-    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
-        selected = stream.readBool();
-        selectedByOtherPlayer = stream.readBool();
-    } else {
-        selected = false;
-        selectedByOtherPlayer = false;
-    }
+    byScenario  = stream.readBool();
 
     forced = stream.readBool();
     target.load(stream);
     targetFriendly = stream.readBool();
-    attackMode = static_cast<ATTACKMODE>(stream.readUint32());
+    attackMode     = static_cast<ATTACKMODE>(stream.readUint32());
 
     std::array<bool, 7> b{false, false, false, false, false, false, false};
 
     stream.readBools(&b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6]);
 
-    for (decltype(visible.size()) i = 0; i < visible.size(); ++i)
+    for(decltype(visible.size()) i = 0; i < visible.size(); ++i)
         visible[i] = b[i];
 }
 
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID)
-    : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
-}
+    : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} { }
 
 ObjectBase::~ObjectBase() = default;
 
@@ -153,7 +147,7 @@ void ObjectBase::destroy(const GameContext& context) { context.objectManager.rem
 
 void ObjectBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) { }
 
-void ObjectBase::save(OutputStream& stream) const {
+void ObjectBase::save(const Game& game, OutputStream& stream) const {
     stream.writeUint32(static_cast<uint32_t>(originalHouseID));
     stream.writeUint32(static_cast<uint32_t>(owner->getHouseID()));
 
@@ -176,11 +170,6 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBool(respondable);
     stream.writeBool(byScenario);
 
-    if(currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
-        stream.writeBool(selected);
-        stream.writeBool(selectedByOtherPlayer);
-    }
-
     stream.writeBool(forced);
     target.save(stream);
     stream.writeBool(targetFriendly);
@@ -189,22 +178,16 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBools(visible[0], visible[1], visible[2], visible[3], visible[4], visible[5], visible[6]);
 }
 
-
 /**
     Returns the center point of this object
     \return the center point in world coordinates
 */
-Coord ObjectBase::getCenterPoint() const {
-    return Coord(lround(realX), lround(realY));
-}
+Coord ObjectBase::getCenterPoint() const { return Coord(lround(realX), lround(realY)); }
 
-Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const {
-    return getCenterPoint();
-}
+Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const { return getCenterPoint(); }
 
-
-int ObjectBase::getMaxHealth() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
+int ObjectBase::getMaxHealth(const Game& game) const {
+    return game.objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
 }
 
 void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
@@ -214,52 +197,41 @@ void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t d
         newHealth -= damage;
 
         if(newHealth <= 0) {
-            setHealth(0);
+            setHealth(context.game, 0);
 
-            if(damagerOwner != nullptr) {
-                damagerOwner->informHasKilled(itemID);
-            }
+            if(damagerOwner != nullptr) { damagerOwner->informHasKilled(itemID); }
         } else {
-            setHealth(newHealth);
+            setHealth(context.game, newHealth);
         }
-    }
-
-    if(getOwner() == pLocalHouse) {
-        musicPlayer->changeMusic(MUSIC_ATTACK);
     }
 
     getOwner()->noteDamageLocation(this, damage, damagerID);
 }
 
-void ObjectBase::handleInterfaceEvent(SDL_Event* event) {
-}
-
-std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
-    return DefaultObjectInterface::create(context, objectID);
-}
-
-void ObjectBase::setDestination(int newX, int newY) {
-    if(currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
+void ObjectBase::setDestination(const GameContext& context, int newX, int newY) {
+    if(context.map.tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
         destination.x = newX;
         destination.y = newY;
     }
 }
 
-void ObjectBase::setHealth(FixPoint newHealth) {
-    if((newHealth >= 0) && (newHealth <= getMaxHealth())) {
-        health = newHealth;
-        badlyDamaged = health < BADLYDAMAGEDRATIO * getMaxHealth();
+void ObjectBase::setHealth(const Game& game, FixPoint newHealth) {
+    const auto max_health = getMaxHealth(game);
+
+    if((newHealth >= 0) && (newHealth <= max_health)) {
+        health       = newHealth;
+        badlyDamaged = health < BADLYDAMAGEDRATIO * max_health;
     }
 }
 
 void ObjectBase::setLocation(const GameContext& context, int xPos, int yPos) {
     if((xPos == INVALID_POS) && (yPos == INVALID_POS)) {
         location.invalidate();
-    } else if (context.map.tileExists(xPos, yPos))  {
+    } else if(context.map.tileExists(xPos, yPos)) {
         location.x = xPos;
         location.y = yPos;
-        realX = location.x*TILESIZE;
-        realY = location.y*TILESIZE;
+        realX      = location.x * TILESIZE;
+        realY      = location.y * TILESIZE;
 
         assignToMap(context, location);
     }
@@ -267,24 +239,23 @@ void ObjectBase::setLocation(const GameContext& context, int xPos, int yPos) {
 
 void ObjectBase::setVisible(int teamID, bool status) {
     if(teamID == VIS_ALL) {
-        if (status) {
+        if(status) {
             visible.set();
         } else {
             visible.reset();
-
-}
-    } else if ((teamID >= 0) && (teamID < NUM_TEAMS)) {
+        }
+    } else if((teamID >= 0) && (teamID < NUM_TEAMS)) {
         visible[teamID] = status;
     }
 }
 
-void ObjectBase::setTarget(const ObjectBase* newTarget) {
+void ObjectBase::setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) {
     target.pointTo(const_cast<ObjectBase*>(newTarget));
 
     auto friendly = false;
 
     if(target) {
-        if(auto* targetPtr = target.getObjPointer()) {
+        if(auto* targetPtr = target.getObjPointer(objectManager)) {
             friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) &&
                        (targetPtr->getItemID() != Unit_Sandworm);
         }
@@ -293,75 +264,45 @@ void ObjectBase::setTarget(const ObjectBase* newTarget) {
     targetFriendly = friendly;
 }
 
-void ObjectBase::unassignFromMap(const Coord& location) const {
-    if(currentGameMap->tileExists(location)) {
-        currentGameMap->getTile(location)->unassignObject(getObjectID());
-    }
+void ObjectBase::unassignFromMap(const GameContext& context, const Coord& location) const {
+    auto* tile = context.map.tryGetTile(location.x, location.y);
+
+    if(!tile) return;
+
+    tile->unassignObject(getObjectID());
 }
 
-
-bool ObjectBase::canAttack(const ObjectBase* object) const {
-    return canAttack()
-        && (object != nullptr)
-        && (object->isAStructure() || !object->isAFlyingUnit())
-        && (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) || (object->getItemID() == Unit_Sandworm));
-}
-
-bool ObjectBase::isOnScreen() const {
-    const Coord position{ lround(getRealX()), lround(getRealY()) };
-    const Coord size{ getWidth(graphic[currentZoomlevel]) / numImagesX, getHeight(graphic[currentZoomlevel]) / numImagesY };
-
-    return screenborder->isInsideScreen(position,size);
+bool ObjectBase::canAttack(const GameContext& context, const ObjectBase* object) const {
+    return canAttack() && (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit()) &&
+           (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) ||
+            (object->getItemID() == Unit_Sandworm));
 }
 
 bool ObjectBase::isVisible(int teamID) const {
     if(visible.all()) return true;
 
-    if((teamID >= 0) && (teamID < NUM_TEAMS)) {
-        return visible[teamID];
-    }         return false;
-
-   
+    if((teamID >= 0) && (teamID < NUM_TEAMS)) { return visible[teamID]; }
+    return false;
 }
 
-bool ObjectBase::isVisible() const {
-    return visible.any();
-}
+bool ObjectBase::isVisible() const { return visible.any(); }
 
-uint32_t ObjectBase::getHealthColor() const {
-    const FixPoint healthPercent = health/getMaxHealth();
+Coord ObjectBase::getClosestPoint(const Coord& point) const { return location; }
 
-    if(healthPercent >= BADLYDAMAGEDRATIO) {
-        return COLOR_LIGHTGREEN;
-    } if(healthPercent >= HEAVILYDAMAGEDRATIO) {
-
-        return COLOR_YELLOW;
-
-    } else {
-
-        return COLOR_RED;
-
-    }
-}
-
-Coord ObjectBase::getClosestPoint(const Coord& point) const {
-    return location;
-}
-
-const StructureBase* ObjectBase::findClosestTargetStructure() const {
-    const StructureBase *pClosestStructure = nullptr;
-    auto closestDistance = FixPt_MAX;
-    for(const StructureBase* pStructure : structureList) {
-        if(canAttack(pStructure)) {
-            const auto closestPoint = pStructure->getClosestPoint(getLocation());
-            auto structureDistance = blockDistance(getLocation(), closestPoint);
+const StructureBase* ObjectBase::findClosestTargetStructure(const GameContext& context) const {
+    const StructureBase* pClosestStructure = nullptr;
+    auto                 closestDistance   = FixPt_MAX;
+    for(const StructureBase* pStructure : context.game.structureList) {
+        if(canAttack(context, pStructure)) {
+            const auto closestPoint      = pStructure->getClosestPoint(getLocation());
+            auto       structureDistance = blockDistance(getLocation(), closestPoint);
 
             if(pStructure->getItemID() == Structure_Wall) {
-                structureDistance += 20000000; //so that walls are targeted very last
+                structureDistance += 20000000; // so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance) {
-                closestDistance = structureDistance;
+                closestDistance   = structureDistance;
                 pClosestStructure = pStructure;
             }
         }
@@ -370,17 +311,17 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
     return pClosestStructure;
 }
 
-const UnitBase* ObjectBase::findClosestTargetUnit() const {
-    const UnitBase *pClosestUnit = nullptr;
-    auto closestDistance = FixPt_MAX;
-    for(const UnitBase* pUnit : unitList) {
-        if(canAttack(pUnit)) {
+const UnitBase* ObjectBase::findClosestTargetUnit(const GameContext& context) const {
+    const UnitBase* pClosestUnit    = nullptr;
+    auto            closestDistance = FixPt_MAX;
+    for(const UnitBase* pUnit : context.game.unitList) {
+        if(canAttack(context, pUnit)) {
             const auto closestPoint = pUnit->getClosestPoint(getLocation());
             const auto unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
-                pClosestUnit = pUnit;
+                pClosestUnit    = pUnit;
             }
         }
     }
@@ -388,33 +329,33 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
     return pClosestUnit;
 }
 
-const ObjectBase* ObjectBase::findClosestTarget() const {
-    const ObjectBase *pClosestObject = nullptr;
-    FixPoint closestDistance = FixPt_MAX;
-    for(const StructureBase* pStructure : structureList) {
-        if(canAttack(pStructure)) {
-            const auto closestPoint = pStructure->getClosestPoint(getLocation());
-            auto structureDistance = blockDistance(getLocation(), closestPoint);
+const ObjectBase* ObjectBase::findClosestTarget(const GameContext& context) const {
+    const ObjectBase* pClosestObject  = nullptr;
+    FixPoint          closestDistance = FixPt_MAX;
+    for(const StructureBase* pStructure : context.game.structureList) {
+        if(canAttack(context, pStructure)) {
+            const auto closestPoint      = pStructure->getClosestPoint(getLocation());
+            auto       structureDistance = blockDistance(getLocation(), closestPoint);
 
             if(pStructure->getItemID() == Structure_Wall) {
-                    structureDistance += 20000000; //so that walls are targeted very last
+                structureDistance += 20000000; // so that walls are targeted very last
             }
 
             if(structureDistance < closestDistance) {
                 closestDistance = structureDistance;
-                pClosestObject = pStructure;
+                pClosestObject  = pStructure;
             }
         }
     }
 
-    for(const UnitBase* pUnit : unitList) {
-        if(canAttack(pUnit)) {
+    for(const UnitBase* pUnit : context.game.unitList) {
+        if(canAttack(context, pUnit)) {
             const auto closestPoint = pUnit->getClosestPoint(getLocation());
             const auto unitDistance = blockDistance(getLocation(), closestPoint);
 
             if(unitDistance < closestDistance) {
                 closestDistance = unitDistance;
-                pClosestObject = pUnit;
+                pClosestObject  = pUnit;
             }
         }
     }
@@ -422,34 +363,34 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
     return pClosestObject;
 }
 
-const ObjectBase* ObjectBase::findTarget() const {
-//searches for a target in an area like as shown below
-//
-//                    *
-//                  *****
-//                  *****
-//                 ***T***
-//                  *****
-//                  *****
-//                    *
+const ObjectBase* ObjectBase::findTarget(const GameContext& context) const {
+    // searches for a target in an area like as shown below
+    //
+    //                    *
+    //                  *****
+    //                  *****
+    //                 ***T***
+    //                  *****
+    //                  *****
+    //                    *
 
     auto checkRange = 0;
     switch(attackMode) {
         case GUARD: {
-            checkRange = getWeaponRange();
+            checkRange = getWeaponRange(context.game);
         } break;
 
         case AREAGUARD: {
-            checkRange = getAreaGuardRange();
+            checkRange = getAreaGuardRange(context.game);
         } break;
 
         case AMBUSH: {
-            checkRange = getViewRange();
+            checkRange = getViewRange(context.game);
         } break;
 
         case HUNT: {
             // check whole map
-            return findClosestTarget();
+            return findClosestTarget(context);
         } break;
 
         case STOP:
@@ -458,34 +399,33 @@ const ObjectBase* ObjectBase::findTarget() const {
         } break;
     }
 
-    if(getItemID() == Unit_Sandworm) {
-        checkRange = getViewRange();
-    }
+    if(getItemID() == Unit_Sandworm) { checkRange = getViewRange(context.game); }
 
-    ObjectBase *pClosestTarget = nullptr;
-    auto closestTargetDistance = FixPt_MAX;
+    ObjectBase* pClosestTarget        = nullptr;
+    auto        closestTargetDistance = FixPt_MAX;
 
-    Coord coord;
+    Coord      coord;
     const auto startY = std::max(0, location.y - checkRange);
-    const auto endY = std::min(currentGameMap->getSizeY()-1, location.y + checkRange);
+    const auto endY   = std::min(context.map.getSizeY() - 1, location.y + checkRange);
     for(coord.y = startY; coord.y <= endY; coord.y++) {
         const auto startX = std::max(0, location.x - checkRange);
-        const auto endX = std::min(currentGameMap->getSizeX()-1, location.x + checkRange);
+        const auto endX   = std::min(context.map.getSizeX() - 1, location.x + checkRange);
         for(coord.x = startX; coord.x <= endX; coord.x++) {
 
             const auto targetDistance = blockDistance(location, coord);
             if(targetDistance <= checkRange) {
-                Tile* pTile = currentGameMap->getTile(coord);
-                if( pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID())
-                    && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID())
-                    && pTile->hasAnObject()) {
+                Tile* pTile = context.map.getTile(coord);
+                if(pTile->isExploredByTeam(&context.game, getOwner()->getTeamID()) &&
+                   !pTile->isFoggedByTeam(&context.game, getOwner()->getTeamID()) && pTile->hasAnObject()) {
 
-                    auto *const pNewTarget = pTile->getObject(currentGame->getObjectManager());
+                    auto* const pNewTarget = pTile->getObject(context.objectManager);
                     if(!pNewTarget) continue;
 
-                    if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
+                    if(((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) ||
+                        pClosestTarget == nullptr) &&
+                        canAttack(context, pNewTarget)) {
                         if(targetDistance < closestTargetDistance) {
-                            pClosestTarget = pNewTarget;
+                            pClosestTarget        = pNewTarget;
                             closestTargetDistance = targetDistance;
                         }
                     }
@@ -497,34 +437,33 @@ const ObjectBase* ObjectBase::findTarget() const {
     return pClosestTarget;
 }
 
-int ObjectBase::getViewRange() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].viewrange;
+int ObjectBase::getViewRange(const Game& game) const {
+    return game.getObjectData(itemID, originalHouseID).viewrange;
 }
 
-int ObjectBase::getAreaGuardRange() const {
-    return 2*getWeaponRange();
+int ObjectBase::getAreaGuardRange(const Game& game) const { return 2 * getWeaponRange(game); }
+
+int ObjectBase::getWeaponRange(const Game& game) const {
+    return game.getObjectData(itemID, originalHouseID).weaponrange;
 }
 
-int ObjectBase::getWeaponRange() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+int ObjectBase::getWeaponReloadTime(const Game& game) const {
+    return game.getObjectData(itemID, originalHouseID).weaponreloadtime;
 }
 
-int ObjectBase::getWeaponReloadTime() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponreloadtime;
+int ObjectBase::getInfSpawnProp(const Game& game) const {
+    return game.getObjectData(itemID, originalHouseID).infspawnprop;
 }
 
-int ObjectBase::getInfSpawnProp() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
-}
-
-namespace
-{
+namespace {
 template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
     static_assert(std::is_constructible<ObjectType, Args...>::value, "ObjectType is not constructible");
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
-    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
-    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
+    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value,
+                  "ObjectType's parent is not derived from ObjectBase");
+    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value,
+                  "ObjectType's parent is not a base class");
 
     return std::make_unique<ObjectType>(std::forward<Args>(args)...);
 }
@@ -570,7 +509,7 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
         case RaiderTrike::item_id:         return makeObject<RaiderTrike>(args...);
         case Trooper::item_id:             return makeObject<Trooper>(args...);
 
-        default:                            sdl2::log_info("ObjectBase::makeObject(): %d is no valid ItemID!",itemID);
+        default:                            Dune::Logger.log("ObjectBase::makeObject(): %d is no valid ItemID!",itemID);
                                             return std::unique_ptr<ObjectBase>{};
     }
     // clang-format on
@@ -578,7 +517,8 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
 
 } // anonymous namespace
 
-std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID, const ObjectInitializer& initializer) {
+std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID,
+                                                     const ObjectInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 
@@ -587,9 +527,11 @@ std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, uint32_t 
     return objectFactory(itemID, objectID, initializer);
 }
 
-bool ObjectBase::targetInWeaponRange() const {
-    const auto coord = target.getObjPointer()->getClosestPoint(location);
+bool ObjectBase::targetInWeaponRange(const GameContext& context) const {
+    const auto coord = target.getObjPointer(context.objectManager)->getClosestPoint(location);
     const auto dist  = blockDistance(location, coord);
 
-    return dist <= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+    return dist <= context.game.getObjectData(itemID, originalHouseID).weaponrange;
 }
+
+} // namespace Dune::Engine

@@ -15,8 +15,8 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AIRUNIT_H
-#define AIRUNIT_H
+#ifndef ENGINE_AIRUNIT_H
+#define ENGINE_AIRUNIT_H
 
 #include <units/UnitBase.h>
 
@@ -45,23 +45,18 @@ public:
     AirUnit& operator=(const AirUnit&) = delete;
     AirUnit& operator=(AirUnit&&) = delete;
 
-    void save(OutputStream& stream) const override;
-
-    void blitToScreen() override;
-
-    void playConfirmSound() override { }
-    void playSelectSound() override { }
+    void save(const Game& game, OutputStream& stream) const override;
 
     void destroy(const GameContext& context) override;
 
     void assignToMap(const GameContext& context, const Coord& pos) override;
     void checkPos(const GameContext& context) override;
-    bool canPassTile(const Tile* pTile) const override;
+    bool canPassTile(const GameContext& context, const Tile* pTile) const override;
 
     FixPoint getMaxSpeed(const GameContext& context) const override { return currentMaxSpeed; }
 
 protected:
-    virtual FixPoint getDestinationAngle() const;
+    virtual FixPoint getDestinationAngle(const Game& game) const;
 
     void navigate(const GameContext& context) override;
     void move(const GameContext& context) override;
@@ -89,4 +84,4 @@ inline const AirUnit* dune_cast(const ObjectBase* base) {
 
 } // namespace Dune::Engine
 
-#endif // AIRUNIT_H
+#endif // ENGINE_AIRUNIT_H

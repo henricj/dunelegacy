@@ -17,21 +17,21 @@
 
 #include <structures/GunTurret.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
-#include <FileClasses/SFXManager.h>
 #include <House.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr TurretBaseConstants gun_turret_constants{GunTurret::item_id, Bullet_ShellTurret};
 }
+
+namespace Dune::Engine {
 
 GunTurret::GunTurret(uint32_t objectID, const ObjectInitializer& initializer)
     : TurretBase(gun_turret_constants, objectID, initializer) {
     GunTurret::init();
 
-    setHealth(getMaxHealth());
+    GunTurret::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 GunTurret::GunTurret(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -42,14 +42,8 @@ GunTurret::GunTurret(uint32_t objectID, const ObjectStreamInitializer& initializ
 void GunTurret::init() {
     assert(itemID == Structure_GunTurret);
     owner->incrementStructures(itemID);
-
-    attackSound = Sound_ExplosionSmall;
-
-    graphicID = ObjPic_GunTurret;
-    graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
 GunTurret::~GunTurret() = default;
+
+} // namespace Dune::Engine

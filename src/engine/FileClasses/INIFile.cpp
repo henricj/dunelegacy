@@ -78,7 +78,7 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
     return defaultValue;
 }
 
-void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeIfNeeded) {
+void INIFile::Key::setStringValue(std::string_view newValue, bool bEscapeIfNeeded) {
     const auto need_escape = bEscapeIfNeeded ? escapingValueNeeded(newValue) : false;
     const auto is_escaped  = valueStringBegin > 0 ? completeLine[valueStringBegin - 1] == '"' : false;
 
@@ -106,7 +106,7 @@ void INIFile::Key::setBoolValue(bool newValue) {
     setStringValue(newValue ? "true" : "false");
 }
 
-bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
+bool INIFile::Key::escapingValueNeeded(std::string_view value) {
     // test for non normal char
     if(value.empty()) return true;
 

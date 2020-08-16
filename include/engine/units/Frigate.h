@@ -15,22 +15,23 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FRIGATE_H
-#define FRIGATE_H
+#ifndef ENGINE_FRIGATE_H
+#define ENGINE_FRIGATE_H
 
 #include <units/AirUnit.h>
 
-class Frigate final : public AirUnit
-{
+namespace Dune::Engine {
+
+class Frigate final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Frigate;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Frigate(uint32_t objectID, const ObjectInitializer& initializer);
     Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Frigate() override;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void checkPos(const GameContext& context) override;
 
@@ -51,4 +52,6 @@ private:
     bool droppedOffCargo; ///< Is the cargo already dropped off?
 };
 
-#endif // FRIGATE_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_FRIGATE_H

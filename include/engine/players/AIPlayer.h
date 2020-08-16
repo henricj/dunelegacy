@@ -26,7 +26,7 @@
 
 namespace Dune::Engine {
 
-class AIPlayer : public Player {
+class AIPlayer final : public Player {
 public:
     enum class Difficulty { Easy = 0, Medium = 1, Hard = 2 };
 

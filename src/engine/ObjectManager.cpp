@@ -22,21 +22,23 @@
 
 #include <misc/exceptions.h>
 
+namespace Dune::Engine {
+
 ObjectManager::ObjectManager() { objectMap.reserve(100); }
 
 ObjectManager::~ObjectManager() = default;
 
-void ObjectManager::save(OutputStream& stream) const {
+void ObjectManager::save(const Game& game, OutputStream& stream) const {
     stream.writeUint32(nextFreeObjectID);
 
-    stream.writeUint32(objectMap.size());
+    stream.writeUint32(static_cast<uint32_t>(objectMap.size()));
     for(const auto& objectEntry : objectMap) {
         stream.writeUint32(objectEntry.second->getObjectID());
-        Game::saveObject(stream, objectEntry.second.get());
+        game.saveObject(stream, objectEntry.second.get());
     }
 }
 
-void ObjectManager::load(InputStream& stream) {
+void ObjectManager::load(Game& game, InputStream& stream) {
     objectMap.clear();
 
     nextFreeObjectID = stream.readUint32();
@@ -48,21 +50,19 @@ void ObjectManager::load(InputStream& stream) {
     for(auto i = decltype(numObjects){0}; i < numObjects; i++) {
         auto objectID = stream.readUint32();
 
-        auto pObject = loadObject(stream, objectID);
+        auto pObject = loadObject(game, stream, objectID);
         if(objectID != pObject->getObjectID()) {
-            Dune::Logger.log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!", objectID,
-                    pObject->getObjectID());
+            Dune::Logger.log("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",
+                             objectID, pObject->getObjectID());
         }
 
         const auto& [_, ok] = objectMap.emplace(objectID, std::move(pObject));
         if(!ok) {
             // there is already such an object
-            Dune::Logger.log("ObjectManager::load(): The object with this id already exists (%d)!",
-                           objectID);
+            Dune::Logger.log("ObjectManager::load(): The object with this id already exists (%d)!", objectID);
         }
     }
 }
-
 
 bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
     const auto& [_, ok] = objectMap.emplace(nextFreeObjectID, std::move(object));
@@ -78,11 +78,13 @@ bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
     return true;
 }
 
-std::unique_ptr<ObjectBase> ObjectManager::loadObject(InputStream& stream, uint32_t objectID) {
+std::unique_ptr<ObjectBase> ObjectManager::loadObject(Game& game, InputStream& stream, uint32_t objectID) {
     const auto itemID = static_cast<ItemID_enum>(stream.readUint32());
 
-    auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer{stream});
+    auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer{game, stream});
     if(!newObject) { THROW(std::runtime_error, "Error while loading an object!"); }
 
     return newObject;
 }
+
+} // namespace Dune::Engine

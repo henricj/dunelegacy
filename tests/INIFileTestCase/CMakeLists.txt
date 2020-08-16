@@ -1,8 +1,9 @@
 
 find_package(GTest CONFIG REQUIRED)
 
-add_executable(INIFileTestCase INIFileTestCase1.cpp INIFileTestCase2.cpp INIFileTestCase3.cpp)
+add_executable(INIFileTestCase INIFileTestCase1.cpp INIFileTestCase2.cpp INIFileTestCase3.cpp INIFileTestCase1.h INIFileTestCase2.h INIFileTestCase3.h)
 target_link_libraries(INIFileTestCase PRIVATE engine GTest::gtest GTest::gtest_main)
+target_include_directories(INIFileTestCase PRIVATE ../../include/engine)
 
 set(INI_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/INIFileTestCase1.ini

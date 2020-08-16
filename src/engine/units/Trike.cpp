@@ -17,24 +17,24 @@
 
 #include <units/Trike.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
 #include <Explosion.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr GroundUnitConstants trike_constants{Trike::item_id, 2, Bullet_ShellSmall};
 }
+
+namespace Dune::Engine {
 
 Trike::Trike(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(trike_constants, objectID, initializer) {
     Trike::init();
 
-    setHealth(getMaxHealth());
+    Trike::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 Trike::Trike(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -45,28 +45,17 @@ Trike::Trike(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void Trike::init() {
     assert(itemID == Unit_Trike);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Trike;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 Trike::~Trike() = default;
 
 void Trike::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if(context.map.tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
     }
 
     GroundUnit::destroy(context);
 }
 
-void Trike::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_MachineGun,location);
-}
+} // namespace Dune::Engine

@@ -15,22 +15,21 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RADAR_H
-#define RADAR_H
+#ifndef ENGINE_RADAR_H
+#define ENGINE_RADAR_H
 
 #include <structures/StructureBase.h>
 
-class Radar final : public StructureBase
-{
+namespace Dune::Engine {
+
+class Radar final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Radar;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Radar(uint32_t objectID, const ObjectInitializer& initializer);
     Radar(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Radar() override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     /**
         Can this structure be captured by infantry units?
@@ -38,10 +37,10 @@ public:
     */
     bool canBeCaptured() const noexcept override { return false; }
 
-    void destroy(const GameContext& context) override;
-
 private:
     void init();
 };
 
-#endif //RADAR_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_RADAR_H

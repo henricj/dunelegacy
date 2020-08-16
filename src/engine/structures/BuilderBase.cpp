@@ -15,20 +15,18 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "engine_mmath.h"
+
 #include <structures/BuilderBase.h>
 
-#include <FileClasses/TextManager.h>
-
-#include <globals.h>
-
-#include <SoundPlayer.h>
+#include <Game.h>
 #include <Map.h>
 #include <House.h>
 #include <units/UnitBase.h>
 
 #include <players/HumanPlayer.h>
 
-#include <GUI/ObjectInterfaces/BuilderInterface.h>
+namespace Dune::Engine {
 
 const ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
                                               Structure_Slab1,
@@ -87,34 +85,32 @@ BuilderBase::BuilderBase(const BuilderBaseConstants& constants, uint32_t objectI
 
     upgrading       = stream.readBool();
     upgradeProgress = stream.readFixPoint();
-    curUpgradeLev = stream.readUint8();
+    curUpgradeLev   = stream.readUint8();
 
-    bCurrentItemOnHold = stream.readBool();
+    bCurrentItemOnHold  = stream.readBool();
     currentProducedItem = static_cast<ItemID_enum>(stream.readUint32());
-    productionProgress = stream.readFixPoint();
-    deployTimer = stream.readUint32();
+    productionProgress  = stream.readFixPoint();
+    deployTimer         = stream.readUint32();
 
     buildSpeedLimit = stream.readFixPoint();
 
     const int numProductionQueueItem = stream.readUint32();
-    for(auto i=0;i<numProductionQueueItem;i++) {
+    for(auto i = 0; i < numProductionQueueItem; i++) {
         currentProductionQueue.emplace_back(stream);
     }
 
     const int numBuildItem = stream.readUint32();
-    for(auto i=0;i<numBuildItem;i++) {
+    for(auto i = 0; i < numBuildItem; i++) {
         buildList.emplace_back(stream);
     }
 }
 
-void BuilderBase::init() {
-}
+void BuilderBase::init() { }
 
 BuilderBase::~BuilderBase() = default;
 
-
-void BuilderBase::save(OutputStream& stream) const {
-    StructureBase::save(stream);
+void BuilderBase::save(const Game& game, OutputStream& stream) const {
+    StructureBase::save(game, stream);
 
     stream.writeBool(upgrading);
     stream.writeFixPoint(upgradeProgress);
@@ -138,30 +134,23 @@ void BuilderBase::save(OutputStream& stream) const {
     }
 }
 
-std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return BuilderInterface::create(context, objectID); }
-    return DefaultObjectInterface::create(context, objectID);
-}
-
-void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price) {
+void BuilderBase::insertItem(const Game& game, std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+                             ItemID_enum itemID, int price) {
     if(iter != buildItemList.end()) {
         if(iter->itemID == itemID) {
-            if(price != -1) {
-                iter->price = price;
-            }
+            if(price != -1) { iter->price = price; }
             ++iter;
             return;
         }
     }
 
-    if(price == -1) {
-        price = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price;
-    }
+    if(price == -1) { price = game.getObjectData(itemID, originalHouseID).price; }
 
     buildItemList.insert(iter, BuildItem(itemID, price));
 }
 
-void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID) {
+void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+                             ItemID_enum itemID) {
     if(iter == buildItemList.end() || iter->itemID != itemID) return;
 
     const auto iter2 = iter;
@@ -171,7 +160,7 @@ void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<Buil
     // is this item currently produced?
     if(currentProducedItem == itemID) {
         owner->returnCredits(productionProgress);
-        productionProgress = 0;
+        productionProgress  = 0;
         currentProducedItem = ItemID_Invalid;
     }
 
@@ -190,92 +179,77 @@ void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<Buil
     produceNextAvailableItem();
 }
 
-
-void BuilderBase::setOwner(House *no) {
-    this->owner = no;
-}
+void BuilderBase::setOwner(House* no) { this->owner = no; }
 
 bool BuilderBase::isWaitingToPlace() const {
-    if((currentProducedItem == ItemID_Invalid) || isUnit(currentProducedItem)) {
-        return false;
-    }
+    if((currentProducedItem == ItemID_Invalid) || isUnit(currentProducedItem)) { return false; }
 
-    const auto *const tmp = getBuildItem(currentProducedItem);
-    if(tmp == nullptr) {
-        return false;
-    }         return (productionProgress >= tmp->price);
-
-   
+    const auto* const tmp = getBuildItem(currentProducedItem);
+    if(tmp == nullptr) { return false; }
+    return (productionProgress >= tmp->price);
 }
 
 bool BuilderBase::isUnitLimitReached(ItemID_enum itemID) const {
-    if((currentProducedItem == ItemID_Invalid) || isStructure(currentProducedItem)) {
-        return false;
-    }
+    if((currentProducedItem == ItemID_Invalid) || isStructure(currentProducedItem)) { return false; }
 
-    if(isInfantryUnit(itemID)) {
-        return getOwner()->isInfantryUnitLimitReached();
-    } if(isFlyingUnit(itemID)) {
+    if(isInfantryUnit(itemID)) { return getOwner()->isInfantryUnitLimitReached(); }
+    if(isFlyingUnit(itemID)) {
 
         return getOwner()->isAirUnitLimitReached();
 
     } else {
 
         return getOwner()->isGroundUnitLimitReached();
-
     }
 }
 
-
-void BuilderBase::updateProductionProgress() {
+void BuilderBase::updateProductionProgress(const Game& game) {
     if(currentProducedItem == ItemID_Invalid) return;
 
-    auto *const tmp = getBuildItem(currentProducedItem);
+    auto* const tmp = getBuildItem(currentProducedItem);
 
-    if((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) && (owner->getCredits() > 0)) {
+    if((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) &&
+       (owner->getCredits() > 0)) {
 
         const FixPoint oldProgress = productionProgress;
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
-            const FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
+        const auto& item_data = game.getObjectData(currentProducedItem, originalHouseID);
+
+        if(game.getGameInitSettings().getGameOptions().instantBuild) {
+            const FixPoint totalBuildCosts = item_data.price;
             const auto buildCosts = totalBuildCosts - productionProgress;
 
             productionProgress += owner->takeCredits(buildCosts);
         } else {
 
-            const auto buildSpeed = std::min( getHealth() / getMaxHealth(), buildSpeedLimit);
-            const FixPoint totalBuildCosts =
-                currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
-            auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime*15;
+            const auto     buildSpeed = std::min(getHealth() / getMaxHealth(game), buildSpeedLimit);
+            const FixPoint totalBuildCosts = item_data.price;
+            const auto totalBuildGameTicks = item_data.buildtime * 15;
             const auto buildCosts = totalBuildCosts / totalBuildGameTicks;
 
-            productionProgress += owner->takeCredits(buildCosts*buildSpeed);
+            productionProgress += owner->takeCredits(buildCosts * buildSpeed);
 
             /* That was wrong. Build speed does not depend on power production
-                if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::Skirmish)) && getOwner()->isAI())) {
+                if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType
+               == GameType::Skirmish)) && getOwner()->isAI())) {
                     //if not enough power, production is halved
                     ProductionProgress += owner->takeCredits(0.25_fix);
                 } else {
                     ProductionProgress += owner->takeCredits(0.125_fix);
                 }*/
-
         }
 
-        if ((oldProgress == productionProgress) && (owner == pLocalHouse)) {
-            currentGame->addToNewsTicker(_("Not enough money"));
-        }
-
-        if(productionProgress >= tmp->price) {
-            setWaitingToPlace();
-        }
+        if(productionProgress >= tmp->price) { setWaitingToPlace(); }
     }
 }
 
 void BuilderBase::doBuildRandom(const GameContext& context) {
     if(buildList.empty()) return;
 
-    const auto item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
-    doProduceItem(item2Produce);
+    const auto item2Produce =
+        std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
+            ->itemID;
+    doProduceItem(context, item2Produce);
 }
 
 void BuilderBase::produceNextAvailableItem() {
@@ -289,13 +263,14 @@ void BuilderBase::produceNextAvailableItem() {
     bCurrentItemOnHold = false;
 }
 
-int BuilderBase::getMaxUpgradeLevel() const {
+int BuilderBase::getMaxUpgradeLevel(const Game& game) const {
     auto upgradeLevel = 0;
 
     for(int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
-        const auto& objData = currentGame->objectData.data[i][static_cast<int>(originalHouseID)];
+        const auto& objData = game.getObjectData(static_cast<ItemID_enum>(i), originalHouseID);
 
-        if(objData.enabled && (objData.builder == static_cast<int>(itemID)) && (objData.techLevel <= currentGame->techLevel)) {
+        if(objData.enabled && (objData.builder == static_cast<int>(itemID)) &&
+           (objData.techLevel <= game.techLevel)) {
             upgradeLevel = std::max(upgradeLevel, static_cast<int>(objData.upgradeLevel));
         }
     }
@@ -303,17 +278,17 @@ int BuilderBase::getMaxUpgradeLevel() const {
     return upgradeLevel;
 }
 
-void BuilderBase::updateBuildList()
-{
+void BuilderBase::updateBuildList(const Game& game) {
     auto iter = buildList.begin();
 
     for(int i = 0; itemOrder[i] != ItemID_Invalid; i++) {
 
         const auto itemID2Add = itemOrder[i];
 
-        const auto& objData = currentGame->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
+        const auto& objData = game.getObjectData(itemID2Add, originalHouseID);
 
-        if(!objData.enabled || (objData.builder != static_cast<int>(itemID)) || (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > currentGame->techLevel)) {
+        if(!objData.enabled || (objData.builder != static_cast<int>(itemID)) ||
+           (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > game.techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
             removeItem(buildList, iter, itemID2Add);
         } else {
@@ -321,59 +296,39 @@ void BuilderBase::updateBuildList()
             // check if prerequisites are met
             auto bPrerequisitesMet = true;
             for(int itemID2Test = Structure_FirstID; itemID2Test <= Structure_LastID; itemID2Test++) {
-                if(objData.prerequisiteStructuresSet[itemID2Test] && (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
+                if(objData.prerequisiteStructuresSet[itemID2Test] &&
+                   (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
                     bPrerequisitesMet = false;
                     break;
                 }
             }
 
             if(bPrerequisitesMet) {
-                insertItem(buildList, iter, itemID2Add);
+                insertItem(game, buildList, iter, itemID2Add);
             } else {
                 removeItem(buildList, iter, itemID2Add);
             }
         }
     }
-
 }
 
 void BuilderBase::setWaitingToPlace() {
-    if (currentProducedItem == ItemID_Invalid) return;
+    if(currentProducedItem == ItemID_Invalid) return;
 
-    if (owner == pLocalHouse) {
-        if(isStructure(currentProducedItem)) {
-            soundPlayer->playVoice(ConstructionComplete, getOwner()->getHouseID());
-        } else if(isFlyingUnit(currentProducedItem)) {
-            soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
-        } else if(currentProducedItem == Unit_Harvester) {
-            soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
-        } else {
-            soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
-        }
-    }
-
-    if (isUnit(currentProducedItem)) {
-        //if its a unit
+    if(isUnit(currentProducedItem)) {
+        // if its a unit
         deployTimer = MILLI2CYCLES(750);
     } else {
-        //its a structure
-        if (owner == pLocalHouse) {
-            currentGame->addToNewsTicker(_("@DUNE.ENG|51#Construction is complete"));
-        }
     }
 }
 
-void BuilderBase::unSetWaitingToPlace() {
-    removeBuiltItemFromProductionQueue();
+void BuilderBase::unSetWaitingToPlace() { removeBuiltItemFromProductionQueue(); }
+
+int BuilderBase::getUpgradeCost(const Game& game) const {
+    return game.getObjectData(itemID, originalHouseID).price / 2;
 }
 
-int BuilderBase::getUpgradeCost(const GameContext& context) const {
-    return context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price / 2;
-}
-
-
-void BuilderBase::produce_item(const GameContext& context)
-{
+void BuilderBase::produce_item(const GameContext& context) {
     auto finishedItemID = currentProducedItem;
     removeBuiltItemFromProductionQueue();
 
@@ -382,22 +337,20 @@ void BuilderBase::produce_item(const GameContext& context)
     if(finishedItemID == Unit_Infantry) {
         // make three
         finishedItemID = Unit_Soldier;
-        num2Place = 3;
+        num2Place      = 3;
     } else if(finishedItemID == Unit_Troopers) {
         // make three
         finishedItemID = Unit_Trooper;
-        num2Place = 3;
+        num2Place      = 3;
     }
 
     for(auto i = 0; i < num2Place; i++) {
-        auto *newUnit = getOwner()->createUnit(finishedItemID);
+        auto* newUnit = getOwner()->createUnit(finishedItemID);
 
         if(newUnit != nullptr) {
             Coord unitDestination;
-            if( getOwner()->isAI()
-                && ((newUnit->getItemID() == Unit_Carryall)
-                    || (newUnit->getItemID() == Unit_Harvester)
-                    || (newUnit->getItemID() == Unit_MCV))) {
+            if(getOwner()->isAI() && ((newUnit->getItemID() == Unit_Carryall) ||
+                                      (newUnit->getItemID() == Unit_Harvester) || (newUnit->getItemID() == Unit_MCV))) {
                 // Don't want harvesters going to the rally point
                 unitDestination = location;
             } else {
@@ -409,8 +362,8 @@ void BuilderBase::produce_item(const GameContext& context)
             newUnit->deploy(context, spot);
 
             if(unitDestination.isValid()) {
-                newUnit->setGuardPoint(unitDestination);
-                newUnit->ObjectBase::setDestination(unitDestination);
+                newUnit->setGuardPoint(context, unitDestination);
+                newUnit->ObjectBase::setDestination(context, unitDestination);
                 newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
             }
 
@@ -421,19 +374,15 @@ void BuilderBase::produce_item(const GameContext& context)
 }
 
 bool BuilderBase::update(const GameContext& context) {
-    if(!StructureBase::update(context)) {
-        return false;
-    }
+    if(!StructureBase::update(context)) { return false; }
 
     if(isUnit(currentProducedItem) && (productionProgress >= getBuildItem(currentProducedItem)->price)) {
         deployTimer--;
-        if(deployTimer == 0) {
-            produce_item(context);
-        }
+        if(deployTimer == 0) { produce_item(context); }
     }
 
     if(upgrading) {
-        const FixPoint totalUpgradePrice = getUpgradeCost(context);
+        const FixPoint totalUpgradePrice = getUpgradeCost(context.game);
 
         if(context.game.getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
@@ -446,12 +395,12 @@ bool BuilderBase::update(const GameContext& context) {
         if(upgradeProgress >= totalUpgradePrice) {
             upgrading = false;
             curUpgradeLev++;
-            updateBuildList();
+            updateBuildList(context.game);
 
             upgradeProgress = 0;
         }
     } else {
-        updateProductionProgress();
+        updateProductionProgress(context.game);
     }
 
     return true;
@@ -460,57 +409,20 @@ bool BuilderBase::update(const GameContext& context) {
 void BuilderBase::removeBuiltItemFromProductionQueue() {
     productionProgress = 0;
 
-    const auto currentBuildItemIter = std::find_if(   buildList.begin(),
-                                                buildList.end(),
-                                                [&](BuildItem& buildItem) {
-                                                    return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
-                                                });
+    const auto currentBuildItemIter = std::find_if(buildList.begin(), buildList.end(), [&](BuildItem& buildItem) {
+        return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
+    });
 
-    if(currentBuildItemIter != buildList.end()) {
-        currentBuildItemIter->num--;
-    }
+    if(currentBuildItemIter != buildList.end()) { currentBuildItemIter->num--; }
 
     deployTimer = 0;
     currentProductionQueue.pop_front();
     produceNextAvailableItem();
 }
 
-void BuilderBase::handleUpgradeClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_UPGRADE, objectID));
-}
-
-void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
-    for(const auto& buildItem : buildList) {
-        if(buildItem.itemID == itemID) {
-            if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
-                && (itemID == Structure_Palace)
-                && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
-                // only one palace allowed
-                soundPlayer->playSound(Sound_InvalidAction);
-                return;
-            }
-        }
-    }
-
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (uint32_t) multipleMode));
-}
-
-void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (uint32_t)multipleMode));
-}
-
-void BuilderBase::handleSetOnHoldClick(bool OnHold) {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, (uint32_t)OnHold));
-}
-
-
 bool BuilderBase::doUpgrade(const GameContext& context) {
-    if(upgrading) {
-        return false;
-    } if(isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost(context))) {
+    if(upgrading) { return false; }
+    if(isAllowedToUpgrade(context.game) && (owner->getCredits() >= getUpgradeCost(context.game))) {
 
         upgrading = true;
 
@@ -521,30 +433,24 @@ bool BuilderBase::doUpgrade(const GameContext& context) {
     } else {
 
         return false;
-
     }
 }
 
-void BuilderBase::doProduceItem(ItemID_enum itemID, bool multipleMode) {
+void BuilderBase::doProduceItem(const GameContext& context, ItemID_enum itemID, bool multipleMode) {
     for(BuildItem& buildItem : buildList) {
         if(buildItem.itemID == itemID) {
             for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if( currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
-                    && (itemID == Structure_Palace)
-                    && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
+                if(context.game.getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace) &&
+                   ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                     // only one palace allowed
                     return;
                 }
 
                 buildItem.num++;
-                currentProductionQueue.emplace_back(itemID, buildItem.price );
+                currentProductionQueue.emplace_back(itemID, buildItem.price);
                 if(currentProducedItem == ItemID_Invalid) {
-                    productionProgress = 0;
+                    productionProgress  = 0;
                     currentProducedItem = itemID;
-                }
-
-                if(pLocalHouse == getOwner()) {
-                    pLocalPlayer->onProduceItem(itemID);
                 }
             }
             break;
@@ -561,11 +467,9 @@ void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
 
                     bool bCancelCurrentItem = (itemID == currentProducedItem);
 
-                    const auto queueItemIter = std::find_if(  currentProductionQueue.rbegin(),
-                                                        currentProductionQueue.rend(),
-                                                        [&](ProductionQueueItem& queueItem) {
-                                                            return (queueItem.itemID == itemID);
-                                                        });
+                    const auto queueItemIter =
+                        std::find_if(currentProductionQueue.rbegin(), currentProductionQueue.rend(),
+                                     [&](ProductionQueueItem& queueItem) { return (queueItem.itemID == itemID); });
 
                     if(queueItemIter != currentProductionQueue.rend()) {
                         if(buildItem.num == 0 && bCancelCurrentItem) {
@@ -587,4 +491,4 @@ void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
     }
 }
 
-
+} // namespace Dune::Engine

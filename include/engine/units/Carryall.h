@@ -15,27 +15,28 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CARRYALL_H
-#define CARRYALL_H
+#ifndef ENGINE_CARRYALL_H
+#define ENGINE_CARRYALL_H
 
 #include <units/AirUnit.h>
 
 #include <Game.h>
 
-class Carryall final : public AirUnit
-{
+namespace Dune::Engine {
+
+class Carryall final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Carryall;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Carryall(uint32_t objectID, const ObjectInitializer& initializer);
     Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
-    Carryall(const Carryall &) = delete;
-    Carryall(Carryall &&) = delete;
-    Carryall& operator=(const Carryall &) = delete;
-    Carryall& operator=(Carryall &&) = delete;
+    Carryall(const Carryall&) = delete;
+    Carryall(Carryall&&)      = delete;
+    Carryall& operator=(const Carryall&) = delete;
+    Carryall& operator=(Carryall&&) = delete;
 
     void checkPos(const GameContext& context) override;
 
@@ -53,57 +54,54 @@ public:
 
     void giveCargo(const GameContext& context, UnitBase* newUnit);
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
-    void setTarget(const ObjectBase* newTarget) override;
+    void setTarget(const ObjectManager& objectManager, const ObjectBase* newTarget) override;
 
-    bool hasCargo() const noexcept {
-        return !pickedUpUnitList.empty();
-    }
+    bool hasCargo() const noexcept { return !pickedUpUnitList.empty(); }
 
     void setOwned(bool b) noexcept { owned = b; }
 
-    void setDropOfferer(bool status) {
-        aDropOfferer = status;
-    }
+    void setDropOfferer(bool status) { aDropOfferer = status; }
 
     bool isBooked() const noexcept { return (target || hasCargo()); }
 
 private:
     void init();
 
-    void releaseTarget() override;
+    void releaseTarget(const GameContext& context) override;
     void engageTarget(const GameContext& context) override;
     void pickupTarget(const GameContext& context);
     void targeting(const GameContext& context) override;
     void turn(const GameContext& context) override;
 
     // unit state/properties
-    std::vector<uint32_t>   pickedUpUnitList;   ///< What units does this carryall carry?
+    std::vector<uint32_t> pickedUpUnitList; ///< What units does this carryall carry?
 
-    bool     owned;              ///< Is this carryall owned or is it just here to drop something off
+    bool owned; ///< Is this carryall owned or is it just here to drop something off
 
-    bool     aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
-    bool     droppedOffCargo;    ///< Is the cargo already dropped off?
-
+    bool aDropOfferer;    ///< This carryall just drops some units and vanishes afterwards
+    bool droppedOffCargo; ///< Is the cargo already dropped off?
 
     template<typename F>
     void removeUnits(const GameContext& context, F&& predicate) {
-        auto& units = pickedUpUnitList;
+        auto&       units         = pickedUpUnitList;
         const auto& objectManager = context.objectManager;
 
         units.erase(std::remove_if(units.begin(), units.end(),
-            [&](uint32_t unit_id) {
-                auto *const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
+                                   [&](uint32_t unit_id) {
+                                       auto* const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
-                return unit ? F(unit) : true;
-            }),
-            units.end());
+                                       return unit ? F(unit) : true;
+                                   }),
+                    units.end());
     }
 
     void pre_deployUnits(const GameContext& context);
     void deployUnit(const GameContext& context, Tile* tile, UnitBase* pUnit);
-    void post_deployUnits();
+    void post_deployUnits(const GameContext& context);
 };
 
-#endif // CARRYALL_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_CARRYALL_H

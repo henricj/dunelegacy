@@ -18,9 +18,12 @@
 
 #include <players/CampaignAIPlayer.h>
 #include <House.h>
+#include <Game.h>
 #include <engine_sand.h>
 #include <Map.h>
 #include <misc/Random.h>
+
+#include <engine_mmath.h>
 
 #include <unordered_map>
 
@@ -153,9 +156,9 @@ void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t 
         return;
     }
 
-    if(!pUnit->canAttack(pDamager)) { return; }
+    if(!pUnit->canAttack(context_, pDamager)) { return; }
 
-    if(!pUnit->hasATarget() || pUnit->getTarget()->getTarget() != pUnit) {
+    if(!pUnit->hasATarget() || pUnit->getTarget(context_.objectManager)->getTarget(context_.objectManager) != pUnit) {
         // the unit has no target or the target is not targeting the unit
         doAttackObject(pUnit, pDamager, true);
     }
@@ -175,7 +178,7 @@ void CampaignAIPlayer::updateStructures() {
                 } else {
                     const House* pBestHouse = nullptr;
 
-                    currentGame->for_each_house([&](const auto& house) {
+                    context_.game.for_each_house([&](const auto& house) {
                         if(house.getTeamID() != getHouse()->getTeamID()) return;
 
                         if(!pBestHouse) {
@@ -197,14 +200,14 @@ void CampaignAIPlayer::updateStructures() {
             }
         }
 
-        if(pStructure->getHealth() < pStructure->getMaxHealth() / 2) {
+        if(pStructure->getHealth() < pStructure->getMaxHealth(context_.game) / 2) {
             if(!pStructure->isRepairing()) { doRepair(pStructure); }
             continue;
         }
 
         if(pStructure->isABuilder()) {
             const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
-            if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) {
+            if(pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game)) {
                 if(!pStructure->isRepairing() && !pBuilder->isUpgrading()) { doUpgrade(pBuilder); }
                 continue;
             }
@@ -303,7 +306,7 @@ void CampaignAIPlayer::updateUnits() {
         const ObjectBase* pBestCandidate        = nullptr;
         int               bestCandidatePriority = -1;
         for(const StructureBase* pCandidate : getStructureList()) {
-            if(!pUnit->canAttack(pCandidate)) { continue; }
+            if(!pUnit->canAttack(context_, pCandidate)) { continue; }
 
             int priority = calculateTargetPriority(pUnit, pCandidate);
             if(priority > bestCandidatePriority) {
@@ -313,7 +316,7 @@ void CampaignAIPlayer::updateUnits() {
         }
 
         for(const UnitBase* pCandidate : getUnitList()) {
-            if(!pUnit->canAttack(pCandidate)) { continue; }
+            if(!pUnit->canAttack(context_, pCandidate)) { continue; }
 
             int priority = calculateTargetPriority(pUnit, pCandidate);
             if(priority > bestCandidatePriority) {

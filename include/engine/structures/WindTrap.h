@@ -15,22 +15,21 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef WINDTRAP_H
-#define WINDTRAP_H
+#ifndef ENGINE_WINDTRAP_H
+#define ENGINE_WINDTRAP_H
 
 #include <structures/StructureBase.h>
 
-class WindTrap final : public StructureBase
-{
+namespace Dune::Engine {
+
+class WindTrap final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_WindTrap;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     WindTrap(uint32_t objectID, const ObjectInitializer& initializer);
     WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~WindTrap() override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
     /**
         Updates this object.
@@ -38,13 +37,15 @@ public:
     */
     bool update(const GameContext& context) override;
 
-    void setHealth(FixPoint newHealth) override;
+    void setHealth(const Game& game, FixPoint newHealth) override;
 
 protected:
-    int getProducedPower() const;
+    int getProducedPower(const Game& game) const;
 
 private:
     void init();
 };
 
-#endif //WINDTRAP_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_WINDTRAP_H

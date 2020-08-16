@@ -17,12 +17,11 @@
 
 #include <Trigger/ReinforcementTrigger.h>
 
-#include <globals.h>
 #include <Game.h>
 #include <Map.h>
 #include <House.h>
 
-#include <DataTypes.h>
+#include <EngineDataTypes.h>
 
 #include <fixmath/FixPoint.h>
 
@@ -32,7 +31,7 @@
 namespace Dune::Engine {
 
 ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
-                                           Uint32 triggerCycleNumber)
+                                           uint32_t triggerCycleNumber)
     : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID),
       repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
@@ -51,13 +50,13 @@ void ReinforcementTrigger::save(OutputStream& stream) const {
     Trigger::save(stream);
 
     stream.writeUint32Vector<ItemID_enum>(droppedUnits);
-    stream.writeUint32(static_cast<const Uint32>(dropLocation));
-    stream.writeSint32(static_cast<const Sint32>(houseID));
+    stream.writeUint32(static_cast<const uint32_t>(dropLocation));
+    stream.writeSint32(static_cast<const int32_t>(houseID));
     stream.writeUint32(repeatCycle);
 }
 
 void ReinforcementTrigger::trigger(const GameContext& context) {
-    auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
     auto* dropHouse = game.getHouse(houseID);
 
@@ -117,16 +116,16 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                     if(newCoord.x == 0) {
                         pUnit2Drop->setAngle(ANGLETYPE::RIGHT);
-                        pUnit2Drop->setDestination(newCoord + Coord(1, 0));
+                        pUnit2Drop->setDestination(context, newCoord + Coord(1, 0));
                     } else if(newCoord.x == map.getSizeX() - 1) {
                         pUnit2Drop->setAngle(ANGLETYPE::LEFT);
-                        pUnit2Drop->setDestination(newCoord + Coord(-1, 0));
+                        pUnit2Drop->setDestination(context, newCoord + Coord(-1, 0));
                     } else if(newCoord.y == 0) {
                         pUnit2Drop->setAngle(ANGLETYPE::DOWN);
-                        pUnit2Drop->setDestination(newCoord + Coord(0, 1));
+                        pUnit2Drop->setDestination(context, newCoord + Coord(0, 1));
                     } else if(newCoord.y == map.getSizeY() - 1) {
                         pUnit2Drop->setAngle(ANGLETYPE::UP);
-                        pUnit2Drop->setDestination(newCoord + Coord(0, -1));
+                        pUnit2Drop->setDestination(context, newCoord + Coord(0, -1));
                     }
                 }
             }
@@ -170,9 +169,9 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                     if(dropCoord.isInvalid()) {
                         // no house with units or structures found => random position
-                        int x     = game.randomGen.rand(0, map.getSizeX() - 1);
-                        int y     = game.randomGen.rand(0, map.getSizeY() - 1);
-                        dropCoord = Coord(x, y);
+                        const auto x = game.randomGen.rand(0, map.getSizeX() - 1);
+                        const auto y = game.randomGen.rand(0, map.getSizeY() - 1);
+                        dropCoord    = Coord(x, y);
                     }
 
                 } break;
@@ -187,8 +186,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                             dropCoord = dropHouse->getStrongestUnitPosition();
                         } else {
                             // house has no units => random position
-                            int x     = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                            int y     = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                            const auto x = game.randomGen.rand(0, map.getSizeX() - 1);
+                            const auto y = game.randomGen.rand(0, map.getSizeY() - 1);
                             dropCoord = Coord(x, y);
                         }
                     }
@@ -231,7 +230,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                     else if(closestPos.y == map.getSizeY() - 1)
                         carryall->setAngle(ANGLETYPE::UP);
 
-                    carryall->setDestination(dropCoord);
+                    carryall->setDestination(context, dropCoord);
 
                     break;
                 }
@@ -240,7 +239,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
         } break;
 
         default: {
-            sdl2::log_info("ReinforcementTrigger::trigger(): Invalid drop location!");
+            Dune::Logger.log("ReinforcementTrigger::trigger(): Invalid drop location!");
         } break;
     }
 

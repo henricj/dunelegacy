@@ -18,26 +18,18 @@
 #ifndef ENGINE_TILE_H
 #define ENGINE_TILE_H
 
-inline constexpr int xyz3b = 123;
-namespace {
-inline constexpr int abc3b = ::xyz3b;
-}
-
-#include <EngineDataTypes.h>
-#include <data.h>
+#include "EngineDataTypes.h"
+#include "data.h"
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <fixmath/FixPoint.h>
 
+#include "units/GroundUnit.h"
+
 #include <array>
 #include <vector>
 #include <algorithm>
-
-inline constexpr int xyz3 = 123;
-namespace {
-inline constexpr int abc3 = ::xyz3;
-}
 
 namespace Dune::Engine {
 
@@ -238,7 +230,7 @@ public:
     }
 
     void assignNonInfantryGroundObject(uint32_t newObjectID);
-    int  assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);
+    int8_t assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);
     void assignUndergroundUnit(uint32_t newObjectID);
 
     /**
@@ -358,7 +350,7 @@ public:
         return dune_cast<ObjectType>(getGroundObject(objectManager));
     }
 
-    std::pair<bool, object_id_type> getGroundObjectID() const {
+    std::tuple<bool, uint32_t> getGroundObjectID() const {
         if(hasANonInfantryGroundObject()) return {true, assignedNonInfantryGroundObjectList.front()};
         if(hasInfantry()) return {true, assignedInfantryList.front()};
 

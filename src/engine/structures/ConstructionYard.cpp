@@ -17,20 +17,22 @@
 
 #include <structures/ConstructionYard.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 
 namespace {
+using namespace Dune::Engine;
+
 const BuilderBaseConstants construction_yard_constants{ConstructionYard::item_id, Coord{2, 2}};
 }
 
-ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(construction_yard_constants, objectID, initializer) {
+namespace Dune::Engine {
+
+ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectInitializer& initializer)
+    : BuilderBase(construction_yard_constants, objectID, initializer) {
     ConstructionYard::init();
 
-    setHealth(getMaxHealth());
+    ConstructionYard::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -40,14 +42,6 @@ ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectStreamInitiali
 
 void ConstructionYard::init() {
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_ConstructionYard;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
-
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 ConstructionYard::~ConstructionYard() = default;
@@ -55,7 +49,8 @@ ConstructionYard::~ConstructionYard() = default;
 bool ConstructionYard::doPlaceStructure(int x, int y) {
     if(isWaitingToPlace()) {
         return (getOwner()->placeStructure(getObjectID(), getCurrentProducedItem(), x, y) != nullptr);
-    }         return false;
-
-   
+    }
+    return false;
 }
+
+} // namespace Dune::Engine

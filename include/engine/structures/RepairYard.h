@@ -15,38 +15,40 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPAIRYARD_H
-#define REPAIRYARD_H
+#ifndef ENGINE_REPAIRYARD_H
+#define ENGINE_REPAIRYARD_H
 
 #include <structures/StructureBase.h>
 #include <ObjectPointer.h>
 
+namespace Dune::Engine {
+
 class Carryall;
 
-class RepairYard final : public StructureBase
-{
+class RepairYard final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_RepairYard;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     RepairYard(uint32_t objectID, const ObjectInitializer& initializer);
     RepairYard(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~RepairYard() override;
 
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
-    void save(OutputStream& stream) const override;
-
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void deployRepairUnit(const GameContext& context, Carryall* pCarryall = nullptr);
 
     void book() { bookings++; }
     void unBook() { bookings--; }
-    void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
-    bool isFree() const noexcept { return !repairingAUnit; }
-    int getNumBookings() const noexcept { return bookings; }  //number of harvesters goings there
-    const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
-    UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
+    void assignUnit(ObjectPointer newUnit) {
+        repairUnit     = newUnit;
+        repairingAUnit = true;
+    }
+    bool            isFree() const noexcept { return !repairingAUnit; }
+    int             getNumBookings() const noexcept { return bookings; } // number of harvesters goings there
+    const UnitBase* getRepairUnit(const ObjectManager& objectManager) const { return repairUnit.getUnitPointer(objectManager); }
+    UnitBase* getRepairUnit(const ObjectManager& objectManager) { return repairUnit.getUnitPointer(objectManager); }
 
 protected:
     /**
@@ -56,11 +58,13 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
-    void            init();
+    void init();
 
-    bool            repairingAUnit; ///< Currently repairing?
-    ObjectPointer   repairUnit;     ///< The unit to repair
-    uint32_t          bookings;       ///< Number of bookings for this repair yard
+    bool          repairingAUnit; ///< Currently repairing?
+    ObjectPointer repairUnit;     ///< The unit to repair
+    uint32_t      bookings;       ///< Number of bookings for this repair yard
 };
 
-#endif // REPAIRYARD_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_REPAIRYARD_H

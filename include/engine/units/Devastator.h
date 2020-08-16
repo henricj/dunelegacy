@@ -15,14 +15,14 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEVASTATOR_H
-#define DEVASTATOR_H
+#ifndef ENGINE_DEVASTATOR_H
+#define ENGINE_DEVASTATOR_H
 
 #include <units/TrackedUnit.h>
-#include <FileClasses/GFXManager.h>
 
-class Devastator final : public TrackedUnit
-{
+namespace Dune::Engine {
+
+class Devastator final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Devastator;
     using parent                                = TrackedUnit;
@@ -31,9 +31,7 @@ public:
     Devastator(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Devastator() override;
 
-    void save(OutputStream& stream) const override;
-
-    void blitToScreen() override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void handleStartDevastateClick();
 
@@ -53,11 +51,9 @@ private:
     void init();
 
     // devastator state
-    int32_t      devastateTimer;       ///< When will this devastator devastate
-
-    // drawing information
-    zoomable_texture turretGraphic{}; ///< The graphic of the turret
-    int              gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
+    int32_t devastateTimer; ///< When will this devastator devastate
 };
 
-#endif // DEVASTATOR_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_DEVASTATOR_H

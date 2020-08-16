@@ -21,44 +21,46 @@
 #include <Network/ENetPacketIStream.h>
 #include <Network/ENetPacketOStream.h>
 #include <Network/ChangeEventList.h>
-#include <Network/CommandList.h>
+#include <engine/CommandList.h>
 
 #include <Network/LANGameFinderAndAnnouncer.h>
 #include <Network/MetaServerClient.h>
 
 #include <misc/string_util.h>
-#include <misc/SDL2pp.h>
 
 #include <enet/enet.h>
 #include <string>
 #include <list>
 #include <functional>
-#include <cstdarg>
 
-#define NETWORKDISCONNECT_QUIT              1
-#define NETWORKDISCONNECT_TIMEOUT           2
-#define NETWORKDISCONNECT_PLAYER_EXISTS     3
-#define NETWORKDISCONNECT_GAME_FULL         4
+enum NetworkDisconnect {
+    NETWORKDISCONNECT_QUIT          = 1,
+    NETWORKDISCONNECT_TIMEOUT       = 2,
+    NETWORKDISCONNECT_PLAYER_EXISTS = 3,
+    NETWORKDISCONNECT_GAME_FULL     = 4
+};
 
-#define NETWORKPACKET_UNKNOWN               0
-#define NETWORKPACKET_CONNECT               1
-#define NETWORKPACKET_DISCONNECT            2
-#define NETWORKPACKET_PEER_CONNECTED        3
-#define NETWORKPACKET_SENDGAMEINFO          4
-#define NETWORKPACKET_SENDNAME              5
-#define NETWORKPACKET_CHATMESSAGE           6
-#define NETWORKPACKET_CHANGEEVENTLIST       7
-#define NETWORKPACKET_STARTGAME             8
-#define NETWORKPACKET_COMMANDLIST           9
-#define NETWORKPACKET_SELECTIONLIST         10
+enum NetworkPacket {
+    NETWORKPACKET_UNKNOWN         = 0,
+    NETWORKPACKET_CONNECT         = 1,
+    NETWORKPACKET_DISCONNECT      = 2,
+    NETWORKPACKET_PEER_CONNECTED  = 3,
+    NETWORKPACKET_SENDGAMEINFO    = 4,
+    NETWORKPACKET_SENDNAME        = 5,
+    NETWORKPACKET_CHATMESSAGE     = 6,
+    NETWORKPACKET_CHANGEEVENTLIST = 7,
+    NETWORKPACKET_STARTGAME       = 8,
+    NETWORKPACKET_COMMANDLIST     = 9,
+    NETWORKPACKET_SELECTIONLIST   = 10
+};
 
-#define AWAITING_CONNECTION_TIMEOUT     5000
+inline constexpr int AWAITING_CONNECTION_TIMEOUT = 5000;
 
 class GameInitSettings;
 
 class NetworkManager {
 public:
-    NetworkManager(int port, const std::string& metaserver);
+    NetworkManager(int port, std::string_view metaserver);
     NetworkManager(const NetworkManager& o) = delete;
     NetworkManager(NetworkManager&& o) = delete;
     ~NetworkManager();
@@ -85,7 +87,7 @@ public:
 
     void sendStartGame(unsigned int timeLeft);
 
-    void sendCommandList(const CommandList& commandList);
+    void sendCommandList(const Dune::Engine::CommandList& commandList);
 
     void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
 
@@ -116,7 +118,7 @@ public:
         Sets the function that should be called when a chat message is received
         \param  pOnReceiveChatMessage   function to call on new chat message
     */
-    inline void setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)> pOnReceiveChatMessage) {
+    void setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)> pOnReceiveChatMessage) {
         this->pOnReceiveChatMessage = pOnReceiveChatMessage;
     }
 
@@ -124,7 +126,7 @@ public:
         Sets the function that should be called when game infos are received after connecting to the server.
         \param  pOnReceiveGameInfo  function to call on receive
     */
-    inline void setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
+    void setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
         this->pOnReceiveGameInfo = pOnReceiveGameInfo;
     }
 
@@ -133,7 +135,7 @@ public:
         Sets the function that should be called when a change event is received.
         \param  pOnReceiveChangeEventList   function to call on receive
     */
-    inline void setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)> pOnReceiveChangeEventList) {
+    void setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)> pOnReceiveChangeEventList) {
         this->pOnReceiveChangeEventList = pOnReceiveChangeEventList;
     }
 
@@ -142,7 +144,7 @@ public:
         Sets the function that should be called when a peer disconnects.
         \param  pOnPeerDisconnected function to call on disconnect
     */
-    inline void setOnPeerDisconnected(std::function<void (const std::string&, bool, int)> pOnPeerDisconnected) {
+    void setOnPeerDisconnected(std::function<void (const std::string&, bool, int)> pOnPeerDisconnected) {
         this->pOnPeerDisconnected = pOnPeerDisconnected;
     }
 
@@ -150,7 +152,7 @@ public:
         Sets the function that can be used to retreive all house/player changes to get the current state
         \param pGetChangeEventListForNewPlayerCallback    function to call
     */
-    inline void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
+    void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
         this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
     }
 
@@ -158,7 +160,7 @@ public:
         Sets the function that should be called when the game is about to start and the time (in ms) left is received
         \param  pOnStartGame    function to call on receive
     */
-    inline void setOnStartGame(std::function<void (unsigned int)> pOnStartGame) {
+    void setOnStartGame(std::function<void (unsigned int)> pOnStartGame) {
         this->pOnStartGame = pOnStartGame;
     }
 
@@ -166,7 +168,7 @@ public:
         Sets the function that should be called when a command list is received.
         \param  pOnReceiveCommandList   function to call on receive
     */
-    void setOnReceiveCommandList(std::function<void (const std::string&, const CommandList&)> pOnReceiveCommandList) {
+    void setOnReceiveCommandList(std::function<void (const std::string&, const Dune::Engine::CommandList&)> pOnReceiveCommandList) {
         this->pOnReceiveCommandList = pOnReceiveCommandList;
     }
 
@@ -179,8 +181,6 @@ public:
     }
 
 private:
-    static void debugNetwork(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(1);
-
     void sendPacketToHost(ENetPacketOStream& packetStream, int channel = 0);
 
     static void sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetStream, int channel = 0);
@@ -229,17 +229,17 @@ private:
 
     std::list<ENetPeer*> awaitingConnectionList;
 
-    std::function<void (const std::string&, const std::string&)>            pOnReceiveChatMessage;
-    std::function<void (const GameInitSettings&, const ChangeEventList&)>   pOnReceiveGameInfo;
-    std::function<void (const ChangeEventList&)>                            pOnReceiveChangeEventList;
-    std::function<void (const std::string&, bool, int)>                     pOnPeerDisconnected;
-    std::function<ChangeEventList (const std::string&)>                     pGetChangeEventListForNewPlayerCallback;
-    std::function<void (unsigned int)>                                      pOnStartGame;
-    std::function<void (const std::string&, const CommandList&)>            pOnReceiveCommandList;
-    std::function<void (const std::string&, const Dune::selected_set_type&, int)>  pOnReceiveSelectionList;
+    std::function<void (const std::string&, const std::string&)>                  pOnReceiveChatMessage;
+    std::function<void (const GameInitSettings&, const ChangeEventList&)>         pOnReceiveGameInfo;
+    std::function<void (const ChangeEventList&)>                                  pOnReceiveChangeEventList;
+    std::function<void (const std::string&, bool, int)>                           pOnPeerDisconnected;
+    std::function<ChangeEventList (const std::string&)>                           pGetChangeEventListForNewPlayerCallback;
+    std::function<void (unsigned int)>                                            pOnStartGame;
+    std::function<void (const std::string&, const Dune::Engine::CommandList&)>    pOnReceiveCommandList;
+    std::function<void (const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList;
 
-    std::unique_ptr<LANGameFinderAndAnnouncer>  pLANGameFinderAndAnnouncer = nullptr;
-    std::unique_ptr<MetaServerClient>           pMetaServerClient = nullptr;
+    std::unique_ptr<LANGameFinderAndAnnouncer>  pLANGameFinderAndAnnouncer;
+    std::unique_ptr<MetaServerClient>           pMetaServerClient;
 };
 
 #endif // NETWORKMANAGER_H

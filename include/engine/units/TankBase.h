@@ -15,21 +15,23 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TANKBASE_H
-#define TANKBASE_H
+#ifndef ENGINE_TANKBASE_H
+#define ENGINE_TANKBASE_H
 
 #include <units/TrackedUnit.h>
 
+namespace Dune::Engine {
+
 class TankBaseConstants : public TrackedUnitConstants {
 public:
-    constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0, BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+    constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0,
+                                         BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
         : TrackedUnitConstants{itemID, num_weapons, bullet_id} {
         turreted_ = true;
     }
 };
 
-class TankBase : public TrackedUnit
-{
+class TankBase : public TrackedUnit {
 protected:
     TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -39,12 +41,12 @@ public:
 
     ~TankBase() override = 0;
 
-    TankBase(const TankBase &) = delete;
-    TankBase(TankBase &&) = delete;
-    TankBase& operator=(const TankBase &) = delete;
-    TankBase& operator=(TankBase &&) = delete;
+    TankBase(const TankBase&) = delete;
+    TankBase(TankBase&&)      = delete;
+    TankBase& operator=(const TankBase&) = delete;
+    TankBase& operator=(TankBase&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void navigate(const GameContext& context) override;
 
@@ -68,17 +70,13 @@ protected:
     void turnTurretRight();
 
     // constant for all tanks of the same type
-    FixPoint turretTurnSpeed = 0.0625_fix;        ///< How fast can we turn the turret
+    FixPoint turretTurnSpeed = 0.0625_fix; ///< How fast can we turn the turret
 
     // tank state
-    FixPoint turretAngle;            ///< The angle of the turret
-    ANGLETYPE drawnTurretAngle;       ///< The drawn angle of the turret
+    FixPoint  turretAngle;      ///< The angle of the turret
+    ANGLETYPE drawnTurretAngle; ///< The drawn angle of the turret
 
-    ObjectPointer   closeTarget;     ///< a enemy target that can be shot at while moving
-
-    // drawing information
-    zoomable_texture turretGraphic{};   ///< The turret graphic
-    int              gunGraphicID = -1; ///< The id of the turret graphic (needed if we want to reload the graphic)
+    ObjectPointer closeTarget; ///< a enemy target that can be shot at while moving
 };
 
 template<>
@@ -99,5 +97,6 @@ inline const TankBase* dune_cast(const ObjectBase* base) {
     return nullptr;
 }
 
+} // namespace Dune::Engine
 
-#endif // TANKBASE_H
+#endif // ENGINE_TANKBASE_H

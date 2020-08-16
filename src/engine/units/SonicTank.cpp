@@ -17,25 +17,23 @@
 
 #include <units/SonicTank.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Game.h>
 #include <Map.h>
-#include <Explosion.h>
-#include <ScreenBorder.h>
-#include <SoundPlayer.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr TrackedUnitConstants sonic_tank_constants{SonicTank::item_id, 1, Bullet_Sonic};
 }
+
+namespace Dune::Engine {
 
 SonicTank::SonicTank(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 
-    setHealth(getMaxHealth());
+    SonicTank::setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
 SonicTank::SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -46,49 +44,14 @@ SonicTank::SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializ
 void SonicTank::init() {
     assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
-
-    graphicID = ObjPic_Tank_Base;
-    gunGraphicID = ObjPic_Sonictank_Gun;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
-
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    numImagesY = 1;
 }
 
 SonicTank::~SonicTank() = default;
-
-void SonicTank::blitToScreen() {
-    const auto x1 = screenborder->world2screenX(realX);
-    const auto y1 = screenborder->world2screenY(realY);
-
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
-
-    static constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                      Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
-
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto        source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto        dest2          = calcSpriteDrawingRect(
-        pTurretGraphic, screenborder->world2screenX(realX + sonicTankTurretOffset[static_cast<int>(drawnAngle)].x),
-        screenborder->world2screenY(realY + sonicTankTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-        HAlign::Center, VAlign::Center);
-
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
-
-    if(isBadlyDamaged()) { drawSmoke(x1, y1); }
-}
 
 void SonicTank::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
         const Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
-
-        if(isVisible(getOwner()->getTeamID())) soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
     }
 
     parent::destroy(context);
@@ -97,14 +60,12 @@ void SonicTank::destroy(const GameContext& context) {
 void SonicTank::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     auto* const damager = context.objectManager.getObject(damagerID);
 
-    if (!damager || (damager->getItemID() != Unit_SonicTank))
+    if(!damager || (damager->getItemID() != Unit_SonicTank))
         parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
-bool SonicTank::canAttack(const ObjectBase *object) const {
-    return ((object != nullptr) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
+bool SonicTank::canAttack(const GameContext& context, const ObjectBase* object) const {
+    return ((object != nullptr) && parent::canAttack(context, object) && (object->getItemID() != Unit_SonicTank));
 }
 
-void SonicTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Sonic,location);
-}
+} // namespace Dune::Engine

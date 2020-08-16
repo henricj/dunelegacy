@@ -22,11 +22,11 @@
 #include <misc/OutputStream.h>
 #include <Definitions.h>
 #include <DataTypes.h>
-#include <AITeamInfo.h>
-#include <data.h>
+#include <engine/AITeamInfo.h>
+#include <engine/data.h>
 #include <Choam.h>
-#include "ObjectManager.h"
-#include <players/Player.h>
+#include <engine/ObjectManager.h>
+#include <engine/players/Player.h>
 
 #include <memory>
 

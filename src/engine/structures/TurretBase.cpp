@@ -15,28 +15,28 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <structures/TurretBase.h>
+#include "engine_mmath.h"
 
-#include <globals.h>
+#include <structures/TurretBase.h>
 
 #include <Game.h>
 #include <Map.h>
 #include <House.h>
 #include <Bullet.h>
-#include <SoundPlayer.h>
 
 #include <players/HumanPlayer.h>
 
+namespace Dune::Engine {
 
 TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
-    angle = initializer.game().randomGen.rand(0, 7);
+    angle      = initializer.game().randomGen.rand(0, 7);
     drawnAngle = static_cast<ANGLETYPE>(lround(angle));
 
     findTargetTimer = 0;
-    weaponTimer = 0;
+    weaponTimer     = 0;
 }
 
 TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID,
@@ -47,36 +47,36 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID,
     auto& stream = initializer.stream();
 
     findTargetTimer = stream.readSint32();
-    weaponTimer = stream.readSint32();
+    weaponTimer     = stream.readSint32();
 }
 
 void TurretBase::init() {
-    attackSound = Sound_Gun;
-
     attackMode = AREAGUARD;
 }
 
 TurretBase::~TurretBase() = default;
 
-void TurretBase::save(OutputStream& stream) const {
-    StructureBase::save(stream);
+void TurretBase::save(const Game& game, OutputStream& stream) const {
+    parent::save(game, stream);
 
     stream.writeSint32(findTargetTimer);
     stream.writeSint32(weaponTimer);
 }
 
 void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
-    if(target && (target.getObjPointer() != nullptr)) {
-        if(!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
-            setTarget(nullptr);
-        } else if(targetInWeaponRange()) {
-            Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
-            const auto wantedAngle = destinationDrawnAngle(location, closestPoint);
+    auto* const pTarget = target.getObjPointer(context.objectManager);
+
+    if(pTarget) {
+        if(!canAttack(context, pTarget) || !targetInWeaponRange(context)) {
+            setTarget(context.objectManager, nullptr);
+        } else if(targetInWeaponRange(context)) {
+            Coord      closestPoint = pTarget->getClosestPoint(location);
+            const auto wantedAngle  = destinationDrawnAngle(location, closestPoint);
 
             if(angle != static_cast<int>(wantedAngle)) {
                 // turn
-                FixPoint  angleLeft = 0;
-                FixPoint  angleRight = 0;
+                FixPoint angleLeft  = 0;
+                FixPoint angleRight = 0;
 
                 if(angle > static_cast<int>(wantedAngle)) {
                     angleRight = angle - static_cast<int>(wantedAngle);
@@ -95,82 +95,68 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
                 }
             }
 
-            if(drawnAngle == wantedAngle) {
-                attack(context);
-            }
+            if(drawnAngle == wantedAngle) { attack(context); }
 
         } else {
-            setTarget(nullptr);
+            setTarget(context.objectManager, nullptr);
         }
     } else if((attackMode != STOP) && (findTargetTimer == 0)) {
-        setTarget(findTarget());
+        setTarget(context.objectManager, findTarget(context));
         findTargetTimer = 100;
     }
 
-    if(findTargetTimer > 0) {
-        findTargetTimer--;
-    }
+    if(findTargetTimer > 0) { findTargetTimer--; }
 
-    if(weaponTimer > 0) {
-        weaponTimer--;
-    }
-}
-
-void TurretBase::handleActionCommand(const GameContext& context, int xPos, int yPos) {
-    auto& [game, map, objectManager] = context;
-
-    if(auto* tile = map.tryGetTile(xPos, yPos)) {
-        ObjectBase* tempTarget = tile->getObject(objectManager);
-        game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,
-                                                    objectID, tempTarget->getObjectID()));
-    }
+    if(weaponTimer > 0) { weaponTimer--; }
 }
 
 void TurretBase::doAttackObject(const GameContext& context, uint32_t targetObjectID) {
     const auto* pObject = context.objectManager.getObject(targetObjectID);
-    doAttackObject(pObject);
+    if(pObject) doAttackObject(context, pObject);
 }
 
-void TurretBase::doAttackObject(const ObjectBase* pObject) {
+void TurretBase::doAttackObject(const GameContext& context, const ObjectBase* pObject) {
     if(pObject == nullptr) { return; }
 
-    setDestination(INVALID_POS, INVALID_POS);
-    setTarget(pObject);
+    setDestination(context, INVALID_POS, INVALID_POS);
+    setTarget(context.objectManager, pObject);
     setForced(true);
 }
 
 void TurretBase::turnLeft(const GameContext& context) {
-    angle += context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
-    if (angle >= 7.5_fix)    //must keep drawnangle between 0 and 7
+    angle += context.game.getObjectData(itemID, originalHouseID).turnspeed;
+    if(angle >= 7.5_fix) // must keep drawnangle between 0 and 7
         angle -= 8;
-    drawnAngle = static_cast<ANGLETYPE>(lround(angle));
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
+    drawnAngle   = static_cast<ANGLETYPE>(lround(angle));
 }
 
 void TurretBase::turnRight(const GameContext& context) {
-    angle -= context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
+    angle -= context.game.getObjectData(itemID, originalHouseID).turnspeed;
     if(angle < -0.5_fix) {
-        //must keep angle between 0 and 7
+        // must keep angle between 0 and 7
         angle += 8;
     }
-    drawnAngle = static_cast<ANGLETYPE>(lround(angle));
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
+    drawnAngle   = static_cast<ANGLETYPE>(lround(angle));
 }
 
 void TurretBase::attack(const GameContext& context) {
-    if((weaponTimer == 0) && (target.getObjPointer() != nullptr)) {
-        const auto centerPoint = getCenterPoint();
-        auto *const pObject = target.getObjPointer();
-        const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
+    if(weaponTimer != 0) return;
 
-        const auto& [game, map, objectManager] = context;
+    const auto& [game, map, objectManager] = context;
 
-        map.add_bullet(objectID, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
-                                   game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
-                                   pObject->isAFlyingUnit(), pObject);
+    auto* const pObject = target.getObjPointer(objectManager);
 
-        map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
-        soundPlayer->playSoundAt(attackSound, location);
-        weaponTimer = getWeaponReloadTime();
-    }
+    if(pObject == nullptr) return;
+
+    const auto centerPoint       = getCenterPoint();
+    const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
+
+    game.add_bullet(context, objectID, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
+                    game.getObjectData(itemID, originalHouseID).weapondamage,
+                    pObject->isAFlyingUnit(), pObject);
+
+    map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
+    weaponTimer = getWeaponReloadTime(context.game);
 }
+
+} // namespace Dune::Engine

@@ -23,11 +23,11 @@
 #include <EngineDataTypes.h>
 
 namespace Dune::Engine {
-class SmartBot : public Player {
+class SmartBot final : public Player {
 public:
     enum class Difficulty { Normal = 0, Defense = 1, Hard = 2 };
 
-    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+    SmartBot(const GameContext& context, House* associatedHouse, std::string_view playername, const Random& random,
              Difficulty difficulty);
     SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~SmartBot() override;

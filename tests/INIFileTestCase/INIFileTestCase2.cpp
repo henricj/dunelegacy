@@ -4,7 +4,7 @@
 
 
 TEST_F(INIFileTestCase2, modifyData) {
-	INIFile inifile("INIFileTestCase2.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase2.ini");
 
 	inifile.setStringValue("General", "StringKey", "Some New Value");
 	inifile.setStringValue("", "anonymousKey", "SomeNewValue");
@@ -17,7 +17,7 @@ TEST_F(INIFileTestCase2, modifyData) {
 }
 
 TEST_F(INIFileTestCase2, addKey) {
-	INIFile inifile("INIFileTestCase2.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase2.ini");
 
 	inifile.setStringValue("General", "NewStringKey", "NewValue");
 	inifile.setBoolValue("General", "NewBoolKey", true);
@@ -29,7 +29,7 @@ TEST_F(INIFileTestCase2, addKey) {
 }
 
 TEST_F(INIFileTestCase2, addSectionAndKeys) {
-	INIFile inifile("INIFileTestCase2.ini");
+    Dune::Engine::INIFile inifile("INIFileTestCase2.ini");
 
 	inifile.setStringValue("NewSection", "NewStringKey", "NewValue");
 

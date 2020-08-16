@@ -17,36 +17,31 @@
 
 #include <structures/IX.h>
 
-#include <globals.h>
-
-#include <FileClasses/GFXManager.h>
 #include <House.h>
 
 namespace {
+using namespace Dune::Engine;
+
 constexpr StructureBaseConstants ix_constants{IX::item_id, Coord{2, 2}};
 }
 
+namespace Dune::Engine {
 IX::IX(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 
-    setHealth(getMaxHealth());
+    setHealth(initializer.game(), getMaxHealth(initializer.game()));
 }
 
-IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
+IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 }
 
 void IX::init() {
     assert(itemID == Structure_IX);
     owner->incrementStructures(itemID);
-
-    graphicID = ObjPic_IX;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
-    firstAnimFrame = 2;
-    lastAnimFrame = 3;
 }
 
 IX::~IX() = default;
 
+} // namespace Dune::Engine

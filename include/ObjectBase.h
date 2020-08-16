@@ -18,7 +18,7 @@
 #ifndef OBJECTBASE_H
 #define OBJECTBASE_H
 
-#include <ObjectPointer.h>
+#include <engine/ObjectPointer.h>
 #include <Definitions.h>
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
@@ -40,15 +40,6 @@ class Map;
 class Coord;
 template<class WidgetData> class Container;
 
-
-struct GameContext {
-    GameContext(Game& game, Map& map, ObjectManager& objectManager)
-        : game{game}, map{map}, objectManager{objectManager} { }
-
-    Game&          game;
-    Map&           map;
-    ObjectManager& objectManager;
-};
 
 #define VIS_ALL -1
 
@@ -307,7 +298,7 @@ protected:
 
     bool          forced;            ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
     bool          targetFriendly;    ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
-    ObjectPointer target;            ///< The target to attack or move to
+    Dune::Engine::ObjectPointer target;            ///< The target to attack or move to
     ATTACKMODE    attackMode;        ///< The attack mode of this unit/structure
 
     std::bitset<NUM_TEAMS> visible;  ///< To which teams is this unit visible?

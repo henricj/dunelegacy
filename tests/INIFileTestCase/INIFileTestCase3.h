@@ -23,6 +23,6 @@ class INIFileTestCase3: public testing::Test  {
 protected:
 	bool fileCompare(std::string filename1, std::string filename2);
 
-	std::unique_ptr<INIFile> pINIFile;
+	std::unique_ptr<Dune::Engine::INIFile> pINIFile;
 };
 

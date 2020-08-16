@@ -23,6 +23,9 @@
 #include <Map.h>
 #include <House.h>
 
+#include <engine_sand.h>
+#include <engine_mmath.h>
+
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <structures/StructureBase.h>
@@ -123,7 +126,7 @@ void AIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerI
         if((pDamager != nullptr) && pDamager->isInfantry()) {
             doAttackObject(static_cast<const Harvester*>(pObject), pDamager, false);
         }
-    } else if(pObject->isAUnit() && pObject->canAttack(pDamager)) {
+    } else if(pObject->isAUnit() && pObject->canAttack(context_, pDamager)) {
         const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
         if(pUnit->getAttackMode() == GUARD || pUnit->getAttackMode() == AMBUSH) {
@@ -236,9 +239,9 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_WOR: {
                     // place near sand
                     FixPoint nearestSand = 10000000;
-                    for(int y = 0; y < currentGameMap->getSizeY(); y++) {
-                        for(int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if(!currentGameMap->getTile(x, y)->isRock()) {
+                    for(int y = 0; y < context_.map.getSizeY(); y++) {
+                        for(int x = 0; x < context_.map.getSizeX(); x++) {
+                            if(!context_.map.getTile(x, y)->isRock()) {
                                 const auto distance = blockDistance(pos, Coord(x, y));
                                 if(distance < nearestSand) { nearestSand = distance; }
                             }
@@ -300,16 +303,16 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 
     int numAdjacentStructureTiles = 0;
 
-    const auto* const map = currentGameMap;
+    const auto& map = context_.map;
 
     for(int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if(map->hasAStructure(context_, pos.x - 1, y)) { numAdjacentStructureTiles++; }
-        if(map->hasAStructure(context_, pos.x + structureSizeX, y)) { numAdjacentStructureTiles++; }
+        if(map.hasAStructure(context_, pos.x - 1, y)) { numAdjacentStructureTiles++; }
+        if(map.hasAStructure(context_, pos.x + structureSizeX, y)) { numAdjacentStructureTiles++; }
     }
 
     for(int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if(map->hasAStructure(context_, x, pos.y - 1)) { numAdjacentStructureTiles++; }
-        if(map->hasAStructure(context_, x, pos.y + structureSizeY)) { numAdjacentStructureTiles++; }
+        if(map.hasAStructure(context_, x, pos.y - 1)) { numAdjacentStructureTiles++; }
+        if(map.hasAStructure(context_, x, pos.y + structureSizeY)) { numAdjacentStructureTiles++; }
     }
 
     return numAdjacentStructureTiles;
@@ -321,21 +324,21 @@ void AIPlayer::build() {
         // if this players structure, and its a heavy factory, build something
         if(pStructure->getOwner() == getHouse()) {
 
-            if((!pStructure->isRepairing()) && (pStructure->getHealth() < pStructure->getMaxHealth())) {
+            if((!pStructure->isRepairing()) && (pStructure->getHealth() < pStructure->getMaxHealth(context_.game))) {
                 doRepair(pStructure);
             }
 
-            if(pStructure->isABuilder()) {
-                const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
+            if(const auto* const pBuilder = dune_cast<BuilderBase>(pStructure)) {
 
-                if((getHouse()->getCredits() > 2000) && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) &&
+                if((getHouse()->getCredits() > 2000) &&
+                   (pBuilder->getHealth() >= pBuilder->getMaxHealth(context_.game)) &&
                    (!pBuilder->isUpgrading()) &&
-                   (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                   (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game))) {
                     doUpgrade(pBuilder);
                     continue;
                 }
 
-                switch(pStructure->getItemID()) {
+                switch(pBuilder->getItemID()) {
 
                     case Structure_Barracks: {
                         if(isAllowedToArm() && (!getHouse()->hasLightFactory()) && (!getHouse()->hasHeavyFactory())) {
@@ -414,8 +417,8 @@ void AIPlayer::build() {
                     } break;
 
                     case Structure_StarPort: {
-                        const auto* pStarPort = static_cast<const StarPort*>(pBuilder);
-                        if(isAllowedToArm() && pStarPort->okToOrder()) {
+                        const auto* const pStarPort = dune_cast<StarPort>(pBuilder);
+                        if(pStarPort && isAllowedToArm() && pStarPort->okToOrder()) {
                             const auto& choam = getHouse()->getChoam();
 
                             if(getHouse()->getNumItems(Unit_Harvester) < getMaxHarvester() &&
@@ -465,8 +468,9 @@ void AIPlayer::build() {
                     case Structure_ConstructionYard: {
                         if((getHouse()->getCredits() > 900) &&
                            ((pBuilder->getCurrentUpgradeLevel() == 0) || (getHouse()->hasRadar())) &&
-                           (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (!pBuilder->isUpgrading()) &&
-                           (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
+                           (pBuilder->getHealth() >= pBuilder->getMaxHealth(context_.game)) &&
+                           (!pBuilder->isUpgrading()) &&
+                           (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel(context_.game))) {
                             auto upgrading = doUpgrade(pBuilder);
                         }
 
@@ -673,7 +677,9 @@ void AIPlayer::build() {
 void AIPlayer::attack() {
     Coord           destination;
     const UnitBase* pLeaderUnit = nullptr;
-    for(const auto* pUnit : getUnitList()) {
+    for(const auto* const pUnit : getUnitList()) {
+        if(!pUnit) continue;
+
         if(pUnit->isRespondable() && (pUnit->getOwner() == getHouse()) &&
            pUnit->isActive()
            /*&& !(pUnit->getAttackMode() == HUNT)*/
@@ -689,11 +695,11 @@ void AIPlayer::attack() {
                 destination.x = pLeaderUnit->getX();
                 destination.y = pLeaderUnit->getY();
 
-                const auto* const closestStructure = pLeaderUnit->findClosestTargetStructure();
+                const auto* const closestStructure = pLeaderUnit->findClosestTargetStructure(context_);
                 if(closestStructure) {
                     destination = closestStructure->getClosestPoint(pLeaderUnit->getLocation());
                 } else {
-                    const auto* closestUnit = pLeaderUnit->findClosestTargetUnit();
+                    const auto* closestUnit = pLeaderUnit->findClosestTargetUnit(context_);
                     if(closestUnit) {
                         destination.x = closestUnit->getX();
                         destination.y = closestUnit->getY();
@@ -711,11 +717,15 @@ void AIPlayer::attack() {
 }
 
 void AIPlayer::checkAllUnits() {
-    for(const auto* pUnit : getUnitList()) {
+    for(const auto* const pUnit : getUnitList()) {
+        if(!pUnit) continue;
+
         if(pUnit->getItemID() == Unit_Sandworm) {
-            for(const auto* pUnit2 : getUnitList()) {
+            for(const auto* const pUnit2 : getUnitList()) {
+                if(!pUnit2) continue;
+
                 if(pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                    const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
+                    const auto* pHarvester = dune_cast<const Harvester>(pUnit2);
                     if(getMap().tileExists(pHarvester->getLocation()) &&
                        !getMap().getTile(pHarvester->getLocation())->isRock() &&
                        blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
@@ -730,9 +740,9 @@ void AIPlayer::checkAllUnits() {
 
         switch(pUnit->getItemID()) {
             case Unit_MCV: {
-                const MCV* pMCV = static_cast<const MCV*>(pUnit);
+                const MCV* pMCV = dune_cast<const MCV>(pUnit);
                 if(!pMCV->isMoving()) {
-                    if(pMCV->canDeploy()) {
+                    if(pMCV->canDeploy(context_)) {
                         doDeploy(pMCV);
                     } else {
                         const auto pos = findPlaceLocation(Structure_ConstructionYard);
@@ -742,7 +752,7 @@ void AIPlayer::checkAllUnits() {
             } break;
 
             case Unit_Harvester: {
-                const auto* pHarvester = static_cast<const Harvester*>(pUnit);
+                const auto* pHarvester = dune_cast<const Harvester>(pUnit);
                 if(getHouse()->getNumItems(Unit_Harvester) < 3 &&
                    pHarvester->getAmountOfSpice() >= HARVESTERMAXSPICE / 2) {
                     doReturn(pHarvester);
@@ -759,7 +769,7 @@ bool AIPlayer::isAllowedToArm() const {
     std::array<int, NUM_TEAMS> teamScore{};
 
     int maxTeamScore = 0;
-    currentGame->for_each_house([&](const auto& house) {
+    context_.game.for_each_house([&](const auto& house) {
         teamScore[house.getTeamID()] += house.getUnitBuiltValue();
 
         if(house.getTeamID() != getHouse()->getTeamID()) {
@@ -767,38 +777,31 @@ bool AIPlayer::isAllowedToArm() const {
         }
     });
 
-    int ownTeamScore = teamScore[getHouse()->getTeamID()];
+    const auto ownTeamScore = teamScore[getHouse()->getTeamID()];
 
     switch(difficulty) {
-        case Difficulty::Easy: {
+        case Difficulty::Easy:
             return (ownTeamScore < maxTeamScore);
-        } break;
 
-        case Difficulty::Medium: {
+        case Difficulty::Medium:
             return (ownTeamScore < 2 * maxTeamScore);
-        } break;
 
         case Difficulty::Hard:
-        default: {
-            return true;
-        } break;
+        default: return true;
     }
 }
 
 int AIPlayer::getMaxHarvester() const {
     switch(difficulty) {
-        case Difficulty::Easy: {
+        case Difficulty::Easy:
             return getHouse()->getNumItems(Structure_Refinery);
-        }
 
-        case Difficulty::Medium: {
+        case Difficulty::Medium:
             return (2 * getHouse()->getNumItems(Structure_Refinery) + 1) / 3;
-        }
 
         case Difficulty::Hard:
-        default: {
+        default:
             return 2 * getHouse()->getNumItems(Structure_Refinery);
-        }
     }
 }
 

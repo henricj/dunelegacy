@@ -15,10 +15,12 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TRACKEDUNIT_H
-#define TRACKEDUNIT_H
+#ifndef ENGINE_TRACKEDUNIT_H
+#define ENGINE_TRACKEDUNIT_H
 
 #include <units/GroundUnit.h>
+
+namespace Dune::Engine {
 
 class TrackedUnitConstants : public GroundUnitConstants {
 public:
@@ -44,10 +46,10 @@ public:
     TrackedUnit& operator=(const TrackedUnit&) = delete;
     TrackedUnit& operator=(TrackedUnit&&) = delete;
 
-    void save(OutputStream& stream) const override;
+    void save(const Game& game, OutputStream& stream) const override;
 
     void checkPos(const GameContext& context) override;
-    bool canPassTile(const Tile* pTile) const override;
+    bool canPassTile(const GameContext& context, const Tile* pTile) const override;
 
     /**
         Returns how fast a unit can move over the specified terrain type.
@@ -64,4 +66,6 @@ private:
     static const std::array<FixPoint, Terrain_SpecialBloom + 1> terrain_difficulty; // TODO:: get better constant...
 };
 
-#endif // TRACKEDUNIT_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_TRACKEDUNIT_H

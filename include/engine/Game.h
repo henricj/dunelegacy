@@ -19,43 +19,26 @@
 #define ENGINE_GAME_H
 
 
-inline constexpr int xyz2b = 123;
-namespace {
-inline constexpr int abc2b = ::xyz2b;
-}
+#include "GameInitSettings.h"
 
 #include <misc/Random.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-inline constexpr int xyz2c = 123;
-namespace {
-inline constexpr int abc2c = ::xyz2c;
-}
+#include "ObjectData.h"
+#include "ObjectManager.h"
+#include "CommandManager.h"
 
-#include <ObjectData.h>
-#include <ObjectManager.h>
-#include <CommandManager.h>
+#include "Bullet.h"
 
-inline constexpr int xyz2d = 123;
-namespace {
-inline constexpr int abc2d = ::xyz2d;
-}
+#include "GameInitSettings.h"
+#include "Trigger/TriggerManager.h"
 
-#include <GameInitSettings.h>
-#include <Trigger/TriggerManager.h>
+#include "players/Player.h"
+#include "players/HumanPlayer.h"
 
-inline constexpr int xyz2e = 123;
-namespace {
-inline constexpr int abc2e = ::xyz2e;
-}
+#include "EngineDataTypes.h"
 
-#include <players/Player.h>
-#include <players/HumanPlayer.h>
-
-#include <EngineDataTypes.h>
-
-#include <cstdarg>
 #include <string>
 
 #include <array>
@@ -65,18 +48,10 @@ inline constexpr int abc2e = ::xyz2e;
 #include <unordered_set>
 
 
-inline constexpr int xyz2 = 123;
-namespace {
-inline constexpr int abc2 = ::xyz2;
-}
-
 namespace Dune::Engine {
 
 // forward declarations
 class ObjectBase;
-class InGameMenu;
-class MentatHelp;
-class WaitingForOtherPlayers;
 class ObjectManager;
 class House;
 class Explosion;
@@ -146,10 +121,7 @@ public:
     /**
         Add an explosion.
     */
-    template<class... Args>
-    void addExplosion(Args&&... args) {
-        explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
-    }
+    void addExplosion(uint32_t explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
     [[nodiscard]] int getHouseIndex(HOUSETYPE houseID) const {
         const auto int_house = static_cast<int>(houseID);
@@ -188,7 +160,7 @@ public:
         return nullptr;
     }
 
-    Map* getMap() { return map ? map.get() : currentGameMap; }
+    Map* getMap() const { return map.get(); }
 
     /**
         The current game is finished and the local house has won
@@ -238,7 +210,7 @@ public:
         \param stream   the stream to write to
         \param obj      the object to be saved
     */
-    static void saveObject(OutputStream& stream, ObjectBase* obj);
+    void saveObject(OutputStream& stream, ObjectBase* obj) const;
 
     /**
         This method loads an object from the stream.
@@ -246,7 +218,7 @@ public:
         \param objectID the object id that this unit/structure should get
         \return the read unit/structure
     */
-    static ::std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
+    std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
 
     ObjectManager&                     getObjectManager() noexcept { return objectManager; };
     [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; };
@@ -358,16 +330,15 @@ public:
         return nullptr;
     }
 
+    [[nodiscard]] const ObjectData::ObjectDataStruct& getObjectData(ItemID_enum itemID, HOUSETYPE house) const {
+        return objectData.getData(itemID, house);
+    }
+
+    void add_bullet(const GameContext& context, uint32_t            shooterID, const Coord* newRealLocation,
+                    const Coord*       newRealDestination, uint32_t bulletID, int           damage, bool air,
+                    const ObjectBase*  pTarget);
+
 private:
-    /**
-        Checks whether the cursor is on the radar view
-        \param  mouseX  x-coordinate of cursor
-        \param  mouseY  y-coordinate of cursor
-        \return true if on radar view
-    */
-    [[nodiscard]] bool isOnRadarView(int mouseX, int mouseY) const;
-
-
     /**
         Returns the game speed of this game: The number of ms per game cycle.
         For singleplayer games this is a global setting (but can be adjusted in the in-game settings menu). For
@@ -375,13 +346,7 @@ private:
     */
     [[nodiscard]] int getGameSpeed() const;
 
-    bool removeFromSelectionLists(ObjectBase* pObject);
-    void removeFromQuickSelectionLists(uint32_t objectID);
-
-    void serviceNetwork(bool& bWaitForNetwork);
     void updateGame(const GameContext& context);
-
-    void doEventsUntil(const GameContext& context, int until);
 
 public:
 
@@ -395,6 +360,11 @@ public:
     ObjectData    objectData; ///< This contains all the unit/structure data
 
     GameState gameState = GameState::Start;
+
+    RobustList<UnitBase*>                unitList;      ///< the list of all units
+    RobustList<StructureBase*>           structureList; ///< the list of all structures
+    std::vector<std::unique_ptr<Bullet>> bulletList;    ///< the list of all bullets
+
 
 private:
 
@@ -413,7 +383,7 @@ private:
         houseInfoListSetup; ///< this saves with which houses and players the game was actually set up. It is a copy of
                             ///< gameInitSettings::houseInfoList but without random houses
 
-    ::Dune::Engine::ObjectManager objectManager; ///< This manages all the object and maps object ids to the actual objects
+    ObjectManager objectManager; ///< This manages all the object and maps object ids to the actual objects
 
     CommandManager cmdManager; ///< This is the manager for all the game commands (e.g. moving a unit)
 

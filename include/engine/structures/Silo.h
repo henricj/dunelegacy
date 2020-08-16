@@ -15,24 +15,26 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SILO_H
-#define SILO_H
+#ifndef ENGINE_SILO_H
+#define ENGINE_SILO_H
 
 #include <structures/StructureBase.h>
+
+namespace Dune::Engine {
 
 class Silo final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Silo;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Silo(uint32_t objectID, const ObjectInitializer& initializer);
     Silo(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Silo() override;
 
-    std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
-
 private:
     void init();
 };
 
-#endif // SILO_H
+} // namespace Dune::Engine
+
+#endif // ENGINE_SILO_H

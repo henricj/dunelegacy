@@ -31,11 +31,7 @@ public:
     Palace(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Palace() override;
 
-    void save(OutputStream& stream) const override;
-
-    void handleSpecialClick(const GameContext& context);
-
-    void handleDeathhandClick(const GameContext& context, int xPos, int yPos);
+    void save(const Game& game, OutputStream& stream) const override;
 
     /**
         Activate the special palace weapon Fremen or Saboteur. For the Deathhand see doLaunchDeathhand.

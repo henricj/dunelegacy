@@ -21,6 +21,8 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+struct GameContext;
+
 namespace Dune::Engine {
 
 /**

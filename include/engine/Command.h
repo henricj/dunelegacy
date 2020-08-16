@@ -24,9 +24,9 @@
 #include <type_traits>
 #include <vector>
 
-namespace Dune::Engine {
-
 struct GameContext;
+
+namespace Dune::Engine {
 
 enum class CMDTYPE {
     CMD_NONE,
