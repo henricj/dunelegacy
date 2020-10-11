@@ -287,5 +287,5 @@ Random RandomFactory::create(std::string_view name) const {
 
     sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
-    return Random::create(buffer);
+    return Random::create(gsl::span<const Uint8, Random::state_bytes>{buffer});
 }
