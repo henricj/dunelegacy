@@ -1576,7 +1576,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     randomFactory.setSeed(stream.readUint8Vector());
     auto seed = stream.readUint8Vector();
     if(seed.size() != decltype(randomGen)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
-    randomGen.setState(seed);
+    randomGen.setState(gsl::span<const Uint8, Random::state_bytes>{seed});
 
     // read in the unit/structure data
     objectData.load(stream);
