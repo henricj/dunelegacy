@@ -104,7 +104,7 @@ There should now be a working dunelegacy executable in `out\build\x64-avx2-Relea
 #### Linux
 
 The build-essential, git, ninja-build, and cmake packages are needed.  Either g++ or clang
-can be used for the build (tested with g++-9 and clang-10).
+can be used for the build (tested with g++-10 and clang-10).
 
 ```sh
 git clone https://github.com/henricj/dunelegacy.git
