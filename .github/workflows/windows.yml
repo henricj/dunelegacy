@@ -41,7 +41,7 @@ jobs:
       - name: Export Environment
         run: |
           function Export-WorkflowValue ([string]$name, [string]$value) {
-            Write-Host ( '::set-env name={0}::{1}' -f $name, $value )
+            Write-Output "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           }
           function New-NormalizedDirectory ([string]$name, [string]$path) {
             $value = (New-Item -Path $path -ItemType Directory -Force).FullName
