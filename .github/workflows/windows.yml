@@ -48,7 +48,7 @@ jobs:
             Export-WorkflowValue $name $value
             Return $value
           }
-          $platform = '${{matrix.config.platform}}'
+          $platform = '${{matrix.config.platform}}${{matrix.config.name_postfix}}'
           $root = (Resolve-Path -LiteralPath $Env:GITHUB_WORKSPACE).Path
           $source = (Resolve-Path -LiteralPath (Join-Path $root -ChildPath 'source')).Path
           cd $source
@@ -66,10 +66,10 @@ jobs:
           Export-WorkflowValue 'PROJECT_GIT_DESCRIBE' $git_describe
           Export-WorkflowValue 'PROJECT_GIT_DESCRIBE_MASTER' $git_describe_master
           Export-WorkflowValue 'PROJECT_SOURCE' $source
-          $build = New-NormalizedDirectory 'PROJECT_BUILD' (Join-Path $root -ChildPath ( 'build\Release-{0}' -f $platform ))
+          $build = New-NormalizedDirectory 'PROJECT_BUILD' (Join-Path $root -ChildPath "build\Release-$platform" )
           Export-WorkflowValue 'PROJECT_TOOLS' (Join-Path $root -ChildPath 'tools')
           Export-WorkflowValue 'PROJECT_TOOLS_TMP' (Join-Path $root -ChildPath 'tools.tmp')
-          $output_name = 'dunelegacy-{0}${{matrix.config.name_postfix}}-{1}' -f $platform, $git_describe
+          $output_name = "dunelegacy-$platform-$git_describe"
           $zip_name =   $output_name + '.zip'
           $msi_zip_name =   'MSI-' + $output_name + '.zip'
           $exe_zip_name =   'Setup-' + $output_name + '.zip'
@@ -82,11 +82,12 @@ jobs:
           Export-WorkflowValue 'PROJECT_INSTALLER' (Join-Path $build -ChildPath ($output_name + '.exe'))
           Export-WorkflowValue 'PROJECT_INSTALLER_ZIP' (Join-Path $build -ChildPath $exe_zip_name)
           Export-WorkflowValue 'PROJECT_INSTALLER_ZIP_NAME' $exe_zip_name
-          Export-WorkflowValue 'PROJECT_LATEST_TAG' 'latest-${{matrix.config.platform}}${{matrix.config.name_postfix}}'
+          Export-WorkflowValue 'PROJECT_LATEST_TAG' "latest-$platform"
+          Export-WorkflowValue 'PROJECT_VCPKG_TRIPLET' "$platform-windows-ltcg"
 
       - name: vcpkg
         shell: cmd
-        run: source\IDE\VC\vcpkg\build_vcpkg.bat --triplet ${{matrix.config.platform}}-windows-ltcg
+        run: source\IDE\VC\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
 
       - name: Compile
         shell: cmd
@@ -94,7 +95,7 @@ jobs:
           call "source\IDE\VC\findmsvc.bat" -host_arch=x64 -arch=${{matrix.config.platform}} -startdir=none
           set CC=cl.exe
           set CXX=cl.exe
-          cmake -G Ninja -DDUNE_TARGET_ARCHITECTURE=${{matrix.config.platform}} -DVCPKG_TARGET_TRIPLET:STRING=${{matrix.config.platform}}-windows-ltcg "${{matrix.config.extra}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -DCMAKE_BUILD_TYPE=Release -S "%PROJECT_SOURCE%" -B "%PROJECT_BUILD%"
+          cmake -G Ninja -DDUNE_TARGET_ARCHITECTURE=${{matrix.config.platform}} -DVCPKG_TARGET_TRIPLET:STRING=%PROJECT_VCPKG_TRIPLET% "${{matrix.config.extra}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -DCMAKE_BUILD_TYPE=Release -S "%PROJECT_SOURCE%" -B "%PROJECT_BUILD%"
           cmake --build "%PROJECT_BUILD%"
 
       - name: Test
