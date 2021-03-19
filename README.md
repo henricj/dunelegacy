@@ -94,7 +94,7 @@ too few tests):
 ```bat
 mkdir out\build\x64-avx2-Release
 cd out\build\x64-avx2-Release
-cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DDUNE_TARGET_ARCHITECTURE:STRING=x64 -DDUNE_TARGET_ARCHTECTURE_EXTENSION=avx2 -DVCPKG_TARGET_TRIPLET:STRING=x64-avx2-windows-ltcg ../../..
+cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DDUNE_TARGET_ARCHITECTURE:STRING=x64 -DDUNE_TARGET_ARCHITECTURE_EXTENSION=avx2 -DVCPKG_TARGET_TRIPLET:STRING=x64-avx2-windows-ltcg ../../..
 cmake --build .
 ctest
 ```
