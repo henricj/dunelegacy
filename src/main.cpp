@@ -51,7 +51,7 @@
 
 #include <CutScenes/Intro.h>
 
-#include <SDL_ttf.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <iostream>
 #include <typeinfo>

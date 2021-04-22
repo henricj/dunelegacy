@@ -96,7 +96,7 @@
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2maind.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -120,7 +120,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
       <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>SDL2maind.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent />
@@ -149,7 +149,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -177,7 +177,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2main.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_ttf.lib;SDL2_mixer.lib;imm32.lib;version.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent />
@@ -193,7 +193,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\Colors.h" />
     <ClInclude Include="..\..\include\Command.h" />
     <ClInclude Include="..\..\include\CommandManager.h" />
-    <ClInclude Include="..\..\include\ConcatIterator.h" />
     <ClInclude Include="..\..\include\config.h" />
     <ClInclude Include="..\..\include\CutScenes\CrossBlendVideoEvent.h" />
     <ClInclude Include="..\..\include\CutScenes\CutScene.h" />
@@ -261,7 +260,6 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClInclude Include="..\..\include\fixmath\fix16.h" />
     <ClInclude Include="..\..\include\fixmath\fix16_trig_sin_lut.h" />
     <ClInclude Include="..\..\include\fixmath\fix32.h" />
-    <ClInclude Include="..\..\include\fixmath\fix32_support.h" />
     <ClInclude Include="..\..\include\fixmath\fixmath.h" />
     <ClInclude Include="..\..\include\fixmath\FixPoint.h" />
     <ClInclude Include="..\..\include\fixmath\FixPoint16.h" />
@@ -628,11 +626,11 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\FileClasses\Pakfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Palfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\PictureFactory.cpp" />
-    <ClCompile Include="..\..\src\FileClasses\PictureFont.cpp" />
     <ClCompile Include="..\..\src\FileClasses\POFile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\SFXManager.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Shpfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\TextManager.cpp" />
+    <ClCompile Include="..\..\src\FileClasses\TTFFont.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Vocfile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\Wsafile.cpp" />
     <ClCompile Include="..\..\src\FileClasses\xmidi\xmidi.cpp" />
@@ -870,6 +868,7 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     <ClCompile Include="..\..\src\ObjectManager.cpp" />
     <ClCompile Include="..\..\src\ObjectPointer.cpp" />
     <ClCompile Include="..\..\src\players\AIPlayer.cpp" />
+    <ClCompile Include="..\..\src\players\CampaignAIPlayer.cpp" />
     <ClCompile Include="..\..\src\players\HumanPlayer.cpp" />
     <ClCompile Include="..\..\src\players\Player.cpp" />
     <ClCompile Include="..\..\src\players\PlayerFactory.cpp" />

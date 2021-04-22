@@ -1124,9 +1124,6 @@
     <ClCompile Include="..\..\src\FileClasses\PictureFactory.cpp">
       <Filter>src\FileClasses</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\FileClasses\PictureFont.cpp">
-      <Filter>src\FileClasses</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\FileClasses\POFile.cpp">
       <Filter>src\FileClasses</Filter>
     </ClCompile>
@@ -1558,6 +1555,12 @@
     </ClCompile>
     <ClCompile Include="..\..\src\misc\Random.cpp">
       <Filter>src\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\FileClasses\TTFFont.cpp">
+      <Filter>src\FileClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\players\CampaignAIPlayer.cpp">
+      <Filter>src\players</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
