@@ -22,3 +22,5 @@ xcuserdata/
 IDE/VC/obj
 *.user
 IDE/VC/*.out?
+/.vs/ProjectSettings.json
+/.vs
