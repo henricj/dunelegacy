@@ -77,8 +77,10 @@
     <IntDir>obj\$(Configuration)-$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\bin\$(Configuration)-$(Platform)\</OutDir>
-    <IntDir>obj\$(Configuration)-$(Platform)\</IntDir>
+    <OutDir>..\..\..\bin\$(Configuration)-$(Platform)\</OutDir>
+    <IntDir>..\..\..\obj\$(Configuration)-$(Platform)\</IntDir>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -187,6 +189,8 @@ IF %ERRORLEVEL% LSS 8 exit 0</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\SDL2\include\SDL2\begin_code.h" />
+    <ClInclude Include="..\..\..\SDL2\include\SDL2\close_code.h" />
     <ClInclude Include="..\..\include\AStarSearch.h" />
     <ClInclude Include="..\..\include\Bullet.h" />
     <ClInclude Include="..\..\include\Choam.h" />

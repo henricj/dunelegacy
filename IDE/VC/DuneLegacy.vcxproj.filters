@@ -144,9 +144,6 @@
     <ClInclude Include="..\..\include\CommandManager.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\ConcatIterator.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\config.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -937,6 +934,15 @@
       <Filter>include\misc</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\misc\sdl_support.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SDL2\include\SDL2\begin_code.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SDL2\include\SDL2\close_code.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
