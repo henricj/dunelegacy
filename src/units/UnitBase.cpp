@@ -211,10 +211,7 @@ bool UnitBase::attack() {
                     currentBulletType = Bullet_ShellSmall;
                     currentWeaponDamage -= currentWeaponDamage/4;
                 }
-            } else if(getItemID() == Unit_Launcher && bAirBullet){
-                // Launchers change weapon type when targeting flying units
-                currentBulletType = Bullet_TurretRocket;
-            }
+            } 
 
             if(primaryWeaponTimer == 0) {
                 bulletList.push_back( new Bullet( objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject) );
