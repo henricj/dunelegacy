@@ -58,7 +58,7 @@ void Player::save(OutputStream& stream) const {
 }
 
 void Player::logDebug(const char* fmt, ...) const {
-#ifdef DEBUG_AI
+//#ifdef DEBUG_AI
     std::string house = getHouseNameByNumber((HOUSETYPE) pHouse->getHouseID());
     fprintf(stderr, "%s (%s):   ", playername.c_str(), house.c_str());
     va_list arg;
@@ -66,7 +66,7 @@ void Player::logDebug(const char* fmt, ...) const {
     vfprintf(stderr, fmt, arg);
     va_end(arg);
     fprintf(stderr, "\n");
-#endif
+//#endif
 }
 
 void Player::logWarn(const char* fmt, ...) const {
