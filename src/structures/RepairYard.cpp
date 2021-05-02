@@ -128,15 +128,20 @@ void RepairYard::updateStructureSpecificStuff() {
         }
     }
 
-    if(repairingAUnit == true) {
+    if (repairingAUnit == true) {
         GroundUnit* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
 
-        if (pRepairUnit->getHealth()*100/pRepairUnit->getMaxHealth() < 100) {
+        if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
             if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
                 pRepairUnit->addHealth();
             }
 
-        } else if(!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE) {
+        /*
+            Will turn this code into an option that's only on when manual carryall is enabled. 
+            While this is fixing the original code, it can cause imbalances in combat as tanks 
+            can be kept at the frontline letting an initial successful attack snowball
+        */
+        } else if(!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
@@ -160,6 +165,8 @@ void RepairYard::updateStructureSpecificStuff() {
                 deployRepairUnit();
             }
         } else if(!pRepairUnit->hasBookedCarrier()) {
+            deployRepairUnit();
+        } else {
             deployRepairUnit();
         }
     }
