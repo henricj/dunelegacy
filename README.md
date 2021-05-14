@@ -33,7 +33,8 @@ is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.
 
 - Builds are done with CMake (and only CMake).
 - [ENet](http://enet.bespin.org/) and [libfmt](https://fmt.dev/) have been updated are are no longer a
-normal part of the tree.
+normal part of the tree but are included as [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+instead.
 - [vcpkg](https://github.com/microsoft/vcpkg) is used to provide SDL2, gtest, fmt, and ms-gsl.
 - Pausing after the mission has completed but before the statistic page is displayed will let the user
 explore the map for as long as they like.
@@ -50,13 +51,10 @@ At some point, some of these change might be incorporated into the upstream repo
 
 ### Known Issues
 
-- The way states are handled for the random number generator is broken.  Among other things, a
-replay will not actually repeat the same game.
+- The random number generator is different than the one in the official release.
 - Systems with older GPUs may need to use the software renderer (add `Renderer = software` under
 the `[Video]` section in the INI file).
-- With all the rendering changes, there are now some glitches that need to be tracked down.  The
-sandworm shimmer is broken, some icons are missing in the Map Editor, and the sonic tank's "bullet"
-has artifacts when close to the edge of the screen.
+- With all the rendering changes, there are now some glitches that need to be tracked down.
 
 ### Building
 
