@@ -12,10 +12,8 @@ jobs:
         run: |
           #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt-get update
-          sudo apt-mark hold msodbcsql17 mssql-tools
           sudo apt-get dist-upgrade -y
-          sudo apt-get install -y gettext ninja-build gcc-10 g++-10
-          #sudo apt-get install -y gettext ninja-build gcc-10 g++-10 clang-tidy-10
+          sudo apt-get install -y gettext ninja-build
 
       - name: Fetch repo
         uses: actions/checkout@v2
@@ -30,8 +28,8 @@ jobs:
         uses: ashutoshvarma/action-cmake-build@master
         with:
           build-dir: ${{ runner.workspace }}/build
-          cc: gcc-10
-          cxx: g++-10
-          configure-options: -v -G Ninja -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
+          cc: gcc-11
+          cxx: g++-11
+          configure-options: -G Ninja -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
           build-type: Release
           parallel: 8
