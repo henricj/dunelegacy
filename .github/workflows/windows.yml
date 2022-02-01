@@ -87,7 +87,7 @@ jobs:
 
       - name: vcpkg
         shell: cmd
-        run: source\IDE\VC\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
+        run: source\external\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
 
       - name: Compile
         shell: cmd

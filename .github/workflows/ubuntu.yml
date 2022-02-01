@@ -22,7 +22,7 @@ jobs:
           submodules: recursive
 
       - name: vcpkg
-        run: IDE/VC/vcpkg/build_vcpkg.sh
+        run: external/vcpkg/build_vcpkg.sh
 
       - name: Build
         uses: ashutoshvarma/action-cmake-build@master

@@ -1,5 +1,5 @@
 [submodule "IDE/VC/vcpkg/vcpkg"]
-	path = IDE/VC/vcpkg/vcpkg
+	path = external/vcpkg/vcpkg
 	url = https://github.com/henricj/vcpkg-ltcg.git
 [submodule "external/enet"]
 	path = external/enet

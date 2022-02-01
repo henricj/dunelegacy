@@ -83,7 +83,7 @@ git submodule update --init --recursive -j 8
 Build the vcpkg packages,
 
 ```bat
-IDE\VC\vcpkg\build_vcpkg.bat
+external\vcpkg\build_vcpkg.bat
 ```
 
 Configure CMake's build folder, compile the source, and run the tests (alas, there are far
@@ -113,10 +113,8 @@ git submodule update --init --recursive -j 8
 Build the vcpkg packages,
 
 ```sh
-IDE/VC/vcpkg/build_vcpkg.sh
+external/vcpkg/build_vcpkg.sh
 ```
-
-(At some point, the vcpkg folder will move to the externals folder where it belongs.)
 
 Configure CMake's build folder, compile the source, and run the tests (alas, there are far
 too few tests):
