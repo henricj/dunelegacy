@@ -544,6 +544,10 @@ find_package(sdl2-ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
+if(UNIX)
+    find_package(X11 REQUIRED)
+endif()
+
 # If we want to really support UTF-8...
 #find_path(ICU_INCLUDE_DIR unicode/unistr.h REQUIRED)
 #find_library(ICU_COMMON_LIBRARY lib/icuuc.lib REQUIRED)
@@ -567,6 +571,10 @@ if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32)
 	list(APPEND SOURCES fixmath/fixmath.natvis)
 	list(APPEND EXE_SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
+endif()
+
+if(UNIX)
+	list(APPEND LIBS ${X11_LIBRARIES})
 endif()
 
 
