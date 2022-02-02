@@ -546,7 +546,7 @@ sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) con
         } break;
 
         default:
-            THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!", House);
+            THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!", static_cast<int>(House));
     }
 
     pLogo = Scaler::defaultDoubleSurface(pLogo.get());

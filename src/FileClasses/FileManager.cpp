@@ -151,7 +151,7 @@ sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) con
         }
     }
 
-    THROW(io_error, "Cannot find '%s'!", filename);
+    THROW(io_error, "Cannot find '%s'!", filename.string());
 }
 
 bool FileManager::exists(const std::filesystem::path& filename) const {
@@ -180,7 +180,7 @@ std::string FileManager::md5FromFilename(const std::filesystem::path& filename)
     unsigned char md5sum[16];
 
     if(md5_file(filename.u8string().c_str(), md5sum) != 0) {
-        THROW(io_error, "Cannot open or read '%s'!", filename);
+        THROW(io_error, "Cannot open or read '%s'!", filename.string());
     } else {
 
         std::stringstream stream;

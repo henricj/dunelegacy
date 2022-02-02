@@ -643,7 +643,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     if(auto* pTankBase = dune_cast<TankBase>(newUnit)) { pTankBase->setTurretAngle(angle); }
                 }
             } else {
-                logWarning(key.getLineNumber(), fmt::format("Unable to get or create house {}!", houseID));
+                logWarning(key.getLineNumber(), fmt::format("Unable to get or create house {}!", static_cast<int>(houseID)));
             }
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");

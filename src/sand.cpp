@@ -440,7 +440,7 @@ std::string getHouseNameByNumber(HOUSETYPE house) {
         return houseName[idx];
     }
 
-    THROW(std::invalid_argument, "Invalid house number %d!", house);
+    THROW(std::invalid_argument, "Invalid house number %d!", static_cast<int>(house));
 }
 
 ATTACKMODE getAttackModeByName(std::string_view name) {

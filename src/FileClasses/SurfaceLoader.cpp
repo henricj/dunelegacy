@@ -1141,7 +1141,7 @@ SurfaceLoader::SurfaceLoader() {
                 if(HOUSETYPE::HOUSE_HARKONNEN == house)
                     source = std::move(surface);
 
-                if(!source) THROW(std::runtime_error, "No source surface for generating id %d for house %d", id, house);
+                if(!source) THROW(std::runtime_error, "No source surface for generating id %d for house %d", static_cast<int>(id), static_cast<int>(house));
 
                 assert(!surface);
 

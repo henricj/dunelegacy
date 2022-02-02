@@ -38,7 +38,7 @@
 Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
     if(house != HOUSETYPE::HOUSE_HARKONNEN && house != HOUSETYPE::HOUSE_ATREIDES && house != HOUSETYPE::HOUSE_ORDOS) {
-        THROW(std::invalid_argument, "Invalid house number %d!", house);
+        THROW(std::invalid_argument, "Invalid house number %d!", static_cast<int>(house));
     }
 
     pMeanwhile = create_wsafile("MEANWHIL.WSA");

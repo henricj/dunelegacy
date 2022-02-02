@@ -175,7 +175,7 @@ void Game::initReplay(const std::filesystem::path& filename) {
     IFileStream fs;
 
     if(!fs.open(filename)) {
-        THROW(io_error, "Error while opening '%s'!", filename);
+        THROW(io_error, "Error while opening '%s'!", filename.string());
     }
 
     // override local player name as it was when the replay was created
@@ -1185,7 +1185,7 @@ void Game::runMainLoop(const GameContext& context) {
 
                 sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
                              fmt::format("Unable to open the replay file {}: {}",
-                                         std::filesystem::path{replayname2}.filename(), replay2_error.message())
+                                         std::filesystem::path{replayname2}.filename().string(), replay2_error.message())
                                  .c_str());
             }
         }

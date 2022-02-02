@@ -63,7 +63,7 @@ public:
         const load_functor pLoad;
 
         Random create_random(const GameContext& context, House* house, std::string_view playername) const {
-            auto random_name = fmt::format("player {} {} {} {}", name, house->getHouseID(), playerclass, playername);
+            const auto random_name = fmt::format("player {} {} {} {}", name, static_cast<int>(house->getHouseID()), playerclass, playername);
 
             return context.game.randomFactory.create(random_name);
         }

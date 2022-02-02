@@ -118,24 +118,24 @@ const DuneTexture* GFXManager::getTinyPicture(unsigned int id) const {
 const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
     if(static_cast<int>(id) >= NUM_GENERATEDPICTURES) {
         THROW(std::invalid_argument,
-              "GFXManager::getGeneratedPicture(): Generated pictured with ID %u is not available!", id);
+              "GFXManager::getGeneratedPicture(): Generated pictured with ID %u is not available!", static_cast<unsigned int>(id));
     }
 
     const auto& texture = duneTextures.get_generated_picture(id);
 
-    if(!texture) sdl2::log_info("Unable to get generated picture %u", id);
+    if(!texture) sdl2::log_info("Unable to get generated picture %u", static_cast<unsigned int>(id));
 
     return texture ? &texture : nullptr;
 }
 
 const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) const {
     if(id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", static_cast<unsigned int>(id));
     }
 
     const auto& texture = duneTextures.get_ui_graphic(id, house);
 
-    if(!texture) sdl2::log_info("Unable to get ui graphic %u for house %d", id, house);
+    if(!texture) sdl2::log_info("Unable to get ui graphic %u for house %d", id, static_cast<int>(house));
 
     return texture ? &texture : nullptr;
 }
@@ -147,7 +147,7 @@ const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE hou
 
     const auto& texture = duneTextures.get_ui_graphic(num, house);
 
-    if(!texture) sdl2::log_info("Unable to get map choice piece %u for house %d", num, house);
+    if(!texture) sdl2::log_info("Unable to get map choice piece %u for house %d", num, static_cast<int>(house));
 
     return texture ? &texture : nullptr;
 }
