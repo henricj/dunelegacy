@@ -173,16 +173,39 @@ void setVideoMode(int displayIndex)
                               SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
                               settings.video.physicalWidth, settings.video.physicalHeight,
                               videoFlags);
-    if(settings.video.renderer != "default") SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
+
+    sdl2::log_info("Available renderers:");
+
+    { // Scope
+        const auto n = SDL_GetNumRenderDrivers();
+
+        for(auto i = 0; i < n; ++i) {
+            SDL_RendererInfo info;
+            if(0 == SDL_GetRenderDriverInfo(i, &info))
+                sdl2::log_info("   %s", info.name);
+        }
+    }
+
+    if(settings.video.renderer != "default")
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
+
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
 
 #if defined(_WIN32)
     // Prefer DX11 on Windows
-    if(settings.video.renderer == "default") SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
+    if(settings.video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
 #    if defined(_DEBUG)
     SDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG, "1");
 #    endif
 #endif
+
+    { // Scope
+        const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER);
+
+        if(render_driver_hint)
+            sdl2::log_info("   requested render driver: %s", render_driver_hint);
+    }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
     { // Scope
