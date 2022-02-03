@@ -25,8 +25,8 @@ performance.  The game engine itself will eventually be moved off of the renderi
 will provide for a much more responsive user interface, particularly when many units are on the map.
 
 All builds are now being done through [CMake](https://cmake.org/) with regular testing
-on Windows with [Visual Studio 2019](https://visualstudio.microsoft.com/vs/) and Ubuntu with g++.  Windows
-development is being done with VS2019's native CMake support, which uses Ninja for the actual build.  (It
+on Windows with [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) and Ubuntu with g++.  Windows
+development is being done with VS2022's native CMake support, which uses Ninja for the actual build.  (It
 is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.)
 
 ### Notable Changes
@@ -58,9 +58,9 @@ the `[Video]` section in the INI file).
 
 ### Building
 
-#### Windows
+#### Windows Build
 
-Install Visual Studio 2019 including the "Desktop development with C++" workload.  Go
+Install Visual Studio 2022 including the "Desktop development with C++" workload.  Go
 to the "Individual Components" of the installer to make sure "C++ CMake tools for Windows" is
 enabled (enable clang as well to enable builds with "clang-cl").
 
@@ -72,7 +72,7 @@ repository directly by going to "File" -> "Clone Repository..." on the menu.
 From the command line (a bit faster, but requries more typing):
 
 First open a command prompt with access to CMake (for example, "Developer Command Prompt
-for Visual Studio 2019").  Get a copy of the code repository, along with the submodules:
+for Visual Studio 2022").  Get a copy of the code repository, along with the submodules:
 
 ```bat
 git clone https://github.com/henricj/dunelegacy.git
@@ -99,7 +99,7 @@ ctest
 
 There should now be a working dunelegacy executable in `out\build\x64-avx2-Release\src`.
 
-#### Linux
+#### Linux Build
 
 The build-essential, git, ninja-build, and cmake packages are needed.  Either g++ or clang
 can be used for the build (tested with g++-10 and clang-10).
@@ -127,7 +127,7 @@ cmake --build .
 ctest
 ```
 
-There should now be a working dunelegacy executable in `out/build/x64-Release\src`.
+There should now be a working dunelegacy executable in `out/build/x64-Release/src`.
 
 ### Notes
 
@@ -186,14 +186,14 @@ Just look for LEGACY.PAK. If you do not have root access to your system you shou
 
 ### Windows
 
-The installer has already asked for the files and put them in the installation directory. If not put the PAK-files inside your installation folder or 
+The installer has already asked for the files and put them in the installation directory. If not put the PAK-files inside your installation folder or
 if you do not have administrator privileges you should put them to C:\Documents and Settings\<YourName>\Application Data\dunelegacy\data\ .
 
 ### MAC OS X
 
 The PAK-files have to be copied inside the application bundle. If you have followed the steps in the supplied dmg you have already copied them there.
-Otherwise just right-click on the bundle and select "Show Bundle Content". Then navigate into "Contents" and then into "Resources". There you will 
-find LEGACY.PAK. Put the other PAK-files there too. Alternativly you can put them in your home directory under ~/.config/dunelegacy/data/ but putting 
+Otherwise just right-click on the bundle and select "Show Bundle Content". Then navigate into "Contents" and then into "Resources". There you will
+find LEGACY.PAK. Put the other PAK-files there too. Alternativly you can put them in your home directory under ~/.config/dunelegacy/data/ but putting
 them inside the application bundle is the preferred way.
 
 ## Keyboard Shortcuts
@@ -247,7 +247,7 @@ Map Editor:
 
 | Key | Effect |
 |--|--|
-| Print Key or Ctrl + P         |    Save a picture of the whole map as <Mapname>.bmp |
+| Print Key or Ctrl + P         |    Save a picture of the whole map as &lt;Mapname&gt;.bmp |
 | Ctrl + Z                      |    Undo last edit                                   |
 | Ctrl + Y                      |    Redo last edit                                   |
 
