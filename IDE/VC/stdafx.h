@@ -81,10 +81,12 @@
 #    include <memory>
 #    include <mutex>
 #    include <numeric>
+#    include <optional>
 #    include <queue>
 #    include <random>
 #    include <set>
 #    include <string>
+#    include <tuple>
 #    include <typeinfo>
 #    include <unordered_map>
 #    include <unordered_set>
