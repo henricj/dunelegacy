@@ -40,8 +40,7 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
             return p[0] << 16 | p[1] << 8 | p[2];
         } else {
             return p[0] | p[1] << 8 | p[2] << 16;
-
-}
+        }
 
     case 4: {
         const auto value = *reinterpret_cast<Uint32 *>(p);
@@ -172,11 +171,27 @@ void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     assert(renderer == ::renderer);
-    const SDL_Rect rendererSize = getRendererSize();
-    sdl2::surface_ptr pScreen{ SDL_CreateRGBSurface(0, rendererSize.w, rendererSize.h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
-    if((pScreen == nullptr) || (SDL_RenderReadPixels(renderer, nullptr, SCREEN_FORMAT, pScreen->pixels, pScreen->pitch) != 0)) {
-        sdl2::log_info("Warning: renderReadSurface() failed: %s", SDL_GetError());
+
+    auto w = 0;
+    auto h = 0;
+    if(SDL_GetRendererOutputSize(renderer, &w, &h)) {
+        sdl2::log_warn("Warning: renderReadSurface() output size failed: %s", SDL_GetError());
         return nullptr;
+    }
+
+    sdl2::surface_ptr pScreen{ SDL_CreateRGBSurface(0, w, h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if((pScreen == nullptr)) {
+        sdl2::log_warn("Warning: renderReadSurface() create surface failed: %s", SDL_GetError());
+        return nullptr;
+    }
+
+    {   // Scope
+        sdl2::surface_lock lock{pScreen.get()};
+
+        if(0 != SDL_RenderReadPixels(renderer, nullptr, pScreen->format->format, pScreen->pixels, pScreen->pitch)) {
+            sdl2::log_warn("Warning: renderReadSurface() copy failed: %s", SDL_GetError());
+            return nullptr;
+        }
     }
 
     // Fix bug in SDL2 OpenGL Backend (SDL bug #2740 and #3350) in SDL version <= 2.0.4
