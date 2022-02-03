@@ -2589,16 +2589,12 @@ bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos
 
 
 void Game::takeScreenshot() const {
-    std::string screenshotFilename;
-    int i = 1;
-    do {
-        screenshotFilename = "Screenshot" + std::to_string(i) + ".png";
-        i++;
-    } while(existsFile(screenshotFilename));
+    auto [ok, path] = SaveScreenshot();
 
-    sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
-    SavePNG(pCurrentScreen.get(), screenshotFilename.c_str());
-    currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + screenshotFilename + "'");
+    if (ok && path.has_value()) {
+        const auto filename = path.value().filename().u8string();
+        currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + filename + "'");
+    }
 }
 
 

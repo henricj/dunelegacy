@@ -153,16 +153,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
                 case SDLK_PRINTSCREEN:
                 case SDLK_SYSREQ: {
-
-                    std::string screenshotFilename;
-                    int i = 1;
-                    do {
-                        screenshotFilename = "Screenshot" + std::to_string(i) + ".png";
-                        i++;
-                    } while(existsFile(screenshotFilename));
-
-                    sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
-                    SavePNG(pCurrentScreen.get(), screenshotFilename.c_str());
+                    SaveScreenshot();
                 } break;
 
                 case SDLK_TAB: {

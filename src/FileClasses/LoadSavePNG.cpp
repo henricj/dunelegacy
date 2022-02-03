@@ -21,6 +21,7 @@
 #include <misc/exceptions.h>
 #include <Colors.h>
 #include <globals.h>
+#include <optional>
 
 struct free_deleter
 {
@@ -154,37 +155,34 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 }
 
 int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
-    if(surface == nullptr) {
+    if(surface == nullptr || nullptr == RWop) {
         return -1;
+    }
+
+    sdl2::surface_ptr surface_copy;
+
+    if(surface->format->format != SDL_PIXELFORMAT_RGBA32) {
+        surface_copy = sdl2::surface_ptr{SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)};
+
+        surface = surface_copy.get();
     }
 
     const unsigned int width = surface->w;
     const unsigned int height = surface->h;
 
-    std::vector<unsigned char> image(width*height * 4);
-
-    {
-        sdl2::surface_lock lock{ surface };
-
-        // Now we can copy pixel by pixel
-        for(auto y = 0u; y < height; y++) {
-            auto * RESTRICT out = image.data() + y * 4*width;
-            for(auto x = 0u; x < width; x++) {
-                const auto pixel = getPixel(surface, x, y);
-                SDL_GetRGBA(pixel, surface->format, &out[0], &out[1], &out[2], &out[3]);
-                out += 4;
-            }
-        }
-    }
-
     unsigned char* ppngFile = nullptr;
     size_t pngFileSize = 0;
 
-    const auto error = lodepng_encode32(&ppngFile, &pngFileSize, image.data(), width, height);
-    if(error != 0) {
-        sdl2::log_info("%s", lodepng_error_text(error));
-        free(ppngFile);
-        return -1;
+    { // Scope
+        sdl2::surface_lock lock{surface};
+
+        const auto error = lodepng_encode32(&ppngFile, &pngFileSize, static_cast<const unsigned char*>(surface->pixels),
+                                            width, height);
+        if(error != 0) {
+            sdl2::log_info("%s", lodepng_error_text(error));
+            free(ppngFile);
+            return -1;
+        }
     }
 
     lodepng_ptr ppngFile_ptr{ ppngFile };
@@ -195,4 +193,48 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     }
 
     return 0;
+}
+
+std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
+    time_t rawtime;
+    time(&rawtime);
+    const auto* timeinfo = localtime(&rawtime);
+
+    if(!timeinfo) {
+        sdl2::log_warn("Saving screenshot failed: unable to get local time");
+        return {false, std::nullopt};
+    }
+
+    std::array<char, 128> buffer;
+    const auto length = strftime(buffer.data(), buffer.size(), "screenshot/dunelegacy %F %H%M%S.png", timeinfo);
+
+    if(0 == length) {
+        sdl2::log_warn("Saving screenshot failed: unable to format time");
+        return {false, std::nullopt};
+    }
+
+    auto [ok, path] = fnkdat(buffer.data(), FNKDAT_USER | FNKDAT_CREAT);
+
+    if(!ok) {
+        sdl2::log_warn("Saving screenshot failed: unable to get path");
+        return {false, std::nullopt};
+    }
+
+    { // Scope
+        const sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
+
+        if (!pCurrentScreen) {
+            sdl2::log_warn("Saving screenshot failed: unable to copy screen");
+            return {false, std::nullopt};
+        }
+
+        const auto saved_ok = 0 == SavePNG(pCurrentScreen.get(), path);
+
+        if (saved_ok)
+            sdl2::log_info("Saving screenshot to %s", path.u8string());
+        else
+            sdl2::log_warn("Saving screenshot to %s failed", path.u8string());
+
+        return { saved_ok, path };
+    }
 }
