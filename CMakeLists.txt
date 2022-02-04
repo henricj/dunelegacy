@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16..3.22)
 
 if(NOT DEFINED VCPKG_TARGET_TRIPLET)
     if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
