@@ -100,6 +100,10 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
     lastAnimFrame = 3;
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
+
+    if(nullptr == pRepairUnit)
+        return;
+
     if(pCarryall != nullptr) {
         pCarryall->giveCargo(context, pRepairUnit);
         pCarryall->setTarget(nullptr);
@@ -137,7 +141,10 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
     }
 
     if (repairingAUnit == true) {
-        auto* pRepairUnit = static_cast<GroundUnit*>(repairUnit.getUnitPointer());
+        auto* pRepairUnit = dune_cast<GroundUnit>(repairUnit.getUnitPointer());
+
+        if(nullptr == pRepairUnit)
+            return;
 
         if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
             if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
