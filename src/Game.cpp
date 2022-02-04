@@ -2007,22 +2007,30 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_0: {
             //if ctrl and 0 remove selected units from all groups
             if(SDL_GetModState() & KMOD_CTRL) {
-                for(Uint32 objectID : selectedList) {
-                    ObjectBase* pObject = objectManager.getObject(objectID);
+                std::vector<ObjectBase*> selected_objects;
+                selected_objects.reserve(selectedList.size());
+
+                for(auto objectID : selectedList) {
+                    if(auto* object = objectManager.getObject(objectID))
+                        selected_objects.push_back(object);
+                }
+
+                for(auto* pObject : selected_objects) {
+                    const auto objectID = pObject->getObjectID();
+
                     removeFromSelectionLists(pObject);
                     removeFromQuickSelectionLists(objectID);
                 }
-                selectedList.clear();
-                currentGame->selectionChanged();
-                currentCursorMode = CursorMode_Normal;
             } else {
                 for(Uint32 objectID : selectedList) {
-                    objectManager.getObject(objectID)->setSelected(false);
+                    if (auto* object = objectManager.getObject(objectID))
+                        object->setSelected(false);
                 }
-                selectedList.clear();
-                currentGame->selectionChanged();
-                currentCursorMode = CursorMode_Normal;
             }
+
+            selectedList.clear();
+            currentGame->selectionChanged();
+            currentCursorMode = CursorMode_Normal;
         } break;
 
         case SDLK_1:
