@@ -570,7 +570,7 @@ set(LIBS
 if(WIN32)
 	list(APPEND LIBS shlwapi ws2_32 winmm)
 	list(APPEND SOURCES fixmath/fixmath.natvis)
-	list(APPEND EXE_SOURCES ../IDE/VC/DuneLegacy.exe.manifest ../resource.rc)
+	list(APPEND EXE_SOURCES ../Windows/DuneLegacy.exe.manifest ../resource.rc)
 endif()
 
 if(UNIX)
@@ -599,7 +599,7 @@ if(NOT HAVE_DOUBLE_FROM_CHARS)
 	target_compile_definitions(dune PUBLIC NEED_DOUBLE_FROM_CHARS)
 endif()
 
-target_precompile_headers(dune PRIVATE ../IDE/VC/stdafx.h)
+target_precompile_headers(dune PRIVATE stdafx.h)
 
 add_executable(dunelegacy ${EXE_SOURCES} ../include/main.h)
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
