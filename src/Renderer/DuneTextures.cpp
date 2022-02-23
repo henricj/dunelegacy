@@ -753,8 +753,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
     return DuneTextures{std::move(textures),
                         object_picture_packer.object_pictures2(),
-                        std::move(small_detail_pics_packer.dune_textures()),
-                        std::move(tiny_picture_packer.dune_textures()),
-                        std::move(ui_graphic_packer.dune_textures()),
-                        std::move(generated_pictures_packer.dune_textures())};
+                        small_detail_pics_packer.dune_textures(),
+                        tiny_picture_packer.dune_textures(),
+                        ui_graphic_packer.dune_textures(),
+                        generated_pictures_packer.dune_textures()};
 }
