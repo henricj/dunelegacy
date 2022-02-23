@@ -23,7 +23,7 @@
            The "longPathAware" setting also require a registry setting.
            https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#enable-long-paths-in-windows-10-version-1607-and-later
            Note that it should not be enabled unless the application has been audited for
-           possible buffer overflows if MAX_PATH is no longer limted to 260.
+           possible buffer overflows if MAX_PATH is no longer limited to 260.
         -->
       <!--<longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>-->
       <!--<heapType>SegmentHeap</heapType>-->
