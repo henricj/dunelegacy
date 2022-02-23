@@ -11,25 +11,20 @@ jobs:
     strategy:
       #fail-fast: false
       matrix:
-        config:
-          - {
-              name: Windows x64,
-              platform: x64
-            }
-          - {
-              name: Windows x64-avx2,
-              platform: x64,
-              extra: "-DDUNE_TARGET_ARCHITECTURE_EXTENSION:STRING=\"avx2\"",
-              name_postfix: "-avx2"
-            }
-          - {
-              name: Windows x86,
-              platform: x86
-            }
-          - {
-              name: Windows ARM64,
-              platform: arm64
-            }
+        include:
+          - name: Windows x64
+            platform: x64
+            preset: windows-x64-release
+          - name: Windows x64-avx2
+            platform: x64
+            name_postfix: "-avx2"
+            preset: windows-x64-avx2-release
+          - name: Windows x86
+            platform: x86
+            preset: windows-x86-release
+          - name: Windows ARM64
+            platform: arm64
+            preset: windows-arm64-release
     steps:
       - name: Fetch repo
         uses: actions/checkout@v2
@@ -37,6 +32,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
           path: source
+
+      #- name: Install Ninja
+      #  shell: cmd
+      #  run: choco install --yes ninja
 
       - name: Export Environment
         run: |
@@ -48,7 +47,7 @@ jobs:
             Export-WorkflowValue $name $value
             Return $value
           }
-          $platform = '${{matrix.config.platform}}${{matrix.config.name_postfix}}'
+          $platform = '${{matrix.platform}}${{matrix.name_postfix}}'
           $root = (Resolve-Path -LiteralPath $Env:GITHUB_WORKSPACE).Path
           $source = (Resolve-Path -LiteralPath (Join-Path $root -ChildPath 'source')).Path
           cd $source
@@ -84,32 +83,35 @@ jobs:
           Export-WorkflowValue 'PROJECT_INSTALLER_ZIP_NAME' $exe_zip_name
           Export-WorkflowValue 'PROJECT_LATEST_TAG' "latest-$platform"
           Export-WorkflowValue 'PROJECT_VCPKG_TRIPLET' "$platform-windows-ltcg"
+          $vs = Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require @('Microsoft.VisualStudio.Component.VC.Tools.x86.x64', 'Microsoft.VisualStudio.Component.VC.Tools.ARM64', 'Microsoft.VisualStudio.Component.VC.CMake.Project')
+          $vsdevcmd_path = (Resolve-Path -LiteralPath (Join-Path $vs.InstallationPath -ChildPath 'Common7/Tools/VsDevCmd.bat')).Path
+          Export-WorkflowValue 'VSDEVCMD_PATH' $vsdevcmd_path
 
       - name: vcpkg
         shell: cmd
-        run: source\external\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
+        run: |
+          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
+          source\external\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
 
       - name: Compile
         shell: cmd
         run: |
-          call "source\IDE\VC\findmsvc.bat" -host_arch=x64 -arch=${{matrix.config.platform}} -startdir=none
-          set CC=cl.exe
-          set CXX=cl.exe
-          cmake -G Ninja -DDUNE_TARGET_ARCHITECTURE=${{matrix.config.platform}} -DVCPKG_TARGET_TRIPLET:STRING=%PROJECT_VCPKG_TRIPLET% "${{matrix.config.extra}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -DCMAKE_BUILD_TYPE=Release -S "%PROJECT_SOURCE%" -B "%PROJECT_BUILD%"
+          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
+          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B "%PROJECT_BUILD%"
           cmake --build "%PROJECT_BUILD%"
 
       - name: Test
         shell: cmd
-        if: matrix.config.platform != 'arm64'
+        if: matrix.platform != 'arm64'
         run: |
-          call "source\IDE\VC\findmsvc.bat" -host_arch=x64 -arch=${{matrix.config.platform}} -startdir=none
+          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
           cd "%PROJECT_BUILD%"
           ctest
 
       - name: Build Installer
         shell: cmd
         run: |
-          call "source\IDE\VC\findmsvc.bat" -host_arch=x64 -arch=${{matrix.config.platform}} -startdir=none
+          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
           cd "%PROJECT_BUILD%"
           cpack -G ZIP -v
 
