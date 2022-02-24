@@ -6,8 +6,8 @@
 
 | [Workflow](../../actions) | Status |
 |------------|------------|
-|   [Windows](../../actions?query=workflow%3AWindows)  | ![Windows](../../workflows/Windows/badge.svg) |
-|   [Ubuntu](../../actions?query=workflow%3AUbuntu)    | ![Ubuntu](../../workflows/Ubuntu/badge.svg) |
+|   [Windows](../../actions/workflows/windows.yml)  | [![Windows](../../actions/workflows/windows.yml/badge.svg)](../../actions/workflows/windows.yml) |
+|   [Ubuntu](../../actions/workflows/ubuntu.yml)    | [![Ubuntu](../../actions/workflows/ubuntu.yml/badge.svg)](../../actions/workflows/ubuntu.yml) |
 
 ### Binaries
 
