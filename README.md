@@ -75,9 +75,8 @@ First open a command prompt with access to CMake (for example, "Developer Comman
 for Visual Studio 2022").  Get a copy of the code repository, along with the submodules:
 
 ```bat
-git clone https://github.com/henricj/dunelegacy.git
+git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
-git submodule update --init --recursive -j 8
 ```
 
 Build the vcpkg packages,
@@ -92,7 +91,7 @@ too few tests):
 ```bat
 mkdir out\build\x64-avx2-Release
 cd out\build\x64-avx2-Release
-cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DDUNE_TARGET_ARCHITECTURE:STRING=x64 -DDUNE_TARGET_ARCHITECTURE_EXTENSION=avx2 -DVCPKG_TARGET_TRIPLET:STRING=x64-avx2-windows-ltcg ../../..
+cmake -G Ninja -profile=windows-x64-avx2-release -B . -S ../../..
 cmake --build .
 ctest
 ```
@@ -102,12 +101,11 @@ There should now be a working dunelegacy executable in `out\build\x64-avx2-Relea
 #### Linux Build
 
 The build-essential, git, ninja-build, and cmake packages are needed.  Either g++ or clang
-can be used for the build (tested with g++-10 and clang-10).
+can be used for the build (tested with GCC 11 and Clang 13).
 
 ```sh
-git clone https://github.com/henricj/dunelegacy.git
+git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
-git submodule update --init --recursive -j 8
 ```
 
 Build the vcpkg packages,
