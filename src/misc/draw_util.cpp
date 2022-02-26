@@ -307,7 +307,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
 }
 
 void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
-    if(source->format->BitsPerPixel == 8 && target->format->BitsPerPixel == 8 && target->format->padding && source->format->palette) {
+    if(source->format->BitsPerPixel == 8 && target->format->BitsPerPixel == 8 && source->format->palette) {
         if(SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0,
                                 source->format->palette->ncolors)) {
             THROW(std::runtime_error,
