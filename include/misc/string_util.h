@@ -20,12 +20,12 @@
 
 #include <misc/exceptions.h>
 
-#include <string>
-#include <vector>
-#include <map>
 #include <algorithm>
 #include <functional>
+#include <map>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include <gsl/gsl>
 
@@ -115,19 +115,18 @@ inline bool parseString(std::string_view str, T& t) {
     return ec == std::errc{};
 }
 
-
 inline void convertToLower(std::string& str) {
-    std::transform(str.begin(),str.end(), str.begin(), static_cast<int(*)(int)>(tolower));
+    std::transform(str.begin(), str.end(), str.begin(), tolower);
 }
 
 inline std::string strToLower(std::string_view str) {
-    std::string result{str};
+    std::string result{ str };
     convertToLower(result);
     return result;
 }
 
 inline void convertToUpper(std::string& str) {
-    std::transform(str.begin(),str.end(), str.begin(), static_cast<int(*)(int)>(toupper));
+    std::transform(str.begin(),str.end(), str.begin(), toupper);
 }
 
 inline std::string strToUpper(std::string_view str) {
@@ -138,13 +137,12 @@ inline std::string strToUpper(std::string_view str) {
 
 inline std::string trim(std::string_view str) {
     const size_t firstChar = str.find_first_not_of(" \t");
-    const size_t lastChar = str.find_last_not_of(" \t");
+    const size_t lastChar  = str.find_last_not_of(" \t");
 
-    if((firstChar == std::string::npos) || (lastChar == std::string::npos)) {
+    if(firstChar == std::string::npos || lastChar == std::string::npos)
         return "";
-    } else {
-        return std::string{str.substr(firstChar, lastChar - firstChar + 1)};
-    }
+
+    return std::string{ str.substr(firstChar, lastChar - firstChar + 1) };
 }
 
 inline bool utf8IsStartByte(unsigned char c) {

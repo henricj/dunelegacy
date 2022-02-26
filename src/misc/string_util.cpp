@@ -17,9 +17,7 @@
 
 #include <misc/string_util.h>
 
-#include <algorithm>
-#include <cstdarg>
-#include <cstdio>
+#include <charconv>
 #include <regex>
 #include <vector>
 
@@ -239,7 +237,7 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
 std::string convertCP850ToUTF8(std::string_view text)
 {
     // contains the upper half of cp850 (128 - 255)
-    static const unsigned char cp850toISO8859_1[] = {
+    static constexpr unsigned char cp850toISO8859_1[] = {
         0xc7, 0xfc, 0xe9, 0xe2, 0xe4, 0xe0, 0xe5, 0xe7, 0xea, 0xeb, 0xe8, 0xef, 0xee, 0xec, 0xc4, 0xc5,
         0xc9, 0xe6, 0xc6, 0xf4, 0xf6, 0xf2, 0xfb, 0xf9, 0xff, 0xd6, 0xdc, 0xf8, 0xa3, 0xd8, 0xd7, 0x3f,
         0xe1, 0xed, 0xf3, 0xfa, 0xf1, 0xd1, 0xaa, 0xba, 0xbf, 0xae, 0xac, 0xbd, 0xbc, 0xa1, 0xab, 0xbb,
@@ -253,7 +251,7 @@ std::string convertCP850ToUTF8(std::string_view text)
     std::string result;
     result.reserve(text.length());
     for(char i : text) {
-        auto c = (unsigned char) i;
+        auto c = static_cast<unsigned char>(i);
         if(c == 0x0D) {
             result += "\n";
         } else if(c < 128) {
@@ -270,9 +268,8 @@ std::string convertCP850ToUTF8(std::string_view text)
 
 std::string decodeString(std::string_view text) {
     std::string out = "";
-
-    static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
-    static const char decodeTable2[16][9] = {   { 't','a','s','i','o',' ','w','b' },
+    static constexpr char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
+    static constexpr char decodeTable2[16][9] = {   { 't','a','s','i','o',' ','w','b' },
                                                 { ' ','r','n','s','d','a','l','m' },
                                                 { 'h',' ','i','e','o','r','a','s' },
                                                 { 'n','r','t','l','c',' ','s','y' },
