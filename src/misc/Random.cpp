@@ -1,4 +1,5 @@
 #include <misc/Random.h>
+#include <misc/string_util.h>
 
 #include <atomic>
 #include <array>
