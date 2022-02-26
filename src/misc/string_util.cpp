@@ -324,7 +324,7 @@ std::string decodeString(std::string_view text) {
     return out;
 }
 
-std::string to_hex(gsl::span<const Uint8> data) {
+std::string to_hex(gsl::span<const uint8_t> data) {
     std::string s;
     s.reserve(data.size() * 2 + 1);
 
@@ -349,7 +349,7 @@ std::string to_hex(gsl::span<const Uint8> data) {
     return s;
 }
 
-std::string to_hex(gsl::span<const Uint32> data) {
+std::string to_hex(gsl::span<const uint32_t> data) {
     std::string s;
     s.reserve(data.size() * 9 + 1);
 
@@ -376,7 +376,7 @@ std::string to_hex(gsl::span<const Uint32> data) {
     return s;
 }
 
-std::string to_hex(gsl::span<const Uint64> data) {
+std::string to_hex(gsl::span<const uint64_t> data) {
     std::string s;
     s.reserve(data.size() * 17 + 1);
 
