@@ -83,7 +83,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     auto iter = str.cbegin();
 
     size_t currentPos = 0;
-    while( (iter < str.cend()) && (currentPos != pos) ) {
+    while( (iter != str.cend()) && (currentPos != pos) ) {
         auto c = static_cast<unsigned char>( *iter );
 
         if( (c & 0x80) == 0) {
@@ -106,7 +106,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     }
 
     size_t resultLen = 0;
-    while( (iter < str.cend()) && (resultLen != len) ) {
+    while( (iter != str.cend()) && (resultLen != len) ) {
         auto c = static_cast<unsigned char>( *iter );
 
         size_t numBytes = 0;
@@ -130,7 +130,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
         while((iter < str.cend()) && (numBytes > 0)) {
             result += *iter;
             numBytes--;
-            iter++;
+            ++iter;
         }
 
         resultLen += 1;
