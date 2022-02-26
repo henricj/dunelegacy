@@ -197,7 +197,7 @@ fix32_t fix32_div(fix32_t a, fix32_t b)
 		int64_t product_hi = AC + (AD_CB >> 32);
 
 		// Handle carry from lower 64 bits to upper part of result.
-		uint64_t ad_cb_temp = AD_CB << 32;
+		uint64_t ad_cb_temp = (uint64_t)AD_CB << 32u;
 		uint64_t product_lo = BD + ad_cb_temp;
 		if (product_lo < BD)
 			product_hi++;
