@@ -167,7 +167,7 @@ inline size_t utf8Length(std::string_view str) {
             // 1 byte: 0xxxxxxx
             iter += 1;
         } else if( (c & 0xE0) == 0xC0) {
-            // 2 bvte: 110xxxxx 10xxxxxx
+            // 2 byte: 110xxxxx 10xxxxxx
             iter += 2;
         } else if( (c & 0xF0) == 0xE0) {
             // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
