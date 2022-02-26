@@ -267,7 +267,6 @@ std::string convertCP850ToUTF8(std::string_view text)
 
 
 std::string decodeString(std::string_view text) {
-    std::string out = "";
     static constexpr char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
     static constexpr char decodeTable2[16][9] = {   { 't','a','s','i','o',' ','w','b' },
                                                 { ' ','r','n','s','d','a','l','m' },
@@ -285,6 +284,9 @@ std::string decodeString(std::string_view text) {
                                                 { 'n','s','r','c','t','l','a','i' },
                                                 { 'l','e','o','i','r','a','t','p' },
                                                 { 'e','a','o','i','p',' ','b','m' } };
+
+    std::string out;
+    out.reserve(text.length());
 
     for(unsigned int i = 0; i < text.length(); i++) {
         unsigned char databyte = text[i];
