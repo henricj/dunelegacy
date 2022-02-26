@@ -27,9 +27,9 @@ class AnimationLabel : public Widget
 public:
 
     /// default constructor
-    AnimationLabel() {
+    AnimationLabel()
+        : pAnim(nullptr) {
         enableResizing(false,false);
-        pAnim = nullptr;
     }
 
     /// destructor
@@ -75,11 +75,12 @@ public:
     [[nodiscard]] Point getMinimumSize() const override
     {
         SDL_Surface* surface = pAnim->getFrame();
-        if(surface != nullptr) {
-            return Point((Sint32) surface->w, (Sint32) surface->h);
-        }             return Point(0,0);
 
-       
+        if(surface != nullptr) {
+            return {surface->w, surface->h};
+        }
+
+        return {0,0};
     }
 
 private:
