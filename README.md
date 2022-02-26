@@ -98,6 +98,11 @@ ctest
 
 There should now be a working dunelegacy executable in `out\build\x64-avx2-Release\src`.
 
+To see the full list of CMake presets (from the top level dunelegacy directory):
+```bat
+cmake --list-presets
+```
+
 #### Linux Build
 
 The build-essential, git, ninja-build, and cmake packages are needed.  Either g++ or clang
