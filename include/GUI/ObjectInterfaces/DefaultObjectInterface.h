@@ -67,7 +67,7 @@ protected:
         objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()));
 
         topBoxHBox.addWidget(Spacer::create());
-    };
+    }
 
     /**
         This method updates the object interface.

@@ -214,7 +214,7 @@ std::vector<Uint8> RandomFactory::getSeed() const {
     sdl2::log_info("Getting RandomFactory seed %s", to_hex(seed));
 
     return seed;
-};
+}
 
 std::vector<Uint8> RandomFactory::createRandomSeed(std::string_view name) {
     std::random_device rd;

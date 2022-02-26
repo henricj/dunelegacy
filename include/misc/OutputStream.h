@@ -29,7 +29,7 @@
 class OutputStream
 {
 public:
-    OutputStream() { ; };
+    OutputStream() { }
     virtual ~OutputStream() = default;
     /**
         This method flushes all caches and finally writes out all cached output.
@@ -183,10 +183,10 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        explicit error(const std::string& str) noexcept : str(str) { };
+        explicit error(const std::string& str) noexcept : str(str) { }
         virtual ~error() noexcept = default;
 
-        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); };
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;

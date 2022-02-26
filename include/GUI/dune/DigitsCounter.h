@@ -40,7 +40,7 @@ public:
     }
 
     /// destructor
-    ~DigitsCounter() override { ; };
+    ~DigitsCounter() override { ; }
 
     /**
         Get the current count of this digits counter

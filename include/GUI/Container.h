@@ -223,7 +223,7 @@ public:
         }
 
         return insideOverlay;
-    };
+    }
 
     /**
         Handles a left mouse click in overlays.

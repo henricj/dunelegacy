@@ -46,7 +46,7 @@ public:
         topLeftCornerOnScreen.y = gameBoardRect.y;
         bottomRightCornerOnScreen.x = gameBoardRect.x + gameBoardRect.w;
         bottomRightCornerOnScreen.y = gameBoardRect.y + gameBoardRect.h;
-    };
+    }
 
     /**
         Destructor
@@ -315,7 +315,7 @@ public:
     [[nodiscard]] int screen2MapX(int x) const
     {
         return screen2worldX(x)/TILESIZE;
-    };
+    }
 
     /**
         This method converts from screen to map coordinates.
@@ -325,7 +325,7 @@ public:
     [[nodiscard]] int screen2MapY(int y) const
     {
         return screen2worldY(y)/TILESIZE;
-    };
+    }
 
     /**
         This method checks if the specified x,y coordinate is within the map

@@ -76,13 +76,13 @@ public:
         Returns the radar view
         \return the radar view
     */
-    RadarView& getRadarView() { return radarView; };
+    RadarView& getRadarView() { return radarView; }
 
     /**
         Returns the chat manager
         \return the chat manager
     */
-    ChatManager& getChatManager() { return chatManager; };
+    ChatManager& getChatManager() { return chatManager; }
 
 
     /**

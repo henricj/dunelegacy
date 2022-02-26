@@ -44,7 +44,7 @@ public:
         Returns that this button can be set active.
         \return true(= activatable)
     */
-    [[nodiscard]] bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); }
 
     /**
         Enable or disable this button. A disabled button is not responding
@@ -57,7 +57,7 @@ public:
         if(bEnabled == false) {
             bPressed = false;
         }
-    };
+    }
 
 
     /**

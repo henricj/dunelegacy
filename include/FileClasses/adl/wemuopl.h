@@ -35,7 +35,7 @@ public:
     {
       opl.adlib_init(rate);
       currType = TYPE_OPL2;
-    };
+    }
 
   void update(short *buf, int samples) override
   {
@@ -52,9 +52,9 @@ public:
 
       opl.index = reg;
       opl.adlib_write(opl.index, val, 0);
-    };
+    }
 
-  void init() noexcept override {};
+  void init() noexcept override { }
 
 private:
   bool      stereo;

@@ -425,7 +425,7 @@ public:
 
     void setOwner(HOUSETYPE newOwner) noexcept { owner = newOwner; }
     void setSandRegion(Uint32 newSandRegion) noexcept { sandRegion = newSandRegion; }
-    void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept { destroyedStructureTile = newDestroyedStructureTile; };
+    void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept { destroyedStructureTile = newDestroyedStructureTile; }
 
     bool hasAGroundObject() const noexcept { return (hasInfantry() || hasANonInfantryGroundObject()); }
     bool hasAnAirUnit() const noexcept { return !assignedAirUnitList.empty(); }
@@ -476,7 +476,7 @@ public:
     }
     int getHideTile(const Game* game, int teamID) const;
     int getFogTile(const Game* game, int teamID) const;
-    int getDestroyedStructureTile() const noexcept { return  destroyedStructureTile; };
+    int getDestroyedStructureTile() const noexcept { return  destroyedStructureTile; }
 
     bool isBlocked() const noexcept {
         return (isMountain() || hasAGroundObject());

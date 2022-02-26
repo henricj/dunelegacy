@@ -35,9 +35,9 @@ public:
 
     explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
-    const auto& getLoadMapFilepath() const { return loadMapFilepath; };
-    const auto& getLoadMapname() const { return loadMapname; };
-    bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
+    const auto& getLoadMapFilepath() const { return loadMapFilepath; }
+    const auto& getLoadMapname() const { return loadMapname; }
+    bool isLoadMapSingleplayer() const { return loadMapSingleplayer; }
 
     bool handleKeyPress(SDL_KeyboardEvent& key) override;
 

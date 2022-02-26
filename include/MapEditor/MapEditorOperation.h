@@ -52,7 +52,7 @@ public:
     std::unique_ptr<MapEditorOperation> perform(MapEditor *pMapEditor) override
     {
         return std::make_unique<MapEditorNoOperation>();
-    };
+    }
 };
 
 class MapEditorStartOperation : public MapEditorOperation {

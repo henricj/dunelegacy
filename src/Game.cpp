@@ -1998,7 +1998,7 @@ void Game::removeFromQuickSelectionLists(Uint32 objectID) {
     for(int i = 0; i < NUMSELECTEDLISTS; i++) {
         pLocalPlayer->getGroupList(i).erase(objectID);
     }
-};
+}
 
 
 void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {

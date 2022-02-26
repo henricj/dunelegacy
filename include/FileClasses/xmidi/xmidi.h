@@ -109,7 +109,7 @@ public:
         if (info.type != 1)
             return info.tracks;
                     return 1;
-    };
+    }
 
     // Retrieve it to a data source
     int retrieve (unsigned int track, DataSource *dest);

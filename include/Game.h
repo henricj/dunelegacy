@@ -121,25 +121,25 @@ public:
         Returns the current game cycle number.
         \return the current game cycle
     */
-    [[nodiscard]] Uint32 getGameCycleCount() const noexcept { return gameCycleCount; };
+    [[nodiscard]] Uint32 getGameCycleCount() const noexcept { return gameCycleCount; }
 
     /**
         Return the game time in milliseconds.
         \return the current game time in milliseconds
     */
-    [[nodiscard]] Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; };
+    [[nodiscard]] Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; }
 
     /**
         Get the command manager of this game
         \return the command manager
     */
-    CommandManager& getCommandManager() noexcept { return cmdManager; };
+    CommandManager& getCommandManager() noexcept { return cmdManager; }
 
     /**
         Get the trigger manager of this game
         \return the trigger manager
     */
-    TriggerManager& getTriggerManager() noexcept { return triggerManager; };
+    TriggerManager& getTriggerManager() noexcept { return triggerManager; }
 
     /**
         Add an explosion.
@@ -234,7 +234,7 @@ public:
     */
     void runMainLoop(const GameContext& context);
 
-    inline void quitGame() { bQuitGame = true;};
+    inline void quitGame() { bQuitGame = true; }
 
     /**
         This method pauses the current game.
@@ -266,12 +266,12 @@ public:
     */
     static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
 
-    ObjectManager& getObjectManager() noexcept { return objectManager; };
-    [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; };
-    [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; };
+    ObjectManager& getObjectManager() noexcept { return objectManager; }
+    [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; }
+    [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; }
 
-    [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; };
-    void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; };
+    [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; }
+    void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; }
 
     /**
         This method should be called if whatNext() returns GAME_NEXTMISSION or GAME_LOAD. You should
@@ -335,7 +335,7 @@ public:
             pInterface->updateObjectInterface();
         }
         pLocalPlayer->onSelectionChanged(selectedList);
-    };
+    }
 
 
     void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex);
@@ -344,8 +344,8 @@ public:
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players per house).
         \return list of currently selected units/structures by the other player
     */
-    Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList; };
-    [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; };
+    Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList; }
+    [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; }
 
     /**
         Called when a peer disconnects the game.

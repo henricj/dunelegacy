@@ -87,7 +87,7 @@ public:
     [[nodiscard]] Uint32 getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
 
 
-    void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; };
+    void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; }
 
     /**
         Updates the command manager and sends commands to other peers

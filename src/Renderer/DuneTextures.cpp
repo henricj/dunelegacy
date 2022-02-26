@@ -411,7 +411,7 @@ private:
         const auto& [id, house, zoom] = identifier;
 
         return dune_textures_.at(zoom).at(id).at(static_cast<int>(house));
-    };
+    }
 
     PackableSurfaces<identifier_type> surfaces_;
 
@@ -499,7 +499,7 @@ private:
         const auto& [id, house] = identifier;
 
         return dune_textures_.at(static_cast<int>(house)).at(id);
-    };
+    }
 
     PackableSurfaces<identifier_type> surfaces_;
 

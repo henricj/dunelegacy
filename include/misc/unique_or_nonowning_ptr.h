@@ -46,15 +46,15 @@ public:
     }
 
 
-    constexpr unique_or_nonowning_ptr() noexcept : ptr(nullptr, &noop_deleter) { };
+    constexpr unique_or_nonowning_ptr() noexcept : ptr(nullptr, &noop_deleter) { }
 
-    constexpr unique_or_nonowning_ptr(std::nullptr_t) noexcept : ptr(nullptr, &noop_deleter) { };
+    constexpr unique_or_nonowning_ptr(std::nullptr_t) noexcept : ptr(nullptr, &noop_deleter) { }
 
-    unique_or_nonowning_ptr(T* p) noexcept : ptr(p, &noop_deleter) { };
+    unique_or_nonowning_ptr(T* p) noexcept : ptr(p, &noop_deleter) { }
 
-    unique_or_nonowning_ptr(T* p, deleter_func_ptr d) noexcept : ptr(p, d) { };
+    unique_or_nonowning_ptr(T* p, deleter_func_ptr d) noexcept : ptr(p, d) { }
 
-    unique_or_nonowning_ptr(unique_or_nonowning_ptr&& u) noexcept : ptr(std::move(u.ptr)) { };
+    unique_or_nonowning_ptr(unique_or_nonowning_ptr&& u) noexcept : ptr(std::move(u.ptr)) { }
 
     template<typename = std::enable_if<std::is_pointer<deleter>::value>, int >
     unique_or_nonowning_ptr(std::unique_ptr<T, deleter>&& u) noexcept
@@ -68,17 +68,17 @@ public:
     unique_or_nonowning_ptr& operator=(T* p) noexcept {
         ptr = internal_ptr_type(p, &noop_deleter);
         return *this;
-    };
+    }
 
     unique_or_nonowning_ptr& operator=(unique_or_nonowning_ptr&& u) noexcept {
         ptr = std::move(u.ptr);
         return *this;
-    };
+    }
 
     unique_or_nonowning_ptr& operator=(std::nullptr_t) noexcept {
         ptr.reset();
         return *this;
-    };
+    }
 
     template<typename = std::enable_if<std::is_pointer<deleter>::value>, int >
     unique_or_nonowning_ptr& operator=(std::unique_ptr<T, deleter>&& u) noexcept {

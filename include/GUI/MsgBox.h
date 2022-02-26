@@ -48,7 +48,7 @@ public:
         Get the text of this message box.
         \return the text of this message box
     */
-    inline const std::string& getText() { return textLabel.getText(); };
+    inline const std::string& getText() { return textLabel.getText(); }
 
     /**
         Sets the text color for this message box.
@@ -97,7 +97,7 @@ public:
             newSize.y = std::max(newSize.y,30);
             resize(newSize.x,newSize.y);
         }
-    };
+    }
 
     /**
         This static method creates a dynamic message box object with Text as the text in the message box.

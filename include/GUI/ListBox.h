@@ -118,7 +118,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
 
     /**
         Adds a new entry to this list box

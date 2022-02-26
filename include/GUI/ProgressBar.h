@@ -200,7 +200,7 @@ public:
         Get the text of this progress bar.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; }
 
     /**
         Sets the text color for this progress bar.

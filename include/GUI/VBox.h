@@ -24,9 +24,9 @@
 
 class VBox_WidgetData {
 public:
-    VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { };
-    VBox_WidgetData(Widget* _pWidget, Sint32 _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { };
-    VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { };
+    VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { }
+    VBox_WidgetData(Widget* _pWidget, Sint32 _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
+    VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
 
     Widget* pWidget;
     Sint32 fixedHeight;

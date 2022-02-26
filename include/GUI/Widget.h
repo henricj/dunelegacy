@@ -41,7 +41,7 @@ public:
     */
     Point operator+(const Point& p) const {
         return Point(x+p.x,y+p.y);
-    };
+    }
 
     /** operator for subtracting two points.
         \param p the point to add
@@ -49,7 +49,7 @@ public:
     */
     Point operator-(const Point& p) const {
         return Point(x-p.x,y-p.y);
-    };
+    }
 
     /** operator for multiplying every both coordinates with an integer value.
         \param c the scalar to multiply with
@@ -57,7 +57,7 @@ public:
     */
     Point operator*(Sint32 c) const {
         return Point(x*c,y*c);
-    };
+    }
 
     /** operator for dividing every both coordinates by an integer value.
         \param c the scalar to devide by
@@ -65,7 +65,7 @@ public:
     */
     Point operator/(Sint32 c) const {
         return Point(x/c,y/c);
-    };
+    }
 
     /** operator for comparing two Points.
         \param op the other operator
@@ -146,13 +146,13 @@ public:
         Sets the parent of this widget.
         \param pParent new parent (nullptr is also possible)
     */
-    void setParent(Widget* pParent) noexcept { parent = pParent; };
+    void setParent(Widget* pParent) noexcept { parent = pParent; }
 
     /**
         Returns the parent of this widget
         \return the parent of this widget or nullptr if it has no parent.
     */
-    [[nodiscard]] Widget* getParent() const noexcept { return parent; };
+    [[nodiscard]] Widget* getParent() const noexcept { return parent; }
 
     /**
         Enable or disable this widget. A disabled widget is not responding
@@ -164,26 +164,26 @@ public:
             setInactive();
         }
         enabled = bEnabled;
-    };
+    }
 
     /**
         Returns whether this widget is enabled or not.
         \return true = widget is enabled, false = widget is disabled
     */
-    [[nodiscard]] bool isEnabled() const noexcept { return enabled; };
+    [[nodiscard]] bool isEnabled() const noexcept { return enabled; }
 
     /**
         Sets this widget visible or invisible. An invisible widget does not
         responding to clicks and key presses.
         \return bVisible    true = visible, false = invisible
     */
-    virtual void setVisible(bool bVisible) { visible = bVisible; };
+    virtual void setVisible(bool bVisible) { visible = bVisible; }
 
     /**
         Returns whether this widget is visible or not.
         \return true = visible, false = invisible
     */
-    [[nodiscard]] bool isVisible() const noexcept { return visible; };
+    [[nodiscard]] bool isVisible() const noexcept { return visible; }
 
     /**
         Sets this widget active. The parent widgets are also activated and the
@@ -200,26 +200,26 @@ public:
         Returns whether this widget is currently active.
         \return true = currently active, false = currently inactive
     */
-    [[nodiscard]] bool isActive() const noexcept { return active; };
+    [[nodiscard]] bool isActive() const noexcept { return active; }
 
     /**
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] virtual bool isActivatable() const { return false; };
+    [[nodiscard]] virtual bool isActivatable() const { return false; }
 
 
     /**
         Returns whether this widget is an container.
         \return true = container, false = any other widget
     */
-    [[nodiscard]] virtual bool isContainer() const { return false; };
+    [[nodiscard]] virtual bool isContainer() const { return false; }
 
     /**
         Returns the current size of this widget.
         \return current size of this widget
     */
-    [[nodiscard]] const Point& getSize() const noexcept { return size; };
+    [[nodiscard]] const Point& getSize() const noexcept { return size; }
 
     /**
         Returns the minimum size of this widget. The widget should not
@@ -227,21 +227,21 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0,0); };
+    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0,0); }
 
     /**
         Returns whether this widget is allowed to be resized in X direction.
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in X direction, false = not resizeable in X direction
     */
-    [[nodiscard]] bool resizingXAllowed() const { return resizeX; };
+    [[nodiscard]] bool resizingXAllowed() const { return resizeX; }
 
     /**
         Returns whether this widget is allowed to be resized in Y direction.
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in Y direction, false = not resizeable in Y direction
     */
-    [[nodiscard]] bool resizingYAllowed() const { return resizeY; };
+    [[nodiscard]] bool resizingYAllowed() const { return resizeY; }
 
     /**
         This method resizes the widget. This method should only be
@@ -251,7 +251,7 @@ public:
     */
     virtual void resize(Point newSize) {
         resize(newSize.x, newSize.y);
-    };
+    }
 
     /**
         This method resizes the widget to width and height. This method should only be
@@ -263,7 +263,7 @@ public:
     virtual void resize(Uint32 width, Uint32 height) {
         size.x = width;
         size.y = height;
-    };
+    }
 
     /**
         This method resizes the widget and its parent (the surrounding container).
@@ -275,7 +275,7 @@ public:
             resize( std::max(getMinimumSize().x,getSize().x),
                     std::max(getMinimumSize().y,getSize().y));
         }
-    };
+    }
 
     /**
         Handles a mouse movement.
@@ -283,7 +283,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) { ; };
+    virtual void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) { }
 
     /**
         Handles a left mouse click.
@@ -292,7 +292,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) { return false; };
+    virtual bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) { return false; }
 
     /**
         Handles a right mouse click.
@@ -301,7 +301,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) { return false; };
+    virtual bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) { return false; }
 
     /**
         Handles mouse wheel scrolling.
@@ -310,7 +310,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up) { return false; };
+    virtual bool handleMouseWheel(Sint32 x, Sint32 y, bool up) { return false; }
 
     /**
         Handles a key stroke.
@@ -337,7 +337,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the widget)
         \return true if (x,y) is in overlay of this widget, false otherwise
     */
-    virtual bool handleMouseMovementOverlay(Sint32 x, Sint32 y) { return false; };
+    virtual bool handleMouseMovementOverlay(Sint32 x, Sint32 y) { return false; }
 
     /**
         Handles a left mouse click in overlays.
@@ -346,7 +346,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) { return false; };
+    virtual bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) { return false; }
 
     /**
         Handles a right mouse click in overlays.
@@ -355,7 +355,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    virtual bool handleMouseRightOverlay(Sint32 x, Sint32 y, bool pressed) { return false; };
+    virtual bool handleMouseRightOverlay(Sint32 x, Sint32 y, bool pressed) { return false; }
 
     /**
         Handles mouse wheel scrolling in overlays.
@@ -364,7 +364,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    virtual bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) { return false; };
+    virtual bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) { return false; }
 
     /**
         Handles a key stroke in overlays.
@@ -385,23 +385,21 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    virtual void draw(Point position) { ; };
+    virtual void draw(Point position) { }
 
     /**
         This method draws the parts of this widget that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
         \param  position    Position to draw the widget to
     */
-    virtual void drawOverlay(Point position) { ; };
+    virtual void drawOverlay(Point position) { }
 
 
     /**
         This method is called if a child widget is destroyed (see Widget::~Widget).
         \param  pChildWidget    widget to remove
     */
-    virtual void removeChildWidget(Widget* pChildWidget) {
-        ;
-    }
+    virtual void removeChildWidget(Widget* pChildWidget) { }
 
     /**
         This method is called if the widget is removed from a container. If
@@ -417,7 +415,7 @@ public:
                 parent->removeChildWidget(this);
             }
         }
-    };
+    }
 
     /**
         Sets the function that should be called when this widget gains focus.
@@ -453,7 +451,7 @@ protected:
                 pOnLostFocus();
             }
         }
-    };
+    }
 
     /**
         This method enables or disables resizing of a widget. By default resizing in both directions is not allowed
@@ -464,7 +462,7 @@ protected:
     virtual void enableResizing(bool bResizeX, bool bResizeY) {
         resizeX = bResizeX;
         resizeY = bResizeY;
-    };
+    }
 
     /**
         This method activates or deactivates one specific widget in this widget/container. It is mainly used

@@ -148,9 +148,9 @@ public:
         bQuitEditor = true;
     }
 
-    [[nodiscard]] const std::filesystem::path& getLastSaveName() const { return lastSaveName; };
+    [[nodiscard]] const std::filesystem::path& getLastSaveName() const { return lastSaveName; }
 
-    [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; };
+    [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; }
 
     [[nodiscard]] std::string generateMapname() ;
 
@@ -158,15 +158,15 @@ public:
         return players;
     }
 
-    void informPlayersChanged() { pInterface->onHouseChanges(); };
+    void informPlayersChanged() { pInterface->onHouseChanges(); }
 
     void setMirrorMode(MirrorMode newMirrorMode);
 
     const MapMirror* getMapMirror() { return mapMirror.get(); }
 
-    MapInfo& getMapInfo() { return mapInfo; };
+    MapInfo& getMapInfo() { return mapInfo; }
 
-    void setMapInfo(const MapInfo& newMapInfo) { mapInfo = newMapInfo; };
+    void setMapInfo(const MapInfo& newMapInfo) { mapInfo = newMapInfo; }
 
     [[nodiscard]] int getMapVersion() const {
         if(mapInfo.mapSeed != INVALID) {
@@ -182,22 +182,22 @@ public:
         return map;
     }
 
-    std::vector<Coord>& getSpiceBlooms() { return spiceBlooms; };
+    std::vector<Coord>& getSpiceBlooms() { return spiceBlooms; }
 
-    std::vector<Coord>& getSpecialBlooms() { return specialBlooms; };
+    std::vector<Coord>& getSpecialBlooms() { return specialBlooms; }
 
-    std::vector<Coord>& getSpiceFields() { return spiceFields; };
+    std::vector<Coord>& getSpiceFields() { return spiceFields; }
 
 
-    std::map<ItemID_enum,int>& getChoam() { return choam; };
+    std::map<ItemID_enum,int>& getChoam() { return choam; }
 
-    std::vector<ReinforcementInfo>& getReinforcements() { return reinforcements; };
+    std::vector<ReinforcementInfo>& getReinforcements() { return reinforcements; }
 
     void setReinforcements(const std::vector<ReinforcementInfo>& newReinforcements) {
         reinforcements = newReinforcements;
     }
 
-    std::vector<AITeamInfo>& getAITeams() { return aiteams; };
+    std::vector<AITeamInfo>& getAITeams() { return aiteams; }
 
     void setAITeams(const std::vector<AITeamInfo>& newAITeams) {
         aiteams = newAITeams;

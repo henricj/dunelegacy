@@ -52,16 +52,16 @@ public:
         return dlg;
     }
 
-    int getMapSeed() const { return mapSeed; };
+    int getMapSeed() const { return mapSeed; }
 
-    std::string getAuthor() const { return authorTextBox.getText(); };
-    std::string getLicense() const { return licenseTextBox.getText(); };
+    std::string getAuthor() const { return authorTextBox.getText(); }
+    std::string getLicense() const { return licenseTextBox.getText(); }
 
-    const auto& getLoadMapFilepath() const { return loadMapFilepath; };
-    const auto& getLoadMapname() const { return loadMapname; };
-    bool isLoadMapSingleplayer() const { return loadMapSingleplayer; };
+    const auto& getLoadMapFilepath() const { return loadMapFilepath; }
+    const auto& getLoadMapname() const { return loadMapname; }
+    bool isLoadMapSingleplayer() const { return loadMapSingleplayer; }
 
-    const MapData& getMapData() const { return mapdata; };
+    const MapData& getMapData() const { return mapdata; }
 
     /**
         This method is called, when the child window is about to be closed.

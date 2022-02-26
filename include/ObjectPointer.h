@@ -29,9 +29,9 @@ class StructureBase;
 class ObjectPointer
 {
 public:
-    ObjectPointer() { objectID = NONE_ID; };
-    explicit ObjectPointer(Uint32 newItemID) : objectID(newItemID) { };
-    ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); };
+    ObjectPointer() { objectID = NONE_ID; }
+    explicit ObjectPointer(Uint32 newItemID) : objectID(newItemID) { }
+    ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); }
     ~ObjectPointer() = default;
 
     ObjectPointer(const ObjectPointer &) = default;
@@ -39,10 +39,10 @@ public:
     ObjectPointer& operator=(const ObjectPointer &) = default;
     ObjectPointer& operator=(ObjectPointer &&) = default;
 
-    void pointTo(Uint32 newItemID) { objectID = newItemID; };
+    void pointTo(Uint32 newItemID) { objectID = newItemID; }
     void pointTo(const ObjectBase* newObject);
 
-    Uint32 getObjectID() const noexcept { return objectID; };
+    Uint32 getObjectID() const noexcept { return objectID; }
     ObjectBase* getObjPointer() const;
     UnitBase* getUnitPointer() const;
     StructureBase* getStructurePointer() const;
@@ -52,7 +52,7 @@ public:
 
     operator bool() const {
         return (objectID != NONE_ID);
-    };
+    }
 
 private:
     mutable Uint32 objectID;

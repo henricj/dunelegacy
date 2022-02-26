@@ -63,7 +63,7 @@ public:
             THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
         }
         return newMission;
-    };
+    }
 
     [[nodiscard]] Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 

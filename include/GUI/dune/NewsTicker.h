@@ -29,7 +29,7 @@ public:
     NewsTicker();
     virtual ~NewsTicker();
 
-    [[nodiscard]] bool hasMessage() const { return !messages.empty(); };
+    [[nodiscard]] bool hasMessage() const { return !messages.empty(); }
     void addMessage(const std::string& msg);
     void addUrgentMessage(const std::string& msg);
 

@@ -39,7 +39,7 @@ protected:
     bool update() override;
 
 private:
-    void onSpecial(const GameContext& context) const;;
+    void onSpecial(const GameContext& context) const;
 
     StaticContainer     weaponBox;
     PictureProgressBar  weaponProgressBar;

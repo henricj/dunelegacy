@@ -71,7 +71,7 @@ public:
         Gets the current sfx volume.
         \return the current volume
     */
-    [[nodiscard]] inline int getSfxVolume() const { return sfxVolume; };
+    [[nodiscard]] inline int getSfxVolume() const { return sfxVolume; }
 
     /**
         Sets the volume of all channels

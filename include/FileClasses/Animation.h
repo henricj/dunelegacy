@@ -53,7 +53,7 @@ public:
 
     SDL_Texture* getFrameTexture();
 
-    const std::vector<sdl2::surface_ptr>& getFrames() { return frames; };
+    const std::vector<sdl2::surface_ptr>& getFrames() { return frames; }
 
     void setFrameRate(double FrameRate) noexcept {
         if(FrameRate == 0.0) {
@@ -78,11 +78,11 @@ public:
     void setNumLoops(int loops) noexcept {
         curFrame = 0;
         loopsLeft = loops;
-    };
+    }
 
     [[nodiscard]] int getLoopsLeft() const noexcept {
         return loopsLeft;
-    };
+    }
 
     [[nodiscard]] bool isFinished() const noexcept {
         if(loopsLeft == -1 || loopsLeft > 0) {
@@ -92,11 +92,11 @@ public:
         }
     }
 
-    void setFrameOverride(unsigned int frameOverride) noexcept { curFrameOverride = frameOverride; };
+    void setFrameOverride(unsigned int frameOverride) noexcept { curFrameOverride = frameOverride; }
 
-    void resetFrameOverride() noexcept { curFrameOverride = INVALID_FRAME; };
+    void resetFrameOverride() noexcept { curFrameOverride = INVALID_FRAME; }
 
-    [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; };
+    [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; }
 
 private:
     Uint32 curFrameStartTime;

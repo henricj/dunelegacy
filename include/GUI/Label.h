@@ -102,7 +102,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; }
 
     /**
         This method resizes the label. This method should only
@@ -175,7 +175,7 @@ public:
 
         SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x/2, position.y + getSize().y/2, HAlign::Center, VAlign::Center);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
-    };
+    }
 
     /**
         This static method creates a dynamic label object with Text as the label text.

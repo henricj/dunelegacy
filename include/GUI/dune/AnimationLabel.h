@@ -33,7 +33,7 @@ public:
     }
 
     /// destructor
-    ~AnimationLabel() override { ; };
+    ~AnimationLabel() override = default;
 
     /**
         Set the current animation that should be shown in this widget.
@@ -41,13 +41,13 @@ public:
     */
     void setAnimation(Animation *newAnimation) {
         pAnim = newAnimation;
-    };
+    }
 
     /**
         This method returns the stored animation.
         \return the stored animation
     */
-    [[nodiscard]] Animation* getAnimation() const { return pAnim; };
+    [[nodiscard]] Animation* getAnimation() const { return pAnim; }
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
@@ -62,10 +62,10 @@ public:
         SDL_Texture* tex = pAnim->getFrameTexture();
 
         if(isVisible()) {
-            SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
+            const SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
             Dune_RenderCopy(renderer, tex, nullptr, &dest);
         }
-    };
+    }
 
     /**
         Returns the minimum size of this animation label. The widget should not

@@ -63,7 +63,7 @@ public:
         INIFileLine(std::string completeLine, int lineNumber);
         virtual ~INIFileLine();
 
-        [[nodiscard]] int getLineNumber() const noexcept { return line; };
+        [[nodiscard]] int getLineNumber() const noexcept { return line; }
 
         friend class INIFile;
         friend class INIFile::Section;

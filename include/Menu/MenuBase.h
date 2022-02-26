@@ -37,10 +37,10 @@ public:
 
     virtual int showMenu();
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
-    virtual bool isQuiting() { return quiting; };
-    void disableQuiting(bool disable) { bAllowQuiting = !disable; };
+    virtual bool isQuiting() { return quiting; }
+    void disableQuiting(bool disable) { bAllowQuiting = !disable; }
 
-    virtual void update() { };
+    virtual void update() { }
 
     virtual void drawSpecificStuff();
 
@@ -49,7 +49,7 @@ public:
 
     void setClearScreen(bool bClearScreen) {
         this->bClearScreen = bClearScreen;
-    };
+    }
 
 protected:
     bool doEventsUntil(int until);

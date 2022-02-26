@@ -50,7 +50,7 @@ public:
         Returns true.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); }
 
     /**
         This method sets a new text for this text box.
@@ -64,7 +64,7 @@ public:
         Get the text of this text box.
         \return the text of this text box
     */
-    [[nodiscard]] const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; }
 
     /**
         Sets a font size for this text box. Default font size of a text box is 14

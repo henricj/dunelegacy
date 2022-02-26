@@ -76,9 +76,9 @@ public:
     [[nodiscard]] bool hasRadarOn() const noexcept { return (hasRadar() && hasPower()); }
     [[nodiscard]] bool hasPower() const noexcept { return (producedPower >= powerRequirement); }
 
-    [[nodiscard]] int getNumStructures() const noexcept { return numStructures; };
-    [[nodiscard]] int getNumUnits() const noexcept{ return numUnits; };
-    [[nodiscard]] int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; };
+    [[nodiscard]] int getNumStructures() const noexcept { return numStructures; }
+    [[nodiscard]] int getNumUnits() const noexcept{ return numUnits; }
+    [[nodiscard]] int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; }
 
     [[nodiscard]] int getCapacity() const noexcept{ return capacity; }
 
@@ -105,13 +105,13 @@ public:
     [[nodiscard]] int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
     [[nodiscard]] int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
 
-    [[nodiscard]] int getQuota() const noexcept { return quota; };
-    [[nodiscard]] int getMaxUnits() const noexcept { return maxUnits; };
+    [[nodiscard]] int getQuota() const noexcept { return quota; }
+    [[nodiscard]] int getMaxUnits() const noexcept { return maxUnits; }
 
-    void informContactWithEnemy() { bHadContactWithEnemy = true; };
-    [[nodiscard]] bool hadContactWithEnemy() const { return bHadContactWithEnemy; };
-    void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; };
-    [[nodiscard]] bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; };
+    void informContactWithEnemy() { bHadContactWithEnemy = true; }
+    [[nodiscard]] bool hadContactWithEnemy() const { return bHadContactWithEnemy; }
+    void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; }
+    [[nodiscard]] bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; }
 
     void informVisibleEnemyUnit() {
         numVisibleEnemyUnits++;
@@ -128,7 +128,7 @@ public:
     [[nodiscard]] bool isGroundUnitLimitReached() const {
         int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + (numItem[Unit_Soldier]+2)/3 + (numItem[Unit_Trooper]+2)/3  >= maxUnits);
-    };
+    }
 
     /**
         This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
@@ -137,7 +137,7 @@ public:
     [[nodiscard]] bool isInfantryUnitLimitReached() const {
         const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + numItem[Unit_Soldier]/3 + numItem[Unit_Trooper]/3  >= maxUnits);
-    };
+    }
 
     /**
         This function checks if the limit for air units is already reached.
@@ -147,8 +147,8 @@ public:
         return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11*std::max(maxUnits,25)/25);
     }
 
-    Choam& getChoam() { return choam; };
-    [[nodiscard]] const Choam& getChoam() const { return choam; };
+    Choam& getChoam() { return choam; }
+    [[nodiscard]] const Choam& getChoam() const { return choam; }
 
 
     [[nodiscard]] FixPoint getStartingCredits() const { return startingCredits; }
@@ -185,7 +185,7 @@ public:
     void win();
 
     void freeHarvester(int xPos, int yPos);
-    void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); };
+    void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); }
     StructureBase* placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos,
                                   bool byScenario = false, bool bForcePlacing = false);
 
@@ -205,12 +205,12 @@ public:
 
     [[nodiscard]] Coord getStrongestUnitPosition() const;
 
-    [[nodiscard]] const std::vector<AITeamInfo>& getAITeams() const { return aiteams; };
+    [[nodiscard]] const std::vector<AITeamInfo>& getAITeams() const { return aiteams; }
     void addAITeam(AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits) {
         aiteams.emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }
 
-    [[nodiscard]] const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; };
+    [[nodiscard]] const std::list<std::unique_ptr<Player> >& getPlayerList() const { return players; }
 
 protected:
     void decrementHarvesters();

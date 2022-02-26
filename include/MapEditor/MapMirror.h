@@ -55,7 +55,7 @@ class MapMirrorNone : public MapMirror {
 public:
     MapMirrorNone(int mapsizeX, int mapsizeY);
 
-    [[nodiscard]] int getSize() const override { return 1; };
+    [[nodiscard]] int getSize() const override { return 1; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
@@ -73,7 +73,7 @@ class MapMirrorHorizontal : public MapMirror {
 public:
     MapMirrorHorizontal(int mapsizeX, int mapsizeY);
 
-    [[nodiscard]] int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
@@ -91,7 +91,7 @@ class MapMirrorVertical : public MapMirror {
 public:
     MapMirrorVertical(int mapsizeX, int mapsizeY);
 
-    [[nodiscard]] int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
@@ -109,7 +109,7 @@ class MapMirrorBoth : public MapMirror {
 public:
     MapMirrorBoth(int mapsizeX, int mapsizeY);
 
-    [[nodiscard]] int getSize() const override { return 4; };
+    [[nodiscard]] int getSize() const override { return 4; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {
@@ -127,7 +127,7 @@ class MapMirrorPoint : public MapMirror {
 public:
     MapMirrorPoint(int mapsizeX, int mapsizeY);
 
-    [[nodiscard]] int getSize() const override { return 2; };
+    [[nodiscard]] int getSize() const override { return 2; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1,1)) const override
     {

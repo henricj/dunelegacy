@@ -46,7 +46,7 @@ public:
         This methods returns the height of this font.
         \return Number of pixels needed
     */
-    [[nodiscard]] inline int getTextHeight() const override { return characterHeight; };
+    [[nodiscard]] int getTextHeight() const override { return characterHeight; }
 
 private:
     font_ptr pTTFFont;

@@ -53,7 +53,7 @@ public:
         Get the text of this question box.
         \return the text of this question box
     */
-    inline const std::string& getText() { return textLabel.getText(); };
+    inline const std::string& getText() { return textLabel.getText(); }
 
     /**
         Sets the text color for this question box.
@@ -103,7 +103,7 @@ public:
             newSize.y = std::max(newSize.y,30);
             resize(newSize.x,newSize.y);
         }
-    };
+    }
 
     /**
         The number of the pressed button.

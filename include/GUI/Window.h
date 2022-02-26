@@ -70,20 +70,20 @@ public:
         This child window will be closed after this method returns.
         \param  pChildWindow    The child window that will be closed
     */
-    virtual void onChildWindowClose(Window* pChildWindow) { ; };
+    virtual void onChildWindowClose(Window* pChildWindow) { }
 
 
     /**
         This method checks whether this window has a child window.
         \return true if child window present, false otherwise
     */
-    [[nodiscard]] bool hasChildWindow() const { return (pChildWindow != nullptr); };
+    [[nodiscard]] bool hasChildWindow() const { return (pChildWindow != nullptr); }
 
     /**
         Get the current position of this window.
         \return current position of this window
     */
-    [[nodiscard]] const Point& getPosition() const noexcept { return position; };
+    [[nodiscard]] const Point& getPosition() const noexcept { return position; }
 
     /**
         Sets the current window position and size.
@@ -162,7 +162,7 @@ public:
     /**
         Draws this window to screen. This method should be called every frame.
     */
-    virtual void draw() { draw(Point(0,0)); };
+    virtual void draw() { draw(Point(0,0)); }
 
     /**
         Draws this window to screen. This method should be called every frame.
@@ -174,7 +174,7 @@ public:
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
     */
-    virtual void drawOverlay() { drawOverlay(Point(0,0)); };
+    virtual void drawOverlay() { drawOverlay(Point(0,0)); }
 
     /**
         This method draws the parts of this window that must be drawn after all the other
@@ -195,13 +195,13 @@ public:
             this->pWindowWidget->resize(getSize().x,getSize().y);
             this->pWindowWidget->setActive();
         }
-    };
+    }
 
     /**
         Returns the current window widget.
         \return the current window widget
     */
-    virtual Widget* getWindowWidget() { return pWindowWidget; };
+    virtual Widget* getWindowWidget() { return pWindowWidget; }
 
     /**
         This method resizes the window.
@@ -210,7 +210,7 @@ public:
     void resize(Point newSize) override
     {
         resize(newSize.x, newSize.y);
-    };
+    }
 
     /**
         This method resizes the window to width and height.
@@ -228,7 +228,7 @@ public:
     {
         // Windows do not get bigger if content changes
         resize(getSize().x,getSize().y);
-    };
+    }
 
 protected:
 

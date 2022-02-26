@@ -50,7 +50,7 @@ public:
 
     [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, unsigned int z) const {
         return getZoomedObjPic(id, HOUSETYPE::HOUSE_HARKONNEN, z);
-    };
+    }
     zoomable_texture getObjPic(unsigned int id, HOUSETYPE house= HOUSETYPE::HOUSE_HARKONNEN) const;
 
     [[nodiscard]] const DuneTexture* getSmallDetailPic(unsigned int id) const;
@@ -75,7 +75,7 @@ public:
 
     Animation* getAnimation(unsigned int id) { return surfaceLoader.getAnimation(id); }
 
-    [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return surfaceLoader.getBackgroundSurface(); };
+    [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return surfaceLoader.getBackgroundSurface(); }
 
     [[nodiscard]] SDL_Texture* getTempStreamingTexture(SDL_Renderer* renderer, int width, int height);
 

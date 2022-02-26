@@ -42,7 +42,7 @@ public:
     SurfaceLoader& operator=(SurfaceLoader &&) = default;
 
     SDL_Surface*     getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z);
-    SDL_Surface*     getZoomedObjSurface(unsigned int id, unsigned int z) { return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z); };
+    SDL_Surface*     getZoomedObjSurface(unsigned int id, unsigned int z) { return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z); }
 
     SDL_Surface*     getSmallDetailSurface(unsigned int id);
     SDL_Surface*     getTinyPictureSurface(unsigned int id);
@@ -57,7 +57,7 @@ public:
                                                           HOUSETYPE    house = HOUSETYPE::HOUSE_HARKONNEN);
     [[nodiscard]] sdl2::surface_ptr extractSmallDetailPic(const std::string& filename) const;
 
-    [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return pBackgroundSurface.get(); };
+    [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return pBackgroundSurface.get(); }
 private:
     [[nodiscard]] std::unique_ptr<Animation>  loadAnimationFromWsa(const std::string& filename) const;
 

@@ -56,7 +56,7 @@ public:
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID),
           currentMusicType(MUSIC_RANDOM), random_{RandomFactory{}.create(name)} {
         Mix_VolumeMusic(musicVolume);
-    };
+    }
 
     virtual ~MusicPlayer() = default;
 
@@ -105,7 +105,7 @@ public:
         Gets the current music volume.
         \return the current volume
     */
-    [[nodiscard]] inline int getMusicVolume() const { return musicVolume; };
+    [[nodiscard]] inline int getMusicVolume() const { return musicVolume; }
 
     /**
         Sets the volume of the music channel

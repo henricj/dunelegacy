@@ -55,7 +55,7 @@ public:
         Get the text of this checkbox.
         \return the text of this checkbox
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; }
 
     /**
         Sets the text color for this checkbox.

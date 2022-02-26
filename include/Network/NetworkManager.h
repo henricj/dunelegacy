@@ -66,7 +66,7 @@ public:
     NetworkManager& operator=(const NetworkManager &) = delete;
     NetworkManager& operator=(NetworkManager &&) = delete;
 
-    [[nodiscard]] bool isServer() const noexcept { return bIsServer; };
+    [[nodiscard]] bool isServer() const noexcept { return bIsServer; }
 
     void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
@@ -106,11 +106,11 @@ public:
 
     LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() {
         return pLANGameFinderAndAnnouncer.get();
-    };
+    }
 
     MetaServerClient* getMetaServerClient() {
         return pMetaServerClient.get();
-    };
+    }
 
     /**
         Sets the function that should be called when a chat message is received

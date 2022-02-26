@@ -148,8 +148,8 @@ public:
     virtual void assignToMap(const GameContext& context, const Coord& pos) = 0;
     virtual void blitToScreen() = 0;
 
-    virtual void drawSelectionBox() { ; };
-    virtual void drawOtherPlayerSelectionBox() { ; };
+    virtual void drawSelectionBox() { }
+    virtual void drawOtherPlayerSelectionBox() { }
 
     virtual void destroy(const GameContext& context);
 
@@ -235,7 +235,7 @@ public:
     bool isByScenario() const noexcept { return byScenario; }
     bool isSelected() const noexcept { return selected; }
     bool isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
-    bool isBadlyDamaged() const noexcept { return badlyDamaged; };
+    bool isBadlyDamaged() const noexcept { return badlyDamaged; }
     bool wasForced() const noexcept { return forced; }
     ItemID_enum getItemID() const noexcept { return itemID; }
     int getX() const noexcept { return location.x; }

@@ -106,19 +106,19 @@ public:
         Gets the ID of the player that added this command.
         \return the ID of the player
     */
-    [[nodiscard]] Uint8 getPlayerID() const noexcept { return playerID; };
+    [[nodiscard]] Uint8 getPlayerID() const noexcept { return playerID; }
 
     /**
         Gets the ID of this command.
         \return the ID of this command
     */
-    [[nodiscard]] CMDTYPE getCommandID() const noexcept { return commandID; };
+    [[nodiscard]] CMDTYPE getCommandID() const noexcept { return commandID; }
 
     /**
         Gets the parameters of this command.
         \return the parameters of this command
     */
-    [[nodiscard]] const std::vector<Uint32> getParameter() const { return parameter; };
+    [[nodiscard]] const std::vector<Uint32> getParameter() const { return parameter; }
 
 
     /**

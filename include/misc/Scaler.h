@@ -55,7 +55,7 @@ public:
             case Scaler::ScaleNN:   return "ScaleNN";
             default:        return "Unknown";
         }
-    };
+    }
 
     static Scaler::ScalerType getScalerByName(const std::string& scalerName) {
         if(scalerName == "ScaleHD") {
@@ -67,7 +67,7 @@ public:
         } else {
             return Scaler::Invalid;
         }
-    };
+    }
 
 
     // nearest neighbor scaling

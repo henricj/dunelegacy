@@ -141,7 +141,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
 
     /**
         Adds a new entry to this dropdown box
@@ -369,7 +369,7 @@ public:
         openListBoxButton.setEnabled(bEnabled);
 
         Widget::setEnabled(bEnabled);
-    };
+    }
 
     /**
         Enable or disable the onClick event for this dropdownbox.
@@ -377,13 +377,13 @@ public:
     */
     virtual inline void setOnClickEnabled(bool bOnClickEnabled) {
         this->bOnClickEnabled = bOnClickEnabled;
-    };
+    }
 
     /**
         Returns whether the onClick event for this dropdownbox is enabled.
         \return true = onClick event is enabled, false = onClick event is disabled
     */
-    [[nodiscard]] inline bool isOnClickEnabled() const { return bOnClickEnabled; };
+    [[nodiscard]] inline bool isOnClickEnabled() const { return bOnClickEnabled; }
 
     /**
         This static method creates a dynamic dropdown box object.

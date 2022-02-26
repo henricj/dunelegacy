@@ -42,15 +42,15 @@ public:
     LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
 
     void updateEntries();
-    std::filesystem::path getFilename() const noexcept { return filename; };
+    std::filesystem::path getFilename() const noexcept { return filename; }
 
-    bool isSaveWindow() const noexcept { return bSaveWindow; };
+    bool isSaveWindow() const noexcept { return bSaveWindow; }
 
-    const std::filesystem::path& getDirectory() const { return directories[currentDirectoryIndex]; };
+    const std::filesystem::path& getDirectory() const { return directories[currentDirectoryIndex]; }
 
-    int getCurrentDirectoryIndex() const { return currentDirectoryIndex; };
+    int getCurrentDirectoryIndex() const { return currentDirectoryIndex; }
 
-    std::string getExtension() const noexcept { return extension; };
+    std::string getExtension() const noexcept { return extension; }
 
     bool handleKeyPress(SDL_KeyboardEvent& key) override;
 

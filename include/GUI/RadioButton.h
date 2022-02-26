@@ -82,7 +82,7 @@ public:
         Get the text of this radio button.
         \return the text of this radio button
     */
-    [[nodiscard]] const std::string& getText() const { return text; };
+    [[nodiscard]] const std::string& getText() const { return text; }
 
     /**
         Sets the text color for this radio button.

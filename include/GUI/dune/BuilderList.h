@@ -120,7 +120,7 @@ public:
     {
         return Point(   WIDGET_WIDTH,
                         BUILDERBTN_HEIGHT*3 + (ARROWBTN_HEIGHT+BUILDERBTN_SPACING)*2 + BUILDERBTN_SPACING*4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING);
-    };
+    }
 
 
     static BuilderList* create(Uint32 builderObjectID) {

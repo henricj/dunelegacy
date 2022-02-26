@@ -95,7 +95,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; };
+    [[nodiscard]] const std::string& getText() const noexcept { return text; }
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -171,7 +171,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); };
+    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
 
     /**
         Is the scrollbar always shown or is it hidden if not needed

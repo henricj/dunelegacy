@@ -68,7 +68,7 @@ public:
         Draws the radar to screen. This method is called before drawOverlay().
         \param  Position    Position to draw the radar to
     */
-    inline void draw(Point position) override { ; };
+    inline void draw(Point position) override { }
 
 
     /**
@@ -149,7 +149,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); };
+    [[nodiscard]] Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); }
 
 
     /**

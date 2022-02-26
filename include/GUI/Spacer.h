@@ -37,7 +37,7 @@ public:
         Returns the minimum size of this spacer. That is (0,0).
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override { return Point(0,0); };
+    [[nodiscard]] Point getMinimumSize() const override { return Point(0,0); }
 
     /**
         This static method creates a dynamic spacer object.

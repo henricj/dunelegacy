@@ -248,7 +248,7 @@ public:
 
     class error : public InputStream::exception {
     public:
-        explicit error(std::string str) noexcept : str(std::move(str)) { };
+        explicit error(std::string str) noexcept : str(std::move(str)) { }
         error(const error &) = default;
         error(error &&) = default;
         virtual ~error() noexcept = default;
@@ -256,7 +256,7 @@ public:
         error& operator=(const error &) = default;
         error& operator=(error &&) = default;
 
-        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); };
+        [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
     private:
         std::string str;
