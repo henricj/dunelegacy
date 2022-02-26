@@ -19,9 +19,10 @@
  */
 
 
-
 #include <FileClasses/Vocfile.h>
+
 #include <misc/SDL2pp.h>
+#include "misc/string_error.h"
 
 #include <SDL2/SDL_mixer.h>
 
@@ -181,7 +182,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
                 if (packing == 0) {
                     auto* tmp_ret_sound = (Uint8 *) SDL_realloc(ret_sound.get(), decsize + len);
                     if(tmp_ret_sound == nullptr) {
-                        THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
+                        THROW(std::runtime_error, "LoadVOC_RW(): %s", string_error(errno));
                     } else {
                         ret_sound.release();
                         ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp_ret_sound };
@@ -222,7 +223,7 @@ static sdl2::sdl_ptr<Uint8[]> LoadVOC_RW(SDL_RWops* rwop, Uint32 &decsize, Uint3
 
                 auto* tmp_ret_sound = (Uint8 *) SDL_realloc(ret_sound.get(), decsize + length);
                 if(tmp_ret_sound == nullptr) {
-                    THROW(std::runtime_error, "LoadVOC_RW(): %s", strerror(errno));
+                    THROW(std::runtime_error, "LoadVOC_RW(): %s", string_error(errno));
                 } else {
                     ret_sound.release();
                     ret_sound = sdl2::sdl_ptr<Uint8[]> { tmp_ret_sound };

@@ -36,6 +36,7 @@
 #include <misc/draw_util.h>
 #include <misc/md5.h>
 #include <misc/exceptions.h>
+#include <misc/string_error.h>
 #include <fmt/format.h>
 #include <misc/SDL2pp.h>
 
@@ -1687,7 +1688,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     OFileStream fs;
 
     if(!fs.open(filename)) {
-        sdl2::log_info("Game::saveGame(): %s", strerror(errno));
+        sdl2::log_info("Game::saveGame(): %s", string_error(errno));
         currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename.u8string() + "\".");
         return false;
     }
