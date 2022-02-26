@@ -51,7 +51,7 @@ public:
     ChatManager& operator=(ChatManager &&) = delete;
 
     /// destructor
-    ~ChatManager();
+    ~ChatManager() override;
 
     void addChatMessage(std::string_view username, std::string_view message);
 

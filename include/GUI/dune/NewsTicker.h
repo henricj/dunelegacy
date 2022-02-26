@@ -27,7 +27,7 @@
 class NewsTicker : public Widget {
 public:
     NewsTicker();
-    virtual ~NewsTicker();
+    ~NewsTicker() override;
 
     [[nodiscard]] bool hasMessage() const { return !messages.empty(); }
     void addMessage(const std::string& msg);

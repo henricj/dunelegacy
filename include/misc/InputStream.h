@@ -221,10 +221,10 @@ public:
 
     class exception : public std::exception {
     public:
-        exception() noexcept = default;
-        exception(const exception &) = default;
-        exception(exception &&) = default;
-        virtual ~exception() noexcept = default;
+        exception() noexcept           = default;
+        exception(const exception &)   = default;
+        exception(exception &&)        = default;
+        ~exception() noexcept override = default;
 
         exception& operator=(const exception &) = default;
         exception& operator=(exception &&) = default;
@@ -233,9 +233,9 @@ public:
     class eof : public InputStream::exception {
     public:
         explicit eof(std::string str) noexcept : str(std::move(str)) { }
-        eof(const eof &) = default;
-        eof(eof &&) = default;
-        virtual ~eof() noexcept = default;
+        eof(const eof &)         = default;
+        eof(eof &&)              = default;
+        ~eof() noexcept override = default;
 
         eof& operator=(const eof &) = default;
         eof& operator=(eof &&) = default;
@@ -249,9 +249,9 @@ public:
     class error : public InputStream::exception {
     public:
         explicit error(std::string str) noexcept : str(std::move(str)) { }
-        error(const error &) = default;
-        error(error &&) = default;
-        virtual ~error() noexcept = default;
+        error(const error &)       = default;
+        error(error &&)            = default;
+        ~error() noexcept override = default;
 
         error& operator=(const error &) = default;
         error& operator=(error &&) = default;

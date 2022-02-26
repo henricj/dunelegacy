@@ -166,14 +166,14 @@ public:
 
     class exception : public std::exception {
     public:
-        exception() noexcept = default;
-        virtual ~exception() noexcept = default;
+        exception() noexcept           = default;
+        ~exception() noexcept override = default;
     };
 
     class eof : public OutputStream::exception {
     public:
-        explicit eof(const std::string& str) noexcept : str(str) { };
-        virtual ~eof() noexcept = default;
+        explicit eof(const std::string& str) noexcept : str(str) { }
+        ~eof() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
@@ -184,7 +184,7 @@ public:
     class error : public OutputStream::exception {
     public:
         explicit error(const std::string& str) noexcept : str(str) { }
-        virtual ~error() noexcept = default;
+        ~error() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
