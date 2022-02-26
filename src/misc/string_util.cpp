@@ -292,8 +292,8 @@ std::string decodeString(std::string_view text) {
         unsigned char databyte = text[i];
 
         if(databyte & 0x80) {
-            unsigned char index1 = (databyte >> 3) & 0xF;
-            unsigned char index2 = databyte & 0x7;
+            const unsigned char index1 = (databyte >> 3u) & 0xFu;
+            const unsigned char index2 = databyte & 0x7u;
 
             out += decodeTable1[index1];
             out += decodeTable2[index1][index2];
@@ -307,14 +307,14 @@ std::string decodeString(std::string_view text) {
                     THROW(std::invalid_argument, "decodeString(): Special character escape sequence at end of string!");
                 }
 
-                unsigned char special = text[i] + 0x7F;
+                const unsigned char special = text[i] + 0x7Fu;
 
                 out += special;
             } else if(databyte == '\r') {
                 out += '\n';
-            } else if(databyte == 0x0C) {
+            } else if(databyte == 0x0Cu) {
                 out += '\n';
-            } else if(databyte == 0x1F) {
+            } else if(databyte == 0x1Fu) {
                 out += '.';
             } else {
                 out += databyte;

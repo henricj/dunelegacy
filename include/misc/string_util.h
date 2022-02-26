@@ -146,7 +146,7 @@ inline std::string trim(std::string_view str) {
 }
 
 inline bool utf8IsStartByte(unsigned char c) {
-    return ( ((c & 0x80) == 0) || ((c & 0xC0) == 0xC0) );
+    return (c & 0x80u) == 0u || (c & 0xC0u) == 0xC0u;
 }
 
 /**
