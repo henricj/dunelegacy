@@ -495,22 +495,42 @@ int main(int argc, char *argv[]) {
 
             #ifdef _WIN32
 
+            FILE* discard = nullptr;
+            if(freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
+                THROW(io_error, "Intitializing stdin failed!");
+            if(freopen_s(&discard, R"(\\.\NUL)", "a", stdout))
+                THROW(io_error, "Intitializing stdout failed!");
+            if(freopen_s(&discard, R"(\\.\NUL)", "a", stderr))
+                THROW(io_error, "Intitializing stderr failed!");
+
+            const auto fn_out = _fileno(stdout);
+            const auto fn_err = _fileno(stderr);
+
             const auto wLogFilePath = logfilePath.wstring();
 
-            if(_wfreopen(wLogFilePath.c_str(), L"wS", stdout) == NULL) {
-                THROW(io_error, "Reopening logfile '%s' as stdout failed!", logfilePath.string().c_str());
-            }
-            setbuf(stdout, nullptr);   // No buffering
+            const auto log_handle = CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+                                                    CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 
-            if(_wfreopen(wLogFilePath.c_str(), L"wS", stderr) == NULL) {
+            if(log_handle == INVALID_HANDLE_VALUE) {
                 // use stdout in this error case as stderr is not yet ready
-                THROW(io_error, "Reopening logfile '%s' as stderr failed!", logfilePath.string().c_str());
+                THROW(io_error, "Opening logfile '%s' as stdout failed!", logfilePath.string().c_str());
             }
-            setbuf(stderr, nullptr);   // No buffering
 
-            if(dup2(fileno(stdout), fileno(stderr)) < 0) {
-                THROW(io_error, "Redirecting stderr to stdout failed!");
-            }
+            if(!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))
+                THROW(io_error, "Intitializing output handle failed!");
+            if(!SetStdHandle(STD_ERROR_HANDLE, log_handle))
+                THROW(io_error, "Intitializing error handle failed!");
+
+            const auto log_fd = _open_osfhandle(reinterpret_cast<intptr_t>(log_handle), _O_TEXT);
+
+            if(_dup2(log_fd, fn_out))
+                THROW(io_error, "Redirecting output failed!");
+            if(_dup2(log_fd, fn_err))
+                THROW(io_error, "Redirecting error failed!");
+
+            // No buffering
+            setvbuf(stdout, nullptr, _IONBF, 0);
+            setvbuf(stderr, nullptr, _IONBF, 0);
 
             #else
 
