@@ -66,7 +66,6 @@ public:
     void draw(Point position) override;
 
 private:
-    SDL_Texture * getUserTexture(std::string username);
     void prune_messages();
 
     struct ChatMessage final {
