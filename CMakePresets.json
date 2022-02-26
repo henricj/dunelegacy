@@ -159,6 +159,24 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "RelWithDebInfo"
       }
+    },
+    {
+      "name": "windows-clang-x64-ubsan-debug",
+      "displayName": "Windows Clang x64 UBSAN Debug",
+      "cacheVariables": {
+        "DUNE_UBSAN": true,
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug"
+      },
+      "inherits": "windows-clang-x64-debug"
+    },
+    {
+      "name": "windows-clang-x64-ubsan-release",
+      "displayName": "Windows Clang x64 UBSAN Release",
+      "cacheVariables": {
+        "DUNE_UBSAN": true,
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+      },
+      "inherits": "windows-clang-x64-release"
     }
   ]
 }
