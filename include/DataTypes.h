@@ -243,17 +243,17 @@ public:
 };
 
 enum class HOUSETYPE : Sint8 {
-    HOUSE_UNUSED    = -2,
-    HOUSE_INVALID   = -1,
+    HOUSE_UNUSED  [[maybe_unused]] = -2,
+    HOUSE_INVALID [[maybe_unused]] = -1,
     HOUSE_HARKONNEN = 0,
     HOUSE_ATREIDES  = 1,
     HOUSE_ORDOS     = 2,
     HOUSE_FREMEN    = 3,
     HOUSE_SARDAUKAR = 4,
     HOUSE_MERCENARY = 5,
-    NUM_HOUSES,
-    HOUSE_FIRST = HOUSE_HARKONNEN,
-    HOUSE_LAST  = HOUSE_MERCENARY
+    NUM_HOUSES  [[maybe_unused]],
+    HOUSE_FIRST [[maybe_unused]] = HOUSE_HARKONNEN,
+    HOUSE_LAST  [[maybe_unused]]  = HOUSE_MERCENARY
 };
 
 
@@ -272,12 +272,12 @@ enum class ANGLETYPE : Sint8 {
     LEFTDOWN,
     DOWN,
     RIGHTDOWN,
-    NUM_ANGLES,
-    INVALID_ANGLE = INVALID
+    NUM_ANGLES [[maybe_unused]],
+    INVALID_ANGLE [[maybe_unused]] = INVALID
 };
 
 enum class DropLocation : Sint8 {
-    Drop_Invalid = -1,
+    Drop_Invalid [[maybe_unused]] = -1,
     Drop_North,         ///< unit will appear at a random position at the top of the map
     Drop_East,          ///< unit will appear at a random position on the right side of the map
     Drop_South,         ///< unit will appear at a random position at the bottom of the map
@@ -289,7 +289,7 @@ enum class DropLocation : Sint8 {
 };
 
 enum class AITeamBehavior {
-    AITeamBehavior_Invalid = -1,
+    AITeamBehavior_Invalid [[maybe_unused]] = -1,
     AITeamBehavior_Normal,            ///< Attack units and/or structures when building up the team is complete
     AITeamBehavior_Guard,             ///< Same as AITeamBehavior_Normal
     AITeamBehavior_Kamikaze,          ///< Directly attack structures when building up the team is complete
@@ -298,7 +298,7 @@ enum class AITeamBehavior {
 };
 
 enum class AITeamType {
-    AITeamType_Invalid = -1,
+    AITeamType_Invalid [[maybe_unused]] = -1,
     AITeamType_Foot,
     AITeamType_Wheeled,
     AITeamType_Tracked,
@@ -309,8 +309,8 @@ enum class AITeamType {
 
 
 namespace Dune {
-    typedef Uint32 object_id_type;
-    typedef std::unordered_set<object_id_type> selected_set_type;
+using object_id_type = Uint32;
+using selected_set_type = std::unordered_set<object_id_type>;
 }
 
 #endif //DATATYPES_H

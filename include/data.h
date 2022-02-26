@@ -49,10 +49,10 @@ enum ExplosionID_enum {
 };
 
 enum ItemID_enum {
-    ItemID_Invalid = 0,
-    ItemID_FirstID = 1,
+    ItemID_Invalid [[maybe_unused]] = 0,
+    ItemID_FirstID [[maybe_unused]] = 1,
 
-    Structure_FirstID = 1,
+    Structure_FirstID [[maybe_unused]] = 1,
     Structure_Barracks = 1,
     Structure_ConstructionYard = 2,
     Structure_GunTurret = 3,
@@ -72,9 +72,9 @@ enum ItemID_enum {
     Structure_Wall = 17,
     Structure_WindTrap = 18,
     Structure_WOR = 19,
-    Structure_LastID = 19,
+    Structure_LastID [[maybe_unused]]  = 19,
 
-    Unit_FirstID = 20,
+    Unit_FirstID [[maybe_unused]] = 20,
     Unit_Carryall = 20,
     Unit_Devastator = 21,
     Unit_Deviator = 22,
@@ -97,9 +97,9 @@ enum ItemID_enum {
     Unit_Infantry = 39,
     Unit_Troopers = 40,
     Unit_LastID = 40,
-    ItemID_LastID = 40,
+    ItemID_LastID [[maybe_unused]] = 40,
 
-    Num_ItemID
+    Num_ItemID [[maybe_unused]]
 };
 
  enum TERRAINTYPE {
