@@ -130,11 +130,13 @@ void ChatManager::draw(Point position)
 
 void ChatManager::addChatMessage(std::string_view username, std::string_view message)
 {
-    char timestring[80];
+    char timestring[80] = "(>>>)";
     auto unixtime = time(nullptr);
 
-    auto *const timeinfo = localtime( &unixtime );
-    strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
+    tm timeinfo;
+
+    if (0 == localtime_s(&timeinfo, &unixtime))
+        strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo);
 
     auto pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, 12);
     auto pUsernameTexture = pFontManager->createTextureWithText(std::string{username} + ": ", COLOR_WHITE, 12);
