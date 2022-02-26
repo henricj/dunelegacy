@@ -19,6 +19,7 @@
 #include <FileClasses/lodepng.h>
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
+#include <misc/fnkdat.h>
 #include <Colors.h>
 #include <globals.h>
 #include <optional>
@@ -198,15 +199,17 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
 std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
     time_t rawtime;
     time(&rawtime);
-    const auto* timeinfo = localtime(&rawtime);
 
-    if(!timeinfo) {
+    tm timeinfo;
+    const auto error = localtime_s(&timeinfo, &rawtime);
+
+    if(!error) {
         sdl2::log_warn("Saving screenshot failed: unable to get local time");
         return {false, std::nullopt};
     }
 
     std::array<char, 128> buffer;
-    const auto length = strftime(buffer.data(), buffer.size(), "screenshot/dunelegacy %F %H%M%S.png", timeinfo);
+    const auto length = strftime(buffer.data(), buffer.size(), "screenshot/dunelegacy %F %H%M%S.png", &timeinfo);
 
     if(0 == length) {
         sdl2::log_warn("Saving screenshot failed: unable to format time");
