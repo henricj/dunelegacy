@@ -147,22 +147,6 @@ inline std::string trim(std::string_view str) {
     }
 }
 
-inline int stringCaseInsensitiveCompare(const std::string& str1, const std::string& str2) {
-    const char* pStr1 = str1.c_str();
-    const char* pStr2 = str2.c_str();
-
-    while((*pStr1 != '\0') && (*pStr2 != '\0')) {
-        char c1 = tolower(*pStr1);
-        char c2 = tolower(*pStr2);
-
-        if(c1 != c2) {
-            return c1 - c2;
-        }
-    }
-
-    return tolower(*pStr1) - tolower(*pStr2);
-}
-
 inline bool utf8IsStartByte(unsigned char c) {
     return ( ((c & 0x80) == 0) || ((c & 0xC0) == 0xC0) );
 }
