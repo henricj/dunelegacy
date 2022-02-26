@@ -51,7 +51,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile! Must start with 'FORM'");
     }
 
-    Uint32 formSectionSize = SDL_SwapBE32(*((Uint32*) (filedata.data()+4)));
+    Uint32 formSectionSize = SDL_SwapBE32(reinterpret_cast<Uint32*>(filedata.data())[1]);
 
     if(formSectionSize + 8 != mentatTextFilesize) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
@@ -62,7 +62,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
     }
 
-    Uint32 mentnameSectionSize = SDL_SwapBE32(*((Uint32*) (filedata.data()+16)));
+    Uint32 mentnameSectionSize = SDL_SwapBE32(reinterpret_cast<Uint32*>(filedata.data())[4]);
 
     unsigned char* pMentNameSection = filedata.data() + 20;
 
@@ -71,19 +71,22 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
     while(pCurrentPos < pMentNameSectionEnd) {
         unsigned int entryLength = *pCurrentPos;
 
-        Uint32 entryContentOffset = SDL_SwapBE32(*((Uint32*) (pCurrentPos+1)));
+        Uint32 entryContentOffset = SDL_SwapBE32(reinterpret_cast<Uint32*>(pCurrentPos + 1)[0]);
 
-        unsigned int numMenuEntry = *((char*) pCurrentPos + 5) - '0';
-        unsigned int menuLevel = *((char*) pCurrentPos + 6) - '0';
-        std::string entryTitle((char*) pCurrentPos + 7);
+        const auto* p = reinterpret_cast<char*>(pCurrentPos);
 
-        int techLevel = *((char*) pCurrentPos + entryLength - 1);
+        unsigned int numMenuEntry  = p[5] - '0';
+        unsigned int menuLevel     = p[6] - '0';
+
+        std::string entryTitle(p + 7);
+
+        const uint16_t techLevel = p[entryLength - 1];
 
         if(entryContentOffset >= mentatTextFilesize) {
             THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!", entryContentOffset);
         }
 
-        std::string compressedEntryContent((char*) filedata.data() + entryContentOffset);
+        std::string compressedEntryContent(reinterpret_cast<char*>(filedata.data()) + entryContentOffset);
 
         std::string entryContent = convertCP850ToUTF8(decodeString(compressedEntryContent));
 
