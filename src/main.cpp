@@ -384,9 +384,9 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
 }
 
 void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
-    /*
-    static const char* priorityStrings[] = {
-        nullptr,
+    
+    static constexpr std::string_view priorityStrings[] = {
+        "<UNK> ",
         "VERBOSE ",
         "DEBUG   ",
         "INFO    ",
@@ -394,9 +394,14 @@ void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, c
         "ERROR   ",
         "CRITICAL"
     };
-    fprintf(stderr, "%s:   %s\n", priorityStrings[priority], message);
-    */
-    const auto output = fmt::format("{}\n", message);
+
+    static constexpr auto priorityStringsSize = static_cast<int>(std::size(priorityStrings));
+
+    const auto n = static_cast<int>(priority);
+
+    const auto priority_name = n >= 0 && n < priorityStringsSize ? priorityStrings[n] : priorityStrings[0];
+
+    const auto output = fmt::format("{}:   {}\n", priority_name, message);
 #ifdef _WIN32
     OutputDebugStringA(output.c_str());
 #endif
