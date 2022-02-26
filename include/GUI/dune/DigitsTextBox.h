@@ -73,7 +73,7 @@ public:
        \param   textcolor       the color of the text (COLOR_DEFAULT = default color)
        \param   textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setColor(HOUSETYPE house, Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setColor(HOUSETYPE house, Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->house = house;
         updateSurfaces();
         textBox.setTextColor(textcolor, textshadowcolor);
@@ -126,7 +126,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
+    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
     {
         if((!isEnabled()) || (!isVisible())) {
             return true;

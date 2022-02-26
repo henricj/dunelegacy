@@ -53,7 +53,7 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    inline void draw(Point position) override
+    void draw(Point position) override
     {
         if(pAnim == nullptr) {
             return;
