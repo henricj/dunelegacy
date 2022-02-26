@@ -52,6 +52,9 @@
 
 #include <SDL2/SDL_ttf.h>
 
+#include <enet/enet.h>
+#include <fmt/core.h>
+
 #include <iostream>
 #include <typeinfo>
 #include <future>
@@ -59,16 +62,23 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-    #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
-    #endif
-    #include <windows.h>
-    #include <cstdio>
-    #include <io.h>
+#    ifndef WIN32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
+#    endif
+#    include <Windows.h>
+
+#    include <cstdio>
+#    include <io.h>
+#    ifndef STDOUT_FILENO
+#        define STDOUT_FILENO 1
+#    endif
+#    ifndef STDERR_FILENO
+#        define STDERR_FILENO 2
+#    endif
 #else
-    #include <sys/types.h>
-    #include <pwd.h>
-    #include <unistd.h>
+#    include <pwd.h>
+#    include <sys/types.h>
+#    include <unistd.h>
 #endif
 
 #ifdef __APPLE__
@@ -454,7 +464,95 @@ std::string getUserLanguage() {
     }
 }
 
+#if defined(__clang_version__)
+void log_clang() {
+    sdl2::log_info("   Compiler: clang " __clang_version__);
+}
+#elif defined(__GNUC_PATCHLEVEL__)
+void log_gcc() {
+#    ifdef __MINGW32__
+    sdl2::log_info("   Compiler: MinGW %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#    else
+    sdl2::log_info("   Compiler: GCC %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+#    endif
+}
+#elif defined(_MSC_VER)
+void log_msvc() {
+#    if defined(_MSC_FULL_VER)
+    sdl2::log_info("   Compiler: MSVC %02d.%02d.%05d.%02d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000,
+                   _MSC_BUILD);
 
+    sdl2::log_info("   MSVC runtime: "
+#        if defined(_MT)
+                   "MT "
+#        endif
+#        if defined(_DLL)
+                   "DLL"
+#        else
+                   "Static"
+#        endif
+    );
+#    endif // _MSC_FULL_VER
+
+    sdl2::log_info("   Instruction set: "
+#    if defined(_M_IX86)
+                   "x86"
+#    elif defined(_M_X64)
+                   "x64"
+#    elif defined(_M_ARM64)
+                   "ARM64"
+#    elif defined(_M_ARM)
+                   "ARM"
+#    else
+                   "Unknown"
+#    endif
+                   "/"
+#    if defined(__AVX512F__)
+                   "AVX512"
+#    elif defined(__AVX2__)
+                   "AVX2"
+#    elif defined(__AVX__)
+                   "AVX"
+#    elif defined(_M_IX86_FP)
+#        if _M_IX86_FP == 0
+                   "x87 FPU"
+#        elif _M_IX86_FP == 1
+                   "SSE"
+#        elif _M_IX86_FP == 2
+                   "SSE2"
+#        else
+                   "Unknown"
+#        endif
+#    else
+                   "Default"
+#    endif
+    );
+
+#    if defined(_CONTROL_FLOW_GUARD)
+    sdl2::log_info("   Control flow guard");
+#endif
+}
+#endif
+
+void log_build_info() {
+    sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
+
+#if defined(__clang_version__)
+    log_clang();
+#elif defined(__GNUC_PATCHLEVEL__)
+    log_gcc();
+#elif defined(_MSC_VER)
+    log_msvc();
+#endif // _MSC_VER
+
+#if defined(FMT_VERSION)
+    sdl2::log_info("   fmt %d.%d.%d", FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
+#endif
+
+#if defined(ENET_VERSION_MAJOR) && defined(ENET_VERSION_MINOR) && defined(ENET_VERSION_PATCH)
+    sdl2::log_info("   enet %d.%d.%d", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
+#endif
+}
 
 int main(int argc, char *argv[]) {
     SDL_LogSetOutputFunction(logOutputFunction, nullptr);
@@ -554,6 +652,8 @@ int main(int argc, char *argv[]) {
         }
 
         sdl2::log_info("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
+
+        log_build_info();
 
         // First check for missing files
         auto missingFiles = FileManager::getMissingFiles();

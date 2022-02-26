@@ -2,7 +2,7 @@
 	path = external/vcpkg/vcpkg
 	url = https://github.com/henricj/vcpkg-ltcg.git
 [submodule "external/enet"]
-	path = external/enet
+	path = external/enet/enet
 	url = https://github.com/lsalzman/enet.git
 [submodule "external/digestpp/digestpp"]
 	path = external/digestpp/digestpp
