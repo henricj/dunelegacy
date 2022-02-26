@@ -172,11 +172,11 @@ inline bool utf8IsStartByte(unsigned char c) {
     \param  str an utf-8 string
     \return the number of code points
 */
-inline size_t utf8Length(const std::string& str) {
+inline size_t utf8Length(std::string_view str) {
     size_t resultLen = 0;
 
     auto iter = str.cbegin();
-    while( iter < str.cend() ) {
+    while( iter != str.cend() ) {
         unsigned char c = static_cast<unsigned char>( *iter );
 
         if( (c & 0x80) == 0) {
@@ -196,7 +196,7 @@ inline size_t utf8Length(const std::string& str) {
             iter += 1;
         }
 
-        resultLen += 1;
+        resultLen += 1u;
     }
 
     return resultLen;
@@ -210,7 +210,7 @@ inline size_t utf8Length(const std::string& str) {
     \param  len the length of the substring to copy specified in characters (=code points)
     \return the utf8 substring
 */
-std::string utf8Substr(const std::string& str, size_t pos, size_t len = std::string::npos);
+std::string utf8Substr(std::string_view str, size_t pos, size_t len = std::string_view::npos);
 
 /**
     This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function pGetTextWidth is
@@ -220,9 +220,10 @@ std::string utf8Substr(const std::string& str, size_t pos, size_t len = std::str
     \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value shall specify the width in pixels of its parameter.
     \return the returned vector contains the complete text, split into multiple lines.
 */
-std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth);
+std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth,
+                                        std::function<int(std::string_view)> pGetTextWidth);
 
-std::string convertCP850ToUTF8(const std::string& text);
+std::string convertCP850ToUTF8(std::string_view text);
 
 /// This function decodes a string to CP850 Code.
 /**
@@ -230,7 +231,7 @@ std::string convertCP850ToUTF8(const std::string& text);
     \param text Text to decode
     \return The decoded text
 */
-std::string decodeString(const std::string& text);
+std::string decodeString(std::string_view text);
 
 
 std::string to_hex(gsl::span<const Uint8> data);

@@ -25,42 +25,43 @@
 #include <globals.h>
 
 #include <algorithm>
+#include <string_view>
 
-sdl2::surface_ptr DuneStyle::createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize) {
+sdl2::surface_ptr DuneStyle::createSurfaceWithText(std::string_view text, Uint32 color, unsigned int fontsize) {
     if(pFontManager) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
-    } else {
-        // create dummy surface
-        auto surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, text.length() * 10, 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
-        if(surface == nullptr) {
-            return nullptr;
-        }
-
-        SDL_FillRect(surface.get(), nullptr, COLOR_TRANSPARENT);
-
-        return surface;
     }
+
+    // create dummy surface
+    auto surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, static_cast<int>(text.length() * 10), 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    if(surface == nullptr) {
+        return nullptr;
+    }
+
+    SDL_FillRect(surface.get(), nullptr, COLOR_TRANSPARENT);
+
+    return surface;
 }
 
 unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
     if(pFontManager) {
         return pFontManager->getTextHeight(FontNum);
-    } else {
-        return 12;
     }
+
+    return 12;
 }
 
-unsigned int DuneStyle::getTextWidth(const std::string& text, unsigned int FontNum)  {
+unsigned int DuneStyle::getTextWidth(std::string_view text, unsigned int FontNum)  {
     if(pFontManager) {
         return pFontManager->getTextWidth(text,FontNum);
-    } else {
-        return text.length()*10;
     }
+
+    return static_cast<int>(text.length()*10);
 }
 
 
-Point DuneStyle::getMinimumLabelSize(const std::string& text, int fontSize) {
-    return Point(getTextWidth(text,fontSize) + 12,getTextHeight(fontSize) + 4);
+Point DuneStyle::getMinimumLabelSize(std::string_view text, int fontSize) {
+    return {static_cast<int>(getTextWidth(text,fontSize)) + 12,static_cast<int>(getTextHeight(fontSize)) + 4};
 }
 
 sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
@@ -124,11 +125,11 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, con
 
 
 
-Point DuneStyle::getMinimumCheckboxSize(const std::string& text) {
+Point DuneStyle::getMinimumCheckboxSize(std::string_view text) {
     return Point(getTextWidth(text,14) + 20 + 17,getTextHeight(14) + 8);
 }
 
-sdl2::surface_ptr DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+sdl2::surface_ptr DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -179,11 +180,11 @@ sdl2::surface_ptr DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, 
     return surface;
 }
 
-Point DuneStyle::getMinimumRadioButtonSize(const std::string& text) {
+Point DuneStyle::getMinimumRadioButtonSize(std::string_view text) {
     return Point(getTextWidth(text,14) + 16 + 15,getTextHeight(14) + 8);
 }
 
-sdl2::surface_ptr DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+sdl2::surface_ptr DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -291,11 +292,11 @@ sdl2::surface_ptr DuneStyle::createDropDownBoxButton(Uint32 size, bool pressed, 
 
 
 
-Point DuneStyle::getMinimumButtonSize(const std::string& text) {
-    return Point(getTextWidth(text.c_str(),12)+12,getTextHeight(12));
+Point DuneStyle::getMinimumButtonSize(std::string_view text) {
+    return Point(getTextWidth(text,12)+12,getTextHeight(12));
 }
 
-sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor, Uint32 textshadowcolor) {
+sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool pressed, bool activated, Uint32 textcolor, Uint32 textshadowcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -348,7 +349,7 @@ Point DuneStyle::getMinimumTextBoxSize(int fontSize) {
     return Point(10,getTextHeight(fontSize) + 6);
 }
 
-sdl2::surface_ptr DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontSize, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor) {
+sdl2::surface_ptr DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -488,7 +489,7 @@ Uint32 DuneStyle::getListBoxEntryHeight() {
     return 16;
 }
 
-sdl2::surface_ptr DuneStyle::createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color) {
+sdl2::surface_ptr DuneStyle::createListBoxEntry(Uint32 width, std::string_view text, bool selected, Uint32 color) {
     if(color == COLOR_DEFAULT) {
         color = defaultForegroundColor;
     }
@@ -544,7 +545,7 @@ sdl2::surface_ptr DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 heigh
 
 
 
-sdl2::surface_ptr DuneStyle::createToolTip(const std::string& text) {
+sdl2::surface_ptr DuneStyle::createToolTip(std::string_view text) {
     sdl2::surface_ptr helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, 12);
     if(helpTextSurface == nullptr) {
         return nullptr;

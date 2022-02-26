@@ -15,11 +15,13 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <GUI/TextView.h>
+#include "GUI/TextView.h"
 
-#include <misc/string_util.h>
+#include "misc/DrawingRectHelper.h"
+#include "misc/string_util.h"
 
 #include <algorithm>
+
 
 TextView::TextView()  {
     Widget::enableResizing(true,true);
@@ -92,7 +94,7 @@ void TextView::resize(Uint32 width, Uint32 height) {
     int fontSize = this->fontSize;
     std::vector<std::string> textLines = greedyWordWrap(text,
                                                         getSize().x - scrollbar.getSize().x - 4,
-                                                        [fontSize](const std::string& tmp) {
+                                                        [fontSize](std::string_view tmp) {
                                                             return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
                                                         });
 
@@ -114,7 +116,7 @@ void TextView::updateTextures() {
         int fontSize = this->fontSize;
         std::vector<std::string> textLines = greedyWordWrap(text,
                                                             getSize().x - scrollbar.getSize().x - 4,
-                                                            [fontSize](const std::string& tmp) {
+                                                            [fontSize](std::string_view tmp) {
                                                                 return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
                                                             });
 

@@ -18,9 +18,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <misc/SDL2pp.h>
-
-#include <string>
+#include <string_view>
 
 class Font {
 public:
@@ -32,7 +30,7 @@ public:
     Font& operator=(const Font &) = delete;
     Font& operator=(Font &&) = delete;
 
-    virtual void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) = 0;
+    virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor = 0xFFFFFFFFu) = 0;
 
     /// Returns the number of pixels a text needs
     /**
@@ -40,7 +38,7 @@ public:
         \param  text    The text to be checked for it's length in pixel
         \return Number of pixels needed
     */
-    [[nodiscard]] virtual int getTextWidth(const std::string& text) const = 0;
+    [[nodiscard]] virtual int getTextWidth(std::string_view text) const = 0;
 
     /// Returns the number of pixels this font needs in y-direction.
     /**

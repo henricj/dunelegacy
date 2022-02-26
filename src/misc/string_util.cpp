@@ -75,7 +75,7 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
     return result;
 }
 
-std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
+std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     std::string result;
     size_t estimatedLength = (len == std::string::npos) ? (str.length() - pos) : len;
     result.reserve(estimatedLength);
@@ -140,7 +140,7 @@ std::string utf8Substr(const std::string& str, size_t pos, size_t len) {
 }
 
 
-std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, std::function<int (const std::string&)> pGetTextWidth) {
+std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, std::function<int (std::string_view)> pGetTextWidth) {
     //split text into single lines at every '\n'
     size_t startpos = 0;
     size_t nextpos = 0;
@@ -148,9 +148,9 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
     do {
         nextpos = text.find("\n",startpos);
         if(nextpos == std::string::npos) {
-            hardLines.push_back(text.substr(startpos,text.length()-startpos));
+            hardLines.emplace_back(text.substr(startpos,text.length()-startpos));
         } else {
-            hardLines.push_back(text.substr(startpos,nextpos-startpos));
+            hardLines.emplace_back(text.substr(startpos,nextpos-startpos));
             startpos = nextpos+1;
         }
     } while(nextpos != std::string::npos);
@@ -236,7 +236,7 @@ std::vector<std::string> greedyWordWrap(const std::string& text, int linewidth, 
 }
 
 
-std::string convertCP850ToUTF8(const std::string& text)
+std::string convertCP850ToUTF8(std::string_view text)
 {
     // contains the upper half of cp850 (128 - 255)
     static const unsigned char cp850toISO8859_1[] = {
@@ -268,7 +268,7 @@ std::string convertCP850ToUTF8(const std::string& text)
 }
 
 
-std::string decodeString(const std::string& text) {
+std::string decodeString(std::string_view text) {
     std::string out = "";
 
     static const char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };

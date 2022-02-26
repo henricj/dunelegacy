@@ -49,10 +49,10 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize)
 TTFFont::~TTFFont() = default;
 
 
-void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor) {
+void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor) {
 
     if(!text.empty()) {
-        sdl2::surface_ptr pTextSurface { TTF_RenderUTF8_Solid(pTTFFont.get(), text.c_str(), RGBA2SDL(baseColor)) };
+        sdl2::surface_ptr pTextSurface{TTF_RenderUTF8_Solid(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
         if(!pTextSurface) {
             THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Solid() failed: %s!", TTF_GetError());
         }
@@ -68,10 +68,10 @@ void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, 
         \param  text    The text to be checked for it's length in pixel
         \return Number of pixels needed
 */
-int TTFFont::getTextWidth(const std::string& text) const {
+int TTFFont::getTextWidth(std::string_view text) const {
 
     int width = 0;
-    if(TTF_SizeUTF8(pTTFFont.get(), text.c_str(), &width, nullptr) < 0) {
+    if(TTF_SizeUTF8(pTTFFont.get(), std::string{text}.c_str(), &width, nullptr) < 0) {
         THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeText() failed: %s!", TTF_GetError());
     }
 

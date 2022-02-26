@@ -53,11 +53,11 @@ public:
     /// destructor
     ~ChatManager();
 
-    void addChatMessage(const std::string& username, const std::string& message);
+    void addChatMessage(std::string_view username, std::string_view message);
 
-    void addInfoMessage(const std::string& message);
+    void addInfoMessage(std::string_view message);
 
-    void addHintMessage(const std::string& message, const DuneTexture* pTexture);
+    void addHintMessage(std::string_view message, const DuneTexture* pTexture);
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().

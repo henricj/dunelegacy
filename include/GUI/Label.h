@@ -208,7 +208,7 @@ protected:
         if(!pTexture) {
             const auto textLines = greedyWordWrap(text,
                                                                 getSize().x,
-                                                                [font = fontSize](const std::string& tmp) {
+                                                                [font = fontSize](std::string_view tmp) {
                                                                     return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
                                                                 });
 

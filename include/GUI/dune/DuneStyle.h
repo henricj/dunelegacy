@@ -27,7 +27,7 @@ public:
     }
 
     /// destructor
-    virtual ~DuneStyle() = default;
+    ~DuneStyle() override = default;
 
 
     /**
@@ -36,7 +36,7 @@ public:
         \param  fontSize  The size of the font to use
         \return the mimimum size of this label
     */
-    Point getMinimumLabelSize(const std::string& text, int fontSize) override;
+    Point getMinimumLabelSize(std::string_view text, int fontSize) override;
 
     /**
         Creates the surface for a label with TextLines as content.
@@ -60,7 +60,7 @@ public:
         \param  text    The text for the checkbox
         \return the mimimum size of this checkbox
     */
-    Point getMinimumCheckboxSize(const std::string& text) override;
+    Point getMinimumCheckboxSize(std::string_view text) override;
 
     /**
         Creates the surface for a checkbox with text as content.
@@ -74,7 +74,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr createCheckboxSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createCheckboxSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -84,7 +84,7 @@ public:
         \param  text    The text for the radio button
         \return the mimimum size of this radio button
     */
-    Point getMinimumRadioButtonSize(const std::string& text) override;
+    Point getMinimumRadioButtonSize(std::string_view text) override;
 
     /**
         Creates the surface for a radio button with text as content.
@@ -98,7 +98,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr createRadioButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createRadioButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -121,7 +121,7 @@ public:
         \param  text    The text for the button
         \return the mimimum size of this button
     */
-    Point getMinimumButtonSize(const std::string& text) override;
+    Point getMinimumButtonSize(std::string_view text) override;
 
     /**
         Creates the surface for a button with text as content.
@@ -134,7 +134,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createButtonSurface(Uint32 width, Uint32 height, const std::string& text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -158,7 +158,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, const std::string& text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -196,7 +196,7 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createListBoxEntry(Uint32 width, const std::string& text, bool selected, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createListBoxEntry(Uint32 width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -218,7 +218,7 @@ public:
         \param  text        the tool tip text
         \return the new surface
     */
-    sdl2::surface_ptr createToolTip(const std::string& text) override;
+    sdl2::surface_ptr createToolTip(std::string_view text) override;
 
     /**
         Creates a simple background for e.g. a window
@@ -249,7 +249,7 @@ public:
         \param  FontNum     the font
         \return the width of the text
     */
-    unsigned int getTextWidth(const std::string& text, unsigned int FontNum) override;
+    unsigned int getTextWidth(std::string_view text, unsigned int FontNum) override;
 
 public:
     static const Uint32 defaultForegroundColor = COLOR_RGB(125,0,0);
@@ -270,7 +270,7 @@ private:
         \param  fontsize    the size of the text
         \return the new created surface (the caller of this method is responsible of freeing it)
     */
-    sdl2::surface_ptr createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontsize);
+    sdl2::surface_ptr createSurfaceWithText(std::string_view text, Uint32 color, unsigned int fontsize);
 
     Uint32 brightenUp(Uint32 color) {
         Uint32 r = (color & RMASK) >> RSHIFT;

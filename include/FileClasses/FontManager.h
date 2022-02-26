@@ -18,13 +18,12 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
-#include <misc/SDL2pp.h>
 #include "Font.h"
 
+#include <misc/SDL2pp.h>
 #include <misc/sdl_support.h>
 
-#include <memory>
-#include <string>
+#include <string_view>
 #include <map>
 
 /// A class for managing fonts.
@@ -42,28 +41,28 @@ public:
     FontManager& operator=(const FontManager &) = delete;
     FontManager& operator=(FontManager &&) = delete;
 
-    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 color, unsigned int fontSize);
-    int getTextWidth(const std::string& text, unsigned int fontSize);
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 color, unsigned int fontSize);
+    int getTextWidth(std::string_view text, unsigned int fontSize);
     int getTextHeight(unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithText(const std::string& text, Uint32 color, unsigned int fontSize);
-    sdl2::texture_ptr createTextureWithText(const std::string& text, Uint32 color, unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered = false);
-    sdl2::texture_ptr createTextureWithMultilineText(const std::string& text, Uint32 color, unsigned int fontSize, bool bCentered = false);
+    sdl2::surface_ptr createSurfaceWithText(std::string_view, Uint32 color, unsigned int fontSize);
+    sdl2::texture_ptr createTextureWithText(std::string_view text, Uint32 color, unsigned int fontSize);
+    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered = false);
+    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered = false);
 private:
-    inline Font* getFont(unsigned int fontSize) {
+    Font* getFont(unsigned int fontSize) {
         auto iter = fonts.find(fontSize);
+
         if(iter != fonts.end()) {
             return iter->second.get();
-        } else {
-            fonts[fontSize] = loadFont(fontSize);
-            return fonts[fontSize].get();
         }
+
+        fonts[fontSize] = loadFont(fontSize);
+        return fonts[fontSize].get();
     }
 
     std::unique_ptr<Font> loadFont(unsigned int fontSize);
 
     std::map<unsigned int, std::unique_ptr<Font>> fonts;
-
 };
 
 #endif // FONTMANAGER_H

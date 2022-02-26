@@ -128,7 +128,7 @@ void ChatManager::draw(Point position)
     }
 }
 
-void ChatManager::addChatMessage(const std::string& username, const std::string& message)
+void ChatManager::addChatMessage(std::string_view username, std::string_view message)
 {
     char timestring[80];
     auto unixtime = time(nullptr);
@@ -137,7 +137,7 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     strftime(timestring, 80, "(%H:%M:%S)", timeinfo);
 
     auto pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, 12);
-    auto pUsernameTexture = pFontManager->createTextureWithText( username + ": ", COLOR_WHITE, 12);
+    auto pUsernameTexture = pFontManager->createTextureWithText(std::string{username} + ": ", COLOR_WHITE, 12);
     auto pMessageTexture =  pFontManager->createTextureWithText( message, COLOR_WHITE, 12);
 
     chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
@@ -146,22 +146,22 @@ void ChatManager::addChatMessage(const std::string& username, const std::string&
     prune_messages();
 }
 
-void ChatManager::addInfoMessage(const std::string& message)
+void ChatManager::addInfoMessage(std::string_view message)
 {
-    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( "*  " + message, COLOR_GREEN, 12);
+    sdl2::texture_ptr pMessageTexture = pFontManager->createTextureWithText( std::string{"*  "}.append(message), COLOR_GREEN, 12);
 
     chatMessages.emplace_back(std::move(pMessageTexture), SDL_GetTicks(), MessageType::MSGTYPE_INFO);
 
     prune_messages();
 }
 
-void ChatManager::addHintMessage(const std::string& message, const DuneTexture* pTexture)
+void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pTexture)
 {
     const auto width = settings.video.width - SIDEBARWIDTH - LEFT_BORDER_WIDTH - 20;
 
     const auto lines = greedyWordWrap(message,
                                 width,
-                                [](const std::string& tmp) {
+                                [](std::string_view tmp) {
                                     return DuneStyle::getInstance().getTextWidth(tmp, 12);
                                 });
 

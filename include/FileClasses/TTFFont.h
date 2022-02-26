@@ -23,9 +23,9 @@
 
 #include <SDL2/SDL_ttf.h>
 
-#include <vector>
+#include <string_view>
 
-typedef sdl2::implementation::unique_ptr_deleter<TTF_Font, TTF_CloseFont> font_ptr;
+using font_ptr = sdl2::implementation::unique_ptr_deleter<TTF_Font, TTF_CloseFont>;
 
 /// A class for loading a ttf font.
 /**
@@ -37,9 +37,9 @@ public:
     TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
     ~TTFFont() override;
 
-    void drawTextOnSurface(SDL_Surface* pSurface, const std::string& text, Uint32 baseColor = 0xFFFFFFFF) override;
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor = 0xFFFFFFFFu) override;
 
-    [[nodiscard]] int getTextWidth(const std::string& text) const override;
+    [[nodiscard]] int getTextWidth(std::string_view text) const override;
 
     /// Returns the number of pixels this font needs in y-direction.
     /**

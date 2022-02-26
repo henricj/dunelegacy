@@ -120,7 +120,7 @@ public:
 };
 
 typedef enum : Sint8 {
-    ATTACKMODE_INVALID = -1,
+    ATTACKMODE_INVALID [[maybe_unused]] = -1,
     GUARD = 0,      ///< The unit will attack enemy units but will not move or follow enemy units.
     AREAGUARD = 1,  ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a relatively large radius, and return to their original position after their target was either destroyed or left the immediate area.
     AMBUSH = 2,     ///< Ambush means a unit will remain in position until sighted by the enemy, and then proceed to attack any enemy units it might find on the map.
@@ -131,7 +131,7 @@ typedef enum : Sint8 {
     CAPTURE = 7,    ///< Capture is only used for infantry units when ordered to capture a building
     CARRYALLREQUESTED = 8, ///< This allows a unit to keep requesting a carryall even if one isn't available right now
     RETREAT = 9,           ///< Ignore other units
-    ATTACKMODE_MAX
+    ATTACKMODE_MAX [[maybe_unused]]
 } ATTACKMODE;
 
 enum class GameState {
@@ -142,7 +142,7 @@ enum class GameState {
 };
 
 enum class GameType {
-    Invalid           = -1,
+    Invalid [[maybe_unused]] = -1,
     LoadSavegame      = 0,
     Campaign          = 1,
     CustomGame        = 2,
