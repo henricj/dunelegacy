@@ -27,6 +27,7 @@
 #include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_mixer.h>
 
+
 namespace sdl2
 {
     class texture_lock final
@@ -177,16 +178,16 @@ namespace sdl2
     template<typename T>
     using sdl_ptr = implementation::unique_ptr_arg_deleter<T, void, SDL_free>;
 
-    typedef implementation::unique_ptr_deleter<SDL_Surface, SDL_FreeSurface> surface_ptr;
-    typedef implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_FreeSurface> surface_unique_or_nonowning_ptr;
-    typedef implementation::unique_ptr_deleter<SDL_Texture, SDL_DestroyTexture> texture_ptr;
-    typedef implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture> texture_unique_or_nonowning_ptr;
-    typedef implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette> palette_ptr;
-    typedef implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat> pixel_format_ptr;
-    typedef implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer> renderer_ptr;
-    typedef std::unique_ptr<SDL_RWops, implementation::RWops_deleter> RWops_ptr;
+    using surface_ptr = implementation::unique_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
+    using surface_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
+    using texture_ptr = implementation::unique_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
+    using texture_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
+    using palette_ptr = implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette>;
+    using pixel_format_ptr = implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat>;
+    using renderer_ptr = implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer>;
+    using RWops_ptr = std::unique_ptr<SDL_RWops, implementation::RWops_deleter>;
 
-    typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
+    using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk>;
 
     template<typename... Args>
     void log_message(int category, SDL_LogPriority priority, std::string_view format, Args&&... args) {
