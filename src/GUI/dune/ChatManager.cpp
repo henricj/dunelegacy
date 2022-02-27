@@ -15,6 +15,8 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "misc/dune_localtime.h"
+
 #include <GUI/dune/ChatManager.h>
 
 #include <FileClasses/FontManager.h>
@@ -131,12 +133,9 @@ void ChatManager::draw(Point position)
 void ChatManager::addChatMessage(std::string_view username, std::string_view message)
 {
     char timestring[80] = "(>>>)";
-    auto unixtime = time(nullptr);
 
-    tm timeinfo;
-
-    if (0 == localtime_s(&timeinfo, &unixtime))
-        strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo);
+    if(const auto timeinfo = dune::dune_localtime(); timeinfo.has_value())
+        strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo.value());
 
     auto pTimeTexture = pFontManager->createTextureWithText( timestring, COLOR_WHITE, 12);
     auto pUsernameTexture = pFontManager->createTextureWithText(std::string{username} + ": ", COLOR_WHITE, 12);

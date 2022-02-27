@@ -586,6 +586,13 @@ include(CheckIncludeFile)
 
 CHECK_INCLUDE_FILE_CXX(cxxabi.h, HAVE_CXXABI_H)
 
+if(HAVE_MS_LOCALTIME_S)
+	target_compile_definitions(dune PUBLIC HAVE_MS_LOCALTIME_S)
+endif()
+if(HAVE_LOCALTIME_R)
+	target_compile_definitions(dune PUBLIC HAVE_LOCALTIME_R)
+endif()
+
 if(HAVE_STRERROR_S)
 	target_compile_definitions(dune PUBLIC HAVE_STRERROR_S)
 elseif(HAVE_STRERROR_R)

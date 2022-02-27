@@ -128,6 +128,27 @@ include(CheckCXXSourceCompiles)
 check_symbol_exists(strerror_s "string.h" HAVE_STRERROR_S)
 
 check_cxx_source_compiles(
+    "#include <time.h>
+    int main(int argc, char* argv[]) {
+        time_t rawtime{};
+        tm timeinfo{};
+        int error = localtime_s(&timeinfo, &rawtime);
+        return 0;
+    }"
+    HAVE_MS_LOCALTIME_S)
+
+check_cxx_source_compiles(
+    "#include <time.h>
+    int main(int argc, char* argv[]) {
+        time_t rawtime{};
+        tm timeinfo{};
+        tm* result = localtime_r(&rawtime, &timeinfo);
+        return 0;
+    }"
+    HAVE_MS_LOCALTIME_R)
+
+
+check_cxx_source_compiles(
     "#include <string.h>
     char buffer[64];
     int main(int argc, char* argv[]) {
