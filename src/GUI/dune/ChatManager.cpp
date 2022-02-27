@@ -167,7 +167,7 @@ void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pT
                                     return DuneStyle::getInstance().getTextWidth(tmp, 12);
                                 });
 
-    const int height = lines.size() * DuneStyle::getInstance().getTextHeight(12) + 4;
+    const auto height = static_cast<uint32_t>(lines.size()) * DuneStyle::getInstance().getTextHeight(12) + 4u;
 
     auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface( width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
