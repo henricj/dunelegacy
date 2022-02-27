@@ -37,7 +37,7 @@ namespace {
 constexpr StructureBaseConstants refinery_constants{Refinery::item_id, Coord{3, 2}};
 }
 
-Refinery::Refinery(Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
+Refinery::Refinery(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -51,7 +51,7 @@ Refinery::Refinery(Uint32 objectID, const ObjectInitializer& initializer) : Stru
     lastAnimFrame = 3;
 }
 
-Refinery::Refinery(Uint32 objectID, const ObjectStreamInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
+Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer) : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     auto& stream = initializer.stream();

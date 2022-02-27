@@ -67,7 +67,7 @@ void HumanPlayer::save(OutputStream& stream) const {
 void HumanPlayer::update() {
 }
 
-void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     if((lastAttackNotificationCycle != INVALID_GAMECYCLE)
         && (getGameCycleCount() - lastAttackNotificationCycle < ATTACKNOTIFICATIONTIME)) {
         return;

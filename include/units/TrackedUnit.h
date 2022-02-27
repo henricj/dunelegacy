@@ -31,8 +31,8 @@ public:
 
 class TrackedUnit : public GroundUnit {
 protected:
-    TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = GroundUnit;

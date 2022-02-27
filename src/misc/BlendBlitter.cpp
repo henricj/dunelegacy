@@ -3,7 +3,7 @@
 BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps)
     : src{std::move(SrcPic)}, dest{DestPic}, destRect{DestPicRect}, numSteps{numSteps} {
 
-    N = static_cast<Uint64>(src->w) * static_cast<Uint64>(src->h);
+    N = static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h);
 
     // compute next greater 2^x value
     m = N;
@@ -34,14 +34,14 @@ int BlendBlitter::nextStep() {
     sdl2::surface_lock lock_dest{dest};
     sdl2::surface_lock lock_src{src.get()};
 
-    const Uint64 numPixelsPerStep = (N / numSteps) + 1;
-    for(Uint64 i = 0; i < numPixelsPerStep; i++) {
+    const uint64_t numPixelsPerStep = (N / numSteps) + 1;
+    for(uint64_t i = 0; i < numPixelsPerStep; i++) {
         const auto cur = getNextValue();
 
         const auto x = static_cast<int>(cur % src->w);
         const auto y = static_cast<int>(cur / src->w);
 
-        const Uint32 color = getPixel(src.get(), x, y);
+        const uint32_t color = getPixel(src.get(), x, y);
 
         if(color != 0) {
             if((destRect.x + x < dest->w) && (destRect.x + x >= 0) && (destRect.x + x <= destRect.x + destRect.w) &&

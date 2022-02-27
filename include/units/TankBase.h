@@ -31,8 +31,8 @@ public:
 class TankBase : public TrackedUnit
 {
 protected:
-    TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    TankBase(const TankBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = TrackedUnit;

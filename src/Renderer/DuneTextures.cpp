@@ -273,7 +273,7 @@ public:
         return ret;
     }
 
-    sdl2::texture_ptr pack(SDL_Renderer* render, Uint32 format, int max_side) {
+    sdl2::texture_ptr pack(SDL_Renderer* render, uint32_t format, int max_side) {
         if(!packer_.pack(max_side)) return nullptr;
 
         const sdl2::surface_ptr atlas_surface{
@@ -348,7 +348,7 @@ private:
 
 class ObjectPicturePacker final {
 public:
-    using identifier_type = std::tuple<Uint32, HOUSETYPE, int>;
+    using identifier_type = std::tuple<uint32_t, HOUSETYPE, int>;
     using textures_type   = DuneTextures::object_pictures_type;
 
     void initialize(SurfaceLoader* surfaceLoader) {
@@ -418,11 +418,11 @@ private:
     textures_type dune_textures_;
 
     // There is only one kind of these items, stored in the Harkonnen slot.
-    static const std::set<Uint32> harkonnen_only_;
+    static const std::set<uint32_t> harkonnen_only_;
 };
 
 // There is only one kind of these items, stored in the Harkonnen slot.
-const std::set<Uint32> ObjectPicturePacker::harkonnen_only_ = {
+const std::set<uint32_t> ObjectPicturePacker::harkonnen_only_ = {
     ObjPic_ExplosionSmall,
     ObjPic_ExplosionMedium1,
     ObjPic_ExplosionMedium2,
@@ -444,7 +444,7 @@ const std::set<Uint32> ObjectPicturePacker::harkonnen_only_ = {
 
 class UiGraphicPacker final {
 public:
-    using identifier_type = std::tuple<Uint32, HOUSETYPE>;
+    using identifier_type = std::tuple<uint32_t, HOUSETYPE>;
     using textures_type   = DuneTextures::ui_graphics_type;
 
     void initialize(SurfaceLoader* surfaceLoader) {
@@ -538,7 +538,7 @@ protected:
     textures_type textures_;
 };
 
-class TinyPicturePacker final : public PackerBase<DuneTextures::tiny_pictures_type, Uint32> {
+class TinyPicturePacker final : public PackerBase<DuneTextures::tiny_pictures_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
         for(auto id = 0u; id < textures_.size(); ++id) {
@@ -554,7 +554,7 @@ public:
     }
 };
 
-class SmallDetailPicsPacker final : public PackerBase<DuneTextures::small_details_type, Uint32> {
+class SmallDetailPicsPacker final : public PackerBase<DuneTextures::small_details_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
         for(auto id = 0u; id < textures_.size(); ++id) {
@@ -570,7 +570,7 @@ public:
     }
 };
 
-class GeneratedPicturesPacker final : public PackerBase<DuneTextures::generated_type, Uint32> {
+class GeneratedPicturesPacker final : public PackerBase<DuneTextures::generated_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
         auto palaceReady = PalaceInterface::createSurface(surfaceLoader, GeneratedPicture::PalaceReadyText);
@@ -656,7 +656,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
         assert(factory23.empty());
 
-        static const std::set<Uint32> force_combine_ui_graphic = {
+        static const std::set<uint32_t> force_combine_ui_graphic = {
             UI_RadarAnimation,   UI_DuneLegacy,           UI_MenuBackground,  UI_GameMenu,
             UI_MapChoiceMap,     UI_MapChoiceMapOnly,     UI_MapChoicePlanet, UI_MapChoiceClickMap,
             UI_MenuButtonBorder, UI_SelectYourHouseLarge, UI_NewMapWindow};

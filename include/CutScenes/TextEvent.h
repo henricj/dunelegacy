@@ -43,7 +43,7 @@ public:
         \param  bFadeOut        true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears (default is true)
         \param  bCenterVertical true = center the text vertically on the screen, false = draw the text near the bottom of the screen (default is false)
     */
-    TextEvent(const std::string& text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false);
+    TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn = true, bool bFadeOut = true, bool bCenterVertical = false);
 
     /// destructor
     ~TextEvent();

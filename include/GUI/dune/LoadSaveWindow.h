@@ -130,14 +130,14 @@ private:
     TextButton  cancelButton;
     TextBox     saveName;
 
-    bool        bSaveWindow;
-    std::filesystem::path filename;
+    bool                               bSaveWindow;
+    std::filesystem::path              filename;
     std::vector<std::filesystem::path> directories;
-    std::vector<std::string> directoryTitles;
-    std::string extension;
-    int currentDirectoryIndex;
-    std::string preselectedFile;
-    Uint32      color;
+    std::vector<std::string>           directoryTitles;
+    std::string                        extension;
+    int                                currentDirectoryIndex;
+    std::string                        preselectedFile;
+    uint32_t                           color;
 };
 
 #endif //LOADSAVEWINDOW_H

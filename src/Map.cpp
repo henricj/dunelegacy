@@ -66,12 +66,12 @@ void Map::load(InputStream& stream) {
 
     auto state = stream.readUint8Vector();
     if(state.size() != decltype(random_)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
-    random_.setState(gsl::span<const Uint8, Random::state_bytes>{state});
+    random_.setState(gsl::span<const uint8_t, Random::state_bytes>{state});
 
     init_tile_location();
 }
 
-void Map::save(OutputStream& stream, Uint32 gameCycleCount) const {
+void Map::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeSint32(sizeX);
     stream.writeSint32(sizeY);
 
@@ -96,7 +96,7 @@ void Map::createSandRegions() {
     for (auto& tile : tiles)
         tile.setSandRegion(NONE_ID);
 
-    Uint32 region = 0;
+    uint32_t region = 0;
     for (auto& tile : tiles) {
         if (!tile.isRock() && !visited[tile_index(tile.location.x, tile.location.y)]) {
             tileQueue.push(&tile);
@@ -125,8 +125,9 @@ void Map::createSandRegions() {
     }
 }
 
-void Map::damage(const GameContext& context, Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID,
-                 FixPoint damage, int damageRadius, bool air) {
+void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerOwner, const Coord& realPos,
+                 uint32_t           bulletID,
+                 FixPoint           damage, int damageRadius, bool air) {
     const auto location = Coord(realPos.x/TILESIZE, realPos.y/TILESIZE);
 
     std::vector<Dune::object_id_type> affectedAirUnits;
@@ -501,7 +502,7 @@ Coord Map::findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) 
 }
 
 
-void Map::removeObjectFromMap(Uint32 objectID) {
+void Map::removeObjectFromMap(uint32_t objectID) {
     // TODO: Should we try the object manager first?
     // At worst, if we find the object, we can use the location
     // plus the size of the building to avoid going through the

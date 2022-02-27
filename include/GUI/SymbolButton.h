@@ -66,7 +66,7 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         invalidateTextures();
         Widget::resize(width,height);
@@ -80,7 +80,7 @@ public:
     [[nodiscard]] Point getMinimumSize() const override
     {
         if(pSymbolSurface) {
-            return Point((Sint32) pSymbolSurface->w + 5, (Sint32) pSymbolSurface->h + 5);
+            return Point((int32_t) pSymbolSurface->w + 5, (int32_t) pSymbolSurface->h + 5);
         }             return Point(0,0);
 
        

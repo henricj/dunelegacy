@@ -207,7 +207,7 @@ protected:
     }
 
     void onReturn() {
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+        for(const uint32_t selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pHarvester = dynamic_cast<Harvester*>(pObject);
             if(pHarvester != nullptr) {
@@ -217,7 +217,7 @@ protected:
     }
 
     void OnSendToRepair() {
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+        for(const uint32_t selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pGroundUnit = dynamic_cast<GroundUnit*>(pObject);
             if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
@@ -227,7 +227,7 @@ protected:
     }
 
     void onDeploy() {
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+        for(const uint32_t selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             MCV* pMCV = dynamic_cast<MCV*>(pObject);
             if(pMCV != nullptr) {
@@ -237,7 +237,7 @@ protected:
     }
 
     void onDestruct() {
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+        for(const uint32_t selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pDevastator = dynamic_cast<Devastator*>(pObject);
             if(pDevastator != nullptr) {
@@ -319,7 +319,7 @@ protected:
         bool bShowRepair = false;
         bool bShowCarryallDrop = false;
 
-        for(const Uint32 selectedUnitID : currentGame->getSelectedList()) {
+        for(const uint32_t selectedUnitID : currentGame->getSelectedList()) {
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pUnit = dynamic_cast<UnitBase*>(pObject);
             if(pUnit != nullptr) {

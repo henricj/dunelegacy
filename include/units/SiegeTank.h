@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_SiegeTank;
     using parent = TankBase;
 
-    SiegeTank(Uint32 objectID, const ObjectInitializer& initializer);
-    SiegeTank(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    SiegeTank(uint32_t objectID, const ObjectInitializer& initializer);
+    SiegeTank(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~SiegeTank() override;
 
     void blitToScreen() override;

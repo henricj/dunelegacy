@@ -27,8 +27,8 @@ void Choam::save(OutputStream& stream) const {
 }
 
 void Choam::load(InputStream& stream) {
-    Uint32 num = stream.readUint32();
-    for(Uint32 i=0;i<num;i++) {
+    uint32_t num = stream.readUint32();
+    for(uint32_t i = 0;i<num;i++) {
         BuildItem tmp;
         tmp.load(stream);
         availableItems.push_back(tmp);

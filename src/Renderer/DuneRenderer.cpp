@@ -1,7 +1,7 @@
 #include <Renderer/DuneRenderer.h>
 
 
-void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, Uint32 color) {
+void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, uint32_t color) {
     setRenderDrawColor(renderer, color);
 
     std::array<SDL_FPoint, 3> points;

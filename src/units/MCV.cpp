@@ -34,14 +34,14 @@ namespace {
 constexpr GroundUnitConstants mcv_constants{MCV::item_id, false};
 }
 
-MCV::MCV(Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
+MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
     setHealth(getMaxHealth());
     attackMode = GUARD;
 }
 
-MCV::MCV(Uint32 objectID, const ObjectStreamInitializer& initializer)
+MCV::MCV(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 }

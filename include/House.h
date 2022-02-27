@@ -41,8 +41,8 @@ class House final
     House(const GameContext& context);
 
 public:
-    House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID = 0,
-          int quota = 0);
+    House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID = 0,
+          int                quota                                                                     = 0);
     House(const GameContext& context, InputStream& stream);
     virtual ~House();
 
@@ -86,24 +86,24 @@ public:
     void setProducedPower(int newPower);
     [[nodiscard]] int getPowerRequirement() const noexcept { return powerRequirement; }
 
-    [[nodiscard]] int getBuiltValue() const noexcept { return unitBuiltValue + structureBuiltValue; }
-    [[nodiscard]] int getUnitBuiltValue() const noexcept { return unitBuiltValue; }
-    [[nodiscard]] int getMilitaryValue() const noexcept { return militaryValue; }
-    [[nodiscard]] int getKillValue() const noexcept { return killValue; }
-    [[nodiscard]] int getLossValue() const noexcept { return lossValue; }
-    [[nodiscard]] int getStructureBuiltValue() const noexcept { return structureBuiltValue; }
-    [[nodiscard]] int getNumBuiltUnits() const noexcept { return numBuiltUnits; }
-    [[nodiscard]] int getNumBuiltStructures() const noexcept { return numBuiltStructures; }
-    [[nodiscard]] int getDestroyedValue() const noexcept { return destroyedValue; }
-    [[nodiscard]] int getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
-    [[nodiscard]] int getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
-    [[nodiscard]] int getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
-    [[nodiscard]] int getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
-    [[nodiscard]] int getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
-    [[nodiscard]] Sint32 getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
+    [[nodiscard]] int      getBuiltValue() const noexcept { return unitBuiltValue + structureBuiltValue; }
+    [[nodiscard]] int      getUnitBuiltValue() const noexcept { return unitBuiltValue; }
+    [[nodiscard]] int      getMilitaryValue() const noexcept { return militaryValue; }
+    [[nodiscard]] int      getKillValue() const noexcept { return killValue; }
+    [[nodiscard]] int      getLossValue() const noexcept { return lossValue; }
+    [[nodiscard]] int      getStructureBuiltValue() const noexcept { return structureBuiltValue; }
+    [[nodiscard]] int      getNumBuiltUnits() const noexcept { return numBuiltUnits; }
+    [[nodiscard]] int      getNumBuiltStructures() const noexcept { return numBuiltStructures; }
+    [[nodiscard]] int      getDestroyedValue() const noexcept { return destroyedValue; }
+    [[nodiscard]] int      getNumDestroyedUnits() const noexcept { return numDestroyedUnits; }
+    [[nodiscard]] int      getNumDestroyedStructures() const noexcept { return numDestroyedStructures; }
+    [[nodiscard]] int      getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
+    [[nodiscard]] int      getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
+    [[nodiscard]] int      getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
+    [[nodiscard]] int32_t getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
     [[nodiscard]] FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
-    [[nodiscard]] int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
-    [[nodiscard]] int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
+    [[nodiscard]] int      getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
+    [[nodiscard]] int      getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
 
     [[nodiscard]] int getQuota() const noexcept { return quota; }
     [[nodiscard]] int getMaxUnits() const noexcept { return maxUnits; }
@@ -175,19 +175,19 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    void noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID);
+    void noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damagerID);
 
     void informWasBuilt(ObjectBase* pObject);
     void informHasKilled(ItemID_enum itemID);
-    void informHasDamaged(ItemID_enum itemID, Uint32 damage);
+    void informHasDamaged(ItemID_enum itemID, uint32_t damage);
 
     void lose(bool bSilent = false) const;
     void win();
 
-    void freeHarvester(int xPos, int yPos);
-    void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); }
-    StructureBase* placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos,
-                                  bool byScenario = false, bool bForcePlacing = false);
+    void           freeHarvester(int xPos, int yPos);
+    void           freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); }
+    StructureBase* placeStructure(uint32_t builderID, ItemID_enum   itemID, int xPos, int yPos,
+                                  bool     byScenario = false, bool bForcePlacing = false);
 
     template<typename UnitType>
     UnitType* createUnit(bool byScenario = false) {
@@ -219,16 +219,16 @@ protected:
 
     bool    ai;             ///< Is this an ai player?
 
-    HOUSETYPE   houseID;        ///< The house number
-    Uint8   teamID;         ///< The team number
+    HOUSETYPE houseID; ///< The house number
+    uint8_t   teamID;  ///< The team number
 
-    int numStructures;          ///< How many structures does this player have?
-    int numUnits;               ///< How many units does this player have?
-    int numItem[Num_ItemID];    ///< This array contains the number of structures/units of a certain type this player has
-    int numItemBuilt[Num_ItemID];  /// Number of items built by player
-    int numItemKills[Num_ItemID]; /// Number of items killed by player
-    int numItemLosses [Num_ItemID]; /// Number of items lost by player
-    Sint32 numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
+    int     numStructures;                      ///< How many structures does this player have?
+    int     numUnits;                           ///< How many units does this player have?
+    int     numItem[Num_ItemID];                ///< This array contains the number of structures/units of a certain type this player has
+    int     numItemBuilt[Num_ItemID];           /// Number of items built by player
+    int     numItemKills[Num_ItemID];           /// Number of items killed by player
+    int     numItemLosses [Num_ItemID];         /// Number of items lost by player
+    int32_t numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
 
     int capacity;             ///< Total spice capacity
     int producedPower;        ///< Power produced by this player

@@ -49,7 +49,7 @@ public:
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
-    void resize(Uint32 width, Uint32 height) override;
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         Draws this progress bar to screen

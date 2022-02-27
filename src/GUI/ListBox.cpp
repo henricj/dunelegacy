@@ -37,11 +37,11 @@ ListBox::~ListBox() {
     ListBox::invalidateTextures();
 }
 
-void ListBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
 }
 
-bool ListBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
 
     if((x>=0) && (x < getSize().x - scrollbarWidth)
@@ -77,7 +77,7 @@ bool ListBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
    
 }
 
-bool ListBox::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
+bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up)  {
     // forward mouse wheel event to scrollbar
     return scrollbar.handleMouseWheel(0,0,up);
 }
@@ -131,7 +131,7 @@ void ListBox::draw(Point position) {
     }
 }
 
-void ListBox::resize(Uint32 width, Uint32 height) {
+void ListBox::resize(uint32_t width, uint32_t height) {
     Widget::resize(width,height);
 
     scrollbar.resize(scrollbar.getMinimumSize().x,height);

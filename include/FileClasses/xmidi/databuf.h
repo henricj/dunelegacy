@@ -266,22 +266,22 @@ public:
 
     void write1(unsigned int val) override
     {
-        Uint8 b0 = val & 0xff;
+        uint8_t b0 = val & 0xff;
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
     }
 
     void write2(unsigned int val) override
     {
-        Uint8 b0 = val & 0xff;
-        Uint8 b1 = (val>>8) & 0xff;
+        uint8_t b0 = val & 0xff;
+        uint8_t b1 = (val >> 8) & 0xff;
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
         SDL_RWwrite(rwop,&b1,sizeof(b1),1);
     }
 
     void write2high(unsigned int val) override
     {
-        Uint8 b0 = val & 0xff;
-        Uint8 b1 = (val>>8) & 0xff;
+        uint8_t b0 = val & 0xff;
+        uint8_t b1 = (val >> 8) & 0xff;
         SDL_RWwrite(rwop,&b1,sizeof(b1),1);
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
     }
@@ -289,10 +289,10 @@ public:
 
     void write4(unsigned int val) override
     {
-        Uint8 b0 = val & 0xff;
-        Uint8 b1 = (val>>8) & 0xff;
-        Uint8 b2 = (val>>16) & 0xff;
-        Uint8 b3 = (val>>24) & 0xff;
+        uint8_t b0 = val & 0xff;
+        uint8_t b1 = (val >> 8) & 0xff;
+        uint8_t b2 = (val >> 16) & 0xff;
+        uint8_t b3 = (val >> 24) & 0xff;
         SDL_RWwrite(rwop,&b0,sizeof(b0),1);
         SDL_RWwrite(rwop,&b1,sizeof(b1),1);
         SDL_RWwrite(rwop,&b2,sizeof(b2),1);
@@ -301,10 +301,10 @@ public:
 
     void write4high(unsigned int val) override
     {
-        Uint8 b0 = val & 0xff;
-        Uint8 b1 = (val>>8) & 0xff;
-        Uint8 b2 = (val>>16) & 0xff;
-        Uint8 b3 = (val>>24) & 0xff;
+        uint8_t b0 = val & 0xff;
+        uint8_t b1 = (val >> 8) & 0xff;
+        uint8_t b2 = (val >> 16) & 0xff;
+        uint8_t b3 = (val >> 24) & 0xff;
         SDL_RWwrite(rwop,&b3,sizeof(b3),1);
         SDL_RWwrite(rwop,&b2,sizeof(b2),1);
         SDL_RWwrite(rwop,&b1,sizeof(b1),1);

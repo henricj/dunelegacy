@@ -56,8 +56,8 @@ public:
     }
 
     ItemID_enum itemID;
-    Uint32 price;
-    Uint32 num;
+    uint32_t    price;
+    uint32_t    num;
 };
 
 class ProductionQueueItem final {
@@ -67,7 +67,7 @@ public:
 
     }
 
-    ProductionQueueItem(ItemID_enum _ItemID, Uint32 _price)
+    ProductionQueueItem(ItemID_enum _ItemID, uint32_t _price)
         : itemID(_ItemID), price(_price) {
 
     }
@@ -87,7 +87,7 @@ public:
     }
 
     ItemID_enum itemID;
-    Uint32 price;
+    uint32_t    price;
 };
 
 class BuilderBaseConstants : public StructureBaseConstants
@@ -102,8 +102,8 @@ public:
 class BuilderBase : public StructureBase
 {
 protected:
-    BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = StructureBase;
@@ -256,14 +256,14 @@ protected:
     static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
     // structure state
-    bool     upgrading{};              ///< Currently upgrading?
-    FixPoint upgradeProgress{};        ///< The current state of the upgrade progress (measured in money spent)
-    Uint8    curUpgradeLev{};          ///< Current upgrade level
+    bool     upgrading{};       ///< Currently upgrading?
+    FixPoint upgradeProgress{}; ///< The current state of the upgrade progress (measured in money spent)
+    uint8_t  curUpgradeLev{};   ///< Current upgrade level
 
-    bool     bCurrentItemOnHold{};     ///< Is the currently produced item on hold?
-    ItemID_enum   currentProducedItem = ItemID_Invalid;    ///< The ItemID of the currently produced item
-    FixPoint productionProgress{};     ///< The current state of the production progress (measured in money spent)
-    Uint32   deployTimer{};            ///< Timer for deploying a unit
+    bool        bCurrentItemOnHold{};                 ///< Is the currently produced item on hold?
+    ItemID_enum currentProducedItem = ItemID_Invalid; ///< The ItemID of the currently produced item
+    FixPoint    productionProgress{};                 ///< The current state of the production progress (measured in money spent)
+    uint32_t deployTimer{};                        ///< Timer for deploying a unit
 
     FixPoint buildSpeedLimit;        ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
 

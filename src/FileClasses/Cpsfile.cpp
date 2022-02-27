@@ -38,7 +38,7 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop)
         return nullptr;
     }
 
-    Sint64 endOffset = SDL_RWsize(RWop);
+    int64_t endOffset = SDL_RWsize(RWop);
     if(endOffset <= 0) {
         THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
     }

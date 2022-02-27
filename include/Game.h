@@ -121,13 +121,13 @@ public:
         Returns the current game cycle number.
         \return the current game cycle
     */
-    [[nodiscard]] Uint32 getGameCycleCount() const noexcept { return gameCycleCount; }
+    [[nodiscard]] uint32_t getGameCycleCount() const noexcept { return gameCycleCount; }
 
     /**
         Return the game time in milliseconds.
         \return the current game time in milliseconds
     */
-    [[nodiscard]] Uint32 getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; }
+    [[nodiscard]] uint32_t getGameTime() const noexcept { return gameCycleCount * GAMESPEED_DEFAULT; }
 
     /**
         Get the command manager of this game
@@ -264,7 +264,7 @@ public:
         \param objectID the object id that this unit/structure should get
         \return the read unit/structure
     */
-    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
+    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
 
     ObjectManager& getObjectManager() noexcept { return objectManager; }
     [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; }
@@ -438,7 +438,7 @@ public:
         \param  playerID  the name of the player
         \return the player or nullptr if none was found
     */
-    [[nodiscard]] Player* getPlayerByID(Uint8 playerID) const {
+    [[nodiscard]] Player* getPlayerByID(uint8_t playerID) const {
         const auto iter = playerID2Player.find(playerID);
         if(iter != playerID2Player.end()) {
             return iter->second;
@@ -549,7 +549,7 @@ private:
     [[nodiscard]] int getGameSpeed() const;
 
     bool removeFromSelectionLists(ObjectBase* pObject);
-    void removeFromQuickSelectionLists(Uint32 objectID);
+    void removeFromQuickSelectionLists(uint32_t objectID);
 
     void serviceNetwork(bool& bWaitForNetwork);
     void updateGame(const GameContext& context);
@@ -593,7 +593,7 @@ private:
 
     int         whatNextParam = GAME_NOTHING;
 
-    Uint32      indicatorFrame = NONE_ID;
+    uint32_t    indicatorFrame = NONE_ID;
     int         indicatorTime = 5;
     int         indicatorTimer = 0;
     Coord       indicatorPosition = Coord::Invalid();
@@ -604,9 +604,9 @@ private:
 
     int         lastTargetGameCycleTime{};              //< Remember the last time the target gameCycleCount was updated
 
-    Uint32      gameCycleCount = 0;
+    uint32_t gameCycleCount = 0;
 
-    Uint32      skipToGameCycle = 0;            ///< skip to this game cycle
+    uint32_t skipToGameCycle = 0; ///< skip to this game cycle
 
     bool        takePeriodicalScreenshots = false;      ///< take a screenshot every 10 seconds
 
@@ -642,16 +642,16 @@ private:
 
     bool    bCheatsEnabled = false;             ///< Cheat codes are enabled?
 
-    bool    finished = false;                   ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
-    bool    won = false;                        ///< If the game is finished, is it won or lost
-    Uint32  finishedLevelTime = 0;              ///< The time in milliseconds when the level was finished (won or lost)
-    bool    finishedLevel = false;              ///< Set, when the game is really finished and the end message was shown
+    bool     finished          = false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool     won               = false; ///< If the game is finished, is it won or lost
+    uint32_t finishedLevelTime = 0;     ///< The time in milliseconds when the level was finished (won or lost)
+    bool     finishedLevel     = false; ///< Set, when the game is really finished and the end message was shown
 
-    std::unique_ptr<GameInterface>          pInterface;                             ///< This is the whole interface (top bar and side bar)
-    std::unique_ptr<InGameMenu>             pInGameMenu;                            ///< This is the menu that is opened by the option button
-    std::unique_ptr<MentatHelp>             pInGameMentat;                          ///< This is the mentat dialog opened by the mentat button
-    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers;                ///< This is the dialog that pops up when we are waiting for other players during network hangs
-    Uint32                                  startWaitingForOtherPlayersTime = 0;    ///< The time in milliseconds when we started waiting for other players
+    std::unique_ptr<GameInterface>          pInterface;                          ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<InGameMenu>             pInGameMenu;                         ///< This is the menu that is opened by the option button
+    std::unique_ptr<MentatHelp>             pInGameMentat;                       ///< This is the mentat dialog opened by the mentat button
+    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers;             ///< This is the dialog that pops up when we are waiting for other players during network hangs
+    uint32_t startWaitingForOtherPlayersTime = 0; ///< The time in milliseconds when we started waiting for other players
 
     bool    bSelectionChanged = false;                      ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
     Dune::selected_set_type selectedList;                      ///< A set of all selected units/structures
@@ -660,7 +660,7 @@ private:
 
     std::string localPlayerName;                            ///< the name of the local player
     std::unordered_multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
-    std::unordered_map<Uint8, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
+    std::unordered_map<uint8_t, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
 
     std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)> house;   ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 };

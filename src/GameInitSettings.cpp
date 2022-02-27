@@ -33,7 +33,8 @@ GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::Ga
     filename = getScenarioFilename(houseID, mission);
 }
 
-GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions, Uint32 alreadyShownTutorialHints) {
+GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int     nextMission,
+                                   uint32_t                alreadyPlayedRegions, uint32_t alreadyShownTutorialHints) {
     *this = prevGameInitInfoClass;
     mission = nextMission;
     this->alreadyPlayedRegions = alreadyPlayedRegions;
@@ -93,7 +94,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     gameOptions.maximumNumberOfUnitsOverride = stream.readSint32();
 
     const auto numHouseInfo = stream.readUint32();
-    for(Uint32 i=0;i<numHouseInfo;i++) {
+    for(uint32_t i = 0;i<numHouseInfo;i++) {
         houseInfoList.push_back(HouseInfo(stream));
     }
 }
@@ -101,8 +102,8 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
 GameInitSettings::~GameInitSettings() = default;
 
 void GameInitSettings::save(OutputStream& stream) const {
-    stream.writeSint8(static_cast<Sint8>(gameType));
-    stream.writeSint8(static_cast<Sint8>(houseID));
+    stream.writeSint8(static_cast<int8_t>(gameType));
+    stream.writeSint8(static_cast<int8_t>(houseID));
 
     stream.writeString(filename.u8string());
     stream.writeString(filedata);
@@ -166,8 +167,8 @@ void GameInitSettings::checkSaveGame(const std::filesystem::path& savegame) {
 
 
 void GameInitSettings::checkSaveGame(InputStream& stream) {
-    Uint32 magicNum = 0;
-    Uint32 savegameVersion = 0;
+    uint32_t    magicNum        = 0;
+    uint32_t    savegameVersion = 0;
     std::string duneVersion;
     try {
         magicNum = stream.readUint32();

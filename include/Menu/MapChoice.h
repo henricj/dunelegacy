@@ -41,7 +41,7 @@
 class MapChoice : public MenuBase
 {
 public:
-    MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 alreadyPlayedRegions);
+    MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t alreadyPlayedRegions);
     ~MapChoice() override;
 
     int showMenu() override;
@@ -65,7 +65,7 @@ public:
         return newMission;
     }
 
-    [[nodiscard]] Uint32 getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
+    [[nodiscard]] uint32_t getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
     void drawSpecificStuff() override;
     bool doInput(SDL_Event &event) override;
@@ -96,21 +96,21 @@ private:
 
     std::array<TGroup, 9> group;
 
-    HOUSETYPE house;
-    unsigned int lastScenario;
-    Uint32 alreadyPlayedRegions;
-    sdl2::surface_ptr mapSurface;
-    sdl2::texture_ptr mapTexture;
-    std::array<Coord, 28> piecePosition;
+    HOUSETYPE                     house;
+    unsigned int                  lastScenario;
+    uint32_t                      alreadyPlayedRegions;
+    sdl2::surface_ptr             mapSurface;
+    sdl2::texture_ptr             mapTexture;
+    std::array<Coord, 28>         piecePosition;
     std::unique_ptr<BlendBlitter> curBlendBlitter;
-    HOUSETYPE curHouse2Blit;
-    unsigned int curRegion2Blit;
-    bool bFastBlending;
-    int mapChoiceState;
-    int selectedRegion;
-    Uint32  selectionTime;
-    Uint32  stateSwitchTime;
-    MessageTicker  msgticker;
+    HOUSETYPE                     curHouse2Blit;
+    unsigned int                  curRegion2Blit;
+    bool                          bFastBlending;
+    int                           mapChoiceState;
+    int                           selectedRegion;
+    uint32_t                      selectionTime;
+    uint32_t                      stateSwitchTime;
+    MessageTicker                 msgticker;
 
     SDL_Rect centerAreaRect;
 };

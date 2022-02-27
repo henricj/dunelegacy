@@ -28,7 +28,7 @@
 #include <players/HumanPlayer.h>
 
 
-TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
 
@@ -39,7 +39,7 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID, co
     weaponTimer = 0;
 }
 
-TurretBase::TurretBase(const TurretBaseConstants& constants, Uint32 objectID,
+TurretBase::TurretBase(const TurretBaseConstants&     constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
     TurretBase::init();
@@ -126,7 +126,7 @@ void TurretBase::handleActionCommand(const GameContext& context, int xPos, int y
     }
 }
 
-void TurretBase::doAttackObject(const GameContext& context, Uint32 targetObjectID) {
+void TurretBase::doAttackObject(const GameContext& context, uint32_t targetObjectID) {
     const auto* pObject = context.objectManager.getObject(targetObjectID);
     doAttackObject(pObject);
 }

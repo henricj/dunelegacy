@@ -82,7 +82,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the container)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this container may be behind it, false otherwise
     */
-    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override
     {
         for(const WidgetData& widgetData : containedWidgets) {
             Point pos = getPosition(widgetData);
@@ -97,7 +97,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -118,7 +118,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -139,7 +139,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    inline bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override
+    inline bool handleMouseWheel(int32_t x, int32_t y, bool up) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -214,7 +214,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the container)
         \return true if (x,y) is in overlay of this container, false otherwise
     */
-    inline bool handleMouseMovementOverlay(Sint32 x, Sint32 y) override
+    inline bool handleMouseMovementOverlay(int32_t x, int32_t y) override
     {
         bool insideOverlay = false;
         for(const WidgetData& widgetData : containedWidgets) {
@@ -232,7 +232,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    bool handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseLeftOverlay(int32_t x, int32_t y, bool pressed) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -253,7 +253,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the container, false = click was not processed by the container
     */
-    bool handleMouseRightOverlay(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseRightOverlay(int32_t x, int32_t y, bool pressed) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -274,7 +274,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    inline bool handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) override
+    inline bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -382,7 +382,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         Widget::resize(width,height);
     }

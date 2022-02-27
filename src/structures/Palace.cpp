@@ -46,7 +46,7 @@ public:
 constexpr PalaceConstants palace_constants;
 } // namespace
 
-Palace::Palace(Uint32 objectID, const ObjectInitializer& initializer)
+Palace::Palace(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(palace_constants, objectID, initializer) {
     Palace::init();
 
@@ -57,7 +57,7 @@ Palace::Palace(Uint32 objectID, const ObjectInitializer& initializer)
     //specialTimer = 1; // we want the special weapon to be immediately ready
 }
 
-Palace::Palace(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Palace::Palace(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(palace_constants, objectID, initializer) {
     Palace::init();
 
@@ -100,7 +100,7 @@ void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos
 
     if (map.tileExists(xPos, yPos)) {
         game.getCommandManager().addCommand(
-            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, (Uint32)xPos, (Uint32)yPos));
+            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, (uint32_t)xPos, (uint32_t)yPos));
     }
 }
 

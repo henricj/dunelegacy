@@ -49,11 +49,11 @@ int decode40(const unsigned char *image_in, unsigned char *image_out)
     5 skip 1ccccccc
     */
 
-    const unsigned char* readp = image_in;
-    unsigned char* writep = image_out;
-    Uint16 count = 0;
+    const unsigned char* readp  = image_in;
+    unsigned char*       writep = image_out;
+    uint16_t             count  = 0;
     while(true) {
-        Uint16 code = *readp++;
+        uint16_t code = *readp++;
         if(~code & 0x80) {
             //bit 7 = 0
             if(!code) {

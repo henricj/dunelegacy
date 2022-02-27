@@ -207,8 +207,8 @@ private:
 
         ENetPeer*               pPeer;
 
-        PeerState               peerState;
-        Uint32                  timeout;
+        PeerState peerState;
+        uint32_t  timeout;
 
         std::string             name;
         std::list<ENetPeer*>    notYetConnectedPeers;

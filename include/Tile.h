@@ -52,11 +52,11 @@ enum deadUnitEnum {
 
 struct DEADUNITTYPE
 {
-    Coord   realPos;
-    Sint16  timer;
-    Uint8   type;
+    Coord     realPos;
+    int16_t   timer;
+    uint8_t   type;
     HOUSETYPE house;
-    bool    onSand;
+    bool      onSand;
 };
 
 enum destroyedStructureEnum {
@@ -230,10 +230,10 @@ public:
     Tile& operator=(Tile &&) = default;
 
     void load(InputStream& stream);
-    void save(OutputStream& stream, Uint32 gameCycleCount) const;
+    void save(OutputStream& stream, uint32_t gameCycleCount) const;
 
-    void assignAirUnit(Uint32 newObjectID);
-    void assignDeadUnit(Uint8 type, HOUSETYPE house, const Coord& position) {
+    void assignAirUnit(uint32_t newObjectID);
+    void assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position) {
         DEADUNITTYPE newDeadUnit;
         newDeadUnit.type = type;
         newDeadUnit.house = house;
@@ -244,9 +244,9 @@ public:
         deadUnits.push_back(newDeadUnit);
     }
 
-    void assignNonInfantryGroundObject(Uint32 newObjectID);
-    int assignInfantry(ObjectManager& objectManager, Uint32 newObjectID, Sint8 currentPosition = INVALID_POS);
-    void assignUndergroundUnit(Uint32 newObjectID);
+    void assignNonInfantryGroundObject(uint32_t newObjectID);
+    int  assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);
+    void assignUndergroundUnit(uint32_t newObjectID);
 
     /**
         This method draws the terrain of this tile
@@ -314,20 +314,20 @@ public:
 
     void clearTerrain();
 
-    void setTrack(ANGLETYPE direction, Uint32 gameCycleCounter);
+    void setTrack(ANGLETYPE direction, uint32_t gameCycleCounter);
 
-    void selectAllPlayersUnits(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-    void selectAllPlayersUnitsOfType(Game* game, HOUSETYPE houseID, ItemID_enum itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
-    void unassignAirUnit(Uint32 objectID);
-    void unassignNonInfantryGroundObject(Uint32 objectID);
-    void unassignObject(Uint32 objectID);
-    void unassignInfantry(Uint32 objectID, int currentPosition);
-    void unassignUndergroundUnit(Uint32 objectID);
-    void setType(const GameContext& context, TERRAINTYPE newType);
-    void squash(const GameContext& context) const;
-    int getInfantryTeam(const ObjectManager& objectManager) const;
+    void     selectAllPlayersUnits(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void     selectAllPlayersUnitsOfType(Game* game, HOUSETYPE houseID, ItemID_enum itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject);
+    void     unassignAirUnit(uint32_t objectID);
+    void     unassignNonInfantryGroundObject(uint32_t objectID);
+    void     unassignObject(uint32_t objectID);
+    void     unassignInfantry(uint32_t objectID, int currentPosition);
+    void     unassignUndergroundUnit(uint32_t objectID);
+    void     setType(const GameContext& context, TERRAINTYPE newType);
+    void     squash(const GameContext& context) const;
+    int      getInfantryTeam(const ObjectManager& objectManager) const;
     FixPoint harvestSpice(const GameContext& context);
-    void setSpice(FixPoint newSpice);
+    void     setSpice(FixPoint newSpice);
 
     /**
         Returns the center point of this tile
@@ -382,22 +382,22 @@ public:
     InfantryBase* getInfantry(const ObjectManager& objectManager) const;
     ObjectBase*   getObject(const ObjectManager& objectManager) const;
     ObjectBase*   getObjectAt(const ObjectManager& objectManager, int x, int y) const;
-    ObjectBase*   getObjectWithID(const ObjectManager& objectManager, Uint32 objectID) const;
+    ObjectBase*   getObjectWithID(const ObjectManager& objectManager, uint32_t objectID) const;
 
 
-    const std::vector<Uint32>& getAirUnitList() const {
+    const std::vector<uint32_t>& getAirUnitList() const {
         return assignedAirUnitList;
     }
 
-    const std::vector<Uint32>& getInfantryList() const {
+    const std::vector<uint32_t>& getInfantryList() const {
         return assignedInfantryList;
     }
 
-    const std::vector<Uint32>& getUndergroundUnitList() const {
+    const std::vector<uint32_t>& getUndergroundUnitList() const {
         return assignedUndergroundUnitList;
     }
 
-    const std::vector<Uint32>& getNonInfantryGroundObjectList() const {
+    const std::vector<uint32_t>& getNonInfantryGroundObjectList() const {
         return assignedNonInfantryGroundObjectList;
     }
 
@@ -418,13 +418,13 @@ public:
         \param  houseID the house this tile should be explored for
         \param  cycle   the cycle this happens (normally the current game cycle)
     */
-    void setExplored(HOUSETYPE houseID, Uint32 cycle) {
+    void setExplored(HOUSETYPE houseID, uint32_t cycle) {
         lastAccess[static_cast<int>(houseID)] = cycle;
         explored[static_cast<int>(houseID)] = true;
     }
 
     void setOwner(HOUSETYPE newOwner) noexcept { owner = newOwner; }
-    void setSandRegion(Uint32 newSandRegion) noexcept { sandRegion = newSandRegion; }
+    void setSandRegion(uint32_t newSandRegion) noexcept { sandRegion = newSandRegion; }
     void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept { destroyedStructureTile = newDestroyedStructureTile; }
 
     bool hasAGroundObject() const noexcept { return (hasInfantry() || hasANonInfantryGroundObject()); }
@@ -441,7 +441,7 @@ public:
     bool isExploredByHouse(HOUSETYPE houseID) const { return explored[static_cast<int>(houseID)]; }
     bool isExploredByTeam(const Game* game, int teamID) const;
             
-    bool isFoggedByHouse(bool fogOfWarEnabled, Uint32 gameCycleCount, HOUSETYPE houseID) const noexcept;
+    bool isFoggedByHouse(bool fogOfWarEnabled, uint32_t gameCycleCount, HOUSETYPE houseID) const noexcept;
     bool isFoggedByTeam(const Game* game, int teamID) const;
     bool isMountain() const noexcept { return (type == TERRAINTYPE::Terrain_Mountain); }
     bool isRock() const noexcept {
@@ -458,16 +458,16 @@ public:
     }
     bool isThickSpice() const noexcept { return (type == TERRAINTYPE::Terrain_ThickSpice); }
 
-    Uint32 getSandRegion() const noexcept { return sandRegion; }
-    HOUSETYPE getOwner() const noexcept { return owner; }
+    uint32_t    getSandRegion() const noexcept { return sandRegion; }
+    HOUSETYPE   getOwner() const noexcept { return owner; }
     TERRAINTYPE getType() const noexcept { return type; }
-    FixPoint getSpice() const noexcept { return spice; }
+    FixPoint    getSpice() const noexcept { return spice; }
 
     FixPoint getSpiceRemaining() const noexcept { return spice; }
 
     const Coord& getLocation() const noexcept { return location; }
 
-    Uint32 getRadarColor(const Game* game, House* pHouse, bool radar);
+    uint32_t        getRadarColor(const Game* game, House* pHouse, bool radar);
     TERRAINTILETYPE getTerrainTile() const {
         if (terrainTile == TERRAINTILETYPE::TerrainTile_Invalid)
             terrainTile = getTerrainTileImpl();
@@ -500,27 +500,27 @@ private:
 
     TERRAINTYPE type;           ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
-    Uint32      fogColor;       ///< remember last color (radar)
+    uint32_t fogColor; ///< remember last color (radar)
 
-    HOUSETYPE   owner;          ///< house ID of the owner of this tile
-    Uint32      sandRegion;     ///< used by sandworms to check if can get to a unit
+    HOUSETYPE owner;      ///< house ID of the owner of this tile
+    uint32_t  sandRegion; ///< used by sandworms to check if can get to a unit
 
     FixPoint    spice;          ///< how much spice on this particular tile is left
 
     zoomable_texture sprite{};  ///< the graphic to draw
 
-    Sint32                          destroyedStructureTile;         ///< the tile drawn for a destroyed structure
-    mutable TERRAINTILETYPE         terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
-    std::array < Uint32, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTime{};           ///< Contains the game cycle the tracks on sand appeared
-    std::vector<DAMAGETYPE>         damage;                         ///< damage positions
-    std::vector<DEADUNITTYPE>       deadUnits;                      ///< dead units
+    int32_t destroyedStructureTile; ///< the tile drawn for a destroyed structure
+    mutable TERRAINTILETYPE                                       terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
+    std::array < uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTime{}; ///< Contains the game cycle the tracks on sand appeared
+    std::vector<DAMAGETYPE>                                       damage;               ///< damage positions
+    std::vector<DEADUNITTYPE>                                     deadUnits;            ///< dead units
 
-    std::vector<Uint32>   assignedAirUnitList;                      ///< all the air units on this tile
-    std::vector<Uint32>   assignedInfantryList;                     ///< all infantry units on this tile
-    std::vector<Uint32>   assignedUndergroundUnitList;              ///< all underground units on this tile
-    std::vector<Uint32>   assignedNonInfantryGroundObjectList;      ///< all structures/vehicles on this tile
+    std::vector<uint32_t>   assignedAirUnitList;                      ///< all the air units on this tile
+    std::vector<uint32_t>   assignedInfantryList;                     ///< all infantry units on this tile
+    std::vector<uint32_t>   assignedUndergroundUnitList;              ///< all underground units on this tile
+    std::vector<uint32_t>   assignedNonInfantryGroundObjectList;      ///< all structures/vehicles on this tile
 
-    std::array<Uint32, NUM_TEAMS>   lastAccess{};                   ///< contains for every team when this tile was seen last by this house
+    std::array<uint32_t, NUM_TEAMS>   lastAccess{};                   ///< contains for every team when this tile was seen last by this house
     std::array<bool, NUM_TEAMS>     explored{};                     ///< contains for every team if this tile is explored
 
     void update_impl();

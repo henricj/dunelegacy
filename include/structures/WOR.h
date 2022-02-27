@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_WOR;
     using parent = BuilderBase;
 
-    WOR(Uint32 objectID, const ObjectInitializer& initializer);
-    WOR(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    WOR(uint32_t objectID, const ObjectInitializer& initializer);
+    WOR(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~WOR() override;
 
     /**

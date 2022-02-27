@@ -59,8 +59,8 @@ protected:
 class UnitBase : public ObjectBase
 {
 protected:
-    UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     ~UnitBase() override = 0;
@@ -142,7 +142,7 @@ public:
         This method is called when an unit should move to another unit/structure
         \param  TargetObjectID  the ID of the other unit/structure
     */
-    virtual void doMove2Object(const GameContext& context, Uint32 TargetObjectID);
+    virtual void doMove2Object(const GameContext& context, uint32_t TargetObjectID);
 
     /**
         This method is called when an unit should move to another unit/structure
@@ -170,7 +170,7 @@ public:
         \param  TargetObjectID  the ID of the other unit/structure
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackObject(const GameContext& context, Uint32 TargetObjectID, bool bForced);
+    virtual void doAttackObject(const GameContext& context, uint32_t TargetObjectID, bool bForced);
 
     /**
         This method is called when an unit should change it's current attack mode
@@ -178,7 +178,7 @@ public:
     */
     void doSetAttackMode(const GameContext& context, ATTACKMODE newAttackMode);
 
-    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
     void doRepair(const GameContext& context) noexcept override { }
 
@@ -336,19 +336,19 @@ protected:
     ANGLETYPE targetAngle;           ///< Angle to the destination
 
     // path finding
-    Uint8    noCloserPointCount;     ///< How often have we tried to dinf a path?
-    bool     nextSpotFound;          ///< Is the next spot to move to already found?
-    ANGLETYPE nextSpotAngle;         ///< The angle to get to the next spot
-    Sint32   recalculatePathTimer;   ///< This timer is for recalculating the best path after x ticks
-    Coord    nextSpot;               ///< The next spot to move to
-    std::vector<Coord> pathList;     ///< The path to the destination found so far
+    uint8_t            noCloserPointCount;   ///< How often have we tried to dinf a path?
+    bool               nextSpotFound;        ///< Is the next spot to move to already found?
+    ANGLETYPE          nextSpotAngle;        ///< The angle to get to the next spot
+    int32_t            recalculatePathTimer; ///< This timer is for recalculating the best path after x ticks
+    Coord              nextSpot;             ///< The next spot to move to
+    std::vector<Coord> pathList;             ///< The path to the destination found so far
 
-    Sint32  findTargetTimer;         ///< When to look for the next target?
-    Sint32  primaryWeaponTimer;      ///< When can the primary weapon shot again?
-    Sint32  secondaryWeaponTimer;    ///< When can the secondary weapon shot again?
+    int32_t findTargetTimer;      ///< When to look for the next target?
+    int32_t primaryWeaponTimer;   ///< When can the primary weapon shot again?
+    int32_t secondaryWeaponTimer; ///< When can the secondary weapon shot again?
 
     // deviation
-    Sint32          deviationTimer;  ///< When to revert back to the original owner?
+    int32_t deviationTimer; ///< When to revert back to the original owner?
 
     // drawing information
     int drawnFrame;                  ///< Which row in the picture should be drawn

@@ -37,7 +37,7 @@ public:
     TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
     ~TTFFont() override;
 
-    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor = 0xFFFFFFFFu) override;
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) override;
 
     [[nodiscard]] int getTextWidth(std::string_view text) const override;
 

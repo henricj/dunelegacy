@@ -31,7 +31,7 @@ namespace {
 constexpr AirUnitConstants ornithopter_constants{Ornithopter::item_id, 1, Bullet_SmallRocket};
 } // namespace
 
-Ornithopter::Ornithopter(Uint32 objectID, const ObjectInitializer& initializer)
+Ornithopter::Ornithopter(uint32_t objectID, const ObjectInitializer& initializer)
     : AirUnit(ornithopter_constants, objectID, initializer) {
 
     Ornithopter::init();
@@ -41,7 +41,7 @@ Ornithopter::Ornithopter(Uint32 objectID, const ObjectInitializer& initializer)
     timeLastShot = 0;
 }
 
-Ornithopter::Ornithopter(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Ornithopter::Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : AirUnit(ornithopter_constants, objectID, initializer) {
     Ornithopter::init();
 

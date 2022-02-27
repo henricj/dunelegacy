@@ -27,7 +27,7 @@ class Explosion final
 {
 public:
     Explosion();
-    Explosion(Uint32 explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
+    Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     explicit Explosion(InputStream& stream);
     ~Explosion();
 
@@ -43,13 +43,13 @@ public:
     bool update();
 
 private:
-    Uint32 explosionID;
-    Coord position;
-    HOUSETYPE house;
+    uint32_t         explosionID;
+    Coord            position;
+    HOUSETYPE        house;
     zoomable_texture graphic{};
-    int numFrames = 0;
-    int currentFrame;
-    int frameTimer;
+    int              numFrames = 0;
+    int              currentFrame;
+    int              frameTimer;
 
     void init();
 };

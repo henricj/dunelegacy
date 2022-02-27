@@ -29,7 +29,7 @@
 // forward declarations
 class ObjectBase;
 
-typedef std::unordered_map<Uint32, std::unique_ptr<ObjectBase>> ObjectMap;
+typedef std::unordered_map<uint32_t, std::unique_ptr<ObjectBase>> ObjectMap;
 
 /// This class holds all objects (structures and units) in the game.
 class ObjectManager final {
@@ -67,7 +67,7 @@ public:
         \param  objectID        ID of the object to search for
         \return Pointer to this object (nullptr if not found)
     */
-    [[nodiscard]] ObjectBase* getObject(Uint32 objectID) const {
+    [[nodiscard]] ObjectBase* getObject(uint32_t objectID) const {
         const auto iter = objectMap.find(objectID);
 
         if(iter == objectMap.end()) return nullptr;
@@ -81,7 +81,7 @@ public:
         \return Pointer to this object (nullptr if not found)
     */
     template<typename ObjectType>
-    [[nodiscard]] ObjectType* getObject(Uint32 objectID) const {
+    [[nodiscard]] ObjectType* getObject(uint32_t objectID) const {
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
         return dune_cast<ObjectType>(getObject(objectID));
@@ -92,7 +92,7 @@ public:
         \param  objectID        ID of the object to remove
         \return false if there was no object with this ObjectID, true if it could be removed
     */
-    bool removeObject(Uint32 objectID) {
+    bool removeObject(uint32_t objectID) {
         const auto iter = objectMap.find(objectID);
 
         if(iter == objectMap.end()) return false;
@@ -151,7 +151,7 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
-        static_assert(std::is_constructible<ObjectType, Uint32, const ObjectInitializer &>::value,
+        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer &>::value,
                       "ObjectType is not constructible");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
@@ -164,11 +164,11 @@ private:
         \param  pObject A pointer to the object.
         \return ObjectID of the added object.
     */
-    bool addObject(std::unique_ptr<ObjectBase> pObject);
-    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, Uint32 objectID);
+    bool                               addObject(std::unique_ptr<ObjectBase> pObject);
+    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
 
-    Uint32                    nextFreeObjectID = 1;
-    ObjectMap objectMap;
+    uint32_t                                nextFreeObjectID = 1;
+    ObjectMap                               objectMap;
     std::queue<std::unique_ptr<ObjectBase>> pendingDelete;
 };
 

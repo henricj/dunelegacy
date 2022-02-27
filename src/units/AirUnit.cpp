@@ -32,12 +32,12 @@
 
 
 
-AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
     currentMaxSpeed = 2;
 }
 
-AirUnit::AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
+AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
     auto& stream = initializer.stream();
 

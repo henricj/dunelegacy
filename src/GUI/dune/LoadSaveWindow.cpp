@@ -32,7 +32,8 @@
 #include <cstdio>
 #include <utility>
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color)
+LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile,
+                               uint32_t color)
  : Window(0,0,0,0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
 
     // set up window

@@ -390,7 +390,7 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
     sdl2::surface_lock lock{ placingGrid.get() };
 
     for(auto y = 0; y < size; y++) {
-        auto *const out = static_cast<Uint8 *>(placingGrid->pixels) + y * placingGrid->pitch;
+        auto *const out = static_cast<uint8_t*>(placingGrid->pixels) + y * placingGrid->pitch;
         for(auto x = 0; x < size; x++) {
             if(x%2 == y%2) {
                 out[x] = color;
@@ -862,7 +862,7 @@ std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordo
 
     auto newAnimation = std::make_unique<Animation>();
 
-    Uint8 colorMap[256];
+    uint8_t colorMap[256];
     for(int i = 0; i < 256; i++) {
         colorMap[i] = i;
     }
@@ -905,7 +905,7 @@ std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atre
 
     auto newAnimation = std::make_unique<Animation>();
 
-    Uint8 colorMap[256];
+    uint8_t colorMap[256];
     for(int i = 0; i < 256; i++) {
         colorMap[i] = i;
     }
@@ -944,7 +944,7 @@ std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atre
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat) {
     auto mappedSurface = mapSurfaceColorRange(ordosMentat, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
 
-    Uint8 colorMap[256];
+    uint8_t colorMap[256];
     for(int i = 0; i < 256; i++) {
         colorMap[i] = i;
     }
@@ -973,7 +973,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation*
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenMentat) {
     auto mappedSurface = mapSurfaceColorRange(harkonnenMentat, PALCOLOR_HARKONNEN, PALCOLOR_SARDAUKAR);
 
-    Uint8 colorMap[256];
+    uint8_t colorMap[256];
     for(int i = 0; i < 256; i++) {
         colorMap[i] = i;
     }
@@ -1022,7 +1022,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
     sdl2::surface_ptr mappedSurface{ mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN) };
 
-    Uint8 colorMap[256];
+    uint8_t colorMap[256];
     for(int i = 0; i < 256; i++) {
         colorMap[i] = i;
     }

@@ -95,7 +95,7 @@ private:
     TextButton  cancelButton;
     TextButton  loadButton;
 
-    Uint32      color;
+    uint32_t color;
 
     std::filesystem::path loadMapFilepath;
     std::string loadMapname;

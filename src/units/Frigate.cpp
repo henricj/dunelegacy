@@ -32,7 +32,7 @@ namespace {
 constexpr AirUnitConstants frigate_constants{Frigate::item_id};
 } // namespace
 
-Frigate::Frigate(Uint32 objectID, const ObjectInitializer& initializer)
+Frigate::Frigate(uint32_t objectID, const ObjectInitializer& initializer)
     : AirUnit(frigate_constants, objectID, initializer) {
     Frigate::init();
 
@@ -44,7 +44,7 @@ Frigate::Frigate(Uint32 objectID, const ObjectInitializer& initializer)
     droppedOffCargo = false;
 }
 
-Frigate::Frigate(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Frigate::Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : AirUnit(frigate_constants, objectID, initializer) {
     Frigate::init();
 

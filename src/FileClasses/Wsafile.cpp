@@ -109,7 +109,7 @@ Wsafile::~Wsafile() = default;
     \param  frameNumber specifies which frame to return (zero based)
     \return nth frame in this animation
 */
-sdl2::surface_ptr Wsafile::getPicture(Uint32 frameNumber) const {
+sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
     if(frameNumber >= numFrames) {
         THROW(std::invalid_argument, "Wsafile::getPicture(): Requested frame number is %ud but the file contains only %ud frames!", frameNumber, numFrames);
     }
@@ -208,7 +208,7 @@ std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsign
     \param  x               x-dimension of one frame
     \param  y               y-dimension of one frame
 */
-void Wsafile::decodeFrames(const unsigned char* pFiledata, Uint32* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const
+void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const
 {
     for(int i = 0; i < numberOfFrames; ++i) {
         auto dec80 = std::make_unique<unsigned char[]>(x * y * 2);
@@ -284,9 +284,9 @@ void Wsafile::readdata(int numFiles, ...) {
 */
 void Wsafile::readdata(int numFiles, va_list args) {
     std::vector<std::unique_ptr<unsigned char[]>> pFiledata(numFiles);
-    std::vector<Uint32*> index(numFiles);
-    std::vector<Uint16> numberOfFrames(numFiles);
-    std::vector<bool> extended(numFiles);
+    std::vector<uint32_t*>                        index(numFiles);
+    std::vector<uint16_t>                         numberOfFrames(numFiles);
+    std::vector<bool>                             extended(numFiles);
 
     numFrames = 0;
     looped = false;
@@ -308,9 +308,9 @@ void Wsafile::readdata(int numFiles, va_list args) {
         }
 
         if( reinterpret_cast<unsigned short *>(pFiledata[i].get())[6] == 0) {
-            index[i] = reinterpret_cast<Uint32 *>(pFiledata[i].get() + 10);
+            index[i] = reinterpret_cast<uint32_t*>(pFiledata[i].get() + 10);
         } else {
-            index[i] = reinterpret_cast<Uint32 *>(pFiledata[i].get() + 8);
+            index[i] = reinterpret_cast<uint32_t*>(pFiledata[i].get() + 8);
         }
 
         if(index[i][0] == 0) {
@@ -338,7 +338,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
             }
         }
 
-        if(pFiledata[i].get() + wsaFilesize < (reinterpret_cast<unsigned char *>(index[i]) + sizeof(Uint32) * numberOfFrames[i])) {
+        if(pFiledata[i].get() + wsaFilesize < (reinterpret_cast<unsigned char *>(index[i]) + sizeof(uint32_t) * numberOfFrames[i])) {
             THROW(std::runtime_error, "Wsafile::readdata(): No valid WSA-File: File too small!");
         }
 

@@ -30,7 +30,7 @@ class CommandList {
 public:
     class CommandListEntry {
     public:
-        CommandListEntry(Uint32 cycle, std::vector<Command>&& commands)
+        CommandListEntry(uint32_t cycle, std::vector<Command>&& commands)
          : cycle(cycle), commands(std::move(commands)) {
 
         }
@@ -38,7 +38,7 @@ public:
         explicit CommandListEntry(InputStream& stream) {
             cycle = stream.readUint32();
             const auto numCommands = stream.readUint32();
-            for(Uint32 i = 0; i < numCommands; i++) {
+            for(uint32_t i = 0; i < numCommands; i++) {
                 commands.emplace_back(stream);
             }
         }
@@ -46,13 +46,13 @@ public:
         void save(OutputStream& stream) const {
             stream.writeUint32(cycle);
 
-            stream.writeUint32(static_cast<Uint32>(commands.size()));
+            stream.writeUint32(static_cast<uint32_t>(commands.size()));
             for(const auto& command : commands) {
                 command.save(stream);
             }
         }
 
-        Uint32      cycle;
+        uint32_t             cycle;
         std::vector<Command> commands;
     };
 
@@ -62,7 +62,7 @@ public:
 
     explicit CommandList(InputStream& stream) {
         const auto numCommandListEntries = stream.readUint32();
-        for(Uint32 i = 0; i < numCommandListEntries; i++) {
+        for(uint32_t i = 0; i < numCommandListEntries; i++) {
             commandList.emplace_back(stream);
         }
     }
@@ -73,7 +73,7 @@ public:
     CommandList& operator=(CommandList &&) = delete;
 
     void save(OutputStream& stream) const {
-        stream.writeUint32(static_cast<Uint32>(commandList.size()));
+        stream.writeUint32(static_cast<uint32_t>(commandList.size()));
         for(const auto& commandListEntry : commandList) {
             commandListEntry.save(stream);
         }

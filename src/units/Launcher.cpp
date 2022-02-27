@@ -31,14 +31,14 @@ namespace {
 constexpr TrackedUnitConstants launcher_constants{Launcher::item_id, 2, Bullet_Rocket};
 }
 
-Launcher::Launcher(Uint32 objectID, const ObjectInitializer& initializer)
+Launcher::Launcher(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 
     setHealth(getMaxHealth());
 }
 
-Launcher::Launcher(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Launcher::Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 }

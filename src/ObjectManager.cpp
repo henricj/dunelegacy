@@ -78,7 +78,7 @@ bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
     return true;
 }
 
-std::unique_ptr<ObjectBase> ObjectManager::loadObject(InputStream& stream, Uint32 objectID) {
+std::unique_ptr<ObjectBase> ObjectManager::loadObject(InputStream& stream, uint32_t objectID) {
     const auto itemID = static_cast<ItemID_enum>(stream.readUint32());
 
     auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer{stream});

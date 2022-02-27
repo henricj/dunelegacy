@@ -25,12 +25,12 @@
 class HBox_WidgetData {
 public:
     HBox_WidgetData() : pWidget(nullptr), fixedWidth(0), weight(0.0) { }
-    HBox_WidgetData(Widget* _pWidget, Sint32 _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
+    HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
     HBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedWidth(-1), weight(_weight) { }
 
     Widget* pWidget;
-    Sint32 fixedWidth;
-    double weight;
+    int32_t fixedWidth;
+    double  weight;
 };
 
 /// A container class for horizontal aligned widgets.
@@ -51,7 +51,7 @@ public:
         \param newWidget    Widget to add
         \param fixedWidth   a fixed width for this widget (must be greater than the minimum size)
     */
-    virtual void addWidget(Widget* newWidget, Sint32 fixedWidth) {
+    virtual void addWidget(Widget* newWidget, int32_t fixedWidth) {
         if(newWidget != nullptr) {
             containedWidgets.push_back(HBox_WidgetData(newWidget, fixedWidth));
             newWidget->setParent(this);
@@ -109,9 +109,9 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
-        Sint32 availableWidth = width;
+        int32_t availableWidth = width;
 
         int numRemainingWidgets = containedWidgets.size();
 
@@ -132,8 +132,8 @@ public:
 
         // Under the resizeable widgets find all objects that are oversized (minimum size > availableWidth*weight)
         // also calculate the weight sum of all the resizeable widgets that are not oversized
-        Sint32 neededOversizeWidth = 0;
-        double notOversizedWeightSum = 0.0;
+        int32_t neededOversizeWidth   = 0;
+        double  notOversizedWeightSum = 0.0;
         for(const HBox_WidgetData& widgetData : containedWidgets) {
             if(widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
                 if((double) widgetData.pWidget->getMinimumSize().x > availableWidth * (widgetData.weight/weightSum)) {
@@ -144,9 +144,9 @@ public:
             }
         }
 
-        Sint32 totalAvailableWidth = availableWidth;
+        int32_t totalAvailableWidth = availableWidth;
         for(const HBox_WidgetData& widgetData : containedWidgets) {
-            Sint32 widgetHeight;
+            int32_t widgetHeight;
             if(widgetData.pWidget->resizingYAllowed() == true) {
                 widgetHeight = height;
             } else {
@@ -154,7 +154,7 @@ public:
             }
 
             if(widgetData.pWidget->resizingXAllowed() == true) {
-                Sint32 widgetWidth = 0;
+                int32_t widgetWidth = 0;
 
                 if(widgetData.fixedWidth <= 0) {
                     if(numRemainingWidgets <= 1) {
@@ -162,7 +162,7 @@ public:
                     } else if((double) widgetData.pWidget->getMinimumSize().x > totalAvailableWidth * (widgetData.weight/weightSum)) {
                         widgetWidth = widgetData.pWidget->getMinimumSize().x;
                     } else {
-                        widgetWidth = (Sint32) ((totalAvailableWidth-neededOversizeWidth) * (widgetData.weight/notOversizedWeightSum));
+                        widgetWidth = (int32_t) ((totalAvailableWidth-neededOversizeWidth) * (widgetData.weight/notOversizedWeightSum));
                     }
                     availableWidth -= widgetWidth;
                     numRemainingWidgets--;

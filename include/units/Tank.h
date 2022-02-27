@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Tank;
     using parent = TankBase;
 
-    Tank(Uint32 objectID, const ObjectInitializer& initializer);
-    Tank(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Tank(uint32_t objectID, const ObjectInitializer& initializer);
+    Tank(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Tank() override;
 
     void blitToScreen() override;

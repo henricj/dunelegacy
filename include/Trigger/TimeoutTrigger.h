@@ -32,7 +32,7 @@ public:
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
-    explicit TimeoutTrigger(Uint32 triggerCycleNumber);
+    explicit TimeoutTrigger(uint32_t triggerCycleNumber);
 
     /**
         This constructor constructs the trigger from a stream.

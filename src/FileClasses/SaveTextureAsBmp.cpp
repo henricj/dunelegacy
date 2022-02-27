@@ -18,7 +18,7 @@ public:
 void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
     // From https://stackoverflow.com/a/48176678 and https://stackoverflow.com/a/51238719
 
-    Uint32 format = SDL_PIXELFORMAT_RGBA32;
+    uint32_t format = SDL_PIXELFORMAT_RGBA32;
 
     int w = 0;
     int h = 0;

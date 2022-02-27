@@ -270,7 +270,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 }
 
 void LANGameFinderAndAnnouncer::updateServerInfoList() {
-    Uint32 currentTime = SDL_GetTicks();
+    uint32_t currentTime = SDL_GetTicks();
 
     auto iter = gameServerInfoList.begin();
     while(iter != gameServerInfoList.end()) {

@@ -32,7 +32,7 @@ public:
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
-    explicit Trigger(Uint32 triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
+    explicit Trigger(uint32_t triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
 
     Trigger(const Trigger &) = default;
     Trigger(Trigger &&) = default;
@@ -62,7 +62,7 @@ public:
         This method returns the game cycle this trigger shall be triggered.
         \return the cycle number this trigger shall be triggered
     */
-    [[nodiscard]] Uint32 getCycleNumber() const noexcept { return cycleNumber; }
+    [[nodiscard]] uint32_t getCycleNumber() const noexcept { return cycleNumber; }
 
     /**
         Trigger this trigger. Shall only be called when getCycleNumber() is equal to the current game cycle
@@ -70,7 +70,7 @@ public:
     virtual void trigger(const GameContext& context) = 0;
 
 protected:
-    Uint32 cycleNumber;     ///< the game cycle this trigger shall be triggered
+    uint32_t cycleNumber; ///< the game cycle this trigger shall be triggered
 };
 
 #endif // TRIGGER_H

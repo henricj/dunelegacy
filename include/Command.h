@@ -65,10 +65,10 @@ public:
         Construct a command with CMDTYPE id and no parameter.
         \param  id  the id of the command
     */
-    Command(Uint8 playerID, CMDTYPE id) : playerID{ playerID }, commandID{ id } { }
+    Command(uint8_t playerID, CMDTYPE id) : playerID{ playerID }, commandID{ id } { }
 
-    template<typename... Parameters, typename = std::enable_if_t<(std::is_convertible_v<Parameters, Uint32> && ...)>>
-    Command(Uint8 playerID, CMDTYPE id, Parameters&&... parameters) : playerID{playerID}, commandID{ id } {
+    template<typename... Parameters, typename = std::enable_if_t<(std::is_convertible_v<Parameters, uint32_t> && ...)>>
+    Command(uint8_t playerID, CMDTYPE id, Parameters&&... parameters) : playerID{playerID}, commandID{ id } {
         // Pilfered from https://stackoverflow.com/a/39659128
         parameter.reserve(sizeof...(parameters));
         (parameter.push_back(parameters), ...);
@@ -79,7 +79,7 @@ public:
         \param  data        pointer to the data
         \param  length      length of the data
     */
-    Command(Uint8 playerID, Uint8* data, Uint32 length);
+    Command(uint8_t playerID, uint8_t* data, uint32_t length);
 
     /**
         Read a command from stream.
@@ -106,7 +106,7 @@ public:
         Gets the ID of the player that added this command.
         \return the ID of the player
     */
-    [[nodiscard]] Uint8 getPlayerID() const noexcept { return playerID; }
+    [[nodiscard]] uint8_t getPlayerID() const noexcept { return playerID; }
 
     /**
         Gets the ID of this command.
@@ -118,7 +118,7 @@ public:
         Gets the parameters of this command.
         \return the parameters of this command
     */
-    [[nodiscard]] const std::vector<Uint32> getParameter() const { return parameter; }
+    [[nodiscard]] const std::vector<uint32_t> getParameter() const { return parameter; }
 
 
     /**
@@ -127,9 +127,9 @@ public:
     void executeCommand(const GameContext& context) const;
 
 private:
-    Uint8   playerID;                   ///< the ID of the player that gave the command
-    CMDTYPE commandID;                  ///< the type of command
-    std::vector<Uint32> parameter;      ///< the parameters for this command
+    uint8_t             playerID;  ///< the ID of the player that gave the command
+    CMDTYPE             commandID; ///< the type of command
+    std::vector<uint32_t> parameter; ///< the parameters for this command
 };
 
 #endif // COMMAND_H

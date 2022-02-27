@@ -88,7 +88,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -171,7 +171,7 @@ public:
         \param  width   the new width of this text box
         \param  height  the new height of this text box
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         Widget::resize(width,height);
         invalidateTextures();
@@ -231,7 +231,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the text box
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override
     {
         if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
             return false;
@@ -338,16 +338,16 @@ protected:
     }
 
 private:
-    int fontSize;                               ///< the size of the font to use
-    Uint32 textcolor;                           ///< Text color
-    Uint32 textshadowcolor;                     ///< Text shadow color
-    std::string text;                           ///< text in this text box
-    int maxTextLength;                          ///< the maximum length of the typed text
+    int         fontSize;        ///< the size of the font to use
+    uint32_t    textcolor;       ///< Text color
+    uint32_t    textshadowcolor; ///< Text shadow color
+    std::string text;            ///< text in this text box
+    int         maxTextLength;   ///< the maximum length of the typed text
 
     std::string allowedChars;                   ///< a set of allowed characters, empty string for everything allowed
     std::string forbiddenChars;                 ///< a set of forbidden characters, empty string for everything allowed
 
-    Uint32 lastCarretTime;                      ///< Last time the carret changes from off to on or vise versa
+    uint32_t lastCarretTime; ///< Last time the carret changes from off to on or vise versa
 
     std::function<void (bool)> pOnTextChange;   ///< function that is called when the text of this text box changes
     std::function<void ()> pOnReturn;           ///< function that is called when return is pressed

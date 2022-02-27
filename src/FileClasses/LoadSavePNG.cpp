@@ -124,19 +124,19 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
             sdl2::surface_lock pic_lock{pic.get()};
 
-            const Uint32 * RESTRICT const image_out = reinterpret_cast<const Uint32 *>(pImageOut.get());  // NOLINT
-            unsigned char * RESTRICT const pic_surface = static_cast<unsigned char *>(pic_lock.pixels()); // NOLINT
+            const uint32_t* RESTRICT const image_out   = reinterpret_cast<const uint32_t*>(pImageOut.get()); // NOLINT
+            unsigned char * RESTRICT const pic_surface = static_cast<unsigned char *>(pic_lock.pixels());    // NOLINT
 
             // Now we can copy pixel by pixel
-            if (static_cast<int>(sizeof(Uint32) * width) == pic->pitch) {
+            if (static_cast<int>(sizeof(uint32_t) * width) == pic->pitch) {
                 const auto *in = image_out;
-                auto *out = reinterpret_cast<Uint32*>(pic_surface);
+                auto *out = reinterpret_cast<uint32_t*>(pic_surface);
                 for (auto x = 0u; x < height * width; ++x) {
                     *out++ = SDL_SwapLE32(*in++);
                 }
             } else for(auto y = 0u; y < height; y++) {
                 const auto *in = image_out + y * width;
-                auto *out = reinterpret_cast<Uint32*>(pic_surface + y * pic->pitch);
+                auto *out = reinterpret_cast<uint32_t*>(pic_surface + y * pic->pitch);
                 for(auto x = 0u; x < width; ++x)
                     *out++ = SDL_SwapLE32(*in++);
             }

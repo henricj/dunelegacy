@@ -51,7 +51,7 @@ public:
 
     std::string readString() override
     {
-        Uint32 length = readUint32();
+        uint32_t length = readUint32();
 
         if(currentPos + length > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readString(): End-of-File reached!");
@@ -62,47 +62,43 @@ public:
         return resultString;
     }
 
-    Uint8 readUint8() override
-    {
-        if(currentPos + sizeof(Uint8) > bufferSize) {
+    uint8_t readUint8() override {
+        if(currentPos + sizeof(uint8_t) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint8(): End-of-File reached!");
         }
 
-        Uint8 tmp = *((const Uint8*) (pBuffer + currentPos));
-        currentPos += sizeof(Uint8);
+        uint8_t tmp = *((const uint8_t*)(pBuffer + currentPos));
+        currentPos += sizeof(uint8_t);
         return tmp;
     }
 
-    Uint16 readUint16() override
-    {
-        if(currentPos + sizeof(Uint16) > bufferSize) {
+    uint16_t readUint16() override {
+        if(currentPos + sizeof(uint16_t) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint16(): End-of-File reached!");
         }
 
-        Uint16 tmp = *((const Uint16*) (pBuffer + currentPos));
-        currentPos += sizeof(Uint16);
+        uint16_t tmp = *((const uint16_t*)(pBuffer + currentPos));
+        currentPos += sizeof(uint16_t);
         return SDL_SwapLE16(tmp);
     }
 
-    Uint32 readUint32() override
-    {
-        if(currentPos + sizeof(Uint32) > bufferSize) {
+    uint32_t readUint32() override {
+        if(currentPos + sizeof(uint32_t) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint32(): End-of-File reached!");
         }
 
-        Uint32 tmp = *((const Uint32*) (pBuffer + currentPos));
-        currentPos += sizeof(Uint32);
+        uint32_t tmp = *((const uint32_t*)(pBuffer + currentPos));
+        currentPos += sizeof(uint32_t);
         return SDL_SwapLE32(tmp);
     }
 
-    Uint64 readUint64() override
-    {
-        if(currentPos + sizeof(Uint64) > bufferSize) {
+    uint64_t readUint64() override {
+        if(currentPos + sizeof(uint64_t) > bufferSize) {
             THROW(InputStream::eof, "IMemoryStream::readUint64(): End-of-File reached!");
         }
 
-        Uint64 tmp = *((const Uint64*) (pBuffer + currentPos));
-        currentPos += sizeof(Uint64);
+        uint64_t tmp = *((const uint64_t*)(pBuffer + currentPos));
+        currentPos += sizeof(uint64_t);
         return SDL_SwapLE64(tmp);
     }
 
@@ -113,9 +109,9 @@ public:
 
     float readFloat() override
     {
-        Uint32 tmp = readUint32();
-        float tmp2 = NAN;
-        memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+        uint32_t tmp  = readUint32();
+        float    tmp2 = NAN;
+        memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
         return tmp2;
     }
 

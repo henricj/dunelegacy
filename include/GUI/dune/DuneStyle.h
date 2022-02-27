@@ -50,7 +50,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -74,7 +74,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr createCheckboxSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -98,7 +98,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr createRadioButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
 
 
@@ -111,7 +111,7 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createDropDownBoxButton(Uint32 size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createDropDownBoxButton(uint32_t size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -134,7 +134,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -158,7 +158,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createTextBoxSurface(Uint32 width, Uint32 height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
 
 
@@ -186,7 +186,7 @@ public:
         Returns the minumum height of a list box entry.
         \return the mimimum height of a list box entry
     */
-    Uint32 getListBoxEntryHeight() override;
+    uint32_t getListBoxEntryHeight() override;
 
     /**
         Creates the surface for a list box entry with text as content.
@@ -196,7 +196,7 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createListBoxEntry(Uint32 width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createListBoxEntry(uint32_t width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) override;
 
 
 
@@ -210,7 +210,7 @@ public:
         \param  color       the color of the overlay (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createProgressBarOverlay(Uint32 width, Uint32 height, double percent, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createProgressBarOverlay(uint32_t width, uint32_t height, double percent, Uint32 color = COLOR_DEFAULT) override;
 
 
     /**
@@ -226,7 +226,7 @@ public:
         \param  height      the height of the surface
         \return the new surface
     */
-    sdl2::surface_ptr createBackground(Uint32 width, Uint32 height) override;
+    sdl2::surface_ptr createBackground(uint32_t width, uint32_t height) override;
 
     /**
         Creates a simple background for widgets
@@ -234,7 +234,7 @@ public:
         \param  height      the height of the surface
         \return the new surface
     */
-    sdl2::surface_ptr createWidgetBackground(Uint32 width, Uint32 height) override;
+    sdl2::surface_ptr createWidgetBackground(uint32_t width, uint32_t height) override;
 
     /**
         Get the height of the font specified by fontnum
@@ -270,9 +270,9 @@ private:
         \param  fontsize    the size of the text
         \return the new created surface (the caller of this method is responsible of freeing it)
     */
-    sdl2::surface_ptr createSurfaceWithText(std::string_view text, Uint32 color, unsigned int fontsize);
+    sdl2::surface_ptr createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize);
 
-    Uint32 brightenUp(Uint32 color) {
+    uint32_t brightenUp(uint32_t color) {
         Uint32 r = (color & RMASK) >> RSHIFT;
         Uint32 g = (color & GMASK) >> GSHIFT;
         Uint32 b = (color & BMASK) >> BSHIFT;

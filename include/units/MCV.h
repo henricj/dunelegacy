@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_MCV;
     using parent = GroundUnit;
 
-    MCV(Uint32 objectID, const ObjectInitializer& initializer);
-    MCV(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    MCV(uint32_t objectID, const ObjectInitializer& initializer);
+    MCV(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~MCV() override;
 
     void handleDeployClick();

@@ -158,7 +158,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override
     {
         if(bRadarInteraction && isOnRadar(x,y)) {
             if(pOnRadarClick) {
@@ -175,7 +175,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override
     {
         if(pressed) {
             if(isOnRadar(x,y)) {
@@ -199,7 +199,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override
+    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override
     {
         if(pressed) {
             if(isOnRadar(x,y)) {

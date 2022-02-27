@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_StarPort;
     using parent = BuilderBase;
 
-    StarPort(Uint32 objectID, const ObjectInitializer& initializer);
-    StarPort(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    StarPort(uint32_t objectID, const ObjectInitializer& initializer);
+    StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~StarPort() override;
 
     void save(OutputStream& stream) const override;
@@ -97,8 +97,8 @@ protected:
 private:
     void   init();
 
-    Sint32 arrivalTimer; ///< When will the frigate arrive?
-    bool    deploying;          ///< Currently deploying units
+    int32_t arrivalTimer; ///< When will the frigate arrive?
+    bool    deploying;    ///< Currently deploying units
 };
 
 #endif // STARPORT_H

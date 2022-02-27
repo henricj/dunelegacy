@@ -44,7 +44,7 @@ public:
 constexpr SandwormConstants sandworm_constants;
 }
 
-Sandworm::Sandworm(Uint32 objectID, const ObjectInitializer& initializer)
+Sandworm::Sandworm(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(sandworm_constants, objectID, initializer) {
 
     Sandworm::init();
@@ -63,7 +63,7 @@ Sandworm::Sandworm(Uint32 objectID, const ObjectInitializer& initializer)
     shimmerOffsetIndex = -1;
 }
 
-Sandworm::Sandworm(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Sandworm::Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : GroundUnit(sandworm_constants, objectID, initializer) {
 
     Sandworm::init();
@@ -299,7 +299,7 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
     }
 }
 
-void Sandworm::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
+void Sandworm::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     if(damage > 0) {
         attackMode = HUNT;
     }

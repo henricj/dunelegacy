@@ -39,7 +39,8 @@ public:
     LANGameFinderAndAnnouncer();
     ~LANGameFinderAndAnnouncer();
 
-    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
+                       uint8_t            maxPlayers) {
         this->serverName = serverName;
         this->serverPort = serverPort;
         this->mapName = mapName;
@@ -48,7 +49,7 @@ public:
         lastAnnounce = 0;
     }
 
-    void updateAnnounce(Uint8 numPlayers) {
+    void updateAnnounce(uint8_t numPlayers) {
         this->numPlayers = numPlayers;
         if(serverPort > 0) {
             announceGame();
@@ -101,12 +102,12 @@ private:
     void sendRemoveGameAnnouncement();
 
     std::string serverName;
-    int serverPort = 0;
+    int         serverPort = 0;
     std::string mapName;
-    Uint8 numPlayers = 0;
-    Uint8 maxPlayers = 0;
+    uint8_t     numPlayers = 0;
+    uint8_t     maxPlayers = 0;
 
-    Uint32 lastAnnounce = 0;
+    uint32_t   lastAnnounce = 0;
     ENetSocket announceSocket;
 
     std::list<GameServerInfo> gameServerInfoList;

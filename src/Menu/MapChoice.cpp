@@ -31,7 +31,7 @@
 
 #include <sand.h>
 
-MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, Uint32 oldAlreadyPlayedRegions)  {
+MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldAlreadyPlayedRegions)  {
     disableQuiting(true);
     selectedRegion = -1;
     selectionTime = 0;
@@ -327,11 +327,11 @@ bool MapChoice::doInput(SDL_Event &event) {
             if((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
                 auto* const clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
-                Uint8 regionNum = 0;
+                uint8_t regionNum = 0;
                 { // Scope
                     sdl2::surface_lock lock{ clickmap };
 
-                    regionNum = static_cast<Uint8*>(clickmap->pixels)[y * clickmap->pitch + x];
+                    regionNum = static_cast<uint8_t*>(clickmap->pixels)[y * clickmap->pitch + x];
                 }
 
                 if((regionNum != 0) && ((alreadyPlayedRegions & (1 << regionNum)) == 0)) {

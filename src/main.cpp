@@ -238,8 +238,8 @@ void setVideoMode(int displayIndex)
     SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
     screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
 
-    Uint32 screen_format = 0;
-    int screen_access = 0;
+    uint32_t screen_format = 0;
+    int      screen_access = 0;
     if (0 == SDL_QueryTexture(screenTexture, &screen_format, &screen_access, nullptr, nullptr)) {
         if (screen_format != SCREEN_FORMAT)
             sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", std::to_string(screen_format).c_str());

@@ -74,7 +74,7 @@ void CommandManager::update() {
 
     CommandList commandList;
     std::vector<Command> commands;
-    for(Uint32 i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
+    for(uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0); i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
 
         if(i < timeslot.size()) {
             for(auto& command : timeslot[i]) {
@@ -114,7 +114,7 @@ void CommandManager::addCommandList(const std::string& playername, const Command
     }
 }
 
-void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
+void CommandManager::addCommand(const Command& cmd, uint32_t CycleNumber) {
     if (bReadOnly) return;
 
     if (CycleNumber >= timeslot.size()) {
@@ -134,7 +134,7 @@ void CommandManager::addCommand(const Command& cmd, Uint32 CycleNumber) {
     }
 }
 
-void CommandManager::addCommand(Command&& cmd, Uint32 CycleNumber) {
+void CommandManager::addCommand(Command&& cmd, uint32_t CycleNumber) {
     if (bReadOnly) return;
 
     if (CycleNumber >= timeslot.size()) {
@@ -154,7 +154,7 @@ void CommandManager::addCommand(Command&& cmd, Uint32 CycleNumber) {
         });
 }
 
-void CommandManager::executeCommands(const GameContext& context, Uint32 CycleNumber) const {
+void CommandManager::executeCommands(const GameContext& context, uint32_t CycleNumber) const {
     if(CycleNumber >= timeslot.size()) {
         return;
     }

@@ -34,8 +34,8 @@
 
 #include <GUI/ObjectInterfaces/DefaultStructureInterface.h>
 
-StructureBase::StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
-                             const ObjectInitializer& initializer)
+StructureBase::StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
+                             const ObjectInitializer&      initializer)
     : ObjectBase(structure_constants, objectID, initializer) {
     StructureBase::init();
 
@@ -44,7 +44,7 @@ StructureBase::StructureBase(const StructureBaseConstants& structure_constants, 
     degradeTimer = MILLI2CYCLES(15*1000);
 }
 
-StructureBase::StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
+StructureBase::StructureBase(const StructureBaseConstants&  structure_constants, uint32_t objectID,
                              const ObjectStreamInitializer& initializer)
     : ObjectBase(structure_constants, objectID, initializer) {
     StructureBase::init();
@@ -243,11 +243,11 @@ void StructureBase::handleActionClick(const GameContext& context, int xPos, int 
        (yPos >= (location.y + getStructureSizeY()))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            (Uint32)xPos, (Uint32)yPos));
+                                                            (uint32_t)xPos, (uint32_t)yPos));
     } else {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            (Uint32)NONE_ID, (Uint32)NONE_ID));
+                                                            (uint32_t)NONE_ID, (uint32_t)NONE_ID));
     }
 }
 
@@ -423,8 +423,8 @@ void StructureBase::destroy(const GameContext& context) {
                 auto *pTile = map.getTile(location.x + i, location.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY*j + i]);
 
-                Coord position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
-                Uint32 explosionID = game.randomGen.getRandOf(Explosion_Large1,Explosion_Large2);
+                Coord    position((location.x+i)*TILESIZE + TILESIZE/2, (location.y+j)*TILESIZE + TILESIZE/2);
+                uint32_t explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                 game.addExplosion(explosionID, position, owner->getHouseID());
 
                 if(game.randomGen.rand(1,100) <= getInfSpawnProp()) {

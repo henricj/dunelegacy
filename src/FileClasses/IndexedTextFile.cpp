@@ -31,7 +31,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::invalid_argument, "IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
     }
 
-    Sint64 endOffset = SDL_RWsize(rwop);
+    int64_t endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
     }
@@ -50,7 +50,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 
     int numIndexedStrings = (SDL_SwapLE16(((Uint16*) filedata.data())[0]))/2 - 1;
 
-    auto* pIndex = (Uint16*) filedata.data();
+    auto* pIndex = (uint16_t*) filedata.data();
     for(int i=0; i <= numIndexedStrings; i++) {
         pIndex[i] = SDL_SwapLE16(pIndex[i]);
     }

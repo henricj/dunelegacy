@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HeavyFactory;
     using parent = BuilderBase;
 
-    HeavyFactory(Uint32 objectID, const ObjectInitializer& initializer);
-    HeavyFactory(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer);
+    HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~HeavyFactory() override;
 
     void doBuildRandom(const GameContext& context) override;

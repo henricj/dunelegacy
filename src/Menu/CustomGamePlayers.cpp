@@ -93,12 +93,12 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     } else if(gameInitSettings.getGameType() == GameType::LoadMultiplayer) {
         IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
 
-        Uint32 magicNum = memStream.readUint32();
+        uint32_t magicNum = memStream.readUint32();
         if(magicNum != SAVEMAGIC) {
             sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
         }
 
-        Uint32 savegameVersion = memStream.readUint32();
+        uint32_t savegameVersion = memStream.readUint32();
         if (savegameVersion != SAVEGAMEVERSION) {
             sdl2::log_info("CustomGamePlayers: No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
         }
@@ -108,8 +108,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         // read gameInitSettings
         GameInitSettings tmpGameInitSettings(memStream);
 
-        Uint32 numHouseInfo = memStream.readUint32();
-        for(Uint32 i=0;i<numHouseInfo;i++) {
+        uint32_t numHouseInfo = memStream.readUint32();
+        for(uint32_t i = 0;i<numHouseInfo;i++) {
             houseInfoListSetup.push_back(GameInitSettings::HouseInfo(memStream));
         }
 
@@ -457,8 +457,8 @@ void CustomGamePlayers::update() {
 
             quit(MENU_QUIT_GAME_FINISHED);
         } else {
-            static Uint32 lastSecondLeft = 0;
-            Uint32 secondsLeft = ((startGameTime - SDL_GetTicks())/1000) + 1;
+            static uint32_t lastSecondLeft = 0;
+            uint32_t        secondsLeft    = ((startGameTime - SDL_GetTicks()) / 1000) + 1;
             if(lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
                 addInfoMessage("Starting game in " + std::to_string(secondsLeft) + "...");

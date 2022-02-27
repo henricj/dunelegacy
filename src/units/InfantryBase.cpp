@@ -39,8 +39,8 @@ constexpr Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILE
                                      Coord(TILESIZE / 4, TILESIZE / 4)};
 } // namespace
 
-InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID,
-                           const ObjectInitializer& initializer)
+InfantryBase::InfantryBase(const InfantryBaseConstants& constants, uint32_t objectID,
+                           const ObjectInitializer&     initializer)
     : GroundUnit(constants, objectID, initializer) {
 
     setHealth(getMaxHealth());
@@ -49,7 +49,7 @@ InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 object
     oldTilePosition = INVALID_POS;
 }
 
-InfantryBase::InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID,
+InfantryBase::InfantryBase(const InfantryBaseConstants&   constants, uint32_t objectID,
                            const ObjectStreamInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 
@@ -82,7 +82,7 @@ void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int 
     }
 }
 
-void InfantryBase::doCaptureStructure(const GameContext& context, Uint32 targetStructureID) {
+void InfantryBase::doCaptureStructure(const GameContext& context, uint32_t targetStructureID) {
     const auto* pStructure = context.objectManager.getObject<StructureBase>(targetStructureID);
     doCaptureStructure(context, pStructure);
 }

@@ -32,8 +32,8 @@ public:
 
 class InfantryBase : public GroundUnit {
 protected:
-    InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    InfantryBase(const InfantryBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    InfantryBase(const InfantryBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    InfantryBase(const InfantryBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = GroundUnit;
@@ -58,7 +58,7 @@ public:
         This method is called when an unit should capture a structure
         \param  targetStructureID   the ID of the structure to capture
     */
-    virtual void doCaptureStructure(const GameContext& context, Uint32 targetStructureID);
+    virtual void doCaptureStructure(const GameContext& context, uint32_t targetStructureID);
 
     /**
         This method is called when an unit should capture a structure
@@ -87,8 +87,8 @@ protected:
     void setSpeeds(const GameContext& context) override;
 
     // infantry state
-    Sint8 tilePosition;    ///< The position in the current tile (0 to 4)
-    Sint8 oldTilePosition; ///< The previous tile position (0 to 4)
+    int8_t tilePosition;    ///< The position in the current tile (0 to 4)
+    int8_t oldTilePosition; ///< The previous tile position (0 to 4)
 
     // drawing information
     int walkFrame{}; ///< What frame to draw

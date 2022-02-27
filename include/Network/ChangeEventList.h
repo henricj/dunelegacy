@@ -37,11 +37,11 @@ public:
         };
 
 
-        ChangeEvent(EventType eventType, Uint32 slot, Uint32 newValue)
+        ChangeEvent(EventType eventType, uint32_t slot, uint32_t newValue)
          : eventType(eventType), slot(slot), newValue(newValue) {
         }
 
-        ChangeEvent(Uint32 slot, std::string newStringValue)
+        ChangeEvent(uint32_t slot, std::string newStringValue)
          : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) {
         }
 
@@ -57,7 +57,7 @@ public:
         }
 
         void save(OutputStream& stream) const {
-            stream.writeUint32(static_cast<Uint32>(eventType));
+            stream.writeUint32(static_cast<uint32_t>(eventType));
             stream.writeUint32(slot);
             if(eventType == EventType::SetHumanPlayer) {
                 stream.writeString(newStringValue);
@@ -67,8 +67,8 @@ public:
         }
 
         EventType   eventType;
-        Uint32      slot = 0;
-        Uint32      newValue = 0;
+        uint32_t    slot     = 0;
+        uint32_t    newValue = 0;
         std::string newStringValue;
     };
 
@@ -76,7 +76,7 @@ public:
 
     explicit ChangeEventList(InputStream& stream) {
         const auto numChangeEvents = stream.readUint32();
-        for(Uint32 i = 0; i < numChangeEvents; i++) {
+        for(uint32_t i = 0; i < numChangeEvents; i++) {
             changeEventList.emplace_back(stream);
         }
     }

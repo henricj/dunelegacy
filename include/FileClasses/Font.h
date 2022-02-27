@@ -30,7 +30,7 @@ public:
     Font& operator=(const Font &) = delete;
     Font& operator=(Font &&) = delete;
 
-    virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor = 0xFFFFFFFFu) = 0;
+    virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) = 0;
 
     /// Returns the number of pixels a text needs
     /**

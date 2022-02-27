@@ -207,12 +207,12 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
         auto color = t.getRadarColor(currentGame.get(), pLocalHouse, radar_on);
         color = MapRGBA(radarSurface->format, color);
 
-        Uint8* const RESTRICT out = static_cast<Uint8 *>(radarSurface->pixels)
-            + (offsetY + scale * t.getLocation().y) * radarSurface->pitch;
+        uint8_t* const RESTRICT out = static_cast<uint8_t*>(radarSurface->pixels)
+                                      + (offsetY + scale * t.getLocation().y) * radarSurface->pitch;
         const auto offset = (offsetX + scale * t.getLocation().x);
 
         for (auto j = 0; j < scale; j++) {
-            auto *p = reinterpret_cast<Uint32*>(out + j * radarSurface->pitch) + offset;
+            auto *p = reinterpret_cast<uint32_t*>(out + j * radarSurface->pitch) + offset;
 
             for (auto i = 0; i < scale; ++i, ++p) {
                 // Do not use putPixel here to avoid overhead

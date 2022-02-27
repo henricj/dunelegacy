@@ -31,15 +31,15 @@ TextView::TextView()  {
 
 TextView::~TextView() = default;
 
-void TextView::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void TextView::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
 }
 
-bool TextView::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool TextView::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
 }
 
-bool TextView::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
+bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up)  {
     // forward mouse wheel event to scrollbar
     return scrollbar.handleMouseWheel(0,0,up);
 }
@@ -86,7 +86,7 @@ void TextView::draw(Point position) {
     }
 }
 
-void TextView::resize(Uint32 width, Uint32 height) {
+void TextView::resize(uint32_t width, uint32_t height) {
     invalidateTextures();
 
     scrollbar.resize(scrollbar.getMinimumSize().x,height);

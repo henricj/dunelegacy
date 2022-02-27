@@ -51,15 +51,15 @@ public:
     void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
     void onDecrementUnits(ItemID_enum itemID) override;
     void onIncrementUnitKills(ItemID_enum itemID) override;
-    void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
+    void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
 private:
 
-    Difficulty difficulty;  ///< difficulty level
-    GameMode  gameMode;     ///< game mode (custom or campaign)
-    Sint32  buildTimer;     ///< When to build the next structure/unit
-    Sint32  attackTimer;    ///< When to build the next structure/unit
-    Sint32  retreatTimer;   ///< When you last retreated>
+    Difficulty difficulty;   ///< difficulty level
+    GameMode   gameMode;     ///< game mode (custom or campaign)
+    int32_t    buildTimer;   ///< When to build the next structure/unit
+    int32_t    attackTimer;  ///< When to build the next structure/unit
+    int32_t    retreatTimer; ///< When you last retreated>
 
     int initialItemCount[Num_ItemID];
     int initialMilitaryValue = 0;

@@ -35,7 +35,7 @@ namespace {
 constexpr AirUnitConstants carryall_constants{Carryall::item_id};
 } // namespace
 
-Carryall::Carryall(Uint32 objectID, const ObjectInitializer& initializer)
+Carryall::Carryall(uint32_t objectID, const ObjectInitializer& initializer)
     : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
@@ -48,7 +48,7 @@ Carryall::Carryall(Uint32 objectID, const ObjectInitializer& initializer)
     respondable = false;
 }
 
-Carryall::Carryall(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Carryall::Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : AirUnit(carryall_constants, objectID, initializer) {
     Carryall::init();
 
@@ -210,7 +210,7 @@ void Carryall::pre_deployUnits(const GameContext& context)
     setSpeeds(context);
 }
 
-void Carryall::deployUnit(const GameContext& context, Uint32 unitID) {
+void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
     const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
 
     if (pickedUpUnitList.cend() == iter)

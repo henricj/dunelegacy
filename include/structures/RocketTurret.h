@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_RocketTurret;
     using parent = TurretBase;
 
-    RocketTurret(Uint32 objectID, const ObjectInitializer& initializer);
-    RocketTurret(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    RocketTurret(uint32_t objectID, const ObjectInitializer& initializer);
+    RocketTurret(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~RocketTurret() override;
 
     bool canAttack(const ObjectBase* object) const override;

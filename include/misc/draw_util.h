@@ -33,65 +33,65 @@
     \param  y       the y coordinate
     \return the value of the pixel
  */
-Uint32 getPixel(SDL_Surface *surface, int x, int y);
+uint32_t getPixel(SDL_Surface* surface, int x, int y);
 
-void putPixel(SDL_Surface *surface, int x, int y, Uint32 color);
+void putPixel(SDL_Surface * surface, int x, int y, uint32_t color);
 
-void drawHLineNoLock(SDL_Surface *surface, int x1, int y, int x2, Uint32 color);
-void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color);
-void drawHLine(SDL_Surface *surface, int x1, int y, int x2, Uint32 color);
-void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color);
+void drawHLineNoLock(SDL_Surface * surface, int x1, int y, int x2, uint32_t color);
+void drawVLineNoLock(SDL_Surface * surface, int x, int y1, int y2, uint32_t color);
+void drawHLine(SDL_Surface * surface, int x1, int y, int x2, uint32_t color);
+void drawVLine(SDL_Surface * surface, int x, int y1, int y2, uint32_t color);
 
-void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color);
-void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color);
+void drawRectNoLock(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color);
+void drawRect(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color);
 
-inline void setRenderDrawColor(SDL_Renderer* renderer, Uint32 color) {
+inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
     if(((color & AMASK) >> ASHIFT) != 255) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
     SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
 }
 
-inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
 }
 
-inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, Uint32 color) {
+inline void renderDrawHLine(SDL_Renderer* renderer, int x1, int y, int x2, uint32_t color) {
     renderDrawLine(renderer, x1, y, x2, y, color);
 }
 
-inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, Uint32 color) {
+inline void renderDrawVLine(SDL_Renderer* renderer, int x, int y1, int y2, uint32_t color) {
     renderDrawLine(renderer, x, y1, x, y2, color);
 }
 
-inline void renderDrawRect(SDL_Renderer* renderer, const SDL_Rect* rect, Uint32 color) {
+inline void renderDrawRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderDrawRect(renderer, rect);
 }
 
-inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, Uint32 color) {
+inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderDrawRectF(renderer, rect);
 }
 
-inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
                       static_cast<float> (y2 - y1 + 1)};
     renderDrawRectF(renderer, &rect, color);
 }
 
-inline void renderFillRect(SDL_Renderer* renderer, const SDL_Rect* rect, Uint32 color) {
+inline void renderFillRect(SDL_Renderer* renderer, const SDL_Rect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderFillRect(renderer, rect);
 }
 
-inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, Uint32 color) {
+inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderFillRectF(renderer, rect);
 }
 
-inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, Uint32 color) {
+inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
                       static_cast<float> (y2 - y1 + 1)};
     renderFillRectF(renderer, &rect, color);
@@ -99,8 +99,8 @@ inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 
-void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor);
-void mapColor(SDL_Surface *surface, const Uint8 colorMap[256]);
+void replaceColor(SDL_Surface * surface, uint32_t oldColor, uint32_t newColor);
+void mapColor(SDL_Surface * surface, const uint8_t colorMap[256]);
 
 sdl2::surface_ptr   copySurface(SDL_Surface* inSurface);
 

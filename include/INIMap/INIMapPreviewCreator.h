@@ -34,7 +34,7 @@ public:
     explicit INIMapPreviewCreator(INIMap::inifile_ptr pINIFile);
     ~INIMapPreviewCreator();
 
-    sdl2::surface_ptr createMinimapImageOfMap(int borderWidth, Uint32 borderColor);
+    sdl2::surface_ptr createMinimapImageOfMap(int borderWidth, uint32_t borderColor);
 };
 
 #endif //INIMAPPREVIEWCREATOR_H

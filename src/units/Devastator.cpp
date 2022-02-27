@@ -33,7 +33,7 @@ namespace {
 constexpr TrackedUnitConstants devastator_constants{Devastator::item_id, 2, Bullet_ShellLarge};
 }
 
-Devastator::Devastator(Uint32 objectID, const ObjectInitializer& initializer) : TrackedUnit(devastator_constants, objectID, initializer) {
+Devastator::Devastator(uint32_t objectID, const ObjectInitializer& initializer) : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -41,7 +41,7 @@ Devastator::Devastator(Uint32 objectID, const ObjectInitializer& initializer) : 
     devastateTimer = 0;
 }
 
-Devastator::Devastator(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Devastator::Devastator(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
@@ -128,7 +128,7 @@ void Devastator::destroy(const GameContext& context)
 
                 context.map.damage(context, objectID, owner, realPos, itemID, 150, 16, false);
 
-                Uint32 explosionID = context.game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
+                uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                 context.game.addExplosion(explosionID, realPos, owner->getHouseID());
             }
         }

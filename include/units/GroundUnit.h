@@ -33,8 +33,8 @@ public:
 class GroundUnit : public UnitBase
 {
 protected:
-    GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = UnitBase;
@@ -83,8 +83,8 @@ protected:
     void move(const GameContext& context) override;
     void navigate(const GameContext& context) override;
 
-    bool    awaitingPickup;     ///< Is this unit waiting for pickup?
-    Uint32  bookedCarrier;      ///< What is the carrier if waiting for pickup?
+    bool     awaitingPickup; ///< Is this unit waiting for pickup?
+    uint32_t bookedCarrier;  ///< What is the carrier if waiting for pickup?
 };
 
 template<>

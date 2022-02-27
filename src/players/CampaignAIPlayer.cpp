@@ -30,7 +30,7 @@
 
 #define AIUPDATEINTERVAL 50
 
-static const std::map<Uint32, int> buildPriorityMap = {
+static const std::map<uint32_t, int> buildPriorityMap = {
     { Unit_Carryall, 2 },
     { Unit_Ornithopter, 6 },
     { Unit_Infantry, 2 },
@@ -51,7 +51,7 @@ static const std::map<Uint32, int> buildPriorityMap = {
     { Unit_MCV, 1 }
 };
 
-static const std::unordered_map<Uint32, int> targetPriorityMap = {
+static const std::unordered_map<uint32_t, int> targetPriorityMap = {
     { Unit_Carryall, 36 },
     { Unit_Ornithopter, 105 },
     { Unit_Infantry, 40 },
@@ -101,7 +101,7 @@ CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associated
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
     auto numStructureInfo = stream.readUint32();
-    for(Uint32 i = 0; i < numStructureInfo; i++) {
+    for(uint32_t i = 0; i < numStructureInfo; i++) {
         structureQueue.emplace_back(stream);
     }
 }
@@ -143,7 +143,7 @@ void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& lo
     }
 }
 
-void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     if(!pObject->isAUnit() || !pObject->isRespondable()) {
         return;
     }
@@ -267,7 +267,7 @@ void CampaignAIPlayer::updateStructures() {
 
                 auto bestItemID = ItemID_Invalid;
                 int bestItemPriority = 0;
-                for(Uint32 currentItemID = ItemID_FirstID; currentItemID < ItemID_LastID; currentItemID++) {
+                for(uint32_t currentItemID = ItemID_FirstID; currentItemID < ItemID_LastID; currentItemID++) {
                     if(!pBuilder->isAvailableToBuild(static_cast<ItemID_enum>(currentItemID))) {
                         continue;
                     }

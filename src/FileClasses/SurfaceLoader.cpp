@@ -1088,7 +1088,7 @@ SurfaceLoader::SurfaceLoader() {
     pBackgroundSurface = convertSurfaceToDisplayFormat(PicFactory->createBackground().get());
 
     { // Scope
-        auto replace_color = [&](ObjPic_enum id, HOUSETYPE house, int zoom, Uint32 oldColor, Uint32 newColor) {
+        auto replace_color = [&](ObjPic_enum id, HOUSETYPE house, int zoom, uint32_t oldColor, uint32_t newColor) {
             auto display_surface = convertSurfaceToDisplayFormat(getZoomedObjSurface(id, house, zoom));
 
             replaceColor(display_surface.get(), oldColor, newColor);
@@ -1410,16 +1410,16 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
 
         SDL_Color windtrapColor;
         if(i < NUM_WINDTRAP_ANIMATIONS/2) {
-            const auto val = i*windtrapColorQuantizizer;
-            windtrapColor.r = static_cast<Uint8>(std::min(80, val));
-            windtrapColor.g = static_cast<Uint8>(std::min(80, val));
-            windtrapColor.b = static_cast<Uint8>(std::min(255, val));
+            const auto val  = i*windtrapColorQuantizizer;
+            windtrapColor.r = static_cast<uint8_t>(std::min(80, val));
+            windtrapColor.g = static_cast<uint8_t>(std::min(80, val));
+            windtrapColor.b = static_cast<uint8_t>(std::min(255, val));
             windtrapColor.a = 255;
         } else {
-            const auto val = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
-            windtrapColor.r = static_cast<Uint8>(std::max(0, 80-val));
-            windtrapColor.g = static_cast<Uint8>(std::max(0, 80-val));
-            windtrapColor.b = static_cast<Uint8>(std::max(0, 255-val));
+            const auto val  = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
+            windtrapColor.r = static_cast<uint8_t>(std::max(0, 80-val));
+            windtrapColor.g = static_cast<uint8_t>(std::max(0, 80-val));
+            windtrapColor.b = static_cast<uint8_t>(std::max(0, 255-val));
             windtrapColor.a = 255;
         }
         SDL_SetPaletteColors(windtrapPic->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);

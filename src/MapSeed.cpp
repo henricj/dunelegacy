@@ -21,40 +21,40 @@
 #include "MapSeed.h"
 
 // global seed value
-static Uint32 Seed;
+static uint32_t Seed;
 
 // a point that has 2 coordinates
 typedef struct {
-    Uint16 x;
-    Uint16 y;
-} MapSeedPoint;
+    uint16_t x;
+    uint16_t y;
+}            MapSeedPoint;
 
 // some values
-const Uint8 BoolArray[] = {0,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0,0,1,0,0};
+const uint8_t BoolArray[] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0};
 
 // some offsets
-const Sint8 OffsetArray1[]={
-    0,-1,1,-16,16,
-    -17,17,-15,15,
-    -2, 2,-32,32,
-    -4, 4,-64,64,
-    -30,30,-34,34
+const int8_t OffsetArray1[] = {
+    0, -1, 1, -16, 16,
+    -17, 17, -15, 15,
+    -2, 2, -32, 32,
+    -4, 4, -64, 64,
+    -30, 30, -34, 34
 };
 
 // some more offsets
-const Uint8 OffsetArray2[]={
-    0,0,4,0,4,0,4,4,0,0,0,4,0,4,4,4,0,0,0,2,0,
-    2,0,4,0,0,2,0,2,0,4,0,4,0,4,2,4,2,4,4,0,4,
-    2,4,2,4,4,4,0,0,4,4,2,0,2,2,0,0,2,2,4,0,2,
-    2,0,2,2,2,2,2,4,2,2,2,0,4,2,2,4,4,2,2,2,4,
-    0,0,4,0,4,0,4,4,0,0,0,4,0,4,4,4,0,0,0,2,0,
-    2,0,4,0,0,2,0,2,0,4,0,4,0,4,2,4,2,4,4,0,4,
-    2,4,2,4,4,4,4,0,0,4,2,0,2,2,0,0,2,2,4,0,2,
-    2,0,2,2,2,2,2,4,2,2,2,0,4,2,2,4,4,2,2,2,4
+const uint8_t OffsetArray2[] = {
+    0, 0, 4, 0, 4, 0, 4, 4, 0, 0, 0, 4, 0, 4, 4, 4, 0, 0, 0, 2, 0,
+    2, 0, 4, 0, 0, 2, 0, 2, 0, 4, 0, 4, 0, 4, 2, 4, 2, 4, 4, 0, 4,
+    2, 4, 2, 4, 4, 4, 0, 0, 4, 4, 2, 0, 2, 2, 0, 0, 2, 2, 4, 0, 2,
+    2, 0, 2, 2, 2, 2, 2, 4, 2, 2, 2, 0, 4, 2, 2, 4, 4, 2, 2, 2, 4,
+    0, 0, 4, 0, 4, 0, 4, 4, 0, 0, 0, 4, 0, 4, 4, 4, 0, 0, 0, 2, 0,
+    2, 0, 4, 0, 0, 2, 0, 2, 0, 4, 0, 4, 0, 4, 2, 4, 2, 4, 4, 0, 4,
+    2, 4, 2, 4, 4, 4, 4, 0, 0, 4, 2, 0, 2, 2, 0, 0, 2, 2, 4, 0, 2,
+    2, 0, 2, 2, 2, 2, 2, 4, 2, 2, 2, 0, 4, 2, 2, 4, 4, 2, 2, 2, 4
 };
 
 // TileTypes
-const Sint16 TileTypes[] = {
+const int16_t TileTypes[] = {
     220, 221, 222, 229, 230, 231, 213, 214, 215, 223, 224, 225, 232, 233, 234, 216,
     217, 218, 226, 227, 228, 235, 236, 237, 219, 217, 218, 226, 227, 228, 235, 236,
     237, 238, 239, 244, 245, 125, 240, 246, 247, 241, 242, 248, 249, 241, 243, 248,
@@ -75,7 +75,7 @@ const Sint16 TileTypes[] = {
 };
 
 // sinus[index] = 127 * sin(pi * index/128)
-static const Sint8 sinus[256] = {
+static const int8_t sinus[256] = {
     0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45,
     48, 51, 54, 57, 59, 62, 65, 67, 70, 73, 75, 78, 80, 82, 85, 87,
     89, 91, 94, 96, 98, 100, 101, 103, 105, 107, 108, 110, 111, 113, 114, 116,
@@ -100,7 +100,7 @@ static const Sint8 sinus[256] = {
     \param Ycoord   The coordinate in y-direction
     \return The 1-dimensional coordinate
 */
-static Sint16 MapArray2DToMapArray1D(Sint16 Xcoord,Sint16 Ycoord) {
+static int16_t MapArray2DToMapArray1D(int16_t Xcoord, int16_t Ycoord) {
     return Xcoord | (Ycoord << 6);
 }
 
@@ -111,7 +111,7 @@ static Sint16 MapArray2DToMapArray1D(Sint16 Xcoord,Sint16 Ycoord) {
     \param Ycoord   The coordinate in y-direction
     \return The 1-dimensional coordinate
 */
-static Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
+static int16_t MapArray2DToMapArray1D_OOB(int16_t Xcoord, int16_t Ycoord) {
     return MapArray2DToMapArray1D(Xcoord & 0x3F,Ycoord);
 }
 
@@ -122,13 +122,13 @@ static Sint16 MapArray2DToMapArray1D_OOB(Sint16 Xcoord,Sint16 Ycoord) {
     \param  pMapArray   Pointer to the map that should be smoothed
     \return none
 */
-static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
-    Sint16 TileType = 0;
-    Sint16 Xcoord = 0;
-    Sint16 Ycoord = 0;
-    Sint16 Pos = 0;
+static void SmoothNeighbourhood(int16_t index, uint32_t* pMapArray) {
+    int16_t TileType = 0;
+    int16_t Xcoord   = 0;
+    int16_t Ycoord   = 0;
+    int16_t Pos      = 0;
 
-    TileType = (Sint16) pMapArray[index];
+    TileType = (int16_t) pMapArray[index];
 
     if(TileType == 8) {
         pMapArray[index] = 9;
@@ -169,14 +169,14 @@ static void SmoothNeighbourhood(Sint16 index, Uint32* pMapArray) {
     Creates new random value.
     \return The new random value
 */
-static Uint16 SeedRand() {
-    Uint8 a = 0;
-    Uint8 carry = 0;
-    Uint8 old_carry = 0;
+static uint16_t SeedRand() {
+    uint8_t a         = 0;
+    uint8_t carry     = 0;
+    uint8_t old_carry = 0;
 
     // little endian is more useful for this algorithm
     Seed = SDL_SwapLE32(Seed);
-    auto* pSeed = (Uint8*) &Seed;
+    auto* pSeed = (uint8_t*) &Seed;
 
     // shift right
     a = pSeed[0];
@@ -202,7 +202,7 @@ static Uint16 SeedRand() {
     carry = (carry == 1 ? 0 : 1);
 
     // subtract with carry
-    a = ((Uint16) a) - (((Uint16) pSeed[0]) + ((Uint16) carry));
+    a = ((uint16_t) a) - (((uint16_t) pSeed[0]) + ((uint16_t) carry));
 
     // shift right
     carry = a & 0x01;
@@ -217,7 +217,7 @@ static Uint16 SeedRand() {
     // convert back to native endianess
     Seed = SDL_SwapLE32(Seed);
 
-    return ((Uint16) a);
+    return ((uint16_t) a);
 
 }
 
@@ -226,28 +226,28 @@ static Uint16 SeedRand() {
     \param Para_Seed    Seed of the map
     \param pResultMap   Should be Uint16[64*64]
 */
-void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
+void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap)
 {
-    Uint8 Array4x4TerrainGrid[16*16+16+1];
-    Uint32 MapArray[65*65];
+    uint8_t      Array4x4TerrainGrid[16 * 16 + 16 + 1];
+    uint32_t     MapArray[65 * 65];
     MapSeedPoint point;
-    Uint16 randNum = 0;
-    Uint16 randNum2 = 0;
-    Uint16 randNum3 = 0;
-    Sint16 index = 0;
-    Sint16 i = 0;
+    uint16_t     randNum  = 0;
+    uint16_t     randNum2 = 0;
+    uint16_t     randNum3 = 0;
+    int16_t      index    = 0;
+    int16_t      i        = 0;
 
-    Sint16 j = 0;
-    Sint16 Xcoord = 0;
-    Sint16 Ycoord = 0;
-    Uint16 max = 0;
-    Sint16 Point1 = 0;
-    Sint16 Point2 = 0;
-    Uint16 pos = 0;
+    int16_t  j      = 0;
+    int16_t  Xcoord = 0;
+    int16_t  Ycoord = 0;
+    uint16_t max    = 0;
+    int16_t  Point1 = 0;
+    int16_t  Point2 = 0;
+    uint16_t pos    = 0;
 
-    Uint16 curMapRow[0x80];
-    Uint16 oldMapRow[0x80];
-    Uint32 Area[3][3];
+    uint16_t curMapRow[0x80];
+    uint16_t oldMapRow[0x80];
+    uint32_t Area[3][3];
 
     Seed = Para_Seed;
 
@@ -268,7 +268,7 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
             index = randNum + OffsetArray1[j];
             index = index >= 0 ? index : 0;
             index = index <= (16*16+16) ? index : (16*16+16);
-            Array4x4TerrainGrid[index] = ((Uint16) Array4x4TerrainGrid[index] + (SeedRand() & 0x0F)) & 0x0F;
+            Array4x4TerrainGrid[index] = ((uint16_t) Array4x4TerrainGrid[index] + (SeedRand() & 0x0F)) & 0x0F;
         }
     }
 
@@ -315,7 +315,7 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
         // save the old row
         memcpy(oldMapRow,curMapRow,sizeof(curMapRow));
         for(i = 0;i < 64; i++) {
-            curMapRow[i] = (Uint16) MapArray[Ycoord*64+i];
+            curMapRow[i] = (uint16_t) MapArray[Ycoord*64+i];
         }
 
         for(Xcoord = 0; Xcoord < 64; Xcoord++) {
@@ -345,7 +345,7 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
     point.y = ( (randNum-3) < point.y ? randNum-3 : point.y);
 
     for(i = 0; i < 64*64; i++) {
-        point.x = (Uint16) MapArray[i];
+        point.x = (uint16_t) MapArray[i];
 
         if( (randNum+4) < point.x) {
             MapArray[i] = 0x06;
@@ -415,14 +415,14 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
 
     //smoothing
     for(i = 0; i < 64; i++) {
-        curMapRow[i] = (Uint16) MapArray[i];
+        curMapRow[i] = (uint16_t) MapArray[i];
     }
 
     for(Ycoord = 0; Ycoord < 64; Ycoord++) {
         memcpy(oldMapRow,curMapRow,sizeof(curMapRow));
 
         for(i = 0; i < 64; i++) {
-            curMapRow[i] = (Uint16) MapArray[Ycoord*64+i];
+            curMapRow[i] = (uint16_t) MapArray[Ycoord*64+i];
         }
 
         for(Xcoord = 0; Xcoord < 64; Xcoord++) {
@@ -510,8 +510,8 @@ void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap)
     }
 }
 
-MapData createMapWithSeed(Uint32 Para_Seed, int mapscale) {
-    Uint16 SeedMap[64*64];
+MapData createMapWithSeed(uint32_t Para_Seed, int mapscale) {
+    uint16_t SeedMap[64 * 64];
     createMapWithSeed(Para_Seed,SeedMap);
 
     int sizeX = 0;

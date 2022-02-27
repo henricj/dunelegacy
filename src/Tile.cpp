@@ -15,10 +15,10 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Tile.h>
+
 #include "units/Soldier.h"
 #include "units/Trike.h"
-
-#include <Tile.h>
 
 #include <globals.h>
 
@@ -104,9 +104,9 @@ void Tile::load(InputStream& stream) {
 
     if (bHasDamage) {
         damage.clear();
-        Uint32 numDamage = stream.readUint32();
+        uint32_t numDamage = stream.readUint32();
         damage.reserve(numDamage);
-        for (Uint32 i = 0; i < numDamage; i++) {
+        for (uint32_t i = 0; i < numDamage; i++) {
             DAMAGETYPE newDamage;
             newDamage.damageType = static_cast<TerrainDamage_enum>(stream.readUint32());
             newDamage.tile = stream.readSint32();
@@ -119,9 +119,9 @@ void Tile::load(InputStream& stream) {
 
     if (bHasDeadUnits) {
         deadUnits.clear();
-        Uint32 numDeadUnits = stream.readUint32();
+        uint32_t numDeadUnits = stream.readUint32();
         deadUnits.reserve(numDeadUnits);
-        for (Uint32 i = 0; i < numDeadUnits; i++) {
+        for (uint32_t i = 0; i < numDeadUnits; i++) {
             DEADUNITTYPE newDeadUnit;
             newDeadUnit.type = stream.readUint8();
             newDeadUnit.house = static_cast<HOUSETYPE>(stream.readUint8());
@@ -162,7 +162,7 @@ void Tile::load(InputStream& stream) {
     }
 }
 
-void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
+void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeUint32(type);
 
     stream.writeBools(explored[0], explored[1], explored[2], explored[3], explored[4], explored[5], explored[6]);
@@ -176,7 +176,7 @@ void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
 
     stream.writeUint32(fogColor);
 
-    stream.writeUint32(static_cast<Uint32>(owner));
+    stream.writeUint32(static_cast<uint32_t>(owner));
     stream.writeUint32(sandRegion);
 
     stream.writeFixPoint(spice);
@@ -187,7 +187,7 @@ void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
     if (!damage.empty()) {
         stream.writeUint32(damage.size());
         for (const auto& damageItem : damage) {
-            stream.writeUint32(static_cast<Uint32>(damageItem.damageType));
+            stream.writeUint32(static_cast<uint32_t>(damageItem.damageType));
             stream.writeSint32(damageItem.tile);
             stream.writeSint32(damageItem.realPos.x);
             stream.writeSint32(damageItem.realPos.y);
@@ -198,7 +198,7 @@ void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
         stream.writeUint32(deadUnits.size());
         for (const auto& deadUnit : deadUnits) {
             stream.writeUint8(deadUnit.type);
-            stream.writeUint8(static_cast<Uint8>(deadUnit.house));
+            stream.writeUint8(static_cast<uint8_t>(deadUnit.house));
             stream.writeBool(deadUnit.onSand);
             stream.writeSint32(deadUnit.realPos.x);
             stream.writeSint32(deadUnit.realPos.y);
@@ -209,7 +209,7 @@ void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
     stream.writeSint32(destroyedStructureTile);
 
     // clean-up tracksCreationTime to save space in the save game
-    std::array<Uint32, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTimeToSave;
+    std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTimeToSave;
     for(int i = 0; i < tracksCreationTimeToSave.size(); i++) {
         tracksCreationTimeToSave[i] = (tracksCreationTime[i] + TRACKSTIME < gameCycleCount) ? 0 : tracksCreationTime[i];
     }
@@ -239,15 +239,15 @@ void Tile::save(OutputStream& stream, Uint32 gameCycleCount) const {
     }
 }
 
-void Tile::assignAirUnit(Uint32 newObjectID) {
+void Tile::assignAirUnit(uint32_t newObjectID) {
     assignedAirUnitList.push_back(newObjectID);
 }
 
-void Tile::assignNonInfantryGroundObject(Uint32 newObjectID) {
+void Tile::assignNonInfantryGroundObject(uint32_t newObjectID) {
     assignedNonInfantryGroundObjectList.push_back(newObjectID);
 }
 
-int Tile::assignInfantry(ObjectManager& objectManager, Uint32 newObjectID, Sint8 currentPosition) {
+int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition) {
     auto newPosition = currentPosition;
 
     if (currentPosition < 0) {
@@ -271,7 +271,7 @@ int Tile::assignInfantry(ObjectManager& objectManager, Uint32 newObjectID, Sint8
             }
         }
 
-        newPosition = std::max(static_cast<Sint8>(0), std::min(newPosition, static_cast<Sint8>(NUM_INFANTRY_PER_TILE)));
+        newPosition = std::max(static_cast<int8_t>(0), std::min(newPosition, static_cast<int8_t>(NUM_INFANTRY_PER_TILE)));
     }
 
     assignedInfantryList.push_back(newObjectID);
@@ -279,7 +279,7 @@ int Tile::assignInfantry(ObjectManager& objectManager, Uint32 newObjectID, Sint8
 }
 
 
-void Tile::assignUndergroundUnit(Uint32 newObjectID) {
+void Tile::assignUndergroundUnit(uint32_t newObjectID) {
     assignedUndergroundUnitList.push_back(newObjectID);
 }
 
@@ -498,7 +498,7 @@ void Tile::blitSelectionRects(Game* game, int xPos, int yPos) const {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
-    forEachUnit([&](Uint32 objectID) {
+    forEachUnit([&](uint32_t objectID) {
         auto *pObject = game->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return;
@@ -536,7 +536,7 @@ void Tile::clearTerrain() {
     deadUnits.clear();
 }
 
-void Tile::setTrack(ANGLETYPE direction, Uint32 gameCycleCounter) {
+void Tile::setTrack(ANGLETYPE direction, uint32_t gameCycleCounter) {
     if (type == Terrain_Sand || type == Terrain_Dunes || type == Terrain_Spice || type == Terrain_ThickSpice) {
         tracksCreationTime[static_cast<int>(direction)] = gameCycleCounter;
     }
@@ -558,23 +558,23 @@ static void erase_remove(Container& c, Val val) {
     c.erase(std::remove(std::begin(c), std::end(c), val), std::end(c));
 }
 
-void Tile::unassignAirUnit(Uint32 objectID) {
+void Tile::unassignAirUnit(uint32_t objectID) {
     erase_remove(assignedAirUnitList, objectID);
 }
 
-void Tile::unassignNonInfantryGroundObject(Uint32 objectID) {
+void Tile::unassignNonInfantryGroundObject(uint32_t objectID) {
     erase_remove(assignedNonInfantryGroundObjectList, objectID);
 }
 
-void Tile::unassignUndergroundUnit(Uint32 objectID) {
+void Tile::unassignUndergroundUnit(uint32_t objectID) {
     erase_remove(assignedUndergroundUnitList, objectID);
 }
 
-void Tile::unassignInfantry(Uint32 objectID, int currentPosition) {
+void Tile::unassignInfantry(uint32_t objectID, int currentPosition) {
     erase_remove(assignedInfantryList, objectID);
 }
 
-void Tile::unassignObject(Uint32 objectID) {
+void Tile::unassignObject(uint32_t objectID) {
     if (hasInfantry()) unassignInfantry(objectID, -1);
     if (hasAnUndergroundUnit()) unassignUndergroundUnit(objectID);
     if (hasANonInfantryGroundObject()) unassignNonInfantryGroundObject(objectID);
@@ -803,8 +803,8 @@ ObjectBase* Tile::getObjectAt(const ObjectManager& objectManager, int x, int y) 
 }
 
 
-ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, Uint32 objectID) const {
-    const auto predicate = [=](Uint32 n) { return n == objectID; };
+ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, uint32_t objectID) const {
+    const auto predicate = [=](uint32_t n) { return n == objectID; };
 
     if(std::any_of(assignedInfantryList.begin(), assignedInfantryList.end(), predicate)
         || std::any_of(assignedNonInfantryGroundObjectList.begin(), assignedNonInfantryGroundObjectList.end(), predicate)
@@ -956,7 +956,7 @@ bool Tile::isExploredByTeam(const Game* game, int teamID) const {
     return false;
 }
 
-bool Tile::isFoggedByHouse(bool fogOfWarEnabled, Uint32 gameCycleCount, HOUSETYPE houseID) const noexcept {
+bool Tile::isFoggedByHouse(bool fogOfWarEnabled, uint32_t gameCycleCount, HOUSETYPE houseID) const noexcept {
     if (debug)
         return false;
 
@@ -987,7 +987,7 @@ bool Tile::isFoggedByTeam(const Game* game, int teamID) const {
     return true;
 }
 
-Uint32 Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
+uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
     if (!debug && !isExploredByTeam(game, pHouse->getTeamID())) {
         return COLOR_BLACK;
     }
@@ -998,7 +998,7 @@ Uint32 Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
 
     auto *const pObject = getObject(game->getObjectManager());
     if (pObject != nullptr) {
-        Uint32 color = 0;
+        uint32_t color = 0;
 
         if (pObject->getItemID() == Unit_Sandworm) {
             color = COLOR_WHITE;
@@ -1171,7 +1171,7 @@ void Tile::selectFilter(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedO
     ObjectBase* obj = nullptr;
     ObjectBase* last_selected = nullptr;
 
-    const auto selectUnit = [&](Uint32 objectID) {
+    const auto selectUnit = [&](uint32_t objectID) {
                                 obj = game->getObjectManager().getObject(objectID);
 
                                 if (obj->isSelected() || houseID != obj->getOwner()->getHouseID())

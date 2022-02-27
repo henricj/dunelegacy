@@ -30,7 +30,7 @@ FontManager::FontManager() = default;
 
 FontManager::~FontManager() = default;
 
-void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 color, unsigned int fontSize) {
+void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color, unsigned int fontSize) {
     return getFont(fontSize)->drawTextOnSurface(pSurface,text,color);
 }
 
@@ -42,7 +42,7 @@ int FontManager::getTextHeight(unsigned int fontSize) {
     return getFont(fontSize)->getTextHeight();
 }
 
-sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, Uint32 color, unsigned int fontSize) {
+sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
     auto *const pFont = getFont(fontSize);
 
     const auto width = pFont->getTextWidth(text);
@@ -57,11 +57,11 @@ sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, Uint
     return pic;
 }
 
-sdl2::texture_ptr FontManager::createTextureWithText(std::string_view text, Uint32 color, unsigned int fontSize) {
+sdl2::texture_ptr FontManager::createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
     return convertSurfaceToTexture(createSurfaceWithText(text, color, fontSize));
 }
 
-sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered) {
+sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered) {
     size_t startpos = 0;
     size_t nextpos = 0;
     std::vector<std::string> textLines;
@@ -103,7 +103,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view t
     return pic;
 }
 
-sdl2::texture_ptr FontManager::createTextureWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered) {
+sdl2::texture_ptr FontManager::createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered) {
     return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontSize, bCentered));
 }
 

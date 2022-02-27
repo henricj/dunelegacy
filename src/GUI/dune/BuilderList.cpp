@@ -34,7 +34,7 @@
 
 #include <sstream>
 
-BuilderList::BuilderList(Uint32 builderObjectID) {
+BuilderList::BuilderList(uint32_t builderObjectID) {
     enableResizing(false,true);
     this->builderObjectID = builderObjectID;
 
@@ -79,7 +79,7 @@ BuilderList::BuilderList(Uint32 builderObjectID) {
 
 BuilderList::~BuilderList() = default;
 
-void BuilderList::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void BuilderList::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     StaticContainer::handleMouseMovement(x,y,insideOverlay);
 
     if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y) && !insideOverlay) {
@@ -92,7 +92,7 @@ void BuilderList::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     }
 }
 
-bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     StaticContainer::handleMouseLeft(x,y,pressed);
 
     auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
@@ -135,7 +135,7 @@ bool BuilderList::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     return true;
 }
 
-bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
+bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
     StaticContainer::handleMouseRight(x,y,pressed);
 
     auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
@@ -171,7 +171,7 @@ bool BuilderList::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     return true;
 }
 
-bool BuilderList::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+bool BuilderList::handleMouseWheel(int32_t x, int32_t y, bool up) {
     if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
         if(up) {
             onUp();
@@ -362,7 +362,7 @@ void BuilderList::drawOverlay(Point position) {
 }
 
 
-void BuilderList::resize(Uint32 width, Uint32 height) {
+void BuilderList::resize(uint32_t width, uint32_t height) {
     setWidgetGeometry(  &upButton,Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2,-2),upButton.getSize());
     setWidgetGeometry(  &downButton,
                         Point( (WIDGET_WIDTH - ARROWBTN_WIDTH)/2, getRealHeight(height) - ARROWBTN_HEIGHT - ORDERBTN_HEIGHT - BUILDERBTN_SPACING + 2),

@@ -27,14 +27,14 @@ namespace
 const BuilderBaseConstants barracks_constants{Barracks::item_id, Coord{2, 2}};
 }
 
-Barracks::Barracks(Uint32 objectID, const ObjectInitializer& initializer)
+Barracks::Barracks(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 
     setHealth(getMaxHealth());
 }
 
-Barracks::Barracks(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 }

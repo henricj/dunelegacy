@@ -22,7 +22,7 @@ namespace
 {
 Random create_random(int n)
 {
-    std::array<Uint8, Random::state_bytes> state;
+    std::array<uint8_t, Random::state_bytes> state;
 
     std::iota(state.begin(), state.end(), n);
 

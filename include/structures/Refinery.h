@@ -30,8 +30,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Refinery;
     using parent = StructureBase;
 
-    Refinery(Uint32 objectID, const ObjectInitializer& initializer);
-    Refinery(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Refinery(uint32_t objectID, const ObjectInitializer& initializer);
+    Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Refinery() override;
 
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
@@ -71,7 +71,7 @@ private:
 
     bool          extractingSpice; ///< Currently extracting spice?
     ObjectPointer harvester;       ///< The harvester currently in the refinery
-    Uint32        bookings;        ///< How many bookings?
+    uint32_t      bookings;        ///< How many bookings?
 
     bool firstRun; ///< On first deploy of a harvester we tell it to the user
 };

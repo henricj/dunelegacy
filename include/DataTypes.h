@@ -119,7 +119,7 @@ public:
     int y;
 };
 
-typedef enum : Sint8 {
+typedef enum : int8_t {
     ATTACKMODE_INVALID [[maybe_unused]] = -1,
     GUARD = 0,      ///< The unit will attack enemy units but will not move or follow enemy units.
     AREAGUARD = 1,  ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a relatively large radius, and return to their original position after their target was either destroyed or left the immediate area.
@@ -242,7 +242,7 @@ public:
     } gameOptions;
 };
 
-enum class HOUSETYPE : Sint8 {
+enum class HOUSETYPE : int8_t {
     HOUSE_UNUSED  [[maybe_unused]] = -2,
     HOUSE_INVALID [[maybe_unused]] = -1,
     HOUSE_HARKONNEN = 0,
@@ -263,7 +263,7 @@ void for_each_housetype(F&& f) {
         f(static_cast<HOUSETYPE>(i));
 }
 
-enum class ANGLETYPE : Sint8 {
+enum class ANGLETYPE : int8_t {
     RIGHT,
     RIGHTUP,
     UP,
@@ -276,7 +276,7 @@ enum class ANGLETYPE : Sint8 {
     INVALID_ANGLE [[maybe_unused]] = INVALID
 };
 
-enum class DropLocation : Sint8 {
+enum class DropLocation : int8_t {
     Drop_Invalid [[maybe_unused]] = -1,
     Drop_North,         ///< unit will appear at a random position at the top of the map
     Drop_East,          ///< unit will appear at a random position on the right side of the map
@@ -309,7 +309,7 @@ enum class AITeamType {
 
 
 namespace Dune {
-using object_id_type = Uint32;
+using object_id_type = uint32_t;
 using selected_set_type = std::unordered_set<object_id_type>;
 }
 

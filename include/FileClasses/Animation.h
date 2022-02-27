@@ -63,11 +63,11 @@ public:
         }
     }
 
-    void setFrameDurationTime(Uint32 frameDurationTime) noexcept {
+    void setFrameDurationTime(uint32_t frameDurationTime) noexcept {
         this->frameDurationTime = frameDurationTime;
     }
 
-    [[nodiscard]] Uint32 getFrameDurationTime() const noexcept {
+    [[nodiscard]] uint32_t getFrameDurationTime() const noexcept {
         return frameDurationTime;
     }
 
@@ -99,11 +99,11 @@ public:
     [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; }
 
 private:
-    Uint32 curFrameStartTime;
-    Uint32 frameDurationTime;
-    int loopsLeft;
-    unsigned int curFrame;
-    unsigned int curFrameOverride;
+    uint32_t                       curFrameStartTime;
+    uint32_t                       frameDurationTime;
+    int                            loopsLeft;
+    unsigned int                   curFrame;
+    unsigned int                   curFrameOverride;
     std::vector<sdl2::surface_ptr> frames;
     std::vector<sdl2::texture_ptr> frameTextures;
 };

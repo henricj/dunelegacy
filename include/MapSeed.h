@@ -22,7 +22,7 @@
 
 #include <MapEditor/MapData.h>
 
-void createMapWithSeed(Uint32 Para_Seed,Uint16 *pResultMap);
-MapData createMapWithSeed(Uint32 Para_Seed, int mapscale);
+void    createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap);
+MapData createMapWithSeed(uint32_t Para_Seed, int mapscale);
 
 #endif // MAPSEED_H

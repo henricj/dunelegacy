@@ -41,7 +41,7 @@
 #define SMOKEDELAY 30
 #define UNITIDLETIMER (GAMESPEED_DEFAULT *  315)  // about every 5s
 
-UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : ObjectBase(constants, objectID, initializer) {
 
     UnitBase::init();
@@ -79,7 +79,7 @@ UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const Ob
     deviationTimer = INVALID;
 }
 
-UnitBase::UnitBase(const UnitBaseConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer)
+UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)
     : ObjectBase(constants, objectID, initializer) {
 
     UnitBase::init();
@@ -161,11 +161,11 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeFixPoint(bumpyOffsetY);
 
     stream.writeFixPoint(targetDistance);
-    stream.writeSint8(static_cast<Sint8>(targetAngle));
+    stream.writeSint8(static_cast<int8_t>(targetAngle));
 
     stream.writeUint8(noCloserPointCount);
     stream.writeBool(nextSpotFound);
-    stream.writeSint8(static_cast<Sint8>(nextSpotAngle));
+    stream.writeSint8(static_cast<int8_t>(nextSpotAngle));
     stream.writeSint32(recalculatePathTimer);
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
@@ -201,8 +201,8 @@ bool UnitBase::attack(const GameContext& context) {
         bAirBullet        = false;
     }
 
-    int    currentBulletType   = bulletType();
-    Sint32 currentWeaponDamage = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
+    int     currentBulletType   = bulletType();
+    int32_t currentWeaponDamage = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
 
     if(getItemID() == Unit_Trooper && !bAirBullet) {
         // Troopers change weapon type depending on distance
@@ -766,8 +766,8 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
     } else {
         // move this unit
         game.getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
-                                                    static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
-                                                    static_cast<Uint32>(true)});
+                                                    static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
+                                                    static_cast<uint32_t>(true)});
     }
 }
 
@@ -788,8 +788,8 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
         } else {
             // attack pos
             game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS,
-                                                        objectID, static_cast<Uint32>(xPos), static_cast<Uint32>(yPos),
-                                                        static_cast<Uint32>(true)));
+                                                        objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
+                                                        static_cast<uint32_t>(true)));
         }
     }
 }
@@ -800,13 +800,14 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
     if(context.map.tileExists(xPos, yPos)) {
         // move to pos
         context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
-                                                            objectID, static_cast<Uint32>(xPos),
-                                                            static_cast<Uint32>(yPos), static_cast<Uint32>(true)));
+                                                            objectID, static_cast<uint32_t>(xPos),
+                                                            static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
     }
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
-    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,objectID,(Uint32) newAttackMode));
+    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,objectID,(
+                                                            uint32_t) newAttackMode));
 }
 
 /**
@@ -818,7 +819,7 @@ void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xP
 
     if(context.map.tileExists(xPos, yPos)) {
         context.game.getCommandManager().addCommand(Command(
-            pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (Uint32)xPos, (Uint32)yPos));
+            pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (uint32_t)xPos, (uint32_t)yPos));
     }
 }
 
@@ -870,7 +871,7 @@ void UnitBase::doMove2Object(const GameContext& context, const ObjectBase* pTarg
     findTargetTimer = 0;
 }
 
-void UnitBase::doMove2Object(const GameContext& context, Uint32 targetObjectID) {
+void UnitBase::doMove2Object(const GameContext& context, uint32_t targetObjectID) {
     ObjectBase* pObject = context.objectManager.getObject(targetObjectID);
 
     if(pObject == nullptr) {
@@ -924,7 +925,7 @@ void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTar
     findTargetTimer = 0;
 }
 
-void UnitBase::doAttackObject(const GameContext& context, Uint32 TargetObjectID, bool bForced) {
+void UnitBase::doAttackObject(const GameContext& context, uint32_t TargetObjectID, bool bForced) {
     ObjectBase* pObject = context.objectManager.getObject(TargetObjectID);
 
     if(pObject == nullptr) {
@@ -948,7 +949,7 @@ void UnitBase::doSetAttackMode(const GameContext& context, ATTACKMODE newAttackM
     }
 }
 
-void UnitBase::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
+void UnitBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     // shorten deviation time
     if(deviationTimer > 0) {
         deviationTimer = std::max(0,deviationTimer - MILLI2CYCLES(damage*20*1000));

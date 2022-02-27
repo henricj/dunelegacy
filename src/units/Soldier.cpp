@@ -27,14 +27,14 @@ namespace {
 constexpr InfantryBaseConstants soldier_constants{Soldier::item_id, 1, Bullet_ShellSmall};
 }
 
-Soldier::Soldier(Uint32 objectID, const ObjectInitializer& initializer)
+Soldier::Soldier(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(soldier_constants, objectID, initializer) {
     Soldier::init();
 
     setHealth(getMaxHealth());
 }
 
-Soldier::Soldier(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Soldier::Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : InfantryBase(soldier_constants, objectID, initializer) {
     Soldier::init();
 }

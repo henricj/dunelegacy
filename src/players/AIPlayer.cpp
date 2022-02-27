@@ -39,8 +39,8 @@
 
 AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
  : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
-    attackTimer = ((2-static_cast<Uint8>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
-    buildTimer = getRandomGen().rand(0,3) * 50;
+    attackTimer = ((2-static_cast<uint8_t>(difficulty)) * MILLI2CYCLES(2*60*1000)) + getRandomGen().rand(MILLI2CYCLES(8*60*1000), MILLI2CYCLES(11*60*1000));
+    buildTimer  = getRandomGen().rand(0,3) * 50;
 }
 
 AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
@@ -64,7 +64,7 @@ AIPlayer::~AIPlayer() = default;
 void AIPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(static_cast<Uint8>(difficulty));
+    stream.writeUint8(static_cast<uint8_t>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
@@ -104,7 +104,7 @@ void AIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 void AIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
 }
 
-void AIPlayer::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void AIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     const auto *pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner()->getTeamID() == getHouse()->getTeamID()) {

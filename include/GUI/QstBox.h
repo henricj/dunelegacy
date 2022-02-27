@@ -60,7 +60,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual inline void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         textLabel.setTextColor(textcolor, textshadowcolor);
         button1.setTextColor(textcolor, textshadowcolor);
         button2.setTextColor(textcolor, textshadowcolor);
@@ -83,7 +83,7 @@ public:
         \param  width   the new width of this question box
         \param  height  the new height of this question box
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         Window::resize(width,height);
         position.x = (getRendererWidth() - getSize().x)/2;

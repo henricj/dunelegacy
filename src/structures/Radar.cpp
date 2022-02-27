@@ -28,14 +28,14 @@ namespace {
 constexpr StructureBaseConstants radar_constants{Radar::item_id, Coord{2, 2}};
 }
 
-Radar::Radar(Uint32 objectID, const ObjectInitializer& initializer)
+Radar::Radar(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 
     setHealth(getMaxHealth());
 }
 
-Radar::Radar(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Radar::Radar(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 }

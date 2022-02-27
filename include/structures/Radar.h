@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Radar;
     using parent = StructureBase;
 
-    Radar(Uint32 objectID, const ObjectInitializer& initializer);
-    Radar(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Radar(uint32_t objectID, const ObjectInitializer& initializer);
+    Radar(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Radar() override;
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;

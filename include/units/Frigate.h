@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Frigate;
     using parent = AirUnit;
 
-    Frigate(Uint32 objectID, const ObjectInitializer& initializer);
-    Frigate(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Frigate(uint32_t objectID, const ObjectInitializer& initializer);
+    Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Frigate() override;
 
     void save(OutputStream& stream) const override;

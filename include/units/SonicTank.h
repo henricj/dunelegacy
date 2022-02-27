@@ -26,15 +26,15 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_SonicTank;
     using parent = TrackedUnit;
 
-    SonicTank(Uint32 objectID, const ObjectInitializer& initializer);
-    SonicTank(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    SonicTank(uint32_t objectID, const ObjectInitializer& initializer);
+    SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~SonicTank() override;
 
     void blitToScreen() override;
 
     void destroy(const GameContext& context) override;
 
-    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
     bool canAttack(const ObjectBase* object) const override;
 

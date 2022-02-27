@@ -172,7 +172,7 @@ QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* assoc
     attackTimer = stream.readSint32();
     retreatTimer = stream.readSint32();
 
-    for (Uint32 i = ItemID_FirstID; i <= Structure_LastID; i++ ){
+    for (uint32_t i = ItemID_FirstID; i <= Structure_LastID; i++ ){
        initialItemCount[i] = stream.readUint32();
     }
     initialMilitaryValue = stream.readSint32();
@@ -187,10 +187,10 @@ QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* assoc
 
     // Need to add in a building array for when people save and load
     // So that it keeps the count of buildings that should be on the map.
-    Uint32 NumPlaceLocations = stream.readUint32();
-    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
-        Sint32 x = stream.readSint32();
-        Sint32 y = stream.readSint32();
+    uint32_t NumPlaceLocations = stream.readUint32();
+    for(uint32_t i = 0; i < NumPlaceLocations; i++) {
+        int32_t x = stream.readSint32();
+        int32_t y = stream.readSint32();
 
         placeLocations.emplace_back(x,y);
     }
@@ -206,13 +206,13 @@ QuantBot::~QuantBot() = default;
 void QuantBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(static_cast<Uint8>(difficulty));
-    stream.writeUint8(static_cast<Uint8>(gameMode));
+    stream.writeUint8(static_cast<uint8_t>(difficulty));
+    stream.writeUint8(static_cast<uint8_t>(gameMode));
     stream.writeSint32(buildTimer);
     stream.writeSint32(attackTimer);
     stream.writeSint32(retreatTimer);
 
-    for (Uint32 i = ItemID_FirstID; i <= Structure_LastID; i++ ){
+    for (uint32_t i = ItemID_FirstID; i <= Structure_LastID; i++ ){
         stream.writeUint32(initialItemCount[i]);
     }
     stream.writeSint32(initialMilitaryValue);
@@ -260,7 +260,7 @@ void QuantBot::update() {
 
         // Calculate the total military value of the player
         initialMilitaryValue = 0;
-        for (Uint32 i = Unit_FirstID; i <= Unit_LastID; i++) {
+        for (uint32_t i = Unit_FirstID; i <= Unit_LastID; i++) {
             if (i != Unit_Carryall && i != Unit_Harvester) {
                 // Used for campaign mode.
                 initialMilitaryValue += initialItemCount[i] * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
@@ -409,7 +409,7 @@ void QuantBot::update() {
 
     // Calculate the total military value of the player
     int militaryValue = 0;
-    for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
+    for(uint32_t i = Unit_FirstID; i <= Unit_LastID; i++){
         if(i != Unit_Carryall && i != Unit_Harvester){
             militaryValue += getHouse()->getNumItems(static_cast<ItemID_enum>(i)) * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
         }
@@ -455,7 +455,7 @@ void QuantBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) 
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(ItemID_enum itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<Uint8>(difficulty)+1) );
+        attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30 / (static_cast<uint8_t>(difficulty)+1) );
         //logDebug("loss ");
     }
 }
@@ -468,7 +468,7 @@ void QuantBot::onIncrementUnitKills(ItemID_enum itemID) {
         //logDebug("kill ");
     }
 }
-void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner() == getHouse() || pObject->getItemID() == Unit_Sandworm) {
@@ -813,11 +813,11 @@ void QuantBot::build(int militaryValue) {
     FixPoint dlrLauncher = getHouse()->getNumItemDamageInflicted(Unit_Launcher) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Launcher)) * data[Unit_Launcher][static_cast<int>(houseID)].price);
     FixPoint dlrOrnithopter = getHouse()->getNumItemDamageInflicted(Unit_Ornithopter) / FixPoint((1 + getHouse()->getNumLostItems(Unit_Ornithopter)) * data[Unit_Ornithopter][static_cast<int>(houseID)].price);
 
-    Sint32 totalDamage =    getHouse()->getNumItemDamageInflicted(Unit_Tank)
-                            + getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
-                            + getHouse()->getNumItemDamageInflicted(Unit_Devastator)
-                            + getHouse()->getNumItemDamageInflicted(Unit_Launcher)
-                            + getHouse()->getNumItemDamageInflicted(Unit_Ornithopter);
+    int32_t totalDamage = getHouse()->getNumItemDamageInflicted(Unit_Tank)
+                          + getHouse()->getNumItemDamageInflicted(Unit_SiegeTank)
+                          + getHouse()->getNumItemDamageInflicted(Unit_Devastator)
+                          + getHouse()->getNumItemDamageInflicted(Unit_Launcher)
+                          + getHouse()->getNumItemDamageInflicted(Unit_Ornithopter);
 
     // Harkonnen can't build ornithopers
     if(houseID == HOUSETYPE::HOUSE_HARKONNEN){
@@ -1480,7 +1480,7 @@ void QuantBot::attack(int militaryValue) {
     }
 
     logDebug(   "Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
-                static_cast<int>(getHouse()->getHouseID()), static_cast<Uint8>(difficulty), militaryValue, militaryValueLimit, attackTimer);
+                static_cast<int>(getHouse()->getHouseID()), static_cast<uint8_t>(difficulty), militaryValue, militaryValueLimit, attackTimer);
 
     // overwriting existing logic for the time being
     attackTimer = MILLI2CYCLES(40000);

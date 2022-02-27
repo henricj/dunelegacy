@@ -30,14 +30,14 @@ namespace {
 constexpr GroundUnitConstants trike_constants{Trike::item_id, 2, Bullet_ShellSmall};
 }
 
-Trike::Trike(Uint32 objectID, const ObjectInitializer& initializer)
+Trike::Trike(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(trike_constants, objectID, initializer) {
     Trike::init();
 
     setHealth(getMaxHealth());
 }
 
-Trike::Trike(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Trike::Trike(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : GroundUnit(trike_constants, objectID, initializer) {
     Trike::init();
 }

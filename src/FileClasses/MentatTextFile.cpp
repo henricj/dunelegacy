@@ -30,7 +30,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::invalid_argument, "MentatTextFile:MentatTextFile(): rwop == nullptr!");
     }
 
-    Sint64 endOffset = SDL_RWsize(rwop);
+    int64_t endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Cannot determine size of this file!");
     }

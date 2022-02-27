@@ -213,7 +213,7 @@ void Game::processObjects()
 
     auto selection_changed = false;
 
-    map->consume_removed_objects([&](Uint32 objectID) {
+    map->consume_removed_objects([&](uint32_t objectID) {
         auto* object = objectManager.getObject(objectID);
 
         if(!object) return;
@@ -1400,7 +1400,7 @@ void Game::onOptions()
         // don't show menu
         quitGame();
     } else {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
         pInGameMenu = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
         bMenu = true;
         pauseGame();
@@ -1429,8 +1429,8 @@ GameInitSettings Game::getNextGameInitSettings()
             if(!won) {
                 currentMission -= (currentMission >= 22) ? 1 : 3;
             }
-            int nextMission = gameInitSettings.getMission();
-            Uint32 alreadyPlayedRegions = gameInitSettings.getAlreadyPlayedRegions();
+            int      nextMission          = gameInitSettings.getMission();
+            uint32_t alreadyPlayedRegions = gameInitSettings.getAlreadyPlayedRegions();
             if(currentMission >= -1) {
                 // do map choice
                 sdl2::log_info("Map Choice...");
@@ -1440,7 +1440,9 @@ GameInitSettings Game::getNextGameInitSettings()
                 alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }
 
-            Uint32 alreadyShownTutorialHints = won ? pLocalPlayer->getAlreadyShownTutorialHints() : gameInitSettings.getAlreadyShownTutorialHints();
+            uint32_t alreadyShownTutorialHints = won
+                                                     ? pLocalPlayer->getAlreadyShownTutorialHints()
+                                                     : gameInitSettings.getAlreadyShownTutorialHints();
             return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
         } break;
 
@@ -1530,13 +1532,13 @@ bool Game::loadSaveGame(const std::filesystem::path& filename) {
 bool Game::loadSaveGame(InputStream& stream) {
     gameState = GameState::Loading;
 
-    Uint32 magicNum = stream.readUint32();
+    uint32_t magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
         sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
         return false;
     }
 
-    Uint32 savegameVersion = stream.readUint32();
+    uint32_t savegameVersion = stream.readUint32();
     if (savegameVersion != SAVEGAMEVERSION) {
         sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
         return false;
@@ -1554,7 +1556,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     // read the actual house setup chosen at the beginning of the game
     const auto numHouseInfo = stream.readUint32();
     houseInfoListSetup.reserve(numHouseInfo);
-    for(Uint32 i=0;i<numHouseInfo;i++) {
+    for(uint32_t i = 0;i<numHouseInfo;i++) {
         houseInfoListSetup.push_back(GameInitSettings::HouseInfo(stream));
     }
 
@@ -1577,7 +1579,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     randomFactory.setSeed(stream.readUint8Vector());
     auto seed = stream.readUint8Vector();
     if(seed.size() != decltype(randomGen)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
-    randomGen.setState(gsl::span<const Uint8, Random::state_bytes>{seed});
+    randomGen.setState(gsl::span<const uint8_t, Random::state_bytes>{seed});
 
     // read in the unit/structure data
     objectData.load(stream);
@@ -1715,7 +1717,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     fs.writeUint32(gameCycleCount);
 
     // write some settings
-    fs.writeSint8(static_cast<Sint8>(gameType));
+    fs.writeSint8(static_cast<int8_t>(gameType));
     fs.writeUint8(techLevel);
     fs.writeUint8Vector(randomFactory.getSeed());
     fs.writeUint8Vector(randomGen.getState());
@@ -1829,7 +1831,7 @@ void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_
 
         selectedByOtherPlayerList = newSelectionList;
 
-        for(Uint32 objectID : selectedByOtherPlayerList) {
+        for(uint32_t objectID : selectedByOtherPlayerList) {
             ObjectBase* pObject = objectManager.getObject(objectID);
             if(pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(true);
@@ -1995,7 +1997,7 @@ bool Game::removeFromSelectionLists(ObjectBase* pObject) {
 }
 
 
-void Game::removeFromQuickSelectionLists(Uint32 objectID) {
+void Game::removeFromQuickSelectionLists(uint32_t objectID) {
     for(int i = 0; i < NUMSELECTEDLISTS; i++) {
         pLocalPlayer->getGroupList(i).erase(objectID);
     }
@@ -2023,7 +2025,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     removeFromQuickSelectionLists(objectID);
                 }
             } else {
-                for(Uint32 objectID : selectedList) {
+                for(uint32_t objectID : selectedList) {
                     if (auto* object = objectManager.getObject(objectID))
                         object->setSelected(false);
                 }
@@ -2126,7 +2128,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_c: {
             //set object to capture
             if(currentCursorMode != CursorMode_Capture) {
-                for(Uint32 objectID : selectedList) {
+                for(uint32_t objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
                     if(pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable() && pObject->canAttack() && pObject->isInfantry()) {
                         currentCursorMode = CursorMode_Capture;
@@ -2139,7 +2141,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_a: {
             //set object to attack
             if(currentCursorMode != CursorMode_Attack) {
-                for(Uint32 objectID : selectedList) {
+                for(uint32_t objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
                     House* pOwner = pObject->getOwner();
                     if(pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable() && pObject->canAttack()) {
@@ -2281,7 +2283,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         } break;
 
         case SDLK_h: {
-            for(Uint32 objectID : selectedList) {
+            for(uint32_t objectID : selectedList) {
                 if(auto* const pObject = objectManager.getObject<Harvester>(objectID)) {
                     pObject->handleReturnClick(context);
                 }
@@ -2290,7 +2292,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
 
         case SDLK_r: {
-            for(Uint32 objectID : selectedList) {
+            for(uint32_t objectID : selectedList) {
                 auto* const pObject = objectManager.getObject(objectID);
                 if(auto* const structure = dune_cast<StructureBase>(pObject)) {
                     structure->handleRepairClick();
@@ -2303,7 +2305,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_d: {
             if(currentCursorMode != CursorMode_CarryallDrop){
-                for(Uint32 objectID : selectedList) {
+                for(uint32_t objectID : selectedList) {
                     auto* const pObject = objectManager.getObject<GroundUnit>(objectID);
                     if(pObject && pObject->getOwner()->hasCarryalls()) {
                         currentCursorMode = CursorMode_CarryallDrop;
@@ -2314,7 +2316,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         } break;
 
         case SDLK_u: {
-            for(Uint32 objectID : selectedList) {
+            for(uint32_t objectID : selectedList) {
                 if(auto* const pBuilder = objectManager.getObject<BuilderBase>(objectID)) {
                     if(pBuilder->getHealth() >= pBuilder->getMaxHealth() && pBuilder->isAllowedToUpgrade()) {
                         pBuilder->handleUpgradeClick();

@@ -34,7 +34,7 @@ public:
         \param  w   width of this window
         \param  h   height of this window
     */
-    Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h);
+    Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
     /// destructor
     virtual ~Window();
@@ -92,7 +92,7 @@ public:
         \param  w   width of this window
         \param  h   height of this window
     */
-    virtual void setCurrentPosition(Uint32 x, Uint32 y, Uint32 w, Uint32 h);
+    virtual void setCurrentPosition(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
     /**
         Sets the current window position and size.
@@ -115,7 +115,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the window)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay = false) override;
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay = false) override;
 
     /**
         Handles a left mouse click.
@@ -124,7 +124,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the window, false = click was not processed by the window
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles a right mouse click.
@@ -133,7 +133,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the window, false = click was not processed by the window
     */
-    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override;
+    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -143,7 +143,7 @@ public:
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
 
-    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
+    bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
     /**
         Handles a key stroke.
@@ -217,7 +217,7 @@ public:
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
-    void resize(Uint32 width, Uint32 height) override;
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         This method is typically called by the child widget when the child widget

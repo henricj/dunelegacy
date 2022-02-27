@@ -31,7 +31,7 @@
 
 
 ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
-                                           Uint32 triggerCycleNumber)
+                                           uint32_t  triggerCycleNumber)
  : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
 }
@@ -51,8 +51,8 @@ void ReinforcementTrigger::save(OutputStream& stream) const
     Trigger::save(stream);
 
     stream.writeUint32Vector<ItemID_enum>(droppedUnits);
-    stream.writeUint32(static_cast<const Uint32>(dropLocation));
-    stream.writeSint32(static_cast<const Sint32>(houseID));
+    stream.writeUint32(static_cast<const uint32_t>(dropLocation));
+    stream.writeSint32(static_cast<const int32_t>(houseID));
     stream.writeUint32(repeatCycle);
 }
 

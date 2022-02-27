@@ -49,7 +49,7 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize)
 TTFFont::~TTFFont() = default;
 
 
-void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 baseColor) {
+void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor) {
 
     if(!text.empty()) {
         sdl2::surface_ptr pTextSurface{TTF_RenderUTF8_Solid(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};

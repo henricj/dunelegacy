@@ -53,7 +53,7 @@ public:
         Triggers all triggers at CycleNumber
         \param  CycleNumber the current game cycle
     */
-    void trigger(const GameContext& context, Uint32 CycleNumber);
+    void trigger(const GameContext& context, uint32_t CycleNumber);
 
     /**
         Add a trigger to the trigger manager.

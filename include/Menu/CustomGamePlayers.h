@@ -141,14 +141,14 @@ private:
         DropDownBox     player2DropDown;
     };
 
-    bool                    bServer;
-    bool                    bLANServer;
+    bool                                                           bServer;
+    bool                                                           bLANServer;
     std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
-    int                     numHouses;
-    std::vector<HOUSETYPE>    boundHousesOnMap;
-    Uint32                  startGameTime;
-    int                     brainEqHumanSlot;           ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
-    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)> slotToTeam;     ///< Maps the slot number to a team number (both zero-based indices)
+    int                                                            numHouses;
+    std::vector<HOUSETYPE>                                         boundHousesOnMap;
+    uint32_t startGameTime;
+    int                                                            brainEqHumanSlot; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
+    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>       slotToTeam;       ///< Maps the slot number to a team number (both zero-based indices)
 };
 
 #endif //CUSTOMGAMEPLAYERS_H

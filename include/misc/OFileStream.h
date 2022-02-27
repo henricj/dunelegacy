@@ -38,10 +38,10 @@ public:
 
     void writeString(const std::string& str) override;
 
-    void writeUint8(Uint8 x) override;
-    void writeUint16(Uint16 x) override;
-    void writeUint32(Uint32 x) override;
-    void writeUint64(Uint64 x) override;
+    void writeUint8(uint8_t x) override;
+    void writeUint16(uint16_t x) override;
+    void writeUint32(uint32_t x) override;
+    void writeUint64(uint64_t x) override;
     void writeBool(bool x) override;
     void writeFloat(float x) override;
 

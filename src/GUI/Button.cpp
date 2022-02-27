@@ -34,7 +34,7 @@ Button::Button() {
 
 Button::~Button() = default;
 
-void Button::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
         bPressed = false;
         bHover = false;
@@ -44,7 +44,7 @@ void Button::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     }
 }
 
-bool Button::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
         return false;
     }

@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_Palace;
     using parent = StructureBase;
 
-    Palace(Uint32 objectID, const ObjectInitializer& initializer);
-    Palace(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Palace(uint32_t objectID, const ObjectInitializer& initializer);
+    Palace(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Palace() override;
 
     void save(OutputStream& stream) const override;
@@ -88,7 +88,7 @@ protected:
 private:
     void   init();
 
-    Sint32 specialWeaponTimer; ///< When is the special weapon ready?
+    int32_t specialWeaponTimer; ///< When is the special weapon ready?
 };
 
 #endif // PALACE_H

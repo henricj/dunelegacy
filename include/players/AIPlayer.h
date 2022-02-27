@@ -42,7 +42,7 @@ public:
 
     void onObjectWasBuilt(const ObjectBase* pObject) override;
     void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
-    void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
+    void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
 private:
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder);
@@ -60,8 +60,8 @@ private:
     [[nodiscard]] int getMaxHarvester() const;
 
     Difficulty difficulty;  ///< difficulty level
-    Sint32  attackTimer;    ///< When to attack?
-    Sint32  buildTimer;     ///< When to build the next structure/unit
+    int32_t    attackTimer; ///< When to attack?
+    int32_t    buildTimer;  ///< When to build the next structure/unit
 
     std::deque<Coord> placeLocations;    ///< Where to place structures
 };

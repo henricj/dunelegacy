@@ -64,7 +64,8 @@ MetaServerClient::~MetaServerClient() {
 }
 
 
-void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers) {
+void MetaServerClient::startAnnounce(const std::string& serverName, int     serverPort, const std::string& mapName,
+                                     uint8_t            numPlayers, uint8_t maxPlayers) {
 
     stopAnnounce();
 
@@ -87,7 +88,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 }
 
 
-void MetaServerClient::updateAnnounce(Uint8 numPlayers) {
+void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
     if(serverPort > 0) {
         this->numPlayers = numPlayers;
         enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
@@ -399,7 +400,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
                                 break;
                             }
 
-                            gameServerInfo.serverAddress.port = static_cast<Uint16>(port);
+                            gameServerInfo.serverAddress.port = static_cast<uint16_t>(port);
 
                             gameServerInfo.serverName = parts[2];
                             gameServerInfo.serverVersion = parts[3];

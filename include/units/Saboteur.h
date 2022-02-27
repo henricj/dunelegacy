@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Saboteur;
     using parent = InfantryBase;
 
-    Saboteur(Uint32 objectID, const ObjectInitializer& initializer);
-    Saboteur(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Saboteur(uint32_t objectID, const ObjectInitializer& initializer);
+    Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Saboteur() override;
 
     void checkPos(const GameContext& context) override;

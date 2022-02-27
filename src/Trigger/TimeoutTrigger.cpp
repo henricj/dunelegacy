@@ -22,7 +22,7 @@
 #include <SoundPlayer.h>
 #include <globals.h>
 
-TimeoutTrigger::TimeoutTrigger(Uint32 triggerCycleNumber) : Trigger(triggerCycleNumber) { }
+TimeoutTrigger::TimeoutTrigger(uint32_t triggerCycleNumber) : Trigger(triggerCycleNumber) { }
 
 TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream) { }
 

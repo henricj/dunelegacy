@@ -40,7 +40,7 @@ void TriggerManager::load(InputStream& stream) {
     }
 }
 
-void TriggerManager::trigger(const GameContext& context, Uint32 CycleNumber) {
+void TriggerManager::trigger(const GameContext& context, uint32_t CycleNumber) {
     if (triggers.empty()) return;
 
     auto clear = true;

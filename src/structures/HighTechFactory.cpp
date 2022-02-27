@@ -27,14 +27,14 @@ namespace {
 constexpr BuilderBaseConstants high_tech_factory_constants{HighTechFactory::item_id, Coord{3, 2}};
 }
 
-HighTechFactory::HighTechFactory(Uint32 objectID, const ObjectInitializer& initializer)
+HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-HighTechFactory::HighTechFactory(Uint32 objectID, const ObjectStreamInitializer& initializer)
+HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 }

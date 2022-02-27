@@ -125,8 +125,8 @@ void INIMapLoader::loadMap() {
         logicalSizeX = 64;
         logicalSizeY = 64;
 
-        int SeedNum = inifile->getIntValue("MAP","Seed",-1);
-        Uint16 SeedMap[64*64];
+        int      SeedNum = inifile->getIntValue("MAP","Seed",-1);
+        uint16_t SeedMap[64 * 64];
         createMapWithSeed(SeedNum,SeedMap);
 
         map = std::make_unique<Map>(*pGame, sizeX, sizeY);
@@ -803,7 +803,7 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        Uint32 droptime = 0;
+        uint32_t droptime = 0;
         if(!parseString(strTime, droptime)) {
             logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
             continue;
@@ -928,7 +928,7 @@ House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE hous
     if(pHouse)
         return pHouse.get();
 
-    Uint8 team = 0;
+    uint8_t team = 0;
     if(pGame->gameType == GameType::Campaign || pGame->gameType == GameType::Skirmish) {
         // in campaign all "other" units are in the same team as the AI
         team = 2;

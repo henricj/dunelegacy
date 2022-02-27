@@ -37,8 +37,8 @@ private:
     /// Internal structure for the MAP-File.
     struct MapfileEntry
     {
-        Uint32 numTiles{};
-        std::vector<Uint16> tileIndices;
+        uint32_t              numTiles{};
+        std::vector<uint16_t> tileIndices;
     };
 
 public:
@@ -47,10 +47,10 @@ public:
     Icnfile(Icnfile&& o) = delete;
     ~Icnfile();
 
-    [[nodiscard]] sdl2::surface_ptr getPicture(Uint32 indexOfFile) const;
-    sdl2::surface_ptr getPictureArray(Uint32 mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
-    [[nodiscard]] sdl2::surface_ptr getPictureRow(Uint32 startIndex,Uint32 endIndex, Uint32 maxRowLength = 0) const;
-    sdl2::surface_ptr getPictureRow2(unsigned int numTiles, ...) const;
+    [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t indexOfFile) const;
+    sdl2::surface_ptr               getPictureArray(uint32_t mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
+    [[nodiscard]] sdl2::surface_ptr getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength = 0) const;
+    sdl2::surface_ptr               getPictureRow2(unsigned int numTiles, ...) const;
 
     /// Returns the number of tiles
     /**
@@ -68,16 +68,16 @@ public:
 
 private:
     std::unique_ptr<uint8_t[]> pIcnFiledata;
-    Uint32 numFiles;
+    uint32_t                   numFiles;
 
     std::vector<MapfileEntry> tilesets;
 
     const uint8_t* SSET;
-    Uint32 SSET_Length;
+    uint32_t       SSET_Length;
     const uint8_t* RPAL;
-    Uint32 RPAL_Length;
+    uint32_t       RPAL_Length;
     const uint8_t* RTBL;
-    Uint32 RTBL_Length;
+    uint32_t       RTBL_Length;
 };
 
 #endif // ICNFILE_H

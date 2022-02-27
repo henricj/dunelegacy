@@ -56,10 +56,10 @@ SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* assoc
     attackTimer = stream.readSint32();
     buildTimer = stream.readSint32();
 
-    Uint32 NumPlaceLocations = stream.readUint32();
-    for(Uint32 i = 0; i < NumPlaceLocations; i++) {
-        Sint32 x = stream.readSint32();
-        Sint32 y = stream.readSint32();
+    uint32_t NumPlaceLocations = stream.readUint32();
+    for(uint32_t i = 0; i < NumPlaceLocations; i++) {
+        int32_t x = stream.readSint32();
+        int32_t y = stream.readSint32();
 
         placeLocations.emplace_back(x,y);
     }
@@ -77,7 +77,7 @@ SmartBot::~SmartBot() = default;
 void SmartBot::save(OutputStream& stream) const {
     Player::save(stream);
 
-    stream.writeUint8(static_cast<Uint8>(difficulty));
+    stream.writeUint8(static_cast<uint8_t>(difficulty));
     stream.writeSint32(attackTimer);
     stream.writeSint32(buildTimer);
 
@@ -119,7 +119,7 @@ void SmartBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) 
 }
 
 
-void SmartBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
+void SmartBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
     if(pDamager == nullptr || pDamager->getOwner() == getHouse()) {

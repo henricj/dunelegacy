@@ -112,7 +112,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
     for(int y = 0; y <  map.getSizeY(); y++) {
         for(int x = 0; x <  map.getSizeX(); x++) {
 
-            Uint32 color = getColorByTerrainType(map(x,y));
+            uint32_t color = getColorByTerrainType(map(x, y));
 
             if(map(x,y) == Terrain_Sand) {
                 std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
@@ -150,7 +150,8 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             color = MapRGBA(radarSurface->format, color);
 
             for(int j = 0; j < scale; j++) {
-                Uint32* p = ((Uint32*) ((Uint8 *) radarSurface->pixels + (offsetY + scale*y + j) * radarSurface->pitch)) + (offsetX + scale*x);
+                uint32_t* p = ((uint32_t*)((uint8_t*)radarSurface->pixels + (offsetY + scale * y + j) * radarSurface->
+                                           pitch)) + (offsetX + scale * x);
 
                 for(int i = 0; i < scale; i++, p++) {
                     // Do not use putPixel here to avoid overhead

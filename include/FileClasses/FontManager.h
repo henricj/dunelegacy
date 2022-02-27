@@ -41,13 +41,13 @@ public:
     FontManager& operator=(const FontManager &) = delete;
     FontManager& operator=(FontManager &&) = delete;
 
-    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, Uint32 color, unsigned int fontSize);
-    int getTextWidth(std::string_view text, unsigned int fontSize);
-    int getTextHeight(unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithText(std::string_view, Uint32 color, unsigned int fontSize);
-    sdl2::texture_ptr createTextureWithText(std::string_view text, Uint32 color, unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered = false);
-    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, Uint32 color, unsigned int fontSize, bool bCentered = false);
+    void              drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color, unsigned int fontSize);
+    int               getTextWidth(std::string_view text, unsigned int fontSize);
+    int               getTextHeight(unsigned int fontSize);
+    sdl2::surface_ptr createSurfaceWithText(std::string_view, uint32_t color, unsigned int fontSize);
+    sdl2::texture_ptr createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize);
+    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
+    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
 private:
     Font* getFont(unsigned int fontSize) {
         auto iter = fonts.find(fontSize);

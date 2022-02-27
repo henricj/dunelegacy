@@ -31,14 +31,14 @@ namespace {
 constexpr TrackedUnitConstants sonic_tank_constants{SonicTank::item_id, 1, Bullet_Sonic};
 }
 
-SonicTank::SonicTank(Uint32 objectID, const ObjectInitializer& initializer)
+SonicTank::SonicTank(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 
     setHealth(getMaxHealth());
 }
 
-SonicTank::SonicTank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+SonicTank::SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 }
@@ -94,7 +94,7 @@ void SonicTank::destroy(const GameContext& context) {
     parent::destroy(context);
 }
 
-void SonicTank::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
+void SonicTank::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     auto* const damager = context.objectManager.getObject(damagerID);
 
     if (!damager || (damager->getItemID() != Unit_SonicTank))

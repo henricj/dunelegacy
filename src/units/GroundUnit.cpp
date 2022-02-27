@@ -29,14 +29,14 @@
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
-GroundUnit::GroundUnit(const GroundUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
 
     awaitingPickup = false;
     bookedCarrier  = NONE_ID;
 }
 
-GroundUnit::GroundUnit(const GroundUnitConstants& constants, Uint32 objectID,
+GroundUnit::GroundUnit(const GroundUnitConstants&     constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {
 

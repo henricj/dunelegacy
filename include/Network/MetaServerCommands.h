@@ -55,7 +55,8 @@ inline MetaServerCommand::~MetaServerCommand() = default;
 
 class MetaServerAdd final : public MetaServerCommand {
 public:
-    MetaServerAdd(std::string serverName, int serverPort, std::string secret, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers)
+    MetaServerAdd(std::string serverName, int serverPort, std::string secret, std::string mapName, uint8_t numPlayers,
+                  uint8_t     maxPlayers)
      : MetaServerCommand(METASERVERCOMMAND_ADD), serverName(std::move(serverName)), serverPort(serverPort), secret(std::move(secret)),
        mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
@@ -83,16 +84,17 @@ public:
     }
 
     std::string serverName;
-    int serverPort;
+    int         serverPort;
     std::string secret;
     std::string mapName;
-    Uint8 numPlayers;
-    Uint8 maxPlayers;
+    uint8_t     numPlayers;
+    uint8_t     maxPlayers;
 };
 
 class MetaServerUpdate final : public MetaServerCommand {
 public:
-    MetaServerUpdate(std::string serverName, int serverPort, std::string secret, std::string mapName, Uint8 numPlayers, Uint8 maxPlayers)
+    MetaServerUpdate(std::string serverName, int     serverPort, std::string secret, std::string mapName,
+                     uint8_t     numPlayers, uint8_t maxPlayers)
      : MetaServerCommand(METASERVERCOMMAND_UPDATE), serverName(std::move(serverName)), serverPort(serverPort), secret(std::move(secret)),
        mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) {
     }
@@ -120,11 +122,11 @@ public:
     }
 
     std::string serverName;
-    int serverPort;
+    int         serverPort;
     std::string secret;
     std::string mapName;
-    Uint8 numPlayers;
-    Uint8 maxPlayers;
+    uint8_t     numPlayers;
+    uint8_t     maxPlayers;
 };
 
 class MetaServerRemove final : public MetaServerCommand {

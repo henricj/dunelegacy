@@ -86,7 +86,7 @@ public:
 
     void writeString(const std::string& str) override
     {
-        ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
+        ensureBufferSize(currentPos + str.length() + sizeof(uint32_t));
 
         writeUint32(str.length());
 
@@ -97,32 +97,32 @@ public:
     }
 
 
-    void writeUint8(Uint8 x) override
+    void writeUint8(uint8_t x) override
     {
-        ensureBufferSize(currentPos + sizeof(Uint8));
-        *((Uint8*) (packet->data + currentPos)) = x;
-        currentPos += sizeof(Uint8);
+        ensureBufferSize(currentPos + sizeof(uint8_t));
+        *((uint8_t*) (packet->data + currentPos)) = x;
+        currentPos += sizeof(uint8_t);
     }
 
-    void writeUint16(Uint16 x) override
+    void writeUint16(uint16_t x) override
     {
-        ensureBufferSize(currentPos + sizeof(Uint16));
-        *((Uint16*) (packet->data + currentPos)) = SDL_SwapLE16(x);
-        currentPos += sizeof(Uint16);
+        ensureBufferSize(currentPos + sizeof(uint16_t));
+        *((uint16_t*) (packet->data + currentPos)) = SDL_SwapLE16(x);
+        currentPos += sizeof(uint16_t);
     }
 
-    void writeUint32(Uint32 x) override
+    void writeUint32(uint32_t x) override
     {
-        ensureBufferSize(currentPos + sizeof(Uint32));
-        *((Uint32*) (packet->data + currentPos)) = SDL_SwapLE32(x);
-        currentPos += sizeof(Uint32);
+        ensureBufferSize(currentPos + sizeof(uint32_t));
+        *((uint32_t*) (packet->data + currentPos)) = SDL_SwapLE32(x);
+        currentPos += sizeof(uint32_t);
     }
 
-    void writeUint64(Uint64 x) override
+    void writeUint64(uint64_t x) override
     {
-        ensureBufferSize(currentPos + sizeof(Uint64));
-        *((Uint64*) (packet->data + currentPos)) = SDL_SwapLE64(x);
-        currentPos += sizeof(Uint64);
+        ensureBufferSize(currentPos + sizeof(uint64_t));
+        *((uint64_t*) (packet->data + currentPos)) = SDL_SwapLE64(x);
+        currentPos += sizeof(uint64_t);
     }
 
     void writeBool(bool x) override
@@ -132,8 +132,8 @@ public:
 
     void writeFloat(float x) override
     {
-        Uint32 tmp = 0;
-        memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+        uint32_t tmp = 0;
+        memcpy(&tmp,&x,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
         writeUint32(tmp);
     }
 

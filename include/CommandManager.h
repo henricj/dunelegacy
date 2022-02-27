@@ -84,10 +84,10 @@ public:
     void load(InputStream& stream);
 
 
-    [[nodiscard]] Uint32 getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
+    [[nodiscard]] uint32_t getNetworkCycleBuffer() const noexcept { return networkCycleBuffer; }
 
 
-    void setNetworkCycleBuffer(Uint32 newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; }
+    void setNetworkCycleBuffer(uint32_t newNetworkCycleBuffer) noexcept { networkCycleBuffer = newNetworkCycleBuffer; }
 
     /**
         Updates the command manager and sends commands to other peers
@@ -113,20 +113,20 @@ public:
         \param  cmd         the command to add
         \param  CycleNumber the game cycle this command shall take effect
     */
-    void addCommand(const Command& cmd, Uint32 CycleNumber);
-    void addCommand(Command&& cmd, Uint32 CycleNumber);
+    void addCommand(const Command& cmd, uint32_t CycleNumber);
+    void addCommand(Command&& cmd, uint32_t CycleNumber);
 
     /**
         Runs all commands scheduled for game cycle CycleNumber
         \param  CycleNumber the current game cycle
     */
-    void executeCommands(const GameContext& context, Uint32 CycleNumber) const;
+    void executeCommands(const GameContext& context, uint32_t CycleNumber) const;
 
 private:
-    std::vector< std::vector<Command> > timeslot;   ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.
-    std::unique_ptr<OutputStream> pStream;          ///< a stream all added commands will be written to. May be nullptr
-    bool bReadOnly{};                               ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
-    Uint32 networkCycleBuffer{};                    ///< the number of frames a command is given in advance
+    std::vector< std::vector<Command> > timeslot;             ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.
+    std::unique_ptr<OutputStream>       pStream;              ///< a stream all added commands will be written to. May be nullptr
+    bool                                bReadOnly{};          ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
+    uint32_t networkCycleBuffer{}; ///< the number of frames a command is given in advance
 };
 
 #endif // COMMANDMANAGER_H

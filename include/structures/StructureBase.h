@@ -23,7 +23,7 @@
 #include <list>
 
 struct StructureSmoke {
-    StructureSmoke(const Coord& pos, Uint32 gameCycle)
+    StructureSmoke(const Coord& pos, uint32_t gameCycle)
      : realPos(pos), startGameCycle(gameCycle) {
     }
 
@@ -39,8 +39,8 @@ struct StructureSmoke {
         stream.writeUint32(startGameCycle);
     }
 
-    Coord   realPos;
-    Uint32  startGameCycle;
+    Coord    realPos;
+    uint32_t startGameCycle;
 };
 
 class StructureBaseConstants : public ObjectBaseConstants
@@ -65,8 +65,8 @@ public:
     using parent = ObjectBase;
 
 protected:
-    StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID, const ObjectInitializer& initializer);
-    StructureBase(const StructureBaseConstants& structure_constants, Uint32 objectID,
+    StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID, const ObjectInitializer& initializer);
+    StructureBase(const StructureBaseConstants&  structure_constants, uint32_t objectID,
                   const ObjectStreamInitializer& initializer);
 
     const StructureBaseConstants& structure_constants() const noexcept
@@ -149,7 +149,7 @@ public:
     short getStructureSizeX() const noexcept { return getStructureSize().x; }
     short getStructureSizeY() const noexcept { return getStructureSize().y; }
 
-    void addSmoke(const Coord& pos, Uint32 gameCycle) {
+    void addSmoke(const Coord& pos, uint32_t gameCycle) {
         const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
             [](const Coord& p, const StructureSmoke& s) { return p.y < s.realPos.y; });
 

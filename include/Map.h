@@ -40,15 +40,16 @@ public:
     Map& operator=(Map &&) = delete;
 
     void load(InputStream& stream);
-    void save(OutputStream& stream, Uint32 gameCycleCount) const;
+    void save(OutputStream& stream, uint32_t gameCycleCount) const;
 
     void createSandRegions();
-    void damage(const GameContext& context, Uint32 damagerID, House* damagerOwner, const Coord& realPos, Uint32 bulletID,
-                FixPoint damage, int damageRadius, bool air);
+    void damage(const GameContext& context, uint32_t damagerID, House* damagerOwner, const Coord& realPos,
+                uint32_t           bulletID,
+                FixPoint           damage, int damageRadius, bool air);
     static Coord getMapPos(ANGLETYPE angle, const Coord& source);
-    void removeObjectFromMap(Uint32 objectID);
-    void spiceRemoved(const GameContext& context, const Coord& coord);
-    void selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
+    void         removeObjectFromMap(uint32_t objectID);
+    void         spiceRemoved(const GameContext& context, const Coord& coord);
+    void         selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode);
 
     void viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRange);
     void viewMap(HOUSETYPE houseID, int x, int y, const int maxViewRange) {
@@ -72,11 +73,11 @@ public:
 
     void createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice = false);
 
-    [[nodiscard]] Sint32 getSizeX() const noexcept {
+    [[nodiscard]] int32_t getSizeX() const noexcept {
         return sizeX;
     }
 
-    [[nodiscard]] Sint32 getSizeY() const noexcept {
+    [[nodiscard]] int32_t getSizeY() const noexcept {
         return sizeY;
     }
 
@@ -462,7 +463,7 @@ public:
         }
     }
 
-    void removeSelection(Uint32 objectID) { removedObjects.push(objectID); }
+    void removeSelection(uint32_t objectID) { removedObjects.push(objectID); }
 
     bool trySetTileType(const GameContext& context, int x, int y, TERRAINTYPE type) {
         auto* const tile = tryGetTile(x, y);
@@ -540,12 +541,12 @@ public:
 
 
 private:
-    const Sint32  sizeX;                    ///< number of tiles this map is wide (read only)
-    const Sint32  sizeY;                    ///< number of tiles this map is high (read only)
-    std::vector<Tile> tiles;                ///< the 2d-array containing all the tiles of the map
-    ObjectBase* lastSinglySelectedObject;   ///< The last selected object. If selected again all units of the same type are selected
+    const int32_t     sizeX;                    ///< number of tiles this map is wide (read only)
+    const int32_t sizeY;                    ///< number of tiles this map is high (read only)
+    std::vector<Tile> tiles;                    ///< the 2d-array containing all the tiles of the map
+    ObjectBase*       lastSinglySelectedObject; ///< The last selected object. If selected again all units of the same type are selected
 
-    std::queue<Uint32> removedObjects;
+    std::queue<uint32_t> removedObjects;
 
     void init_tile_location();
 

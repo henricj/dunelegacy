@@ -110,7 +110,7 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         WidgetWithBackground::resize(width,height);
 
@@ -169,9 +169,9 @@ protected:
 
     sdl2::texture_ptr pForeground;
 
-    double percent;             ///< Percent from 0.0 to 100.0
-    Uint32 color;               ///< The color of the progress overlay
-    bool bDrawShadow;           ///< Draw shadow under the foreground surface
+    double   percent;     ///< Percent from 0.0 to 100.0
+    uint32_t color;       ///< The color of the progress overlay
+    bool     bDrawShadow; ///< Draw shadow under the foreground surface
 };
 
 class TextProgressBar : public ProgressBar {
@@ -207,7 +207,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -298,7 +298,7 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         ProgressBar::resize(width,height);
     }

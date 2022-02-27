@@ -217,8 +217,8 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    auto* srcPixels = (Uint8*) src->pixels;
-    auto* destPixels = (Uint8*) returnPic->pixels;
+    auto* srcPixels  = (uint8_t*) src->pixels;
+    auto* destPixels = (uint8_t*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
@@ -248,19 +248,21 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
             for(int y = 0; y < tileHeight; ++y) {
                 for(int x = 0; x < tileWidth; ++x) {
-                    Uint8 E = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+x) );
-                    Uint8 B = *( srcPixels + (j*tileHeight+std::max(0,y-1))*src->pitch + (i*tileWidth+x) );
-                    Uint8 H = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+x) );
-                    Uint8 D = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::max(0,x-1)) );
-                    Uint8 F = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
+                    uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
+                    uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
+                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
+                                      i * tileWidth + x));
+                    uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (
+                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
-                    Uint8 E0 = 0;
+                    uint8_t E0 = 0;
 
-                    Uint8 E1 = 0;
+                    uint8_t E1 = 0;
 
-                    Uint8 E2 = 0;
+                    uint8_t E2 = 0;
 
-                    Uint8 E3 = 0;
+                    uint8_t E3 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;
@@ -321,8 +323,8 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    auto* srcPixels = (Uint8*) src->pixels;
-    auto* destPixels = (Uint8*) returnPic->pixels;
+    auto* srcPixels  = (uint8_t*) src->pixels;
+    auto* destPixels = (uint8_t*) returnPic->pixels;
 
     int tileWidth = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
@@ -352,33 +354,39 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
             for(int y = 0; y < tileHeight; ++y) {
                 for(int x = 0; x < tileWidth; ++x) {
-                    Uint8 A = *( srcPixels + (j*tileHeight+std::max(0,y-1))*src->pitch + (i*tileWidth+std::max(0,x-1)) );
-                    Uint8 B = *( srcPixels + (j*tileHeight+std::max(0,y-1))*src->pitch + (i*tileWidth+x) );
-                    Uint8 C = *( srcPixels + (j*tileHeight+std::max(0,y-1))*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
-                    Uint8 D = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::max(0,x-1)) );
-                    Uint8 E = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+x) );
-                    Uint8 F = *( srcPixels + (j*tileHeight+y)*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
-                    Uint8 G = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+std::max(0,x-1)) );
-                    Uint8 H = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+x) );
-                    Uint8 I = *( srcPixels + (j*tileHeight+std::min(tileHeight-1,y+1))*src->pitch + (i*tileWidth+std::min(tileWidth-1,x+1)) );
+                    uint8_t A = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (
+                                      i * tileWidth + std::max(0, x - 1)));
+                    uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
+                    uint8_t C = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (
+                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
+                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (
+                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t G = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
+                                      i * tileWidth + std::max(0, x - 1)));
+                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
+                                      i * tileWidth + x));
+                    uint8_t I = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
+                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
-                    Uint8 E0 = 0;
+                    uint8_t E0 = 0;
 
-                    Uint8 E1 = 0;
+                    uint8_t E1 = 0;
 
-                    Uint8 E2 = 0;
+                    uint8_t E2 = 0;
 
-                    Uint8 E3 = 0;
+                    uint8_t E3 = 0;
 
-                    Uint8 E4 = 0;
+                    uint8_t E4 = 0;
 
-                    Uint8 E5 = 0;
+                    uint8_t E5 = 0;
 
-                    Uint8 E6 = 0;
+                    uint8_t E6 = 0;
 
-                    Uint8 E7 = 0;
+                    uint8_t E7 = 0;
 
-                    Uint8 E8 = 0;
+                    uint8_t E8 = 0;
 
                     if(B != H && D != F) {
                         E0 = (D == B) ? D : E;

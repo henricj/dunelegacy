@@ -51,7 +51,7 @@ Player::Player(const GameContext& context, InputStream& stream, House* associate
     playername = stream.readString();
     const auto state  = stream.readUint8Vector();
     if(state.size() != decltype(random_)::state_bytes) THROW(std::runtime_error, "Random state size mismatch!");
-    random_.setState(gsl::span<const Uint8, Random::state_bytes>{state});
+    random_.setState(gsl::span<const uint8_t, Random::state_bytes>{state});
 }
 
 Player::~Player() {
@@ -71,7 +71,7 @@ const GameInitSettings& Player::getGameInitSettings() const {
     return context_.game.getGameInitSettings();
 }
 
-Uint32 Player::getGameCycleCount() const { return context_.game.getGameCycleCount(); }
+uint32_t Player::getGameCycleCount() const { return context_.game.getGameCycleCount(); }
 
 int Player::getTechLevel() const { return context_.game.techLevel; }
 
@@ -79,7 +79,7 @@ Map& Player::getMap() { return context_.map; }
 
 const Map& Player::getMap() const { return context_.map; }
 
-const ObjectBase* Player::getObject(Uint32 objectID) const { return context_.objectManager.getObject(objectID); }
+const ObjectBase* Player::getObject(uint32_t objectID) const { return context_.objectManager.getObject(objectID); }
 
 const RobustList<const StructureBase*>& Player::getStructureList() {
     return reinterpret_cast<const RobustList<const StructureBase*>&>(structureList);

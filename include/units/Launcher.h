@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Launcher;
     using parent = TrackedUnit;
 
-    Launcher(Uint32 objectID, const ObjectInitializer& initializer);
-    Launcher(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Launcher(uint32_t objectID, const ObjectInitializer& initializer);
+    Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Launcher() override;
 
     void blitToScreen() override;

@@ -332,7 +332,7 @@ void NewMapWindow::onMapPropertiesChanged() {
     minimap.setSurface(createMinimapPicture(mapdata, 1, DuneStyle::buttonBorderColor));
 }
 
-sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor) {
+sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, uint32_t borderColor) {
     sdl2::surface_ptr pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!pMinimap) {
         return nullptr;
@@ -355,7 +355,7 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
 
             TERRAINTYPE terrainType = mapdata(x,y);
 
-            Uint32 color = getColorByTerrainType(terrainType);
+            uint32_t color = getColorByTerrainType(terrainType);
 
             for(int i=0;i<scale;i++) {
                 for(int j=0;j<scale;j++) {

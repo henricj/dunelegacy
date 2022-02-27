@@ -30,7 +30,7 @@ INIMapPreviewCreator::~INIMapPreviewCreator() = default;
     \param  borderColor the color of the border
     \return the minimap of size (128+2*borderWidth)x(128+2*borderWidth)
 */
-sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, Uint32 borderColor) {
+sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, uint32_t borderColor) {
     checkFeatures();
 
     auto pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
@@ -103,7 +103,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         offsetX += borderWidth;
         offsetY += borderWidth;
 
-        Uint16 SeedMap[64*64];
+        uint16_t SeedMap[64 * 64];
         createMapWithSeed(SeedNum,SeedMap);
 
         // "draw" spice fields into SeedMap

@@ -26,7 +26,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
         THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
     }
 
-    Sint64 endOffset = SDL_RWsize(rwop);
+    int64_t endOffset = SDL_RWsize(rwop);
     if(endOffset < 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Cannot determine size of this *.pal-File!");
     }
@@ -59,10 +59,10 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
         for(int i = 0; i < numColors; i++) {
             auto& RESTRICT color = colors[i];
 
-            color.r              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
-            color.g              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
-            color.b              = static_cast<Uint8>(*p++ * (255.0 / 63.0));
-            color.a              = 0xFF;
+            color.r = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+            color.g = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+            color.b = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
+            color.a = 0xFF;
         }
     }
 

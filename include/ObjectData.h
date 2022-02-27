@@ -89,23 +89,23 @@ public:
     void load(InputStream& stream);
 
     struct ObjectDataStruct {
-        bool     enabled;                                             ///< is this unit/structure available?
-        Sint32   hitpoints;                                           ///< what is the maximum health of this unit/structure?
-        Sint32   price;                                               ///< how much does this structure cost?
-        Sint32   power;                                               ///< how much power do this structure require. Wind traps have negative values because they produce power?
-        Sint32   viewrange;                                           ///< much terrain is revealed when this structure is placed or this unit moves?
-        Sint32   capacity;                                            ///< how much spice can this structure contain?
-        Sint32   weapondamage;                                        ///< how much damage does the weapon of this unit/structure have?
-        Sint32   weaponrange;                                         ///< how far can this unit/structure shoot?
-        Sint32   weaponreloadtime;                                    ///< how many frames does it take to reload the weapon?
-        FixPoint maxspeed;                                            ///< how fast can this unit move?
-        FixPoint turnspeed;                                           ///< how fast can this unit turn around?
-        Sint32   buildtime;                                           ///< how much time does the production of this structure/unit take?
-        Sint32   infspawnprop;                                        ///< what is the probability (in percent) that a infantry soldier is spawn on destruction?
-        int      builder;                                             ///< In which building can this item be built
-        std::bitset<Structure_LastID + 1>   prerequisiteStructuresSet;    ///< What buildings are prerequisite for building this item
-        Sint8    techLevel;                                           ///< What techLevel is needed to build this item (in campaign mode this equals to mission number)
-        Sint8    upgradeLevel;                                        ///< How many upgrades must the builder already have made
+        bool                              enabled;                   ///< is this unit/structure available?
+        int32_t                           hitpoints;                 ///< what is the maximum health of this unit/structure?
+        int32_t                           price;                     ///< how much does this structure cost?
+        int32_t                           power;                     ///< how much power do this structure require. Wind traps have negative values because they produce power?
+        int32_t                           viewrange;                 ///< much terrain is revealed when this structure is placed or this unit moves?
+        int32_t                           capacity;                  ///< how much spice can this structure contain?
+        int32_t                           weapondamage;              ///< how much damage does the weapon of this unit/structure have?
+        int32_t                           weaponrange;               ///< how far can this unit/structure shoot?
+        int32_t                           weaponreloadtime;          ///< how many frames does it take to reload the weapon?
+        FixPoint                          maxspeed;                  ///< how fast can this unit move?
+        FixPoint                          turnspeed;                 ///< how fast can this unit turn around?
+        int32_t                           buildtime;                 ///< how much time does the production of this structure/unit take?
+        int32_t infspawnprop;              ///< what is the probability (in percent) that a infantry soldier is spawn on destruction?
+        int                               builder;                   ///< In which building can this item be built
+        std::bitset<Structure_LastID + 1> prerequisiteStructuresSet; ///< What buildings are prerequisite for building this item
+        int8_t                            techLevel;                 ///< What techLevel is needed to build this item (in campaign mode this equals to mission number)
+        int8_t                            upgradeLevel;              ///< How many upgrades must the builder already have made
     };
 
     ObjectDataStruct data[Num_ItemID][static_cast<int>(HOUSETYPE::NUM_HOUSES)];      ///< here is all the data stored. It is public for easy and fast access. Use only read-only.

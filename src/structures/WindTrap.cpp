@@ -28,14 +28,14 @@ namespace {
 constexpr StructureBaseConstants wind_trap_constants{WindTrap::item_id, Coord{2, 2}};
 }
 
-WindTrap::WindTrap(Uint32 objectID, const ObjectInitializer& initializer)
+WindTrap::WindTrap(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(wind_trap_constants, objectID, initializer) {
     WindTrap::init();
 
     setHealth(getMaxHealth());
 }
 
-WindTrap::WindTrap(Uint32 objectID, const ObjectStreamInitializer& initializer)
+WindTrap::WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(wind_trap_constants, objectID, initializer) {
     WindTrap::init();
 }

@@ -32,14 +32,14 @@ namespace {
 constexpr TurretBaseConstants gun_turret_constants{RocketTurret::item_id, Bullet_TurretRocket};
 }
 
-RocketTurret::RocketTurret(Uint32 objectID, const ObjectInitializer& initializer)
+RocketTurret::RocketTurret(uint32_t objectID, const ObjectInitializer& initializer)
     : TurretBase(gun_turret_constants, objectID, initializer) {
     RocketTurret::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-RocketTurret::RocketTurret(Uint32 objectID, const ObjectStreamInitializer& initializer)
+RocketTurret::RocketTurret(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TurretBase(gun_turret_constants, objectID, initializer) {
     RocketTurret::init();
 }

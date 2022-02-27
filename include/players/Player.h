@@ -90,10 +90,10 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) { }
+    virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) { }
 
     [[nodiscard]] const House* getHouse() const { return pHouse; }
-    [[nodiscard]] Uint8 getPlayerID() const { return playerID; }
+    [[nodiscard]] uint8_t      getPlayerID() const { return playerID; }
 
     [[nodiscard]] std::string getPlayername() const { return playername; }
     void setPlayername(const std::string& playername) { this->playername = playername; }
@@ -120,15 +120,15 @@ protected:
     void logWarn(std::string_view fmt, Args&&... args) const;
 
 
-    Random& getRandomGen();
+    Random&                               getRandomGen();
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const;
-    [[nodiscard]] Uint32 getGameCycleCount() const;
-    [[nodiscard]] int getTechLevel() const;
+    [[nodiscard]] uint32_t                getGameCycleCount() const;
+    [[nodiscard]] int                     getTechLevel() const;
 
     Map&              getMap();
     [[nodiscard]] const Map&        getMap() const;
 
-    [[nodiscard]] const ObjectBase* getObject(Uint32 objectID) const;
+    [[nodiscard]] const ObjectBase* getObject(uint32_t objectID) const;
 
     const RobustList<const StructureBase*>& getStructureList();
     [[nodiscard]] const RobustList<const UnitBase*>& getUnitList() const;
@@ -307,8 +307,8 @@ protected:
 private:
     friend class House;
 
-    House* pHouse;
-    Uint8 playerID;
+    House*      pHouse;
+    uint8_t     playerID;
     std::string playername;
     std::string playerclass;
 

@@ -71,9 +71,9 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    virtual void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
+    virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
-    [[nodiscard]] Uint32 getAlreadyShownTutorialHints() const {
+    [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const {
         return alreadyShownTutorialHints;
     }
 
@@ -116,11 +116,11 @@ public:
     */
     void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
 public:
-    Uint32 nextExpectedCommandsCycle{};                       ///< The next cycle we expect commands for (using for network games)
+    uint32_t nextExpectedCommandsCycle{}; ///< The next cycle we expect commands for (using for network games)
 
     Dune::selected_set_type selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
 
-    Uint32 alreadyShownTutorialHints;                       ///< Contains flags for each tutorial hint (see enum TutorialHint)
+    uint32_t alreadyShownTutorialHints; ///< Contains flags for each tutorial hint (see enum TutorialHint)
 
 private:
     void triggerStructureTutorialHint(ItemID_enum itemID);
@@ -128,7 +128,7 @@ private:
     [[nodiscard]] bool hasConcreteOfSize(const Coord& concreteSize) const;
     [[nodiscard]] bool hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const;
 
-    Uint32 lastAttackNotificationCycle;                     ///< When was the last time that the player was informed about an attack
+    uint32_t lastAttackNotificationCycle; ///< When was the last time that the player was informed about an attack
 };
 
 

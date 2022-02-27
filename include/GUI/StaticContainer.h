@@ -110,7 +110,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         for(const StaticContainer_WidgetData& widgetData : containedWidgets) {
             widgetData.pWidget->resize(widgetData.size.x,widgetData.size.y);

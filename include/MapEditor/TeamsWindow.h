@@ -117,8 +117,8 @@ private:
 
     MapEditor*      pMapEditor;
 
-    HOUSETYPE       house;
-    Uint32          color;
+    HOUSETYPE house;
+    uint32_t  color;
 
     std::vector<AITeamInfo>  aiteams;
 };

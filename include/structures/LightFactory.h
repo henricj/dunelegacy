@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Structure_LightFactory;
     using parent = BuilderBase;
 
-    LightFactory(Uint32 objectID, const ObjectInitializer& initializer);
-    LightFactory(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    LightFactory(uint32_t objectID, const ObjectInitializer& initializer);
+    LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~LightFactory() override;
 
 protected:

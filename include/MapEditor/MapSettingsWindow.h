@@ -123,8 +123,8 @@ private:
 
     MapEditor*      pMapEditor;
 
-    HOUSETYPE       house;
-    Uint32          color;
+    HOUSETYPE house;
+    uint32_t  color;
 
     std::vector<std::string>    availableWinPictures;
     std::vector<std::string>    availableLosePictures;

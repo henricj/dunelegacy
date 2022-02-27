@@ -14,7 +14,7 @@ static void SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char *text, size_t maxlen, SDL
 
 
 static void
-SDLTest_PrintRendererFlag(char *text, size_t maxlen, Uint32 flag)
+SDLTest_PrintRendererFlag(char * text, size_t maxlen, uint32_t flag)
 {
     switch (flag) {
     case SDL_RENDERER_SOFTWARE:
@@ -36,7 +36,7 @@ SDLTest_PrintRendererFlag(char *text, size_t maxlen, Uint32 flag)
 }
 
 static void
-SDLTest_PrintPixelFormat(char *text, size_t maxlen, Uint32 format)
+SDLTest_PrintPixelFormat(char * text, size_t maxlen, uint32_t format)
 {
     switch (format) {
     case SDL_PIXELFORMAT_UNKNOWN:
@@ -152,7 +152,7 @@ namespace sdl2 {
         SDL_snprintfcat(text, sizeof(text), " (");
         int count = 0;
         for (auto i = 0; i < sizeof(info->flags) * 8; ++i) {
-            const Uint32 flag = (1 << i);
+            const uint32_t flag = (1 << i);
             if (info->flags & flag) {
                 if (count > 0) {
                     SDL_snprintfcat(text, sizeof(text), " | ");

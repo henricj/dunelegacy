@@ -33,8 +33,8 @@ public:
 class AirUnit : public UnitBase
 {
 protected:
-    AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    AirUnit(const AirUnitConstants& constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = UnitBase;

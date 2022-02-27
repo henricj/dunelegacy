@@ -28,11 +28,11 @@
 #include <Map.h>
 #include <Game.h>
 
-TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 }
 
-TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, Uint32 objectID,
+TrackedUnit::TrackedUnit(const TrackedUnitConstants&    constants, uint32_t objectID,
                          const ObjectStreamInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 }

@@ -31,14 +31,14 @@ namespace {
 constexpr TankBaseConstants siege_tank_constants{SiegeTank::item_id, 2, Bullet_ShellLarge};
 }
 
-SiegeTank::SiegeTank(Uint32 objectID, const ObjectInitializer& initializer)
+SiegeTank::SiegeTank(uint32_t objectID, const ObjectInitializer& initializer)
     : TankBase(siege_tank_constants, objectID, initializer) {
     SiegeTank::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-SiegeTank::SiegeTank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+SiegeTank::SiegeTank(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TankBase(siege_tank_constants, objectID, initializer) {
     SiegeTank::init();
 }

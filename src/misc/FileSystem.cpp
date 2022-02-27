@@ -278,7 +278,7 @@ std::string readCompleteFile(const std::filesystem::path& filename) {
         return "";
     }
 
-    const Sint64 filesize = SDL_RWsize(RWopsFile.get());
+    const int64_t filesize = SDL_RWsize(RWopsFile.get());
     if(filesize < 0) {
         return "";
     }

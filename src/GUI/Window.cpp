@@ -20,7 +20,7 @@
 #include <misc/draw_util.h>
 #include <globals.h>
 
-Window::Window(Uint32 x, Uint32 y, Uint32 w, Uint32 h) : position(x,y) {
+Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position(x,y) {
     closeChildWindowCounter = 0;
     pChildWindow = nullptr;
     pChildWindowAlreadyClosed = false;
@@ -64,7 +64,7 @@ void Window::closeChildWindow() {
     }
 }
 
-void Window::setCurrentPosition(Uint32 x, Uint32 y, Uint32 w, Uint32 h) {
+void Window::setCurrentPosition(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     position.x = x; position.y = y;
     resize(w,h);
 }
@@ -150,7 +150,7 @@ void Window::handleInput(SDL_Event& event) {
     }
 }
 
-void Window::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void Window::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     if(pChildWindow != nullptr) {
         pChildWindow->handleMouseMovement(x, y);
         return;
@@ -162,7 +162,7 @@ void Window::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     }
 }
 
-bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool Window::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if(pChildWindow != nullptr) { return pChildWindow->handleMouseLeft(x, y, pressed); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
@@ -178,7 +178,7 @@ bool Window::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     return false;
 }
 
-bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
+bool Window::handleMouseRight(int32_t x, int32_t y, bool pressed) {
     if(pChildWindow != nullptr) { return pChildWindow->handleMouseRight(x, y, pressed); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
@@ -188,7 +188,7 @@ bool Window::handleMouseRight(Sint32 x, Sint32 y, bool pressed) {
     return false;
 }
 
-bool Window::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+bool Window::handleMouseWheel(int32_t x, int32_t y, bool up) {
     if(pChildWindow != nullptr) { return pChildWindow->handleMouseWheel(x, y, up); }
 
     if(isEnabled() && (pWindowWidget != nullptr)) {
@@ -244,7 +244,7 @@ void Window::drawOverlay(Point position) {
     }
 }
 
-void Window::resize(Uint32 width, Uint32 height) {
+void Window::resize(uint32_t width, uint32_t height) {
     WidgetWithBackground::resize(width,height);
     if(pWindowWidget != nullptr) {
         pWindowWidget->resize(width,height);

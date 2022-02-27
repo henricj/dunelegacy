@@ -27,8 +27,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Devastator;
     using parent                                = TrackedUnit;
 
-    Devastator(Uint32 objectID, const ObjectInitializer& initializer);
-    Devastator(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Devastator(uint32_t objectID, const ObjectInitializer& initializer);
+    Devastator(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Devastator() override;
 
     void save(OutputStream& stream) const override;
@@ -53,7 +53,7 @@ private:
     void init();
 
     // devastator state
-    Sint32      devastateTimer;       ///< When will this devastator devastate
+    int32_t devastateTimer; ///< When will this devastator devastate
 
     // drawing information
     zoomable_texture turretGraphic{}; ///< The graphic of the turret

@@ -41,7 +41,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -50,7 +50,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles a right mouse click.
@@ -59,7 +59,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseRight(Sint32 x, Sint32 y, bool pressed) override;
+    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -68,7 +68,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
+    bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
     /**
         Handles a key stroke.
@@ -107,7 +107,7 @@ public:
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
-    void resize(Uint32 width, Uint32 height) override;
+    void resize(uint32_t width, uint32_t height) override;
 
 
     /**
@@ -123,7 +123,7 @@ public:
     }
 
 
-    static BuilderList* create(Uint32 builderObjectID) {
+    static BuilderList* create(uint32_t builderObjectID) {
         auto* tmp = new BuilderList(builderObjectID);
         tmp->pAllocated = true;
         return tmp;
@@ -134,7 +134,7 @@ public:
     BuilderList& operator=(const BuilderList &) = delete;
     BuilderList& operator=(BuilderList &&) = delete;
 private:
-    explicit BuilderList(Uint32 builderObjectID);
+    explicit BuilderList(uint32_t builderObjectID);
     ~BuilderList() override;
 
     static int getRealHeight(int height);
@@ -148,10 +148,10 @@ private:
     void onOrder() const;
     void onCancel() const;
 
-    int currentListPos;
-    PictureButton   upButton;
-    PictureButton   downButton;
-    Uint32          builderObjectID;
+    int           currentListPos;
+    PictureButton upButton;
+    PictureButton downButton;
+    uint32_t      builderObjectID;
 
     TextButton  orderButton;
 
@@ -164,10 +164,10 @@ private:
     sdl2::texture_ptr    pOnHoldTextTexture;
     sdl2::texture_ptr    pUnitLimitReachedTextTexture;
 
-    sdl2::texture_ptr    pLastTooltip;
-    std::string     tooltipText;
-    Uint32          lastMouseMovement;
-    Point           lastMousePos;
+    sdl2::texture_ptr pLastTooltip;
+    std::string       tooltipText;
+    uint32_t          lastMouseMovement;
+    Point             lastMousePos;
 };
 
 #endif //BUILDERLIST_H

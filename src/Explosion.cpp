@@ -33,7 +33,7 @@ Explosion::Explosion()
     currentFrame = 0;
 }
 
-Explosion::Explosion(Uint32 explosionID, const Coord& position, HOUSETYPE  house)
+Explosion::Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE  house)
  : explosionID(explosionID), position(position) , house(house)
 {
     init();
@@ -130,15 +130,15 @@ void Explosion::save(OutputStream& stream) const
     stream.writeUint32(explosionID);
     stream.writeSint16(position.x);
     stream.writeSint16(position.y);
-    stream.writeUint32(static_cast<Uint32>(house));
+    stream.writeUint32(static_cast<uint32_t>(house));
     stream.writeSint32(frameTimer);
     stream.writeSint32(currentFrame);
 }
 
 void Explosion::blitToScreen() const
 {
-    const Uint16 width = getWidth(graphic[currentZoomlevel])/numFrames;
-    const Uint16 height = getHeight(graphic[currentZoomlevel]);
+    const uint16_t width  = getWidth(graphic[currentZoomlevel]) / numFrames;
+    const uint16_t height = getHeight(graphic[currentZoomlevel]);
 
     if(screenborder->isInsideScreen(position, Coord(width, height))) {
         SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],

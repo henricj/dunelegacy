@@ -480,7 +480,7 @@ std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
 }
 
 
-Uint32 getColorByTerrainType(TERRAINTYPE terrainType) {
+uint32_t getColorByTerrainType(TERRAINTYPE terrainType) {
     auto color = COLOR_BLACK;
     // clang-format off
     switch (terrainType) {

@@ -36,7 +36,7 @@
 #include <globals.h>
 
 
-LoadMapWindow::LoadMapWindow(Uint32 color) : Window(0,0,0,0), color(color) {
+LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0,0,0,0), color(color) {
 
     // set up window
     const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);

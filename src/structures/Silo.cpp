@@ -28,14 +28,14 @@ namespace {
 constexpr StructureBaseConstants silo_constants{Silo::item_id, Coord{2, 2}};
 }
 
-Silo::Silo(Uint32 objectID, const ObjectInitializer& initializer)
+Silo::Silo(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 
     setHealth(getMaxHealth());
 }
 
-Silo::Silo(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Silo::Silo(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 }

@@ -28,10 +28,10 @@ public:
     std::string serverName;
     std::string serverVersion;
     std::string mapName;
-    int numPlayers;
-    int maxPlayers;
-    bool bPasswordProtected;
-    Uint32 lastUpdate;
+    int         numPlayers;
+    int         maxPlayers;
+    bool        bPasswordProtected;
+    uint32_t    lastUpdate;
 
     /**
         Do not compare numPlayers, bPasswordProtected and lastUpdate

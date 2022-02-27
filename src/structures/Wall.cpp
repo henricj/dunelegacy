@@ -27,7 +27,7 @@ namespace {
 constexpr StructureBaseConstants wall_constants{Wall::item_id, Coord{1, 1}};
 }
 
-Wall::Wall(Uint32 objectID, const ObjectInitializer& initializer) : StructureBase(wall_constants, objectID, initializer) {
+Wall::Wall(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
     setHealth(getMaxHealth());
@@ -40,7 +40,7 @@ Wall::Wall(Uint32 objectID, const ObjectInitializer& initializer) : StructureBas
     setWallTile(Wall_LeftRight);
 }
 
-Wall::Wall(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Wall::Wall(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 

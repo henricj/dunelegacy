@@ -69,7 +69,7 @@ public:
     SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
 
-    static void callback(void *, Uint8 *, int);
+    static void callback(void *, uint8_t*, int);
 
     std::vector<int> getSubsongs();
 
@@ -119,9 +119,9 @@ private:
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 
-    int m_channels;
-    int m_freq;
-    Uint16 m_format;
+    int      m_channels;
+    int      m_freq;
+    uint16_t m_format;
 
     bool bJustStartedPlaying;
 

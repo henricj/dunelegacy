@@ -37,7 +37,7 @@ constexpr SaboteurConstants saboteur_constants;
 }
 
 
-Saboteur::Saboteur(Uint32 objectID, const ObjectInitializer& initializer)
+Saboteur::Saboteur(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(saboteur_constants, objectID, initializer) {
     Saboteur::init();
 
@@ -48,7 +48,7 @@ Saboteur::Saboteur(Uint32 objectID, const ObjectInitializer& initializer)
     attackMode = GUARD;
 }
 
-Saboteur::Saboteur(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Saboteur::Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : InfantryBase(saboteur_constants, objectID, initializer) {
     Saboteur::init();
 }

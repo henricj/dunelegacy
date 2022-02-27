@@ -33,13 +33,13 @@ constexpr TankBaseConstants tank_constants{Tank::item_id, 1, Bullet_ShellMedium}
 }
 
 
-Tank::Tank(Uint32 objectID, const ObjectInitializer& initializer) : TankBase(tank_constants, objectID, initializer) {
+Tank::Tank(uint32_t objectID, const ObjectInitializer& initializer) : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 
     setHealth(getMaxHealth());
 }
 
-Tank::Tank(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Tank::Tank(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 }

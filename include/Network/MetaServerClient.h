@@ -62,9 +62,10 @@ public:
         this->pOnMetaServerError = pOnMetaServerError;
     }
 
-    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, Uint8 numPlayers, Uint8 maxPlayers);
+    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
+                       uint8_t            maxPlayers);
 
-    void updateAnnounce(Uint8 numPlayers);
+    void updateAnnounce(uint8_t numPlayers);
 
     void stopAnnounce();
 
@@ -127,15 +128,15 @@ private:
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName = "";                                                ///< The name of the game server
-    int serverPort = 0;                                                         ///< The port of the game server
-    std::string secret = "";                                                    ///< The secret used for the metaserver updates
-    std::string mapName = "";                                                   ///< The name of the map for which a game is currently set up
-    Uint8 numPlayers = 0;                                                       ///< The current number of players in the currently set up game
-    Uint8 maxPlayers = 0;                                                       ///< The maximum number of players in the currently set up game
+    std::string serverName = ""; ///< The name of the game server
+    int         serverPort = 0;  ///< The port of the game server
+    std::string secret     = ""; ///< The secret used for the metaserver updates
+    std::string mapName    = ""; ///< The name of the map for which a game is currently set up
+    uint8_t     numPlayers = 0;  ///< The current number of players in the currently set up game
+    uint8_t     maxPlayers = 0;  ///< The maximum number of players in the currently set up game
 
-    Uint32 lastAnnounceUpdate = 0;                                              ///< The last time the game was announced
-    Uint32 lastServerInfoListUpdate = 0;                                        ///< The last time the server list was updated by a request to the metaserver
+    uint32_t lastAnnounceUpdate       = 0; ///< The last time the game was announced
+    uint32_t lastServerInfoListUpdate = 0; ///< The last time the server list was updated by a request to the metaserver
 
     std::function<void (std::list<GameServerInfo>&)> pOnGameServerInfoList;     ///< Callback for updates to the game server list
     std::function<void (int, std::string)> pOnMetaServerError;                  ///< Callback for metaserver errors

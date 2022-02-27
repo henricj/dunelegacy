@@ -41,8 +41,8 @@ class TurretBase : public StructureBase
     void init();
 
 protected:
-    explicit TurretBase(const TurretBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer);
-    explicit TurretBase(const TurretBaseConstants& constants, Uint32 objectID,
+    explicit TurretBase(const TurretBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
+    explicit TurretBase(const TurretBaseConstants&     constants, uint32_t objectID,
                         const ObjectStreamInitializer& initializer);
 
 public:
@@ -63,7 +63,7 @@ public:
         Set targetObjectID as the attack target for this turret.
         \param  targetObjectID  the object to attack
     */
-    virtual void doAttackObject(const GameContext& context, Uint32 targetObjectID);
+    virtual void doAttackObject(const GameContext& context, uint32_t targetObjectID);
 
     /**
         Set pObject as the attack target for this turret.
@@ -94,8 +94,8 @@ protected:
     Sound_enum attackSound;     ///< The id of the sound to play when attack
 
     // turret state
-    Sint32  findTargetTimer;    ///< Timer used for finding a new target
-    Sint32  weaponTimer;        ///< Time until we can shot again
+    int32_t findTargetTimer; ///< Timer used for finding a new target
+    int32_t weaponTimer;     ///< Time until we can shot again
 };
 
 

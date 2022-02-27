@@ -2408,7 +2408,7 @@ void SoundAdlibPC::playSoundEffect(uint8 track) {
 }
 
 
-void SoundAdlibPC::callback(void *userdata, Uint8 *audiobuf, int len)
+void SoundAdlibPC::callback(void * userdata, uint8_t* audiobuf, int len)
 {
     auto *self = static_cast<SoundAdlibPC*>(userdata);
 
@@ -2477,8 +2477,8 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
     return;
   }
 
-  uint8 *file_data = nullptr;
-  const Sint64 endOffset = SDL_RWsize(rwop);
+  uint8 *       file_data = nullptr;
+  const int64_t endOffset = SDL_RWsize(rwop);
   if(endOffset <= 0) {
     sdl2::log_info("SoundAdlibPC::internalLoadFile(): Cannot determine size of SDL_RWop!");
     return;
@@ -2527,15 +2527,15 @@ void SoundAdlibPC::unk2() {
 }
 
 Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
-    Uint8*  buf = nullptr;
-    int     bufSize = 0;
-    bool    bSilent = true;
+    uint8_t* buf     = nullptr;
+    int      bufSize = 0;
+    bool     bSilent = true;
 
     playTrack(Num);
 
     do {
         bufSize += 1024;
-        if((buf = static_cast<Uint8*>(SDL_realloc(buf, bufSize))) == nullptr) {
+        if((buf = static_cast<uint8_t*>(SDL_realloc(buf, bufSize))) == nullptr) {
             THROW(std::runtime_error, "Cannot allocate memory!");
         }
 
@@ -2544,7 +2544,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
         SoundAdlibPC::callback(this, buf + bufSize - 1024, 1024);
 
         bSilent = true;
-        for(Uint8* p = buf + bufSize - 1024; p < buf + bufSize; p++) {
+        for(uint8_t* p = buf + bufSize - 1024; p < buf + bufSize; p++) {
             if(*p != 0) {
                 bSilent = false;
                 break;
@@ -2563,10 +2563,10 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
         return nullptr;
     }
 
-    myChunk->volume = 128;
+    myChunk->volume    = 128;
     myChunk->allocated = 1;
-    myChunk->abuf = (Uint8*) buf;
-    myChunk->alen = bufSize;
+    myChunk->abuf      = (uint8_t*) buf;
+    myChunk->alen      = bufSize;
     return myChunk;
 }
 

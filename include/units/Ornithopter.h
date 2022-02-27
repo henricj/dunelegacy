@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Ornithopter;
     using parent = AirUnit;
 
-    Ornithopter(Uint32 objectID, const ObjectInitializer& initializer);
-    Ornithopter(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Ornithopter(uint32_t objectID, const ObjectInitializer& initializer);
+    Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Ornithopter() override;
 
     void save(OutputStream& stream) const override;
@@ -49,7 +49,7 @@ protected:
 private:
     void   init();
 
-    Uint32 timeLastShot;
+    uint32_t timeLastShot;
 };
 
 #endif //ORNITHOPTER_H

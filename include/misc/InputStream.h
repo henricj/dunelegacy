@@ -42,47 +42,47 @@ public:
     */
     virtual std::string readString() = 0;
 
-    virtual Uint8 readUint8() = 0;
-    virtual Uint16 readUint16() = 0;
-    virtual Uint32 readUint32() = 0;
-    virtual Uint64 readUint64() = 0;
-    virtual bool readBool() = 0;
-    virtual float readFloat() = 0;
+    virtual uint8_t  readUint8() = 0;
+    virtual uint16_t readUint16() = 0;
+    virtual uint32_t readUint32() = 0;
+    virtual uint64_t readUint64() = 0;
+    virtual bool     readBool() = 0;
+    virtual float    readFloat() = 0;
 
     /**
         Reads in a Sint8 value.
         \return the read value
     */
-    Sint8 readSint8() {
-        Uint8 tmp = readUint8();
-        return *((Sint8*) &tmp);
+    int8_t readSint8() {
+        uint8_t tmp = readUint8();
+        return *((int8_t*) &tmp);
     }
 
     /**
         Reads in a Sint16 value.
         \return the read value
     */
-    Sint16 readSint16() {
-        Uint16 tmp = readUint16();
-        return *((Sint16*) &tmp);
+    int16_t readSint16() {
+        uint16_t tmp = readUint16();
+        return *((int16_t*) &tmp);
     }
 
     /**
         Reads in a Sint32 value.
         \return the read value
     */
-    Sint32 readSint32() {
-        Uint32 tmp = readUint32();
-        return *((Sint32*) &tmp);
+    int32_t readSint32() {
+        uint32_t tmp = readUint32();
+        return *((int32_t*) &tmp);
     }
 
     /**
         Reads in a Sint64 value.
         \return the read value
     */
-    Sint64 readSint64() {
-        Uint64 tmp = readUint64();
-        return *((Sint64*) &tmp);
+    int64_t readSint64() {
+        uint64_t tmp = readUint64();
+        return *((int64_t*) &tmp);
     }
 
     /**
@@ -106,7 +106,7 @@ public:
 
     */
     void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr) {
-        Uint8 val = readUint8();
+        uint8_t val = readUint8();
 
         if(pVal1 != nullptr)   *pVal1 = ((val & 0x01) != 0);
         if(pVal2 != nullptr)   *pVal2 = ((val & 0x02) != 0);
@@ -122,8 +122,8 @@ public:
         Reads a vector of Uint8 written by writeUint8Vector().
         \return the read vector
     */
-    std::vector<Uint8> readUint8Vector() {
-        std::vector<Uint8> vec;
+    std::vector<uint8_t> readUint8Vector() {
+        std::vector<uint8_t> vec;
         readUint8Vector(vec);
 
         return vec;
@@ -133,7 +133,7 @@ public:
         Reads a vector of Uint8 written by writeUint8Vector().
         \param vec operate in place (reduce heap thrashing)
     */
-    void readUint8Vector(std::vector<Uint8>& vec) {
+    void readUint8Vector(std::vector<uint8_t>& vec) {
         vec.clear();
         const auto size = readUint32();
         vec.reserve(size);
@@ -146,8 +146,8 @@ public:
         Reads a list of Uint32 written by writeUint32List().
         \return the read list
     */
-    std::list<Uint32> readUint32List() {
-        std::list<Uint32> List;
+    std::list<uint32_t> readUint32List() {
+        std::list<uint32_t> List;
         const auto size = readUint32();
         for(unsigned int i=0; i < size; i++) {
             List.push_back(readUint32());
@@ -159,7 +159,7 @@ public:
         Reads a vector of Uint32 written by writeUint32Vector().
         \param vec operate in place (reduce heap thrashing)
     */
-    void readUint32Vector(std::vector<Uint32>& vec)
+    void readUint32Vector(std::vector<uint32_t>& vec)
     {
         vec.clear();
         const auto size = readUint32();
@@ -187,8 +187,8 @@ public:
         Reads a vector of Uint32 written by writeUint32Vector().
         \return the read vector
     */
-    std::vector<Uint32> readUint32Vector() {
-        std::vector<Uint32> vec;
+    std::vector<uint32_t> readUint32Vector() {
+        std::vector<uint32_t> vec;
         readUint32Vector(vec);
 
         return vec;

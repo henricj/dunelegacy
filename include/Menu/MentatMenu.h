@@ -76,12 +76,12 @@ protected:
         MentatMouthOpen4 = 4
     };
 
-    Uint32  nextSpecialAnimation;
+    uint32_t nextSpecialAnimation;
 
     std::vector<std::string> mentatTexts;
-    int currentMentatTextIndex;
-    Uint32 nextMentatTextSwitch;
-    HOUSETYPE house;
+    int                      currentMentatTextIndex;
+    uint32_t                 nextMentatTextSwitch;
+    HOUSETYPE                house;
 
     StaticContainer windowWidget;
     AnimationLabel  eyesAnim;

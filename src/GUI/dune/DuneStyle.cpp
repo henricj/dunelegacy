@@ -27,7 +27,7 @@
 #include <algorithm>
 #include <string_view>
 
-sdl2::surface_ptr DuneStyle::createSurfaceWithText(std::string_view text, Uint32 color, unsigned int fontsize) {
+sdl2::surface_ptr DuneStyle::createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize) {
     if(pFontManager) {
         return pFontManager->createSurfaceWithText(text, color, fontsize);
     }
@@ -64,7 +64,8 @@ Point DuneStyle::getMinimumLabelSize(std::string_view text, int fontSize) {
     return {static_cast<int>(getTextWidth(text,fontSize)) + 12,static_cast<int>(getTextHeight(fontSize)) + 4};
 }
 
-sdl2::surface_ptr DuneStyle::createLabelSurface(Uint32 width, Uint32 height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t     height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment,
+                                                uint32_t textcolor, uint32_t textshadowcolor, uint32_t backgroundcolor) {
 
     // create surfaces
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
@@ -129,7 +130,9 @@ Point DuneStyle::getMinimumCheckboxSize(std::string_view text) {
     return Point(getTextWidth(text,14) + 20 + 17,getTextHeight(14) + 8);
 }
 
-sdl2::surface_ptr DuneStyle::createCheckboxSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t           height, std::string_view text, bool checked, bool activated,
+                                                   uint32_t textcolor,
+                                                   uint32_t textshadowcolor, uint32_t backgroundcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -184,7 +187,9 @@ Point DuneStyle::getMinimumRadioButtonSize(std::string_view text) {
     return Point(getTextWidth(text,14) + 16 + 15,getTextHeight(14) + 8);
 }
 
-sdl2::surface_ptr DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool checked, bool activated, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+sdl2::surface_ptr DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t     height, std::string_view  text, bool checked, bool activated,
+                                                      uint32_t textcolor, uint32_t textshadowcolor,
+                                                      uint32_t backgroundcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -244,7 +249,7 @@ sdl2::surface_ptr DuneStyle::createRadioButtonSurface(Uint32 width, Uint32 heigh
 
 
 
-sdl2::surface_ptr DuneStyle::createDropDownBoxButton(Uint32 size, bool pressed, bool activated, Uint32 color) {
+sdl2::surface_ptr DuneStyle::createDropDownBoxButton(uint32_t size, bool pressed, bool activated, uint32_t color) {
     if(color == COLOR_DEFAULT) {
         color = defaultForegroundColor;
     }
@@ -296,7 +301,8 @@ Point DuneStyle::getMinimumButtonSize(std::string_view text) {
     return Point(getTextWidth(text,12)+12,getTextHeight(12));
 }
 
-sdl2::surface_ptr DuneStyle::createButtonSurface(Uint32 width, Uint32 height, std::string_view text, bool pressed, bool activated, Uint32 textcolor, Uint32 textshadowcolor) {
+sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t     height, std::string_view text, bool pressed, bool activated,
+                                                 uint32_t textcolor, uint32_t textshadowcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -349,7 +355,8 @@ Point DuneStyle::getMinimumTextBoxSize(int fontSize) {
     return Point(10,getTextHeight(fontSize) + 6);
 }
 
-sdl2::surface_ptr DuneStyle::createTextBoxSurface(Uint32 width, Uint32 height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment, Uint32 textcolor, Uint32 textshadowcolor) {
+sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t     height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment,
+                                                  uint32_t textcolor, uint32_t textshadowcolor) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!surface) {
         return nullptr;
@@ -431,7 +438,7 @@ Point DuneStyle::getMinimumScrollBarArrowButtonSize() {
     return Point(17,17);
 }
 
-sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color) {
+sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed, bool activated, uint32_t color) {
     if(color == COLOR_DEFAULT) {
         color = defaultForegroundColor;
     }
@@ -483,13 +490,11 @@ sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed,
 }
 
 
-
-
-Uint32 DuneStyle::getListBoxEntryHeight() {
+uint32_t DuneStyle::getListBoxEntryHeight() {
     return 16;
 }
 
-sdl2::surface_ptr DuneStyle::createListBoxEntry(Uint32 width, std::string_view text, bool selected, Uint32 color) {
+sdl2::surface_ptr DuneStyle::createListBoxEntry(uint32_t width, std::string_view text, bool selected, uint32_t color) {
     if(color == COLOR_DEFAULT) {
         color = defaultForegroundColor;
     }
@@ -516,7 +521,7 @@ sdl2::surface_ptr DuneStyle::createListBoxEntry(Uint32 width, std::string_view t
 
 
 
-sdl2::surface_ptr DuneStyle::createProgressBarOverlay(Uint32 width, Uint32 height, double percent, Uint32 color) {
+sdl2::surface_ptr DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t height, double percent, uint32_t color) {
     sdl2::surface_ptr pSurface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
     if(!pSurface) {
         return nullptr;
@@ -569,7 +574,7 @@ sdl2::surface_ptr DuneStyle::createToolTip(std::string_view text) {
 
 
 
-sdl2::surface_ptr DuneStyle::createBackground(Uint32 width, Uint32 height) {
+sdl2::surface_ptr DuneStyle::createBackground(uint32_t width, uint32_t height) {
     sdl2::surface_ptr pSurface;
     if(pGFXManager) {
         pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
@@ -599,7 +604,7 @@ sdl2::surface_ptr DuneStyle::createBackground(Uint32 width, Uint32 height) {
     return pSurface;
 }
 
-sdl2::surface_ptr DuneStyle::createWidgetBackground(Uint32 width, Uint32 height) {
+sdl2::surface_ptr DuneStyle::createWidgetBackground(uint32_t width, uint32_t height) {
     sdl2::surface_ptr surface = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
 
     if(!surface) {

@@ -50,7 +50,7 @@ public:
     /// Destructor
     ~Random() = default;
 
-    static Random create(gsl::span<const Uint8, state_bytes> state) {
+    static Random create(gsl::span<const uint8_t, state_bytes> state) {
         generator_type generator;
 
         set_generator_state(generator, state);
@@ -62,25 +62,25 @@ public:
         Sets the generator state to state
         \param state  the new state value
     */
-    void setState(gsl::span<const Uint8, state_bytes> state);
+    void setState(gsl::span<const uint8_t, state_bytes> state);
 
     /**
         Returns the current generator state.
         \return the current state
     */
-    [[nodiscard]] std::array<Uint8, state_bytes> getState() const;
+    [[nodiscard]] std::array<uint8_t, state_bytes> getState() const;
 
     /**
         Returns the maximum integer returned by rand()
         \return The maximum integer
     */
-    constexpr Uint32 getMaxRandom() { return decltype(generator_)::max(); }
+    constexpr uint32_t getMaxRandom() { return decltype(generator_)::max(); }
 
     /**
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
         \return a random integer on interval [0; getMaxRandom()]
     */
-    Uint32 rand() { return generator_(); }
+    uint32_t rand() { return generator_(); }
 
     /**
         Calculates a random number
@@ -89,7 +89,7 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    Uint32 rand(Uint32 min, Uint32 max) { return lemire_uniform_uint32_distribution{max - min + 1}(generator_) + min; }
+    uint32_t rand(uint32_t min, uint32_t max) { return lemire_uniform_uint32_distribution{max - min + 1}(generator_) + min; }
 
     /**
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)
@@ -98,10 +98,10 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    Sint32 rand(Sint32 min, Sint32 max) {
-        const auto umax = static_cast<Uint32>(max - min);
+    int32_t rand(int32_t min, int32_t max) {
+        const auto umax = static_cast<uint32_t>(max - min);
 
-        return static_cast<Sint32>(lemire_uniform_uint32_distribution{umax + 1}(generator_)) + min;
+        return static_cast<int32_t>(lemire_uniform_uint32_distribution{umax + 1}(generator_)) + min;
     }
 
     /**
@@ -128,8 +128,8 @@ public:
     }
 
 private:
-    static void set_generator_state(generator_type& generator, gsl::span<const Uint8, state_bytes> state);
-    static void get_generator_state(const generator_type& generator, gsl::span<Uint8, state_bytes> state);
+    static void set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state);
+    static void get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state);
 
     generator_type generator_;
     static const FixPoint rand_scale_;
@@ -147,17 +147,17 @@ public:
         setSeed(seed);
     }
 
-    RandomFactory(gsl::span<Uint8> seed) { setSeed(seed); }
+    RandomFactory(gsl::span<uint8_t> seed) { setSeed(seed); }
 
-    void setSeed(gsl::span<const Uint8> seed);
-    [[nodiscard]] std::vector<Uint8> getSeed() const;
+    void                             setSeed(gsl::span<const uint8_t> seed);
+    [[nodiscard]] std::vector<uint8_t> getSeed() const;
 
     [[nodiscard]] Random create(std::string_view name) const;
 
-    static std::vector<Uint8> createRandomSeed(std::string_view name);
+    static std::vector<uint8_t> createRandomSeed(std::string_view name);
 
 private:
-    std::vector<Uint8> seed_;
+    std::vector<uint8_t> seed_;
     std::array<unsigned char, seed_size> key_;
 
     bool initialized_{};

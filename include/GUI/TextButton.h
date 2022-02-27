@@ -64,7 +64,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
@@ -86,7 +86,7 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         invalidateTextures();
         Button::resize(width,height);
@@ -111,8 +111,8 @@ protected:
     void updateTextures() override;
 
 private:
-    Uint32 textcolor;
-    Uint32 textshadowcolor;
+    uint32_t textcolor;
+    uint32_t textshadowcolor;
 
     std::string text;       ///< Text of this button
 };

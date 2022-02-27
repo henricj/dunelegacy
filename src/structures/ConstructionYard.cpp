@@ -27,13 +27,13 @@ namespace {
 const BuilderBaseConstants construction_yard_constants{ConstructionYard::item_id, Coord{2, 2}};
 }
 
-ConstructionYard::ConstructionYard(Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(construction_yard_constants, objectID, initializer) {
+ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(construction_yard_constants, objectID, initializer) {
     ConstructionYard::init();
 
     setHealth(getMaxHealth());
 }
 
-ConstructionYard::ConstructionYard(Uint32 objectID, const ObjectStreamInitializer& initializer)
+ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : BuilderBase(construction_yard_constants, objectID, initializer) {
     ConstructionYard::init();
 }

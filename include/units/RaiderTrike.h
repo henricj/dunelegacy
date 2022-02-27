@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_RaiderTrike;
     using parent = GroundUnit;
 
-    RaiderTrike(Uint32 objectID, const ObjectInitializer& initializer);
-    RaiderTrike(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer);
+    RaiderTrike(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~RaiderTrike() override;
 
     void destroy(const GameContext& context) override;

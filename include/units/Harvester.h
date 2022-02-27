@@ -26,8 +26,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Harvester;
     using parent = TrackedUnit;
 
-    Harvester(Uint32 objectID, const ObjectInitializer& initializer);
-    Harvester(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Harvester(uint32_t objectID, const ObjectInitializer& initializer);
+    Harvester(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Harvester() override;
 
     void save(OutputStream& stream) const override;
@@ -38,7 +38,7 @@ public:
     void deploy(const GameContext& context, const Coord& newLocation) override;
     void destroy(const GameContext& context) override;
     void drawSelectionBox() override;
-    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
     void handleReturnClick(const GameContext& context);
 
@@ -70,10 +70,10 @@ private:
     void setSpeeds(const GameContext& context) override;
 
     // harvester state
-    bool     harvestingMode;         ///< currently harvesting
-    bool     returningToRefinery;    ///< currently on the way back to the refinery
-    FixPoint spice;                  ///< loaded spice
-    Uint32   spiceCheckCounter;      ///< Check for available spice on map to harvest
+    bool     harvestingMode;      ///< currently harvesting
+    bool     returningToRefinery; ///< currently on the way back to the refinery
+    FixPoint spice;               ///< loaded spice
+    uint32_t spiceCheckCounter;   ///< Check for available spice on map to harvest
 };
 
 #endif // HARVESTER_H

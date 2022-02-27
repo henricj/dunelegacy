@@ -50,7 +50,7 @@ namespace {
 constexpr TrackedUnitConstants harvester_constants{Harvester::item_id};
 }
 
-Harvester::Harvester(Uint32 objectID, const ObjectInitializer& initializer)
+Harvester::Harvester(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
@@ -64,7 +64,7 @@ Harvester::Harvester(Uint32 objectID, const ObjectInitializer& initializer)
     attackMode = GUARD;
 }
 
-Harvester::Harvester(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Harvester::Harvester(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
@@ -304,8 +304,8 @@ void Harvester::destroy(const GameContext& context)
 
         setTarget(nullptr);
 
-        Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
+        Coord    realPos(lround(realX), lround(realY));
+        uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID())) {
@@ -345,7 +345,7 @@ void Harvester::drawSelectionBox()
     }
 }
 
-void Harvester::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner)
+void Harvester::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner)
 {
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 

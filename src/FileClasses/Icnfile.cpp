@@ -48,7 +48,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop)
 
     std::unique_ptr<uint8_t[]> pMapFiledata;
 
-    Sint64 icnEndOffset = SDL_RWsize(icnRWop);
+    int64_t icnEndOffset = SDL_RWsize(icnRWop);
     if(icnEndOffset <= 0) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.icn-File!");
     }
@@ -60,7 +60,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop)
         THROW(std::runtime_error, "Icnfile::Icnfile(): Reading this *.icn-File failed!");
     }
 
-    Sint64 mapEndOffset = SDL_RWsize(mapRWop);
+    int64_t mapEndOffset = SDL_RWsize(mapRWop);
     if(mapEndOffset <= 0) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.map-File!");
     }
@@ -187,7 +187,7 @@ Icnfile::~Icnfile() = default;
     \param  indexOfFile specifies which tile/picture to return (zero based)
     \return nth tile/picture in this icn-File
 */
-sdl2::surface_ptr Icnfile::getPicture(Uint32 indexOfFile) const {
+sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
     if(indexOfFile >= numFiles) {
         THROW(std::invalid_argument, "Icnfile::getPicture(): Specified index (%ud) is not valid for a icn file with %ud tiles!", indexOfFile, numFiles);
     }
@@ -253,7 +253,7 @@ sdl2::surface_ptr Icnfile::getPicture(Uint32 indexOfFile) const {
     \param  tilesN          how many tilesX*tilesY blocks in a row
     \return the result surface with tilesX*tilesY*tilesN tiles
 */
-sdl2::surface_ptr Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int tilesY, int tilesN) {
+sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, int tilesY, int tilesN) {
     if(mapfileIndex >= tilesets.size()) {
         THROW(std::invalid_argument, "Icnfile::getPictureArray(): Specified map file index (%ud) is not valid for a map file with %ud tilesets!", mapfileIndex, tilesets.size());
     }
@@ -364,7 +364,7 @@ sdl2::surface_ptr Icnfile::getPictureArray(Uint32 mapfileIndex, int tilesX, int 
     \param  maxRowLength    Used to limit the number of tiles per row and put the remaining tiles on the following rows (0 equals no row limitation)
     \return the result surface with (endIndex-startIndex+1) tiles.
 */
-sdl2::surface_ptr Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex, Uint32 maxRowLength) const {
+sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength) const {
 
     if((startIndex >= numFiles)||(endIndex >= numFiles)||(startIndex > endIndex)) {
         THROW(std::invalid_argument, "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!", startIndex, endIndex, numFiles);
@@ -383,10 +383,10 @@ sdl2::surface_ptr Icnfile::getPictureRow(Uint32 startIndex, Uint32 endIndex, Uin
     palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{ pic.get() };
 
-    Uint32 tileCount = 0u;
-    for(Uint32 row = 0u; (row < numRows) && (tileCount < numTiles); ++row) {
-        for(Uint32 col = 0u; (col < numCols) && (tileCount < numTiles); ++col) {
-            Uint32 indexOfFile = startIndex + tileCount;
+    uint32_t tileCount = 0u;
+    for(uint32_t row = 0u; (row < numRows) && (tileCount < numTiles); ++row) {
+        for(uint32_t col = 0u; (col < numCols) && (tileCount < numTiles); ++col) {
+            uint32_t indexOfFile = startIndex + tileCount;
 
             // check if palette is in range
             if(RTBL[indexOfFile] >= RPAL_Length / 16) {

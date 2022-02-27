@@ -33,7 +33,7 @@
 #include <algorithm>
 
 
-Bullet::Bullet(Uint32 shooterID, const Coord* newRealLocation, const Coord* newRealDestination, Uint32 bulletID, int damage, bool air, const ObjectBase* pTarget)
+Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget)
 {
     airAttack = air;
 
@@ -100,9 +100,9 @@ Bullet::Bullet(InputStream& stream)
     target.load(stream);
     damage = stream.readSint32();
 
-    shooterID = stream.readUint32();
-    Uint32 x = stream.readUint32();
-    if(x < static_cast<Uint32>(HOUSETYPE::NUM_HOUSES)) {
+    shooterID  = stream.readUint32();
+    uint32_t x = stream.readUint32();
+    if(x < static_cast<uint32_t>(HOUSETYPE::NUM_HOUSES)) {
         owner = currentGame->getHouse(static_cast<HOUSETYPE>(x));
     } else {
         owner = currentGame->getHouse(static_cast<HOUSETYPE>(0));
@@ -241,7 +241,7 @@ void Bullet::save(OutputStream& stream) const
     stream.writeSint32(damage);
 
     stream.writeUint32(shooterID);
-    stream.writeUint32(static_cast<Uint32>(owner->getHouseID()));
+    stream.writeUint32(static_cast<uint32_t>(owner->getHouseID()));
 
     stream.writeSint32(source.x);
     stream.writeSint32(source.y);
@@ -262,7 +262,7 @@ void Bullet::save(OutputStream& stream) const
 }
 
 
-void Bullet::blitToScreen(Uint32 cycleCount) const {
+void Bullet::blitToScreen(uint32_t cycleCount) const {
     const auto imageW = getWidth(graphic[currentZoomlevel])/numFrames;
     const auto imageH = getHeight(graphic[currentZoomlevel]);
 
@@ -274,7 +274,7 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
         numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
-        static constexpr Uint8 shimmerOffset[]  = { 1, 3, 2, 5, 4, 3, 2, 1 };
+        static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
         auto* const shimmerMaskSurface = pGFXManager->getZoomedObjSurface(ObjPic_Bullet_Sonic, currentZoomlevel);
         auto* const shimmerTex =
@@ -285,8 +285,8 @@ void Bullet::blitToScreen(Uint32 cycleCount) const {
         const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24) / 3;
         source.x += shimmerOffset[shimmerOffsetIndex % 8] * 2;
 
-        Uint32 format;
-        int    access, w, h;
+        uint32_t format;
+        int      access, w, h;
         SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
 
         float scaleX, scaleY;
@@ -509,7 +509,7 @@ void Bullet::destroy(const GameContext& context) const {
 
                         map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
 
-                        Uint32 explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
+                        uint32_t explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                         game.addExplosion(explosionID, position, houseID);
                         screenborder->shakeScreen(22);
                     }

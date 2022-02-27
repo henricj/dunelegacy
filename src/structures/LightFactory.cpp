@@ -27,14 +27,14 @@ namespace {
 constexpr BuilderBaseConstants light_factory_constants{LightFactory::item_id, Coord{2, 2}};
 }
 
-LightFactory::LightFactory(Uint32 objectID, const ObjectInitializer& initializer)
+LightFactory::LightFactory(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 
     setHealth(getMaxHealth());
 }
 
-LightFactory::LightFactory(Uint32 objectID, const ObjectStreamInitializer& initializer)
+LightFactory::LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 }

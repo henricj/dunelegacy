@@ -28,8 +28,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Carryall;
     using parent = AirUnit;
 
-    Carryall(Uint32 objectID, const ObjectInitializer& initializer);
-    Carryall(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Carryall(uint32_t objectID, const ObjectInitializer& initializer);
+    Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
     Carryall(const Carryall &) = delete;
@@ -49,7 +49,7 @@ public:
 
     void destroy(const GameContext& context) override;
 
-    void deployUnit(const GameContext& context, Uint32 unitID);
+    void deployUnit(const GameContext& context, uint32_t unitID);
 
     void giveCargo(const GameContext& context, UnitBase* newUnit);
 
@@ -79,7 +79,7 @@ private:
     void turn(const GameContext& context) override;
 
     // unit state/properties
-    std::vector<Uint32>   pickedUpUnitList;   ///< What units does this carryall carry?
+    std::vector<uint32_t>   pickedUpUnitList;   ///< What units does this carryall carry?
 
     bool     owned;              ///< Is this carryall owned or is it just here to drop something off
 
@@ -93,7 +93,7 @@ private:
         const auto& objectManager = context.objectManager;
 
         units.erase(std::remove_if(units.begin(), units.end(),
-            [&](Uint32 unit_id) {
+            [&](uint32_t unit_id) {
                 auto *const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
                 return unit ? F(unit) : true;

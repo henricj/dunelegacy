@@ -62,7 +62,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
         \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
     */
-    virtual void setTextColor(Uint32 textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         this->textcolor = textcolor;
         this->textshadowcolor = textshadowcolor;
         this->backgroundcolor = backgroundcolor;
@@ -120,7 +120,7 @@ public:
         \param  width   the new width of this label
         \param  height  the new height of this label
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
         invalidateTextures();
         Widget::resize(width,height);

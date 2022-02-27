@@ -43,7 +43,7 @@ ScrollBar::ScrollBar()  {
 
 ScrollBar::~ScrollBar() = default;
 
-void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void ScrollBar::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     arrow1.handleMouseMovement(x,y,insideOverlay);
     arrow2.handleMouseMovement(x,y - getSize().y + arrow2.getSize().y,insideOverlay);
 
@@ -57,7 +57,7 @@ void ScrollBar::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     }
 }
 
-bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool ScrollBar::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if(!pressed) {
         bDragSlider = false;
     }
@@ -100,7 +100,7 @@ bool ScrollBar::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
     }
 }
 
-bool ScrollBar::handleMouseWheel(Sint32 x, Sint32 y, bool up)  {
+bool ScrollBar::handleMouseWheel(int32_t x, int32_t y, bool up)  {
     if((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
         if(up) {
             setCurrentValue(currentValue-1);
@@ -136,7 +136,7 @@ void ScrollBar::draw(Point position) {
     sliderButton.draw(position+sliderPosition);
 }
 
-void ScrollBar::resize(Uint32 width, Uint32 height) {
+void ScrollBar::resize(uint32_t width, uint32_t height) {
     Widget::resize(width,height);
 
     invalidateTextures();

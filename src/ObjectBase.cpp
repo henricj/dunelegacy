@@ -71,8 +71,8 @@
 
 #include <array>
 
-ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
-                       const ObjectInitializer& initializer)
+ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
+                       const ObjectInitializer&   initializer)
     : ObjectBase(object_constants, objectID) {
     originalHouseID = initializer.owner()->getHouseID();
     owner           = initializer.owner();
@@ -104,7 +104,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objec
     setVisible(VIS_ALL, false);
 }
 
-ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID,
+ObjectBase::ObjectBase(const ObjectBaseConstants&     object_constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
     auto& stream    = initializer.stream();
@@ -151,7 +151,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objec
         visible[i] = b[i];
 }
 
-ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID)
+ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID)
     : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
     graphicID  = -1;
     numImagesX = 0;
@@ -165,8 +165,8 @@ void ObjectBase::destroy(const GameContext& context) { context.objectManager.rem
 void ObjectBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) { }
 
 void ObjectBase::save(OutputStream& stream) const {
-    stream.writeUint32(static_cast<Uint32>(originalHouseID));
-    stream.writeUint32(static_cast<Uint32>(owner->getHouseID()));
+    stream.writeUint32(static_cast<uint32_t>(originalHouseID));
+    stream.writeUint32(static_cast<uint32_t>(owner->getHouseID()));
 
     stream.writeFixPoint(health);
     stream.writeBool(badlyDamaged);
@@ -181,7 +181,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeFixPoint(realY);
 
     stream.writeFixPoint(angle);
-    stream.writeSint8(static_cast<Sint8>(drawnAngle));
+    stream.writeSint8(static_cast<int8_t>(drawnAngle));
 
     stream.writeBool(active);
     stream.writeBool(respondable);
@@ -218,7 +218,7 @@ int ObjectBase::getMaxHealth() const {
     return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
 }
 
-void ObjectBase::handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) {
+void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     if(damage >= 0) {
         FixPoint newHealth = getHealth();
 
@@ -339,7 +339,7 @@ bool ObjectBase::isVisible() const {
     return visible.any();
 }
 
-Uint32 ObjectBase::getHealthColor() const {
+uint32_t ObjectBase::getHealthColor() const {
     const FixPoint healthPercent = health/getMaxHealth();
 
     if(healthPercent >= BADLYDAMAGEDRATIO) {
@@ -589,11 +589,11 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
 
 } // anonymous namespace
 
-std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, Uint32 objectID, const ObjectInitializer& initializer) {
+std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID, const ObjectInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 
-std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, Uint32 objectID,
+std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum                    itemID, uint32_t objectID,
                                                    const ObjectStreamInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }

@@ -46,7 +46,7 @@ DropDownBox::DropDownBox() {
 
 DropDownBox::~DropDownBox() = default;
 
-void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
+void DropDownBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     if((x < 0) || (x >= getSize().x - openListBoxButton.getSize().x - 1) || (y < 0) || (y >= getSize().y)) {
         bHover = false;
     } else if((isEnabled() || (bOnClickEnabled && pOnClick)) && !insideOverlay) {
@@ -62,12 +62,12 @@ void DropDownBox::handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) {
     }
 }
 
-bool DropDownBox::handleMouseMovementOverlay(Sint32 x, Sint32 y) {
+bool DropDownBox::handleMouseMovementOverlay(int32_t x, int32_t y) {
     int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
     return bShowListBox && x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
 }
 
-bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
+bool DropDownBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if((!isEnabled()) || (!isVisible())) {
         // onClick works even when widget is disabled
         if(bOnClickEnabled && isVisible() && pOnClick) {
@@ -112,7 +112,7 @@ bool DropDownBox::handleMouseLeft(Sint32 x, Sint32 y, bool pressed) {
    
 }
 
-bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
+bool DropDownBox::handleMouseLeftOverlay(int32_t x, int32_t y, bool pressed) {
     if((!isEnabled()) || (!isVisible())) {
         return false;
     }
@@ -136,7 +136,7 @@ bool DropDownBox::handleMouseLeftOverlay(Sint32 x, Sint32 y, bool pressed) {
     }
 }
 
-bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
+bool DropDownBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
     if((!isEnabled()) || (!isVisible())) {
         return false;
     }
@@ -162,7 +162,7 @@ bool DropDownBox::handleMouseWheel(Sint32 x, Sint32 y, bool up) {
    
 }
 
-bool DropDownBox::handleMouseWheelOverlay(Sint32 x, Sint32 y, bool up) {
+bool DropDownBox::handleMouseWheelOverlay(int32_t x, int32_t y, bool up) {
     if((!isEnabled()) || (!isVisible())) {
         return false;
     }
@@ -259,7 +259,7 @@ void DropDownBox::drawOverlay(Point position) {
     }
 }
 
-void DropDownBox::resize(Uint32 width, Uint32 height) {
+void DropDownBox::resize(uint32_t width, uint32_t height) {
     Widget::resize(width,height);
 
     invalidateForeground();

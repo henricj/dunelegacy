@@ -35,7 +35,7 @@ void WidgetWithBackground::setBackground(const DuneTexture* pBackground) {
     }
 }
 
-void WidgetWithBackground::resize(Uint32 width, Uint32 height)
+void WidgetWithBackground::resize(uint32_t width, uint32_t height)
 {
     Widget::resize(width, height);
 

@@ -30,13 +30,13 @@ namespace {
 constexpr GroundUnitConstants quad_constants{Quad::item_id, 2, Bullet_ShellSmall};
 }
 
-Quad::Quad(Uint32 objectID, const ObjectInitializer& initializer) : GroundUnit(quad_constants, objectID, initializer) {
+Quad::Quad(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 
     setHealth(getMaxHealth());
 }
 
-Quad::Quad(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Quad::Quad(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 }

@@ -10,7 +10,7 @@ public:
 
     ~BlendBlitter() = default;
 
-    Uint64 getNextValue() {
+    uint64_t getNextValue() {
         do {
             currentValue = (a*currentValue + c) % m;
         } while (currentValue >= N);
@@ -32,11 +32,11 @@ private:
     int numSteps;
     int StepsLeft;
 
-    Uint64 N;
-    Uint64 m;
-    Uint64 a;
-    Uint64 c;
-    Uint64 currentValue;
+    uint64_t N;
+    uint64_t m;
+    uint64_t a;
+    uint64_t c;
+    uint64_t currentValue;
 };
 
 #endif //BLENDBLITTER_H

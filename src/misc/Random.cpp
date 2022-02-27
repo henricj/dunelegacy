@@ -124,8 +124,8 @@ constexpr char seed_stir[] = u8R"(
 )";
 } // namespace
 
-std::array<Uint8, Random::state_bytes> Random::getState() const {
-    std::array<Uint8, Random::state_bytes> state;
+std::array<uint8_t, Random::state_bytes> Random::getState() const {
+    std::array<uint8_t, Random::state_bytes> state;
 
     get_generator_state(generator_, state);
 
@@ -134,13 +134,13 @@ std::array<Uint8, Random::state_bytes> Random::getState() const {
     return state;
 }
 
-void Random::setState(const gsl::span<const Uint8, state_bytes> state) {
+void Random::setState(const gsl::span<const uint8_t, state_bytes> state) {
     sdl2::log_info("Setting state %s", to_hex(state));
 
     set_generator_state(generator_, state);
 }
 
-void Random::set_generator_state(generator_type& generator, gsl::span<const Uint8, state_bytes> state)
+void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state)
 {
     std::array<generator_type::state_type, generator_type::state_words> words;
 
@@ -163,7 +163,7 @@ void Random::set_generator_state(generator_type& generator, gsl::span<const Uint
     generator.set_state(words);
 }
 
-void Random::get_generator_state(const generator_type& generator, gsl::span<Uint8, state_bytes> state)
+void Random::get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state)
 {
     std::array<generator_type::state_type, generator_type::state_words> words;
 
@@ -178,13 +178,13 @@ void Random::get_generator_state(const generator_type& generator, gsl::span<Uint
         for(auto i = 0u; i < sizeof(decltype(n)); ++i) {
             if(it == state.end()) THROW(std::runtime_error, "Invalid state buffer");
 
-            *it++ = static_cast<Uint8>(n >> (8 * (sizeof(decltype(n)) - 1)));
+            *it++ = static_cast<uint8_t>(n >> (8 * (sizeof(decltype(n)) - 1)));
             n <<= 8;
         }
     }
 }
 
-void RandomFactory::setSeed(gsl::span<const Uint8> seed) {
+void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
     sdl2::log_info("Setting RandomFactory seed to %s", to_hex(seed));
 
     seed_.clear();
@@ -204,10 +204,10 @@ void RandomFactory::setSeed(gsl::span<const Uint8> seed) {
     initialized_ = true;
 }
 
-std::vector<Uint8> RandomFactory::getSeed() const {
+std::vector<uint8_t> RandomFactory::getSeed() const {
     if(!initialized_) THROW(std::runtime_error, "RandomFactor::getSeed(): not initialized");
 
-    std::vector<Uint8> seed;
+    std::vector<uint8_t> seed;
     seed.reserve(seed_.size());
     std::copy(seed_.begin(), seed_.end(), std::back_inserter(seed));
 
@@ -216,7 +216,7 @@ std::vector<Uint8> RandomFactory::getSeed() const {
     return seed;
 }
 
-std::vector<Uint8> RandomFactory::createRandomSeed(std::string_view name) {
+std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     std::random_device rd;
 
     auto entropy_estimate = rd.entropy();
@@ -228,7 +228,7 @@ std::vector<Uint8> RandomFactory::createRandomSeed(std::string_view name) {
     const auto rd_efficiency = entropy_estimate / (8 * sizeof(decltype(rd())));
     const auto size = static_cast<int>(std::ceil(seed_size / rd_efficiency)) + 1;
 
-    std::vector<Uint32> buffer;
+    std::vector<uint32_t> buffer;
     buffer.reserve(size + 5);
 
     static std::atomic<int> nonce;
@@ -288,5 +288,5 @@ Random RandomFactory::create(std::string_view name) const {
 
     sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
-    return Random::create(gsl::span<const Uint8, Random::state_bytes>{buffer});
+    return Random::create(gsl::span<const uint8_t, Random::state_bytes>{buffer});
 }

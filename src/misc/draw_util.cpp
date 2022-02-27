@@ -23,17 +23,17 @@
 
 #include <mutex>
 
-Uint32 getPixel(SDL_Surface *surface, int x, int y) {
+uint32_t getPixel(SDL_Surface* surface, int x, int y) {
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    auto *const p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch) + (x * bpp);
+    auto *const p = static_cast<uint8_t*>(surface->pixels) + (y * surface->pitch) + (x * bpp);
 
     switch(bpp) {
     case 1:
         return *p;
 
     case 2:
-        return *reinterpret_cast<Uint16 *>(p);
+        return *reinterpret_cast<uint16_t*>(p);
 
     case 3:
         if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -43,14 +43,14 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
         }
 
     case 4: {
-        const auto value = *reinterpret_cast<Uint32 *>(p);
-        Uint8 r = 0;
+        const auto value = *reinterpret_cast<uint32_t*>(p);
+        uint8_t    r     = 0;
 
-        Uint8 g = 0;
+        uint8_t g = 0;
 
-        Uint8 b = 0;
+        uint8_t b = 0;
 
-        Uint8 a = 0;
+        uint8_t a = 0;
         SDL_GetRGBA(value, surface->format, &r, &g, &b, &a);
         return COLOR_RGBA(r, g, b, a);
     }
@@ -60,12 +60,12 @@ Uint32 getPixel(SDL_Surface *surface, int x, int y) {
 }
 
 
-void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
+void putPixel(SDL_Surface * surface, int x, int y, uint32_t color) {
     if(x < 0 || x >= surface->w || y < 0 || y >= surface->h) return;
 
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel want to set */
-    auto *const p = static_cast<Uint8 *>(surface->pixels) + y * surface->pitch + x * bpp;
+    auto *const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
     switch(bpp) {
     case 1:
@@ -73,7 +73,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
         break;
 
     case 2:
-        *reinterpret_cast<Uint16 *>(p) = color;
+        *reinterpret_cast<uint16_t*>(p) = color;
         break;
 
     case 3:
@@ -89,7 +89,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
         break;
 
     case 4:
-        *reinterpret_cast<Uint32 *>(p) = MapRGBA(surface->format, color);
+        *reinterpret_cast<uint32_t*>(p) = MapRGBA(surface->format, color);
         break;
     default:
         THROW(std::runtime_error, "putPixel(): Invalid bpp value!");
@@ -97,7 +97,7 @@ void putPixel(SDL_Surface *surface, int x, int y, Uint32 color) {
 }
 
 
-void drawHLineNoLock(SDL_Surface *surface, int x1, int y, int x2, Uint32 color) {
+void drawHLineNoLock(SDL_Surface * surface, int x1, int y, int x2, uint32_t color) {
     auto min = x1;
     auto max = x2;
 
@@ -111,7 +111,7 @@ void drawHLineNoLock(SDL_Surface *surface, int x1, int y, int x2, Uint32 color) 
 }
 
 
-void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) {
+void drawVLineNoLock(SDL_Surface * surface, int x, int y1, int y2, uint32_t color) {
     auto min = y1;
     auto max = y2;
 
@@ -125,26 +125,26 @@ void drawVLineNoLock(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) 
 }
 
 
-void drawHLine(SDL_Surface *surface, int x1, int y, int x2, Uint32 color) {
+void drawHLine(SDL_Surface * surface, int x1, int y, int x2, uint32_t color) {
     sdl2::surface_lock lock{ surface };
 
     drawHLineNoLock(surface, x1, y, x2, color);
 }
 
 
-void drawVLine(SDL_Surface *surface, int x, int y1, int y2, Uint32 color) {
+void drawVLine(SDL_Surface * surface, int x, int y1, int y2, uint32_t color) {
     sdl2::surface_lock lock{ surface };
 
     drawVLineNoLock(surface, x, y1, y2, color);
 }
 
-void drawRect(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
+void drawRect(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color) {
     sdl2::surface_lock lock{ surface };
 
     drawRectNoLock(surface, x1, y1, x2, y2, color);
 }
 
-void drawRectNoLock(SDL_Surface *surface, int x1, int y1, int x2, int y2, Uint32 color) {
+void drawRectNoLock(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color) {
     int min = x1;
     int max = x2;
 
@@ -221,7 +221,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     return pScreen;
 }
 
-void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
+void replaceColor(SDL_Surface * surface, uint32_t oldColor, uint32_t newColor) {
     sdl2::surface_lock lock{ surface };
 
     for(auto y = 0; y < surface->h; y++) {
@@ -234,11 +234,11 @@ void replaceColor(SDL_Surface *surface, Uint32 oldColor, Uint32 newColor) {
     }
 }
 
-void mapColor(SDL_Surface *surface, const Uint8 colorMap[256]) {
+void mapColor(SDL_Surface * surface, const uint8_t colorMap[256]) {
     sdl2::surface_lock lock{ surface };
 
     for(auto y = 0; y < surface->h; y++) {
-        Uint8* RESTRICT p = static_cast<Uint8 *>(surface->pixels) + (y * surface->pitch);
+        uint8_t* RESTRICT p = static_cast<uint8_t*>(surface->pixels) + (y * surface->pitch);
 
         for(auto x = 0; x < surface->w; ++x, ++p) {
             *p = colorMap[*p];
@@ -316,7 +316,7 @@ void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
     }
 
     if(const auto has_ckey = SDL_HasColorKey(source)) {
-        Uint32 ckey = 0;
+        uint32_t ckey = 0;
         if(SDL_GetColorKey(source, &ckey)) {
             THROW(std::runtime_error, "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
         }
@@ -501,7 +501,7 @@ sdl2::surface_ptr createShadowSurface(SDL_Surface* source) {
 
     const sdl2::surface_lock lock{ retPic.get() };
 
-    auto* const pixels = static_cast<Uint8*>(lock.pixels());
+    auto* const pixels = static_cast<uint8_t*>(lock.pixels());
 
     for (auto j = 0; j < retPic->h; ++j) {
         auto* const p = &pixels[j * lock.pitch()];
@@ -534,7 +534,7 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
 
     const sdl2::surface_lock lock{ retPic.get() };
 
-    auto* const pixels = static_cast<Uint8*>(lock.pixels());
+    auto* const pixels = static_cast<uint8_t*>(lock.pixels());
 
     for(auto y = 0; y < retPic->h; ++y) {
         auto* p = &pixels[y * lock.pitch()];

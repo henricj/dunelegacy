@@ -30,14 +30,14 @@ namespace {
 constexpr GroundUnitConstants raider_trike_constants{RaiderTrike::item_id, 2, Bullet_ShellSmall};
 }
 
-RaiderTrike::RaiderTrike(Uint32 objectID, const ObjectInitializer& initializer)
+RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(raider_trike_constants, objectID, initializer) {
     RaiderTrike::init();
 
     setHealth(getMaxHealth());
 }
 
-RaiderTrike::RaiderTrike(Uint32 objectID, const ObjectStreamInitializer& initializer)
+RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : GroundUnit(raider_trike_constants, objectID, initializer) {
     RaiderTrike::init();
 }

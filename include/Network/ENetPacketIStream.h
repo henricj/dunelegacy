@@ -68,7 +68,7 @@ public:
 
     std::string readString() override
     {
-        Uint32 length = readUint32();
+        uint32_t length = readUint32();
 
         if(currentPos + length > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readString(): End-of-File reached!");
@@ -79,47 +79,43 @@ public:
         return resultString;
     }
 
-    Uint8 readUint8() override
-    {
-        if(currentPos + sizeof(Uint8) > packet->dataLength) {
+    uint8_t readUint8() override {
+        if(currentPos + sizeof(uint8_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint8(): End-of-File reached!");
         }
 
-        Uint8 tmp = *((Uint8*) (packet->data + currentPos));
-        currentPos += sizeof(Uint8);
+        uint8_t tmp = *((uint8_t*)(packet->data + currentPos));
+        currentPos += sizeof(uint8_t);
         return tmp;
     }
 
-    Uint16 readUint16() override
-    {
-        if(currentPos + sizeof(Uint16) > packet->dataLength) {
+    uint16_t readUint16() override {
+        if(currentPos + sizeof(uint16_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint16(): End-of-File reached!");
         }
 
-        Uint16 tmp = *((Uint16*) (packet->data + currentPos));
-        currentPos += sizeof(Uint16);
+        uint16_t tmp = *((uint16_t*)(packet->data + currentPos));
+        currentPos += sizeof(uint16_t);
         return SDL_SwapLE16(tmp);
     }
 
-    Uint32 readUint32() override
-    {
-        if(currentPos + sizeof(Uint32) > packet->dataLength) {
+    uint32_t readUint32() override {
+        if(currentPos + sizeof(uint32_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint32(): End-of-File reached!");
         }
 
-        Uint32 tmp = *((Uint32*) (packet->data + currentPos));
-        currentPos += sizeof(Uint32);
+        uint32_t tmp = *((uint32_t*)(packet->data + currentPos));
+        currentPos += sizeof(uint32_t);
         return SDL_SwapLE32(tmp);
     }
 
-    Uint64 readUint64() override
-    {
-        if(currentPos + sizeof(Uint64) > packet->dataLength) {
+    uint64_t readUint64() override {
+        if(currentPos + sizeof(uint64_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint64(): End-of-File reached!");
         }
 
-        Uint64 tmp = *((Uint64*) (packet->data + currentPos));
-        currentPos += sizeof(Uint64);
+        uint64_t tmp = *((uint64_t*)(packet->data + currentPos));
+        currentPos += sizeof(uint64_t);
         return SDL_SwapLE64(tmp);
     }
 
@@ -130,9 +126,9 @@ public:
 
     float readFloat() override
     {
-        Uint32 tmp = readUint32();
-        float tmp2 = NAN;
-        memcpy(&tmp2,&tmp,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
+        uint32_t tmp  = readUint32();
+        float    tmp2 = NAN;
+        memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
         return tmp2;
     }
 

@@ -65,7 +65,7 @@ public:
         Constructor.
         \param width    Width of this spacer.
     */
-    explicit HSpacer(Uint32 width) : Widget(), width{ width } {
+    explicit HSpacer(uint32_t width) : Widget(), width{ width } {
         resize(width,0);
         enableResizing(false,false);
     }
@@ -89,14 +89,14 @@ public:
         \param width width of this spacer
         \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static HSpacer* create(Uint32 width) {
+    static HSpacer* create(uint32_t width) {
         HSpacer* sp = new HSpacer(width);
         sp->pAllocated = true;
         return sp;
     }
 
 private:
-    Uint32 width;       ///< width of this spacer
+    uint32_t width; ///< width of this spacer
 };
 
 /// A vertical fixed-size spacer class
@@ -112,7 +112,7 @@ public:
         Constructor.
         \param height   Height of this spacer.
     */
-    explicit VSpacer(Uint32 height) : Widget(), height{ height } {
+    explicit VSpacer(uint32_t height) : Widget(), height{ height } {
         resize(0,height);
         enableResizing(false,false);
     }
@@ -136,14 +136,14 @@ public:
         \param height height of this spacer
         \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static VSpacer* create(Uint32 height) {
+    static VSpacer* create(uint32_t height) {
         VSpacer* sp = new VSpacer(height);
         sp->pAllocated = true;
         return sp;
     }
 
 private:
-    Uint32 height;      ///< height of this spacer
+    uint32_t height; ///< height of this spacer
 };
 
 #endif //SPACER_H

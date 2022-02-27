@@ -27,14 +27,14 @@ namespace {
 constexpr InfantryBaseConstants trooper_constants{Trooper::item_id, 1, Bullet_SmallRocket};
 }
 
-Trooper::Trooper(Uint32 objectID, const ObjectInitializer& initializer)
+Trooper::Trooper(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 
     setHealth(getMaxHealth());
 }
 
-Trooper::Trooper(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Trooper::Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 }

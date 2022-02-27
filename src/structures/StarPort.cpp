@@ -40,7 +40,7 @@ namespace {
 constexpr BuilderBaseConstants star_port_constants{StarPort::item_id, Coord{3, 3}};
 }
 
-StarPort::StarPort(Uint32 objectID, const ObjectInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
+StarPort::StarPort(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     ObjectBase::setHealth(getMaxHealth());
@@ -49,7 +49,7 @@ StarPort::StarPort(Uint32 objectID, const ObjectInitializer& initializer) : Buil
     deploying = false;
 }
 
-StarPort::StarPort(Uint32 objectID, const ObjectStreamInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
+StarPort::StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     auto& stream = initializer.stream();
@@ -87,7 +87,7 @@ void StarPort::doBuildRandom(const GameContext& context) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
         } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
         doProduceItem(item2Produce);
@@ -166,8 +166,8 @@ void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
                 choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
 
                 // find the most expensive item to cancel
-                auto iterMostExpensiveItem = currentProductionQueue.end();
-                Uint32 mostExpensiveItemPrice = 0;
+                auto     iterMostExpensiveItem  = currentProductionQueue.end();
+                uint32_t mostExpensiveItemPrice = 0;
                 for(auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
                     if(iter->itemID == itemID) {
                         if(iter->price > mostExpensiveItemPrice) {

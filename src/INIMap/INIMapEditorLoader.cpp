@@ -571,7 +571,7 @@ void INIMapEditorLoader::loadReinforcements()
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        Uint32 droptime = 0;
+        uint32_t droptime = 0;
         if(!parseString(strTime, droptime)) {
             logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
             continue;

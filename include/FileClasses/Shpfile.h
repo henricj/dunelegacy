@@ -42,8 +42,8 @@ private:
     // Internal structure used for an index of contained files
     struct ShpfileEntry
     {
-        Uint32 startOffset;
-        Uint32 endOffset;
+        uint32_t startOffset;
+        uint32_t endOffset;
     };
 
 public:
@@ -54,9 +54,9 @@ public:
     Shpfile& operator=(Shpfile &&) = delete;
     virtual ~Shpfile();
 
-    sdl2::surface_ptr getPicture(Uint32 indexOfFile);
-    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
-    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic=true, bool bSetColorKey=true, bool bLoopRewindBackwards=false);
+    sdl2::surface_ptr          getPicture(uint32_t indexOfFile);
+    sdl2::surface_ptr          getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
+    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic =true, bool bSetColorKey =true, bool bLoopRewindBackwards =false);
 
     /// Returns the number of contained pictures
     /**

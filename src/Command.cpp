@@ -38,7 +38,7 @@
 #include <structures/ConstructionYard.h>
 
 
-Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
+Command::Command(uint8_t playerID, uint8_t* data, uint32_t length)
  : playerID(playerID)
 {
     if(length % 4 != 0) {
@@ -49,7 +49,7 @@ Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
         THROW(std::invalid_argument, "Command::Command(): Command must be at least 4 bytes long!");
     }
 
-    commandID = static_cast<CMDTYPE>(*reinterpret_cast<Uint32*>(data));
+    commandID = static_cast<CMDTYPE>(*reinterpret_cast<uint32_t*>(data));
 
     if(commandID >= CMDTYPE::CMD_MAX) {
         THROW(std::invalid_argument, "Command::Command(): CommandID unknown!");
@@ -59,7 +59,7 @@ Command::Command(Uint8 playerID, Uint8* data, Uint32 length)
 
     parameter.reserve(count);
 
-    auto *pData = reinterpret_cast<Uint32*>(data + 4);
+    auto *pData = reinterpret_cast<uint32_t*>(data + 4);
     for(auto i=0u;i<count;i++) {
         parameter.push_back(*pData);
         pData++;
@@ -76,7 +76,7 @@ Command::~Command() = default;
 
 void Command::save(OutputStream& stream) const {
     stream.writeUint8(playerID);
-    stream.writeUint32(static_cast<Uint32>(commandID));
+    stream.writeUint32(static_cast<uint32_t>(commandID));
     stream.writeUint32Vector(parameter);
     stream.flush();
 }

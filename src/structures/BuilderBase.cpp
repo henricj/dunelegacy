@@ -71,14 +71,14 @@ const ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
                                               Unit_Saboteur,
                                               ItemID_Invalid};
 
-BuilderBase::BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID, const ObjectInitializer& initializer)
+BuilderBase::BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
     BuilderBase::init();
 
     buildSpeedLimit = 1.0_fix;
 }
 
-BuilderBase::BuilderBase(const BuilderBaseConstants& constants, Uint32 objectID,
+BuilderBase::BuilderBase(const BuilderBaseConstants&    constants, uint32_t objectID,
                          const ObjectStreamInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
     BuilderBase::init();
@@ -274,7 +274,7 @@ void BuilderBase::updateProductionProgress() {
 void BuilderBase::doBuildRandom(const GameContext& context) {
     if(buildList.empty()) return;
 
-    const auto item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<Sint32>(buildList.size())-1))->itemID;
+    const auto item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
     doProduceItem(item2Produce);
 }
 
@@ -493,17 +493,18 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
         }
     }
 
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (Uint32) multipleMode));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (
+                                                            uint32_t) multipleMode));
 }
 
 void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
     currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (Uint32)multipleMode));
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (uint32_t)multipleMode));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
     currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, (Uint32)OnHold));
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, (uint32_t)OnHold));
 }
 
 

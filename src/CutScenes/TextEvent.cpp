@@ -19,7 +19,7 @@
 #include <FileClasses/FontManager.h>
 #include <globals.h>
 
-TextEvent::TextEvent(const std::string& text, Uint32 color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
+TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
  : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical)
 {
     sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, 28, true);

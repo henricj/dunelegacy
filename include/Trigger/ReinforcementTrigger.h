@@ -39,7 +39,7 @@ public:
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered (must be >0 if bRepeat == true)
     */
     ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
-                         Uint32 triggerCycleNumber);
+                         uint32_t  triggerCycleNumber);
     ReinforcementTrigger(const ReinforcementTrigger &) = default;
     ReinforcementTrigger(ReinforcementTrigger &&) = default;
 
@@ -97,10 +97,10 @@ public:
     void trigger(const GameContext& context) override;
 
 private:
-    std::vector<ItemID_enum> droppedUnits;   ///< a vector of the itemIDs of the to be dropped units
-    DropLocation        dropLocation;   ///< the kind of drop
-    HOUSETYPE           houseID;        ///< the owner of the new unit
-    Uint32              repeatCycle;    ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the beginning of the game. repeatCycle = 0 if there is no repeat
+    std::vector<ItemID_enum> droppedUnits; ///< a vector of the itemIDs of the to be dropped units
+    DropLocation             dropLocation; ///< the kind of drop
+    HOUSETYPE                houseID;      ///< the owner of the new unit
+    uint32_t repeatCycle;  ///< the interval in game cycles between two drops. Will be equal to triggerCycleNumber at the beginning of the game. repeatCycle = 0 if there is no repeat
 };
 
 #endif // REINFORCEMENTTRIGGER_H

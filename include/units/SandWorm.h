@@ -28,8 +28,8 @@ public:
     inline static constexpr ItemID_enum item_id = Unit_Sandworm;
     using parent = GroundUnit;
 
-    Sandworm(Uint32 objectID, const ObjectInitializer& initializer);
-    Sandworm(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    Sandworm(uint32_t objectID, const ObjectInitializer& initializer);
+    Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Sandworm() override;
 
     void save(OutputStream& stream) const override;
@@ -45,7 +45,7 @@ public:
 
     void setTarget(const ObjectBase* newTarget) override;
 
-    void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner) override;
+    void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
     /**
         Updates this sandworm.
@@ -89,14 +89,14 @@ private:
     void init();
 
     // sandworm state
-    Sint32      kills;                      ///< How many units does this sandworm alreay killed?
-    Sint32      attackFrameTimer;           ///< When to show the next attack frame
-    Sint32      sleepTimer;                 ///< How long has this sandworm slept?
-    Uint8       warningWormSignPlayedFlags; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
+    int32_t kills;                      ///< How many units does this sandworm alreay killed?
+    int32_t attackFrameTimer;           ///< When to show the next attack frame
+    int32_t sleepTimer;                 ///< How long has this sandworm slept?
+    uint8_t warningWormSignPlayedFlags; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
 
     // drawing information
-    Sint32 shimmerOffsetIndex;
-    Coord lastLocs[SANDWORM_SEGMENTS];    ///< Last locations of the sandworm
+    int32_t shimmerOffsetIndex;
+    Coord   lastLocs[SANDWORM_SEGMENTS]; ///< Last locations of the sandworm
 };
 
 #endif // SANDWORM_H

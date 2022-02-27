@@ -40,7 +40,7 @@ Shpfile::Shpfile(SDL_RWops* rwop)
         THROW(std::invalid_argument, "Shpfile::Shpfile(): rwop == nullptr!");
     }
 
-    const Sint64 endOffset = SDL_RWsize(rwop);
+    const int64_t endOffset = SDL_RWsize(rwop);
     if(endOffset <= 0) {
         THROW(std::runtime_error, "Shpfile::Shpfile(): Cannot determine size of this *.shp-File!");
     }
@@ -67,7 +67,7 @@ Shpfile::~Shpfile() = default;
     \param  indexOfFile specifies which picture to return (zero based)
     \return nth picture in this shp-File
 */
-sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
+sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile)
 {
     if(indexOfFile >= shpfileEntries.size()) {
         THROW(std::invalid_argument, "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile, shpfileEntries.size());
@@ -178,7 +178,7 @@ sdl2::surface_ptr Shpfile::getPicture(Uint32 indexOfFile)
     \return picture in this shp-File containing all specified pictures
 */
 sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
-    std::vector<Uint32> tiles;
+    std::vector<uint32_t> tiles;
 
     if((tilesX == 0) || (tilesY == 0)) {
         THROW(std::invalid_argument, "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
@@ -373,14 +373,14 @@ void Shpfile::readIndex()
         /* files with only one image might be different */
 
         ShpfileEntry newShpfileEntry;
-        if ((reinterpret_cast<const Uint16*>( pFiledata.get()))[2] != 0) {
+        if ((reinterpret_cast<const uint16_t*>( pFiledata.get()))[2] != 0) {
             /* File has special header with only 2 byte offset */
-            newShpfileEntry.startOffset = static_cast<Uint32>(reinterpret_cast<const Uint16 *>(pFiledata.get())[1]);
-            newShpfileEntry.endOffset = static_cast<Uint32>(reinterpret_cast<const Uint16 *>(pFiledata.get())[2]) - 1;
+            newShpfileEntry.startOffset = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[1]);
+            newShpfileEntry.endOffset   = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[2]) - 1;
         } else {
             /* File has normal 4 byte offsets */
-            newShpfileEntry.startOffset = static_cast<Uint32>(*reinterpret_cast<const Uint32 *>(pFiledata.get()+2)) + 2;
-            newShpfileEntry.endOffset = static_cast<Uint32>(reinterpret_cast<const Uint16 *>(pFiledata.get())[3]) - 1 + 2;
+            newShpfileEntry.startOffset = static_cast<uint32_t>(*reinterpret_cast<const uint32_t*>(pFiledata.get()+2)) + 2;
+            newShpfileEntry.endOffset   = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[3]) - 1 + 2;
         }
 
         shpfileEntries.push_back(newShpfileEntry);
@@ -388,10 +388,10 @@ void Shpfile::readIndex()
     } else {
         /* File contains more than one image */
 
-        if (reinterpret_cast<const Uint16 *>(pFiledata.get())[2] != 0) {
+        if (reinterpret_cast<const uint16_t*>(pFiledata.get())[2] != 0) {
             /* File has special header with only 2 byte offset */
 
-            if( shpFilesize < static_cast<Uint32>((NumFiles * 2) + 2 + 2)) {
+            if( shpFilesize < static_cast<uint32_t>((NumFiles * 2) + 2 + 2)) {
                 THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
@@ -412,11 +412,11 @@ void Shpfile::readIndex()
             }
 
             // Add the endOffset for the last file
-            shpfileEntries.back().endOffset = static_cast<Uint32>(*reinterpret_cast<const Uint16 *>(pFiledata.get()+ 2 +(NumFiles * 2))) - 1 + 2;
+            shpfileEntries.back().endOffset = static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get()+ 2 +(NumFiles * 2))) - 1 + 2;
         } else {
             /* File has normal 4 byte offsets */
 
-            if( shpFilesize < static_cast<Uint32>((NumFiles * 4) + 2 + 2)) {
+            if( shpFilesize < static_cast<uint32_t>((NumFiles * 4) + 2 + 2)) {
                 THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
@@ -437,7 +437,7 @@ void Shpfile::readIndex()
             }
 
             // Add the endOffset for the last file
-            shpfileEntries.back().endOffset = static_cast<Uint32>(*reinterpret_cast<const Uint16 *>(pFiledata.get()+ 2 +(NumFiles * 4))) - 1 + 2;
+            shpfileEntries.back().endOffset = static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get()+ 2 +(NumFiles * 4))) - 1 + 2;
         }
     }
 }

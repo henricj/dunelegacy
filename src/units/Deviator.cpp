@@ -31,14 +31,14 @@ namespace {
 constexpr TrackedUnitConstants deviator_constants{Deviator::item_id, 1, Bullet_DRocket};
 }
 
-Deviator::Deviator(Uint32 objectID, const ObjectInitializer& initializer)
+Deviator::Deviator(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(deviator_constants, objectID, initializer) {
     Deviator::init();
 
     ObjectBase::setHealth(getMaxHealth());
 }
 
-Deviator::Deviator(Uint32 objectID, const ObjectStreamInitializer& initializer)
+Deviator::Deviator(uint32_t objectID, const ObjectStreamInitializer& initializer)
     : TrackedUnit(deviator_constants, objectID, initializer) {
     Deviator::init();
 }
@@ -88,8 +88,8 @@ void Deviator::blitToScreen()
 
 void Deviator::destroy(const GameContext& context) {
     if(context.map.tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        Uint32 explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2,Explosion_Flames);
+        Coord    realPos(lround(realX), lround(realY));
+        uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if(isVisible(getOwner()->getTeamID()))

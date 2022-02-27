@@ -73,7 +73,7 @@ public:
 private:
     void onMapPropertiesChanged();
 
-    static sdl2::surface_ptr createMinimapPicture(MapData& mapdata, int borderWidth, Uint32 borderColor);
+    static sdl2::surface_ptr createMinimapPicture(MapData& mapdata, int borderWidth, uint32_t borderColor);
 
     void onCancel();
     void onLoad();
@@ -136,8 +136,8 @@ private:
     TextButton  loadButton;
     TextButton  createButton;
 
-    HOUSETYPE   house;
-    Uint32      color;
+    HOUSETYPE house;
+    uint32_t  color;
 
     int         mapSeed;
     MapData     mapdata;

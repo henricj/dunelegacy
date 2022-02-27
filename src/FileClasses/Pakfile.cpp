@@ -74,13 +74,13 @@ Pakfile::~Pakfile()
             #if SDL_BYTEORDER == SDL_BIG_ENDIAN
             Uint32 startoffset = SDL_Swap32(fileEntries[i].startOffset + headersize);
             #else
-            Uint32 startoffset = fileEntrie.startOffset + headersize;
+            uint32_t startoffset = fileEntrie.startOffset + headersize;
             #endif
-            SDL_RWwrite(fPakFile,(char*) &startoffset,sizeof(Uint32),1);
+            SDL_RWwrite(fPakFile,(char*) &startoffset,sizeof(uint32_t),1);
             SDL_RWwrite(fPakFile,fileEntrie.filename.u8string().c_str(), fileEntrie.filename.u8string().length() + 1,1);
         }
-        Uint32 tmp = 0;
-        SDL_RWwrite(fPakFile,(char*) &tmp, sizeof(Uint32), 1);
+        uint32_t tmp = 0;
+        SDL_RWwrite(fPakFile,(char*) &tmp, sizeof(uint32_t), 1);
 
         // write out data
         SDL_RWwrite(fPakFile,writeOutData,numWriteOutData,1);
@@ -273,7 +273,7 @@ size_t Pakfile::WriteFile(SDL_RWops *pRWop, const void *ptr, size_t size, size_t
     return 0;
 }
 
-Sint64 Pakfile::SizeFile(SDL_RWops *pRWop) {
+int64_t Pakfile::SizeFile(SDL_RWops* pRWop) {
     if((pRWop == nullptr) || (pRWop->hidden.unknown.data1 == nullptr)
         || (pRWop->type != PAKFILE_RWOP_TYPE)) {
         return -1;
@@ -289,10 +289,10 @@ Sint64 Pakfile::SizeFile(SDL_RWops *pRWop) {
         return -1;
     }
 
-    return static_cast<Sint64>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
+    return static_cast<int64_t>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
 }
 
-Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
+int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
     if((pRWop == nullptr) || (pRWop->hidden.unknown.data1 == nullptr)
         || (pRWop->type != PAKFILE_RWOP_TYPE)) {
         return -1;
@@ -308,7 +308,7 @@ Sint64 Pakfile::SeekFile(SDL_RWops *pRWop, Sint64 offset, int whence) {
         return -1;
     }
 
-    Sint64 newOffset = 0;
+    int64_t newOffset = 0;
 
     switch(whence) {
         case SEEK_SET:
@@ -390,7 +390,7 @@ void Pakfile::readIndex()
         fileEntries.push_back(newEntry);
     }
 
-    Sint64 filesize = SDL_RWsize(fPakFile);
+    int64_t filesize = SDL_RWsize(fPakFile);
     if(filesize < 0) {
         THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWsize() failed!");
     }

@@ -25,12 +25,12 @@
 class VBox_WidgetData {
 public:
     VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { }
-    VBox_WidgetData(Widget* _pWidget, Sint32 _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
+    VBox_WidgetData(Widget* _pWidget, int32_t _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
     VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
 
     Widget* pWidget;
-    Sint32 fixedHeight;
-    double weight;
+    int32_t fixedHeight;
+    double  weight;
 };
 
 /// A container class for vertical aligned widgets.
@@ -51,7 +51,7 @@ public:
         \param newWidget    Widget to add
         \param fixedHeight  a fixed height for this widget (must be greater than the minimum size)
     */
-    virtual void addWidget(Widget* newWidget, Sint32 fixedHeight) {
+    virtual void addWidget(Widget* newWidget, int32_t fixedHeight) {
         if(newWidget != nullptr) {
             containedWidgets.push_back(VBox_WidgetData(newWidget, fixedHeight));
             newWidget->setParent(this);
@@ -109,9 +109,9 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(Uint32 width, Uint32 height) override
+    void resize(uint32_t width, uint32_t height) override
     {
-        Sint32 availableHeight = height;
+        int32_t availableHeight = height;
 
         int numRemainingWidgets = containedWidgets.size();
 
@@ -132,8 +132,8 @@ public:
 
         // Under the resizeable widgets find all objects that are oversized (minimum size > AvailableHeight*weight)
         // also calculate the weight sum of all the resizeable widgets that are not oversized
-        Sint32 neededOversizeHeight = 0;
-        double notOversizedWeightSum = 0.0;
+        int32_t neededOversizeHeight  = 0;
+        double  notOversizedWeightSum = 0.0;
         for(const VBox_WidgetData& widgetData : containedWidgets) {
             if(widgetData.pWidget->resizingYAllowed() == true && widgetData.fixedHeight <= 0) {
                 if((double) widgetData.pWidget->getMinimumSize().y > availableHeight * (widgetData.weight/weightSum)) {
@@ -144,9 +144,9 @@ public:
             }
         }
 
-        Sint32 totalAvailableHeight = availableHeight;
+        int32_t totalAvailableHeight = availableHeight;
         for(const VBox_WidgetData& widgetData : containedWidgets) {
-            Sint32 widgetWidth;
+            int32_t widgetWidth;
             if(widgetData.pWidget->resizingXAllowed() == true) {
                 widgetWidth = width;
             } else {
@@ -154,7 +154,7 @@ public:
             }
 
             if(widgetData.pWidget->resizingYAllowed() == true) {
-                Sint32 WidgetHeight = 0;
+                int32_t WidgetHeight = 0;
 
                 if(widgetData.fixedHeight <= 0) {
                     if(numRemainingWidgets <= 1) {
@@ -162,7 +162,7 @@ public:
                     } else if((double) widgetData.pWidget->getMinimumSize().y > totalAvailableHeight * (widgetData.weight/weightSum)) {
                         WidgetHeight = widgetData.pWidget->getMinimumSize().y;
                     } else {
-                        WidgetHeight = (Sint32) ((totalAvailableHeight-neededOversizeHeight) * (widgetData.weight/notOversizedWeightSum));
+                        WidgetHeight = (int32_t) ((totalAvailableHeight-neededOversizeHeight) * (widgetData.weight/notOversizedWeightSum));
                     }
                     availableHeight -= WidgetHeight;
                     numRemainingWidgets--;

@@ -59,7 +59,7 @@ AITeamType      getAITeamTypeByName(const std::string& name);
 std::string     getAITeamTypeNameByID(AITeamType aiTeamType);
 
 
-Uint32 getColorByTerrainType(TERRAINTYPE terrainType);
+uint32_t getColorByTerrainType(TERRAINTYPE terrainType);
 
 FixPoint        getDeviateWeakness(HOUSETYPE house);
 

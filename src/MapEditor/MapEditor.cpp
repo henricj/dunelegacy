@@ -1276,11 +1276,11 @@ void MapEditor::processInput() {
     }
 
     if((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
-        const Uint8 *keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-        scrollLeftMode = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
-        scrollUpMode = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+        const uint8_t* keystate = SDL_GetKeyboardState(nullptr);
+        scrollDownMode          =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode          = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode         = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode            = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if(scrollLeftMode && scrollRightMode) {
             // do nothing

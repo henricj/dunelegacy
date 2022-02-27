@@ -63,13 +63,13 @@ public:
             team = stream.readSint32();
 
             const auto numPlayerInfo = stream.readUint32();
-            for(Uint32 i=0;i<numPlayerInfo;i++) {
+            for(uint32_t i = 0;i<numPlayerInfo;i++) {
                 playerInfoList.push_back(PlayerInfo(stream));
             }
         }
 
         void save(OutputStream& stream) const {
-            stream.writeSint32(static_cast<Sint32>(houseID));
+            stream.writeSint32(static_cast<int32_t>(houseID));
             stream.writeSint32(team);
 
             stream.writeUint32(playerInfoList.size());
@@ -110,7 +110,8 @@ public:
         \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid playing these again)
         \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum HumanPlayer::TutorialHint)
     */
-    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, Uint32 alreadyPlayedRegions, Uint32 alreadyShownTutorialHints);
+    GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, uint32_t alreadyPlayedRegions,
+                     uint32_t                alreadyShownTutorialHints);
 
     /**
         Constructor for specifying the start of a skirmish mission in the campaign
@@ -165,16 +166,16 @@ public:
 
     void save(OutputStream& stream) const;
 
-    [[nodiscard]] GameType getGameType() const noexcept { return gameType; }
-    [[nodiscard]] HOUSETYPE getHouseID() const noexcept { return houseID; }
-    [[nodiscard]] int getMission() const noexcept { return mission; }
-    [[nodiscard]] Uint32 getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
-    [[nodiscard]] Uint32 getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; }
+    [[nodiscard]] GameType                     getGameType() const noexcept { return gameType; }
+    [[nodiscard]] HOUSETYPE                    getHouseID() const noexcept { return houseID; }
+    [[nodiscard]] int                          getMission() const noexcept { return mission; }
+    [[nodiscard]] uint32_t                     getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
+    [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; }
     [[nodiscard]] const std::filesystem::path& getFilename() const noexcept { return filename; }
-    [[nodiscard]] const std::string& getFiledata() const noexcept { return filedata; }
-    [[nodiscard]] const std::string& getServername() const noexcept { return servername; }
+    [[nodiscard]] const std::string&           getFiledata() const noexcept { return filedata; }
+    [[nodiscard]] const std::string&           getServername() const noexcept { return servername; }
 
-    [[nodiscard]] const std::vector<Uint8>& getRandomSeed() noexcept {
+    [[nodiscard]] const std::vector<uint8_t>& getRandomSeed() noexcept {
         if(randomSeed.empty()) randomSeed = RandomFactory::createRandomSeed("game master seed");
 
         return randomSeed;
@@ -210,16 +211,16 @@ private:
 
     GameType        gameType = GameType::Invalid;
 
-    HOUSETYPE       houseID = HOUSETYPE::HOUSE_INVALID;
-    int             mission = 0;
-    Uint32          alreadyPlayedRegions = 0;
-    Uint32          alreadyShownTutorialHints = 0xFFFFFFFF;
+    HOUSETYPE houseID                   = HOUSETYPE::HOUSE_INVALID;
+    int       mission                   = 0;
+    uint32_t  alreadyPlayedRegions      = 0;
+    uint32_t  alreadyShownTutorialHints = 0xFFFFFFFF;
 
     std::filesystem::path     filename;
     std::string     filedata;
     std::string     servername;
 
-    std::vector<Uint8> randomSeed;
+    std::vector<uint8_t> randomSeed;
 
     bool            multiplePlayersPerHouse = false;
 

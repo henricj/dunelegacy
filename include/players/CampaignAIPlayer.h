@@ -44,7 +44,7 @@ public:
 
     void onObjectWasBuilt(const ObjectBase* pObject) override;
     void onDecrementStructures(ItemID_enum itemID, const Coord& location) override;
-    void onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) override;
+    void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
 private:
     class StructureInfo {
@@ -60,7 +60,7 @@ private:
         }
 
         void save(OutputStream& stream) const {
-            stream.writeUint32(static_cast<Uint32>(itemID));
+            stream.writeUint32(static_cast<uint32_t>(itemID));
             stream.writeSint32(location.x);
             stream.writeSint32(location.y);
         }

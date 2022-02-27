@@ -71,7 +71,7 @@ House::House(const GameContext& context) : choam(this), context(context) {
 House::~House() = default;
 
 
-House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, Uint8 teamID, int quota) : House(context) {
+House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID, int quota) : House(context) {
     houseID = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse :  static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
@@ -129,13 +129,13 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
 
     choam.load(stream);
 
-    Uint32 numAITeams = stream.readUint32();
-    for(Uint32 i = 0; i < numAITeams; i++) {
+    uint32_t numAITeams = stream.readUint32();
+    for(uint32_t i = 0; i < numAITeams; i++) {
         aiteams.emplace_back(stream);
     }
 
-    Uint32 numPlayers = stream.readUint32();
-    for(Uint32 i = 0; i < numPlayers; i++) {
+    uint32_t numPlayers = stream.readUint32();
+    for(uint32_t i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
         const auto* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if(pPlayerData == nullptr) {
@@ -156,7 +156,7 @@ StructureBase* House::createStructure(ItemID_enum itemID, bool byScenario) {
 
 
 void House::save(OutputStream& stream) const {
-    stream.writeUint8(static_cast<Uint8>(houseID));
+    stream.writeUint8(static_cast<uint8_t>(houseID));
     stream.writeUint8(teamID);
 
     stream.writeFixPoint(storedCredits);
@@ -204,7 +204,7 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
 
     players.push_back(std::move(newPlayer));
 
-    auto newPlayerID = static_cast<Uint8>((static_cast<Uint8>(houseID) << 4) | players.size());
+    auto newPlayerID     = static_cast<uint8_t>((static_cast<uint8_t>(houseID) << 4) | players.size());
     pNewPlayer->playerID = newPlayerID;
 
     context.game.registerPlayer(pNewPlayer);
@@ -461,7 +461,7 @@ void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
 
 
 
-void House::noteDamageLocation(ObjectBase* pObject, int damage, Uint32 damagerID) {
+void House::noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damagerID) {
     for(auto& pPlayer : players) {
         pPlayer->onDamage(pObject, damage, damagerID);
     }
@@ -528,7 +528,7 @@ void House::informHasKilled(ItemID_enum itemID) {
  \param itemID   the ID of the enemy unit or structure
  */
 
-void House::informHasDamaged(ItemID_enum itemID, Uint32 damage) {
+void House::informHasDamaged(ItemID_enum itemID, uint32_t damage) {
     numItemDamageInflicted[itemID] += damage;
 }
 
@@ -637,8 +637,8 @@ void House::freeHarvester(int xPos, int yPos) {
 }
 
 
-StructureBase* House::placeStructure(Uint32 builderID, ItemID_enum itemID, int xPos, int yPos,
-                                     bool byScenario, bool bForcePlacing) {
+StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos,
+                                     bool     byScenario, bool       bForcePlacing) {
     const auto& [game, map, objectManager] = context;
 
     auto* const tile = map.tryGetTile(xPos, yPos);
@@ -853,11 +853,11 @@ Coord House::getCenterOfMainBase() const {
     \return the coordinate of the strongest unit
 */
 Coord House::getStrongestUnitPosition() const {
-    Coord strongestUnitPosition = Coord::Invalid();
-    Sint32 strongestUnitCost = 0;
+    Coord   strongestUnitPosition = Coord::Invalid();
+    int32_t strongestUnitCost     = 0;
     for(const UnitBase* pUnit : unitList) {
         if(pUnit->getOwner() == this) {
-            Sint32 currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
+            int32_t currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
 
             if(currentCost > strongestUnitCost) {
                 strongestUnitPosition = pUnit->getLocation();

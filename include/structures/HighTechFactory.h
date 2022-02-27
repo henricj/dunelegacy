@@ -25,8 +25,8 @@ public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HighTechFactory;
     using parent = BuilderBase;
 
-    HighTechFactory(Uint32 objectID, const ObjectInitializer& initializer);
-    HighTechFactory(Uint32 objectID, const ObjectStreamInitializer& initializer);
+    HighTechFactory(uint32_t objectID, const ObjectInitializer& initializer);
+    HighTechFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~HighTechFactory() override;
 
 private:

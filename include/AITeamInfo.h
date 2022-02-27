@@ -37,9 +37,9 @@ public:
     }
 
     void save(OutputStream& stream) const {
-        stream.writeUint32(static_cast<Uint32>(houseID));
-        stream.writeUint32(static_cast<Uint32>(aiTeamBehavior));
-        stream.writeUint32(static_cast<Uint32>(aiTeamType));
+        stream.writeUint32(static_cast<uint32_t>(houseID));
+        stream.writeUint32(static_cast<uint32_t>(aiTeamBehavior));
+        stream.writeUint32(static_cast<uint32_t>(aiTeamType));
         stream.writeUint32(minUnits);
         stream.writeUint32(maxUnits);
     }

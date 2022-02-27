@@ -169,7 +169,7 @@ void ObjectData::save(OutputStream& stream) const
             stream.writeSint32(h.buildtime);
             stream.writeSint32(h.infspawnprop);
             stream.writeSint32(h.builder);
-            stream.writeUint32((Uint32) h.prerequisiteStructuresSet.to_ulong());
+            stream.writeUint32((uint32_t) h.prerequisiteStructuresSet.to_ulong());
             stream.writeSint8(h.techLevel);
             stream.writeSint8(h.upgradeLevel);
         }

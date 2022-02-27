@@ -45,7 +45,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    void handleMouseMovement(Sint32 x, Sint32 y, bool insideOverlay) override;
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -54,7 +54,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseLeft(Sint32 x, Sint32 y, bool pressed) override;
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles mouse wheel scrolling.
@@ -63,7 +63,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    bool handleMouseWheel(Sint32 x, Sint32 y, bool up) override;
+    bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
     /**
         Handles a key stroke. This method is neccessary for controlling an application
@@ -94,7 +94,7 @@ public:
         \param  width   the new width of this scroll bar
         \param  height  the new height of this scroll bar
     */
-    void resize(Uint32 width, Uint32 height) override;
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         Returns the minimum size of this scroll bar. The scroll bar should not
@@ -349,7 +349,7 @@ public:
         Sets the color for this list box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual inline void setColor(Uint32 color) {
+    virtual inline void setColor(uint32_t color) {
         this->color = color;
         updateList();
         scrollbar.setColor(color);
@@ -452,12 +452,12 @@ private:
     std::function<void ()> pOnSingleClick;          ///< this function is called when a list entry is single clicked
     std::function<void ()> pOnDoubleClick;          ///< this function is called when a list entry is double clicked
 
-    Uint32 color;                                   ///< the color
-    bool bAutohideScrollbar;                        ///< hide the scrollbar if not needed (default = true)
-    bool bHighlightSelectedElement;                 ///< highlight selected element (default = true);
-    int firstVisibleElement;                        ///< the index of the first shown element in the list
-    int selectedElement;                            ///< the selected element
-    Uint32 lastClickTime;                           ///< the time an element was clicked on the last time (needed for double clicking)
+    uint32_t color;                     ///< the color
+    bool     bAutohideScrollbar;        ///< hide the scrollbar if not needed (default = true)
+    bool     bHighlightSelectedElement; ///< highlight selected element (default = true);
+    int      firstVisibleElement;       ///< the index of the first shown element in the list
+    int      selectedElement;           ///< the selected element
+    uint32_t lastClickTime;             ///< the time an element was clicked on the last time (needed for double clicking)
 };
 
 #endif //LISTBOX_H

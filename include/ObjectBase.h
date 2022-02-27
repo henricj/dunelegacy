@@ -125,11 +125,11 @@ protected:
 */
 class ObjectBase
 {
-    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID);
+    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID);
 
 protected:
-    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID, const ObjectInitializer& initializer);
-    ObjectBase(const ObjectBaseConstants& object_constants, Uint32 objectID, const ObjectStreamInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
     using parent = ObjectBase;
@@ -161,7 +161,7 @@ public:
 
     virtual Coord getCenterPoint() const;
 
-    virtual void handleDamage(const GameContext& context, int damage, Uint32 damagerID, House* damagerOwner);
+    virtual void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner);
 
     /**
         This method is called when an object is ordered by a right click
@@ -194,10 +194,10 @@ public:
 
     void unassignFromMap(const Coord& location) const;
 
-    bool isOnScreen() const;
-    bool isVisible(int teamID) const;
-    bool isVisible() const;
-    Uint32 getHealthColor() const;
+    bool     isOnScreen() const;
+    bool     isVisible(int teamID) const;
+    bool     isVisible() const;
+    uint32_t getHealthColor() const;
 
     /**
         This method returns the closest coordinate of this object to objectLocation. If this is a building
@@ -220,30 +220,30 @@ public:
     bool isInfantry() const noexcept { return constants_.isInfantry(); }
     bool isAUnit() const noexcept { return constants_.isAUnit(); }
 
-    void addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
-    void setActive(bool status) noexcept { active = status; }
-    void setForced(bool status) noexcept { forced = status; }
-    void setRespondable(bool status) noexcept { respondable = status; }
-    void setSelected(bool value) noexcept { selected = value; }
-    void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
-    void setDestination(const Coord& location) { setDestination(location.x, location.y); }
-    void setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
-    bool hasATarget() const noexcept { return (target); }
-    bool hasObjectID(Uint32 id) const noexcept { return (objectID == id); }
-    bool isActive() const noexcept { return active; }
-    bool isRespondable() const noexcept { return respondable; }
-    bool isByScenario() const noexcept { return byScenario; }
-    bool isSelected() const noexcept { return selected; }
-    bool isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
-    bool isBadlyDamaged() const noexcept { return badlyDamaged; }
-    bool wasForced() const noexcept { return forced; }
+    void        addHealth() { if (health < getMaxHealth()) setHealth(health + 1); }
+    void        setActive(bool status) noexcept { active = status; }
+    void        setForced(bool status) noexcept { forced = status; }
+    void        setRespondable(bool status) noexcept { respondable = status; }
+    void        setSelected(bool value) noexcept { selected = value; }
+    void        setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
+    void        setDestination(const Coord& location) { setDestination(location.x, location.y); }
+    void        setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
+    bool        hasATarget() const noexcept { return (target); }
+    bool        hasObjectID(uint32_t id) const noexcept { return (objectID == id); }
+    bool        isActive() const noexcept { return active; }
+    bool        isRespondable() const noexcept { return respondable; }
+    bool        isByScenario() const noexcept { return byScenario; }
+    bool        isSelected() const noexcept { return selected; }
+    bool        isSelectedByOtherPlayer() const noexcept { return selectedByOtherPlayer; }
+    bool        isBadlyDamaged() const noexcept { return badlyDamaged; }
+    bool        wasForced() const noexcept { return forced; }
     ItemID_enum getItemID() const noexcept { return itemID; }
-    int getX() const noexcept { return location.x; }
-    int getY() const noexcept { return location.y; }
+    int         getX() const noexcept { return location.x; }
+    int         getY() const noexcept { return location.y; }
 
     FixPoint getHealth() const noexcept { return health; }
-    int getMaxHealth() const;
-    Uint32 getObjectID() const noexcept { return objectID; }
+    int      getMaxHealth() const;
+    uint32_t getObjectID() const noexcept { return objectID; }
 
 
     int getViewRange() const;
@@ -272,9 +272,9 @@ public:
         owner = no;
     }
 
-    static std::unique_ptr<ObjectBase> createObject(ItemID_enum itemID, Uint32 objectID,
+    static std::unique_ptr<ObjectBase> createObject(ItemID_enum              itemID, uint32_t objectID,
                                                     const ObjectInitializer& initializer);
-    static std::unique_ptr<ObjectBase> loadObject(ItemID_enum itemID, Uint32 objectID,
+    static std::unique_ptr<ObjectBase> loadObject(ItemID_enum                    itemID, uint32_t objectID,
                                                   const ObjectStreamInitializer& initializer);
 
 protected:
@@ -286,9 +286,9 @@ protected:
     const ItemID_enum itemID = ItemID_Invalid; ///< The ItemID of this object.
 
     // object state/properties
-    const Uint32   objectID;               ///< The unique object ID of this object
-    HOUSETYPE      originalHouseID;  ///< for takeover/deviation, we still want to keep track of what the original house was
-    House    *owner;                 ///< The owner of this object
+    const uint32_t objectID;        ///< The unique object ID of this object
+    HOUSETYPE      originalHouseID; ///< for takeover/deviation, we still want to keep track of what the original house was
+    House    *     owner;           ///< The owner of this object
 
     Coord    location;               ///< The current position of this object in tile coordinates
     Coord    oldLocation;            ///< The previous position of this object in tile coordinates (used when moving from one tile to the next tile)
