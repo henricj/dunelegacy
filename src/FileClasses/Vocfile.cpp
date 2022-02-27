@@ -182,7 +182,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                 if (packing == 0) {
                     auto* tmp_ret_sound = (uint8_t*) SDL_realloc(ret_sound.get(), decsize + len);
                     if(tmp_ret_sound == nullptr) {
-                        THROW(std::runtime_error, "LoadVOC_RW(): %s", string_error(errno));
+                        THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                     } else {
                         ret_sound.release();
                         ret_sound = sdl2::sdl_ptr<uint8_t[]> { tmp_ret_sound };
@@ -222,7 +222,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
 
                 auto* tmp_ret_sound = (uint8_t*) SDL_realloc(ret_sound.get(), decsize + length);
                 if(tmp_ret_sound == nullptr) {
-                    THROW(std::runtime_error, "LoadVOC_RW(): %s", string_error(errno));
+                    THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                 } else {
                     ret_sound.release();
                     ret_sound = sdl2::sdl_ptr<uint8_t[]> { tmp_ret_sound };

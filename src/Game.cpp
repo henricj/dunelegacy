@@ -1690,7 +1690,7 @@ bool Game::saveGame(const std::filesystem::path& filename)
     OFileStream fs;
 
     if(!fs.open(filename)) {
-        sdl2::log_info("Game::saveGame(): %s", string_error(errno));
+        sdl2::log_info("Game::saveGame(): %s", dune::string_error(errno));
         currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename.u8string() + "\".");
         return false;
     }

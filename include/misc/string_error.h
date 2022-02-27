@@ -6,6 +6,8 @@
 #include <array>
 #include <cstring>
 
+namespace dune {
+
 inline std::string string_error(int errnum) {
 #if defined(HAVE_STRERROR_S) || defined(HAVE_STRERROR_R) || defined(HAVE_GNU_STRERROR_R)
     std::array<char, 256> buffer;
@@ -27,5 +29,7 @@ inline std::string string_error(int errnum) {
 
     return fmt::format("error {}", errnum);
 }
+
+} // namespace dune
 
 #endif // STRING_ERROR_H
