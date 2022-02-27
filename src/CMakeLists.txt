@@ -586,6 +586,14 @@ include(CheckIncludeFile)
 
 CHECK_INCLUDE_FILE_CXX(cxxabi.h, HAVE_CXXABI_H)
 
+if(HAVE_STRERROR_S)
+	target_compile_definitions(dune PUBLIC HAVE_STRERROR_S)
+elseif(HAVE_STRERROR_R)
+	target_compile_definitions(dune PUBLIC HAVE_STRERROR_R)
+elseif(HAVE_GNU_STRERROR_R)
+	target_compile_definitions(dune PUBLIC HAVE_GNU_STRERROR_R)
+endif()
+
 if(NOT HAVE_FLOAT_TO_CHARS)
 	target_compile_definitions(dune PUBLIC NEED_FLOAT_TO_CHARS)
 endif()

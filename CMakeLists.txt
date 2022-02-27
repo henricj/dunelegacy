@@ -122,7 +122,28 @@ if(MSVC)
 endif()
 
 
+include(CheckSymbolExists)
 include(CheckCXXSourceCompiles)
+
+check_symbol_exists(strerror_s "string.h" HAVE_STRERROR_S)
+
+check_cxx_source_compiles(
+    "#include <string.h>
+    char buffer[64];
+    int main(int argc, char* argv[]) {
+        int error = strerror_r(7, buffer, sizeof(buffer));
+        return 0;
+    }"
+    HAVE_STRERROR_R)
+
+check_cxx_source_compiles(
+    "#include <string.h>
+    char buffer[64];
+    int main(int argc, char* argv[]) {
+        char* error = strerror_r(7, buffer, sizeof(buffer));
+        return 0;
+    }"
+    HAVE_GNU_STRERROR_R)
 
 check_cxx_source_compiles(
     "#include <charconv>

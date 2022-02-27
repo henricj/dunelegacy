@@ -7,14 +7,25 @@
 #include <cstring>
 
 inline std::string string_error(int errnum) {
+#if defined(HAVE_STRERROR_S) || defined(HAVE_STRERROR_R) || defined(HAVE_GNU_STRERROR_R)
     std::array<char, 256> buffer;
+#endif
 
-    const auto error = strerror_s(buffer.data(), buffer.size(), errnum);
-
-    if(0 == error)
+#if HAVE_STRERROR_S
+    if(const auto error = strerror_s(buffer.data(), buffer.size(), errnum); 0 == error)
         return buffer.data();
+#elif HAVE_STRERROR_R
+    if(const auto error = strerror_r(errnum, buffer.data(), buffer.size()); 0 == error)
+        return buffer.data();
+#elif HAVE_GNU_STRERROR_R
+    if(const auto* error_string = strerror_r(errnum, buffer.data(), buffer.size()))
+        return error_string;
+#else
+    if(const auto* error_string = strerror(errnum))
+        return error_string;
+#endif
 
-    return fmt::format(buffer.data(), buffer.size(), "error {}", errnum);
+    return fmt::format("error {}", errnum);
 }
 
 #endif // STRING_ERROR_H
