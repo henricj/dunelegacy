@@ -416,16 +416,21 @@ void showMissingFilesMessageBox() {
 
     for(const auto& missingFile : FileManager::getMissingFiles()) {
         instruction += " " + missingFile.u8string() + "\n";
+        sdl2::log_error("missing required %s", missingFile.u8string());
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
     for(const auto& searchPath : FileManager::getSearchPath()) {
         instruction += " " + searchPath.u8string() + "\n";
+        sdl2::log_info("search path %s", searchPath.u8string());
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
 
-    if(!SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
+    if(SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
+        const auto error = SDL_GetError();
+        sdl2::log_error("message box failed: %s", error);
+
         fprintf(stderr, "%s\n", instruction.c_str());
     }
 }
