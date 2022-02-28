@@ -35,8 +35,8 @@
 #include <mutex>
 
 FileManager::FileManager() {
-    sdl2::log_info("\nFileManager is loading PAK-Files...");
-    sdl2::log_info("\nMD5-Checksum                      Filename");
+    sdl2::log_info("FileManager is loading PAK-Files...");
+    sdl2::log_info("MD5-Checksum                      Filename");
 
     const auto search_path = getSearchPath();
 
