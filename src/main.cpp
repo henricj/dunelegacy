@@ -605,11 +605,11 @@ int main(int argc, char *argv[]) {
 
             FILE* discard = nullptr;
             if(freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
-                THROW(io_error, "Intitializing stdin failed!");
+                THROW(io_error, "Initializing stdin failed!");
             if(freopen_s(&discard, R"(\\.\NUL)", "a", stdout))
-                THROW(io_error, "Intitializing stdout failed!");
+                THROW(io_error, "Initializing stdout failed!");
             if(freopen_s(&discard, R"(\\.\NUL)", "a", stderr))
-                THROW(io_error, "Intitializing stderr failed!");
+                THROW(io_error, "Initializing stderr failed!");
 
             const auto fn_out = _fileno(stdout);
             const auto fn_err = _fileno(stderr);
@@ -625,9 +625,9 @@ int main(int argc, char *argv[]) {
             }
 
             if(!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))
-                THROW(io_error, "Intitializing output handle failed!");
+                THROW(io_error, "Initializing output handle failed!");
             if(!SetStdHandle(STD_ERROR_HANDLE, log_handle))
-                THROW(io_error, "Intitializing error handle failed!");
+                THROW(io_error, "Initializing error handle failed!");
 
             const auto log_fd = _open_osfhandle(reinterpret_cast<intptr_t>(log_handle), _O_TEXT);
 
