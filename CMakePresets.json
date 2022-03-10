@@ -65,6 +65,7 @@
       "displayName": "Windows x64 ASAN Debug",
       "cacheVariables": {
         "DUNE_ASAN": true,
+        "DUNE_CRT_HEAP_DEBUG": true,
         "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug",
         "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
       },

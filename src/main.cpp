@@ -75,6 +75,10 @@
 #    ifndef STDERR_FILENO
 #        define STDERR_FILENO 2
 #    endif
+
+#    ifdef DUNE_CRT_HEAP_DEBUG
+#        include <crtdbg.h>
+#    endif
 #else
 #    include <pwd.h>
 #    include <sys/types.h>
@@ -568,7 +572,26 @@ void log_build_info() {
 #endif
 }
 
+namespace {
+#ifdef DUNE_CRT_HEAP_DEBUG
+struct DuneHeapDebug final {
+    DuneHeapDebug() {
+        auto tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
+        tmpDbgFlag |= _CRTDBG_CHECK_CRT_DF;
+        tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+        _CrtSetDbgFlag(tmpDbgFlag);
+    }
+    ~DuneHeapDebug() { _CrtDumpMemoryLeaks(); }
+};
+#else
+struct DuneHeapDebug { };
+#endif
+}
+
 int main(int argc, char *argv[]) {
+    DuneHeapDebug heap_debug;
+
     SDL_LogSetOutputFunction(logOutputFunction, nullptr);
     SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);

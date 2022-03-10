@@ -582,6 +582,13 @@ add_library(dune ${SOURCES} ${HEADERS})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC ${LIBS})
 
+if(DUNE_CRT_HEAP_DEBUG)
+	target_compile_definitions(dune PUBLIC DUNE_CRT_HEAP_DEBUG)
+	if(WIN32)
+		target_compile_definitions(dune PUBLIC _CRTDBG_MAP_ALLOC)
+	endif()
+endif()
+
 include(CheckIncludeFile)
 
 CHECK_INCLUDE_FILE_CXX(cxxabi.h, HAVE_CXXABI_H)
