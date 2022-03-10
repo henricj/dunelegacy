@@ -551,6 +551,10 @@ void log_msvc() {
 void log_build_info() {
     sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
 
+#if defined(DEBUG)
+    sdl2::log_info("   *** DEBUG build " __DATE__ " " __TIME__);
+#endif
+
 #if defined(__SANITIZE_ADDRESS__)
     sdl2::log_info("   *** Address Sanitizer enabled");
 #endif
