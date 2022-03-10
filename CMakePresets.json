@@ -191,7 +191,7 @@
       "displayName": "Windows Clang x64 UBSAN Debug",
       "cacheVariables": {
         "DUNE_UBSAN": true,
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug"
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug"
       },
       "inherits": "windows-clang-x64-debug"
     },
@@ -200,7 +200,7 @@
       "displayName": "Windows Clang x64 UBSAN Release",
       "cacheVariables": {
         "DUNE_UBSAN": true,
-        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
       },
       "inherits": "windows-clang-x64-release"
     }
