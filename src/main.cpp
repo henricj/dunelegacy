@@ -493,7 +493,7 @@ void log_gcc() {
 #elif defined(_MSC_VER)
 void log_msvc() {
 #    if defined(_MSC_FULL_VER)
-    sdl2::log_info("   Compiler: MSVC %02d.%02d.%05d.%02d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000,
+    sdl2::log_info("   Compiler: MSVC %d.%d.%d.%d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000,
                    _MSC_BUILD);
 
     sdl2::log_info("   MSVC runtime: "
