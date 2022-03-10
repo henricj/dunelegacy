@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16..3.22)
 
+set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
+
 if(NOT DEFINED VCPKG_TARGET_TRIPLET)
     if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
         set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
@@ -32,7 +34,7 @@ endif()
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 
 if(DUNE_ASAN)
-    message("Enabling ASAN")
+    message(STATUS "Enabling ASAN")
 
     if(MSVC)
         add_compile_options(/fsanitize=address)
@@ -230,6 +232,10 @@ message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
 message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS " CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "   VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
+
+if(CMAKE_MSVC_RUNTIME_LIBRARY)
+    message(STATUS "           MSVC Runtime: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
+endif()
 
 foreach(config ${build_list})
     string(TOUPPER "${config}" config)

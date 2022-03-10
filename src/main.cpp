@@ -547,6 +547,10 @@ void log_msvc() {
 void log_build_info() {
     sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
 
+#if defined(__SANITIZE_ADDRESS__)
+    sdl2::log_info("   *** Address Sanitizer enabled");
+#endif
+
 #if defined(__clang_version__)
     log_clang();
 #elif defined(__GNUC_PATCHLEVEL__)

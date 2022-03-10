@@ -16,3 +16,7 @@ exit 0
 "%~dp0vcpkg\vcpkg.exe" install --triplet arm64-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x64-avx2-windows-ltcg %Packages%
 "%~dp0vcpkg\vcpkg.exe" install --triplet x86-avx2-windows-ltcg %Packages%
+setlocal
+set ASAN_OPTIONS= windows_hook_rtl_allocators=true
+"%~dp0vcpkg\vcpkg.exe" install --triplet x64-windows-asan %Packages%
+endlocal

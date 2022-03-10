@@ -60,6 +60,31 @@
       }
     },
     {
+      "name": "windows-x64-asan-debug",
+      "inherits": "windows-x64-debug",
+      "displayName": "Windows x64 ASAN Debug",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDebug",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
+      },
+      "environment": {
+        "ASAN_OPTIONS": "windows_hook_rtl_allocators=true"
+      }
+    },
+    {
+      "name": "windows-x64-asan-release",
+      "inherits": "windows-x64-release",
+      "displayName": "Windows x64 ASAN Release",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
+      },
+      "environment": {
+        "ASAN_OPTIONS": "windows_hook_rtl_allocators=true"
+      }
+    },
+    {
       "name": "windows-x64-avx2-release",
       "displayName": "Windows x64 AVX2 Release",
       "inherits": "windows-x64",
