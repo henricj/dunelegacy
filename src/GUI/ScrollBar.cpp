@@ -18,7 +18,7 @@
 #include <GUI/ScrollBar.h>
 
 
-#include "math.h"
+#include <cmath>
 
 
 ScrollBar::ScrollBar()  {

@@ -34,7 +34,7 @@
 #include <algorithm>
 
 
-#include "math.h"
+#include <cmath>
 
 
 #define max3(a,b,c) (std::max((a),std::max((b),(c))))

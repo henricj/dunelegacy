@@ -26,7 +26,7 @@
 #include <string>
 
 
-#include "math.h"
+#include <cmath>
 
 
 class ENetPacketIStream : public InputStream

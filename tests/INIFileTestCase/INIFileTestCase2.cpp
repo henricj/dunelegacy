@@ -1,6 +1,6 @@
 #include "INIFileTestCase2.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 
 TEST_F(INIFileTestCase2, modifyData) {

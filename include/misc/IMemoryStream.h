@@ -19,11 +19,11 @@
 #define IMEMORYSTREAM_H
 
 #include "InputStream.h"
-#include "math.h"
 
 
 #include <misc/exceptions.h>
 
+#include <cmath>
 #include <cstdlib>
 #include <memory.h>
 #include <string>

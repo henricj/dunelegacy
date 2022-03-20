@@ -1,6 +1,6 @@
 #include "INIFileTestCase3.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 
 TEST_F(INIFileTestCase3, removeKey) {

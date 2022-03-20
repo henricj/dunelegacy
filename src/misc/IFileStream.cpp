@@ -22,7 +22,7 @@
 #include <SDL2/SDL_endian.h>
 
 
-#include "math.h"
+#include <cmath>
 
 
 #ifdef _WIN32

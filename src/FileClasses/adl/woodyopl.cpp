@@ -79,8 +79,7 @@ Bugs/missing features:
 #include <cstring>
 
 
-#include "math.h"
-
+#include <cmath>
 
 
 static fltype recipsamp;    // inverse of sampling rate
