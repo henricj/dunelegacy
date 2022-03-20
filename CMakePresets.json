@@ -187,6 +187,25 @@
       }
     },
     {
+      "name": "windows-clang-x64-asan-debug",
+      "displayName": "Windows Clang x64 ASAN Debug",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "DUNE_ASAN_FLAGS": "_ITERATOR_DEBUG_LEVEL=0",
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+      },
+      "inherits": "windows-clang-x64-debug"
+    },
+    {
+      "name": "windows-clang-x64-asan-release",
+      "displayName": "Windows Clang x64 ASAN Release",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
+      },
+      "inherits": "windows-clang-x64-release"
+    },
+    {
       "name": "windows-clang-x64-ubsan-debug",
       "displayName": "Windows Clang x64 UBSAN Debug",
       "cacheVariables": {
