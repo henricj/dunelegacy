@@ -31,15 +31,11 @@
 class IMemoryStream : public InputStream
 {
 public:
-    IMemoryStream()
-      {
-        ;
-    }
+    IMemoryStream() = default;
 
-    IMemoryStream(const char* data, int length)
-     :  bufferSize(length), pBuffer(data) {
-        ;
-    }
+    IMemoryStream(const char* data, size_t length)
+     :  bufferSize(length), pBuffer(data)
+    { }
 
     ~IMemoryStream() override = default;
 

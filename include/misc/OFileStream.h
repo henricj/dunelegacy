@@ -46,7 +46,7 @@ public:
     void writeFloat(float x) override;
 
 private:
-    FILE* fp;
+    FILE* fp{};
 };
 
 #endif // OFILESTREAM_H

@@ -28,10 +28,7 @@
 #    include <Windows.h>
 #endif
 
-OFileStream::OFileStream()
-{
-    fp = nullptr;
-}
+OFileStream::OFileStream() = default;
 
 OFileStream::~OFileStream()
 {

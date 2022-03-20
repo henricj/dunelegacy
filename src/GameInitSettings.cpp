@@ -25,8 +25,7 @@
 
 #include <globals.h>
 
-GameInitSettings::GameInitSettings() {
-}
+GameInitSettings::GameInitSettings() = default;
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
  : gameType(GameType::Campaign), houseID(newHouseID), mission(1), alreadyShownTutorialHints(0), gameOptions(gameOptions) {
@@ -56,9 +55,9 @@ GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&
 }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& savegame)
- : gameType(GameType::LoadSavegame) {
-    checkSaveGame(savegame);
-    filename = std::move(savegame);
+ : gameType(GameType::LoadSavegame), filename(std::move(savegame)) {
+    checkSaveGame(filename);
+
 }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& savegame, std::string&& filedata, std::string&& serverName)
