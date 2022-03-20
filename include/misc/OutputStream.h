@@ -29,8 +29,9 @@
 class OutputStream
 {
 public:
-    OutputStream() { }
-    virtual ~OutputStream() = default;
+    OutputStream();
+    virtual ~OutputStream();
+
     /**
         This method flushes all caches and finally writes out all cached output.
     */
@@ -51,45 +52,31 @@ public:
         Writes out a Sint8 value.
         \param x    the value to write out
     */
-    void writeSint8(int8_t x) {
-        uint8_t tmp = *reinterpret_cast<uint8_t*>(&x);
-        writeUint8(tmp);
-    }
+    void writeSint8(int8_t x);
 
     /**
         Writes out a Sint16 value.
         \param x    the value to write out
     */
-    void writeSint16(int16_t x) {
-        uint16_t tmp = *reinterpret_cast<uint16_t*>(&x);
-        writeUint16(tmp);
-    }
+    void writeSint16(int16_t x);
 
     /**
         Writes out a Sint32 value.
         \param x    the value to write out
     */
-    void writeSint32(int32_t x) {
-        uint32_t tmp = *reinterpret_cast<uint32_t*>(&x);
-        writeUint32(tmp);
-    }
+    void writeSint32(int32_t x);
 
     /**
         Writes out a Sint64 value.
         \param x    the value to write out
     */
-    void writeSint64(int64_t x) {
-        uint64_t tmp = *reinterpret_cast<uint64_t*>(&x);
-        writeUint64(tmp);
-    }
+    void writeSint64(int64_t x);
 
     /**
         Writes out a FixPoint value.
         \param x    the value to write out
     */
-    void writeFixPoint(FixPoint x) {
-        writeSint64(x.getRawValue());
-    }
+    void writeFixPoint(FixPoint x);
 
     /**
         Writes out up to 8 boolean values into a single byte.
@@ -103,44 +90,25 @@ public:
         \param  val8    the 8th boolean value
 
     */
-    void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false, bool val6 = false, bool val7 = false, bool val8 = false) {
-        uint8_t val = static_cast<uint8_t>(val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) |
-                      (val7 << 6) | (val8 << 7);
-        writeUint8(val);
-    }
+    void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false, bool val6 = false, bool val7 = false, bool val8 = false);
 
     /**
         Writes out a complete vector of Uint8
         \param  dataVector the vector to write
     */
-    void writeUint8Vector(gsl::span<const uint8_t> dataVector) {
-        writeUint32(static_cast<uint32_t>(dataVector.size()));
-        for(const auto data : dataVector) {
-            writeUint8(data);
-        }
-    }
+    void writeUint8Vector(gsl::span<const uint8_t> dataVector);
 
     /**
         Writes out a complete list of Uint32
         \param  dataList    the list to write
     */
-    void writeUint32List(const std::list<uint32_t>& dataList) {
-        writeUint32(static_cast<uint32_t>(dataList.size()));
-        for(const auto data : dataList) {
-            writeUint32(data);
-        }
-    }
+    void writeUint32List(const std::list<uint32_t>& dataList);
 
     /**
         Writes out a complete vector of Uint32
         \param  dataVector the vector to write
     */
-    void writeUint32Vector(gsl::span<const uint32_t> dataVector) {
-        writeUint32(static_cast<uint32_t>(dataVector.size()));
-        for(const auto data : dataVector) {
-            writeUint32(data);
-        }
-    }
+    void writeUint32Vector(gsl::span<const uint32_t> dataVector);
 
     /**
         Writes out a complete vector of Uint32
@@ -158,12 +126,7 @@ public:
         Writes out a complete set of Uint32
         \param  dataSet   the set to write
     */
-    void writeUint32Set(const Dune::selected_set_type& dataSet) {
-        writeUint32(static_cast<uint32_t>(dataSet.size()));
-        for(const auto data : dataSet) {
-            writeUint32(data);
-        }
-    }
+    void writeUint32Set(const Dune::selected_set_type& dataSet);
 
     class exception : public std::exception {
     public:

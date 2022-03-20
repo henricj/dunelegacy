@@ -33,8 +33,8 @@
 class InputStream
 {
 public:
-    InputStream() = default;
-    virtual ~InputStream() = default;
+    InputStream();
+    virtual ~InputStream();
 
     /**
         readString reads in a strings from the stream.
@@ -53,37 +53,25 @@ public:
         Reads in a Sint8 value.
         \return the read value
     */
-    int8_t readSint8() {
-        uint8_t tmp = readUint8();
-        return *((int8_t*) &tmp);
-    }
+    int8_t readSint8();
 
     /**
         Reads in a Sint16 value.
         \return the read value
     */
-    int16_t readSint16() {
-        uint16_t tmp = readUint16();
-        return *((int16_t*) &tmp);
-    }
+    int16_t readSint16();
 
     /**
         Reads in a Sint32 value.
         \return the read value
     */
-    int32_t readSint32() {
-        uint32_t tmp = readUint32();
-        return *((int32_t*) &tmp);
-    }
+    int32_t readSint32();
 
     /**
         Reads in a Sint64 value.
         \return the read value
     */
-    int64_t readSint64() {
-        uint64_t tmp = readUint64();
-        return *((int64_t*) &tmp);
-    }
+    int64_t readSint64();
 
     /**
         Reads in a FixPoint value.
@@ -105,69 +93,31 @@ public:
         \param  pVal8   the 8th boolean value
 
     */
-    void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr) {
-        uint8_t val = readUint8();
-
-        if(pVal1 != nullptr)   *pVal1 = ((val & 0x01) != 0);
-        if(pVal2 != nullptr)   *pVal2 = ((val & 0x02) != 0);
-        if(pVal3 != nullptr)   *pVal3 = ((val & 0x04) != 0);
-        if(pVal4 != nullptr)   *pVal4 = ((val & 0x08) != 0);
-        if(pVal5 != nullptr)   *pVal5 = ((val & 0x10) != 0);
-        if(pVal6 != nullptr)   *pVal6 = ((val & 0x20) != 0);
-        if(pVal7 != nullptr)   *pVal7 = ((val & 0x40) != 0);
-        if(pVal8 != nullptr)   *pVal8 = ((val & 0x80) != 0);
-    }
+    void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr);
 
     /**
         Reads a vector of Uint8 written by writeUint8Vector().
         \return the read vector
     */
-    std::vector<uint8_t> readUint8Vector() {
-        std::vector<uint8_t> vec;
-        readUint8Vector(vec);
-
-        return vec;
-    }
+    std::vector<uint8_t> readUint8Vector();
 
     /**
         Reads a vector of Uint8 written by writeUint8Vector().
         \param vec operate in place (reduce heap thrashing)
     */
-    void readUint8Vector(std::vector<uint8_t>& vec) {
-        vec.clear();
-        const auto size = readUint32();
-        vec.reserve(size);
-        for(unsigned int i = 0; i < size; i++) {
-            vec.push_back(readUint8());
-        }
-    }
+    void readUint8Vector(std::vector<uint8_t>& vec);
 
     /**
         Reads a list of Uint32 written by writeUint32List().
         \return the read list
     */
-    std::list<uint32_t> readUint32List() {
-        std::list<uint32_t> List;
-        const auto size = readUint32();
-        for(unsigned int i=0; i < size; i++) {
-            List.push_back(readUint32());
-        }
-        return List;
-    }
+    std::list<uint32_t> readUint32List();
 
     /**
         Reads a vector of Uint32 written by writeUint32Vector().
         \param vec operate in place (reduce heap thrashing)
     */
-    void readUint32Vector(std::vector<uint32_t>& vec)
-    {
-        vec.clear();
-        const auto size = readUint32();
-        vec.reserve(size);
-        for(unsigned int i=0; i < size; i++) {
-            vec.push_back(readUint32());
-        }
-    }
+    void readUint32Vector(std::vector<uint32_t>& vec);
 
     /**
         Reads a vector of Uint32 written by writeUint32Vector().
@@ -187,12 +137,7 @@ public:
         Reads a vector of Uint32 written by writeUint32Vector().
         \return the read vector
     */
-    std::vector<uint32_t> readUint32Vector() {
-        std::vector<uint32_t> vec;
-        readUint32Vector(vec);
-
-        return vec;
-    }
+    std::vector<uint32_t> readUint32Vector();
 
     /**
         Reads a vector of Uint32 written by writeUint32Vector().
@@ -210,14 +155,7 @@ public:
         Reads a set of Uint32 written by writeUint32Set().
         \return the read set
     */
-    Dune::selected_set_type readUint32Set() {
-        Dune::selected_set_type retSet;
-        const auto size = readUint32();
-        for (auto i = decltype(size){0}; i < size; i++) {
-            retSet.insert(readUint32());
-        }
-        return retSet;
-    }
+    Dune::selected_set_type readUint32Set();
 
     class exception : public std::exception {
     public:
