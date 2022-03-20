@@ -23,7 +23,7 @@
 #include <filesystem>
 #include <string>
 
-class OFileStream : public OutputStream
+class OFileStream final : public OutputStream
 {
 public:
     OFileStream();

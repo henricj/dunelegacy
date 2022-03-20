@@ -22,7 +22,7 @@
 #include <cstdlib>
 #include <string>
 
-class IFileStream : public InputStream
+class IFileStream final : public InputStream
 {
 public:
     IFileStream();
