@@ -19,31 +19,17 @@
 #define OMEMORYSTREAM_H
 
 #include "OutputStream.h"
-#include <stdlib.h>
+
 #include <string>
 
-class OMemoryStream : public OutputStream
+class OMemoryStream final : public OutputStream
 {
 public:
-    OMemoryStream()
-     : currentPos(0), bufferSize(0), pBuffer(nullptr) {
-        ;
-    }
+    OMemoryStream();
 
-    ~OMemoryStream() {
-        free(pBuffer);
-    }
+    ~OMemoryStream() override;
 
-    void open() {
-        free(pBuffer);
-
-        currentPos = 0;
-        bufferSize = 4;
-        pBuffer = (char*) malloc(4);
-        if(pBuffer == nullptr) {
-            THROW(OMemoryStream::error, "OMemoryStream::open(): malloc failed!");
-        }
-    }
+    void open();
 
     [[nodiscard]] const char* getData() const {
         return pBuffer;
@@ -53,93 +39,29 @@ public:
         return (bReadOnly == true) ? bufferSize : currentPos;
     }
 
-    void flush() override
-    {
-        ;
-    }
+    void flush() override;
 
-    void writeString(const std::string& str) override
-    {
-        ensureBufferSize(currentPos + str.length() + sizeof(Uint32));
-
-        writeUint32(str.length());
-
-        if(!str.empty()) {
-            memcpy(pBuffer + currentPos, str.c_str(), str.length());
-            currentPos += str.length();
-        }
-    }
+    void writeString(const std::string& str) override;
 
 
-    void writeUint8(Uint8 x) override
-    {
-        ensureBufferSize(currentPos + sizeof(Uint8));
-        *((Uint8*) (pBuffer + currentPos)) = x;
-        currentPos += sizeof(Uint8);
-    }
+    void writeUint8(Uint8 x) override;
 
-    void writeUint16(Uint16 x) override
-    {
-        ensureBufferSize(currentPos + sizeof(Uint16));
-        x = SDL_SwapLE16(x);
-        *((Uint16*) (pBuffer + currentPos)) = x;
-        currentPos += sizeof(Uint16);
-    }
+    void writeUint16(Uint16 x) override;
 
-    void writeUint32(Uint32 x) override
-    {
-        ensureBufferSize(currentPos + sizeof(Uint32));
-        x = SDL_SwapLE32(x);
-        *((Uint32*) (pBuffer + currentPos)) = x;
-        currentPos += sizeof(Uint32);
-    }
+    void writeUint32(Uint32 x) override;
 
-    void writeUint64(Uint64 x) override
-    {
-        ensureBufferSize(currentPos + sizeof(Uint64));
-        x = SDL_SwapLE64(x);
-        *((Uint64*) (pBuffer + currentPos)) = x;
-        currentPos += sizeof(Uint64);
-    }
+    void writeUint64(Uint64 x) override;
 
-    void writeBool(bool x) override
-    {
-        writeUint8(x == true ? 1 : 0);
-    }
+    void writeBool(bool x) override;
 
-    void writeFloat(float x) override
-    {
-        if(sizeof(float) != sizeof(Uint32)) {
-            THROW(OMemoryStream::error, "OMemoryStream::writeFloat(): sizeof(float) != sizeof(Uint32). Cannot save floats on such systems.");
-        }
-        Uint32 tmp;
-        memcpy(&tmp,&x,sizeof(Uint32)); // workaround for a strange optimization in gcc 4.1
-        writeUint32(tmp);
-    }
+    void writeFloat(float x) override;
 
-    void ensureBufferSize(size_t minBufferSize) {
-        if(minBufferSize < bufferSize) {
-            return;
-        }
-
-        size_t newBufferSize = ((bufferSize * 3) / 2);
-        if(newBufferSize < minBufferSize) {
-            newBufferSize = minBufferSize;
-        }
-
-        char* pNewBuffer = (char*) realloc(pBuffer, newBufferSize);
-        if(pNewBuffer == nullptr) {
-            THROW(OMemoryStream::error, "OMemoryStream::ensureBufferSize(): realloc failed!");
-        } else {
-            pBuffer = pNewBuffer;
-            bufferSize = newBufferSize;
-        }
-    }
+    void ensureBufferSize(size_t minBufferSize);
 
 private:
-    size_t  currentPos;
-    size_t  bufferSize;
-    char*   pBuffer;
+    size_t  currentPos{};
+    size_t  bufferSize{};
+    char*   pBuffer{};
 };
 
 #endif // OMEMORYSTREAM_H

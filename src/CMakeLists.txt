@@ -165,8 +165,10 @@ set(MISC_SOURCES
 	misc/BlendBlitter.cpp
 	misc/FileSystem.cpp
 	misc/IFileStream.cpp
+	misc/IMemoryStream.cpp
 	misc/InputStream.cpp
 	misc/OFileStream.cpp
+	#misc/OMemoryStream.cpp
 	misc/OutputStream.cpp
 	misc/Random.cpp
 	misc/SDL_LogRenderer.cpp
