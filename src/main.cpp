@@ -747,6 +747,14 @@ bool run_game(int argc, char* argv[]) {
                 // SDL_GetError());
             } else {
                 sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
+
+                SDL_version compiledVersion;
+                SDL_MIXER_VERSION(&compiledVersion);
+                const auto* const linkedVersion = Mix_Linked_Version();
+                sdl2::log_info("SDL Mixer runtime v%d.%d.%d", linkedVersion->major, linkedVersion->minor,
+                               linkedVersion->patch);
+                sdl2::log_info("SDL Mixer compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
+                               compiledVersion.patch);
             }
         }
 
