@@ -576,6 +576,286 @@ void log_build_info() {
 #endif
 }
 
+void load_settings(const INIFile& myINIFile) {
+    settings.general.playIntro         = myINIFile.getBoolValue("General", "Play Intro", false);
+    settings.general.playerName        = myINIFile.getStringValue("General", "Player Name", "Player");
+    settings.general.language          = myINIFile.getStringValue("General", "Language", "en");
+    settings.general.scrollSpeed       = myINIFile.getIntValue("General", "Scroll Speed", 50);
+    settings.general.showTutorialHints = myINIFile.getBoolValue("General", "Show Tutorial Hints", true);
+    settings.video.width               = myINIFile.getIntValue("Video", "Width", 640);
+    settings.video.height              = myINIFile.getIntValue("Video", "Height", 480);
+    settings.video.physicalWidth       = myINIFile.getIntValue("Video", "Physical Width", 640);
+    settings.video.physicalHeight      = myINIFile.getIntValue("Video", "Physical Height", 480);
+    settings.video.fullscreen          = myINIFile.getBoolValue("Video", "Fullscreen", false);
+    settings.video.frameLimit          = myINIFile.getBoolValue("Video", "FrameLimit", true);
+    settings.video.preferredZoomLevel  = myINIFile.getIntValue("Video", "Preferred Zoom Level", 0);
+    settings.video.scaler              = myINIFile.getStringValue("Video", "Scaler", "ScaleHD");
+    settings.video.rotateUnitGraphics  = myINIFile.getBoolValue("Video", "RotateUnitGraphics", false);
+    settings.video.renderer            = myINIFile.getStringValue("Video", "Renderer", "default");
+    settings.audio.musicType           = myINIFile.getStringValue("Audio", "Music Type", "adl");
+    settings.audio.playMusic           = myINIFile.getBoolValue("Audio", "Play Music", true);
+    settings.audio.musicVolume         = myINIFile.getIntValue("Audio", "Music Volume", 64);
+    settings.audio.playSFX             = myINIFile.getBoolValue("Audio", "Play SFX", true);
+    settings.audio.sfxVolume           = myINIFile.getIntValue("Audio", "SFX Volume", 64);
+
+    settings.network.serverPort   = myINIFile.getIntValue("Network", "ServerPort", DEFAULT_PORT);
+    settings.network.metaServer   = myINIFile.getStringValue("Network", "MetaServer", DEFAULT_METASERVER);
+    settings.network.debugNetwork = myINIFile.getBoolValue("Network", "Debug Network", false);
+
+    settings.ai.campaignAI = myINIFile.getStringValue("AI", "Campaign AI", DEFAULTAIPLAYERCLASS);
+
+    settings.gameOptions.gameSpeed        = myINIFile.getIntValue("Game Options", "Game Speed", GAMESPEED_DEFAULT);
+    settings.gameOptions.concreteRequired = myINIFile.getBoolValue("Game Options", "Concrete Required", true);
+    settings.gameOptions.structuresDegradeOnConcrete =
+        myINIFile.getBoolValue("Game Options", "Structures Degrade On Concrete", true);
+    settings.gameOptions.fogOfWar = myINIFile.getBoolValue("Game Options", "Fog of War", false);
+    settings.gameOptions.startWithExploredMap =
+        myINIFile.getBoolValue("Game Options", "Start with Explored Map", false);
+    settings.gameOptions.instantBuild  = myINIFile.getBoolValue("Game Options", "Instant Build", false);
+    settings.gameOptions.onlyOnePalace = myINIFile.getBoolValue("Game Options", "Only One Palace", false);
+    settings.gameOptions.rocketTurretsNeedPower =
+        myINIFile.getBoolValue("Game Options", "Rocket-Turrets Need Power", false);
+    settings.gameOptions.sandwormsRespawn = myINIFile.getBoolValue("Game Options", "Sandworms Respawn", false);
+    settings.gameOptions.killedSandwormsDropSpice =
+        myINIFile.getBoolValue("Game Options", "Killed Sandworms Drop Spice", false);
+    settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options", "Manual Carryall Drops", false);
+    settings.gameOptions.maximumNumberOfUnitsOverride =
+        myINIFile.getIntValue("Game Options", "Maximum Number of Units Override", -1);
+}
+
+bool configure_game(int argc, char* argv[], bool bFirstInit) {
+    auto bFirstGamestart = false;
+
+    // check if configfile exists
+    const auto config_filepath = getConfigFilepath();
+
+    if(!existsFile(config_filepath)) {
+        std::string userLanguage = getUserLanguage();
+        if(userLanguage.empty()) {
+            userLanguage = "en";
+        }
+
+        bFirstGamestart = true;
+        createDefaultConfigFile(config_filepath, userLanguage);
+    }
+
+    INIFile myINIFile(config_filepath);
+
+    load_settings(myINIFile);
+
+    pTextManager = std::make_unique<TextManager>(settings.general.language);
+
+    const auto missingFiles = FileManager::getMissingFiles();
+    if(!missingFiles.empty()) {
+        // set back to English
+        auto setBackToEnglishWarning =
+            fmt::sprintf("The following files are missing for language \"%s\":\n", _("LanguageFileExtension"));
+        for(const auto& filename : missingFiles) {
+            setBackToEnglishWarning += filename.u8string() + "\n";
+        }
+        setBackToEnglishWarning += "\nLanguage is changed to English!";
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), nullptr);
+
+        sdl2::log_info("Warning: Language is changed to English!");
+
+        settings.general.language = "en";
+        myINIFile.setStringValue("General", "Language", settings.general.language);
+        if(!myINIFile.saveChangesTo(config_filepath)) {
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                            config_filepath.u8string().c_str());
+        }
+
+        // reinit text manager
+        pTextManager = std::make_unique<TextManager>(settings.general.language);
+    }
+
+    for(int i = 1; i < argc; i++) {
+        // check for overriding params
+        std::string parameter(argv[i]);
+
+        if((parameter == "-f") || (parameter == "--fullscreen")) {
+            settings.video.fullscreen = true;
+        } else if((parameter == "-w") || (parameter == "--window")) {
+            settings.video.fullscreen = false;
+        } else if(parameter.compare(0, 13, "--PlayerName=") == 0) {
+            settings.general.playerName = parameter.substr(strlen("--PlayerName="));
+        } else if(parameter.compare(0, 13, "--ServerPort=") == 0) {
+            settings.network.serverPort = atol(argv[i] + strlen("--ServerPort="));
+        }
+    }
+
+    if(bFirstGamestart && bFirstInit) {
+        SDL_DisplayMode displayMode;
+        SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
+
+        const auto factor                 = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
+        settings.video.physicalWidth      = displayMode.w;
+        settings.video.physicalHeight     = displayMode.h;
+        settings.video.width              = displayMode.w / factor;
+        settings.video.height             = displayMode.h / factor;
+        settings.video.preferredZoomLevel = 1;
+
+        myINIFile.setIntValue("Video", "Width", settings.video.width);
+        myINIFile.setIntValue("Video", "Height", settings.video.height);
+        myINIFile.setIntValue("Video", "Physical Width", settings.video.physicalWidth);
+        myINIFile.setIntValue("Video", "Physical Height", settings.video.physicalHeight);
+        myINIFile.setIntValue("Video", "Preferred Zoom Level", 1);
+
+        if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                            getConfigFilepath().u8string().c_str());
+        }
+    }
+
+    Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
+
+    return bFirstGamestart;
+}
+
+bool run_game(int argc, char* argv[]) {
+    bool bExitGame       = false;
+    bool bFirstInit      = true;
+    bool bFirstGamestart = false;
+
+    debug       = false;
+    cursorFrame = UI_CursorNormal;
+
+    do {
+        if(configure_game(argc, argv, bFirstInit))
+            bFirstGamestart = true;
+
+        if(bFirstInit) {
+            sdl2::log_info("Initializing audio...");
+            if(Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
+                // SDL_Quit();
+                // THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY,
+                // SDL_GetError());
+            } else {
+                sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
+            }
+        }
+
+        pFileManager = std::make_unique<FileManager>();
+
+        // now we can finish loading texts
+        pTextManager->loadData();
+
+        palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
+
+        sdl2::log_info("Setting video mode...");
+        setVideoMode(currentDisplayIndex);
+        SDL_RendererInfo rendererInfo;
+        SDL_GetRendererInfo(renderer, &rendererInfo);
+        sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width,
+                       rendererInfo.max_texture_height);
+
+        sdl2::log_info("Loading fonts...");
+        pFontManager = std::make_unique<FontManager>();
+
+        sdl2::log_info("Loading graphics and sounds...");
+
+#ifdef HAS_ASYNC
+        // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
+        auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
+            const auto start   = std::chrono::steady_clock::now();
+            auto       ret     = std::make_unique<SFXManager>();
+            const auto elapsed = std::chrono::steady_clock::now() - start;
+            return std::make_pair(std::move(ret), elapsed);
+        });
+#else
+        // g++ does not provide std::launch::async on all platforms
+        pSFXManager = std::make_unique<SFXManager>();
+#endif
+
+        const auto start   = std::chrono::steady_clock::now();
+        pGFXManager        = std::make_unique<GFXManager>();
+        const auto elapsed = std::chrono::steady_clock::now() - start;
+
+        sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
+
+#ifdef HAS_ASYNC
+        try {
+            auto sfxResult = sfxManagerFut.get();
+            pSFXManager    = std::move(sfxResult.first);
+            sdl2::log_info("SFXManager time: %s",
+                           std::to_string(std::chrono::duration<double>(sfxResult.second).count()).c_str());
+        } catch(const std::exception& e) {
+            pSFXManager        = nullptr;
+            const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
+                                              "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
+                                              demangleSymbol(typeid(e).name()), e.what());
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
+        }
+#endif
+
+        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
+
+        if(bFirstInit) {
+            sdl2::log_info("Starting sound player...");
+            soundPlayer = std::make_unique<SoundPlayer>();
+
+            if(settings.audio.musicType == "directory") {
+                sdl2::log_info("Starting directory music player...");
+                musicPlayer = std::make_unique<DirectoryPlayer>();
+            } else if(settings.audio.musicType == "adl") {
+                sdl2::log_info("Starting ADL music player...");
+                musicPlayer = std::make_unique<ADLPlayer>();
+            } else if(settings.audio.musicType == "xmi") {
+                sdl2::log_info("Starting XMI music player...");
+                musicPlayer = std::make_unique<XMIPlayer>();
+            } else {
+                THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
+            }
+
+            // musicPlayer->changeMusic(MUSIC_INTRO);
+        }
+
+        // Playing intro
+        if(((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
+            sdl2::log_info("Playing intro...");
+            Intro().run();
+        }
+
+        bFirstInit = false;
+
+        sdl2::log_info("Starting main menu...");
+        { // Scope
+            if(MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
+                bExitGame = true;
+            }
+        }
+
+        sdl2::log_info("Deinitialize...");
+
+        GUIStyle::destroyGUIStyle();
+
+        // clear everything
+        if(bExitGame) {
+            musicPlayer.reset();
+            soundPlayer.reset();
+            Mix_HaltMusic();
+            Mix_CloseAudio();
+        } else {
+            // save the current display index for later reuse
+            currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
+        }
+
+        pTextManager.reset();
+        pSFXManager.reset();
+        pGFXManager.reset();
+        pFontManager.reset();
+        pFileManager.reset();
+
+        SDL_DestroyTexture(screenTexture);
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+
+        sdl2::log_info("Deinitialization finished!");
+    } while(!bExitGame);
+
+    return true;
+}
+
 namespace {
 #ifdef DUNE_CRT_HEAP_DEBUG
 struct DuneHeapDebug final {
@@ -591,9 +871,25 @@ struct DuneHeapDebug final {
 #else
 struct DuneHeapDebug { };
 #endif
+
+struct SDL_handle final {
+    SDL_handle(Uint32 flags) {
+        if(SDL_Init(flags) < 0)
+            THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
+    }
+    ~SDL_handle() { SDL_Quit(); }
+};
+
+struct TTF_handle final {
+    TTF_handle() {
+        if(TTF_Init() < 0)
+            THROW(sdl_error, "Couldn't initialize SDL2_ttf: %s!", TTF_GetError());
+    }
+    ~TTF_handle() { TTF_Quit(); }
+};
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     DuneHeapDebug heap_debug;
 
     SDL_LogSetOutputFunction(logOutputFunction, nullptr);
@@ -612,14 +908,16 @@ int main(int argc, char *argv[]) {
         }
 
         bool bShowDebugLog = false;
-        for(int i=1; i < argc; i++) {
-            //check for overiding params
+        for(int i = 1; i < argc; i++) {
+            // check for overriding params
             std::string parameter(argv[i]);
 
             if(parameter == "--showlog") {
                 // special parameter which does not overwrite settings
                 bShowDebugLog = true;
-            } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") || (parameter == "--window") || (parameter.compare(0, 13, "--PlayerName=") == 0) || (parameter.compare(0, 13, "--ServerPort=") == 0)) {
+            } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") ||
+                      (parameter == "--window") || (parameter.compare(0, 13, "--PlayerName=") == 0) ||
+                      (parameter.compare(0, 13, "--ServerPort=") == 0)) {
                 // normal parameter for overwriting settings
                 // handle later
             } else {
@@ -632,7 +930,7 @@ int main(int argc, char *argv[]) {
             // get utf8-encoded log file path
             auto logfilePath = getLogFilepath();
 
-            #ifdef _WIN32
+#ifdef _WIN32
 
             FILE* discard = nullptr;
             if(freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
@@ -647,8 +945,9 @@ int main(int argc, char *argv[]) {
 
             const auto wLogFilePath = logfilePath.wstring();
 
-            const auto log_handle = CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr,
-                                                    CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
+            const auto log_handle =
+                CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 
             if(log_handle == INVALID_HANDLE_VALUE) {
                 // use stdout in this error case as stderr is not yet ready
@@ -671,7 +970,7 @@ int main(int argc, char *argv[]) {
             setvbuf(stdout, nullptr, _IONBF, 0);
             setvbuf(stderr, nullptr, _IONBF, 0);
 
-            #else
+#else
 
             char* pLogfilePath = (char*)logfilePath.c_str();
 
@@ -689,7 +988,7 @@ int main(int argc, char *argv[]) {
                 THROW(io_error, "Redirecting stderr failed!");
             }
 
-            #endif
+#endif
         }
 
         sdl2::log_info("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
@@ -708,303 +1007,48 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
 
-        bool bExitGame = false;
-        bool bFirstInit = true;
-        bool bFirstGamestart = false;
+        // we do not use rand() but maybe some library does; thus we shall initialize it
+        auto seed = static_cast<unsigned>(std::random_device()()) ^ static_cast<unsigned>(time(nullptr));
+        srand(seed);
 
-        debug = false;
-        cursorFrame = UI_CursorNormal;
+        sdl2::log_info("Initializing SDL...");
 
-        do {
-            // we do not use rand() but maybe some library does; thus we shall initialize it
-            auto seed = static_cast<unsigned>(std::random_device()()) ^ static_cast<unsigned>(time(nullptr));
-            srand(seed);
+        SDL_handle sdl_handle{SDL_INIT_TIMER | SDL_INIT_VIDEO};
 
-            // check if configfile exists
-            auto configfilepath = getConfigFilepath();
-            if(!existsFile(configfilepath)) {
-                std::string userLanguage = getUserLanguage();
-                if(userLanguage.empty()) {
-                    userLanguage = "en";
-                }
+        SDL_version compiledVersion;
+        SDL_version linkedVersion;
+        SDL_VERSION(&compiledVersion);
+        SDL_GetVersion(&linkedVersion);
+        sdl2::log_info("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
+        sdl2::log_info("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
+                       compiledVersion.patch);
 
-                bFirstGamestart = true;
-                createDefaultConfigFile(configfilepath, userLanguage);
-            }
+        TTF_handle ttf_handle;
 
-            INIFile myINIFile(configfilepath);
+        SDL_version TTFCompiledVersion;
+        SDL_TTF_VERSION(&TTFCompiledVersion);
+        const SDL_version* pTTFLinkedVersion = TTF_Linked_Version();
+        sdl2::log_info("SDL2_ttf runtime v%d.%d.%d", pTTFLinkedVersion->major, pTTFLinkedVersion->minor,
+                       pTTFLinkedVersion->patch);
+        sdl2::log_info("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor,
+                       TTFCompiledVersion.patch);
 
-            settings.general.playIntro = myINIFile.getBoolValue("General","Play Intro",false);
-            settings.general.playerName = myINIFile.getStringValue("General","Player Name","Player");
-            settings.general.language = myINIFile.getStringValue("General","Language","en");
-            settings.general.scrollSpeed = myINIFile.getIntValue("General","Scroll Speed",50);
-            settings.general.showTutorialHints = myINIFile.getBoolValue("General","Show Tutorial Hints",true);
-            settings.video.width = myINIFile.getIntValue("Video","Width",640);
-            settings.video.height = myINIFile.getIntValue("Video","Height",480);
-            settings.video.physicalWidth= myINIFile.getIntValue("Video","Physical Width",640);
-            settings.video.physicalHeight = myINIFile.getIntValue("Video","Physical Height",480);
-            settings.video.fullscreen = myINIFile.getBoolValue("Video","Fullscreen",false);
-            settings.video.frameLimit = myINIFile.getBoolValue("Video","FrameLimit",true);
-            settings.video.preferredZoomLevel = myINIFile.getIntValue("Video","Preferred Zoom Level", 0);
-            settings.video.scaler = myINIFile.getStringValue("Video","Scaler","ScaleHD");
-            settings.video.rotateUnitGraphics  = myINIFile.getBoolValue("Video", "RotateUnitGraphics", false);
-            settings.video.renderer = myINIFile.getStringValue("Video", "Renderer", "default");
-            settings.audio.musicType = myINIFile.getStringValue("Audio","Music Type","adl");
-            settings.audio.playMusic = myINIFile.getBoolValue("Audio","Play Music", true);
-            settings.audio.musicVolume = myINIFile.getIntValue("Audio","Music Volume", 64);
-            settings.audio.playSFX = myINIFile.getBoolValue("Audio","Play SFX", true);
-            settings.audio.sfxVolume = myINIFile.getIntValue("Audio","SFX Volume", 64);
-
-            settings.network.serverPort = myINIFile.getIntValue("Network","ServerPort",DEFAULT_PORT);
-            settings.network.metaServer = myINIFile.getStringValue("Network","MetaServer",DEFAULT_METASERVER);
-            settings.network.debugNetwork = myINIFile.getBoolValue("Network","Debug Network",false);
-
-            settings.ai.campaignAI = myINIFile.getStringValue("AI","Campaign AI",DEFAULTAIPLAYERCLASS);
-
-            settings.gameOptions.gameSpeed = myINIFile.getIntValue("Game Options","Game Speed",GAMESPEED_DEFAULT);
-            settings.gameOptions.concreteRequired = myINIFile.getBoolValue("Game Options","Concrete Required",true);
-            settings.gameOptions.structuresDegradeOnConcrete = myINIFile.getBoolValue("Game Options","Structures Degrade On Concrete",true);
-            settings.gameOptions.fogOfWar = myINIFile.getBoolValue("Game Options","Fog of War",false);
-            settings.gameOptions.startWithExploredMap = myINIFile.getBoolValue("Game Options","Start with Explored Map",false);
-            settings.gameOptions.instantBuild = myINIFile.getBoolValue("Game Options","Instant Build",false);
-            settings.gameOptions.onlyOnePalace = myINIFile.getBoolValue("Game Options","Only One Palace",false);
-            settings.gameOptions.rocketTurretsNeedPower = myINIFile.getBoolValue("Game Options","Rocket-Turrets Need Power",false);
-            settings.gameOptions.sandwormsRespawn = myINIFile.getBoolValue("Game Options","Sandworms Respawn",false);
-            settings.gameOptions.killedSandwormsDropSpice = myINIFile.getBoolValue("Game Options","Killed Sandworms Drop Spice",false);
-            settings.gameOptions.manualCarryallDrops = myINIFile.getBoolValue("Game Options","Manual Carryall Drops",false);
-            settings.gameOptions.maximumNumberOfUnitsOverride = myINIFile.getIntValue("Game Options","Maximum Number of Units Override",-1);
-
-            pTextManager = std::make_unique<TextManager>();
-
-            missingFiles = FileManager::getMissingFiles();
-            if(!missingFiles.empty()) {
-                // set back to English
-                auto setBackToEnglishWarning = fmt::sprintf("The following files are missing for language \"%s\":\n",_("LanguageFileExtension"));
-                for(const auto& filename : missingFiles) {
-                    setBackToEnglishWarning += filename.u8string() + "\n";
-                }
-                setBackToEnglishWarning += "\nLanguage is changed to English!";
-                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), nullptr);
-
-                sdl2::log_info("Warning: Language is changed to English!");
-
-                settings.general.language = "en";
-                myINIFile.setStringValue("General","Language",settings.general.language);
-                if(!myINIFile.saveChangesTo(configfilepath)) {
-                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                 configfilepath.u8string().c_str());
-                }
-
-                // reinit text manager
-                pTextManager = std::make_unique<TextManager>();
-            }
-
-            for(int i=1; i < argc; i++) {
-                //check for overiding params
-                std::string parameter(argv[i]);
-
-                if((parameter == "-f") || (parameter == "--fullscreen")) {
-                    settings.video.fullscreen = true;
-                } else if((parameter == "-w") || (parameter == "--window")) {
-                    settings.video.fullscreen = false;
-                } else if(parameter.compare(0, 13, "--PlayerName=") == 0) {
-                    settings.general.playerName = parameter.substr(strlen("--PlayerName="));
-                } else if(parameter.compare(0, 13, "--ServerPort=") == 0) {
-                    settings.network.serverPort = atol(argv[i] + strlen("--ServerPort="));
-                }
-            }
-
-            if(bFirstInit) {
-                sdl2::log_info("Initializing SDL...");
-
-                if(SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) < 0) {
-                    THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
-                }
-
-                SDL_version compiledVersion;
-                SDL_version linkedVersion;
-                SDL_VERSION(&compiledVersion);
-                SDL_GetVersion(&linkedVersion);
-                sdl2::log_info("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
-                sdl2::log_info("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor, compiledVersion.patch);
-
-                if(TTF_Init() < 0) {
-                    THROW(sdl_error, "Couldn't initialize SDL2_ttf: %s!", TTF_GetError());
-                }
-
-                SDL_version TTFCompiledVersion;
-                SDL_TTF_VERSION(&TTFCompiledVersion);
-                const SDL_version* pTTFLinkedVersion = TTF_Linked_Version();
-                sdl2::log_info("SDL2_ttf runtime v%d.%d.%d", pTTFLinkedVersion->major, pTTFLinkedVersion->minor, pTTFLinkedVersion->patch);
-                sdl2::log_info("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor, TTFCompiledVersion.patch);
-            }
-
-            if(bFirstGamestart && bFirstInit) {
-                SDL_DisplayMode displayMode;
-                SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
-
-                const auto factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
-                settings.video.physicalWidth = displayMode.w;
-                settings.video.physicalHeight = displayMode.h;
-                settings.video.width = displayMode.w / factor;
-                settings.video.height = displayMode.h / factor;
-                settings.video.preferredZoomLevel = 1;
-
-                myINIFile.setIntValue("Video","Width",settings.video.width);
-                myINIFile.setIntValue("Video","Height",settings.video.height);
-                myINIFile.setIntValue("Video","Physical Width",settings.video.physicalWidth);
-                myINIFile.setIntValue("Video","Physical Height",settings.video.physicalHeight);
-                myINIFile.setIntValue("Video","Preferred Zoom Level",1);
-
-                if(!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                 getConfigFilepath().u8string().c_str());
-                }
-            }
-
-            Scaler::setDefaultScaler(Scaler::getScalerByName(settings.video.scaler));
-
-            if(bFirstInit) {
-                sdl2::log_info("Initializing audio...");
-                if( Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0 ) {
-                    //SDL_Quit();
-                    //THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY, SDL_GetError());
-                } else {
-                    sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
-                }
-            }
-
-            pFileManager = std::make_unique<FileManager>();
-
-            // now we can finish loading texts
-            pTextManager->loadData();
-
-            palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
-
-            sdl2::log_info("Setting video mode...");
-            setVideoMode(currentDisplayIndex);
-            SDL_RendererInfo rendererInfo;
-            SDL_GetRendererInfo(renderer, &rendererInfo);
-            sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width, rendererInfo.max_texture_height);
-
-
-            sdl2::log_info("Loading fonts...");
-            pFontManager = std::make_unique<FontManager>();
-
-            sdl2::log_info("Loading graphics and sounds...");
-
-#ifdef HAS_ASYNC
-            // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
-            auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
-                const auto start   = std::chrono::steady_clock::now();
-                auto       ret     = std::make_unique<SFXManager>();
-                const auto elapsed = std::chrono::steady_clock::now() - start;
-                return std::make_pair(std::move(ret), elapsed);
-            });
-#else
-            // g++ does not provide std::launch::async on all platforms
-            pSFXManager = std::make_unique<SFXManager>();
-#endif
-
-            const auto start = std::chrono::steady_clock::now();
-            pGFXManager = std::make_unique<GFXManager>();
-            const auto elapsed = std::chrono::steady_clock::now() - start;
-
-            sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
-
-#ifdef HAS_ASYNC
-            try {
-                auto sfxResult = sfxManagerFut.get();
-                pSFXManager = std::move(sfxResult.first);
-                sdl2::log_info("SFXManager time: %s", std::to_string(std::chrono::duration<double>(sfxResult.second).count()).c_str());
-            } catch(const std::exception& e) {
-                pSFXManager = nullptr;
-                const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was thrown:\n\n%s\n\nDune Legacy is unable to play sound!", demangleSymbol(typeid(e).name()), e.what());
-                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
-            }
-#endif
-
-            GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
-
-            if(bFirstInit) {
-                sdl2::log_info("Starting sound player...");
-                soundPlayer = std::make_unique<SoundPlayer>();
-
-                if(settings.audio.musicType == "directory") {
-                    sdl2::log_info("Starting directory music player...");
-                    musicPlayer = std::make_unique<DirectoryPlayer>();
-                } else if(settings.audio.musicType == "adl") {
-                    sdl2::log_info("Starting ADL music player...");
-                    musicPlayer = std::make_unique<ADLPlayer>();
-                } else if(settings.audio.musicType == "xmi") {
-                    sdl2::log_info("Starting XMI music player...");
-                    musicPlayer = std::make_unique<XMIPlayer>();
-                } else {
-                    THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
-                }
-
-                //musicPlayer->changeMusic(MUSIC_INTRO);
-            }
-
-            // Playing intro
-            if(((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
-                sdl2::log_info("Playing intro...");
-                Intro().run();
-            }
-
-            bFirstInit = false;
-
-            sdl2::log_info("Starting main menu...");
-            { // Scope
-                if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
-                    bExitGame = true;
-                }
-            }
-
-            sdl2::log_info("Deinitialize...");
-
-            GUIStyle::destroyGUIStyle();
-
-            // clear everything
-            if(bExitGame) {
-                musicPlayer.reset();
-                soundPlayer.reset();
-                Mix_HaltMusic();
-                Mix_CloseAudio();
-            } else {
-                // save the current display index for later reuse
-                currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
-            }
-
-            pTextManager.reset();
-            pSFXManager.reset();
-            pGFXManager.reset();
-            pFontManager.reset();
-            pFileManager.reset();
-
-            SDL_DestroyTexture(screenTexture);
-            SDL_DestroyRenderer(renderer);
-            SDL_DestroyWindow(window);
-
-            if(bExitGame) {
-                TTF_Quit();
-                SDL_Quit();
-            }
-            sdl2::log_info("Deinitialization finished!");
-        } while(!bExitGame);
+        const auto okay = run_game(argc, argv);
 
         // deinit fnkdat
         auto [ok2, tmp2] = fnkdat(FNKDAT_UNINIT);
         if(!ok2) {
             THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
         }
+
+        return okay ? EXIT_SUCCESS : EXIT_FAILURE;
     } catch(const std::exception& e) {
-        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name()) + std::string("\' was thrown:\n\n") + e.what() + std::string("\n\nDune Legacy will now be terminated!");
+        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name()) +
+                              std::string("\' was thrown:\n\n") + e.what() +
+                              std::string("\n\nDune Legacy will now be terminated!");
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message.c_str());
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
         return EXIT_FAILURE;
     }
-
-    return EXIT_SUCCESS;
 }

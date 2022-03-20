@@ -17,8 +17,6 @@
 
 #include <FileClasses/TextManager.h>
 
-#include <globals.h>
-
 #include <misc/string_util.h>
 
 #include <FileClasses/FileManager.h>
@@ -50,17 +48,17 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path)
     return sdl2::RWops_ptr{ rwops };
 }
 
-TextManager::TextManager() {
+TextManager::TextManager(std::string_view language) {
     const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
-    auto languages = getFileNamesList(locale_directory, settings.general.language + ".po", true, FileListOrder_Name_Asc);
+    auto languages = getFileNamesList(locale_directory, std::string{language} + ".po", true, FileListOrder_Name_Asc);
 
-    const auto language = languages.empty() ? std::filesystem::path{ "English.en.po" } : languages.front();
+    const auto language_file = languages.empty() ? std::filesystem::path{ "English.en.po" } : languages.front();
 
-    const auto language_path = locale_directory / language;
+    const auto language_path = locale_directory / language_file;
     sdl2::log_info("Loading localization from '%s'...", language_path.u8string().c_str());
     auto rwops = openReadOnlyRWops(language_path.u8string());
-    localizedString = loadPOFile(rwops.get(), language.u8string());
+    localizedString = loadPOFile(rwops.get(), language_file.u8string());
 }
 
 TextManager::~TextManager() = default;

@@ -23,6 +23,7 @@
 #include "DataTypes.h"
 
 #include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 #include <memory>
@@ -41,7 +42,7 @@ public:
     /**
         Default constructor
     */
-    TextManager();
+    TextManager(std::string_view language);
 
     /**
         Destructor
