@@ -548,6 +548,17 @@ void log_msvc() {
 }
 #endif
 
+#if defined(NTDDI_VERSION)
+void log_windows_sdk() {
+    sdl2::log_info("   Windows SDK %d.%d.%d.%d",
+        OSVER(WDK_NTDDI_VERSION) >> 24, 0xff & (OSVER(WDK_NTDDI_VERSION) >> 16),
+        SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+    sdl2::log_info("   Minimum Windows %d.%d.%d.%d",
+        OSVER(NTDDI_VERSION) >> 24, 0xff & (OSVER(NTDDI_VERSION) >> 16),
+        SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
+}
+#endif // defined(NTDDI_VERSION)
+
 void log_build_info() {
     sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
 
@@ -566,6 +577,10 @@ void log_build_info() {
 #elif defined(_MSC_VER)
     log_msvc();
 #endif // _MSC_VER
+
+#if defined(NTDDI_VERSION)
+    log_windows_sdk();
+#endif
 
 #if defined(FMT_VERSION)
     sdl2::log_info("   fmt %d.%d.%d", FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
