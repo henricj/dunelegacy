@@ -28,9 +28,12 @@
 #include <SDL2/SDL_filesystem.h>
 
 #ifdef _WIN32
+#    ifndef WIN32_LEAN_AND_MEAN
+#        define WIN32_LEAN_AND_MEAN
+#    endif
 #include <io.h>
 #include <direct.h>
-#include <windows.h>
+#include <Windows.h>
 #else
 #include <dirent.h>
 #include <sys/stat.h>

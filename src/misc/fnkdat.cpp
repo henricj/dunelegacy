@@ -129,7 +129,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(int flags) {
 #    include <Shlwapi.h>
 #    include <cctype>
 #    include <direct.h>
-#    include <windows.h>
+#    include <Windows.h>
 
 /*
  * Constants passed to the silly-ass MS function
