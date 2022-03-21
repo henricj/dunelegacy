@@ -16,13 +16,15 @@
  */
 
 #include <FileClasses/LoadSavePNG.h>
-#include <FileClasses/lodepng.h>
 #include <misc/draw_util.h>
 #include <misc/dune_localtime.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
 #include <Colors.h>
 #include <globals.h>
+
+#include <lodepng.h>
+
 #include <optional>
 
 struct free_deleter

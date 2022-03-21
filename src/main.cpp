@@ -54,6 +54,7 @@
 
 #include <enet/enet.h>
 #include <fmt/core.h>
+#include <lodepng.h>
 
 #include <iostream>
 #include <typeinfo>
@@ -594,6 +595,8 @@ void log_build_info() {
 #if defined(FMT_VERSION)
     sdl2::log_info("   fmt %d.%d.%d", FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
 #endif
+
+    sdl2::log_info("   lodepng %s", LODEPNG_VERSION_STRING);
 
 #if defined(ENET_VERSION_MAJOR) && defined(ENET_VERSION_MINOR) && defined(ENET_VERSION_PATCH)
     sdl2::log_info("   enet %d.%d.%d", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);

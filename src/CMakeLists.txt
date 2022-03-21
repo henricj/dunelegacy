@@ -67,7 +67,6 @@ set(FILE_CLASSES_SOURCES
 	FileClasses/adl/sound_adlib.cpp
 	FileClasses/adl/surroundopl.cpp
 	FileClasses/adl/woodyopl.cpp
-	FileClasses/lodepng.cpp
 	FileClasses/music/ADLPlayer.cpp
 	FileClasses/music/DirectoryPlayer.cpp
 	FileClasses/music/XMIPlayer.cpp
@@ -288,7 +287,7 @@ set(HEADERS
 ../include/FileClasses/IndexedTextFile.h
 ../include/FileClasses/INIFile.h
 ../include/FileClasses/LoadSavePNG.h
-../include/FileClasses/lodepng.h
+
 ../include/FileClasses/MentatTextFile.h
 ../include/FileClasses/music/ADLPlayer.h
 ../include/FileClasses/music/DirectoryPlayer.h
@@ -546,6 +545,7 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(sdl2-mixer CONFIG REQUIRED)
 find_package(sdl2-ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+find_package(lodepng CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
 
 if(UNIX)
@@ -564,6 +564,7 @@ set(LIBS
 	SDL2::SDL2_mixer
 	SDL2::SDL2_ttf
 	fmt::fmt
+	lodepng
 	Microsoft.GSL::GSL
 	digestpp
 	rectpack2D
