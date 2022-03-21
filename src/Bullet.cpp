@@ -55,7 +55,7 @@ Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* ne
         const auto diffX = destination.x - newRealLocation->x;
         auto diffY = destination.y - newRealLocation->y;
 
-        int weaponrange = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
+        const int weaponrange = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
 
         if((diffX == 0) && (diffY == 0)) {
             diffY = weaponrange*TILESIZE;
@@ -270,8 +270,8 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         return;
     }
 
-    auto dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
-        numFrames, 1, HAlign::Center, VAlign::Center);
+    const auto dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
+                                            numFrames, 1, HAlign::Center, VAlign::Center);
 
     if(bulletID == Bullet_Sonic) {
         static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
@@ -426,11 +426,11 @@ bool Bullet::update(const GameContext& context) {
             return true;
         }
 
-        FixPoint weaponDamage =
+        const FixPoint weaponDamage =
             context.game.objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weapondamage;
 
-        FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
-        FixPoint endDamage   = ((weaponDamage - 9) / 4 + 1) / 4.5_fix;
+        const FixPoint startDamage = (weaponDamage / 4 + 1) / 4.5_fix;
+        const FixPoint endDamage   = ((weaponDamage - 9) / 4 + 1) / 4.5_fix;
 
         const auto damageDecrease = -(startDamage - endDamage) / (45 * 2 * speed);
         const auto dist           = distanceFrom(source.x, source.y, realX, realY);
