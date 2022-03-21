@@ -296,7 +296,8 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        SDL_Rect scaled_source{lround(source.x * scaleX), lround(source.y * scaleY), lround(w * scaleX), lround(h * scaleY)};
+        const SDL_Rect scaled_source{lround(static_cast<float>(source.x) * scaleX), lround(static_cast<float>(source.y) * scaleY),
+                                     lround(static_cast<float>(w) * scaleX), lround(static_cast<float>(h) * scaleY)};
 
         const sdl2::surface_ptr screen_copy{
             SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
