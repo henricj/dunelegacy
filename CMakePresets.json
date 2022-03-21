@@ -183,7 +183,8 @@
       "inherits": "windows-clang-x64",
       "displayName": "Windows Clang x64 Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL"
       }
     },
     {
