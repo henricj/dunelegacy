@@ -32,11 +32,13 @@ is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.
 ### Notable Changes
 
 - Builds are done with CMake (and only CMake).
-- [ENet](http://enet.bespin.org/) and [libfmt](https://fmt.dev/) have been updated are are no longer a
-normal part of the tree but are included as [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+- [ENet](http://enet.bespin.org/) has been updated and is no longer a
+normal part of the tree but is included as [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 instead.
-- [vcpkg](https://github.com/microsoft/vcpkg) is used to provide SDL2, gtest, fmt, and ms-gsl.
-- Pausing after the mission has completed but before the statistic page is displayed will let the user
+- [vcpkg](https://github.com/microsoft/vcpkg) is used to provide [SDL2](https://www.libsdl.org/),
+[googletest](https://github.com/google/googletest), [fmt](https://fmt.dev/), [lodepng](https://lodev.org/lodepng/),
+ [soxr](https://sourceforge.net/projects/soxr/), and [ms-gsl](https://github.com/microsoft/GSL).
+- Pausing after the mission has completed but before the statistics page is displayed will let the user
 explore the map for as long as they like.
 - On Windows, DirectX 11 is now the preferred renderer. An option has been added to the INI file to configure
 the preferred renderer.  Add `Renderer = direct3d` or `Renderer = software` under the `[Video]` section
