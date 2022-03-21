@@ -280,10 +280,10 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         auto* const shimmerTex =
             pGFXManager->getTempStreamingTexture(renderer, shimmerMaskSurface->w, shimmerMaskSurface->h);
 
-        auto source = dest;
+        auto [sx, sy, sw, sh] = dest;
 
         const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24) / 3;
-        source.x += shimmerOffset[shimmerOffsetIndex % 8] * 2;
+        sx += shimmerOffset[shimmerOffsetIndex % 8] * 2;
 
         uint32_t format;
         int      access, w, h;
@@ -296,8 +296,12 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        const SDL_Rect scaled_source{lround(static_cast<float>(source.x) * scaleX), lround(static_cast<float>(source.y) * scaleY),
-                                     lround(static_cast<float>(w) * scaleX), lround(static_cast<float>(h) * scaleY)};
+        const SDL_Rect scaled_source{
+            static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
+            static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
+            static_cast<int>(lround(static_cast<float>(w) * scaleX)),
+            static_cast<int>(lround(static_cast<float>(h) * scaleY))
+        };
 
         const sdl2::surface_ptr screen_copy{
             SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
