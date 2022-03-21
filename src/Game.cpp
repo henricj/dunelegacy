@@ -1109,9 +1109,7 @@ void Game::updateGame(const GameContext& context)
 }
 
 void Game::doEventsUntil(const GameContext& context, const int until) {
-    SDL_Event event;
-    // valgrind reports errors in SDL_PollEvent if event is not initialized
-    memset(&event, 0, sizeof(event));
+    SDL_Event event{};
 
     while(!bQuitGame && !finishedLevel) {
         const auto remaining = until - static_cast<int>(SDL_GetTicks());

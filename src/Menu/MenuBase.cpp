@@ -45,9 +45,7 @@ void MenuBase::quit(int returnVal) {
 }
 
 bool MenuBase::doEventsUntil(const int until) {
-    SDL_Event event;
-    // valgrind reports errors in SDL_PollEvent if event is not initialized
-    memset(&event, 0, sizeof(event));
+    SDL_Event event{};
 
     while(!quiting) {
         const auto remaining = until - SDL_GetTicks();
@@ -68,9 +66,7 @@ bool MenuBase::doEventsUntil(const int until) {
 }
 
 int MenuBase::showMenu() {
-    SDL_Event   event;
-    // valgrind reports errors in SDL_PollEvent if event is not initialized
-    memset(&event, 0, sizeof(event));
+    SDL_Event event{};
 
     quiting = false;
 
