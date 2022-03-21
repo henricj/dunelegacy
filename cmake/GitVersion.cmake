@@ -93,7 +93,7 @@ execute_process(
 if(NOT "${DUNE_GIT_REPO_BRANCH}" STREQUAL "master" )
     execute_process(
        COMMAND
-          ${GIT} merge-base upstream/master HEAD
+          ${GIT} merge-base origin/master HEAD
        OUTPUT_VARIABLE DUNE_GIT_MASTER_MERGE_BASE
        OUTPUT_STRIP_TRAILING_WHITESPACE
        ERROR_QUIET
