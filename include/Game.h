@@ -613,7 +613,7 @@ private:
 
     uint32_t skipToGameCycle = 0; ///< skip to this game cycle
 
-    bool        takePeriodicalScreenshots = false;      ///< take a screenshot every 10 seconds
+    bool        takePeriodicScreenshots   = false;      ///< take a screenshot every 10 seconds
     bool        pendingScreenshot         = false;
 
     SDL_Rect    powerIndicatorPos = {14, 146, 4, 0};    ///< position of the power indicator in the right game bar

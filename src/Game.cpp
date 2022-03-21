@@ -1332,7 +1332,7 @@ void Game::runMainLoop(const GameContext& context) {
 
             if(bShowFPS) { averageUpdateTime = 0.97f * averageUpdateTime + 0.03f * performanceScaleMs * updateElapsed; }
 
-            if(takePeriodicalScreenshots && ((gameCycleCount % (MILLI2CYCLES(10 * 1000))) == 0)) { takeScreenshot(); }
+            if(takePeriodicScreenshots && ((gameCycleCount % (MILLI2CYCLES(10 * 1000))) == 0)) { takeScreenshot(); }
 
             now = static_cast<int>(SDL_GetTicks());
             // Don't block the UI for more than 75ms, even if we are behind.
@@ -2279,7 +2279,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_PRINTSCREEN:
         case SDLK_SYSREQ: {
             if(SDL_GetModState() & KMOD_SHIFT) {
-                takePeriodicalScreenshots = !takePeriodicalScreenshots;
+                takePeriodicScreenshots = !takePeriodicScreenshots;
             } else {
                 takeScreenshot();
             }
