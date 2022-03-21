@@ -584,7 +584,7 @@ endif()
 
 add_library(dune ${SOURCES} ${HEADERS})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
-target_link_libraries(dune PUBLIC ${LIBS})
+target_link_libraries(dune PUBLIC git_version ${LIBS})
 
 if(DUNE_CRT_HEAP_DEBUG)
 	target_compile_definitions(dune PUBLIC DUNE_CRT_HEAP_DEBUG)

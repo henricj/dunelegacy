@@ -46,9 +46,9 @@
 
 #include <SoundPlayer.h>
 
-#include <mmath.h>
-
 #include <CutScenes/Intro.h>
+
+#include <dune_version.h>
 
 #include <SDL2/SDL_ttf.h>
 
@@ -550,9 +550,13 @@ void log_msvc() {
 
 #if defined(NTDDI_VERSION)
 void log_windows_sdk() {
-    sdl2::log_info("   Windows SDK %d.%d.%d.%d",
-        OSVER(WDK_NTDDI_VERSION) >> 24, 0xff & (OSVER(WDK_NTDDI_VERSION) >> 16),
-        SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+#    ifdef DUNE_WINDOWS_SDK_VERSION
+    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " (%d.%d.%d.%d)", OSVER(WDK_NTDDI_VERSION) >> 24,
+                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+#    else
+    sdl2::log_info("   Windows SDK %d.%d.%d.%d", OSVER(WDK_NTDDI_VERSION) >> 24,
+                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
+#    endif
     sdl2::log_info("   Minimum Windows %d.%d.%d.%d",
         OSVER(NTDDI_VERSION) >> 24, 0xff & (OSVER(NTDDI_VERSION) >> 16),
         SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
@@ -564,6 +568,11 @@ void log_build_info() {
 
 #if defined(DEBUG)
     sdl2::log_info("   *** DEBUG build " __DATE__ " " __TIME__);
+#endif
+
+#if defined(DUNE_GIT_DESCRIBE)
+    sdl2::log_info("   git " DUNE_GIT_REPO_BRANCH "/" DUNE_GIT_DESCRIBE " " DUNE_GIT_TIME);
+    sdl2::log_info("   git " DUNE_GIT_REPO_URL);
 #endif
 
 #if defined(__SANITIZE_ADDRESS__)

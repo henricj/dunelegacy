@@ -33,6 +33,8 @@ endif()
 
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 if(DUNE_ASAN)
     message(STATUS "Enabling ASAN")
 
@@ -209,6 +211,12 @@ check_cxx_source_compiles(
         return 0;
     }"
     HAVE_DOUBLE_FROM_CHARS)
+
+find_package(Git)
+
+include(GitVersion)
+
+create_git_version_target()
 
 add_subdirectory(external)
 add_subdirectory(src)
