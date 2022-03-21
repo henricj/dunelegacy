@@ -1259,6 +1259,11 @@ void Game::runMainLoop(const GameContext& context) {
 
         drawScreen();
 
+        // Apparently this must be done after drawing, but before render present.
+        // https://discourse.libsdl.org/t/sdl-renderreadpixels-always-returns-black-rectangle/20371/6
+        if(pendingScreenshot)
+            saveScreenshot();
+
         Dune_RenderPresent(renderer);
 
         const auto renderElapsed = SDL_GetPerformanceCounter() - renderStart;
@@ -2597,7 +2602,9 @@ bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos
 }
 
 
-void Game::takeScreenshot() const {
+void Game::saveScreenshot() {
+    pendingScreenshot = false;
+
     auto [ok, path] = SaveScreenshot();
 
     if (ok && path.has_value()) {

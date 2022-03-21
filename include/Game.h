@@ -457,11 +457,16 @@ public:
     bool onRadarClick(const GameContext& context, Coord worldPosition, bool bRightMouseButton, bool bDrag);
 
     /**
-        Take a screenshot and save it with a unique name
+        Request a screenshot
     */
-    void takeScreenshot() const;
+    void takeScreenshot() { pendingScreenshot = true; }
 
 private:
+
+    /**
+        Take a screenshot and save it with a unique name
+    */
+    void saveScreenshot();
 
     /**
         Checks whether the cursor is on the radar view
@@ -609,6 +614,7 @@ private:
     uint32_t skipToGameCycle = 0; ///< skip to this game cycle
 
     bool        takePeriodicalScreenshots = false;      ///< take a screenshot every 10 seconds
+    bool        pendingScreenshot         = false;
 
     SDL_Rect    powerIndicatorPos = {14, 146, 4, 0};    ///< position of the power indicator in the right game bar
     SDL_Rect    spiceIndicatorPos = {20, 146, 4, 0};    ///< position of the spice indicator in the right game bar
