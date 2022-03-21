@@ -33,7 +33,7 @@ is unknown if the CMake Visual Studio generators produce usable `vcxproj` files.
 
 - Builds are done with CMake (and only CMake).
 - [ENet](http://enet.bespin.org/) has been updated and is no longer a
-normal part of the tree but is included as [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
+normal part of the tree but is included as a [Git submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules)
 instead.
 - [vcpkg](https://github.com/microsoft/vcpkg) is used to provide [SDL2](https://www.libsdl.org/),
 [googletest](https://github.com/google/googletest), [fmt](https://fmt.dev/), [lodepng](https://lodev.org/lodepng/),
