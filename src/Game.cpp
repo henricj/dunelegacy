@@ -1342,9 +1342,11 @@ void Game::runMainLoop(const GameContext& context) {
         while(SDL_PollEvent(&event))
             doInput(context, event);
 
-        const auto until = frameStart + (settings.video.frameLimit ? 16 : 5);
+        if(bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
+            const auto until = frameStart + (settings.video.frameLimit ? 16 : 5);
 
-        doEventsUntil(context, until);
+            doEventsUntil(context, until);
+        }
 
         musicPlayer->musicCheck();         // if song has finished, start playing next one
 
