@@ -133,11 +133,8 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
 
         return 2;
 
-    } else {
-
-        return 1;
-
     }
+    return 1;
 }
 
 void setVideoMode(int displayIndex)
@@ -460,10 +457,8 @@ std::string getUserLanguage() {
     char ISO639_LanguageName[10];
     if(GetLocaleInfo(GetUserDefaultLCID(), LOCALE_SISO639LANGNAME, ISO639_LanguageName, sizeof(ISO639_LanguageName)) == 0) {
         return "";
-    } else {
-
-        pLang = ISO639_LanguageName;
     }
+    pLang = ISO639_LanguageName;
 
 #elif defined (__APPLE__)
     pLang = getMacLanguage();
@@ -487,9 +482,8 @@ std::string getUserLanguage() {
 
     if(strlen(pLang) < 2) {
         return "";
-    } else {
-        return strToLower(std::string(pLang, 2));
     }
+    return strToLower(std::string(pLang, 2));
 }
 
 #if defined(__clang_version__)

@@ -1294,8 +1294,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
         return 1;
 
     } // A RIFF Midi, just pass the source back to this function at the start of the midi file
-
-    else if (!memcmp(buf, "RIFF", 4))
+    if (!memcmp(buf, "RIFF", 4))
 
     {
 

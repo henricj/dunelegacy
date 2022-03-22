@@ -161,13 +161,14 @@ public:
     bool operator==(const RobustListIterator<T>& x) const {
         if ((pList == nullptr) && (x.pList == nullptr)) {
             return true;
-        } else if ((pList == nullptr) && (x.current == x.pList->tail)) {
-            return true;
-        } else if ((x.pList == nullptr) && (current == pList->tail)) {
-            return true;
-        } else {
-            return (current == x.current);
         }
+        if ((pList == nullptr) && (x.current == x.pList->tail)) {
+            return true;
+        }
+        if ((x.pList == nullptr) && (current == pList->tail)) {
+            return true;
+        }
+        return (current == x.current);
     }
 
     /**
@@ -372,13 +373,14 @@ public:
     bool operator==(const RobustListConstIterator<T>& x) const {
         if ((pList == nullptr) && (x.pList == nullptr)) {
             return true;
-        } else if ((pList == nullptr) && (x.current == x.pList->tail)) {
-            return true;
-        } else if ((x.pList == nullptr) && (current == pList->tail)) {
-            return true;
-        } else {
-            return (current == x.current);
         }
+        if ((pList == nullptr) && (x.current == x.pList->tail)) {
+            return true;
+        }
+        if ((x.pList == nullptr) && (current == pList->tail)) {
+            return true;
+        }
+        return (current == x.current);
     }
 
     /**

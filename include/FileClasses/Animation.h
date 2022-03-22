@@ -86,9 +86,8 @@ public:
     [[nodiscard]] bool isFinished() const noexcept {
         if (loopsLeft == -1 || loopsLeft > 0) {
             return false;
-        } else {
-            return (curFrame == (frames.size() - 1));
         }
+        return (curFrame == (frames.size() - 1));
     }
 
     void setFrameOverride(unsigned int frameOverride) noexcept { curFrameOverride = frameOverride; }

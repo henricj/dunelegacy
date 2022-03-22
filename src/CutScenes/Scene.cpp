@@ -58,10 +58,9 @@ int Scene::draw() {
         if (videoEvents.front()->isFinished()) {
             videoEvents.pop();
             continue;
-        } else {
-            nextFrameTime = videoEvents.front()->draw();
-            break;
         }
+        nextFrameTime = videoEvents.front()->draw();
+        break;
     }
 
     for (auto& pTextEvent : textEvents) {

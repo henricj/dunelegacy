@@ -116,9 +116,8 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
 
     if (diffX > diffY) {
         return diffX + diffY * (FixPt_SQRT2 - 1);
-    } else {
-        return diffX * (FixPt_SQRT2 - 1) + diffY;
     }
+    return diffX * (FixPt_SQRT2 - 1) + diffY;
 }
 
 /**
@@ -133,9 +132,8 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
 
     if (diffX > diffY) {
         return ((diffX * 2 + diffY) + 1) / 2;
-    } else {
-        return ((diffX + diffY * 2) + 1) / 2;
     }
+    return ((diffX + diffY * 2) + 1) / 2;
 }
 
 inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {

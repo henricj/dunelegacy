@@ -65,19 +65,16 @@ static uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
     if (vocSR == 0xd2 || vocSR == 0xd3) {
 
         return 22050;
-
-    } else {
-
-        const auto sr = 1000000L / (256L - vocSR);
-
-        // inexact sampling rates occur e.g. in the kitchen in Monkey Island,
-
-        // very easy to reach right from the start of the game.
-
-        // warning("inexact sample rate used: %i (0x%x)", sr, vocSR);
-
-        return sr;
     }
+    const auto sr = 1000000L / (256L - vocSR);
+
+    // inexact sampling rates occur e.g. in the kitchen in Monkey Island,
+
+    // very easy to reach right from the start of the game.
+
+    // warning("inexact sample rate used: %i (0x%x)", sr, vocSR);
+
+    return sr;
 }
 
 /**
@@ -181,10 +178,9 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                     auto* tmp_ret_sound = (uint8_t*)SDL_realloc(ret_sound.get(), decsize + len);
                     if (tmp_ret_sound == nullptr) {
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
-                    } else {
-                        ret_sound.release();
-                        ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
                     }
+                    ret_sound.release();
+                    ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
 
                     if (SDL_RWread(rwop, ret_sound.get() + decsize, 1, len) != len) {
                         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read data!");
@@ -221,10 +217,9 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                 auto* tmp_ret_sound = (uint8_t*)SDL_realloc(ret_sound.get(), decsize + length);
                 if (tmp_ret_sound == nullptr) {
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
-                } else {
-                    ret_sound.release();
-                    ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
                 }
+                ret_sound.release();
+                ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
 
                 memset(ret_sound.get() + decsize, 0x80, length);
 

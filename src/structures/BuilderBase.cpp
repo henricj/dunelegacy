@@ -220,11 +220,8 @@ bool BuilderBase::isUnitLimitReached(ItemID_enum itemID) const {
     if (isFlyingUnit(itemID)) {
 
         return getOwner()->isAirUnitLimitReached();
-
-    } else {
-
-        return getOwner()->isGroundUnitLimitReached();
     }
+    return getOwner()->isGroundUnitLimitReached();
 }
 
 void BuilderBase::updateProductionProgress() {
@@ -510,11 +507,8 @@ bool BuilderBase::doUpgrade(const GameContext& context) {
         upgradeProgress = 0;
 
         return true;
-
-    } else {
-
-        return false;
     }
+    return false;
 }
 
 void BuilderBase::doProduceItem(ItemID_enum itemID, bool multipleMode) {

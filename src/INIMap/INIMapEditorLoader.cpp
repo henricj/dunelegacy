@@ -359,7 +359,8 @@ void INIMapEditorLoader::loadUnits() {
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip unit for unused house
                 continue;
-            } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+            }
+            if (houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -448,7 +449,8 @@ void INIMapEditorLoader::loadStructures() {
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+            }
+            if (houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -481,7 +483,8 @@ void INIMapEditorLoader::loadStructures() {
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+            }
+            if (houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -533,7 +536,8 @@ void INIMapEditorLoader::loadReinforcements() {
         if (houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+        }
+        if (houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
@@ -586,7 +590,8 @@ void INIMapEditorLoader::loadAITeams() {
         if (houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+        }
+        if (houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }

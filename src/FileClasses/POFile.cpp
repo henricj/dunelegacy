@@ -81,8 +81,8 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
             if (tmp == '\n') {
 
                 break;
-
-            } else if (tmp != '\r') {
+            }
+            if (tmp != '\r') {
 
                 completeLine += tmp;
             }

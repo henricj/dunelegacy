@@ -57,13 +57,14 @@ public:
     static Scaler::ScalerType getScalerByName(const std::string& scalerName) {
         if (scalerName == "ScaleHD") {
             return Scaler::ScaleHD;
-        } else if (scalerName == "Scale2x") {
-            return Scaler::Scale2x;
-        } else if (scalerName == "ScaleNN") {
-            return Scaler::ScaleNN;
-        } else {
-            return Scaler::Invalid;
         }
+        if (scalerName == "Scale2x") {
+            return Scaler::Scale2x;
+        }
+        if (scalerName == "ScaleNN") {
+            return Scaler::ScaleNN;
+        }
+        return Scaler::Invalid;
     }
 
     // nearest neighbor scaling

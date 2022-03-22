@@ -176,14 +176,12 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
                     // this line would be too big => in oldwarppos is the last correct word warp pos
                     bEndOfLine = false;
                     break;
-                } else {
-                    if (bEndOfLine) {
-                        oldwarppos = warppos;
-                        break;
-                    } else {
-                        oldwarppos = warppos + 1;
-                    }
                 }
+                if (bEndOfLine) {
+                    oldwarppos = warppos;
+                    break;
+                }
+                oldwarppos = warppos + 1;
             }
 
             if (oldwarppos == lastwarp) {
@@ -195,9 +193,8 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
                     if (pGetTextWidth(tmp) > linewidth) {
                         // this line would be too big => in oldwarppos is the last correct warp pos
                         break;
-                    } else {
-                        oldwarppos = warppos;
                     }
+                    oldwarppos = warppos;
 
                     do {
                         warppos++;

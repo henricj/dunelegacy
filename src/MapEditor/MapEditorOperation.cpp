@@ -26,10 +26,9 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perf
 
     if (std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y)) != spiceBlooms.end()) {
         return std::make_unique<MapEditorNoOperation>();
-    } else {
-        spiceBlooms.emplace_back(x, y);
-        return std::make_unique<MapEditorTerrainRemoveSpiceBloomOperation>(x, y);
     }
+    spiceBlooms.emplace_back(x, y);
+    return std::make_unique<MapEditorTerrainRemoveSpiceBloomOperation>(x, y);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::perform(MapEditor* pMapEditor) {
@@ -41,9 +40,8 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::p
     if (iter != spiceBlooms.end()) {
         spiceBlooms.erase(iter);
         return std::make_unique<MapEditorTerrainAddSpiceBloomOperation>(x, y);
-    } else {
-        return std::make_unique<MapEditorNoOperation>();
     }
+    return std::make_unique<MapEditorNoOperation>();
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::perform(MapEditor* pMapEditor) {
@@ -52,10 +50,9 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::pe
 
     if (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y)) != specialBlooms.end()) {
         return std::make_unique<MapEditorNoOperation>();
-    } else {
-        specialBlooms.emplace_back(x, y);
-        return std::make_unique<MapEditorTerrainRemoveSpecialBloomOperation>(x, y);
     }
+    specialBlooms.emplace_back(x, y);
+    return std::make_unique<MapEditorTerrainRemoveSpecialBloomOperation>(x, y);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation::perform(MapEditor* pMapEditor) {
@@ -67,9 +64,8 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation:
     if (iter != specialBlooms.end()) {
         specialBlooms.erase(iter);
         return std::make_unique<MapEditorTerrainAddSpecialBloomOperation>(x, y);
-    } else {
-        return std::make_unique<MapEditorNoOperation>();
     }
+    return std::make_unique<MapEditorNoOperation>();
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perform(MapEditor* pMapEditor) {
@@ -78,10 +74,9 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perf
 
     if (std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y)) != spiceFields.end()) {
         return std::make_unique<MapEditorNoOperation>();
-    } else {
-        spiceFields.emplace_back(x, y);
-        return std::make_unique<MapEditorTerrainRemoveSpiceFieldOperation>(x, y);
     }
+    spiceFields.emplace_back(x, y);
+    return std::make_unique<MapEditorTerrainRemoveSpiceFieldOperation>(x, y);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::perform(MapEditor* pMapEditor) {
@@ -93,9 +88,8 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::p
     if (iter != spiceFields.end()) {
         spiceFields.erase(iter);
         return std::make_unique<MapEditorTerrainAddSpiceFieldOperation>(x, y);
-    } else {
-        return std::make_unique<MapEditorNoOperation>();
     }
+    return std::make_unique<MapEditorNoOperation>();
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorSetTacticalPositionOperation::perform(MapEditor* pMapEditor) {

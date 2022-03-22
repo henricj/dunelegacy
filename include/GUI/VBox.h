@@ -204,9 +204,8 @@ protected:
         for (const VBox_WidgetData& tmpWidgetData : containedWidgets) {
             if (widgetData.pWidget == tmpWidgetData.pWidget) {
                 return p;
-            } else {
-                p.y = p.y + tmpWidgetData.pWidget->getSize().y;
             }
+            p.y = p.y + tmpWidgetData.pWidget->getSize().y;
         }
 
         // should not happen

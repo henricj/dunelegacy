@@ -116,7 +116,8 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
                     if (spiceField.x == x && spiceField.y == y) {
                         color = COLOR_THICKSPICE;
                         break;
-                    } else if (distanceFrom(spiceField, Coord(x, y)) <= 5) {
+                    }
+                    if (distanceFrom(spiceField, Coord(x, y)) <= 5) {
                         color = COLOR_SPICE;
                         break;
                     }

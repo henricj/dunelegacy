@@ -90,10 +90,8 @@ bool ScrollBar::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         }
 
         return true;
-
-    } else {
-        return false;
     }
+    return false;
 }
 
 bool ScrollBar::handleMouseWheel(int32_t x, int32_t y, bool up) {

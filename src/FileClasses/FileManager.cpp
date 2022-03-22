@@ -179,13 +179,11 @@ std::string FileManager::md5FromFilename(const std::filesystem::path& filename) 
 
     if (md5_file(filename.u8string().c_str(), md5sum) != 0) {
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
-    } else {
-
-        std::stringstream stream;
-        stream << std::setfill('0') << std::hex;
-        for (int i : md5sum) {
-            stream << std::setw(2) << i;
-        }
-        return stream.str();
     }
+    std::stringstream stream;
+    stream << std::setfill('0') << std::hex;
+    for (int i : md5sum) {
+        stream << std::setw(2) << i;
+    }
+    return stream.str();
 }

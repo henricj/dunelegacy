@@ -674,7 +674,8 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+            }
+            if (houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -705,7 +706,8 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
-            } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+            }
+            if (houseID == HOUSETYPE::HOUSE_INVALID) {
                 logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
                 continue;
             }
@@ -729,9 +731,8 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                 if (newStructure == nullptr) {
                     logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                     continue;
-                } else {
-                    newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
                 }
+                newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
             }
         } else {
             logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
@@ -766,7 +767,8 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
         if (houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+        }
+        if (houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }
@@ -855,7 +857,8 @@ void INIMapLoader::loadAITeams(const GameContext& context) {
         if (houseID == HOUSETYPE::HOUSE_UNUSED) {
             // skip reinforcement for unused house
             continue;
-        } else if (houseID == HOUSETYPE::HOUSE_INVALID) {
+        }
+        if (houseID == HOUSETYPE::HOUSE_INVALID) {
             logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
             continue;
         }

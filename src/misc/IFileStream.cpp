@@ -66,21 +66,19 @@ std::string IFileStream::readString() {
 
     if (length == 0) {
         return "";
-    } else {
-        std::string str;
-
-        str.resize(length);
-
-        if (fread(&str[0], length, 1, fp) != 1) {
-            if (feof(fp) != 0) {
-                THROW(InputStream::eof, "IFileStream::readString(): End-of-File reached!");
-            } else {
-                THROW(InputStream::error, "IFileStream::readString(): An I/O-Error occurred!");
-            }
-        }
-
-        return str;
     }
+    std::string str;
+
+    str.resize(length);
+
+    if (fread(&str[0], length, 1, fp) != 1) {
+        if (feof(fp) != 0) {
+            THROW(InputStream::eof, "IFileStream::readString(): End-of-File reached!");
+        }
+        THROW(InputStream::error, "IFileStream::readString(): An I/O-Error occurred!");
+    }
+
+    return str;
 }
 
 uint8_t IFileStream::readUint8() {
@@ -88,9 +86,8 @@ uint8_t IFileStream::readUint8() {
     if (fread(&tmp, sizeof(uint8_t), 1, fp) != 1) {
         if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint8(): End-of-File reached!");
-        } else {
-            THROW(InputStream::error, "IFileStream::readUint8(): An I/O-Error occurred!");
         }
+        THROW(InputStream::error, "IFileStream::readUint8(): An I/O-Error occurred!");
     }
 
     return tmp;
@@ -101,9 +98,8 @@ uint16_t IFileStream::readUint16() {
     if (fread(&tmp, sizeof(uint16_t), 1, fp) != 1) {
         if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint16(): End-of-File reached!");
-        } else {
-            THROW(InputStream::error, "IFileStream::readUint16(): An I/O-Error occurred!");
         }
+        THROW(InputStream::error, "IFileStream::readUint16(): An I/O-Error occurred!");
     }
 
     return SDL_SwapLE16(tmp);
@@ -114,9 +110,8 @@ uint32_t IFileStream::readUint32() {
     if (fread(&tmp, sizeof(uint32_t), 1, fp) != 1) {
         if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint32(): End-of-File reached!");
-        } else {
-            THROW(InputStream::error, "IFileStream::readUint32(): An I/O-Error occurred!");
         }
+        THROW(InputStream::error, "IFileStream::readUint32(): An I/O-Error occurred!");
     }
 
     return SDL_SwapLE32(tmp);
@@ -127,9 +122,8 @@ uint64_t IFileStream::readUint64() {
     if (fread(&tmp, sizeof(uint64_t), 1, fp) != 1) {
         if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint64(): End-of-File reached!");
-        } else {
-            THROW(InputStream::error, "IFileStream::readUint64(): An I/O-Error occurred!");
         }
+        THROW(InputStream::error, "IFileStream::readUint64(): An I/O-Error occurred!");
     }
     return SDL_SwapLE64(tmp);
 }

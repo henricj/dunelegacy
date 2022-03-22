@@ -39,7 +39,8 @@
 Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
     if (icnRWop == nullptr) {
         THROW(std::invalid_argument, "Icnfile::Icnfile(): icnRWop == nullptr!");
-    } else if (mapRWop == nullptr) {
+    }
+    if (mapRWop == nullptr) {
         THROW(std::invalid_argument, "Icnfile::Icnfile(): mapRWop == nullptr!");
     }
 

@@ -182,9 +182,8 @@ public:
     [[nodiscard]] std::string getEntry(unsigned int index) const {
         if (index < entries.size()) {
             return entries.at(index).text;
-        } else {
-            return "";
         }
+        return "";
     }
 
     /**
@@ -209,9 +208,8 @@ public:
     [[nodiscard]] int getEntryIntData(unsigned int index) const {
         if (index < entries.size()) {
             return entries.at(index).data.intData;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
     /**
@@ -235,9 +233,8 @@ public:
     [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
         if (index < entries.size()) {
             return entries.at(index).data.ptrData;
-        } else {
-            return nullptr;
         }
+        return nullptr;
     }
 
     /**

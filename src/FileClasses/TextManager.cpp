@@ -577,11 +577,8 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
         localizedString[unprocessedString] = replaceAll(pIndexedTextFile->getString(index), mapping);
 
         return localizedString[unprocessedString];
-
-    } else {
-
-        return unprocessedString;
     }
+    return unprocessedString;
 
     return unprocessedString;
 }

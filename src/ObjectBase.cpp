@@ -343,11 +343,8 @@ uint32_t ObjectBase::getHealthColor() const {
     if (healthPercent >= HEAVILYDAMAGEDRATIO) {
 
         return COLOR_YELLOW;
-
-    } else {
-
-        return COLOR_RED;
     }
+    return COLOR_RED;
 }
 
 Coord ObjectBase::getClosestPoint(const Coord& point) const {

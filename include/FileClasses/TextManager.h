@@ -81,9 +81,8 @@ public:
         if (!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
             // post-process
             return postProcessString(localizedStringRaw);
-        } else {
-            return localizedStringRaw;
         }
+        return localizedStringRaw;
     }
 
 private:
@@ -96,9 +95,8 @@ private:
         auto iter = localizedString.find(unlocalizedString);
         if ((iter != localizedString.end()) && !iter->second.empty()) {
             return iter->second;
-        } else {
-            return unlocalizedString;
         }
+        return unlocalizedString;
     }
 
     /**

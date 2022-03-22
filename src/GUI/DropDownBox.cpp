@@ -99,11 +99,8 @@ bool DropDownBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         }
 
         return true;
-
-    } else {
-
-        return false;
     }
+    return false;
 }
 
 bool DropDownBox::handleMouseLeftOverlay(int32_t x, int32_t y, bool pressed) {
@@ -120,13 +117,10 @@ bool DropDownBox::handleMouseLeftOverlay(int32_t x, int32_t y, bool pressed) {
             } // on drop down box we don't handle overlay click
 
             return false;
-
-        } else {
-            return true;
         }
-    } else {
-        return false;
+        return true;
     }
+    return false;
 }
 
 bool DropDownBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
@@ -164,9 +158,8 @@ bool DropDownBox::handleMouseWheelOverlay(int32_t x, int32_t y, bool up) {
         const auto newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
         listBox.handleMouseWheel(x, newY, up);
         return x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
-    } else {
-        return false;
     }
+    return false;
 }
 
 bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {

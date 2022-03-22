@@ -175,14 +175,12 @@ public:
 
         if (pActiveChildWidget != nullptr) {
             return pActiveChildWidget->handleKeyPress(key);
-        } else {
-            if (key.keysym.sym == SDLK_TAB) {
-                activateFirstActivatableWidget();
-                return true;
-            } else {
-                return false;
-            }
         }
+        if (key.keysym.sym == SDLK_TAB) {
+            activateFirstActivatableWidget();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -379,9 +377,8 @@ public:
         WidgetData* widgetData = getWidgetDataFromWidget(widget);
         if (widgetData == nullptr) {
             return Point(-1, -1);
-        } else {
-            return getPosition(*widgetData);
         }
+        return getPosition(*widgetData);
     }
 
     /**

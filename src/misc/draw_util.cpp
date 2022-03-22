@@ -35,12 +35,12 @@ uint32_t getPixel(SDL_Surface* surface, int x, int y) {
         case 2:
             return *reinterpret_cast<uint16_t*>(p);
 
-        case 3:
+        case 3: {
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 return p[0] << 16 | p[1] << 8 | p[2];
-            } else {
-                return p[0] | p[1] << 8 | p[2] << 16;
             }
+            return p[0] | p[1] << 8 | p[2] << 16;
+        }
 
         case 4: {
             const auto value = *reinterpret_cast<uint32_t*>(p);
@@ -76,17 +76,16 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
             *reinterpret_cast<uint16_t*>(p) = color;
             break;
 
-        case 3:
+        case 3: {
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
                 p[0] = (color >> 16) & 0xff;
                 p[1] = (color >> 8) & 0xff;
                 p[2] = color & 0xff;
-            } else {
-                p[0] = color & 0xff;
-                p[1] = (color >> 8) & 0xff;
-                p[2] = (color >> 16) & 0xff;
             }
-            break;
+            p[0] = color & 0xff;
+            p[1] = (color >> 8) & 0xff;
+            p[2] = (color >> 16) & 0xff;
+        } break;
 
         case 4:
             *reinterpret_cast<uint32_t*>(p) = MapRGBA(surface->format, color);

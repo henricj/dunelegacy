@@ -422,9 +422,8 @@ public:
         const auto iter = playerName2Player.find(playername);
         if (iter != playerName2Player.end()) {
             return iter->second;
-        } else {
-            return nullptr;
         }
+        return nullptr;
     }
 
     /**
@@ -436,9 +435,8 @@ public:
         const auto iter = playerID2Player.find(playerID);
         if (iter != playerID2Player.end()) {
             return iter->second;
-        } else {
-            return nullptr;
         }
+        return nullptr;
     }
 
     /**

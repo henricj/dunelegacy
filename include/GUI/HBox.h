@@ -205,9 +205,8 @@ protected:
             if (widgetData.pWidget == tmpWidgetData.pWidget) {
                 p.y = (getSize().y - tmpWidgetData.pWidget->getSize().y) / 2;
                 return p;
-            } else {
-                p.x = p.x + tmpWidgetData.pWidget->getSize().x;
             }
+            p.x = p.x + tmpWidgetData.pWidget->getSize().x;
         }
 
         // should not happen

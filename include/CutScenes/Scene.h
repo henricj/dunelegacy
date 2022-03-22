@@ -71,11 +71,8 @@ public:
         if (videoEvents.size() == 1) {
 
             return videoEvents.front()->isFinished();
-
-        } else {
-
-            return false;
         }
+        return false;
     }
 
     /**

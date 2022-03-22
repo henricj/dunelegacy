@@ -172,10 +172,9 @@ public:
                 return true;
             }
             return false;
-        } else {
-            bRadarInteraction = false;
-            return false;
         }
+        bRadarInteraction = false;
+        return false;
     }
 
     /**
@@ -194,10 +193,9 @@ public:
                 return true;
             }
             return false;
-        } else {
-            bRadarInteraction = false;
-            return false;
         }
+        bRadarInteraction = false;
+        return false;
     }
 
     /**

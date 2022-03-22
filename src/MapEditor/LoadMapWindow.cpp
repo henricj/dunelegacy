@@ -167,14 +167,10 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             }
 
             return true;
-
-        } else {
-
-            return pWindowWidget->handleKeyPress(key);
         }
-    } else {
-        return false;
+        return pWindowWidget->handleKeyPress(key);
     }
+    return false;
 }
 
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
