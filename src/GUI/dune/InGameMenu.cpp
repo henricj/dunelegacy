@@ -21,21 +21,20 @@
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
-#include <misc/fnkdat.h>
 #include <Game.h>
-#include <main.h>
 #include <GameInitSettings.h>
+#include <main.h>
+#include <misc/fnkdat.h>
 
 #include <GUI/MsgBox.h>
 #include <GUI/QstBox.h>
 #include <GUI/dune/InGameSettingsMenu.h>
 #include <GUI/dune/LoadSaveWindow.h>
 
-
 InGameMenu::InGameMenu(bool bMultiplayer, int color)
- : Window(0,0,0,0), bMultiplayer(bMultiplayer), color(color) {
+    : Window(0, 0, 0, 0), bMultiplayer(bMultiplayer), color(color) {
     // set up window
-    const auto *pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
+    const auto* pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -45,7 +44,6 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
     mainHBox.addWidget(HSpacer::create(22));
     mainHBox.addWidget(&mainVBox);
     mainHBox.addWidget(HSpacer::create(22));
-
 
     mainVBox.addWidget(VSpacer::create(34));
 
@@ -101,20 +99,19 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 InGameMenu::~InGameMenu() = default;
 
 bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
-    switch( key.keysym.sym ) {
-        case SDLK_ESCAPE:
-        {
+    switch (key.keysym.sym) {
+        case SDLK_ESCAPE: {
             currentGame->resumeGame();
         } break;
 
         case SDLK_RETURN:
-            if(SDL_GetModState() & KMOD_ALT) {
+            if (SDL_GetModState() & KMOD_ALT) {
                 toggleFullscreen();
             }
             break;
 
         case SDLK_TAB:
-            if(SDL_GetModState() & KMOD_ALT) {
+            if (SDL_GetModState() & KMOD_ALT) {
                 SDL_MinimizeWindow(window);
             }
             break;
@@ -128,12 +125,12 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void InGameMenu::onChildWindowClose(Window* pChildWindow) {
     auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-    if(pLoadSaveWindow != nullptr) {
+    if (pLoadSaveWindow != nullptr) {
         auto FileName = pLoadSaveWindow->getFilename();
-        bool bSave = pLoadSaveWindow->isSaveWindow();
+        bool bSave    = pLoadSaveWindow->isSaveWindow();
 
-        if(!FileName.empty()) {
-            if(!bSave) {
+        if (!FileName.empty()) {
+            if (!bSave) {
                 // load window
                 try {
                     currentGame->setNextGameInitSettings(GameInitSettings(std::move(FileName)));
@@ -153,10 +150,10 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
             }
         }
     } else {
-        auto *const pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-        if(pQstBox != nullptr) {
-            if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
-                if(pQstBox->getText() == _("Do you really want to quit this game?")) {
+        auto* const pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+        if (pQstBox != nullptr) {
+            if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
+                if (pQstBox->getText() == _("Do you really want to quit this game?")) {
                     // quit
                     currentGame->quitGame();
                 } else {
@@ -173,46 +170,40 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
     }
 }
 
-void InGameMenu::onResume()
-{
+void InGameMenu::onResume() {
     currentGame->resumeGame();
 }
 
-void InGameMenu::onSettings()
-{
+void InGameMenu::onSettings() {
     openWindow(InGameSettingsMenu::create());
 }
 
-void InGameMenu::onSave()
-{
+void InGameMenu::onSave() {
     auto [ok, savepath] = fnkdat(bMultiplayer ? "mpsave/" : "save/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(true, _("Save Game"), savepath, "dls", "", color));
 }
 
-void InGameMenu::onLoad()
-{
+void InGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls", "", color));
 }
 
-void InGameMenu::onRestart()
-{
-    QstBox* pQstBox = QstBox::create(   _("Do you really want to restart this game?"),
-                                        _("Yes"),
-                                        _("No"),
-                                        QSTBOX_BUTTON2);
+void InGameMenu::onRestart() {
+    QstBox* pQstBox = QstBox::create(_("Do you really want to restart this game?"),
+                                     _("Yes"),
+                                     _("No"),
+                                     QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 
     openWindow(pQstBox);
 }
 
-void InGameMenu::onQuit()
-{
-    QstBox* pQstBox = QstBox::create(   _("Do you really want to quit this game?"),
-                                        _("Yes"),
-                                        _("No"),
-                                        QSTBOX_BUTTON2);
+void InGameMenu::onQuit() {
+    QstBox* pQstBox = QstBox::create(_("Do you really want to quit this game?"),
+                                     _("Yes"),
+                                     _("No"),
+                                     QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 

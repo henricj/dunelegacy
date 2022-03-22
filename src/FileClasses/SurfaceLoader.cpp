@@ -21,125 +21,122 @@
 
 #include <FileClasses/GFXManager.h>
 
-#include <FileClasses/FileManager.h>
-#include <FileClasses/TextManager.h>
-#include <FileClasses/PictureFactory.h>
-#include <FileClasses/LoadSavePNG.h>
-#include <FileClasses/Shpfile.h>
 #include <FileClasses/Cpsfile.h>
+#include <FileClasses/FileManager.h>
 #include <FileClasses/Icnfile.h>
-#include <FileClasses/Wsafile.h>
+#include <FileClasses/LoadSavePNG.h>
 #include <FileClasses/Palfile.h>
+#include <FileClasses/PictureFactory.h>
+#include <FileClasses/Shpfile.h>
+#include <FileClasses/TextManager.h>
+#include <FileClasses/Wsafile.h>
 
-#include <misc/draw_util.h>
 #include <misc/Scaler.h>
+#include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
-
-#define GROUNDUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+3)|TILE_FLIPV, (i+4)|TILE_NORMAL,(i+3)|TILE_NORMAL
-#define AIRUNIT_ROW(i) (i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+1)|TILE_ROTATE, i|TILE_FLIPH,(i+1)|TILE_FLIPH
-#define ORNITHOPTER_ROW(i) (i+6)|TILE_NORMAL,(i+3)|TILE_NORMAL,i|TILE_NORMAL,(i+3)|TILE_FLIPV,(i+6)|TILE_FLIPV,(i+3)|TILE_ROTATE, i|TILE_FLIPH,(i+3)|TILE_FLIPH
-#define INFANTRY_ROW(i) (i+3)|TILE_NORMAL,i|TILE_NORMAL,(i+3)|TILE_FLIPV,(i+6)|TILE_NORMAL
-#define MULTIINFANTRY_ROW(i) (i+4)|TILE_NORMAL,i|TILE_NORMAL,(i+4)|TILE_FLIPV,(i+8)|TILE_NORMAL
-#define HARVESTERSAND_ROW(i) (i+6)|TILE_NORMAL,(i+3)|TILE_NORMAL,i|TILE_NORMAL,(i+3)|TILE_FLIPV,(i+6)|TILE_FLIPV,(i+9)|TILE_FLIPV,(i+12)|TILE_NORMAL,(i+9)|TILE_NORMAL
-#define ROCKET_ROW(i)   (i+4)|TILE_NORMAL,(i+3)|TILE_NORMAL,(i+2)|TILE_NORMAL,(i+1)|TILE_NORMAL,i|TILE_NORMAL,(i+1)|TILE_FLIPV,(i+2)|TILE_FLIPV,(i+3)|TILE_FLIPV, \
-                        (i+4)|TILE_FLIPV,(i+3)|TILE_ROTATE,(i+2)|TILE_ROTATE, (i+1)|TILE_ROTATE,i|TILE_FLIPH,(i+1)|TILE_FLIPH,(i+2)|TILE_FLIPH,(i+3)|TILE_FLIPH
-
+#define GROUNDUNIT_ROW(i)    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL
+#define AIRUNIT_ROW(i)       (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH
+#define ORNITHOPTER_ROW(i)   (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV, (i + 3) | TILE_ROTATE, i | TILE_FLIPH, (i + 3) | TILE_FLIPH
+#define INFANTRY_ROW(i)      (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_NORMAL
+#define MULTIINFANTRY_ROW(i) (i + 4) | TILE_NORMAL, i | TILE_NORMAL, (i + 4) | TILE_FLIPV, (i + 8) | TILE_NORMAL
+#define HARVESTERSAND_ROW(i) (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV, (i + 9) | TILE_FLIPV, (i + 12) | TILE_NORMAL, (i + 9) | TILE_NORMAL
+#define ROCKET_ROW(i)        (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL, (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, \
+                      (i + 4) | TILE_FLIPV, (i + 3) | TILE_ROTATE, (i + 2) | TILE_ROTATE, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH, (i + 2) | TILE_FLIPH, (i + 3) | TILE_FLIPH
 
 namespace {
-const std::array<std::string, NUM_OBJPICS> ObjPicNames =  { { "Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
-    "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
-    "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
-    "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
-    "IX", "Palace", "RepairYard", "Starport", "GunTurret", "RocketTurret", "Wall",
-    "Bullet_SmallRocket", "Bullet_MediumRocket", "Bullet_LargeRocket", "Bullet_Small", "Bullet_Medium", "Bullet_Large", "Bullet_Sonic",
-    "Bullet_SonicTemp", "Hit_Gas", "Hit_ShellSmall", "Hit_ShellMedium", "Hit_ShellLarge", "ExplosionSmall", "ExplosionMedium1",
-    "ExplosionMedium2", "ExplosionLarge1", "ExplosionLarge2", "ExplosionSmallUnit", "ExplosionFlames", "ExplosionSpiceBloom",
-    "DeadInfantry", "DeadAirUnit", "Smoke", "SandwormShimmerMask", "SandwormShimmerTemp", "Terrain", "DestroyedStructure", "RockDamage",
-    "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star" } };
-
+const std::array<std::string, NUM_OBJPICS> ObjPicNames = {{"Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
+                                                           "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
+                                                           "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
+                                                           "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
+                                                           "IX", "Palace", "RepairYard", "Starport", "GunTurret", "RocketTurret", "Wall",
+                                                           "Bullet_SmallRocket", "Bullet_MediumRocket", "Bullet_LargeRocket", "Bullet_Small", "Bullet_Medium", "Bullet_Large", "Bullet_Sonic",
+                                                           "Bullet_SonicTemp", "Hit_Gas", "Hit_ShellSmall", "Hit_ShellMedium", "Hit_ShellLarge", "ExplosionSmall", "ExplosionMedium1",
+                                                           "ExplosionMedium2", "ExplosionLarge1", "ExplosionLarge2", "ExplosionSmallUnit", "ExplosionFlames", "ExplosionSpiceBloom",
+                                                           "DeadInfantry", "DeadAirUnit", "Smoke", "SandwormShimmerMask", "SandwormShimmerTemp", "Terrain", "DestroyedStructure", "RockDamage",
+                                                           "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star"}};
 
 /**
     Number of columns and rows each obj pic has
 */
 constexpr Coord objPicTiles[] {
-    { 8, 1 },   // ObjPic_Tank_Base
-    { 8, 1 },   // ObjPic_Tank_Gun
-    { 8, 1 },   // ObjPic_Siegetank_Base
-    { 8, 1 },   // ObjPic_Siegetank_Gun
-    { 8, 1 },   // ObjPic_Devastator_Base
-    { 8, 1 },   // ObjPic_Devastator_Gun
-    { 8, 1 },   // ObjPic_Sonictank_Gun
-    { 8, 1 },   // ObjPic_Launcher_Gun
-    { 8, 1 },   // ObjPic_Quad
-    { 8, 1 },   // ObjPic_Trike
-    { 8, 1 },   // ObjPic_Harvester
-    { 8, 3 },   // ObjPic_Harvester_Sand
-    { 8, 1 },   // ObjPic_MCV
-    { 8, 2 },   // ObjPic_Carryall
-    { 8, 2 },   // ObjPic_CarryallShadow
-    { 8, 1 },   // ObjPic_Frigate
-    { 8, 1 },   // ObjPic_FrigateShadow
-    { 8, 3 },   // ObjPic_Ornithopter
-    { 8, 3 },   // ObjPic_OrnithopterShadow
-    { 4, 3 },   // ObjPic_Trooper
-    { 4, 3 },   // ObjPic_Troopers
-    { 4, 3 },   // ObjPic_Soldier
-    { 4, 3 },   // ObjPic_Infantry
-    { 4, 3 },   // ObjPic_Saboteur
-    { 1, 9 },   // ObjPic_Sandworm
-    { 4, 1 },   // ObjPic_ConstructionYard
-    { 4, 1 },   // ObjPic_Windtrap
-    { 10, 1 },  // ObjPic_Refinery
-    { 4, 1 },   // ObjPic_Barracks
-    { 4, 1 },   // ObjPic_WOR
-    { 4, 1 },   // ObjPic_Radar
-    { 6, 1 },   // ObjPic_LightFactory
-    { 4, 1 },   // ObjPic_Silo
-    { 8, 1 },   // ObjPic_HeavyFactory
-    { 8, 1 },   // ObjPic_HighTechFactory
-    { 4, 1 },   // ObjPic_IX
-    { 4, 1 },   // ObjPic_Palace
-    { 10, 1 },  // ObjPic_RepairYard
-    { 10, 1 },  // ObjPic_Starport
-    { 10, 1 },  // ObjPic_GunTurret
-    { 10, 1 },  // ObjPic_RocketTurret
-    { 25, 3 },  // ObjPic_Wall
-    { 16, 1 },  // ObjPic_Bullet_SmallRocket
-    { 16, 1 },  // ObjPic_Bullet_MediumRocket
-    { 16, 1 },  // ObjPic_Bullet_LargeRocket
-    { 1, 1 },   // ObjPic_Bullet_Small
-    { 1, 1 },   // ObjPic_Bullet_Medium
-    { 1, 1 },   // ObjPic_Bullet_Large
-    { 1, 1 },   // ObjPic_Bullet_Sonic
-    { 1, 1 },   // ObjPic_Bullet_SonicTemp
-    { 5, 1 },   // ObjPic_Hit_Gas
-    { 1, 1 },   // ObjPic_Hit_ShellSmall
-    { 1, 1 },   // ObjPic_Hit_ShellMedium
-    { 1, 1 },   // ObjPic_Hit_ShellLarge
-    { 5, 1 },   // ObjPic_ExplosionSmall
-    { 5, 1 },   // ObjPic_ExplosionMedium1
-    { 5, 1 },   // ObjPic_ExplosionMedium2
-    { 5, 1 },   // ObjPic_ExplosionLarge1
-    { 5, 1 },   // ObjPic_ExplosionLarge2
-    { 2, 1 },   // ObjPic_ExplosionSmallUnit
-    { 21, 1 },  // ObjPic_ExplosionFlames
-    { 3, 1 },   // ObjPic_ExplosionSpiceBloom
-    { 6, 1 },   // ObjPic_DeadInfantry
-    { 6, 1 },   // ObjPic_DeadAirUnit
-    { 3, 1 },   // ObjPic_Smoke
-    { 1, 1 },   // ObjPic_SandwormShimmerMask
-    { 1, 1 },   // ObjPic_SandwormShimmerTemp
-    { NUM_TERRAIN_TILES_X, NUM_TERRAIN_TILES_Y },  // ObjPic_Terrain
-    { 14, 1 },  // ObjPic_DestroyedStructure
-    { 6, 1 },   // ObjPic_RockDamage
-    { 3, 1 },   // ObjPic_SandDamage
-    { 16, 1 },  // ObjPic_Terrain_Hidden
-    { 16, 1 },  // ObjPic_Terrain_HiddenFog
-    { 8, 1 },   // ObjPic_Terrain_Tracks
-    { 1, 1 },   // ObjPic_Star
+    {8, 1},                                     // ObjPic_Tank_Base
+    {8, 1},                                     // ObjPic_Tank_Gun
+    {8, 1},                                     // ObjPic_Siegetank_Base
+    {8, 1},                                     // ObjPic_Siegetank_Gun
+    {8, 1},                                     // ObjPic_Devastator_Base
+    {8, 1},                                     // ObjPic_Devastator_Gun
+    {8, 1},                                     // ObjPic_Sonictank_Gun
+    {8, 1},                                     // ObjPic_Launcher_Gun
+    {8, 1},                                     // ObjPic_Quad
+    {8, 1},                                     // ObjPic_Trike
+    {8, 1},                                     // ObjPic_Harvester
+    {8, 3},                                     // ObjPic_Harvester_Sand
+    {8, 1},                                     // ObjPic_MCV
+    {8, 2},                                     // ObjPic_Carryall
+    {8, 2},                                     // ObjPic_CarryallShadow
+    {8, 1},                                     // ObjPic_Frigate
+    {8, 1},                                     // ObjPic_FrigateShadow
+    {8, 3},                                     // ObjPic_Ornithopter
+    {8, 3},                                     // ObjPic_OrnithopterShadow
+    {4, 3},                                     // ObjPic_Trooper
+    {4, 3},                                     // ObjPic_Troopers
+    {4, 3},                                     // ObjPic_Soldier
+    {4, 3},                                     // ObjPic_Infantry
+    {4, 3},                                     // ObjPic_Saboteur
+    {1, 9},                                     // ObjPic_Sandworm
+    {4, 1},                                     // ObjPic_ConstructionYard
+    {4, 1},                                     // ObjPic_Windtrap
+    {10, 1},                                    // ObjPic_Refinery
+    {4, 1},                                     // ObjPic_Barracks
+    {4, 1},                                     // ObjPic_WOR
+    {4, 1},                                     // ObjPic_Radar
+    {6, 1},                                     // ObjPic_LightFactory
+    {4, 1},                                     // ObjPic_Silo
+    {8, 1},                                     // ObjPic_HeavyFactory
+    {8, 1},                                     // ObjPic_HighTechFactory
+    {4, 1},                                     // ObjPic_IX
+    {4, 1},                                     // ObjPic_Palace
+    {10, 1},                                    // ObjPic_RepairYard
+    {10, 1},                                    // ObjPic_Starport
+    {10, 1},                                    // ObjPic_GunTurret
+    {10, 1},                                    // ObjPic_RocketTurret
+    {25, 3},                                    // ObjPic_Wall
+    {16, 1},                                    // ObjPic_Bullet_SmallRocket
+    {16, 1},                                    // ObjPic_Bullet_MediumRocket
+    {16, 1},                                    // ObjPic_Bullet_LargeRocket
+    {1, 1},                                     // ObjPic_Bullet_Small
+    {1, 1},                                     // ObjPic_Bullet_Medium
+    {1, 1},                                     // ObjPic_Bullet_Large
+    {1, 1},                                     // ObjPic_Bullet_Sonic
+    {1, 1},                                     // ObjPic_Bullet_SonicTemp
+    {5, 1},                                     // ObjPic_Hit_Gas
+    {1, 1},                                     // ObjPic_Hit_ShellSmall
+    {1, 1},                                     // ObjPic_Hit_ShellMedium
+    {1, 1},                                     // ObjPic_Hit_ShellLarge
+    {5, 1},                                     // ObjPic_ExplosionSmall
+    {5, 1},                                     // ObjPic_ExplosionMedium1
+    {5, 1},                                     // ObjPic_ExplosionMedium2
+    {5, 1},                                     // ObjPic_ExplosionLarge1
+    {5, 1},                                     // ObjPic_ExplosionLarge2
+    {2, 1},                                     // ObjPic_ExplosionSmallUnit
+    {21, 1},                                    // ObjPic_ExplosionFlames
+    {3, 1},                                     // ObjPic_ExplosionSpiceBloom
+    {6, 1},                                     // ObjPic_DeadInfantry
+    {6, 1},                                     // ObjPic_DeadAirUnit
+    {3, 1},                                     // ObjPic_Smoke
+    {1, 1},                                     // ObjPic_SandwormShimmerMask
+    {1, 1},                                     // ObjPic_SandwormShimmerTemp
+    {NUM_TERRAIN_TILES_X, NUM_TERRAIN_TILES_Y}, // ObjPic_Terrain
+    {14, 1},                                    // ObjPic_DestroyedStructure
+    {6, 1},                                     // ObjPic_RockDamage
+    {3, 1},                                     // ObjPic_SandDamage
+    {16, 1},                                    // ObjPic_Terrain_Hidden
+    {16, 1},                                    // ObjPic_Terrain_HiddenFog
+    {8, 1},                                     // ObjPic_Terrain_Tracks
+    {1, 1},                                     // ObjPic_Star
 };
-}
+} // namespace
 
 SurfaceLoader::SurfaceLoader() {
 
@@ -157,9 +154,9 @@ SurfaceLoader::SurfaceLoader() {
     auto menshpm = loadShpfile("MENSHPM.SHP");
 
     std::unique_ptr<Shpfile> choam;
-    if(pFileManager->exists("CHOAM." + _("LanguageFileExtension"))) {
+    if (pFileManager->exists("CHOAM." + _("LanguageFileExtension"))) {
         choam = loadShpfile("CHOAM." + _("LanguageFileExtension"));
-    } else if(pFileManager->exists("CHOAMSHP.SHP")) {
+    } else if (pFileManager->exists("CHOAMSHP.SHP")) {
         choam = loadShpfile("CHOAMSHP.SHP");
     } else {
         THROW(std::runtime_error,
@@ -167,7 +164,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     std::unique_ptr<Shpfile> bttn;
-    if(pFileManager->exists("BTTN." + _("LanguageFileExtension"))) {
+    if (pFileManager->exists("BTTN." + _("LanguageFileExtension"))) {
         bttn = loadShpfile("BTTN." + _("LanguageFileExtension"));
     } else {
         // The US-Version has the buttons in SHAPES.SHP
@@ -175,7 +172,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     std::unique_ptr<Shpfile> mentat;
-    if(pFileManager->exists("MENTAT." + _("LanguageFileExtension"))) {
+    if (pFileManager->exists("MENTAT." + _("LanguageFileExtension"))) {
         mentat = loadShpfile("MENTAT." + _("LanguageFileExtension"));
     } else {
         mentat = loadShpfile("MENTAT.SHP");
@@ -283,7 +280,7 @@ SurfaceLoader::SurfaceLoader() {
     objPic[ObjPic_Hit_ShellMedium][harkIdx][0] = units1->getPicture(3);
     objPic[ObjPic_Hit_ShellLarge][harkIdx][0]  = units1->getPicture(4);
     objPic[ObjPic_ExplosionSmall][harkIdx][0]  = units1->getPictureArray(
-        5, 1, 32 | TILE_NORMAL, 33 | TILE_NORMAL, 34 | TILE_NORMAL, 35 | TILE_NORMAL, 36 | TILE_NORMAL);
+         5, 1, 32 | TILE_NORMAL, 33 | TILE_NORMAL, 34 | TILE_NORMAL, 35 | TILE_NORMAL, 36 | TILE_NORMAL);
     objPic[ObjPic_ExplosionMedium1][harkIdx][0] = units1->getPictureArray(
         5, 1, 47 | TILE_NORMAL, 48 | TILE_NORMAL, 49 | TILE_NORMAL, 50 | TILE_NORMAL, 51 | TILE_NORMAL);
     objPic[ObjPic_ExplosionMedium2][harkIdx][0] = units1->getPictureArray(
@@ -294,10 +291,10 @@ SurfaceLoader::SurfaceLoader() {
         5, 1, 42 | TILE_NORMAL, 43 | TILE_NORMAL, 44 | TILE_NORMAL, 45 | TILE_NORMAL, 46 | TILE_NORMAL);
     objPic[ObjPic_ExplosionSmallUnit][harkIdx][0] = units1->getPictureArray(2, 1, 0 | TILE_NORMAL, 1 | TILE_NORMAL);
     objPic[ObjPic_ExplosionFlames][harkIdx][0]    = units1->getPictureArray(
-        21, 1, 11 | TILE_NORMAL, 12 | TILE_NORMAL, 13 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-        19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-        19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-        19 | TILE_NORMAL, 20 | TILE_NORMAL, 21 | TILE_NORMAL, 22 | TILE_NORMAL);
+           21, 1, 11 | TILE_NORMAL, 12 | TILE_NORMAL, 13 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+           19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+           19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+           19 | TILE_NORMAL, 20 | TILE_NORMAL, 21 | TILE_NORMAL, 22 | TILE_NORMAL);
     objPic[ObjPic_ExplosionSpiceBloom][harkIdx][0] =
         units1->getPictureArray(3, 1, 7 | TILE_NORMAL, 6 | TILE_NORMAL, 5 | TILE_NORMAL);
     objPic[ObjPic_DeadInfantry][harkIdx][0] = icon->getPictureArray(4, 1, 1, 6);
@@ -324,13 +321,17 @@ SurfaceLoader::SurfaceLoader() {
                          1);
 
     // scale obj pics and apply color key
-    for(int id = 0; id < NUM_OBJPICS; id++) {
-        for(int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
-            if(objPic[id][h][0] != nullptr) {
-                if(objPic[id][h][1] == nullptr) { objPic[id][h][1] = generateDoubledObjPic(id, h); }
+    for (int id = 0; id < NUM_OBJPICS; id++) {
+        for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+            if (objPic[id][h][0] != nullptr) {
+                if (objPic[id][h][1] == nullptr) {
+                    objPic[id][h][1] = generateDoubledObjPic(id, h);
+                }
                 SDL_SetColorKey(objPic[id][h][1].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
 
-                if(objPic[id][h][2] == nullptr) { objPic[id][h][2] = generateTripledObjPic(id, h); }
+                if (objPic[id][h][2] == nullptr) {
+                    objPic[id][h][2] = generateTripledObjPic(id, h);
+                }
                 SDL_SetColorKey(objPic[id][h][2].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
 
                 SDL_SetColorKey(objPic[id][h][0].get(), SDL_TRUE, PALCOLOR_TRANSPARENT);
@@ -356,7 +357,7 @@ SurfaceLoader::SurfaceLoader() {
     smallDetailPic[Picture_Deviator]         = extractSmallDetailPic("ORDRTANK.WSA");
     smallDetailPic[Picture_DeathHand]        = extractSmallDetailPic("GOLD-BB.WSA");
     smallDetailPic[Picture_Fremen]           = extractSmallDetailPic("FREMEN.WSA");
-    if(pFileManager->exists("FRIGATE.WSA")) {
+    if (pFileManager->exists("FRIGATE.WSA")) {
         smallDetailPic[Picture_Frigate] = extractSmallDetailPic("FRIGATE.WSA");
     } else {
         // US-Version 1.07 does not contain FRIGATE.WSA
@@ -566,7 +567,7 @@ SurfaceLoader::SurfaceLoader() {
     SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_MessageBox][harkIdx] = PicFactory->createMessageBoxBorder();
 
-    if(bttn != nullptr) {
+    if (bttn != nullptr) {
         uiGraphic[UI_Mentat][harkIdx]          = bttn->getPicture(0);
         uiGraphic[UI_Mentat_Pressed][harkIdx]  = bttn->getPicture(1);
         uiGraphic[UI_Options][harkIdx]         = bttn->getPicture(2);
@@ -627,7 +628,7 @@ SurfaceLoader::SurfaceLoader() {
 
     uiGraphic[UI_MentatBackgroundBene][harkIdx] =
         Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATM.CPS").get()).get());
-    if(uiGraphic[UI_MentatBackgroundBene][harkIdx] != nullptr) {
+    if (uiGraphic[UI_MentatBackgroundBene][harkIdx] != nullptr) {
         benePalette.applyToSurface(uiGraphic[UI_MentatBackgroundBene][harkIdx].get());
     }
 
@@ -657,7 +658,7 @@ SurfaceLoader::SurfaceLoader() {
 
     { // Scope
         sdl2::surface_ptr pHouseChoiceBackground;
-        if(pFileManager->exists("HERALD." + _("LanguageFileExtension"))) {
+        if (pFileManager->exists("HERALD." + _("LanguageFileExtension"))) {
             pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD." + _("LanguageFileExtension")).get());
         } else {
             pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD.CPS").get());
@@ -753,11 +754,13 @@ SurfaceLoader::SurfaceLoader() {
     {
         auto* const surface = uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
 
-        sdl2::surface_lock lock{surface};
+        sdl2::surface_lock lock {surface};
 
-        for(auto y = 48; y < 48 + 240; y++) {
-            for(auto x = 16; x < 16 + 608; x++) {
-                if(getPixel(surface, x, y) == 0) { putPixel(surface, x, y, PALCOLOR_BLACK); }
+        for (auto y = 48; y < 48 + 240; y++) {
+            for (auto x = 16; x < 16 + 608; x++) {
+                if (getPixel(surface, x, y) == 0) {
+                    putPixel(surface, x, y, PALCOLOR_BLACK);
+                }
             }
         }
     }
@@ -958,7 +961,7 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_LightFactory][harkIdx] = getSubPicture(
         objPic[ObjPic_LightFactory][harkIdx][0].get(), 2 * 2 * D2_TILESIZE, 0, 2 * D2_TILESIZE, 2 * D2_TILESIZE);
     uiGraphic[UI_MapEditor_Refinery][harkIdx]        = getSubPicture(objPic[ObjPic_Refinery][harkIdx][0].get(),
-                                                              2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 2 * D2_TILESIZE);
+                                                                     2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 2 * D2_TILESIZE);
     uiGraphic[UI_MapEditor_HighTechFactory][harkIdx] = getSubPicture(
         objPic[ObjPic_HighTechFactory][harkIdx][0].get(), 2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 2 * D2_TILESIZE);
     uiGraphic[UI_MapEditor_HeavyFactory][harkIdx] = getSubPicture(
@@ -968,7 +971,7 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_Starport][harkIdx] = getSubPicture(objPic[ObjPic_Starport][harkIdx][0].get(),
                                                               2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 3 * D2_TILESIZE);
     uiGraphic[UI_MapEditor_Palace][harkIdx]   = getSubPicture(objPic[ObjPic_Palace][harkIdx][0].get(),
-                                                            2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 3 * D2_TILESIZE);
+                                                              2 * 3 * D2_TILESIZE, 0, 3 * D2_TILESIZE, 3 * D2_TILESIZE);
 
     uiGraphic[UI_MapEditor_Soldier][harkIdx]   = getSubFrame(objPic[ObjPic_Soldier][harkIdx][0].get(), 0, 0, 4, 3);
     uiGraphic[UI_MapEditor_Trooper][harkIdx]   = getSubFrame(objPic[ObjPic_Trooper][harkIdx][0].get(), 0, 0, 4, 3);
@@ -1066,19 +1069,19 @@ SurfaceLoader::SurfaceLoader() {
     animation[Anim_MercenaryRing] = PictureFactory::mapMentatAnimationToMercenary(animation[Anim_OrdosRing].get());
 
     animation[Anim_BeneEyes] = menshpm->getAnimation(0, 4, true, true);
-    if(animation[Anim_BeneEyes] != nullptr) {
+    if (animation[Anim_BeneEyes] != nullptr) {
         animation[Anim_BeneEyes]->setPalette(benePalette);
         animation[Anim_BeneEyes]->setFrameRate(0.5);
     }
     animation[Anim_BeneMouth] = menshpm->getAnimation(5, 9, true, true, true);
-    if(animation[Anim_BeneMouth] != nullptr) {
+    if (animation[Anim_BeneMouth] != nullptr) {
         animation[Anim_BeneMouth]->setPalette(benePalette);
         animation[Anim_BeneMouth]->setFrameRate(5.0);
     }
     // the remaining animation are loaded on demand to save some loading time
 
     // load map choice pieces
-    for(int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
+    for (int i = 0; i < NUM_MAPCHOICEPIECES; i++) {
         mapChoicePieces[i][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
             Scaler::doubleSurfaceNN(pieces->getPicture(i).get());
         SDL_SetColorKey(mapChoicePieces[i][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
@@ -1093,15 +1096,15 @@ SurfaceLoader::SurfaceLoader() {
 
             replaceColor(display_surface.get(), oldColor, newColor);
 
-            if(SDL_SetSurfaceBlendMode(display_surface.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND))
+            if (SDL_SetSurfaceBlendMode(display_surface.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND))
                 THROW(std::runtime_error, std::string("SurfaceLoader(): SDL_SetSurfaceBlendMode() failed: ") +
                                               std::string(SDL_GetError()));
 
             objPic[static_cast<int>(id)][static_cast<int>(house)][zoom] = std::move(display_surface);
         };
 
-        for(auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-            for(auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
+        for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+            for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
                 const auto house = static_cast<HOUSETYPE>(h);
 
                 // Create the per-house Windtrap surfaces
@@ -1113,13 +1116,13 @@ SurfaceLoader::SurfaceLoader() {
             }
         }
 
-        for(auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-            for(auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
+        for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+            for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
                 const auto house = static_cast<HOUSETYPE>(h);
 
                 auto& windtrap = objPic[ObjPic_Windtrap][h][zoom];
 
-                if(!windtrap)
+                if (!windtrap)
                     THROW(std::runtime_error, fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom).c_str());
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
@@ -1132,16 +1135,17 @@ SurfaceLoader::SurfaceLoader() {
 
     // Create map choice arrows
     { // Scope
-        for(auto id = UI_MapChoiceArrow_None; id <= UI_MapChoiceArrow_Left; id = static_cast<UIGraphics_Enum>(id + 1)) {
+        for (auto id = UI_MapChoiceArrow_None; id <= UI_MapChoiceArrow_Left; id = static_cast<UIGraphics_Enum>(id + 1)) {
             sdl2::surface_ptr source;
 
             for_each_housetype([&](const auto& house) {
                 auto& surface = uiGraphic[static_cast<int>(id)][static_cast<int>(house)];
 
-                if(HOUSETYPE::HOUSE_HARKONNEN == house)
+                if (HOUSETYPE::HOUSE_HARKONNEN == house)
                     source = std::move(surface);
 
-                if(!source) THROW(std::runtime_error, "No source surface for generating id %d for house %d", static_cast<int>(id), static_cast<int>(house));
+                if (!source)
+                    THROW(std::runtime_error, "No source surface for generating id %d for house %d", static_cast<int>(id), static_cast<int>(house));
 
                 assert(!surface);
 
@@ -1154,7 +1158,7 @@ SurfaceLoader::SurfaceLoader() {
 SurfaceLoader::~SurfaceLoader() = default;
 
 SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
-    if(id >= NUM_OBJPICS) {
+    if (id >= NUM_OBJPICS) {
         THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurface(): Unit Picture with ID %u is not available!", id);
     }
 
@@ -1162,43 +1166,46 @@ SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house
 
     auto& surface = objPic[id][idx][z];
 
-    if(surface == nullptr) {
+    if (surface == nullptr) {
         const auto harkonnen = static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN);
 
         // remap to this color
-        if(objPic[id][harkonnen][z] == nullptr) {
+        if (objPic[id][harkonnen][z] == nullptr) {
             THROW(std::runtime_error, "SurfaceLoader::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
         }
 
         surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(),
-                                                  PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
+                                       PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
     }
 
     return surface.get();
 }
 
-
 SDL_Surface* SurfaceLoader::getSmallDetailSurface(unsigned int id) {
-    if(id >= NUM_SMALLDETAILPICS) { return nullptr; }
+    if (id >= NUM_SMALLDETAILPICS) {
+        return nullptr;
+    }
     return smallDetailPic[id].get();
 }
 
 SDL_Surface* SurfaceLoader::getTinyPictureSurface(unsigned int id) {
-    if(id >= NUM_TINYPICTURE) { return nullptr; }
+    if (id >= NUM_TINYPICTURE) {
+        return nullptr;
+    }
     return tinyPicture[id].get();
 }
 
 SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house) {
-    if(id >= NUM_UIGRAPHICS) {
+    if (id >= NUM_UIGRAPHICS) {
         THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not available!", id);
     }
 
     auto& target = uiGraphic[id][static_cast<int>(house)];
 
-    if(target == nullptr) {
+    if (target == nullptr) {
         auto* const harkonnen = uiGraphic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
 
-        if(harkonnen == nullptr) {
+        if (harkonnen == nullptr) {
             THROW(std::runtime_error, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
         }
 
@@ -1211,13 +1218,13 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
 }
 
 SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE house) {
-    if(num >= NUM_MAPCHOICEPIECES) {
+    if (num >= NUM_MAPCHOICEPIECES) {
         THROW(std::invalid_argument, "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
     }
 
-    if(mapChoicePieces[num][static_cast<int>(house)] == nullptr) {
+    if (mapChoicePieces[num][static_cast<int>(house)] == nullptr) {
         // remap to this color
-        if(mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] == nullptr) {
+        if (mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] == nullptr) {
             THROW(std::runtime_error, "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
         }
 
@@ -1228,12 +1235,12 @@ SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE
 }
 
 Animation* SurfaceLoader::getAnimation(unsigned int id) {
-    if(id >= NUM_ANIMATION) {
+    if (id >= NUM_ANIMATION) {
         THROW(std::invalid_argument, "SurfaceLoader::getAnimation(): Animation with ID %u is not available!", id);
     }
 
-    if(animation[id] == nullptr) {
-        switch(id) {
+    if (animation[id] == nullptr) {
+        switch (id) {
             case Anim_HarkonnenPlanet: {
                 animation[Anim_HarkonnenPlanet] = loadAnimationFromWsa("FHARK.WSA");
                 animation[Anim_HarkonnenPlanet]->setFrameRate(10);
@@ -1264,50 +1271,50 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
                 animation[Anim_MercenaryPlanet]->setFrameRate(10);
             } break;
 
-            case Anim_Win1:             animation[Anim_Win1] = loadAnimationFromWsa("WIN1.WSA");                 break;
-            case Anim_Win2:             animation[Anim_Win2] = loadAnimationFromWsa("WIN2.WSA");                 break;
-            case Anim_Lose1:            animation[Anim_Lose1] = loadAnimationFromWsa("LOSTBILD.WSA");            break;
-            case Anim_Lose2:            animation[Anim_Lose2] = loadAnimationFromWsa("LOSTVEHC.WSA");            break;
-            case Anim_Barracks:         animation[Anim_Barracks] = loadAnimationFromWsa("BARRAC.WSA");           break;
-            case Anim_Carryall:         animation[Anim_Carryall] = loadAnimationFromWsa("CARRYALL.WSA");         break;
+            case Anim_Win1: animation[Anim_Win1] = loadAnimationFromWsa("WIN1.WSA"); break;
+            case Anim_Win2: animation[Anim_Win2] = loadAnimationFromWsa("WIN2.WSA"); break;
+            case Anim_Lose1: animation[Anim_Lose1] = loadAnimationFromWsa("LOSTBILD.WSA"); break;
+            case Anim_Lose2: animation[Anim_Lose2] = loadAnimationFromWsa("LOSTVEHC.WSA"); break;
+            case Anim_Barracks: animation[Anim_Barracks] = loadAnimationFromWsa("BARRAC.WSA"); break;
+            case Anim_Carryall: animation[Anim_Carryall] = loadAnimationFromWsa("CARRYALL.WSA"); break;
             case Anim_ConstructionYard: animation[Anim_ConstructionYard] = loadAnimationFromWsa("CONSTRUC.WSA"); break;
-            case Anim_Fremen:           animation[Anim_Fremen] = loadAnimationFromWsa("FREMEN.WSA");             break;
-            case Anim_DeathHand:        animation[Anim_DeathHand] = loadAnimationFromWsa("GOLD-BB.WSA");         break;
-            case Anim_Devastator:       animation[Anim_Devastator] = loadAnimationFromWsa("HARKTANK.WSA");       break;
-            case Anim_Harvester:        animation[Anim_Harvester] = loadAnimationFromWsa("HARVEST.WSA");         break;
-            case Anim_Radar:            animation[Anim_Radar] = loadAnimationFromWsa("HEADQRTS.WSA");            break;
-            case Anim_HighTechFactory:  animation[Anim_HighTechFactory] = loadAnimationFromWsa("HITCFTRY.WSA");  break;
-            case Anim_SiegeTank:        animation[Anim_SiegeTank] = loadAnimationFromWsa("HTANK.WSA");           break;
-            case Anim_HeavyFactory:     animation[Anim_HeavyFactory] = loadAnimationFromWsa("HVYFTRY.WSA");      break;
-            case Anim_Trooper:          animation[Anim_Trooper] = loadAnimationFromWsa("HYINFY.WSA");            break;
-            case Anim_Infantry:         animation[Anim_Infantry] = loadAnimationFromWsa("INFANTRY.WSA");         break;
-            case Anim_IX:               animation[Anim_IX] = loadAnimationFromWsa("IX.WSA");                     break;
-            case Anim_LightFactory:     animation[Anim_LightFactory] = loadAnimationFromWsa("LITEFTRY.WSA");     break;
-            case Anim_Tank:             animation[Anim_Tank] = loadAnimationFromWsa("LTANK.WSA");                break;
-            case Anim_MCV:              animation[Anim_MCV] = loadAnimationFromWsa("MCV.WSA");                   break;
-            case Anim_Deviator:         animation[Anim_Deviator] = loadAnimationFromWsa("ORDRTANK.WSA");         break;
-            case Anim_Ornithopter:      animation[Anim_Ornithopter] = loadAnimationFromWsa("ORNI.WSA");          break;
-            case Anim_Raider:           animation[Anim_Raider] = loadAnimationFromWsa("OTRIKE.WSA");             break;
-            case Anim_Palace:           animation[Anim_Palace] = loadAnimationFromWsa("PALACE.WSA");             break;
-            case Anim_Quad:             animation[Anim_Quad] = loadAnimationFromWsa("QUAD.WSA");                 break;
-            case Anim_Refinery:         animation[Anim_Refinery] = loadAnimationFromWsa("REFINERY.WSA");         break;
-            case Anim_RepairYard:       animation[Anim_RepairYard] = loadAnimationFromWsa("REPAIR.WSA");         break;
-            case Anim_Launcher:         animation[Anim_Launcher] = loadAnimationFromWsa("RTANK.WSA");            break;
-            case Anim_RocketTurret:     animation[Anim_RocketTurret] = loadAnimationFromWsa("RTURRET.WSA");      break;
-            case Anim_Saboteur:         animation[Anim_Saboteur] = loadAnimationFromWsa("SABOTURE.WSA");         break;
-            case Anim_Slab1:            animation[Anim_Slab1] = loadAnimationFromWsa("SLAB.WSA");                break;
-            case Anim_SonicTank:        animation[Anim_SonicTank] = loadAnimationFromWsa("STANK.WSA");           break;
-            case Anim_StarPort:         animation[Anim_StarPort] = loadAnimationFromWsa("STARPORT.WSA");         break;
-            case Anim_Silo:             animation[Anim_Silo] = loadAnimationFromWsa("STORAGE.WSA");              break;
-            case Anim_Trike:            animation[Anim_Trike] = loadAnimationFromWsa("TRIKE.WSA");               break;
-            case Anim_GunTurret:        animation[Anim_GunTurret] = loadAnimationFromWsa("TURRET.WSA");          break;
-            case Anim_Wall:             animation[Anim_Wall] = loadAnimationFromWsa("WALL.WSA");                 break;
-            case Anim_WindTrap:         animation[Anim_WindTrap] = loadAnimationFromWsa("WINDTRAP.WSA");         break;
-            case Anim_WOR:              animation[Anim_WOR] = loadAnimationFromWsa("WOR.WSA");                   break;
-            case Anim_Sandworm:         animation[Anim_Sandworm] = loadAnimationFromWsa("WORM.WSA");             break;
-            case Anim_Sardaukar:        animation[Anim_Sardaukar] = loadAnimationFromWsa("SARDUKAR.WSA");        break;
+            case Anim_Fremen: animation[Anim_Fremen] = loadAnimationFromWsa("FREMEN.WSA"); break;
+            case Anim_DeathHand: animation[Anim_DeathHand] = loadAnimationFromWsa("GOLD-BB.WSA"); break;
+            case Anim_Devastator: animation[Anim_Devastator] = loadAnimationFromWsa("HARKTANK.WSA"); break;
+            case Anim_Harvester: animation[Anim_Harvester] = loadAnimationFromWsa("HARVEST.WSA"); break;
+            case Anim_Radar: animation[Anim_Radar] = loadAnimationFromWsa("HEADQRTS.WSA"); break;
+            case Anim_HighTechFactory: animation[Anim_HighTechFactory] = loadAnimationFromWsa("HITCFTRY.WSA"); break;
+            case Anim_SiegeTank: animation[Anim_SiegeTank] = loadAnimationFromWsa("HTANK.WSA"); break;
+            case Anim_HeavyFactory: animation[Anim_HeavyFactory] = loadAnimationFromWsa("HVYFTRY.WSA"); break;
+            case Anim_Trooper: animation[Anim_Trooper] = loadAnimationFromWsa("HYINFY.WSA"); break;
+            case Anim_Infantry: animation[Anim_Infantry] = loadAnimationFromWsa("INFANTRY.WSA"); break;
+            case Anim_IX: animation[Anim_IX] = loadAnimationFromWsa("IX.WSA"); break;
+            case Anim_LightFactory: animation[Anim_LightFactory] = loadAnimationFromWsa("LITEFTRY.WSA"); break;
+            case Anim_Tank: animation[Anim_Tank] = loadAnimationFromWsa("LTANK.WSA"); break;
+            case Anim_MCV: animation[Anim_MCV] = loadAnimationFromWsa("MCV.WSA"); break;
+            case Anim_Deviator: animation[Anim_Deviator] = loadAnimationFromWsa("ORDRTANK.WSA"); break;
+            case Anim_Ornithopter: animation[Anim_Ornithopter] = loadAnimationFromWsa("ORNI.WSA"); break;
+            case Anim_Raider: animation[Anim_Raider] = loadAnimationFromWsa("OTRIKE.WSA"); break;
+            case Anim_Palace: animation[Anim_Palace] = loadAnimationFromWsa("PALACE.WSA"); break;
+            case Anim_Quad: animation[Anim_Quad] = loadAnimationFromWsa("QUAD.WSA"); break;
+            case Anim_Refinery: animation[Anim_Refinery] = loadAnimationFromWsa("REFINERY.WSA"); break;
+            case Anim_RepairYard: animation[Anim_RepairYard] = loadAnimationFromWsa("REPAIR.WSA"); break;
+            case Anim_Launcher: animation[Anim_Launcher] = loadAnimationFromWsa("RTANK.WSA"); break;
+            case Anim_RocketTurret: animation[Anim_RocketTurret] = loadAnimationFromWsa("RTURRET.WSA"); break;
+            case Anim_Saboteur: animation[Anim_Saboteur] = loadAnimationFromWsa("SABOTURE.WSA"); break;
+            case Anim_Slab1: animation[Anim_Slab1] = loadAnimationFromWsa("SLAB.WSA"); break;
+            case Anim_SonicTank: animation[Anim_SonicTank] = loadAnimationFromWsa("STANK.WSA"); break;
+            case Anim_StarPort: animation[Anim_StarPort] = loadAnimationFromWsa("STARPORT.WSA"); break;
+            case Anim_Silo: animation[Anim_Silo] = loadAnimationFromWsa("STORAGE.WSA"); break;
+            case Anim_Trike: animation[Anim_Trike] = loadAnimationFromWsa("TRIKE.WSA"); break;
+            case Anim_GunTurret: animation[Anim_GunTurret] = loadAnimationFromWsa("TURRET.WSA"); break;
+            case Anim_Wall: animation[Anim_Wall] = loadAnimationFromWsa("WALL.WSA"); break;
+            case Anim_WindTrap: animation[Anim_WindTrap] = loadAnimationFromWsa("WINDTRAP.WSA"); break;
+            case Anim_WOR: animation[Anim_WOR] = loadAnimationFromWsa("WOR.WSA"); break;
+            case Anim_Sandworm: animation[Anim_Sandworm] = loadAnimationFromWsa("WORM.WSA"); break;
+            case Anim_Sardaukar: animation[Anim_Sardaukar] = loadAnimationFromWsa("SARDUKAR.WSA"); break;
             case Anim_Frigate: {
-                if(pFileManager->exists("FRIGATE.WSA")) {
+                if (pFileManager->exists("FRIGATE.WSA")) {
                     animation[Anim_Frigate] = loadAnimationFromWsa("FRIGATE.WSA");
                 } else {
                     // US-Version 1.07 does not contain FRIGATE.WSA
@@ -1315,14 +1322,14 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
                     animation[Anim_Frigate] = loadAnimationFromWsa("STARPORT.WSA");
                 }
             } break;
-            case Anim_Slab4:            animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA");               break;
+            case Anim_Slab4: animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA"); break;
 
             default: {
                 THROW(std::runtime_error, "SurfaceLoader::getAnimation(): Invalid animation ID %u", id);
             } break;
         }
 
-        if(id >= Anim_Barracks && id <= Anim_Slab4) {
+        if (id >= Anim_Barracks && id <= Anim_Slab4) {
             animation[id]->setFrameRate(6);
         }
     }
@@ -1333,7 +1340,7 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
 std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename) const {
     try {
         return std::make_unique<Shpfile>(pFileManager->openFile(filename).get());
-    } catch (std::exception &e) {
+    } catch (std::exception& e) {
         THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
 }
@@ -1341,38 +1348,42 @@ std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename)
 std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename) const {
     try {
         return std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
-    } catch (std::exception &e) {
+    } catch (std::exception& e) {
         THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
     }
 }
 
 sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filename) const {
-    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pSurface {SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)};
 
     // create new picture surface
-    if(pSurface == nullptr) { THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError()); }
+    if (pSurface == nullptr) {
+        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
+    }
 
     { // Scope
         auto myWsafile = std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
 
-        sdl2::surface_ptr tmp{myWsafile->getPicture(0)};
-        if(tmp == nullptr) { THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename); }
+        sdl2::surface_ptr tmp {myWsafile->getPicture(0)};
+        if (tmp == nullptr) {
+            THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
+        }
 
-        if((tmp->w != 184) || (tmp->h != 112)) {
+        if ((tmp->w != 184) || (tmp->h != 112)) {
             THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
         }
 
         palette.applyToSurface(pSurface.get());
 
-        sdl2::surface_lock lock_out{pSurface.get()};
-        sdl2::surface_lock lock_in{tmp.get()};
+        sdl2::surface_lock lock_out {pSurface.get()};
+        sdl2::surface_lock lock_in {tmp.get()};
 
-        char* RESTRICT const       out = static_cast<char*>(lock_out.pixels());
-        const char* RESTRICT const in  = static_cast<const char*>(lock_in.pixels());
+        char* RESTRICT const out      = static_cast<char*>(lock_out.pixels());
+        const char* RESTRICT const in = static_cast<const char*>(lock_in.pixels());
 
         // Now we can copy pixel by pixel
-        for(auto y = 0; y < 55; y++) {
-            for(auto x = 0; x < 91; x++) {
+        for (auto y = 0; y < 55; y++) {
+            for (auto x = 0; x < 91; x++) {
                 out[y * pSurface->pitch + x] = in[((y * 2) + 1) * tmp->pitch + (x * 2) + 1];
             }
         }
@@ -1382,22 +1393,22 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {
-    auto file = pFileManager->openFile(filename);
-    auto wsafile = std::make_unique<Wsafile>(file.get());
-    auto animation = wsafile->getAnimation(0,wsafile->getNumFrames() - 1,true,false);
+    auto file      = pFileManager->openFile(filename);
+    auto wsafile   = std::make_unique<Wsafile>(file.get());
+    auto animation = wsafile->getAnimation(0, wsafile->getNumFrames() - 1, true, false);
     return animation;
 }
 
 sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const {
-    int windtrapColorQuantizizer = 255/((NUM_WINDTRAP_ANIMATIONS/2)-2);
-    int windtrapSize = windtrapPic->h;
-    int sizeX = NUM_WINDTRAP_ANIMATIONS_PER_ROW*windtrapSize;
-    int sizeY = ((2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW)*windtrapSize;
-    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
+    int windtrapColorQuantizizer = 255 / ((NUM_WINDTRAP_ANIMATIONS / 2) - 2);
+    int windtrapSize             = windtrapPic->h;
+    int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
+    int sizeY                    = ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW) * windtrapSize;
+    sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
     // copy building phase
-    SDL_Rect src = { 0, 0, 2*windtrapSize, windtrapSize};
+    SDL_Rect src  = {0, 0, 2 * windtrapSize, windtrapSize};
     SDL_Rect dest = src;
     SDL_BlitSurface(windtrapPic, &src, returnPic.get(), &dest);
 
@@ -1405,21 +1416,21 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     dest.x += dest.w;
     dest.w = windtrapSize;
 
-    for(auto i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
-        src.x = ((i/3) % 2 == 0) ? 2*windtrapSize : 3*windtrapSize;
+    for (auto i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
+        src.x = ((i / 3) % 2 == 0) ? 2 * windtrapSize : 3 * windtrapSize;
 
         SDL_Color windtrapColor;
-        if(i < NUM_WINDTRAP_ANIMATIONS/2) {
-            const auto val  = i*windtrapColorQuantizizer;
+        if (i < NUM_WINDTRAP_ANIMATIONS / 2) {
+            const auto val  = i * windtrapColorQuantizizer;
             windtrapColor.r = static_cast<uint8_t>(std::min(80, val));
             windtrapColor.g = static_cast<uint8_t>(std::min(80, val));
             windtrapColor.b = static_cast<uint8_t>(std::min(255, val));
             windtrapColor.a = 255;
         } else {
-            const auto val  = (i-NUM_WINDTRAP_ANIMATIONS/2)*windtrapColorQuantizizer;
-            windtrapColor.r = static_cast<uint8_t>(std::max(0, 80-val));
-            windtrapColor.g = static_cast<uint8_t>(std::max(0, 80-val));
-            windtrapColor.b = static_cast<uint8_t>(std::max(0, 255-val));
+            const auto val  = (i - NUM_WINDTRAP_ANIMATIONS / 2) * windtrapColorQuantizizer;
+            windtrapColor.r = static_cast<uint8_t>(std::max(0, 80 - val));
+            windtrapColor.g = static_cast<uint8_t>(std::max(0, 80 - val));
+            windtrapColor.b = static_cast<uint8_t>(std::max(0, 255 - val));
             windtrapColor.a = 255;
         }
         SDL_SetPaletteColors(windtrapPic->format->palette, &windtrapColor, PALCOLOR_WINDTRAP_COLORCYCLE, 1);
@@ -1431,22 +1442,21 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
         dest.x = dest.x % sizeX;
     }
 
-    if((returnPic->w > 2048) || (returnPic->h > 2048)) {
+    if ((returnPic->w > 2048) || (returnPic->h > 2048)) {
         sdl2::log_info("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
     }
 
     return returnPic;
 }
 
-
 sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) {
-    sdl2::surface_ptr returnPic{ SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 
-    for(int i = 0; i < 4; i++) {
-        for(int k = 0; k < 4; k++) {
-            SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[static_cast<int>(house)]+((i+k)%4)], 251+k, 1);
+    for (int i = 0; i < 4; i++) {
+        for (int k = 0; k < 4; k++) {
+            SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[static_cast<int>(house)] + ((i + k) % 4)], 251 + k, 1);
         }
 
         SDL_BlitSurface(arrowPic, nullptr, returnPic.get(), &dest);
@@ -1459,9 +1469,9 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
 sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) const {
     sdl2::surface_ptr pSurface;
     std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
-    if(settings.video.scaler == "ScaleHD") {
-        if(pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr{ Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+    if (settings.video.scaler == "ScaleHD") {
+        if (pFileManager->exists(filename)) {
+            pSurface = sdl2::surface_ptr {Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
@@ -1474,13 +1484,13 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr{ Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+            pSurface = sdl2::surface_ptr {Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr{ Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+        pSurface = sdl2::surface_ptr {Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
-    if((pSurface->w > 2048) || (pSurface->h > 2048)) {
+    if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
@@ -1490,9 +1500,9 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
 sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) const {
     sdl2::surface_ptr pSurface;
     const std::string filename = "Mask_3x_" + ObjPicNames.at(id) + ".png";
-    if(settings.video.scaler == "ScaleHD") {
-        if(pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr{ Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+    if (settings.video.scaler == "ScaleHD") {
+        if (pFileManager->exists(filename)) {
+            pSurface = sdl2::surface_ptr {Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
@@ -1505,14 +1515,13 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr{ Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+            pSurface = sdl2::surface_ptr {Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr{ Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y) };
+        pSurface = sdl2::surface_ptr {Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
-
-    if((pSurface->w > 2048) || (pSurface->h > 2048)) {
+    if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 

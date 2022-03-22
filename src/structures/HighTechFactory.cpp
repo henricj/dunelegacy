@@ -20,11 +20,11 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants high_tech_factory_constants{HighTechFactory::item_id, Coord{3, 2}};
+constexpr BuilderBaseConstants high_tech_factory_constants {HighTechFactory::item_id, Coord {3, 2}};
 }
 
 HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectInitializer& initializer)
@@ -42,12 +42,12 @@ HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectStreamInitialize
 void HighTechFactory::init() {
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_HighTechFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 8;
-    numImagesY = 1;
+    graphicID      = ObjPic_HighTechFactory;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 8;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 HighTechFactory::~HighTechFactory() = default;

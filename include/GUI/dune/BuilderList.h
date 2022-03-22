@@ -18,23 +18,22 @@
 #ifndef BUILDERLIST_H
 #define BUILDERLIST_H
 
-#include <GUI/StaticContainer.h>
 #include <GUI/PictureButton.h>
+#include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>
 #include <misc/SDL2pp.h>
 
-#define ARROWBTN_WIDTH 48
-#define ARROWBTN_HEIGHT 16
-#define BUILDERBTN_HEIGHT 55
-#define BUILDERBTN_WIDTH 91
+#define ARROWBTN_WIDTH     48
+#define ARROWBTN_HEIGHT    16
+#define BUILDERBTN_HEIGHT  55
+#define BUILDERBTN_WIDTH   91
 #define BUILDERBTN_SPACING 5
-#define ORDERBTN_HEIGHT 16
+#define ORDERBTN_HEIGHT    16
 
 #define WIDGET_WIDTH (BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING)
 
 class BuilderList : public StaticContainer {
 public:
-
     /**
         Handles a mouse movement.
         \param  x               x-coordinate (relative to the left top corner of the widget)
@@ -95,9 +94,8 @@ public:
         called if the new size is a valid size for this builder list (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -109,37 +107,35 @@ public:
     */
     void resize(uint32_t width, uint32_t height) override;
 
-
     /**
         Returns the minimum size of this widget. The widget should not
         resized to a size smaller than this. If the widget is not resizeable
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    Point getMinimumSize() const override
-    {
-        return Point(   WIDGET_WIDTH,
-                        BUILDERBTN_HEIGHT*3 + (ARROWBTN_HEIGHT+BUILDERBTN_SPACING)*2 + BUILDERBTN_SPACING*4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING);
+    Point getMinimumSize() const override {
+        return Point(WIDGET_WIDTH,
+                     BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2 + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING);
     }
 
-
     static BuilderList* create(uint32_t builderObjectID) {
-        auto* tmp = new BuilderList(builderObjectID);
+        auto* tmp       = new BuilderList(builderObjectID);
         tmp->pAllocated = true;
         return tmp;
     }
 
-    BuilderList(const BuilderList &) = delete;
-    BuilderList(BuilderList &&) = delete;
-    BuilderList& operator=(const BuilderList &) = delete;
-    BuilderList& operator=(BuilderList &&) = delete;
+    BuilderList(const BuilderList&) = delete;
+    BuilderList(BuilderList&&)      = delete;
+    BuilderList& operator=(const BuilderList&) = delete;
+    BuilderList& operator=(BuilderList&&) = delete;
+
 private:
     explicit BuilderList(uint32_t builderObjectID);
     ~BuilderList() override;
 
     static int getRealHeight(int height);
-    static int getNumButtons(int height) ;
-    static Point getButtonPosition(int BtnNumber) ;
+    static int getNumButtons(int height);
+    static Point getButtonPosition(int BtnNumber);
     int getButton(int x, int y) const;
     ItemID_enum getItemIDFromIndex(int i) const;
 
@@ -148,26 +144,26 @@ private:
     void onOrder() const;
     void onCancel() const;
 
-    int           currentListPos;
+    int currentListPos;
     PictureButton upButton;
     PictureButton downButton;
-    uint32_t      builderObjectID;
+    uint32_t builderObjectID;
 
-    TextButton  orderButton;
+    TextButton orderButton;
 
     int mouseLeftButton;
     int mouseRightButton;
 
-    sdl2::texture_ptr    pSoldOutTextTexture;
-    sdl2::texture_ptr    pAlreadyBuiltTextTexture;
-    sdl2::texture_ptr    pPlaceItTextTexture;
-    sdl2::texture_ptr    pOnHoldTextTexture;
-    sdl2::texture_ptr    pUnitLimitReachedTextTexture;
+    sdl2::texture_ptr pSoldOutTextTexture;
+    sdl2::texture_ptr pAlreadyBuiltTextTexture;
+    sdl2::texture_ptr pPlaceItTextTexture;
+    sdl2::texture_ptr pOnHoldTextTexture;
+    sdl2::texture_ptr pUnitLimitReachedTextTexture;
 
     sdl2::texture_ptr pLastTooltip;
-    std::string       tooltipText;
-    uint32_t          lastMouseMovement;
-    Point             lastMousePos;
+    std::string tooltipText;
+    uint32_t lastMouseMovement;
+    Point lastMousePos;
 };
 
-#endif //BUILDERLIST_H
+#endif // BUILDERLIST_H

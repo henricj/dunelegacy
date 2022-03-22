@@ -29,14 +29,14 @@ class BuildItem final {
 public:
     BuildItem() {
         itemID = ItemID_Invalid;
-        price = 0;
-        num = 0;
+        price  = 0;
+        num    = 0;
     }
 
     BuildItem(ItemID_enum itemID, int price) {
         this->itemID = itemID;
-        this->price = price;
-        num = 0;
+        this->price  = price;
+        num          = 0;
     }
 
     BuildItem(InputStream& stream) {
@@ -51,25 +51,23 @@ public:
 
     void load(InputStream& stream) {
         itemID = static_cast<ItemID_enum>(stream.readUint32());
-        price = stream.readUint32();
-        num = stream.readUint32();
+        price  = stream.readUint32();
+        num    = stream.readUint32();
     }
 
     ItemID_enum itemID;
-    uint32_t    price;
-    uint32_t    num;
+    uint32_t price;
+    uint32_t num;
 };
 
 class ProductionQueueItem final {
 public:
     ProductionQueueItem()
         : itemID(ItemID_enum::ItemID_Invalid), price(0) {
-
     }
 
     ProductionQueueItem(ItemID_enum _ItemID, uint32_t _price)
         : itemID(_ItemID), price(_price) {
-
     }
 
     ProductionQueueItem(InputStream& stream) {
@@ -83,24 +81,22 @@ public:
 
     void load(InputStream& stream) {
         itemID = static_cast<ItemID_enum>(stream.readUint32());
-        price = stream.readUint32();
+        price  = stream.readUint32();
     }
 
     ItemID_enum itemID;
-    uint32_t    price;
+    uint32_t price;
 };
 
-class BuilderBaseConstants : public StructureBaseConstants
-{
+class BuilderBaseConstants : public StructureBaseConstants {
 public:
     constexpr explicit BuilderBaseConstants(ItemID_enum itemID, Coord structureSize)
-        : StructureBaseConstants{itemID, structureSize} {
+        : StructureBaseConstants {itemID, structureSize} {
         aBuilder_ = true;
     }
 };
 
-class BuilderBase : public StructureBase
-{
+class BuilderBase : public StructureBase {
 protected:
     BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -110,19 +106,18 @@ public:
 
     virtual ~BuilderBase() = 0;
 
-    BuilderBase(const BuilderBase &) = delete;
-    BuilderBase(BuilderBase &&) = delete;
-    BuilderBase& operator=(const BuilderBase &) = delete;
-    BuilderBase& operator=(BuilderBase &&) = delete;
+    BuilderBase(const BuilderBase&) = delete;
+    BuilderBase(BuilderBase&&)      = delete;
+    BuilderBase& operator=(const BuilderBase&) = delete;
+    BuilderBase& operator=(BuilderBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    void setOwner(House *no);
+    void setOwner(House* no);
 
-    void setOriginalHouseID(HOUSETYPE i) override
-    {
+    void setOriginalHouseID(HOUSETYPE i) override {
         StructureBase::setOriginalHouseID(i);
         updateBuildList();
     }
@@ -156,8 +151,6 @@ public:
     virtual void handleProduceItemClick(ItemID_enum itemID, bool multipleMode = false);
     virtual void handleCancelItemClick(ItemID_enum itemID, bool multipleMode = false);
     virtual void handleSetOnHoldClick(bool OnHold);
-
-
 
     /**
         Start upgrading this builder if possible.
@@ -197,8 +190,6 @@ public:
     */
     void doSetBuildSpeedLimit(FixPoint newBuildSpeedLimit) { buildSpeedLimit = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit)); }
 
-
-
     bool isUpgrading() const noexcept { return upgrading; }
     bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
     int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
@@ -228,13 +219,13 @@ protected:
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price=-1);
+    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price = -1);
 
     void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID);
 
     BuildItem* getBuildItem(ItemID_enum itemID) {
-        for(auto& buildItem : buildList) {
-            if(buildItem.itemID == itemID) {
+        for (auto& buildItem : buildList) {
+            if (buildItem.itemID == itemID) {
                 return &buildItem;
             }
         }
@@ -242,8 +233,8 @@ protected:
     }
 
     const BuildItem* getBuildItem(ItemID_enum itemID) const {
-        for(const auto& buildItem : buildList) {
-            if(buildItem.itemID == itemID) {
+        for (const auto& buildItem : buildList) {
+            if (buildItem.itemID == itemID) {
                 return &buildItem;
             }
         }
@@ -256,37 +247,38 @@ protected:
     static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
     // structure state
-    bool     upgrading{};       ///< Currently upgrading?
-    FixPoint upgradeProgress{}; ///< The current state of the upgrade progress (measured in money spent)
-    uint8_t  curUpgradeLev{};   ///< Current upgrade level
+    bool upgrading {};           ///< Currently upgrading?
+    FixPoint upgradeProgress {}; ///< The current state of the upgrade progress (measured in money spent)
+    uint8_t curUpgradeLev {};    ///< Current upgrade level
 
-    bool        bCurrentItemOnHold{};                 ///< Is the currently produced item on hold?
+    bool bCurrentItemOnHold {};                       ///< Is the currently produced item on hold?
     ItemID_enum currentProducedItem = ItemID_Invalid; ///< The ItemID of the currently produced item
-    FixPoint    productionProgress{};                 ///< The current state of the production progress (measured in money spent)
-    uint32_t deployTimer{};                        ///< Timer for deploying a unit
+    FixPoint productionProgress {};                   ///< The current state of the production progress (measured in money spent)
+    uint32_t deployTimer {};                          ///< Timer for deploying a unit
 
-    FixPoint buildSpeedLimit;        ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
+    FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
 
-    std::list<ProductionQueueItem>  currentProductionQueue;     ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
-    std::list<BuildItem>            buildList;                  ///< This list contains all the things that can be produced by this builder
+    std::list<ProductionQueueItem> currentProductionQueue; ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
+    std::list<BuildItem> buildList;                        ///< This list contains all the things that can be produced by this builder
 
 private:
     void init();
 };
 
-
 template<>
 inline BuilderBase* dune_cast(ObjectBase* base) {
-    if(base && base->isABuilder()) return static_cast<BuilderBase*>(base);
+    if (base && base->isABuilder())
+        return static_cast<BuilderBase*>(base);
 
     return nullptr;
 }
 
 template<>
 inline const BuilderBase* dune_cast(const ObjectBase* base) {
-    if(base && base->isABuilder()) return static_cast<const BuilderBase*>(base);
+    if (base && base->isABuilder())
+        return static_cast<const BuilderBase*>(base);
 
     return nullptr;
 }
 
-#endif //BUILDERBASE_H
+#endif // BUILDERBASE_H

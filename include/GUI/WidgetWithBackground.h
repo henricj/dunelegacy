@@ -22,8 +22,7 @@
 
 #include <misc/SDL2pp.h>
 
-class WidgetWithBackground : public Widget
-{
+class WidgetWithBackground : public Widget {
 public:
     WidgetWithBackground()                            = default;
     WidgetWithBackground(const WidgetWithBackground&) = delete;
@@ -71,13 +70,13 @@ protected:
     virtual sdl2::surface_ptr createBackground();
 
 private:
-    const DuneTexture* pBackground{}; ///< background texture
+    const DuneTexture* pBackground {}; ///< background texture
 
-    bool bTransparentBackground{};          ///< true = no background is drawn
-    bool bSelfGeneratedBackground{true};    ///< true = background is created by this window, false = created by someone else
+    bool bTransparentBackground {};       ///< true = no background is drawn
+    bool bSelfGeneratedBackground {true}; ///< true = background is created by this window, false = created by someone else
 
     sdl2::texture_ptr localTexture_;
-    DuneTexture       localDuneTexture_;
+    DuneTexture localDuneTexture_;
 };
 
 #endif // WIDGETWITHBACKGROUND_H

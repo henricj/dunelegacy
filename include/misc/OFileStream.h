@@ -22,8 +22,7 @@
 #include <filesystem>
 #include <string>
 
-class OFileStream final : public OutputStream
-{
+class OFileStream final : public OutputStream {
 public:
     OFileStream();
     ~OFileStream() override;
@@ -45,7 +44,7 @@ public:
     void writeFloat(float x) override;
 
 private:
-    FILE* fp{};
+    FILE* fp {};
 };
 
 #endif // OFILESTREAM_H

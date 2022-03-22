@@ -19,21 +19,21 @@
 #define MAINMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/Spacer.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/Spacer.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 
 class MainMenu final : public MenuBase {
 public:
     MainMenu();
     virtual ~MainMenu();
 
-    MainMenu(const MainMenu &) = delete;
-    MainMenu(MainMenu &&) = delete;
-    MainMenu& operator=(const MainMenu &) = delete;
-    MainMenu& operator=(MainMenu &&) = delete;
+    MainMenu(const MainMenu&) = delete;
+    MainMenu(MainMenu&&)      = delete;
+    MainMenu& operator=(const MainMenu&) = delete;
+    MainMenu& operator=(MainMenu&&) = delete;
 
     virtual int showMenu() override;
 
@@ -46,18 +46,18 @@ private:
     void onQuit();
 
     StaticContainer windowWidget;
-    VBox            MenuButtons;
+    VBox MenuButtons;
 
-    TextButton      singlePlayerButton;
-    TextButton      multiPlayerButton;
-    TextButton      mapEditorButton;
-    TextButton      optionsButton;
-    TextButton      aboutButton;
-    TextButton      quitButton;
+    TextButton singlePlayerButton;
+    TextButton multiPlayerButton;
+    TextButton mapEditorButton;
+    TextButton optionsButton;
+    TextButton aboutButton;
+    TextButton quitButton;
 
-    PictureLabel    planetPicture;
-    PictureLabel    duneLegacy;
-    PictureLabel    buttonBorder;
+    PictureLabel planetPicture;
+    PictureLabel duneLegacy;
+    PictureLabel buttonBorder;
 };
 
 #endif // MAINMENU_H

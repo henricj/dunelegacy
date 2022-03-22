@@ -30,15 +30,14 @@
 
 #include <misc/exceptions.h>
 
-#include <ObjectBase.h>
 #include <House.h>
+#include <ObjectBase.h>
 #include <units/UnitBase.h>
-
 
 class DefaultObjectInterface : public ObjectInterface {
 public:
     static std::unique_ptr<DefaultObjectInterface> create(const GameContext& context, int objectID) {
-        auto tmp = std::unique_ptr<DefaultObjectInterface>{ new DefaultObjectInterface(context, objectID) };
+        auto tmp        = std::unique_ptr<DefaultObjectInterface> {new DefaultObjectInterface(context, objectID)};
         tmp->pAllocated = true;
         return tmp;
     }
@@ -46,25 +45,26 @@ public:
     ~DefaultObjectInterface() override = default;
 
 protected:
-    DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
+    DefaultObjectInterface(const GameContext& context, int objectID)
+        : context_ {context} {
         ObjectBase* pObject = context_.objectManager.getObject(objectID);
-        if(pObject == nullptr) {
+        if (pObject == nullptr) {
             THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);
         }
 
         this->objectID = objectID;
-        itemID = pObject->getItemID();
+        itemID         = pObject->getItemID();
 
-        addWidget(&topBox,Point(0,0),Point(SIDEBARWIDTH - 25,80));
+        addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
 
-        addWidget(&mainHBox,Point(0,80),Point(SIDEBARWIDTH - 25,getRendererHeight() - 80 - 148));
+        addWidget(&mainHBox, Point(0, 80), Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
 
-        topBox.addWidget(&topBoxHBox,Point(0,22),Point(SIDEBARWIDTH - 25,58));
+        topBox.addWidget(&topBoxHBox, Point(0, 22), Point(SIDEBARWIDTH - 25, 58));
 
         topBoxHBox.addWidget(Spacer::create());
         topBoxHBox.addWidget(&objPicture);
 
-        objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE) pObject->getOriginalHouseID()));
+        objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE)pObject->getOriginalHouseID()));
 
         topBoxHBox.addWidget(Spacer::create());
     }
@@ -74,19 +74,18 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         ObjectBase* pObject = context_.objectManager.getObject(objectID);
         return (pObject != nullptr);
     }
 
-    int             objectID;
+    int objectID;
     ItemID_enum itemID;
 
     StaticContainer topBox;
-    HBox            topBoxHBox;
-    HBox            mainHBox;
-    PictureLabel    objPicture;
+    HBox topBoxHBox;
+    HBox mainHBox;
+    PictureLabel objPicture;
 
     const GameContext context_;
 };

@@ -20,19 +20,17 @@
 
 #include <MapEditor/MapData.h>
 
-#include <GUI/Window.h>
 #include <GUI/HBox.h>
-#include <GUI/VBox.h>
 #include <GUI/Label.h>
-#include <GUI/TextButton.h>
 #include <GUI/ListBox.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <misc/SDL2pp.h>
 
-class  LoadMapWindow : public Window
-{
+class LoadMapWindow : public Window {
 public:
-
     explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
     const auto& getLoadMapFilepath() const { return loadMapFilepath; }
@@ -55,11 +53,10 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static LoadMapWindow* create(int color = -1) {
-        auto* dlg = new LoadMapWindow(color);
+        auto* dlg       = new LoadMapWindow(color);
         dlg->pAllocated = true;
         return dlg;
     }
-
 
 private:
     void onCancel();
@@ -67,41 +64,40 @@ private:
     void onMapTypeChange(int buttonID);
     void onMapListSelectionChange(bool bInteractive);
 
-    HBox    mainHBox;
-    VBox    mainVBox;
-    HBox    centralHBox;
+    HBox mainHBox;
+    VBox mainVBox;
+    HBox centralHBox;
 
     // left VBox with map list
-    VBox            leftVBox;
-    HBox            mapTypeButtonsHBox;
-    TextButton      singleplayerUserMapsButton;
-    TextButton      multiplayerUserMapsButton;
-    ListBox         mapList;
+    VBox leftVBox;
+    HBox mapTypeButtonsHBox;
+    TextButton singleplayerUserMapsButton;
+    TextButton multiplayerUserMapsButton;
+    ListBox mapList;
 
     // right VBox with mini map
-    VBox            rightVBox;
-    PictureLabel    minimap;
-    HBox            mapPropertiesHBox;
-    VBox            mapPropertyNamesVBox;
-    VBox            mapPropertyValuesVBox;
-    Label           mapPropertySize;
-    Label           mapPropertyPlayers;
-    Label           mapPropertyAuthors;
-    Label           mapPropertyLicense;
+    VBox rightVBox;
+    PictureLabel minimap;
+    HBox mapPropertiesHBox;
+    VBox mapPropertyNamesVBox;
+    VBox mapPropertyValuesVBox;
+    Label mapPropertySize;
+    Label mapPropertyPlayers;
+    Label mapPropertyAuthors;
+    Label mapPropertyLicense;
 
-    HBox            buttonHBox;
+    HBox buttonHBox;
 
-    Label       titleLabel;
-    TextButton  cancelButton;
-    TextButton  loadButton;
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton loadButton;
 
     uint32_t color;
 
     std::filesystem::path loadMapFilepath;
     std::string loadMapname;
-    bool        loadMapSingleplayer{false};
+    bool loadMapSingleplayer {false};
     std::filesystem::path currentMapDirectory;
 };
-
 
 #endif // LOADMAPWINDOW_H

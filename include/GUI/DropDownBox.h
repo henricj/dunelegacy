@@ -18,14 +18,14 @@
 #ifndef DROPDOWNBOX_H
 #define DROPDOWNBOX_H
 
-#include "Widget.h"
-#include "PictureButton.h"
 #include "ListBox.h"
+#include "PictureButton.h"
+#include "Widget.h"
 #include <misc/SDL2pp.h>
 
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
+#include <vector>
 
 /// A class for a dropdown box widget
 class DropDownBox : public Widget {
@@ -114,9 +114,8 @@ public:
         called if the new size is a valid size for this dropdownbox (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -132,9 +131,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        return Point(listBox.getMinimumSize().x,openListBoxButton.getSize().y+2);
+    [[nodiscard]] Point getMinimumSize() const override {
+        return Point(listBox.getMinimumSize().x, openListBoxButton.getSize().y + 2);
     }
 
     /**
@@ -304,7 +302,7 @@ public:
     */
     void removeEntry(int index) {
         listBox.removeEntry(index);
-        if(listBox.getSelectedIndex() < 0) {
+        if (listBox.getSelectedIndex() < 0) {
             invalidateForeground();
         }
         resizeListBox();
@@ -323,7 +321,7 @@ public:
         Sets the function that should be called when the selection in this dropdown box changes.
         \param  pOnSelectionChange  A function this is called on selection change
     */
-    void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
+    void setOnSelectionChange(std::function<void(bool)> pOnSelectionChange) {
         this->pOnSelectionChange = pOnSelectionChange;
     }
 
@@ -334,7 +332,7 @@ public:
         a on mouse hover effect is only active if a OnClick function is set.
         \param  pOnClick    A function to be called on click
     */
-    void setOnClick(std::function<void ()> pOnClick) {
+    void setOnClick(std::function<void()> pOnClick) {
         this->pOnClick = pOnClick;
     }
 
@@ -342,8 +340,7 @@ public:
         Sets this widget active. The parent widgets are also activated and the
         currently active widget is set to inactive.
     */
-    void setActive() override
-    {
+    void setActive() override {
         openListBoxButton.setActive();
         Widget::setActive();
     }
@@ -364,8 +361,7 @@ public:
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable widget, false = disable widget
     */
-    void setEnabled(bool bEnabled) override
-    {
+    void setEnabled(bool bEnabled) override {
         openListBoxButton.setEnabled(bEnabled);
 
         Widget::setEnabled(bEnabled);
@@ -392,7 +388,7 @@ public:
         \return The new created dropdown box (will be automatically destroyed when it's parent widget is destroyed)
     */
     static DropDownBox* create() {
-        auto* dropDownBox = new DropDownBox();
+        auto* dropDownBox       = new DropDownBox();
         dropDownBox->pAllocated = true;
         return dropDownBox;
     }
@@ -417,7 +413,6 @@ protected:
     }
 
 private:
-
     void onSelectionChange(bool bInteractive);
 
     void resizeListBox();
@@ -438,23 +433,23 @@ private:
 
     bool bShowListBox;
     bool bListBoxAbove;
-    bool bAutocloseListBoxOnSelectionChange;        ///< This is a small hack to allow the list box to be open while selection with up/down keys
-    bool bOnClickEnabled;                           ///< Is the onClick event enabled for this widget?
+    bool bAutocloseListBoxOnSelectionChange; ///< This is a small hack to allow the list box to be open while selection with up/down keys
+    bool bOnClickEnabled;                    ///< Is the onClick event enabled for this widget?
 
     sdl2::texture_ptr pBackground;
     sdl2::texture_ptr pForeground;
-    sdl2::texture_ptr pActiveForeground;                 ///< Ís shown while the mouse cursor is over this drop down box
+    sdl2::texture_ptr pActiveForeground; ///< Ís shown while the mouse cursor is over this drop down box
 
     PictureButton openListBoxButton;
     ListBox listBox;
 
-    std::function<void (bool)> pOnSelectionChange;  ///< this function is called when the selection changes
-    std::function<void ()> pOnClick;                ///< function that is called when this drop down box is clicked
+    std::function<void(bool)> pOnSelectionChange; ///< this function is called when the selection changes
+    std::function<void()> pOnClick;               ///< function that is called when this drop down box is clicked
 
-    int numVisibleEntries;                          ///< the number of entries visible when the list is opened (default=7)
+    int numVisibleEntries; ///< the number of entries visible when the list is opened (default=7)
 
-    uint32_t color;  ///< the color
-    bool     bHover; ///< true = currenlty mouse hover, false = currently no mouse hover
+    uint32_t color; ///< the color
+    bool bHover;    ///< true = currenlty mouse hover, false = currently no mouse hover
 };
 
-#endif //DROPDOWNBOX_H
+#endif // DROPDOWNBOX_H

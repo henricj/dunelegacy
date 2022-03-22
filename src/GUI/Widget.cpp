@@ -15,28 +15,26 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <GUI/Widget.h>
 #include <GUI/Container.h>
+#include <GUI/Widget.h>
 
 Widget::~Widget() {
     pAllocated = false;
-    if (parent != nullptr)
-    {
+    if (parent != nullptr) {
         parent->removeChildWidget(this);
     }
 }
 
 void Widget::setActive() {
     active = true;
-    if(parent != nullptr) {
-        parent->setActiveChildWidget(true,this);
+    if (parent != nullptr) {
+        parent->setActiveChildWidget(true, this);
     }
 }
 
 void Widget::setInactive() {
     active = false;
-    if(parent != nullptr) {
-        parent->setActiveChildWidget(false,this);
+    if (parent != nullptr) {
+        parent->setActiveChildWidget(false, this);
     }
 }
-

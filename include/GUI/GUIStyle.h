@@ -18,14 +18,14 @@
 #ifndef GUISTYLE_H
 #define GUISTYLE_H
 
-#include <FileClasses/FontManager.h>        // For Font IDs
 #include <Colors.h>
+#include <FileClasses/FontManager.h> // For Font IDs
 
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string_view>
 
 #include "Widget.h"
@@ -34,11 +34,11 @@
 
 enum Alignment_Enum {
     Alignment_VCenter = 1,
-    Alignment_Top = 2,
-    Alignment_Bottom = 4,
+    Alignment_Top     = 2,
+    Alignment_Bottom  = 4,
     Alignment_HCenter = 8,
-    Alignment_Left = 16,
-    Alignment_Right = 32
+    Alignment_Left    = 16,
+    Alignment_Right   = 32
 };
 
 class GUIStyle {
@@ -58,14 +58,11 @@ public:
     }
 
     static GUIStyle& getInstance() {
-        if(currentGUIStyle == nullptr) {
+        if (currentGUIStyle == nullptr) {
             THROW(std::runtime_error, "GUIStyle::getInstance(): currentGUIStyle == nullptr. Call setGUIStyle before using getInstance()!");
         }
         return *currentGUIStyle;
     }
-
-
-
 
     /**
         Returns the minimum size of a label with this text
@@ -89,9 +86,6 @@ public:
     */
     virtual sdl2::surface_ptr createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
-
-
-
     /**
         Returns the minimum size of a checkbox with this text
         \param  text    The text for the checkbox
@@ -112,8 +106,6 @@ public:
         \return the new surface
     */
     virtual sdl2::surface_ptr createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
-
-
 
     /**
         Returns the minimum size of a radio button with this text
@@ -136,8 +128,6 @@ public:
     */
     virtual sdl2::surface_ptr createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
-
-
     /**
         Creates the surface for a drop down box
         \param  size        the width and height of the drop down button
@@ -147,8 +137,6 @@ public:
         \return the new surface
     */
     virtual sdl2::surface_ptr createDropDownBoxButton(uint32_t size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
-
-
 
     /**
         Returns the minimum size of a button with this text
@@ -169,9 +157,6 @@ public:
         \return the new surface
     */
     virtual sdl2::surface_ptr createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
-
-
-
 
     /**
         Returns the minimum size of a text box
@@ -194,9 +179,6 @@ public:
     */
     virtual sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
-
-
-
     /**
         Returns the minimum size of a scroll bar arrow button.
         \return the minimum size of a scroll bar arrow
@@ -213,9 +195,6 @@ public:
     */
     virtual sdl2::surface_ptr createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
 
-
-
-
     /**
         Returns the minimum height of a list box entry.
         \return the minimum height of a list box entry
@@ -231,9 +210,6 @@ public:
         \return the new surface
     */
     virtual sdl2::surface_ptr createListBoxEntry(uint32_t width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) = 0;
-
-
-
 
     /**
         Creates the overlay surface for a progress bar widget. This surface is then drawn
@@ -278,7 +254,6 @@ public:
     */
     virtual sdl2::surface_ptr createEmptySurface(uint32_t width, uint32_t height, bool transparent);
 
-
     /**
         Get the height of the font specified by fontnum
         \param  FontNum     the font
@@ -298,4 +273,4 @@ private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;
 };
 
-#endif //GUISTYLE_H
+#endif // GUISTYLE_H

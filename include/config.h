@@ -17,23 +17,23 @@
  */
 
 #ifndef VERSION
-    #define VERSION "0.96.5.a4"
+#define VERSION "0.96.5.a4"
 #endif
 
 #ifndef PACKAGE
-    #define PACKAGE "dunelegacy"
+#define PACKAGE "dunelegacy"
 #endif
 
-#define VERSIONSTRING   PACKAGE VERSION
+#define VERSIONSTRING PACKAGE VERSION
 
 #ifndef DUNELEGACY_DATADIR
-    #define DUNELEGACY_DATADIR "."
+#define DUNELEGACY_DATADIR "."
 #endif
 
 #ifndef CONFIGFILENAME
-    #define CONFIGFILENAME "Dune Legacy.ini"
+#define CONFIGFILENAME "Dune Legacy.ini"
 #endif
 
 #ifndef LOGFILENAME
-    #define LOGFILENAME "Dune Legacy.log"
+#define LOGFILENAME "Dune Legacy.log"
 #endif

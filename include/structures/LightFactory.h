@@ -20,11 +20,10 @@
 
 #include <structures/BuilderBase.h>
 
-class LightFactory final : public BuilderBase
-{
+class LightFactory final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_LightFactory;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     LightFactory(uint32_t objectID, const ObjectInitializer& initializer);
     LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,4 +40,4 @@ private:
     void init();
 };
 
-#endif //LIGHTFACTORY_H
+#endif // LIGHTFACTORY_H

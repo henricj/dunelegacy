@@ -30,12 +30,12 @@
 #include <gsl/gsl>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
-#include <sal.h>
-#define PRINTF_FORMAT_STRING _Printf_format_string_
-#define PRINTF_VARARG_FUNC( fmtargnumber )
+#    include <sal.h>
+#    define PRINTF_FORMAT_STRING _Printf_format_string_
+#    define PRINTF_VARARG_FUNC(fmtargnumber)
 #elif defined(__GNUC__)
-#define PRINTF_FORMAT_STRING
-#define PRINTF_VARARG_FUNC( fmtargnumber ) __attribute__ (( format( __printf__, fmtargnumber, fmtargnumber+1 )))
+#    define PRINTF_FORMAT_STRING
+#    define PRINTF_VARARG_FUNC(fmtargnumber) __attribute__((format(__printf__, fmtargnumber, fmtargnumber + 1)))
 #endif
 
 /**
@@ -50,16 +50,17 @@ template<class... Args>
 bool splitString(std::string_view parseString, std::string& arg0, Args&... args) {
     std::array<std::string*, sizeof...(Args) + 1> pStrings = {&arg0, &args...};
 
-    auto**       p           = &pStrings[0];
+    auto** p                 = &pStrings[0];
     auto** const strings_end = p + pStrings.size();
 
-    for(auto previous = parseString.data(), current = previous, end = previous + parseString.size();
-        current != end && previous != end; previous = current + 1) {
+    for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
+         current != end && previous != end; previous = current + 1) {
         current = std::find(previous, end, ',');
 
-        if(previous != current) {
-            **p = std::string{previous, static_cast<std::string::size_type>(current - previous)};
-            if(++p == strings_end) return true;
+        if (previous != current) {
+            **p = std::string {previous, static_cast<std::string::size_type>(current - previous)};
+            if (++p == strings_end)
+                return true;
         }
     }
 
@@ -79,18 +80,20 @@ template<class... Args>
 bool splitString(std::string_view parseString, std::string_view* arg0, Args*... args) {
     std::array<std::string_view*, sizeof...(Args) + 1> pStrings = {arg0, args...};
 
-    if(pStrings.empty()) return true;
+    if (pStrings.empty())
+        return true;
 
-    auto**       p           = &pStrings[0];
+    auto** p                 = &pStrings[0];
     auto** const strings_end = p + pStrings.size();
 
-    for(auto previous = parseString.data(), current = previous, end = previous + parseString.size();
-        current != end && previous != end; previous = current + 1) {
+    for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
+         current != end && previous != end; previous = current + 1) {
         current = std::find(previous, end, ',');
 
-        if(previous != current) {
-            **p = std::string_view{previous, static_cast<std::string::size_type>(current - previous)};
-            if(++p == strings_end) return true;
+        if (previous != current) {
+            **p = std::string_view {previous, static_cast<std::string::size_type>(current - previous)};
+            if (++p == strings_end)
+                return true;
         }
     }
 
@@ -107,12 +110,11 @@ std::vector<std::string> splitStringToStringVector(const std::string& parseStrin
 
 std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
 
-
 template<typename T>
 bool parseString(std::string_view str, T& t) {
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
 
-    return ec == std::errc{};
+    return ec == std::errc {};
 }
 
 inline void convertToLower(std::string& str) {
@@ -120,17 +122,17 @@ inline void convertToLower(std::string& str) {
 }
 
 inline std::string strToLower(std::string_view str) {
-    std::string result{ str };
+    std::string result {str};
     convertToLower(result);
     return result;
 }
 
 inline void convertToUpper(std::string& str) {
-    std::transform(str.begin(),str.end(), str.begin(), toupper);
+    std::transform(str.begin(), str.end(), str.begin(), toupper);
 }
 
 inline std::string strToUpper(std::string_view str) {
-    std::string result{str};
+    std::string result {str};
     convertToUpper(result);
     return result;
 }
@@ -139,10 +141,10 @@ inline std::string trim(std::string_view str) {
     const size_t firstChar = str.find_first_not_of(" \t");
     const size_t lastChar  = str.find_last_not_of(" \t");
 
-    if(firstChar == std::string::npos || lastChar == std::string::npos)
+    if (firstChar == std::string::npos || lastChar == std::string::npos)
         return "";
 
-    return std::string{ str.substr(firstChar, lastChar - firstChar + 1) };
+    return std::string {str.substr(firstChar, lastChar - firstChar + 1)};
 }
 
 inline bool utf8IsStartByte(unsigned char c) {
@@ -158,19 +160,19 @@ inline size_t utf8Length(std::string_view str) {
     size_t resultLen = 0;
 
     auto iter = str.cbegin();
-    while( iter != str.cend() ) {
-        unsigned char c = static_cast<unsigned char>( *iter );
+    while (iter != str.cend()) {
+        unsigned char c = static_cast<unsigned char>(*iter);
 
-        if( (c & 0x80) == 0) {
+        if ((c & 0x80) == 0) {
             // 1 byte: 0xxxxxxx
             iter += 1;
-        } else if( (c & 0xE0) == 0xC0) {
+        } else if ((c & 0xE0) == 0xC0) {
             // 2 byte: 110xxxxx 10xxxxxx
             iter += 2;
-        } else if( (c & 0xF0) == 0xE0) {
+        } else if ((c & 0xF0) == 0xE0) {
             // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
             iter += 3;
-        } else if( (c & 0xF8) == 0xF0) {
+        } else if ((c & 0xF8) == 0xF0) {
             // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             iter += 4;
         } else {
@@ -214,7 +216,6 @@ std::string convertCP850ToUTF8(std::string_view text);
     \return The decoded text
 */
 std::string decodeString(std::string_view text);
-
 
 std::string to_hex(gsl::span<const uint8_t> data);
 std::string to_hex(gsl::span<const uint32_t> data);

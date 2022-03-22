@@ -20,7 +20,7 @@
 #include <mmath.h>
 
 MapMirror::MapMirror(int mapsizeX, int mapsizeY)
- : mapsizeX(mapsizeX), mapsizeY(mapsizeY) {
+    : mapsizeX(mapsizeX), mapsizeY(mapsizeY) {
 }
 
 MapMirror::~MapMirror() = default;

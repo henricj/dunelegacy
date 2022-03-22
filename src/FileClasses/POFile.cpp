@@ -21,16 +21,15 @@
 
 #include <cstdio>
 
-
 static std::string unescapeString(const std::string& str) {
     std::map<std::string, std::string> replacementMap;
-    replacementMap["\\0"] = "\0";
-    replacementMap["\\n"] = "\n";
-    replacementMap["\\r"] = "\r";
-    replacementMap["\\t"] = "\t";
-    replacementMap["\\a"] = "\a";
-    replacementMap["\\b"] = "\b";
-    replacementMap["\\?"] = "\?";
+    replacementMap["\\0"]  = "\0";
+    replacementMap["\\n"]  = "\n";
+    replacementMap["\\r"]  = "\r";
+    replacementMap["\\t"]  = "\t";
+    replacementMap["\\a"]  = "\a";
+    replacementMap["\\b"]  = "\b";
+    replacementMap["\\?"]  = "\?";
     replacementMap["\\\\"] = "\\";
     replacementMap["\\\""] = "\"";
     replacementMap["\\\'"] = "\'";
@@ -40,70 +39,68 @@ static std::string unescapeString(const std::string& str) {
 
 static std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
     size_t firstQuote = str.find_first_of('\"');
-    size_t lastQuote = str.find_last_of('\"');
+    size_t lastQuote  = str.find_last_of('\"');
 
-    if(firstQuote == std::string::npos || lastQuote == std::string::npos) {
+    if (firstQuote == std::string::npos || lastQuote == std::string::npos) {
         sdl2::log_info("%s:%d: Missing opening or closing quotes!", filename.c_str(), lineNum);
         return "";
     }
 
-    return unescapeString(str.substr(firstQuote+1, lastQuote-firstQuote-1));
+    return unescapeString(str.substr(firstQuote + 1, lastQuote - firstQuote - 1));
 }
 
 std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
 
     std::map<std::string, std::string> mapping;
 
-    if(rwop == nullptr) {
+    if (rwop == nullptr) {
         sdl2::log_info("%s: Cannot find this file!", filename.c_str());
         return mapping;
     }
 
-
     std::string msgid;
     std::string msgstr;
-    bool msgidMode = false;
+    bool msgidMode  = false;
     bool msgstrMode = false;
 
-    int lineNum = 0;
+    int lineNum    = 0;
     bool bFinished = false;
 
-
-    while(!bFinished) {
+    while (!bFinished) {
         lineNum++;
 
         std::string completeLine;
         unsigned char tmp = 0;
 
-        while(true) {
-            size_t readbytes = SDL_RWread(rwop,&tmp,1,1);
-            if(readbytes == 0) {
+        while (true) {
+            size_t readbytes = SDL_RWread(rwop, &tmp, 1, 1);
+            if (readbytes == 0) {
                 bFinished = true;
                 break;
-            } if(tmp == '\n') {
+            }
+            if (tmp == '\n') {
 
                 break;
 
-            } else if(tmp != '\r') {
+            } else if (tmp != '\r') {
 
                 completeLine += tmp;
-
             }
         }
 
         size_t lineStart = completeLine.find_first_not_of(" \t");
-        if(lineStart == std::string::npos || completeLine[lineStart] == '#') {
+        if (lineStart == std::string::npos || completeLine[lineStart] == '#') {
             // blank line or comment line
             continue;
         }
 
-        if(completeLine.substr(lineStart, 5) == "msgid") {
-            if(msgidMode) {
+        if (completeLine.substr(lineStart, 5) == "msgid") {
+            if (msgidMode) {
                 sdl2::log_info("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(), lineNum);
-            } else if(msgstrMode) {
+            } else if (msgstrMode) {
                 // we have finished the previous translation
                 mapping[msgid] = msgstr;
-                msgstr = "";
+                msgstr         = "";
 
                 msgstrMode = false;
             }
@@ -111,22 +108,22 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
             msgid = extractString(completeLine.substr(lineStart + 5), filename, lineNum);
 
             msgidMode = true;
-        } else if(completeLine.substr(lineStart, 6) == "msgstr") {
+        } else if (completeLine.substr(lineStart, 6) == "msgstr") {
             msgidMode = false;
 
             msgstr = extractString(completeLine.substr(lineStart + 6), filename, lineNum);
 
             msgstrMode = true;
         } else {
-            if(msgidMode) {
+            if (msgidMode) {
                 msgid += extractString(completeLine, filename, lineNum);
-            } else if(msgstrMode) {
+            } else if (msgstrMode) {
                 msgstr += extractString(completeLine, filename, lineNum);
             }
         }
     }
 
-    if(msgstrMode) {
+    if (msgstrMode) {
         // we have a last translation to finish
         mapping[msgid] = msgstr;
     }

@@ -22,20 +22,19 @@
 
 #include <Game.h>
 
-class Carryall final : public AirUnit
-{
+class Carryall final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Carryall;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Carryall(uint32_t objectID, const ObjectInitializer& initializer);
     Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
-    Carryall(const Carryall &) = delete;
-    Carryall(Carryall &&) = delete;
-    Carryall& operator=(const Carryall &) = delete;
-    Carryall& operator=(Carryall &&) = delete;
+    Carryall(const Carryall&) = delete;
+    Carryall(Carryall&&)      = delete;
+    Carryall& operator=(const Carryall&) = delete;
+    Carryall& operator=(Carryall&&) = delete;
 
     void checkPos(const GameContext& context) override;
 
@@ -79,26 +78,25 @@ private:
     void turn(const GameContext& context) override;
 
     // unit state/properties
-    std::vector<uint32_t>   pickedUpUnitList;   ///< What units does this carryall carry?
+    std::vector<uint32_t> pickedUpUnitList; ///< What units does this carryall carry?
 
-    bool     owned;              ///< Is this carryall owned or is it just here to drop something off
+    bool owned; ///< Is this carryall owned or is it just here to drop something off
 
-    bool     aDropOfferer;       ///< This carryall just drops some units and vanishes afterwards
-    bool     droppedOffCargo;    ///< Is the cargo already dropped off?
-
+    bool aDropOfferer;    ///< This carryall just drops some units and vanishes afterwards
+    bool droppedOffCargo; ///< Is the cargo already dropped off?
 
     template<typename F>
     void removeUnits(const GameContext& context, F&& predicate) {
-        auto& units = pickedUpUnitList;
+        auto& units               = pickedUpUnitList;
         const auto& objectManager = context.objectManager;
 
         units.erase(std::remove_if(units.begin(), units.end(),
-            [&](uint32_t unit_id) {
-                auto *const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
+                                   [&](uint32_t unit_id) {
+                                       auto* const unit = static_cast<UnitBase*>(objectManager.getObject(unit_id));
 
-                return unit ? F(unit) : true;
-            }),
-            units.end());
+                                       return unit ? F(unit) : true;
+                                   }),
+                    units.end());
     }
 
     void pre_deployUnits(const GameContext& context);

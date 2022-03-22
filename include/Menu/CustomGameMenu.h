@@ -18,14 +18,14 @@
 #ifndef CUSTOMGAMEMENU_H
 #define CUSTOMGAMEMENU_H
 
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
+#include <GUI/Checkbox.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
-#include <GUI/TextButton.h>
 #include <GUI/ListBox.h>
 #include <GUI/PictureLabel.h>
-#include <GUI/Checkbox.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 
 #include <DataTypes.h>
 
@@ -33,8 +33,7 @@
 
 #include "MenuBase.h"
 
-class CustomGameMenu : public MenuBase
-{
+class CustomGameMenu : public MenuBase {
 public:
     CustomGameMenu(bool multiplayer, bool LANServer = true);
     ~CustomGameMenu() override;
@@ -62,42 +61,41 @@ private:
     SettingsClass::GameOptionsClass currentGameOptions;
 
     StaticContainer windowWidget;
-    VBox            mainVBox;
+    VBox mainVBox;
 
-    Label           captionLabel;
+    Label captionLabel;
 
-    HBox            mainHBox;
+    HBox mainHBox;
 
     // left VBox with map list and map options
-    VBox            leftVBox;
-    HBox            mapTypeButtonsHBox;
-    TextButton      singleplayerMapsButton;
-    TextButton      singleplayerUserMapsButton;
-    TextButton      multiplayerMapsButton;
-    TextButton      multiplayerUserMapsButton;
-    TextButton      dummyButton;
-    ListBox         mapList;
-    HBox            optionsHBox;
-    Checkbox        multiplePlayersPerHouseCheckbox;
-    TextButton      gameOptionsButton;
+    VBox leftVBox;
+    HBox mapTypeButtonsHBox;
+    TextButton singleplayerMapsButton;
+    TextButton singleplayerUserMapsButton;
+    TextButton multiplayerMapsButton;
+    TextButton multiplayerUserMapsButton;
+    TextButton dummyButton;
+    ListBox mapList;
+    HBox optionsHBox;
+    Checkbox multiplePlayersPerHouseCheckbox;
+    TextButton gameOptionsButton;
 
     // right VBox with mini map
-    VBox            rightVBox;
-    PictureLabel    minimap;
-    HBox            mapPropertiesHBox;
-    VBox            mapPropertyNamesVBox;
-    VBox            mapPropertyValuesVBox;
-    Label           mapPropertySize;
-    Label           mapPropertyPlayers;
-    Label           mapPropertyAuthors;
-    Label           mapPropertyLicense;
+    VBox rightVBox;
+    PictureLabel minimap;
+    HBox mapPropertiesHBox;
+    VBox mapPropertyNamesVBox;
+    VBox mapPropertyValuesVBox;
+    Label mapPropertySize;
+    Label mapPropertyPlayers;
+    Label mapPropertyAuthors;
+    Label mapPropertyLicense;
 
     // bottom row of buttons
-    HBox            buttonHBox;
-    TextButton      nextButton;
-    TextButton      loadButton;
-    TextButton      cancelButton;
-
+    HBox buttonHBox;
+    TextButton nextButton;
+    TextButton loadButton;
+    TextButton cancelButton;
 };
 
-#endif //CUSTOMGAMEMENU_H
+#endif // CUSTOMGAMEMENU_H

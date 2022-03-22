@@ -16,28 +16,26 @@
  */
 
 #include <CutScenes/HoldPictureVideoEvent.h>
+#include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
-#include <globals.h>
 
-HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bCenterVertical)
-{
-    if(pSurface == nullptr) {
+HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bCenterVertical) {
+    if (pSurface == nullptr) {
         pTexture = nullptr;
     } else {
         sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-        pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pTmp.get()) };
+        pTexture               = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
     }
-    this->numFrames2Hold = numFrames2Hold;
+    this->numFrames2Hold  = numFrames2Hold;
     this->bCenterVertical = bCenterVertical;
-    currentFrame = 0;
+    currentFrame          = 0;
 }
 
 HoldPictureVideoEvent::~HoldPictureVideoEvent() = default;
 
-int HoldPictureVideoEvent::draw()
-{
-    if(pTexture != nullptr) {
+int HoldPictureVideoEvent::draw() {
+    if (pTexture != nullptr) {
         SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
@@ -47,7 +45,6 @@ int HoldPictureVideoEvent::draw()
     return 100;
 }
 
-bool HoldPictureVideoEvent::isFinished()
-{
+bool HoldPictureVideoEvent::isFinished() {
     return (currentFrame >= numFrames2Hold);
 }

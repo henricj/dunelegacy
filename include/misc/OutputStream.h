@@ -18,16 +18,15 @@
 #ifndef OUTPUTSTREAM_H
 #define OUTPUTSTREAM_H
 
+#include "DataTypes.h"
 #include <fixmath/FixPoint.h>
 #include <misc/SDL2pp.h>
-#include "DataTypes.h"
 
-#include <string>
-#include <list>
 #include <exception>
+#include <list>
+#include <string>
 
-class OutputStream
-{
+class OutputStream {
 public:
     OutputStream();
     virtual ~OutputStream();
@@ -41,12 +40,12 @@ public:
 
     virtual void writeString(const std::string& str) = 0;
 
-    virtual void writeUint8(uint8_t x) = 0;
+    virtual void writeUint8(uint8_t x)   = 0;
     virtual void writeUint16(uint16_t x) = 0;
     virtual void writeUint32(uint32_t x) = 0;
     virtual void writeUint64(uint64_t x) = 0;
-    virtual void writeBool(bool x) = 0;
-    virtual void writeFloat(float x) = 0;
+    virtual void writeBool(bool x)       = 0;
+    virtual void writeFloat(float x)     = 0;
 
     /**
         Writes out a Sint8 value.
@@ -117,7 +116,7 @@ public:
     template<typename T>
     void writeUint32Vector(gsl::span<const T> dataVector) {
         writeUint32(static_cast<uint32_t>(dataVector.size()));
-        for(const auto data : dataVector) {
+        for (const auto data : dataVector) {
             writeUint32(static_cast<uint32_t>(data));
         }
     }
@@ -136,7 +135,8 @@ public:
 
     class eof : public OutputStream::exception {
     public:
-        explicit eof(const std::string& str) noexcept : str(str) { }
+        explicit eof(const std::string& str) noexcept
+            : str(str) { }
         ~eof() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
@@ -147,7 +147,8 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        explicit error(const std::string& str) noexcept : str(str) { }
+        explicit error(const std::string& str) noexcept
+            : str(str) { }
         ~error() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }

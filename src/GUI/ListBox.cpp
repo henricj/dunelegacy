@@ -18,16 +18,16 @@
 #include <GUI/ListBox.h>
 
 ListBox::ListBox() {
-    enableResizing(true,true);
+    enableResizing(true, true);
 
-    pBackground = nullptr;
-    pForeground = nullptr;
-    color = COLOR_DEFAULT;
-    bAutohideScrollbar = true;
+    pBackground               = nullptr;
+    pForeground               = nullptr;
+    color                     = COLOR_DEFAULT;
+    bAutohideScrollbar        = true;
     bHighlightSelectedElement = true;
-    firstVisibleElement = 0;
-    selectedElement = -1;
-    lastClickTime = 0;
+    firstVisibleElement       = 0;
+    selectedElement           = -1;
+    lastClickTime             = 0;
 
     scrollbar.setOnChange(std::bind(&ListBox::onScrollbarChange, this));
     resize(ListBox::getMinimumSize().x, ListBox::getMinimumSize().y);
@@ -38,31 +38,30 @@ ListBox::~ListBox() {
 }
 
 void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
+    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x, y, insideOverlay);
 }
 
 bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
 
-    if((x>=0) && (x < getSize().x - scrollbarWidth)
-        && (y>=0) && (y < getSize().y)) {
+    if ((x >= 0) && (x < getSize().x - scrollbarWidth) && (y >= 0) && (y < getSize().y)) {
 
-        if(pressed) {
+        if (pressed) {
             int index = ((y - 1) / GUIStyle::getInstance().getListBoxEntryHeight()) + firstVisibleElement;
-            if((index >= 0) && (index < getNumEntries())) {
+            if ((index >= 0) && (index < getNumEntries())) {
                 selectedElement = index;
 
-                if(SDL_GetTicks() - lastClickTime < 200) {
-                    if(pOnDoubleClick) {
+                if (SDL_GetTicks() - lastClickTime < 200) {
+                    if (pOnDoubleClick) {
                         pOnDoubleClick();
                     }
                 } else {
                     lastClickTime = SDL_GetTicks();
                     updateList();
-                    if(pOnSingleClick) {
+                    if (pOnSingleClick) {
                         pOnSingleClick();
                     }
-                    if(pOnSelectionChange) {
+                    if (pOnSelectionChange) {
                         pOnSelectionChange(true);
                     }
                     setActive();
@@ -70,31 +69,30 @@ bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
             }
         }
 
-        scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
+        scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
         return true;
-    }         return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
-
-   
+    }
+    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
 }
 
-bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up)  {
+bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
     // forward mouse wheel event to scrollbar
-    return scrollbar.handleMouseWheel(0,0,up);
+    return scrollbar.handleMouseWheel(0, 0, up);
 }
 
 bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
     Widget::handleKeyPress(key);
-    if(isActive()) {
-        switch(key.keysym.sym) {
+    if (isActive()) {
+        switch (key.keysym.sym) {
             case SDLK_UP: {
-                if(selectedElement > 0) {
-                    setSelectedItem(selectedElement-1, true);
+                if (selectedElement > 0) {
+                    setSelectedItem(selectedElement - 1, true);
                 }
             } break;
 
             case SDLK_DOWN: {
-                if(selectedElement < getNumEntries()-1 ) {
-                    setSelectedItem(selectedElement+1, true);
+                if (selectedElement < getNumEntries() - 1) {
+                    setSelectedItem(selectedElement + 1, true);
                 }
             } break;
 
@@ -109,13 +107,13 @@ bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void ListBox::draw(Point position) {
-    if(!isVisible()) {
+    if (!isVisible()) {
         return;
     }
 
     updateTextures();
 
-    if(pBackground != nullptr) {
+    if (pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
@@ -126,15 +124,15 @@ void ListBox::draw(Point position) {
     Point ScrollBarPos = position;
     ScrollBarPos.x += getSize().x - scrollbar.getSize().x;
 
-    if(isScrollbarVisible()) {
+    if (isScrollbarVisible()) {
         scrollbar.draw(ScrollBarPos);
     }
 }
 
 void ListBox::resize(uint32_t width, uint32_t height) {
-    Widget::resize(width,height);
+    Widget::resize(width, height);
 
-    scrollbar.resize(scrollbar.getMinimumSize().x,height);
+    scrollbar.resize(scrollbar.getMinimumSize().x, height);
 
     updateList();
 }
@@ -142,10 +140,10 @@ void ListBox::resize(uint32_t width, uint32_t height) {
 void ListBox::setActive() {
     Widget::setActive();
 
-    if((selectedElement == -1) && (getNumEntries() > 0)) {
+    if ((selectedElement == -1) && (getNumEntries() > 0)) {
         selectedElement = 0;
         updateList();
-        if(pOnSelectionChange) {
+        if (pOnSelectionChange) {
             pOnSelectionChange(false);
         }
     }
@@ -154,22 +152,22 @@ void ListBox::setActive() {
 void ListBox::setSelectedItem(int index, bool bInteractive) {
     bool bChanged = (index != selectedElement);
 
-    if(index <= -1) {
+    if (index <= -1) {
         selectedElement = -1;
         updateList();
-    } else if((index >= 0) && (index < getNumEntries())) {
+    } else if ((index >= 0) && (index < getNumEntries())) {
         selectedElement = index;
 
         int numVisibleElements = ((getSize().y - 2) / GUIStyle::getInstance().getListBoxEntryHeight()) + 1;
 
-        if(selectedElement >= firstVisibleElement+numVisibleElements - 1) {
-            firstVisibleElement = selectedElement-(numVisibleElements-1) + 1;
-        } else if(selectedElement < firstVisibleElement) {
+        if (selectedElement >= firstVisibleElement + numVisibleElements - 1) {
+            firstVisibleElement = selectedElement - (numVisibleElements - 1) + 1;
+        } else if (selectedElement < firstVisibleElement) {
             firstVisibleElement = selectedElement;
         }
 
-        if(firstVisibleElement > getNumEntries() - numVisibleElements) {
-            firstVisibleElement = std::max(0,getNumEntries() - numVisibleElements + 1);
+        if (firstVisibleElement > getNumEntries() - numVisibleElements) {
+            firstVisibleElement = std::max(0, getNumEntries() - numVisibleElements + 1);
         }
 
         scrollbar.setCurrentValue(firstVisibleElement);
@@ -177,7 +175,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
         updateList();
     }
 
-    if(bChanged && pOnSelectionChange) {
+    if (bChanged && pOnSelectionChange) {
         pOnSelectionChange(bInteractive);
     }
 }
@@ -196,16 +194,16 @@ void ListBox::updateTextures() {
             surfaceHeight = 0;
         }
 
-        sdl2::surface_ptr pForegroundSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true) };
+        sdl2::surface_ptr pForegroundSurface = sdl2::surface_ptr {GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
 
         int numVisibleElements = static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
         for (int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;
 
-            sdl2::surface_ptr pSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createListBoxEntry( getSize().x - 4, getEntry(i),
-                                                                                                        bHighlightSelectedElement && (i == selectedElement),
-                                                                                                        color) };
+            sdl2::surface_ptr pSurface = sdl2::surface_ptr {GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i),
+                                                                                                       bHighlightSelectedElement && (i == selectedElement),
+                                                                                                       color)};
 
             SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()));
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
@@ -219,12 +217,12 @@ void ListBox::updateList() {
 
     // create surfaces
     int surfaceHeight = getSize().y - 2;
-    if(surfaceHeight < 0) {
+    if (surfaceHeight < 0) {
         surfaceHeight = 0;
     }
 
     const int numVisibleElements = surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight();
 
-    scrollbar.setRange(0,std::max(0,getNumEntries() - numVisibleElements));
-    scrollbar.setBigStepSize(std::max(1, numVisibleElements-1));
+    scrollbar.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
+    scrollbar.setBigStepSize(std::max(1, numVisibleElements - 1));
 }

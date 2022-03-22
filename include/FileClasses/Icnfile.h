@@ -31,26 +31,24 @@
     small 16x16 pixel tiles. The map-file contains the information how to build up a complete picture with
     this small tiles.
 */
-class Icnfile
-{
+class Icnfile {
 private:
     /// Internal structure for the MAP-File.
-    struct MapfileEntry
-    {
-        uint32_t              numTiles{};
+    struct MapfileEntry {
+        uint32_t numTiles {};
         std::vector<uint16_t> tileIndices;
     };
 
 public:
     Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop);
     Icnfile(const Icnfile& o) = delete;
-    Icnfile(Icnfile&& o) = delete;
+    Icnfile(Icnfile&& o)      = delete;
     ~Icnfile();
 
     [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t indexOfFile) const;
-    sdl2::surface_ptr               getPictureArray(uint32_t mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
+    sdl2::surface_ptr getPictureArray(uint32_t mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
     [[nodiscard]] sdl2::surface_ptr getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength = 0) const;
-    sdl2::surface_ptr               getPictureRow2(unsigned int numTiles, ...) const;
+    sdl2::surface_ptr getPictureRow2(unsigned int numTiles, ...) const;
 
     /// Returns the number of tiles
     /**
@@ -68,16 +66,16 @@ public:
 
 private:
     std::unique_ptr<uint8_t[]> pIcnFiledata;
-    uint32_t                   numFiles;
+    uint32_t numFiles;
 
     std::vector<MapfileEntry> tilesets;
 
     const uint8_t* SSET;
-    uint32_t       SSET_Length;
+    uint32_t SSET_Length;
     const uint8_t* RPAL;
-    uint32_t       RPAL_Length;
+    uint32_t RPAL_Length;
     const uint8_t* RTBL;
-    uint32_t       RTBL_Length;
+    uint32_t RTBL_Length;
 };
 
 #endif // ICNFILE_H

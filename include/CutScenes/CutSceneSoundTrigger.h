@@ -22,26 +22,25 @@
 
 #include <SoundPlayer.h>
 
-
 /**
     This class is used for triggering sound effects and voices
 */
 class CutSceneSoundTrigger : public CutSceneTrigger {
 public:
-
     /**
         Constructor
         \param  frameNumber     the frame number relative to the scene start where the sound shall be played
         \param  sound           the sound to play
     */
-    CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound) : CutSceneTrigger(frameNumber) {
+    CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound)
+        : CutSceneTrigger(frameNumber) {
         this->sound = sound;
     }
 
-    CutSceneSoundTrigger(const CutSceneSoundTrigger &) = delete;
-    CutSceneSoundTrigger(CutSceneSoundTrigger &&) = delete;
-    CutSceneSoundTrigger& operator=(const CutSceneSoundTrigger &) = delete;
-    CutSceneSoundTrigger& operator=(CutSceneSoundTrigger &&) = delete;
+    CutSceneSoundTrigger(const CutSceneSoundTrigger&) = delete;
+    CutSceneSoundTrigger(CutSceneSoundTrigger&&)      = delete;
+    CutSceneSoundTrigger& operator=(const CutSceneSoundTrigger&) = delete;
+    CutSceneSoundTrigger& operator=(CutSceneSoundTrigger&&) = delete;
 
     /// destructor
     ~CutSceneSoundTrigger() override = default;
@@ -50,13 +49,12 @@ public:
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
         \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
     */
-    void trigger(int currentFrameNumber) override
-    {
+    void trigger(int currentFrameNumber) override {
         soundPlayer->playSound(sound);
     }
 
 private:
-    Mix_Chunk* sound;   ///< the sound to play
+    Mix_Chunk* sound; ///< the sound to play
 };
 
 #endif // CUTSCENESOUNDTRIGGER_H

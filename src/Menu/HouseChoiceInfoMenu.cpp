@@ -21,11 +21,11 @@
 
 #include <FileClasses/FileManager.h>
 #include <FileClasses/GFXManager.h>
-#include <FileClasses/TextManager.h>
 #include <FileClasses/Palfile.h>
+#include <FileClasses/TextManager.h>
 
-HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSETYPE::HOUSE_INVALID)
-{
+HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse)
+    : MentatMenu(HOUSETYPE::HOUSE_INVALID) {
     disableQuiting(true);
 
     house = newHouse;
@@ -47,35 +47,35 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     // clang-format on
 
     planetAnimation.setAnimation(anim);
-    windowWidget.addWidget(&planetAnimation, Point(256,96), planetAnimation.getMinimumSize());
+    windowWidget.addWidget(&planetAnimation, Point(256, 96), planetAnimation.getMinimumSize());
 
     const auto* const pQuestionTexture = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
     questionLabel.setTexture(pQuestionTexture);
-    windowWidget.addWidget(&questionLabel, Point(0,0), getTextureSize(pQuestionTexture));
+    windowWidget.addWidget(&questionLabel, Point(0, 0), getTextureSize(pQuestionTexture));
     questionLabel.setVisible(false);
 
     // init textbox but skip first line (this line contains "House ???")
-    std::string desc = pTextManager->getBriefingText(0,MISSION_DESCRIPTION,house);
-    int linebreak = desc.find("\n",0) + 1;
-    setText(desc.substr(linebreak,desc.length()-linebreak));
+    std::string desc = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
+    int linebreak    = desc.find("\n", 0) + 1;
+    setText(desc.substr(linebreak, desc.length() - linebreak));
 
-    const auto* const pMentatYes = pGFXManager->getUIGraphic(UI_MentatYes);
+    const auto* const pMentatYes        = pGFXManager->getUIGraphic(UI_MentatYes);
     const auto* const pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
 
     yesButton.setTextures(pMentatYes, pMentatYesPressed);
     yesButton.setEnabled(false);
     yesButton.setVisible(false);
     yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
-    windowWidget.addWidget(&yesButton,Point(370,340), getTextureSize(pMentatYes));
+    windowWidget.addWidget(&yesButton, Point(370, 340), getTextureSize(pMentatYes));
 
-    const auto* const pMentatNo = pGFXManager->getUIGraphic(UI_MentatNo);
+    const auto* const pMentatNo        = pGFXManager->getUIGraphic(UI_MentatNo);
     const auto* const pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
 
     noButton.setTextures(pMentatNo, pMentatNoPressed);
     noButton.setEnabled(false);
     noButton.setVisible(false);
-    noButton.setOnClick([&]{ onNo();});
-    windowWidget.addWidget(&noButton,Point(480,340), getTextureSize(pMentatNo));
+    noButton.setOnClick([&] { onNo(); });
+    windowWidget.addWidget(&noButton, Point(480, 340), getTextureSize(pMentatNo));
 }
 
 HouseChoiceInfoMenu::~HouseChoiceInfoMenu() = default;

@@ -21,21 +21,19 @@
 #include <GUI/Widget.h>
 #include <misc/SDL2pp.h>
 
+#include <deque>
 #include <memory>
 #include <string>
-#include <deque>
 #include <unordered_map>
 
 /**
     This class manages all the chat messages that are shown on the screen.
 */
-class ChatManager : public Widget
-{
+class ChatManager : public Widget {
 public:
-
     enum class MessageType {
-        MSGTYPE_NORMAL = 0,
-        MSGTYPE_INFO = 1,
+        MSGTYPE_NORMAL  = 0,
+        MSGTYPE_INFO    = 1,
         MSGTYPE_PICTURE = 2,
         NUM_MSGTYPE
     };
@@ -45,10 +43,10 @@ public:
     */
     ChatManager();
 
-    ChatManager(const ChatManager &) = delete;
-    ChatManager(ChatManager &&) = delete;
+    ChatManager(const ChatManager&) = delete;
+    ChatManager(ChatManager&&)      = delete;
     ChatManager& operator=(const ChatManager&) = delete;
-    ChatManager& operator=(ChatManager &&) = delete;
+    ChatManager& operator=(ChatManager&&) = delete;
 
     /// destructor
     ~ChatManager() override;
@@ -74,17 +72,17 @@ private:
             : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
         ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
-                    sdl2::texture_ptr _pMessageTexture, uint32_t       _messageTime, MessageType _messageType)
+                    sdl2::texture_ptr _pMessageTexture, uint32_t _messageTime, MessageType _messageType)
             : pTimeTexture(std::move(_pTimeTexture)), pUsernameTexture(std::move(_pUsernameTexture)),
               pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
         ChatMessage(sdl2::texture_ptr _pMessageTexture, const DuneTexture* _pPictureTexture, uint32_t _messageTime,
-                    MessageType       _messageType)
+                    MessageType _messageType)
             : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)),
               messageTime(_messageTime), messageType(_messageType) { }
 
         ChatMessage(const ChatMessage&) = delete;
-        ChatMessage(ChatMessage&&) = default;
+        ChatMessage(ChatMessage&&)      = default;
         ChatMessage& operator=(const ChatMessage&) = delete;
         ChatMessage& operator=(ChatMessage&&) = default;
 
@@ -96,12 +94,12 @@ private:
             return pUsernameTexture ? getHeight(pUsernameTexture.get()) : getHeight(pPictureTexture);
         }
 
-        sdl2::texture_ptr  pTimeTexture;
-        sdl2::texture_ptr  pUsernameTexture;
-        const DuneTexture* pPictureTexture{};
-        sdl2::texture_ptr  pMessageTexture;
+        sdl2::texture_ptr pTimeTexture;
+        sdl2::texture_ptr pUsernameTexture;
+        const DuneTexture* pPictureTexture {};
+        sdl2::texture_ptr pMessageTexture;
 
-        uint32_t    messageTime;
+        uint32_t messageTime;
         MessageType messageType;
     };
 

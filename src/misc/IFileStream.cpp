@@ -21,9 +21,7 @@
 
 #include <SDL2/SDL_endian.h>
 
-
 #include <cmath>
-
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -32,18 +30,15 @@
 #    include <Windows.h>
 #endif
 
-IFileStream::IFileStream()
-{
+IFileStream::IFileStream() {
     fp = nullptr;
 }
 
-IFileStream::~IFileStream()
-{
+IFileStream::~IFileStream() {
     close();
 }
 
-bool IFileStream::open(const std::filesystem::path& filename)
-{
+bool IFileStream::open(const std::filesystem::path& filename) {
     close();
 
     const auto normal = std::filesystem::canonical(filename);
@@ -57,29 +52,27 @@ bool IFileStream::open(const std::filesystem::path& filename)
     return fp != nullptr;
 }
 
-void IFileStream::close()
-{
-    if(fp != nullptr) {
+void IFileStream::close() {
+    if (fp != nullptr) {
         fclose(fp);
         fp = nullptr;
     }
 }
 
-std::string IFileStream::readString()
-{
+std::string IFileStream::readString() {
     uint32_t length = 0;
 
     length = readUint32();
 
-    if(length == 0) {
+    if (length == 0) {
         return "";
     } else {
         std::string str;
 
         str.resize(length);
 
-        if(fread(&str[0],length,1,fp) != 1) {
-            if(feof(fp) != 0) {
+        if (fread(&str[0], length, 1, fp) != 1) {
+            if (feof(fp) != 0) {
                 THROW(InputStream::eof, "IFileStream::readString(): End-of-File reached!");
             } else {
                 THROW(InputStream::error, "IFileStream::readString(): An I/O-Error occurred!");
@@ -92,8 +85,8 @@ std::string IFileStream::readString()
 
 uint8_t IFileStream::readUint8() {
     uint8_t tmp = 0;
-    if(fread(&tmp,sizeof(uint8_t),1,fp) != 1) {
-        if(feof(fp) != 0) {
+    if (fread(&tmp, sizeof(uint8_t), 1, fp) != 1) {
+        if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint8(): End-of-File reached!");
         } else {
             THROW(InputStream::error, "IFileStream::readUint8(): An I/O-Error occurred!");
@@ -105,8 +98,8 @@ uint8_t IFileStream::readUint8() {
 
 uint16_t IFileStream::readUint16() {
     uint16_t tmp = 0;
-    if(fread(&tmp,sizeof(uint16_t),1,fp) != 1) {
-        if(feof(fp) != 0) {
+    if (fread(&tmp, sizeof(uint16_t), 1, fp) != 1) {
+        if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint16(): End-of-File reached!");
         } else {
             THROW(InputStream::error, "IFileStream::readUint16(): An I/O-Error occurred!");
@@ -118,8 +111,8 @@ uint16_t IFileStream::readUint16() {
 
 uint32_t IFileStream::readUint32() {
     uint32_t tmp = 0;
-    if(fread(&tmp,sizeof(uint32_t),1,fp) != 1) {
-        if(feof(fp) != 0) {
+    if (fread(&tmp, sizeof(uint32_t), 1, fp) != 1) {
+        if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint32(): End-of-File reached!");
         } else {
             THROW(InputStream::error, "IFileStream::readUint32(): An I/O-Error occurred!");
@@ -131,8 +124,8 @@ uint32_t IFileStream::readUint32() {
 
 uint64_t IFileStream::readUint64() {
     uint64_t tmp = 0;
-    if(fread(&tmp,sizeof(uint64_t),1,fp) != 1) {
-        if(feof(fp) != 0) {
+    if (fread(&tmp, sizeof(uint64_t), 1, fp) != 1) {
+        if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readUint64(): End-of-File reached!");
         } else {
             THROW(InputStream::error, "IFileStream::readUint64(): An I/O-Error occurred!");
@@ -141,15 +134,13 @@ uint64_t IFileStream::readUint64() {
     return SDL_SwapLE64(tmp);
 }
 
-bool IFileStream::readBool()
-{
+bool IFileStream::readBool() {
     return (readUint8() == 1);
 }
 
-float IFileStream::readFloat()
-{
-    uint32_t tmp  = readUint32();
-    float    tmp2 = NAN;
-    memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
+float IFileStream::readFloat() {
+    uint32_t tmp = readUint32();
+    float tmp2   = NAN;
+    memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     return tmp2;
 }

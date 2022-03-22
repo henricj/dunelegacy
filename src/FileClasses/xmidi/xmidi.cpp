@@ -18,153 +18,153 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // XMIDI/MIDI Converter/Loader
 
-#include <iostream>
 #include <FileClasses/xmidi/xmidi.h>
+#include <iostream>
 
 using namespace std;
 
-#define TRUE 1
+#define TRUE  1
 #define FALSE 0
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a
 // patch change. This is to ensure that the default state of a midi file is with
 // the tracks centred, unless the first patch change says otherwise.
-#define PATCH_VOL_PAN_BIAS  5
+#define PATCH_VOL_PAN_BIAS 5
 
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
 // This is only suitable for music that doesn'tdo timbre changes
 // XMIDIs that contain Timbre changes will not convert properly
 const char XMIDI::mt32asgm[128] = {
-    0,  // 0    Piano 1
-    1,  // 1    Piano 2
-    2,  // 2    Piano 3 (synth)
-    4,  // 3    EPiano 1
-    4,  // 4    EPiano 2
-    5,  // 5    EPiano 3
-    5,  // 6    EPiano 4
-    3,  // 7    Honkytonk
-    16, // 8    Organ 1
-    17, // 9    Organ 2
-    18, // 10   Organ 3
-    16, // 11   Organ 4
-    19, // 12   Pipe Organ 1
-    19, // 13   Pipe Organ 2
-    19, // 14   Pipe Organ 3
-    21, // 15   Accordion
-    6,  // 16   Harpsichord 1
-    6,  // 17   Harpsichord 2
-    6,  // 18   Harpsichord 3
-    7,  // 19   Clavinet 1
-    7,  // 20   Clavinet 2
-    7,  // 21   Clavinet 3
-    8,  // 22   Celesta 1
-    8,  // 23   Celesta 2
-    62, // 24   Synthbrass 1 (62)
-    63, // 25   Synthbrass 2 (63)
-    62, // 26   Synthbrass 3 Bank 8
-    63, // 27   Synthbrass 4 Bank 8
-    38, // 28   Synthbass 1
-    39, // 29   Synthbass 2
-    38, // 30   Synthbass 3 Bank 8
-    39, // 31   Synthbass 4 Bank 8
-    88, // 32   Fantasy
-    90, // 33   Harmonic Pan - No equiv closest is polysynth(90) :(
-    52, // 34   Choral ?? Currently set to SynthVox(54). Should it be ChoirAhhs(52)???
-    92, // 35   Glass
-    97, // 36   Soundtrack
-    99, // 37   Atmosphere
-    14, // 38   Warmbell, sounds kind of like crystal(98) perhaps Tubular Bells(14) would be better. It is!
-    54, // 39   FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
-    98, // 40   EchoBell, no real equiv, sounds like Crystal(98)
-    96, // 41   IceRain
-    68, // 42   Oboe 2001, no equiv, just patching it to normal oboe(68)
-    95, // 43   EchoPans, no equiv, setting to SweepPad
-    81, // 44   DoctorSolo Bank 8
-    87, // 45   SchoolDaze, no real equiv
-    112,    // 46   Bell Singer
-    80, // 47   SquareWave
-    48, // 48   Strings 1
-    48, // 49   Strings 2 - should be 49
-    44, // 50   Strings 3 (Synth) - Experimental set to Tremollo Strings - should be 50
-    45, // 51   Pizzicato Strings
-    40, // 52   Violin 1
-    40, // 53   Violin 2 ? Viola
-    42, // 54   Cello 1
-    42, // 55   Cello 2
-    43, // 56   Contrabass
-    46, // 57   Harp 1
-    46, // 58   Harp 2
-    24, // 59   Guitar 1 (Nylon)
-    25, // 60   Guitar 2 (Steel)
-    26, // 61   Elec Guitar 1
-    27, // 62   Elec Guitar 2
-    104,    // 63   Sitar
-    32, // 64   Acou Bass 1
-    32, // 65   Acou Bass 2
-    33, // 66   Elec Bass 1
-    34, // 67   Elec Bass 2
-    36, // 68   Slap Bass 1
-    37, // 69   Slap Bass 2
-    35, // 70   Fretless Bass 1
-    35, // 71   Fretless Bass 2
-    73, // 72   Flute 1
-    73, // 73   Flute 2
-    72, // 74   Piccolo 1
-    72, // 75   Piccolo 2
-    74, // 76   Recorder
-    75, // 77   Pan Pipes
-    64, // 78   Sax 1
-    65, // 79   Sax 2
-    66, // 80   Sax 3
-    67, // 81   Sax 4
-    71, // 82   Clarinet 1
-    71, // 83   Clarinet 2
-    68, // 84   Oboe
-    69, // 85   English Horn (Cor Anglais)
-    70, // 86   Bassoon
-    22, // 87   Harmonica
-    56, // 88   Trumpet 1
-    56, // 89   Trumpet 2
-    57, // 90   Trombone 1
-    57, // 91   Trombone 2
-    60, // 92   French Horn 1
-    60, // 93   French Horn 2
-    58, // 94   Tuba
-    61, // 95   Brass Section 1
-    61, // 96   Brass Section 2
-    11, // 97   Vibes 1
-    11, // 98   Vibes 2
-    99, // 99   Syn Mallet Bank 1
-    112,    // 100  WindBell no real equiv Set to TinkleBell(112)
-    9,  // 101  Glockenspiel
-    14, // 102  Tubular Bells
-    13, // 103  Xylophone
-    12, // 104  Marimba
-    107,    // 105  Koto
-    111,    // 106  Sho?? set to Shanai(111)
-    77, // 107  Shakauhachi
-    78, // 108  Whistle 1
-    78, // 109  Whistle 2
-    76, // 110  Bottle Blow
-    76, // 111  Breathpipe no real equiv set to bottle blow(76)
-    47, // 112  Timpani
-    117,    // 113  Melodic Tom
-    116,    // 114  Deap Snare no equiv, set to Taiko(116)
-    118,    // 115  Electric Perc 1
-    118,    // 116  Electric Perc 2
-    116,    // 117  Taiko
-    115,    // 118  Taiko Rim, no real equiv, set to Woodblock(115)
-    119,    // 119  Cymbal, no real equiv, set to reverse cymbal(119)
-    115,    // 120  Castanets, no real equiv, in GM set to Woodblock(115)
-    112,    // 121  Triangle, no real equiv, set to TinkleBell(112)
-    55, // 122  Orchestral Hit
-    124,    // 123  Telephone
-    123,    // 124  BirdTweet
-    94, // 125  Big Notes Pad no equiv, set to halo pad (94)
-    98, // 126  Water Bell set to Crystal Pad(98)
-    121 // 127  Jungle Tune set to Breath Noise
+    0,   // 0    Piano 1
+    1,   // 1    Piano 2
+    2,   // 2    Piano 3 (synth)
+    4,   // 3    EPiano 1
+    4,   // 4    EPiano 2
+    5,   // 5    EPiano 3
+    5,   // 6    EPiano 4
+    3,   // 7    Honkytonk
+    16,  // 8    Organ 1
+    17,  // 9    Organ 2
+    18,  // 10   Organ 3
+    16,  // 11   Organ 4
+    19,  // 12   Pipe Organ 1
+    19,  // 13   Pipe Organ 2
+    19,  // 14   Pipe Organ 3
+    21,  // 15   Accordion
+    6,   // 16   Harpsichord 1
+    6,   // 17   Harpsichord 2
+    6,   // 18   Harpsichord 3
+    7,   // 19   Clavinet 1
+    7,   // 20   Clavinet 2
+    7,   // 21   Clavinet 3
+    8,   // 22   Celesta 1
+    8,   // 23   Celesta 2
+    62,  // 24   Synthbrass 1 (62)
+    63,  // 25   Synthbrass 2 (63)
+    62,  // 26   Synthbrass 3 Bank 8
+    63,  // 27   Synthbrass 4 Bank 8
+    38,  // 28   Synthbass 1
+    39,  // 29   Synthbass 2
+    38,  // 30   Synthbass 3 Bank 8
+    39,  // 31   Synthbass 4 Bank 8
+    88,  // 32   Fantasy
+    90,  // 33   Harmonic Pan - No equiv closest is polysynth(90) :(
+    52,  // 34   Choral ?? Currently set to SynthVox(54). Should it be ChoirAhhs(52)???
+    92,  // 35   Glass
+    97,  // 36   Soundtrack
+    99,  // 37   Atmosphere
+    14,  // 38   Warmbell, sounds kind of like crystal(98) perhaps Tubular Bells(14) would be better. It is!
+    54,  // 39   FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
+    98,  // 40   EchoBell, no real equiv, sounds like Crystal(98)
+    96,  // 41   IceRain
+    68,  // 42   Oboe 2001, no equiv, just patching it to normal oboe(68)
+    95,  // 43   EchoPans, no equiv, setting to SweepPad
+    81,  // 44   DoctorSolo Bank 8
+    87,  // 45   SchoolDaze, no real equiv
+    112, // 46   Bell Singer
+    80,  // 47   SquareWave
+    48,  // 48   Strings 1
+    48,  // 49   Strings 2 - should be 49
+    44,  // 50   Strings 3 (Synth) - Experimental set to Tremollo Strings - should be 50
+    45,  // 51   Pizzicato Strings
+    40,  // 52   Violin 1
+    40,  // 53   Violin 2 ? Viola
+    42,  // 54   Cello 1
+    42,  // 55   Cello 2
+    43,  // 56   Contrabass
+    46,  // 57   Harp 1
+    46,  // 58   Harp 2
+    24,  // 59   Guitar 1 (Nylon)
+    25,  // 60   Guitar 2 (Steel)
+    26,  // 61   Elec Guitar 1
+    27,  // 62   Elec Guitar 2
+    104, // 63   Sitar
+    32,  // 64   Acou Bass 1
+    32,  // 65   Acou Bass 2
+    33,  // 66   Elec Bass 1
+    34,  // 67   Elec Bass 2
+    36,  // 68   Slap Bass 1
+    37,  // 69   Slap Bass 2
+    35,  // 70   Fretless Bass 1
+    35,  // 71   Fretless Bass 2
+    73,  // 72   Flute 1
+    73,  // 73   Flute 2
+    72,  // 74   Piccolo 1
+    72,  // 75   Piccolo 2
+    74,  // 76   Recorder
+    75,  // 77   Pan Pipes
+    64,  // 78   Sax 1
+    65,  // 79   Sax 2
+    66,  // 80   Sax 3
+    67,  // 81   Sax 4
+    71,  // 82   Clarinet 1
+    71,  // 83   Clarinet 2
+    68,  // 84   Oboe
+    69,  // 85   English Horn (Cor Anglais)
+    70,  // 86   Bassoon
+    22,  // 87   Harmonica
+    56,  // 88   Trumpet 1
+    56,  // 89   Trumpet 2
+    57,  // 90   Trombone 1
+    57,  // 91   Trombone 2
+    60,  // 92   French Horn 1
+    60,  // 93   French Horn 2
+    58,  // 94   Tuba
+    61,  // 95   Brass Section 1
+    61,  // 96   Brass Section 2
+    11,  // 97   Vibes 1
+    11,  // 98   Vibes 2
+    99,  // 99   Syn Mallet Bank 1
+    112, // 100  WindBell no real equiv Set to TinkleBell(112)
+    9,   // 101  Glockenspiel
+    14,  // 102  Tubular Bells
+    13,  // 103  Xylophone
+    12,  // 104  Marimba
+    107, // 105  Koto
+    111, // 106  Sho?? set to Shanai(111)
+    77,  // 107  Shakauhachi
+    78,  // 108  Whistle 1
+    78,  // 109  Whistle 2
+    76,  // 110  Bottle Blow
+    76,  // 111  Breathpipe no real equiv set to bottle blow(76)
+    47,  // 112  Timpani
+    117, // 113  Melodic Tom
+    116, // 114  Deap Snare no equiv, set to Taiko(116)
+    118, // 115  Electric Perc 1
+    118, // 116  Electric Perc 2
+    116, // 117  Taiko
+    115, // 118  Taiko Rim, no real equiv, set to Woodblock(115)
+    119, // 119  Cymbal, no real equiv, set to reverse cymbal(119)
+    115, // 120  Castanets, no real equiv, in GM set to Woodblock(115)
+    112, // 121  Triangle, no real equiv, set to TinkleBell(112)
+    55,  // 122  Orchestral Hit
+    124, // 123  Telephone
+    123, // 124  BirdTweet
+    94,  // 125  Big Notes Pad no equiv, set to halo pad (94)
+    98,  // 126  Water Bell set to Crystal Pad(98)
+    121  // 127  Jungle Tune set to Breath Noise
 };
 
 // Same as above, except include patch changes
@@ -300,223 +300,199 @@ const char XMIDI::mt32asgs[256] = {
     121, 0  // 127  Jungle Tune set to Breath Noise
 };
 // Constructor
-XMIDI::XMIDI(DataSource *source, int pconvert) : events(nullptr),timing(nullptr),
-                        convert_type(pconvert),fixed(nullptr)
-{
+XMIDI::XMIDI(DataSource* source, int pconvert)
+    : events(nullptr), timing(nullptr),
+      convert_type(pconvert), fixed(nullptr) {
     int i = 16;
-    while (i--) bank127[i] = 0;
+    while (i--)
+        bank127[i] = 0;
 
-    ExtractTracks (source);
+    ExtractTracks(source);
 }
 
-XMIDI::~XMIDI()
-{
-    if (events)
-    {
-        for (int i=0; i < info.tracks; i++)
-            DeleteEventList (events[i]);
-        delete [] events;
+XMIDI::~XMIDI() {
+    if (events) {
+        for (int i = 0; i < info.tracks; i++)
+            DeleteEventList(events[i]);
+        delete[] events;
     }
-    if (timing) delete [] timing;
-    if (fixed) delete [] fixed;
+    if (timing)
+        delete[] timing;
+    if (fixed)
+        delete[] fixed;
 }
 
-int XMIDI::retrieve (unsigned int track, DataSource *dest)
-{
+int XMIDI::retrieve(unsigned int track, DataSource* dest) {
     int len = 0;
 
-    if (!events)
-    {
+    if (!events) {
         cerr << "No midi data in loaded." << endl;
         return 0;
     }
 
     // Convert type 1 midi's to type 0
-    if (info.type == 1)
-    {
+    if (info.type == 1) {
         DuplicateAndMerge(-1);
 
-        for (int i=0; i < info.tracks; i++)
-            DeleteEventList (events[i]);
+        for (int i = 0; i < info.tracks; i++)
+            DeleteEventList(events[i]);
 
-        delete [] events;
-        events = new midi_event *[1];
+        delete[] events;
+        events    = new midi_event*[1];
         events[0] = list;
 
         info.tracks = 1;
-        info.type = 0;
+        info.type   = 0;
     }
 
-    if (track >= info.tracks)
-    {
+    if (track >= info.tracks) {
         cerr << "Can't retrieve MIDI data, track out of range" << endl;
         return 0;
     }
 
     // And fix the midis if they are broken
-    if (!fixed[track])
-    {
+    if (!fixed[track]) {
         list = events[track];
-        MovePatchVolAndPan ();
-        fixed[track] = TRUE;
+        MovePatchVolAndPan();
+        fixed[track]  = TRUE;
         events[track] = list;
     }
 
     // This is so if using buffer datasource, the caller can know how big to make the buffer
-    if (!dest)
-    {
+    if (!dest) {
         // Header is 14 bytes long and add the rest as well
-        len = ConvertListToMTrk (nullptr, events[track]);
+        len = ConvertListToMTrk(nullptr, events[track]);
         return 14 + len;
     }
 
-    dest->write1 ('M');
-    dest->write1 ('T');
-    dest->write1 ('h');
-    dest->write1 ('d');
+    dest->write1('M');
+    dest->write1('T');
+    dest->write1('h');
+    dest->write1('d');
 
-    dest->write4high (6);
+    dest->write4high(6);
 
-    dest->write2high (0);
-    dest->write2high (1);
-    dest->write2high (timing[track]);
+    dest->write2high(0);
+    dest->write2high(1);
+    dest->write2high(timing[track]);
 
-    len = ConvertListToMTrk (dest, events[track]);
+    len = ConvertListToMTrk(dest, events[track]);
 
     return len + 14;
 }
 
-int XMIDI::retrieve (unsigned int track, midi_event **dest, int &ppqn)
-{
-    if (!events)
-    {
+int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
+    if (!events) {
         cerr << "No midi data in loaded." << endl;
         return 0;
     }
 
-    if ((info.type == 1 && track != 0) || (track >= info.tracks))
-    {
+    if ((info.type == 1 && track != 0) || (track >= info.tracks)) {
         cerr << "Can't retrieve MIDI data, track out of range" << endl;
         return 0;
     }
     DuplicateAndMerge(track);
-    MovePatchVolAndPan ();
+    MovePatchVolAndPan();
 
     *dest = list;
-    ppqn = timing[track];
+    ppqn  = timing[track];
 
     return 1;
 }
 
-void XMIDI::DeleteEventList (midi_event *mlist)
-{
-    midi_event *event = nullptr;
-    midi_event *next = nullptr;
+void XMIDI::DeleteEventList(midi_event* mlist) {
+    midi_event* event = nullptr;
+    midi_event* next  = nullptr;
 
-    next = mlist;
+    next  = mlist;
     event = mlist;
 
-    while ((event = next))
-    {
+    while ((event = next)) {
         next = event->next;
         delete event;
     }
 }
 
 // Sets current to the new event and updates list
-void XMIDI::CreateNewEvent (int time)
-{
-    if (!list)
-    {
+void XMIDI::CreateNewEvent(int time) {
+    if (!list) {
         list = current = new midi_event;
-        current->next = nullptr;
+        current->next  = nullptr;
         if (time < 0) {
             current->time = 0;
         } else {
             current->time = time;
-
-}
+        }
         current->buffer = nullptr;
-        current->len = 0;
+        current->len    = 0;
         return;
     }
 
-    if (time < 0)
-    {
-        auto *event = new midi_event;
+    if (time < 0) {
+        auto* event = new midi_event;
         event->next = list;
-        list = current = event;
-        current->time = 0;
+        list = current  = event;
+        current->time   = 0;
         current->buffer = nullptr;
-        current->len = 0;
+        current->len    = 0;
         return;
     }
 
     if (current->time > time)
         current = list;
 
-    while (current->next)
-    {
-        if (current->next->time > time)
-        {
-            auto *event = new midi_event;
+    while (current->next) {
+        if (current->next->time > time) {
+            auto* event = new midi_event;
 
-            event->next = current->next;
-            current->next = event;
-            current = event;
-            current->time = time;
+            event->next     = current->next;
+            current->next   = event;
+            current         = event;
+            current->time   = time;
             current->buffer = nullptr;
-            current->len = 0;
+            current->len    = 0;
             return;
         }
 
         current = current->next;
     }
 
-    current->next = new midi_event;
-    current = current->next;
-    current->next = nullptr;
-    current->time = time;
+    current->next   = new midi_event;
+    current         = current->next;
+    current->next   = nullptr;
+    current->time   = time;
     current->buffer = nullptr;
-    current->len = 0;
+    current->len    = 0;
 }
 
-
 // Conventional Variable Length Quantity
-int XMIDI::GetVLQ (DataSource *source, unsigned int &quant)
-{
-    int i = 0;
-    quant = 0;
+int XMIDI::GetVLQ(DataSource* source, unsigned int& quant) {
+    int i             = 0;
+    quant             = 0;
     unsigned int data = 0;
 
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         data = source->read1();
         quant <<= 7;
         quant |= data & 0x7F;
 
-        if (!(data & 0x80))
-        {
+        if (!(data & 0x80)) {
             i++;
             break;
         }
-
     }
     return i;
 }
 
 // XMIDI Delta Variable Length Quantity
-int XMIDI::GetVLQ2 (DataSource *source, unsigned int &quant)
-{
-    int i = 0;
-    quant = 0;
+int XMIDI::GetVLQ2(DataSource* source, unsigned int& quant) {
+    int i    = 0;
+    quant    = 0;
     int data = 0;
 
-    for (i = 0; i < 4; i++)
-    {
+    for (i = 0; i < 4; i++) {
         data = source->read1();
-        if (data & 0x80)
-        {
+        if (data & 0x80) {
             source->skip(-1);
             break;
         }
@@ -525,20 +501,18 @@ int XMIDI::GetVLQ2 (DataSource *source, unsigned int &quant)
     return i;
 }
 
-int XMIDI::PutVLQ(DataSource *dest, unsigned int value)
-{
+int XMIDI::PutVLQ(DataSource* dest, unsigned int value) {
     int buffer = 0;
-    int i = 1;
-    buffer = value & 0x7F;
-    while (value >>= 7)
-    {
+    int i      = 1;
+    buffer     = value & 0x7F;
+    while (value >>= 7) {
         buffer <<= 8;
         buffer |= ((value & 0x7F) | 0x80);
         i++;
     }
-    if (!dest) return i;
-    for (int j = 0; j < i; j++)
-    {
+    if (!dest)
+        return i;
+    for (int j = 0; j < i; j++) {
         dest->write1(buffer & 0xFF);
         buffer >>= 8;
     }
@@ -550,24 +524,21 @@ int XMIDI::PutVLQ(DataSource *dest, unsigned int value)
 //
 // This little function attempts to correct errors in midi files
 // that relate to patch, volume and pan changing
-void XMIDI::MovePatchVolAndPan (int channel)
-{
-    if (channel == -1)
-    {
+void XMIDI::MovePatchVolAndPan(int channel) {
+    if (channel == -1) {
         for (int i = 0; i < 16; i++)
-            MovePatchVolAndPan (i);
+            MovePatchVolAndPan(i);
 
         return;
     }
 
-    midi_event *patch = nullptr;
-    midi_event *vol = nullptr;
-    midi_event *pan = nullptr;
-    midi_event *bank = nullptr;
-    midi_event *temp = nullptr;
+    midi_event* patch = nullptr;
+    midi_event* vol   = nullptr;
+    midi_event* pan   = nullptr;
+    midi_event* bank  = nullptr;
+    midi_event* temp  = nullptr;
 
-    for (current = list; current; )
-    {
+    for (current = list; current;) {
         if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel) {
             patch = current;
         } else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel) {
@@ -576,144 +547,132 @@ void XMIDI::MovePatchVolAndPan (int channel)
             pan = current;
         } else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel) {
             bank = current;
+        }
 
-}
+        if (pan && vol && patch)
+            break;
 
-        if (pan && vol && patch) break;
-
-        if (current) current = current->next;
-        else current = list;
+        if (current)
+            current = current->next;
+        else
+            current = list;
     }
 
     // Got no patch change, return and don't try fixing it
-    if (!patch) return;
-
+    if (!patch)
+        return;
 
     // Copy Patch Change Event
-    temp = patch;
-    patch = new midi_event;
-    patch->time = temp->time;
-    patch->status = channel + 0xC0;
-    patch->len = 0;
-    patch->buffer = nullptr;
+    temp           = patch;
+    patch          = new midi_event;
+    patch->time    = temp->time;
+    patch->status  = channel + 0xC0;
+    patch->len     = 0;
+    patch->buffer  = nullptr;
     patch->data[0] = temp->data[0];
 
-
     // Copy Volume
-    if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
+    if (vol && (vol->time > patch->time + PATCH_VOL_PAN_BIAS || vol->time < patch->time - PATCH_VOL_PAN_BIAS))
         vol = nullptr;
 
-    temp = vol;
-    vol = new midi_event;
-    vol->status = channel + 0xB0;
+    temp         = vol;
+    vol          = new midi_event;
+    vol->status  = channel + 0xB0;
     vol->data[0] = 7;
-    vol->len = 0;
-    vol->buffer = nullptr;
+    vol->len     = 0;
+    vol->buffer  = nullptr;
 
     if (!temp) {
         vol->data[1] = 64;
     } else {
         vol->data[1] = temp->data[1];
-
-}
-
+    }
 
     // Copy Bank
-    if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
+    if (bank && (bank->time > patch->time + PATCH_VOL_PAN_BIAS || bank->time < patch->time - PATCH_VOL_PAN_BIAS))
         bank = nullptr;
 
     temp = bank;
 
-    bank = new midi_event;
-    bank->status = channel + 0xB0;
+    bank          = new midi_event;
+    bank->status  = channel + 0xB0;
     bank->data[0] = 0;
-    bank->len = 0;
-    bank->buffer = nullptr;
+    bank->len     = 0;
+    bank->buffer  = nullptr;
 
     if (!temp) {
         bank->data[1] = 0;
     } else {
         bank->data[1] = temp->data[1];
-
-}
+    }
 
     // Copy Pan
-    if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
+    if (pan && (pan->time > patch->time + PATCH_VOL_PAN_BIAS || pan->time < patch->time - PATCH_VOL_PAN_BIAS))
         pan = nullptr;
 
-    temp = pan;
-    pan = new midi_event;
-    pan->status = channel + 0xB0;
+    temp         = pan;
+    pan          = new midi_event;
+    pan->status  = channel + 0xB0;
     pan->data[0] = 10;
-    pan->len = 0;
-    pan->buffer = nullptr;
+    pan->len     = 0;
+    pan->buffer  = nullptr;
 
     if (!temp) {
         pan->data[1] = 64;
     } else {
         pan->data[1] = temp->data[1];
+    }
 
-}
-
-
-    vol->time = 0;
-    pan->time = 0;
+    vol->time   = 0;
+    pan->time   = 0;
     patch->time = 0;
-    bank->time = 0;
+    bank->time  = 0;
 
-    bank->next = vol;
-    vol->next = pan;
-    pan->next = patch;
+    bank->next  = vol;
+    vol->next   = pan;
+    pan->next   = patch;
     patch->next = list;
-    list = bank;
+    list        = bank;
 }
 
 // DuplicateAndMerge
-void XMIDI::DuplicateAndMerge (int num)
-{
-    int     i = 0;
-    midi_event  **track = nullptr;
-    int     time = 0;
-    int     start = 0;
-    int     end = 1;
+void XMIDI::DuplicateAndMerge(int num) {
+    int i              = 0;
+    midi_event** track = nullptr;
+    int time           = 0;
+    int start          = 0;
+    int end            = 1;
 
-    if (info.type == 1)
-    {
+    if (info.type == 1) {
         start = 0;
-        end = info.tracks;
-    }
-    else if (num >= 0 && num < info.tracks)
-    {
+        end   = info.tracks;
+    } else if (num >= 0 && num < info.tracks) {
         start += num;
         end += num;
     }
 
-    track = new midi_event *[info.tracks];
+    track = new midi_event*[info.tracks];
 
-    for (i = 0; i < info.tracks; i++) track[i] = events[i];
+    for (i = 0; i < info.tracks; i++)
+        track[i] = events[i];
 
     current = list = nullptr;
 
-
-    while (true)
-    {
-        int lowest = 1 << 30;
+    while (true) {
+        int lowest   = 1 << 30;
         int selected = -1;
-        int num_na = end-start;
+        int num_na   = end - start;
 
         // Firstly we find the track with the lowest time
         // for it's current event
-        for (i = start; i < end; i++)
-        {
-            if (!track[i])
-            {
+        for (i = start; i < end; i++) {
+            if (!track[i]) {
                 num_na--;
                 continue;
             }
-            if (track[i]->time < lowest)
-            {
+            if (track[i]->time < lowest) {
                 selected = i;
-                lowest = track[i]->time;
+                lowest   = track[i]->time;
             }
         }
 
@@ -721,48 +680,43 @@ void XMIDI::DuplicateAndMerge (int num)
         i = selected;
 
         // None left to convert
-        if (!num_na) break;
+        if (!num_na)
+            break;
 
         // Only need 1 end of track
         // So take the last one and ignore the rest;
-        if ((num_na != 1) && (track[i]->status == 0xff) && (track[i]->data[0] == 0x2f))
-        {
+        if ((num_na != 1) && (track[i]->status == 0xff) && (track[i]->data[0] == 0x2f)) {
             track[i] = nullptr;
             continue;
         }
 
-        if (current)
-        {
+        if (current) {
             current->next = new midi_event;
-            current = current->next;
-        }
-        else
+            current       = current->next;
+        } else
             list = current = new midi_event;
 
         current->next = nullptr;
 
-        time = track[i]->time;
+        time          = track[i]->time;
         current->time = time;
 
-        current->status = track[i]->status;
+        current->status  = track[i]->status;
         current->data[0] = track[i]->data[0];
         current->data[1] = track[i]->data[1];
 
         current->len = track[i]->len;
 
-        if (current->len)
-        {
+        if (current->len) {
             current->buffer = new unsigned char[current->len];
-            memcpy (current->buffer, track[i]->buffer, current->len);
-        }
-        else
+            memcpy(current->buffer, track[i]->buffer, current->len);
+        } else
             current->buffer = nullptr;
 
         track[i] = track[i]->next;
     }
-    delete [] track;
+    delete[] track;
 }
-
 
 // Converts Events
 //
@@ -772,73 +726,62 @@ void XMIDI::DuplicateAndMerge (int num)
 // size 3 is XMI Note on
 // Returns bytes converted
 
-int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
-{
-    unsigned int    delta = 0;
-    int data = 0;
+int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* source, const int size) {
+    unsigned int delta = 0;
+    int data           = 0;
 
     data = source->read1();
 
-
     // Bank changes are handled here
-    if ((status >> 4) == 0xB && data == 0)
-    {
+    if ((status >> 4) == 0xB && data == 0) {
         data = source->read1();
 
-        bank127[status&0xF] = FALSE;
+        bank127[status & 0xF] = FALSE;
 
-        if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
-            || convert_type == XMIDI_CONVERT_MT32_TO_GS127 ||
-            (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status&0xF) == 9))
+        if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS || convert_type == XMIDI_CONVERT_MT32_TO_GS127 ||
+            (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status & 0xF) == 9))
             return 2;
 
-        CreateNewEvent (time);
-        current->status = status;
+        CreateNewEvent(time);
+        current->status  = status;
         current->data[0] = 0;
         current->data[1] = data;
 
         if (convert_type == XMIDI_CONVERT_GS127_TO_GS && data == 127)
-            bank127[status&0xF] = TRUE;
+            bank127[status & 0xF] = TRUE;
 
         return 2;
     }
 
     // Handling for patch change mt32 conversion, probably should go elsewhere
-    if ((status >> 4) == 0xC && (status&0xF) != 9 && convert_type != XMIDI_CONVERT_NOCONVERSION)
-    {
-        if (convert_type == XMIDI_CONVERT_MT32_TO_GM)
-        {
+    if ((status >> 4) == 0xC && (status & 0xF) != 9 && convert_type != XMIDI_CONVERT_NOCONVERSION) {
+        if (convert_type == XMIDI_CONVERT_MT32_TO_GM) {
             data = mt32asgm[data];
-        }
-        else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status&0xF]) ||
-                convert_type == XMIDI_CONVERT_MT32_TO_GS ||
-                convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM)
-        {
-            CreateNewEvent (time);
-            current->status = 0xB0 | (status&0xF);
+        } else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status & 0xF]) ||
+                   convert_type == XMIDI_CONVERT_MT32_TO_GS ||
+                   convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM) {
+            CreateNewEvent(time);
+            current->status  = 0xB0 | (status & 0xF);
             current->data[0] = 0;
-            current->data[1] = mt32asgs[data*2+1];
+            current->data[1] = mt32asgs[data * 2 + 1];
 
-            data = mt32asgs[data*2];
-        }
-        else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
-        {
-            CreateNewEvent (time);
-            current->status = 0xB0 | (status&0xF);
+            data = mt32asgs[data * 2];
+        } else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127) {
+            CreateNewEvent(time);
+            current->status  = 0xB0 | (status & 0xF);
             current->data[0] = 0;
             current->data[1] = 127;
         }
-    }   // Drum track handling
-    else if ((status >> 4) == 0xC && (status&0xF) == 9 &&
-        (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM || convert_type == XMIDI_CONVERT_MT32_TO_GS127))
-    {
-        CreateNewEvent (time);
-        current->status = 0xB9;
+    } // Drum track handling
+    else if ((status >> 4) == 0xC && (status & 0xF) == 9 &&
+             (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM || convert_type == XMIDI_CONVERT_MT32_TO_GS127)) {
+        CreateNewEvent(time);
+        current->status  = 0xB9;
         current->data[0] = 0;
         current->data[1] = 127;
     }
 
-    CreateNewEvent (time);
+    CreateNewEvent(time);
     current->status = status;
 
     current->data[0] = data;
@@ -852,168 +795,152 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
         return 2;
 
     // XMI Note On handling
-    midi_event *prev = current;
-    int i = GetVLQ (source, delta);
-    CreateNewEvent (time+delta*3);
+    midi_event* prev = current;
+    int i            = GetVLQ(source, delta);
+    CreateNewEvent(time + delta * 3);
 
-    current->status = status;
+    current->status  = status;
     current->data[0] = data;
     current->data[1] = 0;
-    current = prev;
+    current          = prev;
 
     return i + 2;
 }
 
 // Simple routine to convert system messages
-int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, DataSource *source)
-{
-    int i=0;
+int XMIDI::ConvertSystemMessage(const int time, const unsigned char status, DataSource* source) {
+    int i = 0;
 
-    CreateNewEvent (time);
+    CreateNewEvent(time);
     current->status = status;
 
     // Handling of Meta events
-    if (status == 0xFF)
-    {
+    if (status == 0xFF) {
         current->data[0] = source->read1();
         i++;
     }
 
-    i += GetVLQ (source, current->len);
+    i += GetVLQ(source, current->len);
 
-    if (!current->len) return i;
+    if (!current->len)
+        return i;
 
     current->buffer = new unsigned char[current->len];
 
-    source->read ((char *) current->buffer, current->len);
+    source->read((char*)current->buffer, current->len);
 
-    return i+current->len;
+    return i + current->len;
 }
 
 // XMIDI and Midi to List
 // Returns XMIDI PPQN
-int XMIDI::ConvertFiletoList (DataSource *source, const BOOL is_xmi)
-{
-    int         time = 0;
-    unsigned int    data = 0;
-    int     end = 0;
-    int     tempo = 500000;
-    int     tempo_set = 0;
-    unsigned int    status = 0;
-    int     play_size = 2;
-    unsigned int    file_size = source->getSize();
+int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
+    int time               = 0;
+    unsigned int data      = 0;
+    int end                = 0;
+    int tempo              = 500000;
+    int tempo_set          = 0;
+    unsigned int status    = 0;
+    int play_size          = 2;
+    unsigned int file_size = source->getSize();
 
-    if (is_xmi) play_size = 3;
+    if (is_xmi)
+        play_size = 3;
 
     // Set Drum track to correct setting if required
-    if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
-    {
-        CreateNewEvent (0);
-        current->status = 0xB9;
+    if (convert_type == XMIDI_CONVERT_MT32_TO_GS127) {
+        CreateNewEvent(0);
+        current->status  = 0xB9;
         current->data[0] = 0;
         current->data[1] = 127;
     }
 
-    while (!end && source->getPos() < file_size)
-    {
+    while (!end && source->getPos() < file_size) {
 
-        if (!is_xmi)
-        {
-            GetVLQ (source, data);
+        if (!is_xmi) {
+            GetVLQ(source, data);
             time += data;
 
             data = source->read1();
 
-            if (data >= 0x80)
-            {
+            if (data >= 0x80) {
                 status = data;
-            }
-            else
-                source->skip (-1);
-        }
-        else
-        {
-            GetVLQ2 (source, data);
-            time += data*3;
+            } else
+                source->skip(-1);
+        } else {
+            GetVLQ2(source, data);
+            time += data * 3;
 
             status = source->read1();
         }
 
-        switch (status >> 4)
-        {
+        switch (status >> 4) {
             case MIDI_STATUS_NOTE_ON:
-            ConvertEvent (time, status, source, play_size);
-            break;
+                ConvertEvent(time, status, source, play_size);
+                break;
 
             // 2 byte data
             case MIDI_STATUS_NOTE_OFF:
             case MIDI_STATUS_AFTERTOUCH:
             case MIDI_STATUS_CONTROLLER:
             case MIDI_STATUS_PITCH_WHEEL:
-            ConvertEvent (time, status, source, 2);
-            break;
-
+                ConvertEvent(time, status, source, 2);
+                break;
 
             // 1 byte data
             case MIDI_STATUS_PROG_CHANGE:
             case MIDI_STATUS_PRESSURE:
-            ConvertEvent (time, status, source, 1);
-            break;
-
+                ConvertEvent(time, status, source, 1);
+                break;
 
             case MIDI_STATUS_SYSEX:
-            if (status == 0xFF)
-            {
-                int pos = source->getPos();
-                unsigned int    data = source->read1();
+                if (status == 0xFF) {
+                    int pos           = source->getPos();
+                    unsigned int data = source->read1();
 
-                if (data == 0x2F) { // End
-                    end = 1;
-                } else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
-                {
-                    source->skip(1);
-                    tempo = source->read1() << 16;
-                    tempo += source->read1() << 8;
-                    tempo += source->read1();
-                    tempo *= 3;
-                    tempo_set = 1;
-                }
-                else if (data == 0x51 && tempo_set && is_xmi) // Skip any other tempo changes
-                {
-                    GetVLQ (source, data);
-                    source->skip(data);
-                    break;
-                }
+                    if (data == 0x2F) { // End
+                        end = 1;
+                    } else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
+                    {
+                        source->skip(1);
+                        tempo = source->read1() << 16;
+                        tempo += source->read1() << 8;
+                        tempo += source->read1();
+                        tempo *= 3;
+                        tempo_set = 1;
+                    } else if (data == 0x51 && tempo_set && is_xmi) // Skip any other tempo changes
+                    {
+                        GetVLQ(source, data);
+                        source->skip(data);
+                        break;
+                    }
 
-                source->seek (pos);
-            }
-            ConvertSystemMessage (time, status, source);
-            break;
+                    source->seek(pos);
+                }
+                ConvertSystemMessage(time, status, source);
+                break;
 
             default:
-            break;
+                break;
         }
-
     }
-    return (tempo*3)/25000;
+    return (tempo * 3) / 25000;
 }
 
 // Converts and event list to a MTrk
 // Returns bytes of the array
 // buf can be NULL
-unsigned int XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
-{
-    int time = 0;
-    midi_event  *event = nullptr;
-    unsigned int    delta = 0;
-    unsigned char   last_status = 0;
-    unsigned int    i = 8;
-    unsigned int    j = 0;
-    unsigned int    size_pos=0;
-    BOOL end = FALSE;
+unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
+    int time                  = 0;
+    midi_event* event         = nullptr;
+    unsigned int delta        = 0;
+    unsigned char last_status = 0;
+    unsigned int i            = 8;
+    unsigned int j            = 0;
+    unsigned int size_pos     = 0;
+    BOOL end                  = FALSE;
 
-    if (dest)
-    {
+    if (dest) {
         dest->write1('M');
         dest->write1('T');
         dest->write1('r');
@@ -1023,118 +950,112 @@ unsigned int XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
         dest->skip(4);
     }
 
-    for (event = mlist; event && !end; event=event->next)
-    {
+    for (event = mlist; event && !end; event = event->next) {
         delta = (event->time - time);
-        time = event->time;
+        time  = event->time;
 
-        i += PutVLQ (dest, delta);
+        i += PutVLQ(dest, delta);
 
-        if ((event->status != last_status) || (event->status >= 0xF0))
-        {
-            if (dest) dest->write1(event->status);
+        if ((event->status != last_status) || (event->status >= 0xF0)) {
+            if (dest)
+                dest->write1(event->status);
             i++;
         }
 
         last_status = event->status;
 
-        switch (event->status >> 4)
-        {
+        switch (event->status >> 4) {
             // 2 bytes data
             // Note off, Note on, Aftertouch, Controller and Pitch Wheel
-            case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-            if (dest)
-            {
-                dest->write1(event->data[0]);
-                dest->write1(event->data[1]);
-            }
-            i += 2;
-            break;
-
+            case 0x8:
+            case 0x9:
+            case 0xA:
+            case 0xB:
+            case 0xE:
+                if (dest) {
+                    dest->write1(event->data[0]);
+                    dest->write1(event->data[1]);
+                }
+                i += 2;
+                break;
 
             // 1 bytes data
             // Program Change and Channel Pressure
-            case 0xC: case 0xD:
-            if (dest) dest->write1(event->data[0]);
-            i++;
-            break;
-
+            case 0xC:
+            case 0xD:
+                if (dest)
+                    dest->write1(event->data[0]);
+                i++;
+                break;
 
             // Variable length
             // SysEx
             case 0xF:
-            if (event->status == 0xFF)
-            {
-                if (event->data[0] == 0x2f) end = TRUE;
-                if (dest) dest->write1(event->data[0]);
-                i++;
-            }
-
-            i += PutVLQ (dest, event->len);
-
-            if (event->len)
-            {
-                for (j = 0; j < event->len; j++)
-                {
-                    if (dest) dest->write1(event->buffer[j]);
+                if (event->status == 0xFF) {
+                    if (event->data[0] == 0x2f)
+                        end = TRUE;
+                    if (dest)
+                        dest->write1(event->data[0]);
                     i++;
                 }
-            }
 
-            break;
+                i += PutVLQ(dest, event->len);
 
+                if (event->len) {
+                    for (j = 0; j < event->len; j++) {
+                        if (dest)
+                            dest->write1(event->buffer[j]);
+                        i++;
+                    }
+                }
+
+                break;
 
             // Never occur
             default:
-            cerr << "Not supposed to see this" << endl;
-            break;
+                cerr << "Not supposed to see this" << endl;
+                break;
         }
     }
 
-    if (dest)
-    {
+    if (dest) {
         int cur_pos = dest->getPos();
-        dest->seek (size_pos);
-        dest->write4high (i-8);
-        dest->seek (cur_pos);
+        dest->seek(size_pos);
+        dest->write4high(i - 8);
+        dest->seek(cur_pos);
     }
     return i;
 }
 
 // Assumes correct xmidi
-int XMIDI::ExtractTracksFromXmi (DataSource *source)
-{
-    int     num = 0;
-    signed short    ppqn = 0;
-    unsigned int        len = 0;
-    char        buf[32];
+int XMIDI::ExtractTracksFromXmi(DataSource* source) {
+    int num           = 0;
+    signed short ppqn = 0;
+    unsigned int len  = 0;
+    char buf[32];
 
-    while (source->getPos() < source->getSize() && num != info.tracks)
-    {
+    while (source->getPos() < source->getSize() && num != info.tracks) {
         // Read first 4 bytes of name
-        source->read (buf, 4);
+        source->read(buf, 4);
         len = source->read4high();
 
         // Skip the FORM entries
-        if (!memcmp(buf,"FORM",4))
-        {
-            source->skip (4);
-            source->read (buf, 4);
+        if (!memcmp(buf, "FORM", 4)) {
+            source->skip(4);
+            source->read(buf, 4);
             len = source->read4high();
         }
 
-        if (memcmp(buf,"EVNT",4))
-        {
-            source->skip ((len+1)&~1);
+        if (memcmp(buf, "EVNT", 4)) {
+            source->skip((len + 1) & ~1);
             continue;
         }
 
-        list = nullptr;
-        int begin = source->getPos ();
+        list      = nullptr;
+        int begin = source->getPos();
 
         // Convert it
-        if (!(ppqn = ConvertFiletoList (source, TRUE)))
-        {
+        if (!(ppqn = ConvertFiletoList(source, TRUE))) {
             cerr << "Unable to convert data" << endl;
             break;
         }
@@ -1145,38 +1066,33 @@ int XMIDI::ExtractTracksFromXmi (DataSource *source)
         num++;
 
         // go to start of next track
-        source->seek (begin + ((len+1)&~1));
+        source->seek(begin + ((len + 1) & ~1));
     }
-
 
     // Return how many were converted
     return num;
 }
 
-int XMIDI::ExtractTracksFromMid (DataSource *source)
-{
-    int num = 0;
-    unsigned int    len = 0;
-    char    buf[32];
+int XMIDI::ExtractTracksFromMid(DataSource* source) {
+    int num          = 0;
+    unsigned int len = 0;
+    char buf[32];
 
-    while (source->getPos() < source->getSize() && num != info.tracks)
-    {
+    while (source->getPos() < source->getSize() && num != info.tracks) {
         // Read first 4 bytes of name
-        source->read (buf, 4);
+        source->read(buf, 4);
         len = source->read4high();
 
-        if (memcmp(buf,"MTrk",4))
-        {
-            source->skip (len);
+        if (memcmp(buf, "MTrk", 4)) {
+            source->skip(len);
             continue;
         }
 
-        list = nullptr;
-        int begin = source->getPos ();
+        list      = nullptr;
+        int begin = source->getPos();
 
         // Convert it
-        if (!ConvertFiletoList (source, FALSE))
-        {
+        if (!ConvertFiletoList(source, FALSE)) {
             cerr << "Unable to convert data" << endl;
             break;
         }
@@ -1185,70 +1101,62 @@ int XMIDI::ExtractTracksFromMid (DataSource *source)
 
         // Increment Counter
         num++;
-        source->seek (begin+len);
+        source->seek(begin + len);
     }
-
 
     // Return how many were converted
     return num;
 }
 
-int XMIDI::ExtractTracks (DataSource *source)
-{
-    unsigned int        i = 0;
-    int     start = 0;
-    unsigned int        len = 0;
-    unsigned int        chunk_len = 0;
-    int         count = 0;
-    char        buf[32];
+int XMIDI::ExtractTracks(DataSource* source) {
+    unsigned int i         = 0;
+    int start              = 0;
+    unsigned int len       = 0;
+    unsigned int chunk_len = 0;
+    int count              = 0;
+    char buf[32];
 
     // Read first 4 bytes of header
-    source->read (buf, 4);
+    source->read(buf, 4);
 
     // Could be XMIDI
-    if (!memcmp (buf, "FORM", 4))
-    {
+    if (!memcmp(buf, "FORM", 4)) {
         // Read length of
         len = source->read4high();
 
         start = source->getPos();
 
         // Read 4 bytes of type
-        source->read (buf, 4);
+        source->read(buf, 4);
 
         // XDIRless XMIDI, we can handle them here.
-        if (!memcmp (buf, "XMID", 4))
-        {
+        if (!memcmp(buf, "XMID", 4)) {
             cerr << "Warning: XMIDI doesn't have XDIR" << endl;
             info.tracks = 1;
 
         } // Not an XMIDI that we recognise
-        else if (memcmp (buf, "XDIR", 4))
-        {
+        else if (memcmp(buf, "XDIR", 4)) {
             cerr << "Not a recognised XMID" << endl;
             return 0;
 
         } // Seems Valid
-        else
-        {
+        else {
             info.tracks = 0;
 
-            for (i = 4; i < len; i++)
-            {
+            for (i = 4; i < len; i++) {
                 // Read 4 bytes of type
-                source->read (buf, 4);
+                source->read(buf, 4);
 
                 // Read length of chunk
                 chunk_len = source->read4high();
 
                 // Add eight bytes
-                i+=8;
+                i += 8;
 
-                if (memcmp (buf, "INFO", 4))
-                {
+                if (memcmp(buf, "INFO", 4)) {
                     // Must allign
-                    source->skip((chunk_len+1)&~1);
-                    i+= (chunk_len+1)&~1;
+                    source->skip((chunk_len + 1) & ~1);
+                    i += (chunk_len + 1) & ~1;
                     continue;
                 }
 
@@ -1261,22 +1169,20 @@ int XMIDI::ExtractTracks (DataSource *source)
             }
 
             // Didn't get to fill the header
-            if (info.tracks == 0)
-            {
+            if (info.tracks == 0) {
                 cerr << "Not a valid XMID" << endl;
                 return 0;
             }
 
             // Ok now to start part 2
             // Goto the right place
-            source->seek (start+((len+1)&~1));
+            source->seek(start + ((len + 1) & ~1));
 
             // Read 4 bytes of type
-            source->read (buf, 4);
+            source->read(buf, 4);
 
             // Not an XMID
-            if (memcmp (buf, "CAT ", 4))
-            {
+            if (memcmp(buf, "CAT ", 4)) {
                 cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )" << endl;
                 return 0;
             }
@@ -1285,59 +1191,53 @@ int XMIDI::ExtractTracks (DataSource *source)
             len = source->read4high();
 
             // Read 4 bytes of type
-            source->read (buf, 4);
+            source->read(buf, 4);
 
             // Not an XMID
-            if (memcmp (buf, "XMID", 4))
-            {
+            if (memcmp(buf, "XMID", 4)) {
                 cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)" << endl;
                 return 0;
             }
-
         }
 
         // Ok it's an XMID, so pass it to the ExtractCode
 
-        events = new midi_event *[info.tracks];
-        timing = new short[info.tracks];
-        fixed = new BOOL[info.tracks];
+        events    = new midi_event*[info.tracks];
+        timing    = new short[info.tracks];
+        fixed     = new BOOL[info.tracks];
         info.type = 0;
 
-        for (i = 0; i < info.tracks; i++)
-        {
+        for (i = 0; i < info.tracks; i++) {
             events[i] = nullptr;
-            fixed[i] = FALSE;
+            fixed[i]  = FALSE;
         }
 
-        count = ExtractTracksFromXmi (source);
+        count = ExtractTracksFromXmi(source);
 
-        if (count != info.tracks)
-        {
-            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only ("<< count << ")" << endl;
+        if (count != info.tracks) {
+            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only (" << count << ")" << endl;
 
             int i = 0;
 
             for (i = 0; i < info.tracks; i++)
-                DeleteEventList (events[i]);
+                DeleteEventList(events[i]);
 
-            delete [] events;
-            delete [] timing;
+            delete[] events;
+            delete[] timing;
 
             return 0;
         }
 
         return 1;
 
-    }// Definately a Midi
-    if (!memcmp (buf, "MThd", 4))
+    } // Definately a Midi
+    if (!memcmp(buf, "MThd", 4))
 
     {
 
         // Simple read length of header
 
         len = source->read4high();
-
-
 
         if (len < 6)
 
@@ -1346,20 +1246,13 @@ int XMIDI::ExtractTracks (DataSource *source)
             cerr << "Not a valid MIDI" << endl;
 
             return 0;
-
         }
-
-
 
         info.type = source->read2high();
 
-
-
         info.tracks = source->read2high();
 
-
-
-        events = new midi_event *[info.tracks];
+        events = new midi_event*[info.tracks];
 
         timing = new short[info.tracks];
 
@@ -1376,52 +1269,33 @@ int XMIDI::ExtractTracks (DataSource *source)
             events[i] = nullptr;
 
             fixed[i] = FALSE;
-
         }
 
-
-
-        count = ExtractTracksFromMid (source);
-
-
+        count = ExtractTracksFromMid(source);
 
         if (count != info.tracks)
 
         {
 
-            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
-
-
+            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only (" << count << ")" << endl;
 
             for (i = 0; i < info.tracks; i++) {
 
-                DeleteEventList (events[i]);
+                DeleteEventList(events[i]);
+            }
 
-}
+            delete[] events;
 
-
-
-            delete [] events;
-
-            delete [] timing;
-
-
+            delete[] timing;
 
             return 0;
-
-
-
         }
-
-
 
         return 1;
 
+    } // A RIFF Midi, just pass the source back to this function at the start of the midi file
 
-
-    }// A RIFF Midi, just pass the source back to this function at the start of the midi file
-
-    else if (!memcmp (buf, "RIFF", 4))
+    else if (!memcmp(buf, "RIFF", 4))
 
     {
 
@@ -1429,31 +1303,22 @@ int XMIDI::ExtractTracks (DataSource *source)
 
         len = source->read4();
 
-
-
         // Read 4 bytes of type
 
-        source->read (buf, 4);
-
-
+        source->read(buf, 4);
 
         // Not an RMID
 
-        if (memcmp (buf, "RMID", 4))
+        if (memcmp(buf, "RMID", 4))
 
         {
 
             cerr << "Invalid RMID" << endl;
 
             return 0;
-
         }
 
-
-
         // Is a RMID
-
-
 
         for (i = 4; i < len; i++)
 
@@ -1461,46 +1326,31 @@ int XMIDI::ExtractTracks (DataSource *source)
 
             // Read 4 bytes of type
 
-            source->read (buf, 4);
-
-
+            source->read(buf, 4);
 
             chunk_len = source->read4();
 
+            i += 8;
 
-
-            i+=8;
-
-
-
-            if (memcmp (buf, "data", 4))
+            if (memcmp(buf, "data", 4))
 
             {
 
                 // Must allign
 
-                source->skip ((chunk_len+1)&~1);
+                source->skip((chunk_len + 1) & ~1);
 
-                i+= (chunk_len+1)&~1;
+                i += (chunk_len + 1) & ~1;
 
                 continue;
-
             }
 
-
-
-            return ExtractTracks (source);
-
-
-
+            return ExtractTracks(source);
         }
-
-
 
         cerr << "Failed to find midi data in RIFF Midi" << endl;
 
         return 0;
-
     }
 
     return 0;

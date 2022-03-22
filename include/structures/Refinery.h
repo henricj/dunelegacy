@@ -28,7 +28,7 @@ class Carryall;
 class Refinery final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Refinery;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Refinery(uint32_t objectID, const ObjectInitializer& initializer);
     Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -51,13 +51,15 @@ public:
 
     void unBook() {
         bookings--;
-        if(bookings == 0) { stopAnimate(); }
+        if (bookings == 0) {
+            stopAnimate();
+        }
     }
 
     bool isFree() const noexcept { return !extractingSpice; }
-    int  getNumBookings() const noexcept { return bookings; } // number of units goings there
+    int getNumBookings() const noexcept { return bookings; } // number of units goings there
     const Harvester* getHarvester() const { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
-    Harvester*       getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+    Harvester* getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
 
 protected:
     /**
@@ -69,9 +71,9 @@ protected:
 private:
     void init();
 
-    bool          extractingSpice; ///< Currently extracting spice?
-    ObjectPointer harvester;       ///< The harvester currently in the refinery
-    uint32_t      bookings;        ///< How many bookings?
+    bool extractingSpice;    ///< Currently extracting spice?
+    ObjectPointer harvester; ///< The harvester currently in the refinery
+    uint32_t bookings;       ///< How many bookings?
 
     bool firstRun; ///< On first deploy of a harvester we tell it to the user
 };

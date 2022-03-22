@@ -20,26 +20,25 @@
 
 #include <cstdio>
 
-Palette LoadPalette_RW(SDL_RWops* rwop)
-{
-    if(rwop == nullptr) {
+Palette LoadPalette_RW(SDL_RWops* rwop) {
+    if (rwop == nullptr) {
         THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
     }
 
     int64_t endOffset = SDL_RWsize(rwop);
-    if(endOffset < 0) {
+    if (endOffset < 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Cannot determine size of this *.pal-File!");
     }
 
     auto filesize = static_cast<size_t>(endOffset);
 
-    if(filesize % 3 != 0) {
+    if (filesize % 3 != 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");
     }
 
     auto buf = std::make_unique<unsigned char[]>(filesize);
 
-    if(SDL_RWread(rwop, &buf[0], filesize, 1) != 1) {
+    if (SDL_RWread(rwop, &buf[0], filesize, 1) != 1) {
         THROW(std::runtime_error, "Palfile::Palfile(): SDL_RWread failed!");
     }
 
@@ -47,16 +46,16 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
 
     auto colors = std::make_unique<SDL_Color[]>(numColors);
 
-    const auto * RESTRICT p = &buf[0];
+    const auto* RESTRICT p = &buf[0];
 
-    if(numColors > 0) {
+    if (numColors > 0) {
         // The first color is always transparent... (?)
-        //colors[0].r = 0;
-        //colors[0].g = 0;
-        //colors[0].b = 0;
-        //colors[0].a = 0;
+        // colors[0].r = 0;
+        // colors[0].g = 0;
+        // colors[0].b = 0;
+        // colors[0].a = 0;
 
-        for(int i = 0; i < numColors; i++) {
+        for (int i = 0; i < numColors; i++) {
             auto& RESTRICT color = colors[i];
 
             color.r = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
@@ -66,9 +65,9 @@ Palette LoadPalette_RW(SDL_RWops* rwop)
         }
     }
 
-    sdl2::palette_ptr sdl_palette{SDL_AllocPalette(numColors)};
+    sdl2::palette_ptr sdl_palette {SDL_AllocPalette(numColors)};
 
     SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, numColors);
 
-    return Palette{sdl_palette.get()};
+    return Palette {sdl_palette.get()};
 }

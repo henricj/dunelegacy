@@ -19,11 +19,11 @@
 
 #include <globals.h>
 
+#include <Choam.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
-#include <House.h>
 #include <Game.h>
-#include <Choam.h>
+#include <House.h>
 #include <Map.h>
 #include <SoundPlayer.h>
 
@@ -32,30 +32,32 @@
 #include <units/Frigate.h>
 
 // Starport is counting in 30s from 10 to 0
-#define STARPORT_ARRIVETIME         (MILLI2CYCLES(30*1000))
+#define STARPORT_ARRIVETIME (MILLI2CYCLES(30 * 1000))
 
 #define STARPORT_NO_ARRIVAL_AWAITED -1
 
 namespace {
-constexpr BuilderBaseConstants star_port_constants{StarPort::item_id, Coord{3, 3}};
+constexpr BuilderBaseConstants star_port_constants {StarPort::item_id, Coord {3, 3}};
 }
 
-StarPort::StarPort(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
+StarPort::StarPort(uint32_t objectID, const ObjectInitializer& initializer)
+    : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     ObjectBase::setHealth(getMaxHealth());
 
     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
-    deploying = false;
+    deploying    = false;
 }
 
-StarPort::StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer) : BuilderBase(star_port_constants, objectID, initializer) {
+StarPort::StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer)
+    : BuilderBase(star_port_constants, objectID, initializer) {
     StarPort::init();
 
     auto& stream = initializer.stream();
 
     arrivalTimer = stream.readSint32();
-    if(stream.readBool()) {
+    if (stream.readBool()) {
         startDeploying();
     } else {
         deploying = false;
@@ -66,12 +68,12 @@ void StarPort::init() {
     assert(itemID == Structure_StarPort);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_Starport;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
+    graphicID      = ObjPic_Starport;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 10;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 StarPort::~StarPort() = default;
@@ -83,30 +85,30 @@ void StarPort::save(OutputStream& stream) const {
 }
 
 void StarPort::doBuildRandom(const GameContext& context) {
-    if(!buildList.empty()) {
+    if (!buildList.empty()) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
-        } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
+            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
+        } while ((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
         doProduceItem(item2Produce);
     }
 }
 
 void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
-    auto& choam = owner->getChoam();
+    auto& choam             = owner->getChoam();
     const auto numAvailable = choam.getNumAvailable(itemID);
 
-    if(numAvailable <= 0) {
+    if (numAvailable <= 0) {
         soundPlayer->playSound(Sound_InvalidAction);
         currentGame->addToNewsTicker(_("This unit is sold out"));
         return;
     }
 
-    for(const auto& buildItem : buildList) {
-        if(buildItem.itemID == itemID) {
-            if((owner->getCredits() < static_cast<int>(buildItem.price))) {
+    for (const auto& buildItem : buildList) {
+        if (buildItem.itemID == itemID) {
+            if ((owner->getCredits() < static_cast<int>(buildItem.price))) {
                 soundPlayer->playSound(Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
@@ -129,22 +131,23 @@ void StarPort::handleCancelOrderClick() {
 void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
-    for(auto& buildItem : buildList) {
-        if(buildItem.itemID != itemID) continue;
+    for (auto& buildItem : buildList) {
+        if (buildItem.itemID != itemID)
+            continue;
 
-        for(auto i = 0; i < (multipleMode ? 5 : 1); i++) {
+        for (auto i = 0; i < (multipleMode ? 5 : 1); i++) {
             const auto numAvailable = choam.getNumAvailable(itemID);
 
-            if(numAvailable <= 0) {
+            if (numAvailable <= 0) {
                 break;
             }
 
-            if((owner->getCredits() >= static_cast<int>(buildItem.price))) {
+            if ((owner->getCredits() >= static_cast<int>(buildItem.price))) {
                 buildItem.num++;
-                currentProductionQueue.emplace_back(itemID,buildItem.price );
+                currentProductionQueue.emplace_back(itemID, buildItem.price);
                 owner->takeCredits(buildItem.price);
 
-                if(!choam.setNumAvailable(itemID, numAvailable - 1)) {
+                if (!choam.setNumAvailable(itemID, numAvailable - 1)) {
                     // sold out
                     break;
                 }
@@ -157,28 +160,29 @@ void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
 void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
-    for(auto& buildItem : buildList) {
-        if(buildItem.itemID != itemID) continue;
+    for (auto& buildItem : buildList) {
+        if (buildItem.itemID != itemID)
+            continue;
 
-        for(int i = 0; i < (multipleMode ? 5 : 1); i++) {
-            if(buildItem.num > 0) {
+        for (int i = 0; i < (multipleMode ? 5 : 1); i++) {
+            if (buildItem.num > 0) {
                 buildItem.num--;
                 choam.setNumAvailable(itemID, choam.getNumAvailable(itemID) + 1);
 
                 // find the most expensive item to cancel
-                auto     iterMostExpensiveItem  = currentProductionQueue.end();
+                auto iterMostExpensiveItem      = currentProductionQueue.end();
                 uint32_t mostExpensiveItemPrice = 0;
-                for(auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
-                    if(iter->itemID == itemID) {
-                        if(iter->price > mostExpensiveItemPrice) {
-                            iterMostExpensiveItem = iter;
+                for (auto iter = currentProductionQueue.begin(); iter != currentProductionQueue.end(); ++iter) {
+                    if (iter->itemID == itemID) {
+                        if (iter->price > mostExpensiveItemPrice) {
+                            iterMostExpensiveItem  = iter;
                             mostExpensiveItemPrice = iter->price;
                         }
                     }
                 }
 
                 // Cancel the best found item if any was found
-                if(iterMostExpensiveItem != currentProductionQueue.end()) {
+                if (iterMostExpensiveItem != currentProductionQueue.end()) {
                     owner->returnCredits(iterMostExpensiveItem->price);
                     currentProductionQueue.erase(iterMostExpensiveItem);
                 }
@@ -193,20 +197,20 @@ void StarPort::doPlaceOrder() {
 
     if (!currentProductionQueue.empty()) {
 
-        if(currentGame->getGameInitSettings().getGameOptions().instantBuild) {
+        if (currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             arrivalTimer = 1;
         } else {
             arrivalTimer = STARPORT_ARRIVETIME;
         }
 
         firstAnimFrame = 2;
-        lastAnimFrame = 7;
+        lastAnimFrame  = 7;
     }
 }
 
 void StarPort::doCancelOrder() {
     if (arrivalTimer == STARPORT_NO_ARRIVAL_AWAITED) {
-        while(!currentProductionQueue.empty()) {
+        while (!currentProductionQueue.empty()) {
             doCancelItem(currentProductionQueue.back().itemID, false);
         }
 
@@ -214,17 +218,16 @@ void StarPort::doCancelOrder() {
     }
 }
 
-
 void StarPort::updateBuildList() {
     auto iter = buildList.begin();
 
     auto& choam = owner->getChoam();
 
-    for(auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
+    for (auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
         const auto& objData = currentGame->objectData.data[itemOrder[i]][static_cast<int>(originalHouseID)];
 
-        if(objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
+        if (objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(buildList, iter, itemOrder[i], choam.getPrice(itemOrder[i]));
         } else {
             removeItem(buildList, iter, itemOrder[i]);
@@ -237,9 +240,9 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
-            //make a frigate with all the cargo
-            auto *const frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
-            const auto pos = context.map.findClosestEdgePoint(getLocation() + Coord(1,1), Coord(1,1));
+            // make a frigate with all the cargo
+            auto* const frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
+            const auto pos      = context.map.findClosestEdgePoint(getLocation() + Coord(1, 1), Coord(1, 1));
             frigate->deploy(context, pos);
             frigate->setTarget(this);
             const auto closestPoint = getClosestPoint(frigate->getLocation());
@@ -247,50 +250,46 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 
             if (pos.x == 0)
                 frigate->setAngle(ANGLETYPE::RIGHT);
-            else if (pos.x == currentGameMap->getSizeX()-1)
+            else if (pos.x == currentGameMap->getSizeX() - 1)
                 frigate->setAngle(ANGLETYPE::LEFT);
             else if (pos.y == 0)
                 frigate->setAngle(ANGLETYPE::DOWN);
-            else if (pos.y == currentGameMap->getSizeY()-1)
+            else if (pos.y == currentGameMap->getSizeY() - 1)
                 frigate->setAngle(ANGLETYPE::UP);
 
             deployTimer = MILLI2CYCLES(2000);
 
             currentProducedItem = ItemID_Invalid;
 
-            if(getOwner() == pLocalHouse) {
-                soundPlayer->playVoice(FrigateHasArrived,getOwner()->getHouseID());
+            if (getOwner() == pLocalHouse) {
+                soundPlayer->playVoice(FrigateHasArrived, getOwner()->getHouseID());
                 context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
             }
-
         }
-    } else if(deploying) {
+    } else if (deploying) {
         deployTimer--;
-        if(deployTimer == 0) {
+        if (deployTimer == 0) {
 
-            if(!currentProductionQueue.empty()) {
+            if (!currentProductionQueue.empty()) {
                 auto newUnitItemID = currentProductionQueue.front().itemID;
 
                 auto num2Place = 1;
 
-                if(newUnitItemID == Unit_Infantry) {
+                if (newUnitItemID == Unit_Infantry) {
                     // make three
                     newUnitItemID = Unit_Soldier;
-                    num2Place = 3;
-                } else if(newUnitItemID == Unit_Troopers) {
+                    num2Place     = 3;
+                } else if (newUnitItemID == Unit_Troopers) {
                     // make three
                     newUnitItemID = Unit_Trooper;
-                    num2Place = 3;
+                    num2Place     = 3;
                 }
 
-                for(auto i = 0; i < num2Place; i++) {
-                    auto *newUnit = getOwner()->createUnit(newUnitItemID);
+                for (auto i = 0; i < num2Place; i++) {
+                    auto* newUnit = getOwner()->createUnit(newUnitItemID);
                     if (newUnit != nullptr) {
                         Coord unitDestination;
-                        if( getOwner()->isAI()
-                            && ((newUnit->getItemID() == Unit_Carryall)
-                                || (newUnit->getItemID() == Unit_Harvester)
-                                || (newUnit->getItemID() == Unit_MCV))) {
+                        if (getOwner()->isAI() && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester) || (newUnit->getItemID() == Unit_MCV))) {
                             // Don't want harvesters going to the rally point
                             unitDestination = location;
                         } else {
@@ -300,16 +299,16 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                         const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
                         newUnit->deploy(context, spot);
 
-                        if(unitDestination.isValid()) {
+                        if (unitDestination.isValid()) {
                             newUnit->setGuardPoint(unitDestination);
                             newUnit->setDestination(unitDestination);
                             newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                         }
 
-                        if(getOwner() == pLocalHouse) {
-                            if(isFlyingUnit(newUnitItemID)) {
+                        if (getOwner() == pLocalHouse) {
+                            if (isFlyingUnit(newUnitItemID)) {
                                 soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
-                            } else if(newUnitItemID == Unit_Harvester) {
+                            } else if (newUnitItemID == Unit_Harvester) {
                                 soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
                             } else {
                                 soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
@@ -321,23 +320,23 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                     }
                 }
 
-                const auto currentProducedBuildItem = std::find_if(   buildList.begin(),
-                                                                      buildList.end(),
-                                                                      [&](BuildItem& buildItem) {
-                                                                         return (buildItem.itemID == currentProductionQueue.front().itemID);
-                                                                      });
-                if(currentProducedBuildItem != buildList.end()) {
+                const auto currentProducedBuildItem = std::find_if(buildList.begin(),
+                                                                   buildList.end(),
+                                                                   [&](BuildItem& buildItem) {
+                                                                       return (buildItem.itemID == currentProductionQueue.front().itemID);
+                                                                   });
+                if (currentProducedBuildItem != buildList.end()) {
                     currentProducedBuildItem->num--;
                 }
 
                 currentProductionQueue.pop_front();
 
-                if(currentProductionQueue.empty()) {
+                if (currentProductionQueue.empty()) {
                     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
-                    deploying = false;
+                    deploying    = false;
                     // Remove box from starport
                     firstAnimFrame = 2;
-                    lastAnimFrame = 3;
+                    lastAnimFrame  = 3;
                 } else {
                     deployTimer = MILLI2CYCLES(2000);
                 }
@@ -349,9 +348,9 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 void StarPort::informFrigateDestroyed() {
     currentProductionQueue.clear();
     arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
-    deployTimer = 0;
-    deploying = false;
+    deployTimer  = 0;
+    deploying    = false;
     // stop blinking
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }

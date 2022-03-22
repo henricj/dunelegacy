@@ -27,54 +27,55 @@
 
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <array>
 #include <memory>
+#include <string>
 
 class SurfaceLoader final {
 public:
     SurfaceLoader();
     ~SurfaceLoader();
 
-    SurfaceLoader(const SurfaceLoader &) = delete;
-    SurfaceLoader(SurfaceLoader &&) = default;
-    SurfaceLoader& operator=(const SurfaceLoader &) = delete;
-    SurfaceLoader& operator=(SurfaceLoader &&) = default;
+    SurfaceLoader(const SurfaceLoader&) = delete;
+    SurfaceLoader(SurfaceLoader&&)      = default;
+    SurfaceLoader& operator=(const SurfaceLoader&) = delete;
+    SurfaceLoader& operator=(SurfaceLoader&&) = default;
 
-    SDL_Surface*     getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z);
-    SDL_Surface*     getZoomedObjSurface(unsigned int id, unsigned int z) { return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z); }
+    SDL_Surface* getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z);
+    SDL_Surface* getZoomedObjSurface(unsigned int id, unsigned int z) { return getZoomedObjSurface(id, HOUSETYPE::HOUSE_HARKONNEN, z); }
 
-    SDL_Surface*     getSmallDetailSurface(unsigned int id);
-    SDL_Surface*     getTinyPictureSurface(unsigned int id);
+    SDL_Surface* getSmallDetailSurface(unsigned int id);
+    SDL_Surface* getTinyPictureSurface(unsigned int id);
 
-    SDL_Surface*     getUIGraphicSurface(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
-    SDL_Surface*     getMapChoicePieceSurface(unsigned int num, HOUSETYPE house);
+    SDL_Surface* getUIGraphicSurface(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
+    SDL_Surface* getMapChoicePieceSurface(unsigned int num, HOUSETYPE house);
 
-    Animation*       getAnimation(unsigned int id);
+    Animation* getAnimation(unsigned int id);
 
     sdl2::surface_ptr generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const;
     static sdl2::surface_ptr generateMapChoiceArrowFrames(SDL_Surface* arrowPic,
-                                                          HOUSETYPE    house = HOUSETYPE::HOUSE_HARKONNEN);
+                                                          HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     [[nodiscard]] sdl2::surface_ptr extractSmallDetailPic(const std::string& filename) const;
 
     [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return pBackgroundSurface.get(); }
+
 private:
-    [[nodiscard]] std::unique_ptr<Animation>  loadAnimationFromWsa(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Animation> loadAnimationFromWsa(const std::string& filename) const;
 
-    [[nodiscard]] std::unique_ptr<Shpfile>  loadShpfile(const std::string& filename) const;
-    [[nodiscard]] std::unique_ptr<Wsafile>  loadWsafile(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Shpfile> loadShpfile(const std::string& filename) const;
+    [[nodiscard]] std::unique_ptr<Wsafile> loadWsafile(const std::string& filename) const;
 
-    [[nodiscard]] sdl2::surface_ptr   generateDoubledObjPic(unsigned int id, int h) const;
-    [[nodiscard]] sdl2::surface_ptr   generateTripledObjPic(unsigned int id, int h) const;
+    [[nodiscard]] sdl2::surface_ptr generateDoubledObjPic(unsigned int id, int h) const;
+    [[nodiscard]] sdl2::surface_ptr generateTripledObjPic(unsigned int id, int h) const;
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
     std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS> objPic;
     std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_UIGRAPHICS> uiGraphic;
     std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES> mapChoicePieces;
-    std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation{};
+    std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation {};
 
     std::array<sdl2::surface_ptr, NUM_SMALLDETAILPICS> smallDetailPic;
-    std::array<sdl2::surface_ptr, NUM_TINYPICTURE>     tinyPicture;
+    std::array<sdl2::surface_ptr, NUM_TINYPICTURE> tinyPicture;
 
     // 32-bit surfaces
     sdl2::surface_ptr pBackgroundSurface;

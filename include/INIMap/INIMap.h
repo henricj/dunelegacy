@@ -18,27 +18,25 @@
 #ifndef INIMAP_H
 #define INIMAP_H
 
-#include <FileClasses/INIFile.h>
 #include <FileClasses/FileManager.h>
+#include <FileClasses/INIFile.h>
 
 #include <DataTypes.h>
 
 #include <globals.h>
 
-#include <misc/string_util.h>
 #include <misc/SDL2pp.h>
+#include <misc/string_util.h>
 
-#include <string>
 #include <memory>
-
+#include <string>
 
 class INIMap {
 protected:
     typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
 
     explicit INIMap(inifile_ptr pINIFile)
-     : inifile(std::move(pINIFile)) {
-
+        : inifile(std::move(pINIFile)) {
     }
 
     INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "");
@@ -47,7 +45,6 @@ public:
     virtual ~INIMap();
 
 protected:
-
     /**
         Log a warning while reading the scenario file.
         \param  warning the warning message
@@ -55,7 +52,6 @@ protected:
     void logWarning(const std::string& warning) {
         sdl2::log_info("%s: %s", mapname.c_str(), warning.c_str());
     }
-
 
     /**
         Log a warning while reading the scenario file.
@@ -66,7 +62,6 @@ protected:
         sdl2::log_info("%s:%d: %s", mapname.c_str(), line, warning.c_str());
     }
 
-
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
         with error as the exception message
@@ -75,7 +70,6 @@ protected:
     void logError(const std::string& error) {
         THROW(std::runtime_error, mapname + ": " + error);
     }
-
 
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
@@ -87,12 +81,10 @@ protected:
         THROW(std::runtime_error, mapname + ":" + std::to_string(line) + ": " + error);
     }
 
-
     /**
     Checks if all map features of this map are supported.
     */
     void checkFeatures();
-
 
     [[nodiscard]] int getXPos(int pos) const { return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX; }
     [[nodiscard]] int getYPos(int pos) const { return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY; }
@@ -104,12 +96,12 @@ protected:
 
     int version = 0;
 
-    int sizeX = 0;
-    int sizeY = 0;
-    int logicalSizeX = 0;
-    int logicalSizeY = 0;
+    int sizeX          = 0;
+    int sizeY          = 0;
+    int logicalSizeX   = 0;
+    int logicalSizeY   = 0;
     int logicalOffsetX = 0;
     int logicalOffsetY = 0;
 };
 
-#endif //INIMAP_H
+#endif // INIMAP_H

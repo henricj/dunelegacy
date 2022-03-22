@@ -3,24 +3,24 @@
 
 #include "MenuBase.h"
 
-#include <GUI/Window.h>
-#include <GUI/StaticContainer.h>
-#include <GUI/HBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/Spacer.h>
-#include <GUI/Label.h>
-#include <GUI/TextBox.h>
-#include <GUI/SymbolButton.h>
-#include <GUI/ScrollBar.h>
-#include <GUI/ListBox.h>
-#include <GUI/ProgressBar.h>
-#include <GUI/PictureLabel.h>
-#include <GUI/InvisibleButton.h>
 #include <GUI/ClickMap.h>
+#include <GUI/HBox.h>
+#include <GUI/InvisibleButton.h>
+#include <GUI/Label.h>
+#include <GUI/ListBox.h>
+#include <GUI/PictureLabel.h>
+#include <GUI/ProgressBar.h>
+#include <GUI/ScrollBar.h>
+#include <GUI/Spacer.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/SymbolButton.h>
+#include <GUI/TextBox.h>
+#include <GUI/TextButton.h>
 #include <GUI/VBox.h>
+#include <GUI/Window.h>
 
-#include <Network/LANGameFinderAndAnnouncer.h>
 #include <Network/ChangeEventList.h>
+#include <Network/LANGameFinderAndAnnouncer.h>
 
 #include <GameInitSettings.h>
 
@@ -59,7 +59,6 @@ private:
     void onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList);
     void onMetaServerError(int errorcause, const std::string& errorMessage);
 
-
     void onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList);
 
     std::list<GameServerInfo> LANGameList;
@@ -67,33 +66,32 @@ private:
 
     StaticContainer windowWidget;
 
-    VBox            mainVBox;
-    HBox            mainHBox;
+    VBox mainVBox;
+    HBox mainHBox;
 
-    Label           captionLabel;
+    Label captionLabel;
 
-    HBox            connectHBox;
-    TextBox         connectHostTextBox;
-    TextBox         connectPortTextBox;
-    TextButton      connectButton;
+    HBox connectHBox;
+    TextBox connectHostTextBox;
+    TextBox connectPortTextBox;
+    TextButton connectButton;
 
     // left VBox with create game buttons
-    VBox            leftVBox;
-    TextButton      createLANGameButton;
-    TextButton      createInternetGameButton;
+    VBox leftVBox;
+    TextButton createLANGameButton;
+    TextButton createInternetGameButton;
 
     // right VBox with game list
-    VBox            rightVBox;
-    HBox            gameTypeButtonsHBox;
-    TextButton      LANGamesButton;
-    TextButton      internetGamesButton;
-    ListBox         gameList;
+    VBox rightVBox;
+    HBox gameTypeButtonsHBox;
+    TextButton LANGamesButton;
+    TextButton internetGamesButton;
+    ListBox gameList;
 
     // bottom row of buttons
-    HBox            buttonHBox;
-    TextButton      joinButton;
-    TextButton      backButton;
+    HBox buttonHBox;
+    TextButton joinButton;
+    TextButton backButton;
 };
 
 #endif // MULTIPLAYERMENU_H
-

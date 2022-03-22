@@ -19,13 +19,13 @@
 #define MENTATMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
 #include <GUI/Button.h>
-#include <GUI/dune/AnimationLabel.h>
 #include <GUI/Label.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/dune/AnimationLabel.h>
 
-#include <misc/string_util.h>
 #include <misc/SDL2pp.h>
+#include <misc/string_util.h>
 
 #include <cstdio>
 #include <string>
@@ -41,9 +41,8 @@ public:
 
     void update() override;
 
-    bool doInput(SDL_Event &event) override
-    {
-        if(event.type == SDL_MOUSEBUTTONDOWN) {
+    bool doInput(SDL_Event& event) override {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
             showNextMentatText();
         }
 
@@ -56,39 +55,38 @@ public:
 
     virtual void onMentatTextFinished() { }
 
-    static int getMissionSpecificAnim(int missionnumber) ;
+    static int getMissionSpecificAnim(int missionnumber);
 
 protected:
     enum MentatEyes {
         MentatEyesNormal = 0,
-        MentatEyesLeft = 1,
-        MentatEyesRight = 2,
-        MentatEyesDown = 3,
+        MentatEyesLeft   = 1,
+        MentatEyesRight  = 2,
+        MentatEyesDown   = 3,
         MentatEyesClosed = 4
     };
 
-
     enum MentatMouth {
         MentatMouthClosed = 0,
-        MentatMouthOpen1 = 1,
-        MentatMouthOpen2 = 2,
-        MentatMouthOpen3 = 3,
-        MentatMouthOpen4 = 4
+        MentatMouthOpen1  = 1,
+        MentatMouthOpen2  = 2,
+        MentatMouthOpen3  = 3,
+        MentatMouthOpen4  = 4
     };
 
     uint32_t nextSpecialAnimation;
 
     std::vector<std::string> mentatTexts;
-    int                      currentMentatTextIndex;
-    uint32_t                 nextMentatTextSwitch;
-    HOUSETYPE                house;
+    int currentMentatTextIndex;
+    uint32_t nextMentatTextSwitch;
+    HOUSETYPE house;
 
     StaticContainer windowWidget;
-    AnimationLabel  eyesAnim;
-    AnimationLabel  mouthAnim;
-    AnimationLabel  specialAnim;
-    AnimationLabel  shoulderAnim;
-    Label           textLabel;
+    AnimationLabel eyesAnim;
+    AnimationLabel mouthAnim;
+    AnimationLabel specialAnim;
+    AnimationLabel shoulderAnim;
+    Label textLabel;
 };
 
 #endif // MENTATMENU_H

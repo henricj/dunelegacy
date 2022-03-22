@@ -18,8 +18,8 @@
 #ifndef GAMEINITINFOCLASS_H
 #define GAMEINITINFOCLASS_H
 
-#include "Definitions.h"
 #include "DataTypes.h"
+#include "Definitions.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
@@ -27,19 +27,16 @@
 #include <string>
 #include <utility>
 
-
-class GameInitSettings
-{
+class GameInitSettings {
 public:
-
     class PlayerInfo {
     public:
         PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
-         : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) {
+            : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) {
         }
 
         explicit PlayerInfo(InputStream& stream) {
-            playerName = stream.readString();
+            playerName  = stream.readString();
             playerClass = stream.readString();
         }
 
@@ -55,15 +52,15 @@ public:
     class HouseInfo {
     public:
         HouseInfo(HOUSETYPE newHouseID, int newTeam)
-         : houseID(newHouseID), team(newTeam) {
+            : houseID(newHouseID), team(newTeam) {
         }
 
         explicit HouseInfo(InputStream& stream) {
             houseID = static_cast<HOUSETYPE>(stream.readSint32());
-            team = stream.readSint32();
+            team    = stream.readSint32();
 
             const auto numPlayerInfo = stream.readUint32();
-            for(uint32_t i = 0;i<numPlayerInfo;i++) {
+            for (uint32_t i = 0; i < numPlayerInfo; i++) {
                 playerInfoList.push_back(PlayerInfo(stream));
             }
         }
@@ -73,7 +70,7 @@ public:
             stream.writeSint32(team);
 
             stream.writeUint32(playerInfoList.size());
-            for(const auto& playerInfo : playerInfoList) {
+            for (const auto& playerInfo : playerInfoList) {
                 playerInfo.save(stream);
             }
         }
@@ -82,13 +79,12 @@ public:
 
         typedef std::vector<PlayerInfo> PlayerInfoList;
 
-        HOUSETYPE       houseID;
-        int             team;
-        PlayerInfoList  playerInfoList;
+        HOUSETYPE houseID;
+        int team;
+        PlayerInfoList playerInfoList;
     };
 
     typedef std::vector<HouseInfo> HouseInfoList;
-
 
     /**
         Default constructor.
@@ -111,7 +107,7 @@ public:
         \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum HumanPlayer::TutorialHint)
     */
     GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, uint32_t alreadyPlayedRegions,
-                     uint32_t                alreadyShownTutorialHints);
+                     uint32_t alreadyShownTutorialHints);
 
     /**
         Constructor for specifying the start of a skirmish mission in the campaign
@@ -166,17 +162,18 @@ public:
 
     void save(OutputStream& stream) const;
 
-    [[nodiscard]] GameType                     getGameType() const noexcept { return gameType; }
-    [[nodiscard]] HOUSETYPE                    getHouseID() const noexcept { return houseID; }
-    [[nodiscard]] int                          getMission() const noexcept { return mission; }
-    [[nodiscard]] uint32_t                     getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
+    [[nodiscard]] GameType getGameType() const noexcept { return gameType; }
+    [[nodiscard]] HOUSETYPE getHouseID() const noexcept { return houseID; }
+    [[nodiscard]] int getMission() const noexcept { return mission; }
+    [[nodiscard]] uint32_t getAlreadyPlayedRegions() const noexcept { return alreadyPlayedRegions; }
     [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const noexcept { return alreadyShownTutorialHints; }
     [[nodiscard]] const std::filesystem::path& getFilename() const noexcept { return filename; }
-    [[nodiscard]] const std::string&           getFiledata() const noexcept { return filedata; }
-    [[nodiscard]] const std::string&           getServername() const noexcept { return servername; }
+    [[nodiscard]] const std::string& getFiledata() const noexcept { return filedata; }
+    [[nodiscard]] const std::string& getServername() const noexcept { return servername; }
 
     [[nodiscard]] const std::vector<uint8_t>& getRandomSeed() noexcept {
-        if(randomSeed.empty()) randomSeed = RandomFactory::createRandomSeed("game master seed");
+        if (randomSeed.empty())
+            randomSeed = RandomFactory::createRandomSeed("game master seed");
 
         return randomSeed;
     }
@@ -201,33 +198,30 @@ private:
     */
     static void checkSaveGame(const std::filesystem::path& savegame);
 
-
     /**
         This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
         \param stream the strean to read the data from
     */
     static void checkSaveGame(InputStream& stream);
 
+    GameType gameType = GameType::Invalid;
 
-    GameType        gameType = GameType::Invalid;
+    HOUSETYPE houseID                  = HOUSETYPE::HOUSE_INVALID;
+    int mission                        = 0;
+    uint32_t alreadyPlayedRegions      = 0;
+    uint32_t alreadyShownTutorialHints = 0xFFFFFFFF;
 
-    HOUSETYPE houseID                   = HOUSETYPE::HOUSE_INVALID;
-    int       mission                   = 0;
-    uint32_t  alreadyPlayedRegions      = 0;
-    uint32_t  alreadyShownTutorialHints = 0xFFFFFFFF;
-
-    std::filesystem::path     filename;
-    std::string     filedata;
-    std::string     servername;
+    std::filesystem::path filename;
+    std::string filedata;
+    std::string servername;
 
     std::vector<uint8_t> randomSeed;
 
-    bool            multiplePlayersPerHouse = false;
+    bool multiplePlayersPerHouse = false;
 
     SettingsClass::GameOptionsClass gameOptions;
 
-
-    HouseInfoList   houseInfoList;
+    HouseInfoList houseInfoList;
 };
 
 #endif // GAMEINITINFOCLASS_H

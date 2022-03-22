@@ -27,7 +27,6 @@
 */
 class FadeInVideoEvent : public VideoEvent {
 public:
-
     /**
         Constructor
         \param  pSurface            The picture to fade in

@@ -1,17 +1,17 @@
 /*
  * Adplug - Replayer for many OPL2/OPL3 audio file formats.
  * Copyright (C) 1999 - 2010 Simon Peter, <dn.tlp@gmx.net>, et al.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,7 +32,7 @@
 // The right-channel is increased in frequency by itself divided by this amount.
 // The right value should not noticeably change the pitch, but it should provide
 // a nice stereo harmonic effect.
-#define FREQ_OFFSET 128.0//96.0
+#define FREQ_OFFSET 128.0 // 96.0
 
 // Number of FNums away from the upper/lower limit before switching to the next
 // block (octave.)  By rights it should be zero, but for some reason this seems
@@ -40,30 +40,28 @@
 // time.  Setting it higher means it will switch blocks sooner and that seems
 // to help.  Don't set it too high or it'll get stuck in an infinite loop if
 // one block is too high and the adjacent block is too low ;-)
-#define NEWBLOCK_LIMIT  32
+#define NEWBLOCK_LIMIT 32
 
-class CSurroundopl: public Copl
-{
-    private:
-        bool use16bit;
-        short bufsize;
-        short *lbuf, *rbuf;
-        Copl *a, *b;
-        uint8_t iFMReg[2][256];
-        uint8_t iTweakedFMReg[2][256];
-        uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
-        uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
+class CSurroundopl : public Copl {
+private:
+    bool use16bit;
+    short bufsize;
+    short *lbuf, *rbuf;
+    Copl *a, *b;
+    uint8_t iFMReg[2][256];
+    uint8_t iTweakedFMReg[2][256];
+    uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
+    uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
 
-    public:
+public:
+    CSurroundopl(Copl* a, Copl* b, bool use16bit);
+    ~CSurroundopl() override;
 
-        CSurroundopl(Copl *a, Copl *b, bool use16bit);
-        ~CSurroundopl() override;
+    void update(short* buf, int samples) override;
+    void write(int reg, int val) override;
 
-        void update(short *buf, int samples) override;
-        void write(int reg, int val) override;
-
-        void init() override;
-        void setchip(int n) noexcept override;
+    void init() override;
+    void setchip(int n) noexcept override;
 };
 
 #endif

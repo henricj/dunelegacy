@@ -19,59 +19,62 @@
 
 #include <units/Harvester.h>
 
-#include <structures/RepairYard.h>
 #include <structures/Refinery.h>
+#include <structures/RepairYard.h>
 
 #include <globals.h>
 
+#include <Game.h>
 #include <House.h>
 #include <Map.h>
-#include <Game.h>
 
 TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 }
 
-TrackedUnit::TrackedUnit(const TrackedUnitConstants&    constants, uint32_t objectID,
+TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID,
                          const ObjectStreamInitializer& initializer)
     : GroundUnit(constants, objectID, initializer) {
 }
 
 TrackedUnit::~TrackedUnit() = default;
 
-void TrackedUnit::save(OutputStream& stream) const
-{
+void TrackedUnit::save(OutputStream& stream) const {
     GroundUnit::save(stream);
 }
 
 void TrackedUnit::checkPos(const GameContext& context) {
     GroundUnit::checkPos(context);
 
-    if(active && justStoppedMoving) {
+    if (active && justStoppedMoving) {
         const auto* const tile = context.map.tryGetTile(location.x, location.y);
 
-        if(tile) tile->squash(context);
+        if (tile)
+            tile->squash(context);
     }
 }
 
 bool TrackedUnit::canPassTile(const Tile* pTile) const {
-    if(!pTile || pTile->isMountain()) { return false; }
+    if (!pTile || pTile->isMountain()) {
+        return false;
+    }
 
     const auto ground_object_result = pTile->getGroundObjectID();
 
-    if(!ground_object_result.first) return true;
+    if (!ground_object_result.first)
+        return true;
 
-    if(ground_object_result.second == target.getObjectID()) {
+    if (ground_object_result.second == target.getObjectID()) {
         auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if((pObject != nullptr) && targetFriendly && pObject->isAStructure() &&
-           (pObject->getOwner()->getTeamID() == owner->getTeamID()) && pObject->isVisible(getOwner()->getTeamID())) {
+        if ((pObject != nullptr) && targetFriendly && pObject->isAStructure() &&
+            (pObject->getOwner()->getTeamID() == owner->getTeamID()) && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
-            if(goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
+            if (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
                 return static_cast<const RepairYard*>(pObject)->isFree();
             }
 
-            if(const auto* const pHarvester = dune_cast<Harvester>(this)) {
+            if (const auto* const pHarvester = dune_cast<Harvester>(this)) {
                 return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) &&
                         static_cast<const Refinery*>(pObject)->isFree());
             }
@@ -80,12 +83,12 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         }
     }
 
-    if(!pTile->hasANonInfantryGroundObject()) {
+    if (!pTile->hasANonInfantryGroundObject()) {
         // The tile does not have a non-infantry ground object, therefore the ground object ID must
         // be for an infantry unit.  We have complicated this function since profiling puts it in
         // the hotpath...
         auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
-        if(pObject && pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
+        if (pObject && pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
             // possibly squashing this unit
             return true;
         }
@@ -96,13 +99,13 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
 }
 
 const std::array<FixPoint, Terrain_SpecialBloom + 1> TrackedUnit::terrain_difficulty = {
-    1_fix,      //Terrain_Slab
-    1.5625_fix, //Terrain_Sand
-    1.375_fix,  //Terrain_Rock
-    1.375_fix,  //Terrain_Dunes
-    1.0_fix,    //Terrain_Mountain
-    1.375_fix,  //Terrain_Spice
-    1.375_fix,  //Terrain_ThickSpice
-    1.5625_fix, //Terrain_SpiceBloom
-    1.5625_fix  //Terrain_SpecialBloom
+    1_fix,      // Terrain_Slab
+    1.5625_fix, // Terrain_Sand
+    1.375_fix,  // Terrain_Rock
+    1.375_fix,  // Terrain_Dunes
+    1.0_fix,    // Terrain_Mountain
+    1.375_fix,  // Terrain_Spice
+    1.375_fix,  // Terrain_ThickSpice
+    1.5625_fix, // Terrain_SpiceBloom
+    1.5625_fix  // Terrain_SpecialBloom
 };

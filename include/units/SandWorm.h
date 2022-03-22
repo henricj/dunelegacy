@@ -18,15 +18,14 @@
 #ifndef SANDWORM_H
 #define SANDWORM_H
 
-#define SANDWORM_SEGMENTS 4 //how many shimmer things will be drawn per worm
+#define SANDWORM_SEGMENTS 4 // how many shimmer things will be drawn per worm
 
 #include <units/GroundUnit.h>
 
-class Sandworm final : public GroundUnit
-{
+class Sandworm final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Sandworm;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     Sandworm(uint32_t objectID, const ObjectInitializer& initializer);
     Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -61,19 +60,18 @@ public:
 
     void playAttackSound() override;
 
-    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override
-    {
-        switch(terrainType) {
-            case Terrain_Slab:          return 1.0_fix;
-            case Terrain_Sand:          return 1.25_fix;
-            case Terrain_Rock:          return 1.0_fix;
-            case Terrain_Dunes:         return 1.25_fix;
-            case Terrain_Mountain:      return 1.0_fix;
-            case Terrain_Spice:         return 1.25_fix;
-            case Terrain_ThickSpice:    return 1.25_fix;
-            case Terrain_SpiceBloom:    return 1.25_fix;
-            case Terrain_SpecialBloom:  return 1.25_fix;
-            default:                    return 1.0_fix;
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override {
+        switch (terrainType) {
+            case Terrain_Slab: return 1.0_fix;
+            case Terrain_Sand: return 1.25_fix;
+            case Terrain_Rock: return 1.0_fix;
+            case Terrain_Dunes: return 1.25_fix;
+            case Terrain_Mountain: return 1.0_fix;
+            case Terrain_Spice: return 1.25_fix;
+            case Terrain_ThickSpice: return 1.25_fix;
+            case Terrain_SpiceBloom: return 1.25_fix;
+            case Terrain_SpecialBloom: return 1.25_fix;
+            default: return 1.0_fix;
         }
     }
 
@@ -96,7 +94,7 @@ private:
 
     // drawing information
     int32_t shimmerOffsetIndex;
-    Coord   lastLocs[SANDWORM_SEGMENTS]; ///< Last locations of the sandworm
+    Coord lastLocs[SANDWORM_SEGMENTS]; ///< Last locations of the sandworm
 };
 
 #endif // SANDWORM_H

@@ -25,7 +25,7 @@
 #include <GUI/ObjectInterfaces/WindTrapInterface.h>
 
 namespace {
-constexpr StructureBaseConstants wind_trap_constants{WindTrap::item_id, Coord{2, 2}};
+constexpr StructureBaseConstants wind_trap_constants {WindTrap::item_id, Coord {2, 2}};
 }
 
 WindTrap::WindTrap(uint32_t objectID, const ObjectInitializer& initializer)
@@ -44,28 +44,30 @@ void WindTrap::init() {
     assert(itemID == Structure_WindTrap);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_Windtrap;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-    numImagesY = (2+NUM_WINDTRAP_ANIMATIONS+NUM_WINDTRAP_ANIMATIONS_PER_ROW-1)/NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    graphicID      = ObjPic_Windtrap;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    numImagesY     = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
     firstAnimFrame = 2;
-    lastAnimFrame = 2+NUM_WINDTRAP_ANIMATIONS-1;
+    lastAnimFrame  = 2 + NUM_WINDTRAP_ANIMATIONS - 1;
 }
 
 WindTrap::~WindTrap() = default;
 
 std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return WindTrapInterface::create(context, objectID); }
+    if ((pLocalHouse == owner) || (debug)) {
+        return WindTrapInterface::create(context, objectID);
+    }
     return DefaultObjectInterface::create(context, objectID);
 }
 
 bool WindTrap::update(const GameContext& context) {
     bool bResult = StructureBase::update(context);
 
-    if(bResult) {
+    if (bResult) {
         // we are still alive
-        if(justPlacedTimer <= 0 || curAnimFrame != 0) {
-            curAnimFrame = 2 + ((context.game.getGameCycleCount()/8) % NUM_WINDTRAP_ANIMATIONS);
+        if (justPlacedTimer <= 0 || curAnimFrame != 0) {
+            curAnimFrame = 2 + ((context.game.getGameCycleCount() / 8) % NUM_WINDTRAP_ANIMATIONS);
         }
     }
 

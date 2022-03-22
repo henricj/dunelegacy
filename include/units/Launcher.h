@@ -20,11 +20,10 @@
 
 #include <units/TrackedUnit.h>
 
-class Launcher final : public TrackedUnit
-{
+class Launcher final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Launcher;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Launcher(uint32_t objectID, const ObjectInitializer& initializer);
     Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,8 +39,8 @@ private:
     void init();
 
     // drawing information
-    zoomable_texture turretGraphic{};    ///< The turret graphic
-    int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic {}; ///< The turret graphic
+    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //LAUNCHER_H
+#endif // LAUNCHER_H

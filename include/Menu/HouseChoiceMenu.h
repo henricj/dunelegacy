@@ -19,9 +19,9 @@
 #define HOUSECHOICEMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
-#include <GUI/PictureLabel.h>
 #include <GUI/PictureButton.h>
+#include <GUI/PictureLabel.h>
+#include <GUI/StaticContainer.h>
 
 class HouseChoiceMenu : public MenuBase {
 public:
@@ -37,14 +37,14 @@ private:
 
     StaticContainer windowWidget;
 
-    PictureLabel    selectYourHouseLabel;
+    PictureLabel selectYourHouseLabel;
 
-    PictureButton   house1Button;
-    PictureButton   house2Button;
-    PictureButton   house3Button;
+    PictureButton house1Button;
+    PictureButton house2Button;
+    PictureButton house3Button;
 
-    PictureButton   houseLeftButton;
-    PictureButton   houseRightButton;
+    PictureButton houseLeftButton;
+    PictureButton houseRightButton;
 
     int currentHouseChoiceScrollPos;
 };

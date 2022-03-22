@@ -24,24 +24,22 @@
 #include <cstdarg>
 #include <vector>
 
-#define TILE_NORMAL     0x00010000
-#define TILE_FLIPH      0x00100000
-#define TILE_FLIPV      0x01000000
-#define TILE_ROTATE     0x10000000
+#define TILE_NORMAL 0x00010000
+#define TILE_FLIPH  0x00100000
+#define TILE_FLIPV  0x01000000
+#define TILE_ROTATE 0x10000000
 
-#define TILE_GETINDEX(x)    (x & 0x0000FFFF)
-#define TILE_GETTYPE(x)     (x & 0xFFFF0000)
+#define TILE_GETINDEX(x) (x & 0x0000FFFF)
+#define TILE_GETTYPE(x)  (x & 0xFFFF0000)
 
 /// A class for loading a *.SHP-File.
 /**
     This class can read shp-Files and return the contained pictures as a SDL_Surface.
 */
-class Shpfile
-{
+class Shpfile {
 private:
     // Internal structure used for an index of contained files
-    struct ShpfileEntry
-    {
+    struct ShpfileEntry {
         uint32_t startOffset;
         uint32_t endOffset;
     };
@@ -49,14 +47,14 @@ private:
 public:
     explicit Shpfile(SDL_RWops* rwop);
     Shpfile(const Shpfile& o) = delete;
-    Shpfile(Shpfile &&) = delete;
-    Shpfile& operator=(const Shpfile &) = delete;
-    Shpfile& operator=(Shpfile &&) = delete;
+    Shpfile(Shpfile&&)        = delete;
+    Shpfile& operator=(const Shpfile&) = delete;
+    Shpfile& operator=(Shpfile&&) = delete;
     virtual ~Shpfile();
 
-    sdl2::surface_ptr          getPicture(uint32_t indexOfFile);
-    sdl2::surface_ptr          getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
-    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic =true, bool bSetColorKey =true, bool bLoopRewindBackwards =false);
+    sdl2::surface_ptr getPicture(uint32_t indexOfFile);
+    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
+    std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic = true, bool bSetColorKey = true, bool bLoopRewindBackwards = false);
 
     /// Returns the number of contained pictures
     /**
@@ -67,13 +65,12 @@ public:
 
 private:
     void readIndex();
-    static void shpCorrectLF(const unsigned char *in, unsigned char *out, int size);
-    static void applyPalOffsets(const unsigned char *offsets, unsigned char *data,unsigned int length);
+    static void shpCorrectLF(const unsigned char* in, unsigned char* out, int size);
+    static void applyPalOffsets(const unsigned char* offsets, unsigned char* data, unsigned int length);
 
     std::vector<ShpfileEntry> shpfileEntries;
     std::unique_ptr<unsigned char[]> pFiledata;
     size_t shpFilesize;
 };
 
-
-#endif //SHPFILE_H
+#endif // SHPFILE_H

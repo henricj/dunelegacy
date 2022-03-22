@@ -24,16 +24,15 @@
 #include <memory>
 #include <utility>
 
-
 class PlayerFactory {
 public:
     class PlayerData {
     public:
         using create_functor = std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, const Random&)>;
-        using load_functor = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*)>;
+        using load_functor   = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*)>;
 
         PlayerData(std::string&& playerclass, std::string&& name, create_functor&& pCreate, load_functor&& pLoad)
-         : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
+            : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
         }
 
         [[nodiscard]] const std::string& getPlayerClass() const {
@@ -70,18 +69,18 @@ public:
     };
 
     static const std::vector<PlayerData>& getList() {
-        if(playerDataList.empty()) {
+        if (playerDataList.empty()) {
             registerAllPlayers();
         }
         return playerDataList;
     }
 
     static const PlayerData* getByIndex(int index) {
-        if(playerDataList.empty()) {
+        if (playerDataList.empty()) {
             registerAllPlayers();
         }
 
-        if(index < 0 || index >= static_cast<int>(playerDataList.size())) {
+        if (index < 0 || index >= static_cast<int>(playerDataList.size())) {
             return nullptr;
         }
 
@@ -89,12 +88,12 @@ public:
     }
 
     static const PlayerData* getByPlayerClass(const std::string& playerclass) {
-        if(playerDataList.empty()) {
+        if (playerDataList.empty()) {
             registerAllPlayers();
         }
 
-        for(auto& player_data : playerDataList) {
-            if(player_data.getPlayerClass() == playerclass) {
+        for (auto& player_data : playerDataList) {
+            if (player_data.getPlayerClass() == playerclass) {
                 return &player_data;
             }
         }
@@ -103,12 +102,12 @@ public:
     }
 
     static int getIndexByPlayerClass(const std::string& playerclass) {
-        if(playerDataList.empty()) {
+        if (playerDataList.empty()) {
             registerAllPlayers();
         }
 
-        for(unsigned int i = 0; i < playerDataList.size(); i++) {
-            if(playerDataList[i].getPlayerClass() == playerclass) {
+        for (unsigned int i = 0; i < playerDataList.size(); i++) {
+            if (playerDataList[i].getPlayerClass() == playerclass) {
                 return i;
             }
         }
@@ -117,7 +116,6 @@ public:
     }
 
 private:
-
     static void registerAllPlayers();
 
     template<typename PlayerType, typename... Args>
@@ -137,4 +135,4 @@ private:
     static std::vector<PlayerData> playerDataList;
 };
 
-#endif //PLAYERFACTORY_H
+#endif // PLAYERFACTORY_H

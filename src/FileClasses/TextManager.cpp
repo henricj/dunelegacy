@@ -26,38 +26,39 @@
 #include <misc/exceptions.h>
 
 #ifdef _
-#undef _
+#    undef _
 #endif
 #define _(msgid) getLocalized(msgid)
 
 namespace {
-struct FilePtrCloser { void operator()(FILE* fp) const { fclose(fp); } };
-}
+struct FilePtrCloser {
+    void operator()(FILE* fp) const { fclose(fp); }
+};
+} // namespace
 
 using file_ptr = std::unique_ptr<FILE*, FilePtrCloser>;
 
-sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path)
-{
+sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
     const auto normal = path.lexically_normal();
 
-    auto *const rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
+    auto* const rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
 
     if (!rwops)
         THROW(sdl_error, "Opening file '%s' failed: %s!", normal.u8string().c_str(), SDL_GetError());
 
-    return sdl2::RWops_ptr{ rwops };
+    return sdl2::RWops_ptr {rwops};
 }
 
 TextManager::TextManager(std::string_view language) {
     const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
-    auto languages = getFileNamesList(locale_directory, std::string{language} + ".po", true, FileListOrder_Name_Asc);
+    auto languages = getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
 
-    const auto language_file = languages.empty() ? std::filesystem::path{ "English.en.po" } : languages.front();
+    const auto language_file = languages.empty() ? std::filesystem::path {"English.en.po"} : languages.front();
 
     const auto language_path = locale_directory / language_file;
     sdl2::log_info("Loading localization from '%s'...", language_path.u8string().c_str());
-    auto rwops = openReadOnlyRWops(language_path.u8string());
+    auto rwops      = openReadOnlyRWops(language_path.u8string());
     localizedString = loadPOFile(rwops.get(), language_file.u8string());
 }
 
@@ -74,8 +75,8 @@ void TextManager::loadData() {
 
     // load all mentat texts
     mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]  = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]     = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
 }
 
 std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const {
@@ -504,12 +505,12 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
 std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const {
     std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
-    switch(house) {
+    switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR:
         default: {
-            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries(); i++) {
-                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel <= techLevel) {
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries(); i++) {
+                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel <= techLevel) {
                     mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
                 }
             }
@@ -517,8 +518,8 @@ std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSET
 
         case HOUSETYPE::HOUSE_ATREIDES:
         case HOUSETYPE::HOUSE_FREMEN: {
-            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries(); i++) {
-                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel <= techLevel) {
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries(); i++) {
+                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel <= techLevel) {
                     mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
                 }
             }
@@ -526,8 +527,8 @@ std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSET
 
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY: {
-            for(unsigned int i = 0; i <  mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries(); i++) {
-                if(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel <= techLevel) {
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries(); i++) {
+                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel <= techLevel) {
                     mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i));
                 }
             }
@@ -537,73 +538,54 @@ std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSET
     return mentatEntries;
 }
 
-
 const std::string& TextManager::postProcessString(const std::string& unprocessedString) const {
     size_t commentStart = unprocessedString.find_first_of('#');
-    if(commentStart == std::string::npos) {
+    if (commentStart == std::string::npos) {
         commentStart = unprocessedString.size();
     }
 
-
-    std::string commandString = unprocessedString.substr(1, commentStart-1);
+    std::string commandString = unprocessedString.substr(1, commentStart - 1);
 
     std::vector<std::string> commands = splitStringToStringVector(commandString, "\\|");
 
     int index = -1;
-    if(commands.size() < 2 || !parseString(commands[1], index)) {
+    if (commands.size() < 2 || !parseString(commands[1], index)) {
         return unprocessedString;
-    }         auto iter = origDuneText.find(commands[0]);
+    }
+    auto iter = origDuneText.find(commands[0]);
 
-        if(iter != origDuneText.end()) {
+    if (iter != origDuneText.end()) {
 
-            IndexedTextFile* pIndexedTextFile = iter->second.get();
+        IndexedTextFile* pIndexedTextFile = iter->second.get();
 
+        if (commands[0].compare(0, 5, "DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
 
+            // Dune II 1.0 has 2 titles less
 
-            if(commands[0].compare(0,5,"DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
-
-                // Dune II 1.0 has 2 titles less
-
-                index = std::max((int) 281, index - 2);
-
-            }
-
-
-
-
-
-            std::map<std::string, std::string> mapping;
-
-            for(unsigned int i=2;i<commands.size();i++) {
-
-                std::vector<std::string> parts = splitStringToStringVector(commands[i], "->");
-
-                mapping[parts[0]] = parts[1];
-
-            }
-
-
-
-            localizedString[unprocessedString] = replaceAll(pIndexedTextFile->getString(index), mapping);
-
-
-
-            return localizedString[unprocessedString];
-
-        } else {
-
-            return unprocessedString;
-
+            index = std::max((int)281, index - 2);
         }
 
+        std::map<std::string, std::string> mapping;
 
+        for (unsigned int i = 2; i < commands.size(); i++) {
+
+            std::vector<std::string> parts = splitStringToStringVector(commands[i], "->");
+
+            mapping[parts[0]] = parts[1];
+        }
+
+        localizedString[unprocessedString] = replaceAll(pIndexedTextFile->getString(index), mapping);
+
+        return localizedString[unprocessedString];
+
+    } else {
 
         return unprocessedString;
+    }
 
-   
+    return unprocessedString;
 }
 
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
     origDuneText[filename] = std::make_unique<IndexedTextFile>(pFileManager->openFile(filename).get(), bDecode);
 }
-

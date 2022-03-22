@@ -23,7 +23,7 @@
 class Tank final : public TankBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Tank;
-    using parent = TankBase;
+    using parent                                = TankBase;
 
     Tank(uint32_t objectID, const ObjectInitializer& initializer);
     Tank(uint32_t objectID, const ObjectStreamInitializer& initializer);

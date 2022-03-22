@@ -23,13 +23,12 @@
 class TankBaseConstants : public TrackedUnitConstants {
 public:
     constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0, BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : TrackedUnitConstants{itemID, num_weapons, bullet_id} {
+        : TrackedUnitConstants {itemID, num_weapons, bullet_id} {
         turreted_ = true;
     }
 };
 
-class TankBase : public TrackedUnit
-{
+class TankBase : public TrackedUnit {
 protected:
     TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -39,10 +38,10 @@ public:
 
     ~TankBase() override = 0;
 
-    TankBase(const TankBase &) = delete;
-    TankBase(TankBase &&) = delete;
-    TankBase& operator=(const TankBase &) = delete;
-    TankBase& operator=(TankBase &&) = delete;
+    TankBase(const TankBase&) = delete;
+    TankBase(TankBase&&)      = delete;
+    TankBase& operator=(const TankBase&) = delete;
+    TankBase& operator=(TankBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -68,24 +67,25 @@ protected:
     void turnTurretRight();
 
     // constant for all tanks of the same type
-    FixPoint turretTurnSpeed = 0.0625_fix;        ///< How fast can we turn the turret
+    FixPoint turretTurnSpeed = 0.0625_fix; ///< How fast can we turn the turret
 
     // tank state
-    FixPoint turretAngle;            ///< The angle of the turret
-    ANGLETYPE drawnTurretAngle;       ///< The drawn angle of the turret
+    FixPoint turretAngle;       ///< The angle of the turret
+    ANGLETYPE drawnTurretAngle; ///< The drawn angle of the turret
 
-    ObjectPointer   closeTarget;     ///< a enemy target that can be shot at while moving
+    ObjectPointer closeTarget; ///< a enemy target that can be shot at while moving
 
     // drawing information
-    zoomable_texture turretGraphic{};   ///< The turret graphic
-    int              gunGraphicID = -1; ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic {}; ///< The turret graphic
+    int gunGraphicID = -1;             ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 template<>
 inline TankBase* dune_cast(ObjectBase* base) {
     auto* unit = dune_cast<UnitBase>(base);
 
-    if(unit && unit->isTurreted()) return static_cast<TankBase*>(unit);
+    if (unit && unit->isTurreted())
+        return static_cast<TankBase*>(unit);
 
     return nullptr;
 }
@@ -94,10 +94,10 @@ template<>
 inline const TankBase* dune_cast(const ObjectBase* base) {
     const auto* unit = dune_cast<UnitBase>(base);
 
-    if(unit && unit->isTurreted()) return static_cast<const TankBase*>(unit);
+    if (unit && unit->isTurreted())
+        return static_cast<const TankBase*>(unit);
 
     return nullptr;
 }
-
 
 #endif // TANKBASE_H

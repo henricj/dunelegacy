@@ -27,8 +27,8 @@
 #include <Menu/CampaignStatsMenu.h>
 #include <Menu/CustomGameStatsMenu.h>
 
-#include <CutScenes/Meanwhile.h>
 #include <CutScenes/Finale.h>
+#include <CutScenes/Meanwhile.h>
 
 #include <Game.h>
 #include <GameInitSettings.h>
@@ -43,7 +43,7 @@
     the two global variables drawnMouseX and drawnMouseY.
 */
 void drawCursor() {
-    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
@@ -51,17 +51,17 @@ void drawCursor() {
 
     auto dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
 
-    //reposition image so pointing on right spot
+    // reposition image so pointing on right spot
 
     if (cursorFrame == UI_CursorRight) {
-        dest.x -= dest.w/2;
+        dest.x -= dest.w / 2;
     } else if (cursorFrame == UI_CursorDown) {
-        dest.y -= dest.h/2;
+        dest.y -= dest.h / 2;
     }
 
     if ((cursorFrame == UI_CursorAttack_Zoomlevel0) || (cursorFrame == UI_CursorMove_Zoomlevel0)) {
-        dest.x -= dest.w/2;
-        dest.y -= dest.h/2;
+        dest.x -= dest.w / 2;
+        dest.y -= dest.h / 2;
     }
 
     tex->draw(renderer, dest.x, dest.y);
@@ -138,7 +138,6 @@ const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
 
     return pGFXManager->getSmallDetailPic(newPicID);
 }
-
 
 /**
     This function returns the anim id based on the passed filename.
@@ -239,7 +238,7 @@ Coord getStructureSize(ItemID_enum itemID) {
     \param name the name of the item (e.g. "rocket-turret" or "r-turret".
     \return the id of the item (e.g. Structure_RocketTurret)
 */
-ItemID_enum  getItemIDByName(std::string_view name) {
+ItemID_enum getItemIDByName(std::string_view name) {
     const std::string lowerName = strToLower(name);
 
     // clang-format off
@@ -291,7 +290,6 @@ ItemID_enum  getItemIDByName(std::string_view name) {
 
     return ItemID_Invalid;
 }
-
 
 /**
     This function returns the name of an item id.
@@ -349,7 +347,6 @@ std::string getItemNameByID(ItemID_enum itemID) {
     // clang-format on
 }
 
-
 /**
     This function resolves the name corresponding to one item id.
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
@@ -406,7 +403,6 @@ std::string resolveItemName(ItemID_enum itemID) {
     // clang-format on
 }
 
-
 /**
     This function returns the number of each house providing the house name as a string. The comparison is
     done case-insensitive.
@@ -434,8 +430,8 @@ HOUSETYPE getHouseByName(std::string_view name) {
     \return the name of the house (e.g. "Atreides").
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
-    if(const auto idx = static_cast<int>(house); idx >= 0 && house < HOUSETYPE::NUM_HOUSES) {
-        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)]{
+    if (const auto idx = static_cast<int>(house); idx >= 0 && house < HOUSETYPE::NUM_HOUSES) {
+        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)] {
             "Harkonnen", "Atreides", "Ordos", "Fremen", "Sardaukar", "Mercenary"};
         return houseName[idx];
     }
@@ -461,7 +457,6 @@ ATTACKMODE getAttackModeByName(std::string_view name) {
     // clang-format on
 }
 
-
 std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
     // clang-format off
     switch(attackMode) {
@@ -478,7 +473,6 @@ std::string getAttackModeNameByMode(ATTACKMODE attackMode) {
     }
     // clang-format on
 }
-
 
 uint32_t getColorByTerrainType(TERRAINTYPE terrainType) {
     auto color = COLOR_BLACK;
@@ -500,8 +494,6 @@ uint32_t getColorByTerrainType(TERRAINTYPE terrainType) {
     return color;
 }
 
-
-
 DropLocation getDropLocationByName(std::string_view name) {
     const auto lowerName = strToLower(name);
 
@@ -518,7 +510,6 @@ DropLocation getDropLocationByName(std::string_view name) {
 
     return DropLocation::Drop_Invalid;
 }
-
 
 std::string getDropLocationNameByID(DropLocation dropLocation) {
     // clang-format off
@@ -568,7 +559,6 @@ AITeamBehavior getAITeamBehaviorByName(const std::string& name) {
     return AITeamBehavior::AITeamBehavior_Invalid;
 }
 
-
 std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior) {
     // clang-format off
     switch(aiTeamBehavior) {
@@ -581,7 +571,6 @@ std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior) {
     }
     // clang-format on
 }
-
 
 AITeamType getAITeamTypeByName(const std::string& name) {
     const auto lowerName = strToLower(name);
@@ -598,7 +587,6 @@ AITeamType getAITeamTypeByName(const std::string& name) {
     return AITeamType::AITeamType_Invalid;
 }
 
-
 std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
     // clang-format off
     switch(aiTeamType) {
@@ -614,7 +602,6 @@ std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
     // clang-format on
 }
 
-
 /**
     This function returns the house-dependent weakness of a unit to get deviated
     \param  house   the house of the unit (choose the real owner);
@@ -623,7 +610,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // so that Ordos is playable for Humans
-    if(currentGame->gameType == GameType::CustomGame || currentGame->gameType == GameType::CustomMultiplayer) {
+    if (currentGame->gameType == GameType::CustomGame || currentGame->gameType == GameType::CustomMultiplayer) {
         return 1.00_fix;
     }
 
@@ -640,8 +627,6 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     // clang-format on
 }
 
-
-
 /**
     Starts a game replay
     \param  filename    the filename of the replay file
@@ -655,7 +640,7 @@ void startReplay(const std::filesystem::path& filename) {
 
     currentGame->initReplay(filename);
 
-    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+    const GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
     currentGame->runMainLoop(context);
 
     currentGame.reset();
@@ -663,7 +648,6 @@ void startReplay(const std::filesystem::path& filename) {
     // Change music to menu music
     musicPlayer->changeMusic(MUSIC_MENU);
 }
-
 
 /**
     Starts a new game. If this game is quit it might start another game. This other game is also started from
@@ -675,7 +659,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
     auto cleanup = gsl::finally([&] { currentGame.reset(); });
 
-    while(true) {
+    while (true) {
         // Make sure to delete the old game (if any) before creating a new one since
         // its destructor has global side effects.  If we let std::unique_ptr<> handle
         // this responsibility, then the new Game instance will be constructed before the
@@ -690,18 +674,18 @@ void startSinglePlayerGame(const GameInitSettings& init) {
         // get init settings from game as it might have changed (through loading the game)
         currentGameInitInfo = currentGame->getGameInitSettings();
 
-        GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+        GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
         context.game.runMainLoop(context);
 
         sdl2::log_info("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
 
         bool bGetNext = true;
-        while(bGetNext) {
-            switch(context.game.whatNext()) {
+        while (bGetNext) {
+            switch (context.game.whatNext()) {
                 case GAME_DEBRIEFING_WIN: {
                     sdl2::log_info("Debriefing...");
                     { // Scope
-                        BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN};
+                        BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN};
                         briefing.showMenu();
                     }
 
@@ -713,21 +697,21 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                     const auto houseID = currentGameInitInfo.getHouseID();
 
-                    if(currentGameInitInfo.getGameType() == GameType::Campaign) {
+                    if (currentGameInitInfo.getGameType() == GameType::Campaign) {
                         const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
-                        if(level == 4 && (houseID == HOUSETYPE::HOUSE_HARKONNEN ||
-                                          houseID == HOUSETYPE::HOUSE_ATREIDES || houseID == HOUSETYPE::HOUSE_ORDOS)) {
+                        if (level == 4 && (houseID == HOUSETYPE::HOUSE_HARKONNEN ||
+                                           houseID == HOUSETYPE::HOUSE_ATREIDES || houseID == HOUSETYPE::HOUSE_ORDOS)) {
                             sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, true);
                             meanwhile.run();
-                        } else if(level == 8 &&
-                                  (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES ||
-                                   houseID == HOUSETYPE::HOUSE_ORDOS)) {
+                        } else if (level == 8 &&
+                                   (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES ||
+                                    houseID == HOUSETYPE::HOUSE_ORDOS)) {
                             sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, false);
                             meanwhile.run();
-                        } else if(level == 9) {
+                        } else if (level == 9) {
                             sdl2::log_info("Playing finale.....");
                             Finale finale(houseID);
                             finale.run();
@@ -737,8 +721,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                 case GAME_DEBRIEFING_LOST: {
                     sdl2::log_info("Debriefing...");
-                    BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
-                                          DEBRIEFING_LOST};
+                    BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
+                                           DEBRIEFING_LOST};
                     briefing.showMenu();
                 } break;
 
@@ -783,10 +767,10 @@ void startMultiPlayerGame(const GameInitSettings& init) {
     // get init settings from game as it might have changed (through loading the game)
     currentGameInitInfo = currentGame->getGameInitSettings();
 
-    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+    const GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
     currentGame->runMainLoop(context);
 
-    if(currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
+    if (currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
         sdl2::log_info("Game statistics...");
         CustomGameStatsMenu stats;
         stats.showMenu();

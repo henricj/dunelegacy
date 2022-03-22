@@ -23,12 +23,12 @@
 #include <FileClasses/GFXManager.h>
 
 #include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/TextBox.h>
 #include <GUI/Spacer.h>
+#include <GUI/TextBox.h>
+#include <GUI/VBox.h>
 
-#include <misc/string_util.h>
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 
 #include <limits>
 
@@ -36,7 +36,7 @@
 class DigitsTextBox : public HBox {
 
 public:
-    DigitsTextBox()  {
+    DigitsTextBox() {
         minValue = std::numeric_limits<int>::min();
         maxValue = std::numeric_limits<int>::max();
 
@@ -59,12 +59,12 @@ public:
 
         updateSurfaces();
 
-        addWidget(&buttonVBox,0.0);
+        addWidget(&buttonVBox, 0.0);
     }
 
     ~DigitsTextBox() override {
         // we don't want to get notified because we are then already gone
-        textBox.setOnLostFocus(std::function<void ()>());
+        textBox.setOnLostFocus(std::function<void()>());
     }
 
     /**
@@ -85,9 +85,9 @@ public:
 
         int currentValue = getValue();
 
-        if(currentValue < minValue) {
+        if (currentValue < minValue) {
             setValue(minValue, false);
-        } else if(currentValue > maxValue) {
+        } else if (currentValue > maxValue) {
             setValue(maxValue, false);
         }
 
@@ -106,7 +106,9 @@ public:
 
     int getValue() const {
         int x = 0;
-        if(parseString(textBox.getText(), x)) { return x; }
+        if (parseString(textBox.getText(), x)) {
+            return x;
+        }
         return 0;
     }
 
@@ -114,7 +116,7 @@ public:
         Sets the function that should be called when the value of this digit text box changes.
         \param  pOnValueChange  A function to call on value change
     */
-    void setOnValueChange(std::function<void (bool)> pOnValueChange) {
+    void setOnValueChange(std::function<void(bool)> pOnValueChange) {
         textBox.setOnTextChange(pOnValueChange);
         this->pOnValueChange = pOnValueChange;
     }
@@ -126,23 +128,21 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    bool handleMouseWheel(int32_t x, int32_t y, bool up) override
-    {
-        if((!isEnabled()) || (!isVisible())) {
+    bool handleMouseWheel(int32_t x, int32_t y, bool up) override {
+        if ((!isEnabled()) || (!isVisible())) {
             return true;
         }
 
-        if(x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-            if(up) {
+        if (x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
+            if (up) {
                 onDecrement();
             } else {
                 onIncrement();
             }
 
             return true;
-        }             return true;
-
-       
+        }
+        return true;
     }
 
     /**
@@ -151,38 +151,36 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    Point getMinimumSize() const override
-    {
-        if(textBox.getParent() != this || buttonVBox.getParent() != this) {
+    Point getMinimumSize() const override {
+        if (textBox.getParent() != this || buttonVBox.getParent() != this) {
             // we are about to be destroyed
-            return Point(0,0);
+            return Point(0, 0);
         }
 
-        Point textBoxMinimumSize = textBox.getMinimumSize();
+        Point textBoxMinimumSize    = textBox.getMinimumSize();
         Point buttonVBoxMinimumSize = buttonVBox.getMinimumSize();
 
-        std::string testString(std::max(1,textBox.getMaximumTextLength()), '9');
+        std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
 
-        return Point(   textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize()),
-                        std::max(textBoxMinimumSize.y,buttonVBoxMinimumSize.y) );
+        return Point(textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize()),
+                     std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y));
     }
 
 protected:
     void setValue(int newValue, bool bInteractive) {
         textBox.setText(std::to_string(newValue));
-        if(bInteractive && pOnValueChange) {
+        if (bInteractive && pOnValueChange) {
             pOnValueChange(true);
         }
     }
 
 private:
-
     void onTextBoxLostFocus() {
         int x = 0;
-        if(parseString(textBox.getText(), x)) {
-            if(x < minValue) {
+        if (parseString(textBox.getText(), x)) {
+            if (x < minValue) {
                 setValue(minValue, true);
-            } else if(x > maxValue) {
+            } else if (x > maxValue) {
                 setValue(maxValue, true);
             }
         } else {
@@ -193,9 +191,9 @@ private:
     void onIncrement() {
         int currentValue = getValue();
         currentValue += incrementValue;
-        if(currentValue < minValue) {
+        if (currentValue < minValue) {
             setValue(minValue, true);
-        } else if(currentValue <= maxValue) {
+        } else if (currentValue <= maxValue) {
             setValue(currentValue, true);
         } else {
             setValue(maxValue, true);
@@ -205,41 +203,38 @@ private:
     void onDecrement() {
         int currentValue = getValue();
         currentValue -= incrementValue;
-        if(currentValue > maxValue) {
+        if (currentValue > maxValue) {
             setValue(maxValue, true);
-        } else if(currentValue >= minValue) {
+        } else if (currentValue >= minValue) {
             setValue(currentValue, true);
         } else {
             setValue(minValue, true);
         }
     }
 
-
     void updateSurfaces() {
-        plusButton.setTextures( pGFXManager->getUIGraphic(UI_Plus, house),
-                                pGFXManager->getUIGraphic(UI_Plus_Pressed, house),
-                                pGFXManager->getUIGraphic(UI_Plus_Active, house));
+        plusButton.setTextures(pGFXManager->getUIGraphic(UI_Plus, house),
+                               pGFXManager->getUIGraphic(UI_Plus_Pressed, house),
+                               pGFXManager->getUIGraphic(UI_Plus_Active, house));
 
         minusButton.setTextures(pGFXManager->getUIGraphic(UI_Minus, house),
                                 pGFXManager->getUIGraphic(UI_Minus_Pressed, house),
                                 pGFXManager->getUIGraphic(UI_Minus_Active, house));
     }
 
+    TextBox textBox;
+    VBox buttonVBox;
+    PictureButton plusButton;
+    PictureButton minusButton;
 
-    TextBox         textBox;
-    VBox            buttonVBox;
-    PictureButton   plusButton;
-    PictureButton   minusButton;
+    std::function<void(bool)> pOnValueChange;
 
-    std::function<void (bool)> pOnValueChange;
+    int minValue;
+    int maxValue;
 
-    int             minValue;
-    int             maxValue;
+    int incrementValue;
 
-    int             incrementValue;
-
-    HOUSETYPE       house{HOUSETYPE::HOUSE_HARKONNEN};
+    HOUSETYPE house {HOUSETYPE::HOUSE_HARKONNEN};
 };
-
 
 #endif // DIGITSTEXTBOX_H

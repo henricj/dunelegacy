@@ -20,15 +20,15 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
-#include <Map.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
+#include <Map.h>
 #include <SoundPlayer.h>
 
 #define ORNITHOPTER_FRAMETIME 3
 
 namespace {
-constexpr AirUnitConstants ornithopter_constants{Ornithopter::item_id, 1, Bullet_SmallRocket};
+constexpr AirUnitConstants ornithopter_constants {Ornithopter::item_id, 1, Bullet_SmallRocket};
 } // namespace
 
 Ornithopter::Ornithopter(uint32_t objectID, const ObjectInitializer& initializer)
@@ -54,9 +54,9 @@ void Ornithopter::init() {
     assert(itemID == Unit_Ornithopter);
     owner->incrementUnits(itemID);
 
-    graphicID = ObjPic_Ornithopter;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    shadowGraphic = pGFXManager->getObjPic(ObjPic_OrnithopterShadow,getOwner()->getHouseID());
+    graphicID     = ObjPic_Ornithopter;
+    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    shadowGraphic = pGFXManager->getObjPic(ObjPic_OrnithopterShadow, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 3;
@@ -66,8 +66,7 @@ void Ornithopter::init() {
 
 Ornithopter::~Ornithopter() = default;
 
-void Ornithopter::save(OutputStream& stream) const
-{
+void Ornithopter::save(OutputStream& stream) const {
     parent::save(stream);
 
     stream.writeUint32(timeLastShot);
@@ -76,32 +75,29 @@ void Ornithopter::save(OutputStream& stream) const
 void Ornithopter::checkPos(const GameContext& context) {
     parent::checkPos(context);
 
-    if(!target) {
-        if(destination.isValid()) {
-            if(blockDistance(location, destination) <= 2) {
+    if (!target) {
+        if (destination.isValid()) {
+            if (blockDistance(location, destination) <= 2) {
                 destination.invalidate();
             }
         } else {
-            if(blockDistance(location, guardPoint) > 17) {
+            if (blockDistance(location, guardPoint) > 17) {
                 setDestination(guardPoint);
             }
         }
     }
 
-    drawnFrame = ((context.game.getGameCycleCount() + getObjectID())/ORNITHOPTER_FRAMETIME) % numImagesY;
+    drawnFrame = ((context.game.getGameCycleCount() + getObjectID()) / ORNITHOPTER_FRAMETIME) % numImagesY;
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
-    return (object != nullptr)
-        && !object->isAFlyingUnit()
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
-        && object->isVisible(getOwner()->getTeamID());
+    return (object != nullptr) && !object->isAFlyingUnit() && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm) && object->isVisible(getOwner()->getTeamID());
 }
 
 void Ornithopter::destroy(const GameContext& context) {
     // place wreck
-    if(currentGameMap->tileExists(location)) {
-        auto *pTile = currentGameMap->getTile(location);
+    if (currentGameMap->tileExists(location)) {
+        auto* pTile = currentGameMap->getTile(location);
         pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), Coord(lround(realX), lround(realY)));
     }
 
@@ -109,7 +105,7 @@ void Ornithopter::destroy(const GameContext& context) {
 }
 
 void Ornithopter::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Rocket,location);
+    soundPlayer->playSoundAt(Sound_Rocket, location);
 }
 
 bool Ornithopter::canPassTile(const Tile* pTile) const {
@@ -119,7 +115,7 @@ bool Ornithopter::canPassTile(const Tile* pTile) const {
 FixPoint Ornithopter::getDestinationAngle() const {
     FixPoint angle;
 
-    if(timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
+    if (timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
         // we already shot at target and now want to fly in the opposite direction
         angle = destinationAngleRad(destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2,
                                     realX, realY);
@@ -134,6 +130,8 @@ FixPoint Ornithopter::getDestinationAngle() const {
 bool Ornithopter::attack(const GameContext& context) {
     const auto bAttacked = parent::attack(context);
 
-    if(bAttacked) { timeLastShot = context.game.getGameCycleCount(); }
+    if (bAttacked) {
+        timeLastShot = context.game.getGameCycleCount();
+    }
     return bAttacked;
 }

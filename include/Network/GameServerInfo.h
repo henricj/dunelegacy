@@ -18,8 +18,8 @@
 #ifndef GAMESERVERINFO_H
 #define GAMESERVERINFO_H
 
-#include <misc/SDL2pp.h>
 #include <enet/enet.h>
+#include <misc/SDL2pp.h>
 #include <string>
 
 class GameServerInfo {
@@ -28,10 +28,10 @@ public:
     std::string serverName;
     std::string serverVersion;
     std::string mapName;
-    int         numPlayers;
-    int         maxPlayers;
-    bool        bPasswordProtected;
-    uint32_t    lastUpdate;
+    int numPlayers;
+    int maxPlayers;
+    bool bPasswordProtected;
+    uint32_t lastUpdate;
 
     /**
         Do not compare numPlayers, bPasswordProtected and lastUpdate
@@ -39,11 +39,7 @@ public:
         \return true if equal, false otherwise
     */
     bool operator==(const GameServerInfo& gameServerInfo) const {
-        return ((serverAddress.host == gameServerInfo.serverAddress.host)
-                 && (serverAddress.port == gameServerInfo.serverAddress.port)
-                 && (serverName == gameServerInfo.serverName)
-                 && (mapName == gameServerInfo.mapName)
-                 && (maxPlayers == gameServerInfo.maxPlayers));
+        return ((serverAddress.host == gameServerInfo.serverAddress.host) && (serverAddress.port == gameServerInfo.serverAddress.port) && (serverName == gameServerInfo.serverName) && (mapName == gameServerInfo.mapName) && (maxPlayers == gameServerInfo.maxPlayers));
     }
 };
 

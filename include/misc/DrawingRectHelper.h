@@ -41,7 +41,7 @@ enum class VAlign {
     \param  pSurface    the surface to consider
     \return the width of pSurface
 */
-inline int getWidth(SDL_Surface *pSurface) {
+inline int getWidth(SDL_Surface* pSurface) {
     return pSurface->w;
 }
 
@@ -50,7 +50,7 @@ inline int getWidth(SDL_Surface *pSurface) {
     \param  pSurface    the surface to consider
     \return the height of pSurface
 */
-inline int getHeight(SDL_Surface *pSurface) {
+inline int getHeight(SDL_Surface* pSurface) {
     return pSurface->h;
 }
 
@@ -81,14 +81,18 @@ inline int getHeight(SDL_Texture* pTexture) {
     \param  pTexture    the surface to consider
     \return the width of pTexture
 */
-inline int getWidth(const DuneTexture* pTexture) noexcept { return pTexture->source_.w; }
+inline int getWidth(const DuneTexture* pTexture) noexcept {
+    return pTexture->source_.w;
+}
 
 /**
     Returns the height of this texture
     \param  pTexture    the surface to consider
     \return the height of pTexture
 */
-inline int getHeight(const DuneTexture* pTexture) noexcept { return pTexture->source_.h; }
+inline int getHeight(const DuneTexture* pTexture) noexcept {
+    return pTexture->source_.h;
+}
 
 /**
     Calculates the source rect for drawing the sprite at (row, col) in pSurface.
@@ -99,8 +103,8 @@ inline int getHeight(const DuneTexture* pTexture) noexcept { return pTexture->so
     \param  numRows     the number of sprites per column in pSurface (default is 1)
     \return the rectangle for drawing the specified sprite from pSurface when passed to SDL_BlitSurface
 */
-inline SDL_Rect calcSpriteSourceRect(SDL_Surface *pSurface, int col, int numCols, int row = 0, int numRows = 1) {
-    SDL_Rect rect = { col * (pSurface->w/numCols), row * (pSurface->h/numRows), pSurface->w/numCols, pSurface->h/numRows };
+inline SDL_Rect calcSpriteSourceRect(SDL_Surface* pSurface, int col, int numCols, int row = 0, int numRows = 1) {
+    SDL_Rect rect = {col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols, pSurface->h / numRows};
     return rect;
 }
 
@@ -131,8 +135,8 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     \return the rectangle for drawing the specified sprite from pTexture when passed to SDL_RenderCopy
 */
 inline SDL_Rect calcSpriteSourceRect(const DuneTexture* pTexture, int col, int numCols, int row = 0, int numRows = 1) {
-    const auto w = pTexture->source_.w;
-    const auto h = pTexture->source_.h;
+    const auto w        = pTexture->source_.w;
+    const auto h        = pTexture->source_.h;
     const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
     return rect;
 }
@@ -150,18 +154,18 @@ inline SDL_Rect calcSpriteSourceRect(const DuneTexture* pTexture, int col, int n
     \return the rectangle for drawing pSurface at the specified position when passed to SDL_BlitSurface
 */
 inline SDL_Rect calcSpriteDrawingRect(SDL_Surface* pSurface, int x, int y, int numCols, int numRows = 1, HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
-    SDL_Rect rect = { x, y, pSurface->w/numCols, pSurface->h/numRows };
+    SDL_Rect rect = {x, y, pSurface->w / numCols, pSurface->h / numRows};
 
-    switch(halign) {
-        case HAlign::Left:      /*nothing*/         break;
-        case HAlign::Center:    rect.x -= rect.w/2; break;
-        case HAlign::Right:     rect.x -= rect.w-1; break;
+    switch (halign) {
+        case HAlign::Left: /*nothing*/ break;
+        case HAlign::Center: rect.x -= rect.w / 2; break;
+        case HAlign::Right: rect.x -= rect.w - 1; break;
     }
 
-    switch(valign) {
-        case VAlign::Top:       /*nothing*/         break;
-        case VAlign::Center:    rect.y -= rect.h/2; break;
-        case VAlign::Bottom:    rect.y -= rect.h-1; break;
+    switch (valign) {
+        case VAlign::Top: /*nothing*/ break;
+        case VAlign::Center: rect.y -= rect.h / 2; break;
+        case VAlign::Bottom: rect.y -= rect.h - 1; break;
     }
 
     return rect;
@@ -185,13 +189,13 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int n
     rect.w /= numCols;
     rect.h /= numRows;
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: /*nothing*/ break;
         case HAlign::Center: rect.x -= rect.w / 2; break;
         case HAlign::Right: rect.x -= rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: /*nothing*/ break;
         case VAlign::Center: rect.y -= rect.h / 2; break;
         case VAlign::Bottom: rect.y -= rect.h - 1; break;
@@ -211,22 +215,24 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int n
    SDL_RenderCopy
 */
 inline SDL_FRect calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int numCols, int numRows = 1,
-                                      HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+                                        HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
     int w, h;
     SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
 
-    if (numCols > 1) w /= numCols;
-    if (numRows > 1) h /= numRows;
+    if (numCols > 1)
+        w /= numCols;
+    if (numRows > 1)
+        h /= numRows;
 
-    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+    SDL_FRect rect {static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: /*nothing*/ break;
         case HAlign::Center: rect.x -= rect.w / 2; break;
         case HAlign::Right: rect.x -= rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: /*nothing*/ break;
         case VAlign::Center: rect.y -= rect.h / 2; break;
         case VAlign::Bottom: rect.y -= rect.h - 1; break;
@@ -252,13 +258,13 @@ inline SDL_Rect calcSpriteDrawingRect(const DuneTexture* pTexture, int x, int y,
     rect.w /= numCols;
     rect.h /= numRows;
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: /*nothing*/ break;
         case HAlign::Center: rect.x -= rect.w / 2; break;
         case HAlign::Right: rect.x -= rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: /*nothing*/ break;
         case VAlign::Center: rect.y -= rect.h / 2; break;
         case VAlign::Bottom: rect.y -= rect.h - 1; break;
@@ -278,22 +284,24 @@ inline SDL_Rect calcSpriteDrawingRect(const DuneTexture* pTexture, int x, int y,
    SDL_RenderCopy
 */
 inline SDL_FRect calcSpriteDrawingRectF(const DuneTexture* pTexture, int x, int y, int numCols, int numRows = 1,
-                                      HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+                                        HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
     auto w = pTexture->source_.w;
     auto h = pTexture->source_.h;
 
-    if (numCols > 1) w /= numCols;
-    if (numRows > 1) h /= numRows;
+    if (numCols > 1)
+        w /= numCols;
+    if (numRows > 1)
+        h /= numRows;
 
-    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+    SDL_FRect rect {static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: /*nothing*/ break;
         case HAlign::Center: rect.x -= rect.w / 2; break;
         case HAlign::Right: rect.x -= rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: /*nothing*/ break;
         case VAlign::Center: rect.y -= rect.h / 2; break;
         case VAlign::Bottom: rect.y -= rect.h - 1; break;
@@ -338,7 +346,7 @@ inline SDL_Rect calcDrawingRect(SDL_Texture* pTexture, int x, int y, HAlign hali
    rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
 inline SDL_FRect calcDrawingRectF(SDL_Texture* pTexture, int x, int y, HAlign halign = HAlign::Left,
-                                VAlign valign = VAlign::Top) {
+                                  VAlign valign = VAlign::Top) {
     return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
 }
 
@@ -364,7 +372,7 @@ inline SDL_Rect calcDrawingRect(const DuneTexture* pTexture, int x, int y, HAlig
    rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
 inline SDL_FRect calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAlign::Left,
-                                VAlign valign = VAlign::Top) {
+                                  VAlign valign = VAlign::Top) {
     return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
 }
 
@@ -375,7 +383,7 @@ inline SDL_FRect calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAl
 inline SDL_Rect getRendererSize() {
     SDL_Rect rect = {0, 0, 0, 0};
     SDL_RenderGetLogicalSize(renderer, &rect.w, &rect.h);
-    if(rect.w == 0 || rect.h == 0) {
+    if (rect.w == 0 || rect.h == 0) {
         SDL_GetRendererOutputSize(renderer, &rect.w, &rect.h);
     }
     return rect;
@@ -411,16 +419,16 @@ inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, const SDL_Rect& re
     int x = 0;
     int y = 0;
 
-    switch(halign) {
-        case HAlign::Left:      x = 0;          break;
-        case HAlign::Center:    x = rect.w/2;   break;
-        case HAlign::Right:     x = rect.w-1;   break;
+    switch (halign) {
+        case HAlign::Left: x = 0; break;
+        case HAlign::Center: x = rect.w / 2; break;
+        case HAlign::Right: x = rect.w - 1; break;
     }
 
-    switch(valign) {
-        case VAlign::Top:       y = 0;          break;
-        case VAlign::Center:    y = rect.h/2;   break;
-        case VAlign::Bottom:    y = rect.h-1;   break;
+    switch (valign) {
+        case VAlign::Top: y = 0; break;
+        case VAlign::Center: y = rect.h / 2; break;
+        case VAlign::Bottom: y = rect.h - 1; break;
     }
 
     return calcDrawingRect(pSurface, x, y, halign, valign);
@@ -467,13 +475,13 @@ inline SDL_Rect calcAlignedDrawingRect(SDL_Texture* pTexture, const SDL_Rect& re
     int x = 0;
     int y = 0;
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: x = 0; break;
         case HAlign::Center: x = rect.w / 2; break;
         case HAlign::Right: x = rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: y = 0; break;
         case VAlign::Center: y = rect.h / 2; break;
         case VAlign::Bottom: y = rect.h - 1; break;
@@ -508,13 +516,13 @@ inline SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, const SDL_Re
     int x = 0;
     int y = 0;
 
-    switch(halign) {
+    switch (halign) {
         case HAlign::Left: x = 0; break;
         case HAlign::Center: x = rect.w / 2; break;
         case HAlign::Right: x = rect.w - 1; break;
     }
 
-    switch(valign) {
+    switch (valign) {
         case VAlign::Top: y = 0; break;
         case VAlign::Center: y = rect.h / 2; break;
         case VAlign::Bottom: y = rect.h - 1; break;

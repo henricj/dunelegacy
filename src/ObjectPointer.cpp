@@ -22,46 +22,40 @@
 #include <Game.h>
 #include <ObjectBase.h>
 
-#include "units/UnitBase.h"
 #include "structures/StructureBase.h"
+#include "units/UnitBase.h"
 
-ObjectBase* ObjectPointer::getObjPointer() const
-{
-    if(objectID == NONE_ID || !currentGame) {
+ObjectBase* ObjectPointer::getObjPointer() const {
+    if (objectID == NONE_ID || !currentGame) {
         return nullptr;
     }
 
     auto* ObjPointer = currentGame->getObjectManager().getObject(objectID);
-    if(ObjPointer == nullptr) {
+    if (ObjPointer == nullptr) {
         objectID = NONE_ID;
     }
 
     return ObjPointer;
 }
 
-UnitBase* ObjectPointer::getUnitPointer() const
-{
+UnitBase* ObjectPointer::getUnitPointer() const {
     return dynamic_cast<UnitBase*>(getObjPointer());
 }
 
-StructureBase* ObjectPointer::getStructurePointer() const
-{
+StructureBase* ObjectPointer::getStructurePointer() const {
     return dynamic_cast<StructureBase*>(getObjPointer());
 }
 
-void ObjectPointer::save(OutputStream& stream) const
-{
+void ObjectPointer::save(OutputStream& stream) const {
     stream.writeUint32(objectID);
 }
 
-void ObjectPointer::load(InputStream& stream)
-{
+void ObjectPointer::load(InputStream& stream) {
     pointTo(stream.readUint32());
 }
 
-void ObjectPointer::pointTo(const ObjectBase* newObject)
-{
-    if(newObject != nullptr) {
+void ObjectPointer::pointTo(const ObjectBase* newObject) {
+    if (newObject != nullptr) {
         objectID = newObject->getObjectID();
     } else {
         objectID = NONE_ID;

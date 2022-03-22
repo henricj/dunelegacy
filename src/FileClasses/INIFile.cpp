@@ -19,63 +19,60 @@
 
 #include <misc/exceptions.h>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <algorithm>
 #include <utility>
 
 #include <cctype>
 #include <cstdio>
 
-
 INIFile::INIFileLine::INIFileLine(std::string completeLine, int lineNumber)
- : completeLine(std::move(completeLine)), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
+    : completeLine(std::move(completeLine)), line(lineNumber), nextLine(nullptr), prevLine(nullptr) {
 }
 
 INIFile::INIFileLine::~INIFileLine() = default;
 
 INIFile::Key::Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin, int valuestringlength)
- :  INIFileLine(std::move(completeLine), lineNumber), keyStringBegin(keystringbegin), keyStringLength(keystringlength),
-    valueStringBegin(valuestringbegin), valueStringLength(valuestringlength),
-    nextKey(nullptr), prevKey(nullptr) {
+    : INIFileLine(std::move(completeLine), lineNumber), keyStringBegin(keystringbegin), keyStringLength(keystringlength),
+      valueStringBegin(valuestringbegin), valueStringLength(valuestringlength),
+      nextKey(nullptr), prevKey(nullptr) {
 }
 
 INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
-    : INIFileLine(std::string{keyname} + (bWhitespace ? " = " : "=") +
+    : INIFileLine(std::string {keyname} + (bWhitespace ? " = " : "=") +
                       (bEscapeIfNeeded ? escapeValue(value) : value),
                   INVALID_LINE),
       keyStringBegin(0), keyStringLength(keyname.size()),
-    valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)), valueStringLength(value.size()),
-    nextKey(nullptr), prevKey(nullptr) {
+      valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)), valueStringLength(value.size()),
+      nextKey(nullptr), prevKey(nullptr) {
 }
-
 
 INIFile::Key::~Key() = default;
 
 std::string INIFile::Key::getKeyName() const {
-    return completeLine.substr(keyStringBegin,keyStringLength);
+    return completeLine.substr(keyStringBegin, keyStringLength);
 }
 
-std::string_view INIFile::Key::getStringView() const
-{
-    return std::string_view{&completeLine[valueStringBegin], static_cast<size_t>(valueStringLength)};
+std::string_view INIFile::Key::getStringView() const {
+    return std::string_view {&completeLine[valueStringBegin], static_cast<size_t>(valueStringLength)};
 }
 
 bool INIFile::Key::getBoolValue(bool defaultValue) const {
     std::string value = getStringValue();
-    if(value.empty()) {
+    if (value.empty()) {
         return defaultValue;
     }
 
     // convert string to lower case
-    std::transform(value.begin(),value.end(), value.begin(), static_cast<int(*)(int)>(std::tolower));
+    std::transform(value.begin(), value.end(), value.begin(), static_cast<int (*)(int)>(std::tolower));
 
-    if((value == "true") || (value == "enabled") || (value == "on") || (value == "1")) {
+    if ((value == "true") || (value == "enabled") || (value == "on") || (value == "1")) {
         return true;
-    } if((value == "false") || (value == "disabled") || (value == "off") || (value == "0")) {
+    }
+    if ((value == "false") || (value == "disabled") || (value == "off") || (value == "0")) {
 
         return false;
-
     }
     return defaultValue;
 }
@@ -84,13 +81,13 @@ void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeI
     const auto need_escape = bEscapeIfNeeded ? escapingValueNeeded(newValue) : false;
     const auto is_escaped  = valueStringBegin > 0 ? completeLine[valueStringBegin - 1] == '"' : false;
 
-    if(need_escape == is_escaped) {
+    if (need_escape == is_escaped) {
         completeLine.replace(valueStringBegin, valueStringLength, newValue.data(), newValue.size());
         valueStringLength = newValue.size();
         return;
     }
 
-    if(is_escaped && !need_escape) {
+    if (is_escaped && !need_escape) {
         completeLine.replace(valueStringBegin - 1, valueStringLength + 2, newValue.data(), newValue.size());
         --valueStringBegin;
         valueStringLength = newValue.size();
@@ -101,7 +98,7 @@ void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeI
     completeLine.replace(valueStringBegin, valueStringLength, "\"\"");
     ++valueStringBegin;
     valueStringLength = newValue.size();
-    completeLine.insert(valueStringBegin,newValue.data(), newValue.size());
+    completeLine.insert(valueStringBegin, newValue.data(), newValue.size());
 }
 
 void INIFile::Key::setBoolValue(bool newValue) {
@@ -110,28 +107,28 @@ void INIFile::Key::setBoolValue(bool newValue) {
 
 bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
     // test for non normal char
-    if(value.empty()) return true;
+    if (value.empty())
+        return true;
 
     return std::any_of(value.begin(), value.end(), [](char c) { return !isNormalChar(c); });
 }
 
 std::string INIFile::Key::escapeValue(std::string value) {
-    if(escapingValueNeeded(value)) {
+    if (escapingValueNeeded(value)) {
         return "\"" + value + "\"";
     }
     return value;
 }
 
-
 INIFile::Section::Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength, bool bWhitespace)
- :  INIFileLine(std::move(completeLine), lineNumber), sectionStringBegin(sectionstringbegin), sectionStringLength(sectionstringlength),
-    nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
+    : INIFileLine(std::move(completeLine), lineNumber), sectionStringBegin(sectionstringbegin), sectionStringLength(sectionstringlength),
+      nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
 
 INIFile::Section::Section(std::string_view sectionname, bool bWhitespace)
-    : INIFileLine("[" + std::string{sectionname} + "]", INVALID_LINE), sectionStringBegin(1),
+    : INIFileLine("[" + std::string {sectionname} + "]", INVALID_LINE), sectionStringBegin(1),
       sectionStringLength(sectionname.size()),
-    nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
+      nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
 
 INIFile::Section::~Section() = default;
@@ -144,7 +141,6 @@ INIFile::Section::~Section() = default;
 std::string INIFile::Section::getSectionName() const {
     return completeLine.substr(sectionStringBegin, sectionStringLength);
 }
-
 
 /// Get a key iterator pointing at the first key in this section
 /**
@@ -174,65 +170,64 @@ bool INIFile::Section::hasKey(std::string_view key) const {
 }
 
 INIFile::Key* INIFile::Section::getKey(std::string_view keyname) const {
-    for(INIFile::Key& key : *this) {
+    for (INIFile::Key& key : *this) {
         const auto key_begin = &key.completeLine[key.keyStringBegin];
 
-        if(upper_compare(keyname, std::string_view(key_begin, key.keyStringLength)))
+        if (upper_compare(keyname, std::string_view(key_begin, key.keyStringLength)))
             return &key;
     }
 
     return nullptr;
 }
 
-
 void INIFile::Section::setStringValue(std::string_view key, const std::string& newValue, bool bEscapeIfNeeded) {
-    if(hasKey(key)) {
+    if (hasKey(key)) {
         getKey(key)->setStringValue(newValue, bEscapeIfNeeded);
     } else {
         // create new key
-        if(!isValidKeyName(key)) {
+        if (!isValidKeyName(key)) {
             std::cerr << "INIFile: Cannot create key with name " << key << "!" << std::endl;
             return;
         }
 
         Key* curKey = new Key(key, newValue, bEscapeIfNeeded, bWhitespace);
-        Key* pKey = keyRoot;
-        if(pKey == nullptr) {
+        Key* pKey   = keyRoot;
+        if (pKey == nullptr) {
             // Section has no key yet
-            if(nextLine == nullptr) {
+            if (nextLine == nullptr) {
                 // no line after this section declaration
-                nextLine = curKey;
+                nextLine         = curKey;
                 curKey->prevLine = this;
-                curKey->line = line+1;
+                curKey->line     = line + 1;
             } else {
                 // lines after this section declaration
                 nextLine->prevLine = curKey;
-                curKey->nextLine = nextLine;
-                nextLine = curKey;
-                curKey->prevLine = this;
+                curKey->nextLine   = nextLine;
+                nextLine           = curKey;
+                curKey->prevLine   = this;
 
-                curKey->line = line+1;
+                curKey->line = line + 1;
                 curKey->nextLine->shiftLineNumber(1);
             }
         } else {
             // Section already has some keys
-            while(pKey->nextKey != nullptr) {
+            while (pKey->nextKey != nullptr) {
                 pKey = pKey->nextKey;
             }
 
-            if(pKey->nextLine == nullptr) {
+            if (pKey->nextLine == nullptr) {
                 // no line after this key
-                pKey->nextLine = curKey;
+                pKey->nextLine   = curKey;
                 curKey->prevLine = pKey;
-                curKey->line = pKey->line+1;
+                curKey->line     = pKey->line + 1;
             } else {
                 // lines after this section declaration
                 pKey->nextLine->prevLine = curKey;
-                curKey->nextLine = pKey->nextLine;
-                pKey->nextLine = curKey;
-                curKey->prevLine = pKey;
+                curKey->nextLine         = pKey->nextLine;
+                pKey->nextLine           = curKey;
+                curKey->prevLine         = pKey;
 
-                curKey->line = pKey->line+1;
+                curKey->line = pKey->line + 1;
                 curKey->nextLine->shiftLineNumber(1);
             }
         }
@@ -246,7 +241,7 @@ void INIFile::Section::setIntValue(std::string_view key, int newValue) {
 }
 
 void INIFile::Section::setBoolValue(std::string_view key, bool newValue) {
-    if(newValue) {
+    if (newValue) {
         setStringValue(key, "true", false);
     } else {
         setStringValue(key, "false", false);
@@ -257,15 +252,14 @@ void INIFile::Section::setDoubleValue(std::string_view key, double newValue) {
     setStringValue(key, std::to_string(newValue), false);
 }
 
-
 void INIFile::Section::insertKey(Key* newKey) {
-    if(keyRoot == nullptr) {
+    if (keyRoot == nullptr) {
         // New root element
         keyRoot = newKey;
     } else {
         // insert into list
         Key* curKey = keyRoot;
-        while(curKey->nextKey != nullptr) {
+        while (curKey->nextKey != nullptr) {
             curKey = curKey->nextKey;
         }
 
@@ -273,8 +267,6 @@ void INIFile::Section::insertKey(Key* newKey) {
         newKey->prevKey = curKey;
     }
 }
-
-
 
 // public methods
 
@@ -285,17 +277,15 @@ void INIFile::Section::insertKey(Key* newKey) {
     \param  firstLineComment    A comment to put in the first line (no comment is added for an empty string)
 */
 INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment)
- : bWhitespace(bWhitespace)
-{
+    : bWhitespace(bWhitespace) {
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
-    if(!firstLineComment.empty()) {
-        firstLine = new INIFileLine("; " + std::string{firstLineComment}, 0);
-        auto* blankLine = new INIFileLine("",1);
+    if (!firstLineComment.empty()) {
+        firstLine           = new INIFileLine("; " + std::string {firstLineComment}, 0);
+        auto* blankLine     = new INIFileLine("", 1);
         firstLine->nextLine = blankLine;
         blankLine->prevLine = firstLine;
     }
 }
-
 
 /// Constructor for reading the INI-File from a file.
 /**
@@ -305,12 +295,12 @@ INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment)
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
 */
 INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
- : bWhitespace(bWhitespace) {
+    : bWhitespace(bWhitespace) {
 
-    SDL_RWops * file = nullptr;
+    SDL_RWops* file = nullptr;
 
     // open file
-    if((file = SDL_RWFromFile(filename.u8string().c_str(), "r")) != nullptr) {
+    if ((file = SDL_RWFromFile(filename.u8string().c_str(), "r")) != nullptr) {
         readfile(file);
         SDL_RWclose(file);
     } else {
@@ -323,10 +313,10 @@ INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
     This constructor reads the INI-File from RWopsFile. The RWopsFile can be readonly.
     \param  RWopsFile   Pointer to RWopsFile (can be readonly)
 */
-INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
- : bWhitespace(bWhitespace) {
+INIFile::INIFile(SDL_RWops* RWopsFile, bool bWhitespace)
+    : bWhitespace(bWhitespace) {
 
-    if(RWopsFile == nullptr) {
+    if (RWopsFile == nullptr) {
         THROW(std::invalid_argument, "RWopsFile == nullptr!");
     }
 
@@ -339,16 +329,15 @@ INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
 */
 INIFile::~INIFile() {
     INIFileLine* curLine = firstLine;
-    while(curLine != nullptr) {
+    while (curLine != nullptr) {
         INIFileLine* tmp = curLine;
-        curLine = curLine->nextLine;
+        curLine          = curLine->nextLine;
         delete tmp;
     }
 
     // now we have to delete the "" section
     delete sectionRoot;
 }
-
 
 /**
     This method checks whether the specified section exists.
@@ -359,7 +348,6 @@ bool INIFile::hasSection(std::string_view section) const {
     return (getSectionInternal(section) != nullptr);
 }
 
-
 /**
     This method returns a reference to the section specified by sectionname
     \param  sectionname the name of the section
@@ -368,12 +356,11 @@ bool INIFile::hasSection(std::string_view section) const {
 const INIFile::Section& INIFile::getSection(std::string_view sectionname) const {
     const Section* curSection = getSectionInternal(sectionname);
 
-    if(curSection == nullptr) {
-        throw std::out_of_range("There is no section '" + std::string{sectionname} + "' in this INI file");
+    if (curSection == nullptr) {
+        throw std::out_of_range("There is no section '" + std::string {sectionname} + "' in this INI file");
     }
     return *curSection;
 }
-
 
 /**
     Removes the whole the specified section
@@ -385,33 +372,33 @@ bool INIFile::removeSection(std::string_view sectionname) {
     clearSection(sectionname, false);
 
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return false;
     }
 
-    if(curSection == sectionRoot) {
+    if (curSection == sectionRoot) {
         // the "" section cannot be removed
         firstLine = sectionRoot->nextSection;
     } else {
         // remove line
-        if(curSection->prevLine != nullptr) {
+        if (curSection->prevLine != nullptr) {
             curSection->prevLine->nextLine = curSection->nextLine;
         }
 
-        if(curSection->nextLine != nullptr) {
+        if (curSection->nextLine != nullptr) {
             curSection->nextLine->prevLine = curSection->prevLine;
         }
 
-        if(firstLine == curSection) {
+        if (firstLine == curSection) {
             firstLine = curSection->nextLine;
         }
 
         // remove section from section list
-        if(curSection->prevSection != nullptr) {
+        if (curSection->prevSection != nullptr) {
             curSection->prevSection->nextSection = curSection->nextSection;
         }
 
-        if(curSection->nextSection != nullptr) {
+        if (curSection->nextSection != nullptr) {
             curSection->nextSection->prevSection = curSection->prevSection;
         }
 
@@ -421,7 +408,6 @@ bool INIFile::removeSection(std::string_view sectionname) {
     return true;
 }
 
-
 /**
     Removes all keys from the specified section
     \param  sectionname             the section to clear
@@ -430,46 +416,44 @@ bool INIFile::removeSection(std::string_view sectionname) {
 */
 bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectionEnd) {
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return false;
     }
 
     INIFile::INIFileLine* pCurrentLine = (sectionRoot == curSection) ? firstLine : curSection->nextLine;
 
-    while((pCurrentLine != nullptr) && (pCurrentLine != curSection->nextSection)) {
+    while ((pCurrentLine != nullptr) && (pCurrentLine != curSection->nextSection)) {
         INIFile::INIFileLine* tmp = pCurrentLine->nextLine;
         delete pCurrentLine;
         pCurrentLine = tmp;
     }
 
-    if(sectionRoot == curSection) {
+    if (sectionRoot == curSection) {
         // the "" section header is no line => the first line is the first section header
         firstLine = pCurrentLine;
     } else {
         curSection->nextLine = pCurrentLine;
-        if(pCurrentLine != nullptr) {
+        if (pCurrentLine != nullptr) {
             pCurrentLine->prevLine = curSection;
         }
     }
 
-
     curSection->keyRoot = nullptr;
 
     // now we add one blank line if not last section
-    if(bBlankLineAtSectionEnd && (curSection->nextSection != nullptr)) {
-        auto* blankLine = new INIFileLine("",INVALID_LINE);
-        if(curSection->nextLine != nullptr) {
+    if (bBlankLineAtSectionEnd && (curSection->nextSection != nullptr)) {
+        auto* blankLine = new INIFileLine("", INVALID_LINE);
+        if (curSection->nextLine != nullptr) {
             curSection->nextLine->prevLine = blankLine;
-            blankLine->nextLine = curSection->nextLine;
+            blankLine->nextLine            = curSection->nextLine;
         }
 
         curSection->nextLine = blankLine;
-        blankLine->prevLine = curSection;
+        blankLine->prevLine  = curSection;
     }
 
     return true;
 }
-
 
 /**
     This method checks whether the specified key exists in the specified section.
@@ -479,13 +463,11 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
 */
 bool INIFile::hasKey(const std::string& section, const std::string& key) const {
     const Section* curSection = getSectionInternal(section);
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return false;
-    }         return curSection->hasKey(key);
-
-   
+    }
+    return curSection->hasKey(key);
 }
-
 
 /**
     This method returns a pointer to the key specified by sectionname and keyname
@@ -495,13 +477,12 @@ bool INIFile::hasKey(const std::string& section, const std::string& key) const {
 */
 const INIFile::Key* INIFile::getKey(std::string_view sectionname, std::string_view keyname) const {
     const INIFile::Section* curSection = getSectionInternal(sectionname);
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return nullptr;
     }
 
     return curSection->getKey(keyname);
 }
-
 
 /**
     Removes one key from this ini file
@@ -511,38 +492,38 @@ const INIFile::Key* INIFile::getKey(std::string_view sectionname, std::string_vi
 */
 bool INIFile::removeKey(const std::string& sectionname, const std::string& keyname) {
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return false;
     }
 
     INIFile::Key* key = curSection->getKey(keyname);
-    if(key == nullptr) {
+    if (key == nullptr) {
         return false;
     }
 
     // remove line
-    if(key->prevLine != nullptr) {
+    if (key->prevLine != nullptr) {
         key->prevLine->nextLine = key->nextLine;
     }
 
-    if(key->nextLine != nullptr) {
+    if (key->nextLine != nullptr) {
         key->nextLine->prevLine = key->prevLine;
     }
 
-    if(firstLine == key) {
+    if (firstLine == key) {
         firstLine = key->nextLine;
     }
 
     // remove key from section
-    if(key->prevKey != nullptr) {
+    if (key->prevKey != nullptr) {
         key->prevKey->nextKey = key->nextKey;
     }
 
-    if(key->nextKey != nullptr) {
+    if (key->nextKey != nullptr) {
         key->nextKey->prevKey = key->prevKey;
     }
 
-    if(curSection->keyRoot == key) {
+    if (curSection->keyRoot == key) {
         curSection->keyRoot = key->nextKey;
     }
 
@@ -550,8 +531,6 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
 
     return true;
 }
-
-
 
 /// Reads the string that is addressed by the section/key pair.
 /**
@@ -565,10 +544,11 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
 std::string INIFile::getStringValue(std::string_view section, std::string_view key,
                                     const std::string& defaultValue) const {
     const Key* curKey = getKey(section, key);
-    if(curKey == nullptr) { return defaultValue; }
+    if (curKey == nullptr) {
+        return defaultValue;
+    }
     return curKey->getStringValue();
 }
-
 
 /// Reads the int that is addressed by the section/key pair.
 /**
@@ -582,7 +562,9 @@ std::string INIFile::getStringValue(std::string_view section, std::string_view k
 */
 int INIFile::getIntValue(std::string_view section, std::string_view key, int defaultValue) const {
     const Key* curKey = getKey(section, key);
-    if(curKey == nullptr) { return defaultValue; }
+    if (curKey == nullptr) {
+        return defaultValue;
+    }
     return curKey->getIntValue(defaultValue);
 }
 
@@ -599,7 +581,8 @@ int INIFile::getIntValue(std::string_view section, std::string_view key, int def
 */
 bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool defaultValue) const {
     const Key* curKey = getKey(section, key);
-    if(curKey == nullptr) return defaultValue;
+    if (curKey == nullptr)
+        return defaultValue;
     return curKey->getBoolValue(defaultValue);
 }
 
@@ -615,10 +598,10 @@ bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool 
 */
 float INIFile::getFloatValue(std::string_view section, std::string_view key, float defaultValue) const {
     const Key* curKey = getKey(section, key);
-    if(curKey == nullptr) return defaultValue;
+    if (curKey == nullptr)
+        return defaultValue;
     return curKey->getFloatValue(defaultValue);
 }
-
 
 /// Reads the double that is addressed by the section/key pair.
 /**
@@ -632,7 +615,8 @@ float INIFile::getFloatValue(std::string_view section, std::string_view key, flo
 */
 double INIFile::getDoubleValue(std::string_view section, std::string_view key, double defaultValue) const {
     const Key* curKey = getKey(section, key);
-    if(curKey == nullptr) return defaultValue;
+    if (curKey == nullptr)
+        return defaultValue;
     return curKey->getDoubleValue(defaultValue);
 }
 
@@ -650,7 +634,7 @@ void INIFile::setStringValue(std::string_view section, std::string_view key, std
                              bool bEscapeIfNeeded) {
     Section* curSection = getSectionOrCreate(section);
 
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         std::cerr << "INIFile: Cannot create section with name " << section << "!" << std::endl;
         return;
     }
@@ -697,7 +681,6 @@ void INIFile::setDoubleValue(std::string_view section, std::string_view key, dou
     setStringValue(section, key, std::to_string(value), false);
 }
 
-
 /// Get a section iterator pointing at the first section
 /**
     This method returns a section iterator pointing at the first section (which is the anonymous "" section)
@@ -724,11 +707,10 @@ INIFile::SectionIterator INIFile::end() const {
 */
 INIFile::KeyIterator INIFile::begin(std::string_view section) const {
     const Section* curSection = getSectionInternal(section);
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         return KeyIterator(nullptr);
-    }         return KeyIterator(curSection->keyRoot);
-
-   
+    }
+    return KeyIterator(curSection->keyRoot);
 }
 
 /// Get a key iterator pointing past the end of the specified section
@@ -738,7 +720,7 @@ INIFile::KeyIterator INIFile::begin(std::string_view section) const {
     \return the iterator
 */
 INIFile::KeyIterator INIFile::end(std::string_view section) const {
-    return KeyIterator{};
+    return KeyIterator {};
 }
 
 /// Saves the changes made in the INI-File to a file.
@@ -750,7 +732,7 @@ INIFile::KeyIterator INIFile::end(std::string_view section) const {
     \return true on success otherwise false.
 */
 bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding) const {
-    sdl2::RWops_ptr file{ SDL_RWFromFile(filename.u8string().c_str(), "wb") };
+    sdl2::RWops_ptr file {SDL_RWFromFile(filename.u8string().c_str(), "wb")};
 
     if (!file) {
         return false;
@@ -766,25 +748,25 @@ bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLine
     \param  file    SDL_RWops that is used for writing. (Cannot be readonly)
     \return true on success otherwise false.
 */
-bool INIFile::saveChangesTo(SDL_RWops * file, bool bDOSLineEnding) const {
+bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
     INIFileLine* curLine = firstLine;
 
     bool error = false;
-    while(curLine != nullptr) {
+    while (curLine != nullptr) {
         unsigned int written = SDL_RWwrite(file, curLine->completeLine.c_str(), 1, curLine->completeLine.size());
-        if(written != curLine->completeLine.size()) {
+        if (written != curLine->completeLine.size()) {
             std::cout << SDL_GetError() << std::endl;
             error = true;
         }
 
-        if(bDOSLineEnding) {
+        if (bDOSLineEnding) {
             // when dos line ending we also put it at the end of the file
-            if((written = SDL_RWwrite(file,"\r\n",2,1)) != 1) {
+            if ((written = SDL_RWwrite(file, "\r\n", 2, 1)) != 1) {
                 error = true;
             }
-        } else if(curLine->nextLine != nullptr) {
+        } else if (curLine->nextLine != nullptr) {
             // when no dos line ending we skip the ending at the last line
-            if((written = SDL_RWwrite(file,"\n",1,1)) != 1) {
+            if ((written = SDL_RWwrite(file, "\n", 1, 1)) != 1) {
                 error = true;
             }
         }
@@ -799,86 +781,85 @@ bool INIFile::saveChangesTo(SDL_RWops * file, bool bDOSLineEnding) const {
 void INIFile::flush() const {
     INIFileLine* curLine = firstLine;
 
-    while(curLine != nullptr) {
+    while (curLine != nullptr) {
         std::cout << curLine->completeLine << std::endl;
         curLine = curLine->nextLine;
     }
 }
 
-void INIFile::readfile(SDL_RWops * file) {
+void INIFile::readfile(SDL_RWops* file) {
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
 
     Section* curSection = sectionRoot;
 
     std::string completeLine;
-    int lineNum = 0;
-    INIFileLine* curLine = nullptr;
+    int lineNum                 = 0;
+    INIFileLine* curLine        = nullptr;
     INIFileLine* newINIFileLine = nullptr;
-    Section* newSection = nullptr;
-    Key* newKey = nullptr;
+    Section* newSection         = nullptr;
+    Key* newKey                 = nullptr;
 
     bool readfinished = false;
 
-    while(!readfinished) {
+    while (!readfinished) {
         lineNum++;
 
-        completeLine = "";
+        completeLine      = "";
         unsigned char tmp = 0;
 
-        while(true) {
-            size_t readbytes = SDL_RWread(file,&tmp,1,1);
-            if(readbytes == 0) {
+        while (true) {
+            size_t readbytes = SDL_RWread(file, &tmp, 1, 1);
+            if (readbytes == 0) {
                 readfinished = true;
                 break;
-            } if(tmp == '\n') {
+            }
+            if (tmp == '\n') {
 
                 break;
-
             }
-            if(tmp != '\r') {
+            if (tmp != '\r') {
 
                 completeLine += tmp;
-
             }
         }
 
-        const auto* line = (const unsigned char*) completeLine.c_str();
+        const auto* line  = (const unsigned char*)completeLine.c_str();
         bool bSyntaxError = false;
 
-        int ret = getNextChar(line,0);
+        int ret = getNextChar(line, 0);
 
-        if(ret == -1) {
+        if (ret == -1) {
             // empty line or comment
-            newINIFileLine = new INIFileLine(completeLine,lineNum);
+            newINIFileLine = new INIFileLine(completeLine, lineNum);
 
-            if(curLine == nullptr) {
+            if (curLine == nullptr) {
                 firstLine = newINIFileLine;
-                curLine = newINIFileLine;
+                curLine   = newINIFileLine;
             } else {
-                curLine->nextLine = newINIFileLine;
+                curLine->nextLine        = newINIFileLine;
                 newINIFileLine->prevLine = curLine;
-                curLine = newINIFileLine;
+                curLine                  = newINIFileLine;
             }
         } else {
 
-            if(line[ret] == '[') {
+            if (line[ret] == '[') {
                 // section line
-                int sectionstart = ret+1;
-                int sectionend = skipName(line,ret+1);
+                int sectionstart = ret + 1;
+                int sectionend   = skipName(line, ret + 1);
 
-                if((line[sectionend] != ']') || (getNextChar(line,sectionend+1) != -1)) {
+                if ((line[sectionend] != ']') || (getNextChar(line, sectionend + 1) != -1)) {
                     bSyntaxError = true;
                 } else {
                     // valid section line
-                    newSection = new Section(completeLine,lineNum,sectionstart,sectionend-sectionstart,bWhitespace);
+                    newSection = new Section(completeLine, lineNum, sectionstart, sectionend - sectionstart, bWhitespace);
 
-                    if(curLine == nullptr) {
+                    if (curLine == nullptr) {
                         firstLine = newSection;
-                        curLine = newSection;
+                        curLine   = newSection;
                     } else {
-                        curLine->nextLine = newSection;
+                        curLine->nextLine    = newSection;
                         newSection->prevLine = curLine;
-                        curLine = newSection;
+                        curLine              = newSection;
                     }
 
                     insertSection(newSection);
@@ -888,58 +869,58 @@ void INIFile::readfile(SDL_RWops * file) {
 
                 // might be key/value line
                 int keystart = ret;
-                int keyend = skipKey(line,keystart);
+                int keyend   = skipKey(line, keystart);
 
-                if(keystart == keyend) {
+                if (keystart == keyend) {
                     bSyntaxError = true;
                 } else {
-                    ret = getNextChar(line,keyend);
-                    if((ret == -1) ||(line[ret] != '=')) {
+                    ret = getNextChar(line, keyend);
+                    if ((ret == -1) || (line[ret] != '=')) {
                         bSyntaxError = true;
                     } else {
-                        int valuestart = getNextChar(line,ret+1);
-                        if(valuestart == -1) {
+                        int valuestart = getNextChar(line, ret + 1);
+                        if (valuestart == -1) {
                             bSyntaxError = true;
                         } else {
-                            if(line[valuestart] == '"') {
+                            if (line[valuestart] == '"') {
                                 // now get the next '"'
 
-                                int valueend = getNextQuote(line,valuestart+1);
+                                int valueend = getNextQuote(line, valuestart + 1);
 
-                                if((valueend == -1) || (getNextChar(line,valueend+1) != -1)) {
+                                if ((valueend == -1) || (getNextChar(line, valueend + 1) != -1)) {
                                     bSyntaxError = true;
                                 } else {
                                     // valid key/value line
-                                    newKey = new Key(completeLine,lineNum,keystart,keyend-keystart,valuestart+1,valueend-valuestart-1);
+                                    newKey = new Key(completeLine, lineNum, keystart, keyend - keystart, valuestart + 1, valueend - valuestart - 1);
 
-                                    if(firstLine == nullptr) {
+                                    if (firstLine == nullptr) {
                                         firstLine = newKey;
-                                        curLine = newKey;
+                                        curLine   = newKey;
                                     } else {
                                         curLine->nextLine = newKey;
-                                        newKey->prevLine = curLine;
-                                        curLine = newKey;
+                                        newKey->prevLine  = curLine;
+                                        curLine           = newKey;
                                     }
 
                                     curSection->insertKey(newKey);
                                 }
 
                             } else {
-                                int valueend = skipValue(line,valuestart);
+                                int valueend = skipValue(line, valuestart);
 
-                                if(getNextChar(line,valueend) != -1) {
+                                if (getNextChar(line, valueend) != -1) {
                                     bSyntaxError = true;
                                 } else {
                                     // valid key/value line
-                                    newKey = new Key(completeLine,lineNum,keystart,keyend-keystart,valuestart,valueend-valuestart);
+                                    newKey = new Key(completeLine, lineNum, keystart, keyend - keystart, valuestart, valueend - valuestart);
 
-                                    if(firstLine == nullptr) {
+                                    if (firstLine == nullptr) {
                                         firstLine = newKey;
-                                        curLine = newKey;
+                                        curLine   = newKey;
                                     } else {
                                         curLine->nextLine = newKey;
-                                        newKey->prevLine = curLine;
-                                        curLine = newKey;
+                                        newKey->prevLine  = curLine;
+                                        curLine           = newKey;
                                     }
 
                                     curSection->insertKey(newKey);
@@ -948,42 +929,38 @@ void INIFile::readfile(SDL_RWops * file) {
                         }
                     }
                 }
-
             }
         }
 
-        if(bSyntaxError) {
-            if(completeLine.size() < 100) {
+        if (bSyntaxError) {
+            if (completeLine.size() < 100) {
                 // there are some buggy ini-files which have a lot of waste at the end of the file
                 // and it makes no sense to print all this stuff out. just skip it
                 std::cerr << "INIFile: Syntax-Error in line " << lineNum << ":" << completeLine << " !" << std::endl;
             }
             // save this line as a comment
-            newINIFileLine = new INIFileLine(completeLine,lineNum);
+            newINIFileLine = new INIFileLine(completeLine, lineNum);
 
-            if(curLine == nullptr) {
+            if (curLine == nullptr) {
                 firstLine = newINIFileLine;
-                curLine = newINIFileLine;
+                curLine   = newINIFileLine;
             } else {
-                curLine->nextLine = newINIFileLine;
+                curLine->nextLine        = newINIFileLine;
                 newINIFileLine->prevLine = curLine;
-                curLine = newINIFileLine;
+                curLine                  = newINIFileLine;
             }
         }
-
-
-
     }
 }
 
 void INIFile::insertSection(Section* newSection) {
-    if(sectionRoot == nullptr) {
+    if (sectionRoot == nullptr) {
         // New root element
         sectionRoot = newSection;
     } else {
         // insert into list
         Section* curSection = sectionRoot;
-        while(curSection->nextSection != nullptr) {
+        while (curSection->nextSection != nullptr) {
             curSection = curSection->nextSection;
         }
 
@@ -992,53 +969,50 @@ void INIFile::insertSection(Section* newSection) {
     }
 }
 
-
 const INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname) const {
-    
-    for(Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
+
+    for (Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
         const auto cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
 
-        if(upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))
+        if (upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))
             return curSection;
     }
 
     return nullptr;
 }
 
-
 INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
 
-    if(curSection == nullptr) {
+    if (curSection == nullptr) {
         // create new section
 
-        if(!isValidSectionName(sectionname)) {
+        if (!isValidSectionName(sectionname)) {
             std::cerr << "INIFile: Cannot create section with name " << sectionname << "!" << std::endl;
             return nullptr;
         }
 
         curSection = new Section(sectionname, bWhitespace);
 
-        if(firstLine == nullptr) {
+        if (firstLine == nullptr) {
             firstLine = curSection;
         } else {
             INIFileLine* curLine = firstLine;
-            while(curLine->nextLine != nullptr) {
+            while (curLine->nextLine != nullptr) {
                 curLine = curLine->nextLine;
             }
 
-
-            if(!curLine->completeLine.empty()) {
+            if (!curLine->completeLine.empty()) {
                 // previous line is not a blank line => add one blank line
-                auto* blankLine = new INIFileLine("",INVALID_LINE);
-                curLine->nextLine = blankLine;
+                auto* blankLine     = new INIFileLine("", INVALID_LINE);
+                curLine->nextLine   = blankLine;
                 blankLine->prevLine = curLine;
 
-                blankLine->nextLine = curSection;
+                blankLine->nextLine  = curSection;
                 curSection->prevLine = blankLine;
             } else {
                 // previous line is an empty line => directly add new section
-                curLine->nextLine = curSection;
+                curLine->nextLine    = curSection;
                 curSection->prevLine = curLine;
             }
 
@@ -1050,45 +1024,44 @@ INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
     return curSection;
 }
 
-
 bool INIFile::isValidSectionName(std::string_view sectionname) {
-    for(char i : sectionname) {
-        if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
+    for (char i : sectionname) {
+        if ((!isNormalChar(i)) && (!isWhitespace(i))) {
             return false;
         }
     }
 
-    return !(isWhitespace(sectionname[0]) || isWhitespace(sectionname[sectionname.size()-1]));
+    return !(isWhitespace(sectionname[0]) || isWhitespace(sectionname[sectionname.size() - 1]));
 }
 
 bool INIFile::isValidKeyName(std::string_view keyname) {
-    for(auto i : keyname) {
-        if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
+    for (auto i : keyname) {
+        if ((!isNormalChar(i)) && (!isWhitespace(i))) {
             return false;
         }
     }
 
-    return !(isWhitespace(keyname[0]) || isWhitespace(keyname[keyname.size()-1]));
+    return !(isWhitespace(keyname[0]) || isWhitespace(keyname[keyname.size() - 1]));
 }
 
 int INIFile::getNextChar(const unsigned char* line, int startpos) {
-    while(line[startpos] != '\0') {
-        if((line[startpos] == ';') || (line[startpos] == '#')) {
+    while (line[startpos] != '\0') {
+        if ((line[startpos] == ';') || (line[startpos] == '#')) {
             // comment
             return -1;
-        } if(!isWhitespace(line[startpos])) {
+        }
+        if (!isWhitespace(line[startpos])) {
 
             return startpos;
-
         }
         startpos++;
     }
     return -1;
 }
 
-int INIFile::skipName(const unsigned char* line,int startpos) {
-    while(line[startpos] != '\0') {
-        if(isNormalChar(line[startpos]) || (line[startpos] == ' ') || (line[startpos] == '\t')) {
+int INIFile::skipName(const unsigned char* line, int startpos) {
+    while (line[startpos] != '\0') {
+        if (isNormalChar(line[startpos]) || (line[startpos] == ' ') || (line[startpos] == '\t')) {
             startpos++;
         } else {
             return startpos;
@@ -1097,12 +1070,12 @@ int INIFile::skipName(const unsigned char* line,int startpos) {
     return startpos;
 }
 
-int INIFile::skipValue(const unsigned char* line,int startpos) {
+int INIFile::skipValue(const unsigned char* line, int startpos) {
     int i = startpos;
-    while(line[i] != '\0') {
-        if(isNormalChar(line[i]) || isWhitespace(line[i])) {
+    while (line[i] != '\0') {
+        if (isNormalChar(line[i]) || isWhitespace(line[i])) {
             i++;
-        } else if((line[i] == ';') || (line[i] == '#')) {
+        } else if ((line[i] == ';') || (line[i] == '#')) {
             // begin of a comment
             break;
         } else {
@@ -1112,21 +1085,21 @@ int INIFile::skipValue(const unsigned char* line,int startpos) {
     }
 
     // now we go backwards
-    while(i >= startpos) {
-        if(isNormalChar(line[i])) {
-            return i+1;
+    while (i >= startpos) {
+        if (isNormalChar(line[i])) {
+            return i + 1;
         }
         i--;
     }
-    return startpos+1;
+    return startpos + 1;
 }
 
-int INIFile::skipKey(const unsigned char* line,int startpos) {
+int INIFile::skipKey(const unsigned char* line, int startpos) {
     int i = startpos;
-    while(line[i] != '\0') {
-        if(isNormalChar(line[i]) || isWhitespace(line[i])) {
+    while (line[i] != '\0') {
+        if (isNormalChar(line[i]) || isWhitespace(line[i])) {
             i++;
-        } else if((line[i] == ';') || (line[i] == '#') || (line[i] == '=')) {
+        } else if ((line[i] == ';') || (line[i] == '#') || (line[i] == '=')) {
             // begin of a comment or '='
             break;
         } else {
@@ -1136,18 +1109,18 @@ int INIFile::skipKey(const unsigned char* line,int startpos) {
     }
 
     // now we go backwards
-    while(i >= startpos) {
-        if(isNormalChar(line[i])) {
-            return i+1;
+    while (i >= startpos) {
+        if (isNormalChar(line[i])) {
+            return i + 1;
         }
         i--;
     }
-    return startpos+1;
+    return startpos + 1;
 }
 
-int INIFile::getNextQuote(const unsigned char* line,int startpos) {
-    while(line[startpos] != '\0') {
-        if(line[startpos] != '"') {
+int INIFile::getNextQuote(const unsigned char* line, int startpos) {
+    while (line[startpos] != '\0') {
+        if (line[startpos] != '"') {
             startpos++;
         } else {
             return startpos;
@@ -1165,11 +1138,11 @@ bool INIFile::isNormalChar(unsigned char s) {
 }
 
 bool INIFile::upper_compare(std::string_view s1, std::string_view s2) {
-    if(s1.size() != s2.size())
+    if (s1.size() != s2.size())
         return false;
 
     return std::equal(
-    std::begin(s1), std::end(s1),
-    std::begin(s2), std::end(s2),
-    [](auto a, auto b) { return std::toupper(a) == std::toupper(b); });
+        std::begin(s1), std::end(s1),
+        std::begin(s2), std::end(s2),
+        [](auto a, auto b) { return std::toupper(a) == std::toupper(b); });
 }

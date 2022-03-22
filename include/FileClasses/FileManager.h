@@ -22,10 +22,9 @@
 #include <misc/SDL2pp.h>
 
 #include <filesystem>
+#include <memory>
 #include <string>
-#include <memory>
 #include <vector>
-#include <memory>
 
 /// A class for loading all the PAK-Files.
 /**
@@ -39,7 +38,7 @@ public:
     explicit FileManager();
 
     FileManager(const FileManager& fileManager) = delete;
-    FileManager(FileManager&& fileManager) = delete;
+    FileManager(FileManager&& fileManager)      = delete;
 
     ~FileManager();
 
@@ -61,6 +60,7 @@ public:
     [[nodiscard]] sdl2::RWops_ptr openFile(const std::filesystem::path& filename) const;
 
     [[nodiscard]] bool exists(const std::filesystem::path& filename) const;
+
 private:
     static std::string md5FromFilename(const std::filesystem::path& filename);
 

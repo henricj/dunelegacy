@@ -66,7 +66,7 @@ public:
     protected:
         void shiftLineNumber(int shift) noexcept {
             auto pCurrentLine = this;
-            while(pCurrentLine != nullptr) {
+            while (pCurrentLine != nullptr) {
                 pCurrentLine->line += shift;
                 pCurrentLine = pCurrentLine->nextLine;
             }
@@ -86,18 +86,18 @@ public:
         ~Key() override;
 
         [[nodiscard]] std::string getKeyName() const;
-        [[nodiscard]] std::string getStringValue() const { return std::string{getStringView()}; }
+        [[nodiscard]] std::string getStringValue() const { return std::string {getStringView()}; }
         [[nodiscard]] std::string_view getStringView() const;
 
         [[nodiscard]] bool getBoolValue(bool defaultValue = false) const;
 
         template<typename T>
-        [[nodiscard]] T getValue(T defaultValue = T{}) const noexcept {
+        [[nodiscard]] T getValue(T defaultValue = T {}) const noexcept {
             auto value = getStringView();
-            if(value.empty())
+            if (value.empty())
                 return defaultValue;
 
-            if(value.front() == '+')
+            if (value.front() == '+')
                 value.remove_prefix(1);
 
             auto ret = defaultValue;
@@ -108,18 +108,18 @@ public:
 #ifdef NEED_FLOAT_FROM_CHARS
         [[nodiscard]] auto getValue(float defaultValue) const noexcept -> float {
             auto view = getStringView();
-            if(view.empty())
+            if (view.empty())
                 return defaultValue;
 
-            if(view.front() == '+')
+            if (view.front() == '+')
                 view.remove_prefix(1);
 
-            const std::string str{view};
+            const std::string str {view};
 
             char* end;
             auto result = std::strtof(str.c_str(), &end);
 
-            if(HUGE_VALF == result || end == str.c_str())
+            if (HUGE_VALF == result || end == str.c_str())
                 return defaultValue;
 
             return result;
@@ -129,18 +129,18 @@ public:
 #ifdef NEED_DOUBLE_FROM_CHARS
         [[nodiscard]] auto getValue(double defaultValue) const noexcept -> double {
             auto view = getStringView();
-            if(view.empty())
+            if (view.empty())
                 return defaultValue;
 
-            if(view.front() == '+')
+            if (view.front() == '+')
                 view.remove_prefix(1);
 
-            const std::string str{view};
+            const std::string str {view};
 
             char* end;
             auto result = std::strtod(str.c_str(), &end);
 
-            if(HUGE_VAL == result || end == str.c_str())
+            if (HUGE_VAL == result || end == str.c_str())
                 return defaultValue;
 
             return result;
@@ -159,7 +159,7 @@ public:
             std::array<char, 128> buffer;
             const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
 
-            setStringValue(std::string_view{&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
+            setStringValue(std::string_view {&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
         }
 
 #ifdef NEED_FLOAT_TO_CHARS
@@ -200,9 +200,11 @@ public:
 
     class KeyIterator {
     public:
-        KeyIterator() noexcept : key(nullptr) { }
+        KeyIterator() noexcept
+            : key(nullptr) { }
 
-        explicit KeyIterator(Key* pKey) noexcept : key(pKey) { }
+        explicit KeyIterator(Key* pKey) noexcept
+            : key(pKey) { }
 
         Key& operator*() const noexcept { return *key; }
 
@@ -213,7 +215,7 @@ public:
         bool operator!=(const KeyIterator& other) const noexcept { return !(operator==(other)); }
 
         void operator++() {
-            if(key != nullptr) {
+            if (key != nullptr) {
                 key = key->nextKey;
             }
         }
@@ -257,9 +259,11 @@ public:
 
     class SectionIterator {
     public:
-        SectionIterator() noexcept : section(nullptr) { }
+        SectionIterator() noexcept
+            : section(nullptr) { }
 
-        explicit SectionIterator(Section* pSection) noexcept : section(pSection) { }
+        explicit SectionIterator(Section* pSection) noexcept
+            : section(pSection) { }
 
         Section& operator*() const noexcept { return *section; }
 
@@ -270,7 +274,7 @@ public:
         bool operator!=(const SectionIterator& other) const noexcept { return !(operator==(other)); }
 
         void operator++() noexcept {
-            if(section != nullptr) {
+            if (section != nullptr) {
                 section = section->nextSection;
             }
         }
@@ -322,8 +326,8 @@ public:
     bool saveChangesTo(SDL_RWops* file, bool bDOSLineEnding = false) const;
 
 private:
-    INIFileLine* firstLine{};
-    Section* sectionRoot{};
+    INIFileLine* firstLine {};
+    Section* sectionRoot {};
     bool bWhitespace;
 
     void flush() const;

@@ -22,9 +22,8 @@
 
 #include <algorithm>
 
-
-TextView::TextView()  {
-    Widget::enableResizing(true,true);
+TextView::TextView() {
+    Widget::enableResizing(true, true);
 
     resize(TextView::getMinimumSize().x, TextView::getMinimumSize().y);
 }
@@ -32,16 +31,16 @@ TextView::TextView()  {
 TextView::~TextView() = default;
 
 void TextView::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x,y,insideOverlay);
+    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x, y, insideOverlay);
 }
 
 bool TextView::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x,y,pressed);
+    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
 }
 
-bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up)  {
+bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up) {
     // forward mouse wheel event to scrollbar
-    return scrollbar.handleMouseWheel(0,0,up);
+    return scrollbar.handleMouseWheel(0, 0, up);
 }
 
 bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -52,36 +51,36 @@ bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void TextView::draw(Point position) {
-    if(!isVisible()) {
+    if (!isVisible()) {
         return;
     }
 
     updateTextures();
 
-    if(pBackground != nullptr) {
+    if (pBackground != nullptr) {
         SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
-    if(pForeground != nullptr) {
+    if (pForeground != nullptr) {
         int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
-        SDL_Rect src = {    0,
-                            scrollbar.getCurrentValue() * lineHeight,
-                            getWidth(pForeground.get()),
-                            std::min(getHeight(pForeground.get()), getSize().y - 2) };
+        SDL_Rect src = {0,
+                        scrollbar.getCurrentValue() * lineHeight,
+                        getWidth(pForeground.get()),
+                        std::min(getHeight(pForeground.get()), getSize().y - 2)};
 
-        SDL_Rect dest = {   position.x + 2,
-                            position.y + 1,
-                            getWidth(pForeground.get()),
-                            std::min(getHeight(pForeground.get()), getSize().y - 2) };
+        SDL_Rect dest = {position.x + 2,
+                         position.y + 1,
+                         getWidth(pForeground.get()),
+                         std::min(getHeight(pForeground.get()), getSize().y - 2)};
         Dune_RenderCopy(renderer, pForeground.get(), &src, &dest);
     }
 
     Point scrollBarPos = position;
     scrollBarPos.x += getSize().x - scrollbar.getSize().x;
 
-    if(!bAutohideScrollbar || (scrollbar.getRangeMin() != scrollbar.getRangeMax())) {
+    if (!bAutohideScrollbar || (scrollbar.getRangeMin() != scrollbar.getRangeMax())) {
         scrollbar.draw(scrollBarPos);
     }
 }
@@ -89,9 +88,9 @@ void TextView::draw(Point position) {
 void TextView::resize(uint32_t width, uint32_t height) {
     invalidateTextures();
 
-    scrollbar.resize(scrollbar.getMinimumSize().x,height);
+    scrollbar.resize(scrollbar.getMinimumSize().x, height);
 
-    int fontSize = this->fontSize;
+    int fontSize                       = this->fontSize;
     std::vector<std::string> textLines = greedyWordWrap(text,
                                                         getSize().x - scrollbar.getSize().x - 4,
                                                         [fontSize](std::string_view tmp) {
@@ -100,28 +99,28 @@ void TextView::resize(uint32_t width, uint32_t height) {
 
     int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
-    int numVisibleLines = height/lineHeight;
-    scrollbar.setRange(0,std::max(0, ((int) textLines.size()) - numVisibleLines));
-    scrollbar.setBigStepSize(std::max(1, numVisibleLines-1));
+    int numVisibleLines = height / lineHeight;
+    scrollbar.setRange(0, std::max(0, ((int)textLines.size()) - numVisibleLines));
+    scrollbar.setBigStepSize(std::max(1, numVisibleLines - 1));
 
-    Widget::resize(width,height);
+    Widget::resize(width, height);
 }
 
 void TextView::updateTextures() {
-    if(pBackground == nullptr) {
+    if (pBackground == nullptr) {
         pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
     }
 
-    if(pForeground == nullptr) {
-        int fontSize = this->fontSize;
+    if (pForeground == nullptr) {
+        int fontSize                       = this->fontSize;
         std::vector<std::string> textLines = greedyWordWrap(text,
                                                             getSize().x - scrollbar.getSize().x - 4,
                                                             [fontSize](std::string_view tmp) {
                                                                 return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
                                                             });
 
-        int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+        int lineHeight  = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
         int labelHeight = lineHeight * textLines.size() + 2;
-        pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x-4,labelHeight,textLines,fontSize,alignment,textcolor,textshadowcolor,backgroundcolor));
+        pForeground     = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
     }
 }

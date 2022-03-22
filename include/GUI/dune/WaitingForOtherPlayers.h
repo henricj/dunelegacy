@@ -18,17 +18,16 @@
 #ifndef WAITINGFOROTHERPLAYERS_H
 #define WAITINGFOROTHERPLAYERS_H
 
-#include <GUI/Window.h>
 #include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
 #include <GUI/Label.h>
 #include <GUI/Spacer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 
 #include <algorithm>
 
-class WaitingForOtherPlayers : public Window
-{
+class WaitingForOtherPlayers : public Window {
 public:
     WaitingForOtherPlayers();
     ~WaitingForOtherPlayers() override;
@@ -37,8 +36,6 @@ public:
 
     void update();
 
-
-
 private:
     /**
         This method sets a new text for this window.
@@ -46,15 +43,14 @@ private:
     */
     void setText(const std::string& text) {
         textLabel.setText(text);
-        resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
+        resize(std::max(vbox.getMinimumSize().x, 120), vbox.getMinimumSize().y);
     }
 
-    VBox vbox;                  ///< vertical box
-    HBox hbox;                  ///< horizontal box
-    VBox vbox2;                 ///< inner vertical box;
-    Label textLabel;            ///< label that contains the text
-    TextButton removeButton;    ///< the remove button
+    VBox vbox;               ///< vertical box
+    HBox hbox;               ///< horizontal box
+    VBox vbox2;              ///< inner vertical box;
+    Label textLabel;         ///< label that contains the text
+    TextButton removeButton; ///< the remove button
 };
-
 
 #endif // WAITINGFOROTHERPLAYERS_H

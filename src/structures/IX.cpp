@@ -23,16 +23,18 @@
 #include <House.h>
 
 namespace {
-constexpr StructureBaseConstants ix_constants{IX::item_id, Coord{2, 2}};
+constexpr StructureBaseConstants ix_constants {IX::item_id, Coord {2, 2}};
 }
 
-IX::IX(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
+IX::IX(uint32_t objectID, const ObjectInitializer& initializer)
+    : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 
     setHealth(getMaxHealth());
 }
 
-IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
+IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer)
+    : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 }
 
@@ -40,13 +42,12 @@ void IX::init() {
     assert(itemID == Structure_IX);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_IX;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
+    graphicID      = ObjPic_IX;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 4;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 IX::~IX() = default;
-

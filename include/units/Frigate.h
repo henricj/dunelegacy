@@ -20,11 +20,10 @@
 
 #include <units/AirUnit.h>
 
-class Frigate final : public AirUnit
-{
+class Frigate final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Frigate;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Frigate(uint32_t objectID, const ObjectInitializer& initializer);
     Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer);

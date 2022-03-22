@@ -18,9 +18,9 @@
 #ifndef SCROLLBAR_H
 #define SCROLLBAR_H
 
-#include "Widget.h"
 #include "PictureButton.h"
 #include "TextButton.h"
+#include "Widget.h"
 
 #include <functional>
 
@@ -30,13 +30,13 @@ public:
     /// default constructor
     ScrollBar();
 
-    ScrollBar(const ScrollBar &) = delete;
-    ScrollBar(ScrollBar &&) = delete;
-    ScrollBar& operator=(const ScrollBar &) = delete;
-    ScrollBar& operator=(ScrollBar &&) = delete;
+    ScrollBar(const ScrollBar&) = delete;
+    ScrollBar(ScrollBar&&)      = delete;
+    ScrollBar& operator=(const ScrollBar&) = delete;
+    ScrollBar& operator=(ScrollBar&&) = delete;
 
     /// destructor
-    ~ScrollBar() override ;
+    ~ScrollBar() override;
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -84,8 +84,7 @@ public:
         called if the new size is a valid size for this scroll bar (See getMinumumSize).
         \param  newSize    the new size of this scroll bar
     */
-    void resize(Point newSize) override
-    {
+    void resize(Point newSize) override {
         resize(newSize.x, newSize.y);
     }
 
@@ -102,10 +101,9 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    [[nodiscard]] [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] [[nodiscard]] Point getMinimumSize() const override {
         auto tmp = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize();
-        tmp.y = tmp.y * 3;
+        tmp.y    = tmp.y * 3;
         return tmp;
     }
 
@@ -115,16 +113,16 @@ public:
         \param  maxValue    the maximum value
     */
     void setRange(int minValue, int maxValue) {
-        if(minValue > maxValue) {
+        if (minValue > maxValue) {
             return;
         }
 
         this->minValue = minValue;
         this->maxValue = maxValue;
 
-        if(currentValue < minValue) {
+        if (currentValue < minValue) {
             currentValue = minValue;
-        } else if(currentValue > maxValue) {
+        } else if (currentValue > maxValue) {
             currentValue = maxValue;
         }
 
@@ -167,15 +165,15 @@ public:
     */
     void setCurrentValue(int newValue) {
         currentValue = newValue;
-        if(currentValue < minValue) {
+        if (currentValue < minValue) {
             currentValue = minValue;
-        } else if(currentValue > maxValue) {
+        } else if (currentValue > maxValue) {
             currentValue = maxValue;
         }
 
         updateSliderButton();
 
-        if(pOnChange) {
+        if (pOnChange) {
             pOnChange();
         }
     }
@@ -184,7 +182,7 @@ public:
         Sets the function that should be called when this scroll bar changes its position.
         \param  pOnChange   A function to be called on change
     */
-    void setOnChange(std::function<void ()> pOnChange) {
+    void setOnChange(std::function<void()> pOnChange) {
         this->pOnChange = pOnChange;
     }
 
@@ -203,11 +201,10 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
+    void updateTextures() override {
         Widget::updateTextures();
 
-        if(!pBackground) {
+        if (!pBackground) {
             pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
         }
     }
@@ -215,21 +212,21 @@ protected:
     /**
         This method frees all textures that are used by this scrollbar
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         pBackground.reset();
     }
+
 private:
     void updateSliderButton();
 
     void updateArrowButtonSurface();
 
     void onArrow1() {
-        setCurrentValue(currentValue-1);
+        setCurrentValue(currentValue - 1);
     }
 
     void onArrow2() {
-        setCurrentValue(currentValue+1);
+        setCurrentValue(currentValue + 1);
     }
 
     sdl2::texture_ptr pBackground;
@@ -237,12 +234,12 @@ private:
     PictureButton arrow2;
     TextButton sliderButton;
 
-    std::function<void ()> pOnChange;       ///< function that is called when this scrollbar changes its position
+    std::function<void()> pOnChange; ///< function that is called when this scrollbar changes its position
 
     int currentValue;
     int minValue;
     int maxValue;
-    int bigStepSize;                        ///< the step size when clicking between the arrows and the slider
+    int bigStepSize; ///< the step size when clicking between the arrows and the slider
     Point sliderPosition;
 
     bool bDragSlider;

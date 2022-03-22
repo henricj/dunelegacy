@@ -35,32 +35,29 @@ std::vector<std::string> splitStringToStringVector(const std::string& parseStrin
 std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap) {
 
     std::string result = str;
-    size_t currentPos = 0;
+    size_t currentPos  = 0;
 
-    while(true) {
+    while (true) {
 
         size_t bestNextPos = std::string::npos;
         std::string bestNextKey;
         std::string bestNextValue;
 
-        for(const auto& replacement : replacementMap) {
+        for (const auto& replacement : replacementMap) {
 
             std::string nextKey = replacement.first;
-            size_t nextPos = result.find(nextKey, currentPos);
+            size_t nextPos      = result.find(nextKey, currentPos);
 
-            if((nextPos != std::string::npos)
-                && ( (nextPos < bestNextPos)
-                     || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())) ) ) {
+            if ((nextPos != std::string::npos) && ((nextPos < bestNextPos) || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())))) {
 
                 // best match so far (either smaller position or same position but longer match)
-                bestNextPos = nextPos;
-                bestNextKey = nextKey;
+                bestNextPos   = nextPos;
+                bestNextKey   = nextKey;
                 bestNextValue = replacement.second;
             }
-
         }
 
-        if(bestNextPos == std::string::npos) {
+        if (bestNextPos == std::string::npos) {
             break;
         }
 
@@ -68,7 +65,6 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
         currentPos = bestNextPos + bestNextValue.length();
     }
-
 
     return result;
 }
@@ -81,19 +77,19 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     auto iter = str.cbegin();
 
     size_t currentPos = 0;
-    while( (iter != str.cend()) && (currentPos != pos) ) {
-        auto c = static_cast<unsigned char>( *iter );
+    while ((iter != str.cend()) && (currentPos != pos)) {
+        auto c = static_cast<unsigned char>(*iter);
 
-        if( (c & 0x80) == 0) {
+        if ((c & 0x80) == 0) {
             // 1 byte: 0xxxxxxx
             iter += 1;
-        } else if( (c & 0xE0) == 0xC0) {
+        } else if ((c & 0xE0) == 0xC0) {
             // 2 byte: 110xxxxx 10xxxxxx
             iter += 2;
-        } else if( (c & 0xF0) == 0xE0) {
+        } else if ((c & 0xF0) == 0xE0) {
             // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
             iter += 3;
-        } else if( (c & 0xF8) == 0xF0) {
+        } else if ((c & 0xF8) == 0xF0) {
             // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             iter += 4;
         } else {
@@ -104,20 +100,20 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     }
 
     size_t resultLen = 0;
-    while( (iter != str.cend()) && (resultLen != len) ) {
-        auto c = static_cast<unsigned char>( *iter );
+    while ((iter != str.cend()) && (resultLen != len)) {
+        auto c = static_cast<unsigned char>(*iter);
 
         size_t numBytes = 0;
-        if( (c & 0x80) == 0) {
+        if ((c & 0x80) == 0) {
             // 1 byte: 0xxxxxxx
             numBytes = 1;
-        } else if( (c & 0xE0) == 0xC0) {
+        } else if ((c & 0xE0) == 0xC0) {
             // 2 byte: 110xxxxx 10xxxxxx
             numBytes = 2;
-        } else if( (c & 0xF0) == 0xE0) {
+        } else if ((c & 0xF0) == 0xE0) {
             // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
-            numBytes= 3;
-        } else if( (c & 0xF8) == 0xF0) {
+            numBytes = 3;
+        } else if ((c & 0xF8) == 0xF0) {
             // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             numBytes = 4;
         } else {
@@ -125,7 +121,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
             numBytes = 1;
         }
 
-        while((iter < str.cend()) && (numBytes > 0)) {
+        while ((iter < str.cend()) && (numBytes > 0)) {
             result += *iter;
             numBytes--;
             ++iter;
@@ -137,52 +133,51 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     return result;
 }
 
-
-std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, std::function<int (std::string_view)> pGetTextWidth) {
-    //split text into single lines at every '\n'
+std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::string_view)> pGetTextWidth) {
+    // split text into single lines at every '\n'
     size_t startpos = 0;
-    size_t nextpos = 0;
+    size_t nextpos  = 0;
     std::vector<std::string> hardLines;
     do {
-        nextpos = text.find("\n",startpos);
-        if(nextpos == std::string::npos) {
-            hardLines.emplace_back(text.substr(startpos,text.length()-startpos));
+        nextpos = text.find("\n", startpos);
+        if (nextpos == std::string::npos) {
+            hardLines.emplace_back(text.substr(startpos, text.length() - startpos));
         } else {
-            hardLines.emplace_back(text.substr(startpos,nextpos-startpos));
-            startpos = nextpos+1;
+            hardLines.emplace_back(text.substr(startpos, nextpos - startpos));
+            startpos = nextpos + 1;
         }
-    } while(nextpos != std::string::npos);
+    } while (nextpos != std::string::npos);
 
     std::vector<std::string> textLines;
-    for(const std::string& hardLine : hardLines) {
-        if(hardLine == "") {
+    for (const std::string& hardLine : hardLines) {
+        if (hardLine == "") {
             textLines.emplace_back(" ");
             continue;
         }
 
-        bool bEndOfLine = false;
-        size_t warppos = 0;
+        bool bEndOfLine   = false;
+        size_t warppos    = 0;
         size_t oldwarppos = 0;
-        size_t lastwarp = 0;
+        size_t lastwarp   = 0;
 
-        while(!bEndOfLine) {
-            while(true) {
+        while (!bEndOfLine) {
+            while (true) {
                 warppos = hardLine.find(" ", oldwarppos);
                 std::string tmp;
-                if(warppos == std::string::npos) {
-                    tmp = hardLine.substr(lastwarp,hardLine.length()-lastwarp);
-                    warppos = hardLine.length();
+                if (warppos == std::string::npos) {
+                    tmp        = hardLine.substr(lastwarp, hardLine.length() - lastwarp);
+                    warppos    = hardLine.length();
                     bEndOfLine = true;
                 } else {
-                    tmp = hardLine.substr(lastwarp,warppos-lastwarp);
+                    tmp = hardLine.substr(lastwarp, warppos - lastwarp);
                 }
 
-                if( pGetTextWidth(tmp) > linewidth) {
+                if (pGetTextWidth(tmp) > linewidth) {
                     // this line would be too big => in oldwarppos is the last correct word warp pos
                     bEndOfLine = false;
                     break;
                 } else {
-                    if(bEndOfLine) {
+                    if (bEndOfLine) {
                         oldwarppos = warppos;
                         break;
                     } else {
@@ -191,13 +186,13 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
                 }
             }
 
-            if(oldwarppos == lastwarp) {
+            if (oldwarppos == lastwarp) {
                 // linewidth is too small for the next word => split the word
 
                 warppos = lastwarp;
-                while(true) {
-                    std::string tmp = hardLine.substr(lastwarp,warppos-lastwarp);
-                    if( pGetTextWidth(tmp) > linewidth) {
+                while (true) {
+                    std::string tmp = hardLine.substr(lastwarp, warppos - lastwarp);
+                    if (pGetTextWidth(tmp) > linewidth) {
                         // this line would be too big => in oldwarppos is the last correct warp pos
                         break;
                     } else {
@@ -206,16 +201,16 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
 
                     do {
                         warppos++;
-                    } while((warppos < hardLine.length()) && !utf8IsStartByte(hardLine[warppos]));
+                    } while ((warppos < hardLine.length()) && !utf8IsStartByte(hardLine[warppos]));
 
-                    if(warppos >= hardLine.length()) {
+                    if (warppos >= hardLine.length()) {
                         oldwarppos = hardLine.length();
                         break;
                     }
                 }
 
-                if(warppos != lastwarp) {
-                    textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                if (warppos != lastwarp) {
+                    textLines.push_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                     lastwarp = oldwarppos;
                 } else {
                     // linewidth is too small for the next character => create a dummy entry
@@ -224,7 +219,7 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
                     oldwarppos++;
                 }
             } else {
-                textLines.push_back(hardLine.substr(lastwarp,oldwarppos-lastwarp));
+                textLines.push_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                 lastwarp = oldwarppos;
             }
         }
@@ -233,9 +228,7 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
     return textLines;
 }
 
-
-std::string convertCP850ToUTF8(std::string_view text)
-{
+std::string convertCP850ToUTF8(std::string_view text) {
     // contains the upper half of cp850 (128 - 255)
     static constexpr unsigned char cp850toISO8859_1[] = {
         0xc7, 0xfc, 0xe9, 0xe2, 0xe4, 0xe0, 0xe5, 0xe7, 0xea, 0xeb, 0xe8, 0xef, 0xee, 0xec, 0xc4, 0xc5,
@@ -245,19 +238,18 @@ std::string convertCP850ToUTF8(std::string_view text)
         0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0xe3, 0xc3, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0x3f, 0xa4,
         0xf0, 0xd0, 0xca, 0xcb, 0xc8, 0x3f, 0xcd, 0xce, 0xcf, 0x3f, 0x3f, 0x3f, 0x3f, 0xa6, 0xcc, 0x3f,
         0xd3, 0xdf, 0xd4, 0xd2, 0xf5, 0xd5, 0xb5, 0xfe, 0xde, 0xda, 0xdb, 0xd9, 0xfd, 0xdd, 0xaf, 0xb4,
-        0xad, 0xb1, 0x3f, 0xbe, 0xb6, 0xa7, 0xf7, 0xb8, 0xb0, 0xa8, 0xb7, 0xb9, 0xb3, 0xb2, 0x3f, 0xa0
-    };
+        0xad, 0xb1, 0x3f, 0xbe, 0xb6, 0xa7, 0xf7, 0xb8, 0xb0, 0xa8, 0xb7, 0xb9, 0xb3, 0xb2, 0x3f, 0xa0};
 
     std::string result;
     result.reserve(text.length());
-    for(char i : text) {
+    for (char i : text) {
         auto c = static_cast<unsigned char>(i);
-        if(c == 0x0D) {
+        if (c == 0x0D) {
             result += "\n";
-        } else if(c < 128) {
+        } else if (c < 128) {
             result += c;
         } else {
-            c = cp850toISO8859_1[c-128];
+            c = cp850toISO8859_1[c - 128];
             result += (0xC0 | (c >> 6));
             result += (0x80 | (c & 0x3F));
         }
@@ -265,56 +257,55 @@ std::string convertCP850ToUTF8(std::string_view text)
     return result;
 }
 
-
 std::string decodeString(std::string_view text) {
-    static constexpr char decodeTable1[16] = { ' ','e','t','a','i','n','o','s','r','l','h','c','d','u','p','m' };
-    static constexpr char decodeTable2[16][9] = {   { 't','a','s','i','o',' ','w','b' },
-                                                { ' ','r','n','s','d','a','l','m' },
-                                                { 'h',' ','i','e','o','r','a','s' },
-                                                { 'n','r','t','l','c',' ','s','y' },
-                                                { 'n','s','t','c','l','o','e','r' },
-                                                { ' ','d','t','g','e','s','i','o' },
-                                                { 'n','r',' ','u','f','m','s','w' },
-                                                { ' ','t','e','p','.','i','c','a' },
-                                                { 'e',' ','o','i','a','d','u','r' },
-                                                { ' ','l','a','e','i','y','o','d' },
-                                                { 'e','i','a',' ','o','t','r','u' },
-                                                { 'e','t','o','a','k','h','l','r' },
-                                                { ' ','e','i','u',',','.','o','a' },
-                                                { 'n','s','r','c','t','l','a','i' },
-                                                { 'l','e','o','i','r','a','t','p' },
-                                                { 'e','a','o','i','p',' ','b','m' } };
+    static constexpr char decodeTable1[16]    = {' ', 'e', 't', 'a', 'i', 'n', 'o', 's', 'r', 'l', 'h', 'c', 'd', 'u', 'p', 'm'};
+    static constexpr char decodeTable2[16][9] = {{'t', 'a', 's', 'i', 'o', ' ', 'w', 'b'},
+                                                 {' ', 'r', 'n', 's', 'd', 'a', 'l', 'm'},
+                                                 {'h', ' ', 'i', 'e', 'o', 'r', 'a', 's'},
+                                                 {'n', 'r', 't', 'l', 'c', ' ', 's', 'y'},
+                                                 {'n', 's', 't', 'c', 'l', 'o', 'e', 'r'},
+                                                 {' ', 'd', 't', 'g', 'e', 's', 'i', 'o'},
+                                                 {'n', 'r', ' ', 'u', 'f', 'm', 's', 'w'},
+                                                 {' ', 't', 'e', 'p', '.', 'i', 'c', 'a'},
+                                                 {'e', ' ', 'o', 'i', 'a', 'd', 'u', 'r'},
+                                                 {' ', 'l', 'a', 'e', 'i', 'y', 'o', 'd'},
+                                                 {'e', 'i', 'a', ' ', 'o', 't', 'r', 'u'},
+                                                 {'e', 't', 'o', 'a', 'k', 'h', 'l', 'r'},
+                                                 {' ', 'e', 'i', 'u', ',', '.', 'o', 'a'},
+                                                 {'n', 's', 'r', 'c', 't', 'l', 'a', 'i'},
+                                                 {'l', 'e', 'o', 'i', 'r', 'a', 't', 'p'},
+                                                 {'e', 'a', 'o', 'i', 'p', ' ', 'b', 'm'}};
 
     std::string out;
     out.reserve(text.length());
 
-    for(unsigned int i = 0; i < text.length(); i++) {
+    for (unsigned int i = 0; i < text.length(); i++) {
         unsigned char databyte = text[i];
 
-        if(databyte & 0x80) {
+        if (databyte & 0x80) {
             const unsigned char index1 = (databyte >> 3u) & 0xFu;
             const unsigned char index2 = databyte & 0x7u;
 
             out += decodeTable1[index1];
             out += decodeTable2[index1][index2];
         } else {
-            if(databyte == 0x1B) {
+            if (databyte == 0x1B) {
                 // special character
                 // These characters are encoded as CP850 but from the actual CP850 code 0x7F is subtracted
 
                 i++;
-                if(i == text.length()) {
+                if (i == text.length()) {
                     THROW(std::invalid_argument, "decodeString(): Special character escape sequence at end of string!");
                 }
 
                 const unsigned char special = text[i] + 0x7Fu;
 
                 out += special;
-            } else if(databyte == '\r') {
+            } else if (databyte == '\r') {
                 out += '\n';
-            } else if(databyte == 0x0Cu) {
+            } else if (databyte == 0x0Cu) {
                 out += '\n';
-            } else if(databyte == 0x1Fu) {
+            } else if (databyte == 0x1Fu) {
                 out += '.';
             } else {
                 out += databyte;
@@ -330,16 +321,19 @@ std::string to_hex(gsl::span<const uint8_t> data) {
 
     auto count = -1;
     char buffer[2];
-    for(auto n : data) {
-        if(++count > 7) {
+    for (auto n : data) {
+        if (++count > 7) {
             count = 0;
             s.append(1, '-');
         }
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
-        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+        if (ec != std::errc {}) {
+            THROW(std::runtime_error, "Unable to convert to hex");
+        }
         const auto length = p - std::begin(buffer);
-        if(length > 1) s.append(buffer, 2);
+        if (length > 1)
+            s.append(buffer, 2);
         else {
             s.append(1, '0');
             s.append(std::begin(buffer), 1);
@@ -355,18 +349,21 @@ std::string to_hex(gsl::span<const uint32_t> data) {
 
     auto first = true;
     char buffer[8];
-    for(auto n : data) {
-        if(first) {
+    for (auto n : data) {
+        if (first) {
             first = false;
         } else
             s.append(1, '-');
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
 
-        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+        if (ec != std::errc {}) {
+            THROW(std::runtime_error, "Unable to convert to hex");
+        }
 
         const auto length = p - std::begin(buffer);
-        if(length > 7) s.append(buffer, 8);
+        if (length > 7)
+            s.append(buffer, 8);
         else {
             s.append(8 - length, '0');
             s.append(std::begin(buffer), length);
@@ -382,18 +379,21 @@ std::string to_hex(gsl::span<const uint64_t> data) {
 
     auto first = true;
     char buffer[16];
-    for(auto n : data) {
-        if(first) {
+    for (auto n : data) {
+        if (first) {
             first = false;
         } else
             s.append(1, '-');
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
 
-        if(ec != std::errc{}) { THROW(std::runtime_error, "Unable to convert to hex"); }
+        if (ec != std::errc {}) {
+            THROW(std::runtime_error, "Unable to convert to hex");
+        }
 
         const auto length = p - std::begin(buffer);
-        if(length > 15) s.append(buffer, 16);
+        if (length > 15)
+            s.append(buffer, 16);
         else {
             s.append(16 - length, '0');
             s.append(std::begin(buffer), length);

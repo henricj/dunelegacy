@@ -19,66 +19,64 @@
 
 #include <algorithm>
 
-DoubleSurfaceFunction* Scaler::defaultDoubleSurface = Scaler::doubleSurfaceScale2x;
+DoubleSurfaceFunction* Scaler::defaultDoubleSurface           = Scaler::doubleSurfaceScale2x;
 DoubleTiledSurfaceFunction* Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
 
-DoubleSurfaceFunction* Scaler::defaultTripleSurface = Scaler::tripleSurfaceScale3x;
+DoubleSurfaceFunction* Scaler::defaultTripleSurface           = Scaler::tripleSurfaceScale3x;
 DoubleTiledSurfaceFunction* Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
 
-
 void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
-    switch(scaler) {
+    switch (scaler) {
         case Scaler::ScaleHD: {
-            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceScale2x;
+            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceScale2x;
             Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
-            Scaler::defaultTripleSurface = Scaler::tripleSurfaceScale3x;
+            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceScale3x;
             Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
         } break;
 
         case Scaler::Scale2x:
         default: {
-            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceScale2x;
+            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceScale2x;
             Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
-            Scaler::defaultTripleSurface = Scaler::tripleSurfaceScale3x;
+            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceScale3x;
             Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
         } break;
 
         case Scaler::ScaleNN: {
-            Scaler::defaultDoubleSurface = Scaler::doubleSurfaceNN;
+            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceNN;
             Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceNN;
-            Scaler::defaultTripleSurface = Scaler::tripleSurfaceNN;
+            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceNN;
             Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceNN;
         } break;
     }
 }
 
-namespace
-{
-    template<typename Scale>
-    sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle, Scale&& scale) {
-        if (src == nullptr) {
-            return nullptr;
-        }
-
-        sdl2::surface_ptr src_handle{ freeSrcSurface ? src : nullptr };
-
-        // create new picture surface
-        auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0) };
-        if (returnPic == nullptr) {
-            return nullptr;
-        }
-
-        copySurfaceAttributes(returnPic.get(), src);
-
-        sdl2::surface_lock return_lock{ returnPic.get() };
-        sdl2::surface_lock src_lock{ src };
-
-        //Now we can copy pixel by pixel
-        scale(src, returnPic.get());
-
-        return returnPic;
+namespace {
+template<typename Scale>
+sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle, Scale&& scale) {
+    if (src == nullptr) {
+        return nullptr;
     }
+
+    sdl2::surface_ptr src_handle {freeSrcSurface ? src : nullptr};
+
+    // create new picture surface
+    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+    if (returnPic == nullptr) {
+        return nullptr;
+    }
+
+    copySurfaceAttributes(returnPic.get(), src);
+
+    sdl2::surface_lock return_lock {returnPic.get()};
+    sdl2::surface_lock src_lock {src};
+
+    // Now we can copy pixel by pixel
+    scale(src, returnPic.get());
+
+    return returnPic;
 }
+} // namespace
 
 /**
     This function doubles a surface by making 4 same-colored pixels out of one.
@@ -86,35 +84,34 @@ namespace
     \return the scaled surface
 */
 sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
-    if(src == nullptr) {
+    if (src == nullptr) {
         return nullptr;
     }
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0) };
+    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    sdl2::surface_lock return_lock{ returnPic.get() };
-    sdl2::surface_lock src_lock{ src };
+    sdl2::surface_lock return_lock {returnPic.get()};
+    sdl2::surface_lock src_lock {src};
 
-    //Now we can copy pixel by pixel
-    for(int y = 0; y < src->h;y++) {
-        for(int x = 0; x < src->w; x++) {
-            char val = *( ((char*) (src->pixels)) + y*src->pitch + x);
-            *( ((char*) (returnPic->pixels)) + 2*y*returnPic->pitch + 2*x) = val;
-            *( ((char*) (returnPic->pixels)) + 2*y*returnPic->pitch + 2*x+1) = val;
-            *( ((char*) (returnPic->pixels)) + (2*y+1)*returnPic->pitch + 2*x) = val;
-            *( ((char*) (returnPic->pixels)) + (2*y+1)*returnPic->pitch + 2*x+1) = val;
+    // Now we can copy pixel by pixel
+    for (int y = 0; y < src->h; y++) {
+        for (int x = 0; x < src->w; x++) {
+            char val                                                                     = *(((char*)(src->pixels)) + y * src->pitch + x);
+            *(((char*)(returnPic->pixels)) + 2 * y * returnPic->pitch + 2 * x)           = val;
+            *(((char*)(returnPic->pixels)) + 2 * y * returnPic->pitch + 2 * x + 1)       = val;
+            *(((char*)(returnPic->pixels)) + (2 * y + 1) * returnPic->pitch + 2 * x)     = val;
+            *(((char*)(returnPic->pixels)) + (2 * y + 1) * returnPic->pitch + 2 * x + 1) = val;
         }
     }
 
     return returnPic;
 }
-
 
 /**
     This function is a wrapper around Scaler::doubleSurfaceNN.
@@ -127,47 +124,45 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int
     return doubleSurfaceNN(src);
 }
 
-
 /**
     This function triples a surface by making 9 same-colored pixels out of one.
     \param  src             the source image
     \return the scaled surface
 */
 sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
-    if(src == nullptr) {
+    if (src == nullptr) {
         return nullptr;
     }
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0) };
+    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    sdl2::surface_lock return_lock{ returnPic.get() };
-    sdl2::surface_lock src_lock{ src };
+    sdl2::surface_lock return_lock {returnPic.get()};
+    sdl2::surface_lock src_lock {src};
 
-    //Now we can copy pixel by pixel
-    for(int y = 0; y < src->h;y++) {
-        for(int x = 0; x < src->w; x++) {
-            char val = *( ((char*) (src->pixels)) + y*src->pitch + x);
-            *( ((char*) (returnPic->pixels)) + 3*y*returnPic->pitch + 3*x) = val;
-            *( ((char*) (returnPic->pixels)) + 3*y*returnPic->pitch + 3*x+1) = val;
-            *( ((char*) (returnPic->pixels)) + 3*y*returnPic->pitch + 3*x+2) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+1)*returnPic->pitch + 3*x) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+1)*returnPic->pitch + 3*x+1) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+1)*returnPic->pitch + 3*x+2) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+2)*returnPic->pitch + 3*x) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+2)*returnPic->pitch + 3*x+1) = val;
-            *( ((char*) (returnPic->pixels)) + (3*y+2)*returnPic->pitch + 3*x+2) = val;
+    // Now we can copy pixel by pixel
+    for (int y = 0; y < src->h; y++) {
+        for (int x = 0; x < src->w; x++) {
+            char val                                                                     = *(((char*)(src->pixels)) + y * src->pitch + x);
+            *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x)           = val;
+            *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x + 1)       = val;
+            *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x + 2)       = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 1) * returnPic->pitch + 3 * x)     = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 1) * returnPic->pitch + 3 * x + 1) = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 1) * returnPic->pitch + 3 * x + 2) = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 2) * returnPic->pitch + 3 * x)     = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 2) * returnPic->pitch + 3 * x + 1) = val;
+            *(((char*)(returnPic->pixels)) + (3 * y + 2) * returnPic->pitch + 3 * x + 2) = val;
         }
     }
 
     return returnPic;
 }
-
 
 /**
     This function is a wrapper around Scaler::tripleSurfaceNN.
@@ -180,10 +175,6 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int
     return tripleSurfaceNN(src);
 }
 
-
-
-
-
 /**
     This function doubles a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
     \param  src             the source image
@@ -192,7 +183,6 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int
 sdl2::surface_ptr Scaler::doubleSurfaceScale2x(SDL_Surface* src) {
     return doubleTiledSurfaceScale2x(src, 1, 1);
 }
-
 
 /**
     This function doubles a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
@@ -206,30 +196,28 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    int srcWidth = src->w;
+    int srcWidth  = src->w;
     int srcHeight = src->h;
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*2, srcHeight*2, 8, 0, 0, 0, 0) };
+    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 2, srcHeight * 2, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    auto* srcPixels  = (uint8_t*) src->pixels;
-    auto* destPixels = (uint8_t*) returnPic->pixels;
+    auto* srcPixels  = (uint8_t*)src->pixels;
+    auto* destPixels = (uint8_t*)returnPic->pixels;
 
-    int tileWidth = srcWidth / tilesX;
+    int tileWidth  = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
 
-    sdl2::surface_lock return_lock{ returnPic.get() };
-    sdl2::surface_lock src_lock{ src };
+    sdl2::surface_lock return_lock {returnPic.get()};
+    sdl2::surface_lock src_lock {src};
 
-    for(int j=0;j<tilesY;++j) {
-        for(int i=0;i<tilesX;++i) {
-
-
+    for (int j = 0; j < tilesY; ++j) {
+        for (int i = 0; i < tilesX; ++i) {
 
             /*
 
@@ -246,15 +234,13 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
             */
 
-            for(int y = 0; y < tileHeight; ++y) {
-                for(int x = 0; x < tileWidth; ++x) {
+            for (int y = 0; y < tileHeight; ++y) {
+                for (int x = 0; x < tileWidth; ++x) {
                     uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
                     uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
-                                      i * tileWidth + x));
+                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
                     uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
-                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (
-                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
                     uint8_t E0 = 0;
 
@@ -264,7 +250,7 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
                     uint8_t E3 = 0;
 
-                    if(B != H && D != F) {
+                    if (B != H && D != F) {
                         E0 = (D == B) ? D : E;
                         E1 = (B == F) ? F : E;
                         E2 = (D == H) ? D : E;
@@ -276,19 +262,17 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
                         E3 = E;
                     }
 
-                    *(destPixels + (j*tileHeight+y)*2*returnPic->pitch + (i*tileWidth+x)*2) = E0;
-                    *(destPixels + (j*tileHeight+y)*2*returnPic->pitch + (i*tileWidth+x)*2 + 1) = E1;
-                    *(destPixels + ((j*tileHeight+y)*2+1)*returnPic->pitch + (i*tileWidth+x)*2) = E2;
-                    *(destPixels + ((j*tileHeight+y)*2+1)*returnPic->pitch + (i*tileWidth+x)*2 + 1) = E3;
+                    *(destPixels + (j * tileHeight + y) * 2 * returnPic->pitch + (i * tileWidth + x) * 2)           = E0;
+                    *(destPixels + (j * tileHeight + y) * 2 * returnPic->pitch + (i * tileWidth + x) * 2 + 1)       = E1;
+                    *(destPixels + ((j * tileHeight + y) * 2 + 1) * returnPic->pitch + (i * tileWidth + x) * 2)     = E2;
+                    *(destPixels + ((j * tileHeight + y) * 2 + 1) * returnPic->pitch + (i * tileWidth + x) * 2 + 1) = E3;
                 }
             }
-
         }
     }
 
     return returnPic;
 }
-
 
 /**
     This function triples a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
@@ -298,7 +282,6 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 sdl2::surface_ptr Scaler::tripleSurfaceScale3x(SDL_Surface* src) {
     return tripleTiledSurfaceScale3x(src, 1, 1);
 }
-
 
 /**
     This function triples a surface while smoothing edges (see http://scale2x.sourceforge.net/algorithm.html ).
@@ -312,30 +295,28 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    int srcWidth = src->w;
+    int srcWidth  = src->w;
     int srcHeight = src->h;
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, srcWidth*3, srcHeight*3, 8, 0, 0, 0, 0) };
+    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 3, srcHeight * 3, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    auto* srcPixels  = (uint8_t*) src->pixels;
-    auto* destPixels = (uint8_t*) returnPic->pixels;
+    auto* srcPixels  = (uint8_t*)src->pixels;
+    auto* destPixels = (uint8_t*)returnPic->pixels;
 
-    int tileWidth = srcWidth / tilesX;
+    int tileWidth  = srcWidth / tilesX;
     int tileHeight = srcHeight / tilesY;
 
-    sdl2::surface_lock return_lock{ returnPic.get() };
-    sdl2::surface_lock src_lock{ src };
+    sdl2::surface_lock return_lock {returnPic.get()};
+    sdl2::surface_lock src_lock {src};
 
-    for(int j=0;j<tilesY;++j) {
-        for(int i=0;i<tilesX;++i) {
-
-
+    for (int j = 0; j < tilesY; ++j) {
+        for (int i = 0; i < tilesX; ++i) {
 
             /*
 
@@ -352,23 +333,17 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
             */
 
-            for(int y = 0; y < tileHeight; ++y) {
-                for(int x = 0; x < tileWidth; ++x) {
-                    uint8_t A = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (
-                                      i * tileWidth + std::max(0, x - 1)));
+            for (int y = 0; y < tileHeight; ++y) {
+                for (int x = 0; x < tileWidth; ++x) {
+                    uint8_t A = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
                     uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t C = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (
-                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t C = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
                     uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
                     uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
-                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (
-                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
-                    uint8_t G = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
-                                      i * tileWidth + std::max(0, x - 1)));
-                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
-                                      i * tileWidth + x));
-                    uint8_t I = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (
-                                      i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t G = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
+                    uint8_t I = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
                     uint8_t E0 = 0;
 
@@ -388,7 +363,7 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
                     uint8_t E8 = 0;
 
-                    if(B != H && D != F) {
+                    if (B != H && D != F) {
                         E0 = (D == B) ? D : E;
                         E1 = (((D == B) && (E != C)) || ((B == F) && (E != A))) ? B : E;
                         E2 = (B == F) ? F : E;
@@ -410,22 +385,19 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
                         E8 = E;
                     }
 
-                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3) = E0;
-                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E1;
-                    *(destPixels + (j*tileHeight+y)*3*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E2;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3) = E3;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E4;
-                    *(destPixels + ((j*tileHeight+y)*3+1)*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E5;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3) = E6;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3 + 1) = E7;
-                    *(destPixels + ((j*tileHeight+y)*3+2)*returnPic->pitch + (i*tileWidth+x)*3 + 2) = E8;
+                    *(destPixels + (j * tileHeight + y) * 3 * returnPic->pitch + (i * tileWidth + x) * 3)           = E0;
+                    *(destPixels + (j * tileHeight + y) * 3 * returnPic->pitch + (i * tileWidth + x) * 3 + 1)       = E1;
+                    *(destPixels + (j * tileHeight + y) * 3 * returnPic->pitch + (i * tileWidth + x) * 3 + 2)       = E2;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 1) * returnPic->pitch + (i * tileWidth + x) * 3)     = E3;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 1) * returnPic->pitch + (i * tileWidth + x) * 3 + 1) = E4;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 1) * returnPic->pitch + (i * tileWidth + x) * 3 + 2) = E5;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 2) * returnPic->pitch + (i * tileWidth + x) * 3)     = E6;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 2) * returnPic->pitch + (i * tileWidth + x) * 3 + 1) = E7;
+                    *(destPixels + ((j * tileHeight + y) * 3 + 2) * returnPic->pitch + (i * tileWidth + x) * 3 + 2) = E8;
                 }
             }
-
         }
     }
 
     return returnPic;
 }
-
-

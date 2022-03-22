@@ -18,10 +18,10 @@
 #ifndef ENETHTTP_H
 #define ENETHTTP_H
 
-#include <string>
 #include <map>
+#include <string>
 
-#define PORT_HTTP   80
+#define PORT_HTTP 80
 
 std::string getDomainFromURL(const std::string& url);
 
@@ -29,11 +29,10 @@ std::string getFilePathFromURL(const std::string& url);
 
 int getPortFromURL(const std::string& url);
 
-std::string percentEncode(const std::string & s);
+std::string percentEncode(const std::string& s);
 
 std::string loadFromHttp(const std::string& url, const std::map<std::string, std::string>& parameters = std::map<std::string, std::string>());
 
 std::string loadFromHttp(const std::string& domain, const std::string& filepath, unsigned short port = PORT_HTTP);
-
 
 #endif // ENETHTTP_H

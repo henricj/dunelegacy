@@ -19,38 +19,37 @@
 #include <Menu/CustomGamePlayers.h>
 
 #include <FileClasses/GFXManager.h>
-#include <FileClasses/TextManager.h>
 #include <FileClasses/INIFile.h>
+#include <FileClasses/TextManager.h>
 
-#include <GUI/Spacer.h>
 #include <GUI/GUIStyle.h>
+#include <GUI/Spacer.h>
+#include <GUI/dune/DuneStyle.h>
 #include <GUI/dune/GameOptionsWindow.h>
 #include <GUI/dune/LoadSaveWindow.h>
-#include <GUI/dune/DuneStyle.h>
 
-#include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
+#include <misc/fnkdat.h>
 #include <misc/string_util.h>
 
-#include <INIMap/INIMapPreviewCreator.h>
 #include <GameInitSettings.h>
+#include <INIMap/INIMapPreviewCreator.h>
 
 #include <globals.h>
 
 #include <memory>
 
-
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
- :  bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
+    : bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
     // set up window
-    const auto *pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto* pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
 
-    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
+    windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(bMultiplayer ? (bLANServer ? _("LAN Game") : _("Internet Game")) : _("Custom Game"));
     captionLabel.setAlignment(Alignment_HCenter);
@@ -111,7 +110,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
 
     mainHBox.addWidget(&rightVBox, 180);
     mainHBox.addWidget(Spacer::create(), 0.05);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false) );
+    minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("Choose map"), true, false));
     rightVBox.addWidget(&minimap);
 
     rightVBox.addWidget(VSpacer::create(10));
@@ -146,7 +145,7 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     loadButton.setVisible(bMultiplayer);
     loadButton.setEnabled(bMultiplayer);
     loadButton.setOnClick([this] { onLoad(); });
-;
+    ;
     buttonHBox.addWidget(&loadButton, 0.175);
     buttonHBox.addWidget(Spacer::create(), 0.25);
 
@@ -162,34 +161,32 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
 
 CustomGameMenu::~CustomGameMenu() = default;
 
-
 void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
     auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-    if(pLoadSaveWindow != nullptr) {
+    if (pLoadSaveWindow != nullptr) {
         auto filename = pLoadSaveWindow->getFilename();
 
-        if(filename != "") {
+        if (filename != "") {
             auto savegamedata = readCompleteFile(filename);
 
             auto servername = settings.general.playerName + "'s Game";
             GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata), std::move(servername));
 
             int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
-            if(ret != MENU_QUIT_DEFAULT) {
+            if (ret != MENU_QUIT_DEFAULT) {
                 quit(ret);
             }
         }
     }
 
-    auto *const pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
-    if(pGameOptionsWindow != nullptr) {
+    auto* const pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
+    if (pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
     }
 }
 
-void CustomGameMenu::onNext()
-{
-    if(mapList.getSelectedIndex() < 0) {
+void CustomGameMenu::onNext() {
+    if (mapList.getSelectedIndex() < 0) {
         return;
     }
 
@@ -198,55 +195,51 @@ void CustomGameMenu::onNext()
     getCaseInsensitiveFilename(mapFilename);
 
     GameInitSettings gameInitSettings;
-    if(bMultiplayer) {
+    if (bMultiplayer) {
         std::string servername = settings.general.playerName + "'s Game";
-        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings       = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     } else {
         gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }
 
     int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
-    if(ret != MENU_QUIT_DEFAULT) {
+    if (ret != MENU_QUIT_DEFAULT) {
         quit(ret);
     }
 }
 
-void CustomGameMenu::onCancel()
-{
+void CustomGameMenu::onCancel() {
     quit();
 }
 
-void CustomGameMenu::onLoad()
-{
+void CustomGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("mpsave/", FNKDAT_USER | FNKDAT_CREAT);
     openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
 }
 
-void CustomGameMenu::onGameOptions()
-{
+void CustomGameMenu::onGameOptions() {
     openWindow(GameOptionsWindow::create(currentGameOptions));
 }
 
-void CustomGameMenu::onMapTypeChange(int buttonID)
-{
+void CustomGameMenu::onMapTypeChange(int buttonID) {
     singleplayerMapsButton.setToggleState(buttonID == 0);
     singleplayerUserMapsButton.setToggleState(buttonID == 1);
     multiplayerMapsButton.setToggleState(buttonID == 2);
     multiplayerUserMapsButton.setToggleState(buttonID == 3);
 
-    switch(buttonID) {
+    switch (buttonID) {
         case 0: {
             currentMapDirectory = getDuneLegacyDataDir() / "maps/singleplayer/";
         } break;
         case 1: {
-            auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp]      = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
         case 2: {
             currentMapDirectory = getDuneLegacyDataDir() / "maps/multiplayer/";
         } break;
         case 3: {
-            auto [ok, tmp] = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp]      = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
     }
@@ -255,16 +248,17 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
 
     mapList.clearAllEntries();
 
-    for(const auto& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+    for (const auto& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
         auto name = file.u8string();
-        if(name.size() > 4) name = name.substr(0, name.size() - 4);
+        if (name.size() > 4)
+            name = name.substr(0, name.size() - 4);
         mapList.addEntry(name);
     }
 
-    if(mapList.getNumEntries() > 0) {
+    if (mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
-        minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false) );
+        minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("No map available"), true, false));
         mapPropertySize.setText("");
         mapPropertyPlayers.setText("");
         mapPropertyAuthors.setText("");
@@ -272,11 +266,10 @@ void CustomGameMenu::onMapTypeChange(int buttonID)
     }
 }
 
-void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
-{
+void CustomGameMenu::onMapListSelectionChange(bool bInteractive) {
     nextButton.setEnabled(true);
 
-    if(mapList.getSelectedIndex() < 0) {
+    if (mapList.getSelectedIndex() < 0) {
         return;
     }
 
@@ -290,11 +283,11 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
     int sizeX = 0;
     int sizeY = 0;
 
-    if(inimap.hasKey("MAP","Seed")) {
+    if (inimap.hasKey("MAP", "Seed")) {
         // old map format with seed value
         int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
 
-        switch(mapscale) {
+        switch (mapscale) {
             case 0: {
                 sizeX = 62;
                 sizeY = 62;
@@ -317,8 +310,8 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
         }
     } else {
         // new map format with saved map
-        sizeX = inimap.getIntValue("MAP","SizeX", 0);
-        sizeY = inimap.getIntValue("MAP","SizeY", 0);
+        sizeX = inimap.getIntValue("MAP", "SizeX", 0);
+        sizeY = inimap.getIntValue("MAP", "SizeY", 0);
     }
 
     mapPropertySize.setText(std::to_string(sizeX) + " x " + std::to_string(sizeY));
@@ -327,37 +320,45 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive)
     try {
         INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
-    } catch(...) {
-        pMapSurface = sdl2::surface_ptr{ GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false) };
+    } catch (...) {
+        pMapSurface = sdl2::surface_ptr {GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
         loadButton.setEnabled(false);
     }
-    minimap.setSurface(std::move(pMapSurface) );
+    minimap.setSurface(std::move(pMapSurface));
 
     int numPlayers = 0;
-    if(inimap.hasSection("Atreides")) numPlayers++;
-    if(inimap.hasSection("Ordos")) numPlayers++;
-    if(inimap.hasSection("Harkonnen")) numPlayers++;
-    if(inimap.hasSection("Fremen")) numPlayers++;
-    if(inimap.hasSection("Mercenary")) numPlayers++;
-    if(inimap.hasSection("Sardaukar")) numPlayers++;
-    if(inimap.hasSection("Player1")) numPlayers++;
-    if(inimap.hasSection("Player2")) numPlayers++;
-    if(inimap.hasSection("Player3")) numPlayers++;
-    if(inimap.hasSection("Player4")) numPlayers++;
-    if(inimap.hasSection("Player5")) numPlayers++;
-    if(inimap.hasSection("Player6")) numPlayers++;
+    if (inimap.hasSection("Atreides"))
+        numPlayers++;
+    if (inimap.hasSection("Ordos"))
+        numPlayers++;
+    if (inimap.hasSection("Harkonnen"))
+        numPlayers++;
+    if (inimap.hasSection("Fremen"))
+        numPlayers++;
+    if (inimap.hasSection("Mercenary"))
+        numPlayers++;
+    if (inimap.hasSection("Sardaukar"))
+        numPlayers++;
+    if (inimap.hasSection("Player1"))
+        numPlayers++;
+    if (inimap.hasSection("Player2"))
+        numPlayers++;
+    if (inimap.hasSection("Player3"))
+        numPlayers++;
+    if (inimap.hasSection("Player4"))
+        numPlayers++;
+    if (inimap.hasSection("Player5"))
+        numPlayers++;
+    if (inimap.hasSection("Player6"))
+        numPlayers++;
 
     mapPropertyPlayers.setText(std::to_string(numPlayers));
 
-
-
-    std::string authors = inimap.getStringValue("BASIC","Author", "-");
-    if(authors.size() > 11) {
-        authors = authors.substr(0,9) + "...";
+    std::string authors = inimap.getStringValue("BASIC", "Author", "-");
+    if (authors.size() > 11) {
+        authors = authors.substr(0, 9) + "...";
     }
     mapPropertyAuthors.setText(authors);
 
-
-    mapPropertyLicense.setText(inimap.getStringValue("BASIC","License", "-"));
-
+    mapPropertyLicense.setText(inimap.getStringValue("BASIC", "License", "-"));
 }

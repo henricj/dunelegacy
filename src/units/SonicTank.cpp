@@ -19,16 +19,16 @@
 
 #include <globals.h>
 
-#include <FileClasses/GFXManager.h>
-#include <House.h>
-#include <Game.h>
-#include <Map.h>
 #include <Explosion.h>
+#include <FileClasses/GFXManager.h>
+#include <Game.h>
+#include <House.h>
+#include <Map.h>
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
 namespace {
-constexpr TrackedUnitConstants sonic_tank_constants{SonicTank::item_id, 1, Bullet_Sonic};
+constexpr TrackedUnitConstants sonic_tank_constants {SonicTank::item_id, 1, Bullet_Sonic};
 }
 
 SonicTank::SonicTank(uint32_t objectID, const ObjectInitializer& initializer)
@@ -47,10 +47,10 @@ void SonicTank::init() {
     assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
 
-    graphicID = ObjPic_Tank_Base;
-    gunGraphicID = ObjPic_Sonictank_Gun;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID,getOwner()->getHouseID());
+    graphicID     = ObjPic_Tank_Base;
+    gunGraphicID  = ObjPic_Sonictank_Gun;
+    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -63,8 +63,8 @@ void SonicTank::blitToScreen() {
     const auto y1 = screenborder->world2screenY(realY);
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
@@ -72,23 +72,26 @@ void SonicTank::blitToScreen() {
                                                       Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
     const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto        source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto        dest2          = calcSpriteDrawingRect(
-        pTurretGraphic, screenborder->world2screenX(realX + sonicTankTurretOffset[static_cast<int>(drawnAngle)].x),
-        screenborder->world2screenY(realY + sonicTankTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-        HAlign::Center, VAlign::Center);
+    const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest2                 = calcSpriteDrawingRect(
+                        pTurretGraphic, screenborder->world2screenX(realX + sonicTankTurretOffset[static_cast<int>(drawnAngle)].x),
+                        screenborder->world2screenY(realY + sonicTankTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+                        HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
-    if(isBadlyDamaged()) { drawSmoke(x1, y1); }
+    if (isBadlyDamaged()) {
+        drawSmoke(x1, y1);
+    }
 }
 
 void SonicTank::destroy(const GameContext& context) {
-    if(context.map.tileExists(location) && isVisible()) {
+    if (context.map.tileExists(location) && isVisible()) {
         const Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
-        if(isVisible(getOwner()->getTeamID())) soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+        if (isVisible(getOwner()->getTeamID()))
+            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
     }
 
     parent::destroy(context);
@@ -101,10 +104,10 @@ void SonicTank::handleDamage(const GameContext& context, int damage, uint32_t da
         parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
-bool SonicTank::canAttack(const ObjectBase *object) const {
+bool SonicTank::canAttack(const ObjectBase* object) const {
     return ((object != nullptr) && ObjectBase::canAttack(object) && (object->getItemID() != Unit_SonicTank));
 }
 
 void SonicTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Sonic,location);
+    soundPlayer->playSoundAt(Sound_Sonic, location);
 }

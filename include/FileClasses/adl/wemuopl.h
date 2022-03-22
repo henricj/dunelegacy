@@ -27,38 +27,35 @@ extern "C" {
 #include "woodyopl.h"
 }
 
-class CWemuopl: public Copl
-{
+class CWemuopl : public Copl {
 public:
-  CWemuopl(int rate, bool usestereo)
-    : stereo(usestereo), opl(0)
-    {
-      opl.adlib_init(rate);
-      currType = TYPE_OPL2;
+    CWemuopl(int rate, bool usestereo)
+        : stereo(usestereo), opl(0) {
+        opl.adlib_init(rate);
+        currType = TYPE_OPL2;
     }
 
-  void update(short *buf, int samples) override
-  {
-      //      if(use16bit) samples *= 2;
-      if(stereo) samples *= 2;
-      opl.adlib_getsample(buf, samples);
+    void update(short* buf, int samples) override {
+        //      if(use16bit) samples *= 2;
+        if (stereo)
+            samples *= 2;
+        opl.adlib_getsample(buf, samples);
     }
 
-  // template methods
-  void write(int reg, int val) override
-  {
-      if(currChip != 0)
-    return;
+    // template methods
+    void write(int reg, int val) override {
+        if (currChip != 0)
+            return;
 
-      opl.index = reg;
-      opl.adlib_write(opl.index, val, 0);
+        opl.index = reg;
+        opl.adlib_write(opl.index, val, 0);
     }
 
-  void init() noexcept override { }
+    void init() noexcept override { }
 
 private:
-  bool      stereo;
-  OPLChipClass  opl;
+    bool stereo;
+    OPLChipClass opl;
 };
 
 #endif

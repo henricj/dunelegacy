@@ -23,18 +23,17 @@
 #include <misc/OutputStream.h>
 #include <misc/SDL2pp.h>
 
-class Explosion final
-{
+class Explosion final {
 public:
     Explosion();
     Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     explicit Explosion(InputStream& stream);
     ~Explosion();
 
-    Explosion(const Explosion &) = delete;
-    Explosion(Explosion &&) = delete;
-    Explosion& operator=(const Explosion &) = delete;
-    Explosion& operator=(Explosion &&) = delete;
+    Explosion(const Explosion&) = delete;
+    Explosion(Explosion&&)      = delete;
+    Explosion& operator=(const Explosion&) = delete;
+    Explosion& operator=(Explosion&&) = delete;
 
     void save(OutputStream& stream) const;
 
@@ -43,16 +42,15 @@ public:
     bool update();
 
 private:
-    uint32_t         explosionID;
-    Coord            position;
-    HOUSETYPE        house;
-    zoomable_texture graphic{};
-    int              numFrames = 0;
-    int              currentFrame;
-    int              frameTimer;
+    uint32_t explosionID;
+    Coord position;
+    HOUSETYPE house;
+    zoomable_texture graphic {};
+    int numFrames = 0;
+    int currentFrame;
+    int frameTimer;
 
     void init();
 };
-
 
 #endif // EXPLOSION_H

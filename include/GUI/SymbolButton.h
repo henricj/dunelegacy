@@ -25,9 +25,9 @@
 class SymbolButton : public Button {
 public:
     /// Default constructor
-    SymbolButton()  {
-        enableResizing(true,true);
-        pSymbolSurface = nullptr;
+    SymbolButton() {
+        enableResizing(true, true);
+        pSymbolSurface       = nullptr;
         pActiveSymbolSurface = nullptr;
     }
 
@@ -40,11 +40,11 @@ public:
         \param  pActiveSymbolSurface    This is the symbol to show on mouse over
     */
     virtual void setSymbol(sdl2::surface_unique_or_nonowning_ptr pSymbolSurface, sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface = nullptr) {
-        if(!pSymbolSurface) {
+        if (!pSymbolSurface) {
             return;
         }
 
-        this->pSymbolSurface = std::move(pSymbolSurface);
+        this->pSymbolSurface       = std::move(pSymbolSurface);
         this->pActiveSymbolSurface = std::move(pActiveSymbolSurface);
 
         resizeAll();
@@ -55,9 +55,8 @@ public:
         called if the new size is a valid size for this button (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -66,10 +65,9 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
+    void resize(uint32_t width, uint32_t height) override {
         invalidateTextures();
-        Widget::resize(width,height);
+        Widget::resize(width, height);
     }
 
     /**
@@ -77,13 +75,11 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        if(pSymbolSurface) {
-            return Point((int32_t) pSymbolSurface->w + 5, (int32_t) pSymbolSurface->h + 5);
-        }             return Point(0,0);
-
-       
+    [[nodiscard]] Point getMinimumSize() const override {
+        if (pSymbolSurface) {
+            return Point((int32_t)pSymbolSurface->w + 5, (int32_t)pSymbolSurface->h + 5);
+        }
+        return Point(0, 0);
     }
 
 protected:
@@ -92,18 +88,17 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
+    void updateTextures() override {
         Button::updateTextures();
 
-        if(!pUnpressedTexture) {
+        if (!pUnpressedTexture) {
             invalidateTextures();
 
             sdl2::surface_ptr pUnpressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
-            sdl2::surface_ptr pPressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
+            sdl2::surface_ptr pPressed   = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
             sdl2::surface_ptr pActive;
 
-            if(pSymbolSurface) {
+            if (pSymbolSurface) {
                 SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface.get(), pUnpressed.get());
                 SDL_BlitSurface(pSymbolSurface.get(), nullptr, pUnpressed.get(), &dest);
 
@@ -112,7 +107,7 @@ protected:
                 SDL_BlitSurface(pActiveSymbolSurface ? pActiveSymbolSurface.get() : pSymbolSurface.get(), nullptr, pPressed.get(), &dest);
             }
 
-            if(pActiveSymbolSurface) {
+            if (pActiveSymbolSurface) {
                 pActive = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
 
                 SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface.get(), pActive.get());
@@ -126,7 +121,6 @@ protected:
 private:
     sdl2::surface_unique_or_nonowning_ptr pSymbolSurface;
     sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface;
-
 };
 
-#endif //SYMBOLBUTTON_H
+#endif // SYMBOLBUTTON_H

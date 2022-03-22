@@ -15,11 +15,11 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <GUI/RadioButtonManager.h>
 #include <GUI/RadioButton.h>
+#include <GUI/RadioButtonManager.h>
 
 void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
-    if(!isRegistered(pRadioButton)) {
+    if (!isRegistered(pRadioButton)) {
         radioButtonList.push_back(pRadioButton);
     }
     pRadioButton->registerRadioButtonManager(this);
@@ -27,8 +27,8 @@ void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
 
 void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
     auto iter = radioButtonList.begin();
-    while(iter != radioButtonList.end()) {
-        if(*iter == pRadioButton) {
+    while (iter != radioButtonList.end()) {
+        if (*iter == pRadioButton) {
             radioButtonList.erase(iter);
             break;
         }
@@ -39,8 +39,8 @@ void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
 }
 
 void RadioButtonManager::setChecked(RadioButton* pRadioButton) const {
-    for(RadioButton* pTmpRadioButton : radioButtonList) {
-        if(pTmpRadioButton == pRadioButton) {
+    for (RadioButton* pTmpRadioButton : radioButtonList) {
+        if (pTmpRadioButton == pRadioButton) {
             pTmpRadioButton->Button::setToggleState(true);
         } else {
             pTmpRadioButton->Button::setToggleState(false);

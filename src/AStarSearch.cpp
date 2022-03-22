@@ -19,16 +19,16 @@
 
 #include <globals.h>
 
-#include <Map.h>
 #include <Game.h>
+#include <Map.h>
 #include <units/UnitBase.h>
 
 #include <cstdlib>
 
-#define MAX_NODES_CHECKED   (128*128)
+#define MAX_NODES_CHECKED (128 * 128)
 
 AStarSearch::AStarSearch(Map* pMap)
-    : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord{} { //, heap_compare_(mapData) {
+    : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord {} { //, heap_compare_(mapData) {
 
     mapData.resize(sizeX * sizeY);
 
@@ -37,7 +37,7 @@ AStarSearch::AStarSearch(Map* pMap)
 
 void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
 #if 1
-    std::fill(std::begin(mapData), std::end(mapData), TileData{});
+    std::fill(std::begin(mapData), std::end(mapData), TileData {});
     std::fill(std::begin(depthCheckCount), std::end(depthCheckCount), 0);
 #else
     // Clobber PODs the evil way...
@@ -47,49 +47,49 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     openList.clear();
     openList.reserve(2 * std::max(sizeX, sizeY));
 
-    auto *const destinationTile = pMap->getTile(destination);
+    auto* const destinationTile = pMap->getTile(destination);
 
     const FixPoint rotationSpeed = 1_fix / (currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(pUnit->getOriginalHouseID())].turnspeed * TILESIZE);
 
-    const auto heuristic = blockDistance(start, destination);
+    const auto heuristic   = blockDistance(start, destination);
     auto smallestHeuristic = FixPt_MAX;
-    bestCoord = nullptr;
+    bestCoord              = nullptr;
 
-    //if the unit is not directly next to its destination or it is and the destination is unblocked
+    // if the unit is not directly next to its destination or it is and the destination is unblocked
     if (heuristic <= 1.5_fix && !pUnit->canPassTile(destinationTile))
         return;
 
-    putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0 , heuristic);
+    putOnOpenListIfBetter(pMap->getKey(start.x, start.y), start, nullptr, 0, heuristic);
 
     int numNodesChecked = 0;
-    while(auto *const currentTileData = extractMin()) {
+    while (auto* const currentTileData = extractMin()) {
         auto& map_data = *currentTileData; // getMapData(currentKey);
 
         const auto& currentCoord = map_data.coord;
 
-        //assert(currentKey == pMap->getKey(currentCoord.x, currentCoord.y));
+        // assert(currentKey == pMap->getKey(currentCoord.x, currentCoord.y));
 
         if (map_data.h < smallestHeuristic) {
             smallestHeuristic = map_data.h;
-            bestCoord = currentTileData;
+            bestCoord         = currentTileData;
         }
 
-        if(currentCoord == destination) {
+        if (currentCoord == destination) {
             // destination found
             smallestHeuristic = map_data.h;
-            bestCoord = currentTileData;
+            bestCoord         = currentTileData;
             break;
         }
 
         if (numNodesChecked < MAX_NODES_CHECKED) {
-            //push a node for each direction we could go
+            // push a node for each direction we could go
             pMap->for_each_angle(currentCoord.x, currentCoord.y,
                                  [&](ANGLETYPE angle, Tile& nextTile) {
                                      if (!pUnit->canPassTile(&nextTile))
                                          return;
 
                                      const auto& nextCoord = nextTile.location;
-                                     const auto nextKey = pMap->getKey(nextTile);
+                                     const auto nextKey    = pMap->getKey(nextTile);
 
                                      assert(nextKey == pMap->getKey(nextCoord.x, nextCoord.y));
 
@@ -98,15 +98,15 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                                      auto difficulty = (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty(static_cast<TERRAINTYPE>(nextTile.getType())));
 
                                      if ((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
-                                         //add diagonal movement cost
+                                         // add diagonal movement cost
                                          difficulty *= FixPt_SQRT2;
                                      }
 
                                      g += difficulty;
 
                                      if (map_data.parentKey) {
-                                         //add cost of turning time
-                                         //assert(map_data.parentKey == pMap->getKey(mapData[map_data.parentKey].coord.x, mapData[map_data.parentKey].coord.y));
+                                         // add cost of turning time
+                                         // assert(map_data.parentKey == pMap->getKey(mapData[map_data.parentKey].coord.x, mapData[map_data.parentKey].coord.y));
                                          const auto posAngle = Map::getPosAngle(map_data.parentKey->coord, currentCoord);
                                          g += angleDiff(angle, posAngle) * rotationSpeed;
                                      }
@@ -151,7 +151,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
         if (!map_data.bClosed) {
             const int depth = std::max(abs(currentCoord.x - destination.x), abs(currentCoord.y - destination.y));
 
-            if(depth < std::min(sizeX,sizeY)) {
+            if (depth < std::min(sizeX, sizeY)) {
 
                 // calculate maximum number of tiles in a square shape
                 // you could look at without success around a destination x,y
@@ -181,14 +181,12 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                 //  ...#..     - (x,y)=(0,1) => Square only partly inside map
                 //  ####..     => depthcheckmax(0,1,2) = 7
 
-
-                const auto x = destination.x;
-                const auto y = destination.y;
-                const auto k = depth;
-                const auto horizontal = std::min(sizeX-1, x+(k-1)) - std::max(0, x-(k-1)) + 1;
-                const auto vertical = std::min(sizeY-1, y+k) - std::max(0, y-k) + 1;
-                const auto depthCheckMax = ((x-k >= 0) ? vertical : 0) +  ((x+k < sizeX) ? vertical : 0) + ((y-k >= 0) ? horizontal : 0) +  ((y+k < sizeY) ? horizontal : 0);
-
+                const auto x             = destination.x;
+                const auto y             = destination.y;
+                const auto k             = depth;
+                const auto horizontal    = std::min(sizeX - 1, x + (k - 1)) - std::max(0, x - (k - 1)) + 1;
+                const auto vertical      = std::min(sizeY - 1, y + k) - std::max(0, y - k) + 1;
+                const auto depthCheckMax = ((x - k >= 0) ? vertical : 0) + ((x + k < sizeX) ? vertical : 0) + ((y - k >= 0) ? horizontal : 0) + ((y + k < sizeY) ? horizontal : 0);
 
                 if (++depthCheckCount[k] >= depthCheckMax) {
                     // we have searched a whole square around destination, it can't be reached
@@ -202,24 +200,21 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     }
 }
 
-bool AStarSearch::getFoundPath(Map * pMap, std::vector<Coord>& path) const
-{
+bool AStarSearch::getFoundPath(Map* pMap, std::vector<Coord>& path) const {
     path.clear();
 
-    if (!bestCoord)
-    {
+    if (!bestCoord) {
         return false;
     }
 
-    for (auto *p = bestCoord; p->parentKey; p = p->parentKey) {
+    for (auto* p = bestCoord; p->parentKey; p = p->parentKey) {
         path.push_back(p->coord);
     }
 
     return true;
 }
 
-void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* parentKey, FixPoint g, FixPoint h)
-{
+void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* parentKey, FixPoint g, FixPoint h) {
     const FixPoint f = g + h;
 
     auto& map_data = getMapData(key);
@@ -230,23 +225,22 @@ void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* p
         }
     }
 
-    map_data.g = g;
-    map_data.h = h;
-    map_data.f = f;
-    map_data.coord = coord;
-    map_data.parentKey = parentKey;
+    map_data.g           = g;
+    map_data.h           = h;
+    map_data.f           = f;
+    map_data.coord       = coord;
+    map_data.parentKey   = parentKey;
     map_data.bInOpenList = true;
     // This will result in duplicate entries for the same location, but the
     // newest one will always be found first and subsequent closed ones will
     // be ignored.
-    openList.emplace_back(open_list{ f, &map_data });
+    openList.emplace_back(open_list {f, &map_data});
     std::push_heap(std::begin(openList), std::end(openList));
 }
 
-AStarSearch::TileData* AStarSearch::extractMin()
-{
+AStarSearch::TileData* AStarSearch::extractMin() {
     while (!openList.empty()) {
-        auto *const ret = openList.front().key;
+        auto* const ret = openList.front().key;
 
         std::pop_heap(std::begin(openList), std::end(openList));
         openList.pop_back();
@@ -259,4 +253,3 @@ AStarSearch::TileData* AStarSearch::extractMin()
 }
 
 AStarSearch::~AStarSearch() = default;
-

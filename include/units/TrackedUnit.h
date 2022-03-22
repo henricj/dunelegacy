@@ -24,7 +24,7 @@ class TrackedUnitConstants : public GroundUnitConstants {
 public:
     constexpr explicit TrackedUnitConstants(ItemID_enum itemID, int num_weapons = 0,
                                             BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : GroundUnitConstants{itemID, num_weapons, bullet_id} {
+        : GroundUnitConstants {itemID, num_weapons, bullet_id} {
         tracked_ = true;
     }
 };
@@ -55,7 +55,8 @@ public:
         \return Returns a speed factor. Higher values mean slower.
     */
     FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override {
-        if(terrainType < 0 || terrainType > Terrain_SpecialBloom) return 1_fix;
+        if (terrainType < 0 || terrainType > Terrain_SpecialBloom)
+            return 1_fix;
 
         return terrain_difficulty[terrainType];
     }

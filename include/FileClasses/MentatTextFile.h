@@ -18,32 +18,29 @@
 #ifndef MENTATTEXTFILE_H
 #define MENTATTEXTFILE_H
 
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
 
 #include <string>
 #include <utility>
 #include <vector>
 
-
 /// A class for loading a mentat textfile (e.g. MENTATA.ENG).
 /**
     This class can read mentat textfiles and return their content in decoded ANSI Code.
 */
-class MentatTextFile
-{
+class MentatTextFile {
 public:
-
     class MentatEntry {
     public:
-        MentatEntry(std::string  title,
+        MentatEntry(std::string title,
                     unsigned int numMenuEntry,
                     unsigned int menuLevel,
                     unsigned int techLevel,
-                    std::string  filename,
-                    std::string  name,
-                    std::string  content)
-         : title(std::move(title)), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(std::move(filename)), name(std::move(name)), content(std::move(content)) {
+                    std::string filename,
+                    std::string name,
+                    std::string content)
+            : title(std::move(title)), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(std::move(filename)), name(std::move(name)), content(std::move(content)) {
         }
 
         std::string title;
@@ -58,10 +55,10 @@ public:
     explicit MentatTextFile(SDL_RWops* rwop);
     ~MentatTextFile();
 
-    MentatTextFile(const MentatTextFile &) = delete;
-    MentatTextFile(MentatTextFile &&) = delete;
-    MentatTextFile& operator=(const MentatTextFile &) = delete;
-    MentatTextFile& operator=(MentatTextFile &&) = delete;
+    MentatTextFile(const MentatTextFile&) = delete;
+    MentatTextFile(MentatTextFile&&)      = delete;
+    MentatTextFile& operator=(const MentatTextFile&) = delete;
+    MentatTextFile& operator=(MentatTextFile&&) = delete;
 
     /// This method returns the nth entry in this text file.
     /**
@@ -70,7 +67,7 @@ public:
         \return the nth entry in the file.
     */
     [[nodiscard]] const MentatEntry& getMentatEntry(unsigned int n) const {
-        if(n >= mentatEntries.size()) {
+        if (n >= mentatEntries.size()) {
             THROW(std::invalid_argument, "MentatTextFile:getMentatEntry(): Invalid index!");
         }
 

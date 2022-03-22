@@ -21,15 +21,15 @@
 #include <MapEditor/MapData.h>
 #include <MapEditor/ReinforcementInfo.h>
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/Label.h>
-#include <GUI/DropDownBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/SymbolButton.h>
-#include <GUI/ListBox.h>
 #include <GUI/Checkbox.h>
+#include <GUI/DropDownBox.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
+#include <GUI/ListBox.h>
+#include <GUI/SymbolButton.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
 
 #include <misc/SDL2pp.h>
@@ -37,13 +37,9 @@
 // forward declaration
 class MapEditor;
 
-
-class  ReinforcementsWindow : public Window
-{
+class ReinforcementsWindow : public Window {
 public:
-
     ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
-
 
     /**
         This static method creates a dynamic reinforcements window.
@@ -54,14 +50,12 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static ReinforcementsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg = new ReinforcementsWindow(pMapEditor, house);
+        auto* dlg       = new ReinforcementsWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }
 
-
 private:
-
     void onCancel();
     void onOK();
 
@@ -79,46 +73,45 @@ private:
 
     std::string getPlayerName(HOUSETYPE house);
 
-    HBox            mainHBox;
-    VBox            mainVBox;
-    VBox            centralVBox;
+    HBox mainHBox;
+    VBox mainVBox;
+    VBox centralVBox;
 
-    Label           Label_Explanation;
+    Label Label_Explanation;
 
-    HBox            hBox1;
-    ListBox         reinforcementsListBox;
-    VBox            listControlVBox;
-    SymbolButton    listEntryUpButton;
-    SymbolButton    listEntryDownButton;
-    SymbolButton    addListEntryButton;
-    SymbolButton    removeListEntryButton;
+    HBox hBox1;
+    ListBox reinforcementsListBox;
+    VBox listControlVBox;
+    SymbolButton listEntryUpButton;
+    SymbolButton listEntryDownButton;
+    SymbolButton addListEntryButton;
+    SymbolButton removeListEntryButton;
 
-    HBox            hBox2;
-    Label           playerLabel;
-    DropDownBox     playerDropDownBox;
-    Label           unitLabel;
-    DropDownBox     unitDropDownBox;
+    HBox hBox2;
+    Label playerLabel;
+    DropDownBox playerDropDownBox;
+    Label unitLabel;
+    DropDownBox unitDropDownBox;
 
-    HBox            hBox3;
-    Label           dropLocationLabel;
-    DropDownBox     dropLocationDropDownBox;
-    Label           timeLabel;
-    DigitsTextBox   timeTextBox;
-    Checkbox        repeatCheckbox;
+    HBox hBox3;
+    Label dropLocationLabel;
+    DropDownBox dropLocationDropDownBox;
+    Label timeLabel;
+    DigitsTextBox timeTextBox;
+    Checkbox repeatCheckbox;
 
-    HBox            buttonHBox;
+    HBox buttonHBox;
 
-    Label           titleLabel;
-    TextButton      cancelButton;
-    TextButton      okButton;
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton okButton;
 
-    MapEditor*      pMapEditor;
+    MapEditor* pMapEditor;
 
     HOUSETYPE house;
-    uint32_t  color;
+    uint32_t color;
 
-    std::vector<ReinforcementInfo>  reinforcements;
+    std::vector<ReinforcementInfo> reinforcements;
 };
-
 
 #endif // REINFORCEMENTSWINDOW_H

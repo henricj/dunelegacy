@@ -23,15 +23,14 @@
 #include <fixmath/FixPoint.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
+#include <exception>
 #include <list>
+#include <set>
+#include <string>
 #include <utility>
 #include <vector>
-#include <set>
-#include <exception>
 
-class InputStream
-{
+class InputStream {
 public:
     InputStream();
     virtual ~InputStream();
@@ -42,12 +41,12 @@ public:
     */
     virtual std::string readString() = 0;
 
-    virtual uint8_t  readUint8() = 0;
+    virtual uint8_t readUint8()   = 0;
     virtual uint16_t readUint16() = 0;
     virtual uint32_t readUint32() = 0;
     virtual uint64_t readUint64() = 0;
-    virtual bool     readBool() = 0;
-    virtual float    readFloat() = 0;
+    virtual bool readBool()       = 0;
+    virtual float readFloat()     = 0;
 
     /**
         Reads in a Sint8 value.
@@ -128,7 +127,7 @@ public:
         vec.clear();
         const auto size = readUint32();
         vec.reserve(size);
-        for(unsigned int i = 0; i < size; i++) {
+        for (unsigned int i = 0; i < size; i++) {
             vec.push_back(static_cast<T>(readUint32()));
         }
     }
@@ -160,23 +159,24 @@ public:
     class exception : public std::exception {
     public:
         exception() noexcept           = default;
-        exception(const exception &)   = default;
-        exception(exception &&)        = default;
+        exception(const exception&)    = default;
+        exception(exception&&)         = default;
         ~exception() noexcept override = default;
 
-        exception& operator=(const exception &) = default;
-        exception& operator=(exception &&) = default;
+        exception& operator=(const exception&) = default;
+        exception& operator=(exception&&) = default;
     };
 
     class eof : public InputStream::exception {
     public:
-        explicit eof(std::string str) noexcept : str(std::move(str)) { }
-        eof(const eof &)         = default;
-        eof(eof &&)              = default;
+        explicit eof(std::string str) noexcept
+            : str(std::move(str)) { }
+        eof(const eof&)          = default;
+        eof(eof&&)               = default;
         ~eof() noexcept override = default;
 
-        eof& operator=(const eof &) = default;
-        eof& operator=(eof &&) = default;
+        eof& operator=(const eof&) = default;
+        eof& operator=(eof&&) = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
@@ -186,13 +186,14 @@ public:
 
     class error : public InputStream::exception {
     public:
-        explicit error(std::string str) noexcept : str(std::move(str)) { }
-        error(const error &)       = default;
-        error(error &&)            = default;
+        explicit error(std::string str) noexcept
+            : str(std::move(str)) { }
+        error(const error&)        = default;
+        error(error&&)             = default;
         ~error() noexcept override = default;
 
-        error& operator=(const error &) = default;
-        error& operator=(error &&) = default;
+        error& operator=(const error&) = default;
+        error& operator=(error&&) = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 

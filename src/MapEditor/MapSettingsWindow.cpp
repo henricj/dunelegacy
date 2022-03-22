@@ -17,8 +17,8 @@
 
 #include <MapEditor/MapSettingsWindow.h>
 
-#include <MapEditor/MapInfo.h>
 #include <MapEditor/MapEditorOperation.h>
+#include <MapEditor/MapInfo.h>
 
 #include <GUI/Spacer.h>
 
@@ -32,14 +32,14 @@
 #include <FileClasses/TextManager.h>
 
 MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
- : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse) {
+    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     auto& mapInfo = pMapEditor->getMapInfo();
 
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -71,16 +71,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableWinPictures.emplace_back("WIN1.WSA");
     availableWinPictures.emplace_back("WIN2.WSA");
 
-    for(size_t i = 0; i < availableWinPictures.size(); ++i) {
+    for (size_t i = 0; i < availableWinPictures.size(); ++i) {
         winPictureDropDownBox.addEntry(availableWinPictures[i], i);
-        if(availableWinPictures[i] == mapInfo.winPicture) {
+        if (availableWinPictures[i] == mapInfo.winPicture) {
             winPictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if(winPictureDropDownBox.getSelectedIndex() < 0) {
+    if (winPictureDropDownBox.getSelectedIndex() < 0) {
         availableWinPictures.push_back(mapInfo.winPicture);
-        winPictureDropDownBox.addEntry(mapInfo.winPicture, availableWinPictures.size()-1);
+        winPictureDropDownBox.addEntry(mapInfo.winPicture, availableWinPictures.size() - 1);
     }
 
     winPictureVBox.addWidget(&winPictureDropDownBox);
@@ -97,16 +97,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableLosePictures.emplace_back("LOSTBILD.WSA");
     availableLosePictures.emplace_back("LOSTVEHC.WSA");
 
-    for(size_t i = 0; i < availableLosePictures.size(); ++i) {
+    for (size_t i = 0; i < availableLosePictures.size(); ++i) {
         losePictureDropDownBox.addEntry(availableLosePictures[i], i);
-        if(availableLosePictures[i] == mapInfo.losePicture) {
+        if (availableLosePictures[i] == mapInfo.losePicture) {
             losePictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if(losePictureDropDownBox.getSelectedIndex() < 0) {
+    if (losePictureDropDownBox.getSelectedIndex() < 0) {
         availableLosePictures.push_back(mapInfo.losePicture);
-        losePictureDropDownBox.addEntry(mapInfo.losePicture, availableLosePictures.size()-1);
+        losePictureDropDownBox.addEntry(mapInfo.losePicture, availableLosePictures.size() - 1);
     }
 
     losePictureVBox.addWidget(&losePictureDropDownBox);
@@ -130,16 +130,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     availableBriefingPictures.emplace_back("PALACE.WSA");
     availableBriefingPictures.emplace_back("SARDUKAR.WSA");
 
-    for(size_t i = 0; i < availableBriefingPictures.size(); ++i) {
+    for (size_t i = 0; i < availableBriefingPictures.size(); ++i) {
         briefingPictureDropDownBox.addEntry(availableBriefingPictures[i], i);
-        if(availableBriefingPictures[i] == mapInfo.briefPicture) {
+        if (availableBriefingPictures[i] == mapInfo.briefPicture) {
             briefingPictureDropDownBox.setSelectedItem(i);
         }
     }
 
-    if(briefingPictureDropDownBox.getSelectedIndex() < 0) {
+    if (briefingPictureDropDownBox.getSelectedIndex() < 0) {
         availableBriefingPictures.push_back(mapInfo.briefPicture);
-        briefingPictureDropDownBox.addEntry(mapInfo.briefPicture, availableBriefingPictures.size()-1);
+        briefingPictureDropDownBox.addEntry(mapInfo.briefPicture, availableBriefingPictures.size() - 1);
     }
 
     briefingPictureVBox.addWidget(&briefingPictureDropDownBox);
@@ -156,7 +156,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsTimeoutCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_TIMEOUT);
     winFlags1HBox.addWidget(&winFlagsTimeoutCheckbox, 0.0);
     winFlagsTimeoutTextBox.setColor(house, color);
-    winFlagsTimeoutTextBox.setMinMax(0,999);
+    winFlagsTimeoutTextBox.setMinMax(0, 999);
     winFlagsTimeoutTextBox.setValue(mapInfo.timeout);
     winFlags1HBox.addWidget(&winFlagsTimeoutTextBox, 65);
 
@@ -166,7 +166,6 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsSpiceQuotaCheckbox.setTextColor(color);
     winFlagsSpiceQuotaCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_QUOTA);
     winFlags1HBox.addWidget(&winFlagsSpiceQuotaCheckbox, 284);
-
 
     centralVBox.addWidget(&winFlags2HBox);
     winFlagsPlayerNoObjectsLeftCheckbox.setText(_("Player has no units/structures left"));
@@ -180,7 +179,6 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsAIPlayerNoObjectsLeftCheckbox.setTextColor(color);
     winFlagsAIPlayerNoObjectsLeftCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS);
     winFlags2HBox.addWidget(&winFlagsAIPlayerNoObjectsLeftCheckbox, 284);
-
 
     centralVBox.addWidget(VSpacer::create(15));
 
@@ -200,7 +198,6 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     loseFlagsSpiceQuotaCheckbox.setTextColor(color);
     loseFlagsSpiceQuotaCheckbox.setChecked(mapInfo.loseFlags & WINLOSEFLAGS_QUOTA);
     loseFlags1HBox.addWidget(&loseFlagsSpiceQuotaCheckbox, 284);
-
 
     centralVBox.addWidget(&loseFlags2HBox);
     loseFlagsPlayerHasObjectsLeftCheckbox.setText(_("Player has units/structures left"));
@@ -224,16 +221,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     techLevelDropDownBox.setColor(color);
     techLevelDropDownBox.setNumVisibleEntries(8);
-    techLevelDropDownBox.addEntry(_("Level 1:  Concrete, Windtrap, Refinery"),1);
-    techLevelDropDownBox.addEntry(_("Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"),2);
-    techLevelDropDownBox.addEntry(_("Level 3:  Light Factory, Quad"),3);
-    techLevelDropDownBox.addEntry(_("Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"),4);
-    techLevelDropDownBox.addEntry(_("Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"),5);
-    techLevelDropDownBox.addEntry(_("Level 6:  Starport, Rocket Turret, Siege Tank"),6);
-    techLevelDropDownBox.addEntry(_("Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"),7);
-    techLevelDropDownBox.addEntry(_("Level 8:  Palace, Fremen, Saboteur"),8);
-    techLevelDropDownBox.setSelectedItem(mapInfo.techLevel > 0 ? mapInfo.techLevel-1 : 7);
-    techLevelDropDownBox.setVisible( (pMapEditor->getMapVersion() >= 2) );
+    techLevelDropDownBox.addEntry(_("Level 1:  Concrete, Windtrap, Refinery"), 1);
+    techLevelDropDownBox.addEntry(_("Level 2:  Radar, Barracks/Light Factory/WOR, Silo, Soldier/Trooper, Trike"), 2);
+    techLevelDropDownBox.addEntry(_("Level 3:  Light Factory, Quad"), 3);
+    techLevelDropDownBox.addEntry(_("Level 4:  2x2 Concrete, Wall, Heavy Factory, Tank, Harvester, MCV"), 4);
+    techLevelDropDownBox.addEntry(_("Level 5:  Gun Turret, Hightech Factory, Rapair Yard, Launcher, Carryall"), 5);
+    techLevelDropDownBox.addEntry(_("Level 6:  Starport, Rocket Turret, Siege Tank"), 6);
+    techLevelDropDownBox.addEntry(_("Level 7:  House IX, Sonic Tank/Deviator/Devastator, Ornithopter"), 7);
+    techLevelDropDownBox.addEntry(_("Level 8:  Palace, Fremen, Saboteur"), 8);
+    techLevelDropDownBox.setSelectedItem(mapInfo.techLevel > 0 ? mapInfo.techLevel - 1 : 7);
+    techLevelDropDownBox.setVisible((pMapEditor->getMapVersion() >= 2));
     techLevelHBox.addWidget(&techLevelDropDownBox);
 
     centralVBox.addWidget(VSpacer::create(15));
@@ -283,33 +280,31 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     buttonHBox.addWidget(&okButton);
 
     mainVBox.addWidget(VSpacer::create(10));
-
 }
 
 void MapSettingsWindow::onCancel() {
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
-
 
 void MapSettingsWindow::onOK() {
 
     MapInfo mapInfo = pMapEditor->getMapInfo();
 
-    mapInfo.winPicture = availableWinPictures[winPictureDropDownBox.getSelectedIndex()];
-    mapInfo.losePicture = availableLosePictures[losePictureDropDownBox.getSelectedIndex()];
+    mapInfo.winPicture   = availableWinPictures[winPictureDropDownBox.getSelectedIndex()];
+    mapInfo.losePicture  = availableLosePictures[losePictureDropDownBox.getSelectedIndex()];
     mapInfo.briefPicture = availableBriefingPictures[briefingPictureDropDownBox.getSelectedIndex()];
 
-    mapInfo.winFlags = (winFlagsTimeoutCheckbox.isChecked() << 3) | (winFlagsSpiceQuotaCheckbox.isChecked() << 2) | (winFlagsPlayerNoObjectsLeftCheckbox.isChecked() << 1) | (winFlagsAIPlayerNoObjectsLeftCheckbox.isChecked() << 0);
+    mapInfo.winFlags  = (winFlagsTimeoutCheckbox.isChecked() << 3) | (winFlagsSpiceQuotaCheckbox.isChecked() << 2) | (winFlagsPlayerNoObjectsLeftCheckbox.isChecked() << 1) | (winFlagsAIPlayerNoObjectsLeftCheckbox.isChecked() << 0);
     mapInfo.loseFlags = (loseFlagsTimeoutCheckbox.isChecked() << 3) | (loseFlagsSpiceQuotaCheckbox.isChecked() << 2) | (loseFlagsPlayerHasObjectsLeftCheckbox.isChecked() << 1) | (loseFlagsAIPlayerNoObjectsLeftCheckbox.isChecked() << 0);
 
     mapInfo.timeout = winFlagsTimeoutTextBox.getValue();
 
     mapInfo.techLevel = techLevelDropDownBox.getSelectedEntryIntData();
-    mapInfo.author = authorTextBox.getText();
-    mapInfo.license = licenseTextBox.getText();
+    mapInfo.author    = authorTextBox.getText();
+    mapInfo.license   = licenseTextBox.getText();
 
     pMapEditor->startOperation();
 
@@ -318,7 +313,7 @@ void MapSettingsWindow::onOK() {
     pMapEditor->addUndoOperation(changeMapInfoOperation.perform(pMapEditor));
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }

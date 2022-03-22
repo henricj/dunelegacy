@@ -24,17 +24,17 @@
 
 #include <FileClasses/GFXManager.h>
 
-#include <sand.h>
-#include <Game.h>
-#include <Map.h>
-#include <House.h>
-#include <SoundPlayer.h>
-#include <ScreenBorder.h>
 #include <Explosion.h>
+#include <Game.h>
+#include <House.h>
+#include <Map.h>
+#include <ScreenBorder.h>
+#include <SoundPlayer.h>
+#include <sand.h>
 
 #include <structures/StructureBase.h>
-#include <units/InfantryBase.h>
 #include <units/AirUnit.h>
+#include <units/InfantryBase.h>
 
 #define FOGTIME MILLI2CYCLES(10 * 1000)
 
@@ -42,13 +42,13 @@ Tile::Tile() {
     type = Terrain_Sand;
 
     for (auto i = 0; i < NUM_TEAMS; i++) {
-        explored[i] = false;
+        explored[i]   = false;
         lastAccess[i] = 0;
     }
 
     fogColor = COLOR_BLACK;
 
-    owner = HOUSETYPE::HOUSE_INVALID;
+    owner      = HOUSETYPE::HOUSE_INVALID;
     sandRegion = NONE_ID;
 
     spice = 0;
@@ -64,7 +64,6 @@ Tile::Tile() {
 
     destroyedStructureTile = DestroyedStructure_None;
 }
-
 
 Tile::~Tile() = default;
 
@@ -84,7 +83,7 @@ void Tile::load(InputStream& stream) {
 
     fogColor = stream.readUint32();
 
-    owner = static_cast<HOUSETYPE>(stream.readSint32());
+    owner      = static_cast<HOUSETYPE>(stream.readSint32());
     sandRegion = stream.readUint32();
 
     spice = stream.readFixPoint();
@@ -109,9 +108,9 @@ void Tile::load(InputStream& stream) {
         for (uint32_t i = 0; i < numDamage; i++) {
             DAMAGETYPE newDamage;
             newDamage.damageType = static_cast<TerrainDamage_enum>(stream.readUint32());
-            newDamage.tile = stream.readSint32();
-            newDamage.realPos.x = stream.readSint32();
-            newDamage.realPos.y = stream.readSint32();
+            newDamage.tile       = stream.readSint32();
+            newDamage.realPos.x  = stream.readSint32();
+            newDamage.realPos.y  = stream.readSint32();
 
             damage.push_back(newDamage);
         }
@@ -123,12 +122,12 @@ void Tile::load(InputStream& stream) {
         deadUnits.reserve(numDeadUnits);
         for (uint32_t i = 0; i < numDeadUnits; i++) {
             DEADUNITTYPE newDeadUnit;
-            newDeadUnit.type = stream.readUint8();
-            newDeadUnit.house = static_cast<HOUSETYPE>(stream.readUint8());
-            newDeadUnit.onSand = stream.readBool();
+            newDeadUnit.type      = stream.readUint8();
+            newDeadUnit.house     = static_cast<HOUSETYPE>(stream.readUint8());
+            newDeadUnit.onSand    = stream.readBool();
             newDeadUnit.realPos.x = stream.readSint32();
             newDeadUnit.realPos.y = stream.readSint32();
-            newDeadUnit.timer = stream.readSint16();
+            newDeadUnit.timer     = stream.readSint16();
 
             deadUnits.push_back(newDeadUnit);
         }
@@ -182,7 +181,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeFixPoint(spice);
 
     stream.writeBools(!damage.empty(), !deadUnits.empty(), !assignedAirUnitList.empty(),
-        !assignedInfantryList.empty(), !assignedUndergroundUnitList.empty(), !assignedNonInfantryGroundObjectList.empty());
+                      !assignedInfantryList.empty(), !assignedUndergroundUnitList.empty(), !assignedNonInfantryGroundObjectList.empty());
 
     if (!damage.empty()) {
         stream.writeUint32(damage.size());
@@ -210,12 +209,12 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
 
     // clean-up tracksCreationTime to save space in the save game
     std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTimeToSave;
-    for(int i = 0; i < tracksCreationTimeToSave.size(); i++) {
+    for (int i = 0; i < tracksCreationTimeToSave.size(); i++) {
         tracksCreationTimeToSave[i] = (tracksCreationTime[i] + TRACKSTIME < gameCycleCount) ? 0 : tracksCreationTime[i];
     }
 
     stream.writeBools((tracksCreationTimeToSave[0] != 0), (tracksCreationTimeToSave[1] != 0), (tracksCreationTimeToSave[2] != 0), (tracksCreationTimeToSave[3] != 0),
-        (tracksCreationTimeToSave[4] != 0), (tracksCreationTimeToSave[5] != 0), (tracksCreationTimeToSave[6] != 0), (tracksCreationTimeToSave[7] != 0));
+                      (tracksCreationTimeToSave[4] != 0), (tracksCreationTimeToSave[5] != 0), (tracksCreationTimeToSave[6] != 0), (tracksCreationTimeToSave[7] != 0));
     for (auto i : tracksCreationTimeToSave) {
         if (i != 0) {
             stream.writeUint32(i);
@@ -251,10 +250,10 @@ int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int
     auto newPosition = currentPosition;
 
     if (currentPosition < 0) {
-        std::array<bool, NUM_INFANTRY_PER_TILE> used{};
+        std::array<bool, NUM_INFANTRY_PER_TILE> used {};
 
         for (auto objectID : assignedInfantryList) {
-            auto *const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
+            auto* const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
             if (pInfantry == nullptr) {
                 continue;
             }
@@ -278,7 +277,6 @@ int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int
     return newPosition;
 }
 
-
 void Tile::assignUndergroundUnit(uint32_t newObjectID) {
     assignedUndergroundUnitList.push_back(newObjectID);
 }
@@ -287,21 +285,21 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject(game->getObjectManager())->isAStructure())
         return;
 
-    const auto tileIndex = static_cast<int>(getTerrainTile());
-    const auto indexX = tileIndex % NUM_TERRAIN_TILES_X;
-    const auto indexY = tileIndex / NUM_TERRAIN_TILES_X;
+    const auto tileIndex       = static_cast<int>(getTerrainTile());
+    const auto indexX          = tileIndex % NUM_TERRAIN_TILES_X;
+    const auto indexY          = tileIndex / NUM_TERRAIN_TILES_X;
     const auto zoomed_tilesize = world2zoomedWorld(TILESIZE);
-    SDL_Rect source = { indexX*zoomed_tilesize, indexY*zoomed_tilesize, zoomed_tilesize, zoomed_tilesize };
-    SDL_Rect drawLocation = { xPos, yPos, zoomed_tilesize, zoomed_tilesize };
+    SDL_Rect source            = {indexX * zoomed_tilesize, indexY * zoomed_tilesize, zoomed_tilesize, zoomed_tilesize};
+    SDL_Rect drawLocation      = {xPos, yPos, zoomed_tilesize, zoomed_tilesize};
 
     // draw terrain
     if (destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
         Dune_RenderCopy(renderer, sprite[currentZoomlevel], &source, &drawLocation);
     }
 
-    if(destroyedStructureTile != DestroyedStructure_None) {
+    if (destroyedStructureTile != DestroyedStructure_None) {
         const auto* const pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
-        SDL_Rect source2 = { destroyedStructureTile*zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize };
+        SDL_Rect source2                         = {destroyedStructureTile * zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize};
         Dune_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
 
@@ -319,7 +317,7 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     for (auto i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
         const auto tracktime = static_cast<int>(gameCycleCount - tracksCreationTime[i]);
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
-            source.x = ((10 - i) % 8)*zoomed_tilesize;
+            source.x = ((10 - i) % 8) * zoomed_tilesize;
             SDL_SetTextureAlphaMod(pTracks->texture_, std::min(255, 256 * (TRACKSTIME - tracktime) / TRACKSTIME));
             Dune_RenderCopy(renderer, pTracks, &source, &drawLocation);
             SDL_SetTextureAlphaMod(pTracks->texture_, 255);
@@ -328,37 +326,38 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
 
     // damage
     for (const auto& damageItem : damage) {
-        source.x = damageItem.tile*zoomed_tilesize;
-        SDL_Rect dest = { screenborder->world2screenX(damageItem.realPos.x) - zoomed_tilesize / 2,
-            screenborder->world2screenY(damageItem.realPos.y) - zoomed_tilesize / 2,
-            zoomed_tilesize,
-            zoomed_tilesize };
+        source.x      = damageItem.tile * zoomed_tilesize;
+        SDL_Rect dest = {screenborder->world2screenX(damageItem.realPos.x) - zoomed_tilesize / 2,
+                         screenborder->world2screenY(damageItem.realPos.y) - zoomed_tilesize / 2,
+                         zoomed_tilesize,
+                         zoomed_tilesize};
 
         if (damageItem.damageType == Tile::TerrainDamage_enum::Terrain_RockDamage) {
             Dune_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel), &source, &dest);
-        }
-        else {
+        } else {
             Dune_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_SandDamage, currentZoomlevel), &source, &drawLocation);
         }
     }
 }
 
 void Tile::blitStructures(Game* game, int xPos, int yPos) const {
-    if(!hasANonInfantryGroundObject()) return;
+    if (!hasANonInfantryGroundObject())
+        return;
 
     // if got a structure, draw the structure, and don't draw any terrain because wont be seen
     auto* pStructure = dune_cast<StructureBase>(getNonInfantryGroundObject(game->getObjectManager()));
-    if(!pStructure) return;
+    if (!pStructure)
+        return;
 
     auto* map = game->getMap();
 
     map->for_each(pStructure->getX(), pStructure->getY(), pStructure->getX() + pStructure->getStructureSizeX(),
                   pStructure->getY() + pStructure->getStructureSizeY(), [&](const auto& tile) {
-                      if(screenborder->isTileInsideScreen(tile.location) &&
-                         (tile.isExploredByTeam(game, pLocalHouse->getTeamID()) || debug)) {
+                      if (screenborder->isTileInsideScreen(tile.location) &&
+                          (tile.isExploredByTeam(game, pLocalHouse->getTeamID()) || debug)) {
                           pStructure->setFogged(isFoggedByTeam(game, pLocalHouse->getTeamID()));
 
-                          if(&tile == this) {
+                          if (&tile == this) {
                               // only this tile will draw it, so will be drawn only once
                               pStructure->blitToScreen();
                           }
@@ -372,7 +371,7 @@ void Tile::blitUndergroundUnits(Game* game, int xPos, int yPos) const {
     if (!hasAnUndergroundUnit() || isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
-    auto *current = getUndergroundUnit(game->getObjectManager());
+    auto* current = getUndergroundUnit(game->getObjectManager());
 
     if (current->isVisible(pLocalHouse->getTeamID())) {
         if (location == current->getLocation()) {
@@ -388,7 +387,7 @@ void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
 
     for (const auto& deadUnit : deadUnits) {
-        SDL_Rect source = { 0, 0, zoomed_tile, zoomed_tile };
+        SDL_Rect source             = {0, 0, zoomed_tile, zoomed_tile};
         const DuneTexture* pTexture = nullptr;
         switch (deadUnit.type) {
             case DeadUnit_Infantry: {
@@ -410,8 +409,7 @@ void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
                 pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
                 if (deadUnit.onSand) {
                     source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
-                }
-                else {
+                } else {
                     source.x = 3 * zoomed_tile;
                 }
             } break;
@@ -420,8 +418,7 @@ void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
                 pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
                 if (deadUnit.onSand) {
                     source.x = (deadUnit.timer < 1000) ? 2 * zoomed_tile : zoomed_tile;
-                }
-                else {
+                } else {
                     source.x = 0;
                 }
             } break;
@@ -431,10 +428,10 @@ void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
         }
 
         if (pTexture != nullptr) {
-            SDL_Rect dest = { screenborder->world2screenX(deadUnit.realPos.x) - zoomed_tile / 2,
-                screenborder->world2screenY(deadUnit.realPos.y) - zoomed_tile / 2,
-                zoomed_tile,
-                zoomed_tile };
+            SDL_Rect dest = {screenborder->world2screenX(deadUnit.realPos.x) - zoomed_tile / 2,
+                             screenborder->world2screenY(deadUnit.realPos.y) - zoomed_tile / 2,
+                             zoomed_tile,
+                             zoomed_tile};
             Dune_RenderCopy(renderer, pTexture, &source, &dest);
         }
     }
@@ -445,7 +442,7 @@ void Tile::blitInfantry(Game* game, int xPos, int yPos) {
         return;
 
     for (auto objectID : assignedInfantryList) {
-        auto *pInfantry = game->getObjectManager().getObject<InfantryBase>(objectID);
+        auto* pInfantry = game->getObjectManager().getObject<InfantryBase>(objectID);
         if (pInfantry == nullptr) {
             continue;
         }
@@ -463,7 +460,7 @@ void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
         return;
 
     for (auto objectID : assignedNonInfantryGroundObjectList) {
-        auto *pObject = game->getObjectManager().getObject(objectID);
+        auto* pObject = game->getObjectManager().getObject(objectID);
 
         if (pObject && pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeamID())) {
             if (location == pObject->getLocation()) {
@@ -473,13 +470,12 @@ void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
     }
 }
 
-
 void Tile::blitAirUnits(Game* game, int xPos, int yPos) {
-    auto *const player_house = pLocalHouse;
-    const auto is_fogged = isFoggedByTeam(game, player_house->getTeamID());
+    auto* const player_house = pLocalHouse;
+    const auto is_fogged     = isFoggedByTeam(game, player_house->getTeamID());
 
     for (auto objectID : assignedAirUnitList) {
-        auto *pAirUnit = game->getObjectManager().getObject<AirUnit>(objectID);
+        auto* pAirUnit = game->getObjectManager().getObject<AirUnit>(objectID);
         if (pAirUnit == nullptr) {
             continue;
         }
@@ -499,7 +495,7 @@ void Tile::blitSelectionRects(Game* game, int xPos, int yPos) const {
         return;
 
     forEachUnit([&](uint32_t objectID) {
-        auto *pObject = game->getObjectManager().getObject(objectID);
+        auto* pObject = game->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return;
         }
@@ -516,20 +512,17 @@ void Tile::blitSelectionRects(Game* game, int xPos, int yPos) const {
     });
 }
 
-void Tile::update_impl()
-{
+void Tile::update_impl() {
     deadUnits.erase(
         std::remove_if(std::begin(deadUnits), std::end(deadUnits),
-            [](DEADUNITTYPE& dut)
-            {
-                if (0 == dut.timer)
-                    return true;
-                --dut.timer;
-                return false;
-            }),
+                       [](DEADUNITTYPE& dut) {
+                           if (0 == dut.timer)
+                               return true;
+                           --dut.timer;
+                           return false;
+                       }),
         std::end(deadUnits));
 }
-
 
 void Tile::clearTerrain() {
     damage.clear();
@@ -544,13 +537,12 @@ void Tile::setTrack(ANGLETYPE direction, uint32_t gameCycleCounter) {
 
 void Tile::selectAllPlayersUnits(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
     selectFilter(game, houseID, lastCheckedObject, lastSelectedObject,
-        [](ObjectBase* obj) { return  obj->isAUnit() && obj->isRespondable(); });
+                 [](ObjectBase* obj) { return obj->isAUnit() && obj->isRespondable(); });
 }
-
 
 void Tile::selectAllPlayersUnitsOfType(Game* game, HOUSETYPE houseID, ItemID_enum itemID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject) {
     selectFilter(game, houseID, lastCheckedObject, lastSelectedObject,
-        [=](ObjectBase* obj) { return  obj->getItemID() == itemID; });
+                 [=](ObjectBase* obj) { return obj->getItemID() == itemID; });
 }
 
 template<typename Container, typename Val>
@@ -575,17 +567,20 @@ void Tile::unassignInfantry(uint32_t objectID, int currentPosition) {
 }
 
 void Tile::unassignObject(uint32_t objectID) {
-    if (hasInfantry()) unassignInfantry(objectID, -1);
-    if (hasAnUndergroundUnit()) unassignUndergroundUnit(objectID);
-    if (hasANonInfantryGroundObject()) unassignNonInfantryGroundObject(objectID);
-    if (hasAnAirUnit()) unassignAirUnit(objectID);
+    if (hasInfantry())
+        unassignInfantry(objectID, -1);
+    if (hasAnUndergroundUnit())
+        unassignUndergroundUnit(objectID);
+    if (hasANonInfantryGroundObject())
+        unassignNonInfantryGroundObject(objectID);
+    if (hasAnAirUnit())
+        unassignAirUnit(objectID);
 }
-
 
 void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
     const auto& [game, map, objectManager] = context;
 
-    type = newType;
+    type                   = newType;
     destroyedStructureTile = DestroyedStructure_None;
 
     terrainTile = TERRAINTILETYPE::TerrainTile_Invalid;
@@ -594,13 +589,10 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
 
     if (type == Terrain_Spice) {
         spice = game.randomGen.rand(RANDOMSPICEMIN, RANDOMSPICEMAX);
-    }
-    else if (type == Terrain_ThickSpice) {
+    } else if (type == Terrain_ThickSpice) {
         spice = game.randomGen.rand(RANDOMTHICKSPICEMIN, RANDOMTHICKSPICEMAX);
-    }
-    else if (type == Terrain_Dunes) {
-    }
-    else {
+    } else if (type == Terrain_Dunes) {
+    } else {
         spice = 0;
 
         if (isRock()) {
@@ -611,9 +603,8 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
                 auto units = std::move(assignedUndergroundUnitList);
                 assignedUndergroundUnitList.clear();
 
-                for (const auto object_id : units)
-                {
-                    auto *const current = game.getObjectManager().getObject(object_id);
+                for (const auto object_id : units) {
+                    auto* const current = game.getObjectManager().getObject(object_id);
 
                     unassignUndergroundUnit(current->getObjectID());
                     current->destroy(context);
@@ -625,9 +616,8 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
                     auto units = std::move(assignedNonInfantryGroundObjectList);
                     assignedNonInfantryGroundObjectList.clear();
 
-                    for (const auto object_id : units)
-                    {
-                        auto *const object = game.getObjectManager().getObject(object_id);
+                    for (const auto object_id : units) {
+                        auto* const object = game.getObjectManager().getObject(object_id);
 
                         if (object)
                             pending_destroy.push_back(object);
@@ -636,8 +626,7 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
                     }
 
                     // Try to keep the largest buffer.
-                    if (assignedNonInfantryGroundObjectList.empty() && units.capacity() > assignedNonInfantryGroundObjectList.capacity())
-                    {
+                    if (assignedNonInfantryGroundObjectList.empty() && units.capacity() > assignedNonInfantryGroundObjectList.capacity()) {
                         units.clear();
                         assignedNonInfantryGroundObjectList = std::move(units);
                     }
@@ -649,42 +638,40 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
         }
     }
 
-    map.for_each(location.x, location.y, location.x + 4, location.y + 4, [](Tile &t) { t.clearTerrain(); });
+    map.for_each(location.x, location.y, location.x + 4, location.y + 4, [](Tile& t) { t.clearTerrain(); });
 }
 
-
 void Tile::squash(const GameContext& context) const {
-    if (!hasInfantry()) return;
+    if (!hasInfantry())
+        return;
 
     for (const auto object_id : assignedInfantryList) {
-        auto *current = context.objectManager.getObject<InfantryBase>(object_id);
+        auto* current = context.objectManager.getObject<InfantryBase>(object_id);
 
-        if(current == nullptr)
+        if (current == nullptr)
             continue;
 
         current->squash(context);
     }
 }
 
-
 int Tile::getInfantryTeam(const ObjectManager& objectManager) const {
     int team = INVALID;
-    if(hasInfantry()) {
-        if(auto* infantry = getInfantry(objectManager)) {
-            if(auto* owner = infantry->getOwner()) team = owner->getTeamID();
+    if (hasInfantry()) {
+        if (auto* infantry = getInfantry(objectManager)) {
+            if (auto* owner = infantry->getOwner())
+                team = owner->getTeamID();
         }
     }
     return team;
 }
-
 
 FixPoint Tile::harvestSpice(const GameContext& context) {
     const auto oldSpice = spice;
 
     if ((spice - HARVESTSPEED) >= 0) {
         spice -= HARVESTSPEED;
-    }
-    else {
+    } else {
         spice = 0;
     }
 
@@ -699,20 +686,16 @@ FixPoint Tile::harvestSpice(const GameContext& context) {
     return (oldSpice - spice);
 }
 
-
 void Tile::setSpice(FixPoint newSpice) {
     if (newSpice <= 0) {
         type = Terrain_Sand;
-    }
-    else if (newSpice >= RANDOMTHICKSPICEMIN) {
+    } else if (newSpice >= RANDOMTHICKSPICEMIN) {
         type = Terrain_ThickSpice;
-    }
-    else {
+    } else {
         type = Terrain_Spice;
     }
     spice = newSpice;
 }
-
 
 AirUnit* Tile::getAirUnit(const ObjectManager& objectManager) const {
     return assignedAirUnitList.empty() ? nullptr
@@ -720,30 +703,31 @@ AirUnit* Tile::getAirUnit(const ObjectManager& objectManager) const {
 }
 
 ObjectBase* Tile::getGroundObject(const ObjectManager& objectManager) const {
-    if(hasANonInfantryGroundObject()) return getNonInfantryGroundObject(objectManager);
-    if(hasInfantry()) return getInfantry(objectManager);
+    if (hasANonInfantryGroundObject())
+        return getNonInfantryGroundObject(objectManager);
+    if (hasInfantry())
+        return getInfantry(objectManager);
 
     return nullptr;
 }
 
 InfantryBase* Tile::getInfantry(const ObjectManager& objectManager) const {
     return assignedInfantryList.empty()
-               ? nullptr
-               : objectManager.getObject<InfantryBase>(assignedInfantryList.front());
+             ? nullptr
+             : objectManager.getObject<InfantryBase>(assignedInfantryList.front());
 }
 
 ObjectBase* Tile::getNonInfantryGroundObject(const ObjectManager& objectManager) const {
     return assignedNonInfantryGroundObjectList.empty()
-               ? nullptr
-               : objectManager.getObject(assignedNonInfantryGroundObjectList.front());
+             ? nullptr
+             : objectManager.getObject(assignedNonInfantryGroundObjectList.front());
 }
 
 UnitBase* Tile::getUndergroundUnit(const ObjectManager& objectManager) const {
     return assignedUndergroundUnitList.empty()
-               ? nullptr
-               : objectManager.getObject<UnitBase>(assignedUndergroundUnitList.front());
+             ? nullptr
+             : objectManager.getObject<UnitBase>(assignedUndergroundUnitList.front());
 }
-
 
 /*ObjectBase* Tile::getInfantry(int i)
 {
@@ -758,59 +742,53 @@ UnitBase* Tile::getUndergroundUnit(const ObjectManager& objectManager) const {
     return assignedInfantry.removeElement();
 }*/
 
-
 ObjectBase* Tile::getObject(const ObjectManager& objectManager) const {
-    if(hasAnAirUnit()) return getAirUnit(objectManager);
-    if(hasANonInfantryGroundObject()) return getNonInfantryGroundObject(objectManager);
-    if(hasInfantry()) return getInfantry(objectManager);
-    if(hasAnUndergroundUnit()) return getUndergroundUnit(objectManager);
+    if (hasAnAirUnit())
+        return getAirUnit(objectManager);
+    if (hasANonInfantryGroundObject())
+        return getNonInfantryGroundObject(objectManager);
+    if (hasInfantry())
+        return getInfantry(objectManager);
+    if (hasAnUndergroundUnit())
+        return getUndergroundUnit(objectManager);
 
     return nullptr;
 }
-
 
 ObjectBase* Tile::getObjectAt(const ObjectManager& objectManager, int x, int y) const {
     ObjectBase* pObject = nullptr;
     if (hasAnAirUnit()) {
         pObject = getAirUnit(objectManager);
-    }
-    else if (hasANonInfantryGroundObject()) {
+    } else if (hasANonInfantryGroundObject()) {
         pObject = getNonInfantryGroundObject(objectManager);
-    }
-    else if (hasInfantry()) {
+    } else if (hasInfantry()) {
         auto closestDistance = FixPt_MAX;
         const Coord atPos(x, y);
 
         for (const auto objectID : assignedInfantryList) {
-            auto *const pInfantry = objectManager.getObject<InfantryBase>(objectID);
+            auto* const pInfantry = objectManager.getObject<InfantryBase>(objectID);
             if (pInfantry == nullptr) {
                 continue;
             }
 
             const auto centerPoint = pInfantry->getCenterPoint();
-            const auto distance = distanceFrom(atPos, centerPoint);
+            const auto distance    = distanceFrom(atPos, centerPoint);
             if (distance < closestDistance) {
                 closestDistance = distance;
-                pObject = pInfantry;
+                pObject         = pInfantry;
             }
         }
-    }
-    else if (hasAnUndergroundUnit()) {
+    } else if (hasAnUndergroundUnit()) {
         pObject = getUndergroundUnit(objectManager);
     }
 
     return pObject;
 }
 
-
 ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, uint32_t objectID) const {
     const auto predicate = [=](uint32_t n) { return n == objectID; };
 
-    if(std::any_of(assignedInfantryList.begin(), assignedInfantryList.end(), predicate)
-        || std::any_of(assignedNonInfantryGroundObjectList.begin(), assignedNonInfantryGroundObjectList.end(), predicate)
-        ||  std::any_of(assignedUndergroundUnitList.begin(), assignedUndergroundUnitList.end(), predicate)
-        ||  std::any_of(assignedAirUnitList.begin(), assignedAirUnitList.end(), predicate))
-    {
+    if (std::any_of(assignedInfantryList.begin(), assignedInfantryList.end(), predicate) || std::any_of(assignedNonInfantryGroundObjectList.begin(), assignedNonInfantryGroundObjectList.end(), predicate) || std::any_of(assignedUndergroundUnitList.begin(), assignedUndergroundUnitList.end(), predicate) || std::any_of(assignedAirUnitList.begin(), assignedAirUnitList.end(), predicate)) {
         return objectManager.getObject(objectID);
     }
 
@@ -818,9 +796,10 @@ ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, uint32_t o
 }
 
 void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
-    if (!isSpiceBloom()) return;
+    if (!isSpiceBloom())
+        return;
 
-    //a spice bloom
+    // a spice bloom
     soundPlayer->playSoundAt(Sound_Bloom, getLocation());
     screenborder->shakeScreen(18);
     if (pTrigger == pLocalHouse) {
@@ -834,9 +813,9 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
 
     if (damage.size() < DAMAGE_PER_TILE) {
         DAMAGETYPE newDamage;
-        newDamage.tile = static_cast<int>(SANDDAMAGETYPE::SandDamage1);
+        newDamage.tile       = static_cast<int>(SANDDAMAGETYPE::SandDamage1);
         newDamage.damageType = TerrainDamage_enum::Terrain_SandDamage;
-        newDamage.realPos = realLocation;
+        newDamage.realPos    = realLocation;
 
         damage.push_back(newDamage);
     }
@@ -845,7 +824,8 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
 }
 
 void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
-    if (!isSpecialBloom()) return;
+    if (!isSpecialBloom())
+        return;
 
     setType(context, Terrain_Sand);
 
@@ -859,7 +839,7 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
 
         case 1: {
             // The house gets a Trike for free. It spawns beside the special bloom.
-            auto *pNewUnit = pTrigger->createUnit<Trike>();
+            auto* pNewUnit = pTrigger->createUnit<Trike>();
             if (pNewUnit != nullptr) {
                 const auto spot = map.findDeploySpot(pNewUnit, location);
                 pNewUnit->deploy(context, spot);
@@ -871,26 +851,29 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
             // the special bloom.
             int numCandidates = 0;
             game.for_each_house([&](const auto& house) {
-                if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) numCandidates++;
+                if (house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0)
+                    numCandidates++;
             });
 
-            if(numCandidates == 0) break;
+            if (numCandidates == 0)
+                break;
 
             int candidate = game.randomGen.rand(0, numCandidates - 1);
 
             auto* pEnemyHouse = game.house_find_if([&](auto& house) {
-                if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) {
-                    if(candidate-- == 0) return true;
+                if (house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) {
+                    if (candidate-- == 0)
+                        return true;
                     candidate--;
                 }
                 return false;
             });
 
-            if(!pEnemyHouse) break;
+            if (!pEnemyHouse)
+                break;
 
             auto* const pNewUnit = pEnemyHouse->createUnit<Trike>();
-            if(pNewUnit != nullptr)
-            {
+            if (pNewUnit != nullptr) {
                 const auto spot = map.findDeploySpot(pNewUnit, location);
                 pNewUnit->deploy(context, spot);
             }
@@ -901,7 +884,9 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
             // One of the AI players on the map (one that has at least one unit) gets an Infantry unit (3 Soldiers) for free. The spawn beside the special bloom.
             auto numCandidates = 0;
             game.for_each_house([&](auto& house) {
-                if(house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) { numCandidates++; }
+                if (house.getTeamID() != pTrigger->getTeamID() && house.getNumUnits() > 0) {
+                    numCandidates++;
+                }
             });
 
             if (numCandidates == 0) {
@@ -911,8 +896,8 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
             auto candidate = game.randomGen.rand(0, numCandidates - 1);
 
             House* pEnemyHouse = nullptr;
-            for(auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-                auto *const pHouse = game.getHouse(static_cast<HOUSETYPE>(i));
+            for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+                auto* const pHouse = game.getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
                         pEnemyHouse = pHouse;
@@ -922,9 +907,9 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
                 }
             }
 
-            if(pEnemyHouse) {
+            if (pEnemyHouse) {
                 for (int i = 0; i < 3; i++) {
-                    auto *const pNewUnit = pEnemyHouse->createUnit<Soldier>();
+                    auto* const pNewUnit = pEnemyHouse->createUnit<Soldier>();
                     if (pNewUnit != nullptr) {
                         const auto spot = map.findDeploySpot(pNewUnit, location);
                         pNewUnit->deploy(context, spot);
@@ -940,15 +925,15 @@ bool Tile::hasAStructure(const ObjectManager& objectManager) const {
         return false;
     }
 
-    auto *const pObject = objectManager.getObject(assignedNonInfantryGroundObjectList.front());
+    auto* const pObject = objectManager.getObject(assignedNonInfantryGroundObjectList.front());
     return ((pObject != nullptr) && pObject->isAStructure());
 }
 
 bool Tile::isExploredByTeam(const Game* game, int teamID) const {
-    for(auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
         const auto* pHouse = game->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
-            if(isExploredByHouse(static_cast<HOUSETYPE>(h))) {
+            if (isExploredByHouse(static_cast<HOUSETYPE>(h))) {
                 return true;
             }
         }
@@ -978,7 +963,7 @@ bool Tile::isFoggedByTeam(const Game* game, int teamID) const {
     for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
         const auto* pHouse = game->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
-            if((game->getGameCycleCount() - lastAccess[h]) < FOGTIME) {
+            if ((game->getGameCycleCount() - lastAccess[h]) < FOGTIME) {
                 return false;
             }
         }
@@ -996,14 +981,13 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
         return fogColor;
     }
 
-    auto *const pObject = getObject(game->getObjectManager());
+    auto* const pObject = getObject(game->getObjectManager());
     if (pObject != nullptr) {
         uint32_t color = 0;
 
         if (pObject->getItemID() == Unit_Sandworm) {
             color = COLOR_WHITE;
-        }
-        else {
+        } else {
             // clang-format off
             switch (pObject->getOwner()->getHouseID()) {
             case HOUSETYPE::HOUSE_HARKONNEN:   color = SDL2RGB(palette[PALCOLOR_HARKONNEN]);  break;
@@ -1019,8 +1003,7 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
 
         if (pObject->isAUnit()) {
             fogColor = getColorByTerrainType(getType());
-        }
-        else {
+        } else {
             fogColor = color;
         }
 
@@ -1041,10 +1024,9 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
     return fogColor;
 }
 
-
 Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     const auto terrainType = type;
-    auto *const map = currentGameMap;
+    auto* const map        = currentGameMap;
 
     const auto x = location.x;
     const auto y = location.y;
@@ -1060,59 +1042,59 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     }
 
     switch (terrainType) {
-    case TERRAINTYPE::Terrain_Slab: {
-        return TERRAINTILETYPE::TerrainTile_Slab;
-    } break;
+        case TERRAINTYPE::Terrain_Slab: {
+            return TERRAINTILETYPE::TerrainTile_Slab;
+        } break;
 
-    case TERRAINTYPE::Terrain_Sand: {
-        return TERRAINTILETYPE::TerrainTile_Sand;
-    } break;
+        case TERRAINTYPE::Terrain_Sand: {
+            return TERRAINTILETYPE::TerrainTile_Sand;
+        } break;
 
-    case Terrain_Rock: {
-        // determine which surrounding tiles are rock
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isRock(); });
+        case Terrain_Rock: {
+            // determine which surrounding tiles are rock
+            const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isRock(); });
 
-        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Rock) + mask);
-      }
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Rock) + mask);
+        }
 
-    case TERRAINTYPE::Terrain_Dunes: {
-        // determine which surrounding tiles are dunes
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == TERRAINTYPE::Terrain_Dunes; });
+        case TERRAINTYPE::Terrain_Dunes: {
+            // determine which surrounding tiles are dunes
+            const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == TERRAINTYPE::Terrain_Dunes; });
 
-        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Dunes) + mask);
-    }
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Dunes) + mask);
+        }
 
-    case TERRAINTYPE::Terrain_Mountain: {
-        // determine which surrounding tiles are mountains
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isMountain(); });
+        case TERRAINTYPE::Terrain_Mountain: {
+            // determine which surrounding tiles are mountains
+            const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isMountain(); });
 
-        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Mountain) + mask);
-    }
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Mountain) + mask);
+        }
 
-    case TERRAINTYPE::Terrain_Spice: {
-        // determine which surrounding tiles are spice
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isSpice(); });
+        case TERRAINTYPE::Terrain_Spice: {
+            // determine which surrounding tiles are spice
+            const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isSpice(); });
 
-        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Spice) + mask);
-    }
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_Spice) + mask);
+        }
 
-    case TERRAINTYPE::Terrain_ThickSpice: {
-        // determine which surrounding tiles are thick spice
-        const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == Terrain_ThickSpice; });
+        case TERRAINTYPE::Terrain_ThickSpice: {
+            // determine which surrounding tiles are thick spice
+            const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == Terrain_ThickSpice; });
 
-        return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_ThickSpice) + mask);
-    }
+            return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_ThickSpice) + mask);
+        }
 
-    case TERRAINTYPE::Terrain_SpiceBloom: {
-        return TERRAINTILETYPE::TerrainTile_SpiceBloom;
-    } break;
+        case TERRAINTYPE::Terrain_SpiceBloom: {
+            return TERRAINTILETYPE::TerrainTile_SpiceBloom;
+        } break;
 
-    case TERRAINTYPE::Terrain_SpecialBloom: {
-        return TERRAINTILETYPE::TerrainTile_SpecialBloom;
-    } break;
+        case TERRAINTYPE::Terrain_SpecialBloom: {
+            return TERRAINTILETYPE::TerrainTile_SpecialBloom;
+        } break;
 
-    default:
-        THROW(std::runtime_error, "Tile::getTerrainTile(): Invalid terrain type");
+        default:
+            THROW(std::runtime_error, "Tile::getTerrainTile(): Invalid terrain type");
     }
 }
 
@@ -1121,22 +1103,19 @@ int Tile::getHideTile(const Game* game, int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    auto *const map = currentGameMap;
+    auto* const map = currentGameMap;
 
     // are all surrounding tiles explored?
 
-    if (((!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isExploredByTeam(game, teamID)))
-        && ((!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isExploredByTeam(game, teamID)))
-        && ((!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isExploredByTeam(game, teamID)))
-        && ((!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isExploredByTeam(game, teamID)))) {
+    if (((!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isExploredByTeam(game, teamID))) && ((!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isExploredByTeam(game, teamID))) && ((!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isExploredByTeam(game, teamID))) && ((!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isExploredByTeam(game, teamID)))) {
         return 0;
     }
 
     // determine what tiles are unexplored
-    bool up = (!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isExploredByTeam(game, teamID));
+    bool up    = (!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isExploredByTeam(game, teamID));
     bool right = (!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isExploredByTeam(game, teamID));
-    bool down = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(game, teamID));
-    bool left = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(game, teamID));
+    bool down  = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(game, teamID));
+    bool left  = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(game, teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
@@ -1145,64 +1124,60 @@ int Tile::getFogTile(const Game* game, int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    auto *const map = currentGameMap;
+    auto* const map = currentGameMap;
 
     // are all surrounding tiles fogged?
-    if (((!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isFoggedByTeam(game, teamID)))
-        && ((!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isFoggedByTeam(game, teamID)))
-        && ((!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isFoggedByTeam(game, teamID)))
-        && ((!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isFoggedByTeam(game, teamID)))) {
+    if (((!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isFoggedByTeam(game, teamID))) && ((!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isFoggedByTeam(game, teamID))) && ((!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isFoggedByTeam(game, teamID))) && ((!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isFoggedByTeam(game, teamID)))) {
         return 0;
     }
 
     // determine what tiles are fogged
-    bool up = (!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isFoggedByTeam(game, teamID));
+    bool up    = (!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isFoggedByTeam(game, teamID));
     bool right = (!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isFoggedByTeam(game, teamID));
-    bool down = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(game, teamID));
-    bool left = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(game, teamID));
+    bool down  = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(game, teamID));
+    bool left  = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(game, teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
 
 template<typename Pred>
-void Tile::selectFilter(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate)
-{
-    auto changed = false;
-    ObjectBase* obj = nullptr;
+void Tile::selectFilter(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedObject, ObjectBase** lastSelectedObject, Pred&& predicate) {
+    auto changed              = false;
+    ObjectBase* obj           = nullptr;
     ObjectBase* last_selected = nullptr;
 
     const auto selectUnit = [&](uint32_t objectID) {
-                                obj = game->getObjectManager().getObject(objectID);
+        obj = game->getObjectManager().getObject(objectID);
 
-                                if (obj->isSelected() || houseID != obj->getOwner()->getHouseID())
-                                    return;
+        if (obj->isSelected() || houseID != obj->getOwner()->getHouseID())
+            return;
 
-                                if (!predicate(obj))
-                                    return;
+        if (!predicate(obj))
+            return;
 
-                                obj->setSelected(true);
+        obj->setSelected(true);
 
-                                if (game->getSelectedList().insert(obj->getObjectID()).second)
-                                    changed = true;
+        if (game->getSelectedList().insert(obj->getObjectID()).second)
+            changed = true;
 
-                                last_selected = obj;
-                            };
+        last_selected = obj;
+    };
 
-    std::for_each(  assignedInfantryList.begin(),
-                    assignedInfantryList.end(),
-                    selectUnit);
+    std::for_each(assignedInfantryList.begin(),
+                  assignedInfantryList.end(),
+                  selectUnit);
 
-    std::for_each(  assignedNonInfantryGroundObjectList.begin(),
-                    assignedNonInfantryGroundObjectList.end(),
-                    selectUnit);
+    std::for_each(assignedNonInfantryGroundObjectList.begin(),
+                  assignedNonInfantryGroundObjectList.end(),
+                  selectUnit);
 
-    std::for_each(  assignedUndergroundUnitList.begin(),
-                    assignedUndergroundUnitList.end(),
-                    selectUnit);
+    std::for_each(assignedUndergroundUnitList.begin(),
+                  assignedUndergroundUnitList.end(),
+                  selectUnit);
 
-    std::for_each(  assignedAirUnitList.begin(),
-                    assignedAirUnitList.end(),
-                    selectUnit);
+    std::for_each(assignedAirUnitList.begin(),
+                  assignedAirUnitList.end(),
+                  selectUnit);
 
     if (changed)
         game->selectionChanged();
@@ -1215,8 +1190,7 @@ void Tile::selectFilter(Game* game, HOUSETYPE houseID, ObjectBase** lastCheckedO
 }
 
 template<typename Visitor>
-void Tile::forEachUnit(Visitor&& visitor) const
-{
+void Tile::forEachUnit(Visitor&& visitor) const {
     for (auto i : assignedInfantryList)
         visitor(i);
 

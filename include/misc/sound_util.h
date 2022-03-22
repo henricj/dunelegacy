@@ -18,14 +18,13 @@
 #ifndef SOUND_UTIL_H
 #define SOUND_UTIL_H
 
-#include <misc/SDL2pp.h>
-#include <string>
 #include <SDL2/SDL_mixer.h>
+#include <misc/SDL2pp.h>
 #include <misc/sdl_support.h>
+#include <string>
 
-namespace sdl2
-{
-    typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
+namespace sdl2 {
+typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
 }
 
 sdl2::mix_chunk_ptr create_chunk();

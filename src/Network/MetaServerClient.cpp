@@ -19,36 +19,35 @@
 
 #include <Network/ENetHttp.h>
 
-#include <misc/string_util.h>
 #include <misc/exceptions.h>
+#include <misc/string_util.h>
 #include <mmath.h>
 
 #include <config.h>
 
-#include <sstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 #include <utility>
 
 MetaServerClient::MetaServerClient(std::string metaServerURL)
- : metaServerURL(std::move(metaServerURL)) {
+    : metaServerURL(std::move(metaServerURL)) {
 
     availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
-    if(availableMetaServerCommandsSemaphore == nullptr) {
+    if (availableMetaServerCommandsSemaphore == nullptr) {
         THROW(std::runtime_error, "Unable to create semaphore");
     }
 
     sharedDataMutex = SDL_CreateMutex();
-    if(sharedDataMutex == nullptr) {
+    if (sharedDataMutex == nullptr) {
         THROW(std::runtime_error, "Unable to create mutex");
     }
 
-    connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, (void*) this);
-    if(connectionThread == nullptr) {
+    connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, (void*)this);
+    if (connectionThread == nullptr) {
         THROW(std::runtime_error, "Unable to create thread");
     }
 }
-
 
 MetaServerClient::~MetaServerClient() {
 
@@ -63,9 +62,8 @@ MetaServerClient::~MetaServerClient() {
     SDL_DestroySemaphore(availableMetaServerCommandsSemaphore);
 }
 
-
-void MetaServerClient::startAnnounce(const std::string& serverName, int     serverPort, const std::string& mapName,
-                                     uint8_t            numPlayers, uint8_t maxPlayers) {
+void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
+                                     uint8_t numPlayers, uint8_t maxPlayers) {
 
     stopAnnounce();
 
@@ -74,7 +72,8 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int     serv
 
     auto secret_key = RandomFactory::createRandomSeed(rng_name);
 
-    if(secret_key.size() > 16) secret_key.resize(16);
+    if (secret_key.size() > 16)
+        secret_key.resize(16);
 
     this->serverName = serverName;
     this->serverPort = serverPort;
@@ -87,50 +86,45 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int     serv
     lastAnnounceUpdate = SDL_GetTicks();
 }
 
-
 void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
-    if(serverPort > 0) {
+    if (serverPort > 0) {
         this->numPlayers = numPlayers;
         enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
         lastAnnounceUpdate = SDL_GetTicks();
     }
 }
 
-
 void MetaServerClient::stopAnnounce() {
-    if(serverPort != 0) {
+    if (serverPort != 0) {
 
         enqueueMetaServerCommand(std::make_unique<MetaServerRemove>(serverPort, secret));
 
         serverName = "";
         serverPort = 0;
-        secret = "";
-        mapName = "";
+        secret     = "";
+        mapName    = "";
         numPlayers = 0;
         maxPlayers = 0;
     }
 }
 
-
 void MetaServerClient::update() {
 
-    if(pOnGameServerInfoList) {
+    if (pOnGameServerInfoList) {
         // someone is waiting for the list
 
-        if(SDL_GetTicks() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
+        if (SDL_GetTicks() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
             enqueueMetaServerCommand(std::make_unique<MetaServerList>());
             lastServerInfoListUpdate = SDL_GetTicks();
         }
-
     }
 
-    if(serverPort != 0) {
-        if(SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
+    if (serverPort != 0) {
+        if (SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
             enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
             lastAnnounceUpdate = SDL_GetTicks();
         }
     }
-
 
     int errorCause = 0;
     std::string errorMsg;
@@ -139,30 +133,29 @@ void MetaServerClient::update() {
 
     SDL_LockMutex(sharedDataMutex);
 
-    if(metaserverErrorCause != 0) {
-        errorCause = metaserverErrorCause;
-        errorMsg = metaserverError;
+    if (metaserverErrorCause != 0) {
+        errorCause           = metaserverErrorCause;
+        errorMsg             = metaserverError;
         metaserverErrorCause = 0;
-        metaserverError = "";
+        metaserverError      = "";
     }
 
-    if(bUpdatedGameServerInfoList) {
-        tmpGameServerInfoList = gameServerInfoList;
+    if (bUpdatedGameServerInfoList) {
+        tmpGameServerInfoList         = gameServerInfoList;
         bTmpUpdatedGameServerInfoList = true;
-        bUpdatedGameServerInfoList = false;
+        bUpdatedGameServerInfoList    = false;
     }
 
     SDL_UnlockMutex(sharedDataMutex);
 
-    if(pOnMetaServerError && (errorCause != 0)) {
+    if (pOnMetaServerError && (errorCause != 0)) {
         pOnMetaServerError(errorCause, errorMsg);
     }
 
-    if(pOnGameServerInfoList && bTmpUpdatedGameServerInfoList) {
+    if (pOnGameServerInfoList && bTmpUpdatedGameServerInfoList) {
         pOnGameServerInfoList(tmpGameServerInfoList);
     }
 }
-
 
 void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerCommand> metaServerCommand) {
 
@@ -170,29 +163,28 @@ void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerComman
 
     bool bInsert = true;
 
-    for(const auto& pMetaServerCommand : metaServerCommandList) {
-        if(*pMetaServerCommand == *metaServerCommand) {
+    for (const auto& pMetaServerCommand : metaServerCommandList) {
+        if (*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
         }
     }
 
-    if(bInsert) {
+    if (bInsert) {
         metaServerCommandList.push_back(std::move(metaServerCommand));
     }
 
     SDL_UnlockMutex(sharedDataMutex);
 
-    if(bInsert) {
+    if (bInsert) {
         SDL_SemPost(availableMetaServerCommandsSemaphore);
     }
 }
 
-
 std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
 
-    while(SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) {
-        ;   // try again in case of error
+    while (SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) {
+        ; // try again in case of error
     }
 
     SDL_LockMutex(sharedDataMutex);
@@ -205,126 +197,121 @@ std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() 
     return nextMetaServerCommand;
 }
 
-
 void MetaServerClient::setErrorMessage(int errorCause, const std::string& errorMessage) {
     SDL_LockMutex(sharedDataMutex);
 
-    if(metaserverErrorCause == 0) {
-        metaserverErrorCause = errorCause;
+    if (metaserverErrorCause == 0) {
+        metaserverErrorCause  = errorCause;
         this->metaserverError = errorMessage;
     }
 
     SDL_UnlockMutex(sharedDataMutex);
 }
 
-
 void MetaServerClient::setNewGameServerInfoList(const std::list<GameServerInfo>& newGameServerInfoList) {
     SDL_LockMutex(sharedDataMutex);
 
-    gameServerInfoList = newGameServerInfoList;
+    gameServerInfoList         = newGameServerInfoList;
     bUpdatedGameServerInfoList = true;
 
     SDL_UnlockMutex(sharedDataMutex);
 }
 
-
 int MetaServerClient::connectionThreadMain(void* data) {
     auto* pMetaServerClient = static_cast<MetaServerClient*>(data);
 
-    while(true) {
+    while (true) {
         try {
             std::unique_ptr<MetaServerCommand> nextMetaServerCommand = pMetaServerClient->dequeueMetaServerCommand();
 
-            switch(nextMetaServerCommand->type) {
+            switch (nextMetaServerCommand->type) {
 
                 case METASERVERCOMMAND_ADD: {
 
                     auto* pMetaServerAdd = dynamic_cast<MetaServerAdd*>(nextMetaServerCommand.get());
-                    if(!pMetaServerAdd) {
+                    if (!pMetaServerAdd) {
                         break;
                     }
 
                     std::map<std::string, std::string> parameters;
 
-                    parameters["command"] = "add";
-                    parameters["port"] = std::to_string(pMetaServerAdd->serverPort);
-                    parameters["secret"] = pMetaServerAdd->secret;
-                    parameters["gamename"] = pMetaServerAdd->serverName;
-                    parameters["gameversion"] = VERSION;
-                    parameters["mapname"] = pMetaServerAdd->mapName;
-                    parameters["numplayers"] = std::to_string(pMetaServerAdd->numPlayers);
-                    parameters["maxplayers"] = std::to_string(pMetaServerAdd->maxPlayers);
+                    parameters["command"]      = "add";
+                    parameters["port"]         = std::to_string(pMetaServerAdd->serverPort);
+                    parameters["secret"]       = pMetaServerAdd->secret;
+                    parameters["gamename"]     = pMetaServerAdd->serverName;
+                    parameters["gameversion"]  = VERSION;
+                    parameters["mapname"]      = pMetaServerAdd->mapName;
+                    parameters["numplayers"]   = std::to_string(pMetaServerAdd->numPlayers);
+                    parameters["maxplayers"]   = std::to_string(pMetaServerAdd->maxPlayers);
                     parameters["pwdprotected"] = "false";
 
                     std::string result;
 
                     try {
                         result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                    } catch(std::exception& e) {
+                    } catch (std::exception& e) {
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, e.what());
                         break;
                     }
 
-                    if(result.substr(0,2) != "OK") {
-                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                    if (result.substr(0, 2) != "OK") {
+                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, errorMsg);
                     }
-
 
                 } break;
 
                 case METASERVERCOMMAND_UPDATE: {
                     auto* pMetaServerUpdate = dynamic_cast<MetaServerUpdate*>(nextMetaServerCommand.get());
-                    if(!pMetaServerUpdate) {
+                    if (!pMetaServerUpdate) {
                         break;
                     }
 
                     std::map<std::string, std::string> parameters;
 
-                    parameters["command"] = "update";
-                    parameters["port"] = std::to_string(pMetaServerUpdate->serverPort);
-                    parameters["secret"] = pMetaServerUpdate->secret;
+                    parameters["command"]    = "update";
+                    parameters["port"]       = std::to_string(pMetaServerUpdate->serverPort);
+                    parameters["secret"]     = pMetaServerUpdate->secret;
                     parameters["numplayers"] = std::to_string(pMetaServerUpdate->numPlayers);
 
                     std::string result1;
 
                     try {
                         result1 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                    } catch(std::exception& e) {
+                    } catch (std::exception& e) {
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, e.what());
                         break;
                     }
 
-
-                    if(result1.substr(0,2) != "OK") {
+                    if (result1.substr(0, 2) != "OK") {
                         // try adding the game again
 
-                        parameters["command"] = "add";
-                        parameters["gamename"] = pMetaServerUpdate->serverName;
-                        parameters["gameversion"] = VERSION;
-                        parameters["mapname"] = pMetaServerUpdate->mapName;
-                        parameters["maxplayers"] = std::to_string(pMetaServerUpdate->maxPlayers);
+                        parameters["command"]      = "add";
+                        parameters["gamename"]     = pMetaServerUpdate->serverName;
+                        parameters["gameversion"]  = VERSION;
+                        parameters["mapname"]      = pMetaServerUpdate->mapName;
+                        parameters["maxplayers"]   = std::to_string(pMetaServerUpdate->maxPlayers);
                         parameters["pwdprotected"] = "false";
 
                         std::string result2;
 
                         try {
                             result2 = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                        } catch(std::exception&) {
+                        } catch (std::exception&) {
                             // adding the game again did not work => report updating error
 
-                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                             pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
 
                             break;
                         }
 
-                        if(result2.substr(0,2) != "OK") {
+                        if (result2.substr(0, 2) != "OK") {
                             // adding the game again did not work => report updating error
 
-                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                             pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
                         }
@@ -334,19 +321,19 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
                 case METASERVERCOMMAND_REMOVE: {
                     auto* pMetaServerRemove = dynamic_cast<MetaServerRemove*>(nextMetaServerCommand.get());
-                    if(!pMetaServerRemove) {
+                    if (!pMetaServerRemove) {
                         break;
                     }
 
                     std::map<std::string, std::string> parameters;
 
                     parameters["command"] = "remove";
-                    parameters["port"] = std::to_string(pMetaServerRemove->serverPort);
-                    parameters["secret"] = pMetaServerRemove->secret;
+                    parameters["port"]    = std::to_string(pMetaServerRemove->serverPort);
+                    parameters["secret"]  = pMetaServerRemove->secret;
 
                     try {
                         loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                    } catch(std::exception& e) {
+                    } catch (std::exception& e) {
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_REMOVE, e.what());
                         break;
                     }
@@ -355,14 +342,14 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 case METASERVERCOMMAND_LIST: {
                     std::map<std::string, std::string> parameters;
 
-                    parameters["command"] = "list";
+                    parameters["command"]     = "list";
                     parameters["gameversion"] = VERSION;
 
                     std::string result;
 
                     try {
                         result = loadFromHttp(pMetaServerClient->metaServerURL, parameters);
-                    } catch(std::exception& e) {
+                    } catch (std::exception& e) {
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, e.what());
                         break;
                     }
@@ -373,21 +360,21 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
                     resultstream >> status;
 
-                    if(status == "OK") {
+                    if (status == "OK") {
 
                         // skip all newlines
                         resultstream >> std::ws;
 
                         std::list<GameServerInfo> newGameServerInfoList;
 
-                        while(true) {
+                        while (true) {
 
                             std::string completeLine;
                             getline(resultstream, completeLine);
 
                             std::vector<std::string> parts = splitStringToStringVector(completeLine, "\\t");
 
-                            if(parts.size() != 9) {
+                            if (parts.size() != 9) {
                                 break;
                             }
 
@@ -396,41 +383,40 @@ int MetaServerClient::connectionThreadMain(void* data) {
                             enet_address_set_host(&gameServerInfo.serverAddress, parts[0].c_str());
 
                             int port = 0;
-                            if(!parseString(parts[1], port) || port <= 0 || port > 65535) {
+                            if (!parseString(parts[1], port) || port <= 0 || port > 65535) {
                                 break;
                             }
 
                             gameServerInfo.serverAddress.port = static_cast<uint16_t>(port);
 
-                            gameServerInfo.serverName = parts[2];
+                            gameServerInfo.serverName    = parts[2];
                             gameServerInfo.serverVersion = parts[3];
-                            gameServerInfo.mapName = parts[4];
-                            if(!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1) || (gameServerInfo.maxPlayers > 12)) {
+                            gameServerInfo.mapName       = parts[4];
+                            if (!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1) || (gameServerInfo.maxPlayers > 12)) {
                                 continue;
                             }
 
-                            if(!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0) || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
+                            if (!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0) || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
                                 continue;
                             }
 
                             gameServerInfo.bPasswordProtected = (parts[7] == "true");
 
-                            if(!parseString(parts[8], gameServerInfo.lastUpdate)) {
+                            if (!parseString(parts[8], gameServerInfo.lastUpdate)) {
                                 continue;
                             }
 
-                            if(!resultstream.good()) {
+                            if (!resultstream.good()) {
                                 break;
                             }
 
                             newGameServerInfoList.push_back(gameServerInfo);
-
                         }
 
                         pMetaServerClient->setNewGameServerInfoList(newGameServerInfoList);
 
                     } else {
-                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A",5), std::string::npos);
+                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, errorMsg);
                     }
@@ -444,11 +430,9 @@ int MetaServerClient::connectionThreadMain(void* data) {
                 default: {
                     // ignore
                 } break;
-
             }
-        } catch(std::exception& e) {
+        } catch (std::exception& e) {
             sdl2::log_info("MetaServerClient::connectionThreadMain(): %s", e.what());
         }
     }
 }
-

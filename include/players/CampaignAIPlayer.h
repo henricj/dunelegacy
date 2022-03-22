@@ -32,8 +32,7 @@
      - Structures are only build when they were destroyed before (queue of at most 5 structures)
      - Special weapons are launched as soon as they get ready
 */
-class CampaignAIPlayer : public Player
-{
+class CampaignAIPlayer : public Player {
 public:
     CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
     CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
@@ -50,11 +49,11 @@ private:
     class StructureInfo {
     public:
         StructureInfo(ItemID_enum itemID, const Coord& location)
-         : itemID(itemID), location(location) {
+            : itemID(itemID), location(location) {
         }
 
         StructureInfo(InputStream& stream) {
-            itemID = static_cast<ItemID_enum>(stream.readUint32());
+            itemID     = static_cast<ItemID_enum>(stream.readUint32());
             location.x = stream.readSint32();
             location.y = stream.readSint32();
         }
@@ -74,7 +73,7 @@ private:
 
     static int calculateTargetPriority(const UnitBase* pUnit, const ObjectBase* pObject);
 
-    std::vector<StructureInfo> structureQueue;    ///< Last destroyed structures and their location
+    std::vector<StructureInfo> structureQueue; ///< Last destroyed structures and their location
 };
 
-#endif //CAMPAIGNAIPLAYER_H
+#endif // CAMPAIGNAIPLAYER_H

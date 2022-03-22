@@ -23,12 +23,11 @@
 
 inline std::string Address2String(const ENetAddress& address) {
     char tmp[20];
-    if(enet_address_get_host_ip (&address, tmp, 20) < 0) {
+    if (enet_address_get_host_ip(&address, tmp, 20) < 0) {
         return "???.???.???.???";
     } else {
         return std::string(tmp);
     }
 }
-
 
 #endif // ENETHELPER_H

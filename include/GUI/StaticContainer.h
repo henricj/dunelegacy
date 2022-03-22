@@ -24,11 +24,12 @@
 
 class StaticContainer_WidgetData {
 public:
-    StaticContainer_WidgetData() : pWidget(nullptr), position(0,0), size(0,0) {
+    StaticContainer_WidgetData()
+        : pWidget(nullptr), position(0, 0), size(0, 0) {
     }
 
     StaticContainer_WidgetData(Widget* pWidget, Point position, Point size)
-     : pWidget(pWidget), position(position), size(size) {
+        : pWidget(pWidget), position(position), size(size) {
     }
 
     Widget* pWidget;
@@ -43,10 +44,9 @@ public:
 /// A container class of explicit placed widgets
 class StaticContainer : public Container<StaticContainer_WidgetData> {
 public:
-
-
     /// default constructor
-    StaticContainer() : Container<StaticContainer_WidgetData>() {
+    StaticContainer()
+        : Container<StaticContainer_WidgetData>() {
         ;
     }
 
@@ -60,8 +60,8 @@ public:
         \param size         Size of the new widget
     */
     virtual void addWidget(Widget* newWidget, Point position, Point size) {
-        if(newWidget != nullptr) {
-            containedWidgets.push_back(StaticContainer_WidgetData(newWidget,position,size));
+        if (newWidget != nullptr) {
+            containedWidgets.push_back(StaticContainer_WidgetData(newWidget, position, size));
             newWidget->resize(size.x, size.y);
             newWidget->setParent(this);
             Widget::resizeAll();
@@ -83,12 +83,11 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this container
     */
-    Point getMinimumSize() const override
-    {
-        Point p(0,0);
-        for(const StaticContainer_WidgetData& widgetData : containedWidgets) {
-            p.x = std::max(p.x , widgetData.position.x + widgetData.size.x);
-            p.y = std::max(p.y , widgetData.position.y + widgetData.size.y);
+    Point getMinimumSize() const override {
+        Point p(0, 0);
+        for (const StaticContainer_WidgetData& widgetData : containedWidgets) {
+            p.x = std::max(p.x, widgetData.position.x + widgetData.size.x);
+            p.y = std::max(p.y, widgetData.position.y + widgetData.size.y);
         }
         return p;
     }
@@ -98,9 +97,8 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -110,12 +108,11 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        for(const StaticContainer_WidgetData& widgetData : containedWidgets) {
-            widgetData.pWidget->resize(widgetData.size.x,widgetData.size.y);
+    void resize(uint32_t width, uint32_t height) override {
+        for (const StaticContainer_WidgetData& widgetData : containedWidgets) {
+            widgetData.pWidget->resize(widgetData.size.x, widgetData.size.y);
         }
-        Container<StaticContainer_WidgetData>::resize(width,height);
+        Container<StaticContainer_WidgetData>::resize(width, height);
     }
 
 protected:
@@ -125,21 +122,18 @@ protected:
         \param widgetData   the widget data to get the position from.
         \return The position of the left upper corner
     */
-    Point getPosition(const StaticContainer_WidgetData& widgetData) const override
-    {
+    Point getPosition(const StaticContainer_WidgetData& widgetData) const override {
         return widgetData.position;
     }
 
     void setWidgetGeometry(Widget* pWidget, Point position, Point size) {
         StaticContainer_WidgetData* pWidgetData = getWidgetDataFromWidget(pWidget);
-        if(pWidgetData != nullptr) {
+        if (pWidgetData != nullptr) {
             pWidgetData->position = position;
-            pWidgetData->size = size;
+            pWidgetData->size     = size;
             pWidget->resize(size.x, size.y);
         }
     }
 };
 
-
 #endif // STATICCONTAINER_H
-

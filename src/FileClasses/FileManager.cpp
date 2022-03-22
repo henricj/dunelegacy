@@ -23,16 +23,16 @@
 
 #include <misc/FileSystem.h>
 
+#include <misc/exceptions.h>
 #include <misc/fnkdat.h>
 #include <misc/md5.h>
 #include <misc/string_util.h>
-#include <misc/exceptions.h>
 
 #include <algorithm>
 #include <filesystem>
-#include <sstream>
 #include <iomanip>
 #include <mutex>
+#include <sstream>
 
 FileManager::FileManager() {
     sdl2::log_info("FileManager is loading PAK-Files...");
@@ -40,14 +40,14 @@ FileManager::FileManager() {
 
     const auto search_path = getSearchPath();
 
-    for(const auto& filename : getNeededFiles()) {
-        for(const auto& sp : search_path) {
+    for (const auto& filename : getNeededFiles()) {
+        for (const auto& sp : search_path) {
             auto filepath = sp / filename;
-            if(getCaseInsensitiveFilename(filepath)) {
+            if (getCaseInsensitiveFilename(filepath)) {
                 try {
                     sdl2::log_info("%s  %s", md5FromFilename(filepath).c_str(), filepath.u8string().c_str());
                     pakFiles.push_back(std::make_unique<Pakfile>(filepath));
-                } catch (std::exception &e) {
+                } catch (std::exception& e) {
                     pakFiles.clear();
 
                     THROW(io_error, "Error while opening '%s': %s!", filepath.u8string().c_str(), e.what());
@@ -57,7 +57,6 @@ FileManager::FileManager() {
                 break;
             }
         }
-
     }
 
     sdl2::log_info("%s", "");
@@ -72,8 +71,9 @@ const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
     std::call_once(flag, [] {
         search_path.push_back(getDuneLegacyDataDir());
         auto [ok, tmp] = fnkdat("data/", FNKDAT_USER | FNKDAT_CREAT);
-        if(ok) search_path.push_back(tmp);
-        });
+        if (ok)
+            search_path.push_back(tmp);
+    });
 
     return search_path;
 }
@@ -96,7 +96,7 @@ std::vector<std::filesystem::path> FileManager::getNeededFiles() {
 
     std::string LanguagePakFiles = (pTextManager != nullptr) ? _("LanguagePakFiles") : "";
 
-    if(LanguagePakFiles.empty()) {
+    if (LanguagePakFiles.empty()) {
         LanguagePakFiles = "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK";
     }
 
@@ -112,17 +112,17 @@ std::vector<std::filesystem::path> FileManager::getMissingFiles() {
     std::vector<std::filesystem::path> MissingFiles;
     const auto searchPath = getSearchPath();
 
-    for(const auto& fileName : getNeededFiles()) {
+    for (const auto& fileName : getNeededFiles()) {
         auto bFound = false;
-        for(const auto& sp : searchPath) {
+        for (const auto& sp : searchPath) {
             auto filepath = sp / fileName;
-            if(getCaseInsensitiveFilename(filepath)) {
+            if (getCaseInsensitiveFilename(filepath)) {
                 bFound = true;
                 break;
             }
         }
 
-        if(!bFound) {
+        if (!bFound) {
             MissingFiles.push_back(fileName);
         }
     }
@@ -134,19 +134,19 @@ sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) con
     sdl2::RWops_ptr ret;
 
     // try loading external file
-    for(const auto& searchPath : getSearchPath()) {
+    for (const auto& searchPath : getSearchPath()) {
         auto externalFilename = searchPath / filename;
-        if(getCaseInsensitiveFilename(externalFilename)) {
-            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
-            if(ret) {
+        if (getCaseInsensitiveFilename(externalFilename)) {
+            ret = sdl2::RWops_ptr {SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
+            if (ret) {
                 return ret;
             }
         }
     }
 
     // now try loading from pak file
-    for(const auto& pPakFile : pakFiles) {
-        if(pPakFile->exists(filename)) {
+    for (const auto& pPakFile : pakFiles) {
+        if (pPakFile->exists(filename)) {
             return pPakFile->openFile(filename);
         }
     }
@@ -157,16 +157,16 @@ sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) con
 bool FileManager::exists(const std::filesystem::path& filename) const {
 
     // try finding external file
-    for(const auto& searchPath : getSearchPath()) {
+    for (const auto& searchPath : getSearchPath()) {
         auto externalFilename = searchPath / filename;
-        if(getCaseInsensitiveFilename(externalFilename)) {
+        if (getCaseInsensitiveFilename(externalFilename)) {
             return true;
         }
     }
 
     // now try finding in one pak file
-    for(const auto& pPakFile : pakFiles) {
-        if(pPakFile->exists(filename)) {
+    for (const auto& pPakFile : pakFiles) {
+        if (pPakFile->exists(filename)) {
             return true;
         }
     }
@@ -174,18 +174,16 @@ bool FileManager::exists(const std::filesystem::path& filename) const {
     return false;
 }
 
-
-std::string FileManager::md5FromFilename(const std::filesystem::path& filename)
-{
+std::string FileManager::md5FromFilename(const std::filesystem::path& filename) {
     unsigned char md5sum[16];
 
-    if(md5_file(filename.u8string().c_str(), md5sum) != 0) {
+    if (md5_file(filename.u8string().c_str(), md5sum) != 0) {
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
     } else {
 
         std::stringstream stream;
         stream << std::setfill('0') << std::hex;
-        for(int i : md5sum) {
+        for (int i : md5sum) {
             stream << std::setw(2) << i;
         }
         return stream.str();

@@ -33,10 +33,8 @@
     make it easier to debug the exact timings of TextEvents and CutSceneTriggers. The timings for both are given relative to the start of
     the last scene.
 */
-class CutScene
-{
+class CutScene {
 public:
-
     /// Default constructor
     CutScene();
 
@@ -90,8 +88,8 @@ protected:
     static std::unique_ptr<Wsafile> create_wsafile(const char* name1, const char* name2, const char* name3);
 
 private:
-    std::queue<std::unique_ptr<Scene>> scenes;  ///< List of all scenes
-    bool quiting;                               ///< Quit the cutscene?
+    std::queue<std::unique_ptr<Scene>> scenes; ///< List of all scenes
+    bool quiting;                              ///< Quit the cutscene?
 };
 
 #endif // CUTSCENE_H

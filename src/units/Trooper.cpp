@@ -24,7 +24,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr InfantryBaseConstants trooper_constants{Trooper::item_id, 1, Bullet_SmallRocket};
+constexpr InfantryBaseConstants trooper_constants {Trooper::item_id, 1, Bullet_SmallRocket};
 }
 
 Trooper::Trooper(uint32_t objectID, const ObjectInitializer& initializer)
@@ -44,7 +44,7 @@ void Trooper::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Trooper;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = 4;
     numImagesY = 3;
@@ -60,7 +60,6 @@ bool Trooper::canAttack(const ObjectBase* object) const {
         && object->isVisible(getOwner()->getTeamID());
 }
 
-
 void Trooper::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_RocketSmall,location);
+    soundPlayer->playSoundAt(Sound_RocketSmall, location);
 }

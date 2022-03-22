@@ -9,9 +9,9 @@ DuneTextures::DuneTextures() = default;
 DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pictures_type&& object_pictures,
                            small_details_type&& small_details, tiny_pictures_type&& tiny_pictures,
                            ui_graphics_type&& ui_graphics, generated_type&& generated_pictures)
-    : object_pictures_{std::move(object_pictures)}, small_details_{std::move(small_details)},
-      tiny_pictures_{std::move(tiny_pictures)}, ui_graphics_{std::move(ui_graphics)},
-      generated_pictures_{std::move(generated_pictures)}, textures_{std::move(textures)} { }
+    : object_pictures_ {std::move(object_pictures)}, small_details_ {std::move(small_details)},
+      tiny_pictures_ {std::move(tiny_pictures)}, ui_graphics_ {std::move(ui_graphics)},
+      generated_pictures_ {std::move(generated_pictures)}, textures_ {std::move(textures)} { }
 
 DuneTextures::~DuneTextures() = default;
 
@@ -29,7 +29,7 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 
     const auto total_pixels = [&]() {
         auto sum = 0;
-        for(auto& r : rectangles)
+        for (auto& r : rectangles)
             sum += r.w * r.h;
         return sum;
     }();
@@ -44,9 +44,9 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
             },
             runtime_flipping_mode));
 
-    if(failed) {
+    if (failed) {
         sdl2::log_info("Packing failed ");
-        return {false, rectpack2D::rect_wh{}};
+        return {false, rectpack2D::rect_wh {}};
     }
 
     sdl2::log_info(fmt::format("Packed in {}x{}", result_size.w, result_size.h).c_str());
@@ -62,15 +62,17 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
     //}
 
 #if _DEBUG
-    for(auto i = 0; i < rectangles.size() - 1; ++i) {
+    for (auto i = 0; i < rectangles.size() - 1; ++i) {
         const auto& a = rectangles[i];
-        SDL_Rect    sa{a.x, a.y, a.w, a.h};
+        SDL_Rect sa {a.x, a.y, a.w, a.h};
 
-        for(auto j = i + 1; j < rectangles.size(); ++j) {
+        for (auto j = i + 1; j < rectangles.size(); ++j) {
             const auto& b = rectangles[j];
-            SDL_Rect    sb{b.x, b.y, b.w, b.h};
+            SDL_Rect sb {b.x, b.y, b.w, b.h};
 
-            if(SDL_HasIntersection(&sa, &sb)) { sdl2::log_info("Failed packing"); }
+            if (SDL_HasIntersection(&sa, &sb)) {
+                sdl2::log_info("Failed packing");
+            }
         }
     }
 #endif // _DEBUG
@@ -79,22 +81,26 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 }
 
 bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
-    if(a->w != b->w || a->h != b->h) return false;
+    if (a->w != b->w || a->h != b->h)
+        return false;
 
-    if(a == b) return true;
+    if (a == b)
+        return true;
 
-    const sdl2::surface_lock lock_a{a};
-    const sdl2::surface_lock lock_b{b};
+    const sdl2::surface_lock lock_a {a};
+    const sdl2::surface_lock lock_b {b};
 
     const auto* pa = static_cast<const char*>(lock_a.pixels());
     const auto* pb = static_cast<const char*>(lock_b.pixels());
 
-    if(lock_a.pitch() != lock_b.pitch()) return false;
+    if (lock_a.pitch() != lock_b.pitch())
+        return false;
 
     const auto pitch = lock_a.pitch();
 
-    for(auto i = 0; i < a->h; ++i, pa += pitch, pb += pitch) {
-        if(0 != memcmp(pa, pb, lock_a.pitch())) return false;
+    for (auto i = 0; i < a->h; ++i, pa += pitch, pb += pitch) {
+        if (0 != memcmp(pa, pb, lock_a.pitch()))
+            return false;
     }
 
     return true;
@@ -103,8 +109,8 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
 class Packer final {
     std::vector<rect_type> rectangles_;
 
-    int w_{};
-    int h_{};
+    int w_ {};
+    int h_ {};
 
 public:
     void clear() { rectangles_.clear(); }
@@ -120,7 +126,7 @@ public:
     bool pack(int max_side) {
         const auto& [ok, size] = packRectangles(max_side, rectangles_);
 
-        if(ok) {
+        if (ok) {
             w_ = size.w;
             h_ = size.h;
         } else {
@@ -143,11 +149,12 @@ class PackableSet {
 public:
     using packer_set_type = std::vector<std::tuple<int, int, SDL_Surface*>>;
 
-    PackableSet(packer_set_type&& set) : set_{set} { }
+    PackableSet(packer_set_type&& set)
+        : set_ {set} { }
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) {
-        for(const auto& s : set_) {
+        for (const auto& s : set_) {
             const auto& [rect_idx, s_idx, surface] = s;
 
             const auto& r = packer[rect_idx];
@@ -158,7 +165,7 @@ public:
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) const {
-        for(const auto& s : set_) {
+        for (const auto& s : set_) {
             const auto& [rect_idx, s_idx, surface] = s;
 
             const auto& r = packer[rect_idx];
@@ -174,11 +181,11 @@ private:
 template<typename Identifier>
 class PackableSurfaces {
     struct record {
-        Identifier   identifier;
+        Identifier identifier;
         SDL_Surface* surface;
     };
 
-    std::vector<record>                      surfaces_;
+    std::vector<record> surfaces_;
     std::vector<std::tuple<int, Identifier>> duplicates_;
 
 public:
@@ -194,7 +201,7 @@ public:
 
     PackableSet create_packer_set(Packer& packer) {
         PackableSet::packer_set_type output;
-        for(auto i = 0u; i < surfaces_.size(); ++i) {
+        for (auto i = 0u; i < surfaces_.size(); ++i) {
             const auto& record = surfaces_[i];
 
             const auto idx = packer.add(record.surface->w, record.surface->h);
@@ -202,7 +209,7 @@ public:
             output.emplace_back(static_cast<int>(idx), i, record.surface);
         }
 
-        return PackableSet{std::move(output)};
+        return PackableSet {std::move(output)};
     }
 
     template<typename Predicate>
@@ -210,17 +217,18 @@ public:
         static_assert(std::is_invocable_r<bool, Predicate, Identifier, SDL_Surface*>::value);
 
         PackableSet::packer_set_type output;
-        for(auto i = 0u; i < surfaces_.size(); ++i) {
+        for (auto i = 0u; i < surfaces_.size(); ++i) {
             const auto& record = surfaces_[i];
 
-            if(!predicate(record.identifier, record.surface)) continue;
+            if (!predicate(record.identifier, record.surface))
+                continue;
 
             const auto idx = packer.add(record.surface->w, record.surface->h);
 
             output.emplace_back(static_cast<int>(idx), i, record.surface);
         }
 
-        return PackableSet{std::move(output)};
+        return PackableSet {std::move(output)};
     }
 
     void add_duplicate(int key, Identifier identifier) {
@@ -231,7 +239,7 @@ public:
 
     template<typename F>
     void for_each_duplicate(F&& f) const {
-        for(const auto& duplicate : duplicates_) {
+        for (const auto& duplicate : duplicates_) {
             const auto& [s_idx, identifier] = duplicate;
 
             f(surfaces_[s_idx].identifier, identifier);
@@ -241,7 +249,7 @@ public:
     template<typename Lookup>
     void update_duplicates(Lookup&& lookup) {
         static_assert(std::is_invocable_r<DuneTexture&, Lookup, const Identifier&>::value);
-        for(const auto& duplicate : duplicates_) {
+        for (const auto& duplicate : duplicates_) {
             const auto& [s_idx, identifier] = duplicate;
 
             lookup(identifier) = lookup(surfaces_.at(s_idx).identifier);
@@ -274,24 +282,25 @@ public:
     }
 
     sdl2::texture_ptr pack(SDL_Renderer* render, uint32_t format, int max_side) {
-        if(!packer_.pack(max_side)) return nullptr;
+        if (!packer_.pack(max_side))
+            return nullptr;
 
-        const sdl2::surface_ptr atlas_surface{
+        const sdl2::surface_ptr atlas_surface {
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
         const auto draw = [&](const auto r, int s_idx, SDL_Surface* surface) {
-            SDL_Rect dst{r.x, r.y, r.w, r.h};
+            SDL_Rect dst {r.x, r.y, r.w, r.h};
 
-            if(!drawSurface(surface, nullptr, atlas_surface.get(), &dst)) {
+            if (!drawSurface(surface, nullptr, atlas_surface.get(), &dst)) {
                 // Retry after converting from palette to 32-bit surface...
-                const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
+                const sdl2::surface_ptr copy {SDL_ConvertSurfaceFormat(surface, format, 0)};
 
-                if(!copy) {
+                if (!copy) {
                     sdl2::log_warn("Unable to copy surface: %s", SDL_GetError());
                     return false;
                 }
 
-                if(!drawSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
+                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
                     sdl2::log_warn("Unable to draw object %u for house %d");
                     return false;
                 }
@@ -300,20 +309,20 @@ public:
             return true;
         };
 
-        for(const auto& set : surface_sets_) {
+        for (const auto& set : surface_sets_) {
             set.for_each(packer_, draw);
         }
 
-        //auto [ok, cache_path] = fnkdat("cache/", FNKDAT_USER | FNKDAT_CREAT);
+        // auto [ok, cache_path] = fnkdat("cache/", FNKDAT_USER | FNKDAT_CREAT);
 
-        //auto path = cache_path / fmt::format("f23_{}.bmp", texture_identifier);
-        //path      = path.lexically_normal().make_preferred();
+        // auto path = cache_path / fmt::format("f23_{}.bmp", texture_identifier);
+        // path      = path.lexically_normal().make_preferred();
 
-        //SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
+        // SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
-        auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
+        auto texture = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
 
-        if(texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
+        if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
             sdl2::log_warn("Unable to set texture atlas blend mode");
         }
 
@@ -327,9 +336,9 @@ public:
         const auto& set = surface_sets_.at(key);
 
         set.for_each(packer_, [&](const auto& r, auto s_idx, auto* surface) {
-            const SDL_Rect rect{r.x, r.y, r.w, r.h};
+            const SDL_Rect rect {r.x, r.y, r.w, r.h};
 
-            lookup(s_idx) = DuneTexture{texture, rect};
+            lookup(s_idx) = DuneTexture {texture, rect};
         });
     }
 
@@ -353,28 +362,31 @@ public:
 
     void initialize(SurfaceLoader* surfaceLoader) {
 
-        for(auto id = 0u; id < NUM_OBJPICS; ++id) {
-            if(id == ObjPic_Bullet_SonicTemp || id == ObjPic_SandwormShimmerTemp) continue;
+        for (auto id = 0u; id < NUM_OBJPICS; ++id) {
+            if (id == ObjPic_Bullet_SonicTemp || id == ObjPic_SandwormShimmerTemp)
+                continue;
 
             const auto harkonnen_only = harkonnen_only_.end() != harkonnen_only_.find(id);
 
-            for(auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-                SDL_Surface* harkonnen     = nullptr;
-                auto         harkonnen_key = 0;
+            for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+                SDL_Surface* harkonnen = nullptr;
+                auto harkonnen_key     = 0;
 
                 for_each_housetype([&](auto house) {
                     const auto is_harkonnen = house == HOUSETYPE::HOUSE_HARKONNEN;
 
-                    if(harkonnen_only && !is_harkonnen) return;
+                    if (harkonnen_only && !is_harkonnen)
+                        return;
 
                     auto* const surface = surfaceLoader->getZoomedObjSurface(id, house, zoom);
 
-                    if(!surface) return;
+                    if (!surface)
+                        return;
 
-                    if(is_harkonnen) {
+                    if (is_harkonnen) {
                         harkonnen     = surface;
                         harkonnen_key = surfaces_.add({id, house, zoom}, surface);
-                    } else if(harkonnen && compare_surfaces(harkonnen, surface)) {
+                    } else if (harkonnen && compare_surfaces(harkonnen, surface)) {
                         // We are identical to the Harkonnen image, so let it find the Harkonnen version.
                         surfaces_.add_duplicate(harkonnen_key, {id, house, zoom});
                     } else {
@@ -449,21 +461,22 @@ public:
 
     void initialize(SurfaceLoader* surfaceLoader) {
 
-        for(auto id = 0u; id < NUM_UIGRAPHICS; ++id) {
-            SDL_Surface* harkonnen     = nullptr;
-            auto         harkonnen_key = 0;
+        for (auto id = 0u; id < NUM_UIGRAPHICS; ++id) {
+            SDL_Surface* harkonnen = nullptr;
+            auto harkonnen_key     = 0;
 
             for_each_housetype([&](auto house) {
                 auto* surface = surfaceLoader->getUIGraphicSurface(id, house);
 
-                if(!surface) return;
+                if (!surface)
+                    return;
 
                 const auto is_harkonnen = house == HOUSETYPE::HOUSE_HARKONNEN;
 
-                if(is_harkonnen) {
+                if (is_harkonnen) {
                     harkonnen     = surface;
                     harkonnen_key = surfaces_.add({id, house}, surface);
-                } else if(harkonnen && compare_surfaces(harkonnen, surface)) {
+                } else if (harkonnen && compare_surfaces(harkonnen, surface)) {
                     // We are identical to the Harkonnen image, so let it find the Harkonnen version.
                     surfaces_.add_duplicate(harkonnen_key, {id, house});
                 } else {
@@ -541,10 +554,10 @@ protected:
 class TinyPicturePacker final : public PackerBase<DuneTextures::tiny_pictures_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for(auto id = 0u; id < textures_.size(); ++id) {
+        for (auto id = 0u; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getTinyPictureSurface(id);
 
-            if(!surface) {
+            if (!surface) {
                 sdl2::log_warn("No surface available for tiny picture %d", id);
                 continue;
             }
@@ -557,10 +570,10 @@ public:
 class SmallDetailPicsPacker final : public PackerBase<DuneTextures::small_details_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        for(auto id = 0u; id < textures_.size(); ++id) {
+        for (auto id = 0u; id < textures_.size(); ++id) {
             auto* surface = surfaceLoader->getSmallDetailSurface(id);
 
-            if(!surface) {
+            if (!surface) {
                 sdl2::log_warn("No surface available for small detail %d", id);
                 continue;
             }
@@ -575,12 +588,13 @@ public:
     void initialize(SurfaceLoader* surfaceLoader) {
         auto palaceReady = PalaceInterface::createSurface(surfaceLoader, GeneratedPicture::PalaceReadyText);
 
-        if(palaceReady) generated_.at(static_cast<int>(GeneratedPicture::PalaceReadyText)) = std::move(palaceReady);
+        if (palaceReady)
+            generated_.at(static_cast<int>(GeneratedPicture::PalaceReadyText)) = std::move(palaceReady);
 
-        for(auto id = 0u; id < textures_.size(); ++id) {
+        for (auto id = 0u; id < textures_.size(); ++id) {
             auto* surface = generated_.at(id).get();
 
-            if(!surface) {
+            if (!surface) {
                 sdl2::log_warn("No surface available for generated picture %d", id);
                 continue;
             }
@@ -600,12 +614,13 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     SDL_GetRendererInfo(renderer, &info);
 
     Uint32 format = SCREEN_FORMAT;
-    for(auto i = 0u; i < info.num_texture_formats; ++i) {
+    for (auto i = 0u; i < info.num_texture_formats; ++i) {
         const auto f = info.texture_formats[i];
 
-        if(SDL_ISPIXELFORMAT_FOURCC(f)) continue;
+        if (SDL_ISPIXELFORMAT_FOURCC(f))
+            continue;
 
-        if(SDL_ISPIXELFORMAT_ALPHA(f)) {
+        if (SDL_ISPIXELFORMAT_ALPHA(f)) {
             format = f;
             break;
         }
@@ -613,14 +628,15 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
     const auto max_side = [&] {
         const auto longest_side = std::min(info.max_texture_width, info.max_texture_height);
-        if(0 == longest_side) return 8192;
+        if (0 == longest_side)
+            return 8192;
         return longest_side;
     }();
 
-    ObjectPicturePacker     object_picture_packer;
-    UiGraphicPacker         ui_graphic_packer;
-    TinyPicturePacker       tiny_picture_packer;
-    SmallDetailPicsPacker   small_detail_pics_packer;
+    ObjectPicturePacker object_picture_packer;
+    UiGraphicPacker ui_graphic_packer;
+    TinyPicturePacker tiny_picture_packer;
+    SmallDetailPicsPacker small_detail_pics_packer;
     GeneratedPicturesPacker generated_pictures_packer;
 
     object_picture_packer.initialize(surfaceLoader);
@@ -634,7 +650,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     { // Scope
         AtlasFactory23 factory23;
 
-        for(auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
+        for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
 
             const auto opp_key =
                 object_picture_packer.add(factory23, [&](const auto& identifier, SDL_Surface* surface) {
@@ -645,7 +661,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
             auto texture = factory23.pack(renderer, format, max_side);
 
-            if(!texture) THROW(std::runtime_error, "Unable to create object pictures texture");
+            if (!texture)
+                THROW(std::runtime_error, "Unable to create object pictures texture");
 
             object_picture_packer.update(factory23, opp_key, texture.get());
 
@@ -657,14 +674,15 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         assert(factory23.empty());
 
         static const std::set<uint32_t> force_combine_ui_graphic = {
-            UI_RadarAnimation,   UI_DuneLegacy,           UI_MenuBackground,  UI_GameMenu,
-            UI_MapChoiceMap,     UI_MapChoiceMapOnly,     UI_MapChoicePlanet, UI_MapChoiceClickMap,
+            UI_RadarAnimation, UI_DuneLegacy, UI_MenuBackground, UI_GameMenu,
+            UI_MapChoiceMap, UI_MapChoiceMapOnly, UI_MapChoicePlanet, UI_MapChoiceClickMap,
             UI_MenuButtonBorder, UI_SelectYourHouseLarge, UI_NewMapWindow};
 
         auto combined_ui_graphic = [&](const auto& identifier, SDL_Surface* surface) {
             const auto& [id, h] = identifier;
 
-            if(force_combine_ui_graphic.find(id) != force_combine_ui_graphic.end()) return true;
+            if (force_combine_ui_graphic.find(id) != force_combine_ui_graphic.end())
+                return true;
 
             return surface->w < 350 && surface->h < 350;
         };
@@ -680,9 +698,10 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
                 auto texture = factory23.pack(renderer, format, max_side);
 
-                if(!texture) THROW(std::runtime_error, "Unable to create UI graphics texture");
+                if (!texture)
+                    THROW(std::runtime_error, "Unable to create UI graphics texture");
 
-                for(auto key : keys)
+                for (auto key : keys)
                     ui_graphic_packer.update(factory23, key, texture.get());
                 keys.clear();
 
@@ -701,14 +720,16 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
                 keys.push_back(ugp_key);
 
-                if(is_second) {
+                if (is_second) {
                     flush_factory();
                 } else {
                     is_second = true;
                 }
             });
 
-            if(!factory23.empty()) { flush_factory(); }
+            if (!factory23.empty()) {
+                flush_factory();
+            }
         }
 
         assert(factory23.empty());
@@ -723,7 +744,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
             auto texture = factory23.pack(renderer, format, max_side);
 
-            if(!texture) THROW(std::runtime_error, "Unable to create combined texture");
+            if (!texture)
+                THROW(std::runtime_error, "Unable to create combined texture");
 
             ui_graphic_packer.update(factory23, ugp_key, texture.get());
             tiny_picture_packer.update(factory23, tpp_key, texture.get());
@@ -751,10 +773,10 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     //    SaveTextureAsBmp(renderer, texture.get(), path.u8string().c_str());
     //}
 
-    return DuneTextures{std::move(textures),
-                        object_picture_packer.object_pictures2(),
-                        small_detail_pics_packer.dune_textures(),
-                        tiny_picture_packer.dune_textures(),
-                        ui_graphic_packer.dune_textures(),
-                        generated_pictures_packer.dune_textures()};
+    return DuneTextures {std::move(textures),
+                         object_picture_packer.object_pictures2(),
+                         small_detail_pics_packer.dune_textures(),
+                         tiny_picture_packer.dune_textures(),
+                         ui_graphic_packer.dune_textures(),
+                         generated_pictures_packer.dune_textures()};
 }

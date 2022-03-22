@@ -22,13 +22,13 @@
 
 class Font {
 public:
-    Font() = default;
+    Font()          = default;
     virtual ~Font() = default;
 
-    Font(const Font &) = delete;
-    Font(Font &&) = delete;
-    Font& operator=(const Font &) = delete;
-    Font& operator=(Font &&) = delete;
+    Font(const Font&) = delete;
+    Font(Font&&)      = delete;
+    Font& operator=(const Font&) = delete;
+    Font& operator=(Font&&) = delete;
 
     virtual void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) = 0;
 

@@ -18,27 +18,25 @@
 #ifndef INDEXEDTEXTFILE_H
 #define INDEXEDTEXTFILE_H
 
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
 
 #include <string>
 #include <vector>
-
 
 /// A class for loading a indexed textfile (e.g. INTRO.ENG).
 /**
     This class can read indexed textfiles and return their content in decoded ANSI Code.
 */
-class IndexedTextFile
-{
+class IndexedTextFile {
 public:
     IndexedTextFile(SDL_RWops* rwop, bool bDecode = false);
     ~IndexedTextFile();
 
-    IndexedTextFile(const IndexedTextFile &) = delete;
-    IndexedTextFile(IndexedTextFile &&) = delete;
-    IndexedTextFile& operator=(const IndexedTextFile &) = delete;
-    IndexedTextFile& operator=(IndexedTextFile &&) = delete;
+    IndexedTextFile(const IndexedTextFile&) = delete;
+    IndexedTextFile(IndexedTextFile&&)      = delete;
+    IndexedTextFile& operator=(const IndexedTextFile&) = delete;
+    IndexedTextFile& operator=(IndexedTextFile&&) = delete;
 
     /// This method returns nth string in the text file.
     /**
@@ -47,20 +45,19 @@ public:
     \return the nth text in the file.
     */
     [[nodiscard]] const std::string& getString(unsigned int n) const {
-        if(n >= indexedStrings.size()) {
+        if (n >= indexedStrings.size()) {
             THROW(std::invalid_argument, "IndexedTextFile:getString(): Invalid index!");
         }
 
         return indexedStrings[n];
     }
 
-
     /// This method returns the number of strings in this file
     /**
     \return the number of strings in this file
     */
     [[nodiscard]] unsigned int getNumStrings() const noexcept {
-        return  indexedStrings.size();
+        return indexedStrings.size();
     }
 
 private:

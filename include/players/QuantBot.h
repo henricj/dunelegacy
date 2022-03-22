@@ -23,19 +23,18 @@
 
 #include <DataTypes.h>
 
-class QuantBot : public Player
-{
+class QuantBot : public Player {
 public:
     enum class Difficulty {
-        Easy = 0,
+        Easy   = 0,
         Medium = 1,
-        Hard = 2,
+        Hard   = 2,
         Brutal = 3,
         Defend = 4
     };
 
     enum class GameMode {
-        Custom = 4,
+        Custom   = 4,
         Campaign = 5
     };
 
@@ -54,23 +53,21 @@ public:
     void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
 private:
-
-    Difficulty difficulty;   ///< difficulty level
-    GameMode   gameMode;     ///< game mode (custom or campaign)
-    int32_t    buildTimer;   ///< When to build the next structure/unit
-    int32_t    attackTimer;  ///< When to build the next structure/unit
-    int32_t    retreatTimer; ///< When you last retreated>
+    Difficulty difficulty; ///< difficulty level
+    GameMode gameMode;     ///< game mode (custom or campaign)
+    int32_t buildTimer;    ///< When to build the next structure/unit
+    int32_t attackTimer;   ///< When to build the next structure/unit
+    int32_t retreatTimer;  ///< When you last retreated>
 
     int initialItemCount[Num_ItemID];
-    int initialMilitaryValue = 0;
-    int militaryValueLimit = 0;
-    int harvesterLimit = 4;
-    bool campaignAIAttackFlag = false;
-    Coord squadRallyLocation = Coord::Invalid();
+    int initialMilitaryValue   = 0;
+    int militaryValueLimit     = 0;
+    int harvesterLimit         = 4;
+    bool campaignAIAttackFlag  = false;
+    Coord squadRallyLocation   = Coord::Invalid();
     Coord squadRetreatLocation = Coord::Invalid();
 
     void scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits = std::numeric_limits<int>::max());
-
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
     Coord findPlaceLocation(ItemID_enum itemID);
@@ -79,13 +76,12 @@ private:
     Coord findSquadRallyLocation();
     Coord findSquadRetreatLocation();
 
-    std::list<Coord> placeLocations;    ///< Where to place structures
+    std::list<Coord> placeLocations; ///< Where to place structures
 
     void checkAllUnits();
     void retreatAllUnits();
     void build(int militaryValue);
     void attack(int militaryValue);
-
 };
 
-#endif //QuantBot_H
+#endif // QuantBot_H

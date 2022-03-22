@@ -18,11 +18,10 @@
 #ifndef DEVASTATOR_H
 #define DEVASTATOR_H
 
-#include <units/TrackedUnit.h>
 #include <FileClasses/GFXManager.h>
+#include <units/TrackedUnit.h>
 
-class Devastator final : public TrackedUnit
-{
+class Devastator final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Devastator;
     using parent                                = TrackedUnit;
@@ -56,8 +55,8 @@ private:
     int32_t devastateTimer; ///< When will this devastator devastate
 
     // drawing information
-    zoomable_texture turretGraphic{}; ///< The graphic of the turret
-    int              gunGraphicID;    ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic {}; ///< The graphic of the turret
+    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // DEVASTATOR_H

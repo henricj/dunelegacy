@@ -18,28 +18,26 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include <ObjectPointer.h>
 #include <DataTypes.h>
+#include <ObjectPointer.h>
+#include <fixmath/FixPoint.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <fixmath/FixPoint.h>
 
 // forward declarations
 class House;
 
-
-class Bullet final
-{
+class Bullet final {
 public:
     Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget);
     explicit Bullet(InputStream& stream);
     void init();
     ~Bullet();
 
-    Bullet(const Bullet &) = delete;
-    Bullet(Bullet &&) = delete;
-    Bullet& operator=(const Bullet &) = delete;
-    Bullet& operator=(Bullet &&) = delete;
+    Bullet(const Bullet&) = delete;
+    Bullet(Bullet&&)      = delete;
+    Bullet& operator=(const Bullet&) = delete;
+    Bullet& operator=(Bullet&&) = delete;
 
     void save(OutputStream& stream) const;
 
@@ -54,10 +52,10 @@ public:
 
 private:
     // constants for each bullet type
-    int      damageRadius;            ///< The radius of the bullet
-    bool     explodesAtGroundObjects; ///< false = bullet goes through objects, true = bullet explodes at ground objects
-    FixPoint speed;                   ///< The speed of this bullet
-    int8_t   detonationTimer;         ///< How long is this bullet alive before it explodes
+    int damageRadius;             ///< The radius of the bullet
+    bool explodesAtGroundObjects; ///< false = bullet goes through objects, true = bullet explodes at ground objects
+    FixPoint speed;               ///< The speed of this bullet
+    int8_t detonationTimer;       ///< How long is this bullet alive before it explodes
 
     // bullet state
     uint32_t bulletID; ///< The ID of the bullet
@@ -65,26 +63,26 @@ private:
     int32_t damage; ///< the damage this bullet causes
 
     uint32_t shooterID; ///< the ItemId of the shooter
-    House*   owner;     ///< the owner of this bullet
+    House* owner;       ///< the owner of this bullet
 
-    Coord    source;                     ///< the source location (in world coordinates) of this bullet
-    Coord    destination;                ///< the destination (in world coordinates) of this bullet
-    Coord    location;                   ///< the current location of this bullet (in map coordinates)
-    FixPoint realX;                      ///< the x-coordinate of the current position (in world coordinates)
-    FixPoint realY;                      ///< the y-coordinate of the current position (in world coordinates)
+    Coord source;      ///< the source location (in world coordinates) of this bullet
+    Coord destination; ///< the destination (in world coordinates) of this bullet
+    Coord location;    ///< the current location of this bullet (in map coordinates)
+    FixPoint realX;    ///< the x-coordinate of the current position (in world coordinates)
+    FixPoint realY;    ///< the y-coordinate of the current position (in world coordinates)
 
-    FixPoint xSpeed;                     ///< Speed in x direction
-    FixPoint ySpeed;                     ///< Speed in x direction
+    FixPoint xSpeed; ///< Speed in x direction
+    FixPoint ySpeed; ///< Speed in x direction
 
-    FixPoint angle;      ///< the angle of the bullet
-    int8_t   drawnAngle; ///< the drawn angle of the bullet
+    FixPoint angle;    ///< the angle of the bullet
+    int8_t drawnAngle; ///< the drawn angle of the bullet
 
-    bool     airAttack;                  ///< Is this an air attack?
-    ObjectPointer target;                ///< The target to hit
+    bool airAttack;       ///< Is this an air attack?
+    ObjectPointer target; ///< The target to hit
 
     // drawing information
-    zoomable_texture graphic{};          ///< The graphic of the bullet
-    int              numFrames = 0;      ///< Number of frames of the bullet
+    zoomable_texture graphic {}; ///< The graphic of the bullet
+    int numFrames = 0;           ///< Number of frames of the bullet
 };
 
 #endif // BULLET_H

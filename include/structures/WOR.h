@@ -20,11 +20,10 @@
 
 #include <structures/BuilderBase.h>
 
-class WOR final : public BuilderBase
-{
+class WOR final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_WOR;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     WOR(uint32_t objectID, const ObjectInitializer& initializer);
     WOR(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +39,4 @@ private:
     void init();
 };
 
-#endif //WOR_H
+#endif // WOR_H

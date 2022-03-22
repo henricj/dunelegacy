@@ -18,9 +18,9 @@
 #ifndef SAND_H
 #define SAND_H
 
-#include <misc/SDL2pp.h>
-#include <fixmath/FixPoint.h>
 #include <DataTypes.h>
+#include <fixmath/FixPoint.h>
+#include <misc/SDL2pp.h>
 
 #include <string>
 
@@ -31,49 +31,45 @@ extern SDL_Renderer* renderer;
 
 void drawCursor();
 
-std::string     resolveItemName(ItemID_enum itemID);
+std::string resolveItemName(ItemID_enum itemID);
 
-int             getAnimByFilename(const std::string& filename);
+int getAnimByFilename(const std::string& filename);
 
-Coord           getStructureSize(ItemID_enum itemID);
+Coord getStructureSize(ItemID_enum itemID);
 
-ItemID_enum     getItemIDByName(std::string_view name);
-std::string     getItemNameByID(ItemID_enum itemID);
-const DuneTexture*    resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
+ItemID_enum getItemIDByName(std::string_view name);
+std::string getItemNameByID(ItemID_enum itemID);
+const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
-HOUSETYPE       getHouseByName(std::string_view name);
-std::string     getHouseNameByNumber(HOUSETYPE house);
+HOUSETYPE getHouseByName(std::string_view name);
+std::string getHouseNameByNumber(HOUSETYPE house);
 
-ATTACKMODE      getAttackModeByName(std::string_view name);
-std::string     getAttackModeNameByMode(ATTACKMODE attackMode);
+ATTACKMODE getAttackModeByName(std::string_view name);
+std::string getAttackModeNameByMode(ATTACKMODE attackMode);
 
-DropLocation    getDropLocationByName(std::string_view name);
-std::string     getDropLocationNameByID(DropLocation dropLocation);
-std::string     resolveDropLocationName(DropLocation dropLocation);
+DropLocation getDropLocationByName(std::string_view name);
+std::string getDropLocationNameByID(DropLocation dropLocation);
+std::string resolveDropLocationName(DropLocation dropLocation);
 
+AITeamBehavior getAITeamBehaviorByName(const std::string& name);
+std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);
 
-AITeamBehavior  getAITeamBehaviorByName(const std::string& name);
-std::string     getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);
-
-AITeamType      getAITeamTypeByName(const std::string& name);
-std::string     getAITeamTypeNameByID(AITeamType aiTeamType);
-
+AITeamType getAITeamTypeByName(const std::string& name);
+std::string getAITeamTypeNameByID(AITeamType aiTeamType);
 
 uint32_t getColorByTerrainType(TERRAINTYPE terrainType);
 
-FixPoint        getDeviateWeakness(HOUSETYPE house);
+FixPoint getDeviateWeakness(HOUSETYPE house);
 
 inline int missionNumberToLevelNumber(int missionNumber) {
-    if(missionNumber != 22) {
-        return ((missionNumber+1)/3)+1;
-    }         return 9;
-
-   
+    if (missionNumber != 22) {
+        return ((missionNumber + 1) / 3) + 1;
+    }
+    return 9;
 }
 
 void startReplay(const std::filesystem::path& filename);
 void startSinglePlayerGame(const GameInitSettings& init);
 void startMultiPlayerGame(const GameInitSettings& init);
 
-
-#endif //SAND_H
+#endif // SAND_H

@@ -20,27 +20,26 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
+#include "CutSceneTrigger.h"
 
 /**
     This class is used for triggering a music change
 */
 class CutSceneMusicTrigger : public CutSceneTrigger {
 public:
-
     /**
         Constructor
         \param  frameNumber     the frame number relative to the scene start where the music shall be changed
         \param  musicType       the type of the new music
     */
     CutSceneMusicTrigger(int frameNumber, MUSICTYPE musicType)
-     : CutSceneTrigger(frameNumber), musicType(musicType)
-    {
+        : CutSceneTrigger(frameNumber), musicType(musicType) {
     }
 
-    CutSceneMusicTrigger(const CutSceneMusicTrigger &) = delete;
-    CutSceneMusicTrigger(CutSceneMusicTrigger &&) = delete;
-    CutSceneMusicTrigger& operator=(const CutSceneMusicTrigger &) = delete;
-    CutSceneMusicTrigger& operator=(CutSceneMusicTrigger &&) = delete;
+    CutSceneMusicTrigger(const CutSceneMusicTrigger&) = delete;
+    CutSceneMusicTrigger(CutSceneMusicTrigger&&)      = delete;
+    CutSceneMusicTrigger& operator=(const CutSceneMusicTrigger&) = delete;
+    CutSceneMusicTrigger& operator=(CutSceneMusicTrigger&&) = delete;
 
     /// destructor
     ~CutSceneMusicTrigger() override = default;
@@ -49,13 +48,12 @@ public:
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
         \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
     */
-    void trigger(int currentFrameNumber) override
-    {
+    void trigger(int currentFrameNumber) override {
         musicPlayer->changeMusic(musicType);
     }
 
 private:
-    MUSICTYPE musicType;    ///< the type of the new music
+    MUSICTYPE musicType; ///< the type of the new music
 };
 
 #endif // CUTSCENEMUSICTRIGGER_H

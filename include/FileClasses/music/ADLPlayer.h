@@ -15,14 +15,13 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef ADLPLAYER_H
 #define ADLPLAYER_H
 
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <vector>
 #include <SDL2/SDL_mixer.h>
+#include <vector>
 
 // Forward declarations
 class SoundAdlibPC;

@@ -23,16 +23,15 @@
 */
 class CutSceneTrigger {
 public:
-
     /**
         Constructor
         \param  frameNumber the frame number relative to the start of the current scene where this trigger should be triggered.
     */
     explicit CutSceneTrigger(int frameNumber);
 
-    CutSceneTrigger(const CutSceneTrigger &) = delete;
-    CutSceneTrigger(CutSceneTrigger &&) = delete;
-    CutSceneTrigger& operator=(const CutSceneTrigger &) = delete;
+    CutSceneTrigger(const CutSceneTrigger&) = delete;
+    CutSceneTrigger(CutSceneTrigger&&)      = delete;
+    CutSceneTrigger& operator=(const CutSceneTrigger&) = delete;
     CutSceneTrigger& operator=(CutSceneTrigger&&) = delete;
 
     /// destructor
@@ -53,7 +52,7 @@ public:
     virtual void trigger(int currentFrameNumber) = 0;
 
 private:
-    int frameNumber;    ///< The frame number where this trigger shall be triggered.
+    int frameNumber; ///< The frame number where this trigger shall be triggered.
 };
 
 #endif // CUTSCENETRIGGER_H

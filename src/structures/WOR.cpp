@@ -23,7 +23,7 @@
 #include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants wor_constants{WOR::item_id, Coord{2, 2}};
+constexpr BuilderBaseConstants wor_constants {WOR::item_id, Coord {2, 2}};
 }
 
 WOR::WOR(uint32_t objectID, const ObjectInitializer& initializer)
@@ -41,12 +41,12 @@ WOR::WOR(uint32_t objectID, const ObjectStreamInitializer& initializer)
 void WOR::init() {
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_WOR;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
+    graphicID      = ObjPic_WOR;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 4;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 WOR::~WOR() = default;

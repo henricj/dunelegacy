@@ -19,22 +19,20 @@
 
 #include <globals.h>
 
-#include <FileClasses/GFXManager.h>
-#include <SoundPlayer.h>
-#include <ObjectBase.h>
-#include <Game.h>
-#include <Map.h>
-#include <House.h>
 #include <Explosion.h>
+#include <FileClasses/GFXManager.h>
+#include <Game.h>
+#include <House.h>
+#include <Map.h>
+#include <ObjectBase.h>
+#include <SoundPlayer.h>
 
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
 #include <algorithm>
 
-
-Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget)
-{
+Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget) {
     airAttack = air;
 
     this->shooterID = shooterID;
@@ -51,49 +49,46 @@ Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* ne
 
     destination = *newRealDestination;
 
-    if(bulletID == Bullet_Sonic) {
+    if (bulletID == Bullet_Sonic) {
         const auto diffX = destination.x - newRealLocation->x;
-        auto diffY = destination.y - newRealLocation->y;
+        auto diffY       = destination.y - newRealLocation->y;
 
         const int weaponrange = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
 
-        if((diffX == 0) && (diffY == 0)) {
-            diffY = weaponrange*TILESIZE;
+        if ((diffX == 0) && (diffY == 0)) {
+            diffY = weaponrange * TILESIZE;
         }
 
-        const auto square_root = FixPoint::sqrt(diffX*diffX + diffY*diffY);
-        const auto ratio = (weaponrange*TILESIZE)/square_root;
-        destination.x = newRealLocation->x + floor(diffX*ratio);
-        destination.y = newRealLocation->y + floor(diffY*ratio);
-    } else if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
+        const auto square_root = FixPoint::sqrt(diffX * diffX + diffY * diffY);
+        const auto ratio       = (weaponrange * TILESIZE) / square_root;
+        destination.x          = newRealLocation->x + floor(diffX * ratio);
+        destination.y          = newRealLocation->y + floor(diffY * ratio);
+    } else if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
         const auto distance = distanceFrom(*newRealLocation, *newRealDestination);
 
-
         const auto randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
-        const auto radius = currentGame->randomGen.rand(0,lround(TILESIZE/2 + (distance/TILESIZE)));
+        const auto radius    = currentGame->randomGen.rand(0, lround(TILESIZE / 2 + (distance / TILESIZE)));
 
         destination.x += lround(FixPoint::cos(randAngle) * radius);
         destination.y -= lround(FixPoint::sin(randAngle) * radius);
-
     }
 
-    realX = newRealLocation->x;
-    realY = newRealLocation->y;
-    source.x = newRealLocation->x;
-    source.y = newRealLocation->y;
-    location.x = newRealLocation->x/TILESIZE;
-    location.y = newRealLocation->y/TILESIZE;
+    realX      = newRealLocation->x;
+    realY      = newRealLocation->y;
+    source.x   = newRealLocation->x;
+    source.y   = newRealLocation->y;
+    location.x = newRealLocation->x / TILESIZE;
+    location.y = newRealLocation->y / TILESIZE;
 
-    const auto angleRad =  destinationAngleRad(*newRealLocation, *newRealDestination);
-    angle = RadToDeg256(angleRad);
-    drawnAngle = lround(numFrames*angle/256) % numFrames;
+    const auto angleRad = destinationAngleRad(*newRealLocation, *newRealDestination);
+    angle               = RadToDeg256(angleRad);
+    drawnAngle          = lround(numFrames * angle / 256) % numFrames;
 
     xSpeed = speed * FixPoint::cos(angleRad);
     ySpeed = speed * -FixPoint::sin(angleRad);
 }
 
-Bullet::Bullet(InputStream& stream)
-{
+Bullet::Bullet(InputStream& stream) {
     bulletID = stream.readUint32();
 
     airAttack = stream.readBool();
@@ -102,121 +97,120 @@ Bullet::Bullet(InputStream& stream)
 
     shooterID  = stream.readUint32();
     uint32_t x = stream.readUint32();
-    if(x < static_cast<uint32_t>(HOUSETYPE::NUM_HOUSES)) {
+    if (x < static_cast<uint32_t>(HOUSETYPE::NUM_HOUSES)) {
         owner = currentGame->getHouse(static_cast<HOUSETYPE>(x));
     } else {
         owner = currentGame->getHouse(static_cast<HOUSETYPE>(0));
     }
 
-    source.x = stream.readSint32();
-    source.y = stream.readSint32();
+    source.x      = stream.readSint32();
+    source.y      = stream.readSint32();
     destination.x = stream.readSint32();
     destination.y = stream.readSint32();
-    location.x = stream.readSint32();
-    location.y = stream.readSint32();
-    realX = stream.readFixPoint();
-    realY = stream.readFixPoint();
+    location.x    = stream.readSint32();
+    location.y    = stream.readSint32();
+    realX         = stream.readFixPoint();
+    realY         = stream.readFixPoint();
 
     xSpeed = stream.readFixPoint();
     ySpeed = stream.readFixPoint();
 
     drawnAngle = stream.readSint8();
-    angle = stream.readFixPoint();
+    angle      = stream.readFixPoint();
 
     Bullet::init();
 
     detonationTimer = stream.readSint8();
 }
 
-void Bullet::init()
-{
+void Bullet::init() {
     explodesAtGroundObjects = false;
 
     const auto houseID = owner->getHouseID();
 
-    switch(bulletID) {
+    switch (bulletID) {
         case Bullet_DRocket: {
-            damageRadius = TILESIZE/2;
-            speed = 20;
+            damageRadius    = TILESIZE / 2;
+            speed           = 20;
             detonationTimer = 19;
-            numFrames = 16;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            numFrames       = 16;
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_LargeRocket: {
-            damageRadius = TILESIZE;
-            speed = 20;
+            damageRadius    = TILESIZE;
+            speed           = 20;
             detonationTimer = -1;
-            numFrames = 16;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_LargeRocket, houseID);
+            numFrames       = 16;
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_LargeRocket, houseID);
         } break;
 
         case Bullet_Rocket: {
-            damageRadius = TILESIZE/2;
-            speed = 17.5_fix;
+            damageRadius    = TILESIZE / 2;
+            speed           = 17.5_fix;
             detonationTimer = 22;
-            numFrames = 16;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            numFrames       = 16;
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_TurretRocket: {
-            damageRadius = TILESIZE/2;
-            speed = 20;
+            damageRadius    = TILESIZE / 2;
+            speed           = 20;
             detonationTimer = -1;
-            numFrames = 16;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            numFrames       = 16;
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_ShellSmall: {
-            damageRadius = TILESIZE/2;
+            damageRadius            = TILESIZE / 2;
             explodesAtGroundObjects = true;
-            speed = 20;
-            detonationTimer = -1;
-            numFrames = 1;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Small, houseID);
+            speed                   = 20;
+            detonationTimer         = -1;
+            numFrames               = 1;
+            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Small, houseID);
         } break;
 
         case Bullet_ShellMedium: {
-            damageRadius = TILESIZE/2;
+            damageRadius            = TILESIZE / 2;
             explodesAtGroundObjects = true;
-            speed = 20;
-            detonationTimer = -1;
-            numFrames = 1;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
+            speed                   = 20;
+            detonationTimer         = -1;
+            numFrames               = 1;
+            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
         } break;
 
         case Bullet_ShellLarge: {
-            damageRadius = TILESIZE/2;
+            damageRadius            = TILESIZE / 2;
             explodesAtGroundObjects = true;
-            speed = 20;
-            detonationTimer = -1;
-            numFrames = 1;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Large, houseID);
+            speed                   = 20;
+            detonationTimer         = -1;
+            numFrames               = 1;
+            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Large, houseID);
         } break;
 
         case Bullet_ShellTurret: {
-            damageRadius = TILESIZE/2;
+            damageRadius            = TILESIZE / 2;
             explodesAtGroundObjects = true;
-            speed = 20;
-            detonationTimer = -1;
-            numFrames = 1;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
+            speed                   = 20;
+            detonationTimer         = -1;
+            numFrames               = 1;
+            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
         } break;
 
         case Bullet_SmallRocket: {
-            damageRadius = TILESIZE/2;
-            speed = 20;
+            damageRadius    = TILESIZE / 2;
+            speed           = 20;
             detonationTimer = 7;
-            numFrames = 16;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_SmallRocket, houseID);
+            numFrames       = 16;
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_SmallRocket, houseID);
         } break;
 
         case Bullet_Sonic: {
-            damageRadius = (TILESIZE*3)/4;
-            speed = 6;  // For Sonic bullets this is only half the actual speed; see Bullet::update()
-            numFrames = 1;
+            damageRadius    = (TILESIZE * 3) / 4;
+            speed           = 6; // For Sonic bullets this is only half the actual speed; see Bullet::update()
+            numFrames       = 1;
             detonationTimer = 45;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN);    // no color remapping
+            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN); // no color remapping
         } break;
 
         case Bullet_Sandworm: {
@@ -229,11 +223,9 @@ void Bullet::init()
     }
 }
 
-
 Bullet::~Bullet() = default;
 
-void Bullet::save(OutputStream& stream) const
-{
+void Bullet::save(OutputStream& stream) const {
     stream.writeUint32(bulletID);
 
     stream.writeBool(airAttack);
@@ -261,19 +253,18 @@ void Bullet::save(OutputStream& stream) const
     stream.writeSint8(detonationTimer);
 }
 
-
 void Bullet::blitToScreen(uint32_t cycleCount) const {
-    const auto imageW = getWidth(graphic[currentZoomlevel])/numFrames;
+    const auto imageW = getWidth(graphic[currentZoomlevel]) / numFrames;
     const auto imageH = getHeight(graphic[currentZoomlevel]);
 
-    if(!screenborder->isInsideScreen( Coord(lround(realX), lround(realY)), Coord(imageW, imageH))) {
+    if (!screenborder->isInsideScreen(Coord(lround(realX), lround(realY)), Coord(imageW, imageH))) {
         return;
     }
 
     const auto dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
                                             numFrames, 1, HAlign::Center, VAlign::Center);
 
-    if(bulletID == Bullet_Sonic) {
+    if (bulletID == Bullet_Sonic) {
         static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
         auto* const shimmerMaskSurface = pGFXManager->getZoomedObjSurface(ObjPic_Bullet_Sonic, currentZoomlevel);
@@ -286,7 +277,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         sx += shimmerOffset[shimmerOffsetIndex % 8] * 2;
 
         uint32_t format;
-        int      access, w, h;
+        int access, w, h;
         SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
 
         float scaleX, scaleY;
@@ -296,27 +287,26 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        const SDL_Rect scaled_source{
+        const SDL_Rect scaled_source {
             static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
             static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
             static_cast<int>(lround(static_cast<float>(w) * scaleX)),
-            static_cast<int>(lround(static_cast<float>(h) * scaleY))
-        };
+            static_cast<int>(lround(static_cast<float>(h) * scaleY))};
 
-        const sdl2::surface_ptr screen_copy{
+        const sdl2::surface_ptr screen_copy {
             SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
 
         { // Scope
-            const sdl2::surface_lock lock{screen_copy.get()};
+            const sdl2::surface_lock lock {screen_copy.get()};
 
-            if(SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
-                                    lock.pitch())) {
+            if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
+                                     lock.pitch())) {
                 const auto sdl_error = SDL_GetError();
             }
         }
 
         // If we are close
-        const sdl2::surface_ptr shimmer_work{
+        const sdl2::surface_ptr shimmer_work {
             SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
 
         SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
@@ -327,7 +317,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         const auto blit2_ret = SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr);
 
         { // Scope
-            const sdl2::surface_lock src{shimmer_work.get()};
+            const sdl2::surface_lock src {shimmer_work.get()};
 
             const auto update_ret = SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch());
         }
@@ -360,41 +350,42 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
         Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
     } else {
-        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle: 0, numFrames);
+        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle : 0, numFrames);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 
-
 bool Bullet::update(const GameContext& context) {
-    if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
+    if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
 
         ObjectBase* pTarget = target.getObjPointer();
-        if(pTarget && pTarget->isAFlyingUnit()) { destination = pTarget->getCenterPoint(); }
+        if (pTarget && pTarget->isAFlyingUnit()) {
+            destination = pTarget->getCenterPoint();
+        }
 
         const auto angleToDestinationRad = destinationAngleRad(Coord(lround(realX), lround(realY)), destination);
         const auto angleToDestination    = RadToDeg256(angleToDestinationRad);
 
         auto angleDifference = angleToDestination - angle;
-        if(angleDifference > 128) {
+        if (angleDifference > 128) {
             angleDifference -= 256;
-        } else if(angleDifference < -128) {
+        } else if (angleDifference < -128) {
             angleDifference += 256;
         }
 
         static const FixPoint turnSpeed = 4.5_fix;
 
-        if(angleDifference >= turnSpeed) {
+        if (angleDifference >= turnSpeed) {
             angleDifference = turnSpeed;
-        } else if(angleDifference <= -turnSpeed) {
+        } else if (angleDifference <= -turnSpeed) {
             angleDifference = -turnSpeed;
         }
 
         angle += angleDifference;
 
-        if(angle < 0) {
+        if (angle < 0) {
             angle += 256;
-        } else if(angle >= 256) {
+        } else if (angle >= 256) {
             angle -= 256;
         }
 
@@ -411,21 +402,23 @@ bool Bullet::update(const GameContext& context) {
     location.x = floor(realX / TILESIZE);
     location.y = floor(realY / TILESIZE);
 
-    if((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) ||
-       (location.y >= currentGameMap->getSizeY() + 5)) {
+    if ((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) ||
+        (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it
         return true;
     }
 
     const auto newDistanceToDestination = distanceFrom(realX, realY, destination.x, destination.y);
 
-    if(detonationTimer > 0) { detonationTimer--; }
+    if (detonationTimer > 0) {
+        detonationTimer--;
+    }
 
     auto& map = context.map;
 
-    if(bulletID == Bullet_Sonic) {
+    if (bulletID == Bullet_Sonic) {
 
-        if(detonationTimer == 0) {
+        if (detonationTimer == 0) {
             destroy(context);
             return true;
         }
@@ -453,14 +446,14 @@ bool Bullet::update(const GameContext& context) {
         return false;
     }
 
-    if(explodesAtGroundObjects) {
+    if (explodesAtGroundObjects) {
         auto* tile = map.tryGetTile(location.x, location.y);
 
-        if(tile && tile->hasANonInfantryGroundObject()) {
+        if (tile && tile->hasANonInfantryGroundObject()) {
             auto* structure = tile->getNonInfantryGroundObject(context.objectManager);
 
-            if(structure && structure->isAStructure() &&
-               ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {
+            if (structure && structure->isAStructure() &&
+                ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {
                 destroy(context);
 
                 return true;
@@ -468,10 +461,10 @@ bool Bullet::update(const GameContext& context) {
         }
     }
 
-    if(oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4) {
+    if (oldDistanceToDestination < newDistanceToDestination || newDistanceToDestination < 4) {
 
-        if(bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
-            if(detonationTimer == 0) {
+        if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
+            if (detonationTimer == 0) {
                 destroy(context);
 
                 return true;
@@ -488,7 +481,6 @@ bool Bullet::update(const GameContext& context) {
     return false;
 }
 
-
 void Bullet::destroy(const GameContext& context) const {
     auto position = Coord(lround(realX), lround(realY));
 
@@ -496,7 +488,7 @@ void Bullet::destroy(const GameContext& context) const {
 
     const auto houseID = owner->getHouseID();
 
-    switch(bulletID) {
+    switch (bulletID) {
         case Bullet_DRocket: {
             map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
             soundPlayer->playSoundAt(Sound_ExplosionGas, position);
@@ -506,9 +498,9 @@ void Bullet::destroy(const GameContext& context) const {
         case Bullet_LargeRocket: {
             soundPlayer->playSoundAt(Sound_ExplosionLarge, position);
 
-            for(auto i = 0; i < 5; i++) {
-                for(auto j = 0; j < 5; j++) {
-                    if(((i != 0) && (i != 4)) || ((j != 0) && (j != 4))) {
+            for (auto i = 0; i < 5; i++) {
+                for (auto j = 0; j < 5; j++) {
+                    if (((i != 0) && (i != 4)) || ((j != 0) && (j != 4))) {
                         position.x = lround(realX) + (i - 2) * TILESIZE;
                         position.y = lround(realY) + (j - 2) * TILESIZE;
 
@@ -556,4 +548,3 @@ void Bullet::destroy(const GameContext& context) const {
         } break;
     }
 }
-

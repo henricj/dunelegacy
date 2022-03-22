@@ -20,11 +20,10 @@
 
 #include <units/TrackedUnit.h>
 
-class SonicTank final : public TrackedUnit
-{
+class SonicTank final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_SonicTank;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     SonicTank(uint32_t objectID, const ObjectInitializer& initializer);
     SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -44,8 +43,8 @@ private:
     void init();
 
     // drawing information
-    zoomable_texture turretGraphic{};    ///< The turret graphic
-    int              gunGraphicID;       ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic {}; ///< The turret graphic
+    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //SONICTANK_H
+#endif // SONICTANK_H

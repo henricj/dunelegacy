@@ -20,22 +20,20 @@
 
 #include "MenuBase.h"
 
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/PictureButton.h>
 #include <GUI/InvisibleButton.h>
+#include <GUI/PictureButton.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 #include <GUI/dune/DigitsCounter.h>
 
-class SinglePlayerSkirmishMenu : public MenuBase
-{
+class SinglePlayerSkirmishMenu : public MenuBase {
 public:
     SinglePlayerSkirmishMenu();
     ~SinglePlayerSkirmishMenu() override;
 
 private:
-
     void onStart();
     void onCancel();
 
@@ -49,36 +47,36 @@ private:
     void updateHouseChoice();
 
     InvisibleButton house1Button;
-    PictureLabel    house1Picture;
-    PictureLabel    house1SelectedPicture;
+    PictureLabel house1Picture;
+    PictureLabel house1SelectedPicture;
     InvisibleButton house2Button;
-    PictureLabel    house2Picture;
-    PictureLabel    house2SelectedPicture;
+    PictureLabel house2Picture;
+    PictureLabel house2SelectedPicture;
     InvisibleButton house3Button;
-    PictureLabel    house3Picture;
-    PictureLabel    house3SelectedPicture;
+    PictureLabel house3Picture;
+    PictureLabel house3SelectedPicture;
 
-    PictureButton   houseLeftButton;
-    PictureButton   houseRightButton;
+    PictureButton houseLeftButton;
+    PictureButton houseRightButton;
 
-    PictureButton   missionPlusButton;
-    PictureButton   missionMinusButton;
-    DigitsCounter   missionCounter;
+    PictureButton missionPlusButton;
+    PictureButton missionMinusButton;
+    DigitsCounter missionCounter;
 
     StaticContainer windowWidget;
     StaticContainer houseChoiceContainer;
-    VBox            menuButtonsVBox;
+    VBox menuButtonsVBox;
 
-    TextButton      startButton;
-    TextButton      backButton;
+    TextButton startButton;
+    TextButton backButton;
 
-    PictureLabel    heraldPicture;
-    PictureLabel    duneLegacy;
-    PictureLabel    buttonBorder;
+    PictureLabel heraldPicture;
+    PictureLabel duneLegacy;
+    PictureLabel buttonBorder;
 
     int currentHouseChoiceScrollPos;
     int selectedButton;
     int mission;
 };
 
-#endif //SINGLEPLAYERSKIRMISHMENU_H
+#endif // SINGLEPLAYERSKIRMISHMENU_H

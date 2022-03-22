@@ -19,26 +19,25 @@
 #define TEXTBOX_H
 
 #include "Widget.h"
+#include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 #include <misc/string_util.h>
-#include <misc/SDL2pp.h>
 #include <string>
 
 /// A class for a text box
 class TextBox : public Widget {
 public:
-
     /// default constructor
-    TextBox()  {
-        fontSize = 14;
-        textcolor = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
-        maxTextLength = -1;
+    TextBox() {
+        fontSize              = 14;
+        textcolor             = COLOR_DEFAULT;
+        textshadowcolor       = COLOR_DEFAULT;
+        maxTextLength         = -1;
         pTextureWithoutCarret = nullptr;
-        pTextureWithCarret = nullptr;
-        lastCarretTime = SDL_GetTicks();
-        enableResizing(true,false);
-        resize(getMinimumSize().x,getMinimumSize().y);
+        pTextureWithCarret    = nullptr;
+        lastCarretTime        = SDL_GetTicks();
+        enableResizing(true, false);
+        resize(getMinimumSize().x, getMinimumSize().y);
     }
 
     /// destructor
@@ -80,7 +79,7 @@ public:
         \return the font size of this text box
     */
     [[nodiscard]] virtual int getTextFontSize() const {
-       return fontSize;
+        return fontSize;
     }
 
     /**
@@ -89,7 +88,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor = textcolor;
+        this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
     }
@@ -129,19 +128,17 @@ public:
         Sets the function that should be called when the text of this text box changes.
         \param  pOnTextChange   A function to call on text change
     */
-    void setOnTextChange(std::function<void (bool)> pOnTextChange) {
+    void setOnTextChange(std::function<void(bool)> pOnTextChange) {
         this->pOnTextChange = pOnTextChange;
     }
-
 
     /**
         Sets the method that should be called when return is pressed
         \param  pOnReturn   A function to call on pressing return
     */
-    void setOnReturn(std::function<void ()> pOnReturn) {
+    void setOnReturn(std::function<void()> pOnReturn) {
         this->pOnReturn = pOnReturn;
     }
-
 
     /**
         Returns the minimum size of this text box. The text box should not
@@ -149,8 +146,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] Point getMinimumSize() const override {
         return GUIStyle::getInstance().getMinimumTextBoxSize(fontSize);
     }
 
@@ -159,9 +155,8 @@ public:
         called if the new size is a valid size for this text box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -171,9 +166,8 @@ public:
         \param  width   the new width of this text box
         \param  height  the new height of this text box
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        Widget::resize(width,height);
+    void resize(uint32_t width, uint32_t height) override {
+        Widget::resize(width, height);
         invalidateTextures();
     }
 
@@ -181,13 +175,12 @@ public:
         This method updates all surfaces for this text box. This method will be called
         if this text box is resized or the text changes.
     */
-    void updateTextures() override
-    {
-        if(pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
+    void updateTextures() override {
+        if (pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
             invalidateTextures();
 
-            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize,  Alignment_Left, textcolor, textshadowcolor));
-            pTextureWithCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithCarret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
         }
     }
 
@@ -195,28 +188,27 @@ public:
         Draws this text box to screen.
         \param  Position    Position to draw the text box to
     */
-    void draw(Point position) override
-    {
-        if(!isVisible()) {
+    void draw(Point position) override {
+        if (!isVisible()) {
             return;
         }
 
         updateTextures();
 
-        if((pTextureWithoutCarret == nullptr) || (pTextureWithCarret == nullptr)) {
+        if ((pTextureWithoutCarret == nullptr) || (pTextureWithCarret == nullptr)) {
             return;
         }
 
         SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret.get(), position.x, position.y);
 
-        if(isActive()) {
-            if((SDL_GetTicks() - lastCarretTime) < 500) {
+        if (isActive()) {
+            if ((SDL_GetTicks() - lastCarretTime) < 500) {
                 Dune_RenderCopy(renderer, pTextureWithCarret.get(), nullptr, &dest);
             } else {
                 Dune_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
             }
 
-            if(SDL_GetTicks() - lastCarretTime >= 1000) {
+            if (SDL_GetTicks() - lastCarretTime >= 1000) {
                 lastCarretTime = SDL_GetTicks();
             }
         } else {
@@ -231,17 +223,16 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the text box
     */
-    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override
-    {
-        if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override {
+        if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
             return false;
         }
 
-        if((!isEnabled()) || (!isVisible())) {
+        if ((!isEnabled()) || (!isVisible())) {
             return true;
         }
 
-        if(pressed) {
+        if (pressed) {
             setActive();
             lastCarretTime = SDL_GetTicks();
         }
@@ -253,26 +244,25 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the text box, false = key stroke was not processed by the text box
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override
-    {
-        if((!isVisible()) || (!isEnabled()) || (!isActive())) {
+    bool handleKeyPress(SDL_KeyboardEvent& key) override {
+        if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
             return true;
         }
 
-        if(key.keysym.sym == SDLK_TAB) {
+        if (key.keysym.sym == SDLK_TAB) {
             setInactive();
             return true;
         }
 
-        if(key.keysym.sym == SDLK_BACKSPACE) {
-            if(text.size() != 0) {
-                text = utf8Substr(text, 0, utf8Length(text)-1);
-                if(pOnTextChange) {
+        if (key.keysym.sym == SDLK_BACKSPACE) {
+            if (text.size() != 0) {
+                text = utf8Substr(text, 0, utf8Length(text) - 1);
+                if (pOnTextChange) {
                     pOnTextChange(true);
                 }
             }
-        } else if(key.keysym.sym == SDLK_RETURN) {
-            if(pOnReturn) {
+        } else if (key.keysym.sym == SDLK_RETURN) {
+            if (pOnReturn) {
                 pOnReturn();
             }
         }
@@ -282,31 +272,27 @@ public:
         return true;
     }
 
-
     /**
         Handles a text input event.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    bool handleTextInput(SDL_TextInputEvent& textInput) override
-    {
-        if((!isVisible()) || (!isEnabled()) || (!isActive())) {
+    bool handleTextInput(SDL_TextInputEvent& textInput) override {
+        if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
             return true;
         }
 
         std::string newText = textInput.text;
 
         bool bChanged = false;
-        for(char c : newText) {
-            if(((maxTextLength < 0) || ((int) utf8Length(text) < maxTextLength))
-                && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
-                && (forbiddenChars.find(c) == std::string::npos)) {
+        for (char c : newText) {
+            if (((maxTextLength < 0) || ((int)utf8Length(text) < maxTextLength)) && (allowedChars.empty() || allowedChars.find(c) != std::string::npos) && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;
                 bChanged = true;
             }
         }
 
-        if(bChanged && pOnTextChange) {
+        if (bChanged && pOnTextChange) {
             pOnTextChange(true);
         }
 
@@ -321,9 +307,9 @@ protected:
     */
     virtual void setText(const std::string& text, bool bInteractive) {
         bool bChanged = (text != this->text);
-        this->text = text;
+        this->text    = text;
         invalidateTextures();
-        if(bChanged && pOnTextChange) {
+        if (bChanged && pOnTextChange) {
             pOnTextChange(bInteractive);
         }
     }
@@ -331,29 +317,28 @@ protected:
     /**
         This method frees all textures that are used by this text box
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         pTextureWithoutCarret.reset();
         pTextureWithCarret.reset();
     }
 
 private:
-    int         fontSize;        ///< the size of the font to use
-    uint32_t    textcolor;       ///< Text color
-    uint32_t    textshadowcolor; ///< Text shadow color
-    std::string text;            ///< text in this text box
-    int         maxTextLength;   ///< the maximum length of the typed text
+    int fontSize;             ///< the size of the font to use
+    uint32_t textcolor;       ///< Text color
+    uint32_t textshadowcolor; ///< Text shadow color
+    std::string text;         ///< text in this text box
+    int maxTextLength;        ///< the maximum length of the typed text
 
-    std::string allowedChars;                   ///< a set of allowed characters, empty string for everything allowed
-    std::string forbiddenChars;                 ///< a set of forbidden characters, empty string for everything allowed
+    std::string allowedChars;   ///< a set of allowed characters, empty string for everything allowed
+    std::string forbiddenChars; ///< a set of forbidden characters, empty string for everything allowed
 
     uint32_t lastCarretTime; ///< Last time the carret changes from off to on or vise versa
 
-    std::function<void (bool)> pOnTextChange;   ///< function that is called when the text of this text box changes
-    std::function<void ()> pOnReturn;           ///< function that is called when return is pressed
+    std::function<void(bool)> pOnTextChange; ///< function that is called when the text of this text box changes
+    std::function<void()> pOnReturn;         ///< function that is called when return is pressed
 
-    sdl2::texture_ptr pTextureWithoutCarret;         ///< Texture with carret off
-    sdl2::texture_ptr pTextureWithCarret;            ///< Texture with carret on
+    sdl2::texture_ptr pTextureWithoutCarret; ///< Texture with carret off
+    sdl2::texture_ptr pTextureWithCarret;    ///< Texture with carret on
 };
 
 #endif // TEXTBOX_H

@@ -19,15 +19,15 @@
 
 #include <globals.h>
 
-#include <FileClasses/GFXManager.h>
-#include <House.h>
-#include <Game.h>
-#include <Map.h>
 #include <Explosion.h>
+#include <FileClasses/GFXManager.h>
+#include <Game.h>
+#include <House.h>
+#include <Map.h>
 #include <SoundPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants raider_trike_constants{RaiderTrike::item_id, 2, Bullet_ShellSmall};
+constexpr GroundUnitConstants raider_trike_constants {RaiderTrike::item_id, 2, Bullet_ShellSmall};
 }
 
 RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer)
@@ -47,7 +47,7 @@ void RaiderTrike::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Trike;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -56,17 +56,17 @@ void RaiderTrike::init() {
 RaiderTrike::~RaiderTrike() = default;
 
 void RaiderTrike::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if (currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
+        if (isVisible(getOwner()->getTeamID()))
+            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
     }
 
     GroundUnit::destroy(context);
 }
 
 void RaiderTrike::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_MachineGun,location);
+    soundPlayer->playSoundAt(Sound_MachineGun, location);
 }

@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-constexpr TurretBaseConstants gun_turret_constants{GunTurret::item_id, Bullet_ShellTurret};
+constexpr TurretBaseConstants gun_turret_constants {GunTurret::item_id, Bullet_ShellTurret};
 }
 
 GunTurret::GunTurret(uint32_t objectID, const ObjectInitializer& initializer)
@@ -45,11 +45,11 @@ void GunTurret::init() {
 
     attackSound = Sound_ExplosionSmall;
 
-    graphicID = ObjPic_GunTurret;
-    graphic = pGFXManager->getObjPic(ObjPic_GunTurret,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10-static_cast<int>(drawnAngle)) % 8) + 2;
+    graphicID    = ObjPic_GunTurret;
+    graphic      = pGFXManager->getObjPic(ObjPic_GunTurret, getOwner()->getHouseID());
+    numImagesX   = 10;
+    numImagesY   = 1;
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
 GunTurret::~GunTurret() = default;

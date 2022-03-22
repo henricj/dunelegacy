@@ -20,33 +20,32 @@
 
 #include <GameInitSettings.h>
 
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
+#include <GUI/Checkbox.h>
+#include <GUI/DropDownBox.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
-#include <GUI/DropDownBox.h>
-#include <GUI/TextButton.h>
 #include <GUI/ListBox.h>
 #include <GUI/PictureLabel.h>
-#include <GUI/Checkbox.h>
-#include <GUI/TextView.h>
+#include <GUI/StaticContainer.h>
 #include <GUI/TextBox.h>
+#include <GUI/TextButton.h>
+#include <GUI/TextView.h>
+#include <GUI/VBox.h>
 
 #include <Network/ChangeEventList.h>
 
 #include <DataTypes.h>
 
-#include <string>
 #include <list>
+#include <string>
 
 #include "MenuBase.h"
 
-#define MENU_QUIT_GAME_FINISHED     (-2)
+#define MENU_QUIT_GAME_FINISHED (-2)
 
 class INIFile;
 
-class CustomGamePlayers : public MenuBase
-{
+class CustomGamePlayers : public MenuBase {
 public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
     ~CustomGamePlayers() override;
@@ -90,65 +89,65 @@ private:
 
     void disableAllDropDownBoxes();
 
-    GameInitSettings                gameInitSettings;
-    GameInitSettings::HouseInfoList houseInfoListSetup;     ///< only used if we are loading a savegame
+    GameInitSettings gameInitSettings;
+    GameInitSettings::HouseInfoList houseInfoListSetup; ///< only used if we are loading a savegame
 
     StaticContainer windowWidget;
-    VBox            mainVBox;
+    VBox mainVBox;
 
-    Label           captionLabel;
+    Label captionLabel;
 
-    HBox            mainHBox;
+    HBox mainHBox;
 
     // left VBox with player list and map options
-    VBox            leftVBox;
-    HBox            playerListHBox;
-    VBox            playerListVBox;
+    VBox leftVBox;
+    HBox playerListHBox;
+    VBox playerListVBox;
 
     // right VBox with mini map
-    VBox            rightVBox;
-    PictureLabel    minimap;
-    HBox            mapPropertiesHBox;
-    VBox            mapPropertyNamesVBox;
-    VBox            mapPropertyValuesVBox;
-    Label           mapPropertySize;
-    Label           mapPropertyPlayers;
-    Label           mapPropertyAuthors;
-    Label           mapPropertyLicense;
+    VBox rightVBox;
+    PictureLabel minimap;
+    HBox mapPropertiesHBox;
+    VBox mapPropertyNamesVBox;
+    VBox mapPropertyValuesVBox;
+    Label mapPropertySize;
+    Label mapPropertyPlayers;
+    Label mapPropertyAuthors;
+    Label mapPropertyLicense;
 
     // bottom row of buttons
-    HBox            buttonHBox;
-    VBox            backButtonVBox;
-    TextButton      backButton;
-    VBox            chatVBox;
-    TextView        chatTextView;
-    TextBox         chatTextBox;
-    VBox            nextButtonVBox;
-    TextButton      nextButton;
+    HBox buttonHBox;
+    VBox backButtonVBox;
+    TextButton backButton;
+    VBox chatVBox;
+    TextView chatTextView;
+    TextBox chatTextBox;
+    VBox nextButtonVBox;
+    TextButton nextButton;
 
     class HouseInfo {
     public:
-        VBox            houseInfoVBox;
-        HBox            houseHBox;
-        Label           houseLabel;
-        DropDownBox     houseDropDown;
-        DropDownBox     teamDropDown;
-        HBox            playerHBox;
-        PictureLabel    player1ArrowLabel;
-        Label           player1Label;
-        DropDownBox     player1DropDown;
-        Label           player2Label;
-        DropDownBox     player2DropDown;
+        VBox houseInfoVBox;
+        HBox houseHBox;
+        Label houseLabel;
+        DropDownBox houseDropDown;
+        DropDownBox teamDropDown;
+        HBox playerHBox;
+        PictureLabel player1ArrowLabel;
+        Label player1Label;
+        DropDownBox player1DropDown;
+        Label player2Label;
+        DropDownBox player2DropDown;
     };
 
-    bool                                                           bServer;
-    bool                                                           bLANServer;
+    bool bServer;
+    bool bLANServer;
     std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
-    int                                                            numHouses;
-    std::vector<HOUSETYPE>                                         boundHousesOnMap;
+    int numHouses;
+    std::vector<HOUSETYPE> boundHousesOnMap;
     uint32_t startGameTime;
-    int                                                            brainEqHumanSlot; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
-    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>       slotToTeam;       ///< Maps the slot number to a team number (both zero-based indices)
+    int brainEqHumanSlot;                                                ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
+    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)> slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
 };
 
-#endif //CUSTOMGAMEPLAYERS_H
+#endif // CUSTOMGAMEPLAYERS_H

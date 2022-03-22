@@ -23,7 +23,7 @@
 class SiegeTank final : public TankBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_SiegeTank;
-    using parent = TankBase;
+    using parent                                = TankBase;
 
     SiegeTank(uint32_t objectID, const ObjectInitializer& initializer);
     SiegeTank(uint32_t objectID, const ObjectStreamInitializer& initializer);

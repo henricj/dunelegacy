@@ -23,7 +23,7 @@
 class RocketTurret final : public TurretBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_RocketTurret;
-    using parent = TurretBase;
+    using parent                                = TurretBase;
 
     RocketTurret(uint32_t objectID, const ObjectInitializer& initializer);
     RocketTurret(uint32_t objectID, const ObjectStreamInitializer& initializer);

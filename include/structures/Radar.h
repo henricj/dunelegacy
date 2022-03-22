@@ -20,11 +20,10 @@
 
 #include <structures/StructureBase.h>
 
-class Radar final : public StructureBase
-{
+class Radar final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_Radar;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     Radar(uint32_t objectID, const ObjectInitializer& initializer);
     Radar(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -44,4 +43,4 @@ private:
     void init();
 };
 
-#endif //RADAR_H
+#endif // RADAR_H

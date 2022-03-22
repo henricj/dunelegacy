@@ -19,17 +19,16 @@
 #define CUSTOMGAMESTATSMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
-#include <GUI/TextButton.h>
 #include <GUI/ProgressBar.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 
 #include <DataTypes.h>
 
-class CustomGameStatsMenu : public MenuBase
-{
+class CustomGameStatsMenu : public MenuBase {
 public:
     CustomGameStatsMenu();
     ~CustomGameStatsMenu() override;
@@ -40,9 +39,10 @@ private:
     template<typename F>
     void for_each_stat(Game* pGame, F&& f) {
         for (auto i = 0u; i < houseStat.size(); ++i) {
-            auto *pHouse = pGame->getHouse(static_cast<HOUSETYPE>(i));
+            auto* pHouse = pGame->getHouse(static_cast<HOUSETYPE>(i));
 
-            if(!pHouse) continue;
+            if (!pHouse)
+                continue;
 
             f(i, *pHouse, houseStat[i]);
         }
@@ -50,43 +50,43 @@ private:
 
     StaticContainer windowWidget;
 
-    VBox            mainVBox;
+    VBox mainVBox;
 
-    Label           captionLabel;
+    Label captionLabel;
 
-    HBox            mainHBox;
+    HBox mainHBox;
 
-    VBox            playerStatListVBox;
+    VBox playerStatListVBox;
 
-    HBox            headerHBox;
+    HBox headerHBox;
 
-    Label           headerLabelDummy;
-    Label           headerLabel1;
-    Label           headerLabel2;
-    Label           headerLabel3;
+    Label headerLabelDummy;
+    Label headerLabel1;
+    Label headerLabel2;
+    Label headerLabel3;
 
     class HouseStat {
     public:
-        HBox            houseHBox;
-        Label           houseName;
+        HBox houseHBox;
+        Label houseName;
 
-        Label           value1;
-        VBox            vBox1;
-        ProgressBar     progressBar1;
-        Label           value2;
-        VBox            vBox2;
-        ProgressBar     progressBar2;
-        Label           value3;
-        VBox            vBox3;
-        ProgressBar     progressBar3;
+        Label value1;
+        VBox vBox1;
+        ProgressBar progressBar1;
+        Label value2;
+        VBox vBox2;
+        ProgressBar progressBar2;
+        Label value3;
+        VBox vBox3;
+        ProgressBar progressBar3;
     };
 
     std::array<HouseStat, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseStat;
 
     // bottom row of buttons
-    HBox            buttonHBox;
-    Label           timeLabel;
-    TextButton      okButton;
+    HBox buttonHBox;
+    Label timeLabel;
+    TextButton okButton;
 };
 
-#endif //CUSTOMGAMESTATSMENU_H
+#endif // CUSTOMGAMESTATSMENU_H

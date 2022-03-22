@@ -18,18 +18,20 @@
 #ifndef GAMEINTERFACE_H
 #define GAMEINTERFACE_H
 
-#include <GUI/Window.h>
 #include <GUI/HBox.h>
-#include <GUI/StaticContainer.h>
-#include <GUI/Spacer.h>
 #include <GUI/PictureButton.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/Spacer.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/Window.h>
 #include <GUI/dune/ChatManager.h>
 #include <GUI/dune/NewsTicker.h>
 
 #include <RadarView.h>
 
 #include <memory>
+
+#include "ObjectBase.h"
 
 class ObjectInterface;
 
@@ -84,7 +86,6 @@ public:
     */
     ChatManager& getChatManager() { return chatManager; }
 
-
     /**
         This method updates the object interface
     */
@@ -95,22 +96,22 @@ private:
 
     // windowWidget needs to be above pObjectContainer so that pObjectContainer's dtor
     // runs before windowWidget's dtor.
-    StaticContainer     windowWidget;           ///< The main widget of this interface
+    StaticContainer windowWidget; ///< The main widget of this interface
 
-    std::unique_ptr<ObjectInterface> pObjectContainer;  ///< The container holding information about the currently selected unit/structure
-    uint32_t objectID{NONE_ID}; ///< The id of the currently selected object
+    std::unique_ptr<ObjectInterface> pObjectContainer; ///< The container holding information about the currently selected unit/structure
+    uint32_t objectID {NONE_ID};                       ///< The id of the currently selected object
 
-    HBox                topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
-    NewsTicker          newsticker;             ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
-    PictureButton       optionsButton;          ///< Button for accessing the ingame menu
-    PictureButton       mentatButton;           ///< Button for accessing the mentat menu
-    PictureLabel        topBar;                 ///< The background of the top bar
+    HBox topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
+    NewsTicker newsticker;       ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
+    PictureButton optionsButton; ///< Button for accessing the ingame menu
+    PictureButton mentatButton;  ///< Button for accessing the mentat menu
+    PictureLabel topBar;         ///< The background of the top bar
 
-    PictureLabel        sideBar;                ///< The background of the side bar
+    PictureLabel sideBar; ///< The background of the side bar
 
-    RadarView           radarView;              ///< This is the minimap/radar in the side bar
+    RadarView radarView; ///< This is the minimap/radar in the side bar
 
-    ChatManager         chatManager;            ///< Manages chat manages shown overlayed with the main map
+    ChatManager chatManager; ///< Manages chat manages shown overlayed with the main map
 
     std::vector<SDL_Point> render_points_;
 

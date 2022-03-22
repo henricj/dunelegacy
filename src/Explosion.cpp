@@ -24,31 +24,28 @@
 #include <ScreenBorder.h>
 #include <misc/exceptions.h>
 
-#define CYCLES_PER_FRAME    5
+#define CYCLES_PER_FRAME 5
 
 Explosion::Explosion()
- : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN)
-{
-    frameTimer = CYCLES_PER_FRAME;
+    : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN) {
+    frameTimer   = CYCLES_PER_FRAME;
     currentFrame = 0;
 }
 
-Explosion::Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE  house)
- : explosionID(explosionID), position(position) , house(house)
-{
+Explosion::Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house)
+    : explosionID(explosionID), position(position), house(house) {
     init();
 
-    frameTimer = CYCLES_PER_FRAME;
+    frameTimer   = CYCLES_PER_FRAME;
     currentFrame = 0;
 }
 
-Explosion::Explosion(InputStream& stream)
-{
-    explosionID = stream.readUint32();
-    position.x = stream.readSint16();
-    position.y = stream.readSint16();
-    house = static_cast<HOUSETYPE>(stream.readUint32());
-    frameTimer = stream.readSint32();
+Explosion::Explosion(InputStream& stream) {
+    explosionID  = stream.readUint32();
+    position.x   = stream.readSint16();
+    position.y   = stream.readSint16();
+    house        = static_cast<HOUSETYPE>(stream.readUint32());
+    frameTimer   = stream.readSint32();
     currentFrame = stream.readSint32();
 
     init();
@@ -56,66 +53,65 @@ Explosion::Explosion(InputStream& stream)
 
 Explosion::~Explosion() = default;
 
-void Explosion::init()
-{
-    switch(explosionID) {
+void Explosion::init() {
+    switch (explosionID) {
         case Explosion_Small: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionSmall);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSmall);
             numFrames = 5;
         } break;
 
         case Explosion_Medium1: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionMedium1);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionMedium1);
             numFrames = 5;
         } break;
 
         case Explosion_Medium2: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionMedium2);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionMedium2);
             numFrames = 5;
         } break;
 
         case Explosion_Large1: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionLarge1);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionLarge1);
             numFrames = 5;
         } break;
 
         case Explosion_Large2: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionLarge2);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionLarge2);
             numFrames = 5;
         } break;
 
         case Explosion_Gas: {
-            graphic = pGFXManager->getObjPic(ObjPic_Hit_Gas, house);
+            graphic   = pGFXManager->getObjPic(ObjPic_Hit_Gas, house);
             numFrames = 5;
         } break;
 
         case Explosion_ShellSmall: {
-            graphic = pGFXManager->getObjPic(ObjPic_Hit_ShellSmall);
+            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellSmall);
             numFrames = 1;
         } break;
 
         case Explosion_ShellMedium: {
-            graphic = pGFXManager->getObjPic(ObjPic_Hit_ShellMedium);
+            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellMedium);
             numFrames = 1;
         } break;
 
         case Explosion_ShellLarge: {
-            graphic = pGFXManager->getObjPic(ObjPic_Hit_ShellLarge);
+            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellLarge);
             numFrames = 1;
         } break;
 
         case Explosion_SmallUnit: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionSmallUnit);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSmallUnit);
             numFrames = 2;
         } break;
 
         case Explosion_Flames: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionFlames);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionFlames);
             numFrames = 21;
         } break;
 
         case Explosion_SpiceBloom: {
-            graphic = pGFXManager->getObjPic(ObjPic_ExplosionSpiceBloom);
+            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSpiceBloom);
             numFrames = 3;
         } break;
 
@@ -125,8 +121,7 @@ void Explosion::init()
     }
 }
 
-void Explosion::save(OutputStream& stream) const
-{
+void Explosion::save(OutputStream& stream) const {
     stream.writeUint32(explosionID);
     stream.writeSint16(position.x);
     stream.writeSint16(position.y);
@@ -135,13 +130,12 @@ void Explosion::save(OutputStream& stream) const
     stream.writeSint32(currentFrame);
 }
 
-void Explosion::blitToScreen() const
-{
+void Explosion::blitToScreen() const {
     const uint16_t width  = getWidth(graphic[currentZoomlevel]) / numFrames;
     const uint16_t height = getHeight(graphic[currentZoomlevel]);
 
-    if(screenborder->isInsideScreen(position, Coord(width, height))) {
-        SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+    if (screenborder->isInsideScreen(position, Coord(width, height))) {
+        SDL_Rect dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
                                                 screenborder->world2screenX(position.x),
                                                 screenborder->world2screenY(position.y),
                                                 numFrames, 1,
@@ -151,16 +145,15 @@ void Explosion::blitToScreen() const
     }
 }
 
-bool Explosion::update()
-{
+bool Explosion::update() {
     frameTimer--;
 
-    if(frameTimer < 0) {
+    if (frameTimer < 0) {
         frameTimer = CYCLES_PER_FRAME;
         currentFrame++;
 
-        if(currentFrame >= numFrames) {
-            //this explosion is finished
+        if (currentFrame >= numFrames) {
+            // this explosion is finished
             return true;
         }
     }

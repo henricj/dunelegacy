@@ -104,14 +104,18 @@ std::tuple<bool, std::filesystem::path> fnkdat(int flags) {
      * from a single thread before anything else.  Other then that,
      * there are no concurrency issues (as far as I know).
      */
-    if(flags == FNKDAT_INIT) { return {true, std::filesystem::path{}}; }
+    if (flags == FNKDAT_INIT) {
+        return {true, std::filesystem::path {}};
+    }
 
     /* Uninitialize, if requested to -- probably not necessary but what
      * the hell, why not?
      */
-    if(flags == FNKDAT_UNINIT) { return {true, std::filesystem::path{}}; }
+    if (flags == FNKDAT_UNINIT) {
+        return {true, std::filesystem::path {}};
+    }
 
-    return {false, std::filesystem::path{}};
+    return {false, std::filesystem::path {}};
 }
 
 /************************
@@ -127,9 +131,9 @@ std::tuple<bool, std::filesystem::path> fnkdat(int flags) {
 #    endif
 #    include <Shlobj.h>
 #    include <Shlwapi.h>
+#    include <Windows.h>
 #    include <cctype>
 #    include <direct.h>
-#    include <Windows.h>
 
 /*
  * Constants passed to the silly-ass MS function
@@ -158,17 +162,22 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
      * from a single thread before anything else.  Other then that,
      * there are no concurrency issues (as far as I know).
      */
-    if(flags == FNKDAT_INIT) { return {true, std::filesystem::path{}}; }
+    if (flags == FNKDAT_INIT) {
+        return {true, std::filesystem::path {}};
+    }
 
     /* Uninitialize, if requested to -- probably not necessary but what
      * the hell, why not?
      */
-    if(flags == FNKDAT_UNINIT) { return {true, std::filesystem::path{}}; }
+    if (flags == FNKDAT_UNINIT) {
+        return {true, std::filesystem::path {}};
+    }
 
     /* if target is absolute then simply return it
      */
-    if(!target.empty()) {
-        if(target.is_absolute()) return {true, target.lexically_normal().make_preferred()};
+    if (!target.empty()) {
+        if (target.is_absolute())
+            return {true, target.lexically_normal().make_preferred()};
     }
 
     const int rawflags = flags & (0xFFFFFFFF ^ FNKDAT_CREAT);
@@ -182,17 +191,18 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
     /* save room for the null term char
      */
     HRESULT hresult = S_OK;
-    DWORD   dwFlags = 0;
+    DWORD dwFlags   = 0;
 
-    if(rawflags == FNKDAT_USER) dwFlags = CSIDL_APPDATA;
-    else if(rawflags == (FNKDAT_VAR | FNKDAT_DATA))
+    if (rawflags == FNKDAT_USER)
+        dwFlags = CSIDL_APPDATA;
+    else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA))
         dwFlags = CSIDL_COMMON_APPDATA;
 
     /* Get the user conf directory using the silly-ass function if it
        is available.
      */
-    if(dwFlags && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
-                                                       NULL, SHGFP_TYPE_CURRENT, &szPath[0]))) {
+    if (dwFlags && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
+                                                        NULL, SHGFP_TYPE_CURRENT, &szPath[0]))) {
 
         output_path = &szPath[0];
         output_path /= L"" PACKAGE;
@@ -213,8 +223,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
            to the executable, as that's what most existing software seems
            to do.
          */
-    } else if((flags == FNKDAT_CONF) || (flags == FNKDAT_USER) || (flags == FNKDAT_DATA) ||
-              (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
+    } else if ((flags == FNKDAT_CONF) || (flags == FNKDAT_USER) || (flags == FNKDAT_DATA) ||
+               (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
         const wchar_t* szCommandLine = GetCommandLineW();
 
         const wchar_t* command_end;
@@ -222,39 +232,42 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         /* argv[0] may be quoted -- if so, skip the quote
            and whack everything after the end quote
          */
-        if(szCommandLine[0] == L'"') {
+        if (szCommandLine[0] == L'"') {
             ++szCommandLine;
 
             command_end = wcschr(szCommandLine, L'"');
 
-            if(!command_end) return {false, std::filesystem::path{}};
+            if (!command_end)
+                return {false, std::filesystem::path {}};
 
             /* otherwise, whack everything after the first
                space character
              */
         } else {
-            for(command_end = szCommandLine; *command_end && !iswspace(*command_end); ++command_end) { }
+            for (command_end = szCommandLine; *command_end && !iswspace(*command_end); ++command_end) { }
         }
 
-        if(command_end == szCommandLine) output_path = "./";
+        if (command_end == szCommandLine)
+            output_path = "./";
         else {
             const auto command_length = command_end - szCommandLine;
 
             assert(command_length > 0);
 
-            if(command_length >= MAX_PATH - 1) return {false, std::filesystem::path{}};
+            if (command_length >= MAX_PATH - 1)
+                return {false, std::filesystem::path {}};
 
             output_path = std::wstring(szCommandLine, command_length);
         }
 
         /* this only happens when we don't have the silly-ass function */
-        if(flags & FNKDAT_USER) {
+        if (flags & FNKDAT_USER) {
             output_path /= L"users";
 
             DWORD dwSize = buffer.size();
 
             /* Grab what windows thinks is the current user name */
-            if(GetUserNameW(&buffer[0], &dwSize) == TRUE) {
+            if (GetUserNameW(&buffer[0], &dwSize) == TRUE) {
                 output_path /= &buffer[0];
 
                 /* if that fails, make something up */
@@ -268,14 +281,14 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
          */
     } else {
         errno = EINVAL;
-        return {false, std::filesystem::path{}};
+        return {false, std::filesystem::path {}};
     }
 #else // _WIN32
     /************************
      * UNIX IMPLEMENTATION  *
      ************************/
 
-    if(rawflags == FNKDAT_USER) {
+    if (rawflags == FNKDAT_USER) {
 
         std::array<char, 1536> buffer;
 
@@ -289,10 +302,11 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         {
             const char* xdg_config = getenv("XDG_CONFIG_HOME");
 
-            if(xdg_config == nullptr) {
+            if (xdg_config == nullptr) {
                 const struct passwd* pwent = getpwuid(getuid());
 
-                if(!pwent) return {false, std::filesystem::path{}};
+                if (!pwent)
+                    return {false, std::filesystem::path {}};
 
                 output_path = pwent->pw_dir;
                 output_path /= ".config";
@@ -303,40 +317,45 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         }
 #    endif
         }
-        else if(rawflags == FNKDAT_CONF) {
+        else if (rawflags == FNKDAT_CONF) {
             output_path = FNKDAT_SYSCONFDIR;
             output_path /= PACKAGE;
         }
-        else if(rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
+        else if (rawflags == (FNKDAT_VAR | FNKDAT_DATA)) {
             output_path = FNKDAT_PKGLIBDIR;
         }
-        else if(rawflags == FNKDAT_DATA) {
+        else if (rawflags == FNKDAT_DATA) {
             output_path = FNKDAT_PKGDATADIR;
         }
         else {
             errno = EINVAL;
-            return {false, std::filesystem::path{}};
+            return {false, std::filesystem::path {}};
         }
 #endif // _WIN32
 
     /* append any given filename */
-    if(!target.empty()) { output_path /= target; }
+    if (!target.empty()) {
+        output_path /= target;
+    }
 
     output_path = output_path.lexically_normal().make_preferred();
 
     /* do the mkdir(s), if asked to */
-    if((flags & FNKDAT_CREAT)) {
+    if ((flags & FNKDAT_CREAT)) {
         const auto parent = output_path.parent_path();
 
-        if(!parent.empty()) {
+        if (!parent.empty()) {
             std::error_code ec;
-            if(!std::filesystem::create_directories(parent, ec) && ec) return {false, std::filesystem::path{}};
+            if (!std::filesystem::create_directories(parent, ec) && ec)
+                return {false, std::filesystem::path {}};
 
             std::filesystem::permissions(parent,
                                          std::filesystem::perms::owner_all | std::filesystem::perms::group_all |
                                              std::filesystem::perms::others_exec | std::filesystem::perms::others_read,
                                          std::filesystem::perm_options::replace, ec);
-            if(ec) { return {false, std::filesystem::path{}}; }
+            if (ec) {
+                return {false, std::filesystem::path {}};
+            }
         }
     }
 

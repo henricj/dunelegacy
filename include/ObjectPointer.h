@@ -26,25 +26,25 @@ class ObjectBase;
 class UnitBase;
 class StructureBase;
 
-class ObjectPointer
-{
+class ObjectPointer {
 public:
     ObjectPointer() { objectID = NONE_ID; }
-    explicit ObjectPointer(uint32_t newItemID) : objectID(newItemID) { }
+    explicit ObjectPointer(uint32_t newItemID)
+        : objectID(newItemID) { }
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); }
     ~ObjectPointer() = default;
 
-    ObjectPointer(const ObjectPointer &) = default;
-    ObjectPointer(ObjectPointer &&) = default;
-    ObjectPointer& operator=(const ObjectPointer &) = default;
-    ObjectPointer& operator=(ObjectPointer &&) = default;
+    ObjectPointer(const ObjectPointer&) = default;
+    ObjectPointer(ObjectPointer&&)      = default;
+    ObjectPointer& operator=(const ObjectPointer&) = default;
+    ObjectPointer& operator=(ObjectPointer&&) = default;
 
     void pointTo(uint32_t newItemID) { objectID = newItemID; }
     void pointTo(const ObjectBase* newObject);
 
-    uint32_t       getObjectID() const noexcept { return objectID; }
-    ObjectBase*    getObjPointer() const;
-    UnitBase*      getUnitPointer() const;
+    uint32_t getObjectID() const noexcept { return objectID; }
+    ObjectBase* getObjPointer() const;
+    UnitBase* getUnitPointer() const;
     StructureBase* getStructurePointer() const;
 
     void save(OutputStream& stream) const;
@@ -57,6 +57,5 @@ public:
 private:
     mutable uint32_t objectID;
 };
-
 
 #endif // OBJECTPOINTER_H

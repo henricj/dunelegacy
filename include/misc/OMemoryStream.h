@@ -22,8 +22,7 @@
 
 #include <string>
 
-class OMemoryStream final : public OutputStream
-{
+class OMemoryStream final : public OutputStream {
 public:
     OMemoryStream();
 
@@ -43,7 +42,6 @@ public:
 
     void writeString(const std::string& str) override;
 
-
     void writeUint8(Uint8 x) override;
 
     void writeUint16(Uint16 x) override;
@@ -59,9 +57,9 @@ public:
     void ensureBufferSize(size_t minBufferSize);
 
 private:
-    size_t  currentPos{};
-    size_t  bufferSize{};
-    char*   pBuffer{};
+    size_t currentPos {};
+    size_t bufferSize {};
+    char* pBuffer {};
 };
 
 #endif // OMEMORYSTREAM_H

@@ -4,41 +4,35 @@
 #include <array>
 #include <random>
 
-namespace ExtraGenerators
-{
+namespace ExtraGenerators {
 using namespace std;
 
-class xoroshiro128plus
-{
+class xoroshiro128plus {
     // From http://xorshift.di.unimi.it/
     // http://xorshift.di.unimi.it/xoroshiro128plus.c
     // "Written in 2016 by David Blackman and Sebastiano Vigna (vigna@acm.org)"
     uint64_t s0_;
     uint64_t s1_;
 
-    static uint64_t rotl(const uint64_t x, int k)
-    {
+    static uint64_t rotl(const uint64_t x, int k) {
         return (x << k) | (x >> (64 - k));
     }
 
 public:
     typedef uint64_t result_type;
 
-    explicit xoroshiro128plus(result_type x = 1)
-    {
+    explicit xoroshiro128plus(result_type x = 1) {
         seed(x);
     }
 
-    template <class Seq>
-    explicit xoroshiro128plus(Seq& seq)
-    {
+    template<class Seq>
+    explicit xoroshiro128plus(Seq& seq) {
         seed(seq);
     }
 
-    result_type operator()()
-    {
-        const result_type s0 = s0_;
-        result_type s1 = s1_;
+    result_type operator()() {
+        const result_type s0  = s0_;
+        result_type s1        = s1_;
         const uint64_t result = s0 + s1;
 
         s1 ^= s0;
@@ -48,28 +42,24 @@ public:
         return result;
     }
 
-    static constexpr result_type min()
-    {
+    static constexpr result_type min() {
         return numeric_limits<result_type>::min();
     }
 
-    static constexpr result_type max()
-    {
+    static constexpr result_type max() {
         return numeric_limits<result_type>::max();
     }
 
     static constexpr size_t seed_words = (sizeof(xoroshiro128plus::s0_) + sizeof(xoroshiro128plus::s1_)) / sizeof(unsigned int);
 
-    void seed(result_type s)
-    {
-        seed_seq seq{ s };
+    void seed(result_type s) {
+        seed_seq seq {s};
 
         seed(seq);
     }
 
-    template <class Seq>
-    void seed(Seq& seq)
-    {
+    template<class Seq>
+    void seed(Seq& seq) {
         array<unsigned int, seed_words> buffer;
 
         seq.generate(begin(buffer), end(buffer));
@@ -83,11 +73,10 @@ public:
         s1_ |= buffer[3];
     }
 
-    void discard(unsigned long long count)
-    {
+    void discard(unsigned long long count) {
         (*this)();
     }
 };
-}
+} // namespace ExtraGenerators
 
 #endif // RANDOM_XOROSHIRO128PLUS_H

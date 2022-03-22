@@ -20,11 +20,10 @@
 
 #include <structures/StructureBase.h>
 
-class WindTrap final : public StructureBase
-{
+class WindTrap final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_WindTrap;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     WindTrap(uint32_t objectID, const ObjectInitializer& initializer);
     WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -47,4 +46,4 @@ private:
     void init();
 };
 
-#endif //WINDTRAP_H
+#endif // WINDTRAP_H

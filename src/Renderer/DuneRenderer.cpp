@@ -1,15 +1,14 @@
 #include <Renderer/DuneRenderer.h>
 
-
 void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, uint32_t color) {
     setRenderDrawColor(renderer, color);
 
     std::array<SDL_FPoint, 3> points;
 
-    constexpr auto to_pt = [](int u, int v) { return SDL_FPoint{static_cast<float>(u), static_cast<float>(v)}; };
+    constexpr auto to_pt = [](int u, int v) { return SDL_FPoint {static_cast<float>(u), static_cast<float>(v)}; };
 
     // now draw the box with parts at all corners
-    for(auto i = 0; i <= currentZoomlevel; i++) {
+    for (auto i = 0; i <= currentZoomlevel; i++) {
         const auto offset = (currentZoomlevel + 1) * 3;
 
         // top left bit
@@ -48,20 +47,23 @@ void Dune_RenderDump() {
     using namespace DuneRendererImplementation;
 
     sdl2::log_info("present calls: %d, copy calls: %d, texture changes: %d", render_presents, render_copies,
-            render_texture_changes);
+                   render_texture_changes);
 
     auto max_w = 0, max_h = 0;
     auto pixels = 0;
 
-    for(const auto& it : render_textures) {
+    for (const auto& it : render_textures) {
 
         int h, w;
-        if(SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h)) continue;
+        if (SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h))
+            continue;
 
         sdl2::log_info("texture %x of size %dx%d rendered %d times", reinterpret_cast<intptr_t>(it.first), w, h, it.second);
 
-        if(w > max_w) max_w = w;
-        if(h > max_h) max_h = h;
+        if (w > max_w)
+            max_w = w;
+        if (h > max_h)
+            max_h = h;
 
         pixels += h * w;
     }
@@ -72,12 +74,12 @@ void Dune_RenderDump() {
 }
 
 namespace DuneRendererImplementation {
-int  render_copies;
-int  render_presents;
+int render_copies;
+int render_presents;
 bool render_dump;
 
 SDL_Texture* render_texture;
-int          render_texture_changes;
+int render_texture_changes;
 
 std::map<SDL_Texture*, int> render_textures;
 } // namespace DuneRendererImplementation

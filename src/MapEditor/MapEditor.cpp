@@ -21,57 +21,56 @@
 #include <MapEditor/MapMirror.h>
 
 #include <FileClasses/GFXManager.h>
-#include <FileClasses/TextManager.h>
 #include <FileClasses/INIFile.h>
 #include <FileClasses/LoadSavePNG.h>
+#include <FileClasses/TextManager.h>
 
 #include <structures/Wall.h>
 
+#include <fmt/printf.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
-#include <fmt/printf.h>
 
+#include <Tile.h>
 #include <globals.h>
+#include <main.h>
 #include <mmath.h>
 #include <sand.h>
-#include <main.h>
-#include <Tile.h>
 
 #include <config.h>
 
-#include <typeinfo>
 #include <algorithm>
+#include <typeinfo>
 
-
-
-MapEditor::MapEditor() : pInterface(nullptr) {
-    bQuitEditor = false;
-    scrollDownMode = false;
-    scrollLeftMode = false;
+MapEditor::MapEditor()
+    : pInterface(nullptr) {
+    bQuitEditor     = false;
+    scrollDownMode  = false;
+    scrollLeftMode  = false;
     scrollRightMode = false;
-    scrollUpMode = false;
-    shift = false;
+    scrollUpMode    = false;
+    shift           = false;
 
     bChangedSinceLastSave = false;
 
-    bLeftMousePressed = false;
+    bLeftMousePressed   = false;
     lastTerrainEditPosX = -1;
     lastTerrainEditPosY = -1;
 
-    selectedUnitID = INVALID;
+    selectedUnitID      = INVALID;
     selectedStructureID = INVALID;
     selectedMapItemCoord.invalidate();
 
     currentZoomlevel = settings.video.preferredZoomLevel;
 
-    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    sideBarPos   = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos    = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
     bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
-    SDL_Rect gameBoardRect = { 0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h };
-    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
+    SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h};
+    screenborder           = std::make_unique<ScreenBorder>(gameBoardRect);
 
-    setMap(MapData(128,128,Terrain_Sand), MapInfo());
+    setMap(MapData(128, 128, Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);
 
     pInterface = std::make_unique<MapEditorInterface>(this);
@@ -79,7 +78,9 @@ MapEditor::MapEditor() : pInterface(nullptr) {
     pInterface->onNew();
 }
 
-MapEditor::~MapEditor() { screenborder.reset(); }
+MapEditor::~MapEditor() {
+    screenborder.reset();
+}
 
 std::string MapEditor::generateMapname() {
     const auto numPlayers =
@@ -92,19 +93,19 @@ std::string MapEditor::generateMapname() {
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
     currentMirrorMode = newMirrorMode;
 
-    mapMirror = MapMirror::createMapMirror(currentMirrorMode,map.getSizeX(), map.getSizeY());
+    mapMirror = MapMirror::createMapMirror(currentMirrorMode, map.getSizeX(), map.getSizeY());
 }
 
 void MapEditor::RunEditor() {
-    while(!bQuitEditor) {
+    while (!bQuitEditor) {
         const int frameStart = static_cast<int>(SDL_GetTicks());
 
         processInput();
         drawScreen();
 
         const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        if(settings.video.frameLimit) {
-            if(frameTime >= 0 && frameTime < 32) {
+        if (settings.video.frameLimit) {
+            if (frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }
@@ -112,25 +113,25 @@ void MapEditor::RunEditor() {
 }
 
 void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
-    map = mapdata;
+    map     = mapdata;
     mapInfo = newMapInfo;
 
-    screenborder->adjustScreenBorderToMapsize(map.getSizeX(),map.getSizeY());
+    screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
     // reset tools
-    selectedUnitID = INVALID;
+    selectedUnitID      = INVALID;
     selectedStructureID = INVALID;
     selectedMapItemCoord.invalidate();
 
-    if(pInterface != nullptr) {
+    if (pInterface != nullptr) {
         pInterface->deselectAll();
     }
 
-    while(!redoOperationStack.empty()) {
+    while (!redoOperationStack.empty()) {
         redoOperationStack.pop();
     }
 
-    while(!undoOperationStack.empty()) {
+    while (!undoOperationStack.empty()) {
         undoOperationStack.pop();
     }
 
@@ -149,34 +150,34 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     players.clear();
 
     // setup default players
-    if(getMapVersion() < 2) {
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,true,false,"Human",25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,true,false,"CPU",25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,true,false,"CPU",25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"CPU",25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,true,false,"CPU",25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"CPU",25);
+    if (getMapVersion() < 2) {
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, true, false, "Human", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "CPU", 25);
     } else {
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,true,true,"Team1");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,true,true,"Team2");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,true,true,"Team3");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"Team4");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,true,true,"Team5");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"Team6");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, true, true, "Team1");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, true, true, "Team2");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, true, true, "Team3");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, true, true, "Team5");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
     }
 
     // setup default choam
-    choam[Unit_Carryall] = 2;
-    choam[Unit_Harvester] = 4;
-    choam[Unit_Launcher] = 5;
-    choam[Unit_MCV] = 2;
+    choam[Unit_Carryall]    = 2;
+    choam[Unit_Harvester]   = 4;
+    choam[Unit_Launcher]    = 5;
+    choam[Unit_MCV]         = 2;
     choam[Unit_Ornithopter] = 5;
-    choam[Unit_Quad] = 5;
-    choam[Unit_SiegeTank] = 6;
-    choam[Unit_Tank] = 6;
-    choam[Unit_Trike] = 5;
+    choam[Unit_Quad]        = 5;
+    choam[Unit_SiegeTank]   = 6;
+    choam[Unit_Tank]        = 6;
+    choam[Unit_Trike]       = 5;
 
-    if(pInterface != nullptr) {
+    if (pInterface != nullptr) {
         pInterface->onNewMap();
         pInterface->onHouseChanges();
     }
@@ -187,21 +188,21 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 }
 
 bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAreBlocking) const {
-    for(const Structure& structure : structures) {
-        if(!bSlabIsBlocking && ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4)) ) {
+    for (const Structure& structure : structures) {
+        if (!bSlabIsBlocking && ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4))) {
             continue;
         }
 
         Coord structureSize = getStructureSize(structure.itemID);
-        Coord position = structure.position;
-        if((x >= position.x) && (x < position.x+structureSize.x) && (y >= position.y) && (y < position.y+structureSize.y)) {
+        Coord position      = structure.position;
+        if ((x >= position.x) && (x < position.x + structureSize.x) && (y >= position.y) && (y < position.y + structureSize.y)) {
             return true;
         }
     }
 
-    if(bUnitsAreBlocking) {
-        for(const Unit& unit : units) {
-            if((x == unit.position.x) && (y == unit.position.y)) {
+    if (bUnitsAreBlocking) {
+        for (const Unit& unit : units) {
+            if ((x == unit.position.x) && (y == unit.position.y)) {
                 return true;
             }
         }
@@ -215,17 +216,17 @@ std::vector<int> MapEditor::getMirrorStructures(int structureID) const {
 
     const auto* pStructure = getStructure(structureID);
 
-    if(pStructure == nullptr) {
+    if (pStructure == nullptr) {
         return mirrorStructures;
     }
 
     const Coord structureSize = getStructureSize(pStructure->itemID);
 
-    for(int i=0;i<mapMirror->getSize();i++) {
-        Coord position = mapMirror->getCoord( pStructure->position, i, structureSize);
+    for (int i = 0; i < mapMirror->getSize(); i++) {
+        Coord position = mapMirror->getCoord(pStructure->position, i, structureSize);
 
-        for(const Structure& structure : structures) {
-            if(structure.position == position) {
+        for (const Structure& structure : structures) {
+            if (structure.position == position) {
                 mirrorStructures.push_back(structure.id);
                 break;
             }
@@ -240,21 +241,21 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
 
     const Unit* pUnit = getUnit(unitID);
 
-    if(pUnit == nullptr) {
+    if (pUnit == nullptr) {
         return mirrorUnits;
     }
 
-    for(int i=0;i<mapMirror->getSize();i++) {
-        Coord position = mapMirror->getCoord( pUnit->position, i);
+    for (int i = 0; i < mapMirror->getSize(); i++) {
+        Coord position = mapMirror->getCoord(pUnit->position, i);
 
-        for(const Unit& unit : units) {
-            if(unit.position == position) {
+        for (const Unit& unit : units) {
+            if (unit.position == position) {
                 mirrorUnits.push_back(unit.id);
                 break;
             }
         }
 
-        if(bAddMissingAsInvalid && (mirrorUnits.size() < static_cast<unsigned int>(i + 1) )) {
+        if (bAddMissingAsInvalid && (mirrorUnits.size() < static_cast<unsigned int>(i + 1))) {
             mirrorUnits.push_back(INVALID);
         }
     }
@@ -264,11 +265,11 @@ std::vector<int> MapEditor::getMirrorUnits(int unitID, bool bAddMissingAsInvalid
 
 void MapEditor::setEditorMode(const EditorMode& newEditorMode) {
 
-    if(pInterface != nullptr) {
+    if (pInterface != nullptr) {
         pInterface->deselectObject();
     }
 
-    selectedUnitID = INVALID;
+    selectedUnitID      = INVALID;
     selectedStructureID = INVALID;
     selectedMapItemCoord.invalidate();
 
@@ -276,36 +277,36 @@ void MapEditor::setEditorMode(const EditorMode& newEditorMode) {
 }
 
 void MapEditor::startOperation() {
-    if(undoOperationStack.empty() || !dynamic_cast<MapEditorStartOperation*>( undoOperationStack.top().get() )) {
+    if (undoOperationStack.empty() || !dynamic_cast<MapEditorStartOperation*>(undoOperationStack.top().get())) {
         addUndoOperation(std::make_unique<MapEditorStartOperation>());
     }
 }
 
 void MapEditor::undoLastOperation() {
-    if(!undoOperationStack.empty()) {
+    if (!undoOperationStack.empty()) {
         redoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while((!undoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>( undoOperationStack.top().get() )) {
+        while ((!undoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>(undoOperationStack.top().get())) {
             redoOperationStack.push(undoOperationStack.top()->perform(this));
             undoOperationStack.pop();
         }
 
-        if(!undoOperationStack.empty()) {
+        if (!undoOperationStack.empty()) {
             undoOperationStack.pop();
         }
     }
 }
 
 void MapEditor::redoLastOperation() {
-    if(!redoOperationStack.empty()) {
+    if (!redoOperationStack.empty()) {
         undoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while((!redoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>( redoOperationStack.top().get() )) {
+        while ((!redoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>(redoOperationStack.top().get())) {
             undoOperationStack.push(redoOperationStack.top()->perform(this));
             redoOperationStack.pop();
         }
 
-        if(!redoOperationStack.empty()) {
+        if (!redoOperationStack.empty()) {
             redoOperationStack.pop();
         }
     }
@@ -313,18 +314,18 @@ void MapEditor::redoLastOperation() {
 
 void MapEditor::loadMap(const std::filesystem::path& filepath) {
     // reset tools
-    selectedUnitID = INVALID;
+    selectedUnitID      = INVALID;
     selectedStructureID = INVALID;
 
-    if(pInterface != nullptr) {
+    if (pInterface != nullptr) {
         pInterface->deselectAll();
     }
 
-    while(!redoOperationStack.empty()) {
+    while (!redoOperationStack.empty()) {
         redoOperationStack.pop();
     }
 
-    while(!undoOperationStack.empty()) {
+    while (!undoOperationStack.empty()) {
         undoOperationStack.pop();
     }
 
@@ -339,22 +340,22 @@ void MapEditor::loadMap(const std::filesystem::path& filepath) {
     units.clear();
     players.clear();
 
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN),HOUSETYPE::HOUSE_HARKONNEN,HOUSETYPE::HOUSE_HARKONNEN,false,true,"Team1");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES),HOUSETYPE::HOUSE_ATREIDES,HOUSETYPE::HOUSE_ATREIDES,false,true,"Team2");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS),HOUSETYPE::HOUSE_ORDOS,HOUSETYPE::HOUSE_ORDOS,false,true,"Team3");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN),HOUSETYPE::HOUSE_FREMEN,HOUSETYPE::HOUSE_FREMEN,false,false,"Team4");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR),HOUSETYPE::HOUSE_SARDAUKAR,HOUSETYPE::HOUSE_SARDAUKAR,false,false,"Team5");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY),HOUSETYPE::HOUSE_MERCENARY,HOUSETYPE::HOUSE_MERCENARY,false,false,"Team6");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, false, true, "Team1");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, false, true, "Team2");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, false, true, "Team3");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, false, false, "Team5");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
 
     // load map
     loadedINIFile = std::make_unique<INIFile>(filepath, false);
-    lastSaveName = filepath;
+    lastSaveName  = filepath;
 
     // do the actual loading
     INIMapEditorLoader INIMapEditorLoader(this, loadedINIFile.get());
 
     // update interface
-    if(pInterface != nullptr) {
+    if (pInterface != nullptr) {
         pInterface->onNewMap();
         pInterface->onHouseChanges();
     }
@@ -365,26 +366,26 @@ void MapEditor::loadMap(const std::filesystem::path& filepath) {
 }
 
 void MapEditor::saveMap(const std::filesystem::path& filepath) {
-    if(!loadedINIFile) {
+    if (!loadedINIFile) {
         std::string comment = "Created with Dune Legacy " + std::string(VERSION) + " Map Editor.";
-        loadedINIFile = std::make_unique<INIFile>(false, comment);
+        loadedINIFile       = std::make_unique<INIFile>(false, comment);
     }
 
     int version = (mapInfo.mapSeed == INVALID) ? 2 : 1;
 
-    if(version > 1) {
+    if (version > 1) {
         loadedINIFile->setIntValue("BASIC", "Version", version);
     }
 
-    if(!mapInfo.license.empty()) {
+    if (!mapInfo.license.empty()) {
         loadedINIFile->setStringValue("BASIC", "License", mapInfo.license);
     }
 
-    if(!mapInfo.author.empty()) {
+    if (!mapInfo.author.empty()) {
         loadedINIFile->setStringValue("BASIC", "Author", mapInfo.author);
     }
 
-    if((version > 1) && (mapInfo.techLevel > 0)) {
+    if ((version > 1) && (mapInfo.techLevel > 0)) {
         loadedINIFile->setIntValue("BASIC", "TechLevel", mapInfo.techLevel);
     }
 
@@ -395,110 +396,106 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     loadedINIFile->setStringValue("BASIC", "WinPicture", mapInfo.winPicture, false);
     loadedINIFile->setStringValue("BASIC", "BriefPicture", mapInfo.briefPicture, false);
 
-    loadedINIFile->setIntValue("BASIC","TimeOut", mapInfo.timeout);
+    loadedINIFile->setIntValue("BASIC", "TimeOut", mapInfo.timeout);
 
     int logicalSizeX = 0;
-    //int logicalSizeY;
+    // int logicalSizeY;
     int logicalOffsetX = 0;
     int logicalOffsetY = 0;
 
-    if(version < 2) {
+    if (version < 2) {
         logicalSizeX = 64;
-        //logicalSizeY = 64;
+        // logicalSizeY = 64;
 
         int mapscale = 0;
-        switch(map.getSizeX()) {
+        switch (map.getSizeX()) {
             case 21: {
-                mapscale = 2;
+                mapscale       = 2;
                 logicalOffsetX = logicalOffsetY = 11;
             } break;
             case 32: {
-                mapscale = 1;
+                mapscale       = 1;
                 logicalOffsetX = logicalOffsetY = 16;
             } break;
             case 62:
             default: {
-                mapscale = 0;
+                mapscale       = 0;
                 logicalOffsetX = logicalOffsetY = 1;
             } break;
-
         }
 
         loadedINIFile->setIntValue("BASIC", "MapScale", mapscale);
 
-        int cursorPos = (logicalOffsetY+mapInfo.cursorPos.y) * logicalSizeX + (logicalOffsetX+mapInfo.cursorPos.x);
+        int cursorPos = (logicalOffsetY + mapInfo.cursorPos.y) * logicalSizeX + (logicalOffsetX + mapInfo.cursorPos.x);
         loadedINIFile->setIntValue("BASIC", "CursorPos", cursorPos);
-        int tacticalPos = (logicalOffsetY+mapInfo.tacticalPos.y) * logicalSizeX + (logicalOffsetX+mapInfo.tacticalPos.x);
+        int tacticalPos = (logicalOffsetY + mapInfo.tacticalPos.y) * logicalSizeX + (logicalOffsetX + mapInfo.tacticalPos.x);
         loadedINIFile->setIntValue("BASIC", "TacticalPos", tacticalPos);
 
         // field, spice bloom and special bloom
         std::string strSpiceBloom;
-        for(size_t i=0;i<spiceBlooms.size();++i) {
-            if(i>0) {
+        for (size_t i = 0; i < spiceBlooms.size(); ++i) {
+            if (i > 0) {
                 strSpiceBloom += ",";
             }
 
-            int position = (logicalOffsetY+spiceBlooms[i].y) * logicalSizeX + (logicalOffsetX+spiceBlooms[i].x);
+            int position = (logicalOffsetY + spiceBlooms[i].y) * logicalSizeX + (logicalOffsetX + spiceBlooms[i].x);
             strSpiceBloom += std::to_string(position);
         }
 
-        if(!strSpiceBloom.empty()) {
+        if (!strSpiceBloom.empty()) {
             loadedINIFile->setStringValue("MAP", "Bloom", strSpiceBloom, false);
         } else {
             loadedINIFile->removeKey("MAP", "Bloom");
         }
 
-
         std::string strSpecialBloom;
-        for(size_t i=0;i<specialBlooms.size();++i) {
-            if(i>0) {
+        for (size_t i = 0; i < specialBlooms.size(); ++i) {
+            if (i > 0) {
                 strSpecialBloom += ",";
             }
 
-            int position = (logicalOffsetY+specialBlooms[i].y) * logicalSizeX + (logicalOffsetX+specialBlooms[i].x);
+            int position = (logicalOffsetY + specialBlooms[i].y) * logicalSizeX + (logicalOffsetX + specialBlooms[i].x);
             strSpecialBloom += std::to_string(position);
         }
 
-        if(!strSpecialBloom.empty()) {
+        if (!strSpecialBloom.empty()) {
             loadedINIFile->setStringValue("MAP", "Special", strSpecialBloom, false);
         } else {
             loadedINIFile->removeKey("MAP", "Special");
         }
 
-
         std::string strFieldBloom;
-        for(size_t i=0;i<spiceFields.size();++i) {
-            if(i>0) {
+        for (size_t i = 0; i < spiceFields.size(); ++i) {
+            if (i > 0) {
                 strFieldBloom += ",";
             }
 
-            int position = (logicalOffsetY+spiceFields[i].y) * logicalSizeX + (logicalOffsetX+spiceFields[i].x);
+            int position = (logicalOffsetY + spiceFields[i].y) * logicalSizeX + (logicalOffsetX + spiceFields[i].x);
             strFieldBloom += std::to_string(position);
         }
 
-        if(!strFieldBloom.empty()) {
+        if (!strFieldBloom.empty()) {
             loadedINIFile->setStringValue("MAP", "Field", strFieldBloom, false);
         } else {
             loadedINIFile->removeKey("MAP", "Field");
         }
 
-
         loadedINIFile->setIntValue("MAP", "Seed", mapInfo.mapSeed);
     } else {
         logicalSizeX = map.getSizeX();
-        //logicalSizeY = map.getSizeY();
+        // logicalSizeY = map.getSizeY();
         logicalOffsetX = logicalOffsetY = 0;
 
         loadedINIFile->clearSection("MAP");
         loadedINIFile->setIntValue("MAP", "SizeX", map.getSizeX());
         loadedINIFile->setIntValue("MAP", "SizeY", map.getSizeY());
 
-        for(int y = 0; y < map.getSizeY(); y++) {
+        for (int y = 0; y < map.getSizeY(); y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             std::string row;
-            for(int x = 0; x < map.getSizeX(); x++) {
-                switch(map(x,y)) {
+            for (int x = 0; x < map.getSizeX(); x++) {
+                switch (map(x, y)) {
 
                     case Terrain_Dunes: {
                         // Sand dunes
@@ -547,8 +544,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-
-    for(int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         loadedINIFile->removeSection("player" + std::to_string(i));
     }
 
@@ -556,22 +552,22 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     house2housename.reserve(players.size());
 
     int currentAnyHouseNumber = 1;
-    for(const Player& player : players) {
-        if(player.bAnyHouse) {
+    for (const Player& player : players) {
+        if (player.bAnyHouse) {
             house2housename.emplace_back("Player" + std::to_string(currentAnyHouseNumber));
         } else {
             house2housename.emplace_back(player.name);
         }
 
-        if(player.bActive) {
+        if (player.bActive) {
             const auto& h2h = house2housename.back();
-            if(version < 2) {
+            if (version < 2) {
                 loadedINIFile->setIntValue(h2h, "Quota", player.quota);
                 loadedINIFile->setIntValue(h2h, "Credits", player.credits);
                 loadedINIFile->setStringValue(h2h, "Brain", player.brain, false);
                 loadedINIFile->setIntValue(h2h, "MaxUnit", player.maxunit);
             } else {
-                if(player.quota > 0) {
+                if (player.quota > 0) {
                     loadedINIFile->setIntValue(h2h, "Quota", player.quota);
                 } else {
                     loadedINIFile->removeKey(h2h, "Quota");
@@ -579,12 +575,12 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
                 loadedINIFile->setIntValue(h2h, "Credits", player.credits);
                 loadedINIFile->setStringValue(h2h, "Brain", player.brain, false);
 
-                if(player.bAnyHouse) {
+                if (player.bAnyHouse) {
                     currentAnyHouseNumber++;
                 }
             }
 
-            if(player.bAnyHouse) {
+            if (player.bAnyHouse) {
                 // remove corresponding house name
                 loadedINIFile->removeSection(player.name);
             }
@@ -596,21 +592,20 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     // remove players that are leftovers
-    for(int i = currentAnyHouseNumber; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = currentAnyHouseNumber; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
         loadedINIFile->removeSection("Player" + std::to_string(i));
     }
 
-
-    if(choam.empty()) {
+    if (choam.empty()) {
         loadedINIFile->removeSection("CHOAM");
     } else {
         loadedINIFile->clearSection("CHOAM");
 
-        for(auto& choamEntry : choam) {
+        for (auto& choamEntry : choam) {
             ItemID_enum itemID = choamEntry.first;
-            int num = choamEntry.second;
+            int num            = choamEntry.second;
 
-            if(num == 0) {
+            if (num == 0) {
                 num = -1;
             }
 
@@ -618,14 +613,14 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-    if(aiteams.empty()) {
+    if (aiteams.empty()) {
         loadedINIFile->removeSection("TEAMS");
     } else {
         loadedINIFile->clearSection("TEAMS");
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (aiteams.size() >= 16)) ? 0 : 1;
-        for(const AITeamInfo& aiteamInfo : aiteams) {
+        for (const AITeamInfo& aiteamInfo : aiteams) {
             std::string value = house2housename[static_cast<int>(aiteamInfo.houseID)] + "," +
                                 getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + "," +
                                 getAITeamTypeNameByID(aiteamInfo.aiTeamType) + "," +
@@ -635,30 +630,29 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-
     loadedINIFile->clearSection("UNITS");
-    for(const Unit& unit : units) {
-        if(unit.itemID < ItemID_enum::ItemID_FirstID || unit.itemID > ItemID_enum::ItemID_LastID) continue;
+    for (const Unit& unit : units) {
+        if (unit.itemID < ItemID_enum::ItemID_FirstID || unit.itemID > ItemID_enum::ItemID_LastID)
+            continue;
 
         std::string unitKey = fmt::sprintf("ID%.3d", unit.id);
 
-        int position = (logicalOffsetY+unit.position.y) * logicalSizeX + (logicalOffsetX+unit.position.x);
+        int position = (logicalOffsetY + unit.position.y) * logicalSizeX + (logicalOffsetX + unit.position.x);
 
-        int angle = (int) unit.angle;
+        int angle = (int)unit.angle;
 
         angle = (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
 
-        std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health)
-                                + "," + std::to_string(position) + "," + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
+        std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health) + "," + std::to_string(position) + "," + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
 
         loadedINIFile->setStringValue("UNITS", unitKey, unitValue, false);
     }
 
     loadedINIFile->clearSection("STRUCTURES");
-    for(const Structure& structure : structures) {
-        int position = (logicalOffsetY+structure.position.y) * logicalSizeX + (logicalOffsetX+structure.position.x);
+    for (const Structure& structure : structures) {
+        int position = (logicalOffsetY + structure.position.y) * logicalSizeX + (logicalOffsetX + structure.position.x);
 
-        if((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4) || (structure.itemID == Structure_Wall)) {
+        if ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4) || (structure.itemID == Structure_Wall)) {
             std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
             std::string structureValue = house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID);
@@ -675,16 +669,16 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-    if(reinforcements.empty()) {
+    if (reinforcements.empty()) {
         loadedINIFile->removeSection("REINFORCEMENTS");
     } else {
         loadedINIFile->clearSection("REINFORCEMENTS");
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements.size() >= 16)) ? 0 : 1;
-        for(const ReinforcementInfo& reinforcement : reinforcements) {
+        for (const ReinforcementInfo& reinforcement : reinforcements) {
             std::string value = house2housename[static_cast<int>(reinforcement.houseID)] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + std::to_string(reinforcement.droptime);
-            if(reinforcement.bRepeat) {
+            if (reinforcement.bRepeat) {
                 value += ",+";
             }
             loadedINIFile->setStringValue("REINFORCEMENTS", std::to_string(currentIndex), value, false);
@@ -696,25 +690,25 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s", filepath.u8string().c_str());
     }
 
-    lastSaveName = filepath;
+    lastSaveName          = filepath;
     bChangedSinceLastSave = false;
 }
 
 void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
-    switch(currentEditorMode.mode) {
+    switch (currentEditorMode.mode) {
         case EditorMode::EditorMode_Terrain: {
             clearRedoOperations();
 
-            if(!bRepeated) {
+            if (!bRepeated) {
                 startOperation();
             }
 
-            if(getMapVersion() < 2) {
+            if (getMapVersion() < 2) {
                 // classic map
-                if(!bRepeated && map.isInsideMap(xpos, ypos)) {
+                if (!bRepeated && map.isInsideMap(xpos, ypos)) {
                     TERRAINTYPE terrainType = currentEditorMode.terrainType;
 
-                    switch(terrainType) {
+                    switch (terrainType) {
                         case Terrain_SpiceBloom: {
                             MapEditorTerrainAddSpiceBloomOperation editOperation(xpos, ypos);
                             addUndoOperation(editOperation.perform(this));
@@ -733,45 +727,42 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                         default: {
                         } break;
                     }
-
-
                 }
 
             } else {
-                for(int i=0;i<mapMirror->getSize();i++) {
+                for (int i = 0; i < mapMirror->getSize(); i++) {
 
-                    Coord position = mapMirror->getCoord( Coord(xpos, ypos), i);
+                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
-                    int halfsize = currentEditorMode.pensize/2;
-                    for(int y = position.y - halfsize; y <= position.y + halfsize; y++) {
-                        for(int x = position.x - halfsize; x <= position.x + halfsize; x++) {
-                            if(map.isInsideMap(x, y)) {
+                    int halfsize = currentEditorMode.pensize / 2;
+                    for (int y = position.y - halfsize; y <= position.y + halfsize; y++) {
+                        for (int x = position.x - halfsize; x <= position.x + halfsize; x++) {
+                            if (map.isInsideMap(x, y)) {
                                 performTerrainChange(x, y, currentEditorMode.terrainType);
                             }
                         }
                     }
-
                 }
             }
 
         } break;
 
         case EditorMode::EditorMode_Structure: {
-            if(!bRepeated || currentEditorMode.itemID == Structure_Slab1 || currentEditorMode.itemID == Structure_Wall) {
+            if (!bRepeated || currentEditorMode.itemID == Structure_Slab1 || currentEditorMode.itemID == Structure_Wall) {
 
                 Coord structureSize = getStructureSize(currentEditorMode.itemID);
 
-                if(!mapMirror->mirroringPossible( Coord(xpos, ypos), structureSize)) {
+                if (!mapMirror->mirroringPossible(Coord(xpos, ypos), structureSize)) {
                     return;
                 }
 
                 // check if all places are free
-                for(int i=0;i<mapMirror->getSize();i++) {
-                    Coord position = mapMirror->getCoord( Coord(xpos, ypos), i, structureSize);
+                for (int i = 0; i < mapMirror->getSize(); i++) {
+                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
 
-                    for(int x = position.x; x < position.x + structureSize.x; x++) {
-                        for(int y = position.y; y < position.y + structureSize.y; y++) {
-                            if(!map.isInsideMap(x,y) || isTileBlocked(x, y, true, (currentEditorMode.itemID != Structure_Slab1) )) {
+                    for (int x = position.x; x < position.x + structureSize.x; x++) {
+                        for (int y = position.y; y < position.y + structureSize.y; y++) {
+                            if (!map.isInsideMap(x, y) || isTileBlocked(x, y, true, (currentEditorMode.itemID != Structure_Slab1))) {
                                 return;
                             }
                         }
@@ -780,24 +771,24 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 clearRedoOperations();
 
-                if(!bRepeated) {
+                if (!bRepeated) {
                     startOperation();
                 }
 
-                auto currentHouse = currentEditorMode.house;
+                auto currentHouse   = currentEditorMode.house;
                 bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
-                for(int i=0;i<mapMirror->getSize();i++) {
+                for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
-                    for(int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
-                        if(players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
+                    for (int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
+                        if (players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
                             nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                             break;
                         }
                     }
 
-                    if(nextHouse != HOUSETYPE::HOUSE_INVALID) {
-                        Coord position = mapMirror->getCoord( Coord(xpos, ypos), i, structureSize);
+                    if (nextHouse != HOUSETYPE::HOUSE_INVALID) {
+                        Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
 
                         MapEditorStructurePlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health);
 
@@ -810,13 +801,13 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
         } break;
 
         case EditorMode::EditorMode_Unit: {
-            if(!bRepeated) {
+            if (!bRepeated) {
 
                 // first check if all places are free
-                for(int i=0;i<mapMirror->getSize();i++) {
-                    Coord position = mapMirror->getCoord( Coord(xpos, ypos), i);
+                for (int i = 0; i < mapMirror->getSize(); i++) {
+                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
-                    if(!map.isInsideMap(position.x,position.y) || isTileBlocked(position.x, position.y, false, true)) {
+                    if (!map.isInsideMap(position.x, position.y) || isTileBlocked(position.x, position.y, false, true)) {
                         return;
                     }
                 }
@@ -825,24 +816,23 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 startOperation();
 
-
-                auto currentHouse = currentEditorMode.house;
+                auto currentHouse   = currentEditorMode.house;
                 bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
-                for(int i=0;i<mapMirror->getSize();i++) {
+                for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
-                    for(int k = static_cast<int>(currentHouse);
-                        k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
-                        if(players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
+                    for (int k = static_cast<int>(currentHouse);
+                         k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
+                        if (players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
                             nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                             break;
                         }
                     }
 
-                    if(nextHouse != HOUSETYPE::HOUSE_INVALID) {
-                        Coord position = mapMirror->getCoord( Coord(xpos, ypos), i);
+                    if (nextHouse != HOUSETYPE::HOUSE_INVALID) {
+                        Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
-                        const auto angle =  mapMirror->getAngle(currentEditorMode.angle, i);
+                        const auto angle = mapMirror->getAngle(currentEditorMode.angle, i);
 
                         MapEditorUnitPlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health, angle, currentEditorMode.attackmode);
 
@@ -854,7 +844,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
         } break;
 
         case EditorMode::EditorMode_TacticalPos: {
-            if(!map.isInsideMap(xpos,ypos)) {
+            if (!map.isInsideMap(xpos, ypos)) {
                 return;
             }
 
@@ -862,7 +852,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
             startOperation();
 
-            MapEditorSetTacticalPositionOperation setOperation(xpos,ypos);
+            MapEditorSetTacticalPositionOperation setOperation(xpos, ypos);
 
             addUndoOperation(setOperation.perform(this));
 
@@ -872,7 +862,6 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
         default: {
 
         } break;
-
     }
 }
 
@@ -881,54 +870,77 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
     MapEditorTerrainEditOperation editOperation(x, y, terrainType);
     addUndoOperation(editOperation.perform(this));
 
-    switch(terrainType) {
+    switch (terrainType) {
         case Terrain_Mountain: {
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) != Terrain_Mountain) && (map(x-1,y) != Terrain_Rock))     performTerrainChange(x-1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) != Terrain_Mountain) && (map(x,y-1) != Terrain_Rock))     performTerrainChange(x,y-1,Terrain_Rock);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) != Terrain_Mountain) && (map(x+1,y) != Terrain_Rock))     performTerrainChange(x+1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) != Terrain_Mountain) && (map(x,y+1) != Terrain_Rock))     performTerrainChange(x,y+1,Terrain_Rock);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) != Terrain_Mountain) && (map(x - 1, y) != Terrain_Rock))
+                performTerrainChange(x - 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) != Terrain_Mountain) && (map(x, y - 1) != Terrain_Rock))
+                performTerrainChange(x, y - 1, Terrain_Rock);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) != Terrain_Mountain) && (map(x + 1, y) != Terrain_Rock))
+                performTerrainChange(x + 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) != Terrain_Mountain) && (map(x, y + 1) != Terrain_Rock))
+                performTerrainChange(x, y + 1, Terrain_Rock);
         } break;
 
         case Terrain_ThickSpice: {
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) != Terrain_ThickSpice) && (map(x-1,y) != Terrain_Spice))     performTerrainChange(x-1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) != Terrain_ThickSpice) && (map(x,y-1) != Terrain_Spice))     performTerrainChange(x,y-1,Terrain_Spice);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) != Terrain_ThickSpice) && (map(x+1,y) != Terrain_Spice))     performTerrainChange(x+1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) != Terrain_ThickSpice) && (map(x,y+1) != Terrain_Spice))     performTerrainChange(x,y+1,Terrain_Spice);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) != Terrain_ThickSpice) && (map(x - 1, y) != Terrain_Spice))
+                performTerrainChange(x - 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) != Terrain_ThickSpice) && (map(x, y - 1) != Terrain_Spice))
+                performTerrainChange(x, y - 1, Terrain_Spice);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) != Terrain_ThickSpice) && (map(x + 1, y) != Terrain_Spice))
+                performTerrainChange(x + 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) != Terrain_ThickSpice) && (map(x, y + 1) != Terrain_Spice))
+                performTerrainChange(x, y + 1, Terrain_Spice);
         } break;
 
         case Terrain_Rock: {
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) == Terrain_ThickSpice))     performTerrainChange(x-1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) == Terrain_ThickSpice))     performTerrainChange(x,y-1,Terrain_Spice);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) == Terrain_ThickSpice))     performTerrainChange(x+1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) == Terrain_ThickSpice))     performTerrainChange(x,y+1,Terrain_Spice);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) == Terrain_ThickSpice))
+                performTerrainChange(x - 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) == Terrain_ThickSpice))
+                performTerrainChange(x, y - 1, Terrain_Spice);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) == Terrain_ThickSpice))
+                performTerrainChange(x + 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) == Terrain_ThickSpice))
+                performTerrainChange(x, y + 1, Terrain_Spice);
         } break;
 
         case Terrain_Spice: {
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) == Terrain_Mountain))     performTerrainChange(x-1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) == Terrain_Mountain))     performTerrainChange(x,y-1,Terrain_Rock);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) == Terrain_Mountain))     performTerrainChange(x+1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) == Terrain_Mountain))     performTerrainChange(x,y+1,Terrain_Rock);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) == Terrain_Mountain))
+                performTerrainChange(x - 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) == Terrain_Mountain))
+                performTerrainChange(x, y - 1, Terrain_Rock);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) == Terrain_Mountain))
+                performTerrainChange(x + 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) == Terrain_Mountain))
+                performTerrainChange(x, y + 1, Terrain_Rock);
         } break;
 
         case Terrain_Sand:
         case Terrain_Dunes:
         case Terrain_SpiceBloom:
         case Terrain_SpecialBloom: {
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) == Terrain_Mountain))     performTerrainChange(x-1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) == Terrain_Mountain))     performTerrainChange(x,y-1,Terrain_Rock);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) == Terrain_Mountain))     performTerrainChange(x+1,y,Terrain_Rock);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) == Terrain_Mountain))     performTerrainChange(x,y+1,Terrain_Rock);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) == Terrain_Mountain))
+                performTerrainChange(x - 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) == Terrain_Mountain))
+                performTerrainChange(x, y - 1, Terrain_Rock);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) == Terrain_Mountain))
+                performTerrainChange(x + 1, y, Terrain_Rock);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) == Terrain_Mountain))
+                performTerrainChange(x, y + 1, Terrain_Rock);
 
-            if(map.isInsideMap(x-1, y) && (map(x-1,y) == Terrain_ThickSpice))     performTerrainChange(x-1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y-1) && (map(x,y-1) == Terrain_ThickSpice))     performTerrainChange(x,y-1,Terrain_Spice);
-            if(map.isInsideMap(x+1, y) && (map(x+1,y) == Terrain_ThickSpice))     performTerrainChange(x+1,y,Terrain_Spice);
-            if(map.isInsideMap(x, y+1) && (map(x,y+1) == Terrain_ThickSpice))     performTerrainChange(x,y+1,Terrain_Spice);
+            if (map.isInsideMap(x - 1, y) && (map(x - 1, y) == Terrain_ThickSpice))
+                performTerrainChange(x - 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y - 1) && (map(x, y - 1) == Terrain_ThickSpice))
+                performTerrainChange(x, y - 1, Terrain_Spice);
+            if (map.isInsideMap(x + 1, y) && (map(x + 1, y) == Terrain_ThickSpice))
+                performTerrainChange(x + 1, y, Terrain_Spice);
+            if (map.isInsideMap(x, y + 1) && (map(x, y + 1) == Terrain_ThickSpice))
+                performTerrainChange(x, y + 1, Terrain_Spice);
         } break;
 
         default: {
         } break;
     }
-
 }
 
 void MapEditor::drawScreen() {
@@ -936,11 +948,11 @@ void MapEditor::drawScreen() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    //the actuall map
+    // the actuall map
     drawMap(screenborder.get(), false);
 
-    pInterface->draw(Point(0,0));
-    pInterface->drawOverlay(Point(0,0));
+    pInterface->draw(Point(0, 0));
+    pInterface->drawOverlay(Point(0, 0));
 
     // Cursor
     drawCursor();
@@ -951,58 +963,57 @@ void MapEditor::drawScreen() {
 void MapEditor::processInput() {
     SDL_Event event;
 
-    while(SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event)) {
 
         // first of all update mouse
-        if(event.type == SDL_MOUSEMOTION) {
+        if (event.type == SDL_MOUSEMOTION) {
             SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
-            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
+            drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width - 1));
+            drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height - 1));
         }
 
-        if(pInterface->hasChildWindow()) {
+        if (pInterface->hasChildWindow()) {
             pInterface->handleInput(event);
         } else {
             switch (event.type) {
-                case SDL_KEYDOWN:
-                {
-                    switch(event.key.keysym.sym) {
+                case SDL_KEYDOWN: {
+                    switch (event.key.keysym.sym) {
 
                         case SDLK_RETURN: {
-                            if(SDL_GetModState() & KMOD_ALT) {
+                            if (SDL_GetModState() & KMOD_ALT) {
                                 toggleFullscreen();
                             }
                         } break;
 
                         case SDLK_TAB: {
-                            if(SDL_GetModState() & KMOD_ALT) {
+                            if (SDL_GetModState() & KMOD_ALT) {
                                 SDL_MinimizeWindow(window);
                             }
                         } break;
 
                         case SDLK_F1: {
                             Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel = 0;
+                            currentZoomlevel     = 0;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
 
                         case SDLK_F2: {
                             Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel = 1;
+                            currentZoomlevel     = 1;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
 
                         case SDLK_F3: {
                             Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel = 2;
+                            currentZoomlevel     = 2;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
 
                         case SDLK_p: {
-                            if(SDL_GetModState() & KMOD_CTRL) {
+                            if (SDL_GetModState() & KMOD_CTRL) {
                                 saveMapshot();
                             }
                         } break;
@@ -1013,14 +1024,14 @@ void MapEditor::processInput() {
                         } break;
 
                         case SDLK_z: {
-                            if(SDL_GetModState() & KMOD_CTRL) {
-                                    pInterface->onUndo();
+                            if (SDL_GetModState() & KMOD_CTRL) {
+                                pInterface->onUndo();
                             }
                         } break;
 
                         case SDLK_y: {
-                            if(SDL_GetModState() & KMOD_CTRL) {
-                                    pInterface->onRedo();
+                            if (SDL_GetModState() & KMOD_CTRL) {
+                                pInterface->onRedo();
                             }
                         } break;
 
@@ -1030,9 +1041,8 @@ void MapEditor::processInput() {
 
                 } break;
 
-                case SDL_KEYUP:
-                {
-                    switch(event.key.keysym.sym) {
+                case SDL_KEYUP: {
+                    switch (event.key.keysym.sym) {
                         case SDLK_ESCAPE: {
                             // quiting
                             pInterface->onQuit();
@@ -1042,37 +1052,37 @@ void MapEditor::processInput() {
                         case SDLK_BACKSPACE: {
 
                             // check units first
-                            if(selectedUnitID != INVALID) {
+                            if (selectedUnitID != INVALID) {
                                 clearRedoOperations();
                                 startOperation();
 
                                 std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
-                                for(int selectedUnit : selectedUnits) {
+                                for (int selectedUnit : selectedUnits) {
                                     MapEditorRemoveUnitOperation removeOperation(selectedUnit);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
                                 selectedUnitID = INVALID;
 
                                 pInterface->deselectAll();
-                            } else if(selectedStructureID != INVALID) {
+                            } else if (selectedStructureID != INVALID) {
                                 // We only try deleting structures if we had not yet deleted a unit (e.g. a unit on concrete)
                                 clearRedoOperations();
                                 startOperation();
 
                                 std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-                                for(int selectedStructure : selectedStructures) {
+                                for (int selectedStructure : selectedStructures) {
                                     MapEditorRemoveStructureOperation removeOperation(selectedStructure);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
                                 selectedStructureID = INVALID;
 
                                 pInterface->deselectAll();
-                            } else if(selectedMapItemCoord.isValid()) {
+                            } else if (selectedMapItemCoord.isValid()) {
                                 auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord);
 
-                                if(iter != specialBlooms.end()) {
+                                if (iter != specialBlooms.end()) {
                                     clearRedoOperations();
                                     startOperation();
                                     MapEditorTerrainRemoveSpecialBloomOperation removeOperation(iter->x, iter->y);
@@ -1082,7 +1092,7 @@ void MapEditor::processInput() {
                                 } else {
                                     iter = std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord);
 
-                                    if(iter != spiceBlooms.end()) {
+                                    if (iter != spiceBlooms.end()) {
                                         clearRedoOperations();
                                         startOperation();
                                         MapEditorTerrainRemoveSpiceBloomOperation removeOperation(iter->x, iter->y);
@@ -1092,7 +1102,7 @@ void MapEditor::processInput() {
                                     } else {
                                         iter = std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord);
 
-                                        if(iter != spiceFields.end()) {
+                                        if (iter != spiceFields.end()) {
                                             clearRedoOperations();
                                             startOperation();
                                             MapEditorTerrainRemoveSpiceFieldOperation removeOperation(iter->x, iter->y);
@@ -1111,18 +1121,17 @@ void MapEditor::processInput() {
                     }
                 } break;
 
-                case SDL_MOUSEMOTION:
-                {
-                    pInterface->handleMouseMovement(drawnMouseX,drawnMouseY);
+                case SDL_MOUSEMOTION: {
+                    pInterface->handleMouseMovement(drawnMouseX, drawnMouseY);
 
-                    if(bLeftMousePressed) {
-                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
-                            //if mouse is not over side bar
+                    if (bLeftMousePressed) {
+                        if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+                            // if mouse is not over side bar
 
                             int xpos = screenborder->screen2MapX(drawnMouseX);
                             int ypos = screenborder->screen2MapY(drawnMouseY);
 
-                            if((xpos != lastTerrainEditPosX) || (ypos != lastTerrainEditPosY)) {
+                            if ((xpos != lastTerrainEditPosX) || (ypos != lastTerrainEditPosY)) {
                                 performMapEdit(xpos, ypos, true);
                             }
                         }
@@ -1131,15 +1140,15 @@ void MapEditor::processInput() {
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        if(screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
-                            //if mouse is not over side bar
+                        if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+                            // if mouse is not over side bar
                             int xpos = screenborder->screen2MapX(drawnMouseX);
                             int ypos = screenborder->screen2MapY(drawnMouseY);
 
-                            for(const Unit& unit : units) {
+                            for (const Unit& unit : units) {
                                 Coord position = unit.position;
-                                if((position.x == xpos) && (position.y == ypos)) {
-                                    if(event.wheel.y > 0) {
+                                if ((position.x == xpos) && (position.y == ypos)) {
+                                    if (event.wheel.y > 0) {
                                         pInterface->onUnitRotateLeft(unit.id);
                                     } else {
                                         pInterface->onUnitRotateRight(unit.id);
@@ -1149,22 +1158,21 @@ void MapEditor::processInput() {
                             }
                         }
 
-                        pInterface->handleMouseWheel(drawnMouseX,drawnMouseY,(event.wheel.y > 0));
+                        pInterface->handleMouseWheel(drawnMouseX, drawnMouseY, (event.wheel.y > 0));
                     }
                 } break;
 
-                case SDL_MOUSEBUTTONDOWN:
-                {
+                case SDL_MOUSEBUTTONDOWN: {
                     SDL_MouseButtonEvent* mouse = &event.button;
 
-                    switch(mouse->button) {
+                    switch (mouse->button) {
                         case SDL_BUTTON_LEFT: {
-                            if(!pInterface->handleMouseLeft(mouse->x, mouse->y, true)) {
+                            if (!pInterface->handleMouseLeft(mouse->x, mouse->y, true)) {
 
                                 bLeftMousePressed = true;
 
-                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    //if mouse is not over side bar
+                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    // if mouse is not over side bar
 
                                     int xpos = screenborder->screen2MapX(mouse->x);
                                     int ypos = screenborder->screen2MapY(mouse->y);
@@ -1176,53 +1184,51 @@ void MapEditor::processInput() {
                         } break;
 
                         case SDL_BUTTON_RIGHT: {
-                            if(!pInterface->handleMouseRight(mouse->x, mouse->y, true)) {
+                            if (!pInterface->handleMouseRight(mouse->x, mouse->y, true)) {
 
-                                if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    //if mouse is not over side bar
+                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                    // if mouse is not over side bar
                                     setEditorMode(EditorMode());
                                     pInterface->deselectAll();
                                 }
                             }
                         } break;
-
                     }
                 } break;
 
-                case SDL_MOUSEBUTTONUP:
-                {
+                case SDL_MOUSEBUTTONUP: {
                     SDL_MouseButtonEvent* mouse = &event.button;
 
-                    switch(mouse->button) {
+                    switch (mouse->button) {
                         case SDL_BUTTON_LEFT: {
 
                             pInterface->handleMouseLeft(mouse->x, mouse->y, false);
 
-                            if(bLeftMousePressed) {
+                            if (bLeftMousePressed) {
 
-                                bLeftMousePressed = false;
+                                bLeftMousePressed   = false;
                                 lastTerrainEditPosX = -1;
                                 lastTerrainEditPosY = -1;
 
-                                if(currentEditorMode.mode == EditorMode::EditorMode_Selection) {
-                                    if(screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                        //if mouse is not over side bar
+                                if (currentEditorMode.mode == EditorMode::EditorMode_Selection) {
+                                    if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
+                                        // if mouse is not over side bar
 
                                         int xpos = screenborder->screen2MapX(mouse->x);
                                         int ypos = screenborder->screen2MapY(mouse->y);
 
-                                        selectedUnitID = INVALID;
+                                        selectedUnitID      = INVALID;
                                         selectedStructureID = INVALID;
                                         selectedMapItemCoord.invalidate();
 
                                         bool bUnitSelected = false;
 
-                                        for(const Unit& unit : units) {
+                                        for (const Unit& unit : units) {
                                             Coord position = unit.position;
 
-                                            if((position.x == xpos) && (position.y == ypos)) {
+                                            if ((position.x == xpos) && (position.y == ypos)) {
                                                 selectedUnitID = unit.id;
-                                                bUnitSelected = true;
+                                                bUnitSelected  = true;
                                                 pInterface->onObjectSelected();
                                                 mapInfo.cursorPos = position;
                                                 break;
@@ -1231,31 +1237,27 @@ void MapEditor::processInput() {
 
                                         bool bStructureSelected = false;
 
-                                        for(const Structure& structure : structures) {
+                                        for (const Structure& structure : structures) {
                                             const Coord& position = structure.position;
-                                            Coord structureSize = getStructureSize(structure.itemID);
+                                            Coord structureSize   = getStructureSize(structure.itemID);
 
-                                            if(!bUnitSelected && (xpos >= position.x) && (xpos < position.x+structureSize.x) && (ypos >= position.y) && (ypos < position.y+structureSize.y)) {
+                                            if (!bUnitSelected && (xpos >= position.x) && (xpos < position.x + structureSize.x) && (ypos >= position.y) && (ypos < position.y + structureSize.y)) {
                                                 selectedStructureID = structure.id;
-                                                bStructureSelected = true;
+                                                bStructureSelected  = true;
                                                 pInterface->onObjectSelected();
                                                 mapInfo.cursorPos = position;
                                                 break;
                                             }
                                         }
 
-                                        if(!bUnitSelected && !bStructureSelected) {
+                                        if (!bUnitSelected && !bStructureSelected) {
                                             pInterface->deselectAll();
 
                                             // find map items (spice bloom, special bloom or spice field)
-                                            if( (std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(xpos,ypos)) != spiceBlooms.end())
-                                                || (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(xpos,ypos)) != specialBlooms.end())
-                                                || (std::find(spiceFields.begin(), spiceFields.end(), Coord(xpos,ypos)) != spiceFields.end())) {
+                                            if ((std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(xpos, ypos)) != spiceBlooms.end()) || (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(xpos, ypos)) != specialBlooms.end()) || (std::find(spiceFields.begin(), spiceFields.end(), Coord(xpos, ypos)) != spiceFields.end())) {
                                                 selectedMapItemCoord = Coord(xpos, ypos);
                                             }
                                         }
-
-
                                     }
                                 }
                             }
@@ -1267,113 +1269,114 @@ void MapEditor::processInput() {
                     }
                 } break;
 
-                case SDL_QUIT:
-                {
+                case SDL_QUIT: {
                     bQuitEditor = true;
                 } break;
             }
         }
     }
 
-    if((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
+    if ((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
         const uint8_t* keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode          =  (drawnMouseY >= getRendererHeight()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollDownMode          = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
         scrollLeftMode          = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode         = (drawnMouseX >= getRendererWidth()-1-SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollRightMode         = (drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
         scrollUpMode            = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
-        if(scrollLeftMode && scrollRightMode) {
+        if (scrollLeftMode && scrollRightMode) {
             // do nothing
-        } else if(scrollLeftMode) {
+        } else if (scrollLeftMode) {
             scrollLeftMode = screenborder->scrollLeft();
-        } else if(scrollRightMode) {
+        } else if (scrollRightMode) {
             scrollRightMode = screenborder->scrollRight();
         }
 
-        if(scrollDownMode && scrollUpMode) {
+        if (scrollDownMode && scrollUpMode) {
             // do nothing
-        } else if(scrollDownMode) {
+        } else if (scrollDownMode) {
             scrollDownMode = screenborder->scrollDown();
-        } else if(scrollUpMode) {
+        } else if (scrollUpMode) {
             scrollUpMode = screenborder->scrollUp();
         }
     } else {
-        scrollDownMode = false;
-        scrollLeftMode = false;
+        scrollDownMode  = false;
+        scrollLeftMode  = false;
         scrollRightMode = false;
-        scrollUpMode = false;
+        scrollUpMode    = false;
     }
 }
 
 void MapEditor::drawCursor() {
 
-    if(!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
     const DuneTexture* pCursor = nullptr;
-    SDL_Rect dest = { 0, 0, 0, 0};
-    if(scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
-        if(scrollLeftMode && !scrollRightMode) {
+    SDL_Rect dest              = {0, 0, 0, 0};
+    if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
+        if (scrollLeftMode && !scrollRightMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
-            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Left, VAlign::Top);
-        } else if(scrollRightMode && !scrollLeftMode) {
+            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Left, VAlign::Top);
+        } else if (scrollRightMode && !scrollLeftMode) {
             pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
-            dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY-5, HAlign::Center, VAlign::Top);
+            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Center, VAlign::Top);
         }
 
-        if(pCursor == nullptr) {
-            if(scrollUpMode && !scrollDownMode) {
+        if (pCursor == nullptr) {
+            if (scrollUpMode && !scrollDownMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
-                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Top);
-            } else if(scrollDownMode && !scrollUpMode) {
+                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Top);
+            } else if (scrollDownMode && !scrollUpMode) {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorDown);
-                dest = calcDrawingRect(pCursor, drawnMouseX-5, drawnMouseY, HAlign::Left, VAlign::Center);
+                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
                 pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
-                dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+                dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
     } else {
         pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
-        dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+        dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
-        if((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
+        if ((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
 
             const DuneTexture* pMirrorIcon = nullptr;
-            switch(currentMirrorMode) {
-                case MirrorModeHorizontal:  pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);  break;
-                case MirrorModeVertical:    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);    break;
-                case MirrorModeBoth:        pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorBothIcon);        break;
-                case MirrorModePoint:       pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorPointIcon);       break;
-                default:                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon);       break;
+            switch (currentMirrorMode) {
+                case MirrorModeHorizontal: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon); break;
+                case MirrorModeVertical: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon); break;
+                case MirrorModeBoth: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorBothIcon); break;
+                case MirrorModePoint: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorPointIcon); break;
+                default: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon); break;
             }
 
-            if (pMirrorIcon) pMirrorIcon->draw(renderer, drawnMouseX + 5, drawnMouseY + 5);
+            if (pMirrorIcon)
+                pMirrorIcon->draw(renderer, drawnMouseX + 5, drawnMouseY + 5);
         }
     }
 
-    if (pCursor) pCursor->draw(renderer, dest.x, dest.y);
+    if (pCursor)
+        pCursor->draw(renderer, dest.x, dest.y);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
-    TERRAINTYPE terrainType = map(x,y);
+    TERRAINTYPE terrainType = map(x, y);
 
-    if(map(x,y) == Terrain_Sand) {
-        if(std::find(spiceFields.begin(), spiceFields.end(), Coord(x,y)) != spiceFields.end()) {
+    if (map(x, y) == Terrain_Sand) {
+        if (std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y)) != spiceFields.end()) {
             terrainType = Terrain_ThickSpice;
-        } else if(std::find_if(spiceFields.begin(), spiceFields.end(),
-            [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; }) != spiceFields.end()) {
+        } else if (std::find_if(spiceFields.begin(), spiceFields.end(),
+                                [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; }) != spiceFields.end()) {
             terrainType = Terrain_Spice;
         }
     }
 
     // check for classic map items (spice blooms, special blooms)
-    if(std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x,y)) != spiceBlooms.end()) {
+    if (std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y)) != spiceBlooms.end()) {
         terrainType = Terrain_SpiceBloom;
     }
 
-    if(std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x,y)) != specialBlooms.end()) {
+    if (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y)) != specialBlooms.end()) {
         terrainType = Terrain_SpecialBloom;
     }
 
@@ -1383,25 +1386,25 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
 void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     int zoomedTilesize = world2zoomedWorld(TILESIZE);
 
-    Coord TopLeftTile = pScreenborder->getTopLeftTile();
+    Coord TopLeftTile     = pScreenborder->getTopLeftTile();
     Coord BottomRightTile = pScreenborder->getBottomRightTile();
 
     // extend the view a little bit to avoid graphical glitches
-    TopLeftTile.x = std::max(0, TopLeftTile.x - 1);
-    TopLeftTile.y = std::max(0, TopLeftTile.y - 1);
-    BottomRightTile.x = std::min(map.getSizeX()-1, BottomRightTile.x + 1);
-    BottomRightTile.y = std::min(map.getSizeY()-1, BottomRightTile.y + 1);
+    TopLeftTile.x     = std::max(0, TopLeftTile.x - 1);
+    TopLeftTile.y     = std::max(0, TopLeftTile.y - 1);
+    BottomRightTile.x = std::min(map.getSizeX() - 1, BottomRightTile.x + 1);
+    BottomRightTile.y = std::min(map.getSizeY() - 1, BottomRightTile.y + 1);
 
     // Load Terrain Surface
     const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
     /* draw ground */
-    for(int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
-        for(int x = TopLeftTile.x; x <= BottomRightTile.x; x++) {
+    for (int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
+        for (int x = TopLeftTile.x; x <= BottomRightTile.x; x++) {
 
             int tile = 0;
 
-            switch(getTerrain(x,y)) {
+            switch (getTerrain(x, y)) {
                 case Terrain_Slab: {
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab);
                 } break;
@@ -1411,52 +1414,52 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
 
                 case Terrain_Rock: {
-                    //determine which surrounding tiles are rock
-                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Rock) || (getTerrain(x, y-1) == Terrain_Slab) || (getTerrain(x, y-1) == Terrain_Mountain);
-                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Rock) || (getTerrain(x+1, y) == Terrain_Slab) || (getTerrain(x+1, y) == Terrain_Mountain);
-                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Rock) || (getTerrain(x, y+1) == Terrain_Slab) || (getTerrain(x, y+1) == Terrain_Mountain);
-                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Rock) || (getTerrain(x-1, y) == Terrain_Slab) || (getTerrain(x-1, y) == Terrain_Mountain);
+                    // determine which surrounding tiles are rock
+                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Rock) || (getTerrain(x, y - 1) == Terrain_Slab) || (getTerrain(x, y - 1) == Terrain_Mountain);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Rock) || (getTerrain(x + 1, y) == Terrain_Slab) || (getTerrain(x + 1, y) == Terrain_Mountain);
+                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Rock) || (getTerrain(x, y + 1) == Terrain_Slab) || (getTerrain(x, y + 1) == Terrain_Mountain);
+                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Rock) || (getTerrain(x - 1, y) == Terrain_Slab) || (getTerrain(x - 1, y) == Terrain_Mountain);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Rock) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Dunes: {
-                    //determine which surrounding tiles are dunes
-                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Dunes);
-                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Dunes);
-                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Dunes);
-                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Dunes);
+                    // determine which surrounding tiles are dunes
+                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Dunes);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Dunes);
+                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Dunes);
+                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Dunes);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Dunes) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Mountain: {
-                    //determine which surrounding tiles are mountains
-                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Mountain);
-                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Mountain);
-                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Mountain);
-                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Mountain);
+                    // determine which surrounding tiles are mountains
+                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Mountain);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Mountain);
+                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Mountain);
+                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Mountain);
 
                     tile =
                         static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Mountain) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Spice: {
-                    //determine which surrounding tiles are spice
-                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_Spice) || (getTerrain(x, y-1) == Terrain_ThickSpice);
-                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_Spice) || (getTerrain(x+1, y) == Terrain_ThickSpice);
-                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_Spice) || (getTerrain(x, y+1) == Terrain_ThickSpice);
-                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_Spice) || (getTerrain(x-1, y) == Terrain_ThickSpice);
+                    // determine which surrounding tiles are spice
+                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Spice) || (getTerrain(x, y - 1) == Terrain_ThickSpice);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Spice) || (getTerrain(x + 1, y) == Terrain_ThickSpice);
+                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Spice) || (getTerrain(x, y + 1) == Terrain_ThickSpice);
+                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Spice) || (getTerrain(x - 1, y) == Terrain_ThickSpice);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Spice) + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_ThickSpice: {
-                    //determine which surrounding tiles are thick spice
-                    const int up = (y-1 < 0) || (getTerrain(x, y-1) == Terrain_ThickSpice);
-                    const int right = (x+1 >= map.getSizeX()) || (getTerrain(x+1, y) == Terrain_ThickSpice);
-                    const int down = (y+1 >= map.getSizeY()) || (getTerrain(x, y+1) == Terrain_ThickSpice);
-                    const int left = (x-1 < 0) || (getTerrain(x-1, y) == Terrain_ThickSpice);
+                    // determine which surrounding tiles are thick spice
+                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_ThickSpice);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_ThickSpice);
+                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_ThickSpice);
+                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_ThickSpice);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_ThickSpice) +
                            (up | (right << 1) | (down << 2) | (left << 3));
@@ -1475,45 +1478,44 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 } break;
             }
 
-            //draw map[x][y]
-            SDL_Rect source = { (tile % NUM_TERRAIN_TILES_X)*zoomedTilesize, (tile / NUM_TERRAIN_TILES_X)*zoomedTilesize,
-                                zoomedTilesize, zoomedTilesize };
-            SDL_FRect drawLocation = {   static_cast<float>(pScreenborder->world2screenX(x*TILESIZE)), static_cast<float>(pScreenborder->world2screenY(y*TILESIZE)),
-                                        static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize) };
+            // draw map[x][y]
+            SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize, (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize,
+                               zoomedTilesize, zoomedTilesize};
+            SDL_FRect drawLocation = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)), static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
+                                      static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
             Dune_RenderCopyF(renderer, terrainSprite, &source, &drawLocation);
         }
     }
 
-
     std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-    for(const Structure& structure : structures) {
+    for (const Structure& structure : structures) {
 
         Coord position = structure.position;
 
         SDL_Rect selectionDest;
-        if(structure.itemID == Structure_Slab1) {
+        if (structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
             const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
                                zoomedTilesize};
-            SDL_FRect dest   = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
+            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
-            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w), static_cast<int>(dest.h)};
-        } else if(structure.itemID == Structure_Slab4) {
+            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w), static_cast<int>(dest.h)};
+        } else if (structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
             const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
-            for(int y = position.y; y < position.y+2; y++) {
-                for(int x = position.x; x < position.x+2; x++) {
+            for (int y = position.y; y < position.y + 2; y++) {
+                for (int x = position.x; x < position.x + 2; x++) {
                     SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
                                        zoomedTilesize};
-                    SDL_FRect dest   = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
+                    SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
                                       static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
@@ -1521,69 +1523,73 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 }
             }
 
-            selectionDest.x = pScreenborder->world2screenX(position.x*TILESIZE);
-            selectionDest.y = pScreenborder->world2screenY(position.y*TILESIZE);
-            selectionDest.w = world2zoomedWorld(2*TILESIZE);
-            selectionDest.h = world2zoomedWorld(2*TILESIZE);
-        } else if(structure.itemID == Structure_Wall) {
-            bool left = false;
-            bool down = false;
+            selectionDest.x = pScreenborder->world2screenX(position.x * TILESIZE);
+            selectionDest.y = pScreenborder->world2screenY(position.y * TILESIZE);
+            selectionDest.w = world2zoomedWorld(2 * TILESIZE);
+            selectionDest.h = world2zoomedWorld(2 * TILESIZE);
+        } else if (structure.itemID == Structure_Wall) {
+            bool left  = false;
+            bool down  = false;
             bool right = false;
-            bool up = false;
-            for(const Structure& structure1 : structures) {
-                if(structure1.itemID == Structure_Wall) {
-                    if((structure1.position.x == position.x - 1) && (structure1.position.y == position.y))  left = true;
-                    if((structure1.position.x == position.x) && (structure1.position.y == position.y + 1))  down = true;
-                    if((structure1.position.x == position.x + 1) && (structure1.position.y == position.y))  right = true;
-                    if((structure1.position.x == position.x) && (structure1.position.y == position.y - 1))  up = true;
+            bool up    = false;
+            for (const Structure& structure1 : structures) {
+                if (structure1.itemID == Structure_Wall) {
+                    if ((structure1.position.x == position.x - 1) && (structure1.position.y == position.y))
+                        left = true;
+                    if ((structure1.position.x == position.x) && (structure1.position.y == position.y + 1))
+                        down = true;
+                    if ((structure1.position.x == position.x + 1) && (structure1.position.y == position.y))
+                        right = true;
+                    if ((structure1.position.x == position.x) && (structure1.position.y == position.y - 1))
+                        up = true;
                 }
             }
 
             auto maketile = 0;
-            if((left) && (right) && (up) && (down)) {
-                maketile = Wall::Wall_Full; //solid wall
-            } else if((!left) && (right) && (up) && (down)) {
-                maketile = Wall::Wall_UpDownRight; //missing left edge
-            } else if((left) && (!right)&& (up) && (down)) {
-                maketile = Wall::Wall_UpDownLeft; //missing right edge
-            } else if((left) && (right) && (!up) && (down)) {
-                maketile = Wall::Wall_DownLeftRight; //missing top edge
-            } else if((left) && (right) && (up) && (!down)) {
-                maketile = Wall::Wall_UpLeftRight; //missing bottom edge
-            } else if((!left) && (right) && (!up) && (down)) {
-                maketile = Wall::Wall_DownRight; //missing top left edge
-            } else if((left) && (!right) && (up) && (!down)) {
-                maketile = Wall::Wall_UpLeft; //missing bottom right edge
-            } else if((left) && (!right) && (!up) && (down)) {
-                maketile = Wall::Wall_DownLeft; //missing top right edge
-            } else if((!left) && (right) && (up) && (!down)) {
-                maketile = Wall::Wall_UpRight; //missing bottom left edge
-            } else if((left) && (!right) && (!up) && (!down)) {
-                maketile = Wall::Wall_LeftRight; //missing above, right and below
-            } else if((!left) && (right) && (!up) && (!down)) {
-                maketile = Wall::Wall_LeftRight; //missing above, left and below
-            } else if((!left) && (!right) && (up) && (!down)) {
-                maketile = Wall::Wall_UpDown; //only up
-            } else if((!left) && (!right) && (!up) && (down)) {
-                maketile = Wall::Wall_UpDown; //only down
-            } else if((left) && (right) && (!up) && (!down)) {
-                maketile = Wall::Wall_LeftRight; //missing above and below
-            } else if((!left) && (!right) && (up) && (down)) {
-                maketile = Wall::Wall_UpDown; //missing left and right
-            } else if((!left) && (!right) && (!up) && (!down)) {
-                maketile = Wall::Wall_Standalone; //missing left and right
+            if ((left) && (right) && (up) && (down)) {
+                maketile = Wall::Wall_Full; // solid wall
+            } else if ((!left) && (right) && (up) && (down)) {
+                maketile = Wall::Wall_UpDownRight; // missing left edge
+            } else if ((left) && (!right) && (up) && (down)) {
+                maketile = Wall::Wall_UpDownLeft; // missing right edge
+            } else if ((left) && (right) && (!up) && (down)) {
+                maketile = Wall::Wall_DownLeftRight; // missing top edge
+            } else if ((left) && (right) && (up) && (!down)) {
+                maketile = Wall::Wall_UpLeftRight; // missing bottom edge
+            } else if ((!left) && (right) && (!up) && (down)) {
+                maketile = Wall::Wall_DownRight; // missing top left edge
+            } else if ((left) && (!right) && (up) && (!down)) {
+                maketile = Wall::Wall_UpLeft; // missing bottom right edge
+            } else if ((left) && (!right) && (!up) && (down)) {
+                maketile = Wall::Wall_DownLeft; // missing top right edge
+            } else if ((!left) && (right) && (up) && (!down)) {
+                maketile = Wall::Wall_UpRight; // missing bottom left edge
+            } else if ((left) && (!right) && (!up) && (!down)) {
+                maketile = Wall::Wall_LeftRight; // missing above, right and below
+            } else if ((!left) && (right) && (!up) && (!down)) {
+                maketile = Wall::Wall_LeftRight; // missing above, left and below
+            } else if ((!left) && (!right) && (up) && (!down)) {
+                maketile = Wall::Wall_UpDown; // only up
+            } else if ((!left) && (!right) && (!up) && (down)) {
+                maketile = Wall::Wall_UpDown; // only down
+            } else if ((left) && (right) && (!up) && (!down)) {
+                maketile = Wall::Wall_LeftRight; // missing above and below
+            } else if ((!left) && (!right) && (up) && (down)) {
+                maketile = Wall::Wall_UpDown; // missing left and right
+            } else if ((!left) && (!right) && (!up) && (!down)) {
+                maketile = Wall::Wall_Standalone; // missing left and right
             }
 
             // Load Wall texture
             const auto* const WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
-            SDL_Rect source = { maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize };
-            SDL_FRect dest = { static_cast<float>(pScreenborder->world2screenX(position.x*TILESIZE)), static_cast<float>(pScreenborder->world2screenY(position.y*TILESIZE)), static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize) };
+            SDL_Rect source = {maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
+            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)), static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
-            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
-                                     static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                      static_cast<int>(dest.h)};
         } else {
 
             int objectPic = 0;
@@ -1612,89 +1618,81 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             const auto* ObjectSprite = pGFXManager->getZoomedObjPic(objectPic, structure.house, currentZoomlevel);
 
-            Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID)*TILESIZE);
+            Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID) * TILESIZE);
 
-            SDL_Rect source = { frameSize.x*(structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y };
-            SDL_FRect dest   = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
+            SDL_Rect source = {frameSize.x * (structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y};
+            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
                               static_cast<float>(frameSize.x), static_cast<float>(frameSize.y)};
 
             Dune_RenderCopyF(renderer, ObjectSprite, &source, &dest);
 
-            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
-                                     static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                      static_cast<int>(dest.h)};
         }
 
         // draw selection frame
-        if(!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id) != selectedStructures.end()) ) {
-            //now draw the selection box thing, with parts at all corners of structure
+        if (!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id) != selectedStructures.end())) {
+            // now draw the selection box thing, with parts at all corners of structure
 
             DuneDrawSelectionBox(renderer, selectionDest);
         }
-
     }
 
-    for(const Unit& unit : units) {
+    for (const Unit& unit : units) {
 
         const Coord& position = unit.position;
 
-        constexpr Coord tankTurretOffset[] =    {   Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0),
-                                                Coord(0, 0)
-                                            };
+        constexpr Coord tankTurretOffset[] = {Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0),
+                                              Coord(0, 0)};
 
-        constexpr Coord siegeTankTurretOffset[] =   {   Coord(8, -12),
-                                                    Coord(0, -20),
-                                                    Coord(0, -20),
-                                                    Coord(-4, -20),
-                                                    Coord(-8, -12),
-                                                    Coord(-8, -4),
-                                                    Coord(-4, -12),
-                                                    Coord(8, -4)
-                                            };
+        constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),
+                                                   Coord(0, -20),
+                                                   Coord(0, -20),
+                                                   Coord(-4, -20),
+                                                   Coord(-8, -12),
+                                                   Coord(-8, -4),
+                                                   Coord(-4, -12),
+                                                   Coord(8, -4)};
 
-        constexpr Coord sonicTankTurretOffset[] =   {   Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8)
-                                                };
+        constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8),
+                                                   Coord(0, -8)};
 
-        constexpr Coord launcherTurretOffset[] =    {   Coord(0, -12),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -12),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8),
-                                                    Coord(0, -8)
-                                                };
+        constexpr Coord launcherTurretOffset[] = {Coord(0, -12),
+                                                  Coord(0, -8),
+                                                  Coord(0, -8),
+                                                  Coord(0, -8),
+                                                  Coord(0, -12),
+                                                  Coord(0, -8),
+                                                  Coord(0, -8),
+                                                  Coord(0, -8)};
 
-        constexpr Coord devastatorTurretOffset[] =  {
-                                                    Coord(8, -16),
-                                                    Coord(-4, -12),
-                                                    Coord(0, -16),
-                                                    Coord(4, -12),
-                                                    Coord(-8, -16),
-                                                    Coord(0, -12),
-                                                    Coord(-4, -12),
-                                                    Coord(0, -12)
-                                                };
+        constexpr Coord devastatorTurretOffset[] = {
+            Coord(8, -16),
+            Coord(-4, -12),
+            Coord(0, -16),
+            Coord(4, -12),
+            Coord(-8, -16),
+            Coord(0, -12),
+            Coord(-4, -12),
+            Coord(0, -12)};
 
-
-
-        int objectPicBase = 0;
-        int framesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-        int framesY = 1;
-        int objectPicGun = -1;
+        int objectPicBase      = 0;
+        int framesX            = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        int framesY            = 1;
+        int objectPicGun       = -1;
         const Coord* gunOffset = nullptr;
 
         // clang-format off
@@ -1725,187 +1723,187 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const auto* const pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
 
-        int angle = static_cast<int>(unit.angle) / (static_cast<int>(ANGLETYPE::NUM_ANGLES)/framesX);
+        int angle = static_cast<int>(unit.angle) / (static_cast<int>(ANGLETYPE::NUM_ANGLES) / framesX);
 
         int frame = (unit.itemID == Unit_Sandworm) ? 5 : 0;
 
-        auto source = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
-        int frameSizeX = source.w;
-        int frameSizeY = source.h;
-        const auto drawLocation = calcSpriteDrawingRectF(  pObjectSprite,
-                                                        pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)),
-                                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
-                                                        framesX, framesY, HAlign::Center, VAlign::Center);
+        auto source             = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
+        int frameSizeX          = source.w;
+        int frameSizeY          = source.h;
+        const auto drawLocation = calcSpriteDrawingRectF(pObjectSprite,
+                                                         pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
+                                                         pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)),
+                                                         framesX, framesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyF(renderer, pObjectSprite, &source, &drawLocation);
 
-        if(objectPicGun >= 0) {
+        if (objectPicGun >= 0) {
             const auto* const pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
 
             auto source2 = calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
 
             const auto& gun = gunOffset[static_cast<int>(unit.angle)];
-            const auto  sx  = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
-            const auto  sy  = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
+            const auto sx   = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
+            const auto sy   = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
 
             const auto drawLocation2 = calcSpriteDrawingRectF(pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
-                                                           HAlign::Center, VAlign::Center);
+                                                              HAlign::Center, VAlign::Center);
 
             Dune_RenderCopyF(renderer, pGunSprite, &source2, &drawLocation2);
         }
 
-        if(unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
+        if (unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
             const auto* const pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
 
-            auto drawLocation2 = calcDrawingRect(   pStarSprite,
-                                                        pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)) + frameSizeX/2 - 1,
-                                                        pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)) + frameSizeY/2 - 1,
-                                                        HAlign::Right, VAlign::Bottom);
+            auto drawLocation2 = calcDrawingRect(pStarSprite,
+                                                 pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)) + frameSizeX / 2 - 1,
+                                                 pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)) + frameSizeY / 2 - 1,
+                                                 HAlign::Right, VAlign::Bottom);
 
             pStarSprite->draw(renderer, drawLocation2.x, drawLocation2.y);
         }
     }
 
     // draw tactical pos rectangle (the starting screen)
-    if(!bCompleteMap && getMapVersion() < 2 && mapInfo.tacticalPos.isValid()) {
+    if (!bCompleteMap && getMapVersion() < 2 && mapInfo.tacticalPos.isValid()) {
 
         SDL_FRect dest;
-        dest.x = pScreenborder->world2screenX( mapInfo.tacticalPos.x*TILESIZE);
-        dest.y = pScreenborder->world2screenY( mapInfo.tacticalPos.y*TILESIZE);
-        dest.w = world2zoomedWorld(15*TILESIZE);
-        dest.h = world2zoomedWorld(10*TILESIZE);
+        dest.x = pScreenborder->world2screenX(mapInfo.tacticalPos.x * TILESIZE);
+        dest.y = pScreenborder->world2screenY(mapInfo.tacticalPos.y * TILESIZE);
+        dest.w = world2zoomedWorld(15 * TILESIZE);
+        dest.h = world2zoomedWorld(10 * TILESIZE);
 
         renderDrawRectF(renderer, &dest, COLOR_DARKGREY);
     }
 
-    const DuneTexture* validPlace = nullptr;
+    const DuneTexture* validPlace   = nullptr;
     const DuneTexture* invalidPlace = nullptr;
     const DuneTexture* greyPlace    = nullptr;
 
-    switch(currentZoomlevel) {
+    switch (currentZoomlevel) {
         case 0: {
-            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
+            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
             invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
-            greyPlace = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel0);
+            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel0);
         } break;
 
         case 1: {
-            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
+            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
             invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
-            greyPlace = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel1);
+            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel1);
         } break;
 
         case 2:
         default: {
-            validPlace = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
+            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
             invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
-            greyPlace = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel2);
+            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel2);
         } break;
     }
 
-    if(!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+    if (!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
 
         int xPos = pScreenborder->screen2MapX(drawnMouseX);
         int yPos = pScreenborder->screen2MapY(drawnMouseY);
 
-        if(currentEditorMode.mode == EditorMode::EditorMode_Terrain) {
+        if (currentEditorMode.mode == EditorMode::EditorMode_Terrain) {
 
-            int halfsize = currentEditorMode.pensize/2;
+            int halfsize = currentEditorMode.pensize / 2;
 
-            for(int m=0;m<mapMirror->getSize();m++) {
+            for (int m = 0; m < mapMirror->getSize(); m++) {
 
-                Coord position = mapMirror->getCoord( Coord(xPos, yPos), m);
+                Coord position = mapMirror->getCoord(Coord(xPos, yPos), m);
 
                 SDL_Rect dest;
-                dest.x = pScreenborder->world2screenX( (position.x-halfsize)*TILESIZE);
-                dest.y = pScreenborder->world2screenY( (position.y-halfsize)*TILESIZE);
-                dest.w = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
-                dest.h = world2zoomedWorld(currentEditorMode.pensize*TILESIZE);
+                dest.x = pScreenborder->world2screenX((position.x - halfsize) * TILESIZE);
+                dest.y = pScreenborder->world2screenY((position.y - halfsize) * TILESIZE);
+                dest.w = world2zoomedWorld(currentEditorMode.pensize * TILESIZE);
+                dest.h = world2zoomedWorld(currentEditorMode.pensize * TILESIZE);
 
                 DuneDrawSelectionBox(renderer, dest);
             }
 
-        } else if(currentEditorMode.mode == EditorMode::EditorMode_Structure) {
+        } else if (currentEditorMode.mode == EditorMode::EditorMode_Structure) {
             Coord structureSize = getStructureSize(currentEditorMode.itemID);
 
-            for(int m=0;m<mapMirror->getSize();m++) {
+            for (int m = 0; m < mapMirror->getSize(); m++) {
 
-                Coord position = mapMirror->getCoord( Coord(xPos, yPos), m, structureSize);
+                Coord position = mapMirror->getCoord(Coord(xPos, yPos), m, structureSize);
 
-                for(int x = position.x; x < (position.x + structureSize.x); x++) {
-                    for(int y = position.y; y < (position.y + structureSize.y); y++) {
+                for (int x = position.x; x < (position.x + structureSize.x); x++) {
+                    for (int y = position.y; y < (position.y + structureSize.y); y++) {
                         const auto* image = validPlace;
 
                         // check if mirroring of the original (!) position is possible
-                        if(!mapMirror->mirroringPossible( Coord(xPos, yPos), structureSize)) {
+                        if (!mapMirror->mirroringPossible(Coord(xPos, yPos), structureSize)) {
                             image = invalidPlace;
                         }
 
                         // check all mirrored places
-                        for(int k=0;k<mapMirror->getSize();k++) {
-                            Coord pos = mapMirror->getCoord( Coord(x, y), k);
+                        for (int k = 0; k < mapMirror->getSize(); k++) {
+                            Coord pos = mapMirror->getCoord(Coord(x, y), k);
 
-                            if(!map.isInsideMap(pos.x,pos.y) || isTileBlocked(pos.x, pos.y, true, (currentEditorMode.itemID != Structure_Slab1) )) {
+                            if (!map.isInsideMap(pos.x, pos.y) || isTileBlocked(pos.x, pos.y, true, (currentEditorMode.itemID != Structure_Slab1))) {
                                 image = invalidPlace;
-                            } else if((image != invalidPlace) && (map(pos.x,pos.y) != Terrain_Rock)) {
+                            } else if ((image != invalidPlace) && (map(pos.x, pos.y) != Terrain_Rock)) {
                                 image = greyPlace;
                             }
                         }
 
-                        SDL_Rect drawLocation = {   pScreenborder->world2screenX(x*TILESIZE), pScreenborder->world2screenY(y*TILESIZE),
-                                                    zoomedTilesize, zoomedTilesize };
+                        SDL_Rect drawLocation = {pScreenborder->world2screenX(x * TILESIZE), pScreenborder->world2screenY(y * TILESIZE),
+                                                 zoomedTilesize, zoomedTilesize};
                         Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
-        } else if(currentEditorMode.mode == EditorMode::EditorMode_Unit) {
-            for(int m=0;m<mapMirror->getSize();m++) {
+        } else if (currentEditorMode.mode == EditorMode::EditorMode_Unit) {
+            for (int m = 0; m < mapMirror->getSize(); m++) {
 
-                Coord position = mapMirror->getCoord( Coord(xPos, yPos), m);
+                Coord position = mapMirror->getCoord(Coord(xPos, yPos), m);
 
                 const auto* image = validPlace;
                 // check all mirrored places
-                for(int k=0;k<mapMirror->getSize();k++) {
-                    Coord pos = mapMirror->getCoord( position, k);
+                for (int k = 0; k < mapMirror->getSize(); k++) {
+                    Coord pos = mapMirror->getCoord(position, k);
 
-                    if(!map.isInsideMap(pos.x,pos.y) || isTileBlocked(pos.x, pos.y, false, true)) {
+                    if (!map.isInsideMap(pos.x, pos.y) || isTileBlocked(pos.x, pos.y, false, true)) {
                         image = invalidPlace;
                     }
                 }
-                auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x*TILESIZE), pScreenborder->world2screenY(position.y*TILESIZE));
+                auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x * TILESIZE), pScreenborder->world2screenY(position.y * TILESIZE));
                 Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
             }
-        } else if(currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
+        } else if (currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
-            if(mapInfo.tacticalPos.isValid()) {
+            if (mapInfo.tacticalPos.isValid()) {
 
-                SDL_Rect dest = {   pScreenborder->world2screenX(xPos*TILESIZE), pScreenborder->world2screenY(yPos*TILESIZE),
-                                    world2zoomedWorld(15*TILESIZE), world2zoomedWorld(10*TILESIZE) };
+                SDL_Rect dest = {pScreenborder->world2screenX(xPos * TILESIZE), pScreenborder->world2screenY(yPos * TILESIZE),
+                                 world2zoomedWorld(15 * TILESIZE), world2zoomedWorld(10 * TILESIZE)};
                 renderDrawRect(renderer, &dest, COLOR_WHITE);
             }
         }
     }
 
     // draw selection rect for units (selection rect for structures is already drawn)
-    if(!bCompleteMap) {
+    if (!bCompleteMap) {
         std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
-        for(const Unit& unit : units) {
-            if(std::find(selectedUnits.begin(), selectedUnits.end(), unit.id) != selectedUnits.end()) {
+        for (const Unit& unit : units) {
+            if (std::find(selectedUnits.begin(), selectedUnits.end(), unit.id) != selectedUnits.end()) {
                 const Coord& position = unit.position;
 
                 const DuneTexture* selectionBox = nullptr;
 
-                switch(currentZoomlevel) {
-                    case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
-                    case 1:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1);   break;
+                switch (currentZoomlevel) {
+                    case 0: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
+                    case 1: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
                     case 2:
-                    default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
+                    default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
                 }
 
                 SDL_Rect dest = calcDrawingRect(selectionBox,
-                                                pScreenborder->world2screenX((position.x*TILESIZE)+(TILESIZE/2)),
-                                                pScreenborder->world2screenY((position.y*TILESIZE)+(TILESIZE/2)),
+                                                pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
+                                                pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)),
                                                 HAlign::Center, VAlign::Center);
 
                 Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
@@ -1914,23 +1912,20 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     }
 
     // draw selection rect for map items (spice bloom, special bloom or spice field)
-    if(!bCompleteMap && selectedMapItemCoord.isValid()
-        && ( (std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end())
-            || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
-            || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()) )) {
+    if (!bCompleteMap && selectedMapItemCoord.isValid() && ((std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end()) || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end()) || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()))) {
 
         const DuneTexture* selectionBox = nullptr;
 
-        switch(currentZoomlevel) {
-            case 0:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0);   break;
-            case 1:     selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1);   break;
+        switch (currentZoomlevel) {
+            case 0: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
+            case 1: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
             case 2:
-            default:    selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2);   break;
+            default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
         }
 
         SDL_Rect dest = calcDrawingRect(selectionBox,
-                                        pScreenborder->world2screenX((selectedMapItemCoord.x*TILESIZE)+(TILESIZE/2)),
-                                        pScreenborder->world2screenY((selectedMapItemCoord.y*TILESIZE)+(TILESIZE/2)),
+                                        pScreenborder->world2screenX((selectedMapItemCoord.x * TILESIZE) + (TILESIZE / 2)),
+                                        pScreenborder->world2screenY((selectedMapItemCoord.y * TILESIZE) + (TILESIZE / 2)),
                                         HAlign::Center, VAlign::Center);
 
         Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
@@ -1939,30 +1934,30 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
 void MapEditor::saveMapshot() {
     const int oldCurrentZoomlevel = currentZoomlevel;
-    currentZoomlevel = 0;
+    currentZoomlevel              = 0;
 
     auto mapshotFilename =
-        (lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true));
+        (lastSaveName.empty() ? std::filesystem::path {generateMapname()} : getBasename(lastSaveName, true));
 
     mapshotFilename += ".png";
 
-    const auto sizeX = world2zoomedWorld(map.getSizeX()*TILESIZE);
-    const auto sizeY = world2zoomedWorld(map.getSizeY()*TILESIZE);
+    const auto sizeX = world2zoomedWorld(map.getSizeX() * TILESIZE);
+    const auto sizeY = world2zoomedWorld(map.getSizeY() * TILESIZE);
 
-    const SDL_Rect board = { 0, 0, sizeX, sizeY };
+    const SDL_Rect board = {0, 0, sizeX, sizeY};
 
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
-    auto renderTarget = sdl2::texture_ptr{ SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY) };
-    if(renderTarget == nullptr) {
+    auto renderTarget = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
+    if (renderTarget == nullptr) {
         sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
     SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
-    if(SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
+    if (SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
         sdl2::log_info("SDL_SetRenderTarget() failed: %s", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
         currentZoomlevel = oldCurrentZoomlevel;

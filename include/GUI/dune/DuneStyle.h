@@ -23,12 +23,12 @@
 class DuneStyle : public GUIStyle {
 public:
     /// default constructor
-    DuneStyle() : GUIStyle() {
+    DuneStyle()
+        : GUIStyle() {
     }
 
     /// destructor
     ~DuneStyle() override = default;
-
 
     /**
         Returns the minimum size of a label with this text
@@ -52,9 +52,6 @@ public:
     */
     sdl2::surface_ptr createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
-
-
-
     /**
         Returns the minimum size of a checkbox with this text
         \param  text    The text for the checkbox
@@ -75,9 +72,6 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
-
-
-
 
     /**
         Returns the minimum size of a radio button with this text
@@ -100,9 +94,6 @@ public:
     */
     sdl2::surface_ptr createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
 
-
-
-
     /**
         Creates the surface for a drop down box
         \param  size        the width and height of the drop down button
@@ -112,9 +103,6 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr createDropDownBoxButton(uint32_t size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
-
-
-
 
     /**
         Returns the minumum size of a button with this text
@@ -135,9 +123,6 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
-
-
-
 
     /**
         Returns the minumum size of a text box
@@ -160,9 +145,6 @@ public:
     */
     sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
-
-
-
     /**
         Returns the minumum size of a scroll bar arrow button.
         \return the mimimum size of a scroll bar arrow
@@ -178,9 +160,6 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
-
-
-
 
     /**
         Returns the minumum height of a list box entry.
@@ -198,9 +177,6 @@ public:
     */
     sdl2::surface_ptr createListBoxEntry(uint32_t width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) override;
 
-
-
-
     /**
         Creates the overlay surface for a progress bar widget. This surface is then drawn
         above the progress bar widget.
@@ -211,7 +187,6 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr createProgressBarOverlay(uint32_t width, uint32_t height, double percent, Uint32 color = COLOR_DEFAULT) override;
-
 
     /**
         Creates a tool tip surface.
@@ -252,17 +227,16 @@ public:
     unsigned int getTextWidth(std::string_view text, unsigned int FontNum) override;
 
 public:
-    static const Uint32 defaultForegroundColor = COLOR_RGB(125,0,0);
-    static const Uint32 defaultShadowColor = COLOR_LIGHTYELLOW;
+    static const Uint32 defaultForegroundColor = COLOR_RGB(125, 0, 0);
+    static const Uint32 defaultShadowColor     = COLOR_LIGHTYELLOW;
 
-    static const Uint32 buttonBackgroundColor = COLOR_RGB(202,141,16);
-    static const Uint32 pressedButtonBackgroundColor = COLOR_RGB(182,125,12);
-    static const Uint32 buttonBorderColor = COLOR_RGB(60,36,0);
-    static const Uint32 buttonEdgeBottomRightColor = COLOR_RGB(153,105,0);
-    static const Uint32 buttonEdgeTopLeftColor = COLOR_RGB(255,190,76);
+    static const Uint32 buttonBackgroundColor        = COLOR_RGB(202, 141, 16);
+    static const Uint32 pressedButtonBackgroundColor = COLOR_RGB(182, 125, 12);
+    static const Uint32 buttonBorderColor            = COLOR_RGB(60, 36, 0);
+    static const Uint32 buttonEdgeBottomRightColor   = COLOR_RGB(153, 105, 0);
+    static const Uint32 buttonEdgeTopLeftColor       = COLOR_RGB(255, 190, 76);
 
 private:
-
     /**
         Creates a surface with text on it
         \param  text        text to draw
@@ -278,11 +252,11 @@ private:
         Uint32 b = (color & BMASK) >> BSHIFT;
         Uint32 a = (color & AMASK) >> ASHIFT;
 
-        r = std::min(255U, (r*3)/2);
-        g = std::min(255U, (g*3)/2);
-        b = std::min(255U, (b*3)/2);
+        r = std::min(255U, (r * 3) / 2);
+        g = std::min(255U, (g * 3) / 2);
+        b = std::min(255U, (b * 3) / 2);
 
-        return COLOR_RGBA(r,g,b,a);
+        return COLOR_RGBA(r, g, b, a);
     }
 };
 

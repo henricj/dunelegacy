@@ -28,8 +28,7 @@ class Coord;
 /*!
     Class that handles sounds and music.
 */
-class SoundPlayer
-{
+class SoundPlayer {
 public:
     //! @name Constructor & Destructor
     //@{
@@ -37,10 +36,10 @@ public:
     ~SoundPlayer();
     //@}
 
-    SoundPlayer(const SoundPlayer &) = delete;
-    SoundPlayer(SoundPlayer &&) = delete;
-    SoundPlayer& operator=(const SoundPlayer &) = delete;
-    SoundPlayer& operator=(SoundPlayer &&) = delete;
+    SoundPlayer(const SoundPlayer&) = delete;
+    SoundPlayer(SoundPlayer&&)      = delete;
+    SoundPlayer& operator=(const SoundPlayer&) = delete;
+    SoundPlayer& operator=(SoundPlayer&&) = delete;
     /*!
         plays a certain sound at certain coordinates.
         the volume of sound depends on the difference between
@@ -78,7 +77,7 @@ public:
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
     void setSfxVolume(int newVolume) {
-        if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
+        if (newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
             sfxVolume = newVolume;
         }
     }
@@ -105,11 +104,10 @@ private:
     void playSound(Sound_enum soundID, int volume) const;
 
     //! whether sound should be played
-    bool    soundOn;
+    bool soundOn;
 
     //! volume of sound effects
     int sfxVolume;
-
 };
 
-#endif //SOUNDPLAYER_H
+#endif // SOUNDPLAYER_H

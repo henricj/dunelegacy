@@ -46,31 +46,30 @@
 */
 
 #ifndef _FNKDAT_H
-#define _FNKDAT_H
+#    define _FNKDAT_H
 
-#define FNKDAT_CONF     0x01
-#define FNKDAT_DATA     0x02
-#define FNKDAT_VAR      0x04
-#define FNKDAT_USER     0x08
-#define FNKDAT_INIT     0x10
-#define FNKDAT_UNINIT   0x20
-#define FNKDAT_CREAT    0x80
+#    define FNKDAT_CONF   0x01
+#    define FNKDAT_DATA   0x02
+#    define FNKDAT_VAR    0x04
+#    define FNKDAT_USER   0x08
+#    define FNKDAT_INIT   0x10
+#    define FNKDAT_UNINIT 0x20
+#    define FNKDAT_CREAT  0x80
 
 /* version automatically populated */
-#define FNKDAT_VERSION "0.0.8"
+#    define FNKDAT_VERSION "0.0.8"
 
-#ifdef __cplusplus
+#    ifdef __cplusplus
 
-#include <filesystem>
+#        include <filesystem>
 
 std::tuple<bool, std::filesystem::path> fnkdat(int flags);
 std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& target, int flags);
 
 extern "C" {
-#endif // __cplusplus
+#    endif // __cplusplus
 
-
-#ifdef _WIN32
+#    ifdef _WIN32
 
 /*
  * Include UNICODE crap
@@ -80,26 +79,21 @@ extern "C" {
 /*
  * define in a UNICODE compatible way
  */
-//int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags);
+// int fnkdat(const _TCHAR* target, _TCHAR* buffer, int len, int flags);
 
-#else
+#    else
 
 /*
  * basic, lovable ANSI C
  */
 int fnkdat(const char* target, char* buffer, int len, int flags);
 
+#    endif /* _WIN32 */
 
-#endif /* _WIN32 */
-
-
-
-#ifdef __cplusplus
+#    ifdef __cplusplus
 }
-#endif
-
+#    endif
 
 #endif /* _FNKDAT_H */
 
 /* vi: set sw=3 ts=3 tw=78 et sts: */
-

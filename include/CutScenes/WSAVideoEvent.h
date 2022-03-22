@@ -26,7 +26,6 @@
 */
 class WSAVideoEvent : public VideoEvent {
 public:
-
     /**
         Constructor
         \param  pWsafile            The video to play
@@ -48,11 +47,12 @@ public:
         \return true, if there are no more frames to draw with this VideoEvent
     */
     bool isFinished() override;
+
 private:
-    int currentFrame;               ///< the current frame number relative to the start of this WSAVideoEvent
-    Wsafile* pWsafile;              ///< the video to play
+    int currentFrame;                    ///< the current frame number relative to the start of this WSAVideoEvent
+    Wsafile* pWsafile;                   ///< the video to play
     sdl2::texture_ptr pStreamingTexture; ///< the texture used for rendering from
-    bool bCenterVertical;           ///< true = center the video vertically on the screen, false = blit the video frames at the top of the screen
+    bool bCenterVertical;                ///< true = center the video vertically on the screen, false = blit the video frames at the top of the screen
 };
 
 #endif // WSAVIDEOEVENT_H

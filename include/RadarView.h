@@ -24,10 +24,8 @@
 
 #include <misc/SDL2pp.h>
 
-
 /// This class manages the mini map at the top right corner of the screen
-class RadarView final : public RadarViewBase
-{
+class RadarView final : public RadarViewBase {
 public:
     /**
         Constructor
@@ -51,33 +49,30 @@ public:
     */
     [[nodiscard]] int getMapSizeY() const override;
 
-
     /**
         Draws the radar to screen. This method is called before drawOverlay().
         \param  position    Position to draw the radar to
     */
     void draw(Point position) override;
 
-
     /**
         This method updates the radar. It should be called every game tick
     */
     void update();
-
 
     /**
         This method sets the radar mode directly. To show the static animation use switchRadarMode().
         \param bStatus  true = switches the radar on, false = switches the radar off
     */
     void setRadarMode(bool bStatus) {
-        if(bStatus == true) {
+        if (bStatus == true) {
             currentRadarMode = RadarMode::RadarOn;
-            animFrame = 0;
-            animCounter = NUM_STATIC_FRAME_TIME;
+            animFrame        = 0;
+            animCounter      = NUM_STATIC_FRAME_TIME;
         } else {
             currentRadarMode = RadarMode::RadarOff;
-            animFrame = NUM_STATIC_FRAMES - 1;
-            animCounter = NUM_STATIC_FRAME_TIME;
+            animFrame        = NUM_STATIC_FRAMES - 1;
+            animCounter      = NUM_STATIC_FRAME_TIME;
         }
     }
 
@@ -88,7 +83,6 @@ public:
     void switchRadarMode(bool bOn);
 
 private:
-
     enum class RadarMode {
         RadarOff,
         RadarOn,
@@ -98,16 +92,15 @@ private:
 
     void updateRadarSurface(int scale, int offsetX, int offsetY);
 
-    RadarMode currentRadarMode;             ///< the current mode of the radar
+    RadarMode currentRadarMode; ///< the current mode of the radar
 
-    int animFrame;                          ///< the current animation frame
+    int animFrame; ///< the current animation frame
 
-    int animCounter;                        ///< this counter is for counting the ticks one animation frame is shown
+    int animCounter; ///< this counter is for counting the ticks one animation frame is shown
 
-    sdl2::surface_ptr radarSurface;         ///< contains the image to be drawn when the radar is active
-    sdl2::texture_ptr radarTexture;         ///< streaming texture to be used when the radar is active
+    sdl2::surface_ptr radarSurface;          ///< contains the image to be drawn when the radar is active
+    sdl2::texture_ptr radarTexture;          ///< streaming texture to be used when the radar is active
     const DuneTexture* radarStaticAnimation; ///< holds the animation graphic for radar static
-
 };
 
 #endif // RADARVIEW_H

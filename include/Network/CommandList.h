@@ -31,14 +31,13 @@ public:
     class CommandListEntry {
     public:
         CommandListEntry(uint32_t cycle, std::vector<Command>&& commands)
-         : cycle(cycle), commands(std::move(commands)) {
-
+            : cycle(cycle), commands(std::move(commands)) {
         }
 
         explicit CommandListEntry(InputStream& stream) {
-            cycle = stream.readUint32();
+            cycle                  = stream.readUint32();
             const auto numCommands = stream.readUint32();
-            for(uint32_t i = 0; i < numCommands; i++) {
+            for (uint32_t i = 0; i < numCommands; i++) {
                 commands.emplace_back(stream);
             }
         }
@@ -47,34 +46,34 @@ public:
             stream.writeUint32(cycle);
 
             stream.writeUint32(static_cast<uint32_t>(commands.size()));
-            for(const auto& command : commands) {
+            for (const auto& command : commands) {
                 command.save(stream);
             }
         }
 
-        uint32_t             cycle;
+        uint32_t cycle;
         std::vector<Command> commands;
     };
 
-    CommandList() = default;
-    CommandList(const CommandList &) = delete;
-    CommandList(CommandList &&) = delete;
+    CommandList()                   = default;
+    CommandList(const CommandList&) = delete;
+    CommandList(CommandList&&)      = delete;
 
     explicit CommandList(InputStream& stream) {
         const auto numCommandListEntries = stream.readUint32();
-        for(uint32_t i = 0; i < numCommandListEntries; i++) {
+        for (uint32_t i = 0; i < numCommandListEntries; i++) {
             commandList.emplace_back(stream);
         }
     }
 
     ~CommandList() = default;
 
-    CommandList& operator=(const CommandList &) = delete;
-    CommandList& operator=(CommandList &&) = delete;
+    CommandList& operator=(const CommandList&) = delete;
+    CommandList& operator=(CommandList&&) = delete;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(static_cast<uint32_t>(commandList.size()));
-        for(const auto& commandListEntry : commandList) {
+        for (const auto& commandListEntry : commandList) {
             commandListEntry.save(stream);
         }
     }
@@ -82,4 +81,4 @@ public:
     std::vector<CommandListEntry> commandList;
 };
 
-#endif //COMMANDLIST_H
+#endif // COMMANDLIST_H

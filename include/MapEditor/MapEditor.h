@@ -21,37 +21,35 @@
 #include <data.h>
 
 #include <MapEditor/MapData.h>
-#include <MapEditor/ReinforcementInfo.h>
-#include <MapEditor/MapInfo.h>
-#include <MapEditor/MapMirror.h>
 #include <MapEditor/MapEditorInterface.h>
 #include <MapEditor/MapEditorOperation.h>
+#include <MapEditor/MapInfo.h>
+#include <MapEditor/MapMirror.h>
+#include <MapEditor/ReinforcementInfo.h>
 
 #include <INIMap/INIMapEditorLoader.h>
 
 #include <ScreenBorder.h>
 #include <misc/SDL2pp.h>
 
-#include <DataTypes.h>
 #include <AITeamInfo.h>
+#include <DataTypes.h>
 
+#include <stack>
 #include <string>
 #include <utility>
 #include <vector>
-#include <stack>
 
 class MapMirror;
 
 class MapEditor {
 
 public:
-
     class Player {
     public:
-
-        Player(std::string  name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string  brain = "Human", int maxunit = 0)
-         : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) {
-            quota = 0;
+        Player(std::string name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string brain = "Human", int maxunit = 0)
+            : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) {
+            quota   = 0;
             credits = 2000;
         }
 
@@ -68,24 +66,22 @@ public:
 
     class EditorMode {
     public:
-
-        EditorMode()
-          = default;
+        EditorMode() = default;
 
         explicit EditorMode(bool dummy)
-         : mode(EditorMode_TacticalPos) {
+            : mode(EditorMode_TacticalPos) {
         }
 
         EditorMode(TERRAINTYPE terrainType, int pensize)
-         : mode(EditorMode_Terrain), terrainType(terrainType), pensize(pensize) {
+            : mode(EditorMode_Terrain), terrainType(terrainType), pensize(pensize) {
         }
 
         EditorMode(HOUSETYPE house, ItemID_enum itemID, int health)
-         : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) {
+            : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) {
         }
 
         EditorMode(HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-         : mode(EditorMode_Unit), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+            : mode(EditorMode_Unit), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
         }
 
         enum {
@@ -94,46 +90,44 @@ public:
             EditorMode_Structure,
             EditorMode_Unit,
             EditorMode_TacticalPos
-        } mode{EditorMode_Selection};
+        } mode {EditorMode_Selection};
 
-        TERRAINTYPE     terrainType = Terrain_Sand;
-        int             pensize = 0;
-        HOUSETYPE       house = HOUSETYPE::HOUSE_HARKONNEN;
-        ANGLETYPE       angle       = static_cast<ANGLETYPE>(0);
-        ItemID_enum     itemID      = ItemID_enum::ItemID_Invalid;
-        int             health = 0;
-        ATTACKMODE      attackmode = ATTACKMODE_INVALID;
+        TERRAINTYPE terrainType = Terrain_Sand;
+        int pensize             = 0;
+        HOUSETYPE house         = HOUSETYPE::HOUSE_HARKONNEN;
+        ANGLETYPE angle         = static_cast<ANGLETYPE>(0);
+        ItemID_enum itemID      = ItemID_enum::ItemID_Invalid;
+        int health              = 0;
+        ATTACKMODE attackmode   = ATTACKMODE_INVALID;
     };
 
     class Structure {
     public:
         Structure(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position)
-         : id(id), house(house), itemID(itemID), health(health), position(position) {
-
+            : id(id), house(house), itemID(itemID), health(health), position(position) {
         }
 
-        int             id;
-        HOUSETYPE       house;
-        ItemID_enum     itemID;
-        int             health;
-        Coord           position;
+        int id;
+        HOUSETYPE house;
+        ItemID_enum itemID;
+        int health;
+        Coord position;
     };
 
     class Unit {
     public:
         Unit(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position, ANGLETYPE angle,
              ATTACKMODE attackmode)
-         : id(id), house(house), itemID(itemID), health(health), position(position), angle(angle), attackmode(attackmode) {
-
+            : id(id), house(house), itemID(itemID), health(health), position(position), angle(angle), attackmode(attackmode) {
         }
 
-        int             id;
-        HOUSETYPE       house;
-        ANGLETYPE       angle;
-        ItemID_enum     itemID;
-        int             health;
-        Coord           position;
-        ATTACKMODE      attackmode;
+        int id;
+        HOUSETYPE house;
+        ANGLETYPE angle;
+        ItemID_enum itemID;
+        int health;
+        Coord position;
+        ATTACKMODE attackmode;
     };
 
     MapEditor();
@@ -152,7 +146,7 @@ public:
 
     [[nodiscard]] bool hasChangeSinceLastSave() const { return bChangedSinceLastSave; }
 
-    [[nodiscard]] std::string generateMapname() ;
+    [[nodiscard]] std::string generateMapname();
 
     std::vector<Player>& getPlayers() {
         return players;
@@ -169,11 +163,10 @@ public:
     void setMapInfo(const MapInfo& newMapInfo) { mapInfo = newMapInfo; }
 
     [[nodiscard]] int getMapVersion() const {
-        if(mapInfo.mapSeed != INVALID) {
+        if (mapInfo.mapSeed != INVALID) {
             return 1;
-        }             return 2;
-
-       
+        }
+        return 2;
     }
 
     void setMap(const MapData& mapdata, const MapInfo& newMapInfo);
@@ -188,8 +181,7 @@ public:
 
     std::vector<Coord>& getSpiceFields() { return spiceFields; }
 
-
-    std::map<ItemID_enum,int>& getChoam() { return choam; }
+    std::map<ItemID_enum, int>& getChoam() { return choam; }
 
     std::vector<ReinforcementInfo>& getReinforcements() { return reinforcements; }
 
@@ -233,21 +225,24 @@ public:
     }
 
     [[nodiscard]] const Unit* getUnit(int unitID) const {
-        for(const auto& unit : units) {
-            if(unit.id == unitID) { return &unit; }
+        for (const auto& unit : units) {
+            if (unit.id == unitID) {
+                return &unit;
+            }
         }
 
         return nullptr;
     }
 
     Unit* getUnit(int unitID) {
-        for(auto& unit : units) {
-            if(unit.id == unitID) { return &unit; }
+        for (auto& unit : units) {
+            if (unit.id == unitID) {
+                return &unit;
+            }
         }
 
         return nullptr;
     }
-
 
     [[nodiscard]] std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false) const;
 
@@ -275,7 +270,7 @@ public:
     void redoLastOperation();
 
     void clearRedoOperations() {
-        while(!redoOperationStack.empty()) {
+        while (!redoOperationStack.empty()) {
             redoOperationStack.pop();
         }
     }
@@ -296,64 +291,59 @@ private:
     void saveMapshot();
 
 private:
-    std::unique_ptr<MapEditorInterface> pInterface;     ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<MapEditorInterface> pInterface; ///< This is the whole interface (top bar and side bar)
 
+    SDL_Rect sideBarPos;
+    SDL_Rect topBarPos;
+    SDL_Rect bottomBarPos;
 
-    SDL_Rect                        sideBarPos;
-    SDL_Rect                        topBarPos;
-    SDL_Rect                        bottomBarPos;
+    bool bQuitEditor;
 
-    bool                            bQuitEditor;
+    bool scrollDownMode;  ///< currently scrolling the map down?
+    bool scrollLeftMode;  ///< currently scrolling the map left?
+    bool scrollRightMode; ///< currently scrolling the map right?
+    bool scrollUpMode;    ///< currently scrolling the map up?
 
-    bool                            scrollDownMode;     ///< currently scrolling the map down?
-    bool                            scrollLeftMode;     ///< currently scrolling the map left?
-    bool                            scrollRightMode;    ///< currently scrolling the map right?
-    bool                            scrollUpMode;       ///< currently scrolling the map up?
+    bool shift;
 
-    bool                            shift;
+    bool bChangedSinceLastSave;
 
-    bool                            bChangedSinceLastSave;
+    EditorMode currentEditorMode;
 
-    EditorMode                      currentEditorMode;
+    MirrorMode currentMirrorMode;
+    std::unique_ptr<MapMirror> mapMirror;
 
-    MirrorMode                      currentMirrorMode;
-    std::unique_ptr<MapMirror>      mapMirror;
+    bool bLeftMousePressed;
+    int lastTerrainEditPosX;
+    int lastTerrainEditPosY;
 
-    bool                            bLeftMousePressed;
-    int                             lastTerrainEditPosX;
-    int                             lastTerrainEditPosY;
+    int selectedUnitID;
+    int selectedStructureID;
+    Coord selectedMapItemCoord; ///< only used for classic maps
 
-    int                             selectedUnitID;
-    int                             selectedStructureID;
-    Coord                           selectedMapItemCoord;   ///< only used for classic maps
+    std::filesystem::path lastSaveName;
+    std::unique_ptr<INIFile> loadedINIFile;
 
+    std::vector<Player> players;
 
+    MapData map;
+    MapInfo mapInfo;
 
-    std::filesystem::path           lastSaveName;
-    std::unique_ptr<INIFile>        loadedINIFile;
+    std::vector<Coord> spiceBlooms;   ///< only for classic maps
+    std::vector<Coord> specialBlooms; ///< only for classic maps
+    std::vector<Coord> spiceFields;   ///< only for classic maps
 
-    std::vector<Player>             players;
+    std::map<ItemID_enum, int> choam;
 
+    std::vector<ReinforcementInfo> reinforcements;
 
-    MapData                         map;
-    MapInfo                         mapInfo;
+    std::vector<AITeamInfo> aiteams;
 
-    std::vector<Coord>              spiceBlooms;    ///< only for classic maps
-    std::vector<Coord>              specialBlooms;  ///< only for classic maps
-    std::vector<Coord>              spiceFields;    ///< only for classic maps
+    std::vector<Unit> units;
+    std::vector<Structure> structures;
 
-    std::map<ItemID_enum, int>      choam;
-
-    std::vector<ReinforcementInfo>  reinforcements;
-
-    std::vector<AITeamInfo>         aiteams;
-
-    std::vector<Unit>               units;
-    std::vector<Structure>          structures;
-
-
-    std::stack<std::unique_ptr<MapEditorOperation> > undoOperationStack;
-    std::stack<std::unique_ptr<MapEditorOperation> > redoOperationStack;
+    std::stack<std::unique_ptr<MapEditorOperation>> undoOperationStack;
+    std::stack<std::unique_ptr<MapEditorOperation>> redoOperationStack;
 };
 
 #endif // MAPEDITOR_H

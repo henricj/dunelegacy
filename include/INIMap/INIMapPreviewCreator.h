@@ -18,16 +18,15 @@
 #ifndef INIMAPPREVIEWCREATOR_H
 #define INIMAPPREVIEWCREATOR_H
 
-#include <FileClasses/INIFile.h>
 #include <DataTypes.h>
+#include <FileClasses/INIFile.h>
 
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <map>
 #include <memory>
-
+#include <string>
 
 class INIMapPreviewCreator : public INIMap {
 public:
@@ -37,4 +36,4 @@ public:
     sdl2::surface_ptr createMinimapImageOfMap(int borderWidth, uint32_t borderColor);
 };
 
-#endif //INIMAPPREVIEWCREATOR_H
+#endif // INIMAPPREVIEWCREATOR_H

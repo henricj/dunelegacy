@@ -19,8 +19,8 @@
 #define PROGRESSBAR_H
 
 #include "WidgetWithBackground.h"
-#include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
+#include <misc/draw_util.h>
 
 #include <string>
 
@@ -28,18 +28,16 @@
 
 #include <cmath>
 
-
 /// A class for a progress bar widget
 class ProgressBar : public WidgetWithBackground {
 public:
-
     /// default constructor
     ProgressBar() {
-        percent = 0.0;
-        color = COLOR_DEFAULT;
+        percent     = 0.0;
+        color       = COLOR_DEFAULT;
         bDrawShadow = false;
         pForeground = nullptr;
-        enableResizing(true,true);
+        enableResizing(true, true);
     }
 
     /// destructor
@@ -48,20 +46,20 @@ public:
     }
 
     ProgressBar(const ProgressBar&) = delete;
-    ProgressBar(ProgressBar &&) = delete;
-    ProgressBar& operator=(const ProgressBar &) = delete;
-    ProgressBar& operator=(ProgressBar &&) = delete;
+    ProgressBar(ProgressBar&&)      = delete;
+    ProgressBar& operator=(const ProgressBar&) = delete;
+    ProgressBar& operator=(ProgressBar&&) = delete;
 
     /**
         Sets the progress of this progress bar.
         \param newPercent  Should be between 0.0 and 100.0
     */
     void setProgress(double newPercent) {
-        if(percent != newPercent) {
+        if (percent != newPercent) {
             percent = newPercent;
-            if(percent < 0.0) {
+            if (percent < 0.0) {
                 percent = 0.0;
-            } else if(percent > 100.0) {
+            } else if (percent > 100.0) {
                 percent = 100.0;
             }
 
@@ -99,9 +97,8 @@ public:
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -110,9 +107,8 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        WidgetWithBackground::resize(width,height);
+    void resize(uint32_t width, uint32_t height) override {
+        WidgetWithBackground::resize(width, height);
 
         invalidateTextures();
     }
@@ -121,9 +117,8 @@ public:
         Draws this progress bar to screen
         \param  position    Position to draw the progress bar to
     */
-    void draw(Point position) override
-    {
-        if(isVisible() == false) {
+    void draw(Point position) override {
+        if (isVisible() == false) {
             return;
         }
 
@@ -131,10 +126,10 @@ public:
 
         WidgetWithBackground::draw(position);
 
-        if(pForeground) {
+        if (pForeground) {
             auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
-            if(bDrawShadow) {
-                SDL_Rect dest2 = { position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h };
+            if (bDrawShadow) {
+                SDL_Rect dest2 = {position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
                 renderFillRect(renderer, &dest2, COLOR_BLACK);
             }
 
@@ -148,11 +143,10 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
+    void updateTextures() override {
         WidgetWithBackground::updateTextures();
 
-        if(!pForeground) {
+        if (!pForeground) {
             pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
         }
     }
@@ -160,8 +154,7 @@ protected:
     /**
         This method frees all textures that are used by this progress bar
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         pForeground.reset();
 
         WidgetWithBackground::invalidateTextures();
@@ -169,9 +162,9 @@ protected:
 
     sdl2::texture_ptr pForeground;
 
-    double   percent;     ///< Percent from 0.0 to 100.0
-    uint32_t color;       ///< The color of the progress overlay
-    bool     bDrawShadow; ///< Draw shadow under the foreground surface
+    double percent;   ///< Percent from 0.0 to 100.0
+    uint32_t color;   ///< The color of the progress overlay
+    bool bDrawShadow; ///< Draw shadow under the foreground surface
 };
 
 class TextProgressBar : public ProgressBar {
@@ -180,17 +173,17 @@ public:
 
     virtual ~TextProgressBar() = default;
 
-    TextProgressBar(const TextProgressBar &) = delete;
-    TextProgressBar(TextProgressBar &&) = delete;
-    TextProgressBar& operator=(const TextProgressBar &) = delete;
-    TextProgressBar& operator=(TextProgressBar &&) = delete;
+    TextProgressBar(const TextProgressBar&) = delete;
+    TextProgressBar(TextProgressBar&&)      = delete;
+    TextProgressBar& operator=(const TextProgressBar&) = delete;
+    TextProgressBar& operator=(TextProgressBar&&) = delete;
     /**
         This method sets a new text for this progress bar and resizes it
         to fit this text.
         \param  text The new text for this progress bar
     */
     virtual void setText(const std::string& text) {
-        if(this->text != text) {
+        if (this->text != text) {
             this->text = text;
             resizeAll();
         }
@@ -208,7 +201,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor = textcolor;
+        this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
     }
@@ -218,10 +211,9 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        if(text.empty()) {
-            return Point(4,4);
+    [[nodiscard]] Point getMinimumSize() const override {
+        if (text.empty()) {
+            return Point(4, 4);
         } else {
             return GUIStyle::getInstance().getMinimumButtonSize(text);
         }
@@ -233,50 +225,49 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
+    void updateTextures() override {
         ProgressBar::updateTextures();
 
-        if(!getBackground()) {
+        if (!getBackground()) {
             setBackground(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false,
-                                                                      textcolor, textshadowcolor).get());
+                                                                      textcolor, textshadowcolor)
+                              .get());
         }
     }
 
     /**
         This method frees all textures that are used by this progress bar
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         ProgressBar::invalidateTextures();
     }
 
-    std::string text;           ///< Text of this progress bar
+    std::string text; ///< Text of this progress bar
 
-    Uint32 textcolor = COLOR_DEFAULT;
+    Uint32 textcolor       = COLOR_DEFAULT;
     Uint32 textshadowcolor = COLOR_DEFAULT;
 };
 
-class PictureProgressBar: public ProgressBar {
+class PictureProgressBar : public ProgressBar {
 public:
     PictureProgressBar() {
-        Widget::enableResizing(false,false);
+        Widget::enableResizing(false, false);
     }
 
     virtual ~PictureProgressBar() = default;
 
-    PictureProgressBar(const PictureProgressBar &) = delete;
-    PictureProgressBar(PictureProgressBar &&) = delete;
-    PictureProgressBar& operator=(const PictureProgressBar &) = delete;
-    PictureProgressBar& operator=(PictureProgressBar &&) = delete;
+    PictureProgressBar(const PictureProgressBar&) = delete;
+    PictureProgressBar(PictureProgressBar&&)      = delete;
+    PictureProgressBar& operator=(const PictureProgressBar&) = delete;
+    PictureProgressBar& operator=(PictureProgressBar&&) = delete;
 
     void setTexture(const DuneTexture* pBackground) {
         setBackground(pBackground);
 
-        if(const auto* const background = getBackground()) {
+        if (const auto* const background = getBackground()) {
             resize(getTextureSize(background));
         } else {
-            resize(4,4);
+            resize(4, 4);
         }
 
         resizeAll();
@@ -287,9 +278,8 @@ public:
         called if the new size is a valid size for this progress bar (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -298,9 +288,8 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        ProgressBar::resize(width,height);
+    void resize(uint32_t width, uint32_t height) override {
+        ProgressBar::resize(width, height);
     }
 
     /**
@@ -308,9 +297,8 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        if(const auto* const background = getBackground()) {
+    [[nodiscard]] Point getMinimumSize() const override {
+        if (const auto* const background = getBackground()) {
             return getTextureSize(background);
         }
 

@@ -18,24 +18,23 @@
 #ifndef TEXTMANAGER_H
 #define TEXTMANAGER_H
 
+#include "DataTypes.h"
 #include "IndexedTextFile.h"
 #include "MentatTextFile.h"
-#include "DataTypes.h"
 
+#include <array>
+#include <map>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <map>
-#include <memory>
-#include <array>
 
 #include <algorithm>
 
-#define MISSION_DESCRIPTION     0
-#define MISSION_WIN             1
-#define MISSION_LOSE            2
-#define MISSION_ADVICE          3
-
+#define MISSION_DESCRIPTION 0
+#define MISSION_WIN         1
+#define MISSION_LOSE        2
+#define MISSION_ADVICE      3
 
 class TextManager {
 public:
@@ -79,15 +78,13 @@ public:
     const std::string& getLocalized(const std::string& unlocalizedString) const {
         const std::string& localizedStringRaw = getLocalizedRaw(unlocalizedString);
 
-        if(!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
+        if (!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
             // post-process
             return postProcessString(localizedStringRaw);
         } else {
             return localizedStringRaw;
         }
     }
-
-
 
 private:
     /**
@@ -97,7 +94,7 @@ private:
     */
     const std::string& getLocalizedRaw(const std::string& unlocalizedString) const {
         auto iter = localizedString.find(unlocalizedString);
-        if((iter != localizedString.end()) && !iter->second.empty()) {
+        if ((iter != localizedString.end()) && !iter->second.empty()) {
             return iter->second;
         } else {
             return unlocalizedString;
@@ -120,12 +117,11 @@ private:
     */
     void addOrigDuneText(const std::string& filename, bool bDecode = false);
 
+    std::array<std::unique_ptr<MentatTextFile>, 3> mentatStrings; ///< The MENTAT?.<EXTENSION> mentat menu texts
 
-    std::array<std::unique_ptr<MentatTextFile>,3> mentatStrings;            ///< The MENTAT?.<EXTENSION> mentat menu texts
+    std::map<std::string, std::unique_ptr<IndexedTextFile>> origDuneText; ///< This map contains all the loaded original Dune II (indexed) text files
 
-    std::map<std::string,std::unique_ptr<IndexedTextFile> > origDuneText;   ///< This map contains all the loaded original Dune II (indexed) text files
-
-    mutable std::map<std::string, std::string> localizedString;             ///< The mapping between English text and localized text
+    mutable std::map<std::string, std::string> localizedString; ///< The mapping between English text and localized text
 };
 
-#endif //TEXTMANAGER_H
+#endif // TEXTMANAGER_H

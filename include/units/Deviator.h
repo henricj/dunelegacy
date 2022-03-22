@@ -20,11 +20,10 @@
 
 #include <units/TrackedUnit.h>
 
-class Deviator final : public TrackedUnit
-{
+class Deviator final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Unit_Deviator;
-    using parent                     = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Deviator(uint32_t objectID, const ObjectInitializer& initializer);
     Deviator(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,8 +39,8 @@ private:
     void init();
 
     // drawing information
-    zoomable_texture turretGraphic{};   ///< The turret graphic
-    int              gunGraphicID;      ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic {}; ///< The turret graphic
+    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
-#endif //DEVIATOR_H
+#endif // DEVIATOR_H

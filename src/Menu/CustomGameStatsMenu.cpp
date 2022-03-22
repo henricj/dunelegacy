@@ -19,8 +19,8 @@
 
 #include <globals.h>
 
-#include <misc/FileSystem.h>
 #include <fmt/printf.h>
+#include <misc/FileSystem.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
@@ -31,19 +31,17 @@
 
 #include <algorithm>
 
-
-CustomGameStatsMenu::CustomGameStatsMenu()  
-{
+CustomGameStatsMenu::CustomGameStatsMenu() {
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
     setWindowWidget(&windowWidget);
 
-    const Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
+    const Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
-    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
+    windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
     captionLabel.setText(getBasename(currentGame->getGameInitSettings().getFilename(), true).u8string());
     captionLabel.setTextColor(localHouseColor);
@@ -79,12 +77,11 @@ CustomGameStatsMenu::CustomGameStatsMenu()
 
     playerStatListVBox.addWidget(VSpacer::create(15));
 
-    int maxBuiltValue = 0;
-    int maxDestroyedValue = 0;
+    int maxBuiltValue       = 0;
+    int maxDestroyedValue   = 0;
     float maxSpiceHarvested = 0.0;
 
-
-    currentGame->for_each_house( [&](auto& house) {
+    currentGame->for_each_house([&](auto& house) {
         maxBuiltValue     = std::max(maxBuiltValue, house.getBuiltValue());
         maxDestroyedValue = std::max(maxDestroyedValue, house.getDestroyedValue());
         maxSpiceHarvested = std::max(maxSpiceHarvested, house.getHarvestedSpice().toFloat());
@@ -162,8 +159,8 @@ CustomGameStatsMenu::CustomGameStatsMenu()
     mainVBox.addWidget(VSpacer::create(14), 0.0);
 
     buttonHBox.addWidget(HSpacer::create(70));
-    int totalTime = currentGame->getGameTime()/1000;
-    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime/3600, (totalTime%3600)/60));
+    int totalTime = currentGame->getGameTime() / 1000;
+    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, (totalTime % 3600) / 60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);
 
@@ -180,8 +177,6 @@ CustomGameStatsMenu::CustomGameStatsMenu()
 
 CustomGameStatsMenu::~CustomGameStatsMenu() = default;
 
-void CustomGameStatsMenu::onOK()
-{
+void CustomGameStatsMenu::onOK() {
     quit();
 }
-

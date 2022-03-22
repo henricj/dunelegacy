@@ -27,15 +27,12 @@
 
 extern std::unique_ptr<GFXManager> pGFXManager;
 
-
 /// A widget for showing digits (like the credits in dune are shown)
-class DigitsCounter : public Widget
-{
+class DigitsCounter : public Widget {
 public:
-
     /// default constructor
     DigitsCounter() {
-        enableResizing(false,false);
+        enableResizing(false, false);
         count = 0;
     }
 
@@ -52,14 +49,13 @@ public:
         Set the count of this digits counter
         \param  newCount    the new number to show
     */
-    void setCount(unsigned int newCount) { count = std::min(99u,newCount); }
+    void setCount(unsigned int newCount) { count = std::min(99u, newCount); }
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    void draw(Point position) override
-    {
+    void draw(Point position) override {
         const auto* const tex = pGFXManager->getUIGraphic(UI_MissionSelect);
 
         tex->draw(renderer, position.x, position.y);
@@ -68,10 +64,10 @@ public:
 
         char creditsBuffer[3];
         const auto& [ptr, ec] = std::to_chars(std::begin(creditsBuffer), std::end(creditsBuffer), count);
-        if(ec == std::errc{}) {
+        if (ec == std::errc {}) {
             const auto digits = static_cast<int>(ptr - std::begin(creditsBuffer));
 
-            for(auto i = digits - 1; i >= 0; i--) {
+            for (auto i = digits - 1; i >= 0; i--) {
                 auto source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
                 auto dest2 =
                     calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i) * 10, position.y + 16, 10);
@@ -87,12 +83,13 @@ public:
     */
     [[nodiscard]] Point getMinimumSize() const override {
         const auto* const tex = pGFXManager->getUIGraphic(UI_MissionSelect);
-        if(tex != nullptr) { return getTextureSize(tex); }
+        if (tex != nullptr) {
+            return getTextureSize(tex);
+        }
         return Point(0, 0);
     }
 
 private:
-
     unsigned int count;
 };
 

@@ -31,7 +31,7 @@
 #include <GUI/ObjectInterfaces/RepairYardInterface.h>
 
 namespace {
-constexpr StructureBaseConstants repair_yard_constants{RepairYard::item_id, Coord{3, 2}};
+constexpr StructureBaseConstants repair_yard_constants {RepairYard::item_id, Coord {3, 2}};
 }
 
 RepairYard::RepairYard(uint32_t objectID, const ObjectInitializer& initializer)
@@ -39,7 +39,7 @@ RepairYard::RepairYard(uint32_t objectID, const ObjectInitializer& initializer)
     RepairYard::init();
 
     setHealth(getMaxHealth());
-    bookings = 0;
+    bookings       = 0;
     repairingAUnit = false;
 }
 
@@ -58,26 +58,26 @@ void RepairYard::init() {
     assert(itemID == Structure_RepairYard);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_RepairYard;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
+    graphicID      = ObjPic_RepairYard;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 10;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 RepairYard::~RepairYard() = default;
 
 void RepairYard::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
-    if(repairingAUnit) {
+    if (repairingAUnit) {
         unBook();
         auto* const unit = repairUnit.getUnitPointer();
-        if(unit) unit->destroy(context);
+        if (unit)
+            unit->destroy(context);
     }
 
     parent::cleanup(context, humanPlayer);
 }
-
 
 void RepairYard::save(OutputStream& stream) const {
     StructureBase::save(stream);
@@ -87,9 +87,10 @@ void RepairYard::save(OutputStream& stream) const {
     stream.writeUint32(bookings);
 }
 
-
 std::unique_ptr<ObjectInterface> RepairYard::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return RepairYardInterface::create(context, objectID); }
+    if ((pLocalHouse == owner) || (debug)) {
+        return RepairYardInterface::create(context, objectID);
+    }
     return DefaultObjectInterface::create(context, objectID);
 }
 
@@ -97,14 +98,14 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
     unBook();
     repairingAUnit = false;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 
     UnitBase* pRepairUnit = repairUnit.getUnitPointer();
 
-    if(nullptr == pRepairUnit)
+    if (nullptr == pRepairUnit)
         return;
 
-    if(pCarryall != nullptr) {
+    if (pCarryall != nullptr) {
         pCarryall->giveCargo(context, pRepairUnit);
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
@@ -120,30 +121,30 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
 
     repairUnit.pointTo(NONE_ID);
 
-    if(getOwner() == pLocalHouse) {
-        soundPlayer->playVoice(VehicleRepaired,getOwner()->getHouseID());
+    if (getOwner() == pLocalHouse) {
+        soundPlayer->playVoice(VehicleRepaired, getOwner()->getHouseID());
     }
 }
 
 void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
-    if(repairingAUnit) {
-        if(curAnimFrame < 6) {
+    if (repairingAUnit) {
+        if (curAnimFrame < 6) {
             firstAnimFrame = 6;
-            lastAnimFrame = 9;
-            curAnimFrame = 6;
+            lastAnimFrame  = 9;
+            curAnimFrame   = 6;
         }
     } else {
-        if(curAnimFrame > 3) {
+        if (curAnimFrame > 3) {
             firstAnimFrame = 2;
-            lastAnimFrame = 3;
-            curAnimFrame = 2;
+            lastAnimFrame  = 3;
+            curAnimFrame   = 2;
         }
     }
 
     if (repairingAUnit == true) {
         auto* pRepairUnit = dune_cast<GroundUnit>(repairUnit.getUnitPointer());
 
-        if(nullptr == pRepairUnit)
+        if (nullptr == pRepairUnit)
             return;
 
         if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
@@ -151,16 +152,16 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
                 pRepairUnit->addHealth();
             }
 
-        /*
-            Will turn this code into an option that's only on when manual carryall is enabled. 
-            While this is fixing the original code, it can cause imbalances in combat as tanks 
-            can be kept at the frontline letting an initial successful attack snowball
-        */
-        } else if(!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
+            /*
+                Will turn this code into an option that's only on when manual carryall is enabled.
+                While this is fixing the original code, it can cause imbalances in combat as tanks
+                can be kept at the frontline letting an initial successful attack snowball
+            */
+        } else if (!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
             // find carryall
             Carryall* pCarryall = nullptr;
-            if((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls())  {
-                for(UnitBase* pUnit : unitList) {
+            if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
+                for (UnitBase* pUnit : unitList) {
                     if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
                         auto* pTmpCarryall = static_cast<Carryall*>(pUnit);
                         if (!pTmpCarryall->isBooked()) {
@@ -170,7 +171,7 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
                 }
             }
 
-            if(pCarryall != nullptr) {
+            if (pCarryall != nullptr) {
                 pCarryall->setTarget(this);
                 pCarryall->clearPath();
                 static_cast<GroundUnit*>(pRepairUnit)->bookCarrier(pCarryall);
@@ -179,7 +180,7 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
             } else {
                 deployRepairUnit(context);
             }
-        } else if(!pRepairUnit->hasBookedCarrier()) {
+        } else if (!pRepairUnit->hasBookedCarrier()) {
             deployRepairUnit(context);
         } else {
             deployRepairUnit(context);

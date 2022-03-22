@@ -20,11 +20,10 @@
 
 #include <structures/StructureBase.h>
 
-class IX final : public StructureBase
-{
+class IX final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_IX;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     IX(uint32_t objectID, const ObjectInitializer& initializer);
     IX(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +39,4 @@ private:
     void init();
 };
 
-#endif //IX_H
+#endif // IX_H

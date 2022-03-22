@@ -21,9 +21,9 @@
 #include <GUI/Widget.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <memory>
 #include <queue>
+#include <string>
 
 class MessageTicker : public Widget {
 public:
@@ -43,9 +43,8 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        return Point(0,0);
+    [[nodiscard]] Point getMinimumSize() const override {
+        return Point(0, 0);
     }
 
 private:
@@ -53,4 +52,4 @@ private:
     int timer;
 };
 
-#endif //MESSAGETICKER_H
+#endif // MESSAGETICKER_H

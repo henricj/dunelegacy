@@ -18,18 +18,16 @@
 #ifndef ANIMATIONLABEL_H
 #define ANIMATIONLABEL_H
 
-#include <GUI/Widget.h>
 #include <FileClasses/Animation.h>
+#include <GUI/Widget.h>
 
 /// A widget for showing an animation
-class AnimationLabel : public Widget
-{
+class AnimationLabel : public Widget {
 public:
-
     /// default constructor
     AnimationLabel()
         : pAnim(nullptr) {
-        enableResizing(false,false);
+        enableResizing(false, false);
     }
 
     /// destructor
@@ -39,7 +37,7 @@ public:
         Set the current animation that should be shown in this widget.
         \param newAnimation the new animation to show
     */
-    void setAnimation(Animation *newAnimation) {
+    void setAnimation(Animation* newAnimation) {
         pAnim = newAnimation;
     }
 
@@ -53,15 +51,14 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    void draw(Point position) override
-    {
-        if(pAnim == nullptr) {
+    void draw(Point position) override {
+        if (pAnim == nullptr) {
             return;
         }
 
         SDL_Texture* tex = pAnim->getFrameTexture();
 
-        if(isVisible()) {
+        if (isVisible()) {
             const SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
             Dune_RenderCopy(renderer, tex, nullptr, &dest);
         }
@@ -72,19 +69,18 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this animation label
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] Point getMinimumSize() const override {
         SDL_Surface* surface = pAnim->getFrame();
 
-        if(surface != nullptr) {
+        if (surface != nullptr) {
             return {surface->w, surface->h};
         }
 
-        return {0,0};
+        return {0, 0};
     }
 
 private:
     Animation* pAnim;
 };
 
-#endif //ANIMATIONLABEL_H
+#endif // ANIMATIONLABEL_H

@@ -21,10 +21,9 @@
 
 #include <FileClasses/GFXManager.h>
 
-AboutMenu::AboutMenu()  
-{
+AboutMenu::AboutMenu() {
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
@@ -34,37 +33,34 @@ AboutMenu::AboutMenu()
     const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
     auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
-    dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
+    dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
     windowWidget.addWidget(&planetPicture, dest1);
 
     const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
     auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
-    dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
+    dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
     windowWidget.addWidget(&duneLegacy, dest2);
 
     const auto* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
     auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
-    dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
+    dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
     windowWidget.addWidget(&buttonBorder, dest3);
-
 
     text.setText("Written by\n   Anthony Cole,\n      Richard Schaller,\n         Stefan van der Wel\n            and many others!\n");
     text.setAlignment(Alignment_Left);
     windowWidget.addWidget(&text,
-                            Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 70),
-                            Point(170,110));
+                           Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 70),
+                           Point(170, 110));
 }
 
 AboutMenu::~AboutMenu() = default;
 
-bool AboutMenu::doInput(SDL_Event &event)
-{
-    if(event.type == SDL_MOUSEBUTTONUP) {
+bool AboutMenu::doInput(SDL_Event& event) {
+    if (event.type == SDL_MOUSEBUTTONUP) {
         quit();
     }
 
     return MenuBase::doInput(event);
 }
-

@@ -24,13 +24,12 @@
 
 #include <deque>
 
-class AIPlayer : public Player
-{
+class AIPlayer : public Player {
 public:
     enum class Difficulty {
-        Easy = 0,
+        Easy   = 0,
         Medium = 1,
-        Hard = 2
+        Hard   = 2
     };
 
     AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
@@ -59,11 +58,11 @@ private:
 
     [[nodiscard]] int getMaxHarvester() const;
 
-    Difficulty difficulty;  ///< difficulty level
-    int32_t    attackTimer; ///< When to attack?
-    int32_t    buildTimer;  ///< When to build the next structure/unit
+    Difficulty difficulty; ///< difficulty level
+    int32_t attackTimer;   ///< When to attack?
+    int32_t buildTimer;    ///< When to build the next structure/unit
 
-    std::deque<Coord> placeLocations;    ///< Where to place structures
+    std::deque<Coord> placeLocations; ///< Where to place structures
 };
 
-#endif //AIPLAYER_H
+#endif // AIPLAYER_H

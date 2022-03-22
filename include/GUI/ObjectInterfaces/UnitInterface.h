@@ -25,26 +25,27 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-#include <GUI/TextButton.h>
-#include <GUI/SymbolButton.h>
 #include <GUI/HBox.h>
+#include <GUI/SymbolButton.h>
+#include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 
-#include <units/UnitBase.h>
-#include <units/MCV.h>
-#include <units/Harvester.h>
 #include <units/Devastator.h>
+#include <units/Harvester.h>
+#include <units/MCV.h>
+#include <units/UnitBase.h>
 
 class UnitInterface : public DefaultObjectInterface {
 public:
     static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<UnitInterface>{new UnitInterface{context, objectID}};
+        auto tmp        = std::unique_ptr<UnitInterface> {new UnitInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    explicit UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
+    explicit UnitInterface(const GameContext& context, int objectID)
+        : DefaultObjectInterface(context, objectID) {
         const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(HSpacer::create(4));
@@ -54,7 +55,7 @@ protected:
         moveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
         moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
         moveButton.setToggleButton(true);
-        moveButton.setOnClick([]{ onMove(); });
+        moveButton.setOnClick([] { onMove(); });
         actionHBox.addWidget(&moveButton);
 
         actionHBox.addWidget(HSpacer::create(2));
@@ -88,7 +89,7 @@ protected:
 
         returnButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_ReturnIcon));
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
-        returnButton.setVisible( (itemID == Unit_Harvester) );
+        returnButton.setVisible((itemID == Unit_Harvester));
         returnButton.setOnClick(std::bind(&UnitInterface::onReturn, this));
         commandHBox.addWidget(&returnButton);
 
@@ -96,7 +97,7 @@ protected:
 
         deployButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DeployIcon));
         deployButton.setTooltipText(_("Build a new construction yard"));
-        deployButton.setVisible( (itemID == Unit_MCV) );
+        deployButton.setVisible((itemID == Unit_MCV));
         deployButton.setOnClick(std::bind(&UnitInterface::onDeploy, this));
         commandHBox.addWidget(&deployButton);
 
@@ -104,7 +105,7 @@ protected:
 
         destructButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DestructIcon));
         destructButton.setTooltipText(_("Self-destruct this unit"));
-        destructButton.setVisible( (itemID == Unit_Devastator) );
+        destructButton.setVisible((itemID == Unit_Devastator));
         destructButton.setOnClick(std::bind(&UnitInterface::onDestruct, this));
         commandHBox.addWidget(&destructButton);
 
@@ -199,28 +200,28 @@ protected:
 
     void OnSendToRepair() {
         auto* const pGroundUnit = currentGame->getObjectManager().getObject<GroundUnit>(objectID);
-        if((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
+        if ((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
             pGroundUnit->handleSendToRepairClick();
         }
     }
 
     void onReturn() {
         auto* const pHarvester = currentGame->getObjectManager().getObject<Harvester>(objectID);
-        if(pHarvester != nullptr) {
+        if (pHarvester != nullptr) {
             pHarvester->handleReturnClick(context_);
         }
     }
 
     void onDeploy() {
         auto* const pMCV = currentGame->getObjectManager().getObject<MCV>(objectID);
-        if(pMCV != nullptr) {
+        if (pMCV != nullptr) {
             pMCV->handleDeployClick();
         }
     }
 
     void onDestruct() {
         auto* const pDevastator = currentGame->getObjectManager().getObject<Devastator>(objectID);
-        if(pDevastator != nullptr) {
+        if (pDevastator != nullptr) {
             pDevastator->handleStartDevastateClick();
         }
     }
@@ -245,14 +246,14 @@ protected:
         setAttackMode(HUNT);
     }
 
-    void onRetreat(){
+    void onRetreat() {
         setAttackMode(RETREAT);
     }
 
     void setAttackMode(ATTACKMODE newAttackMode) {
         auto* pUnit = context_.objectManager.getObject<UnitBase>(objectID);
 
-        if(pUnit != nullptr) {
+        if (pUnit != nullptr) {
             pUnit->handleSetAttackModeClick(context_, newAttackMode);
             pUnit->playConfirmSound();
 
@@ -265,13 +266,11 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
+        if (pObject == nullptr) {
             return false;
         }
-
 
         moveButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Move);
         attackButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Attack);
@@ -282,41 +281,40 @@ protected:
         sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
         auto* pUnit = dynamic_cast<UnitBase*>(pObject);
-        if(pUnit != nullptr) {
+        if (pUnit != nullptr) {
             ATTACKMODE AttackMode = pUnit->getAttackMode();
 
-            guardButton.setToggleState( AttackMode == GUARD );
-            areaGuardButton.setToggleState( AttackMode == AREAGUARD );
-            stopButton.setToggleState( AttackMode == STOP );
-            ambushButton.setToggleState( AttackMode == AMBUSH );
-            huntButton.setToggleState( AttackMode == HUNT );
-            retreatButton.setToggleState( AttackMode == RETREAT );
+            guardButton.setToggleState(AttackMode == GUARD);
+            areaGuardButton.setToggleState(AttackMode == AREAGUARD);
+            stopButton.setToggleState(AttackMode == STOP);
+            ambushButton.setToggleState(AttackMode == AMBUSH);
+            huntButton.setToggleState(AttackMode == HUNT);
+            retreatButton.setToggleState(AttackMode == RETREAT);
         }
 
         return true;
     }
 
-    HBox            buttonHBox;
-    VBox            buttonVBox;
-    HBox            actionHBox;
-    HBox            commandHBox;
+    HBox buttonHBox;
+    VBox buttonVBox;
+    HBox actionHBox;
+    HBox commandHBox;
 
-    SymbolButton    moveButton;
-    SymbolButton    attackButton;
-    SymbolButton    captureButton;
-    SymbolButton    returnButton;
-    SymbolButton    deployButton;
-    SymbolButton    destructButton;
-    SymbolButton    sendToRepairButton;
-    SymbolButton    carryallDropButton;
+    SymbolButton moveButton;
+    SymbolButton attackButton;
+    SymbolButton captureButton;
+    SymbolButton returnButton;
+    SymbolButton deployButton;
+    SymbolButton destructButton;
+    SymbolButton sendToRepairButton;
+    SymbolButton carryallDropButton;
 
-    TextButton      guardButton;
-    TextButton      areaGuardButton;
-    TextButton      stopButton;
-    TextButton      ambushButton;
-    TextButton      huntButton;
-    TextButton      retreatButton;
-
+    TextButton guardButton;
+    TextButton areaGuardButton;
+    TextButton stopButton;
+    TextButton ambushButton;
+    TextButton huntButton;
+    TextButton retreatButton;
 };
 
-#endif //DEFAULTUNITINTERFACE_H
+#endif // DEFAULTUNITINTERFACE_H

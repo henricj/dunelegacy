@@ -15,9 +15,9 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Trigger/TriggerManager.h>
 #include <Trigger/ReinforcementTrigger.h>
 #include <Trigger/TimeoutTrigger.h>
+#include <Trigger/TriggerManager.h>
 
 #include <misc/exceptions.h>
 
@@ -27,7 +27,7 @@ TriggerManager::~TriggerManager() = default;
 
 void TriggerManager::save(OutputStream& stream) const {
     stream.writeUint32(triggers.size());
-    for(const auto& pTrigger : triggers) {
+    for (const auto& pTrigger : triggers) {
         saveTrigger(stream, pTrigger.get());
     }
 }
@@ -41,14 +41,13 @@ void TriggerManager::load(InputStream& stream) {
 }
 
 void TriggerManager::trigger(const GameContext& context, uint32_t CycleNumber) {
-    if (triggers.empty()) return;
+    if (triggers.empty())
+        return;
 
     auto clear = true;
 
-    for (auto it = std::begin(triggers); it != std::end(triggers); ++it)
-    {
-        if ((*it)->getCycleNumber() != CycleNumber)
-        {
+    for (auto it = std::begin(triggers); it != std::end(triggers); ++it) {
+        if ((*it)->getCycleNumber() != CycleNumber) {
             if (it != std::begin(triggers))
                 triggers.erase(std::begin(triggers), it);
 
@@ -69,10 +68,9 @@ void TriggerManager::trigger(const GameContext& context, uint32_t CycleNumber) {
     active_trigger.clear();
 }
 
-void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
-{
-    for(auto iter = triggers.begin(); iter != triggers.end(); ++iter) {
-        if((*iter)->getCycleNumber() > newTrigger->getCycleNumber()) {
+void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger) {
+    for (auto iter = triggers.begin(); iter != triggers.end(); ++iter) {
+        if ((*iter)->getCycleNumber() > newTrigger->getCycleNumber()) {
             triggers.insert(iter, std::move(newTrigger));
             return;
         }
@@ -81,22 +79,20 @@ void TriggerManager::addTrigger(std::unique_ptr<Trigger> newTrigger)
     triggers.push_back(std::move(newTrigger));
 }
 
-void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t)
-{
-    if(dynamic_cast<const ReinforcementTrigger*>(t)) {
+void TriggerManager::saveTrigger(OutputStream& stream, const Trigger* t) {
+    if (dynamic_cast<const ReinforcementTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_ReinforcementTrigger);
         t->save(stream);
-    } else if(dynamic_cast<const TimeoutTrigger*>(t)) {
+    } else if (dynamic_cast<const TimeoutTrigger*>(t)) {
         stream.writeUint32(TriggerManager::Type_TimeoutTrigger);
         t->save(stream);
     }
 }
 
-std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const
-{
+std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const {
     const auto type = stream.readUint32();
 
-    switch(type) {
+    switch (type) {
         case TriggerManager::Type_ReinforcementTrigger: {
             return std::make_unique<ReinforcementTrigger>(stream);
         } break;
@@ -105,7 +101,7 @@ std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const
             return std::make_unique<TimeoutTrigger>(stream);
         } break;
 
-    default:
-        THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
+        default:
+            THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
     }
 }

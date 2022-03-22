@@ -33,15 +33,15 @@ public:
     MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand) {
         this->sizeX = sizeX;
         this->sizeY = sizeY;
-        data.resize(sizeX*sizeY,terrainType);
+        data.resize(sizeX * sizeY, terrainType);
     }
 
     const TERRAINTYPE& operator()(int x, int y) const {
-        return data.at(y*sizeX+x);
+        return data.at(y * sizeX + x);
     }
 
     TERRAINTYPE& operator()(int x, int y) {
-        return data.at(y*sizeX+x);
+        return data.at(y * sizeX + x);
     }
 
     [[nodiscard]] int getSizeX() const {
@@ -53,7 +53,7 @@ public:
     }
 
     [[nodiscard]] bool isInsideMap(int x, int y) const {
-        return ( (x >= 0) && (x < sizeX) && (y >= 0) && (y < sizeY) );
+        return ((x >= 0) && (x < sizeX) && (y >= 0) && (y < sizeY));
     }
 
 private:

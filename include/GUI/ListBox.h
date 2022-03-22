@@ -18,13 +18,13 @@
 #ifndef LISTBOX_H
 #define LISTBOX_H
 
-#include "Widget.h"
 #include "ScrollBar.h"
+#include "Widget.h"
 #include <misc/SDL2pp.h>
 
-#include <vector>
-#include <string>
 #include <functional>
+#include <string>
+#include <vector>
 
 class DropDownBox;
 
@@ -84,9 +84,8 @@ public:
         called if the new size is a valid size for this list box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
     /**
         This method resizes the list box to width and height. This method should only
@@ -101,8 +100,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this scroll bar
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] Point getMinimumSize() const override {
         Point tmp = scrollbar.getMinimumSize();
         tmp.x += 30;
         return tmp;
@@ -126,7 +124,7 @@ public:
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
     void addEntry(const std::string& text, int data = 0) {
-        entries.emplace_back(text,data);
+        entries.emplace_back(text, data);
         updateList();
     }
 
@@ -136,7 +134,7 @@ public:
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
     void addEntry(const std::string& text, void* data) {
-        entries.emplace_back(text,data);
+        entries.emplace_back(text, data);
         updateList();
     }
 
@@ -147,9 +145,10 @@ public:
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
     void insertEntry(int index, const std::string& text, int data = 0) {
-        if(index <= selectedElement) selectedElement++;
+        if (index <= selectedElement)
+            selectedElement++;
 
-        entries.insert(entries.begin() + index, ListEntry(text,data));
+        entries.insert(entries.begin() + index, ListEntry(text, data));
         updateList();
     }
 
@@ -160,9 +159,10 @@ public:
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
     void insertEntry(int index, const std::string& text, void* data) {
-        if(index <= selectedElement) selectedElement++;
+        if (index <= selectedElement)
+            selectedElement++;
 
-        entries.insert(entries.begin() + index, ListEntry(text,data));
+        entries.insert(entries.begin() + index, ListEntry(text, data));
         updateList();
     }
 
@@ -180,7 +180,7 @@ public:
         \return the text of the entry
     */
     [[nodiscard]] std::string getEntry(unsigned int index) const {
-        if(index < entries.size()) {
+        if (index < entries.size()) {
             return entries.at(index).text;
         } else {
             return "";
@@ -193,7 +193,7 @@ public:
         \param  text    the text to set
     */
     void setEntry(unsigned int index, const std::string& text) {
-        if(index >= entries.size()) {
+        if (index >= entries.size()) {
             return;
         }
 
@@ -207,7 +207,7 @@ public:
         \return the data of the entry
     */
     [[nodiscard]] int getEntryIntData(unsigned int index) const {
-        if(index < entries.size()) {
+        if (index < entries.size()) {
             return entries.at(index).data.intData;
         } else {
             return 0;
@@ -220,7 +220,7 @@ public:
         \param  value    the value to set
     */
     void setEntryIntData(unsigned int index, int value) {
-        if(index >= entries.size()) {
+        if (index >= entries.size()) {
             return;
         }
 
@@ -233,7 +233,7 @@ public:
         \return the data of the entry
     */
     [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
-        if(index < entries.size()) {
+        if (index < entries.size()) {
             return entries.at(index).data.ptrData;
         } else {
             return nullptr;
@@ -246,7 +246,7 @@ public:
         \param  data    the data to set
     */
     void setEntryPtrData(unsigned int index, void* data) {
-        if(index >= entries.size()) {
+        if (index >= entries.size()) {
             return;
         }
 
@@ -301,13 +301,14 @@ public:
     void removeEntry(int index) {
         auto iter = entries.begin() + index;
         entries.erase(iter);
-        if(index == selectedElement) {
+        if (index == selectedElement) {
             selectedElement = -1;
-        } else if(index < selectedElement) {
+        } else if (index < selectedElement) {
             selectedElement--;
         }
 
-        if(index < firstVisibleElement) firstVisibleElement--;
+        if (index < firstVisibleElement)
+            firstVisibleElement--;
 
         updateList();
     }
@@ -325,7 +326,7 @@ public:
         Sets the function that should be called when the selection in this list box changes.
         \param  pOnSelectionChange  A function to be called on selection change
     */
-    void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
+    void setOnSelectionChange(std::function<void(bool)> pOnSelectionChange) {
         this->pOnSelectionChange = pOnSelectionChange;
     }
 
@@ -333,7 +334,7 @@ public:
         Sets the function that should be called when a list entry is single clicked.
         \param  pOnSingleClick  A function to be called on single click
     */
-    void setOnSingleClick(std::function<void ()> pOnSingleClick) {
+    void setOnSingleClick(std::function<void()> pOnSingleClick) {
         this->pOnSingleClick = pOnSingleClick;
     }
 
@@ -341,7 +342,7 @@ public:
         Sets the function that should be called when a list entry is double clicked.
         \param  pOnDoubleClick  A function to be called on double click
     */
-    void setOnDoubleClick(std::function<void ()> pOnDoubleClick) {
+    void setOnDoubleClick(std::function<void()> pOnDoubleClick) {
         this->pOnDoubleClick = pOnDoubleClick;
     }
 
@@ -412,8 +413,7 @@ protected:
     /**
         This method frees all textures that are used by this list box
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         pBackground.reset();
         pForeground.reset();
     }
@@ -428,18 +428,20 @@ private:
 
     class ListEntry {
     public:
-        ListEntry(std::string  text, int intData) : text(std::move(text)) {
+        ListEntry(std::string text, int intData)
+            : text(std::move(text)) {
             data.intData = intData;
         }
 
-        ListEntry(std::string  text, void* ptrData) : text(std::move(text)) {
+        ListEntry(std::string text, void* ptrData)
+            : text(std::move(text)) {
             data.ptrData = ptrData;
         }
 
         std::string text;
         union {
             int intData;
-            void*   ptrData;
+            void* ptrData;
         } data;
     };
 
@@ -448,16 +450,16 @@ private:
     sdl2::texture_ptr pForeground;
     ScrollBar scrollbar;
 
-    std::function<void (bool)> pOnSelectionChange;  ///< this function is called when the selection changes
-    std::function<void ()> pOnSingleClick;          ///< this function is called when a list entry is single clicked
-    std::function<void ()> pOnDoubleClick;          ///< this function is called when a list entry is double clicked
+    std::function<void(bool)> pOnSelectionChange; ///< this function is called when the selection changes
+    std::function<void()> pOnSingleClick;         ///< this function is called when a list entry is single clicked
+    std::function<void()> pOnDoubleClick;         ///< this function is called when a list entry is double clicked
 
-    uint32_t color;                     ///< the color
-    bool     bAutohideScrollbar;        ///< hide the scrollbar if not needed (default = true)
-    bool     bHighlightSelectedElement; ///< highlight selected element (default = true);
-    int      firstVisibleElement;       ///< the index of the first shown element in the list
-    int      selectedElement;           ///< the selected element
-    uint32_t lastClickTime;             ///< the time an element was clicked on the last time (needed for double clicking)
+    uint32_t color;                 ///< the color
+    bool bAutohideScrollbar;        ///< hide the scrollbar if not needed (default = true)
+    bool bHighlightSelectedElement; ///< highlight selected element (default = true);
+    int firstVisibleElement;        ///< the index of the first shown element in the list
+    int selectedElement;            ///< the selected element
+    uint32_t lastClickTime;         ///< the time an element was clicked on the last time (needed for double clicking)
 };
 
-#endif //LISTBOX_H
+#endif // LISTBOX_H

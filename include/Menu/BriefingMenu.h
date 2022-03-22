@@ -26,10 +26,9 @@
 #define DEBRIEFING_WIN  1
 #define DEBRIEFING_LOST 2
 
-class BriefingMenu : public MentatMenu
-{
+class BriefingMenu : public MentatMenu {
 public:
-    BriefingMenu(HOUSETYPE newHouse,int mission, int type);
+    BriefingMenu(HOUSETYPE newHouse, int mission, int type);
     ~BriefingMenu() override;
 
     void onMentatTextFinished() override;
@@ -43,9 +42,9 @@ private:
     void onProceed();
     int mission;
     int type;
-    PictureButton   proceedButton;
-    PictureButton   repeatButton;
-    AnimationLabel  animation;
+    PictureButton proceedButton;
+    PictureButton repeatButton;
+    AnimationLabel animation;
 };
 
-#endif //BRIEFINGMENU_H
+#endif // BRIEFINGMENU_H

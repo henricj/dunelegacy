@@ -18,16 +18,15 @@
 #ifndef REPAIRYARD_H
 #define REPAIRYARD_H
 
-#include <structures/StructureBase.h>
 #include <ObjectPointer.h>
+#include <structures/StructureBase.h>
 
 class Carryall;
 
-class RepairYard final : public StructureBase
-{
+class RepairYard final : public StructureBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_RepairYard;
-    using parent = StructureBase;
+    using parent                                = StructureBase;
 
     RepairYard(uint32_t objectID, const ObjectInitializer& initializer);
     RepairYard(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -42,9 +41,12 @@ public:
 
     void book() { bookings++; }
     void unBook() { bookings--; }
-    void assignUnit(ObjectPointer newUnit) { repairUnit = newUnit; repairingAUnit = true; }
+    void assignUnit(ObjectPointer newUnit) {
+        repairUnit     = newUnit;
+        repairingAUnit = true;
+    }
     bool isFree() const noexcept { return !repairingAUnit; }
-    int getNumBookings() const noexcept { return bookings; }  //number of harvesters goings there
+    int getNumBookings() const noexcept { return bookings; } // number of harvesters goings there
     const UnitBase* getRepairUnit() const { return repairUnit.getUnitPointer(); }
     UnitBase* getRepairUnit() { return repairUnit.getUnitPointer(); }
 
@@ -56,11 +58,11 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
-    void            init();
+    void init();
 
-    bool          repairingAUnit; ///< Currently repairing?
-    ObjectPointer repairUnit;     ///< The unit to repair
-    uint32_t      bookings;       ///< Number of bookings for this repair yard
+    bool repairingAUnit;      ///< Currently repairing?
+    ObjectPointer repairUnit; ///< The unit to repair
+    uint32_t bookings;        ///< Number of bookings for this repair yard
 };
 
 #endif // REPAIRYARD_H

@@ -27,23 +27,22 @@
 /**
     This class can read the animation in a *.WSA-File and return it as SDL_Surfaces.
 */
-class Wsafile
-{
+class Wsafile {
 public:
     explicit Wsafile(SDL_RWops* rwop);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3);
-    Wsafile(int num,...);
+    Wsafile(int num, ...);
     Wsafile(const Wsafile& wsafile) = delete;
-    Wsafile(Wsafile&& wsafile) = delete;
+    Wsafile(Wsafile&& wsafile)      = delete;
     Wsafile& operator=(const Wsafile& wsafile) = delete;
     Wsafile& operator=(Wsafile&& wsafile) = delete;
     virtual ~Wsafile();
 
-    [[nodiscard]] sdl2::surface_ptr          getPicture(uint32_t FrameNumber) const;
-    [[nodiscard]] sdl2::surface_ptr          getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
-    [[nodiscard]] std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic =true, bool bSetColorKey =true) const;
+    [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t FrameNumber) const;
+    [[nodiscard]] sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
+    [[nodiscard]] std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic = true, bool bSetColorKey = true) const;
 
     /// Returns the number of frames
     /**
@@ -72,16 +71,16 @@ public:
     [[nodiscard]] bool isAnimationLooped() const noexcept { return looped; }
 
 private:
-    void                             decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const;
+    void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const;
     std::unique_ptr<unsigned char[]> readfile(SDL_RWops* rwop, int* filesize) const;
-    void                             readdata(int numFiles, ...);
-    void                             readdata(int numFiles, va_list args);
-    std::vector<unsigned char>       decodedFrames;
+    void readdata(int numFiles, ...);
+    void readdata(int numFiles, va_list args);
+    std::vector<unsigned char> decodedFrames;
 
     uint16_t numFrames = 0;
     uint16_t sizeX     = 0;
     uint16_t sizeY     = 0;
-    bool     looped    = false;
+    bool looped        = false;
 };
 
 #endif // WSAFILE_H

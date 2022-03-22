@@ -35,28 +35,28 @@ void OutputStream::writeBools(bool val1, bool val2, bool val3, bool val4, bool v
 
 void OutputStream::writeUint8Vector(gsl::span<const uint8_t> dataVector) {
     writeUint32(static_cast<uint32_t>(dataVector.size()));
-    for(const auto data : dataVector) {
+    for (const auto data : dataVector) {
         writeUint8(data);
     }
 }
 
 void OutputStream::writeUint32List(const std::list<uint32_t>& dataList) {
     writeUint32(static_cast<uint32_t>(dataList.size()));
-    for(const auto data : dataList) {
+    for (const auto data : dataList) {
         writeUint32(data);
     }
 }
 
 void OutputStream::writeUint32Vector(gsl::span<const uint32_t> dataVector) {
     writeUint32(static_cast<uint32_t>(dataVector.size()));
-    for(const auto data : dataVector) {
+    for (const auto data : dataVector) {
         writeUint32(data);
     }
 }
 
 void OutputStream::writeUint32Set(const Dune::selected_set_type& dataSet) {
     writeUint32(static_cast<uint32_t>(dataSet.size()));
-    for(const auto data : dataSet) {
+    for (const auto data : dataSet) {
         writeUint32(data);
     }
 }

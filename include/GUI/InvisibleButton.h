@@ -24,8 +24,8 @@
 class InvisibleButton : public Button {
 public:
     /// Default contructor
-    InvisibleButton()  {
-        enableResizing(true,true);
+    InvisibleButton() {
+        enableResizing(true, true);
     }
 
     /// destructor
@@ -35,11 +35,9 @@ public:
         This method draws nothing to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override
-    {
+    void draw(Point position) override {
         ;
     }
-
 };
 
 #endif // INVISIBLEBUTTON_H

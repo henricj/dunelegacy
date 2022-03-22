@@ -20,27 +20,28 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
 
-#include <ObjectBase.h>
-#include <GUI/ObjectInterfaces/ObjectInterface.h>
 #include <GUI/ObjectInterfaces/MultiUnitInterface.h>
+#include <GUI/ObjectInterfaces/ObjectInterface.h>
+#include <ObjectBase.h>
 
-#include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
+#include <misc/draw_util.h>
 
-GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
+GameInterface::GameInterface(const GameContext& context)
+    : Window {0, 0, 0, 0}, context_ {context} {
     Window::setTransparentBackground(true);
 
-    Window::setCurrentPosition(0,0,getRendererWidth(),getRendererHeight());
+    Window::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
 
     Window::setWindowWidget(&windowWidget);
 
     // top bar
     const auto* const pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
     topBar.setTexture(pTopBarTex);
-    windowWidget.addWidget(&topBar,Point(0,0),Point(getWidth(pTopBarTex),getHeight(pTopBarTex) - 12));
+    windowWidget.addWidget(&topBar, Point(0, 0), Point(getWidth(pTopBarTex), getHeight(pTopBarTex) - 12));
 
     // side bar
     const auto* const pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
@@ -49,30 +50,30 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
     windowWidget.addWidget(&sideBar, dest);
 
     // add buttons
-    windowWidget.addWidget(&topBarHBox,Point(5,5),
-                            Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
+    windowWidget.addWidget(&topBarHBox, Point(5, 5),
+                           Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
 
     topBarHBox.addWidget(&newsticker);
 
     topBarHBox.addWidget(Spacer::create());
 
-    optionsButton.setTextures(  pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
-                                pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
+    optionsButton.setTextures(pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
+                              pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
     optionsButton.setOnClick([] { currentGame->onOptions(); });
     topBarHBox.addWidget(&optionsButton);
 
     topBarHBox.addWidget(Spacer::create());
 
-    mentatButton.setTextures(   pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
-                                pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
+    mentatButton.setTextures(pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
+                             pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
     mentatButton.setOnClick([] { currentGame->onMentat(); });
     topBarHBox.addWidget(&mentatButton);
 
     topBarHBox.addWidget(Spacer::create());
 
     // add radar
-    windowWidget.addWidget(&radarView,Point(getRendererWidth()-sideBar.getSize().x+SIDEBAR_COLUMN_WIDTH, 0),radarView.getMinimumSize());
-    //radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    windowWidget.addWidget(&radarView, Point(getRendererWidth() - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0), radarView.getMinimumSize());
+    // radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
         return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });
@@ -88,26 +89,26 @@ void GameInterface::draw(Point position) {
 
     // draw Power Indicator and Spice indicator
 
-    SDL_Rect powerIndicatorPos = {  getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2 };
+    SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
 
-    SDL_Rect spiceIndicatorPos = {  getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2 };
+    SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
     int xCount = 0;
 
-    int yCount = 0;
+    int yCount  = 0;
     int yCount2 = 0;
 
-    //draw power level indicator
-    if (pLocalHouse->getPowerRequirement() == 0)    {
+    // draw power level indicator
+    if (pLocalHouse->getPowerRequirement() == 0) {
         if (pLocalHouse->getProducedPower() > 0) {
             yCount2 = powerIndicatorPos.h + 1;
         } else {
-            yCount2 = powerIndicatorPos.h/2;
+            yCount2 = powerIndicatorPos.h / 2;
         }
     } else {
-        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower())/static_cast<double>(pLocalHouse->getPowerRequirement())*static_cast<double>(powerIndicatorPos.h / 2));
+        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower()) / static_cast<double>(pLocalHouse->getPowerRequirement()) * static_cast<double>(powerIndicatorPos.h / 2));
     }
 
     if (yCount2 > powerIndicatorPos.h + 1) {
@@ -118,7 +119,7 @@ void GameInterface::draw(Point position) {
     render_points_.clear();
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < powerIndicatorPos.w - 1; xCount++) {
-            if(((yCount/2) % 3) != 0) {
+            if (((yCount / 2) % 3) != 0) {
                 SDL_Point point;
                 point.x = xCount + powerIndicatorPos.x;
                 point.y = powerIndicatorPos.y + powerIndicatorPos.h - yCount;
@@ -130,11 +131,11 @@ void GameInterface::draw(Point position) {
     if (!render_points_.empty())
         SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
 
-    //draw spice level indicator
+    // draw spice level indicator
     if (pLocalHouse->getCapacity() == 0) {
         yCount2 = 0;
     } else {
-        yCount2 = lround((pLocalHouse->getStoredCredits()/pLocalHouse->getCapacity())*spiceIndicatorPos.h);
+        yCount2 = lround((pLocalHouse->getStoredCredits() / pLocalHouse->getCapacity()) * spiceIndicatorPos.h);
     }
 
     if (yCount2 > spiceIndicatorPos.h + 1) {
@@ -145,7 +146,7 @@ void GameInterface::draw(Point position) {
     render_points_.clear();
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < spiceIndicatorPos.w - 1; xCount++) {
-            if(((yCount/2) % 3) != 0) {
+            if (((yCount / 2) % 3) != 0) {
                 SDL_Point point;
                 point.x = xCount + spiceIndicatorPos.x;
                 point.y = spiceIndicatorPos.y + spiceIndicatorPos.h - yCount;
@@ -157,60 +158,60 @@ void GameInterface::draw(Point position) {
     if (!render_points_.empty())
         SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
 
-    //draw credits
-    const auto credits = pLocalHouse->getCredits();
+    // draw credits
+    const auto credits       = pLocalHouse->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
-    const auto NumDigits = CreditsBuffer.length();
-    auto *const digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    const auto NumDigits     = CreditsBuffer.length();
+    auto* const digitsTex    = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
-    for(int i=NumDigits-1; i>=0; i--) {
+    for (int i = NumDigits - 1; i >= 0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
-        auto dest = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i)*10, 135, 10);
+        auto dest   = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i) * 10, 135, 10);
         Dune_RenderCopy(renderer, digitsTex, &source, &dest);
     }
 }
 
 void GameInterface::updateObjectInterface() {
-    auto& selected = currentGame->getSelectedList();
+    auto& selected  = currentGame->getSelectedList();
     const auto size = selected.size();
-    if(size == 1) {
-        auto *pObject = currentGame->getObjectManager().getObject( *(selected.begin()));
+    if (size == 1) {
+        auto* pObject          = currentGame->getObjectManager().getObject(*(selected.begin()));
         const auto newObjectID = pObject->getObjectID();
 
-        if(newObjectID != objectID) {
+        if (newObjectID != objectID) {
             removeOldContainer();
 
             pObjectContainer = pObject->getInterfaceContainer(context_);
 
-            if(pObjectContainer != nullptr) {
+            if (pObjectContainer != nullptr) {
                 objectID = newObjectID;
 
                 windowWidget.addWidget(pObjectContainer.get(),
-                                        Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
-                                        Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
+                                       Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+                                       Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
             }
 
         } else {
-            if(!pObjectContainer->update()) {
+            if (!pObjectContainer->update()) {
                 removeOldContainer();
             }
         }
-    } else if(size > 1) {
+    } else if (size > 1) {
 
-        if((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
+        if ((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
             // either there was nothing selected before or exactly one unit
 
-            if(pObjectContainer != nullptr) {
+            if (pObjectContainer != nullptr) {
                 removeOldContainer();
             }
 
             pObjectContainer = MultiUnitInterface::create(context_);
 
             windowWidget.addWidget(pObjectContainer.get(),
-                                    Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
-                                    Point(sideBar.getSize().x - 25,getRendererHeight() - 148));
+                                   Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+                                   Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
         } else {
-            if(!pObjectContainer->update()) {
+            if (!pObjectContainer->update()) {
                 removeOldContainer();
             }
         }
@@ -220,7 +221,7 @@ void GameInterface::updateObjectInterface() {
 }
 
 void GameInterface::removeOldContainer() {
-    if(pObjectContainer != nullptr) {
+    if (pObjectContainer != nullptr) {
         pObjectContainer.reset();
         objectID = NONE_ID;
     }

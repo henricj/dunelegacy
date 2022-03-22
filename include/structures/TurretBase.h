@@ -25,7 +25,7 @@
 class TurretBaseConstants : public StructureBaseConstants {
 public:
     constexpr explicit TurretBaseConstants(ItemID_enum itemID, BulletID_enum bullet_type)
-        : StructureBaseConstants{itemID, Coord{1, 1}}, bulletType_{bullet_type} {
+        : StructureBaseConstants {itemID, Coord {1, 1}}, bulletType_ {bullet_type} {
         canAttackStuff_ = true;
     }
 
@@ -36,13 +36,12 @@ private:
     BulletID_enum bulletType_; ///< The type of bullet used
 };
 
-class TurretBase : public StructureBase
-{
+class TurretBase : public StructureBase {
     void init();
 
 protected:
     explicit TurretBase(const TurretBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
-    explicit TurretBase(const TurretBaseConstants&     constants, uint32_t objectID,
+    explicit TurretBase(const TurretBaseConstants& constants, uint32_t objectID,
                         const ObjectStreamInitializer& initializer);
 
 public:
@@ -50,10 +49,10 @@ public:
 
     ~TurretBase() override;
 
-    TurretBase(const TurretBase &) = delete;
-    TurretBase(TurretBase &&) = delete;
-    TurretBase& operator=(const TurretBase &) = delete;
-    TurretBase& operator=(TurretBase &&) = delete;
+    TurretBase(const TurretBase&) = delete;
+    TurretBase(TurretBase&&)      = delete;
+    TurretBase& operator=(const TurretBase&) = delete;
+    TurretBase& operator=(TurretBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -70,7 +69,6 @@ public:
         \param  pObject  the object to attack
     */
     virtual void doAttackObject(const ObjectBase* pObject);
-
 
     void turnLeft(const GameContext& context);
     void turnRight(const GameContext& context);
@@ -91,13 +89,12 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
     // constant for all turrets of the same type
-    Sound_enum attackSound;     ///< The id of the sound to play when attack
+    Sound_enum attackSound; ///< The id of the sound to play when attack
 
     // turret state
     int32_t findTargetTimer; ///< Timer used for finding a new target
     int32_t weaponTimer;     ///< Time until we can shot again
 };
-
 
 template<>
 inline TurretBase* dune_cast(ObjectBase* base) {
@@ -109,4 +106,4 @@ inline const TurretBase* dune_cast(const ObjectBase* base) {
     return dynamic_cast<const TurretBase*>(base);
 }
 
-#endif //TURRETBASE_H
+#endif // TURRETBASE_H

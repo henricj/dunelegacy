@@ -19,35 +19,32 @@
 #define OPTIONSMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/TextBox.h>
+#include <DataTypes.h>
 #include <GUI/Checkbox.h>
 #include <GUI/DropDownBox.h>
-#include <DataTypes.h>
+#include <GUI/HBox.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextBox.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 #include <misc/SDL2pp.h>
 
 #include <vector>
 
+#define MENU_QUIT_REINITIALIZE (1)
 
-#define MENU_QUIT_REINITIALIZE  (1)
-
-
-class OptionsMenu : public MenuBase
-{
+class OptionsMenu : public MenuBase {
 public:
     OptionsMenu();
     ~OptionsMenu() override;
 
 private:
-    void    onChangeOption(bool bInteractive);
-    void    onOptionsOK();
-    void    onOptionsCancel();
-    void    onGameOptions();
+    void onChangeOption(bool bInteractive);
+    void onOptionsOK();
+    void onOptionsCancel();
+    void onGameOptions();
 
-    static void    saveConfiguration2File();
+    static void saveConfiguration2File();
 
     void addResolution(const Coord& screenRes);
 
@@ -68,40 +65,39 @@ private:
 
     StaticContainer windowWidget;
 
-    VBox        mainVBox;
+    VBox mainVBox;
 
-    HBox        NameHBox;
-    TextBox     nameTextBox;
-    HBox        gameOptionsHBox;
-    TextButton  gameOptionsButton;
+    HBox NameHBox;
+    TextBox nameTextBox;
+    HBox gameOptionsHBox;
+    TextButton gameOptionsButton;
 
-    HBox        languageHBox;
+    HBox languageHBox;
     DropDownBox languageDropDownBox;
-    HBox        generalHBox;
+    HBox generalHBox;
     DropDownBox aiDropDownBox;
-    Checkbox    introCheckbox;
+    Checkbox introCheckbox;
 
-    HBox        resolutionHBox;
+    HBox resolutionHBox;
     DropDownBox resolutionDropDownBox;
     DropDownBox zoomlevelDropDownBox;
     DropDownBox scalerDropDownBox;
-    HBox        videoHBox;
-    Checkbox    fullScreenCheckbox;
-    Checkbox    showTutorialHintsCheckbox;
+    HBox videoHBox;
+    Checkbox fullScreenCheckbox;
+    Checkbox showTutorialHintsCheckbox;
 
-    HBox        audioHBox;
-    Checkbox    playSFXCheckbox;
-    Checkbox    playMusicCheckbox;
+    HBox audioHBox;
+    Checkbox playSFXCheckbox;
+    Checkbox playMusicCheckbox;
 
-    HBox        networkPortHBox;
-    TextBox     portTextBox;
-    HBox        networkMetaServerHBox;
-    TextBox     metaServerTextBox;
+    HBox networkPortHBox;
+    TextBox portTextBox;
+    HBox networkMetaServerHBox;
+    TextBox metaServerTextBox;
 
-    HBox        okCancelHBox;
-    TextButton  acceptButton;
-    TextButton  backButton;
+    HBox okCancelHBox;
+    TextButton acceptButton;
+    TextButton backButton;
 };
-
 
 #endif // OPTIONSMENU_H

@@ -16,9 +16,9 @@
  */
 
 #include <misc/FileSystem.h>
-#include <misc/string_util.h>
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
+#include <misc/string_util.h>
 
 #include <algorithm>
 #include <cctype>
@@ -31,23 +31,21 @@
 #    ifndef WIN32_LEAN_AND_MEAN
 #        define WIN32_LEAN_AND_MEAN
 #    endif
-#include <io.h>
-#include <direct.h>
-#include <Windows.h>
+#    include <Windows.h>
+#    include <direct.h>
+#    include <io.h>
 #else
-#include <dirent.h>
-#include <sys/stat.h>
+#    include <dirent.h>
+#    include <sys/stat.h>
 #endif
 
-
-std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool IgnoreCase, FileListOrder fileListOrder)
-{
+std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool IgnoreCase, FileListOrder fileListOrder) {
     const auto files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
     std::vector<std::filesystem::path> fileNames;
     fileNames.reserve(files.size());
 
-    for(const auto& fileInfo : files) {
+    for (const auto& fileInfo : files) {
         fileNames.push_back(fileInfo.name);
     }
 
@@ -65,7 +63,8 @@ char32_t safe_tolower(char32_t c) {
     // https://en.cppreference.com/w/cpp/string/byte/tolower
     using nlw = std::numeric_limits<wchar_t>;
 
-    if(c < nlw::min() || c > nlw::max()) return c;
+    if (c < nlw::min() || c > nlw::max())
+        return c;
 
     return towlower(static_cast<wchar_t>(c));
 }
@@ -91,46 +90,61 @@ std::string safe_tolower(std::string_view s) {
     return conv.to_bytes(s32);
 }
 
-
 } // namespace
 
-static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) < 0); }
+static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) {
+    return (a.name.compare(b.name) < 0);
+}
 static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    for(auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
+    for (auto i = decltype(a32.length()) {0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
         const auto lb = safe_tolower(b32[i]);
 
-        if(la < lb) return true;
-        if(la > lb) return false;
+        if (la < lb)
+            return true;
+        if (la > lb)
+            return false;
     }
 
     return a32.length() < b32.length();
 }
 
-static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) { return (a.name.compare(b.name) > 0); }
+static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) {
+    return (a.name.compare(b.name) > 0);
+}
 static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    for(auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
+    for (auto i = decltype(a32.length()) {0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
         const auto lb = safe_tolower(b32[i]);
 
-        if(la < lb) return false;
-        if(la > lb) return true;
+        if (la < lb)
+            return false;
+        if (la > lb)
+            return true;
     }
 
     return a32.length() > b32.length();
 }
 
-static bool cmp_Size_Asc(const FileInfo& a, const FileInfo& b) { return a.size < b.size; }
-static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) { return a.size > b.size; }
+static bool cmp_Size_Asc(const FileInfo& a, const FileInfo& b) {
+    return a.size < b.size;
+}
+static bool cmp_Size_Dsc(const FileInfo& a, const FileInfo& b) {
+    return a.size > b.size;
+}
 
-static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) { return a.modifydate < b.modifydate; }
-static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) { return a.modifydate > b.modifydate; }
+static bool cmp_ModifyDate_Asc(const FileInfo& a, const FileInfo& b) {
+    return a.modifydate < b.modifydate;
+}
+static bool cmp_ModifyDate_Dsc(const FileInfo& a, const FileInfo& b) {
+    return a.modifydate > b.modifydate;
+}
 
 std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const std::string& extension,
                                   bool bIgnoreCase, FileListOrder fileListOrder) {
@@ -141,45 +155,48 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
     auto target_extension = target_extension_path.u32string();
 
-    if(bIgnoreCase) safe_tolower_inplace(target_extension);
+    if (bIgnoreCase)
+        safe_tolower_inplace(target_extension);
 
     std::vector<FileInfo> files;
 
     std::error_code ec;
-    for(const auto& entry : std::filesystem::directory_iterator(directory, ec)) {
-        if(ec) {
+    for (const auto& entry : std::filesystem::directory_iterator(directory, ec)) {
+        if (ec) {
             sdl2::log_info("Scanning directory %s failed with %s", directory.u8string().c_str(), ec.message().c_str());
             break;
         }
 
-        if(!entry.is_regular_file()) continue;
+        if (!entry.is_regular_file())
+            continue;
 
-        const auto& path     = entry.path();
-        const auto  filename = path.filename().u32string();
+        const auto& path    = entry.path();
+        const auto filename = path.filename().u32string();
 
         // Make sure we have the extension, a dot, and a non-empty stem.
-        if(filename.length() < target_extension.length() + 1) continue;
+        if (filename.length() < target_extension.length() + 1)
+            continue;
 
         const auto match = bIgnoreCase
-                               ? std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
-                                            [](auto a, auto b) { return a == safe_tolower(b); })
-                               : std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
-                                            [](auto a, auto b) { return a == b; });
+                             ? std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
+                                          [](auto a, auto b) { return a == safe_tolower(b); })
+                             : std::equal(target_extension.rbegin(), target_extension.rend(), filename.rbegin(),
+                                          [](auto a, auto b) { return a == b; });
 
-        if(match) {
+        if (match) {
             const auto full_path = std::filesystem::canonical(path);
 
             const auto size = std::filesystem::file_size(full_path, ec);
 
-            if(ec) {
+            if (ec) {
                 sdl2::log_info("Getting size of %s failed with %s", full_path.u8string().c_str(), ec.message().c_str());
                 continue;
             }
 
             const auto modified = std::filesystem::last_write_time(full_path, ec);
-            if(ec) {
+            if (ec) {
                 sdl2::log_info("Getting last modified time of %s failed with %s", full_path.u8string().c_str(),
-                        ec.message().c_str());
+                               ec.message().c_str());
                 continue;
             }
 
@@ -187,7 +204,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
         }
     }
 
-    switch(fileListOrder) {
+    switch (fileListOrder) {
         case FileListOrder_Name_Asc: {
             std::sort(files.begin(), files.end(), cmp_Name_Asc);
         } break;
@@ -231,9 +248,9 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
 bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
     std::error_code ec;
-    const auto      cpath = std::filesystem::canonical(filepath, ec);
+    const auto cpath = std::filesystem::canonical(filepath, ec);
 
-    if(!ec) {
+    if (!ec) {
         filepath = cpath;
         return true;
     }
@@ -243,21 +260,24 @@ bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
     const auto wanted     = filepath.filename();
     const auto wanted_u8  = wanted.u8string();
 
-    for(const auto& p : std::filesystem::directory_iterator(parent)) {
-        if(!p.is_regular_file()) continue;
+    for (const auto& p : std::filesystem::directory_iterator(parent)) {
+        if (!p.is_regular_file())
+            continue;
 
         const auto filename = p.path().filename();
 
-        if(wanted != filename) {
+        if (wanted != filename) {
             const auto filename_u8 = filename.u8string();
 
-            if(wanted_u8.length() != filename_u8.length()) continue;
+            if (wanted_u8.length() != filename_u8.length())
+                continue;
 
             const auto match =
                 std::equal(wanted_u8.begin(), wanted_u8.end(), filename_u8.begin(), filename_u8.end(),
                            [](const auto a, const auto b) { return a == b || std::toupper(a) == std::toupper(b); });
 
-            if(!match) continue;
+            if (!match)
+                continue;
         }
 
         filepath = has_parent ? p.path() : filename;
@@ -268,38 +288,37 @@ bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
     return false;
 }
 
-
 bool existsFile(const std::filesystem::path& path) {
     std::error_code ec;
     return std::filesystem::exists(path, ec);
 }
 
 std::string readCompleteFile(const std::filesystem::path& filename) {
-    auto RWopsFile = sdl2::RWops_ptr{ SDL_RWFromFile(filename.u8string().c_str(),"r") };
+    auto RWopsFile = sdl2::RWops_ptr {SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
-    if(!RWopsFile) {
+    if (!RWopsFile) {
         return "";
     }
 
     const int64_t filesize = SDL_RWsize(RWopsFile.get());
-    if(filesize < 0) {
+    if (filesize < 0) {
         return "";
     }
 
-    std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t) filesize);
+    std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t)filesize);
 
-    if(SDL_RWread(RWopsFile.get(), filedata.get(), (size_t) filesize, 1) != 1) {
+    if (SDL_RWread(RWopsFile.get(), filedata.get(), (size_t)filesize, 1) != 1) {
         return "";
     }
 
-    std::string retValue(filedata.get(), (size_t) filesize);
+    std::string retValue(filedata.get(), (size_t)filesize);
 
     return retValue;
 }
 
 std::filesystem::path getBasename(const std::filesystem::path& filepath, bool bStripExtension) {
 
-    if(filepath == "/") {
+    if (filepath == "/") {
         // special case
         return "/";
     }
@@ -311,7 +330,7 @@ std::filesystem::path getBasename(const std::filesystem::path& filepath, bool bS
 
 std::filesystem::path getDirname(const std::filesystem::path& filepath) {
 
-    if(filepath == "/") {
+    if (filepath == "/") {
         // special case
         return "/";
     }
@@ -324,7 +343,7 @@ std::filesystem::path getDirname(const std::filesystem::path& filepath) {
 static std::filesystem::path duneLegacyDataDir;
 
 std::filesystem::path getDuneLegacyDataDir() {
-    if(duneLegacyDataDir.empty()) {
+    if (duneLegacyDataDir.empty()) {
 
         std::filesystem::path dataDir;
 #ifdef DUNELEGACY_DATADIR
@@ -332,10 +351,10 @@ std::filesystem::path getDuneLegacyDataDir() {
         dataDir = dataDir.lexically_normal();
 #endif
 
-        if((dataDir.empty()) || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
-            const sdl2::sdl_ptr<char> basePath{ SDL_GetBasePath() };
+        if ((dataDir.empty()) || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
+            const sdl2::sdl_ptr<char> basePath {SDL_GetBasePath()};
 
-            if(basePath == nullptr) {
+            if (basePath == nullptr) {
                 THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());
             }
             dataDir = basePath.get();

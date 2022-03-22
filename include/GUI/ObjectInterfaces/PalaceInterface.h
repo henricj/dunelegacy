@@ -41,9 +41,9 @@ protected:
 private:
     void onSpecial(const GameContext& context) const;
 
-    StaticContainer     weaponBox;
-    PictureProgressBar  weaponProgressBar;
-    PictureButton       weaponSelectButton;
+    StaticContainer weaponBox;
+    PictureProgressBar weaponProgressBar;
+    PictureButton weaponSelectButton;
 };
 
 #endif // PALACEINTERFACE_H

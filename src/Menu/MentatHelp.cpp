@@ -30,31 +30,31 @@
 
 #include <Game.h>
 
-MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
+MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission)
+    : MentatMenu(newHouse), mission(mission) {
 
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
 
-    const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)]+3]);
+    const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
-    if(mission == 0) {
+    if (mission == 0) {
         auto iter = mentatEntries.begin();
-        while(iter != mentatEntries.end()) {
-            if(iter->numMenuEntry == 0) {
+        while (iter != mentatEntries.end()) {
+            if (iter->numMenuEntry == 0) {
                 iter = mentatEntries.erase(iter);
             } else {
                 ++iter;
             }
         }
-
     }
 
     setClearScreen(false);
 
     backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
-    windowWidget.addWidget(&backgroundLabel,Point(256,96),Point(368,224));
+    windowWidget.addWidget(&backgroundLabel, Point(256, 96), Point(368, 224));
 
-    for(const MentatTextFile::MentatEntry& mentatEntry : mentatEntries) {
-        if(mentatEntry.menuLevel == 0) {
+    for (const MentatTextFile::MentatEntry& mentatEntry : mentatEntries) {
+        if (mentatEntry.menuLevel == 0) {
             mentatTopicsList.addEntry("     " + mentatEntry.title + " :");
         } else {
             mentatTopicsList.addEntry("        " + mentatEntry.title);
@@ -63,29 +63,28 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     mentatTopicsList.setHighlightSelectedElement(false);
     mentatTopicsList.setOnSingleClick([&] { onListBoxClick(); });
     mentatTopicsList.setColor(color);
-    windowWidget.addWidget(&mentatTopicsList,Point(256+7, 96+7),Point(368 - 14, 224 - 14));
+    windowWidget.addWidget(&mentatTopicsList, Point(256 + 7, 96 + 7), Point(368 - 14, 224 - 14));
 
-    windowWidget.addWidget(&animation,Point(256,96),Point(368,224));
+    windowWidget.addWidget(&animation, Point(256, 96), Point(368, 224));
     animation.setVisible(false);
     animation.setEnabled(false);
     itemDescriptionLabel.setTextFontSize(12);
     itemDescriptionLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top));
     itemDescriptionLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
-    windowWidget.addWidget(&itemDescriptionLabel,Point(256 + 4, 96 + 4),Point(368 - 8, 224 - 8));
+    windowWidget.addWidget(&itemDescriptionLabel, Point(256 + 4, 96 + 4), Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-    const auto* const pMentatExit = pGFXManager->getUIGraphic(UI_MentatExit);
+    const auto* const pMentatExit        = pGFXManager->getUIGraphic(UI_MentatExit);
     const auto* const pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
     exitButton.setTextures(pMentatExit, pMentatExitPressed);
 
     exitButton.setOnClick([&] { onExit(); });
-    windowWidget.addWidget(&exitButton,Point(370,340), getTextureSize(pMentatExit));
+    windowWidget.addWidget(&exitButton, Point(370, 340), getTextureSize(pMentatExit));
 }
 
 MentatHelp::~MentatHelp() = default;
 
-void MentatHelp::drawSpecificStuff()
-{
+void MentatHelp::drawSpecificStuff() {
     MentatMenu::drawSpecificStuff();
 
     const int x1 = getPosition().x;
@@ -111,14 +110,12 @@ void MentatHelp::drawSpecificStuff()
     renderDrawVLine(renderer, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 }
 
-bool MentatHelp::doInput(SDL_Event &event)
-{
-    if((!mentatTopicsList.isVisible()) && (event.type == SDL_MOUSEBUTTONDOWN)) {
+bool MentatHelp::doInput(SDL_Event& event) {
+    if ((!mentatTopicsList.isVisible()) && (event.type == SDL_MOUSEBUTTONDOWN)) {
         showNextMentatText();
         return true;
-    }         return MentatMenu::doInput(event);
-
-   
+    }
+    return MentatMenu::doInput(event);
 }
 
 void MentatHelp::onMentatTextFinished() {
@@ -135,7 +132,7 @@ void MentatHelp::onMentatTextFinished() {
 }
 
 void MentatHelp::onExit() {
-    if(mentatTopicsList.isVisible()) {
+    if (mentatTopicsList.isVisible()) {
         currentGame->resumeGame();
         quit();
     } else {
@@ -146,13 +143,13 @@ void MentatHelp::onExit() {
 void MentatHelp::onListBoxClick() {
     int index = mentatTopicsList.getSelectedIndex();
 
-    if(index < 0) {
+    if (index < 0) {
         return;
     }
 
     MentatTextFile::MentatEntry& mentatEntry = mentatEntries[index];
 
-    if(mentatEntry.menuLevel != 1) {
+    if (mentatEntry.menuLevel != 1) {
         return;
     }
 
@@ -160,18 +157,18 @@ void MentatHelp::onListBoxClick() {
     std::string text;
     std::string name;
 
-    int missionnumber = ((mission+1)/3)+1;
+    int missionnumber = ((mission + 1) / 3) + 1;
 
-    if(mentatEntry.filename == "0") {
+    if (mentatEntry.filename == "0") {
         animID = getMissionSpecificAnim(missionnumber);
-        text = pTextManager->getBriefingText(missionnumber, MISSION_DESCRIPTION, house);
-    } else if(mentatEntry.filename == "3") {
+        text   = pTextManager->getBriefingText(missionnumber, MISSION_DESCRIPTION, house);
+    } else if (mentatEntry.filename == "3") {
         animID = getMissionSpecificAnim(missionnumber);
-        text = pTextManager->getBriefingText(missionnumber, MISSION_ADVICE, house);
+        text   = pTextManager->getBriefingText(missionnumber, MISSION_ADVICE, house);
     } else {
         animID = getAnimByFilename(mentatEntry.filename);
-        text = mentatEntry.content;
-        name = mentatEntry.name;
+        text   = mentatEntry.content;
+        name   = mentatEntry.name;
     }
 
     animation.setAnimation(pGFXManager->getAnimation(animID));

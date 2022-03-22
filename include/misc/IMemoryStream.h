@@ -20,26 +20,23 @@
 
 #include "InputStream.h"
 
-
 #include <misc/exceptions.h>
 
 #include <string>
 
-class IMemoryStream final : public InputStream
-{
+class IMemoryStream final : public InputStream {
 public:
     IMemoryStream();
 
     IMemoryStream(const char* data, size_t length)
-     :  bufferSize(length), pBuffer(data)
-    { }
+        : bufferSize(length), pBuffer(data) { }
 
     ~IMemoryStream() override;
 
     void open(const char* data, int length) {
         currentPos = 0;
         bufferSize = length;
-        pBuffer = data;
+        pBuffer    = data;
     }
 
     std::string readString() override;
@@ -57,9 +54,9 @@ public:
     float readFloat() override;
 
 private:
-    size_t      currentPos{};
-    size_t      bufferSize{};
-    const char* pBuffer{};
+    size_t currentPos {};
+    size_t bufferSize {};
+    const char* pBuffer {};
 };
 
 #endif // IMEMORYSTREAM_H

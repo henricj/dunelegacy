@@ -19,12 +19,11 @@
 
 #include <globals.h>
 
-#include <FileClasses/TextManager.h>
 #include <FileClasses/GFXManager.h>
-
+#include <FileClasses/TextManager.h>
 
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
- : Window(50,50,626,340), gameOptions(initialGameOptions) {
+    : Window(50, 50, 626, 340), gameOptions(initialGameOptions) {
 
     setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
@@ -77,15 +76,14 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     maxUnitsOverrideCheckbox.setChecked(gameOptions.maximumNumberOfUnitsOverride >= 0);
     maxUnitsOverrideCheckbox.setOnClick([this] { maxUnitsOverrideTextBox.setVisible(maxUnitsOverrideCheckbox.isChecked()); });
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideCheckbox);
-    maxUnitsOverrideTextBox.setMinMax(0,999);
-    maxUnitsOverrideTextBox.setValue( (gameOptions.maximumNumberOfUnitsOverride < 0) ? 25 : gameOptions.maximumNumberOfUnitsOverride );
+    maxUnitsOverrideTextBox.setMinMax(0, 999);
+    maxUnitsOverrideTextBox.setValue((gameOptions.maximumNumberOfUnitsOverride < 0) ? 25 : gameOptions.maximumNumberOfUnitsOverride);
     maxUnitsOverrideTextBox.setVisible(gameOptions.maximumNumberOfUnitsOverride >= 0);
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideTextBox);
     vboxLeft.addWidget(&maxUnitsOverrideHBox, 24);
     vboxLeft.addWidget(VSpacer::create(6));
 
     vboxLeft.addWidget(VSpacer::create(62));
-
 
     concreteRequiredCheckbox.setText(_("Concrete Required"));
     /* xgettext:no-c-format */
@@ -145,49 +143,48 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(&okbutton, 30);
     vboxRight.addWidget(VSpacer::create(6));
 
+    int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
+    int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
 
-    int xpos = std::max(0,(getRendererWidth() - getSize().x)/2);
-    int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
-
-    setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
+    setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
 }
 
 GameOptionsWindow::~GameOptionsWindow() = default;
 
 void GameOptionsWindow::onOK() {
-    gameOptions.gameSpeed = currentGameSpeed;
-    gameOptions.concreteRequired = concreteRequiredCheckbox.isChecked();
-    gameOptions.structuresDegradeOnConcrete = structuresDegradeOnConcreteCheckbox.isChecked();
-    gameOptions.fogOfWar = fogOfWarCheckbox.isChecked();
-    gameOptions.startWithExploredMap = startWithExploredMapCheckbox.isChecked();
-    gameOptions.instantBuild = instantBuildCheckbox.isChecked();
-    gameOptions.onlyOnePalace = onlyOnePalaceCheckbox.isChecked();
-    gameOptions.rocketTurretsNeedPower = rocketTurretsNeedPowerCheckbox.isChecked();
-    gameOptions.sandwormsRespawn = sandwormsRespawnCheckbox.isChecked();
-    gameOptions.killedSandwormsDropSpice = killedSandwormsDropSpiceCheckbox.isChecked();
-    gameOptions.manualCarryallDrops = manualCarryallDropsCheckbox.isChecked();
+    gameOptions.gameSpeed                    = currentGameSpeed;
+    gameOptions.concreteRequired             = concreteRequiredCheckbox.isChecked();
+    gameOptions.structuresDegradeOnConcrete  = structuresDegradeOnConcreteCheckbox.isChecked();
+    gameOptions.fogOfWar                     = fogOfWarCheckbox.isChecked();
+    gameOptions.startWithExploredMap         = startWithExploredMapCheckbox.isChecked();
+    gameOptions.instantBuild                 = instantBuildCheckbox.isChecked();
+    gameOptions.onlyOnePalace                = onlyOnePalaceCheckbox.isChecked();
+    gameOptions.rocketTurretsNeedPower       = rocketTurretsNeedPowerCheckbox.isChecked();
+    gameOptions.sandwormsRespawn             = sandwormsRespawnCheckbox.isChecked();
+    gameOptions.killedSandwormsDropSpice     = killedSandwormsDropSpiceCheckbox.isChecked();
+    gameOptions.manualCarryallDrops          = manualCarryallDropsCheckbox.isChecked();
     gameOptions.maximumNumberOfUnitsOverride = maxUnitsOverrideCheckbox.isChecked() ? maxUnitsOverrideTextBox.getValue() : -1;
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void GameOptionsWindow::onGameSpeedMinus() {
-    if(currentGameSpeed < GAMESPEED_MAX) {
+    if (currentGameSpeed < GAMESPEED_MAX) {
         currentGameSpeed++;
         updateGameSpeedBar();
     }
 }
 
 void GameOptionsWindow::onGameSpeedPlus() {
-    if(currentGameSpeed > GAMESPEED_MIN) {
+    if (currentGameSpeed > GAMESPEED_MIN) {
         currentGameSpeed--;
         updateGameSpeedBar();
     }
 }
 
 void GameOptionsWindow::updateGameSpeedBar() {
-    gameSpeedBar.setProgress( 100.0 - ((currentGameSpeed-GAMESPEED_MIN)*100.0)/(GAMESPEED_MAX - GAMESPEED_MIN) );
+    gameSpeedBar.setProgress(100.0 - ((currentGameSpeed - GAMESPEED_MIN) * 100.0) / (GAMESPEED_MAX - GAMESPEED_MIN));
 }

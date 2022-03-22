@@ -22,56 +22,56 @@
 #include <SoundPlayer.h>
 
 Button::Button() {
-    bPressed = false;
-    bHover = false;
+    bPressed      = false;
+    bHover        = false;
     bToggleButton = false;
-    bToggleState = false;
+    bToggleState  = false;
 
     pUnpressedTexture = nullptr;
-    pPressedTexture = nullptr;
-    pActiveTexture = nullptr;
+    pPressedTexture   = nullptr;
+    pActiveTexture    = nullptr;
 }
 
 Button::~Button() = default;
 
 void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+    if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
         bPressed = false;
-        bHover = false;
-    } else if(isEnabled() && !insideOverlay) {
-        bHover = true;
+        bHover   = false;
+    } else if (isEnabled() && !insideOverlay) {
+        bHover                 = true;
         tooltipLastMouseMotion = SDL_GetTicks();
     }
 }
 
 bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+    if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
         return false;
     }
 
-    if((!isEnabled()) || (!isVisible())) {
+    if ((!isEnabled()) || (!isVisible())) {
         return true;
     }
 
-    if(pressed) {
+    if (pressed) {
         // button pressed
         bPressed = true;
-        if(!bToggleButton) {
+        if (!bToggleButton) {
             soundPlayer->playSound(Sound_ButtonClick);
         }
     } else {
         // button released
-        if(bPressed) {
+        if (bPressed) {
             bPressed = false;
-            if(bToggleButton) {
+            if (bToggleButton) {
                 bool oldState = getToggleState();
                 setToggleState(!bToggleState);
-                if(getToggleState() != oldState) {
+                if (getToggleState() != oldState) {
                     soundPlayer->playSound(Sound_ButtonClick);
                 }
             }
 
-            if(pOnClick) {
+            if (pOnClick) {
                 pOnClick();
             }
         }
@@ -80,35 +80,35 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
 }
 
 bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
-    if((!isVisible()) || (!isEnabled()) || (!isActive())) {
+    if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
         return true;
     }
 
-    if(key.keysym.sym == SDLK_TAB) {
+    if (key.keysym.sym == SDLK_TAB) {
         setInactive();
         return true;
     }
 
-    if(key.keysym.sym == SDLK_SPACE) {
-        if(bToggleButton) {
+    if (key.keysym.sym == SDLK_SPACE) {
+        if (bToggleButton) {
             bool oldState = getToggleState();
             setToggleState(!bToggleState);
-            if(getToggleState() != oldState) {
+            if (getToggleState() != oldState) {
                 soundPlayer->playSound(Sound_ButtonClick);
             }
         } else {
             soundPlayer->playSound(Sound_ButtonClick);
         }
 
-        if(pOnClick) {
+        if (pOnClick) {
             pOnClick();
         }
     }
 
-    if((!bToggleButton) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
+    if ((!bToggleButton) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
         soundPlayer->playSound(Sound_ButtonClick);
 
-        if(pOnClick) {
+        if (pOnClick) {
             pOnClick();
         }
     }
@@ -117,36 +117,36 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void Button::draw(Point position) {
-    if(!isVisible()) {
+    if (!isVisible()) {
         return;
     }
 
     updateTextures();
 
     const DuneTexture* tex = nullptr;
-    if(bToggleState) {
-        if(pPressedTexture) {
+    if (bToggleState) {
+        if (pPressedTexture) {
             tex = pPressedTexture;
         } else {
-            if(isActive() && pActiveTexture) {
+            if (isActive() && pActiveTexture) {
                 tex = pActiveTexture;
             } else {
                 tex = pUnpressedTexture;
             }
         }
     } else {
-        if(bPressed) {
-            if(pPressedTexture) {
+        if (bPressed) {
+            if (pPressedTexture) {
                 tex = pPressedTexture;
             } else {
-                if(isActive() && pActiveTexture) {
+                if (isActive() && pActiveTexture) {
                     tex = pActiveTexture;
                 } else {
                     tex = pUnpressedTexture;
                 }
             }
         } else {
-            if((isActive() || bHover) && pActiveTexture) {
+            if ((isActive() || bHover) && pActiveTexture) {
                 tex = pActiveTexture;
             } else {
                 tex = pUnpressedTexture;
@@ -154,7 +154,7 @@ void Button::draw(Point position) {
         }
     }
 
-    if(!tex) {
+    if (!tex) {
         return;
     }
 
@@ -162,21 +162,23 @@ void Button::draw(Point position) {
 }
 
 void Button::drawOverlay(Point position) {
-    if(!isVisible() || !isEnabled() || !bHover || !tooltipTexture) return;
+    if (!isVisible() || !isEnabled() || !bHover || !tooltipTexture)
+        return;
 
-    if(SDL_GetTicks() - tooltipLastMouseMotion <= 750) return;
+    if (SDL_GetTicks() - tooltipLastMouseMotion <= 750)
+        return;
 
     const auto renderRect = getRendererSize();
-    auto dest = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
-    if(dest.x + dest.w >= renderRect.w) {
+    auto dest             = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    if (dest.x + dest.w >= renderRect.w) {
         // do not draw tooltip outside screen
         dest.x = renderRect.w - dest.w;
     }
 
-    if(dest.y < 0) {
+    if (dest.y < 0) {
         // do not draw tooltip outside screen
         dest.y = 0;
-    } else if(dest.y + dest.h >= renderRect.h) {
+    } else if (dest.y + dest.h >= renderRect.h) {
         // do not draw tooltip outside screen
         dest.y = renderRect.h - dest.h;
     }
@@ -189,9 +191,9 @@ void Button::invalidateTextures() {
     pPressedTexture   = nullptr;
     pActiveTexture    = nullptr;
 
-    localDuneUnpressed_ = DuneTexture{};
-    localDunePressed_   = DuneTexture{};
-    localDuneActive_    = DuneTexture{};
+    localDuneUnpressed_ = DuneTexture {};
+    localDunePressed_   = DuneTexture {};
+    localDuneActive_    = DuneTexture {};
 
     localUnpressed_.reset();
     localPressed_.reset();
@@ -204,9 +206,9 @@ void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr 
     localPressed_   = convertSurfaceToTexture(pPressedSurface.get());
     localActive_    = convertSurfaceToTexture(pActiveSurface.get());
 
-    localDuneUnpressed_ = DuneTexture{localUnpressed_.get()};
-    localDunePressed_   = DuneTexture{localPressed_.get()};
-    localDuneActive_    = DuneTexture{localActive_.get()};
+    localDuneUnpressed_ = DuneTexture {localUnpressed_.get()};
+    localDunePressed_   = DuneTexture {localPressed_.get()};
+    localDuneActive_    = DuneTexture {localActive_.get()};
 
     setTextures(&localDuneUnpressed_, &localDunePressed_, localActive_ ? &localDuneActive_ : nullptr);
 }
@@ -214,6 +216,6 @@ void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr 
 void Button::setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                          const DuneTexture* pActiveTexture) {
     this->pUnpressedTexture = pUnpressedTexture;
-    this->pPressedTexture = pPressedTexture;
-    this->pActiveTexture = pActiveTexture;
+    this->pPressedTexture   = pPressedTexture;
+    this->pActiveTexture    = pActiveTexture;
 }

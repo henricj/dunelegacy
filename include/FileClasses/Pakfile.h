@@ -20,23 +20,21 @@
 
 #include <misc/SDL2pp.h>
 
-#include <stdio.h>
 #include <filesystem>
+#include <inttypes.h>
+#include <stdio.h>
 #include <string>
 #include <vector>
-#include <inttypes.h>
 
-#define PAKFILE_RWOP_TYPE   0x9A5F17EC
+#define PAKFILE_RWOP_TYPE 0x9A5F17EC
 
 /// A class for reading PAK-Files.
 /**
     This class can be used to read PAK-Files. PAK-Files are archive files used by Dune2.
     The files inside the PAK-File can an be read through SDL_RWops.
 */
-class Pakfile
-{
+class Pakfile {
 private:
-
     /// Internal structure for representing one file in this PAK-File
     struct PakFileEntry final {
         uint32_t startOffset;
@@ -71,16 +69,16 @@ public:
     void addFile(SDL_RWops* rwop, const std::string& filename);
 
 private:
-    static size_t  ReadFile(SDL_RWops* pRWop, void * ptr, size_t size, size_t n);
-    static size_t  WriteFile(SDL_RWops * pRWop, const void * ptr, size_t size, size_t n);
+    static size_t ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n);
+    static size_t WriteFile(SDL_RWops* pRWop, const void* ptr, size_t size, size_t n);
     static int64_t SizeFile(SDL_RWops* pRWop);
     static int64_t SeekFile(SDL_RWops* pRWop, int64_t offset, int whence);
-    static int     CloseFile(SDL_RWops * pRWop);
+    static int CloseFile(SDL_RWops* pRWop);
 
     void readIndex();
 
     bool write;
-    SDL_RWops * fPakFile;
+    SDL_RWops* fPakFile;
     std::filesystem::path filename;
 
     char* writeOutData;

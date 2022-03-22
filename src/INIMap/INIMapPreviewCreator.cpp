@@ -5,20 +5,18 @@
 #include <MapSeed.h>
 #include <RadarView.h>
 
-#include <misc/draw_util.h>
 #include <fmt/printf.h>
+#include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
+#include <globals.h>
 #include <mmath.h>
 #include <sand.h>
-#include <globals.h>
 
 #include <algorithm>
 
 INIMapPreviewCreator::INIMapPreviewCreator(INIMap::inifile_ptr pINIFile)
- : INIMap(std::move(pINIFile))
-{
-
+    : INIMap(std::move(pINIFile)) {
 }
 
 INIMapPreviewCreator::~INIMapPreviewCreator() = default;
@@ -33,61 +31,61 @@ INIMapPreviewCreator::~INIMapPreviewCreator() = default;
 sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, uint32_t borderColor) {
     checkFeatures();
 
-    auto pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
-    if(pMinimap == nullptr) {
+    auto pMinimap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    if (pMinimap == nullptr) {
         return nullptr;
     }
     SDL_FillRect(pMinimap.get(), nullptr, borderColor);
-    SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+    SDL_Rect dest = {borderWidth, borderWidth, pMinimap->w - 2 * borderWidth, pMinimap->h - 2 * borderWidth};
     SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
     int version = inifile->getIntValue("BASIC", "Version", 1);
 
-    int offsetX = 0;
-    int offsetY = 0;
-    int scale = 1;
-    int sizeX = 64;
-    int sizeY = 64;
-    int logicalSizeX = 64;
-    int logicalSizeY = 64;
+    int offsetX        = 0;
+    int offsetY        = 0;
+    int scale          = 1;
+    int sizeX          = 64;
+    int sizeY          = 64;
+    int logicalSizeX   = 64;
+    int logicalSizeY   = 64;
     int logicalOffsetX = 0;
     int logicalOffsetY = 0;
 
-    if(version < 2) {
+    if (version < 2) {
         // old map format with seed value
-        int SeedNum = inifile->getIntValue("MAP","Seed",-1);
+        int SeedNum = inifile->getIntValue("MAP", "Seed", -1);
 
-        if(SeedNum == -1) {
+        if (SeedNum == -1) {
             logError("Cannot read Seed in this map!");
         }
 
-        int mapscale = inifile->getIntValue("BASIC","MapScale",0);
+        int mapscale = inifile->getIntValue("BASIC", "MapScale", 0);
 
-        switch(mapscale) {
+        switch (mapscale) {
             case 0: {
-                scale = 2;
-                sizeX = 62;
-                sizeY = 62;
-                offsetX = 2;
-                offsetY = 2;
+                scale          = 2;
+                sizeX          = 62;
+                sizeY          = 62;
+                offsetX        = 2;
+                offsetY        = 2;
                 logicalOffsetX = 1;
                 logicalOffsetY = 1;
             } break;
 
             case 1: {
-                scale = 4;
-                sizeX = 32;
-                sizeY = 32;
+                scale          = 4;
+                sizeX          = 32;
+                sizeY          = 32;
                 logicalOffsetX = 16;
                 logicalOffsetY = 16;
             } break;
 
             case 2: {
-                scale = 5;
-                sizeX = 21;
-                sizeY = 21;
-                offsetX = 11;
-                offsetY = 11;
+                scale          = 5;
+                sizeX          = 21;
+                sizeY          = 21;
+                offsetX        = 11;
+                offsetY        = 11;
                 logicalOffsetX = 11;
                 logicalOffsetY = 11;
             } break;
@@ -104,28 +102,27 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         offsetY += borderWidth;
 
         uint16_t SeedMap[64 * 64];
-        createMapWithSeed(SeedNum,SeedMap);
+        createMapWithSeed(SeedNum, SeedMap);
 
         // "draw" spice fields into SeedMap
-        std::string FieldString = inifile->getStringValue("MAP","Field");
-        if(FieldString != "") {
-            std::vector<std::string> FieldPositions  = splitStringToStringVector(FieldString);
+        std::string FieldString = inifile->getStringValue("MAP", "Field");
+        if (FieldString != "") {
+            std::vector<std::string> FieldPositions = splitStringToStringVector(FieldString);
 
-            for(auto & FieldPosition : FieldPositions) {
+            for (auto& FieldPosition : FieldPositions) {
                 // set bloom
                 int FieldPos = 0;
-                if(parseString(FieldPosition, FieldPos)) {
+                if (parseString(FieldPosition, FieldPos)) {
                     int xpos = FieldPos % logicalSizeX;
                     int ypos = FieldPos / logicalSizeX;
 
-                    for(int x = -5; x <= 5; x++) {
-                        for(int y = -5; y <= 5; y++) {
+                    for (int x = -5; x <= 5; x++) {
+                        for (int y = -5; y <= 5; y++) {
 
-                            if(xpos+x >= 0 && xpos+x < logicalSizeX && ypos+y >= 0 && ypos+y < logicalSizeY) {
-                                if(((SeedMap[64*(ypos+y) + (xpos+x)] >> 4) == 0x7)
-                                    && (distanceFrom(xpos, ypos, xpos + x, ypos + y) <= 5)) {
+                            if (xpos + x >= 0 && xpos + x < logicalSizeX && ypos + y >= 0 && ypos + y < logicalSizeY) {
+                                if (((SeedMap[64 * (ypos + y) + (xpos + x)] >> 4) == 0x7) && (distanceFrom(xpos, ypos, xpos + x, ypos + y) <= 5)) {
 
-                                    SeedMap[64*(ypos+y) + (xpos+x)] = (x==0 && y==0) ? 0xC0 : 0xB0;
+                                    SeedMap[64 * (ypos + y) + (xpos + x)] = (x == 0 && y == 0) ? 0xC0 : 0xB0;
                                 }
                             }
                         }
@@ -137,11 +134,11 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
             }
         }
 
-        for(int y = 0; y < sizeY; y++) {
-            for(int x = 0; x < sizeX; x++) {
-                Uint32 color = COLOR_BLACK;
-                unsigned char seedmaptype = SeedMap[(y+logicalOffsetY)*64+x+logicalOffsetX] >> 4;
-                switch(seedmaptype) {
+        for (int y = 0; y < sizeY; y++) {
+            for (int x = 0; x < sizeX; x++) {
+                Uint32 color              = COLOR_BLACK;
+                unsigned char seedmaptype = SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4;
+                switch (seedmaptype) {
 
                     case 0x7: {
                         // Normal sand
@@ -175,29 +172,29 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     } break;
                 }
 
-                for(int i=0;i<scale;i++) {
-                    for(int j=0;j<scale;j++) {
-                        putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
+                for (int i = 0; i < scale; i++) {
+                    for (int j = 0; j < scale; j++) {
+                        putPixel(pMinimap.get(), x * scale + i + offsetX, y * scale + j + offsetY, color);
                     }
                 }
             }
         }
 
         // draw spice blooms
-        std::string BloomString = inifile->getStringValue("MAP","Bloom");
-        if(BloomString != "") {
-            std::vector<std::string> BloomPositions  = splitStringToStringVector(BloomString);
+        std::string BloomString = inifile->getStringValue("MAP", "Bloom");
+        if (BloomString != "") {
+            std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
 
-            for(const std::string& strBloomPos : BloomPositions) {
+            for (const std::string& strBloomPos : BloomPositions) {
                 // set bloom
                 int BloomPos = 0;
-                if(parseString(strBloomPos, BloomPos)) {
+                if (parseString(strBloomPos, BloomPos)) {
                     int xpos = BloomPos % logicalSizeX - logicalOffsetX;
                     int ypos = BloomPos / logicalSizeX - logicalOffsetY;
-                    if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
-                        for(int i=0;i<scale;i++) {
-                            for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap.get(), xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
+                    if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
+                        for (int i = 0; i < scale; i++) {
+                            for (int j = 0; j < scale; j++) {
+                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
@@ -208,20 +205,20 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         }
 
         // draw special blooms
-        std::string SpecialString = inifile->getStringValue("MAP","Special");
-        if(SpecialString != "") {
-            std::vector<std::string> SpecialPositions  = splitStringToStringVector(SpecialString);
+        std::string SpecialString = inifile->getStringValue("MAP", "Special");
+        if (SpecialString != "") {
+            std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
 
-            for(const std::string& strSpecialPos : SpecialPositions) {
+            for (const std::string& strSpecialPos : SpecialPositions) {
                 // set bloom
                 int SpecialPos = 0;
-                if(parseString(strSpecialPos, SpecialPos)) {
+                if (parseString(strSpecialPos, SpecialPos)) {
                     int xpos = SpecialPos % logicalSizeX - logicalOffsetX;
                     int ypos = SpecialPos / logicalSizeX - logicalOffsetY;
-                    if(xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
-                        for(int i=0;i<scale;i++) {
-                            for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap.get(), xpos*scale + i + offsetX, ypos*scale + j + offsetY, COLOR_BLOOM);
+                    if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
+                        for (int i = 0; i < scale; i++) {
+                            for (int j = 0; j < scale; j++) {
+                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY, COLOR_BLOOM);
                             }
                         }
                     }
@@ -231,16 +228,15 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
             }
         }
 
-
     } else {
         // new map format with saved map
 
-        if((!inifile->hasKey("MAP","SizeX")) || (!inifile->hasKey("MAP","SizeY"))) {
+        if ((!inifile->hasKey("MAP", "SizeX")) || (!inifile->hasKey("MAP", "SizeY"))) {
             logError("SizeX and SizeY must be specified!");
         }
 
-        sizeX = inifile->getIntValue("MAP","SizeX", 0);
-        sizeY = inifile->getIntValue("MAP","SizeY", 0);
+        sizeX = inifile->getIntValue("MAP", "SizeX", 0);
+        sizeY = inifile->getIntValue("MAP", "SizeY", 0);
 
         logicalSizeX = sizeX;
         logicalSizeY = sizeY;
@@ -250,17 +246,17 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         offsetX += borderWidth;
         offsetY += borderWidth;
 
-        for(int y=0;y<sizeY;y++) {
+        for (int y = 0; y < sizeY; y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
-            if(!inifile->hasKey("MAP", rowKey)) {
+            if (!inifile->hasKey("MAP", rowKey)) {
                 logError(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
             }
 
-            std::string rowString = inifile->getStringValue("MAP",rowKey);
-            for(int x=0;x<sizeX;x++) {
+            std::string rowString = inifile->getStringValue("MAP", rowKey);
+            for (int x = 0; x < sizeX; x++) {
                 Uint32 color = COLOR_BLACK;
-                switch(rowString.at(x)) {
+                switch (rowString.at(x)) {
                     case '-': {
                         // Normal sand
                         color = COLOR_DESERTSAND;
@@ -302,9 +298,9 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     } break;
                 }
 
-                for(int i=0;i<scale;i++) {
-                    for(int j=0;j<scale;j++) {
-                        putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
+                for (int i = 0; i < scale; i++) {
+                    for (int j = 0; j < scale; j++) {
+                        putPixel(pMinimap.get(), x * scale + i + offsetX, y * scale + j + offsetY, color);
                     }
                 }
             }
@@ -312,17 +308,17 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
     }
 
     // draw structures
-    if(inifile->hasSection("STRUCTURES")) {
-        for(const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
+    if (inifile->hasSection("STRUCTURES")) {
+        for (const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
             std::string tmpkey = key.getKeyName();
-            std::string tmp = key.getStringValue();
+            std::string tmp    = key.getStringValue();
 
-            if(tmpkey.compare(0,3,"GEN") == 0) {
+            if (tmpkey.compare(0, 3, "GEN") == 0) {
                 // Gen Object/Structure
 
-                std::string PosStr = tmpkey.substr(3,tmpkey.size()-3);
-                int pos = 0;
-                if(!parseString(PosStr, pos)) {
+                std::string PosStr = tmpkey.substr(3, tmpkey.size() - 3);
+                int pos            = 0;
+                if (!parseString(PosStr, pos)) {
                     continue;
                 }
 
@@ -330,59 +326,59 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 splitString(tmp, HouseStr, BuildingStr);
 
                 const auto house = getHouseByName(HouseStr);
-                Uint32 color = COLOR_WHITE;
-                if(house != HOUSETYPE::HOUSE_INVALID) {
+                Uint32 color     = COLOR_WHITE;
+                if (house != HOUSETYPE::HOUSE_INVALID) {
                     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
-                    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-                        int playernum = HouseStr.at(6)-'0';
+                    if (HouseStr.length() == 7 && HouseStr.substr(0, 6) == "player") {
+                        int playernum = HouseStr.at(6) - '0';
 
-                        if(playernum >= 1 && playernum <= 6) {
-                            int val = 32*(playernum - 1) + 32;
-                            color = COLOR_RGB(val, val, val);
+                        if (playernum >= 1 && playernum <= 6) {
+                            int val = 32 * (playernum - 1) + 32;
+                            color   = COLOR_RGB(val, val, val);
                         }
                     } else {
                         logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
 
-                if(BuildingStr == "Concrete") {
+                if (BuildingStr == "Concrete") {
                     // nothing
-                } else if(BuildingStr == "Wall") {
+                } else if (BuildingStr == "Wall") {
                     int x = pos % logicalSizeX - logicalOffsetX;
                     int y = pos / logicalSizeX - logicalOffsetY;
 
-                    if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
-                        for(int i=0;i<scale;i++) {
-                            for(int j=0;j<scale;j++) {
-                                putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
+                    if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
+                        for (int i = 0; i < scale; i++) {
+                            for (int j = 0; j < scale; j++) {
+                                putPixel(pMinimap.get(), x * scale + i + offsetX, y * scale + j + offsetY, color);
                             }
                         }
                     }
                 }
-            } else if(key.getKeyName().find("ID") == 0) {
+            } else if (key.getKeyName().find("ID") == 0) {
                 // other structure
                 std::string HouseStr, BuildingStr, health, PosStr;
                 splitString(tmp, HouseStr, BuildingStr, health, PosStr);
 
                 int pos = 0;
-                if(!parseString(PosStr, pos)) {
+                if (!parseString(PosStr, pos)) {
                     continue;
                 }
 
                 const auto house = getHouseByName(HouseStr);
-                Uint32 color = COLOR_WHITE;
-                if(house != HOUSETYPE::HOUSE_INVALID) {
+                Uint32 color     = COLOR_WHITE;
+                if (house != HOUSETYPE::HOUSE_INVALID) {
                     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
-                    if(HouseStr.length() == 7 && HouseStr.substr(0,6) == "player") {
-                        int playernum = HouseStr.at(6)-'0';
+                    if (HouseStr.length() == 7 && HouseStr.substr(0, 6) == "player") {
+                        int playernum = HouseStr.at(6) - '0';
 
-                        if(playernum >= 1 && playernum <= 6) {
-                            int val = 32*(playernum - 1) + 32;
-                            color = COLOR_RGB(val, val, val);
+                        if (playernum >= 1 && playernum <= 6) {
+                            int val = 32 * (playernum - 1) + 32;
+                            color   = COLOR_RGB(val, val, val);
                         }
                     } else {
                         logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
@@ -393,12 +389,12 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
                 int posX = pos % logicalSizeX - logicalOffsetX;
                 int posY = pos / logicalSizeX - logicalOffsetY;
-                for(int x = posX; x < posX + size.x; x++) {
-                    for(int y = posY; y < posY + size.y; y++) {
-                        if(x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
-                            for(int i=0;i<scale;i++) {
-                                for(int j=0;j<scale;j++) {
-                                    putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
+                for (int x = posX; x < posX + size.x; x++) {
+                    for (int y = posY; y < posY + size.y; y++) {
+                        if (x >= 0 && x < sizeX && y >= 0 && y < sizeY) {
+                            for (int i = 0; i < scale; i++) {
+                                for (int j = 0; j < scale; j++) {
+                                    putPixel(pMinimap.get(), x * scale + i + offsetX, y * scale + j + offsetY, color);
                                 }
                             }
                         }

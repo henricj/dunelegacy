@@ -23,14 +23,13 @@
 
 #include <misc/SDL2pp.h>
 
-
 sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop);
 
 int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop);
 
 //#define LoadPNG(file) SDL_LoadPNG_RW(sdl2::RWops_ptr{SDL_RWFromFile(file, "rb")}.get())
 inline int SavePNG(SDL_Surface* surface, const std::filesystem::path& file) {
-    const sdl2::RWops_ptr sdl_r_wops{SDL_RWFromFile(file.u8string().c_str(), "wb")};
+    const sdl2::RWops_ptr sdl_r_wops {SDL_RWFromFile(file.u8string().c_str(), "wb")};
 
     return SavePNG_RW(surface, sdl_r_wops.get());
 }

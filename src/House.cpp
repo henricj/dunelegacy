@@ -22,37 +22,36 @@
 
 #include <FileClasses/TextManager.h>
 
-#include <players/PlayerFactory.h>
 #include <players/AIPlayer.h>
-#include <players/QuantBot.h>
 #include <players/HumanPlayer.h>
-
+#include <players/PlayerFactory.h>
+#include <players/QuantBot.h>
 
 #include <Game.h>
 #include <GameInterface.h>
 #include <Map.h>
 #include <SoundPlayer.h>
 
-#include <structures/StructureBase.h>
 #include <structures/BuilderBase.h>
-#include <structures/Refinery.h>
 #include <structures/ConstructionYard.h>
+#include <structures/Refinery.h>
+#include <structures/StructureBase.h>
 #include <units/Carryall.h>
 #include <units/Harvester.h>
 
-#include <misc/exceptions.h>
 #include <fmt/printf.h>
+#include <misc/exceptions.h>
 
 #include <algorithm>
 #include <numeric>
 
-
-House::House(const GameContext& context) : choam(this), context(context) {
+House::House(const GameContext& context)
+    : choam(this), context(context) {
     ai = true;
 
     numUnits      = 0;
     numStructures = 0;
-    for(int i = 0; i < Num_ItemID; i++) {
+    for (int i = 0; i < Num_ItemID; i++) {
         numItem[i]                = 0;
         numItemBuilt[i]           = 0;
         numItemKills[i]           = 0;
@@ -67,78 +66,77 @@ House::House(const GameContext& context) : choam(this), context(context) {
     numVisibleFriendlyUnits = 0;
 }
 
-
 House::~House() = default;
 
-
-House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID, int quota) : House(context) {
-    houseID = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse :  static_cast<HOUSETYPE>(0);
+House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID, int quota)
+    : House(context) {
+    houseID      = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse : static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
-    storedCredits = 0;
+    storedCredits   = 0;
     startingCredits = newCredits;
-    oldCredits = lround(storedCredits+startingCredits);
+    oldCredits      = lround(storedCredits + startingCredits);
 
     this->maxUnits = maxUnits;
-    this->quota = quota;
+    this->quota    = quota;
 
-    bHadContactWithEnemy = false;
+    bHadContactWithEnemy       = false;
     bHadDirectContactWithEnemy = false;
 
-    unitBuiltValue = 0;
-    structureBuiltValue = 0;
-    militaryValue = 0;
-    killValue = 0;
-    lossValue = 0;
-    numBuiltUnits = 0;
-    numBuiltStructures = 0;
-    destroyedValue = 0;
-    numDestroyedUnits = 0;
+    unitBuiltValue         = 0;
+    structureBuiltValue    = 0;
+    militaryValue          = 0;
+    killValue              = 0;
+    lossValue              = 0;
+    numBuiltUnits          = 0;
+    numBuiltStructures     = 0;
+    destroyedValue         = 0;
+    numDestroyedUnits      = 0;
     numDestroyedStructures = 0;
-    harvestedSpice = 0;
-    producedPower = 0;
-    powerUsageTimer = 0;
+    harvestedSpice         = 0;
+    producedPower          = 0;
+    powerUsageTimer        = 0;
 }
 
-
-House::House(const GameContext& context, InputStream& stream) : House(context) {
+House::House(const GameContext& context, InputStream& stream)
+    : House(context) {
     houseID = static_cast<HOUSETYPE>(stream.readUint8());
-    teamID = stream.readUint8();
+    teamID  = stream.readUint8();
 
-    storedCredits = stream.readFixPoint();
+    storedCredits   = stream.readFixPoint();
     startingCredits = stream.readFixPoint();
-    oldCredits = lround(storedCredits+startingCredits);
-    maxUnits = stream.readSint32();
-    quota = stream.readSint32();
+    oldCredits      = lround(storedCredits + startingCredits);
+    maxUnits        = stream.readSint32();
+    quota           = stream.readSint32();
 
     stream.readBools(&bHadContactWithEnemy, &bHadDirectContactWithEnemy);
 
-    unitBuiltValue = stream.readUint32();
-    structureBuiltValue = stream.readUint32();
-    militaryValue = stream.readUint32();
-    killValue = stream.readUint32();
-    lossValue = stream.readUint32();
-    numBuiltUnits = stream.readUint32();
-    numBuiltStructures = stream.readUint32();
-    destroyedValue = stream.readUint32();
-    numDestroyedUnits = stream.readUint32();
+    unitBuiltValue         = stream.readUint32();
+    structureBuiltValue    = stream.readUint32();
+    militaryValue          = stream.readUint32();
+    killValue              = stream.readUint32();
+    lossValue              = stream.readUint32();
+    numBuiltUnits          = stream.readUint32();
+    numBuiltStructures     = stream.readUint32();
+    destroyedValue         = stream.readUint32();
+    numDestroyedUnits      = stream.readUint32();
     numDestroyedStructures = stream.readUint32();
-    harvestedSpice = stream.readFixPoint();
-    producedPower = stream.readSint32();
-    powerUsageTimer = stream.readSint32();
+    harvestedSpice         = stream.readFixPoint();
+    producedPower          = stream.readSint32();
+    powerUsageTimer        = stream.readSint32();
 
     choam.load(stream);
 
     uint32_t numAITeams = stream.readUint32();
-    for(uint32_t i = 0; i < numAITeams; i++) {
+    for (uint32_t i = 0; i < numAITeams; i++) {
         aiteams.emplace_back(stream);
     }
 
     uint32_t numPlayers = stream.readUint32();
-    for(uint32_t i = 0; i < numPlayers; i++) {
+    for (uint32_t i = 0; i < numPlayers; i++) {
         std::string playerclass = stream.readString();
         const auto* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
-        if(pPlayerData == nullptr) {
+        if (pPlayerData == nullptr) {
             sdl2::log_info("Warning: Cannot load player '%s'", playerclass.c_str());
         } else {
             addPlayer(pPlayerData->load(context, stream, this));
@@ -147,13 +145,12 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
 }
 
 UnitBase* House::createUnit(ItemID_enum itemID, bool byScenario) {
-    return context.objectManager.createObjectFromItemId<UnitBase>(itemID, ObjectInitializer{context.game, this, byScenario});
+    return context.objectManager.createObjectFromItemId<UnitBase>(itemID, ObjectInitializer {context.game, this, byScenario});
 }
 
 StructureBase* House::createStructure(ItemID_enum itemID, bool byScenario) {
-    return context.objectManager.createObjectFromItemId<StructureBase>(itemID, ObjectInitializer{context.game, this, byScenario});
+    return context.objectManager.createObjectFromItemId<StructureBase>(itemID, ObjectInitializer {context.game, this, byScenario});
 }
-
 
 void House::save(OutputStream& stream) const {
     stream.writeUint8(static_cast<uint8_t>(houseID));
@@ -183,19 +180,16 @@ void House::save(OutputStream& stream) const {
     choam.save(stream);
 
     stream.writeUint32(aiteams.size());
-    for(const auto& aiteam : aiteams) {
+    for (const auto& aiteam : aiteams) {
         aiteam.save(stream);
     }
 
     stream.writeUint32(players.size());
-    for(const auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         stream.writeString(pPlayer->getPlayerclass());
         pPlayer->save(stream);
     }
 }
-
-
-
 
 void House::addPlayer(std::unique_ptr<Player> newPlayer) {
     Player* pNewPlayer = newPlayer.get();
@@ -210,37 +204,34 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
     context.game.registerPlayer(pNewPlayer);
 }
 
-
 void House::setProducedPower(int newPower) {
     producedPower = newPower;
 }
 
-
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
-    if(newCredits <= 0) return;
+    if (newCredits <= 0)
+        return;
 
-    if(wasRefined) {
+    if (wasRefined) {
         harvestedSpice += newCredits;
     }
 
     storedCredits += newCredits;
-    if(this == pLocalHouse) {
-        if(((context.game.winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
-            if(storedCredits >= quota) {
+    if (this == pLocalHouse) {
+        if (((context.game.winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
+            if (storedCredits >= quota) {
                 win();
             }
         }
     }
 }
 
-
-
-
 void House::returnCredits(FixPoint newCredits) {
-    if(newCredits <= 0) return;
+    if (newCredits <= 0)
+        return;
 
     const auto leftCapacity = capacity - storedCredits;
-    if(newCredits <= leftCapacity) {
+    if (newCredits <= leftCapacity) {
         addCredits(newCredits, false);
     } else {
         addCredits(leftCapacity, false);
@@ -248,21 +239,18 @@ void House::returnCredits(FixPoint newCredits) {
     }
 }
 
-
-
-
 FixPoint House::takeCredits(FixPoint amount) {
     FixPoint taken = 0;
 
-    if(getCredits() >= 1) {
-        if(storedCredits > amount) {
+    if (getCredits() >= 1) {
+        if (storedCredits > amount) {
             taken = amount;
             storedCredits -= amount;
         } else {
-            taken = storedCredits;
+            taken         = storedCredits;
             storedCredits = 0;
 
-            if(startingCredits > (amount - taken)) {
+            if (startingCredits > (amount - taken)) {
                 startingCredits -= (amount - taken);
                 taken = amount;
             } else {
@@ -272,25 +260,22 @@ FixPoint House::takeCredits(FixPoint amount) {
         }
     }
 
-    return taken;   //the amount that was actually withdrawn
+    return taken; // the amount that was actually withdrawn
 }
-
-
-
 
 void House::printStat() const {
     sdl2::log_info("House %s: (Number of Units: %d, Number of Structures: %d)", getHouseNameByNumber(getHouseID()).c_str(),
-            numUnits, numStructures);
+                   numUnits, numStructures);
     sdl2::log_info("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks], numItem[Structure_WOR]);
     sdl2::log_info("Light Factories: %d\tHeavy Factories: %d", numItem[Structure_LightFactory],
-            numItem[Structure_HeavyFactory]);
+                   numItem[Structure_HeavyFactory]);
     sdl2::log_info("IXs: %d\t\t\tPalaces: %d", numItem[Structure_IX], numItem[Structure_Palace]);
     sdl2::log_info("Repair Yards: %d\t\tHigh-Tech Factories: %d", numItem[Structure_RepairYard],
-            numItem[Structure_HighTechFactory]);
+                   numItem[Structure_HighTechFactory]);
     sdl2::log_info("Refineries: %d\t\tStarports: %d", numItem[Structure_Refinery], numItem[Structure_StarPort]);
     sdl2::log_info("Walls: %d\t\tRocket Turrets: %d", numItem[Structure_Wall], numItem[Structure_RocketTurret]);
     sdl2::log_info("Gun Turrets: %d\t\tConstruction Yards: %d", numItem[Structure_GunTurret],
-            numItem[Structure_ConstructionYard]);
+                   numItem[Structure_ConstructionYard]);
     sdl2::log_info("Windtraps: %d\t\tRadars: %d", numItem[Structure_WindTrap], numItem[Structure_Radar]);
     sdl2::log_info("Silos: %d", numItem[Structure_Silo]);
     sdl2::log_info("Carryalls: %d\t\tFrigates: %d", numItem[Unit_Carryall], numItem[Unit_Frigate]);
@@ -304,60 +289,51 @@ void House::printStat() const {
     sdl2::log_info("Ornithopters: %d\t\tRocket Launchers: %d", numItem[Unit_Ornithopter], numItem[Unit_Launcher]);
 }
 
-
-
-
 void House::updateBuildLists() {
-    for(auto* pStructure : structureList) {
+    for (auto* pStructure : structureList) {
         auto* builder = dune_cast<BuilderBase>(pStructure);
-        if(!builder || builder->getOwner() != this) continue;
+        if (!builder || builder->getOwner() != this)
+            continue;
 
         builder->updateBuildList();
     }
 }
 
-
-
-
 void House::update() {
-    numVisibleEnemyUnits = 0;
+    numVisibleEnemyUnits    = 0;
     numVisibleFriendlyUnits = 0;
 
     const auto credits = getCredits();
     if (oldCredits != credits) {
-        if((this == pLocalHouse) && (credits > 0)) {
+        if ((this == pLocalHouse) && (credits > 0)) {
             soundPlayer->playSound(credits > oldCredits ? Sound_CreditsTick : Sound_CreditsTickDown);
         }
         oldCredits = credits;
-
     }
 
-    if(storedCredits > capacity) {
+    if (storedCredits > capacity) {
         --storedCredits;
-        if(storedCredits < 0) {
-         storedCredits = 0;
+        if (storedCredits < 0) {
+            storedCredits = 0;
         }
 
-        if(this == pLocalHouse) {
+        if (this == pLocalHouse) {
             context.game.addToNewsTicker(_("@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."));
         }
     }
 
     powerUsageTimer--;
-    if(powerUsageTimer <= 0) {
-        powerUsageTimer = MILLI2CYCLES(15*1000);
+    if (powerUsageTimer <= 0) {
+        powerUsageTimer = MILLI2CYCLES(15 * 1000);
         takeCredits(FixPoint(getPowerRequirement()) / 32);
     }
 
     choam.update(context);
 
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->update();
     }
 }
-
-
-
 
 void House::incrementUnits(ItemID_enum itemID) {
     numUnits++;
@@ -365,42 +341,39 @@ void House::incrementUnits(ItemID_enum itemID) {
 
     assert(numUnits + numStructures == std::accumulate(std::begin(numItem), std::end(numItem), 0));
 
-    if(itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
-       itemID != Unit_Harvester && itemID != Unit_Sandworm) {
+    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
+        itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
         militaryValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
     }
 }
 
-
-
 void House::decrementUnits(ItemID_enum itemID) {
-    if(numUnits < 1) THROW(std::runtime_error, "Cannot decrement number of units %d (itemId %d)", numUnits, itemID);
+    if (numUnits < 1)
+        THROW(std::runtime_error, "Cannot decrement number of units %d (itemId %d)", numUnits, itemID);
 
     numUnits--;
     numItemLosses[itemID]++;
 
-    if(itemID == Unit_Harvester) {
+    if (itemID == Unit_Harvester) {
         decrementHarvesters();
     } else {
         numItem[itemID]--;
     }
 
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->onDecrementUnits(itemID);
     }
 
-    if(itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
-       itemID != Unit_Harvester && itemID != Unit_Sandworm) {
+    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
+        itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
         lossValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
     }
 
-    if(!isAlive()) lose();
+    if (!isAlive())
+        lose();
 }
-
-
-
 
 void House::incrementStructures(ItemID_enum itemID) {
     numStructures++;
@@ -410,21 +383,18 @@ void House::incrementStructures(ItemID_enum itemID) {
 
     // change power requirements
     const auto currentItemPower = context.game.objectData.data[itemID][static_cast<int>(houseID)].power;
-    if(currentItemPower >= 0) {
+    if (currentItemPower >= 0) {
         powerRequirement += currentItemPower;
     }
 
     // change spice capacity
     capacity += context.game.objectData.data[itemID][static_cast<int>(houseID)].capacity;
 
-    if(context.game.gameState != GameState::Loading) {
+    if (context.game.gameState != GameState::Loading) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
 }
-
-
-
 
 void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (numStructures < 1)
@@ -438,14 +408,14 @@ void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
 
     // change power requirements
     const auto currentItemPower = context.game.objectData.data[itemID][static_cast<int>(houseID)].power;
-    if(currentItemPower >= 0) {
+    if (currentItemPower >= 0) {
         powerRequirement -= currentItemPower;
     }
 
     // change spice capacity
     capacity -= context.game.objectData.data[itemID][static_cast<int>(houseID)].capacity;
 
-    if(context.game.gameState != GameState::Loading) {
+    if (context.game.gameState != GameState::Loading) {
         // do not check selection lists if we are loading
         updateBuildLists();
     }
@@ -453,20 +423,16 @@ void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (!isAlive())
         lose();
 
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->onDecrementStructures(itemID, location);
     }
 }
 
-
-
-
 void House::noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damagerID) {
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->onDamage(pObject, damage, damagerID);
     }
 }
-
 
 /**
     This method informs this house that a new unit or structure was built
@@ -474,7 +440,7 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damager
 */
 void House::informWasBuilt(ObjectBase* pObject) {
     auto itemID = pObject->getItemID();
-    if(pObject->isAStructure()) {
+    if (pObject->isAStructure()) {
         structureBuiltValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltStructures++;
     } else {
@@ -484,41 +450,31 @@ void House::informWasBuilt(ObjectBase* pObject) {
 
     numItemBuilt[itemID]++;
 
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->onObjectWasBuilt(pObject);
     }
 }
-
-
 
 /**
     This method informs this house that one of its units has killed an enemy unit or structure
     \param itemID   the ID of the enemy unit or structure
 */
 void House::informHasKilled(ItemID_enum itemID) {
-    destroyedValue += std::max(context.game.objectData.data[itemID][static_cast<int>(houseID)].price/100, 1);
-    if(isStructure(itemID)) {
+    destroyedValue += std::max(context.game.objectData.data[itemID][static_cast<int>(houseID)].price / 100, 1);
+    if (isStructure(itemID)) {
         numDestroyedStructures++;
     } else {
         numDestroyedUnits++;
 
-        if(itemID != Unit_Saboteur
-           && itemID != Unit_Frigate
-           && itemID != Unit_Carryall
-           && itemID != Unit_MCV
-           && itemID != Unit_Harvester
-           && itemID != Unit_Sandworm) {
+        if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV && itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
-                killValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
-
+            killValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
         }
-
     }
 
     numItemKills[itemID]++;
 
-
-    for(auto& pPlayer : players) {
+    for (auto& pPlayer : players) {
         pPlayer->onIncrementUnitKills(itemID);
     }
 }
@@ -532,20 +488,16 @@ void House::informHasDamaged(ItemID_enum itemID, uint32_t damage) {
     numItemDamageInflicted[itemID] += damage;
 }
 
-
 void House::win() {
-    if(getTeamID() == pLocalHouse->getTeamID()) {
+    if (getTeamID() == pLocalHouse->getTeamID()) {
         context.game.setGameWon();
     } else {
         context.game.setGameLost();
     }
 }
 
-
-
-
 void House::lose(bool bSilent) const {
-    if(!bSilent) {
+    if (!bSilent) {
         try {
             context.game.addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
         } catch (std::exception& e) {
@@ -553,21 +505,21 @@ void House::lose(bool bSilent) const {
         }
     }
 
-    if((getTeamID() == pLocalHouse->getTeamID()) && ((context.game.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
+    if ((getTeamID() == pLocalHouse->getTeamID()) && ((context.game.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
 
         bool finished = true;
 
-        for(auto i=0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-            auto *const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
-            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
+        for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
+            if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
         }
 
-        if(finished) {
+        if (finished) {
             // pLocalHouse is destroyed and this is a game finish condition
-            if((context.game.loseFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0) {
+            if ((context.game.loseFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0) {
                 // house has won
                 context.game.setGameWon();
             } else {
@@ -576,21 +528,21 @@ void House::lose(bool bSilent) const {
             }
         }
 
-    } else if((context.game.winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
-        //if the only players left are on the thisPlayers team, pLocalHouse has won
+    } else if ((context.game.winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
+        // if the only players left are on the thisPlayers team, pLocalHouse has won
         auto finished = true;
 
-        for(auto i=0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-            auto *const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
-            if(pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
+        for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
+            if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
         }
 
-        if(finished) {
+        if (finished) {
             // all AI players are destroyed and this is a game finish condition
-            if((context.game.loseFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
+            if ((context.game.loseFlags & WINLOSEFLAGS_AI_NO_BUILDINGS) != 0) {
                 // house has won
                 context.game.setGameWon();
             } else {
@@ -601,20 +553,19 @@ void House::lose(bool bSilent) const {
     }
 }
 
-
-
-
 void House::freeHarvester(int xPos, int yPos) {
     auto* const tile = context.map.tryGetTile(xPos, yPos);
 
-    if(!tile) return;
+    if (!tile)
+        return;
 
     auto* const refinery = tile->getGroundObject<Refinery>(context.objectManager);
-    if(!refinery) return;
+    if (!refinery)
+        return;
 
-    const Coord closestPos = context.map.findClosestEdgePoint(refinery->getLocation() + Coord(2,0), Coord(1,1));
+    const Coord closestPos = context.map.findClosestEdgePoint(refinery->getLocation() + Coord(2, 0), Coord(1, 1));
 
-    auto* carryall = createUnit<Carryall>();
+    auto* carryall  = createUnit<Carryall>();
     auto* harvester = createUnit<Harvester>();
     harvester->setAmountOfSpice(5);
     carryall->setOwned(false);
@@ -624,11 +575,11 @@ void House::freeHarvester(int xPos, int yPos) {
 
     if (closestPos.x == 0)
         carryall->setAngle(ANGLETYPE::RIGHT);
-    else if (closestPos.x == context.map.getSizeX()-1)
+    else if (closestPos.x == context.map.getSizeX() - 1)
         carryall->setAngle(ANGLETYPE::LEFT);
     else if (closestPos.y == 0)
         carryall->setAngle(ANGLETYPE::DOWN);
-    else if (closestPos.y == context.map.getSizeY()-1)
+    else if (closestPos.y == context.map.getSizeY() - 1)
         carryall->setAngle(ANGLETYPE::UP);
 
     harvester->setTarget(refinery);
@@ -636,18 +587,18 @@ void House::freeHarvester(int xPos, int yPos) {
     carryall->setTarget(refinery);
 }
 
-
 StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos,
-                                     bool     byScenario, bool       bForcePlacing) {
+                                     bool byScenario, bool bForcePlacing) {
     const auto& [game, map, objectManager] = context;
 
     auto* const tile = map.tryGetTile(xPos, yPos);
-    if(!tile) return nullptr;
+    if (!tile)
+        return nullptr;
 
     auto* pBuilder = builderID == NONE_ID ? nullptr : objectManager.getObject<BuilderBase>(builderID);
 
-    if(game.getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
-        if(this == pLocalHouse && pBuilder->isSelected()) {
+    if (game.getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
+        if (this == pLocalHouse && pBuilder->isSelected()) {
             game.currentCursorMode = Game::CursorMode_Normal;
         }
         return nullptr;
@@ -660,13 +611,13 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             tile->setType(context, Terrain_Slab);
             tile->setOwner(getHouseID());
             map.viewMap(getHouseID(), xPos, yPos, game.objectData.data[Structure_Slab1][static_cast<int>(houseID)].viewrange);
-    //      context.map.getTile(xPos, yPos)->clearTerrain();
+            //      context.map.getTile(xPos, yPos)->clearTerrain();
 
-            if(pBuilder != nullptr) {
+            if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if(this == pLocalHouse) {
-                    if(pBuilder->isSelected()) {
+                if (this == pLocalHouse) {
+                    if (pBuilder->isSelected()) {
                         context.game.currentCursorMode = Game::CursorMode_Normal;
                     }
 
@@ -675,27 +626,26 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             }
 
             return nullptr;
-
         }
 
         case Structure_Slab4: {
             // Slabs are no normal buildings
             map.for_each(xPos, yPos, xPos + 2, yPos + 2,
-                [&](Tile& t) {
-                    if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
-                        return;
+                         [&](Tile& t) {
+                             if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
+                                 return;
 
-                    t.setType(context, Terrain_Slab);
-                    t.setOwner(houseID);
-                    context.map.viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, context.game.objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
-                    //pTile->clearTerrain();
-                });
+                             t.setType(context, Terrain_Slab);
+                             t.setOwner(houseID);
+                             context.map.viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, context.game.objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
+                             // pTile->clearTerrain();
+                         });
 
-            if(pBuilder != nullptr) {
+            if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if(this == pLocalHouse) {
-                    if(pBuilder->isSelected()) {
+                if (this == pLocalHouse) {
+                    if (pBuilder->isSelected()) {
                         context.game.currentCursorMode = Game::CursorMode_Normal;
                     }
 
@@ -704,32 +654,32 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             }
 
             return nullptr;
-
         }
 
         default: {
             auto* newStructure = createStructure(itemID, byScenario);
-            if(newStructure == nullptr) {
+            if (newStructure == nullptr) {
                 THROW(std::runtime_error, "Cannot create structure with itemID %d!", itemID);
             }
 
             auto cleanup = gsl::finally([&] {
-                if(!newStructure) return;
+                if (!newStructure)
+                    return;
 
                 context.objectManager.removeObject(newStructure->getObjectID());
                 newStructure = nullptr;
             });
 
             // Make sure the whole building fits on the map.
-            if(!map.tileExists(xPos + newStructure->getStructureSizeX() - 1,
-                               yPos + newStructure->getStructureSizeY() - 1))
+            if (!map.tileExists(xPos + newStructure->getStructureSizeX() - 1,
+                                yPos + newStructure->getStructureSizeY() - 1))
                 return nullptr;
 
-            if(!bForcePlacing) {
+            if (!bForcePlacing) {
                 // check if there is already something on this tile
 
-                if(map.find(xPos, yPos, xPos + newStructure->getStructureSizeX(), newStructure->getStructureSizeY(),
-                            [](Tile& tile) { return tile.hasAGroundObject(); })) {
+                if (map.find(xPos, yPos, xPos + newStructure->getStructureSizeX(), newStructure->getStructureSizeY(),
+                             [](Tile& tile) { return tile.hasAGroundObject(); })) {
                     return nullptr;
                 }
             }
@@ -744,28 +694,29 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             }
 
             // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
-            if((itemID == Structure_Refinery) && ( ((context.game.gameState == GameState::Start) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID)) ) {
+            if ((itemID == Structure_Refinery) && (((context.game.gameState == GameState::Start) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID))) {
                 freeHarvester(xPos, yPos);
             }
 
             // if this structure was built by a construction yard this construction yard must be informed
-            if(pBuilder != nullptr) {
+            if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if(itemID == Structure_Palace) {
+                if (itemID == Structure_Palace) {
                     // cancel all other palaces
-                    for(auto* pStructure : structureList) {
-                        if(pStructure->getOwner() != this) continue;
+                    for (auto* pStructure : structureList) {
+                        if (pStructure->getOwner() != this)
+                            continue;
 
                         auto* pConstructionYard = dune_cast<ConstructionYard>(pStructure);
-                        if(pConstructionYard && pBuilder != pConstructionYard) {
+                        if (pConstructionYard && pBuilder != pConstructionYard) {
                             pConstructionYard->doCancelItem(Structure_Palace, false);
                         }
                     }
                 }
 
                 if (this == pLocalHouse) {
-                    if(pBuilder->isSelected()) {
+                    if (pBuilder->isSelected()) {
                         game.currentCursorMode = Game::CursorMode_Normal;
                     }
                     pLocalPlayer->onPlaceStructure(newStructure);
@@ -776,7 +727,7 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
                 pBuilder->getOwner()->informWasBuilt(newStructure);
             }
 
-            if(auto* builder = dune_cast<BuilderBase>(newStructure)) {
+            if (auto* builder = dune_cast<BuilderBase>(newStructure)) {
                 builder->updateBuildList();
             }
 
@@ -789,32 +740,31 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
     }
 }
 
-
-
-
 UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenario) {
 
     auto* pTile = context.map.tryGetTile(xPos, yPos);
-    if(!pTile) return nullptr;
+    if (!pTile)
+        return nullptr;
 
-    if(itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
-        if((pTile->hasANonInfantryGroundObject()) || (!pTile->infantryNotFull())) {
+    if (itemID == Unit_Saboteur || itemID == Unit_Soldier || itemID == Unit_Trooper) {
+        if ((pTile->hasANonInfantryGroundObject()) || (!pTile->infantryNotFull())) {
             // infantry units can not placed on non-infantry units or structures (or the tile is already full of
             // infantry units)
             return nullptr;
         }
     } else {
-        if(pTile->hasAGroundObject()) {
+        if (pTile->hasAGroundObject()) {
             // non-infantry units can not placed on a tile where already some other unit or structure is placed on
             return nullptr;
         }
     }
 
     auto* newUnit = createUnit(itemID, byScenario);
-    if(!newUnit) return nullptr;
+    if (!newUnit)
+        return nullptr;
 
     Coord pos = Coord(xPos, yPos);
-    if(newUnit->canPass(xPos, yPos)) {
+    if (newUnit->canPass(xPos, yPos)) {
         newUnit->deploy(context, pos);
     } else {
         newUnit->setVisible(VIS_ALL, false);
@@ -825,7 +775,6 @@ UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenar
     return newUnit;
 }
 
-
 /**
     This method returns the center of the base of this house.
     \return the coordinate of the center in tile coordinates
@@ -833,35 +782,33 @@ UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenar
 Coord House::getCenterOfMainBase() const {
     Coord center;
     int numStructures = 0;
-    for(const StructureBase* pStructure : structureList) {
-        if(pStructure->getOwner() == this) {
+    for (const StructureBase* pStructure : structureList) {
+        if (pStructure->getOwner() == this) {
             center += pStructure->getLocation();
             numStructures++;
         }
     }
 
-    if(numStructures == 0) {
+    if (numStructures == 0) {
         return Coord::Invalid();
-    }         return center / numStructures;
-
-   
+    }
+    return center / numStructures;
 }
-
 
 /**
     This method returns the position of the strongest unit
     \return the coordinate of the strongest unit
 */
 Coord House::getStrongestUnitPosition() const {
-    Coord   strongestUnitPosition = Coord::Invalid();
-    int32_t strongestUnitCost     = 0;
-    for(const UnitBase* pUnit : unitList) {
-        if(pUnit->getOwner() == this) {
+    Coord strongestUnitPosition = Coord::Invalid();
+    int32_t strongestUnitCost   = 0;
+    for (const UnitBase* pUnit : unitList) {
+        if (pUnit->getOwner() == this) {
             int32_t currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
 
-            if(currentCost > strongestUnitCost) {
+            if (currentCost > strongestUnitCost) {
                 strongestUnitPosition = pUnit->getLocation();
-                strongestUnitCost = currentCost;
+                strongestUnitCost     = currentCost;
             }
         }
     }
@@ -869,35 +816,32 @@ Coord House::getStrongestUnitPosition() const {
     return strongestUnitPosition;
 }
 
-
-
-
 void House::decrementHarvesters() {
     numItem[Unit_Harvester]--;
 
-    if(numItem[Unit_Harvester] <= 0) {
+    if (numItem[Unit_Harvester] <= 0) {
         numItem[Unit_Harvester] = 0;
 
-        if(numItem[Structure_Refinery]) {
-            Coord          closestPos;
-            FixPoint       closestDistance  = FixPt_MAX;
+        if (numItem[Structure_Refinery]) {
+            Coord closestPos;
+            FixPoint closestDistance        = FixPt_MAX;
             StructureBase* pClosestRefinery = nullptr;
 
-            for(StructureBase* pStructure : structureList) {
-                if((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this) && (pStructure->getHealth() > 0)) {
+            for (StructureBase* pStructure : structureList) {
+                if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this) && (pStructure->getHealth() > 0)) {
                     Coord pos = pStructure->getLocation();
 
-                    Coord closestPoint = pStructure->getClosestPoint(pos);
+                    Coord closestPoint        = pStructure->getClosestPoint(pos);
                     FixPoint refineryDistance = blockDistance(pos, closestPoint);
-                    if(!pClosestRefinery || (refineryDistance < closestDistance)) {
-                            closestDistance = refineryDistance;
-                            pClosestRefinery = pStructure;
-                            closestPos = pos;
+                    if (!pClosestRefinery || (refineryDistance < closestDistance)) {
+                        closestDistance  = refineryDistance;
+                        pClosestRefinery = pStructure;
+                        closestPos       = pos;
                     }
                 }
             }
 
-            if(pClosestRefinery && (context.game.gameState == GameState::Running)) {
+            if (pClosestRefinery && (context.game.gameState == GameState::Running)) {
                 freeHarvester(pClosestRefinery->getLocation());
             }
         }

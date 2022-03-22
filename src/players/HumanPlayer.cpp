@@ -17,8 +17,8 @@
 
 #include <players/HumanPlayer.h>
 
-#include <FileClasses/TextManager.h>
 #include <FileClasses/GFXManager.h>
+#include <FileClasses/TextManager.h>
 #include <GUI/dune/ChatManager.h>
 
 #include <Game.h>
@@ -33,20 +33,21 @@
 
 #include <Network/NetworkManager.h>
 
-#define ATTACKNOTIFICATIONTIME MILLI2CYCLES(2*60*1000)
+#define ATTACKNOTIFICATIONTIME MILLI2CYCLES(2 * 60 * 1000)
 
-HumanPlayer::HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random) : Player(context, associatedHouse, playername, random) {
-    alreadyShownTutorialHints = currentGame->getGameInitSettings().getAlreadyShownTutorialHints();
+HumanPlayer::HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random)
+    : Player(context, associatedHouse, playername, random) {
+    alreadyShownTutorialHints   = currentGame->getGameInitSettings().getAlreadyShownTutorialHints();
     lastAttackNotificationCycle = INVALID_GAMECYCLE;
 }
 
 HumanPlayer::HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
-    for(auto & selectedList : selectedLists) {
+    for (auto& selectedList : selectedLists) {
         selectedList = stream.readUint32Set();
     }
 
-    alreadyShownTutorialHints = stream.readUint32();
+    alreadyShownTutorialHints   = stream.readUint32();
     lastAttackNotificationCycle = stream.readUint32();
 }
 
@@ -56,7 +57,7 @@ void HumanPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
     // write out selection groups (Key 1 to 9)
-    for(const auto & selectedList : selectedLists) {
+    for (const auto& selectedList : selectedLists) {
         stream.writeUint32Set(selectedList);
     }
 
@@ -68,44 +69,43 @@ void HumanPlayer::update() {
 }
 
 void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
-    if((lastAttackNotificationCycle != INVALID_GAMECYCLE)
-        && (getGameCycleCount() - lastAttackNotificationCycle < ATTACKNOTIFICATIONTIME)) {
+    if ((lastAttackNotificationCycle != INVALID_GAMECYCLE) && (getGameCycleCount() - lastAttackNotificationCycle < ATTACKNOTIFICATIONTIME)) {
         return;
     }
 
-    if(pObject->isAStructure() && pObject->getOwner() == getHouse()) {
+    if (pObject->isAStructure() && pObject->getOwner() == getHouse()) {
         soundPlayer->playVoice(BaseIsUnderAttack, getHouse()->getHouseID());
         lastAttackNotificationCycle = getGameCycleCount();
     }
 }
 
 void HumanPlayer::onProduceItem(ItemID_enum itemID) {
-    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
+    if (!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
-    if(!isStructure(itemID)) {
+    if (!isStructure(itemID)) {
         return;
     }
 
-    if(itemID == Structure_Slab1 || itemID == Structure_Slab4) {
+    if (itemID == Structure_Slab1 || itemID == Structure_Slab4) {
         return;
     }
 
-    if(alreadyShownTutorialHints & (1 << static_cast<int>(TutorialHint::NotEnoughConrete))) {
+    if (alreadyShownTutorialHints & (1 << static_cast<int>(TutorialHint::NotEnoughConrete))) {
         return;
     }
 
-    if(!hasConcreteOfSize(getStructureSize(itemID))) {
+    if (!hasConcreteOfSize(getStructureSize(itemID))) {
         ChatManager& chatManager = currentGame->getGameInterface().getChatManager();
-        chatManager.addHintMessage( _("@MESSAGE.ENG|20#There is not enough concrete for this structure. You may continue building this structure but it will need repairing."),
-                                    pGFXManager->getTinyPicture(static_cast<TinyPicture_Enum>(itemID)));
+        chatManager.addHintMessage(_("@MESSAGE.ENG|20#There is not enough concrete for this structure. You may continue building this structure but it will need repairing."),
+                                   pGFXManager->getTinyPicture(static_cast<TinyPicture_Enum>(itemID)));
         alreadyShownTutorialHints |= (1 << static_cast<int>(TutorialHint::NotEnoughConrete));
     }
 }
 
 void HumanPlayer::onPlaceStructure(const StructureBase* pStructure) {
-    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
+    if (!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
@@ -115,35 +115,33 @@ void HumanPlayer::onPlaceStructure(const StructureBase* pStructure) {
 }
 
 void HumanPlayer::onUnitDeployed(const UnitBase* pUnit) {
-    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
+    if (!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
-    if(alreadyShownTutorialHints & (1 << static_cast<int>(TutorialHint::HarvestSpice))) {
+    if (alreadyShownTutorialHints & (1 << static_cast<int>(TutorialHint::HarvestSpice))) {
         return;
     }
 
-    if(pUnit->getItemID() == Unit_Harvester) {
+    if (pUnit->getItemID() == Unit_Harvester) {
         auto& chatManager = currentGame->getGameInterface().getChatManager();
         chatManager.addHintMessage(_("@MESSAGE.ENG|27#Look out for spice fields."), pGFXManager->getTinyPicture(TinyPicture_Spice));
         alreadyShownTutorialHints |= (1 << static_cast<int>(TutorialHint::HarvestSpice));
     }
-
-
 }
 
 void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObjectIDs) {
-    if(!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
+    if (!settings.general.showTutorialHints || (currentGame->gameState != GameState::Running)) {
         return;
     }
 
-    if(selectedObjectIDs.size() != 1) {
+    if (selectedObjectIDs.size() != 1) {
         return;
     }
 
-    for(auto objectID : selectedObjectIDs) {
-        auto *pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject->getOwner() != getHouse()) {
+    for (auto objectID : selectedObjectIDs) {
+        auto* pObject = currentGame->getObjectManager().getObject(objectID);
+        if (pObject->getOwner() != getHouse()) {
             continue;
         }
 
@@ -154,25 +152,25 @@ void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObje
 void HumanPlayer::setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList) {
     selectedLists[groupListIndex].clear();
 
-    for(auto objectID : newGroupList) {
-        if(currentGame->getObjectManager().getObject(objectID) != nullptr) {
+    for (auto objectID : newGroupList) {
+        if (currentGame->getObjectManager().getObject(objectID) != nullptr) {
             selectedLists[groupListIndex].insert(objectID);
         }
     }
 
-    if((pNetworkManager != nullptr) && (pLocalPlayer == this)) {
+    if ((pNetworkManager != nullptr) && (pLocalPlayer == this)) {
         // the local player has changed his group assignment
         pNetworkManager->sendSelectedList(selectedLists[groupListIndex], groupListIndex);
     }
 }
 
 void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
-    if(alreadyShownTutorialHints & (1 << itemID)) {
+    if (alreadyShownTutorialHints & (1 << itemID)) {
         return;
     }
 
     ChatManager& chatManager = currentGame->getGameInterface().getChatManager();
-    switch(itemID) {
+    switch (itemID) {
 
         case Structure_Slab1: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|2#Concrete: Build your buildings on a stable foundation."), pGFXManager->getTinyPicture(TinyPicture_Slab1));
@@ -256,9 +254,9 @@ void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
 
 bool HumanPlayer::hasConcreteOfSize(const Coord& concreteSize) const {
     Coord pos;
-    for(pos.y = 0; pos.y < currentGameMap->getSizeY() - concreteSize.y + 1; pos.y++) {
-        for(pos.x = 0; pos.x < currentGameMap->getSizeX() - concreteSize.x + 1; pos.x++) {
-            if(hasConcreteAtPositionOfSize(pos, concreteSize)) {
+    for (pos.y = 0; pos.y < currentGameMap->getSizeY() - concreteSize.y + 1; pos.y++) {
+        for (pos.x = 0; pos.x < currentGameMap->getSizeX() - concreteSize.x + 1; pos.x++) {
+            if (hasConcreteAtPositionOfSize(pos, concreteSize)) {
                 return true;
             }
         }
@@ -267,14 +265,14 @@ bool HumanPlayer::hasConcreteOfSize(const Coord& concreteSize) const {
 }
 
 bool HumanPlayer::hasConcreteAtPositionOfSize(const Coord& pos, const Coord& concreteSize) const {
-    for(int y = pos.y; y < pos.y + concreteSize.y; y++) {
-        for(int x = pos.x; x < pos.x + concreteSize.x; x++) {
-            if(!currentGameMap->tileExists(x,y)) {
+    for (int y = pos.y; y < pos.y + concreteSize.y; y++) {
+        for (int x = pos.x; x < pos.x + concreteSize.x; x++) {
+            if (!currentGameMap->tileExists(x, y)) {
                 return false;
             }
 
             Tile* pTile = currentGameMap->getTile(x, y);
-            if((pTile->getType() != Terrain_Slab) || (pTile->getOwner() != getHouse()->getHouseID()) || pTile->isBlocked()) {
+            if ((pTile->getType() != Terrain_Slab) || (pTile->getOwner() != getHouse()->getHouseID()) || pTile->isBlocked()) {
                 return false;
             }
         }

@@ -23,7 +23,7 @@
 class Saboteur final : public InfantryBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Saboteur;
-    using parent = InfantryBase;
+    using parent                                = InfantryBase;
 
     Saboteur(uint32_t objectID, const ObjectInitializer& initializer);
     Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer);

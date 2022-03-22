@@ -30,14 +30,15 @@
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
     static std::unique_ptr<DefaultStructureInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<DefaultStructureInterface>{new DefaultStructureInterface{context, objectID}};
+        auto tmp        = std::unique_ptr<DefaultStructureInterface> {new DefaultStructureInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    DefaultStructureInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
-        const auto* const pUIRepair = pGFXManager->getUIGraphic(UI_Repair);
+    DefaultStructureInterface(const GameContext& context, int objectID)
+        : DefaultObjectInterface(context, objectID) {
+        const auto* const pUIRepair        = pGFXManager->getUIGraphic(UI_Repair);
         const auto* const pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 
         repairButton.setTextures(pUIRepair, pUIRepairPressed);
@@ -46,12 +47,12 @@ protected:
         repairButton.setTooltipText(_("Repair this structure (Hotkey: R)"));
         repairButton.setOnClick([&] { OnRepair(); });
 
-        topBox.addWidget(&repairButton, Point(2,2), getTextureSize(pUIRepair));
+        topBox.addWidget(&repairButton, Point(2, 2), getTextureSize(pUIRepair));
     }
 
     void OnRepair() {
         auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
-        if(pStructure != nullptr) {
+        if (pStructure != nullptr) {
             pStructure->handleRepairClick();
         }
     }
@@ -61,12 +62,11 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
 
-        if(pStructure != nullptr) {
-            if(pStructure->getHealth() >= pStructure->getMaxHealth()) {
+        if (pStructure != nullptr) {
+            if (pStructure->getHealth() >= pStructure->getMaxHealth()) {
                 repairButton.setVisible(false);
             } else {
                 repairButton.setVisible(true);
@@ -77,7 +77,7 @@ protected:
         return true;
     }
 
-    PictureButton   repairButton;
+    PictureButton repairButton;
 };
 
 #endif // DEFAULTSTRUCTUREINTERFACE_H

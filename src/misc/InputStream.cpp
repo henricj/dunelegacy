@@ -27,21 +27,21 @@ void InputStream::readBools(bool* pVal1, bool* pVal2, bool* pVal3, bool* pVal4, 
                             bool* pVal8) {
     uint8_t val = readUint8();
 
-    if(pVal1 != nullptr)
+    if (pVal1 != nullptr)
         *pVal1 = ((val & 0x01) != 0);
-    if(pVal2 != nullptr)
+    if (pVal2 != nullptr)
         *pVal2 = ((val & 0x02) != 0);
-    if(pVal3 != nullptr)
+    if (pVal3 != nullptr)
         *pVal3 = ((val & 0x04) != 0);
-    if(pVal4 != nullptr)
+    if (pVal4 != nullptr)
         *pVal4 = ((val & 0x08) != 0);
-    if(pVal5 != nullptr)
+    if (pVal5 != nullptr)
         *pVal5 = ((val & 0x10) != 0);
-    if(pVal6 != nullptr)
+    if (pVal6 != nullptr)
         *pVal6 = ((val & 0x20) != 0);
-    if(pVal7 != nullptr)
+    if (pVal7 != nullptr)
         *pVal7 = ((val & 0x40) != 0);
-    if(pVal8 != nullptr)
+    if (pVal8 != nullptr)
         *pVal8 = ((val & 0x80) != 0);
 }
 
@@ -56,15 +56,15 @@ void InputStream::readUint8Vector(std::vector<uint8_t>& vec) {
     vec.clear();
     const auto size = readUint32();
     vec.reserve(size);
-    for(unsigned int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < size; i++) {
         vec.push_back(readUint8());
     }
 }
 
 std::list<uint32_t> InputStream::readUint32List() {
     std::list<uint32_t> List;
-    const auto          size = readUint32();
-    for(unsigned int i = 0; i < size; i++) {
+    const auto size = readUint32();
+    for (unsigned int i = 0; i < size; i++) {
         List.push_back(readUint32());
     }
     return List;
@@ -74,7 +74,7 @@ void InputStream::readUint32Vector(std::vector<uint32_t>& vec) {
     vec.clear();
     const auto size = readUint32();
     vec.reserve(size);
-    for(unsigned int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < size; i++) {
         vec.push_back(readUint32());
     }
 }
@@ -88,8 +88,8 @@ std::vector<uint32_t> InputStream::readUint32Vector() {
 
 Dune::selected_set_type InputStream::readUint32Set() {
     Dune::selected_set_type retSet;
-    const auto              size = readUint32();
-    for(auto i = decltype(size){0}; i < size; i++) {
+    const auto size = readUint32();
+    for (auto i = decltype(size) {0}; i < size; i++) {
         retSet.insert(readUint32());
     }
     return retSet;

@@ -22,18 +22,22 @@
 #include <SoundPlayer.h>
 #include <globals.h>
 
-TimeoutTrigger::TimeoutTrigger(uint32_t triggerCycleNumber) : Trigger(triggerCycleNumber) { }
+TimeoutTrigger::TimeoutTrigger(uint32_t triggerCycleNumber)
+    : Trigger(triggerCycleNumber) { }
 
-TimeoutTrigger::TimeoutTrigger(InputStream& stream) : Trigger(stream) { }
+TimeoutTrigger::TimeoutTrigger(InputStream& stream)
+    : Trigger(stream) { }
 
 TimeoutTrigger::~TimeoutTrigger() = default;
 
-void TimeoutTrigger::save(OutputStream& stream) const { Trigger::save(stream); }
+void TimeoutTrigger::save(OutputStream& stream) const {
+    Trigger::save(stream);
+}
 
 void TimeoutTrigger::trigger(const GameContext& context) {
     auto& game = context.game;
 
-    if((game.loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
+    if ((game.loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
         // player has won
         game.setGameWon();
         soundPlayer->playVoice(YourMissionIsComplete, pLocalHouse->getHouseID());

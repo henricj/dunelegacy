@@ -20,44 +20,47 @@
 #include <Network/NetworkManager.h>
 
 #include <FileClasses/LoadSavePNG.h>
-#include <misc/string_util.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
+#include <misc/string_util.h>
 
 #include <globals.h>
 
-#include <sand.h>
 #include <main.h>
+#include <sand.h>
 
-
-MenuBase::MenuBase() : Window(0,0,0,0) {
+MenuBase::MenuBase()
+    : Window(0, 0, 0, 0) {
     bAllowQuiting = true;
-    retVal = MENU_QUIT_DEFAULT;
-    bClearScreen = true;
-    quiting = false;
+    retVal        = MENU_QUIT_DEFAULT;
+    bClearScreen  = true;
+    quiting       = false;
 }
 
 MenuBase::~MenuBase() = default;
 
 void MenuBase::quit(int returnVal) {
-    retVal = returnVal;
+    retVal  = returnVal;
     quiting = true;
 }
 
 bool MenuBase::doEventsUntil(const int until) {
-    SDL_Event event{};
+    SDL_Event event {};
 
-    while(!quiting) {
+    while (!quiting) {
         const auto remaining = until - SDL_GetTicks();
 
-        if(remaining <= 0 || remaining >= 32) return true;
+        if (remaining <= 0 || remaining >= 32)
+            return true;
 
-        if(SDL_WaitEventTimeout(&event, remaining)) {
-            if(!doInput(event)) return false;
+        if (SDL_WaitEventTimeout(&event, remaining)) {
+            if (!doInput(event))
+                return false;
 
-            while(SDL_PollEvent(&event)) {
+            while (SDL_PollEvent(&event)) {
                 // check the events
-                if(!doInput(event)) return false;
+                if (!doInput(event))
+                    return false;
             }
         }
     }
@@ -66,24 +69,24 @@ bool MenuBase::doEventsUntil(const int until) {
 }
 
 int MenuBase::showMenu() {
-    SDL_Event event{};
+    SDL_Event event {};
 
     quiting = false;
 
-    while(!quiting) {
+    while (!quiting) {
         const auto frameStart = static_cast<int>(SDL_GetTicks());
 
         update();
 
-        if(pNetworkManager != nullptr) {
+        if (pNetworkManager != nullptr) {
             pNetworkManager->update();
         }
 
-        if(quiting) {
+        if (quiting) {
             return retVal;
         }
 
-        if(bClearScreen) {
+        if (bClearScreen) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
         }
@@ -93,22 +96,24 @@ int MenuBase::showMenu() {
 
         updateFullscreen();
 
-        while(SDL_PollEvent(&event)) {
+        while (SDL_PollEvent(&event)) {
             // check the events
-            if(!doInput(event))
+            if (!doInput(event))
                 break;
         }
 
-        if(!settings.video.frameLimit) continue;
+        if (!settings.video.frameLimit)
+            continue;
 
-        if(!doEventsUntil(frameStart + 32)) break;
+        if (!doEventsUntil(frameStart + 32))
+            break;
     }
 
     return retVal;
 }
 
 void MenuBase::draw() {
-    SDL_Rect clipRect { getPosition().x, getPosition().y, getSize().x, getSize().y };
+    SDL_Rect clipRect {getPosition().x, getPosition().y, getSize().x, getSize().y};
     SDL_RenderSetClipRect(renderer, &clipRect);
 
     Window::draw();
@@ -123,29 +128,29 @@ void MenuBase::draw() {
 void MenuBase::drawSpecificStuff() {
 }
 
-bool MenuBase::doInput(SDL_Event &event) {
+bool MenuBase::doInput(SDL_Event& event) {
     switch (event.type) {
         case (SDL_KEYDOWN): {
             // Look for a keypress
-            switch(event.key.keysym.sym) {
+            switch (event.key.keysym.sym) {
 
                 case SDLK_ESCAPE: {
-                    if((pChildWindow == nullptr) && (bAllowQuiting)) {
+                    if ((pChildWindow == nullptr) && (bAllowQuiting)) {
                         quit();
                     }
                 } break;
 
                 case SDLK_RETURN: {
-                    if(SDL_GetModState() & KMOD_ALT) {
+                    if (SDL_GetModState() & KMOD_ALT) {
                         toggleFullscreen();
                     }
                 } break;
 
                 case SDLK_p: {
-                    if(SDL_GetModState() & KMOD_CTRL) {
+                    if (SDL_GetModState() & KMOD_CTRL) {
                         // fall through to SDLK_PRINT
                     } else {
-                        break;  // do not fall through
+                        break; // do not fall through
                     }
                 } // fall through
 
@@ -155,7 +160,7 @@ bool MenuBase::doInput(SDL_Event &event) {
                 } break;
 
                 case SDLK_TAB: {
-                    if(SDL_GetModState() & KMOD_ALT) {
+                    if (SDL_GetModState() & KMOD_ALT) {
                         SDL_MinimizeWindow(window);
                     }
                 } break;
@@ -167,12 +172,12 @@ bool MenuBase::doInput(SDL_Event &event) {
 
         case SDL_MOUSEMOTION: {
             SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width-1));
-            drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height-1));
+            drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width - 1));
+            drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height - 1));
         } break;
 
         case SDL_QUIT: {
-            if((pChildWindow == nullptr) && (bAllowQuiting)) {
+            if ((pChildWindow == nullptr) && (bAllowQuiting)) {
                 quit();
             }
         } break;

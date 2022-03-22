@@ -21,21 +21,20 @@
 #include <FileClasses/Palette.h>
 #include <misc/SDL2pp.h>
 
-#include <vector>
 #include "GUI/ProgressBar.h"
+#include <vector>
 
-#define INVALID_FRAME ((unsigned int) -1)
+#define INVALID_FRAME ((unsigned int)-1)
 
-class Animation
-{
+class Animation {
 public:
     Animation();
     ~Animation();
 
-    Animation(const Animation &) = delete;
-    Animation(Animation &&) = delete;
-    Animation& operator=(const Animation &) = delete;
-    Animation& operator=(Animation &&) = delete;
+    Animation(const Animation&) = delete;
+    Animation(Animation&&)      = delete;
+    Animation& operator=(const Animation&) = delete;
+    Animation& operator=(Animation&&) = delete;
 
     unsigned int getCurrentFrameNumber();
 
@@ -56,7 +55,7 @@ public:
     const std::vector<sdl2::surface_ptr>& getFrames() { return frames; }
 
     void setFrameRate(double FrameRate) noexcept {
-        if(FrameRate == 0.0) {
+        if (FrameRate == 0.0) {
             frameDurationTime = 1;
         } else {
             frameDurationTime = static_cast<int>(1000.0 / FrameRate);
@@ -76,7 +75,7 @@ public:
     void setPalette(const Palette& newPalette);
 
     void setNumLoops(int loops) noexcept {
-        curFrame = 0;
+        curFrame  = 0;
         loopsLeft = loops;
     }
 
@@ -85,10 +84,10 @@ public:
     }
 
     [[nodiscard]] bool isFinished() const noexcept {
-        if(loopsLeft == -1 || loopsLeft > 0) {
+        if (loopsLeft == -1 || loopsLeft > 0) {
             return false;
         } else {
-            return (curFrame == (frames.size()-1));
+            return (curFrame == (frames.size() - 1));
         }
     }
 
@@ -99,11 +98,11 @@ public:
     [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; }
 
 private:
-    uint32_t                       curFrameStartTime;
-    uint32_t                       frameDurationTime;
-    int                            loopsLeft;
-    unsigned int                   curFrame;
-    unsigned int                   curFrameOverride;
+    uint32_t curFrameStartTime;
+    uint32_t frameDurationTime;
+    int loopsLeft;
+    unsigned int curFrame;
+    unsigned int curFrameOverride;
     std::vector<sdl2::surface_ptr> frames;
     std::vector<sdl2::texture_ptr> frameTextures;
 };

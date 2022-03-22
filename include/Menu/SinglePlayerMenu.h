@@ -19,15 +19,14 @@
 #define SINGLEPLAYERMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/Spacer.h>
 #include <GUI/PictureButton.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/Spacer.h>
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
 
-class SinglePlayerMenu : public MenuBase
-{
+class SinglePlayerMenu : public MenuBase {
 public:
     SinglePlayerMenu();
     ~SinglePlayerMenu() override;
@@ -40,7 +39,6 @@ public:
     void onChildWindowClose(Window* pChildWindow) override;
 
 private:
-
     void onCampaign();
     void onCustom();
     static void onSkirmish();
@@ -49,18 +47,18 @@ private:
     void onCancel();
 
     StaticContainer windowWidget;
-    VBox            menuButtonsVBox;
+    VBox menuButtonsVBox;
 
-    TextButton  campaignButton;
-    TextButton  customButton;
-    TextButton  skirmishButton;
-    TextButton  loadSavegameButton;
-    TextButton  loadReplayButton;
-    TextButton  cancelButton;
+    TextButton campaignButton;
+    TextButton customButton;
+    TextButton skirmishButton;
+    TextButton loadSavegameButton;
+    TextButton loadReplayButton;
+    TextButton cancelButton;
 
-    PictureLabel    planetPicture;
-    PictureLabel    duneLegacy;
-    PictureLabel    buttonBorder;
+    PictureLabel planetPicture;
+    PictureLabel duneLegacy;
+    PictureLabel buttonBorder;
 };
 
-#endif //SINGLEPLAYERMENU_H
+#endif // SINGLEPLAYERMENU_H

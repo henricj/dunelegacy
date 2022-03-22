@@ -23,15 +23,15 @@
 
 #include <gsl/gsl>
 
-#define ROCKFILLER 2        //how many times random generator will try to remove sand "holes" for rock from the map
-#define SPICEFILLER 2       //for spice
+#define ROCKFILLER  2 // how many times random generator will try to remove sand "holes" for rock from the map
+#define SPICEFILLER 2 // for spice
 #define DUNESFILLER 1
 
 class MapGenerator {
 
 public:
     MapGenerator(int sizeX, int sizeY, const Random& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
-        : map(sizeX, sizeY), randGen{random}, rockfields(rockfields),
+        : map(sizeX, sizeY), randGen {random}, rockfields(rockfields),
           spicefields(spicefields) {
         sdl2::log_info("Using random %s", to_hex(randGen.getState()));
 
@@ -48,69 +48,66 @@ public:
     void generateMap() {
         // the whole map shall be of type Terrain_Sand
 
-        for(int i = 0; i < rockfields; i++) {
-            int spotX = randGen.rand(0, map.getSizeX()-1);
-            int spotY = randGen.rand(0, map.getSizeY()-1);
+        for (int i = 0; i < rockfields; i++) {
+            int spotX = randGen.rand(0, map.getSizeX() - 1);
+            int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Rock);
         }
 
-        for(int i = 0; i < ROCKFILLER; i++) {
-            thickSpots(Terrain_Rock); //SPOT ROCK
+        for (int i = 0; i < ROCKFILLER; i++) {
+            thickSpots(Terrain_Rock); // SPOT ROCK
         }
 
         // Spice fields
-        for(int i = 0; i < spicefields; i++) {
-            int spotX = randGen.rand(0, map.getSizeX()-1);
-            int spotY = randGen.rand(0, map.getSizeY()-1);
+        for (int i = 0; i < spicefields; i++) {
+            int spotX = randGen.rand(0, map.getSizeX() - 1);
+            int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Spice);
         }
 
-        for(int i = 0; i < SPICEFILLER; i++) {
+        for (int i = 0; i < SPICEFILLER; i++) {
             thickSpots(Terrain_Spice);
         }
 
-        for(int i = 0; i < SPICEFILLER; i++) {
+        for (int i = 0; i < SPICEFILLER; i++) {
             thickThickSpiceSpots();
         }
 
         // Spice fields
-        for(int i = 0; i < DUNEFIELDS; i++) {
-            int spotX = randGen.rand(0, map.getSizeX()-1);
-            int spotY = randGen.rand(0, map.getSizeY()-1);
+        for (int i = 0; i < DUNEFIELDS; i++) {
+            int spotX = randGen.rand(0, map.getSizeX() - 1);
+            int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Dunes);
         }
 
-        for(int i = 0; i < DUNESFILLER; i++) {
+        for (int i = 0; i < DUNESFILLER; i++) {
             thickSpots(Terrain_Dunes);
         }
 
-        addRockBits(randGen.rand(0,9));
-        addSpiceBlooms(randGen.rand(0,9));
-
-
+        addRockBits(randGen.rand(0, 9));
+        addSpiceBlooms(randGen.rand(0, 9));
     }
 
 private:
-
     bool fixTileCoordinate(int& x, int& y) {
         bool error = false;
 
-        if(x < 0) {
-            x = 0;
+        if (x < 0) {
+            x     = 0;
             error = true;
-        } else if(x >= map.getSizeX()) {
-            x = map.getSizeX() - 1;
+        } else if (x >= map.getSizeX()) {
+            x     = map.getSizeX() - 1;
             error = true;
         }
 
-        if(y < 0) {
-            y = 0;
+        if (y < 0) {
+            y     = 0;
             error = true;
-        } else if(y >= map.getSizeY()) {
-            y = map.getSizeY() - 1;
+        } else if (y >= map.getSizeY()) {
+            y     = map.getSizeY() - 1;
             error = true;
         }
 
@@ -128,7 +125,7 @@ private:
         x--;
         fixTileCoordinate(x, y);
 
-        return (map(x,y) == type);
+        return (map(x, y) == type);
     }
 
     /**
@@ -142,7 +139,7 @@ private:
         x++;
         fixTileCoordinate(x, y);
 
-        return (map(x,y) == type);
+        return (map(x, y) == type);
     }
 
     /**
@@ -156,7 +153,7 @@ private:
         y--;
         fixTileCoordinate(x, y);
 
-        return (map(x,y) == type);
+        return (map(x, y) == type);
     }
 
     /**
@@ -170,7 +167,7 @@ private:
         y++;
         fixTileCoordinate(x, y);
 
-        return (map(x,y) == type);
+        return (map(x, y) == type);
     }
 
     /**
@@ -184,40 +181,42 @@ private:
         // Check at 4 sides for 'tile'
         int flag = 0;
 
-        if(onLeft(x, y, type))      flag++;
-        if(onRight(x, y, type))     flag++;
-        if(onUp(x, y, type))        flag++;
-        if(onDown(x, y, type))      flag++;
+        if (onLeft(x, y, type))
+            flag++;
+        if (onRight(x, y, type))
+            flag++;
+        if (onUp(x, y, type))
+            flag++;
+        if (onDown(x, y, type))
+            flag++;
 
         return flag;
     }
-
-
 
     /**
         Removes holes in rock and spice
         \param type  the type to remove holes from
     */
     void thickSpots(TERRAINTYPE type) {
-        for(int i = 0; i < map.getSizeX(); i++) {
-            for(int j = 0; j < map.getSizeY(); j++) {
-                if(map(i,j) != type) {
+        for (int i = 0; i < map.getSizeX(); i++) {
+            for (int j = 0; j < map.getSizeY(); j++) {
+                if (map(i, j) != type) {
                     // Found something else than what thickining
 
-                    if(side4(i, j, type) >= 3) {
+                    if (side4(i, j, type) >= 3) {
                         // Seems enough of the type around it so make this also of this type
-                        for(int m=0; m < mapMirror->getSize(); m++) {
-                            Coord position = mapMirror->getCoord(Coord(i, j), m);
-                            map(position.x,position.y) = type;
+                        for (int m = 0; m < mapMirror->getSize(); m++) {
+                            Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                            map(position.x, position.y) = type;
                         }
                     }
 
-                    if(side4(i, j, type) == 2) {
+                    if (side4(i, j, type) == 2) {
                         // Gamble, fifty fifty... set this type or not?
-                        if(randGen.rand(0,1) == 1) {
-                            for(int m=0; m < mapMirror->getSize(); m++) {
-                                Coord position = mapMirror->getCoord(Coord(i, j), m);
-                                map(position.x,position.y) = type;
+                        if (randGen.rand(0, 1) == 1) {
+                            for (int m = 0; m < mapMirror->getSize(); m++) {
+                                Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                                map(position.x, position.y) = type;
                             }
                         }
                     }
@@ -226,33 +225,32 @@ private:
         }
     }
 
-
     /**
         Removes holes in thick spice
     */
     void thickThickSpiceSpots() {
-        for(int i = 0; i < map.getSizeX(); i++) {
-            for(int j = 0; j < map.getSizeY(); j++) {
+        for (int i = 0; i < map.getSizeX(); i++) {
+            for (int j = 0; j < map.getSizeY(); j++) {
 
-                int numSpiceTiles = side4(i,j,Terrain_Spice)+side4(i,j,Terrain_ThickSpice);
+                int numSpiceTiles = side4(i, j, Terrain_Spice) + side4(i, j, Terrain_ThickSpice);
 
-                if(map(i,j) != Terrain_ThickSpice && (numSpiceTiles>=4)) {
+                if (map(i, j) != Terrain_ThickSpice && (numSpiceTiles >= 4)) {
                     // Found something else than what thickining
 
-                    if(side4(i, j, Terrain_ThickSpice) >= 3) {
+                    if (side4(i, j, Terrain_ThickSpice) >= 3) {
                         // Seems enough of ThickSpice around it so make this also ThickSpice
-                        for(int m=0; m < mapMirror->getSize(); m++) {
-                            Coord position = mapMirror->getCoord(Coord(i, j), m);
-                            map(position.x,position.y) = Terrain_ThickSpice;
+                        for (int m = 0; m < mapMirror->getSize(); m++) {
+                            Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                            map(position.x, position.y) = Terrain_ThickSpice;
                         }
                     }
 
-                    if(side4(i, j, Terrain_ThickSpice) == 2) {
+                    if (side4(i, j, Terrain_ThickSpice) == 2) {
                         // Gamble, fifty fifty... set this to ThickSpice or not?
-                        if(randGen.rand(0,1) == 1) {
-                            for(int m=0; m < mapMirror->getSize(); m++) {
-                                Coord position = mapMirror->getCoord(Coord(i, j), m);
-                                map(position.x,position.y) = Terrain_ThickSpice;
+                        if (randGen.rand(0, 1) == 1) {
+                            for (int m = 0; m < mapMirror->getSize(); m++) {
+                                Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                                map(position.x, position.y) = Terrain_ThickSpice;
                             }
                         }
                     }
@@ -268,54 +266,51 @@ private:
         \param type      type of the spot
     */
     void makeSpot(int x, int y, TERRAINTYPE type) {
-        int spotSize = (640 * map.getSizeX()*map.getSizeY())/(64*64);
-        for(int j = 0; j < spotSize; j++) {
-            int dir = randGen.rand(0,3);    // Random Dir
+        int spotSize = (640 * map.getSizeX() * map.getSizeY()) / (64 * 64);
+        for (int j = 0; j < spotSize; j++) {
+            int dir = randGen.rand(0, 3); // Random Dir
 
-            switch(dir) {
-                case 0 : x--; break;
-                case 1 : x++; break;
-                case 2 : y--; break;
-                case 3 : y++; break;
+            switch (dir) {
+                case 0: x--; break;
+                case 1: x++; break;
+                case 2: y--; break;
+                case 3: y++; break;
             }
 
             fixTileCoordinate(x, y);
 
             TERRAINTYPE type2Place = type;
 
-            if(type == Terrain_Spice) {
-                if(map(x,y) == Terrain_Rock) {
+            if (type == Terrain_Spice) {
+                if (map(x, y) == Terrain_Rock) {
                     // Do not place the spice spot, priority is ROCK!
                     continue;
-                } if((map(x,y) == Terrain_Spice) && ((side4(x,y,Terrain_Spice)+side4(x,y,Terrain_ThickSpice)) >= 4)) {
+                }
+                if ((map(x, y) == Terrain_Spice) && ((side4(x, y, Terrain_Spice) + side4(x, y, Terrain_ThickSpice)) >= 4)) {
 
                     // "upgrade" spice to thick spice
 
                     type2Place = Terrain_ThickSpice;
 
-                } else if(map(x,y) == Terrain_ThickSpice) {
+                } else if (map(x, y) == Terrain_ThickSpice) {
 
                     // do not "downgrade" thick spice to spice
 
                     type2Place = Terrain_ThickSpice;
-
                 }
-            } else if(type == Terrain_Dunes) {
-                if(map(x,y) != Terrain_Sand) {
+            } else if (type == Terrain_Dunes) {
+                if (map(x, y) != Terrain_Sand) {
                     // Do not place the dunes spot, priority is ROCK and SPICE!
                     continue;
                 }
             }
 
-
-
-            for(int m=0; m < mapMirror->getSize(); m++) {
-                Coord position = mapMirror->getCoord(Coord(x, y), m);
-                map(position.x,position.y) = type2Place;
+            for (int m = 0; m < mapMirror->getSize(); m++) {
+                Coord position              = mapMirror->getCoord(Coord(x, y), m);
+                map(position.x, position.y) = type2Place;
             }
         }
     }
-
 
     /**
         Adds amount number of rock tiles to the map
@@ -323,14 +318,14 @@ private:
     */
     void addRockBits(int amount) {
         int done = 0;
-        for(int j = 0; (done < amount) && (j < 1000) ; j++) {
-            int spotX = randGen.rand(0, map.getSizeX()-1);
-            int spotY = randGen.rand(0, map.getSizeY()-1);
+        for (int j = 0; (done < amount) && (j < 1000); j++) {
+            int spotX = randGen.rand(0, map.getSizeX() - 1);
+            int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            if(map(spotX, spotY) == Terrain_Sand) {
-                for(int m=0; m < mapMirror->getSize(); m++) {
-                    Coord position = mapMirror->getCoord(Coord(spotX, spotY), m);
-                    map(position.x,position.y) = Terrain_Rock;
+            if (map(spotX, spotY) == Terrain_Sand) {
+                for (int m = 0; m < mapMirror->getSize(); m++) {
+                    Coord position              = mapMirror->getCoord(Coord(spotX, spotY), m);
+                    map(position.x, position.y) = Terrain_Rock;
                 }
                 done++;
             }
@@ -343,14 +338,14 @@ private:
     */
     void addSpiceBlooms(int amount) {
         int done = 0;
-        for(int j = 0; (done < amount) && (j < 1000) ; j++) {
-            int spotX = randGen.rand(0, map.getSizeX()-1);
-            int spotY = randGen.rand(0, map.getSizeY()-1);
+        for (int j = 0; (done < amount) && (j < 1000); j++) {
+            int spotX = randGen.rand(0, map.getSizeX() - 1);
+            int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            if(map(spotX, spotY) == Terrain_Sand) {
-                for(int m=0; m < mapMirror->getSize(); m++) {
-                    Coord position = mapMirror->getCoord(Coord(spotX, spotY), m);
-                    map(position.x,position.y) = Terrain_SpiceBloom;
+            if (map(spotX, spotY) == Terrain_Sand) {
+                for (int m = 0; m < mapMirror->getSize(); m++) {
+                    Coord position              = mapMirror->getCoord(Coord(spotX, spotY), m);
+                    map(position.x, position.y) = Terrain_SpiceBloom;
                 }
                 done++;
             }
@@ -361,12 +356,12 @@ private:
     MapData map;
 
     RandomFactory randomFactory;
-    Random        randGen;
+    Random randGen;
 
     int rockfields;
     int spicefields;
 
-    std::unique_ptr<MapMirror>      mapMirror;
+    std::unique_ptr<MapMirror> mapMirror;
 };
 
 /**
@@ -384,9 +379,9 @@ MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields, in
 
     // Using zero will leave the factory initialized from std::random_device
     if (randSeed) {
-        const std::array<uint8_t, 4> seed{static_cast<uint8_t>(randSeed & 0xff), static_cast<uint8_t>((randSeed >> 8) & 0xff),
-                                        static_cast<uint8_t>((randSeed >> 16) & 0xff),
-                                        static_cast<uint8_t>((randSeed >> 24) & 0xff)};
+        const std::array<uint8_t, 4> seed {static_cast<uint8_t>(randSeed & 0xff), static_cast<uint8_t>((randSeed >> 8) & 0xff),
+                                           static_cast<uint8_t>((randSeed >> 16) & 0xff),
+                                           static_cast<uint8_t>((randSeed >> 24) & 0xff)};
 
         randomFactory.setSeed(seed);
     }

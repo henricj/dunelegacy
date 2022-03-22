@@ -24,12 +24,12 @@
 
 struct StructureSmoke {
     StructureSmoke(const Coord& pos, uint32_t gameCycle)
-     : realPos(pos), startGameCycle(gameCycle) {
+        : realPos(pos), startGameCycle(gameCycle) {
     }
 
     explicit StructureSmoke(InputStream& stream) {
-        realPos.x = stream.readSint32();
-        realPos.y = stream.readSint32();
+        realPos.x      = stream.readSint32();
+        realPos.y      = stream.readSint32();
         startGameCycle = stream.readUint32();
     }
 
@@ -39,16 +39,14 @@ struct StructureSmoke {
         stream.writeUint32(startGameCycle);
     }
 
-    Coord    realPos;
+    Coord realPos;
     uint32_t startGameCycle;
 };
 
-class StructureBaseConstants : public ObjectBaseConstants
-{
+class StructureBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit StructureBaseConstants(ItemID_enum itemID, Coord structureSize)
-        : ObjectBaseConstants(itemID), structureSize{structureSize}
-    {
+        : ObjectBaseConstants(itemID), structureSize {structureSize} {
         aStructure_ = true;
     }
 
@@ -59,26 +57,24 @@ private:
     Coord structureSize; ///< The size of this structure in tile coordinates (e.g. (3,2) for a refinery)
 };
 
-class StructureBase : public ObjectBase
-{
+class StructureBase : public ObjectBase {
 public:
     using parent = ObjectBase;
 
 protected:
     StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID, const ObjectInitializer& initializer);
-    StructureBase(const StructureBaseConstants&  structure_constants, uint32_t objectID,
+    StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
                   const ObjectStreamInitializer& initializer);
 
-    const StructureBaseConstants& structure_constants() const noexcept
-    { return *static_cast<const StructureBaseConstants*>(&constants_); }
+    const StructureBaseConstants& structure_constants() const noexcept { return *static_cast<const StructureBaseConstants*>(&constants_); }
 
 public:
     virtual ~StructureBase() = 0;
 
-    StructureBase(const StructureBase &) = delete;
-    StructureBase(StructureBase &&) = delete;
-    StructureBase& operator=(const StructureBase &) = delete;
-    StructureBase& operator=(StructureBase &&) = delete;
+    StructureBase(const StructureBase&) = delete;
+    StructureBase(StructureBase&&)      = delete;
+    StructureBase& operator=(const StructureBase&) = delete;
+    StructureBase& operator=(StructureBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -90,8 +86,8 @@ public:
     void destroy(const GameContext& context) override;
     void cleanup(const GameContext& context, HumanPlayer* humanPlayer) override;
 
-    void         drawSelectionBox() override;
-    void         drawOtherPlayerSelectionBox() override;
+    void drawSelectionBox() override;
+    void drawOtherPlayerSelectionBox() override;
     virtual void drawGatheringPointLine();
 
     Coord getCenterPoint() const override;
@@ -151,7 +147,7 @@ public:
 
     void addSmoke(const Coord& pos, uint32_t gameCycle) {
         const auto iter = std::upper_bound(std::begin(smoke), std::end(smoke), pos,
-            [](const Coord& p, const StructureSmoke& s) { return p.y < s.realPos.y; });
+                                           [](const Coord& p, const StructureSmoke& s) { return p.y < s.realPos.y; });
 
         if (iter != std::end(smoke) && iter->realPos == pos) {
             iter->startGameCycle = gameCycle;
@@ -170,41 +166,41 @@ protected:
     */
     virtual void updateStructureSpecificStuff(const GameContext& context) { }
 
-
     // structure state
-    bool    repairing;          ///< currently repairing?
-    int     degradeTimer;       ///< after which time of insufficient power should we degrade this building again
+    bool repairing;   ///< currently repairing?
+    int degradeTimer; ///< after which time of insufficient power should we degrade this building again
 
     // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden building disappear when being destroyed)
-    bool        fogged;             ///< Currently fogged?
-    int         lastVisibleFrame;   ///< store picture drawn before fogged
+    bool fogged;          ///< Currently fogged?
+    int lastVisibleFrame; ///< store picture drawn before fogged
 
     // drawing information
-    int     justPlacedTimer;          ///< When the structure is justed placed, we draw some special graphic
-    std::vector<StructureSmoke> smoke;  ///< A vector containing all the smoke for this structure
+    int justPlacedTimer;               ///< When the structure is justed placed, we draw some special graphic
+    std::vector<StructureSmoke> smoke; ///< A vector containing all the smoke for this structure
 
-    int     firstAnimFrame;     ///< First frame of the current animation
-    int     lastAnimFrame;      ///< Last frame of the current animation
-    int     curAnimFrame;       ///< The current frame of the current animation
-    int     animationCounter;   ///< When to show the next animation frame?
+    int firstAnimFrame;   ///< First frame of the current animation
+    int lastAnimFrame;    ///< Last frame of the current animation
+    int curAnimFrame;     ///< The current frame of the current animation
+    int animationCounter; ///< When to show the next animation frame?
 
 private:
     void init();
 };
 
-
 template<>
 inline StructureBase* dune_cast(ObjectBase* base) {
-    if(base && base->isAStructure()) return static_cast<StructureBase*>(base);
+    if (base && base->isAStructure())
+        return static_cast<StructureBase*>(base);
 
     return nullptr;
 }
 
 template<>
 inline const StructureBase* dune_cast(const ObjectBase* base) {
-    if(base && base->isAStructure()) return static_cast<const StructureBase*>(base);
+    if (base && base->isAStructure())
+        return static_cast<const StructureBase*>(base);
 
     return nullptr;
 }
 
-#endif //STRUCTUREBASE_H
+#endif // STRUCTUREBASE_H

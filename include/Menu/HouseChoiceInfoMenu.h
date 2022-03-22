@@ -23,7 +23,7 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/dune/AnimationLabel.h>
 
-#define MENU_QUIT_HOUSECHOICE_YES   (1)
+#define MENU_QUIT_HOUSECHOICE_YES (1)
 
 class HouseChoiceInfoMenu : public MentatMenu {
 public:
@@ -33,14 +33,15 @@ public:
     void onMentatTextFinished() override;
 
     void drawSpecificStuff() override;
+
 private:
     void onYes();
     void onNo();
 
-    AnimationLabel  planetAnimation;
-    PictureLabel    questionLabel;
-    PictureButton   yesButton;
-    PictureButton   noButton;
+    AnimationLabel planetAnimation;
+    PictureLabel questionLabel;
+    PictureButton yesButton;
+    PictureButton noButton;
 };
 
 #endif // HOUSECHOICEINFOMENU_H

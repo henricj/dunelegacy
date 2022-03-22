@@ -22,9 +22,8 @@
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 
-namespace
-{
-const BuilderBaseConstants barracks_constants{Barracks::item_id, Coord{2, 2}};
+namespace {
+const BuilderBaseConstants barracks_constants {Barracks::item_id, Coord {2, 2}};
 }
 
 Barracks::Barracks(uint32_t objectID, const ObjectInitializer& initializer)
@@ -42,12 +41,12 @@ Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer
 void Barracks::init() {
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_Barracks,
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
+    graphicID      = ObjPic_Barracks,
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 4;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 Barracks::~Barracks() = default;

@@ -25,7 +25,7 @@
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
 namespace {
-constexpr StructureBaseConstants silo_constants{Silo::item_id, Coord{2, 2}};
+constexpr StructureBaseConstants silo_constants {Silo::item_id, Coord {2, 2}};
 }
 
 Silo::Silo(uint32_t objectID, const ObjectInitializer& initializer)
@@ -44,18 +44,19 @@ void Silo::init() {
     assert(itemID == Structure_Silo);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_Silo;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 4;
-    numImagesY = 1;
+    graphicID      = ObjPic_Silo;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 4;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 Silo::~Silo() = default;
 
 std::unique_ptr<ObjectInterface> Silo::getInterfaceContainer(const GameContext& context) {
-    if((pLocalHouse == owner) || (debug)) { return RefineryAndSiloInterface::create(context, objectID); }
+    if ((pLocalHouse == owner) || (debug)) {
+        return RefineryAndSiloInterface::create(context, objectID);
+    }
     return DefaultObjectInterface::create(context, objectID);
 }
-

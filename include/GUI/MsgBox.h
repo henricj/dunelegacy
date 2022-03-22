@@ -18,30 +18,29 @@
 #ifndef MSGBOX_H
 #define MSGBOX_H
 
-#include "Window.h"
 #include "Button.h"
+#include "GUIStyle.h"
+#include "HBox.h"
 #include "Label.h"
 #include "Spacer.h"
-#include "GUIStyle.h"
-#include "Widget.h"
 #include "VBox.h"
-#include "HBox.h"
+#include "Widget.h"
+#include "Window.h"
 #include <misc/SDL2pp.h>
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 /// A simple class for a message box
 class MsgBox : public Window {
 public:
-
     /**
         This method sets a new text for this message box.
         \param  text The new text for this message box
     */
     virtual void setText(const std::string& text) {
         textLabel.setText(text);
-        resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
+        resize(std::max(vbox.getMinimumSize().x, 120), vbox.getMinimumSize().y);
     }
 
     /**
@@ -65,9 +64,8 @@ public:
         called if the new size is a valid size for this message box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -77,25 +75,23 @@ public:
         \param  width   the new width of this message box
         \param  height  the new height of this message box
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        Window::resize(width,height);
-        position.x = (getRendererWidth() - getSize().x)/2;
-        position.y = (getRendererHeight() - getSize().y)/2;
+    void resize(uint32_t width, uint32_t height) override {
+        Window::resize(width, height);
+        position.x = (getRendererWidth() - getSize().x) / 2;
+        position.y = (getRendererHeight() - getSize().y) / 2;
     }
 
     /**
         This method is called by the window widget if it requests a resizing of
         this window.
     */
-    void resizeAll() override
-    {
+    void resizeAll() override {
         // MsgBox should get bigger if content changes
-        if(pWindowWidget != nullptr) {
+        if (pWindowWidget != nullptr) {
             Point newSize = pWindowWidget->getMinimumSize();
-            newSize.x = std::max(newSize.x,120);
-            newSize.y = std::max(newSize.y,30);
-            resize(newSize.x,newSize.y);
+            newSize.x     = std::max(newSize.x, 120);
+            newSize.y     = std::max(newSize.y, 30);
+            resize(newSize.x, newSize.y);
         }
     }
 
@@ -107,7 +103,7 @@ public:
         \return The new message box (will be automatically destroyed when it's closed)
     */
     static MsgBox* create(const std::string& text) {
-        auto* msgbox = new MsgBox(text);
+        auto* msgbox       = new MsgBox(text);
         msgbox->pAllocated = true;
         return msgbox;
     }
@@ -117,7 +113,7 @@ protected:
         \param  text    Text of this message box
     */
     explicit MsgBox(const std::string& text)
-     : Window(50,50,50,50) {
+        : Window(50, 50, 50, 50) {
         init(text);
     }
 
@@ -154,16 +150,16 @@ private:
     */
     virtual void onOK() {
         auto* pParentWindow = dynamic_cast<Window*>(getParent());
-        if(pParentWindow != nullptr) {
+        if (pParentWindow != nullptr) {
             pParentWindow->closeChildWindow();
         }
     }
 
-    VBox vbox;                  ///< vertical box
-    HBox hbox;                  ///< horizontal box
-    VBox vbox2;                 ///< inner vertical box;
-    Label textLabel;            ///< label that contains the text
-    TextButton okbutton;        ///< the ok button
+    VBox vbox;           ///< vertical box
+    HBox hbox;           ///< horizontal box
+    VBox vbox2;          ///< inner vertical box;
+    Label textLabel;     ///< label that contains the text
+    TextButton okbutton; ///< the ok button
 };
 
 #endif // MSGBOX_H

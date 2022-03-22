@@ -18,28 +18,27 @@
 #ifndef LOADSAVEWINDOW_H
 #define LOADSAVEWINDOW_H
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/TextBox.h>
-#include <GUI/ListBox.h>
-#include <GUI/Label.h>
 #include <Definitions.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
+#include <GUI/ListBox.h>
+#include <GUI/TextBox.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 
 #include <string>
 #include <vector>
 
-class LoadSaveWindow : public Window
-{
+class LoadSaveWindow : public Window {
 public:
     LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
     ~LoadSaveWindow() override;
 
-    LoadSaveWindow(const LoadSaveWindow &) = delete;
-    LoadSaveWindow(LoadSaveWindow &&) = delete;
-    LoadSaveWindow& operator=(const LoadSaveWindow &) = delete;
-    LoadSaveWindow& operator=(LoadSaveWindow &&) = delete;
+    LoadSaveWindow(const LoadSaveWindow&) = delete;
+    LoadSaveWindow(LoadSaveWindow&&)      = delete;
+    LoadSaveWindow& operator=(const LoadSaveWindow&) = delete;
+    LoadSaveWindow& operator=(LoadSaveWindow&&) = delete;
 
     void updateEntries();
     std::filesystem::path getFilename() const noexcept { return filename; }
@@ -82,7 +81,7 @@ public:
         std::vector<std::string> directoryTitles;
         directoryTitles.emplace_back("");
 
-        auto* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
+        auto* dlg       = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
         dlg->pAllocated = true;
         return dlg;
     }
@@ -102,42 +101,42 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
-        auto* dlg = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
+        auto* dlg       = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
         dlg->pAllocated = true;
         return dlg;
     }
 
 private:
     void onOK();
-    void onCancel() ;
+    void onCancel();
 
     void onDirectoryChange(int i);
 
     void onSelectionChange(bool bInteractive);
 
-    HBox    mainHBox;
-    VBox    mainVBox;
+    HBox mainHBox;
+    VBox mainVBox;
 
-    HBox    directoryHBox;
-    HBox    fileListHBox;
+    HBox directoryHBox;
+    HBox fileListHBox;
 
-    HBox    buttonHBox;
+    HBox buttonHBox;
     std::vector<TextButton> directoryButtons;
 
-    Label       titleLabel;
-    ListBox     fileList;
-    TextButton  okButton;
-    TextButton  cancelButton;
-    TextBox     saveName;
+    Label titleLabel;
+    ListBox fileList;
+    TextButton okButton;
+    TextButton cancelButton;
+    TextBox saveName;
 
-    bool                               bSaveWindow;
-    std::filesystem::path              filename;
+    bool bSaveWindow;
+    std::filesystem::path filename;
     std::vector<std::filesystem::path> directories;
-    std::vector<std::string>           directoryTitles;
-    std::string                        extension;
-    int                                currentDirectoryIndex;
-    std::string                        preselectedFile;
-    uint32_t                           color;
+    std::vector<std::string> directoryTitles;
+    std::string extension;
+    int currentDirectoryIndex;
+    std::string preselectedFile;
+    uint32_t color;
 };
 
-#endif //LOADSAVEWINDOW_H
+#endif // LOADSAVEWINDOW_H

@@ -39,16 +39,15 @@ public:
     */
     ObjectManager();
 
-    ObjectManager(const ObjectManager &) = delete;
-    ObjectManager(ObjectManager &&) = delete;
-    ObjectManager& operator=(const ObjectManager &) = delete;
-    ObjectManager& operator=(ObjectManager &&) = delete;
+    ObjectManager(const ObjectManager&) = delete;
+    ObjectManager(ObjectManager&&)      = delete;
+    ObjectManager& operator=(const ObjectManager&) = delete;
+    ObjectManager& operator=(ObjectManager&&) = delete;
 
     /**
         Default destructor
     */
     ~ObjectManager();
-
 
     /**
         Saves all objects to a stream
@@ -70,7 +69,8 @@ public:
     [[nodiscard]] ObjectBase* getObject(uint32_t objectID) const {
         const auto iter = objectMap.find(objectID);
 
-        if(iter == objectMap.end()) return nullptr;
+        if (iter == objectMap.end())
+            return nullptr;
 
         return iter->second.get();
     }
@@ -95,7 +95,8 @@ public:
     bool removeObject(uint32_t objectID) {
         const auto iter = objectMap.find(objectID);
 
-        if(iter == objectMap.end()) return false;
+        if (iter == objectMap.end())
+            return false;
 
         pendingDelete.push(std::move(iter->second));
 
@@ -128,21 +129,21 @@ public:
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
         auto object = ObjectBase::createObject(itemID, nextFreeObjectID, initializer);
-        if(!object) {
+        if (!object) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() could not build item type %d",
-                         itemID);
+                            itemID);
             return nullptr;
         }
 
         auto* const pObject = dune_cast<ObjectType>(object.get());
-        if(!pObject) {
+        if (!pObject) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() created the wrong type of object for build item type %d", itemID);
             return nullptr;
         }
 
-        if(!addObject(std::move(object))) {
+        if (!addObject(std::move(object))) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
-                         "createObjectFromItemId() unable to add object of item type %d", itemID);
+                            "createObjectFromItemId() unable to add object of item type %d", itemID);
             return nullptr;
         }
 
@@ -151,7 +152,7 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
-        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer &>::value,
+        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer&>::value,
                       "ObjectType is not constructible");
         static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
 
@@ -164,12 +165,12 @@ private:
         \param  pObject A pointer to the object.
         \return ObjectID of the added object.
     */
-    bool                               addObject(std::unique_ptr<ObjectBase> pObject);
+    bool addObject(std::unique_ptr<ObjectBase> pObject);
     static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
 
-    uint32_t                                nextFreeObjectID = 1;
-    ObjectMap                               objectMap;
+    uint32_t nextFreeObjectID = 1;
+    ObjectMap objectMap;
     std::queue<std::unique_ptr<ObjectBase>> pendingDelete;
 };
 
-#endif //OBJECTMANAGER_H
+#endif // OBJECTMANAGER_H

@@ -13,7 +13,7 @@ public:
 
     ~DuneTileTexture() = default;
 
-    DuneTileTexture&  operator=(const DuneTileTexture&) = default;
+    DuneTileTexture& operator=(const DuneTileTexture&) = default;
     DuneTileTexture& operator=(DuneTileTexture&&) = default;
 
     operator bool() const noexcept { return nullptr != texture_; }
@@ -22,17 +22,18 @@ public:
     void draw(SDL_Renderer* renderer, int x, int y, double angle, int column, int row = 0) const noexcept;
 
 private:
-
     [[nodiscard]] SDL_Rect source_rect(int column, int row = 0) const {
 #if _DEBUG
-        if(column < 0 || column >= columns_) THROW(std::invalid_argument, "Column out of range (%d)!", column);
-        if(row < 0 || row * columns_ > source_.size()) THROW(std::invalid_argument, "Row out of range (%d)!", column);
+        if (column < 0 || column >= columns_)
+            THROW(std::invalid_argument, "Column out of range (%d)!", column);
+        if (row < 0 || row * columns_ > source_.size())
+            THROW(std::invalid_argument, "Row out of range (%d)!", column);
 #endif
         return source_.at(column + row * columns_).as_sdl();
     }
 
-    SDL_Texture*                 texture_{};
-    int                          columns_;
+    SDL_Texture* texture_ {};
+    int columns_;
     std::vector<DuneTextureRect> source_;
 };
 

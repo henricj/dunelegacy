@@ -18,14 +18,13 @@
 #ifndef INGAMEMENU_H
 #define INGAMEMENU_H
 
-#include <GUI/Window.h>
 #include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/TextButton.h>
 #include <GUI/Spacer.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 
-class InGameMenu : public Window
-{
+class InGameMenu : public Window {
 public:
     InGameMenu(bool bMultiplayer, int color);
     ~InGameMenu() override;
@@ -55,16 +54,15 @@ private:
     bool bMultiplayer;
     int color;
 
-    HBox    mainHBox;
-    VBox    mainVBox;
+    HBox mainHBox;
+    VBox mainVBox;
 
-    TextButton  resumeButton;
-    TextButton  gameSettingsButton;
-    TextButton  restartGameButton;
-    TextButton  saveGameButton;
-    TextButton  loadGameButton;
-    TextButton  quitButton;
+    TextButton resumeButton;
+    TextButton gameSettingsButton;
+    TextButton restartGameButton;
+    TextButton saveGameButton;
+    TextButton loadGameButton;
+    TextButton quitButton;
 };
-
 
 #endif // INGAMEMENU_H

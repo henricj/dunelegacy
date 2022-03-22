@@ -20,11 +20,10 @@
 
 #include <units/GroundUnit.h>
 
-class Quad final : public GroundUnit
-{
+class Quad final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Quad;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     Quad(uint32_t objectID, const ObjectInitializer& initializer);
     Quad(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +39,4 @@ private:
     void init();
 };
 
-#endif //QUAD_H
+#endif // QUAD_H

@@ -20,11 +20,11 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
 
 namespace {
-const BuilderBaseConstants heavy_factory_constants{HeavyFactory::item_id, Coord{3, 2}};
+const BuilderBaseConstants heavy_factory_constants {HeavyFactory::item_id, Coord {3, 2}};
 }
 
 HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer)
@@ -43,39 +43,39 @@ void HeavyFactory::init() {
     assert(itemID == Structure_HeavyFactory);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_HeavyFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 8;
-    numImagesY = 1;
+    graphicID      = ObjPic_HeavyFactory;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 8;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 HeavyFactory::~HeavyFactory() = default;
 
 void HeavyFactory::doBuildRandom(const GameContext& context) {
-    if(isAllowedToUpgrade() && (getUpgradeCost(context) <= owner->getCredits())) {
+    if (isAllowedToUpgrade() && (getUpgradeCost(context) <= owner->getCredits())) {
         doUpgrade(context);
         return;
     }
 
-    if(!buildList.empty()) {
+    if (!buildList.empty()) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size())-1))->itemID;
-        } while((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
+            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
+        } while ((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
         doProduceItem(item2Produce);
     }
 }
 
 void HeavyFactory::updateStructureSpecificStuff(const GameContext& context) {
-    if(deployTimer > 0) {
+    if (deployTimer > 0) {
         firstAnimFrame = 4;
-        lastAnimFrame = 5;
+        lastAnimFrame  = 5;
     } else {
         firstAnimFrame = 2;
-        lastAnimFrame = 3;
+        lastAnimFrame  = 3;
     }
 }

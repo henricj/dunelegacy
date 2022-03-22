@@ -19,13 +19,12 @@
 #define PICTURELABEL_H
 
 #include "Widget.h"
-#include <misc/draw_util.h>
 #include <misc/SDL2pp.h>
+#include <misc/draw_util.h>
 
 /// A class for showing a static picture
 class PictureLabel : public Widget {
 public:
-
     /// default constructor
     PictureLabel();
 
@@ -37,10 +36,10 @@ public:
         \param  pSurface    This surface is shown
     */
     virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
-        localTexture_.reset();  // Free the old one before we try to create another.
+        localTexture_.reset(); // Free the old one before we try to create another.
         localTexture_ = convertSurfaceToTexture(pSurface.get());
 
-        privateDuneTexture_ = DuneTexture{localTexture_.get()};
+        privateDuneTexture_ = DuneTexture {localTexture_.get()};
 
         setTexture(&privateDuneTexture_);
     }
@@ -52,13 +51,14 @@ public:
     virtual void setTexture(const DuneTexture* pTexture) {
         this->pTexture = pTexture;
 
-        if(this->pTexture) {
+        if (this->pTexture) {
             resize(getTextureSize(this->pTexture));
         } else {
-            resize(0,0);
+            resize(0, 0);
         }
 
-        if(this->pTexture->texture_ != localTexture_.get()) localTexture_.reset();
+        if (this->pTexture->texture_ != localTexture_.get())
+            localTexture_.reset();
     }
 
     /**
@@ -67,7 +67,9 @@ public:
         \return the minimum size of this picture label
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        if(pTexture) { return getTextureSize(pTexture); }
+        if (pTexture) {
+            return getTextureSize(pTexture);
+        }
 
         return Point(0, 0);
     }
@@ -76,24 +78,22 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override
-    {
-        if(isVisible() == false) {
+    void draw(Point position) override {
+        if (isVisible() == false) {
             return;
         }
 
-        if(!pTexture) {
+        if (!pTexture) {
             return;
         }
 
         pTexture->draw(renderer, position.x, position.y);
     }
 
-
 private:
-    const DuneTexture* pTexture{};  ///< The texture that is shown
-    sdl2::texture_ptr  localTexture_;
-    DuneTexture        privateDuneTexture_;
+    const DuneTexture* pTexture {}; ///< The texture that is shown
+    sdl2::texture_ptr localTexture_;
+    DuneTexture privateDuneTexture_;
 };
 
 #endif // PICTURELABEL_H

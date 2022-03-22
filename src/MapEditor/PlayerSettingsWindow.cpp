@@ -30,11 +30,10 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
+    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
-
-PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse) : Window(0,0,0,0), pMapEditor(pMapEditor), house(currentHouse) {
-
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
@@ -58,7 +57,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainVBox.addWidget(&centralVBox, 360);
 
     auto& players = pMapEditor->getPlayers();
-    for(int i = 0; i < players.size(); i++) {
+    for (int i = 0; i < players.size(); i++) {
 
         const auto& playerInfo = players[i];
 
@@ -68,25 +67,25 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         playerWidgets[i].playerCheckbox.setTextColor(currentColor);
         playerWidgets[i].playerCheckbox.setOnClick(std::bind(&PlayerSettingsWindow::onPlayerCheckbox, this, i));
-        if(pMapEditor->getMapVersion() < 2) {
-            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE) i) + ":");
+        if (pMapEditor->getMapVersion() < 2) {
+            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE)i) + ":");
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 150);
         } else {
-            playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i+1));
+            playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 0.22);
         }
 
-        if(pMapEditor->getMapVersion() >= 2) {
+        if (pMapEditor->getMapVersion() >= 2) {
             playerWidgets[i].anyHouseRadioButton.setText(_("any"));
             playerWidgets[i].anyHouseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].anyHouseRadioButton);
 
-            playerWidgets[i].houseRadioButton.setText( getHouseNameByNumber(playerInfo.house));
+            playerWidgets[i].houseRadioButton.setText(getHouseNameByNumber(playerInfo.house));
             playerWidgets[i].houseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].houseRadioButton, 110);
 
             playerWidgets[i].radioButtonManager.registerRadioButtons(2, &playerWidgets[i].anyHouseRadioButton, &playerWidgets[i].houseRadioButton);
-            if(playerInfo.bAnyHouse) {
+            if (playerInfo.bAnyHouse) {
                 playerWidgets[i].anyHouseRadioButton.setChecked(true);
             } else {
                 playerWidgets[i].houseRadioButton.setChecked(true);
@@ -99,7 +98,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].creditsLabel.setTextColor(currentColor);
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsLabel);
 
-        playerWidgets[i].creditsTextBox.setMinMax(0,100000);
+        playerWidgets[i].creditsTextBox.setMinMax(0, 100000);
         playerWidgets[i].creditsTextBox.setValue(playerInfo.credits);
         playerWidgets[i].creditsTextBox.setIncrementValue(100);
         playerWidgets[i].creditsTextBox.setColor(house, currentColor);
@@ -111,11 +110,11 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].teamLabel.setTextColor(currentColor);
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].teamLabel);
 
-        if(pMapEditor->getMapVersion() < 2) {
+        if (pMapEditor->getMapVersion() < 2) {
             playerWidgets[i].teamDropDownBox.addEntry("Human", 0);
             playerWidgets[i].teamDropDownBox.addEntry("CPU", 1);
 
-            if(playerInfo.brain == "Human") {
+            if (playerInfo.brain == "Human") {
                 playerWidgets[i].teamDropDownBox.setSelectedItem(0);
             } else {
                 playerWidgets[i].teamDropDownBox.setSelectedItem(1);
@@ -128,8 +127,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].teamDropDownBox.addEntry("Team5", 4);
             playerWidgets[i].teamDropDownBox.addEntry("Team6", 5);
 
-            for(int j = 0; j < 6; j++) {
-                if(playerWidgets[i].teamDropDownBox.getEntry(j) == playerInfo.brain) {
+            for (int j = 0; j < 6; j++) {
+                if (playerWidgets[i].teamDropDownBox.getEntry(j) == playerInfo.brain) {
                     playerWidgets[i].teamDropDownBox.setSelectedItem(j);
                     break;
                 }
@@ -143,7 +142,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].spiceQuotaLabel.setText(_("Quota") + ":");
         playerWidgets[i].spiceQuotaLabel.setTextColor(currentColor);
 
-        playerWidgets[i].spiceQuotaTextBox.setMinMax(0,99999);
+        playerWidgets[i].spiceQuotaTextBox.setMinMax(0, 99999);
         playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota);
         playerWidgets[i].spiceQuotaTextBox.setIncrementValue(100);
         playerWidgets[i].spiceQuotaTextBox.setColor(house, currentColor);
@@ -151,10 +150,9 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].maxUnitsLabel.setText(_("Max Units") + ":");
         playerWidgets[i].maxUnitsLabel.setTextColor(currentColor);
 
-        playerWidgets[i].maxUnitsTextBox.setMinMax(0,999);
+        playerWidgets[i].maxUnitsTextBox.setMinMax(0, 999);
         playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit);
         playerWidgets[i].maxUnitsTextBox.setColor(house, currentColor);
-
 
         centralVBox.addWidget(&playerWidgets[i].playerHBox);
 
@@ -162,7 +160,6 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].playerCheckbox.setChecked(playerInfo.bActive);
         onPlayerCheckbox(i);
     }
-
 
     centralVBox.addWidget(Spacer::create());
 
@@ -172,7 +169,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick([this]{ onCancel(); });
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -197,22 +194,21 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
 void PlayerSettingsWindow::onCancel() {
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void PlayerSettingsWindow::onAdvancedBasicToggle() {
-    if(advancedBasicToggle.getText() == _("Advanced...")) {
+    if (advancedBasicToggle.getText() == _("Advanced...")) {
         advancedBasicToggle.setText(_("Basic..."));
 
-        for(auto& playerWidget : playerWidgets) {
+        for (auto& playerWidget : playerWidgets) {
             playerWidget.playerHBox.removeChildWidget(&playerWidget.creditsLabel);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.creditsTextBox);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.spacer);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.teamLabel);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.teamDropDownBox);
-
 
             playerWidget.playerHBox.addWidget(&playerWidget.spiceQuotaLabel);
             playerWidget.playerHBox.addWidget(&playerWidget.spiceQuotaTextBox, 75);
@@ -224,13 +220,12 @@ void PlayerSettingsWindow::onAdvancedBasicToggle() {
     } else {
         advancedBasicToggle.setText(_("Advanced..."));
 
-        for(auto& playerWidget : playerWidgets) {
+        for (auto& playerWidget : playerWidgets) {
             playerWidget.playerHBox.removeChildWidget(&playerWidget.spiceQuotaLabel);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.spiceQuotaTextBox);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.spacer);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.maxUnitsLabel);
             playerWidget.playerHBox.removeChildWidget(&playerWidget.maxUnitsTextBox);
-
 
             playerWidget.playerHBox.addWidget(&playerWidget.creditsLabel);
             playerWidget.playerHBox.addWidget(&playerWidget.creditsTextBox, 80);
@@ -245,13 +240,13 @@ void PlayerSettingsWindow::onOK() {
 
     pMapEditor->startOperation();
 
-    for(int i = 0; i < playerWidgets.size(); i++) {
-        bool bActive = playerWidgets[i].playerCheckbox.isChecked();
-        bool bAnyHouse = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
-        int credits = playerWidgets[i].creditsTextBox.getValue();
+    for (int i = 0; i < playerWidgets.size(); i++) {
+        bool bActive      = playerWidgets[i].playerCheckbox.isChecked();
+        bool bAnyHouse    = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
+        int credits       = playerWidgets[i].creditsTextBox.getValue();
         std::string brain = playerWidgets[i].teamDropDownBox.getSelectedEntry();
-        int quota = playerWidgets[i].spiceQuotaTextBox.getValue();
-        int maxunit = playerWidgets[i].maxUnitsTextBox.getValue();
+        int quota         = playerWidgets[i].spiceQuotaTextBox.getValue();
+        int maxunit       = playerWidgets[i].maxUnitsTextBox.getValue();
 
         MapEditorChangePlayer changePlayerOperation(i, bActive, bAnyHouse, credits, brain, quota, maxunit);
 
@@ -259,7 +254,7 @@ void PlayerSettingsWindow::onOK() {
     }
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }

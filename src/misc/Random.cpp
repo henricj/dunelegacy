@@ -1,15 +1,13 @@
 #include <misc/Random.h>
 #include <misc/string_util.h>
 
-#include <atomic>
 #include <array>
+#include <atomic>
 #include <chrono>
 
 #include <digestpp/digestpp.hpp>
 
-
 const FixPoint Random::rand_scale_ = 1_fix / (0x7fff'ffff & decltype(generator_)::max());
-
 
 namespace {
 constexpr char master_customization[] = u8R"(
@@ -140,18 +138,18 @@ void Random::setState(const gsl::span<const uint8_t, state_bytes> state) {
     set_generator_state(generator_, state);
 }
 
-void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state)
-{
+void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state) {
     std::array<generator_type::state_type, generator_type::state_words> words;
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
 
     auto it = state.begin();
 
-    for(auto& word : words) {
+    for (auto& word : words) {
         generator_type::state_type n = 0;
-        for(auto i = 0u; i < sizeof(decltype(n)); ++i) {
-            if(it == state.end()) THROW(std::runtime_error, "Invalid state buffer");
+        for (auto i = 0u; i < sizeof(decltype(n)); ++i) {
+            if (it == state.end())
+                THROW(std::runtime_error, "Invalid state buffer");
 
             n <<= 8;
             n |= *it++;
@@ -163,20 +161,20 @@ void Random::set_generator_state(generator_type& generator, gsl::span<const uint
     generator.set_state(words);
 }
 
-void Random::get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state)
-{
+void Random::get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state) {
     std::array<generator_type::state_type, generator_type::state_words> words;
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
 
     generator.get_state(words);
-    
+
     auto it = state.begin();
 
-    for(const auto& word : words) {
+    for (const auto& word : words) {
         auto n = word;
-        for(auto i = 0u; i < sizeof(decltype(n)); ++i) {
-            if(it == state.end()) THROW(std::runtime_error, "Invalid state buffer");
+        for (auto i = 0u; i < sizeof(decltype(n)); ++i) {
+            if (it == state.end())
+                THROW(std::runtime_error, "Invalid state buffer");
 
             *it++ = static_cast<uint8_t>(n >> (8 * (sizeof(decltype(n)) - 1)));
             n <<= 8;
@@ -192,7 +190,7 @@ void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
 
     std::copy(seed.begin(), seed.end(), std::back_inserter(seed_));
 
-    digestpp::kmac256 kmac{8 * key_.size()};
+    digestpp::kmac256 kmac {8 * key_.size()};
 
     kmac.set_key(master_key, sizeof(master_key));
     kmac.set_customization(&master_customization[0], sizeof(master_customization));
@@ -205,7 +203,8 @@ void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
 }
 
 std::vector<uint8_t> RandomFactory::getSeed() const {
-    if(!initialized_) THROW(std::runtime_error, "RandomFactor::getSeed(): not initialized");
+    if (!initialized_)
+        THROW(std::runtime_error, "RandomFactor::getSeed(): not initialized");
 
     std::vector<uint8_t> seed;
     seed.reserve(seed_.size());
@@ -221,12 +220,13 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 
     auto entropy_estimate = rd.entropy();
 
-    if(entropy_estimate < 1) entropy_estimate = 1;
-    else if(entropy_estimate > 30)
+    if (entropy_estimate < 1)
+        entropy_estimate = 1;
+    else if (entropy_estimate > 30)
         entropy_estimate = 30;
 
     const auto rd_efficiency = entropy_estimate / (8 * sizeof(decltype(rd())));
-    const auto size = static_cast<int>(std::ceil(seed_size / rd_efficiency)) + 1;
+    const auto size          = static_cast<int>(std::ceil(seed_size / rd_efficiency)) + 1;
 
     std::vector<uint32_t> buffer;
     buffer.reserve(size + 5);
@@ -242,20 +242,20 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     buffer.push_back(steady_now & ~0U);
     buffer.push_back((steady_now >> 32) & ~0U);
 
-    std::generate_n(std::back_inserter(buffer), size, [&]{ return rd(); });
+    std::generate_n(std::back_inserter(buffer), size, [&] { return rd(); });
 
     std::vector<unsigned char> output;
     output.reserve(seed_size);
 
-    digestpp::kmac256 kmac{ 8 * seed_size };
+    digestpp::kmac256 kmac {8 * seed_size};
 
     kmac.set_key(name.data(), name.size());
     kmac.set_customization(&create_customization[0], sizeof(create_customization));
 
     kmac.absorb(buffer.begin(), buffer.end());
 
-    for(auto i = 0; i < 5; ++i) {
-        std::generate(buffer.begin(), buffer.end(), [&]{ return rd(); });
+    for (auto i = 0; i < 5; ++i) {
+        std::generate(buffer.begin(), buffer.end(), [&] { return rd(); });
         kmac.absorb(buffer.begin(), buffer.end());
         kmac.absorb(&seed_stir[0], sizeof(seed_stir));
     }
@@ -270,11 +270,12 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 Random RandomFactory::create(std::string_view name) const {
     using state_type = Random::generator_type::state_type;
 
-    if(!initialized_) THROW(std::runtime_error, "RandomFactor::create(): not initialized");
+    if (!initialized_)
+        THROW(std::runtime_error, "RandomFactor::create(): not initialized");
 
     const auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
 
-    digestpp::kmac128 kmac{ 8 * seed_bytes };
+    digestpp::kmac128 kmac {8 * seed_bytes};
 
     kmac.set_key(key_.data(), key_.size());
     kmac.set_customization(&generate_customization[0], sizeof(generate_customization));
@@ -288,5 +289,5 @@ Random RandomFactory::create(std::string_view name) const {
 
     sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
-    return Random::create(gsl::span<const uint8_t, Random::state_bytes>{buffer});
+    return Random::create(gsl::span<const uint8_t, Random::state_bytes> {buffer});
 }

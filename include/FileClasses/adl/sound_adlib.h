@@ -69,7 +69,7 @@ public:
     SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
 
-    static void callback(void *, uint8_t*, int);
+    static void callback(void*, uint8_t*, int);
 
     std::vector<int> getSubsongs();
 
@@ -103,24 +103,24 @@ private:
     void unk1();
     void unk2();
 
-    AdlibDriver *_driver;
+    AdlibDriver* _driver;
 
     uint8_t _trackEntries[500];
-    uint8_t *_soundDataPtr;
+    uint8_t* _soundDataPtr;
     int _sfxPlayingSound;
 
     uint8_t _sfxPriority;
     uint8_t _sfxFourthByteOfSong;
 
     int _numSoundTriggers;
-    const int *_soundTriggers;
+    const int* _soundTriggers;
 
     [[nodiscard]] unsigned char getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 
-    int      m_channels;
-    int      m_freq;
+    int m_channels;
+    int m_freq;
     uint16_t m_format;
 
     bool bJustStartedPlaying;
@@ -129,4 +129,3 @@ private:
 };
 
 #endif
-

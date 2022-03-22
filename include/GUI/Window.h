@@ -45,11 +45,10 @@ public:
         is removed. If pChildWidget is the child window then the child window is closed.
         \param  pChildWidget    widget to remove
     */
-    void removeChildWidget(Widget* pChildWidget) override
-    {
-        if(pChildWidget == pWindowWidget) {
+    void removeChildWidget(Widget* pChildWidget) override {
+        if (pChildWidget == pWindowWidget) {
             pWindowWidget = nullptr;
-        } else if(pChildWidget == pChildWindow) {
+        } else if (pChildWidget == pChildWindow) {
             pChildWindow = nullptr;
         }
     }
@@ -71,7 +70,6 @@ public:
         \param  pChildWindow    The child window that will be closed
     */
     virtual void onChildWindowClose(Window* pChildWindow) { }
-
 
     /**
         This method checks whether this window has a child window.
@@ -162,7 +160,7 @@ public:
     /**
         Draws this window to screen. This method should be called every frame.
     */
-    virtual void draw() { draw(Point(0,0)); }
+    virtual void draw() { draw(Point(0, 0)); }
 
     /**
         Draws this window to screen. This method should be called every frame.
@@ -174,7 +172,7 @@ public:
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
     */
-    virtual void drawOverlay() { drawOverlay(Point(0,0)); }
+    virtual void drawOverlay() { drawOverlay(Point(0, 0)); }
 
     /**
         This method draws the parts of this window that must be drawn after all the other
@@ -190,9 +188,9 @@ public:
     */
     virtual void setWindowWidget(Widget* pWindowWidget) {
         this->pWindowWidget = pWindowWidget;
-        if(this->pWindowWidget != nullptr) {
+        if (this->pWindowWidget != nullptr) {
             this->pWindowWidget->setParent(this);
-            this->pWindowWidget->resize(getSize().x,getSize().y);
+            this->pWindowWidget->resize(getSize().x, getSize().y);
             this->pWindowWidget->setActive();
         }
     }
@@ -207,8 +205,7 @@ public:
         This method resizes the window.
         \param  newSize the new size of this widget
     */
-    void resize(Point newSize) override
-    {
+    void resize(Point newSize) override {
         resize(newSize.x, newSize.y);
     }
 
@@ -224,23 +221,21 @@ public:
         requests to resizes its surrounding container. But windows do not resize if
         it's content changes.
     */
-    void resizeAll() override
-    {
+    void resizeAll() override {
         // Windows do not get bigger if content changes
-        resize(getSize().x,getSize().y);
+        resize(getSize().x, getSize().y);
     }
 
 protected:
-
     bool processChildWindowOpenCloses();
 
-    int                 closeChildWindowCounter;   ///< Close the child window after processing all input?
-    Window*             pChildWindow;              ///< The current child window
-    bool                pChildWindowAlreadyClosed; /// Is the child window already closed?
+    int closeChildWindowCounter;            ///< Close the child window after processing all input?
+    Window* pChildWindow;                   ///< The current child window
+    bool pChildWindowAlreadyClosed;         /// Is the child window already closed?
     std::queue<Window*> queuedChildWindows; ///< We cannot close child windows while they are processed. Queue any newly
                                             ///< opened windows here until we close the current child window
     Widget* pWindowWidget;                  ///< The current window widget
-    Point   position;                       ///< The left top corner of this window
+    Point position;                         ///< The left top corner of this window
 };
 
-#endif //WINDOW_H
+#endif // WINDOW_H

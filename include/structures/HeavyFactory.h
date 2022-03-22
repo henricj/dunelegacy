@@ -20,11 +20,10 @@
 
 #include <structures/BuilderBase.h>
 
-class HeavyFactory final : public BuilderBase
-{
+class HeavyFactory final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = ItemID_enum::Structure_HeavyFactory;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer);
     HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -44,4 +43,4 @@ private:
     void init();
 };
 
-#endif //HEAVYFACTORY_H
+#endif // HEAVYFACTORY_H

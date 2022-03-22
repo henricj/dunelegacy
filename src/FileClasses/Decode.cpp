@@ -17,12 +17,10 @@
 
 #include <FileClasses/Decode.h>
 
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
 
-
-void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt)
-{
+void memcpy_overlap(unsigned char* dst, const unsigned char* src, unsigned cnt) {
     /* Copies memory areas that may overlap byte by byte from small memory
      * addresses to big memory addresses. Thus, already copied bytes can be
      * copied again. */
@@ -37,9 +35,7 @@ void memcpy_overlap(unsigned char *dst, const unsigned char *src, unsigned cnt)
     }
 }
 
-
-int decode40(const unsigned char *image_in, unsigned char *image_out)
-{
+int decode40(const unsigned char* image_in, unsigned char* image_out) {
     /*
     0 fill 00000000 c v
     1 copy 0ccccccc
@@ -49,60 +45,60 @@ int decode40(const unsigned char *image_in, unsigned char *image_out)
     5 skip 1ccccccc
     */
 
-    const unsigned char* readp  = image_in;
-    unsigned char*       writep = image_out;
-    uint16_t             count  = 0;
-    while(true) {
+    const unsigned char* readp = image_in;
+    unsigned char* writep      = image_out;
+    uint16_t count             = 0;
+    while (true) {
         uint16_t code = *readp++;
-        if(~code & 0x80) {
-            //bit 7 = 0
-            if(!code) {
-                //command 0 (00000000 c v): fill
+        if (~code & 0x80) {
+            // bit 7 = 0
+            if (!code) {
+                // command 0 (00000000 c v): fill
                 count = *readp++;
-                code = *readp++;
+                code  = *readp++;
                 while (count--)
                     *writep++ ^= code;
             } else {
-                //command 1 (0ccccccc): copy
+                // command 1 (0ccccccc): copy
                 count = code;
                 while (count--)
                     *writep++ ^= *readp++;
             }
 
         } else {
-            //bit 7 = 1
-            if(!(count = code & 0x7f)) {
-                count =  SDL_SwapLE16(*((Uint16*)readp));
+            // bit 7 = 1
+            if (!(count = code & 0x7f)) {
+                count = SDL_SwapLE16(*((Uint16*)readp));
                 readp += 2;
                 code = count >> 8;
-                if(~code & 0x80) {
-                    //bit 7 = 0
-                    //command 2 (10000000 c 0ccccccc): skip
-                    if(!count) {
+                if (~code & 0x80) {
+                    // bit 7 = 0
+                    // command 2 (10000000 c 0ccccccc): skip
+                    if (!count) {
                         // end of image
                         break;
                     }
                     writep += count;
                 } else {
-                    //bit 7 = 1
+                    // bit 7 = 1
                     count &= 0x3fff;
-                    if(~code & 0x40) {
-                        //bit 6 = 0
-                        //command 3 (10000000 c 10cccccc): copy
-                        while(count--) {
+                    if (~code & 0x40) {
+                        // bit 6 = 0
+                        // command 3 (10000000 c 10cccccc): copy
+                        while (count--) {
                             *writep++ ^= *readp++;
                         }
                     } else {
-                        //bit 6 = 1
-                        //command 4 (10000000 c 11cccccc v): fill
+                        // bit 6 = 1
+                        // command 4 (10000000 c 11cccccc v): fill
                         code = *readp++;
-                        while(count--) {
+                        while (count--) {
                             *writep++ ^= code;
                         }
                     }
                 }
             } else {
-                //command 5 (1ccccccc): skip
+                // command 5 (1ccccccc): skip
                 writep += count;
             }
         }
@@ -110,20 +106,19 @@ int decode40(const unsigned char *image_in, unsigned char *image_out)
     return static_cast<int>(writep - image_out);
 }
 
-int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned checksum)
-{
+int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned checksum) {
     //
     // should decode all the format80 stuff ;-)
     //
 
-    const unsigned char *readp = image_in;
-    unsigned char *writep = image_out;
+    const unsigned char* readp = image_in;
+    unsigned char* writep      = image_out;
 
-    unsigned int a = 0;
-    unsigned int b = 0;
-    unsigned int c = 0;
-    unsigned int d = 0;
-    unsigned int e = 0;
+    unsigned int a          = 0;
+    unsigned int b          = 0;
+    unsigned int c          = 0;
+    unsigned int d          = 0;
+    unsigned int e          = 0;
     unsigned int megacounta = 0;
     unsigned int megacountb = 0;
     unsigned int megacountc = 0;
@@ -143,7 +138,7 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             // 10cccccc (1)
             //
             unsigned count = readp[0] & 0x3f;
-            //sdl2::log_info("Cmd 1, count: %d", count);
+            // sdl2::log_info("Cmd 1, count: %d", count);
             megacounta += count;
             if (!count) {
                 break;
@@ -157,8 +152,8 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             //
             // 0cccpppp p (2)
             //
-            unsigned count = ((readp[0] & 0x70) >> 4) + 3;
-            unsigned short relpos = (((unsigned short) (readp[0] & 0xf)) << 8) | ((unsigned short) readp[1]);
+            unsigned count        = ((readp[0] & 0x70) >> 4) + 3;
+            unsigned short relpos = (((unsigned short)(readp[0] & 0xf)) << 8) | ((unsigned short)readp[1]);
             readp += 2;
             megacountb += count;
             memcpy_overlap(writep, writep - relpos, count);
@@ -168,8 +163,8 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             //
             // 11111111 c c p p (5)
             //
-            unsigned short count = SDL_SwapLE16(*((unsigned short *) (readp + 1)));
-            unsigned short pos = SDL_SwapLE16(*((unsigned short *) (readp + 3)));
+            unsigned short count = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
+            unsigned short pos   = SDL_SwapLE16(*((unsigned short*)(readp + 3)));
             readp += 5;
             megacounte += count;
             memcpy_overlap(writep, image_out + pos, count);
@@ -179,8 +174,8 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             //
             // 11111110 c c v(4)
             //
-            unsigned short count = SDL_SwapLE16(*((unsigned short *) (readp + 1)));
-            unsigned char color = readp[3];
+            unsigned short count = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
+            unsigned char color  = readp[3];
             readp += 4;
             memset(writep, color, count);
             writep += count;
@@ -191,7 +186,7 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             // 11cccccc p p (3)
             //
             unsigned short count = (*readp & 0x3f) + 3;
-            unsigned short pos = SDL_SwapLE16(*((unsigned short *) (readp + 1)));
+            unsigned short pos   = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
             readp += 3;
             megacountc += count;
             memcpy_overlap(writep, image_out + pos, count);
@@ -199,7 +194,6 @@ int decode80(const unsigned char *image_in, unsigned char *image_out, unsigned c
             c++;
         } else {
             THROW(std::invalid_argument, "Decode: File contains unknown format80 command");
-
         }
     }
     if (megacounta + megacountb + megacountc + megacountd + megacounte != checksum)

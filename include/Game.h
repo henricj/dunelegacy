@@ -18,20 +18,20 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <misc/Random.h>
-#include <misc/RobustList.h>
-#include <misc/InputStream.h>
-#include <misc/OutputStream.h>
-#include <ObjectData.h>
-#include <ObjectManager.h>
 #include <CommandManager.h>
+#include <GameInitSettings.h>
 #include <GameInterface.h>
 #include <INIMap/INIMapLoader.h>
-#include <GameInitSettings.h>
+#include <ObjectData.h>
+#include <ObjectManager.h>
 #include <Trigger/TriggerManager.h>
-#include <players/Player.h>
-#include <players/HumanPlayer.h>
+#include <misc/InputStream.h>
+#include <misc/OutputStream.h>
+#include <misc/Random.h>
+#include <misc/RobustList.h>
 #include <misc/SDL2pp.h>
+#include <players/HumanPlayer.h>
+#include <players/Player.h>
 
 #include <DataTypes.h>
 
@@ -41,8 +41,8 @@
 #include <array>
 #include <filesystem>
 #include <map>
-#include <utility>
 #include <unordered_set>
+#include <utility>
 
 // forward declarations
 class ObjectBase;
@@ -53,37 +53,33 @@ class ObjectManager;
 class House;
 class Explosion;
 
+#define END_WAIT_TIME (6 * 1000)
 
-#define END_WAIT_TIME               (6*1000)
+#define GAME_NOTHING           -1
+#define GAME_RETURN_TO_MENU    0
+#define GAME_NEXTMISSION       1
+#define GAME_LOAD              2
+#define GAME_DEBRIEFING_WIN    3
+#define GAME_DEBRIEFING_LOST   4
+#define GAME_CUSTOM_GAME_STATS 5
 
-#define GAME_NOTHING            -1
-#define GAME_RETURN_TO_MENU     0
-#define GAME_NEXTMISSION        1
-#define GAME_LOAD               2
-#define GAME_DEBRIEFING_WIN     3
-#define GAME_DEBRIEFING_LOST    4
-#define GAME_CUSTOM_GAME_STATS  5
-
-class Game final
-{
+class Game final {
 public:
     /**
         Default constructor. Call initGame() or initReplay() afterwards.
     */
     Game();
 
-
     Game(const Game& o) = delete;
-    Game(Game&& o) = delete;
+    Game(Game&& o)      = delete;
 
     /**
         Destructor
     */
     ~Game();
 
-
-    Game& operator=(const Game &) = delete;
-    Game& operator=(Game &&) = delete;
+    Game& operator=(const Game&) = delete;
+    Game& operator=(Game&&) = delete;
 
     /**
         Initializes a game with the specified settings
@@ -97,10 +93,7 @@ public:
     */
     void initReplay(const std::filesystem::path& filename);
 
-
-
     friend class INIMapLoader; // loading INI Maps is done with a INIMapLoader helper object
-
 
     /**
         This method processes all objects in the current game. It should be executed exactly once per game tick.
@@ -144,7 +137,7 @@ public:
     /**
         Add an explosion.
     */
-    template <class... Args>
+    template<class... Args>
     void addExplosion(Args&&... args) {
         explosionList.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
@@ -152,7 +145,7 @@ public:
     [[nodiscard]] int getHouseIndex(HOUSETYPE houseID) const {
         const auto int_house = static_cast<int>(houseID);
 
-        if(int_house < 0 || int_house >= house.size())
+        if (int_house < 0 || int_house >= house.size())
             THROW(std::invalid_argument, "Invalid house index %d!", int_house);
 
         return int_house;
@@ -171,16 +164,18 @@ public:
 
     template<typename F>
     void for_each_house(F&& f) const {
-        for(const auto& h : house) {
-            if(h) f(*h.get());
+        for (const auto& h : house) {
+            if (h)
+                f(*h.get());
         }
     }
 
     template<typename F>
     House* house_find_if(F&& predicate) {
-        for(auto& h : house) {
-            if(h) {
-                if(predicate(*h.get())) return h.get();
+        for (auto& h : house) {
+            if (h) {
+                if (predicate(*h.get()))
+                    return h.get();
             }
         }
         return nullptr;
@@ -240,8 +235,8 @@ public:
         This method pauses the current game.
     */
     void pauseGame() {
-        if(gameType != GameType::CustomMultiplayer) {
-            bPause = true;
+        if (gameType != GameType::CustomMultiplayer) {
+            bPause        = true;
             pauseGameTime = SDL_GetTicks();
         }
     }
@@ -311,7 +306,7 @@ public:
         This method selects all units/structures in the list aList.
         \param aList the list containing all the units/structures to be selected
     */
-    void selectAll(const Dune::selected_set_type& aList)  const;
+    void selectAll(const Dune::selected_set_type& aList) const;
 
     /**
         This method unselects all units/structures in the list aList.
@@ -331,12 +326,11 @@ public:
     */
     void selectionChanged() {
         bSelectionChanged = true;
-        if(pInterface) {
+        if (pInterface) {
             pInterface->updateObjectInterface();
         }
         pLocalPlayer->onSelectionChanged(selectedList);
     }
-
 
     void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex);
 
@@ -357,7 +351,7 @@ public:
         \param  text    the text to add
     */
     void addToNewsTicker(const std::string& text) const {
-        if(pInterface != nullptr) {
+        if (pInterface != nullptr) {
             pInterface->addToNewsTicker(text);
         }
     }
@@ -367,7 +361,7 @@ public:
         \param  text    the text to add
     */
     void addUrgentMessageToNewsTicker(const std::string& text) const {
-        if(pInterface != nullptr) {
+        if (pInterface != nullptr) {
             pInterface->addUrgentMessageToNewsTicker(text);
         }
     }
@@ -413,7 +407,7 @@ public:
         playerID2Player.erase(player->getPlayerID());
 
         const auto iter = std::find_if(playerName2Player.begin(), playerName2Player.end(),
-            [=](decltype(playerName2Player)::reference kv) { return kv.second == player; });
+                                       [=](decltype(playerName2Player)::reference kv) { return kv.second == player; });
 
         if (iter != playerName2Player.end())
             playerName2Player.erase(iter);
@@ -426,7 +420,7 @@ public:
     */
     [[nodiscard]] Player* getPlayerByName(const std::string& playername) const {
         const auto iter = playerName2Player.find(playername);
-        if(iter != playerName2Player.end()) {
+        if (iter != playerName2Player.end()) {
             return iter->second;
         } else {
             return nullptr;
@@ -440,7 +434,7 @@ public:
     */
     [[nodiscard]] Player* getPlayerByID(uint8_t playerID) const {
         const auto iter = playerID2Player.find(playerID);
-        if(iter != playerID2Player.end()) {
+        if (iter != playerID2Player.end()) {
             return iter->second;
         } else {
             return nullptr;
@@ -462,7 +456,6 @@ public:
     void takeScreenshot() { pendingScreenshot = true; }
 
 private:
-
     /**
         Take a screenshot and save it with a unique name
     */
@@ -520,7 +513,6 @@ private:
     */
     bool handleSelectedObjectsCaptureClick(const GameContext& context, int xPos, int yPos);
 
-
     /**
         Performs a request carryall click for the currently selected units.
         \param  xPos    x-coordinate in map coordinates
@@ -529,7 +521,6 @@ private:
     */
     bool handleSelectedObjectsRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
 
-
     /**
         Performs an action click for the currently selected units/structures.
         \param  xPos    x-coordinate in map coordinates
@@ -537,7 +528,6 @@ private:
         \return true if action click is possible
     */
     bool handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos);
-
 
     /**
         Selects the next structure of any of the types specified in itemIDs. If none of this type is currently selected the first one is selected.
@@ -571,104 +561,103 @@ public:
         CursorMode_Placing
     };
 
-    int         currentCursorMode = CursorMode_Normal;
+    int currentCursorMode = CursorMode_Normal;
 
-    GameType    gameType = GameType::Campaign;
-    int         techLevel = 0;
-    int         winFlags = 0;
-    int         loseFlags = 0;
+    GameType gameType = GameType::Campaign;
+    int techLevel     = 0;
+    int winFlags      = 0;
+    int loseFlags     = 0;
 
     RandomFactory randomFactory;
-    Random        randomGen;            ///< This is the random number generator for this game
-    ObjectData    objectData;           ///< This contains all the unit/structure data
+    Random randomGen;      ///< This is the random number generator for this game
+    ObjectData objectData; ///< This contains all the unit/structure data
 
-    GameState   gameState = GameState::Start;
+    GameState gameState = GameState::Start;
 
 private:
-    bool        chatMode = false;   ///< chat mode on?
-    std::string typingChatMessage;  ///< currently typed chat message
+    bool chatMode = false;         ///< chat mode on?
+    std::string typingChatMessage; ///< currently typed chat message
 
-    bool        scrollDownMode = false;     ///< currently scrolling the map down?
-    bool        scrollLeftMode = false;     ///< currently scrolling the map left?
-    bool        scrollRightMode = false;    ///< currently scrolling the map right?
-    bool        scrollUpMode = false;       ///< currently scrolling the map up?
+    bool scrollDownMode  = false; ///< currently scrolling the map down?
+    bool scrollLeftMode  = false; ///< currently scrolling the map left?
+    bool scrollRightMode = false; ///< currently scrolling the map right?
+    bool scrollUpMode    = false; ///< currently scrolling the map up?
 
-    bool        selectionMode = false;          ///< currently selection multiple units with a selection rectangle?
-    SDL_Rect    selectionRect = {0, 0, 0, 0};   ///< the drawn rectangle while selection multiple units
+    bool selectionMode     = false;        ///< currently selection multiple units with a selection rectangle?
+    SDL_Rect selectionRect = {0, 0, 0, 0}; ///< the drawn rectangle while selection multiple units
 
-    int         whatNextParam = GAME_NOTHING;
+    int whatNextParam = GAME_NOTHING;
 
-    uint32_t    indicatorFrame = NONE_ID;
-    int         indicatorTime = 5;
-    int         indicatorTimer = 0;
-    Coord       indicatorPosition = Coord::Invalid();
+    uint32_t indicatorFrame = NONE_ID;
+    int indicatorTime       = 5;
+    int indicatorTimer      = 0;
+    Coord indicatorPosition = Coord::Invalid();
 
-    float       averageFrameTime = 31.25f;      ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
-    float       averageRenderTime = 10.0f;      ///< The weighted average of the render time
-    float       averageUpdateTime = 10.0f;      ///< The weighted average of the update time
+    float averageFrameTime  = 31.25f; ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
+    float averageRenderTime = 10.0f;  ///< The weighted average of the render time
+    float averageUpdateTime = 10.0f;  ///< The weighted average of the update time
 
-    int         lastTargetGameCycleTime{};              //< Remember the last time the target gameCycleCount was updated
+    int lastTargetGameCycleTime {}; //< Remember the last time the target gameCycleCount was updated
 
     uint32_t gameCycleCount = 0;
 
     uint32_t skipToGameCycle = 0; ///< skip to this game cycle
 
-    bool        takePeriodicScreenshots   = false;      ///< take a screenshot every 10 seconds
-    bool        pendingScreenshot         = false;
+    bool takePeriodicScreenshots = false; ///< take a screenshot every 10 seconds
+    bool pendingScreenshot       = false;
 
-    SDL_Rect    powerIndicatorPos = {14, 146, 4, 0};    ///< position of the power indicator in the right game bar
-    SDL_Rect    spiceIndicatorPos = {20, 146, 4, 0};    ///< position of the spice indicator in the right game bar
-    SDL_Rect    topBarPos = {0, 0, 0, 0};               ///< position of the top game bar
-    SDL_Rect    sideBarPos = {0, 0, 0, 0};              ///< position of the right side bar
+    SDL_Rect powerIndicatorPos = {14, 146, 4, 0}; ///< position of the power indicator in the right game bar
+    SDL_Rect spiceIndicatorPos = {20, 146, 4, 0}; ///< position of the spice indicator in the right game bar
+    SDL_Rect topBarPos         = {0, 0, 0, 0};    ///< position of the top game bar
+    SDL_Rect sideBarPos        = {0, 0, 0, 0};    ///< position of the right side bar
 
     ////////////////////
 
-    GameInitSettings                    gameInitSettings;       ///< the init settings this game was started with
-    GameInitSettings                    nextGameInitSettings;   ///< the init settings the next game shall be started with (restarting the mission, loading a savegame)
-    GameInitSettings::HouseInfoList     houseInfoListSetup;     ///< this saves with which houses and players the game was actually set up. It is a copy of gameInitSettings::houseInfoList but without random houses
+    GameInitSettings gameInitSettings;                  ///< the init settings this game was started with
+    GameInitSettings nextGameInitSettings;              ///< the init settings the next game shall be started with (restarting the mission, loading a savegame)
+    GameInitSettings::HouseInfoList houseInfoListSetup; ///< this saves with which houses and players the game was actually set up. It is a copy of gameInitSettings::houseInfoList but without random houses
 
+    ObjectManager objectManager; ///< This manages all the object and maps object ids to the actual objects
 
-    ObjectManager       objectManager;          ///< This manages all the object and maps object ids to the actual objects
+    CommandManager cmdManager; ///< This is the manager for all the game commands (e.g. moving a unit)
 
-    CommandManager      cmdManager;             ///< This is the manager for all the game commands (e.g. moving a unit)
-
-    TriggerManager      triggerManager;         ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
+    TriggerManager triggerManager; ///< This is the manager for all the triggers the scenario has (e.g. reinforcements)
 
     std::unique_ptr<Map> map;
 
-    bool    bQuitGame = false;                  ///< Should the game quit after this game tick
-    bool    bPause = false;                     ///< Is the game currently halted
-    int     pauseGameTime{};                    ///< Remember when the game was paused
-    bool    bMenu = false;                      ///< Is there currently a menu shown (options or mentat menu)
-    bool    bReplay = false;                    ///< Is this game actually a replay
+    bool bQuitGame = false; ///< Should the game quit after this game tick
+    bool bPause    = false; ///< Is the game currently halted
+    int pauseGameTime {};   ///< Remember when the game was paused
+    bool bMenu   = false;   ///< Is there currently a menu shown (options or mentat menu)
+    bool bReplay = false;   ///< Is this game actually a replay
 
-    bool    bShowFPS = false;                   ///< Show the FPS
+    bool bShowFPS = false; ///< Show the FPS
 
-    bool    bShowTime = false;                  ///< Show how long this game is running
+    bool bShowTime = false; ///< Show how long this game is running
 
-    bool    bCheatsEnabled = false;             ///< Cheat codes are enabled?
+    bool bCheatsEnabled = false; ///< Cheat codes are enabled?
 
-    bool     finished          = false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
-    bool     won               = false; ///< If the game is finished, is it won or lost
+    bool finished              = false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool won                   = false; ///< If the game is finished, is it won or lost
     uint32_t finishedLevelTime = 0;     ///< The time in milliseconds when the level was finished (won or lost)
-    bool     finishedLevel     = false; ///< Set, when the game is really finished and the end message was shown
+    bool finishedLevel         = false; ///< Set, when the game is really finished and the end message was shown
 
-    std::unique_ptr<GameInterface>          pInterface;                          ///< This is the whole interface (top bar and side bar)
-    std::unique_ptr<InGameMenu>             pInGameMenu;                         ///< This is the menu that is opened by the option button
-    std::unique_ptr<MentatHelp>             pInGameMentat;                       ///< This is the mentat dialog opened by the mentat button
-    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers;             ///< This is the dialog that pops up when we are waiting for other players during network hangs
-    uint32_t startWaitingForOtherPlayersTime = 0; ///< The time in milliseconds when we started waiting for other players
+    std::unique_ptr<GameInterface> pInterface;                       ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<InGameMenu> pInGameMenu;                         ///< This is the menu that is opened by the option button
+    std::unique_ptr<MentatHelp> pInGameMentat;                       ///< This is the mentat dialog opened by the mentat button
+    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers; ///< This is the dialog that pops up when we are waiting for other players during network hangs
+    uint32_t startWaitingForOtherPlayersTime = 0;                    ///< The time in milliseconds when we started waiting for other players
 
-    bool    bSelectionChanged = false;                      ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
-    Dune::selected_set_type selectedList;                      ///< A set of all selected units/structures
-    Dune::selected_set_type selectedByOtherPlayerList;         ///< This is only used in multiplayer games where two players control one house
-    std::vector<std::unique_ptr<Explosion>> explosionList;                   ///< A list containing all the explosions that must be drawn
+    bool bSelectionChanged = false;                        ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
+    Dune::selected_set_type selectedList;                  ///< A set of all selected units/structures
+    Dune::selected_set_type selectedByOtherPlayerList;     ///< This is only used in multiplayer games where two players control one house
+    std::vector<std::unique_ptr<Explosion>> explosionList; ///< A list containing all the explosions that must be drawn
 
-    std::string localPlayerName;                            ///< the name of the local player
-    std::unordered_multimap<std::string, Player*> playerName2Player;  ///< mapping player names to players (one entry per player)
-    std::unordered_map<uint8_t, Player*> playerID2Player;               ///< mapping player ids to players (one entry per player)
+    std::string localPlayerName;                                     ///< the name of the local player
+    std::unordered_multimap<std::string, Player*> playerName2Player; ///< mapping player names to players (one entry per player)
+    std::unordered_map<uint8_t, Player*> playerID2Player;            ///< mapping player ids to players (one entry per player)
 
-    std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)> house;   ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
+    std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)> house; ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
 };
 
 #endif // GAME_H

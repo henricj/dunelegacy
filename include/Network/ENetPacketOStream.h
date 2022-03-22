@@ -24,40 +24,39 @@
 
 #include <string>
 
-class ENetPacketOStream : public OutputStream
-{
+class ENetPacketOStream : public OutputStream {
 public:
     explicit ENetPacketOStream(enet_uint32 flags)
-     : currentPos(0) {
-        packet = enet_packet_create(nullptr,16,flags);
-        if(packet == nullptr) {
+        : currentPos(0) {
+        packet = enet_packet_create(nullptr, 16, flags);
+        if (packet == nullptr) {
             THROW(OutputStream::error, "ENetPacketOStream: enet_packet_create() failed!");
         }
     }
 
     ENetPacketOStream(const ENetPacketOStream& p)
-     : currentPos(0), packet(nullptr) {
+        : currentPos(0), packet(nullptr) {
         *this = p;
     }
 
     ~ENetPacketOStream() override {
-        if(packet != nullptr) {
+        if (packet != nullptr) {
             enet_packet_destroy(packet);
         }
     }
 
     ENetPacketOStream& operator=(const ENetPacketOStream& p) {
-        if(this != &p) {
-            ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-            if(packetCopy == nullptr) {
+        if (this != &p) {
+            ENetPacket* packetCopy = enet_packet_create(p.packet->data, p.packet->dataLength, p.packet->flags);
+            if (packetCopy == nullptr) {
                 THROW(InputStream::error, "ENetPacketOStream::operator=(): enet_packet_create() failed!");
             }
 
-            if(packet != nullptr) {
+            if (packet != nullptr) {
                 enet_packet_destroy(packet);
             }
 
-            packet = packetCopy;
+            packet     = packetCopy;
             currentPos = p.currentPos;
         }
 
@@ -65,7 +64,7 @@ public:
     }
 
     ENetPacket* getPacket() {
-        if(enet_packet_resize(packet,currentPos) < 0) {
+        if (enet_packet_resize(packet, currentPos) < 0) {
             THROW(OutputStream::error, "ENetPacketOStream::getPacket(): enet_packet_resize() failed!");
         }
 
@@ -76,85 +75,74 @@ public:
         return pPacket;
     }
 
-    void flush() override
-    {
+    void flush() override {
         ;
     }
 
-
     // write operations
 
-    void writeString(const std::string& str) override
-    {
+    void writeString(const std::string& str) override {
         ensureBufferSize(currentPos + str.length() + sizeof(uint32_t));
 
         writeUint32(str.length());
 
-        if(!str.empty()) {
+        if (!str.empty()) {
             memcpy(packet->data + currentPos, str.c_str(), str.length());
             currentPos += str.length();
         }
     }
 
-
-    void writeUint8(uint8_t x) override
-    {
+    void writeUint8(uint8_t x) override {
         ensureBufferSize(currentPos + sizeof(uint8_t));
-        *((uint8_t*) (packet->data + currentPos)) = x;
+        *((uint8_t*)(packet->data + currentPos)) = x;
         currentPos += sizeof(uint8_t);
     }
 
-    void writeUint16(uint16_t x) override
-    {
+    void writeUint16(uint16_t x) override {
         ensureBufferSize(currentPos + sizeof(uint16_t));
-        *((uint16_t*) (packet->data + currentPos)) = SDL_SwapLE16(x);
+        *((uint16_t*)(packet->data + currentPos)) = SDL_SwapLE16(x);
         currentPos += sizeof(uint16_t);
     }
 
-    void writeUint32(uint32_t x) override
-    {
+    void writeUint32(uint32_t x) override {
         ensureBufferSize(currentPos + sizeof(uint32_t));
-        *((uint32_t*) (packet->data + currentPos)) = SDL_SwapLE32(x);
+        *((uint32_t*)(packet->data + currentPos)) = SDL_SwapLE32(x);
         currentPos += sizeof(uint32_t);
     }
 
-    void writeUint64(uint64_t x) override
-    {
+    void writeUint64(uint64_t x) override {
         ensureBufferSize(currentPos + sizeof(uint64_t));
-        *((uint64_t*) (packet->data + currentPos)) = SDL_SwapLE64(x);
+        *((uint64_t*)(packet->data + currentPos)) = SDL_SwapLE64(x);
         currentPos += sizeof(uint64_t);
     }
 
-    void writeBool(bool x) override
-    {
+    void writeBool(bool x) override {
         writeUint8(x ? 1 : 0);
     }
 
-    void writeFloat(float x) override
-    {
+    void writeFloat(float x) override {
         uint32_t tmp = 0;
-        memcpy(&tmp,&x,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
+        memcpy(&tmp, &x, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
         writeUint32(tmp);
     }
 
     void ensureBufferSize(size_t minBufferSize) {
-        if(minBufferSize < packet->dataLength) {
+        if (minBufferSize < packet->dataLength) {
             return;
         }
 
         size_t newBufferSize = ((packet->dataLength * 3) / 2);
-        if(newBufferSize < minBufferSize) {
+        if (newBufferSize < minBufferSize) {
             newBufferSize = minBufferSize;
         }
 
-        if(enet_packet_resize(packet,newBufferSize) < 0) {
+        if (enet_packet_resize(packet, newBufferSize) < 0) {
             THROW(OutputStream::error, "ENetPacketOStream::ensureBufferSize(): enet_packet_resize() failed!");
         }
     }
 
-
 private:
-    size_t  currentPos;
+    size_t currentPos;
     ENetPacket* packet;
 };
 

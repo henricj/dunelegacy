@@ -25,21 +25,18 @@ Scene::Scene() = default;
 
 Scene::~Scene() = default;
 
-void Scene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
-{
+void Scene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent) {
     videoEvents.push(std::move(newVideoEvent));
 }
 
-void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
-{
+void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent) {
     textEvents.push_back(std::move(newTextEvent));
 }
 
-void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
-{
+void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
     auto iter = triggerList.begin();
-    while(iter != triggerList.end()) {
-        if((*iter)->getTriggerFrameNumber() > newTrigger->getTriggerFrameNumber()) {
+    while (iter != triggerList.end()) {
+        if ((*iter)->getTriggerFrameNumber() > newTrigger->getTriggerFrameNumber()) {
             break;
         }
 
@@ -49,8 +46,7 @@ void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
     triggerList.insert(iter, std::move(newTrigger));
 }
 
-int Scene::draw()
-{
+int Scene::draw() {
     auto nextFrameTime = 0;
 
     // 1.: Clear the whole screen
@@ -58,8 +54,8 @@ int Scene::draw()
     SDL_RenderClear(renderer);
 
     // 2.: Draw everything on the screen
-    while(!videoEvents.empty()) {
-        if(videoEvents.front()->isFinished()) {
+    while (!videoEvents.empty()) {
+        if (videoEvents.front()->isFinished()) {
             videoEvents.pop();
             continue;
         } else {
@@ -68,7 +64,7 @@ int Scene::draw()
         }
     }
 
-    for(auto& pTextEvent : textEvents) {
+    for (auto& pTextEvent : textEvents) {
         pTextEvent->draw(currentFrameNumber);
     }
 
@@ -76,14 +72,14 @@ int Scene::draw()
     Dune_RenderPresent(renderer);
 
     // 4.: Process Triggers
-    while(!triggerList.empty()) {
+    while (!triggerList.empty()) {
         auto& pTrigger = triggerList.front();
 
-        if(pTrigger->getTriggerFrameNumber() > currentFrameNumber) {
+        if (pTrigger->getTriggerFrameNumber() > currentFrameNumber) {
             break;
         }
 
-        if(pTrigger->getTriggerFrameNumber() == currentFrameNumber) {
+        if (pTrigger->getTriggerFrameNumber() == currentFrameNumber) {
             pTrigger->trigger(currentFrameNumber);
         }
 

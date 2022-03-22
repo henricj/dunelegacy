@@ -29,33 +29,31 @@ class UnitBase;
 class StructureBase;
 class ObjectBase;
 
-class HumanPlayer : public Player
-{
+class HumanPlayer : public Player {
 public:
-
     /// This enum has the same int values as ItemID_enum for structures (exceptions are the first and the last entry)
     enum class TutorialHint {
-        HarvestSpice = 0,
-        ThisIsABarrack = 1,
+        HarvestSpice            = 0,
+        ThisIsABarrack          = 1,
         ThisIsAConstructionYard = 2,
-        ThisIsAGunTurret = 3,
-        ThisIsAHeavyFactory = 4,
-        ThisIsAHighTechFactory = 5,
-        ThisIsHouseIX = 6,
-        ThisIsALightFactory = 7,
-        ThisIsAPalace = 8,
-        ThisIsARadar = 9,
-        ThisIsARefinery = 10,
-        ThisIsARepairYard = 11,
-        ThisIsARocketTurret = 12,
-        ThisIsASilo = 13,
-        ThisIsASlab1 = 14,
-        ThisIsASlab4 = 15,
-        ThisIsAStarPort = 16,
-        ThisIsAWall = 17,
-        ThisIsAWindTrap = 18,
-        ThisIsAWOR = 19,
-        NotEnoughConrete = 20,
+        ThisIsAGunTurret        = 3,
+        ThisIsAHeavyFactory     = 4,
+        ThisIsAHighTechFactory  = 5,
+        ThisIsHouseIX           = 6,
+        ThisIsALightFactory     = 7,
+        ThisIsAPalace           = 8,
+        ThisIsARadar            = 9,
+        ThisIsARefinery         = 10,
+        ThisIsARepairYard       = 11,
+        ThisIsARocketTurret     = 12,
+        ThisIsASilo             = 13,
+        ThisIsASlab1            = 14,
+        ThisIsASlab4            = 15,
+        ThisIsAStarPort         = 16,
+        ThisIsAWall             = 17,
+        ThisIsAWindTrap         = 18,
+        ThisIsAWOR              = 19,
+        NotEnoughConrete        = 20,
     };
 
     HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
@@ -95,7 +93,6 @@ public:
     */
     virtual void onUnitDeployed(const UnitBase* pUnit);
 
-
     /**
         The set of selected units or structures has changed.
         \param  selectedObjectIDs   the new set of selected objects
@@ -115,10 +112,11 @@ public:
         \param  newGroupList        the new list to set
     */
     void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
-public:
-    uint32_t nextExpectedCommandsCycle{}; ///< The next cycle we expect commands for (using for network games)
 
-    Dune::selected_set_type selectedLists[NUMSELECTEDLISTS];       ///< Sets of all the different groups on key 1 to 9
+public:
+    uint32_t nextExpectedCommandsCycle {}; ///< The next cycle we expect commands for (using for network games)
+
+    Dune::selected_set_type selectedLists[NUMSELECTEDLISTS]; ///< Sets of all the different groups on key 1 to 9
 
     uint32_t alreadyShownTutorialHints; ///< Contains flags for each tutorial hint (see enum TutorialHint)
 
@@ -130,7 +128,5 @@ private:
 
     uint32_t lastAttackNotificationCycle; ///< When was the last time that the player was informed about an attack
 };
-
-
 
 #endif // HUMANPLAYER_H

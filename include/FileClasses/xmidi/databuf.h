@@ -21,82 +21,75 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef DATABUF_H
 #define DATABUF_H
 
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/exceptions.h>
 
 #include <cstdio>
 
-typedef char * charptr;
+typedef char* charptr;
 
-class DataSource
-{
+class DataSource {
 public:
-    DataSource() = default;
+    DataSource()          = default;
     virtual ~DataSource() = default;
 
-    virtual unsigned int read1() =0;
-    virtual unsigned int read2() =0;
-    virtual unsigned int read2high() =0;
-    virtual unsigned int read4() =0;
-    virtual unsigned int read4high() =0;
-    virtual void read(char *, size_t) =0;
+    virtual unsigned int read1()     = 0;
+    virtual unsigned int read2()     = 0;
+    virtual unsigned int read2high() = 0;
+    virtual unsigned int read4()     = 0;
+    virtual unsigned int read4high() = 0;
+    virtual void read(char*, size_t) = 0;
 
-    virtual void write1(unsigned int) =0;
-    virtual void write2(unsigned int) =0;
-    virtual void write2high(unsigned int) =0;
-    virtual void write4(unsigned int) =0;
-    virtual void write4high(unsigned int) =0;
+    virtual void write1(unsigned int)     = 0;
+    virtual void write2(unsigned int)     = 0;
+    virtual void write2high(unsigned int) = 0;
+    virtual void write4(unsigned int)     = 0;
+    virtual void write4high(unsigned int) = 0;
 
-    virtual void seek(unsigned int) =0;
-    virtual void skip(int) =0;
-    virtual unsigned int getSize() =0;
-    virtual unsigned int getPos() =0;
+    virtual void seek(unsigned int) = 0;
+    virtual void skip(int)          = 0;
+    virtual unsigned int getSize()  = 0;
+    virtual unsigned int getPos()   = 0;
 };
 
-
-class BufferDataSource: public DataSource
-{
+class BufferDataSource : public DataSource {
 private:
     unsigned char *buf, *buf_ptr;
     unsigned int size;
+
 public:
-    BufferDataSource(char *data, unsigned int len)
-    {
+    BufferDataSource(char* data, unsigned int len) {
         buf = buf_ptr = (unsigned char*)data;
-        size = len;
+        size          = len;
     }
 
     ~BufferDataSource() override = default;
 
-    unsigned int read1() override
-    {
+    unsigned int read1() override {
         unsigned char b0 = 0;
-        b0 = (unsigned char)*buf_ptr++;
+        b0               = (unsigned char)*buf_ptr++;
         return (b0);
     }
 
-    unsigned int read2() override
-    {
+    unsigned int read2() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
-        b0 = (unsigned char)*buf_ptr++;
-        b1 = (unsigned char)*buf_ptr++;
+        b0               = (unsigned char)*buf_ptr++;
+        b1               = (unsigned char)*buf_ptr++;
         return (b0 + (b1 << 8));
     }
 
-    unsigned int read2high() override
-    {
+    unsigned int read2high() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
-        b1 = (unsigned char)*buf_ptr++;
-        b0 = (unsigned char)*buf_ptr++;
+        b1               = (unsigned char)*buf_ptr++;
+        b0               = (unsigned char)*buf_ptr++;
         return (b0 + (b1 << 8));
     }
 
-    unsigned int read4() override
-    {
+    unsigned int read4() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
@@ -104,15 +97,14 @@ public:
         unsigned char b2 = 0;
 
         unsigned char b3 = 0;
-        b0 = (unsigned char)*buf_ptr++;
-        b1 = (unsigned char)*buf_ptr++;
-        b2 = (unsigned char)*buf_ptr++;
-        b3 = (unsigned char)*buf_ptr++;
-        return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+        b0               = (unsigned char)*buf_ptr++;
+        b1               = (unsigned char)*buf_ptr++;
+        b2               = (unsigned char)*buf_ptr++;
+        b3               = (unsigned char)*buf_ptr++;
+        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
     }
 
-    unsigned int read4high() override
-    {
+    unsigned int read4high() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
@@ -120,72 +112,65 @@ public:
         unsigned char b2 = 0;
 
         unsigned char b3 = 0;
-        b3 = (unsigned char)*buf_ptr++;
-        b2 = (unsigned char)*buf_ptr++;
-        b1 = (unsigned char)*buf_ptr++;
-        b0 = (unsigned char)*buf_ptr++;
-        return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+        b3               = (unsigned char)*buf_ptr++;
+        b2               = (unsigned char)*buf_ptr++;
+        b1               = (unsigned char)*buf_ptr++;
+        b0               = (unsigned char)*buf_ptr++;
+        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
     }
 
-    void read(char *b, size_t len) override
-    {
+    void read(char* b, size_t len) override {
         memcpy(b, buf_ptr, len);
         buf_ptr += len;
     }
 
-    void write1(unsigned int val) override
-    {
+    void write1(unsigned int val) override {
         *buf_ptr++ = val & 0xff;
     }
 
-    void write2(unsigned int val) override
-    {
+    void write2(unsigned int val) override {
         *buf_ptr++ = val & 0xff;
-        *buf_ptr++ = (val>>8) & 0xff;
+        *buf_ptr++ = (val >> 8) & 0xff;
     }
 
-    void write2high(unsigned int val) override
-    {
-        *buf_ptr++ = (val>>8) & 0xff;
+    void write2high(unsigned int val) override {
+        *buf_ptr++ = (val >> 8) & 0xff;
         *buf_ptr++ = val & 0xff;
     }
 
-
-    void write4(unsigned int val) override
-    {
+    void write4(unsigned int val) override {
         *buf_ptr++ = val & 0xff;
-        *buf_ptr++ = (val>>8) & 0xff;
-        *buf_ptr++ = (val>>16)&0xff;
-        *buf_ptr++ = (val>>24)&0xff;
+        *buf_ptr++ = (val >> 8) & 0xff;
+        *buf_ptr++ = (val >> 16) & 0xff;
+        *buf_ptr++ = (val >> 24) & 0xff;
     }
 
-    void write4high(unsigned int val) override
-    {
-        *buf_ptr++ = (val>>24)&0xff;
-        *buf_ptr++ = (val>>16)&0xff;
-        *buf_ptr++ = (val>>8) & 0xff;
+    void write4high(unsigned int val) override {
+        *buf_ptr++ = (val >> 24) & 0xff;
+        *buf_ptr++ = (val >> 16) & 0xff;
+        *buf_ptr++ = (val >> 8) & 0xff;
         *buf_ptr++ = val & 0xff;
     }
 
-    void seek(unsigned int pos) override { buf_ptr = buf+pos; }
+    void seek(unsigned int pos) override { buf_ptr = buf + pos; }
 
     void skip(int pos) override { buf_ptr += pos; }
 
     unsigned int getSize() override { return size; }
 
-    unsigned int getPos() override { return static_cast<int>(buf_ptr-buf); }
+    unsigned int getPos() override { return static_cast<int>(buf_ptr - buf); }
 
-    [[nodiscard]] unsigned char *getPtr() const noexcept { return buf_ptr; }
+    [[nodiscard]] unsigned char* getPtr() const noexcept { return buf_ptr; }
 };
 
-class SDLDataSource : public DataSource
-{
+class SDLDataSource : public DataSource {
 private:
     SDL_RWops* rwop;
     int freesrc;
+
 public:
     SDLDataSource(SDL_RWops* rwop, int freesrc = 0) {
-        this->rwop = rwop;
+        this->rwop    = rwop;
         this->freesrc = freesrc;
     }
 
@@ -194,41 +179,37 @@ public:
     }
 
     virtual void close() {
-        if(freesrc && rwop != nullptr) {
+        if (freesrc && rwop != nullptr) {
             SDL_RWclose(rwop);
             rwop = nullptr;
         }
     }
 
-    unsigned int read1() override
-    {
+    unsigned int read1() override {
         unsigned char b0 = 0;
-        SDL_RWread(rwop,&b0,sizeof(b0),1);
+        SDL_RWread(rwop, &b0, sizeof(b0), 1);
         return (b0);
     }
 
-    unsigned int read2() override
-    {
+    unsigned int read2() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
-        SDL_RWread(rwop,&b0,sizeof(b0),1);
-        SDL_RWread(rwop,&b1,sizeof(b1),1);
+        SDL_RWread(rwop, &b0, sizeof(b0), 1);
+        SDL_RWread(rwop, &b1, sizeof(b1), 1);
         return (b0 + (b1 << 8));
     }
 
-    unsigned int read2high() override
-    {
+    unsigned int read2high() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
-        SDL_RWread(rwop,&b1,sizeof(b1),1);
-        SDL_RWread(rwop,&b0,sizeof(b0),1);
+        SDL_RWread(rwop, &b1, sizeof(b1), 1);
+        SDL_RWread(rwop, &b0, sizeof(b0), 1);
         return (b0 + (b1 << 8));
     }
 
-    unsigned int read4() override
-    {
+    unsigned int read4() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
@@ -236,15 +217,14 @@ public:
         unsigned char b2 = 0;
 
         unsigned char b3 = 0;
-        SDL_RWread(rwop,&b0,sizeof(b0),1);
-        SDL_RWread(rwop,&b1,sizeof(b1),1);
-        SDL_RWread(rwop,&b2,sizeof(b2),1);
-        SDL_RWread(rwop,&b3,sizeof(b3),1);
-        return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+        SDL_RWread(rwop, &b0, sizeof(b0), 1);
+        SDL_RWread(rwop, &b1, sizeof(b1), 1);
+        SDL_RWread(rwop, &b2, sizeof(b2), 1);
+        SDL_RWread(rwop, &b3, sizeof(b3), 1);
+        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
     }
 
-    unsigned int read4high() override
-    {
+    unsigned int read4high() override {
         unsigned char b0 = 0;
 
         unsigned char b1 = 0;
@@ -252,82 +232,71 @@ public:
         unsigned char b2 = 0;
 
         unsigned char b3 = 0;
-        SDL_RWread(rwop,&b3,sizeof(b3),1);
-        SDL_RWread(rwop,&b2,sizeof(b2),1);
-        SDL_RWread(rwop,&b1,sizeof(b1),1);
-        SDL_RWread(rwop,&b0,sizeof(b0),1);
-        return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+        SDL_RWread(rwop, &b3, sizeof(b3), 1);
+        SDL_RWread(rwop, &b2, sizeof(b2), 1);
+        SDL_RWread(rwop, &b1, sizeof(b1), 1);
+        SDL_RWread(rwop, &b0, sizeof(b0), 1);
+        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
     }
 
-    void read(char *b, size_t len) override
-    {
-        SDL_RWread(rwop,b,1,len);
+    void read(char* b, size_t len) override {
+        SDL_RWread(rwop, b, 1, len);
     }
 
-    void write1(unsigned int val) override
-    {
+    void write1(unsigned int val) override {
         uint8_t b0 = val & 0xff;
-        SDL_RWwrite(rwop,&b0,sizeof(b0),1);
+        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
     }
 
-    void write2(unsigned int val) override
-    {
+    void write2(unsigned int val) override {
         uint8_t b0 = val & 0xff;
         uint8_t b1 = (val >> 8) & 0xff;
-        SDL_RWwrite(rwop,&b0,sizeof(b0),1);
-        SDL_RWwrite(rwop,&b1,sizeof(b1),1);
+        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
+        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
     }
 
-    void write2high(unsigned int val) override
-    {
+    void write2high(unsigned int val) override {
         uint8_t b0 = val & 0xff;
         uint8_t b1 = (val >> 8) & 0xff;
-        SDL_RWwrite(rwop,&b1,sizeof(b1),1);
-        SDL_RWwrite(rwop,&b0,sizeof(b0),1);
+        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
+        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
     }
 
-
-    void write4(unsigned int val) override
-    {
+    void write4(unsigned int val) override {
         uint8_t b0 = val & 0xff;
         uint8_t b1 = (val >> 8) & 0xff;
         uint8_t b2 = (val >> 16) & 0xff;
         uint8_t b3 = (val >> 24) & 0xff;
-        SDL_RWwrite(rwop,&b0,sizeof(b0),1);
-        SDL_RWwrite(rwop,&b1,sizeof(b1),1);
-        SDL_RWwrite(rwop,&b2,sizeof(b2),1);
-        SDL_RWwrite(rwop,&b3,sizeof(b3),1);
+        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
+        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
+        SDL_RWwrite(rwop, &b2, sizeof(b2), 1);
+        SDL_RWwrite(rwop, &b3, sizeof(b3), 1);
     }
 
-    void write4high(unsigned int val) override
-    {
+    void write4high(unsigned int val) override {
         uint8_t b0 = val & 0xff;
         uint8_t b1 = (val >> 8) & 0xff;
         uint8_t b2 = (val >> 16) & 0xff;
         uint8_t b3 = (val >> 24) & 0xff;
-        SDL_RWwrite(rwop,&b3,sizeof(b3),1);
-        SDL_RWwrite(rwop,&b2,sizeof(b2),1);
-        SDL_RWwrite(rwop,&b1,sizeof(b1),1);
-        SDL_RWwrite(rwop,&b0,sizeof(b0),1);
+        SDL_RWwrite(rwop, &b3, sizeof(b3), 1);
+        SDL_RWwrite(rwop, &b2, sizeof(b2), 1);
+        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
+        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
     }
 
-    void seek(unsigned int pos) override
-    {
+    void seek(unsigned int pos) override {
         SDL_RWseek(rwop, pos, SEEK_SET);
     }
 
-    void skip(int pos) override
-    {
+    void skip(int pos) override {
         SDL_RWseek(rwop, pos, SEEK_CUR);
     }
 
-    unsigned int getSize() override
-    {
+    unsigned int getSize() override {
         return static_cast<unsigned int>(SDL_RWsize(rwop));
     }
 
-    unsigned int getPos() override
-    {
+    unsigned int getPos() override {
         return static_cast<unsigned int>(SDL_RWtell(rwop));
     }
 };

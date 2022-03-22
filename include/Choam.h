@@ -18,9 +18,9 @@
 #ifndef CHOAM_H
 #define CHOAM_H
 
-#include <structures/BuilderBase.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
+#include <structures/BuilderBase.h>
 
 #include <vector>
 
@@ -45,8 +45,8 @@ public:
     void update(const GameContext& context);
 
 private:
-    House*                  house;               ///< The house of this choam
-    std::vector<BuildItem>  availableItems;      ///< This list contains all the things that can be bought from a Starport
+    House* house;                          ///< The house of this choam
+    std::vector<BuildItem> availableItems; ///< This list contains all the things that can be bought from a Starport
 };
 
 #endif // CHOAM_H

@@ -22,39 +22,39 @@
 class Coord;
 
 #include <DataTypes.h>
-#include <fixmath/FixPoint.h>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <fixmath/FixPoint.h>
 
-inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2)
-{
+inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
 
     FixPoint diffX = x2 - x1;
-    FixPoint diffY = -(y2 - y1);    // flip y
+    FixPoint diffY = -(y2 - y1); // flip y
 
-    if(diffX == 0 && diffY == 0) {
-        return FixPt_PI/2;
+    if (diffX == 0 && diffY == 0) {
+        return FixPt_PI / 2;
     }
 
     FixPoint destAngle = FixPoint::atan2(diffY, diffX);
 
-    if(destAngle < 0) {
-        destAngle += (FixPt_PI << 1);   // add 360°
+    if (destAngle < 0) {
+        destAngle += (FixPt_PI << 1); // add 360°
     }
 
     return destAngle;
 }
 
-inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2)
-{
+inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
     return destinationAngleRad(p1.x, p1.y, p2.x, p2.y);
 }
 
 inline FixPoint RadToDeg256(FixPoint angleRad) {
-    return (angleRad << 7)/FixPt_PI; // angleRad*256/(2*FixPt_PI)
+    return (angleRad << 7) / FixPt_PI; // angleRad*256/(2*FixPt_PI)
 }
 
-inline FixPoint Deg256ToRad(FixPoint angle) { return (angle*FixPt_PI) >> 7; }   // angle*2*FixPt_PI/256;
+inline FixPoint Deg256ToRad(FixPoint angle) {
+    return (angle * FixPt_PI) >> 7;
+} // angle*2*FixPt_PI/256;
 
 /**
     Calculates the smaller angle between angle1 and angle2. The result is always positive,
@@ -69,29 +69,27 @@ inline int angleDiff(ANGLETYPE angle1, ANGLETYPE angle2) {
 }
 
 inline ANGLETYPE angleToDrawnAngle(FixPoint angle) {
-    return static_cast<ANGLETYPE>(lround(angle >> 5) & 0x7);  //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
+    return static_cast<ANGLETYPE>(lround(angle >> 5) & 0x7); //  lround(angle*NUM_ANGLES/256) % NUM_ANGLES;
 }
 
 inline ANGLETYPE destinationDrawnAngle(const Coord& p1, const Coord& p2) {
     return angleToDrawnAngle(RadToDeg256(destinationAngleRad(p1, p2)));
 }
 
-inline FixPoint distanceFrom(const Coord& p1, const Coord& p2)
-{
-    FixPoint first = (p1.x - p2.x);
+inline FixPoint distanceFrom(const Coord& p1, const Coord& p2) {
+    FixPoint first  = (p1.x - p2.x);
     FixPoint second = (p1.y - p2.y);
 
-    FixPoint z = FixPoint::sqrt(first*first + second*second);
+    FixPoint z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
 
-inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y)
-{
-    FixPoint first = (x - to_x);
+inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y) {
+    FixPoint first  = (x - to_x);
     FixPoint second = (y - to_y);
 
-    FixPoint z = FixPoint::sqrt(first*first + second*second);
+    FixPoint z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
@@ -116,10 +114,10 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
     int diffX = abs(p1.x - p2.x);
     int diffY = abs(p1.y - p2.y);
 
-    if(diffX > diffY) {
-        return diffX + diffY*(FixPt_SQRT2 - 1);
+    if (diffX > diffY) {
+        return diffX + diffY * (FixPt_SQRT2 - 1);
     } else {
-        return diffX*(FixPt_SQRT2 - 1) + diffY;
+        return diffX * (FixPt_SQRT2 - 1) + diffY;
     }
 }
 
@@ -133,10 +131,10 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
     int diffX = abs(p1.x - p2.x);
     int diffY = abs(p1.y - p2.y);
 
-    if(diffX > diffY) {
-        return ((diffX*2 + diffY) + 1)/2;
+    if (diffX > diffY) {
+        return ((diffX * 2 + diffY) + 1) / 2;
     } else {
-        return ((diffX + diffY*2) + 1)/2;
+        return ((diffX + diffY * 2) + 1) / 2;
     }
 }
 
@@ -147,7 +145,8 @@ inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
         return angle;
 
     auto mod_angle = int_angle % static_cast<int>(ANGLETYPE::NUM_ANGLES);
-    if (int_angle < 0) mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    if (int_angle < 0)
+        mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
 
     return static_cast<ANGLETYPE>(mod_angle);
 }
@@ -171,8 +170,6 @@ inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
     }
     // clang-format on
 }
-
-
 
 inline ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) {
     angle = normalizeAngle(angle);
@@ -229,5 +226,4 @@ int zoomedWorld2world(int x);
 */
 Coord zoomedWorld2world(const Coord& coord);
 
-
-#endif //MMATH_H
+#endif // MMATH_H

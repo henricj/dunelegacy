@@ -1,13 +1,13 @@
 
-#include <Menu/MultiPlayerMenu.h>
 #include <Menu/CustomGameMenu.h>
 #include <Menu/CustomGamePlayers.h>
+#include <Menu/MultiPlayerMenu.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-#include <Network/NetworkManager.h>
 #include <Network/ENetHelper.h>
+#include <Network/NetworkManager.h>
 
 #include <GUI/MsgBox.h>
 
@@ -15,7 +15,7 @@
 
 #include <misc/string_util.h>
 
-MultiPlayerMenu::MultiPlayerMenu()  {
+MultiPlayerMenu::MultiPlayerMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
@@ -23,7 +23,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
     setWindowWidget(&windowWidget);
 
-    windowWidget.addWidget(&mainVBox, Point(24,23), Point(getRendererWidth() - 48, getRendererHeight() - 46));
+    windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 46));
 
     captionLabel.setText("Multiplayer Game");
     captionLabel.setAlignment(Alignment_HCenter);
@@ -96,7 +96,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
     buttonHBox.addWidget(HSpacer::create(70));
     backButton.setText(_("Back"));
-    backButton.setOnClick([]{ onQuit(); });
+    backButton.setOnClick([] { onQuit(); });
     buttonHBox.addWidget(&backButton, 0.1);
 
     buttonHBox.addWidget(Spacer::create(), 0.8);
@@ -108,7 +108,7 @@ MultiPlayerMenu::MultiPlayerMenu()  {
 
     // Start Network Manager
     sdl2::log_info("Starting network...");
-    pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
+    pNetworkManager                     = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
     pLANGFAA->setOnUpdateServer([this](auto interactive) { onUpdateLANServer(interactive); });
@@ -118,12 +118,10 @@ MultiPlayerMenu::MultiPlayerMenu()  {
     onGameTypeChange(0);
 }
 
-
 MultiPlayerMenu::~MultiPlayerMenu() {
     sdl2::log_info("Stopping network...");
     pNetworkManager.reset();
 }
-
 
 /**
     This method is called, when the child window is about to be closed.
@@ -139,15 +137,13 @@ void MultiPlayerMenu::onCreateLANGame() {
     CustomGameMenu(true, true).showMenu();
 }
 
-
 void MultiPlayerMenu::onCreateInternetGame() {
     CustomGameMenu(true, false).showMenu();
 }
 
-
 void MultiPlayerMenu::onConnect() {
     std::string hostname = connectHostTextBox.getText();
-    int port = atol(connectPortTextBox.getText().c_str());
+    int port             = atol(connectPortTextBox.getText().c_str());
 
     pNetworkManager->setOnReceiveGameInfo(
         [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });
@@ -158,11 +154,10 @@ void MultiPlayerMenu::onConnect() {
     openWindow(MsgBox::create(_("Connecting...")));
 }
 
-
 void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
-    if(bHost) {
-        pNetworkManager->setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
+    if (bHost) {
+        pNetworkManager->setOnReceiveGameInfo(std::function<void(const GameInitSettings&, const ChangeEventList&)>());
+        pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
         closeChildWindow();
 
         showDisconnectMessageBox(cause);
@@ -171,7 +166,7 @@ void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHo
 
 void MultiPlayerMenu::onJoin() {
     int selectedEntry = gameList.getSelectedIndex();
-    if(selectedEntry >= 0) {
+    if (selectedEntry >= 0) {
         auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
 
         pNetworkManager->setOnReceiveGameInfo(
@@ -184,32 +179,29 @@ void MultiPlayerMenu::onJoin() {
     }
 }
 
-
 void MultiPlayerMenu::onQuit() {
     SDL_Event quitEvent;
     quitEvent.type = SDL_QUIT;
     SDL_PushEvent(&quitEvent);
 }
 
-
 void MultiPlayerMenu::onGameTypeChange(int buttonID) {
     MetaServerClient* pMetaServerClient = pNetworkManager->getMetaServerClient();
-    if((buttonID == 0) && internetGamesButton.getToggleState()) {
+    if ((buttonID == 0) && internetGamesButton.getToggleState()) {
         // LAN Games
 
         gameList.clearAllEntries();
         InternetGameList.clear();
 
-        for(GameServerInfo& gameServerInfo : LANGameList) {
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                        + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+        for (GameServerInfo& gameServerInfo : LANGameList) {
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &gameServerInfo);
         }
 
         // stop listening on internet games
-        pMetaServerClient->setOnGameServerInfoList(std::function<void (std::list<GameServerInfo>&)>());
-        pMetaServerClient->setOnMetaServerError(std::function<void (int, const std::string&)>());
-    } else if((buttonID == 1) && (LANGamesButton.getToggleState())) {
+        pMetaServerClient->setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)>());
+        pMetaServerClient->setOnMetaServerError(std::function<void(int, const std::string&)>());
+    } else if ((buttonID == 1) && (LANGamesButton.getToggleState())) {
         // Internet Games
 
         gameList.clearAllEntries();
@@ -223,25 +215,21 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
 
     LANGamesButton.setToggleState(buttonID == 0);
     internetGamesButton.setToggleState(buttonID == 1);
-
 }
-
 
 void MultiPlayerMenu::onGameListSelectionChange(bool bInteractive) {
 }
 
-
 void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
     LANGameList.push_back(gameServerInfo);
-    std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+    std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
     gameList.addEntry(description, &LANGameList.back());
 }
 
 void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
     size_t index = 0;
-    for(GameServerInfo& curGameServerInfo : LANGameList) {
-        if(curGameServerInfo == gameServerInfo) {
+    for (GameServerInfo& curGameServerInfo : LANGameList) {
+        if (curGameServerInfo == gameServerInfo) {
             curGameServerInfo = gameServerInfo;
             break;
         }
@@ -249,18 +237,17 @@ void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
         index++;
     }
 
-    if(index < LANGameList.size()) {
-        std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+    if (index < LANGameList.size()) {
+        std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
 
         gameList.setEntry(index, description);
     }
 }
 
 void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
-    for(int i=0;i<gameList.getNumEntries();i++) {
+    for (int i = 0; i < gameList.getNumEntries(); i++) {
         auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(i));
-        if(*pGameServerInfo == gameServerInfo) {
+        if (*pGameServerInfo == gameServerInfo) {
             gameList.removeEntry(i);
             break;
         }
@@ -272,11 +259,11 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
 void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
     auto oldListIter = InternetGameList.begin();
-    int index = 0;
-    while(oldListIter != InternetGameList.end()) {
+    int index        = 0;
+    while (oldListIter != InternetGameList.end()) {
         GameServerInfo& gameServerInfo = *oldListIter;
 
-        if(std::find(gameServerInfoList.begin(), gameServerInfoList.end(), gameServerInfo) == gameServerInfoList.end()) {
+        if (std::find(gameServerInfoList.begin(), gameServerInfoList.end(), gameServerInfo) == gameServerInfoList.end()) {
             // not found => remove
             gameList.removeEntry(index);
             oldListIter = InternetGameList.erase(oldListIter);
@@ -288,11 +275,11 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
     }
 
     // now add all servers that are included for the first time and update the others
-    for(const GameServerInfo& gameServerInfo : gameServerInfoList) {
+    for (const GameServerInfo& gameServerInfo : gameServerInfoList) {
         size_t oldListIndex = 0;
         std::list<GameServerInfo>::iterator oldListIter;
-        for(oldListIter = InternetGameList.begin(); oldListIter != InternetGameList.end(); ++oldListIter) {
-            if(*oldListIter == gameServerInfo) {
+        for (oldListIter = InternetGameList.begin(); oldListIter != InternetGameList.end(); ++oldListIter) {
+            if (*oldListIter == gameServerInfo) {
                 // found => update
                 *oldListIter = gameServerInfo;
                 break;
@@ -301,26 +288,22 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
             oldListIndex++;
         }
 
-
-        if(oldListIndex >= InternetGameList.size()) {
+        if (oldListIndex >= InternetGameList.size()) {
             // not found => add at the end
             InternetGameList.push_back(gameServerInfo);
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &InternetGameList.back());
         } else {
             // found => update
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
 
             gameList.setEntry(oldListIndex, description);
         }
-
     }
 }
 
 void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& errorMessage) {
-    switch(errorcause) {
+    switch (errorcause) {
         case METASERVERCOMMAND_ADD: {
             openWindow(MsgBox::create("MetaServer error on adding game server:\n" + errorMessage));
         } break;
@@ -333,7 +316,7 @@ void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& error
             openWindow(MsgBox::create("MetaServer error on removing game server:\n" + errorMessage));
         } break;
 
-        case METASERVERCOMMAND_LIST : {
+        case METASERVERCOMMAND_LIST: {
             openWindow(MsgBox::create("MetaServer error on list game servers:\n" + errorMessage));
         } break;
 
@@ -347,14 +330,14 @@ void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& error
 void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList) {
     closeChildWindow();
 
-    pNetworkManager->setOnPeerDisconnected(std::function<void (const std::string&, bool, int)>());
+    pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
 
     auto pCustomGamePlayers = std::make_unique<CustomGamePlayers>(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);
     int ret = pCustomGamePlayers->showMenu();
     pCustomGamePlayers.reset();
 
-    switch(ret) {
+    switch (ret) {
         case MENU_QUIT_DEFAULT: {
             // nothing
         } break;
@@ -370,7 +353,7 @@ void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings
 }
 
 void MultiPlayerMenu::showDisconnectMessageBox(int cause) {
-    switch(cause) {
+    switch (cause) {
         case NETWORKDISCONNECT_QUIT: {
             openWindow(MsgBox::create(_("The game host quit the game!")));
         } break;

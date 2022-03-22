@@ -18,35 +18,32 @@
 #ifndef QSTBOX_H
 #define QSTBOX_H
 
-#include "Window.h"
 #include "Button.h"
+#include "GUIStyle.h"
+#include "HBox.h"
 #include "Label.h"
 #include "Spacer.h"
-#include "GUIStyle.h"
-#include "Widget.h"
 #include "VBox.h"
-#include "HBox.h"
+#include "Widget.h"
+#include "Window.h"
 #include <misc/SDL2pp.h>
 
 #include <iostream>
 
-
-#define QSTBOX_BUTTON_INVALID   (-1)
-#define QSTBOX_BUTTON1          (1)
-#define QSTBOX_BUTTON2          (2)
-
+#define QSTBOX_BUTTON_INVALID (-1)
+#define QSTBOX_BUTTON1        (1)
+#define QSTBOX_BUTTON2        (2)
 
 /// A simple class for a question box
 class QstBox : public Window {
 public:
-
     /**
         This method sets a new text for this question box.
         \param  text The new text for this question box
     */
     virtual void setText(const std::string& text) {
         textLabel.setText(text);
-        resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
+        resize(std::max(vbox.getMinimumSize().x, 120), vbox.getMinimumSize().y);
     }
 
     /**
@@ -71,9 +68,8 @@ public:
         called if the new size is a valid size for this question box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -83,25 +79,23 @@ public:
         \param  width   the new width of this question box
         \param  height  the new height of this question box
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
-        Window::resize(width,height);
-        position.x = (getRendererWidth() - getSize().x)/2;
-        position.y = (getRendererHeight() - getSize().y)/2;
+    void resize(uint32_t width, uint32_t height) override {
+        Window::resize(width, height);
+        position.x = (getRendererWidth() - getSize().x) / 2;
+        position.y = (getRendererHeight() - getSize().y) / 2;
     }
 
     /**
         This method is called by the window widget if it requests a resizing of
         this window.
     */
-    void resizeAll() override
-    {
+    void resizeAll() override {
         // QstBox should get bigger if content changes
-        if(pWindowWidget != nullptr) {
+        if (pWindowWidget != nullptr) {
             Point newSize = pWindowWidget->getMinimumSize();
-            newSize.x = std::max(newSize.x,120);
-            newSize.y = std::max(newSize.y,30);
-            resize(newSize.x,newSize.y);
+            newSize.x     = std::max(newSize.x, 120);
+            newSize.y     = std::max(newSize.y, 30);
+            resize(newSize.x, newSize.y);
         }
     }
 
@@ -124,7 +118,7 @@ public:
         \return The new question box (will be automatically destroyed when it's closed)
     */
     static QstBox* create(const std::string& text, const std::string& button1Text = "Yes", const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
-        auto* qstbox = new QstBox(text, button1Text, button2Text, defaultFocus);
+        auto* qstbox       = new QstBox(text, button1Text, button2Text, defaultFocus);
         qstbox->pAllocated = true;
         return qstbox;
     }
@@ -137,7 +131,7 @@ protected:
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
     QstBox(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus)
-     : Window(50,50,50,50), pressedButtonID(QSTBOX_BUTTON_INVALID) {
+        : Window(50, 50, 50, 50), pressedButtonID(QSTBOX_BUTTON_INVALID) {
         init(text, button1Text, button2Text, defaultFocus);
     }
 
@@ -175,9 +169,9 @@ private:
         setText(text);
         textLabel.setAlignment(Alignment_HCenter);
 
-        if(defaultFocus == QSTBOX_BUTTON1) {
+        if (defaultFocus == QSTBOX_BUTTON1) {
             button1.setActive();
-        } else if(defaultFocus == QSTBOX_BUTTON2) {
+        } else if (defaultFocus == QSTBOX_BUTTON2) {
             button2.setActive();
         }
     }
@@ -189,19 +183,19 @@ private:
         pressedButtonID = btnID;
 
         auto* pParentWindow = dynamic_cast<Window*>(getParent());
-        if(pParentWindow != nullptr) {
+        if (pParentWindow != nullptr) {
             pParentWindow->closeChildWindow();
         }
     }
 
-    VBox vbox;                  ///< vertical box
-    HBox hbox;                  ///< horizontal box
-    VBox vbox2;                 ///< inner vertical box;
-    HBox hbox2;                 ///< inner horizontal box;
-    Label textLabel;            ///< label that contains the text
-    TextButton button1;         ///< button 1
-    TextButton button2;         ///< button 2
-    int pressedButtonID;        ///< the pressed button
+    VBox vbox;           ///< vertical box
+    HBox hbox;           ///< horizontal box
+    VBox vbox2;          ///< inner vertical box;
+    HBox hbox2;          ///< inner horizontal box;
+    Label textLabel;     ///< label that contains the text
+    TextButton button1;  ///< button 1
+    TextButton button2;  ///< button 2
+    int pressedButtonID; ///< the pressed button
 };
 
 #endif // QSTBOX_H

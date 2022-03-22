@@ -25,62 +25,58 @@
 
 #include <string>
 
-
 #include <cmath>
 
-
-class ENetPacketIStream : public InputStream
-{
+class ENetPacketIStream : public InputStream {
 public:
     explicit ENetPacketIStream(ENetPacket* pPacket)
-     : currentPos(0), packet(pPacket) {
+        : currentPos(0), packet(pPacket) {
         ;
     }
 
     explicit ENetPacketIStream(const ENetPacketIStream& p)
-     : currentPos(0), packet(nullptr) {
+        : currentPos(0), packet(nullptr) {
         *this = p;
     }
 
     ~ENetPacketIStream() override {
-        if(packet != nullptr) {
+        if (packet != nullptr) {
             enet_packet_destroy(packet);
         }
     }
 
     ENetPacketIStream& operator=(const ENetPacketIStream& p) {
-        if(this != &p) {
-            ENetPacket* packetCopy = enet_packet_create(p.packet->data,p.packet->dataLength,p.packet->flags);
-            if(packetCopy == nullptr) {
+        if (this != &p) {
+            ENetPacket* packetCopy = enet_packet_create(p.packet->data, p.packet->dataLength, p.packet->flags);
+            if (packetCopy == nullptr) {
                 THROW(InputStream::error, "ENetPacketIStream::operator=(): enet_packet_create() failed!");
             }
 
-            if(packet != nullptr) {
+            if (packet != nullptr) {
                 enet_packet_destroy(packet);
             }
 
-            packet = packetCopy;
+            packet     = packetCopy;
             currentPos = p.currentPos;
         }
 
         return *this;
     }
 
-    std::string readString() override
-    {
+    std::string readString() override {
         uint32_t length = readUint32();
 
-        if(currentPos + length > packet->dataLength) {
+        if (currentPos + length > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readString(): End-of-File reached!");
         }
 
-        std::string resultString((char*) (packet->data + currentPos), length);
+        std::string resultString((char*)(packet->data + currentPos), length);
         currentPos += length;
         return resultString;
     }
 
     uint8_t readUint8() override {
-        if(currentPos + sizeof(uint8_t) > packet->dataLength) {
+        if (currentPos + sizeof(uint8_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint8(): End-of-File reached!");
         }
 
@@ -90,7 +86,7 @@ public:
     }
 
     uint16_t readUint16() override {
-        if(currentPos + sizeof(uint16_t) > packet->dataLength) {
+        if (currentPos + sizeof(uint16_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint16(): End-of-File reached!");
         }
 
@@ -100,7 +96,7 @@ public:
     }
 
     uint32_t readUint32() override {
-        if(currentPos + sizeof(uint32_t) > packet->dataLength) {
+        if (currentPos + sizeof(uint32_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint32(): End-of-File reached!");
         }
 
@@ -110,7 +106,7 @@ public:
     }
 
     uint64_t readUint64() override {
-        if(currentPos + sizeof(uint64_t) > packet->dataLength) {
+        if (currentPos + sizeof(uint64_t) > packet->dataLength) {
             THROW(InputStream::eof, "ENetPacketIStream::readUint64(): End-of-File reached!");
         }
 
@@ -119,21 +115,19 @@ public:
         return SDL_SwapLE64(tmp);
     }
 
-    bool readBool() override
-    {
+    bool readBool() override {
         return (readUint8() == 1 ? true : false);
     }
 
-    float readFloat() override
-    {
-        uint32_t tmp  = readUint32();
-        float    tmp2 = NAN;
-        memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
+    float readFloat() override {
+        uint32_t tmp = readUint32();
+        float tmp2   = NAN;
+        memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
         return tmp2;
     }
 
 private:
-    size_t  currentPos;
+    size_t currentPos;
     ENetPacket* packet;
 };
 

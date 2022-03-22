@@ -25,40 +25,40 @@
 
 #include <filesystem>
 
-DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "DirectoryPlayer") {
+DirectoryPlayer::DirectoryPlayer()
+    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "DirectoryPlayer") {
     // determine path to config file
     auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 
-    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = { "/music/attack/",
-                                                                        "/music/peace/",
-                                                                        "/music/intro/",
-                                                                        "/music/menu/",
-                                                                        "/music/briefingH/",
-                                                                        "/music/briefingA/",
-                                                                        "/music/briefingO/",
-                                                                        "/music/winH/",
-                                                                        "/music/winA/",
-                                                                        "/music/winO/",
-                                                                        "/music/loseH/",
-                                                                        "/music/loseA/",
-                                                                        "/music/loseO/",
-                                                                        "/music/gamestats/",
-                                                                        "/music/mapchoice/",
-                                                                        "/music/meanwhile/",
-                                                                        "/music/finaleH/",
-                                                                        "/music/finaleA/",
-                                                                        "/music/finaleO/"
-                                                                    };
+    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = {"/music/attack/",
+                                                                           "/music/peace/",
+                                                                           "/music/intro/",
+                                                                           "/music/menu/",
+                                                                           "/music/briefingH/",
+                                                                           "/music/briefingA/",
+                                                                           "/music/briefingO/",
+                                                                           "/music/winH/",
+                                                                           "/music/winA/",
+                                                                           "/music/winO/",
+                                                                           "/music/loseH/",
+                                                                           "/music/loseA/",
+                                                                           "/music/loseO/",
+                                                                           "/music/gamestats/",
+                                                                           "/music/mapchoice/",
+                                                                           "/music/meanwhile/",
+                                                                           "/music/finaleH/",
+                                                                           "/music/finaleA/",
+                                                                           "/music/finaleO/"};
 
-    for(int i=0;i<MUSIC_NUM_MUSIC_TYPES;i++) {
-        const char* dirName =  musicDirectoryNames[i] + 1; // skip '/' at the beginning
+    for (int i = 0; i < MUSIC_NUM_MUSIC_TYPES; i++) {
+        const char* dirName = musicDirectoryNames[i] + 1; // skip '/' at the beginning
         fnkdat(dirName, FNKDAT_USER | FNKDAT_CREAT);
         musicFileList[i] = getMusicFileNames(configfilepath / musicDirectoryNames[i]);
     }
 
     music = nullptr;
 
-#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,2)
+#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
     Mix_Init(MIX_INIT_MID | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
 #else
     Mix_Init(MIX_INIT_FLUIDSYNTH | MIX_INIT_FLAC | MIX_INIT_MP3 | MIX_INIT_OGG);
@@ -66,7 +66,7 @@ DirectoryPlayer::DirectoryPlayer() : MusicPlayer(settings.audio.playMusic, setti
 }
 
 DirectoryPlayer::~DirectoryPlayer() {
-    if(music != nullptr) {
+    if (music != nullptr) {
         Mix_FreeMusic(music);
         music = nullptr;
     }
@@ -74,60 +74,59 @@ DirectoryPlayer::~DirectoryPlayer() {
     Mix_Quit();
 }
 
-void DirectoryPlayer::changeMusic(MUSICTYPE musicType)
-{
-    int musicNum = -1;
+void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
+    int musicNum                   = -1;
     std::filesystem::path filename = "";
 
-    if(currentMusicType == musicType && Mix_PlayingMusic()) {
+    if (currentMusicType == musicType && Mix_PlayingMusic()) {
         return;
     }
 
-    if(musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
-        musicNum = random().rand(0u, musicFileList[musicType].size() - 1u);
-        filename = musicFileList[musicType][musicNum];
+    if (musicType >= 0 && musicType < MUSIC_NUM_MUSIC_TYPES && !musicFileList[musicType].empty()) {
+        musicNum         = random().rand(0u, musicFileList[musicType].size() - 1u);
+        filename         = musicFileList[musicType][musicNum];
         currentMusicType = musicType;
     } else {
-       // MUSIC_RANDOM
+        // MUSIC_RANDOM
         int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
 
-        if(maxnum > 0) {
+        if (maxnum > 0) {
             unsigned int randnum = random().rand(0, maxnum - 1);
 
-            if(randnum < musicFileList[MUSIC_ATTACK].size()) {
-                musicNum = randnum;
-                filename = musicFileList[MUSIC_ATTACK][musicNum];
+            if (randnum < musicFileList[MUSIC_ATTACK].size()) {
+                musicNum         = randnum;
+                filename         = musicFileList[MUSIC_ATTACK][musicNum];
                 currentMusicType = MUSIC_ATTACK;
             } else {
-                musicNum = randnum - musicFileList[MUSIC_ATTACK].size();
-                filename = musicFileList[MUSIC_PEACE][musicNum];
+                musicNum         = randnum - musicFileList[MUSIC_ATTACK].size();
+                filename         = musicFileList[MUSIC_PEACE][musicNum];
                 currentMusicType = MUSIC_PEACE;
             }
         }
     }
 
-    if((musicOn) && (!filename.empty())) {
+    if ((musicOn) && (!filename.empty())) {
 
         Mix_HaltMusic();
 
-        if(music != nullptr) {
+        if (music != nullptr) {
             Mix_FreeMusic(music);
             music = nullptr;
         }
 
         music = Mix_LoadMUS(filename.u8string().c_str());
-        if(music != nullptr) {
-            sdl2::log_info("Now playing %s!",filename.u8string());
+        if (music != nullptr) {
+            sdl2::log_info("Now playing %s!", filename.u8string());
             Mix_PlayMusic(music, -1);
             Mix_VolumeMusic(musicVolume);
         } else {
-            sdl2::log_info("Unable to play %s: %s!",filename.u8string(), Mix_GetError());
+            sdl2::log_info("Unable to play %s: %s!", filename.u8string(), Mix_GetError());
         }
     }
 }
 
 void DirectoryPlayer::toggleSound() {
-    if(!musicOn) {
+    if (!musicOn) {
         musicOn = true;
         changeMusic(MUSIC_PEACE);
     } else {
@@ -147,9 +146,9 @@ bool DirectoryPlayer::isMusicPlaying() {
 void DirectoryPlayer::setMusic(bool value) {
     musicOn = value;
 
-    if(musicOn) {
+    if (musicOn) {
         changeMusic(MUSIC_RANDOM);
-    } else if(music != nullptr) {
+    } else if (music != nullptr) {
         Mix_HaltMusic();
     }
 }
@@ -157,23 +156,23 @@ void DirectoryPlayer::setMusic(bool value) {
 std::vector<std::filesystem::path> DirectoryPlayer::getMusicFileNames(const std::filesystem::path& dir) {
     std::vector<std::filesystem::path> files;
 
-    for(const auto& filename : getFileNamesList(dir,"mp3",true)) {
+    for (const auto& filename : getFileNamesList(dir, "mp3", true)) {
         files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const auto& filename : getFileNamesList(dir,"ogg",true)) {
+    for (const auto& filename : getFileNamesList(dir, "ogg", true)) {
         files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const auto& filename : getFileNamesList(dir,"wav",true)) {
+    for (const auto& filename : getFileNamesList(dir, "wav", true)) {
         files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const auto& filename : getFileNamesList(dir,"flac",true)) {
+    for (const auto& filename : getFileNamesList(dir, "flac", true)) {
         files.push_back((dir / filename).lexically_normal());
     }
 
-    for(const auto& filename : getFileNamesList(dir,"mid",true)) {
+    for (const auto& filename : getFileNamesList(dir, "mid", true)) {
         files.push_back((dir / filename).lexically_normal());
     }
 

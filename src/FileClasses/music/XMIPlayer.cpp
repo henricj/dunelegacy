@@ -27,22 +27,23 @@
 
 #include <iostream>
 
-XMIPlayer::XMIPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "XMIPlayer") {
+XMIPlayer::XMIPlayer()
+    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "XMIPlayer") {
     music = nullptr;
 
-#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2,0,2)
-    if((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
+#if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
+    if ((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
         sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
 #else
-    if((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
+    if ((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
         sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
     }
 #endif
 }
 
 XMIPlayer::~XMIPlayer() {
-    if(music != nullptr) {
+    if (music != nullptr) {
         Mix_FreeMusic(music);
         music = nullptr;
     }
@@ -52,12 +53,11 @@ XMIPlayer::~XMIPlayer() {
     Mix_Quit();
 }
 
-void XMIPlayer::changeMusic(MUSICTYPE musicType)
-{
-    int musicNum = -1;
+void XMIPlayer::changeMusic(MUSICTYPE musicType) {
+    int musicNum         = -1;
     std::string filename = "";
 
-    if(currentMusicType == musicType && Mix_PlayingMusic()) {
+    if (currentMusicType == musicType && Mix_PlayingMusic()) {
         return;
     }
 
@@ -66,33 +66,77 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         DUNE1.XMI/2 and DUNE10.XMI/2
     */
 
-
-    switch(musicType) {
+    switch (musicType) {
         case MUSIC_ATTACK: {
 
-            switch(random().rand(0, 5)) {
-                case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
-                case 1:     filename = "DUNE11.XMI";    musicNum = 7;   break;
-                case 2:     filename = "DUNE12.XMI";    musicNum = 7;   break;
-                case 3:     filename = "DUNE13.XMI";    musicNum = 7;   break;
-                case 4:     filename = "DUNE14.XMI";    musicNum = 7;   break;
-                case 5:     filename = "DUNE15.XMI";    musicNum = 7;   break;
+            switch (random().rand(0, 5)) {
+                case 0:
+                    filename = "DUNE10.XMI";
+                    musicNum = 7;
+                    break;
+                case 1:
+                    filename = "DUNE11.XMI";
+                    musicNum = 7;
+                    break;
+                case 2:
+                    filename = "DUNE12.XMI";
+                    musicNum = 7;
+                    break;
+                case 3:
+                    filename = "DUNE13.XMI";
+                    musicNum = 7;
+                    break;
+                case 4:
+                    filename = "DUNE14.XMI";
+                    musicNum = 7;
+                    break;
+                case 5:
+                    filename = "DUNE15.XMI";
+                    musicNum = 7;
+                    break;
             }
 
         } break;
 
         case MUSIC_PEACE: {
 
-            switch(random().rand(0, 8)) {
-                case 0:     filename = "DUNE1.XMI";     musicNum = 6;   break;
-                case 1:     filename = "DUNE2.XMI";     musicNum = 6;   break;
-                case 2:     filename = "DUNE3.XMI";     musicNum = 6;   break;
-                case 3:     filename = "DUNE4.XMI";     musicNum = 6;   break;
-                case 4:     filename = "DUNE5.XMI";     musicNum = 6;   break;
-                case 5:     filename = "DUNE6.XMI";     musicNum = 6;   break;
-                case 6:     filename = "DUNE9.XMI";     musicNum = 4;   break;
-                case 7:     filename = "DUNE9.XMI";     musicNum = 5;   break;
-                case 8:     filename = "DUNE18.XMI";    musicNum = 6;   break;
+            switch (random().rand(0, 8)) {
+                case 0:
+                    filename = "DUNE1.XMI";
+                    musicNum = 6;
+                    break;
+                case 1:
+                    filename = "DUNE2.XMI";
+                    musicNum = 6;
+                    break;
+                case 2:
+                    filename = "DUNE3.XMI";
+                    musicNum = 6;
+                    break;
+                case 3:
+                    filename = "DUNE4.XMI";
+                    musicNum = 6;
+                    break;
+                case 4:
+                    filename = "DUNE5.XMI";
+                    musicNum = 6;
+                    break;
+                case 5:
+                    filename = "DUNE6.XMI";
+                    musicNum = 6;
+                    break;
+                case 6:
+                    filename = "DUNE9.XMI";
+                    musicNum = 4;
+                    break;
+                case 7:
+                    filename = "DUNE9.XMI";
+                    musicNum = 5;
+                    break;
+                case 8:
+                    filename = "DUNE18.XMI";
+                    musicNum = 6;
+                    break;
             }
 
         } break;
@@ -185,25 +229,70 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         case MUSIC_RANDOM:
         default: {
 
-            switch(random().rand(0, 14)) {
+            switch (random().rand(0, 14)) {
                 // attack
-                case 0:     filename = "DUNE10.XMI";    musicNum = 7;   break;
-                case 1:     filename = "DUNE11.XMI";    musicNum = 7;   break;
-                case 2:     filename = "DUNE12.XMI";    musicNum = 7;   break;
-                case 3:     filename = "DUNE13.XMI";    musicNum = 7;   break;
-                case 4:     filename = "DUNE14.XMI";    musicNum = 7;   break;
-                case 5:     filename = "DUNE15.XMI";    musicNum = 7;   break;
+                case 0:
+                    filename = "DUNE10.XMI";
+                    musicNum = 7;
+                    break;
+                case 1:
+                    filename = "DUNE11.XMI";
+                    musicNum = 7;
+                    break;
+                case 2:
+                    filename = "DUNE12.XMI";
+                    musicNum = 7;
+                    break;
+                case 3:
+                    filename = "DUNE13.XMI";
+                    musicNum = 7;
+                    break;
+                case 4:
+                    filename = "DUNE14.XMI";
+                    musicNum = 7;
+                    break;
+                case 5:
+                    filename = "DUNE15.XMI";
+                    musicNum = 7;
+                    break;
 
                 // peace
-                case 6:     filename = "DUNE1.XMI";     musicNum = 6;   break;
-                case 7:     filename = "DUNE2.XMI";     musicNum = 6;   break;
-                case 8:     filename = "DUNE3.XMI";     musicNum = 6;   break;
-                case 9:     filename = "DUNE4.XMI";     musicNum = 6;   break;
-                case 10:    filename = "DUNE5.XMI";     musicNum = 6;   break;
-                case 11:    filename = "DUNE6.XMI";     musicNum = 6;   break;
-                case 12:    filename = "DUNE9.XMI";     musicNum = 4;   break;
-                case 13:    filename = "DUNE9.XMI";     musicNum = 5;   break;
-                case 14:    filename = "DUNE18.XMI";    musicNum = 6;   break;
+                case 6:
+                    filename = "DUNE1.XMI";
+                    musicNum = 6;
+                    break;
+                case 7:
+                    filename = "DUNE2.XMI";
+                    musicNum = 6;
+                    break;
+                case 8:
+                    filename = "DUNE3.XMI";
+                    musicNum = 6;
+                    break;
+                case 9:
+                    filename = "DUNE4.XMI";
+                    musicNum = 6;
+                    break;
+                case 10:
+                    filename = "DUNE5.XMI";
+                    musicNum = 6;
+                    break;
+                case 11:
+                    filename = "DUNE6.XMI";
+                    musicNum = 6;
+                    break;
+                case 12:
+                    filename = "DUNE9.XMI";
+                    musicNum = 4;
+                    break;
+                case 13:
+                    filename = "DUNE9.XMI";
+                    musicNum = 5;
+                    break;
+                case 14:
+                    filename = "DUNE18.XMI";
+                    musicNum = 6;
+                    break;
             }
 
         } break;
@@ -211,34 +300,34 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
 
     currentMusicType = musicType;
 
-    if((musicOn) && (filename != "")) {
+    if ((musicOn) && (filename != "")) {
         sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::u8path(filename));
-        SDLDataSource input(inputrwop.release(),1);
+        SDLDataSource input(inputrwop.release(), 1);
 
         auto tmpFilename = getTmpFileName();
 
-        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string().c_str(),"wb");
-        if(outputrwop == nullptr) {
+        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string().c_str(), "wb");
+        if (outputrwop == nullptr) {
             std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
             return;
         }
-        SDLDataSource output(outputrwop,1);
+        SDLDataSource output(outputrwop, 1);
 
         XMIDI myXMIDI(&input, XMIDI_CONVERT_NOCONVERSION);
-        myXMIDI.retrieve(musicNum, &output );
+        myXMIDI.retrieve(musicNum, &output);
 
         input.close();
         output.close();
 
         Mix_HaltMusic();
-        if(music != nullptr) {
+        if (music != nullptr) {
             Mix_FreeMusic(music);
             music = nullptr;
         }
 
         music = Mix_LoadMUS(tmpFilename.u8string().c_str());
-        if(music != nullptr) {
-            if(Mix_PlayMusic(music, -1) == -1) {
+        if (music != nullptr) {
+            if (Mix_PlayMusic(music, -1) == -1) {
                 sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
             } else {
                 Mix_VolumeMusic(musicVolume);
@@ -247,12 +336,11 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType)
         } else {
             sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());
         }
-
     }
 }
 
 void XMIPlayer::toggleSound() {
-    if(!musicOn) {
+    if (!musicOn) {
         musicOn = true;
         changeMusic(MUSIC_PEACE);
     } else {
@@ -272,9 +360,9 @@ bool XMIPlayer::isMusicPlaying() {
 void XMIPlayer::setMusic(bool value) {
     musicOn = value;
 
-    if(musicOn) {
+    if (musicOn) {
         changeMusic(MUSIC_RANDOM);
-    } else if(music != nullptr) {
+    } else if (music != nullptr) {
         Mix_HaltMusic();
     }
 }

@@ -20,34 +20,32 @@
 #include <globals.h>
 
 TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
- : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical)
-{
+    : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical) {
     sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, 28, true);
-    pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pSurface.get()) };
+    pTexture                   = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pSurface.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }
 
 TextEvent::~TextEvent() = default;
 
-void TextEvent::draw(int currentFrameNumber) const
-{
-    if(currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
+void TextEvent::draw(int currentFrameNumber) const {
+    if (currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
         return;
     }
 
     int alpha = 255;
-    if((!bFadeIn) && (currentFrameNumber == startFrame)) {
+    if ((!bFadeIn) && (currentFrameNumber == startFrame)) {
         alpha = 255;
-    } else if(bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {
-        alpha = ((currentFrameNumber - startFrame)*255)/TEXT_FADE_TIME;
+    } else if (bFadeIn && (currentFrameNumber - startFrame <= TEXT_FADE_TIME)) {
+        alpha = ((currentFrameNumber - startFrame) * 255) / TEXT_FADE_TIME;
     } else if (bFadeOut && ((startFrame + lengthInFrames) - currentFrameNumber <= TEXT_FADE_TIME)) {
-        alpha = (((startFrame + lengthInFrames) - currentFrameNumber)*255)/TEXT_FADE_TIME;
+        alpha = (((startFrame + lengthInFrames) - currentFrameNumber) * 255) / TEXT_FADE_TIME;
     }
 
     SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, VAlign::Center);
-    if(!bCenterVertical) {
-        dest.y = getRendererHeight()/2 + 480/2 - 5*pFontManager->getTextHeight(28)/2;
+    if (!bCenterVertical) {
+        dest.y = getRendererHeight() / 2 + 480 / 2 - 5 * pFontManager->getTextHeight(28) / 2;
     }
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);

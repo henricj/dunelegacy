@@ -18,8 +18,8 @@
 #ifndef TEXTEVENT_H
 #define TEXTEVENT_H
 
-#include <Definitions.h>
 #include <Colors.h>
+#include <Definitions.h>
 #include <misc/SDL2pp.h>
 
 #include <string>
@@ -32,7 +32,6 @@
 */
 class TextEvent final {
 public:
-
     /**
         Constructor
         \param  text            the text to show
@@ -55,13 +54,13 @@ public:
     void draw(int currentFrameNumber) const;
 
 private:
-    std::string text;       ///< the text to show
-    int startFrame;         ///< the first frame relative to the current Scene start where the text should be shown
-    int lengthInFrames;     ///< the number of frames the text shall be shown (if fading in/out is selected, the neccessary time for fading is included here)
-    bool bFadeIn;           ///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text
-    bool bFadeOut;          ///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
-    bool bCenterVertical;   ///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
-    sdl2::texture_ptr pTexture;  ///< a texture containing the rendered text
+    std::string text;           ///< the text to show
+    int startFrame;             ///< the first frame relative to the current Scene start where the text should be shown
+    int lengthInFrames;         ///< the number of frames the text shall be shown (if fading in/out is selected, the neccessary time for fading is included here)
+    bool bFadeIn;               ///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply show the text
+    bool bFadeOut;              ///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears
+    bool bCenterVertical;       ///< true = center the text vertically on the screen, false = draw the text near the bottom of the screen
+    sdl2::texture_ptr pTexture; ///< a texture containing the rendered text
 };
 
 #endif // TEXTEVENT_H

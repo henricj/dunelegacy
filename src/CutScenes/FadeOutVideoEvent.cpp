@@ -15,35 +15,33 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Colors.h>
 #include <CutScenes/FadeOutVideoEvent.h>
+#include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
-#include <Colors.h>
-#include <globals.h>
 
 #include <algorithm>
 
-FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical, bool bFadeWhite)  
-{
+FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical, bool bFadeWhite) {
     sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-    pTexture = sdl2::texture_ptr{ SDL_CreateTextureFromSurface(renderer, pTmp.get()) };
+    pTexture               = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 
     this->numFrames2FadeOut = numFrames2FadeOut;
-    this->bCenterVertical = bCenterVertical;
-    this->bFadeWhite = bFadeWhite;
-    currentFrame = 0;
+    this->bCenterVertical   = bCenterVertical;
+    this->bFadeWhite        = bFadeWhite;
+    currentFrame            = 0;
 }
 
 FadeOutVideoEvent::~FadeOutVideoEvent() = default;
 
-int FadeOutVideoEvent::draw()
-{
+int FadeOutVideoEvent::draw() {
     SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    int alpha = std::max(0, 255 - (255*currentFrame)/numFrames2FadeOut);
-    if(bFadeWhite) {
+    int alpha = std::max(0, 255 - (255 * currentFrame) / numFrames2FadeOut);
+    if (bFadeWhite) {
         // fade to white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &dest);
@@ -56,7 +54,6 @@ int FadeOutVideoEvent::draw()
     return 100;
 }
 
-bool FadeOutVideoEvent::isFinished()
-{
+bool FadeOutVideoEvent::isFinished() {
     return (currentFrame >= numFrames2FadeOut);
 }

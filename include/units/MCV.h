@@ -20,11 +20,10 @@
 
 #include <units/GroundUnit.h>
 
-class MCV final : public GroundUnit
-{
+class MCV final : public GroundUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_MCV;
-    using parent = GroundUnit;
+    using parent                                = GroundUnit;
 
     MCV(uint32_t objectID, const ObjectInitializer& initializer);
     MCV(uint32_t objectID, const ObjectStreamInitializer& initializer);

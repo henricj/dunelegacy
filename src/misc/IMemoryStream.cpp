@@ -10,7 +10,7 @@ IMemoryStream::~IMemoryStream() = default;
 std::string IMemoryStream::readString() {
     uint32_t length = readUint32();
 
-    if(currentPos + length > bufferSize) {
+    if (currentPos + length > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readString(): End-of-File reached!");
     }
 
@@ -20,7 +20,7 @@ std::string IMemoryStream::readString() {
 }
 
 uint8_t IMemoryStream::readUint8() {
-    if(currentPos + sizeof(uint8_t) > bufferSize) {
+    if (currentPos + sizeof(uint8_t) > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readUint8(): End-of-File reached!");
     }
 
@@ -30,7 +30,7 @@ uint8_t IMemoryStream::readUint8() {
 }
 
 uint16_t IMemoryStream::readUint16() {
-    if(currentPos + sizeof(uint16_t) > bufferSize) {
+    if (currentPos + sizeof(uint16_t) > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readUint16(): End-of-File reached!");
     }
 
@@ -40,7 +40,7 @@ uint16_t IMemoryStream::readUint16() {
 }
 
 uint32_t IMemoryStream::readUint32() {
-    if(currentPos + sizeof(uint32_t) > bufferSize) {
+    if (currentPos + sizeof(uint32_t) > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readUint32(): End-of-File reached!");
     }
 
@@ -50,7 +50,7 @@ uint32_t IMemoryStream::readUint32() {
 }
 
 uint64_t IMemoryStream::readUint64() {
-    if(currentPos + sizeof(uint64_t) > bufferSize) {
+    if (currentPos + sizeof(uint64_t) > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readUint64(): End-of-File reached!");
     }
 
@@ -64,8 +64,8 @@ bool IMemoryStream::readBool() {
 }
 
 float IMemoryStream::readFloat() {
-    uint32_t tmp  = readUint32();
-    float    tmp2 = NAN;
-    memcpy(&tmp2,&tmp,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
+    uint32_t tmp = readUint32();
+    float tmp2   = NAN;
+    memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     return tmp2;
 }

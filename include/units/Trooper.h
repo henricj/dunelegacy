@@ -20,11 +20,10 @@
 
 #include <units/InfantryBase.h>
 
-class Trooper final : public InfantryBase
-{
+class Trooper final : public InfantryBase {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Trooper;
-    using parent = InfantryBase;
+    using parent                                = InfantryBase;
 
     Trooper(uint32_t objectID, const ObjectInitializer& initializer);
     Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -40,4 +39,4 @@ private:
     void init();
 };
 
-#endif //TROOPER_H
+#endif // TROOPER_H

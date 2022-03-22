@@ -19,13 +19,12 @@
 
 #include <globals.h>
 
-#include <ScreenBorder.h>
 #include <Game.h>
-#include <Map.h>
 #include <House.h>
+#include <Map.h>
+#include <ScreenBorder.h>
 
 #include <misc/exceptions.h>
-
 
 SoundPlayer::SoundPlayer() {
 
@@ -38,7 +37,7 @@ SoundPlayer::SoundPlayer() {
 
     Mix_Volume(-1, sfxVolume);
 
-    Mix_ReserveChannels(24);  //Reserve a channel for voice over
+    Mix_ReserveChannels(24); // Reserve a channel for voice over
 
     // clang-format off
     Mix_GroupChannels( 0,  1, static_cast<int>(ChannelGroup::Voice));
@@ -59,57 +58,56 @@ SoundPlayer::SoundPlayer() {
 SoundPlayer::~SoundPlayer() = default;
 
 void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
-    if(!soundOn || !pSFXManager) return;
+    if (!soundOn || !pSFXManager)
+        return;
 
     Mix_Chunk* tmp = nullptr;
 
-    if((tmp = pSFXManager->getVoice(id,houseID)) == nullptr) {
-        THROW(std::invalid_argument, "There is no voice with ID %d!",id);
+    if ((tmp = pSFXManager->getVoice(id, houseID)) == nullptr) {
+        THROW(std::invalid_argument, "There is no voice with ID %d!", id);
     }
 
     const auto channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
-    if(channel != -1) {
+    if (channel != -1) {
         Mix_Volume(channel, sfxVolume);
     }
 }
 
-void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const
-{
-    if(!soundOn) return;
+void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
+    if (!soundOn)
+        return;
 
-    if( !currentGameMap->tileExists(location)
-        || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID()) ) {
+    if (!currentGameMap->tileExists(location) || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID())) {
         return;
     }
 
-    const auto realCoord = location * TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+    const auto realCoord = location * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
 
-    if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE)) ) {
+    if (screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE))) {
         playSound(soundID, sfxVolume);
-    } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*16, TILESIZE*16)) ) {
-        playSound(soundID, (sfxVolume*3)/4);
-    } else if(screenborder->isInsideScreen(realCoord, Coord(TILESIZE*24, TILESIZE*24)) ) {
-        playSound(soundID, sfxVolume/2);
+    } else if (screenborder->isInsideScreen(realCoord, Coord(TILESIZE * 16, TILESIZE * 16))) {
+        playSound(soundID, (sfxVolume * 3) / 4);
+    } else if (screenborder->isInsideScreen(realCoord, Coord(TILESIZE * 24, TILESIZE * 24))) {
+        playSound(soundID, sfxVolume / 2);
     } else {
-        playSound(soundID, sfxVolume/4);
+        playSound(soundID, sfxVolume / 4);
     }
 }
 
-void SoundPlayer::toggleSound() noexcept
-{
+void SoundPlayer::toggleSound() noexcept {
     soundOn = !soundOn && pSFXManager;
 }
 
-void SoundPlayer::setSound(bool value) noexcept
-{
+void SoundPlayer::setSound(bool value) noexcept {
     soundOn = value && pSFXManager;
 }
 
 void SoundPlayer::playSound(Mix_Chunk* sound) const {
-    if(!soundOn) return;
+    if (!soundOn)
+        return;
 
     const auto channel = Mix_PlayChannel(-1, sound, 0);
-    if(channel != -1) {
+    if (channel != -1) {
         Mix_Volume(channel, sfxVolume);
     }
 }
@@ -118,49 +116,49 @@ void SoundPlayer::playSound(Sound_enum id) const {
     playSound(id, sfxVolume);
 }
 
-void SoundPlayer::playSound(Sound_enum soundID, int volume) const
-{
-    if (!soundOn || !pSFXManager) return;
+void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
+    if (!soundOn || !pSFXManager)
+        return;
 
     static const ChannelGroup soundID2ChannelGroup[] = {
-        ChannelGroup::UI,                   // Sound_PlaceStructure
-        ChannelGroup::UI,                   // Sound_ButtonClick
-        ChannelGroup::UI,                   // Sound_InvalidAction
-        ChannelGroup::Credits,              // Sound_CreditsTick
-        ChannelGroup::Credits,              // Sound_Tick
-        ChannelGroup::UI,                   // Sound_RadarNoise
-        ChannelGroup::Explosion,            // Sound_ExplosionGas
-        ChannelGroup::Explosion,            // Sound_ExplosionTiny
-        ChannelGroup::Explosion,            // Sound_ExplosionSmall
-        ChannelGroup::Explosion,            // Sound_ExplosionMedium
-        ChannelGroup::Explosion,            // Sound_ExplosionLarge
-        ChannelGroup::ExplosionStructure,   // Sound_ExplosionStructure
-        ChannelGroup::Other,                // Sound_WormAttack
-        ChannelGroup::Gun,                  // Sound_Gun
-        ChannelGroup::Rocket,               // Sound_Rocket
-        ChannelGroup::Explosion,            // Sound_Bloom
-        ChannelGroup::Scream,               // Sound_Scream1
-        ChannelGroup::Scream,               // Sound_Scream2
-        ChannelGroup::Scream,               // Sound_Scream3
-        ChannelGroup::Scream,               // Sound_Scream4
-        ChannelGroup::Scream,               // Sound_Scream5
-        ChannelGroup::Scream,               // Sound_Trumpet
-        ChannelGroup::Other,                // Sound_Drop
-        ChannelGroup::Scream,               // Sound_Squashed
-        ChannelGroup::Gun,                  // Sound_MachineGun
-        ChannelGroup::Sonic,                // Sound_Sonic
-        ChannelGroup::Rocket,               // Sound_RocketSmall
+        ChannelGroup::UI,                 // Sound_PlaceStructure
+        ChannelGroup::UI,                 // Sound_ButtonClick
+        ChannelGroup::UI,                 // Sound_InvalidAction
+        ChannelGroup::Credits,            // Sound_CreditsTick
+        ChannelGroup::Credits,            // Sound_Tick
+        ChannelGroup::UI,                 // Sound_RadarNoise
+        ChannelGroup::Explosion,          // Sound_ExplosionGas
+        ChannelGroup::Explosion,          // Sound_ExplosionTiny
+        ChannelGroup::Explosion,          // Sound_ExplosionSmall
+        ChannelGroup::Explosion,          // Sound_ExplosionMedium
+        ChannelGroup::Explosion,          // Sound_ExplosionLarge
+        ChannelGroup::ExplosionStructure, // Sound_ExplosionStructure
+        ChannelGroup::Other,              // Sound_WormAttack
+        ChannelGroup::Gun,                // Sound_Gun
+        ChannelGroup::Rocket,             // Sound_Rocket
+        ChannelGroup::Explosion,          // Sound_Bloom
+        ChannelGroup::Scream,             // Sound_Scream1
+        ChannelGroup::Scream,             // Sound_Scream2
+        ChannelGroup::Scream,             // Sound_Scream3
+        ChannelGroup::Scream,             // Sound_Scream4
+        ChannelGroup::Scream,             // Sound_Scream5
+        ChannelGroup::Scream,             // Sound_Trumpet
+        ChannelGroup::Other,              // Sound_Drop
+        ChannelGroup::Scream,             // Sound_Squashed
+        ChannelGroup::Gun,                // Sound_MachineGun
+        ChannelGroup::Sonic,              // Sound_Sonic
+        ChannelGroup::Rocket,             // Sound_RocketSmall
     };
 
     Mix_Chunk* sound = nullptr;
 
-    if((sound = pSFXManager->getSound(soundID)) == nullptr) {
+    if ((sound = pSFXManager->getSound(soundID)) == nullptr) {
         THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
     }
 
     auto channel = Mix_GroupAvailable(static_cast<int>(soundID2ChannelGroup[soundID]));
-    channel = Mix_PlayChannel(channel, sound, 0);
-    if(channel != -1) {
+    channel      = Mix_PlayChannel(channel, sound, 0);
+    if (channel != -1) {
         Mix_Volume(channel, volume);
     }
 }

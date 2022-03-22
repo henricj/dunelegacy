@@ -24,7 +24,8 @@
 
 #include <mmath.h>
 
-ADLPlayer::ADLPlayer() : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer") {
+ADLPlayer::ADLPlayer()
+    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer") {
     pSoundAdlibPC = nullptr;
 }
 
@@ -32,12 +33,11 @@ ADLPlayer::~ADLPlayer() {
     setMusic(false);
 }
 
-void ADLPlayer::changeMusic(MUSICTYPE musicType)
-{
-    int musicNum = -1;
+void ADLPlayer::changeMusic(MUSICTYPE musicType) {
+    int musicNum         = -1;
     std::string filename = "";
 
-    if((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
+    if ((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
         return;
     }
 
@@ -46,34 +46,77 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
         DUNE1.ADL/2 and DUNE10.ADL/2
     */
 
-
-    switch(musicType)
-    {
+    switch (musicType) {
         case MUSIC_ATTACK: {
 
-            switch(random().rand(0, 5)) {
-                case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
-                case 1:     filename = "DUNE11.ADL";    musicNum = 7;   break;
-                case 2:     filename = "DUNE12.ADL";    musicNum = 7;   break;
-                case 3:     filename = "DUNE13.ADL";    musicNum = 7;   break;
-                case 4:     filename = "DUNE14.ADL";    musicNum = 7;   break;
-                case 5:     filename = "DUNE15.ADL";    musicNum = 7;   break;
+            switch (random().rand(0, 5)) {
+                case 0:
+                    filename = "DUNE10.ADL";
+                    musicNum = 7;
+                    break;
+                case 1:
+                    filename = "DUNE11.ADL";
+                    musicNum = 7;
+                    break;
+                case 2:
+                    filename = "DUNE12.ADL";
+                    musicNum = 7;
+                    break;
+                case 3:
+                    filename = "DUNE13.ADL";
+                    musicNum = 7;
+                    break;
+                case 4:
+                    filename = "DUNE14.ADL";
+                    musicNum = 7;
+                    break;
+                case 5:
+                    filename = "DUNE15.ADL";
+                    musicNum = 7;
+                    break;
             }
 
         } break;
 
         case MUSIC_PEACE: {
 
-            switch(random().rand(0, 8)) {
-                case 0:     filename = "DUNE1.ADL";     musicNum = 6;   break;
-                case 1:     filename = "DUNE2.ADL";     musicNum = 6;   break;
-                case 2:     filename = "DUNE3.ADL";     musicNum = 6;   break;
-                case 3:     filename = "DUNE4.ADL";     musicNum = 6;   break;
-                case 4:     filename = "DUNE5.ADL";     musicNum = 6;   break;
-                case 5:     filename = "DUNE6.ADL";     musicNum = 6;   break;
-                case 6:     filename = "DUNE9.ADL";     musicNum = 4;   break;
-                case 7:     filename = "DUNE9.ADL";     musicNum = 5;   break;
-                case 8:     filename = "DUNE18.ADL";    musicNum = 6;   break;
+            switch (random().rand(0, 8)) {
+                case 0:
+                    filename = "DUNE1.ADL";
+                    musicNum = 6;
+                    break;
+                case 1:
+                    filename = "DUNE2.ADL";
+                    musicNum = 6;
+                    break;
+                case 2:
+                    filename = "DUNE3.ADL";
+                    musicNum = 6;
+                    break;
+                case 3:
+                    filename = "DUNE4.ADL";
+                    musicNum = 6;
+                    break;
+                case 4:
+                    filename = "DUNE5.ADL";
+                    musicNum = 6;
+                    break;
+                case 5:
+                    filename = "DUNE6.ADL";
+                    musicNum = 6;
+                    break;
+                case 6:
+                    filename = "DUNE9.ADL";
+                    musicNum = 4;
+                    break;
+                case 7:
+                    filename = "DUNE9.ADL";
+                    musicNum = 5;
+                    break;
+                case 8:
+                    filename = "DUNE18.ADL";
+                    musicNum = 6;
+                    break;
             }
 
         } break;
@@ -166,25 +209,70 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
         case MUSIC_RANDOM:
         default: {
 
-            switch(random().rand(0, 14)) {
+            switch (random().rand(0, 14)) {
                 // attack
-                case 0:     filename = "DUNE10.ADL";    musicNum = 7;   break;
-                case 1:     filename = "DUNE11.ADL";    musicNum = 7;   break;
-                case 2:     filename = "DUNE12.ADL";    musicNum = 7;   break;
-                case 3:     filename = "DUNE13.ADL";    musicNum = 7;   break;
-                case 4:     filename = "DUNE14.ADL";    musicNum = 7;   break;
-                case 5:     filename = "DUNE15.ADL";    musicNum = 7;   break;
+                case 0:
+                    filename = "DUNE10.ADL";
+                    musicNum = 7;
+                    break;
+                case 1:
+                    filename = "DUNE11.ADL";
+                    musicNum = 7;
+                    break;
+                case 2:
+                    filename = "DUNE12.ADL";
+                    musicNum = 7;
+                    break;
+                case 3:
+                    filename = "DUNE13.ADL";
+                    musicNum = 7;
+                    break;
+                case 4:
+                    filename = "DUNE14.ADL";
+                    musicNum = 7;
+                    break;
+                case 5:
+                    filename = "DUNE15.ADL";
+                    musicNum = 7;
+                    break;
 
                 // peace
-                case 6:     filename = "DUNE1.ADL";     musicNum = 6;   break;
-                case 7:     filename = "DUNE2.ADL";     musicNum = 6;   break;
-                case 8:     filename = "DUNE3.ADL";     musicNum = 6;   break;
-                case 9:     filename = "DUNE4.ADL";     musicNum = 6;   break;
-                case 10:    filename = "DUNE5.ADL";     musicNum = 6;   break;
-                case 11:    filename = "DUNE6.ADL";     musicNum = 6;   break;
-                case 12:    filename = "DUNE9.ADL";     musicNum = 4;   break;
-                case 13:    filename = "DUNE9.ADL";     musicNum = 5;   break;
-                case 14:    filename = "DUNE18.ADL";    musicNum = 6;   break;
+                case 6:
+                    filename = "DUNE1.ADL";
+                    musicNum = 6;
+                    break;
+                case 7:
+                    filename = "DUNE2.ADL";
+                    musicNum = 6;
+                    break;
+                case 8:
+                    filename = "DUNE3.ADL";
+                    musicNum = 6;
+                    break;
+                case 9:
+                    filename = "DUNE4.ADL";
+                    musicNum = 6;
+                    break;
+                case 10:
+                    filename = "DUNE5.ADL";
+                    musicNum = 6;
+                    break;
+                case 11:
+                    filename = "DUNE6.ADL";
+                    musicNum = 6;
+                    break;
+                case 12:
+                    filename = "DUNE9.ADL";
+                    musicNum = 4;
+                    break;
+                case 13:
+                    filename = "DUNE9.ADL";
+                    musicNum = 5;
+                    break;
+                case 14:
+                    filename = "DUNE18.ADL";
+                    musicNum = 6;
+                    break;
             }
 
         } break;
@@ -192,7 +280,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
     currentMusicType = musicType;
 
-    if((musicOn) && (!filename.empty())) {
+    if ((musicOn) && (!filename.empty())) {
 
         Mix_HookMusic(nullptr, nullptr);
         delete pSoundAdlibPC;
@@ -206,13 +294,13 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType)
 
         Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC);
 
-        sdl2::log_info("Now playing %s!",filename.c_str());
+        sdl2::log_info("Now playing %s!", filename.c_str());
     }
 }
 
 void ADLPlayer::toggleSound() {
-    if(!musicOn) {
-        musicOn = true;
+    if (!musicOn) {
+        musicOn          = true;
         currentMusicType = MUSIC_RANDOM;
         changeMusic(MUSIC_PEACE);
     } else {
@@ -227,7 +315,7 @@ bool ADLPlayer::isMusicPlaying() {
 void ADLPlayer::setMusic(bool value) {
     musicOn = value;
 
-    if(musicOn) {
+    if (musicOn) {
         changeMusic(MUSIC_RANDOM);
     } else {
         Mix_HookMusic(nullptr, nullptr);
@@ -239,7 +327,7 @@ void ADLPlayer::setMusic(bool value) {
 
 void ADLPlayer::setMusicVolume(int newVolume) {
     MusicPlayer::setMusicVolume(newVolume);
-    if(musicOn) {
+    if (musicOn) {
         pSoundAdlibPC->setVolume(newVolume);
     }
 }

@@ -23,68 +23,65 @@
 
 #include <Definitions.h>
 
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
-#define SIZE_X  320
-#define SIZE_Y  200
+#define SIZE_X 320
+#define SIZE_Y 200
 
-
-
-sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop)
-{
-    if(RWop == nullptr) {
+sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
+    if (RWop == nullptr) {
         return nullptr;
     }
 
     int64_t endOffset = SDL_RWsize(RWop);
-    if(endOffset <= 0) {
+    if (endOffset <= 0) {
         THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
     }
 
     auto cpsFilesize = static_cast<size_t>(endOffset);
-    auto pFiledata = std::make_unique<uint8_t[]>(cpsFilesize);
+    auto pFiledata   = std::make_unique<uint8_t[]>(cpsFilesize);
 
-    if(SDL_RWread(RWop, pFiledata.get(), cpsFilesize, 1) != 1) {
+    if (SDL_RWread(RWop, pFiledata.get(), cpsFilesize, 1) != 1) {
         THROW(std::runtime_error, "LoadCPS_RW(): Reading this *.cps-File failed!");
     }
 
-    uint16_t format = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get()+ 2));
+    uint16_t format = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 2));
 
-    if(format != 0x0004) {
+    if (format != 0x0004) {
         THROW(std::runtime_error, "LoadCPS_RW(): Only Format80 encoded *.cps-Files are supported!");
     }
 
     unsigned int SizeXTimeSizeY = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 4));
-    SizeXTimeSizeY += SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get()+ 6)));
+    SizeXTimeSizeY += SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 6)));
 
-    if(SizeXTimeSizeY != SIZE_X * SIZE_Y) {
+    if (SizeXTimeSizeY != SIZE_X * SIZE_Y) {
         THROW(std::runtime_error, "LoadCPS_RW(): Images must be 320x200 pixels big!");
     }
 
-    uint16_t PaletteSize = SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get()+ 8)));
+    uint16_t PaletteSize = SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 8)));
 
-    auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X*SIZE_Y);
-    memset(pImageOut.get(), 0, SIZE_X*SIZE_Y);
+    auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X * SIZE_Y);
+    memset(pImageOut.get(), 0, SIZE_X * SIZE_Y);
 
-    if(decode80(pFiledata.get() + 10 + PaletteSize, pImageOut.get(), 0) == -2) {
+    if (decode80(pFiledata.get() + 10 + PaletteSize, pImageOut.get(), 0) == -2) {
         THROW(std::runtime_error, "LoadCPS_RW(): Decoding this *.cps-File failed!");
     }
 
     // create new picture surface
-    auto pic = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0) };
-    if(pic == nullptr) {
+    auto pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
+    if (pic == nullptr) {
         THROW(std::runtime_error, "LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock{ pic.get() };
+    sdl2::surface_lock lock {pic.get()};
 
-    //Now we can copy line by line
-    char * RESTRICT p = static_cast<char*>(pic->pixels);
-    for(int y = 0; y < SIZE_Y; ++y) {
-        memcpy( p + y * pic->pitch, pImageOut.get() + y * SIZE_X, SIZE_X);
+    // Now we can copy line by line
+    char* RESTRICT p = static_cast<char*>(pic->pixels);
+    for (int y = 0; y < SIZE_Y; ++y) {
+        memcpy(p + y * pic->pitch, pImageOut.get() + y * SIZE_X, SIZE_X);
     }
 
     return pic;

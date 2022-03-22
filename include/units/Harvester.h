@@ -20,11 +20,10 @@
 
 #include <units/TrackedUnit.h>
 
-class Harvester final : public TrackedUnit
-{
+class Harvester final : public TrackedUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Harvester;
-    using parent = TrackedUnit;
+    using parent                                = TrackedUnit;
 
     Harvester(uint32_t objectID, const ObjectInitializer& initializer);
     Harvester(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -70,10 +69,10 @@ private:
     void setSpeeds(const GameContext& context) override;
 
     // harvester state
-    bool     harvestingMode;      ///< currently harvesting
-    bool     returningToRefinery; ///< currently on the way back to the refinery
-    FixPoint spice;               ///< loaded spice
-    uint32_t spiceCheckCounter;   ///< Check for available spice on map to harvest
+    bool harvestingMode;        ///< currently harvesting
+    bool returningToRefinery;   ///< currently on the way back to the refinery
+    FixPoint spice;             ///< loaded spice
+    uint32_t spiceCheckCounter; ///< Check for available spice on map to harvest
 };
 
 #endif // HARVESTER_H

@@ -19,25 +19,24 @@
 #define ABOUTMENU_H
 
 #include "MenuBase.h"
-#include <GUI/StaticContainer.h>
 #include <GUI/Label.h>
 #include <GUI/PictureLabel.h>
+#include <GUI/StaticContainer.h>
 
-class AboutMenu : public MenuBase
-{
+class AboutMenu : public MenuBase {
 public:
     AboutMenu();
     ~AboutMenu() override;
 
-    bool doInput(SDL_Event &event) override;
+    bool doInput(SDL_Event& event) override;
 
 private:
     StaticContainer windowWidget;
-    Label           text;
+    Label text;
 
-    PictureLabel    planetPicture;
-    PictureLabel    duneLegacy;
-    PictureLabel    buttonBorder;
+    PictureLabel planetPicture;
+    PictureLabel duneLegacy;
+    PictureLabel buttonBorder;
 };
 
-#endif //ABOUTMENU_H
+#endif // ABOUTMENU_H

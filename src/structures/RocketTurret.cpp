@@ -24,12 +24,12 @@
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/SFXManager.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
 #include <Map.h>
 
 namespace {
-constexpr TurretBaseConstants gun_turret_constants{RocketTurret::item_id, Bullet_TurretRocket};
+constexpr TurretBaseConstants gun_turret_constants {RocketTurret::item_id, Bullet_TurretRocket};
 }
 
 RocketTurret::RocketTurret(uint32_t objectID, const ObjectInitializer& initializer)
@@ -50,10 +50,10 @@ void RocketTurret::init() {
 
     attackSound = Sound_Rocket;
 
-    graphicID = ObjPic_RocketTurret;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
+    graphicID    = ObjPic_RocketTurret;
+    graphic      = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX   = 10;
+    numImagesY   = 1;
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle)) % 8) + 2;
 }
 
@@ -62,37 +62,34 @@ RocketTurret::~RocketTurret() = default;
 void RocketTurret::updateStructureSpecificStuff(const GameContext& context) {
     auto& game = context.game;
 
-    if( ( !game.getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower() )
-        || ( ((game.gameType == GameType::Campaign) || (game.gameType == GameType::Skirmish)) && getOwner()->isAI()) ) {
+    if ((!game.getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower()) || (((game.gameType == GameType::Campaign) || (game.gameType == GameType::Skirmish)) && getOwner()->isAI())) {
         parent::updateStructureSpecificStuff(context);
     }
 }
 
 bool RocketTurret::canAttack(const ObjectBase* object) const {
-    return object != nullptr
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
-        && object->isVisible(getOwner()->getTeamID());
+    return object != nullptr && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm) && object->isVisible(getOwner()->getTeamID());
 }
 
 void RocketTurret::attack(const GameContext& context) {
-    if ((weaponTimer != 0) || (target.getObjPointer() == nullptr)) return;
+    if ((weaponTimer != 0) || (target.getObjPointer() == nullptr))
+        return;
 
-    const auto centerPoint = getCenterPoint();
-    auto *const pObject = target.getObjPointer();
+    const auto centerPoint       = getCenterPoint();
+    auto* const pObject          = target.getObjPointer();
     const auto targetCenterPoint = pObject->getClosestCenterPoint(location);
 
     auto& game = context.game;
     auto& map  = context.map;
 
-    if(distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
+    if (distanceFrom(centerPoint, targetCenterPoint) < 3 * TILESIZE) {
         // we are just shooting a bullet as a gun turret would do
         // for air units do nothing
         if (!pObject->isAFlyingUnit()) {
             const auto& turret_data = game.objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID)];
 
-
             map.add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
-                turret_data.weapondamage, false, pObject);
+                           turret_data.weapondamage, false, pObject);
 
             map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
             soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
@@ -101,8 +98,8 @@ void RocketTurret::attack(const GameContext& context) {
     } else {
         // we are in normal shooting mode
         map.add_bullet(objectID, &centerPoint, &targetCenterPoint, turret_constants().bulletType(),
-                                          game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
-                                          pObject->isAFlyingUnit(), nullptr);
+                       game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage,
+                       pObject->isAFlyingUnit(), nullptr);
 
         map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
         soundPlayer->playSoundAt(attackSound, location);

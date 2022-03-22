@@ -7,8 +7,10 @@
 
 class DuneRotateTexture final {
 public:
-    explicit DuneRotateTexture(const DuneTileTexture& tileTexture) : tile_texture_{tileTexture} { }
-    explicit DuneRotateTexture(DuneTileTexture&& tileTexture) : tile_texture_{std::move(tileTexture)} { }
+    explicit DuneRotateTexture(const DuneTileTexture& tileTexture)
+        : tile_texture_ {tileTexture} { }
+    explicit DuneRotateTexture(DuneTileTexture&& tileTexture)
+        : tile_texture_ {std::move(tileTexture)} { }
 
     void draw(SDL_Renderer* renderer, int x, int y, FixPoint angle) const noexcept;
 

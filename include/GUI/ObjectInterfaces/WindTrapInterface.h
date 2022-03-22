@@ -33,14 +33,15 @@
 class WindTrapInterface : public DefaultStructureInterface {
 public:
     static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<WindTrapInterface>{new WindTrapInterface{context, objectID}};
+        auto tmp        = std::unique_ptr<WindTrapInterface> {new WindTrapInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    WindTrapInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
+    WindTrapInterface(const GameContext& context, int objectID)
+        : DefaultStructureInterface(context, objectID) {
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 
@@ -50,7 +51,7 @@ protected:
         producedEnergyLabel.setTextFontSize(12);
         producedEnergyLabel.setTextColor(color);
         textVBox.addWidget(&producedEnergyLabel, 0.005);
-        textVBox.addWidget(Spacer::create(),0.99);
+        textVBox.addWidget(Spacer::create(), 0.99);
     }
 
     /**
@@ -58,10 +59,9 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
+        if (pObject == nullptr) {
             return false;
         }
 
@@ -74,10 +74,10 @@ protected:
     }
 
 private:
-    VBox    textVBox;
+    VBox textVBox;
 
-    Label   requiredEnergyLabel;
-    Label   producedEnergyLabel;
+    Label requiredEnergyLabel;
+    Label producedEnergyLabel;
 };
 
 #endif // WINDTRAPINTERFACE_H

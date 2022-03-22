@@ -20,11 +20,10 @@
 
 #include <structures/BuilderBase.h>
 
-class StarPort final : public BuilderBase
-{
+class StarPort final : public BuilderBase {
 public:
     inline static constexpr ItemID_enum item_id = Structure_StarPort;
-    using parent = BuilderBase;
+    using parent                                = BuilderBase;
 
     StarPort(uint32_t objectID, const ObjectInitializer& initializer);
     StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -36,7 +35,6 @@ public:
 
     void handlePlaceOrderClick();
     void handleCancelOrderClick();
-
 
     /**
         Start production of the specified item.
@@ -67,16 +65,15 @@ public:
     */
     void doBuildRandom(const GameContext& context) override;
 
-
     void updateBuildList() override;
 
     /**
         Begin with the deploying of the delivered units.
     */
     void startDeploying() {
-        deploying = true;
+        deploying      = true;
         firstAnimFrame = 8;
-        lastAnimFrame = 9;
+        lastAnimFrame  = 9;
     }
 
     /**
@@ -95,10 +92,10 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
 private:
-    void   init();
+    void init();
 
     int32_t arrivalTimer; ///< When will the frigate arrive?
-    bool    deploying;    ///< Currently deploying units
+    bool deploying;       ///< Currently deploying units
 };
 
 #endif // STARPORT_H

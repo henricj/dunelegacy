@@ -20,11 +20,11 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
-#include <House.h>
 #include <Game.h>
+#include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants light_factory_constants{LightFactory::item_id, Coord{2, 2}};
+constexpr BuilderBaseConstants light_factory_constants {LightFactory::item_id, Coord {2, 2}};
 }
 
 LightFactory::LightFactory(uint32_t objectID, const ObjectInitializer& initializer)
@@ -43,22 +43,22 @@ void LightFactory::init() {
     assert(itemID == Structure_LightFactory);
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_LightFactory;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
-    numImagesX = 6;
-    numImagesY = 1;
+    graphicID      = ObjPic_LightFactory;
+    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX     = 6;
+    numImagesY     = 1;
     firstAnimFrame = 2;
-    lastAnimFrame = 3;
+    lastAnimFrame  = 3;
 }
 
 LightFactory::~LightFactory() = default;
 
 void LightFactory::updateStructureSpecificStuff(const GameContext& context) {
-    if(deployTimer > 0) {
+    if (deployTimer > 0) {
         firstAnimFrame = 4;
-        lastAnimFrame = 5;
+        lastAnimFrame  = 5;
     } else {
         firstAnimFrame = 2;
-        lastAnimFrame = 3;
+        lastAnimFrame  = 3;
     }
 }

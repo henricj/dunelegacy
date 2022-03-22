@@ -19,14 +19,14 @@
 
 WidgetWithBackground::~WidgetWithBackground() = default;
 
-
-void WidgetWithBackground::setTransparentBackground(bool bTransparent) { bTransparentBackground = bTransparent; }
-
+void WidgetWithBackground::setTransparentBackground(bool bTransparent) {
+    bTransparentBackground = bTransparent;
+}
 
 void WidgetWithBackground::setBackground(const DuneTexture* pBackground) {
     setBackground(static_cast<SDL_Surface*>(nullptr));
 
-    if(!pBackground || !*pBackground) {
+    if (!pBackground || !*pBackground) {
         bSelfGeneratedBackground = true;
         this->pBackground        = nullptr;
     } else {
@@ -35,37 +35,37 @@ void WidgetWithBackground::setBackground(const DuneTexture* pBackground) {
     }
 }
 
-void WidgetWithBackground::resize(uint32_t width, uint32_t height)
-{
+void WidgetWithBackground::resize(uint32_t width, uint32_t height) {
     Widget::resize(width, height);
 
-    if(bSelfGeneratedBackground) {
-        localDuneTexture_ = DuneTexture{};
+    if (bSelfGeneratedBackground) {
+        localDuneTexture_ = DuneTexture {};
         localTexture_.reset();
         pBackground = nullptr;
     }
 }
 
-void WidgetWithBackground::draw(Point position)
-{
+void WidgetWithBackground::draw(Point position) {
     const auto* background = getBackground();
-    if(!background) return;
+    if (!background)
+        return;
 
-    SDL_Rect dst{position.x, position.y, background->source_.w, background->source_.h};
+    SDL_Rect dst {position.x, position.y, background->source_.w, background->source_.h};
 
     const auto size = getSize();
 
-    if(dst.w != size.x) dst.x += (size.x - dst.w) / 2;
-    if(dst.h != size.y) dst.y += (size.y - dst.h) / 2;
+    if (dst.w != size.x)
+        dst.x += (size.x - dst.w) / 2;
+    if (dst.h != size.y)
+        dst.y += (size.y - dst.h) / 2;
 
     background->draw(renderer, dst.x, dst.y);
 }
 
-void WidgetWithBackground::invalidateTextures()
-{
+void WidgetWithBackground::invalidateTextures() {
     pBackground = nullptr;
 
-    localDuneTexture_ = DuneTexture{};
+    localDuneTexture_ = DuneTexture {};
     localTexture_.reset();
 
     Widget::invalidateTextures();
@@ -76,9 +76,10 @@ sdl2::surface_ptr WidgetWithBackground::createBackground() {
 }
 
 const DuneTexture* WidgetWithBackground::getBackground() {
-    if(bTransparentBackground) return nullptr;
+    if (bTransparentBackground)
+        return nullptr;
 
-    if(bSelfGeneratedBackground && (!pBackground || !*pBackground || pBackground->source_.w != getSize().x || pBackground->source_.h != getSize().y)) {
+    if (bSelfGeneratedBackground && (!pBackground || !*pBackground || pBackground->source_.w != getSize().x || pBackground->source_.h != getSize().y)) {
         const auto surface = createBackground();
 
         setBackground(surface.get());
@@ -88,14 +89,13 @@ const DuneTexture* WidgetWithBackground::getBackground() {
 }
 
 void WidgetWithBackground::setBackground(SDL_Surface* surface) {
-    if(surface) {
+    if (surface) {
         localTexture_     = convertSurfaceToTexture(surface);
-        localDuneTexture_ = DuneTexture{localTexture_.get()};
+        localDuneTexture_ = DuneTexture {localTexture_.get()};
         pBackground       = &localDuneTexture_;
     } else {
-        localDuneTexture_ = DuneTexture{};
+        localDuneTexture_ = DuneTexture {};
         localTexture_.reset();
         pBackground = nullptr;
     }
 }
-

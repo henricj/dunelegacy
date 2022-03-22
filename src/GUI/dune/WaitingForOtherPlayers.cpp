@@ -20,14 +20,13 @@
 #include <globals.h>
 
 #include <FileClasses/TextManager.h>
-#include <players/HumanPlayer.h>
 #include <Network/NetworkManager.h>
+#include <players/HumanPlayer.h>
 
 #include <Game.h>
 
-
-WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
-{
+WaitingForOtherPlayers::WaitingForOtherPlayers()
+    : Window(50, 50, 50, 50) {
     setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
 
@@ -49,10 +48,10 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50,50,50,50)
 
     update();
 
-    int xpos = std::max(0,(getRendererWidth() - getSize().x)/2);
-    int ypos = std::max(0,(getRendererHeight() - getSize().y)/2);
+    int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
+    int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
 
-    setCurrentPosition(xpos,ypos,getSize().x,getSize().y);
+    setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
 }
 
 WaitingForOtherPlayers::~WaitingForOtherPlayers() = default;
@@ -61,9 +60,9 @@ void WaitingForOtherPlayers::update() {
     std::string text = _("Waiting for other players... ");
 
     // test if we need to wait for data to arrive
-    for(const std::string& playername : pNetworkManager->getConnectedPeers()) {
-        if(auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername))) {
-            if(pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
+    for (const std::string& playername : pNetworkManager->getConnectedPeers()) {
+        if (auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername))) {
+            if (pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();
             }
         }
@@ -72,7 +71,6 @@ void WaitingForOtherPlayers::update() {
     setText(text);
 }
 
-void WaitingForOtherPlayers::onRemove()
-{
+void WaitingForOtherPlayers::onRemove() {
     currentGame->resumeGame();
 }

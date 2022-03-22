@@ -30,13 +30,11 @@
 
 OFileStream::OFileStream() = default;
 
-OFileStream::~OFileStream()
-{
+OFileStream::~OFileStream() {
     close();
 }
 
-bool OFileStream::open(const std::filesystem::path& filename)
-{
+bool OFileStream::open(const std::filesystem::path& filename) {
     close();
 
     const auto normal = filename.lexically_normal().make_preferred();
@@ -50,72 +48,64 @@ bool OFileStream::open(const std::filesystem::path& filename)
     return fp != nullptr;
 }
 
-void OFileStream::close()
-{
-    if(fp != nullptr) {
+void OFileStream::close() {
+    if (fp != nullptr) {
         fclose(fp);
         fp = nullptr;
     }
 }
 
 void OFileStream::flush() {
-    if(fp != nullptr) {
+    if (fp != nullptr) {
         fflush(fp);
     }
 }
 
-void OFileStream::writeString(const std::string& str)
-{
+void OFileStream::writeString(const std::string& str) {
     writeUint32(str.length());
 
-    if(!str.empty()) {
-        if(fwrite(str.c_str(),str.length(),1,fp) != 1) {
+    if (!str.empty()) {
+        if (fwrite(str.c_str(), str.length(), 1, fp) != 1) {
             THROW(OutputStream::error, "OFileStream::writeString(): An I/O-Error occurred!");
         }
     }
 }
 
-void OFileStream::writeUint8(uint8_t x)
-{
-    if(fwrite(&x,sizeof(uint8_t),1,fp) != 1) {
+void OFileStream::writeUint8(uint8_t x) {
+    if (fwrite(&x, sizeof(uint8_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint8(): An I/O-Error occurred!");
     }
 }
 
-void OFileStream::writeUint16(uint16_t x)
-{
+void OFileStream::writeUint16(uint16_t x) {
     x = SDL_SwapLE16(x);
 
-    if(fwrite(&x,sizeof(uint16_t),1,fp) != 1) {
+    if (fwrite(&x, sizeof(uint16_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint16(): An I/O-Error occurred!");
     }
 }
 
-void OFileStream::writeUint32(uint32_t x)
-{
+void OFileStream::writeUint32(uint32_t x) {
     x = SDL_SwapLE32(x);
 
-    if(fwrite(&x,sizeof(uint32_t),1,fp) != 1) {
+    if (fwrite(&x, sizeof(uint32_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint32(): An I/O-Error occurred!");
     }
 }
 
-void OFileStream::writeUint64(uint64_t x)
-{
+void OFileStream::writeUint64(uint64_t x) {
     x = SDL_SwapLE64(x);
-    if(fwrite(&x,sizeof(uint64_t),1,fp) != 1) {
+    if (fwrite(&x, sizeof(uint64_t), 1, fp) != 1) {
         THROW(OutputStream::error, "OFileStream::writeUint64(): An I/O-Error occurred!");
     }
 }
 
-void OFileStream::writeBool(bool x)
-{
+void OFileStream::writeBool(bool x) {
     writeUint8(x ? 1 : 0);
 }
 
-void OFileStream::writeFloat(float x)
-{
+void OFileStream::writeFloat(float x) {
     uint32_t tmp = 0;
-    memcpy(&tmp,&x,sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
+    memcpy(&tmp, &x, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     writeUint32(tmp);
 }

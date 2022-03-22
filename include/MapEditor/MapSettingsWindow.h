@@ -21,13 +21,13 @@
 #include <MapEditor/MapData.h>
 #include <MapEditor/ReinforcementInfo.h>
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/Label.h>
-#include <GUI/DropDownBox.h>
-#include <GUI/TextButton.h>
 #include <GUI/Checkbox.h>
+#include <GUI/DropDownBox.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
 
 #include <misc/SDL2pp.h>
@@ -35,13 +35,9 @@
 // forward declaration
 class MapEditor;
 
-
-class  MapSettingsWindow : public Window
-{
+class MapSettingsWindow : public Window {
 public:
-
     MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
-
 
     /**
         This static method creates a dynamic map settings window.
@@ -52,84 +48,79 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static MapSettingsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg = new MapSettingsWindow(pMapEditor, house);
+        auto* dlg       = new MapSettingsWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }
 
-
 private:
-
     void onCancel();
     void onOK();
 
+    HBox mainHBox;
+    VBox mainVBox;
+    VBox centralVBox;
 
-    HBox            mainHBox;
-    VBox            mainVBox;
-    VBox            centralVBox;
+    HBox pictureHBox;
 
-    HBox            pictureHBox;
+    VBox winPictureVBox;
+    Label winPictureLabel;
+    DropDownBox winPictureDropDownBox;
 
-    VBox            winPictureVBox;
-    Label           winPictureLabel;
-    DropDownBox     winPictureDropDownBox;
+    VBox losePictureVBox;
+    Label losePictureLabel;
+    DropDownBox losePictureDropDownBox;
 
-    VBox            losePictureVBox;
-    Label           losePictureLabel;
-    DropDownBox     losePictureDropDownBox;
+    VBox briefingPictureVBox;
+    Label briefingPictureLabel;
+    DropDownBox briefingPictureDropDownBox;
 
-    VBox            briefingPictureVBox;
-    Label           briefingPictureLabel;
-    DropDownBox     briefingPictureDropDownBox;
+    Label gameFinishingConditionsLabel;
 
-    Label           gameFinishingConditionsLabel;
+    HBox winFlags1HBox;
+    Checkbox winFlagsTimeoutCheckbox;
+    DigitsTextBox winFlagsTimeoutTextBox;
+    Checkbox winFlagsSpiceQuotaCheckbox;
 
-    HBox            winFlags1HBox;
-    Checkbox        winFlagsTimeoutCheckbox;
-    DigitsTextBox   winFlagsTimeoutTextBox;
-    Checkbox        winFlagsSpiceQuotaCheckbox;
+    HBox winFlags2HBox;
+    Checkbox winFlagsPlayerNoObjectsLeftCheckbox;
+    Checkbox winFlagsAIPlayerNoObjectsLeftCheckbox;
 
-    HBox            winFlags2HBox;
-    Checkbox        winFlagsPlayerNoObjectsLeftCheckbox;
-    Checkbox        winFlagsAIPlayerNoObjectsLeftCheckbox;
+    Label gameWinningConditionsLabel;
 
-    Label           gameWinningConditionsLabel;
+    HBox loseFlags1HBox;
+    Checkbox loseFlagsTimeoutCheckbox;
+    Checkbox loseFlagsSpiceQuotaCheckbox;
 
-    HBox            loseFlags1HBox;
-    Checkbox        loseFlagsTimeoutCheckbox;
-    Checkbox        loseFlagsSpiceQuotaCheckbox;
+    HBox loseFlags2HBox;
+    Checkbox loseFlagsPlayerHasObjectsLeftCheckbox;
+    Checkbox loseFlagsAIPlayerNoObjectsLeftCheckbox;
 
-    HBox            loseFlags2HBox;
-    Checkbox        loseFlagsPlayerHasObjectsLeftCheckbox;
-    Checkbox        loseFlagsAIPlayerNoObjectsLeftCheckbox;
+    HBox techLevelHBox;
+    Label techLevelLabel;
+    DropDownBox techLevelDropDownBox;
 
-    HBox            techLevelHBox;
-    Label           techLevelLabel;
-    DropDownBox     techLevelDropDownBox;
+    HBox authorHBox;
+    Label authorLabel;
+    TextBox authorTextBox;
+    HBox licenseHBox;
+    Label licenseLabel;
+    TextBox licenseTextBox;
 
-    HBox            authorHBox;
-    Label           authorLabel;
-    TextBox         authorTextBox;
-    HBox            licenseHBox;
-    Label           licenseLabel;
-    TextBox         licenseTextBox;
+    HBox buttonHBox;
 
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton okButton;
 
-    HBox            buttonHBox;
-
-    Label           titleLabel;
-    TextButton      cancelButton;
-    TextButton      okButton;
-
-    MapEditor*      pMapEditor;
+    MapEditor* pMapEditor;
 
     HOUSETYPE house;
-    uint32_t  color;
+    uint32_t color;
 
-    std::vector<std::string>    availableWinPictures;
-    std::vector<std::string>    availableLosePictures;
-    std::vector<std::string>    availableBriefingPictures;
+    std::vector<std::string> availableWinPictures;
+    std::vector<std::string> availableLosePictures;
+    std::vector<std::string> availableBriefingPictures;
 };
-
 
 #endif // MAPSETTINGSWINDOW_H

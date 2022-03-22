@@ -23,9 +23,8 @@
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <map>
-
+#include <string>
 
 // forward declarations
 class MapEditor;
@@ -51,4 +50,4 @@ private:
     std::map<std::string, HOUSETYPE> housename2house;
 };
 
-#endif //INIMAPEDITORLOADER_H
+#endif // INIMAPEDITORLOADER_H

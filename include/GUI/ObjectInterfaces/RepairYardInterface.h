@@ -29,13 +29,14 @@
 class RepairYardInterface : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RepairYardInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RepairYardInterface>{new RepairYardInterface{context, objectID}};
+        auto tmp        = std::unique_ptr<RepairYardInterface> {new RepairYardInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    RepairYardInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
+    RepairYardInterface(const GameContext& context, int objectID)
+        : DefaultStructureInterface(context, objectID) {
         mainHBox.addWidget(Spacer::create());
         mainHBox.addWidget(&repairUnitProgressBar);
         mainHBox.addWidget(Spacer::create());
@@ -46,21 +47,20 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         auto* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
+        if (pObject == nullptr) {
             return false;
         }
 
         auto* const pRepairYard = dune_cast<RepairYard>(pObject);
-        if(pRepairYard != nullptr) {
+        if (pRepairYard != nullptr) {
             auto* pUnit = pRepairYard->getRepairUnit();
 
-            if(pUnit != nullptr) {
+            if (pUnit != nullptr) {
                 repairUnitProgressBar.setVisible(true);
                 repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));
-                repairUnitProgressBar.setProgress( ((pUnit->getHealth()*100)/pUnit->getMaxHealth()).toDouble());
+                repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toDouble());
             } else {
                 repairUnitProgressBar.setVisible(false);
             }
@@ -70,7 +70,7 @@ protected:
     }
 
 private:
-    PictureProgressBar  repairUnitProgressBar;
+    PictureProgressBar repairUnitProgressBar;
 };
 
 #endif // REPAIRYARDINTERFACE_H

@@ -12,7 +12,7 @@ public:
 
     uint64_t getNextValue() {
         do {
-            currentValue = (a*currentValue + c) % m;
+            currentValue = (a * currentValue + c) % m;
         } while (currentValue >= N);
 
         return currentValue;
@@ -24,11 +24,10 @@ public:
     */
     int nextStep();
 
-
 private:
     sdl2::surface_ptr src;
     SDL_Surface* dest;
-    SDL_Rect    destRect{};
+    SDL_Rect destRect {};
     int numSteps;
     int StepsLeft;
 
@@ -39,4 +38,4 @@ private:
     uint64_t currentValue;
 };
 
-#endif //BLENDBLITTER_H
+#endif // BLENDBLITTER_H

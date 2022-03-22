@@ -21,19 +21,17 @@
 #include <GUI/Window.h>
 #include <misc/SDL2pp.h>
 
-#define MENU_QUIT_DEFAULT   (-1)
+#define MENU_QUIT_DEFAULT (-1)
 
-class MenuBase: public Window
-{
+class MenuBase : public Window {
 public:
-
     MenuBase();
     virtual ~MenuBase();
 
-    MenuBase(const MenuBase &) = delete;
-    MenuBase(MenuBase &&) = delete;
-    MenuBase& operator=(const MenuBase &) = delete;
-    MenuBase& operator=(MenuBase &&) = delete;
+    MenuBase(const MenuBase&) = delete;
+    MenuBase(MenuBase&&)      = delete;
+    MenuBase& operator=(const MenuBase&) = delete;
+    MenuBase& operator=(MenuBase&&) = delete;
 
     virtual int showMenu();
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
@@ -45,7 +43,7 @@ public:
     virtual void drawSpecificStuff();
 
     void draw() override;
-    virtual bool doInput(SDL_Event &event);
+    virtual bool doInput(SDL_Event& event);
 
     void setClearScreen(bool bClearScreen) {
         this->bClearScreen = bClearScreen;
@@ -58,7 +56,7 @@ private:
     bool bClearScreen;
     bool bAllowQuiting;
     bool quiting;
-    int  retVal;
+    int retVal;
 };
 
 #endif // MENUBASE_H

@@ -20,27 +20,23 @@
 
 #include <MapEditor/MapData.h>
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/Label.h>
+#include <GUI/Checkbox.h>
 #include <GUI/DropDownBox.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
 #include <GUI/RadioButton.h>
 #include <GUI/TextButton.h>
-#include <GUI/Checkbox.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
 #include <misc/SDL2pp.h>
 
 // forward declaration
 class MapEditor;
 
-
-class  ChoamWindow : public Window
-{
+class ChoamWindow : public Window {
 public:
-
     ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
-
 
     /**
         This static method creates a dynamic choam window.
@@ -51,48 +47,43 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static ChoamWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg = new ChoamWindow(pMapEditor, house);
+        auto* dlg       = new ChoamWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }
 
-
 private:
-
     void onCancel();
     void onOK();
 
     void onUnitCheckbox(ItemID_enum itemID);
 
+    HBox mainHBox;
+    VBox mainVBox;
+    VBox centralVBox;
 
-    HBox    mainHBox;
-    VBox    mainVBox;
-    VBox    centralVBox;
-
-    Label   Label_Explanation;
-
+    Label Label_Explanation;
 
     struct ChoamRow {
-        HBox            HBox_Unit;
-        Checkbox        Checkbox_Unit1;
-        DigitsTextBox   TextBox_Unit1;
-        Checkbox        Checkbox_Unit2;
-        DigitsTextBox   TextBox_Unit2;
+        HBox HBox_Unit;
+        Checkbox Checkbox_Unit1;
+        DigitsTextBox TextBox_Unit1;
+        Checkbox Checkbox_Unit2;
+        DigitsTextBox TextBox_Unit2;
     };
 
-    ChoamRow   choamRows[7];
+    ChoamRow choamRows[7];
 
-    HBox        buttonHBox;
+    HBox buttonHBox;
 
-    Label       titleLabel;
-    TextButton  cancelButton;
-    TextButton  okButton;
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton okButton;
 
-    MapEditor*  pMapEditor;
+    MapEditor* pMapEditor;
 
     HOUSETYPE house;
-    uint32_t  color;
+    uint32_t color;
 };
-
 
 #endif // CHOAMWINDOW_H

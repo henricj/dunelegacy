@@ -18,17 +18,17 @@
 #ifndef TEAMSWINDOW_H
 #define TEAMSWINDOW_H
 
-#include <MapEditor/MapData.h>
 #include <AITeamInfo.h>
+#include <MapEditor/MapData.h>
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/Label.h>
 #include <GUI/DropDownBox.h>
-#include <GUI/TextButton.h>
-#include <GUI/SymbolButton.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
 #include <GUI/ListBox.h>
+#include <GUI/SymbolButton.h>
+#include <GUI/TextButton.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
 
 #include <misc/SDL2pp.h>
@@ -36,13 +36,9 @@
 // forward declaration
 class MapEditor;
 
-
-class  TeamsWindow : public Window
-{
+class TeamsWindow : public Window {
 public:
-
     TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
-
 
     /**
         This static method creates a dynamic teams window.
@@ -53,14 +49,12 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static TeamsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg = new TeamsWindow(pMapEditor, house);
+        auto* dlg       = new TeamsWindow(pMapEditor, house);
         dlg->pAllocated = true;
         return dlg;
     }
 
-
 private:
-
     void onCancel();
     void onOK();
 
@@ -82,46 +76,44 @@ private:
 
     std::string getPlayerName(HOUSETYPE house) const;
 
+    HBox mainHBox;
+    VBox mainVBox;
+    VBox centralVBox;
 
-    HBox            mainHBox;
-    VBox            mainVBox;
-    VBox            centralVBox;
+    HBox hBox1;
+    ListBox teamsListBox;
+    VBox listControlVBox;
+    SymbolButton listEntryUpButton;
+    SymbolButton listEntryDownButton;
+    SymbolButton addListEntryButton;
+    SymbolButton removeListEntryButton;
 
-    HBox            hBox1;
-    ListBox         teamsListBox;
-    VBox            listControlVBox;
-    SymbolButton    listEntryUpButton;
-    SymbolButton    listEntryDownButton;
-    SymbolButton    addListEntryButton;
-    SymbolButton    removeListEntryButton;
+    HBox hBox2;
+    Label playerLabel;
+    DropDownBox playerDropDownBox;
+    Label aiTeamBehaviorLabel;
+    DropDownBox aiTeamBehaviorDropDownBox;
 
-    HBox            hBox2;
-    Label           playerLabel;
-    DropDownBox     playerDropDownBox;
-    Label           aiTeamBehaviorLabel;
-    DropDownBox     aiTeamBehaviorDropDownBox;
+    HBox hBox3;
+    Label aiTeamTypeLabel;
+    DropDownBox aiTeamTypeDropDownBox;
+    Label minUnitsLabel;
+    DigitsTextBox minUnitsTextBox;
+    Label maxUnitsLabel;
+    DigitsTextBox maxUnitsTextBox;
 
-    HBox            hBox3;
-    Label           aiTeamTypeLabel;
-    DropDownBox     aiTeamTypeDropDownBox;
-    Label           minUnitsLabel;
-    DigitsTextBox   minUnitsTextBox;
-    Label           maxUnitsLabel;
-    DigitsTextBox   maxUnitsTextBox;
+    HBox buttonHBox;
 
-    HBox            buttonHBox;
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton okButton;
 
-    Label           titleLabel;
-    TextButton      cancelButton;
-    TextButton      okButton;
-
-    MapEditor*      pMapEditor;
+    MapEditor* pMapEditor;
 
     HOUSETYPE house;
-    uint32_t  color;
+    uint32_t color;
 
-    std::vector<AITeamInfo>  aiteams;
+    std::vector<AITeamInfo> aiteams;
 };
-
 
 #endif // TEAMSWINDOW_H

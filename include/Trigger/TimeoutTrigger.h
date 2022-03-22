@@ -27,7 +27,6 @@
 */
 class TimeoutTrigger final : public Trigger {
 public:
-
     /**
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered

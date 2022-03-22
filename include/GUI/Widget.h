@@ -20,27 +20,29 @@
 
 #include <misc/SDL2pp.h>
 
-#include <functional>
 #include <algorithm>
+#include <functional>
 
 /// A point class for representing a point.
 class Point final {
 public:
     /// Default constructor.
-    Point() : x(0) , y(0) { }
+    Point()
+        : x(0), y(0) { }
 
     /** A constructor that initializes the point with x and y
         \param x the x coordinate
         \param y the y coordinate
     */
-    Point(int32_t x, int32_t y) : x(x) , y(y) { }
+    Point(int32_t x, int32_t y)
+        : x(x), y(y) { }
 
     /** operator for adding two points.
         \param p the point to add
         \return the sum of both points
     */
     Point operator+(const Point& p) const {
-        return Point(x+p.x,y+p.y);
+        return Point(x + p.x, y + p.y);
     }
 
     /** operator for subtracting two points.
@@ -48,7 +50,7 @@ public:
         \return this point minus p
     */
     Point operator-(const Point& p) const {
-        return Point(x-p.x,y-p.y);
+        return Point(x - p.x, y - p.y);
     }
 
     /** operator for multiplying every both coordinates with an integer value.
@@ -56,7 +58,7 @@ public:
         \return this point times c
     */
     Point operator*(int32_t c) const {
-        return Point(x*c,y*c);
+        return Point(x * c, y * c);
     }
 
     /** operator for dividing every both coordinates by an integer value.
@@ -64,7 +66,7 @@ public:
         \return this point divided by c
     */
     Point operator/(int32_t c) const {
-        return Point(x/c,y/c);
+        return Point(x / c, y / c);
     }
 
     /** operator for comparing two Points.
@@ -72,7 +74,7 @@ public:
         \return true if both coordinates are equal, false otherwise
     */
     bool operator==(const Point& op) const {
-            return (x == op.x) && (y == op.y);
+        return (x == op.x) && (y == op.y);
     }
 
     /// The x coordinate
@@ -98,7 +100,9 @@ inline Point getSurfaceSize(SDL_Surface* pSurface) {
 */
 inline Point getTextureSize(SDL_Texture* pTexture) {
     Point p;
-    if(pTexture != nullptr) { SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y); }
+    if (pTexture != nullptr) {
+        SDL_QueryTexture(pTexture, nullptr, nullptr, &p.x, &p.y);
+    }
     return p;
 }
 
@@ -109,7 +113,7 @@ inline Point getTextureSize(SDL_Texture* pTexture) {
 */
 inline Point getTextureSize(const DuneTexture* pTexture) {
     Point p;
-    if(pTexture != nullptr) {
+    if (pTexture != nullptr) {
         p.x = pTexture->source_.w;
         p.y = pTexture->source_.h;
     }
@@ -118,18 +122,19 @@ inline Point getTextureSize(const DuneTexture* pTexture) {
 
 // forward declarations
 class Window;
-template<class WidgetData> class Container;
+template<class WidgetData>
+class Container;
 
 /// The abstract base class for all widgets
-class Widget
-{
+class Widget {
 public:
-    template<class WidgetData> friend class Container;
+    template<class WidgetData>
+    friend class Container;
 
     friend class Window;
 
     /** The default constructor.
-    */
+     */
     Widget() = default;
 
     /** Destructor
@@ -137,10 +142,10 @@ public:
     */
     virtual ~Widget() = 0;
 
-    Widget(const Widget &) = delete;
-    Widget(Widget &&) = default;
-    Widget& operator=(const Widget &) = delete;
-    Widget& operator=(Widget &&) = default;
+    Widget(const Widget&) = delete;
+    Widget(Widget&&)      = default;
+    Widget& operator=(const Widget&) = delete;
+    Widget& operator=(Widget&&) = default;
 
     /**
         Sets the parent of this widget.
@@ -160,7 +165,7 @@ public:
         \param  bEnabled    true = enable widget, false = disable widget
     */
     virtual void setEnabled(bool bEnabled) {
-        if((bEnabled == false) && (isActive() == true)) {
+        if ((bEnabled == false) && (isActive() == true)) {
             setInactive();
         }
         enabled = bEnabled;
@@ -208,7 +213,6 @@ public:
     */
     [[nodiscard]] virtual bool isActivatable() const { return false; }
 
-
     /**
         Returns whether this widget is an container.
         \return true = container, false = any other widget
@@ -227,7 +231,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0,0); }
+    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0, 0); }
 
     /**
         Returns whether this widget is allowed to be resized in X direction.
@@ -269,11 +273,11 @@ public:
         This method resizes the widget and its parent (the surrounding container).
     */
     virtual void resizeAll() {
-        if(parent != nullptr) {
+        if (parent != nullptr) {
             parent->resizeAll();
         } else {
-            resize( std::max(getMinimumSize().x,getSize().x),
-                    std::max(getMinimumSize().y,getSize().y));
+            resize(std::max(getMinimumSize().x, getSize().x),
+                   std::max(getMinimumSize().y, getSize().y));
         }
     }
 
@@ -318,7 +322,7 @@ public:
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
     virtual bool handleKeyPress(SDL_KeyboardEvent& key) {
-        if(isActive() && (key.keysym.sym == SDLK_TAB)) {
+        if (isActive() && (key.keysym.sym == SDLK_TAB)) {
             setInactive();
         }
         return false;
@@ -380,7 +384,6 @@ public:
     */
     virtual bool handleTextInputOverlay(SDL_TextInputEvent& textInput) { return false; }
 
-
     /**
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
@@ -394,7 +397,6 @@ public:
     */
     virtual void drawOverlay(Point position) { }
 
-
     /**
         This method is called if a child widget is destroyed (see Widget::~Widget).
         \param  pChildWidget    widget to remove
@@ -407,11 +409,11 @@ public:
         method automatically frees the memory of this object.
     */
     virtual void destroy() {
-        if(pAllocated == true) {
+        if (pAllocated == true) {
             pAllocated = false;
             delete this;
         } else {
-            if(parent != nullptr) {
+            if (parent != nullptr) {
                 parent->removeChildWidget(this);
             }
         }
@@ -421,7 +423,7 @@ public:
         Sets the function that should be called when this widget gains focus.
         \param  pOnGainFocus    A function to call on focus gain
     */
-    void setOnGainFocus(std::function<void ()> pOnGainFocus) {
+    void setOnGainFocus(std::function<void()> pOnGainFocus) {
         this->pOnGainFocus = std::move(pOnGainFocus);
     }
 
@@ -429,7 +431,7 @@ public:
         Sets the function that should be called when this widget loses focus.
         \param  pOnLostFocus    A function to call on focus loss
     */
-    void setOnLostFocus(std::function<void ()> pOnLostFocus) {
+    void setOnLostFocus(std::function<void()> pOnLostFocus) {
         this->pOnLostFocus = std::move(pOnLostFocus);
     }
 
@@ -442,12 +444,12 @@ protected:
     */
     virtual void setActive(bool bActive) {
         const auto oldActive = active;
-        active = bActive;
+        active               = bActive;
 
-        if(oldActive != bActive) {
-            if(active && pOnGainFocus) {
+        if (oldActive != bActive) {
+            if (active && pOnGainFocus) {
                 pOnGainFocus();
-            } else if(!active && pOnLostFocus) {
+            } else if (!active && pOnLostFocus) {
                 pOnLostFocus();
             }
         }
@@ -488,21 +490,19 @@ protected:
     }
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true
-    bool pAllocated{};
+    bool pAllocated {};
 
 private:
-    bool    visible{true}; ///< Is this widget visible?
-    bool    enabled{true}; ///< Is this widget enabled?
-    bool    active{};      ///< Is this widget active?
-    bool    resizeX{};     ///< Is this widget resizable in X direction?
-    bool    resizeY{};     ///< Is this widget resizable in Y direction?
-    Point   size;          ///< The size of this widget
-    Widget* parent{};      ///< The parent widget
+    bool visible {true}; ///< Is this widget visible?
+    bool enabled {true}; ///< Is this widget enabled?
+    bool active {};      ///< Is this widget active?
+    bool resizeX {};     ///< Is this widget resizable in X direction?
+    bool resizeY {};     ///< Is this widget resizable in Y direction?
+    Point size;          ///< The size of this widget
+    Widget* parent {};   ///< The parent widget
 
-    std::function<void ()> pOnGainFocus;    ///< function that is called when this widget gains focus
-    std::function<void ()> pOnLostFocus;    ///< function that is called when this widget loses focus
-
+    std::function<void()> pOnGainFocus; ///< function that is called when this widget gains focus
+    std::function<void()> pOnLostFocus; ///< function that is called when this widget loses focus
 };
 
-
-#endif //WIDGET_H
+#endif // WIDGET_H

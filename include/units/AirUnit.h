@@ -18,20 +18,19 @@
 #ifndef AIRUNIT_H
 #define AIRUNIT_H
 
-#include <units/UnitBase.h>
 #include <FileClasses/GFXManager.h>
+#include <units/UnitBase.h>
 
 class AirUnitConstants : public UnitBaseConstants {
 public:
     constexpr explicit AirUnitConstants(ItemID_enum itemID, int num_weapons = 0,
                                         BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
+        : UnitBaseConstants {itemID, num_weapons, bullet_id} {
         aFlyingUnit_ = true;
     }
 };
 
-class AirUnit : public UnitBase
-{
+class AirUnit : public UnitBase {
 protected:
     AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,10 +40,10 @@ public:
 
     ~AirUnit() override = 0;
 
-    AirUnit(const AirUnit &) = delete;
-    AirUnit(AirUnit &&) = delete;
-    AirUnit& operator=(const AirUnit &) = delete;
-    AirUnit& operator=(AirUnit &&) = delete;
+    AirUnit(const AirUnit&) = delete;
+    AirUnit(AirUnit&&)      = delete;
+    AirUnit& operator=(const AirUnit&) = delete;
+    AirUnit& operator=(AirUnit&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -70,9 +69,9 @@ protected:
     void move(const GameContext& context) override;
     void turn(const GameContext& context) override;
 
-    FixPoint currentMaxSpeed;               ///< The current maximum allowed speed
+    FixPoint currentMaxSpeed; ///< The current maximum allowed speed
 
-    zoomable_texture shadowGraphic{};       ///< The graphic for the shadow of this air unit
+    zoomable_texture shadowGraphic {}; ///< The graphic for the shadow of this air unit
 
 private:
     void initAirUnit();
@@ -80,14 +79,16 @@ private:
 
 template<>
 inline AirUnit* dune_cast(ObjectBase* base) {
-    if(base && base->isAFlyingUnit()) return static_cast<AirUnit*>(base);
+    if (base && base->isAFlyingUnit())
+        return static_cast<AirUnit*>(base);
 
     return nullptr;
 }
 
 template<>
 inline const AirUnit* dune_cast(const ObjectBase* base) {
-    if(base && base->isAFlyingUnit()) return static_cast<const AirUnit*>(base);
+    if (base && base->isAFlyingUnit())
+        return static_cast<const AirUnit*>(base);
 
     return nullptr;
 }

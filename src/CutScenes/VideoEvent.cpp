@@ -21,12 +21,10 @@ VideoEvent::VideoEvent() noexcept = default;
 
 VideoEvent::~VideoEvent() = default;
 
-int VideoEvent::draw()
-{
+int VideoEvent::draw() {
     return 0;
 }
 
-bool VideoEvent::isFinished()
-{
+bool VideoEvent::isFinished() {
     return true;
 }

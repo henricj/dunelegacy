@@ -17,54 +17,49 @@
 
 #include <mmath.h>
 
-
 int world2zoomedWorld(int x) {
-    if(x<0) {
-        switch(currentZoomlevel) {
-            case 0:     return (x-3)/4;
-            case 1:     return (x-1)/2;
-            case 2:     return ((x-1)*3)/4;
+    if (x < 0) {
+        switch (currentZoomlevel) {
+            case 0: return (x - 3) / 4;
+            case 1: return (x - 1) / 2;
+            case 2: return ((x - 1) * 3) / 4;
             case 3:
-            default:    return x;
+            default: return x;
         }
     }
 
-    switch(currentZoomlevel) {
-        case 0:     return x/4;
-        case 1:     return x/2;
-        case 2:     return (x*3)/4;
+    switch (currentZoomlevel) {
+        case 0: return x / 4;
+        case 1: return x / 2;
+        case 2: return (x * 3) / 4;
         case 3:
-        default:    return x;
+        default: return x;
     }
 }
-
 
 int world2zoomedWorld(float x) {
-    switch(currentZoomlevel) {
-        case 0:     return lround(x*0.25f);
-        case 1:     return lround(x*0.5f);
-        case 2:     return lround(x*0.75f);
+    switch (currentZoomlevel) {
+        case 0: return lround(x * 0.25f);
+        case 1: return lround(x * 0.5f);
+        case 2: return lround(x * 0.75f);
         case 3:
-        default:    return lround(x);
+        default: return lround(x);
     }
 }
-
 
 Coord world2zoomedWorld(const Coord& coord) {
     return Coord(world2zoomedWorld(coord.x), world2zoomedWorld(coord.y));
 }
 
-
 int zoomedWorld2world(int x) {
-    switch(currentZoomlevel) {
-        case 0:     return x*4;
-        case 1:     return x*2;
-        case 2:     return (x*4)/3;
+    switch (currentZoomlevel) {
+        case 0: return x * 4;
+        case 1: return x * 2;
+        case 2: return (x * 4) / 3;
         case 3:
-        default:    return x;
+        default: return x;
     }
 }
-
 
 Coord zoomedWorld2world(const Coord& coord) {
     return Coord(zoomedWorld2world(coord.x), zoomedWorld2world(coord.y));

@@ -19,15 +19,15 @@
 #define EXCEPTIONS_H
 
 #include <exception>
-#include <stdexcept>
 #include <fmt/format.h>
 #include <fmt/printf.h>
+#include <stdexcept>
 
 template<typename TException, typename... Args>
 TException dune_exception(std::string_view file, int line, std::string_view format, Args&&... args) {
     static_assert(std::is_base_of<std::exception, TException>::value);
 
-    return TException{fmt::sprintf("%s:%d: %s", file, line, fmt::sprintf(format, std::forward<Args>(args)...))};
+    return TException {fmt::sprintf("%s:%d: %s", file, line, fmt::sprintf(format, std::forward<Args>(args)...))};
 }
 
 #define THROW(TException, ...) throw dune_exception<TException>(__FILE__, __LINE__, __VA_ARGS__)

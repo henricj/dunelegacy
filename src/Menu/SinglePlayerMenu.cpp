@@ -22,24 +22,24 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <misc/exceptions.h>
 #include <misc/fnkdat.h>
 #include <misc/string_util.h>
-#include <misc/exceptions.h>
 
 #include <Menu/CustomGameMenu.h>
-#include <Menu/SinglePlayerSkirmishMenu.h>
 #include <Menu/HouseChoiceMenu.h>
+#include <Menu/SinglePlayerSkirmishMenu.h>
 
-#include <GUI/dune/LoadSaveWindow.h>
 #include <GUI/MsgBox.h>
+#include <GUI/dune/LoadSaveWindow.h>
 
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <sand.h>
 
-SinglePlayerMenu::SinglePlayerMenu()  {
+SinglePlayerMenu::SinglePlayerMenu() {
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
     resize(getTextureSize(pBackground));
 
@@ -49,23 +49,23 @@ SinglePlayerMenu::SinglePlayerMenu()  {
     const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
     auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
-    dest1.y = dest1.y - getHeight(pPlanetBackground)/2 + 10;
+    dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
     windowWidget.addWidget(&planetPicture, dest1);
 
     const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
     auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
-    dest2.y = dest2.y + getHeight(pDuneLegacy)/2 + 28;
+    dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
     windowWidget.addWidget(&duneLegacy, dest2);
 
     const auto* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
     auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
-    dest3.y = dest3.y + getHeight(pMenuButtonBorder)/2 + 59;
+    dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
     windowWidget.addWidget(&buttonBorder, dest3);
 
     // set up menu buttons
-    windowWidget.addWidget(&menuButtonsVBox,Point((getRendererWidth() - 160)/2,getRendererHeight()/2 + 64),Point(160,111));
+    windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
 
     campaignButton.setText(_("CAMPAIGN"));
     campaignButton.setOnClick(std::bind(&SinglePlayerMenu::onCampaign, this));
@@ -99,7 +99,7 @@ SinglePlayerMenu::SinglePlayerMenu()  {
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     cancelButton.setText(_("BACK"));
-    cancelButton.setOnClick([this]{ onCancel(); });
+    cancelButton.setOnClick([this] { onCancel(); });
     menuButtonsVBox.addWidget(&cancelButton);
 }
 
@@ -108,20 +108,20 @@ SinglePlayerMenu::~SinglePlayerMenu() = default;
 void SinglePlayerMenu::onCampaign() {
     int player = HouseChoiceMenu().showMenu();
 
-    if(player < 0) {
+    if (player < 0) {
         return;
     }
 
-    GameInitSettings init((HOUSETYPE) player, settings.gameOptions);
+    GameInitSettings init((HOUSETYPE)player, settings.gameOptions);
 
     for_each_housetype([&](const auto houseID) {
-        if(houseID == static_cast<HOUSETYPE>(player)) {
-            GameInitSettings::HouseInfo humanHouseInfo((HOUSETYPE) player, 1);
-            humanHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS) );
+        if (houseID == static_cast<HOUSETYPE>(player)) {
+            GameInitSettings::HouseInfo humanHouseInfo((HOUSETYPE)player, 1);
+            humanHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS));
             init.addHouseInfo(humanHouseInfo);
         } else {
             GameInitSettings::HouseInfo aiHouseInfo(houseID, 2);
-            aiHouseInfo.addPlayerInfo( GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI) );
+            aiHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI));
             init.addHouseInfo(aiHouseInfo);
         }
     });
@@ -157,21 +157,21 @@ void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
     std::filesystem::path filename;
     std::string extension;
     auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-    if(pLoadSaveWindow != nullptr) {
-        filename = pLoadSaveWindow->getFilename();
+    if (pLoadSaveWindow != nullptr) {
+        filename  = pLoadSaveWindow->getFilename();
         extension = pLoadSaveWindow->getExtension();
     }
 
-    if(filename != "") {
-        if(extension == "dls") {
+    if (filename != "") {
+        if (extension == "dls") {
 
             try {
-                startSinglePlayerGame( GameInitSettings(std::move(filename)) );
+                startSinglePlayerGame(GameInitSettings(std::move(filename)));
             } catch (std::exception& e) {
                 // most probably the savegame file is not valid or from a different dune legacy version
                 openWindow(MsgBox::create(e.what()));
             }
-        } else if(extension == "rpl") {
+        } else if (extension == "rpl") {
             startReplay(filename);
         }
     }

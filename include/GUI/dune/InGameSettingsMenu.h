@@ -18,15 +18,14 @@
 #ifndef INGAMESETTINGSMENU
 #define INGAMESETTINGSMENU
 
-#include <GUI/Window.h>
-#include <GUI/StaticContainer.h>
-#include <GUI/TextButton.h>
+#include "Definitions.h"
 #include <GUI/PictureButton.h>
 #include <GUI/ProgressBar.h>
-#include "Definitions.h"
+#include <GUI/StaticContainer.h>
+#include <GUI/TextButton.h>
+#include <GUI/Window.h>
 
-class InGameSettingsMenu : public Window
-{
+class InGameSettingsMenu : public Window {
 public:
     InGameSettingsMenu();
     ~InGameSettingsMenu() override;
@@ -47,7 +46,7 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static InGameSettingsMenu* create() {
-        auto* dlg = new InGameSettingsMenu();
+        auto* dlg       = new InGameSettingsMenu();
         dlg->pAllocated = true;
         return dlg;
     }
@@ -67,26 +66,25 @@ private:
 
     StaticContainer windowWidget;
 
-    TextButton      cancelButton;
-    TextButton      okButton;
+    TextButton cancelButton;
+    TextButton okButton;
 
-    PictureButton   gameSpeedPlus;
-    PictureButton   gameSpeedMinus;
-    ProgressBar     gameSpeedBar;
+    PictureButton gameSpeedPlus;
+    PictureButton gameSpeedMinus;
+    ProgressBar gameSpeedBar;
 
-    PictureButton   volumePlus;
-    PictureButton   volumeMinus;
-    ProgressBar     volumeBar;
+    PictureButton volumePlus;
+    PictureButton volumeMinus;
+    ProgressBar volumeBar;
 
-    PictureButton   scrollSpeedPlus;
-    PictureButton   scrollSpeedMinus;
-    ProgressBar     scrollSpeedBar;
+    PictureButton scrollSpeedPlus;
+    PictureButton scrollSpeedMinus;
+    ProgressBar scrollSpeedBar;
 
-    int     newGamespeed;
-    int     previousVolume;
-    int     volume;
-    int     scrollSpeed;
-
+    int newGamespeed;
+    int previousVolume;
+    int volume;
+    int scrollSpeed;
 };
 
 #endif // INGAMESETTINGSMENU

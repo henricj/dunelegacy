@@ -18,8 +18,8 @@
 #ifndef VOCFILE_H
 #define VOCFILE_H
 
-#include <misc/SDL2pp.h>
 #include <SDL2/SDL_mixer.h>
+#include <misc/SDL2pp.h>
 
 /**
     Try to load a VOC from the RWop. Returns a pointer to Mix_Chunk.
@@ -29,4 +29,3 @@
 sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop);
 
 #endif // VOCFILE_H
-

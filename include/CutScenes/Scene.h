@@ -18,11 +18,11 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <queue>
-#include <list>
-#include <CutScenes/VideoEvent.h>
-#include <CutScenes/TextEvent.h>
 #include <CutScenes/CutSceneTrigger.h>
+#include <CutScenes/TextEvent.h>
+#include <CutScenes/VideoEvent.h>
+#include <list>
+#include <queue>
 
 /// A class for representing one part of a cutscene.
 /**
@@ -30,7 +30,6 @@
 */
 class Scene final {
 public:
-
     /// Default constructor
     Scene();
 
@@ -66,16 +65,16 @@ public:
         \return true, if there are no more VideoEvents in the queue
     */
     [[nodiscard]] bool isFinished() {
-        if(videoEvents.empty()) {
+        if (videoEvents.empty()) {
             return true;
-        } if(videoEvents.size() == 1) {
+        }
+        if (videoEvents.size() == 1) {
 
             return videoEvents.front()->isFinished();
 
         } else {
 
             return false;
-
         }
     }
 
@@ -86,11 +85,11 @@ public:
     int draw();
 
 private:
-    int currentFrameNumber{};                     ///< current frame number in this frame
+    int currentFrameNumber {}; ///< current frame number in this frame
 
-    std::queue< std::unique_ptr<VideoEvent> > videoEvents;        ///< queue of all VideoEvents in this scene
-    std::list< std::unique_ptr<TextEvent> > textEvents;           ///< list of all TextEvents in this scene
-    std::list< std::unique_ptr<CutSceneTrigger> > triggerList;    ///< list of all CutSceneTriggers in this scene
+    std::queue<std::unique_ptr<VideoEvent>> videoEvents;     ///< queue of all VideoEvents in this scene
+    std::list<std::unique_ptr<TextEvent>> textEvents;        ///< list of all TextEvents in this scene
+    std::list<std::unique_ptr<CutSceneTrigger>> triggerList; ///< list of all CutSceneTriggers in this scene
 };
 
 #endif // SCENE_H

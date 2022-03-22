@@ -22,8 +22,7 @@
 #include <cstdlib>
 #include <string>
 
-class IFileStream final : public InputStream
-{
+class IFileStream final : public InputStream {
 public:
     IFileStream();
     ~IFileStream() override;
@@ -33,12 +32,12 @@ public:
 
     std::string readString() override;
 
-    uint8_t  readUint8() override;
+    uint8_t readUint8() override;
     uint16_t readUint16() override;
     uint32_t readUint32() override;
     uint64_t readUint64() override;
-    bool     readBool() override;
-    float    readFloat() override;
+    bool readBool() override;
+    float readFloat() override;
 
 private:
     FILE* fp;

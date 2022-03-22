@@ -15,16 +15,16 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <MapEditor/NewMapWindow.h>
 #include <MapEditor/LoadMapWindow.h>
+#include <MapEditor/NewMapWindow.h>
 
 #include <GUI/Spacer.h>
 #include <GUI/dune/DuneStyle.h>
 
 #include <globals.h>
 
-#include <sand.h>
 #include <mmath.h>
+#include <sand.h>
 
 #include <MapEditor/MapGenerator.h>
 #include <MapSeed.h>
@@ -38,12 +38,13 @@
 
 #include <random>
 
-NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
+NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
+    : Window(0, 0, 0, 0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]+3]);
+    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -64,9 +65,8 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     mainVBox.addWidget(&centralVBox, 360);
 
     basicMapPropertiesHBox.addWidget(&basicMapPropertiesVBox);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,"", true, false) );
+    minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, "", true, false));
     basicMapPropertiesHBox.addWidget(&minimap);
-
 
     emptyMapRadioButton.setText(_("Empty Map"));
     emptyMapRadioButton.setTextColor(color);
@@ -81,7 +81,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     seedMapRadioButton.setOnClick(std::bind(&NewMapWindow::onMapTypeChanged, this, 2));
     mapTypeHBox.addWidget(&seedMapRadioButton);
     mapTypeRadioButtons.registerRadioButtons(3, &emptyMapRadioButton, &randomMapRadioButton, &seedMapRadioButton);
-    mapTypeHBox.addWidget(Spacer::create(),5.0);
+    mapTypeHBox.addWidget(Spacer::create(), 5.0);
     basicMapPropertiesVBox.addWidget(&mapTypeHBox);
 
     basicMapPropertiesVBox.addWidget(VSpacer::create(4));
@@ -91,35 +91,34 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     mapSizeXLabel.setText(_("Map Width:"));
     mapSizeXLabel.setTextColor(color);
     mapSizeXDropDownBox.setColor(color);
-    mapSizeXDropDownBox.addEntry("32",32);
-    mapSizeXDropDownBox.addEntry("64",64);
-    mapSizeXDropDownBox.addEntry("128",128);
+    mapSizeXDropDownBox.addEntry("32", 32);
+    mapSizeXDropDownBox.addEntry("64", 64);
+    mapSizeXDropDownBox.addEntry("128", 128);
     mapSizeXDropDownBox.setSelectedItem(2);
-    mapSizeXDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
+    mapSizeXDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
     mapSizeYLabel.setText(_("Map Height:"));
     mapSizeYLabel.setTextColor(color);
     mapSizeYDropDownBox.setColor(color);
-    mapSizeYDropDownBox.addEntry("32",32);
-    mapSizeYDropDownBox.addEntry("64",64);
-    mapSizeYDropDownBox.addEntry("128",128);
+    mapSizeYDropDownBox.addEntry("32", 32);
+    mapSizeYDropDownBox.addEntry("64", 64);
+    mapSizeYDropDownBox.addEntry("128", 128);
     mapSizeYDropDownBox.setSelectedItem(2);
-    mapSizeYDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
-
+    mapSizeYDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
 
     mapScaleLabel.setText(_("Map Scale:"));
     mapScaleLabel.setTextColor(color);
     mapScaleDropDownBox.setColor(color);
-    mapScaleDropDownBox.addEntry(_("Tiny (21x21)"),2);
-    mapScaleDropDownBox.addEntry(_("Small (32x32)"),1);
-    mapScaleDropDownBox.addEntry(_("Normal (62x62)"),0);
+    mapScaleDropDownBox.addEntry(_("Tiny (21x21)"), 2);
+    mapScaleDropDownBox.addEntry(_("Small (32x32)"), 1);
+    mapScaleDropDownBox.addEntry(_("Normal (62x62)"), 0);
     mapScaleDropDownBox.setSelectedItem(2);
-    mapScaleDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
+    mapScaleDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
 
     basicMapPropertiesVBox.addWidget(VSpacer::create(4));
     basicMapPropertiesVBox.addWidget(&rngHBox);
 
     std::random_device rd;
-    std::uniform_int_distribution<> uniform{ 0, 32767 };
+    std::uniform_int_distribution<> uniform {0, 32767};
 
     rngSeedLabel.setText(_("Random Seed:"));
     rngSeedLabel.setTextColor(color);
@@ -127,11 +126,11 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     rngSeedTextBox.setMinMax(0, 32767);
     rngSeedTextBox.setValue(pGFXManager->random().rand(0, 32767));
     rngSeedTextBox.setColor(house, color);
-    rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
-    rngHBox.addWidget(&rngSeedTextBox,80);
+    rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    rngHBox.addWidget(&rngSeedTextBox, 80);
 
     rngHBox.addWidget(HSpacer::create(2));
-    rngHBox.addWidget(Spacer::create(),3.0);
+    rngHBox.addWidget(Spacer::create(), 3.0);
 
     rockLabel.setText(_("Rock:"));
     rockLabel.setTextColor(color);
@@ -139,11 +138,11 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     rockDigitsTextBox.setMinMax(0, 99);
     rockDigitsTextBox.setValue(ROCKFIELDS);
     rockDigitsTextBox.setColor(house, color);
-    rockDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
-    rngHBox.addWidget(&rockDigitsTextBox,45);
+    rockDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    rngHBox.addWidget(&rockDigitsTextBox, 45);
 
     rngHBox.addWidget(HSpacer::create(2));
-    rngHBox.addWidget(Spacer::create(),3.0);
+    rngHBox.addWidget(Spacer::create(), 3.0);
 
     spiceLabel.setText(_("Spice:"));
     spiceLabel.setTextColor(color);
@@ -151,10 +150,10 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     spiceDigitsTextBox.setMinMax(0, 99);
     spiceDigitsTextBox.setValue(SPICEFIELDS);
     spiceDigitsTextBox.setColor(house, color);
-    spiceDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
-    rngHBox.addWidget(&spiceDigitsTextBox,45);
+    spiceDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    rngHBox.addWidget(&spiceDigitsTextBox, 45);
 
-    rngHBox.addWidget(Spacer::create(),3.0);
+    rngHBox.addWidget(Spacer::create(), 3.0);
 
     centralVBox.addWidget(&basicMapPropertiesHBox);
 
@@ -169,7 +168,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
     mirrorModeDropDownBox.addEntry(_("Horizontal and vertical"), MirrorModeBoth);
     mirrorModeDropDownBox.addEntry(_("Inverse"), MirrorModePoint);
     mirrorModeDropDownBox.setSelectedItem(0);
-    mirrorModeDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged,this));
+    mirrorModeDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
     mirrorModeDropDownBox.setColor(color);
     mirrorModeHBox.addWidget(&mirrorModeDropDownBox, 160);
     mirrorModeHBox.addWidget(Spacer::create(), 5.0);
@@ -234,10 +233,10 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0,0,0,0), house(curr
 }
 
 void NewMapWindow::onCancel() {
-    mapdata = MapData(0,0);
+    mapdata = MapData(0, 0);
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
@@ -248,21 +247,21 @@ void NewMapWindow::onLoad() {
 
 void NewMapWindow::onCreate() {
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
     auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-    if(pLoadMapWindow != nullptr) {
-        loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
-        loadMapname = pLoadMapWindow->getLoadMapname();
+    if (pLoadMapWindow != nullptr) {
+        loadMapFilepath     = pLoadMapWindow->getLoadMapFilepath();
+        loadMapname         = pLoadMapWindow->getLoadMapname();
         loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
 
-        if(loadMapFilepath != "") {
+        if (loadMapFilepath != "") {
             auto* pParentWindow = dynamic_cast<Window*>(getParent());
-            if(pParentWindow != nullptr) {
+            if (pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();
             }
         }
@@ -273,56 +272,56 @@ void NewMapWindow::onMapTypeChanged(int buttonID) {
 
     mapSizeHBox.removeAllChildWidgets();
 
-    if(buttonID == 2) {
+    if (buttonID == 2) {
         mapSizeHBox.addWidget(&mapScaleLabel);
-        mapSizeHBox.addWidget(&mapScaleDropDownBox,120);
-        mapSizeHBox.addWidget(Spacer::create(),5.0);
+        mapSizeHBox.addWidget(&mapScaleDropDownBox, 120);
+        mapSizeHBox.addWidget(Spacer::create(), 5.0);
     } else {
         mapSizeHBox.addWidget(&mapSizeXLabel);
         mapSizeHBox.addWidget(&mapSizeXDropDownBox, 50);
         mapSizeHBox.addWidget(HSpacer::create(30));
         mapSizeHBox.addWidget(&mapSizeYLabel);
         mapSizeHBox.addWidget(&mapSizeYDropDownBox, 50);
-        mapSizeHBox.addWidget(Spacer::create(),5.0);
+        mapSizeHBox.addWidget(Spacer::create(), 5.0);
     }
 
-    rngSeedLabel.setVisible( (buttonID != 0) );
-    rngSeedTextBox.setVisible( (buttonID != 0) );
+    rngSeedLabel.setVisible((buttonID != 0));
+    rngSeedTextBox.setVisible((buttonID != 0));
 
-    rockLabel.setVisible( (buttonID == 1) );
-    rockDigitsTextBox.setVisible( (buttonID == 1) );
-    spiceLabel.setVisible( (buttonID == 1) );
-    spiceDigitsTextBox.setVisible( (buttonID == 1) );
+    rockLabel.setVisible((buttonID == 1));
+    rockDigitsTextBox.setVisible((buttonID == 1));
+    spiceLabel.setVisible((buttonID == 1));
+    spiceDigitsTextBox.setVisible((buttonID == 1));
 
-    mirrorModeLabel.setVisible( (buttonID == 1) );
-    mirrorModeDropDownBox.setVisible( (buttonID == 1) );
+    mirrorModeLabel.setVisible((buttonID == 1));
+    mirrorModeDropDownBox.setVisible((buttonID == 1));
 
     onMapPropertiesChanged();
 }
 
 void NewMapWindow::onMapPropertiesChanged() {
 
-    if(emptyMapRadioButton.isChecked()) {
+    if (emptyMapRadioButton.isChecked()) {
         int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
         int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
         mapdata = MapData(sizeX, sizeY, Terrain_Sand);
-    } else if(randomMapRadioButton.isChecked()) {
+    } else if (randomMapRadioButton.isChecked()) {
         int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
         int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
 
-        int seed = rngSeedTextBox.getValue();
-        int rock = rockDigitsTextBox.getValue();
+        int seed  = rngSeedTextBox.getValue();
+        int rock  = rockDigitsTextBox.getValue();
         int spice = spiceDigitsTextBox.getValue();
 
-        auto mirrorMode = (MirrorMode) mirrorModeDropDownBox.getSelectedEntryIntData();
+        auto mirrorMode = (MirrorMode)mirrorModeDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
         mapdata = generateRandomMap(sizeX, sizeY, seed, rock, spice, mirrorMode);
 
-    } else if(seedMapRadioButton.isChecked()) {
-        int seed = rngSeedTextBox.getValue();
+    } else if (seedMapRadioButton.isChecked()) {
+        int seed  = rngSeedTextBox.getValue();
         int scale = mapScaleDropDownBox.getSelectedEntryIntData();
 
         mapSeed = seed;
@@ -333,15 +332,15 @@ void NewMapWindow::onMapPropertiesChanged() {
 }
 
 sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, uint32_t borderColor) {
-    sdl2::surface_ptr pMinimap = sdl2::surface_ptr{ SDL_CreateRGBSurface(0, 128+2*borderWidth, 128+2*borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK) };
-    if(!pMinimap) {
+    sdl2::surface_ptr pMinimap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    if (!pMinimap) {
         return nullptr;
     }
     SDL_FillRect(pMinimap.get(), nullptr, borderColor);
-    SDL_Rect dest = { borderWidth, borderWidth, pMinimap->w - 2*borderWidth, pMinimap->h - 2*borderWidth};
+    SDL_Rect dest = {borderWidth, borderWidth, pMinimap->w - 2 * borderWidth, pMinimap->h - 2 * borderWidth};
     SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
-    int scale = 1;
+    int scale   = 1;
     int offsetX = 0;
     int offsetY = 0;
 
@@ -350,16 +349,16 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
     offsetX += borderWidth;
     offsetY += borderWidth;
 
-    for(int y = 0; y < mapdata.getSizeY(); y++) {
-        for(int x = 0; x < mapdata.getSizeX(); x++) {
+    for (int y = 0; y < mapdata.getSizeY(); y++) {
+        for (int x = 0; x < mapdata.getSizeX(); x++) {
 
-            TERRAINTYPE terrainType = mapdata(x,y);
+            TERRAINTYPE terrainType = mapdata(x, y);
 
             uint32_t color = getColorByTerrainType(terrainType);
 
-            for(int i=0;i<scale;i++) {
-                for(int j=0;j<scale;j++) {
-                    putPixel(pMinimap.get(), x*scale + i + offsetX, y*scale + j + offsetY, color);
+            for (int i = 0; i < scale; i++) {
+                for (int j = 0; j < scale; j++) {
+                    putPixel(pMinimap.get(), x * scale + i + offsetX, y * scale + j + offsetY, color);
                 }
             }
         }
@@ -367,4 +366,3 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
 
     return pMinimap;
 }
-

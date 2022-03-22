@@ -18,43 +18,41 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <Definitions.h>
 
 #include <SDL2/SDL_mixer.h>
 
 //! \enum MUSICTYPE
 /*! Types of music available in the game*/
-typedef enum {  MUSIC_ATTACK = 0,   /*!< Played when at least one of player's units was hit. */
-                MUSIC_PEACE,        /*!< Played most of the time when the enemy is not attacking. */
-                MUSIC_INTRO,        /*!< Background music for intro. */
-                MUSIC_MENU,         /*!< The menu background music. */
-                MUSIC_BRIEFING_H,   /*!< Harkonnen briefing background music. */
-                MUSIC_BRIEFING_A,   /*!< Atreides briefing background music. */
-                MUSIC_BRIEFING_O,   /*!< Ordos briefing background music. */
-                MUSIC_WIN_H,        /*!< Harkonnen victory screen background music.. */
-                MUSIC_WIN_A,        /*!< Atreides victory screen background music.. */
-                MUSIC_WIN_O,        /*!< Ordos victory screen background music.. */
-                MUSIC_LOSE_H,       /*!< Harkonnen failure screen background music.. */
-                MUSIC_LOSE_A,       /*!< Atreides failure screen background music.. */
-                MUSIC_LOSE_O,       /*!< Ordos failure screen background music.. */
-                MUSIC_GAMESTAT,     /*!< Game statistics background music. */
-                MUSIC_MAPCHOICE,    /*!< The map choice background music. */
-                MUSIC_MEANWHILE,    /*!< Meanwhile cutscene background music. */
-                MUSIC_FINALE_H,     /*!< Harkonnen finale cutscene background music. */
-                MUSIC_FINALE_A,     /*!< Atreides finale cutscene background music. */
-                MUSIC_FINALE_O,     /*!< Ordos finale cutscene background music. */
-                MUSIC_NUM_MUSIC_TYPES,
+typedef enum { MUSIC_ATTACK = 0, /*!< Played when at least one of player's units was hit. */
+               MUSIC_PEACE,      /*!< Played most of the time when the enemy is not attacking. */
+               MUSIC_INTRO,      /*!< Background music for intro. */
+               MUSIC_MENU,       /*!< The menu background music. */
+               MUSIC_BRIEFING_H, /*!< Harkonnen briefing background music. */
+               MUSIC_BRIEFING_A, /*!< Atreides briefing background music. */
+               MUSIC_BRIEFING_O, /*!< Ordos briefing background music. */
+               MUSIC_WIN_H,      /*!< Harkonnen victory screen background music.. */
+               MUSIC_WIN_A,      /*!< Atreides victory screen background music.. */
+               MUSIC_WIN_O,      /*!< Ordos victory screen background music.. */
+               MUSIC_LOSE_H,     /*!< Harkonnen failure screen background music.. */
+               MUSIC_LOSE_A,     /*!< Atreides failure screen background music.. */
+               MUSIC_LOSE_O,     /*!< Ordos failure screen background music.. */
+               MUSIC_GAMESTAT,   /*!< Game statistics background music. */
+               MUSIC_MAPCHOICE,  /*!< The map choice background music. */
+               MUSIC_MEANWHILE,  /*!< Meanwhile cutscene background music. */
+               MUSIC_FINALE_H,   /*!< Harkonnen finale cutscene background music. */
+               MUSIC_FINALE_A,   /*!< Atreides finale cutscene background music. */
+               MUSIC_FINALE_O,   /*!< Ordos finale cutscene background music. */
+               MUSIC_NUM_MUSIC_TYPES,
 
-                MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
-             }  MUSICTYPE;
+               MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
+} MUSICTYPE;
 
-class MusicPlayer
-{
+class MusicPlayer {
 public:
     MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID),
-          currentMusicType(MUSIC_RANDOM), random_{RandomFactory{}.create(name)} {
+          currentMusicType(MUSIC_RANDOM), random_ {RandomFactory {}.create(name)} {
         Mix_VolumeMusic(musicVolume);
     }
 
@@ -71,8 +69,8 @@ public:
         other song being played
     */
     void musicCheck() {
-        if(musicOn) {
-            if(!isMusicPlaying()) {
+        if (musicOn) {
+            if (!isMusicPlaying()) {
                 changeMusic(MUSIC_PEACE);
             }
         }
@@ -112,7 +110,7 @@ public:
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
     virtual void setMusicVolume(int newVolume) {
-        if(newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
+        if (newVolume >= 0 && newVolume <= MIX_MAX_VOLUME) {
             musicVolume = newVolume;
         }
     }
@@ -121,7 +119,7 @@ protected:
     Random& random() noexcept { return random_; }
 
     //! whether music should be played
-    bool    musicOn;
+    bool musicOn;
 
     //! music volume
     int musicVolume;

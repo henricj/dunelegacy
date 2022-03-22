@@ -20,24 +20,21 @@
 
 #include <MapEditor/MapData.h>
 
-#include <GUI/Window.h>
-#include <GUI/HBox.h>
-#include <GUI/VBox.h>
-#include <GUI/Label.h>
 #include <GUI/DropDownBox.h>
+#include <GUI/HBox.h>
+#include <GUI/Label.h>
+#include <GUI/PictureLabel.h>
 #include <GUI/RadioButton.h>
 #include <GUI/TextButton.h>
-#include <GUI/PictureLabel.h>
+#include <GUI/VBox.h>
+#include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
 
 #include <misc/SDL2pp.h>
 
-class  NewMapWindow : public Window
-{
+class NewMapWindow : public Window {
 public:
-
     explicit NewMapWindow(HOUSETYPE currentHouse);
-
 
     /**
         This static method creates a dynamic new map window.
@@ -47,7 +44,7 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static NewMapWindow* create(HOUSETYPE house) {
-        auto* dlg = new NewMapWindow(house);
+        auto* dlg       = new NewMapWindow(house);
         dlg->pAllocated = true;
         return dlg;
     }
@@ -79,72 +76,67 @@ private:
     void onLoad();
     void onCreate();
 
-
     void onMapTypeChanged(int buttonID);
 
-    HBox    mainHBox;
-    VBox    mainVBox;
-    VBox    centralVBox;
+    HBox mainHBox;
+    VBox mainVBox;
+    VBox centralVBox;
 
-    HBox                mapTypeHBox;
-    RadioButtonManager  mapTypeRadioButtons;
-    RadioButton         emptyMapRadioButton;
-    RadioButton         randomMapRadioButton;
-    RadioButton         seedMapRadioButton;
+    HBox mapTypeHBox;
+    RadioButtonManager mapTypeRadioButtons;
+    RadioButton emptyMapRadioButton;
+    RadioButton randomMapRadioButton;
+    RadioButton seedMapRadioButton;
 
+    HBox basicMapPropertiesHBox;
+    VBox basicMapPropertiesVBox;
 
-    HBox                basicMapPropertiesHBox;
-    VBox                basicMapPropertiesVBox;
+    HBox mapSizeHBox;
+    Label mapSizeXLabel;
+    DropDownBox mapSizeXDropDownBox;
+    Label mapSizeYLabel;
+    DropDownBox mapSizeYDropDownBox;
+    Label mapScaleLabel;
+    DropDownBox mapScaleDropDownBox;
 
-    HBox                mapSizeHBox;
-    Label               mapSizeXLabel;
-    DropDownBox         mapSizeXDropDownBox;
-    Label               mapSizeYLabel;
-    DropDownBox         mapSizeYDropDownBox;
-    Label               mapScaleLabel;
-    DropDownBox         mapScaleDropDownBox;
+    HBox rngHBox;
+    Label rngSeedLabel;
+    DigitsTextBox rngSeedTextBox;
 
-    HBox                rngHBox;
-    Label               rngSeedLabel;
-    DigitsTextBox       rngSeedTextBox;
+    Label rockLabel;
+    DigitsTextBox rockDigitsTextBox;
 
-    Label               rockLabel;
-    DigitsTextBox       rockDigitsTextBox;
+    Label spiceLabel;
+    DigitsTextBox spiceDigitsTextBox;
 
-    Label               spiceLabel;
-    DigitsTextBox       spiceDigitsTextBox;
+    PictureLabel minimap;
 
-    PictureLabel        minimap;
+    HBox mirrorModeHBox;
+    Label mirrorModeLabel;
+    DropDownBox mirrorModeDropDownBox;
 
-    HBox                mirrorModeHBox;
-    Label               mirrorModeLabel;
-    DropDownBox         mirrorModeDropDownBox;
+    HBox authorHBox;
+    Label authorLabel;
+    TextBox authorTextBox;
+    HBox licenseHBox;
+    Label licenseLabel;
+    TextBox licenseTextBox;
 
-    HBox                authorHBox;
-    Label               authorLabel;
-    TextBox             authorTextBox;
-    HBox                licenseHBox;
-    Label               licenseLabel;
-    TextBox             licenseTextBox;
+    HBox buttonHBox;
 
-
-
-    HBox                buttonHBox;
-
-    Label       titleLabel;
-    TextButton  cancelButton;
-    TextButton  loadButton;
-    TextButton  createButton;
+    Label titleLabel;
+    TextButton cancelButton;
+    TextButton loadButton;
+    TextButton createButton;
 
     HOUSETYPE house;
-    uint32_t  color;
+    uint32_t color;
 
-    int         mapSeed;
-    MapData     mapdata;
+    int mapSeed;
+    MapData mapdata;
     std::filesystem::path loadMapFilepath;
     std::string loadMapname;
-    bool        loadMapSingleplayer;
+    bool loadMapSingleplayer;
 };
-
 
 #endif // NEWMAPWINDOW_H

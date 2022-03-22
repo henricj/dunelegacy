@@ -20,9 +20,9 @@
 
 #include "MenuBase.h"
 
-#include <GUI/StaticContainer.h>
 #include <GUI/Label.h>
 #include <GUI/ProgressBar.h>
+#include <GUI/StaticContainer.h>
 
 #include <string>
 
@@ -33,7 +33,7 @@ public:
 
     int showMenu() override;
 
-    bool doInput(SDL_Event &event) override;
+    bool doInput(SDL_Event& event) override;
 
     void drawSpecificStuff() override;
 
@@ -57,7 +57,6 @@ private:
         State_Finished
     } CampaignStatsState;
 
-
     StaticContainer windowWidget;
     Label scoreLabel;
     Label timeLabel;
@@ -66,54 +65,54 @@ private:
     Label rankLabel;
 
     // spice statistics
-    Label       spiceHarvestedByLabel;
-    Label       you1Label;
+    Label spiceHarvestedByLabel;
+    Label you1Label;
     ProgressBar spiceYouShadowProgressBar;
     ProgressBar spiceYouProgressBar;
-    Label       spiceYouLabel;
-    Label       enemy1Label;
+    Label spiceYouLabel;
+    Label enemy1Label;
     ProgressBar spiceEnemyShadowProgressBar;
     ProgressBar spiceEnemyProgressBar;
-    Label       spiceEnemyLabel;
+    Label spiceEnemyLabel;
 
     // units statistics
-    Label       unitsDestroyedByLabel;
-    Label       you2Label;
+    Label unitsDestroyedByLabel;
+    Label you2Label;
     ProgressBar unitsYouShadowProgressBar;
     ProgressBar unitsYouProgressBar;
-    Label       unitsYouLabel;
-    Label       enemy2Label;
+    Label unitsYouLabel;
+    Label enemy2Label;
     ProgressBar unitsEnemyShadowProgressBar;
     ProgressBar unitsEnemyProgressBar;
-    Label       unitsEnemyLabel;
+    Label unitsEnemyLabel;
 
     // buildings statistics
-    Label       buildingsDestroyedByLabel;
-    Label       you3Label;
+    Label buildingsDestroyedByLabel;
+    Label you3Label;
     ProgressBar buildingsYouShadowProgressBar;
     ProgressBar buildingsYouProgressBar;
-    Label       buildingsYouLabel;
-    Label       enemy3Label;
+    Label buildingsYouLabel;
+    Label enemy3Label;
     ProgressBar buildingsEnemyShadowProgressBar;
     ProgressBar buildingsEnemyProgressBar;
-    Label       buildingsEnemyLabel;
+    Label buildingsEnemyLabel;
 
-    int currentStateStartTime = 0;
+    int currentStateStartTime       = 0;
     CampaignStatsState currentState = State_HumanSpice;
 
     int unitsDestroyedByHuman = 0;
-    int unitsDestroyedByAI = 0;
+    int unitsDestroyedByAI    = 0;
 
     int structuresDestroyedByHuman = 0;
-    int structuresDestroyedByAI = 0;
+    int structuresDestroyedByAI    = 0;
 
     float spiceHarvestedByHuman = 0;
-    float spiceHarvestedByAI = 0;
+    float spiceHarvestedByAI    = 0;
 
-    int totalTime = 0;
+    int totalTime  = 0;
     int totalScore = 0;
 
     std::string rank;
 };
 
-#endif //CAMPAIGNSTATSMENU_H
+#endif // CAMPAIGNSTATSMENU_H

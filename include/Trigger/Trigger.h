@@ -27,17 +27,17 @@
 */
 class Trigger {
 public:
-
     /**
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
-    explicit Trigger(uint32_t triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
+    explicit Trigger(uint32_t triggerCycleNumber)
+        : cycleNumber(triggerCycleNumber) { }
 
-    Trigger(const Trigger &) = default;
-    Trigger(Trigger &&) = default;
-    Trigger& operator=(const Trigger &) = default;
-    Trigger& operator=(Trigger &&) = default;
+    Trigger(const Trigger&) = default;
+    Trigger(Trigger&&)      = default;
+    Trigger& operator=(const Trigger&) = default;
+    Trigger& operator=(Trigger&&) = default;
 
     /**
         This constructor constructs the trigger from a stream.

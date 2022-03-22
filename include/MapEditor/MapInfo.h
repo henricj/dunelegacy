@@ -27,8 +27,8 @@ class MapInfo {
 public:
     MapInfo(int mapSeed = INVALID, std::string author = "", std::string license = "", std::string losePicture = "LOSTVEHC.WSA",
             std::string winPicture = "WIN2.WSA", std::string briefPicture = "SARDUKAR.WSA", int techLevel = INVALID)
-    : mapSeed(mapSeed), author(std::move(author)), license(std::move(license)), losePicture(std::move(losePicture)),
-      winPicture(std::move(winPicture)), briefPicture(std::move(briefPicture)), techLevel(techLevel) {
+        : mapSeed(mapSeed), author(std::move(author)), license(std::move(license)), losePicture(std::move(losePicture)),
+          winPicture(std::move(winPicture)), briefPicture(std::move(briefPicture)), techLevel(techLevel) {
     }
 
     int mapSeed;
@@ -37,13 +37,12 @@ public:
     std::string losePicture;
     std::string winPicture;
     std::string briefPicture;
-    int timeout = 0;
-    Coord   cursorPos = Coord(10,10);
-    Coord   tacticalPos = Coord(10,10);
+    int timeout       = 0;
+    Coord cursorPos   = Coord(10, 10);
+    Coord tacticalPos = Coord(10, 10);
     int techLevel;
     int loseFlags = 1;
-    int winFlags = 3;
-
+    int winFlags  = 3;
 };
 
 #endif // MAPINFO_H

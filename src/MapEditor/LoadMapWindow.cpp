@@ -18,28 +18,28 @@
 #include <MapEditor/LoadMapWindow.h>
 
 #include <FileClasses/GFXManager.h>
-#include <FileClasses/TextManager.h>
 #include <FileClasses/INIFile.h>
+#include <FileClasses/TextManager.h>
 
-#include <GUI/Spacer.h>
 #include <GUI/GUIStyle.h>
 #include <GUI/QstBox.h>
+#include <GUI/Spacer.h>
 #include <GUI/dune/DuneStyle.h>
 
-#include <misc/fnkdat.h>
+#include <fmt/printf.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
-#include <fmt/printf.h>
+#include <misc/fnkdat.h>
 
 #include <INIMap/INIMapPreviewCreator.h>
 
 #include <globals.h>
 
-
-LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0,0,0,0), color(color) {
+LoadMapWindow::LoadMapWindow(uint32_t color)
+    : Window(0, 0, 0, 0), color(color) {
 
     // set up window
-    const auto * const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -51,14 +51,13 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0,0,0,0), color(color) {
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum) (Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment((Alignment_Enum)(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Load Map"));
     mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(VSpacer::create(22));
 
     mainVBox.addWidget(&centralHBox, 346);
-
 
     centralHBox.addWidget(&leftVBox, 0.8);
 
@@ -89,7 +88,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0,0,0,0), color(color) {
     centralHBox.addWidget(Spacer::create(), 0.05);
 
     centralHBox.addWidget(&rightVBox, 180);
-    minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("Choose map"), true, false) );
+    minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("Choose map"), true, false));
     rightVBox.addWidget(&minimap);
 
     rightVBox.addWidget(VSpacer::create(10));
@@ -138,68 +137,60 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0,0,0,0), color(color) {
 }
 
 bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
-    if(pChildWindow != nullptr) {
+    if (pChildWindow != nullptr) {
         bool ret = pChildWindow->handleKeyPress(key);
         return ret;
     }
 
-    if(isEnabled() && (pWindowWidget != nullptr)) {
-        if(key.keysym.sym == SDLK_RETURN) {
+    if (isEnabled() && (pWindowWidget != nullptr)) {
+        if (key.keysym.sym == SDLK_RETURN) {
             onLoad();
             return true;
-        } if(key.keysym.sym == SDLK_DELETE) {
+        }
+        if (key.keysym.sym == SDLK_DELETE) {
 
             int index = mapList.getSelectedIndex();
 
-            if(index >= 0) {
+            if (index >= 0) {
 
-                QstBox* pQstBox = QstBox::create(   fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
 
-                                                    _("Yes"),
+                                                 _("Yes"),
 
-                                                    _("No"),
+                                                 _("No"),
 
-                                                    QSTBOX_BUTTON1);
-
-
+                                                 QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
-
-
                 openWindow(pQstBox);
-
             }
-
-
 
             return true;
 
         } else {
 
             return pWindowWidget->handleKeyPress(key);
-
         }
     } else {
         return false;
     }
 }
 
-
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if(pQstBox != nullptr) {
-        if(pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
+    if (pQstBox != nullptr) {
+        if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             int index = mapList.getSelectedIndex();
-            if(index >= 0) {
+            if (index >= 0) {
                 const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
 
                 std::error_code ec;
-                if(std::filesystem::remove(file2delete, ec)) {
+                if (std::filesystem::remove(file2delete, ec)) {
                     // remove was successful => delete from list
                     mapList.removeEntry(index);
-                    if(mapList.getNumEntries() > 0) {
-                        if(index >= mapList.getNumEntries()) {
+                    if (mapList.getNumEntries() > 0) {
+                        if (index >= mapList.getNumEntries()) {
                             mapList.setSelectedItem(mapList.getNumEntries() - 1);
                         } else {
                             mapList.setSelectedItem(index);
@@ -213,53 +204,52 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
 
 void LoadMapWindow::onCancel() {
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void LoadMapWindow::onLoad() {
-    if(mapList.getSelectedIndex() < 0) {
+    if (mapList.getSelectedIndex() < 0) {
         return;
     }
 
-    loadMapname = mapList.getSelectedEntry();
-    loadMapFilepath = currentMapDirectory / (loadMapname + ".ini");
+    loadMapname         = mapList.getSelectedEntry();
+    loadMapFilepath     = currentMapDirectory / (loadMapname + ".ini");
     loadMapSingleplayer = singleplayerUserMapsButton.getToggleState();
     getCaseInsensitiveFilename(loadMapFilepath);
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
-    if(pParentWindow != nullptr) {
+    if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
-void LoadMapWindow::onMapTypeChange(int buttonID)
-{
+void LoadMapWindow::onMapTypeChange(int buttonID) {
     singleplayerUserMapsButton.setToggleState(buttonID == 0);
     multiplayerUserMapsButton.setToggleState(buttonID == 1);
 
-    switch(buttonID) {
+    switch (buttonID) {
         case 0: {
-            auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp]      = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
         case 1: {
-            auto [ok, tmp] = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
+            auto [ok, tmp]      = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
             currentMapDirectory = tmp;
         } break;
     }
 
     mapList.clearAllEntries();
 
-    for(const auto& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+    for (const auto& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
         mapList.addEntry(filename.stem().u8string());
     }
 
-    if(mapList.getNumEntries() > 0) {
+    if (mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
-        minimap.setSurface( GUIStyle::getInstance().createButtonSurface(130,130,_("No map available"), true, false) );
+        minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("No map available"), true, false));
         mapPropertySize.setText("");
         mapPropertyPlayers.setText("");
         mapPropertyAuthors.setText("");
@@ -267,11 +257,10 @@ void LoadMapWindow::onMapTypeChange(int buttonID)
     }
 }
 
-void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
-{
+void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
     loadButton.setEnabled(true);
 
-    if(mapList.getSelectedIndex() < 0) {
+    if (mapList.getSelectedIndex() < 0) {
         return;
     }
 
@@ -283,11 +272,11 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
     int sizeX = 0;
     int sizeY = 0;
 
-    if(inimap.hasKey("MAP","Seed")) {
+    if (inimap.hasKey("MAP", "Seed")) {
         // old map format with seed value
         int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
 
-        switch(mapscale) {
+        switch (mapscale) {
             case 0: {
                 sizeX = 62;
                 sizeY = 62;
@@ -310,8 +299,8 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
         }
     } else {
         // new map format with saved map
-        sizeX = inimap.getIntValue("MAP","SizeX", 0);
-        sizeY = inimap.getIntValue("MAP","SizeY", 0);
+        sizeX = inimap.getIntValue("MAP", "SizeX", 0);
+        sizeY = inimap.getIntValue("MAP", "SizeY", 0);
     }
 
     mapPropertySize.setText(std::to_string(sizeX) + " x " + std::to_string(sizeY));
@@ -320,37 +309,45 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive)
     try {
         INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
-    } catch(...) {
-        pMapSurface = sdl2::surface_ptr { GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false) };
+    } catch (...) {
+        pMapSurface = sdl2::surface_ptr {GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
         loadButton.setEnabled(false);
     }
     minimap.setSurface(std::move(pMapSurface));
 
     int numPlayers = 0;
-    if(inimap.hasSection("Atreides")) numPlayers++;
-    if(inimap.hasSection("Ordos")) numPlayers++;
-    if(inimap.hasSection("Harkonnen")) numPlayers++;
-    if(inimap.hasSection("Fremen")) numPlayers++;
-    if(inimap.hasSection("Mercenary")) numPlayers++;
-    if(inimap.hasSection("Sardaukar")) numPlayers++;
-    if(inimap.hasSection("Player1")) numPlayers++;
-    if(inimap.hasSection("Player2")) numPlayers++;
-    if(inimap.hasSection("Player3")) numPlayers++;
-    if(inimap.hasSection("Player4")) numPlayers++;
-    if(inimap.hasSection("Player5")) numPlayers++;
-    if(inimap.hasSection("Player6")) numPlayers++;
+    if (inimap.hasSection("Atreides"))
+        numPlayers++;
+    if (inimap.hasSection("Ordos"))
+        numPlayers++;
+    if (inimap.hasSection("Harkonnen"))
+        numPlayers++;
+    if (inimap.hasSection("Fremen"))
+        numPlayers++;
+    if (inimap.hasSection("Mercenary"))
+        numPlayers++;
+    if (inimap.hasSection("Sardaukar"))
+        numPlayers++;
+    if (inimap.hasSection("Player1"))
+        numPlayers++;
+    if (inimap.hasSection("Player2"))
+        numPlayers++;
+    if (inimap.hasSection("Player3"))
+        numPlayers++;
+    if (inimap.hasSection("Player4"))
+        numPlayers++;
+    if (inimap.hasSection("Player5"))
+        numPlayers++;
+    if (inimap.hasSection("Player6"))
+        numPlayers++;
 
     mapPropertyPlayers.setText(std::to_string(numPlayers));
 
-
-
-    std::string authors = inimap.getStringValue("BASIC","Author", "-");
-    if(authors.size() > 11) {
-        authors = authors.substr(0,9) + "...";
+    std::string authors = inimap.getStringValue("BASIC", "Author", "-");
+    if (authors.size() > 11) {
+        authors = authors.substr(0, 9) + "...";
     }
     mapPropertyAuthors.setText(authors);
 
-
-    mapPropertyLicense.setText(inimap.getStringValue("BASIC","License", "-"));
-
+    mapPropertyLicense.setText(inimap.getStringValue("BASIC", "License", "-"));
 }

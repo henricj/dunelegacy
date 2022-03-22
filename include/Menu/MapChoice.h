@@ -21,12 +21,12 @@
 #include "MenuBase.h"
 #include <DataTypes.h>
 #include <GUI/dune/MessageTicker.h>
-#include <misc/draw_util.h>
 #include <misc/BlendBlitter.h>
 #include <misc/SDL2pp.h>
+#include <misc/draw_util.h>
 
-#include <mmath.h>
 #include <array>
+#include <mmath.h>
 #include <vector>
 
 #define MAPCHOICESTATE_FADEINPLANET 0
@@ -38,8 +38,7 @@
 #define MAPCHOICESTATE_ARROWS       6
 #define MAPCHOICESTATE_BLINKING     7
 
-class MapChoice : public MenuBase
-{
+class MapChoice : public MenuBase {
 public:
     MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t alreadyPlayedRegions);
     ~MapChoice() override;
@@ -48,17 +47,17 @@ public:
 
     [[nodiscard]] int getSelectedMission() const {
         int regionIndex = 0;
-        for(regionIndex = 0; regionIndex < 4; regionIndex++) {
-            if(group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
+        for (regionIndex = 0; regionIndex < 4; regionIndex++) {
+            if (group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
                 break;
             }
         }
 
         int newMission = 0;
-        if(lastScenario <= 7) {
-            newMission = (lastScenario-1) * 3 + 2 + regionIndex;
-        } else if(lastScenario == 8) {
-            newMission = (lastScenario-1) * 3 - 1 + 2 + regionIndex;
+        if (lastScenario <= 7) {
+            newMission = (lastScenario - 1) * 3 + 2 + regionIndex;
+        } else if (lastScenario == 8) {
+            newMission = (lastScenario - 1) * 3 - 1 + 2 + regionIndex;
         } else {
             THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
         }
@@ -68,7 +67,7 @@ public:
     [[nodiscard]] uint32_t getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
     void drawSpecificStuff() override;
-    bool doInput(SDL_Event &event) override;
+    bool doInput(SDL_Event& event) override;
 
 private:
     void createMapSurfaceWithPieces(unsigned int scenario);
@@ -88,7 +87,7 @@ private:
 
         struct TText {
             std::string message;
-            int region;     ///< when this region is changed, this message will appear.
+            int region; ///< when this region is changed, this message will appear.
         };
 
         std::vector<TText> text;
@@ -96,23 +95,23 @@ private:
 
     std::array<TGroup, 9> group;
 
-    HOUSETYPE                     house;
-    unsigned int                  lastScenario;
-    uint32_t                      alreadyPlayedRegions;
-    sdl2::surface_ptr             mapSurface;
-    sdl2::texture_ptr             mapTexture;
-    std::array<Coord, 28>         piecePosition;
+    HOUSETYPE house;
+    unsigned int lastScenario;
+    uint32_t alreadyPlayedRegions;
+    sdl2::surface_ptr mapSurface;
+    sdl2::texture_ptr mapTexture;
+    std::array<Coord, 28> piecePosition;
     std::unique_ptr<BlendBlitter> curBlendBlitter;
-    HOUSETYPE                     curHouse2Blit;
-    unsigned int                  curRegion2Blit;
-    bool                          bFastBlending;
-    int                           mapChoiceState;
-    int                           selectedRegion;
-    uint32_t                      selectionTime;
-    uint32_t                      stateSwitchTime;
-    MessageTicker                 msgticker;
+    HOUSETYPE curHouse2Blit;
+    unsigned int curRegion2Blit;
+    bool bFastBlending;
+    int mapChoiceState;
+    int selectedRegion;
+    uint32_t selectionTime;
+    uint32_t stateSwitchTime;
+    MessageTicker msgticker;
 
     SDL_Rect centerAreaRect;
 };
 
-#endif //MAPCHOICE_H
+#endif // MAPCHOICE_H

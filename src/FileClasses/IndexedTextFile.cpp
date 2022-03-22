@@ -17,8 +17,8 @@
 
 #include <FileClasses/IndexedTextFile.h>
 
-#include <misc/string_util.h>
 #include <misc/exceptions.h>
+#include <misc/string_util.h>
 
 #include <SDL2/SDL_endian.h>
 #include <algorithm>
@@ -27,41 +27,41 @@
 
 IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
 
-    if(rwop == nullptr) {
+    if (rwop == nullptr) {
         THROW(std::invalid_argument, "IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
     }
 
     int64_t endOffset = SDL_RWsize(rwop);
-    if(endOffset < 0) {
+    if (endOffset < 0) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
     }
 
     auto indexedTextFilesize = static_cast<size_t>(endOffset);
 
-    if(indexedTextFilesize < 2) {
+    if (indexedTextFilesize < 2) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");
     }
 
     std::vector<unsigned char> filedata(indexedTextFilesize);
 
-    if(SDL_RWread(rwop, filedata.data(), indexedTextFilesize, 1) != 1) {
+    if (SDL_RWread(rwop, filedata.data(), indexedTextFilesize, 1) != 1) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Reading this indexed textfile failed!");
     }
 
-    int numIndexedStrings = (SDL_SwapLE16(((Uint16*) filedata.data())[0]))/2 - 1;
+    int numIndexedStrings = (SDL_SwapLE16(((Uint16*)filedata.data())[0])) / 2 - 1;
 
-    auto* pIndex = (uint16_t*) filedata.data();
-    for(int i=0; i <= numIndexedStrings; i++) {
+    auto* pIndex = (uint16_t*)filedata.data();
+    for (int i = 0; i <= numIndexedStrings; i++) {
         pIndex[i] = SDL_SwapLE16(pIndex[i]);
     }
 
-    for(int i=0; i < numIndexedStrings; i++) {
-        std::string text((const char*) (filedata.data()+pIndex[i]));
+    for (int i = 0; i < numIndexedStrings; i++) {
+        std::string text((const char*)(filedata.data() + pIndex[i]));
 
-        if(bDecode) {
-            indexedStrings.push_back( convertCP850ToUTF8(decodeString(text)) );
+        if (bDecode) {
+            indexedStrings.push_back(convertCP850ToUTF8(decodeString(text)));
         } else {
-            indexedStrings.push_back( convertCP850ToUTF8(text) );
+            indexedStrings.push_back(convertCP850ToUTF8(text));
         }
     }
 }

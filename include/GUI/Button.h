@@ -18,13 +18,13 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "Widget.h"
 #include "GUIStyle.h"
+#include "Widget.h"
 #include "misc/draw_util.h"
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <functional>
+#include <string>
 
 /// A abstract base class for all buttons
 class Button : public Widget {
@@ -35,10 +35,10 @@ public:
     /// destructor
     virtual ~Button();
 
-    Button(const Button &) = delete;
-    Button(Button &&) = default;
-    Button& operator=(const Button &) = delete;
-    Button& operator=(Button &&) = default;
+    Button(const Button&) = delete;
+    Button(Button&&)      = default;
+    Button& operator=(const Button&) = delete;
+    Button& operator=(Button&&) = default;
 
     /**
         Returns that this button can be set active.
@@ -51,14 +51,12 @@ public:
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable button, false = disable button
     */
-    void setEnabled(bool bEnabled) override
-    {
+    void setEnabled(bool bEnabled) override {
         Widget::setEnabled(bEnabled);
-        if(bEnabled == false) {
+        if (bEnabled == false) {
             bPressed = false;
         }
     }
-
 
     /**
         Sets a tooltip text. This text is shown when the mouse remains a short time over this button.
@@ -67,10 +65,10 @@ public:
     void setTooltipText(const std::string& text) {
         tooltipText = text;
 
-        if(tooltipTexture != nullptr)
+        if (tooltipTexture != nullptr)
             tooltipTexture.reset();
 
-        if(!tooltipText.empty()) {
+        if (!tooltipText.empty()) {
             tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText));
         }
     }
@@ -87,7 +85,7 @@ public:
         Sets the function that should be called when this button is clicked on.
         \param  pOnClick    A function to call on click
     */
-    void setOnClick(std::function<void ()> pOnClick) noexcept {
+    void setOnClick(std::function<void()> pOnClick) noexcept {
         this->pOnClick = pOnClick;
     }
 
@@ -113,7 +111,7 @@ public:
         \param bToggleState true = toggled, false = untoggled
     */
     virtual void setToggleState(bool bToggleState) {
-        if(isToggleButton()) {
+        if (isToggleButton()) {
             this->bToggleState = bToggleState;
         }
     }
@@ -182,33 +180,32 @@ protected:
     virtual void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                              const DuneTexture* pActiveTexture = nullptr);
 
-    const DuneTexture* pUnpressedTexture;   ///< Texture that is normally shown
-    const DuneTexture* pPressedTexture;     ///< Texture that is shown when the button is pressed
-    const DuneTexture* pActiveTexture;      ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+    const DuneTexture* pUnpressedTexture; ///< Texture that is normally shown
+    const DuneTexture* pPressedTexture;   ///< Texture that is shown when the button is pressed
+    const DuneTexture* pActiveTexture;    ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
     /**
         This method frees all textures that are used by this button
     */
     void invalidateTextures() override;
 
-    std::string       tooltipText;                ///< the tooltip text
-    sdl2::texture_ptr tooltipTexture;             ///< the tooltip texture
-    uint32_t          tooltipLastMouseMotion = 0; ///< the last time the mouse was moved
+    std::string tooltipText;             ///< the tooltip text
+    sdl2::texture_ptr tooltipTexture;    ///< the tooltip texture
+    uint32_t tooltipLastMouseMotion = 0; ///< the last time the mouse was moved
 
-    std::function<void ()> pOnClick;    ///< function that is called when this button is clicked
-    bool bPressed;                      ///< true = currently pressed, false = currently unpressed
-    bool bHover;                        ///< true = currently mouse hover, false = currently no mouse hover
-    bool bToggleButton;                 ///< true = toggle button, false = normal button
-    bool bToggleState;                  ///< true = currently toggled, false = currently not toggled
+    std::function<void()> pOnClick; ///< function that is called when this button is clicked
+    bool bPressed;                  ///< true = currently pressed, false = currently unpressed
+    bool bHover;                    ///< true = currently mouse hover, false = currently no mouse hover
+    bool bToggleButton;             ///< true = toggle button, false = normal button
+    bool bToggleState;              ///< true = currently toggled, false = currently not toggled
 
 private:
     sdl2::texture_ptr localUnpressed_;
     sdl2::texture_ptr localPressed_;
     sdl2::texture_ptr localActive_;
-    DuneTexture       localDuneUnpressed_;
-    DuneTexture       localDunePressed_;
-    DuneTexture       localDuneActive_;
+    DuneTexture localDuneUnpressed_;
+    DuneTexture localDunePressed_;
+    DuneTexture localDuneActive_;
 };
 
-
-#endif //BUTTON_H
+#endif // BUTTON_H

@@ -17,45 +17,40 @@
 
 #include <CutScenes/CutScene.h>
 
-#include <FileClasses/Palfile.h>
 #include <FileClasses/FileManager.h>
+#include <FileClasses/Palfile.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <misc/SDL2pp.h>
 
 #include <globals.h>
 #include <sand.h>
 
-CutScene::CutScene()
-{
+CutScene::CutScene() {
     quiting = false;
 }
 
-CutScene::~CutScene()
-{
+CutScene::~CutScene() {
     // Fixes some flickering
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     Dune_RenderPresent(renderer);
 }
 
-void CutScene::run()
-{
+void CutScene::run() {
     SDL_Event event;
 
-    while (!quiting)
-    {
+    while (!quiting) {
         const int frameStart = static_cast<int>(SDL_GetTicks());
 
         const int nextFrameTime = draw();
 
-        while(SDL_PollEvent(&event)) {
+        while (SDL_PollEvent(&event)) {
 
-            //check the events
-            switch (event.type)
-            {
+            // check the events
+            switch (event.type) {
                 case (SDL_KEYDOWN): // Look for a keypress
                 {
-                    if((event.key.keysym.sym == SDLK_SPACE) || (event.key.keysym.sym == SDLK_ESCAPE)) {
+                    if ((event.key.keysym.sym == SDLK_SPACE) || (event.key.keysym.sym == SDLK_ESCAPE)) {
                         // Fixes some flickering
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
@@ -67,8 +62,8 @@ void CutScene::run()
         }
 
         const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        const int delay = nextFrameTime - frameTime;
-        if(delay >= 0) {
+        const int delay     = nextFrameTime - frameTime;
+        if (delay >= 0) {
             SDL_Delay(delay);
         }
     }
@@ -78,39 +73,35 @@ void CutScene::startNewScene() {
     scenes.push(std::make_unique<Scene>());
 }
 
-void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent)
-{
-    if(scenes.empty()) {
+void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent) {
+    if (scenes.empty()) {
         scenes.push(std::make_unique<Scene>());
     }
 
     scenes.back()->addVideoEvent(std::move(newVideoEvent));
 }
 
-void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent)
-{
-    if(scenes.empty()) {
+void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent) {
+    if (scenes.empty()) {
         scenes.push(std::make_unique<Scene>());
     }
 
     scenes.back()->addTextEvent(std::move(newTextEvent));
 }
 
-void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger)
-{
-    if(scenes.empty()) {
+void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
+    if (scenes.empty()) {
         scenes.push(std::make_unique<Scene>());
     }
 
     scenes.back()->addTrigger(std::move(newTrigger));
 }
 
-int CutScene::draw()
-{
+int CutScene::draw() {
     int nextFrameTime = 0;
 
-    while(!scenes.empty()) {
-        if(scenes.front()->isFinished()) {
+    while (!scenes.empty()) {
+        if (scenes.front()->isFinished()) {
             scenes.pop();
             continue;
         } else {
@@ -119,24 +110,21 @@ int CutScene::draw()
         }
     }
 
-    if(scenes.empty() && !musicPlayer->isMusicPlaying()) {
+    if (scenes.empty() && !musicPlayer->isMusicPlaying()) {
         quit();
     }
 
     return nextFrameTime;
 }
 
-std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1)
-{
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1) {
     return std::make_unique<Wsafile>(pFileManager->openFile(name1).get());
 }
 
-std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2)
-{
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2) {
     return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get());
 }
 
-std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3)
-{
+std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3) {
     return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get(), pFileManager->openFile(name3).get());
 }

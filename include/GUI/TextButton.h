@@ -23,22 +23,21 @@
 
 #include <string>
 
-
 /// A class for a text button
 class TextButton : public Button {
 public:
     /// Default contructor
     TextButton() {
-        textcolor = COLOR_DEFAULT;
+        textcolor       = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
-        Widget::enableResizing(true,true);
+        Widget::enableResizing(true, true);
     }
 
-    TextButton(const TextButton &) = delete;
-    TextButton(TextButton &&) = default;
-    TextButton& operator=(const TextButton &) = delete;
-    TextButton& operator=(TextButton &&) = default;
+    TextButton(const TextButton&) = delete;
+    TextButton(TextButton&&)      = default;
+    TextButton& operator=(const TextButton&) = delete;
+    TextButton& operator=(TextButton&&) = default;
 
     /// destructor
     virtual ~TextButton();
@@ -65,7 +64,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor = textcolor;
+        this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
     }
@@ -75,9 +74,8 @@ public:
         called if the new size is a valid size for this button (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -86,10 +84,9 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
+    void resize(uint32_t width, uint32_t height) override {
         invalidateTextures();
-        Button::resize(width,height);
+        Button::resize(width, height);
     }
 
     /**
@@ -97,8 +94,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] Point getMinimumSize() const override {
         return GUIStyle::getInstance().getMinimumButtonSize(text);
     }
 
@@ -114,7 +110,7 @@ private:
     uint32_t textcolor;
     uint32_t textshadowcolor;
 
-    std::string text;       ///< Text of this button
+    std::string text; ///< Text of this button
 };
 
 #endif // TEXTBUTTON_H

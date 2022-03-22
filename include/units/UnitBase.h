@@ -18,8 +18,8 @@
 #ifndef UNITBASE_H
 #define UNITBASE_H
 
-#include <ObjectBase.h>
 #include <Map.h>
+#include <ObjectBase.h>
 
 #include <House.h>
 
@@ -32,7 +32,7 @@ class UnitBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit UnitBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : ObjectBaseConstants{itemID} {
+        : ObjectBaseConstants {itemID} {
         aUnit_          = true;
         canAttackStuff_ = 0 != num_weapons;
 
@@ -50,14 +50,13 @@ public:
 
 protected:
     // constant for all units of the same type
-    bool tracked_{};    ///< Does this unit have tracks?
-    bool turreted_{};   ///< Does this unit have a turret?
-    int  numWeapons_{}; ///< How many weapons do we have?
-    int  bulletType_{Bullet_DRocket}; ///< Type of bullet to shot with
+    bool tracked_ {};                 ///< Does this unit have tracks?
+    bool turreted_ {};                ///< Does this unit have a turret?
+    int numWeapons_ {};               ///< How many weapons do we have?
+    int bulletType_ {Bullet_DRocket}; ///< Type of bullet to shot with
 };
 
-class UnitBase : public ObjectBase
-{
+class UnitBase : public ObjectBase {
 protected:
     UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -65,10 +64,10 @@ protected:
 public:
     ~UnitBase() override = 0;
 
-    UnitBase(const UnitBase &) = delete;
-    UnitBase(UnitBase &&) = delete;
-    UnitBase& operator=(const UnitBase &) = delete;
-    UnitBase& operator=(UnitBase &&) = delete;
+    UnitBase(const UnitBase&) = delete;
+    UnitBase(UnitBase&&)      = delete;
+    UnitBase& operator=(const UnitBase&) = delete;
+    UnitBase& operator=(UnitBase&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -108,13 +107,11 @@ public:
     */
     virtual void handleMoveClick(const GameContext& context, int xPos, int yPos);
 
-
     /**
         This method is called when an unit is ordered to be in a new attack mode
         \param  newAttackMode   the new attack mode the unit is put in.
     */
     virtual void handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode);
-
 
     /**
         This method is called when an unit is ordered to request a carryall drop
@@ -214,9 +211,8 @@ public:
     void setLocation(const GameContext& context, int xPos, int yPos) override;
 
     using ObjectBase::setDestination;
-    void setDestination(int newX, int newY) override
-    {
-        if((destination.x != newX) || (destination.y != newY)) {
+    void setDestination(int newX, int newY) override {
+        if ((destination.x != newX) || (destination.y != newY)) {
             ObjectBase::setDestination(newX, newY);
             clearPath();
         }
@@ -231,7 +227,7 @@ public:
     bool update(const GameContext& context) override;
 
     bool canPass(int xPos, int yPos) const {
-        auto *const pTile = currentGameMap->tryGetTile(xPos, yPos);
+        auto* const pTile = currentGameMap->tryGetTile(xPos, yPos);
 
         return pTile ? canPassTile(pTile) : false;
     }
@@ -307,8 +303,8 @@ protected:
     virtual void targeting(const GameContext& context);
 
     virtual void turn(const GameContext& context);
-    void         turnLeft(const GameContext& context);
-    void         turnRight(const GameContext& context);
+    void turnLeft(const GameContext& context);
+    void turnRight(const GameContext& context);
 
     void quitDeviation(const GameContext& context);
 
@@ -317,31 +313,30 @@ protected:
     void drawSmoke(int x, int y) const;
 
     // unit state/properties
-    Coord    guardPoint;             ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
-    Coord    attackPos;              ///< The position to attack
-    bool     goingToRepairYard;      ///< Are we currently going to a repair yard?
-    bool     pickedUp;               ///< Were we picked up by a carryall?
-    bool     bFollow;                ///< Do we currently follow some other unit (specified by target)?
+    Coord guardPoint;       ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
+    Coord attackPos;        ///< The position to attack
+    bool goingToRepairYard; ///< Are we currently going to a repair yard?
+    bool pickedUp;          ///< Were we picked up by a carryall?
+    bool bFollow;           ///< Do we currently follow some other unit (specified by target)?
 
+    bool moving;            ///< Are we currently moving?
+    bool turning;           ///< Are we currently turning?
+    bool justStoppedMoving; ///< Do we have just stopped moving?
+    FixPoint xSpeed;        ///< Speed in x direction
+    FixPoint ySpeed;        ///< Speed in y direction
+    FixPoint bumpyOffsetX;  ///< The bumpy offset in x direction which is already included in realX
+    FixPoint bumpyOffsetY;  ///< The bumpy offset in y direction which is already included in realY
 
-    bool     moving;                 ///< Are we currently moving?
-    bool     turning;                ///< Are we currently turning?
-    bool     justStoppedMoving;      ///< Do we have just stopped moving?
-    FixPoint xSpeed;                 ///< Speed in x direction
-    FixPoint ySpeed;                 ///< Speed in y direction
-    FixPoint bumpyOffsetX;           ///< The bumpy offset in x direction which is already included in realX
-    FixPoint bumpyOffsetY;           ///< The bumpy offset in y direction which is already included in realY
-
-    FixPoint targetDistance;         ///< Distance to the destination
-    ANGLETYPE targetAngle;           ///< Angle to the destination
+    FixPoint targetDistance; ///< Distance to the destination
+    ANGLETYPE targetAngle;   ///< Angle to the destination
 
     // path finding
-    uint8_t            noCloserPointCount;   ///< How often have we tried to dinf a path?
-    bool               nextSpotFound;        ///< Is the next spot to move to already found?
-    ANGLETYPE          nextSpotAngle;        ///< The angle to get to the next spot
-    int32_t            recalculatePathTimer; ///< This timer is for recalculating the best path after x ticks
-    Coord              nextSpot;             ///< The next spot to move to
-    std::vector<Coord> pathList;             ///< The path to the destination found so far
+    uint8_t noCloserPointCount;   ///< How often have we tried to dinf a path?
+    bool nextSpotFound;           ///< Is the next spot to move to already found?
+    ANGLETYPE nextSpotAngle;      ///< The angle to get to the next spot
+    int32_t recalculatePathTimer; ///< This timer is for recalculating the best path after x ticks
+    Coord nextSpot;               ///< The next spot to move to
+    std::vector<Coord> pathList;  ///< The path to the destination found so far
 
     int32_t findTargetTimer;      ///< When to look for the next target?
     int32_t primaryWeaponTimer;   ///< When can the primary weapon shot again?
@@ -351,7 +346,7 @@ protected:
     int32_t deviationTimer; ///< When to revert back to the original owner?
 
     // drawing information
-    int drawnFrame;                  ///< Which row in the picture should be drawn
+    int drawnFrame; ///< Which row in the picture should be drawn
 
 private:
     void init();
@@ -359,17 +354,18 @@ private:
 
 template<>
 inline UnitBase* dune_cast(ObjectBase* base) {
-    if(base && base->isAUnit()) return static_cast<UnitBase*>(base);
+    if (base && base->isAUnit())
+        return static_cast<UnitBase*>(base);
 
     return nullptr;
 }
 
 template<>
 inline const UnitBase* dune_cast(const ObjectBase* base) {
-    if(base && base->isAUnit()) return static_cast<const UnitBase*>(base);
+    if (base && base->isAUnit())
+        return static_cast<const UnitBase*>(base);
 
     return nullptr;
 }
-
 
 #endif // UNITBASE_H

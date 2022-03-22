@@ -15,7 +15,6 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef XMIPLAYER_H
 #define XMIPLAYER_H
 
@@ -23,9 +22,9 @@
 
 #include <Definitions.h>
 
-#include <vector>
-#include <string>
 #include <SDL2/SDL_mixer.h>
+#include <string>
+#include <vector>
 
 // Forward declarations
 class CadlPlayer;
@@ -62,18 +61,15 @@ public:
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-    void setMusicVolume(int newVolume) override
-    {
+    void setMusicVolume(int newVolume) override {
         MusicPlayer::setMusicVolume(newVolume);
         Mix_VolumeMusic(newVolume);
     }
 
 private:
-
     std::filesystem::path getTmpFileName();
 
-
-    Mix_Music*      music;
+    Mix_Music* music;
 };
 
 #endif // XMIPLAYER_H

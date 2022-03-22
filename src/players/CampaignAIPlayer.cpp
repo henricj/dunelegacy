@@ -15,12 +15,11 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include <players/CampaignAIPlayer.h>
 #include <House.h>
-#include <sand.h>
 #include <Map.h>
 #include <misc/Random.h>
+#include <players/CampaignAIPlayer.h>
+#include <sand.h>
 
 #include <unordered_map>
 
@@ -31,77 +30,74 @@
 #define AIUPDATEINTERVAL 50
 
 static const std::map<uint32_t, int> buildPriorityMap = {
-    { Unit_Carryall, 2 },
-    { Unit_Ornithopter, 6 },
-    { Unit_Infantry, 2 },
-    { Unit_Troopers, 3 },
-    { Unit_Soldier, 1 },
-    { Unit_Trooper, 2 },
-    { Unit_Saboteur, 0 },
-    { Unit_Launcher, 8 },
-    { Unit_Deviator, 3 },
-    { Unit_Tank, 7 },
-    { Unit_SiegeTank, 9 },
-    { Unit_Devastator, 10 },
-    { Unit_SonicTank, 7 },
-    { Unit_Trike, 3 },
-    { Unit_RaiderTrike, 4 },
-    { Unit_Quad, 5 },
-    { Unit_Harvester, 1 },
-    { Unit_MCV, 1 }
-};
+    {Unit_Carryall, 2},
+    {Unit_Ornithopter, 6},
+    {Unit_Infantry, 2},
+    {Unit_Troopers, 3},
+    {Unit_Soldier, 1},
+    {Unit_Trooper, 2},
+    {Unit_Saboteur, 0},
+    {Unit_Launcher, 8},
+    {Unit_Deviator, 3},
+    {Unit_Tank, 7},
+    {Unit_SiegeTank, 9},
+    {Unit_Devastator, 10},
+    {Unit_SonicTank, 7},
+    {Unit_Trike, 3},
+    {Unit_RaiderTrike, 4},
+    {Unit_Quad, 5},
+    {Unit_Harvester, 1},
+    {Unit_MCV, 1}};
 
 static const std::unordered_map<uint32_t, int> targetPriorityMap = {
-    { Unit_Carryall, 36 },
-    { Unit_Ornithopter, 105 },
-    { Unit_Infantry, 40 },
-    { Unit_Troopers, 100 },
-    { Unit_Soldier, 20 },
-    { Unit_Trooper, 50 },
-    { Unit_Saboteur, 700 },
-    { Unit_Launcher, 250 },
-    { Unit_Deviator, 225 },
-    { Unit_Tank, 180 },
-    { Unit_SiegeTank, 280 },
-    { Unit_Devastator, 355 },
-    { Unit_SonicTank, 190 },
-    { Unit_Trike, 100 },
-    { Unit_RaiderTrike, 115 },
-    { Unit_Quad, 120 },
-    { Unit_Harvester, 160 },
-    { Unit_MCV, 160 },
-    { Unit_Frigate, 0 },
-    { Unit_Sandworm, 0 },
-    { Structure_Slab1, 5 },
-    { Structure_Slab4, 10 },
-    { Structure_Palace, 400 },
-    { Structure_LightFactory, 200 },
-    { Structure_HeavyFactory, 600 },
-    { Structure_HighTechFactory, 200 },
-    { Structure_IX, 100 },
-    { Structure_WOR, 175 },
-    { Structure_ConstructionYard, 300 },
-    { Structure_WindTrap, 300 },
-    { Structure_Barracks, 100 },
-    { Structure_StarPort, 250 },
-    { Structure_Refinery, 300 },
-    { Structure_RepairYard, 600 },
-    { Structure_Wall, 30 },
-    { Structure_GunTurret, 225 },
-    { Structure_RocketTurret, 175 },
-    { Structure_Silo, 150 },
-    { Structure_Radar, 275 }
-};
-
+    {Unit_Carryall, 36},
+    {Unit_Ornithopter, 105},
+    {Unit_Infantry, 40},
+    {Unit_Troopers, 100},
+    {Unit_Soldier, 20},
+    {Unit_Trooper, 50},
+    {Unit_Saboteur, 700},
+    {Unit_Launcher, 250},
+    {Unit_Deviator, 225},
+    {Unit_Tank, 180},
+    {Unit_SiegeTank, 280},
+    {Unit_Devastator, 355},
+    {Unit_SonicTank, 190},
+    {Unit_Trike, 100},
+    {Unit_RaiderTrike, 115},
+    {Unit_Quad, 120},
+    {Unit_Harvester, 160},
+    {Unit_MCV, 160},
+    {Unit_Frigate, 0},
+    {Unit_Sandworm, 0},
+    {Structure_Slab1, 5},
+    {Structure_Slab4, 10},
+    {Structure_Palace, 400},
+    {Structure_LightFactory, 200},
+    {Structure_HeavyFactory, 600},
+    {Structure_HighTechFactory, 200},
+    {Structure_IX, 100},
+    {Structure_WOR, 175},
+    {Structure_ConstructionYard, 300},
+    {Structure_WindTrap, 300},
+    {Structure_Barracks, 100},
+    {Structure_StarPort, 250},
+    {Structure_Refinery, 300},
+    {Structure_RepairYard, 600},
+    {Structure_Wall, 30},
+    {Structure_GunTurret, 225},
+    {Structure_RocketTurret, 175},
+    {Structure_Silo, 150},
+    {Structure_Radar, 275}};
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random)
- : Player(context, associatedHouse, playername, random) {
+    : Player(context, associatedHouse, playername, random) {
 }
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
     auto numStructureInfo = stream.readUint32();
-    for(uint32_t i = 0; i < numStructureInfo; i++) {
+    for (uint32_t i = 0; i < numStructureInfo; i++) {
         structureQueue.emplace_back(stream);
     }
 }
@@ -112,20 +108,18 @@ void CampaignAIPlayer::save(OutputStream& stream) const {
     Player::save(stream);
 
     stream.writeUint32(structureQueue.size());
-    for(const auto& structureInfo : structureQueue) {
+    for (const auto& structureInfo : structureQueue) {
         structureInfo.save(stream);
     }
 }
 
-
-
 void CampaignAIPlayer::update() {
-    if( (getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
+    if ((getGameCycleCount() + static_cast<int>(getHouse()->getHouseID())) % AIUPDATEINTERVAL != 0) {
         // we are not updating this AI player this cycle
         return;
     }
 
-    if(!getHouse()->hadDirectContactWithEnemy()) {
+    if (!getHouse()->hadDirectContactWithEnemy()) {
         // we are not doing anything until we had contact with the enemy
         return;
     }
@@ -138,66 +132,67 @@ void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
 }
 
 void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
-    if(structureQueue.size() < 5) {
+    if (structureQueue.size() < 5) {
         structureQueue.emplace_back(itemID, location);
     }
 }
 
 void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
-    if(!pObject->isAUnit() || !pObject->isRespondable()) {
+    if (!pObject->isAUnit() || !pObject->isRespondable()) {
         return;
     }
     const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
     const ObjectBase* pDamager = getObject(damagerID);
-    if(!pDamager) {
+    if (!pDamager) {
         return;
     }
 
-    if(pDamager->getOwner()->getTeamID() == pUnit->getOwner()->getTeamID()) {
+    if (pDamager->getOwner()->getTeamID() == pUnit->getOwner()->getTeamID()) {
         // do not respond to friendly fire
         return;
     }
 
-    if(!pUnit->canAttack(pDamager)) {
+    if (!pUnit->canAttack(pDamager)) {
         return;
     }
 
-    if(!pUnit->hasATarget() || pUnit->getTarget()->getTarget() != pUnit) {
+    if (!pUnit->hasATarget() || pUnit->getTarget()->getTarget() != pUnit) {
         // the unit has no target or the target is not targeting the unit
         doAttackObject(pUnit, pDamager, true);
     }
 }
 
 void CampaignAIPlayer::updateStructures() {
-    for(const StructureBase* pStructure : getStructureList()) {
-        if(pStructure->getOwner() != getHouse()) {
+    for (const StructureBase* pStructure : getStructureList()) {
+        if (pStructure->getOwner() != getHouse()) {
             continue;
         }
 
-        if( pStructure->getItemID() == Structure_Palace) {
+        if (pStructure->getItemID() == Structure_Palace) {
             const auto* pPalace = static_cast<const Palace*>(pStructure);
-            if(pPalace->isSpecialWeaponReady()){
+            if (pPalace->isSpecialWeaponReady()) {
 
-                if(getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
+                if (getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
                     doSpecialWeapon(pPalace);
                 } else {
                     const House* pBestHouse = nullptr;
 
                     currentGame->for_each_house([&](const auto& house) {
-                        if(house.getTeamID() != getHouse()->getTeamID()) return;
+                        if (house.getTeamID() != getHouse()->getTeamID())
+                            return;
 
-                        if(!pBestHouse) {
+                        if (!pBestHouse) {
                             pBestHouse = &house;
-                        } else if(house.getNumStructures() > pBestHouse->getNumStructures()) {
+                        } else if (house.getNumStructures() > pBestHouse->getNumStructures()) {
                             pBestHouse = &house;
-                        } else if(pBestHouse->getNumStructures() == 0 &&
-                                  (house.getNumUnits() > pBestHouse->getNumUnits())) {
+                        } else if (pBestHouse->getNumStructures() == 0 &&
+                                   (house.getNumUnits() > pBestHouse->getNumUnits())) {
                             pBestHouse = &house;
                         }
                     });
 
-                    if(pBestHouse) {
+                    if (pBestHouse) {
                         Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();
                         doLaunchDeathhand(pPalace, target.x, target.y);
                     }
@@ -205,51 +200,51 @@ void CampaignAIPlayer::updateStructures() {
             }
         }
 
-        if( pStructure->getHealth() < pStructure->getMaxHealth()/2 ) {
-            if(!pStructure->isRepairing()) {
+        if (pStructure->getHealth() < pStructure->getMaxHealth() / 2) {
+            if (!pStructure->isRepairing()) {
                 doRepair(pStructure);
             }
             continue;
         }
 
-        if(pStructure->isABuilder()) {
+        if (pStructure->isABuilder()) {
             const auto* pBuilder = static_cast<const BuilderBase*>(pStructure);
-            if( pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) {
-                if(!pStructure->isRepairing() && !pBuilder->isUpgrading()) {
+            if (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()) {
+                if (!pStructure->isRepairing() && !pBuilder->isUpgrading()) {
                     doUpgrade(pBuilder);
                 }
                 continue;
             }
 
-            if(pBuilder->getItemID() == Structure_ConstructionYard) {
+            if (pBuilder->getItemID() == Structure_ConstructionYard) {
                 // rebuild the last five destroyed buildings
-                if(pBuilder->isWaitingToPlace()) {
+                if (pBuilder->isWaitingToPlace()) {
                     ItemID_enum itemID = pBuilder->getCurrentProducedItem();
-                    for(auto iter = structureQueue.begin(); iter != structureQueue.end(); ++iter) {
-                        if(iter->itemID == itemID) {
-                            const auto location = iter->location;
-                            Coord itemsize = getStructureSize(itemID);
+                    for (auto iter = structureQueue.begin(); iter != structureQueue.end(); ++iter) {
+                        if (iter->itemID == itemID) {
+                            const auto location    = iter->location;
+                            Coord itemsize         = getStructureSize(itemID);
                             const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                            if(getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
+                            if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                 doPlaceStructure(pConstYard, location.x, location.y);
-                            } else if(itemID == Structure_Slab1) {
-                                //forget about concrete
+                            } else if (itemID == Structure_Slab1) {
+                                // forget about concrete
                                 doCancelItem(pConstYard, Structure_Slab1);
-                            } else if(itemID == Structure_Slab4) {
-                                //forget about concrete
+                            } else if (itemID == Structure_Slab4) {
+                                // forget about concrete
                                 doCancelItem(pConstYard, Structure_Slab4);
                             } else {
-                                //cancel item
+                                // cancel item
                                 doCancelItem(pConstYard, itemID);
                             }
                             structureQueue.erase(iter);
                             break;
                         }
                     }
-                } else if(!structureQueue.empty() && (pBuilder->getProductionQueueSize() <= 0)) {
+                } else if (!structureQueue.empty() && (pBuilder->getProductionQueueSize() <= 0)) {
                     const StructureInfo& structureInfo = structureQueue.front();
-                    if(pBuilder->isAvailableToBuild(structureInfo.itemID)) {
-                        doSetBuildSpeedLimit(pBuilder, std::min(1.0_fix, ((getTechLevel()-1) * 20 + 95)/255.0_fix) );
+                    if (pBuilder->isAvailableToBuild(structureInfo.itemID)) {
+                        doSetBuildSpeedLimit(pBuilder, std::min(1.0_fix, ((getTechLevel() - 1) * 20 + 95) / 255.0_fix));
                         doProduceItem(pBuilder, structureInfo.itemID);
                     } else {
                         // dequeue unavailable structures
@@ -257,45 +252,45 @@ void CampaignAIPlayer::updateStructures() {
                     }
                 }
 
-            } else if(pBuilder->getItemID() != Structure_StarPort) {
+            } else if (pBuilder->getItemID() != Structure_StarPort) {
                 // build units
 
-                if(pBuilder->getProductionQueueSize() >= 1) {
+                if (pBuilder->getProductionQueueSize() >= 1) {
                     // already busy building something
                     continue;
                 }
 
-                auto bestItemID = ItemID_Invalid;
+                auto bestItemID      = ItemID_Invalid;
                 int bestItemPriority = 0;
-                for(uint32_t currentItemID = ItemID_FirstID; currentItemID < ItemID_LastID; currentItemID++) {
-                    if(!pBuilder->isAvailableToBuild(static_cast<ItemID_enum>(currentItemID))) {
+                for (uint32_t currentItemID = ItemID_FirstID; currentItemID < ItemID_LastID; currentItemID++) {
+                    if (!pBuilder->isAvailableToBuild(static_cast<ItemID_enum>(currentItemID))) {
                         continue;
                     }
 
-                    if((currentItemID == Unit_Carryall) && getHouse()->hasCarryalls()) {
+                    if ((currentItemID == Unit_Carryall) && getHouse()->hasCarryalls()) {
                         // build only one carryall
                         continue;
                     }
 
-                    if((currentItemID == Unit_Harvester) || (currentItemID == Unit_MCV)) {
+                    if ((currentItemID == Unit_Harvester) || (currentItemID == Unit_MCV)) {
                         // never build harvesters or MCVs
                         continue;
                     }
 
                     auto buildPriorityIter = buildPriorityMap.find(currentItemID);
-                    if(buildPriorityIter == buildPriorityMap.end()) {
+                    if (buildPriorityIter == buildPriorityMap.end()) {
                         continue;
                     }
 
-                    if((getRandomGen().rand() % 4 == 0) || (buildPriorityIter->second > bestItemPriority)) {
+                    if ((getRandomGen().rand() % 4 == 0) || (buildPriorityIter->second > bestItemPriority)) {
                         // build with 25% chance or if higher priority
-                        bestItemID = static_cast<ItemID_enum>(currentItemID);
+                        bestItemID       = static_cast<ItemID_enum>(currentItemID);
                         bestItemPriority = buildPriorityIter->second;
                     }
                 }
 
-                if(bestItemID != ItemID_Invalid) {
-                    doSetBuildSpeedLimit(pBuilder, std::min(1.0_fix, ((getTechLevel()-1) * 20 + 95)/255.0_fix) );
+                if (bestItemID != ItemID_Invalid) {
+                    doSetBuildSpeedLimit(pBuilder, std::min(1.0_fix, ((getTechLevel() - 1) * 20 + 95) / 255.0_fix));
                     doProduceItem(pBuilder, bestItemID);
                 }
             }
@@ -304,42 +299,42 @@ void CampaignAIPlayer::updateStructures() {
 }
 
 void CampaignAIPlayer::updateUnits() {
-    for(const UnitBase* pUnit : getUnitList()) {
-        if(pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario() || pUnit->hasATarget()) {
+    for (const UnitBase* pUnit : getUnitList()) {
+        if (pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario() || pUnit->hasATarget()) {
             continue;
         }
 
-        if((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV) || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
+        if ((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV) || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
             continue;
         }
 
         const ObjectBase* pBestCandidate = nullptr;
-        int bestCandidatePriority = -1;
-        for(const StructureBase* pCandidate : getStructureList()) {
-            if(!pUnit->canAttack(pCandidate)) {
+        int bestCandidatePriority        = -1;
+        for (const StructureBase* pCandidate : getStructureList()) {
+            if (!pUnit->canAttack(pCandidate)) {
                 continue;
             }
 
             int priority = calculateTargetPriority(pUnit, pCandidate);
-            if(priority > bestCandidatePriority) {
+            if (priority > bestCandidatePriority) {
                 bestCandidatePriority = priority;
-                pBestCandidate = pCandidate;
+                pBestCandidate        = pCandidate;
             }
         }
 
-        for(const UnitBase* pCandidate : getUnitList()) {
-            if(!pUnit->canAttack(pCandidate)) {
+        for (const UnitBase* pCandidate : getUnitList()) {
+            if (!pUnit->canAttack(pCandidate)) {
                 continue;
             }
 
             int priority = calculateTargetPriority(pUnit, pCandidate);
-            if(priority > bestCandidatePriority) {
+            if (priority > bestCandidatePriority) {
                 bestCandidatePriority = priority;
-                pBestCandidate = pCandidate;
+                pBestCandidate        = pCandidate;
             }
         }
 
-        if(pBestCandidate) {
+        if (pBestCandidate) {
             doAttackObject(pUnit, pBestCandidate, true);
         }
     }
@@ -355,5 +350,5 @@ int CampaignAIPlayer::calculateTargetPriority(const UnitBase* pUnit, const Objec
     int priority = it == targetPriorityMap.end() ? 0 : it->second;
     int distance = blockDistanceApprox(pUnit->getLocation(), pObject->getLocation());
 
-    return (distance > 0) ? ( (priority / distance) + 1 ) : priority;
+    return (distance > 0) ? ((priority / distance) + 1) : priority;
 }

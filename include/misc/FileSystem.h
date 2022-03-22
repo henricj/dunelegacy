@@ -20,11 +20,10 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <string>
 #include <list>
-#include <utility>
 #include <stdint.h>
-
+#include <string>
+#include <utility>
 
 class FileInfo {
 public:
@@ -34,7 +33,7 @@ public:
 
     std::filesystem::path name;
     uintmax_t size;
-    std::filesystem::file_time_type  modifydate;
+    std::filesystem::file_time_type modifydate;
 };
 
 enum FileListOrder {
@@ -58,7 +57,6 @@ enum FileListOrder {
     \return a list of all the files with the specified extension
 */
 std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool bIgnoreCase = false, FileListOrder fileListOrder = FileListOrder_Unsorted);
-
 
 /**
     This function finds all the files in the specified directory with the specified
@@ -87,12 +85,10 @@ bool getCaseInsensitiveFilename(std::filesystem::path& filepath);
 */
 bool existsFile(const std::filesystem::path& path);
 
-
 /**
     Reads a complete file into a string. Caution: If the file contains 0-bytes they will also be contained in the returned string
 */
 std::string readCompleteFile(const std::filesystem::path& filename);
-
 
 /**
     Returns the base name of a file without the leading path and if specified without the trailing extension.
@@ -117,4 +113,4 @@ std::filesystem::path getDirname(const std::filesystem::path& filepath);
 */
 std::filesystem::path getDuneLegacyDataDir();
 
-#endif //FILESYSTEM_H
+#endif // FILESYSTEM_H

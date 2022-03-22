@@ -15,16 +15,15 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef DIRECTORYPLAYER_H
 #define DIRECTORYPLAYER_H
 
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <filesystem>
-#include <vector>
-#include <string>
 #include <SDL2/SDL_mixer.h>
+#include <filesystem>
+#include <string>
+#include <vector>
 
 class DirectoryPlayer : public MusicPlayer {
 public:
@@ -58,14 +57,12 @@ public:
         Sets the volume of the music channel
         \param  newVolume   the new volume [0;MIX_MAX_VOLUME]
     */
-    void setMusicVolume(int newVolume) override
-    {
+    void setMusicVolume(int newVolume) override {
         MusicPlayer::setMusicVolume(newVolume);
         Mix_VolumeMusic(newVolume);
     }
 
 private:
-
     /*!
         Get all audio files (mp3, ogg, wav and mid) inside the specified directory.
         @param dir the directory to get the files from
@@ -75,7 +72,7 @@ private:
 
     std::vector<std::filesystem::path> musicFileList[MUSIC_NUM_MUSIC_TYPES];
 
-    Mix_Music*      music;
+    Mix_Music* music;
 };
 
 #endif // DIRECTORYPLAYER_H

@@ -20,18 +20,16 @@
 
 #include <units/UnitBase.h>
 
-
 class GroundUnitConstants : public UnitBaseConstants {
 public:
     constexpr explicit GroundUnitConstants(ItemID_enum itemID, int num_weapons = 0,
                                            BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
+        : UnitBaseConstants {itemID, num_weapons, bullet_id} {
         aGroundUnit_ = true;
     }
 };
 
-class GroundUnit : public UnitBase
-{
+class GroundUnit : public UnitBase {
 protected:
     GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer);
     GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -41,10 +39,10 @@ public:
 
     ~GroundUnit() override = 0;
 
-    GroundUnit(const GroundUnit &) = delete;
-    GroundUnit(GroundUnit &&) = delete;
-    GroundUnit& operator=(const GroundUnit &) = delete;
-    GroundUnit& operator=(GroundUnit &&) = delete;
+    GroundUnit(const GroundUnit&) = delete;
+    GroundUnit(GroundUnit&&)      = delete;
+    GroundUnit& operator=(const GroundUnit&) = delete;
+    GroundUnit& operator=(GroundUnit&&) = delete;
 
     void save(OutputStream& stream) const override;
 
@@ -83,23 +81,24 @@ protected:
     void move(const GameContext& context) override;
     void navigate(const GameContext& context) override;
 
-    bool     awaitingPickup; ///< Is this unit waiting for pickup?
-    uint32_t bookedCarrier;  ///< What is the carrier if waiting for pickup?
+    bool awaitingPickup;    ///< Is this unit waiting for pickup?
+    uint32_t bookedCarrier; ///< What is the carrier if waiting for pickup?
 };
 
 template<>
 inline GroundUnit* dune_cast(ObjectBase* base) {
-    if(base && base->isAGroundUnit()) return static_cast<GroundUnit*>(base);
+    if (base && base->isAGroundUnit())
+        return static_cast<GroundUnit*>(base);
 
     return nullptr;
 }
 
 template<>
 inline const GroundUnit* dune_cast(const ObjectBase* base) {
-    if(base && base->isAGroundUnit()) return static_cast<const GroundUnit*>(base);
+    if (base && base->isAGroundUnit())
+        return static_cast<const GroundUnit*>(base);
 
     return nullptr;
 }
-
 
 #endif // GROUNDUNIT_H

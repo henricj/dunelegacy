@@ -36,20 +36,19 @@ public:
             SetHumanPlayer
         };
 
-
         ChangeEvent(EventType eventType, uint32_t slot, uint32_t newValue)
-         : eventType(eventType), slot(slot), newValue(newValue) {
+            : eventType(eventType), slot(slot), newValue(newValue) {
         }
 
         ChangeEvent(uint32_t slot, std::string newStringValue)
-         : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) {
+            : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) {
         }
 
         explicit ChangeEvent(InputStream& stream) {
             eventType = static_cast<EventType>(stream.readUint32());
-            slot = stream.readUint32();
+            slot      = stream.readUint32();
 
-            if(eventType == EventType::SetHumanPlayer) {
+            if (eventType == EventType::SetHumanPlayer) {
                 newStringValue = stream.readString();
             } else {
                 newValue = stream.readUint32();
@@ -59,16 +58,16 @@ public:
         void save(OutputStream& stream) const {
             stream.writeUint32(static_cast<uint32_t>(eventType));
             stream.writeUint32(slot);
-            if(eventType == EventType::SetHumanPlayer) {
+            if (eventType == EventType::SetHumanPlayer) {
                 stream.writeString(newStringValue);
             } else {
                 stream.writeUint32(newValue);
             }
         }
 
-        EventType   eventType;
-        uint32_t    slot     = 0;
-        uint32_t    newValue = 0;
+        EventType eventType;
+        uint32_t slot     = 0;
+        uint32_t newValue = 0;
         std::string newStringValue;
     };
 
@@ -76,22 +75,22 @@ public:
 
     explicit ChangeEventList(InputStream& stream) {
         const auto numChangeEvents = stream.readUint32();
-        for(uint32_t i = 0; i < numChangeEvents; i++) {
+        for (uint32_t i = 0; i < numChangeEvents; i++) {
             changeEventList.emplace_back(stream);
         }
     }
 
-    ChangeEventList(const ChangeEventList &) = default;
-    ChangeEventList(ChangeEventList &&) = default;
+    ChangeEventList(const ChangeEventList&) = default;
+    ChangeEventList(ChangeEventList&&)      = default;
 
     ~ChangeEventList() = default;
 
-    ChangeEventList& operator=(const ChangeEventList &) = default;
-    ChangeEventList& operator=(ChangeEventList &&) = default;
+    ChangeEventList& operator=(const ChangeEventList&) = default;
+    ChangeEventList& operator=(ChangeEventList&&) = default;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());
-        for(const ChangeEvent& changeEvent : changeEventList) {
+        for (const ChangeEvent& changeEvent : changeEventList) {
             changeEvent.save(stream);
         }
     }
@@ -99,4 +98,4 @@ public:
     std::list<ChangeEvent> changeEventList;
 };
 
-#endif //CHANGEEVENTLIST_H
+#endif // CHANGEEVENTLIST_H

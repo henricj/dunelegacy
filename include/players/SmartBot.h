@@ -22,13 +22,12 @@
 
 #include <DataTypes.h>
 
-class SmartBot : public Player
-{
+class SmartBot : public Player {
 public:
     enum class Difficulty {
-        Normal = 0,
+        Normal  = 0,
         Defense = 1,
-        Hard = 2
+        Hard    = 2
     };
 
     SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
@@ -59,12 +58,12 @@ private:
 
     [[nodiscard]] int getMaxHarvester() const;
 
-    Difficulty difficulty;         ///< difficulty level
-    int32_t    attackTimer;        ///< When to attack?
-    int32_t    buildTimer;         ///< When to build the next structure/unit
-    int        harvesterLimit = 4; ///< maximum number of harvesters
+    Difficulty difficulty;  ///< difficulty level
+    int32_t attackTimer;    ///< When to attack?
+    int32_t buildTimer;     ///< When to build the next structure/unit
+    int harvesterLimit = 4; ///< maximum number of harvesters
 
-    std::list<Coord> placeLocations;    ///< Where to place structures
+    std::list<Coord> placeLocations; ///< Where to place structures
 
     bool focusEconomy();
     bool focusMilitary();
@@ -72,4 +71,4 @@ private:
     bool focusBase();
 };
 
-#endif //SmartBot_H
+#endif // SmartBot_H

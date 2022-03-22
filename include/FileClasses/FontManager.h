@@ -23,36 +23,36 @@
 #include <misc/SDL2pp.h>
 #include <misc/sdl_support.h>
 
-#include <string_view>
 #include <map>
+#include <string_view>
 
 /// A class for managing fonts.
 /**
     This class manages all fonts used in Dune Legacy and provides methods for rendering texts with a specific font.
 */
-class FontManager
-{
+class FontManager {
 public:
     FontManager();
     ~FontManager();
 
-    FontManager(const FontManager &) = delete;
-    FontManager(FontManager &&) = delete;
-    FontManager& operator=(const FontManager &) = delete;
-    FontManager& operator=(FontManager &&) = delete;
+    FontManager(const FontManager&) = delete;
+    FontManager(FontManager&&)      = delete;
+    FontManager& operator=(const FontManager&) = delete;
+    FontManager& operator=(FontManager&&) = delete;
 
-    void              drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color, unsigned int fontSize);
-    int               getTextWidth(std::string_view text, unsigned int fontSize);
-    int               getTextHeight(unsigned int fontSize);
+    void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color, unsigned int fontSize);
+    int getTextWidth(std::string_view text, unsigned int fontSize);
+    int getTextHeight(unsigned int fontSize);
     sdl2::surface_ptr createSurfaceWithText(std::string_view, uint32_t color, unsigned int fontSize);
     sdl2::texture_ptr createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize);
     sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
     sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
+
 private:
     Font* getFont(unsigned int fontSize) {
         auto iter = fonts.find(fontSize);
 
-        if(iter != fonts.end()) {
+        if (iter != fonts.end()) {
             return iter->second.get();
         }
 

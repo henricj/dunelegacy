@@ -2,8 +2,7 @@
 #define __libfixmath_fixmath_h__
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 /*!
@@ -11,8 +10,8 @@ extern "C"
     \brief Functions to perform fast accurate fixed-point math operations.
 */
 
-#include "int64.h"
 #include "fix16.h"
+#include "int64.h"
 
 #ifdef __cplusplus
 }

@@ -35,18 +35,18 @@
  */
 uint32_t getPixel(SDL_Surface* surface, int x, int y);
 
-void putPixel(SDL_Surface * surface, int x, int y, uint32_t color);
+void putPixel(SDL_Surface* surface, int x, int y, uint32_t color);
 
-void drawHLineNoLock(SDL_Surface * surface, int x1, int y, int x2, uint32_t color);
-void drawVLineNoLock(SDL_Surface * surface, int x, int y1, int y2, uint32_t color);
-void drawHLine(SDL_Surface * surface, int x1, int y, int x2, uint32_t color);
-void drawVLine(SDL_Surface * surface, int x, int y1, int y2, uint32_t color);
+void drawHLineNoLock(SDL_Surface* surface, int x1, int y, int x2, uint32_t color);
+void drawVLineNoLock(SDL_Surface* surface, int x, int y1, int y2, uint32_t color);
+void drawHLine(SDL_Surface* surface, int x1, int y, int x2, uint32_t color);
+void drawVLine(SDL_Surface* surface, int x, int y1, int y2, uint32_t color);
 
-void drawRectNoLock(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color);
-void drawRect(SDL_Surface * surface, int x1, int y1, int x2, int y2, uint32_t color);
+void drawRectNoLock(SDL_Surface* surface, int x1, int y1, int x2, int y2, uint32_t color);
+void drawRect(SDL_Surface* surface, int x1, int y1, int x2, int y2, uint32_t color);
 
 inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
-    if(((color & AMASK) >> ASHIFT) != 255) {
+    if (((color & AMASK) >> ASHIFT) != 255) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
     SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
@@ -77,7 +77,7 @@ inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
 
 inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
-                      static_cast<float> (y2 - y1 + 1)};
+                      static_cast<float>(y2 - y1 + 1)};
     renderDrawRectF(renderer, &rect, color);
 }
 
@@ -93,42 +93,41 @@ inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
 
 inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
-                      static_cast<float> (y2 - y1 + 1)};
+                      static_cast<float>(y2 - y1 + 1)};
     renderFillRectF(renderer, &rect, color);
 }
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);
 
-void replaceColor(SDL_Surface * surface, uint32_t oldColor, uint32_t newColor);
-void mapColor(SDL_Surface * surface, const uint8_t colorMap[256]);
+void replaceColor(SDL_Surface* surface, uint32_t oldColor, uint32_t newColor);
+void mapColor(SDL_Surface* surface, const uint8_t colorMap[256]);
 
-sdl2::surface_ptr   copySurface(SDL_Surface* inSurface);
+sdl2::surface_ptr copySurface(SDL_Surface* inSurface);
 
-sdl2::surface_ptr   convertSurfaceToDisplayFormat(SDL_Surface* inSurface);
+sdl2::surface_ptr convertSurfaceToDisplayFormat(SDL_Surface* inSurface);
 
-sdl2::texture_ptr   convertSurfaceToTexture(SDL_Surface* inSurface);
+sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface);
 inline sdl2::texture_ptr convertSurfaceToTexture(sdl2::surface_ptr inSurface) {
     return convertSurfaceToTexture(inSurface.get());
 }
 
 void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source);
 
-sdl2::surface_ptr   scaleSurface(SDL_Surface *surf, double ratio);
+sdl2::surface_ptr scaleSurface(SDL_Surface* surf, double ratio);
 
-sdl2::surface_ptr   getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
+sdl2::surface_ptr getSubPicture(SDL_Surface* Pic, int left, int top, int width, int height);
 
-sdl2::surface_ptr   getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY);
+sdl2::surface_ptr getSubFrame(SDL_Surface* Pic, int i, int j, int numX, int numY);
 
-sdl2::surface_ptr   combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x = 0, int y = 0);
+sdl2::surface_ptr combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x = 0, int y = 0);
 
-sdl2::surface_ptr    rotateSurfaceLeft(SDL_Surface* inputPic);
-sdl2::surface_ptr    rotateSurfaceRight(SDL_Surface* inputPic);
+sdl2::surface_ptr rotateSurfaceLeft(SDL_Surface* inputPic);
+sdl2::surface_ptr rotateSurfaceRight(SDL_Surface* inputPic);
 
-sdl2::surface_ptr    flipHSurface(SDL_Surface* inputPic);
-sdl2::surface_ptr    flipVSurface(SDL_Surface* inputPic);
+sdl2::surface_ptr flipHSurface(SDL_Surface* inputPic);
+sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic);
 
-
-sdl2::surface_ptr    createShadowSurface(SDL_Surface* source);
+sdl2::surface_ptr createShadowSurface(SDL_Surface* source);
 
 /**
     This function maps all the colors in source which are between srcColor and srcColor+7 to colors between destColor and destColor+7. This is
@@ -138,7 +137,7 @@ sdl2::surface_ptr    createShadowSurface(SDL_Surface* source);
     \param  destColor   Color range to change to = [destColor;destColor+7]
     \return The mapped surface
 */
-sdl2::surface_ptr    mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor);
+sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor);
 
 /**
     This function create a new blank surface with the same format and other attributes as the model surface.
@@ -159,7 +158,6 @@ sdl2::surface_ptr createSurface(SDL_Surface* model, int width = 0, int height = 
 sdl2::surface_ptr cloneSurface(SDL_Surface* source, const SDL_Rect* srcrect);
 
 bool drawSurface(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect,
-             SDL_BlendMode blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE);
-
+                 SDL_BlendMode blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE);
 
 #endif // DRAW_UTIL_H

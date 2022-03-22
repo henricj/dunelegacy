@@ -22,36 +22,35 @@
 #include <misc/SDL2pp.h>
 
 #include <enet/enet.h>
-#include <string>
-#include <list>
 #include <functional>
+#include <list>
+#include <string>
 
-#define LANGAME_ANNOUNCER_PORT                  28746
-#define LANGAME_ANNOUNCER_INTERVAL              3000
-#define LANGAME_ANNOUNCER_MAGICNUMBER           82071105
-#define LANGAME_ANNOUNCER_MAXGAMENAMESIZE       32
-#define LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE    32
-#define LANGAME_ANNOUNCER_MAXMAPNAMESIZE        64
+#define LANGAME_ANNOUNCER_PORT               28746
+#define LANGAME_ANNOUNCER_INTERVAL           3000
+#define LANGAME_ANNOUNCER_MAGICNUMBER        82071105
+#define LANGAME_ANNOUNCER_MAXGAMENAMESIZE    32
+#define LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE 32
+#define LANGAME_ANNOUNCER_MAXMAPNAMESIZE     64
 
 class LANGameFinderAndAnnouncer {
 public:
-
     LANGameFinderAndAnnouncer();
     ~LANGameFinderAndAnnouncer();
 
     void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
-                       uint8_t            maxPlayers) {
+                       uint8_t maxPlayers) {
         this->serverName = serverName;
         this->serverPort = serverPort;
-        this->mapName = mapName;
+        this->mapName    = mapName;
         this->numPlayers = numPlayers;
         this->maxPlayers = maxPlayers;
-        lastAnnounce = 0;
+        lastAnnounce     = 0;
     }
 
     void updateAnnounce(uint8_t numPlayers) {
         this->numPlayers = numPlayers;
-        if(serverPort > 0) {
+        if (serverPort > 0) {
             announceGame();
         }
     }
@@ -76,7 +75,7 @@ public:
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    void setOnNewServer(std::function<void (GameServerInfo)> pOnNewServer) {
+    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) {
         this->pOnNewServer = pOnNewServer;
     }
 
@@ -84,7 +83,7 @@ public:
         Sets the function that should be called when a server is updated
         \param  pOnUpdateServer Function to call on server update
     */
-    void setOnUpdateServer(std::function<void (GameServerInfo)> pOnUpdateServer) {
+    void setOnUpdateServer(std::function<void(GameServerInfo)> pOnUpdateServer) {
         this->pOnUpdateServer = pOnUpdateServer;
     }
 
@@ -92,7 +91,7 @@ public:
         Sets the function that should be called when a server is removed from the list of available servers.
         \param  pOnRemoveServer function to call on server remove
     */
-    void setOnRemoveServer(std::function<void (GameServerInfo)> pOnRemoveServer) {
+    void setOnRemoveServer(std::function<void(GameServerInfo)> pOnRemoveServer) {
         this->pOnRemoveServer = pOnRemoveServer;
     }
 
@@ -102,19 +101,19 @@ private:
     void sendRemoveGameAnnouncement();
 
     std::string serverName;
-    int         serverPort = 0;
+    int serverPort = 0;
     std::string mapName;
-    uint8_t     numPlayers = 0;
-    uint8_t     maxPlayers = 0;
+    uint8_t numPlayers = 0;
+    uint8_t maxPlayers = 0;
 
-    uint32_t   lastAnnounce = 0;
+    uint32_t lastAnnounce = 0;
     ENetSocket announceSocket;
 
     std::list<GameServerInfo> gameServerInfoList;
 
-    std::function<void (GameServerInfo)> pOnNewServer;
-    std::function<void (GameServerInfo)> pOnUpdateServer;
-    std::function<void (GameServerInfo)> pOnRemoveServer;
+    std::function<void(GameServerInfo)> pOnNewServer;
+    std::function<void(GameServerInfo)> pOnUpdateServer;
+    std::function<void(GameServerInfo)> pOnRemoveServer;
 };
 
 #endif // LANGAMEFINDERANDANNOUNCER_H

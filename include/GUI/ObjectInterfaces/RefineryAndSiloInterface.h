@@ -33,14 +33,15 @@
 class RefineryAndSiloInterface : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RefineryAndSiloInterface>{new RefineryAndSiloInterface{context, objectID}};
+        auto tmp        = std::unique_ptr<RefineryAndSiloInterface> {new RefineryAndSiloInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    RefineryAndSiloInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())]+3]);
+    RefineryAndSiloInterface(const GameContext& context, int objectID)
+        : DefaultStructureInterface(context, objectID) {
+        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 
@@ -58,10 +59,9 @@ protected:
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override
-    {
+    bool update() override {
         ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
-        if(pObject == nullptr) {
+        if (pObject == nullptr) {
             return false;
         }
 
@@ -74,10 +74,10 @@ protected:
     }
 
 private:
-    VBox    textVBox;
+    VBox textVBox;
 
-    Label   capacityLabel;
-    Label   storedCreditsLabel;
+    Label capacityLabel;
+    Label storedCreditsLabel;
 };
 
 #endif // REFINERYANDSILOINTERFACE_H

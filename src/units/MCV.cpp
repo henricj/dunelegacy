@@ -19,22 +19,23 @@
 
 #include <globals.h>
 
+#include <Explosion.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
-#include <House.h>
-#include <Explosion.h>
 #include <Game.h>
-#include <SoundPlayer.h>
+#include <House.h>
 #include <Map.h>
+#include <SoundPlayer.h>
 #include <sand.h>
 
 #include <players/HumanPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants mcv_constants{MCV::item_id, false};
+constexpr GroundUnitConstants mcv_constants {MCV::item_id, false};
 }
 
-MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
+MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer)
+    : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
     setHealth(getMaxHealth());
@@ -51,7 +52,7 @@ void MCV::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_MCV;
-    graphic = pGFXManager->getObjPic(graphicID,getOwner()->getHouseID());
+    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -60,31 +61,31 @@ void MCV::init() {
 MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY,objectID));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
 }
 
 bool MCV::doDeploy() {
     // check if there is enough room for construction yard
-    if(canDeploy()) {
+    if (canDeploy()) {
         // save needed values
-        House*      pOwner      = getOwner();
+        House* pOwner           = getOwner();
         const Coord newLocation = getLocation();
 
         // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
         // place construction yard (force placing to place on still existing MCV)
-        if(pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) != nullptr) {
+        if (pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) != nullptr) {
             // we hide the MVC so we don't get a soldier on destroy
             setVisible(VIS_ALL, false);
 
             // destroy MCV but with base class method since we want no explosion
-            GroundUnit::destroy(GameContext{*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
+            GroundUnit::destroy(GameContext {*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
 
             return true;
         }
     }
 
-    if(getOwner() == pLocalHouse) {
+    if (getOwner() == pLocalHouse) {
         currentGame->addToNewsTicker(_("You cannot deploy here."));
     }
 
@@ -92,34 +93,31 @@ bool MCV::doDeploy() {
 }
 
 bool MCV::canAttack(const ObjectBase* object) const {
-    return((object != nullptr)
-            && object->isInfantry()
-            && (object->getOwner()->getTeamID() != owner->getTeamID())
-            && object->isVisible(getOwner()->getTeamID()));
+    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
 }
 
 void MCV::destroy(const GameContext& context) {
-    if(currentGameMap->tileExists(location) && isVisible()) {
+    if (currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
-        if(isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall,location);
+        if (isVisible(getOwner()->getTeamID()))
+            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
     }
 
     GroundUnit::destroy(context);
 }
 
 bool MCV::canDeploy(int x, int y) {
-    for(int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
-        for(int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
-            if(!currentGameMap->tileExists(x+i, y+j)) {
+    for (int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
+        for (int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
+            if (!currentGameMap->tileExists(x + i, y + j)) {
                 return false;
             }
-            const Tile* pTile = currentGameMap->getTile(x+i, y+j);
-            if(!pTile->isBlocked() || ((i == 0) && (j == 0))) {
+            const Tile* pTile = currentGameMap->getTile(x + i, y + j);
+            if (!pTile->isBlocked() || ((i == 0) && (j == 0))) {
                 // tile is not blocked or we're checking the tile with the MCV on
-                if(!pTile->isRock()) {
+                if (!pTile->isRock()) {
                     return false;
                 }
             } else {

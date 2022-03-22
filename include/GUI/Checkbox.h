@@ -28,10 +28,10 @@ class Checkbox final : public Button {
 public:
     /// Default constructor
     Checkbox() {
-        textcolor = COLOR_DEFAULT;
+        textcolor       = COLOR_DEFAULT;
         textshadowcolor = COLOR_DEFAULT;
 
-        Widget::enableResizing(true,false);
+        Widget::enableResizing(true, false);
         setToggleButton(true);
         pCheckedActiveTexture = nullptr;
     }
@@ -63,7 +63,7 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor = textcolor;
+        this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         invalidateTextures();
     }
@@ -88,30 +88,29 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override
-    {
-        if(!isVisible()) {
+    void draw(Point position) override {
+        if (!isVisible()) {
             return;
         }
 
         updateTextures();
 
         DuneTexture tex;
-        if(isChecked()) {
-            if((isActive() || bHover) && pCheckedActiveTexture) {
-                tex = DuneTexture{pCheckedActiveTexture.get()};
+        if (isChecked()) {
+            if ((isActive() || bHover) && pCheckedActiveTexture) {
+                tex = DuneTexture {pCheckedActiveTexture.get()};
             } else {
                 tex = *pPressedTexture;
             }
         } else {
-            if((isActive() || bHover) && pActiveTexture) {
+            if ((isActive() || bHover) && pActiveTexture) {
                 tex = *pActiveTexture;
             } else {
                 tex = *pUnpressedTexture;
             }
         }
 
-        if(!tex) {
+        if (!tex) {
             return;
         }
 
@@ -123,9 +122,8 @@ public:
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override
-    {
-        resize(newSize.x,newSize.y);
+    void resize(Point newSize) override {
+        resize(newSize.x, newSize.y);
     }
 
     /**
@@ -134,10 +132,9 @@ public:
         \param  width   the new width of this checkbox
         \param  height  the new height of this checkbox
     */
-    void resize(uint32_t width, uint32_t height) override
-    {
+    void resize(uint32_t width, uint32_t height) override {
         invalidateTextures();
-        Widget::resize(width,height);
+        Widget::resize(width, height);
     }
 
     /**
@@ -145,8 +142,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
+    [[nodiscard]] Point getMinimumSize() const override {
         return GUIStyle::getInstance().getMinimumCheckboxSize(text);
     }
 
@@ -156,11 +152,10 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override
-    {
+    void updateTextures() override {
         Button::updateTextures();
 
-        if(!pUnpressedTexture) {
+        if (!pUnpressedTexture) {
             invalidateTextures();
 
             setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
@@ -174,17 +169,16 @@ protected:
     /**
         This method frees all textures that are used by this checkbox
     */
-    void invalidateTextures() override
-    {
+    void invalidateTextures() override {
         Button::invalidateTextures();
 
         pCheckedActiveTexture.reset();
     }
 
 private:
-    uint32_t          textcolor;             ///< Text color
-    uint32_t textshadowcolor;       ///< Text shadow color
-    std::string       text;                  ///< Text of this checkbox
+    uint32_t textcolor;                      ///< Text color
+    uint32_t textshadowcolor;                ///< Text shadow color
+    std::string text;                        ///< Text of this checkbox
     sdl2::texture_ptr pCheckedActiveTexture; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 

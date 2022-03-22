@@ -22,20 +22,19 @@
 
 #include <FileClasses/MentatTextFile.h>
 
-#include <GUI/PictureButton.h>
-#include <GUI/dune/AnimationLabel.h>
 #include <GUI/Label.h>
 #include <GUI/ListBox.h>
+#include <GUI/PictureButton.h>
+#include <GUI/dune/AnimationLabel.h>
 
-class MentatHelp : public MentatMenu
-{
+class MentatHelp : public MentatMenu {
 public:
     MentatHelp(HOUSETYPE newHouse, int techLevel, int mission);
     ~MentatHelp() override;
 
     void drawSpecificStuff() override;
 
-    bool doInput(SDL_Event &event) override;
+    bool doInput(SDL_Event& event) override;
 
     void onMentatTextFinished() override;
 
@@ -46,12 +45,11 @@ private:
     int mission;
     std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
-    Label           backgroundLabel;
-    Label           itemDescriptionLabel;
-    PictureButton   exitButton;
-    AnimationLabel  animation;
-    ListBox         mentatTopicsList;
-
+    Label backgroundLabel;
+    Label itemDescriptionLabel;
+    PictureButton exitButton;
+    AnimationLabel animation;
+    ListBox mentatTopicsList;
 };
 
-#endif //MENTATHELP_H
+#endif // MENTATHELP_H

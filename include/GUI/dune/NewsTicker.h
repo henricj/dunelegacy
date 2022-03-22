@@ -21,8 +21,8 @@
 #include <GUI/Widget.h>
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <queue>
+#include <string>
 
 class NewsTicker : public Widget {
 public:
@@ -44,12 +44,11 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override
-    {
-        if(pBackground != nullptr) {
+    [[nodiscard]] Point getMinimumSize() const override {
+        if (pBackground != nullptr) {
             return getTextureSize(pBackground);
         } else {
-            return Point(0,0);
+            return Point(0, 0);
         }
     }
 
@@ -57,6 +56,7 @@ private:
     template<typename T>
     class unique_queue {
         std::deque<T> queue_;
+
     public:
         [[nodiscard]] bool empty() const noexcept { return queue_.empty(); }
         [[nodiscard]] bool contains(const T& value) const { return std::end(queue_) != std::find(std::begin(queue_), std::end(queue_), value); }
@@ -76,4 +76,4 @@ private:
     int timer;
 };
 
-#endif //NEWSTICKER_H
+#endif // NEWSTICKER_H

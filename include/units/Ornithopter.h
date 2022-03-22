@@ -20,11 +20,10 @@
 
 #include <units/AirUnit.h>
 
-class Ornithopter final : public AirUnit
-{
+class Ornithopter final : public AirUnit {
 public:
     inline static constexpr ItemID_enum item_id = Unit_Ornithopter;
-    using parent = AirUnit;
+    using parent                                = AirUnit;
 
     Ornithopter(uint32_t objectID, const ObjectInitializer& initializer);
     Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer);
@@ -47,9 +46,9 @@ protected:
     bool attack(const GameContext& context) override;
 
 private:
-    void   init();
+    void init();
 
     uint32_t timeLastShot;
 };
 
-#endif //ORNITHOPTER_H
+#endif // ORNITHOPTER_H

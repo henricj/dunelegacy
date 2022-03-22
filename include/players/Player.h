@@ -18,8 +18,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include <data.h>
 #include <DataTypes.h>
+#include <data.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/RobustList.h>
@@ -51,10 +51,10 @@ protected:
 public:
     virtual ~Player() = 0;
 
-    Player(const Player &) = delete;
-    Player(Player &&) = delete;
-    Player& operator=(const Player &) = delete;
-    Player& operator=(Player &&) = delete;
+    Player(const Player&) = delete;
+    Player(Player&&)      = delete;
+    Player& operator=(const Player&) = delete;
+    Player& operator=(Player&&) = delete;
 
     virtual void save(OutputStream& stream) const;
 
@@ -93,7 +93,7 @@ public:
     virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) { }
 
     [[nodiscard]] const House* getHouse() const { return pHouse; }
-    [[nodiscard]] uint8_t      getPlayerID() const { return playerID; }
+    [[nodiscard]] uint8_t getPlayerID() const { return playerID; }
 
     [[nodiscard]] std::string getPlayername() const { return playername; }
     void setPlayername(const std::string& playername) { this->playername = playername; }
@@ -102,7 +102,6 @@ public:
     void setPlayerclass(const std::string& playerclass) { this->playerclass = playerclass; }
 
 protected:
-
     /**
         Logs a debug message
         \param  fmt the format string of the debug message
@@ -119,14 +118,13 @@ protected:
     template<typename... Args>
     void logWarn(std::string_view fmt, Args&&... args) const;
 
-
-    Random&                               getRandomGen();
+    Random& getRandomGen();
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const;
-    [[nodiscard]] uint32_t                getGameCycleCount() const;
-    [[nodiscard]] int                     getTechLevel() const;
+    [[nodiscard]] uint32_t getGameCycleCount() const;
+    [[nodiscard]] int getTechLevel() const;
 
-    Map&              getMap();
-    [[nodiscard]] const Map&        getMap() const;
+    Map& getMap();
+    [[nodiscard]] const Map& getMap() const;
 
     [[nodiscard]] const ObjectBase* getObject(uint32_t objectID) const;
 
@@ -228,7 +226,6 @@ protected:
     */
     void doAttackObject(const TurretBase* pTurret, const ObjectBase* pTargetObject) const;
 
-
     /**
         Moves the unit pUnit to x,y.
         \param  pUnit   the unit to move
@@ -296,7 +293,6 @@ protected:
     */
     bool doDeploy(const MCV* pMCV) const;
 
-
     /**
         Request a carryall to take unit to location
         This isn't in the original game but will make it fun
@@ -307,8 +303,8 @@ protected:
 private:
     friend class House;
 
-    House*      pHouse;
-    uint8_t     playerID;
+    House* pHouse;
+    uint8_t playerID;
     std::string playername;
     std::string playerclass;
 
@@ -318,8 +314,8 @@ protected:
     const GameContext context_;
 };
 
-#include <sand.h>
 #include <House.h>
+#include <sand.h>
 
 template<typename... Args>
 void Player::logDebug(std::string_view fmt, Args&&... args) const {
@@ -329,9 +325,8 @@ void Player::logDebug(std::string_view fmt, Args&&... args) const {
 #endif
 }
 
-template<typename ... Args>
-void Player::logWarn(std::string_view fmt, Args&&...args) const
-{
+template<typename... Args>
+void Player::logWarn(std::string_view fmt, Args&&... args) const {
     const auto house = getHouseNameByNumber(static_cast<HOUSETYPE>(pHouse->getHouseID()));
     sdl2::log_warn("%s (%s):   %s", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
 }

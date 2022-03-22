@@ -31,26 +31,25 @@ public:
     AStarSearch(Map* pMap);
     ~AStarSearch();
 
-    AStarSearch(const AStarSearch &) = delete;
-    AStarSearch(AStarSearch &&) = delete;
-    AStarSearch& operator=(const AStarSearch &) = delete;
-    AStarSearch& operator=(AStarSearch &&) = delete;
+    AStarSearch(const AStarSearch&) = delete;
+    AStarSearch(AStarSearch&&)      = delete;
+    AStarSearch& operator=(const AStarSearch&) = delete;
+    AStarSearch& operator=(AStarSearch&&) = delete;
 
-    void Search(Map * pMap, UnitBase * pUnit, Coord start, Coord destination);
+    void Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination);
 
-    bool getFoundPath(Map * pMap, std::vector<Coord>& path) const;
+    bool getFoundPath(Map* pMap, std::vector<Coord>& path) const;
 
 private:
     struct TileData {
-        TileData* parentKey{};
-        Coord    coord;
+        TileData* parentKey {};
+        Coord coord;
         FixPoint g;
         FixPoint h;
         FixPoint f;
-        bool     bInOpenList{};
-        bool     bClosed{};
+        bool bInOpenList {};
+        bool bClosed {};
     };
-
 
     TileData& getMapData(const Coord& coord) noexcept { return mapData[coord.y * sizeX + coord.x]; }
     [[nodiscard]] const TileData& getMapData(const Coord& coord) const noexcept { return mapData[coord.y * sizeX + coord.x]; }
@@ -58,12 +57,11 @@ private:
     TileData& getMapData(int key) noexcept { return mapData[key]; }
     [[nodiscard]] const TileData& getMapData(int key) const noexcept { return mapData[key]; }
 
-    //void trickleUp(size_t openListIndex);
+    // void trickleUp(size_t openListIndex);
     void putOnOpenListIfBetter(int key, const Coord& coord, TileData* parentKey, FixPoint g, FixPoint h);
     TileData* extractMin();
 
-    struct open_list final
-    {
+    struct open_list final {
         FixPoint f;
         TileData* key;
         bool operator<(const open_list& other) const noexcept { return f > other.f; }
@@ -77,4 +75,4 @@ private:
     std::vector<short> depthCheckCount;
 };
 
-#endif //ASTARSEARCH_H
+#endif // ASTARSEARCH_H

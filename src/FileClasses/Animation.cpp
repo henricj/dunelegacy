@@ -23,27 +23,27 @@
 Animation::Animation() {
     curFrameStartTime = SDL_GetTicks();
     frameDurationTime = 1;
-    curFrame = 0;
-    curFrameOverride = INVALID_FRAME;
-    loopsLeft = -1;
+    curFrame          = 0;
+    curFrameOverride  = INVALID_FRAME;
+    loopsLeft         = -1;
 }
 
 Animation::~Animation() = default;
 
 unsigned int Animation::getCurrentFrameNumber() {
-    if((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
+    if ((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
         curFrameStartTime = SDL_GetTicks();
 
-        if(loopsLeft == -1) {
+        if (loopsLeft == -1) {
             curFrame++;
-            if(curFrame >= frames.size()) {
+            if (curFrame >= frames.size()) {
                 curFrame = 0;
             }
-        } else if(loopsLeft >= 1) {
+        } else if (loopsLeft >= 1) {
             curFrame++;
-            if(curFrame >= frames.size()) {
+            if (curFrame >= frames.size()) {
                 loopsLeft--;
-                if(loopsLeft > 0) {
+                if (loopsLeft > 0) {
                     curFrame = 0;
                 } else {
                     curFrame--;
@@ -56,7 +56,7 @@ unsigned int Animation::getCurrentFrameNumber() {
 }
 
 SDL_Surface* Animation::getFrame() {
-    if(frames.empty()) {
+    if (frames.empty()) {
         return nullptr;
     }
 
@@ -64,20 +64,20 @@ SDL_Surface* Animation::getFrame() {
 }
 
 SDL_Texture* Animation::getFrameTexture() {
-    if(frames.empty()) {
+    if (frames.empty()) {
         return nullptr;
     }
 
     const unsigned int index = getCurrentFrameNumber();
 
-    if(frameTextures.size() <= index) {
+    if (frameTextures.size() <= index) {
         // vector<>.resize() doesn't work with unique_ptr<>
         frameTextures.reserve(frames.size());
         unsigned int needed = index - frameTextures.size() + 1;
         std::fill_n(std::back_inserter(frameTextures), needed, nullptr);
     }
 
-    if(frameTextures[index] == nullptr) {
+    if (frameTextures[index] == nullptr) {
         frameTextures[index] = convertSurfaceToTexture(frames[index].get());
     }
 
@@ -85,11 +85,11 @@ SDL_Texture* Animation::getFrameTexture() {
 }
 
 void Animation::addFrame(sdl2::surface_ptr newFrame, bool bDoublePic, bool bSetColorKey) {
-    if(bDoublePic) {
+    if (bDoublePic) {
         newFrame = Scaler::defaultDoubleSurface(newFrame.get());
     }
 
-    if(bSetColorKey) {
+    if (bSetColorKey) {
         SDL_SetColorKey(newFrame.get(), SDL_TRUE, 0);
     }
 
@@ -97,7 +97,7 @@ void Animation::addFrame(sdl2::surface_ptr newFrame, bool bDoublePic, bool bSetC
 }
 
 void Animation::setPalette(const Palette& newPalette) {
-    for(auto& pSurface : frames) {
+    for (auto& pSurface : frames) {
         newPalette.applyToSurface(pSurface.get());
     }
 }

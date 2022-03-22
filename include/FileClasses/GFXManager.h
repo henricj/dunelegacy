@@ -32,26 +32,26 @@
 
 #include <misc/SDL2pp.h>
 
-#include <string>
 #include <array>
 #include <memory>
+#include <string>
 
 class GFXManager final {
 public:
     GFXManager();
     ~GFXManager();
 
-    GFXManager(const GFXManager &) = delete;
-    GFXManager(GFXManager &&) = default;
-    GFXManager& operator=(const GFXManager &) = delete;
-    GFXManager& operator=(GFXManager &&) = default;
+    GFXManager(const GFXManager&) = delete;
+    GFXManager(GFXManager&&)      = default;
+    GFXManager& operator=(const GFXManager&) = delete;
+    GFXManager& operator=(GFXManager&&) = default;
 
     [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) const;
 
     [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, unsigned int z) const {
         return getZoomedObjPic(id, HOUSETYPE::HOUSE_HARKONNEN, z);
     }
-    zoomable_texture getObjPic(unsigned int id, HOUSETYPE house= HOUSETYPE::HOUSE_HARKONNEN) const;
+    zoomable_texture getObjPic(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
 
     [[nodiscard]] const DuneTexture* getSmallDetailPic(unsigned int id) const;
     [[nodiscard]] const DuneTexture* getTinyPicture(unsigned int id) const;
@@ -80,6 +80,7 @@ public:
     [[nodiscard]] SDL_Texture* getTempStreamingTexture(SDL_Renderer* renderer, int width, int height);
 
     Random& random() noexcept { return random_; }
+
 private:
     Random random_; ///< This random number generator is for use by the UI so that the game RNGs will not be disrupted.
 

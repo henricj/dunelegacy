@@ -19,22 +19,22 @@
 
 #include <globals.h>
 
-#include <FileClasses/GFXManager.h>
-#include <House.h>
-#include <Game.h>
-#include <Map.h>
 #include <Explosion.h>
+#include <FileClasses/GFXManager.h>
+#include <Game.h>
+#include <House.h>
+#include <Map.h>
 #include <ScreenBorder.h>
 #include <SoundPlayer.h>
 
 #include <structures/StructureBase.h>
 
-#define RANDOMTURRETTURNTIMER 8000    //less of this makes tank turrets randomly turn more
+#define RANDOMTURRETTURNTIMER 8000 // less of this makes tank turrets randomly turn more
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer) {
     drawnTurretAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
-    turretAngle = static_cast<int>(drawnTurretAngle);
+    turretAngle      = static_cast<int>(drawnTurretAngle);
 }
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -59,9 +59,9 @@ void TankBase::save(OutputStream& stream) const {
 }
 
 void TankBase::setTurretAngle(ANGLETYPE newAngle) {
-    if((static_cast<int>(newAngle) >= 0) && (newAngle < ANGLETYPE::NUM_ANGLES)) {
+    if ((static_cast<int>(newAngle) >= 0) && (newAngle < ANGLETYPE::NUM_ANGLES)) {
         drawnTurretAngle = newAngle;
-        turretAngle = static_cast<int>(drawnTurretAngle);
+        turretAngle      = static_cast<int>(drawnTurretAngle);
     }
 }
 
@@ -70,8 +70,8 @@ ANGLETYPE TankBase::getCurrentAttackAngle() const {
 }
 
 void TankBase::navigate(const GameContext& context) {
-    if(moving && !justStoppedMoving) {
-        if(location == destination) {
+    if (moving && !justStoppedMoving) {
+        if (location == destination) {
             targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else {
             // change the turret angle so it faces the direction we are moving in
@@ -83,11 +83,11 @@ void TankBase::navigate(const GameContext& context) {
 }
 
 void TankBase::idleAction(const GameContext& context) {
-    if(getAttackMode() == GUARD) {
+    if (getAttackMode() == GUARD) {
         auto& randomGen = context.game.randomGen;
 
         // do some random turning with 20% chance
-        switch(randomGen.rand(0, 9)) {
+        switch (randomGen.rand(0, 9)) {
             case 0: {
                 // choose a random one of the eight possible angles
                 nextSpotAngle = static_cast<ANGLETYPE>(randomGen.rand(0, 7));
@@ -109,40 +109,39 @@ void TankBase::engageTarget(const GameContext& context) {
 
     parent::engageTarget(context);
 
-
-    if(closeTarget && (closeTarget.getObjPointer() == nullptr)) {
+    if (closeTarget && (closeTarget.getObjPointer() == nullptr)) {
         // the target does not exist anymore
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget && !closeTarget.getObjPointer()->isActive()) {
+    if (closeTarget && !closeTarget.getObjPointer()->isActive()) {
         // the target changed its state to inactive
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget && !canAttack(closeTarget.getObjPointer())) {
+    if (closeTarget && !canAttack(closeTarget.getObjPointer())) {
         // the target cannot be attacked anymore
         // => release target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(target && (targetDistance <= getWeaponRange()) && !targetFriendly) {
+    if (target && (targetDistance <= getWeaponRange()) && !targetFriendly) {
         // we already have a (non-friendly) target in weapon range
         // => we need no close temporary target
         closeTarget.pointTo(NONE_ID);
         return;
     }
 
-    if(closeTarget) {
-        const Coord    targetLocation      = closeTarget.getObjPointer()->getClosestPoint(location);
+    if (closeTarget) {
+        const Coord targetLocation         = closeTarget.getObjPointer()->getClosestPoint(location);
         const FixPoint closeTargetDistance = blockDistance(location, targetLocation);
 
-        if(closeTargetDistance > getWeaponRange()) {
+        if (closeTargetDistance > getWeaponRange()) {
             // we are too far away
             closeTarget.pointTo(NONE_ID);
             return;
@@ -150,9 +149,9 @@ void TankBase::engageTarget(const GameContext& context) {
 
         targetAngle = destinationDrawnAngle(location, targetLocation);
 
-        if(drawnTurretAngle == targetAngle) {
+        if (drawnTurretAngle == targetAngle) {
             const ObjectPointer temp = target;
-            target = closeTarget;
+            target                   = closeTarget;
             attack(context);
             target = temp;
         }
@@ -160,8 +159,8 @@ void TankBase::engageTarget(const GameContext& context) {
 }
 
 void TankBase::targeting(const GameContext& context) {
-    if(findTargetTimer == 0) {
-        if(attackMode != STOP && !closeTarget && !moving && !justStoppedMoving) {
+    if (findTargetTimer == 0) {
+        if (attackMode != STOP && !closeTarget && !moving && !justStoppedMoving) {
             // find a temporary target
             closeTarget = findTarget();
         }
@@ -171,20 +170,20 @@ void TankBase::targeting(const GameContext& context) {
 }
 
 void TankBase::turn(const GameContext& context) {
-    FixPoint angleLeft = 0;
+    FixPoint angleLeft  = 0;
     FixPoint angleRight = 0;
 
-    if(!moving && !justStoppedMoving) {
-        if(nextSpotAngle != ANGLETYPE::INVALID_ANGLE) {
-            if(angle > static_cast<int>(nextSpotAngle)) {
+    if (!moving && !justStoppedMoving) {
+        if (nextSpotAngle != ANGLETYPE::INVALID_ANGLE) {
+            if (angle > static_cast<int>(nextSpotAngle)) {
                 angleRight = angle - static_cast<int>(nextSpotAngle);
-                angleLeft = FixPoint::abs(8-angle) + static_cast<int>(nextSpotAngle);
+                angleLeft  = FixPoint::abs(8 - angle) + static_cast<int>(nextSpotAngle);
             } else if (angle < static_cast<int>(nextSpotAngle)) {
-                angleRight = FixPoint::abs(8-static_cast<int>(nextSpotAngle)) + angle;
-                angleLeft = static_cast<int>(nextSpotAngle) - angle;
+                angleRight = FixPoint::abs(8 - static_cast<int>(nextSpotAngle)) + angle;
+                angleLeft  = static_cast<int>(nextSpotAngle) - angle;
             }
 
-            if(angleLeft <= angleRight) {
+            if (angleLeft <= angleRight) {
                 turnLeft(context);
             } else {
                 turnRight(context);
@@ -192,16 +191,16 @@ void TankBase::turn(const GameContext& context) {
         }
     }
 
-    if(targetAngle != ANGLETYPE::INVALID_ANGLE) {
-        if(turretAngle > static_cast<int>(targetAngle)) {
+    if (targetAngle != ANGLETYPE::INVALID_ANGLE) {
+        if (turretAngle > static_cast<int>(targetAngle)) {
             angleRight = turretAngle - static_cast<int>(targetAngle);
-            angleLeft = FixPoint::abs(8-turretAngle) + static_cast<int>(targetAngle);
+            angleLeft  = FixPoint::abs(8 - turretAngle) + static_cast<int>(targetAngle);
         } else if (turretAngle < static_cast<int>(targetAngle)) {
-            angleRight = FixPoint::abs(8-static_cast<int>(targetAngle)) + turretAngle;
-            angleLeft = static_cast<int>(targetAngle) - turretAngle;
+            angleRight = FixPoint::abs(8 - static_cast<int>(targetAngle)) + turretAngle;
+            angleLeft  = static_cast<int>(targetAngle) - turretAngle;
         }
 
-        if(angleLeft <= angleRight) {
+        if (angleLeft <= angleRight) {
             turnTurretLeft();
         } else {
             turnTurretRight();
@@ -211,14 +210,18 @@ void TankBase::turn(const GameContext& context) {
 
 void TankBase::turnTurretLeft() {
     turretAngle += turretTurnSpeed;
-    if(turretAngle >= 7.5_fix) { turretAngle -= static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+    if (turretAngle >= 7.5_fix) {
+        turretAngle -= static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    }
 
     drawnTurretAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(turretAngle)));
 }
 
 void TankBase::turnTurretRight() {
     turretAngle -= turretTurnSpeed;
-    if(turretAngle <= -0.5_fix) { turretAngle += static_cast<int>(ANGLETYPE::NUM_ANGLES); }
+    if (turretAngle <= -0.5_fix) {
+        turretAngle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    }
 
     drawnTurretAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(turretAngle)));
 }

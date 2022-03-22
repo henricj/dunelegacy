@@ -26,8 +26,8 @@
 class ClickMap : public Widget {
 public:
     /// default constructor
-    ClickMap()  {
-        enableResizing(true,true);
+    ClickMap() {
+        enableResizing(true, true);
     }
 
     /// destructor
@@ -37,7 +37,7 @@ public:
         Sets the function that should be called when this click map is clicked on.
         \param  pOnClick    A function to call when this map is clicked on
     */
-    void setOnClick(std::function<void (int, int)> pOnClick) {
+    void setOnClick(std::function<void(int, int)> pOnClick) {
         this->pOnClick = pOnClick;
     }
 
@@ -48,26 +48,24 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override
-    {
-        if((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override {
+        if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
             return false;
         }
 
-        if((!isEnabled()) || (!isVisible())) {
+        if ((!isEnabled()) || (!isVisible())) {
             return true;
         }
 
-        if(pressed && pOnClick) {
-            pOnClick(x,y);
+        if (pressed && pOnClick) {
+            pOnClick(x, y);
         }
 
         return true;
     }
 
 private:
-    std::function<void (int, int)> pOnClick;    ///< function that is called when this click map is clicked
+    std::function<void(int, int)> pOnClick; ///< function that is called when this click map is clicked
 };
 
-
-#endif //CLICKMAP_H
+#endif // CLICKMAP_H

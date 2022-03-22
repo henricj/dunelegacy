@@ -18,8 +18,8 @@
 #ifndef SFXMANAGER_H
 #define SFXMANAGER_H
 
-#include <SDL2/SDL_mixer.h>
 #include <DataTypes.h>
+#include <SDL2/SDL_mixer.h>
 #include <misc/sound_util.h>
 
 #include <array>
@@ -91,30 +91,29 @@ typedef enum {
     NUM_SOUNDCHUNK
 } Sound_enum;
 
-
 class SFXManager final {
 public:
     SFXManager();
     ~SFXManager();
 
-    SFXManager(const SFXManager &) = delete;
-    SFXManager(SFXManager &&) = delete;
-    SFXManager& operator=(const SFXManager &) = delete;
-    SFXManager& operator=(SFXManager &&) = delete;
+    SFXManager(const SFXManager&) = delete;
+    SFXManager(SFXManager&&)      = delete;
+    SFXManager& operator=(const SFXManager&) = delete;
+    SFXManager& operator=(SFXManager&&) = delete;
 
-    Mix_Chunk*      getVoice(Voice_enum id, HOUSETYPE house);
-    Mix_Chunk*      getSound(Sound_enum id);
+    Mix_Chunk* getVoice(Voice_enum id, HOUSETYPE house);
+    Mix_Chunk* getSound(Sound_enum id);
 
 private:
-    [[nodiscard]] sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME/2) const;
+    [[nodiscard]] sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME / 2) const;
 
     void loadSounds();
 
-    void            loadEnglishVoice();
+    void loadEnglishVoice();
     [[nodiscard]] Mix_Chunk* getEnglishVoice(Voice_enum id, HOUSETYPE house) const;
 
-    void            loadNonEnglishVoice(const std::string& languagePrefix);
-    [[nodiscard]] Mix_Chunk*      getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const;
+    void loadNonEnglishVoice(const std::string& languagePrefix);
+    [[nodiscard]] Mix_Chunk* getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const;
 
     std::vector<sdl2::mix_chunk_ptr> lngVoice;
     std::array<sdl2::mix_chunk_ptr, NUM_SOUNDCHUNK> soundChunk;

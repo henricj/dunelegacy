@@ -18,17 +18,16 @@
 #ifndef INIMAPLOADER_H
 #define INIMAPLOADER_H
 
-#include <FileClasses/INIFile.h>
 #include <DataTypes.h>
+#include <FileClasses/INIFile.h>
 
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 
 #include <filesystem>
-#include <string>
 #include <map>
 #include <memory>
-
+#include <string>
 
 // forward declarations
 class Game;
@@ -41,6 +40,7 @@ public:
     ~INIMapLoader();
 
     std::unique_ptr<Map> load();
+
 private:
     void loadMap();
     void loadHouses(const GameContext& context);
@@ -51,7 +51,7 @@ private:
     void loadAITeams(const GameContext& context);
     void loadView(const GameContext& context);
 
-    House*    getOrCreateHouse(const GameContext& context, HOUSETYPE house);
+    House* getOrCreateHouse(const GameContext& context, HOUSETYPE house);
     HOUSETYPE getHouseID(std::string_view name);
 
     Game* pGame;
@@ -60,4 +60,4 @@ private:
     std::map<std::string, HOUSETYPE> housename2house;
 };
 
-#endif //INIMAPLOADER_H
+#endif // INIMAPLOADER_H
