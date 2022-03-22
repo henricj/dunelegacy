@@ -11,6 +11,12 @@
 #    ifndef NOMINMAX
 #        define NOMINMAX
 #    endif
+
+#    if DUNE_CRT_HEAP_DEBUG
+#        define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#        include <crtdbg.h>
+#        define new DEBUG_CLIENTBLOCK
+#    endif
 #endif // _WIN32
 
 #include <config.h>

@@ -224,9 +224,12 @@ add_subdirectory(data)
 
 install(FILES README DESTINATION .)
 
-enable_testing()
+# googletest and the #define "new" used for heap debugging don't get along.
+if(NOT DUNE_CRT_HEAP_DEBUG)
+    enable_testing()
 
-add_subdirectory(tests)
+    add_subdirectory(tests)
+endif()
 
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
 
