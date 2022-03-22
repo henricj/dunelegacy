@@ -661,3 +661,15 @@ if(WIN32)
 endif()
 
 install(TARGETS dunelegacy RUNTIME DESTINATION .)
+
+set(CLANGFORMAT_SOURCES ${SOURCES} ${HEADERS})
+
+add_custom_target(
+	clangformat
+	COMMAND clang-format
+		--style=file
+		-i
+		${CLANGFORMAT_SOURCES}
+	WORKING_DIRECTORY
+		${CMAKE_CURRENT_SOURCE_DIR}
+)
