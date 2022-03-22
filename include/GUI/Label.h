@@ -73,7 +73,7 @@ public:
         Sets the alignment of the text in this label.
         \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
     */
-    virtual inline void setAlignment(Alignment_Enum alignment) {
+    virtual void setAlignment(Alignment_Enum alignment) {
         this->alignment = alignment;
         invalidateTextures();
     }

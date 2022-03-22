@@ -135,8 +135,8 @@ private:
     void MovePatchVolAndPan (int channel = -1);
     void DuplicateAndMerge (int num = 0);
 
-    int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size);
-    int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);
+    int ConvertEvent (int time, unsigned char status, DataSource * source, int size);
+    int ConvertSystemMessage (int time, unsigned char status, DataSource * source);
 
     int ConvertFiletoList (DataSource *source, BOOL is_xmi);
     static unsigned int ConvertListToMTrk (DataSource *dest, midi_event *mlist);

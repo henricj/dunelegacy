@@ -57,7 +57,7 @@ class Palette
             return *this;
         }
 
-        inline SDL_Color& operator[](const int i) {
+        SDL_Color& operator[](const int i) {
             if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
                 THROW(std::runtime_error, "Palette::operator[]: Invalid index!");
             }
@@ -65,7 +65,7 @@ class Palette
             return pSDLPalette->colors[i];
         }
 
-        inline const SDL_Color& operator[](const int i) const {
+        const SDL_Color& operator[](const int i) const {
             if(pSDLPalette == nullptr || i < 0 || i >= pSDLPalette->ncolors) {
                 THROW(std::runtime_error, "Palette::operator[]: Invalid index!");
             }
@@ -73,7 +73,7 @@ class Palette
             return pSDLPalette->colors[i];
         }
 
-        [[nodiscard]] inline SDL_Palette* getSDLPalette() const {
+        [[nodiscard]] SDL_Palette* getSDLPalette() const {
             return pSDLPalette.get();
         }
 
@@ -88,7 +88,7 @@ class Palette
             this->pSDLPalette = std::move(pNewSDLPalette);
         }
 
-        [[nodiscard]] inline int getNumColors() const {
+        [[nodiscard]] int getNumColors() const {
             if(pSDLPalette == nullptr) {
                 return 0;
             }

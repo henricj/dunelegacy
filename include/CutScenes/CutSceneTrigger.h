@@ -42,7 +42,7 @@ public:
         This method returns the frame number where this trigger shall be triggered.
         \return the frame number where this trigger shall be triggered
     */
-    [[nodiscard]] inline int getTriggerFrameNumber() const noexcept {
+    [[nodiscard]] int getTriggerFrameNumber() const noexcept {
         return frameNumber;
     }
 

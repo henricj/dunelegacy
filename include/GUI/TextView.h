@@ -77,7 +77,7 @@ public:
         Returns the alignment of the text in this label.
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual inline Alignment_Enum getAlignment() const {
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const {
         return alignment;
     }
 
@@ -171,7 +171,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); }
 
     /**
         Is the scrollbar always shown or is it hidden if not needed

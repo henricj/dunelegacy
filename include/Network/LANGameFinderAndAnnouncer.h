@@ -76,7 +76,7 @@ public:
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    inline void setOnNewServer(std::function<void (GameServerInfo)> pOnNewServer) {
+    void setOnNewServer(std::function<void (GameServerInfo)> pOnNewServer) {
         this->pOnNewServer = pOnNewServer;
     }
 
@@ -84,7 +84,7 @@ public:
         Sets the function that should be called when a server is updated
         \param  pOnUpdateServer Function to call on server update
     */
-    inline void setOnUpdateServer(std::function<void (GameServerInfo)> pOnUpdateServer) {
+    void setOnUpdateServer(std::function<void (GameServerInfo)> pOnUpdateServer) {
         this->pOnUpdateServer = pOnUpdateServer;
     }
 
@@ -92,7 +92,7 @@ public:
         Sets the function that should be called when a server is removed from the list of available servers.
         \param  pOnRemoveServer function to call on server remove
     */
-    inline void setOnRemoveServer(std::function<void (GameServerInfo)> pOnRemoveServer) {
+    void setOnRemoveServer(std::function<void (GameServerInfo)> pOnRemoveServer) {
         this->pOnRemoveServer = pOnRemoveServer;
     }
 

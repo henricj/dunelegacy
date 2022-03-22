@@ -202,7 +202,7 @@ public:
         Returns the list of this iterator
         \return the list of this iterator
     */
-    inline RobustList<T>* getList() {
+    RobustList<T>* getList() {
         return pList;
     }
 
@@ -413,7 +413,7 @@ public:
         Returns the list of this iterator
         \return the list of this iterator
     */
-    inline RobustList<T>* getList() {
+    RobustList<T>* getList() {
         return pList;
     }
 

@@ -105,7 +105,7 @@ public:
         Gets the current music volume.
         \return the current volume
     */
-    [[nodiscard]] inline int getMusicVolume() const { return musicVolume; }
+    [[nodiscard]] int getMusicVolume() const { return musicVolume; }
 
     /**
         Sets the volume of the music channel

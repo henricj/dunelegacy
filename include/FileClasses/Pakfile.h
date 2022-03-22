@@ -62,7 +62,7 @@ public:
         Returns the number of files in this pak-File.
         \return Number of files.
     */
-    [[nodiscard]] inline int getNumFiles() const { return fileEntries.size(); }
+    [[nodiscard]] int getNumFiles() const { return fileEntries.size(); }
 
     sdl2::RWops_ptr openFile(const std::filesystem::path& filename);
 

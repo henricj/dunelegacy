@@ -109,7 +109,7 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
 
 template<typename T>
-inline bool parseString(std::string_view str, T& t) {
+bool parseString(std::string_view str, T& t) {
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
 
     return ec == std::errc{};

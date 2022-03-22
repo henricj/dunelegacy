@@ -119,7 +119,7 @@ public:
         This method sets this radio button to checked or unchecked. It does the same as setToggleState().
         \param bChecked true = checked, false = unchecked
     */
-    inline void setChecked(bool bChecked) {
+    void setChecked(bool bChecked) {
         setToggleState(bChecked);
     }
 
@@ -127,7 +127,7 @@ public:
         This method returns whether this radio button is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    [[nodiscard]] inline bool isChecked() const {
+    [[nodiscard]] bool isChecked() const {
         return getToggleState();
     }
 

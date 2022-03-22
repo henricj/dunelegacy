@@ -183,7 +183,7 @@ public:
         Sets the currently produced item on hold or continues production.
         \param  bOnHold         true = hold production; false = resume production
     */
-    inline void doSetOnHold(bool bOnHold) { bCurrentItemOnHold = bOnHold; }
+    void doSetOnHold(bool bOnHold) { bCurrentItemOnHold = bOnHold; }
 
     /**
         Start building a random item in this builder.

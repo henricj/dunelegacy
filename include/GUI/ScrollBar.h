@@ -84,7 +84,7 @@ public:
         called if the new size is a valid size for this scroll bar (See getMinumumSize).
         \param  newSize    the new size of this scroll bar
     */
-    inline void resize(Point newSize) override
+    void resize(Point newSize) override
     {
         resize(newSize.x, newSize.y);
     }

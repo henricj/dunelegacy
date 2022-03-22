@@ -141,7 +141,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); }
 
     /**
         Adds a new entry to this dropdown box
@@ -323,7 +323,7 @@ public:
         Sets the function that should be called when the selection in this dropdown box changes.
         \param  pOnSelectionChange  A function this is called on selection change
     */
-    inline void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
+    void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
         this->pOnSelectionChange = pOnSelectionChange;
     }
 
@@ -334,7 +334,7 @@ public:
         a on mouse hover effect is only active if a OnClick function is set.
         \param  pOnClick    A function to be called on click
     */
-    inline void setOnClick(std::function<void ()> pOnClick) {
+    void setOnClick(std::function<void ()> pOnClick) {
         this->pOnClick = pOnClick;
     }
 
@@ -352,7 +352,7 @@ public:
         Sets the color for this drop down box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual inline void setColor(uint32_t color) {
+    virtual void setColor(uint32_t color) {
         this->color = color;
         updateButtonSurface();
         invalidateForeground();
@@ -364,7 +364,7 @@ public:
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable widget, false = disable widget
     */
-    inline void setEnabled(bool bEnabled) override
+    void setEnabled(bool bEnabled) override
     {
         openListBoxButton.setEnabled(bEnabled);
 
@@ -375,7 +375,7 @@ public:
         Enable or disable the onClick event for this dropdownbox.
         \param  bOnClickEnabled true = enable the onClick event for this dropdownbox, false = disable onClick event
     */
-    virtual inline void setOnClickEnabled(bool bOnClickEnabled) {
+    virtual void setOnClickEnabled(bool bOnClickEnabled) {
         this->bOnClickEnabled = bOnClickEnabled;
     }
 
@@ -383,7 +383,7 @@ public:
         Returns whether the onClick event for this dropdownbox is enabled.
         \return true = onClick event is enabled, false = onClick event is disabled
     */
-    [[nodiscard]] inline bool isOnClickEnabled() const { return bOnClickEnabled; }
+    [[nodiscard]] bool isOnClickEnabled() const { return bOnClickEnabled; }
 
     /**
         This static method creates a dynamic dropdown box object.

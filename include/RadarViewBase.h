@@ -68,7 +68,7 @@ public:
         Draws the radar to screen. This method is called before drawOverlay().
         \param  Position    Position to draw the radar to
     */
-    inline void draw(Point position) override { }
+    void draw(Point position) override { }
 
 
     /**
@@ -220,7 +220,7 @@ public:
         Sets the function that should be called when the radar view is clicked.
         \param  pOnRadarClick   A function to be called on click
     */
-    inline void setOnRadarClick(std::function<bool (Coord,bool,bool)> pOnRadarClick) {
+    void setOnRadarClick(std::function<bool (Coord,bool,bool)> pOnRadarClick) {
         this->pOnRadarClick = pOnRadarClick;
     }
 

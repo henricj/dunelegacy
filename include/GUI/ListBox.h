@@ -118,7 +118,7 @@ public:
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override { return isEnabled(); }
+    [[nodiscard]] bool isActivatable() const override { return isEnabled(); }
 
     /**
         Adds a new entry to this list box
@@ -325,7 +325,7 @@ public:
         Sets the function that should be called when the selection in this list box changes.
         \param  pOnSelectionChange  A function to be called on selection change
     */
-    inline void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
+    void setOnSelectionChange(std::function<void (bool)> pOnSelectionChange) {
         this->pOnSelectionChange = pOnSelectionChange;
     }
 
@@ -333,7 +333,7 @@ public:
         Sets the function that should be called when a list entry is single clicked.
         \param  pOnSingleClick  A function to be called on single click
     */
-    inline void setOnSingleClick(std::function<void ()> pOnSingleClick) {
+    void setOnSingleClick(std::function<void ()> pOnSingleClick) {
         this->pOnSingleClick = pOnSingleClick;
     }
 
@@ -341,7 +341,7 @@ public:
         Sets the function that should be called when a list entry is double clicked.
         \param  pOnDoubleClick  A function to be called on double click
     */
-    inline void setOnDoubleClick(std::function<void ()> pOnDoubleClick) {
+    void setOnDoubleClick(std::function<void ()> pOnDoubleClick) {
         this->pOnDoubleClick = pOnDoubleClick;
     }
 
@@ -349,7 +349,7 @@ public:
         Sets the color for this list box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual inline void setColor(uint32_t color) {
+    virtual void setColor(uint32_t color) {
         this->color = color;
         updateList();
         scrollbar.setColor(color);

@@ -274,7 +274,7 @@ public:
 
     void redoLastOperation();
 
-    inline void clearRedoOperations() {
+    void clearRedoOperations() {
         while(!redoOperationStack.empty()) {
             redoOperationStack.pop();
         }

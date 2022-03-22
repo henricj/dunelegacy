@@ -234,7 +234,7 @@ public:
     */
     void runMainLoop(const GameContext& context);
 
-    inline void quitGame() { bQuitGame = true; }
+    void quitGame() { bQuitGame = true; }
 
     /**
         This method pauses the current game.

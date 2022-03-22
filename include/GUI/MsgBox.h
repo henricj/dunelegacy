@@ -39,7 +39,7 @@ public:
         This method sets a new text for this message box.
         \param  text The new text for this message box
     */
-    virtual inline void setText(const std::string& text) {
+    virtual void setText(const std::string& text) {
         textLabel.setText(text);
         resize(std::max(vbox.getMinimumSize().x,120),vbox.getMinimumSize().y);
     }
@@ -48,14 +48,14 @@ public:
         Get the text of this message box.
         \return the text of this message box
     */
-    inline const std::string& getText() { return textLabel.getText(); }
+    const std::string& getText() { return textLabel.getText(); }
 
     /**
         Sets the text color for this message box.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual inline void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
         textLabel.setTextColor(textcolor, textshadowcolor);
         okbutton.setTextColor(textcolor, textshadowcolor);
     }

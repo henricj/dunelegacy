@@ -139,7 +139,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    inline bool handleMouseWheel(int32_t x, int32_t y, bool up) override
+    bool handleMouseWheel(int32_t x, int32_t y, bool up) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -196,7 +196,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    inline bool handleTextInput(SDL_TextInputEvent& textInput) override
+    bool handleTextInput(SDL_TextInputEvent& textInput) override
     {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
@@ -214,7 +214,7 @@ public:
         \param  y y-coordinate (relative to the left top corner of the container)
         \return true if (x,y) is in overlay of this container, false otherwise
     */
-    inline bool handleMouseMovementOverlay(int32_t x, int32_t y) override
+    bool handleMouseMovementOverlay(int32_t x, int32_t y) override
     {
         bool insideOverlay = false;
         for(const WidgetData& widgetData : containedWidgets) {
@@ -274,7 +274,7 @@ public:
         \param  up  true = mouse wheel up, false = mouse wheel down
         \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
     */
-    inline bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override
+    bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override
     {
         if((isEnabled() == false) || (isVisible() == false)) {
             return false;
@@ -323,7 +323,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    inline bool handleTextInputOverlay(SDL_TextInputEvent& textInput) override
+    bool handleTextInputOverlay(SDL_TextInputEvent& textInput) override
     {
         if((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
             return false;
@@ -431,7 +431,7 @@ public:
         Returns whether one of this container's children can be set active.
         \return true = activatable, false = not activatable
     */
-    [[nodiscard]] inline bool isActivatable() const override
+    [[nodiscard]] bool isActivatable() const override
     {
         if(isEnabled() == false) {
             return false;
@@ -450,7 +450,7 @@ public:
         Returns whether this widget is an container.
         \return true = container, false = any other widget
     */
-    [[nodiscard]] inline bool isContainer() const override { return true; }
+    [[nodiscard]] bool isContainer() const override { return true; }
 
 protected:
     /**

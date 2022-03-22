@@ -116,7 +116,7 @@ public:
         Sets the function that should be called when a chat message is received
         \param  pOnReceiveChatMessage   function to call on new chat message
     */
-    inline void setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)> pOnReceiveChatMessage) {
+    void setOnReceiveChatMessage(std::function<void (const std::string&, const std::string&)> pOnReceiveChatMessage) {
         this->pOnReceiveChatMessage = pOnReceiveChatMessage;
     }
 
@@ -124,7 +124,7 @@ public:
         Sets the function that should be called when game infos are received after connecting to the server.
         \param  pOnReceiveGameInfo  function to call on receive
     */
-    inline void setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
+    void setOnReceiveGameInfo(std::function<void (const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
         this->pOnReceiveGameInfo = pOnReceiveGameInfo;
     }
 
@@ -133,7 +133,7 @@ public:
         Sets the function that should be called when a change event is received.
         \param  pOnReceiveChangeEventList   function to call on receive
     */
-    inline void setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)> pOnReceiveChangeEventList) {
+    void setOnReceiveChangeEventList(std::function<void (const ChangeEventList&)> pOnReceiveChangeEventList) {
         this->pOnReceiveChangeEventList = pOnReceiveChangeEventList;
     }
 
@@ -142,7 +142,7 @@ public:
         Sets the function that should be called when a peer disconnects.
         \param  pOnPeerDisconnected function to call on disconnect
     */
-    inline void setOnPeerDisconnected(std::function<void (const std::string&, bool, int)> pOnPeerDisconnected) {
+    void setOnPeerDisconnected(std::function<void (const std::string&, bool, int)> pOnPeerDisconnected) {
         this->pOnPeerDisconnected = pOnPeerDisconnected;
     }
 
@@ -150,7 +150,7 @@ public:
         Sets the function that can be used to retreive all house/player changes to get the current state
         \param pGetChangeEventListForNewPlayerCallback    function to call
     */
-    inline void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
+    void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList (const std::string&)> pGetChangeEventListForNewPlayerCallback) {
         this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
     }
 
@@ -158,7 +158,7 @@ public:
         Sets the function that should be called when the game is about to start and the time (in ms) left is received
         \param  pOnStartGame    function to call on receive
     */
-    inline void setOnStartGame(std::function<void (unsigned int)> pOnStartGame) {
+    void setOnStartGame(std::function<void (unsigned int)> pOnStartGame) {
         this->pOnStartGame = pOnStartGame;
     }
 

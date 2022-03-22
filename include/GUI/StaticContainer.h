@@ -35,7 +35,7 @@ public:
     Point position;
     Point size;
 
-    inline bool operator==(const StaticContainer_WidgetData& op) const {
+    bool operator==(const StaticContainer_WidgetData& op) const {
         return (pWidget == op.pWidget) && (position == op.position) && (size == op.size);
     }
 };
