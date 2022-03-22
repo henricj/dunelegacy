@@ -970,7 +970,7 @@ void MapEditor::processInput() {
 
                         case SDLK_RETURN: {
                             if(SDL_GetModState() & KMOD_ALT) {
-                                toogleFullscreen();
+                                toggleFullscreen();
                             }
                         } break;
 

@@ -91,6 +91,8 @@ int MenuBase::showMenu() {
         drawCursor();
         Dune_RenderPresent(renderer);
 
+        updateFullscreen();
+
         while(SDL_PollEvent(&event)) {
             // check the events
             if(!doInput(event))
@@ -135,7 +137,7 @@ bool MenuBase::doInput(SDL_Event &event) {
 
                 case SDLK_RETURN: {
                     if(SDL_GetModState() & KMOD_ALT) {
-                        toogleFullscreen();
+                        toggleFullscreen();
                     }
                 } break;
 

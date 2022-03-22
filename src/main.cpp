@@ -253,8 +253,21 @@ void setVideoMode(int displayIndex)
     SDL_ShowCursor(SDL_DISABLE);
 }
 
-void toogleFullscreen()
+namespace
 {
+bool pendingFullscreen = false;
+}
+
+void toggleFullscreen()
+{ pendingFullscreen = !pendingFullscreen; }
+
+void updateFullscreen()
+{
+    if(!pendingFullscreen)
+        return;
+
+    pendingFullscreen = false;
+
     if(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         // switch to windowed mode
         sdl2::log_info("Switching to windowed mode.");

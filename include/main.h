@@ -39,7 +39,12 @@ void setVideoMode();
 /**
     Toggles fullscreen and windowed mode
 */
-void toogleFullscreen();
+void toggleFullscreen();
+
+/**
+    Toggles fullscreen and windowed mode
+*/
+void updateFullscreen();
 
 /**
     This function returns the configfile path

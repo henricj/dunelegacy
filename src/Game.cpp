@@ -1266,6 +1266,8 @@ void Game::runMainLoop(const GameContext& context) {
 
         Dune_RenderPresent(renderer);
 
+        updateFullscreen();
+
         const auto renderElapsed = SDL_GetPerformanceCounter() - renderStart;
 
         if(bShowFPS) { averageRenderTime = 0.97f * averageRenderTime + 0.03f * performanceScaleMs * renderElapsed; }
@@ -2332,7 +2334,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_RETURN: {
             if(SDL_GetModState() & KMOD_ALT) {
-                toogleFullscreen();
+                toggleFullscreen();
             } else {
                 typingChatMessage.clear();
                 chatMode = true;

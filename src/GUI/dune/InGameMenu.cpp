@@ -109,7 +109,7 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 
         case SDLK_RETURN:
             if(SDL_GetModState() & KMOD_ALT) {
-                toogleFullscreen();
+                toggleFullscreen();
             }
             break;
 
