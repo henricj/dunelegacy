@@ -94,11 +94,11 @@ void Choam::update(const GameContext& context) {
         for(BuildItem& buildItem : availableItems) {
             int price = game.objectData.data[buildItem.itemID][static_cast<int>(house->getHouseID())].price;
 
-            const int min_mod = 2;
-            const int max_mod = 8;
+            constexpr int min_mod = 2;
+            constexpr int max_mod = 8;
 
-            int rand1 = game.randomGen.rand(min_mod, max_mod);
-            int rand2 = game.randomGen.rand(min_mod, max_mod);
+            const int rand1 = game.randomGen.rand(min_mod, max_mod);
+            const int rand2 = game.randomGen.rand(min_mod, max_mod);
 
             price = std::min((rand1+rand2)*(price/10), 999);
 

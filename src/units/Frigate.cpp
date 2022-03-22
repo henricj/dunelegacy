@@ -115,9 +115,9 @@ bool Frigate::update(const GameContext& context) {
         } else if(dist >= 10*TILESIZE) {
             currentMaxSpeed = maxSpeed;
         } else {
-            FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
-            FixPoint t = minSpeed-(TILESIZE/2)*m;
-            currentMaxSpeed = dist*m+t;
+            const FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
+            const FixPoint t = minSpeed-(TILESIZE/2)*m;
+            currentMaxSpeed  = dist*m+t;
         }
     } else {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);

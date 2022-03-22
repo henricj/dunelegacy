@@ -56,7 +56,7 @@ namespace ExtraGenerators
 
       void jump()
       {
-         static const uint64_t JUMP[] = { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
+         static constexpr uint64_t JUMP[] = { 0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c };
 
          uint64_t s0 = 0;
          uint64_t s1 = 0;

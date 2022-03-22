@@ -92,38 +92,38 @@ void AirUnit::blitToScreen()
         const auto rotationAngleDeg = -angle.toDouble()*360.0/8.0;
 
         if(shadow != nullptr) {
-            int x = screenborder->world2screenX(realX + 4);
-            int y = screenborder->world2screenY(realY + 12);
+            const int x = screenborder->world2screenX(realX + 4);
+            const int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            const SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
+            const SDL_Rect dest   = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
         }
 
-        int x = screenborder->world2screenX(realX);
-        int y = screenborder->world2screenY(realY);
+        const int x = screenborder->world2screenX(realX);
+        const int y = screenborder->world2screenY(realY);
 
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-        SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        const SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
+        const SDL_Rect dest   = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
     } else {
         if(shadow != nullptr) {
-            int x = screenborder->world2screenX(realX + 4);
-            int y = screenborder->world2screenY(realY + 12);
+            const int x = screenborder->world2screenX(realX + 4);
+            const int y = screenborder->world2screenY(realY + 12);
 
-            SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-            SDL_Rect dest = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            const SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
+            const SDL_Rect dest   = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopy(renderer, shadow, &source, &dest);
         }
 
-        int x = screenborder->world2screenX(realX);
-        int y = screenborder->world2screenY(realY);
+        const int x = screenborder->world2screenX(realX);
+        const int y = screenborder->world2screenY(realY);
 
-        SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-        SDL_Rect dest = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        const SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
+        const SDL_Rect dest   = calcSpriteDrawingRect( pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
     }
@@ -135,13 +135,13 @@ void AirUnit::navigate(const GameContext& context) {
 }
 
 void AirUnit::move(const GameContext& context) {
-    FixPoint angleRad = (angle * (FixPt_PI << 1)) / 8;
-    FixPoint speed = getMaxSpeed(context);
+    const FixPoint angleRad = (angle * (FixPt_PI << 1)) / 8;
+    const FixPoint speed    = getMaxSpeed(context);
 
     realX += FixPoint::cos(angleRad)*speed;
     realY += -FixPoint::sin(angleRad)*speed;
 
-    Coord newLocation = Coord(realX.lround()/TILESIZE, realY.lround()/TILESIZE);
+    const Coord newLocation = Coord(realX.lround()/TILESIZE, realY.lround()/TILESIZE);
 
     if(newLocation != location) {
         unassignFromMap(location);

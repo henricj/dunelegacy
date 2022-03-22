@@ -104,7 +104,7 @@ void Sandworm::save(OutputStream& stream) const {
     stream.writeSint32(sleepTimer);
     stream.writeUint8(warningWormSignPlayedFlags);
     stream.writeSint32(shimmerOffsetIndex);
-    for(auto lastLoc : lastLocs) {
+    for(const auto lastLoc : lastLocs) {
         stream.writeSint32(lastLoc.x);
         stream.writeSint32(lastLoc.y);
     }
@@ -183,12 +183,12 @@ void Sandworm::blitToScreen() {
     }
 
     if(drawnFrame != INVALID) {
-        SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
-                                                screenborder->world2screenX(realX),
-                                                screenborder->world2screenY(realY),
-                                                numImagesX, numImagesY,
-                                                HAlign::Center, VAlign::Center);
-        SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
+        const SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                                      screenborder->world2screenX(realX),
+                                                      screenborder->world2screenY(realY),
+                                                      numImagesX, numImagesY,
+                                                      HAlign::Center, VAlign::Center);
+        const SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
@@ -319,7 +319,7 @@ bool Sandworm::update(const GameContext& context) {
         }
 
         if(isActive() && (moving || justStoppedMoving) && !game.isGamePaused() && !game.isGameFinished()) {
-            Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
+            const Coord realLocation = getLocation()*TILESIZE + Coord(TILESIZE/2, TILESIZE/2);
             if(lastLocs[1] != realLocation) {
                 for(int i = (SANDWORM_SEGMENTS-1); i > 0 ; i--) {
                     lastLocs[i] = lastLocs[i-1];
@@ -352,9 +352,9 @@ bool Sandworm::update(const GameContext& context) {
                             auto* object = target.getObjPointer();
 
                             if(object) {
-                                bool wasAlive =
+                                const bool wasAlive =
                                     object->isVisible(getOwner()->getTeamID()); // see if unit was alive before attack
-                                Coord realPos = Coord(lround(realX), lround(realY));
+                                const Coord realPos = Coord(lround(realX), lround(realY));
                                 map.damage(context, objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
                                            false);
                                 // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive() method?
@@ -376,8 +376,8 @@ bool Sandworm::update(const GameContext& context) {
                 // awaken the worm!
 
                 for(int tries = 0 ; tries < 1000 ; tries++) {
-                    int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                    int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                    const int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
+                    const int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
 
                     if(canPass(x, y)) {
                         deploy(context, map.getTile(x, y)->getLocation());
@@ -407,7 +407,7 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     if (!map->tileExists(object->getLocation()))
         return false;
 
-    auto *const pTile = map->getTile(object->getLocation());
+    const auto *const pTile = map->getTile(object->getLocation());
 
     if (!canPassTile(pTile))
         return false;
@@ -430,7 +430,7 @@ const ObjectBase* Sandworm::findTarget() const {
     if((attackMode == HUNT) || (attackMode == AREAGUARD)) {
         auto closestDistance = FixPt_MAX;
 
-        for(auto *pUnit : unitList) {
+        for(const auto *pUnit : unitList) {
             if (canAttack(pUnit)
                 && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
                 closestTarget = pUnit;

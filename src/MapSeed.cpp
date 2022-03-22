@@ -30,10 +30,10 @@ typedef struct {
 }            MapSeedPoint;
 
 // some values
-const uint8_t BoolArray[] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0};
+constexpr uint8_t BoolArray[] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0};
 
 // some offsets
-const int8_t OffsetArray1[] = {
+constexpr int8_t OffsetArray1[] = {
     0, -1, 1, -16, 16,
     -17, 17, -15, 15,
     -2, 2, -32, 32,
@@ -42,7 +42,7 @@ const int8_t OffsetArray1[] = {
 };
 
 // some more offsets
-const uint8_t OffsetArray2[] = {
+constexpr uint8_t OffsetArray2[] = {
     0, 0, 4, 0, 4, 0, 4, 4, 0, 0, 0, 4, 0, 4, 4, 4, 0, 0, 0, 2, 0,
     2, 0, 4, 0, 0, 2, 0, 2, 0, 4, 0, 4, 0, 4, 2, 4, 2, 4, 4, 0, 4,
     2, 4, 2, 4, 4, 4, 0, 0, 4, 4, 2, 0, 2, 2, 0, 0, 2, 2, 4, 0, 2,
@@ -54,7 +54,7 @@ const uint8_t OffsetArray2[] = {
 };
 
 // TileTypes
-const int16_t TileTypes[] = {
+constexpr int16_t TileTypes[] = {
     220, 221, 222, 229, 230, 231, 213, 214, 215, 223, 224, 225, 232, 233, 234, 216,
     217, 218, 226, 227, 228, 235, 236, 237, 219, 217, 218, 226, 227, 228, 235, 236,
     237, 238, 239, 244, 245, 125, 240, 246, 247, 241, 242, 248, 249, 241, 243, 248,
@@ -75,7 +75,7 @@ const int16_t TileTypes[] = {
 };
 
 // sinus[index] = 127 * sin(pi * index/128)
-static const int8_t sinus[256] = {
+constexpr int8_t sinus[256] = {
     0, 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45,
     48, 51, 54, 57, 59, 62, 65, 67, 70, 73, 75, 78, 80, 82, 85, 87,
     89, 91, 94, 96, 98, 100, 101, 103, 105, 107, 108, 110, 111, 113, 114, 116,

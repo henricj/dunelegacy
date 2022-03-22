@@ -113,12 +113,12 @@ void GroundUnit::checkPos(const GameContext& context) {
                 && (pObject != nullptr)
                 && (pObject->getObjectID() == target.getObjectID()))
             {
-                if(auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {
+                if(const auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {
                     if(pRepairYard->isFree()) {
                         setGettingRepaired();
                     } else {
                         // the repair yard is already in use by some other unit => move out
-                        Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
+                        const Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
                 }

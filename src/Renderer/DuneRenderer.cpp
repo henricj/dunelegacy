@@ -6,7 +6,7 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, ui
 
     std::array<SDL_FPoint, 3> points;
 
-    const auto to_pt = [](int u, int v) { return SDL_FPoint{static_cast<float>(u), static_cast<float>(v)}; };
+    constexpr auto to_pt = [](int u, int v) { return SDL_FPoint{static_cast<float>(u), static_cast<float>(v)}; };
 
     // now draw the box with parts at all corners
     for(auto i = 0; i <= currentZoomlevel; i++) {

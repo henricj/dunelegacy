@@ -75,16 +75,16 @@ void Devastator::save(OutputStream& stream) const
 
 void Devastator::blitToScreen()
 {
-    int x1 = screenborder->world2screenX(realX);
-    int y1 = screenborder->world2screenY(realY);
+    const int x1 = screenborder->world2screenX(realX);
+    const int y1 = screenborder->world2screenY(realY);
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    auto source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto        source1      = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto        dest1        = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    const Coord devastatorTurretOffset[] =  {
+    constexpr Coord devastatorTurretOffset[] =  {
                                                 Coord(8, -16),
                                                 Coord(-4, -12),
                                                 Coord(0, -16),
@@ -96,11 +96,11 @@ void Devastator::blitToScreen()
                                             };
 
     const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    auto dest2 = calcSpriteDrawingRect(pTurretGraphic,
-                                        screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
-                                        screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y),
-                                        numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto        source2        = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto        dest2          = calcSpriteDrawingRect(pTurretGraphic,
+                                                             screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
+                                                             screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y),
+                                                             numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 

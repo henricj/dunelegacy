@@ -98,15 +98,15 @@ bool Carryall::update(const GameContext& context) {
     }
 
     if(dist >= 0) {
-        static const FixPoint minSpeed = FixPoint32(TILESIZE/32);
+        static constexpr FixPoint minSpeed = FixPoint32(TILESIZE/32);
         if(dist < TILESIZE/2) {
             currentMaxSpeed = std::min(dist, minSpeed);
         } else if(dist >= 10*TILESIZE) {
             currentMaxSpeed = maxSpeed;
         } else {
-            FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
-            FixPoint t = minSpeed-(TILESIZE/2)*m;
-            currentMaxSpeed = dist*m+t;
+            const FixPoint m = (maxSpeed-minSpeed) / ((10*TILESIZE)-(TILESIZE/2));
+            const FixPoint t = minSpeed-(TILESIZE/2)*m;
+            currentMaxSpeed  = dist*m+t;
         }
     } else {
         currentMaxSpeed = std::min(currentMaxSpeed + 0.2_fix, maxSpeed);
@@ -175,7 +175,7 @@ void Carryall::checkPos(const GameContext& context) {
             if(!pickedUpUnitList.empty()) {
                 // find next place to drop
                 for(auto i=8;i<18;i++) {
-                    auto r = game.randomGen.rand(3,i/2);
+                    const auto r = game.randomGen.rand(3,i/2);
                     const auto angle = 2 * FixPt_PI * game.randomGen.randFixPoint();
 
                     auto dropCoord = location + Coord( lround(r*FixPoint::sin(angle)), lround(-r*FixPoint::cos(angle)));
@@ -249,7 +249,7 @@ void Carryall::deployUnit(const GameContext& context, Tile* tile, UnitBase* pUni
                 // unit is still going to repair yard but was unbooked from repair yard at pickup => book now
 
                 repair_yard->book();
-            } else if(auto* const refinery = dune_cast<Refinery>(object)) {
+            } else if(const auto* const refinery = dune_cast<Refinery>(object)) {
                 if(refinery->isFree()) {
                     if(auto* const harvester = dune_cast<Harvester>(pUnit)) {
                         harvester->setTarget(object);
@@ -487,7 +487,7 @@ void Carryall::targeting(const GameContext& context) {
 }
 
 void Carryall::turn(const GameContext& context) {
-    auto& map = context.map;
+    const auto& map = context.map;
 
     if (active && aDropOfferer && droppedOffCargo && (!hasCargo())
         && ((getRealX() < TILESIZE/2) || (getRealX() > map.getSizeX()*TILESIZE - TILESIZE/2)

@@ -392,7 +392,7 @@ void UnitBase::drawSelectionBox() {
     const auto screenX = screenborder->world2screenX(realX);
     const auto screenY = screenborder->world2screenY(realY);
 
-    auto dest = calcDrawingRect(selectionBox, screenX, screenY, HAlign::Center, VAlign::Center);
+    const auto dest = calcDrawingRect(selectionBox, screenX, screenY, HAlign::Center, VAlign::Center);
     Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
 
     const auto width = getWidth(selectionBox);
@@ -413,7 +413,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default:    selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2);   break;
     }
 
-    auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
     Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
 }
 
@@ -458,7 +458,7 @@ void UnitBase::engageTarget(const GameContext& context) {
     if(target) {
         // we have a target unit or structure
 
-        Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
+        const Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
 
         if(destination != targetLocation) {
             // the location of the target has moved
@@ -658,7 +658,7 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
 
 void UnitBase::navigate(const GameContext& context) {
 
-    auto& game = context.game;
+    const auto& game = context.game;
 
     // navigation is only performed every 5th frame
     if(!isAFlyingUnit() && (game.getGameCycleCount() + getObjectID()*1337) % 5 != 0) return;
@@ -748,7 +748,7 @@ void UnitBase::idleAction(const GameContext& context) {
 }
 
 void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
-    auto& map = context.map;
+    const auto& map = context.map;
 
     if(!respondable || !map.tileExists(xPos, yPos)) return;
 
@@ -774,7 +774,7 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
 void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos) {
     if(!respondable) return;
 
-    auto& map = context.map;
+    const auto& map = context.map;
 
     if(map.tileExists(xPos, yPos)) {
         auto& game = context.game;
@@ -962,7 +962,7 @@ void UnitBase::handleDamage(const GameContext& context, int damage, uint32_t dam
     if(pDamager != nullptr){
 
         if(attackMode == HUNT && !forced) {
-            auto* pDamager = context.objectManager.getObject(damagerID);
+            const auto* pDamager = context.objectManager.getObject(damagerID);
             if(canAttack(pDamager)) {
                 if(!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
                     // no target or target not on weapon range => switch target
@@ -1070,7 +1070,7 @@ bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
         return false;
     }
 
-    Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
+    const Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
 
     return (blockDistance(location, targetLocation) <= getWeaponRange());
 }
@@ -1150,7 +1150,7 @@ void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
     }
 
     if(getItemID() == Unit_Harvester) {
-        auto* harvester = static_cast<Harvester*>(this);
+        const auto* harvester = static_cast<Harvester*>(this);
         if(harvester->isReturning() && target && (target.getObjPointer()!= nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
             static_cast<Refinery*>(target.getObjPointer())->unBook();
         }
@@ -1360,7 +1360,7 @@ void UnitBase::updateVisibleUnits(const GameContext& context) {
     auto* pTile = context.map.tryGetTile(location.x, location.y);
     if(!pTile) return;
 
-    auto& game = context.game;
+    const auto& game = context.game;
 
     game.for_each_house([&](auto& house) {
         if(pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {

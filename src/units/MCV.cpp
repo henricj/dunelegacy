@@ -67,8 +67,8 @@ bool MCV::doDeploy() {
     // check if there is enough room for construction yard
     if(canDeploy()) {
         // save needed values
-        House* pOwner = getOwner();
-        Coord newLocation = getLocation();
+        House*      pOwner      = getOwner();
+        const Coord newLocation = getLocation();
 
         // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 

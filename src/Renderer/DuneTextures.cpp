@@ -23,7 +23,7 @@ using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_emp
 using rect_type   = rectpack2D::output_rect_t<spaces_type>;
 
 std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::vector<rect_type>& rectangles) {
-    const auto discard_step = 1;
+    constexpr auto discard_step = 1;
 
     auto failed = false;
 

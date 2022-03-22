@@ -38,8 +38,8 @@ public:
     ~Meanwhile() override;
 
 private:
-    static const int MeanwhileText_Base = 287;              ///< the index of the first text in Dune.lng
-    static const int MeanwhileText_NumTextsPerHouse = 11;   ///< number of texts per house
+    static constexpr int MeanwhileText_Base = 287;              ///< the index of the first text in Dune.lng
+    static constexpr int MeanwhileText_NumTextsPerHouse = 11;   ///< number of texts per house
 
     /// \cond
     enum MeanwhileText {

@@ -139,8 +139,8 @@ void TankBase::engageTarget(const GameContext& context) {
     }
 
     if(closeTarget) {
-        Coord targetLocation = closeTarget.getObjPointer()->getClosestPoint(location);
-        FixPoint closeTargetDistance = blockDistance(location, targetLocation);
+        const Coord    targetLocation      = closeTarget.getObjPointer()->getClosestPoint(location);
+        const FixPoint closeTargetDistance = blockDistance(location, targetLocation);
 
         if(closeTargetDistance > getWeaponRange()) {
             // we are too far away
@@ -151,7 +151,7 @@ void TankBase::engageTarget(const GameContext& context) {
         targetAngle = destinationDrawnAngle(location, targetLocation);
 
         if(drawnTurretAngle == targetAngle) {
-            ObjectPointer temp = target;
+            const ObjectPointer temp = target;
             target = closeTarget;
             attack(context);
             target = temp;

@@ -101,8 +101,8 @@ void Harvester::save(OutputStream& stream) const
 
 void Harvester::blitToScreen()
 {
-    int x = screenborder->world2screenX(realX);
-    int y = screenborder->world2screenY(realY);
+    const int x = screenborder->world2screenX(realX);
+    const int y = screenborder->world2screenY(realY);
 
     const auto* pUnitGraphic = graphic[currentZoomlevel];
     const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
@@ -129,12 +129,12 @@ void Harvester::blitToScreen()
             frame -= LASTSANDFRAME;
         }
 
-        auto sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
-        auto sandDest = calcSpriteDrawingRectF(  pSandGraphic,
-                                                    screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
-                                                    screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
-                                                    static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME+1,
-                                                    HAlign::Center, VAlign::Center);
+        const auto sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME+1);
+        const auto sandDest   = calcSpriteDrawingRectF(  pSandGraphic,
+                                                         screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
+                                                         screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
+                                                         static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME+1,
+                                                         HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyF(renderer, pSandGraphic, &sandSource, &sandDest);
     }
@@ -157,7 +157,7 @@ void Harvester::checkPos(const GameContext& context) {
 
     auto& map = context.map;
     if(returningToRefinery) {
-        if(auto* const pRefinery = dune_cast<Refinery>(target.getObjPointer())) {
+        if(const auto* const pRefinery = dune_cast<Refinery>(target.getObjPointer())) {
             auto* pObject = map.getGroundObject(context, location.x, location.y);
 
             if(justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target.getObjectID())) {
@@ -264,8 +264,8 @@ void Harvester::deploy(const GameContext& context, const Coord& newLocation)
 void Harvester::destroy(const GameContext& context)
 {
     if(currentGameMap->tileExists(location) && isVisible()) {
-        int xpos = location.x;
-        int ypos = location.y;
+        const int xpos = location.x;
+        const int ypos = location.y;
 
         if(currentGameMap->tileExists(xpos,ypos)) {
             const auto spiceSpreaded = spice * 0.75_fix;
@@ -437,9 +437,9 @@ void Harvester::move(const GameContext& context)
 
                     if(tile->hasSpice()) {
 
-                        int beforeTileType = tile->getType();
+                        const int beforeTileType = tile->getType();
                         spice += tile->harvestSpice(context);
-                        int afterTileType = tile->getType();
+                        const int afterTileType = tile->getType();
 
                         if(beforeTileType != afterTileType) {
                             context.map.spiceRemoved(context, location);
@@ -481,7 +481,7 @@ bool Harvester::canAttack(const ObjectBase* object) const
 
 FixPoint Harvester::extractSpice(FixPoint extractionSpeed)
 {
-    FixPoint oldSpice = spice;
+    const FixPoint oldSpice = spice;
 
     if((spice - extractionSpeed) >= 0) {
         spice -= extractionSpeed;
@@ -500,7 +500,7 @@ void Harvester::setSpeeds(const GameContext& context)
         speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
     }
 
-    FixPoint percentFull = spice/HARVESTERMAXSPICE;
+    const FixPoint percentFull = spice/HARVESTERMAXSPICE;
     speed = speed * (1 - MAXIMUMHARVESTERSLOWDOWN*percentFull);
 
     // clang-format off

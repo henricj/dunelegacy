@@ -30,7 +30,8 @@
 
 #include <GUI/ObjectInterfaces/BuilderInterface.h>
 
-const ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
+constexpr ItemID_enum BuilderBase::itemOrder[] = {
+                                              Structure_Slab4,
                                               Structure_Slab1,
                                               Structure_IX,
                                               Structure_StarPort,

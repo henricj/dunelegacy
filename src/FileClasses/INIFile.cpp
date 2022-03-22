@@ -21,9 +21,10 @@
 
 #include <fstream>
 #include <iostream>
-#include <cctype>
 #include <algorithm>
 #include <utility>
+
+#include <cctype>
 #include <cstdio>
 
 
@@ -39,8 +40,11 @@ INIFile::Key::Key(std::string completeLine, int lineNumber, int keystringbegin, 
     nextKey(nullptr), prevKey(nullptr) {
 }
 
-INIFile::Key::Key(const std::string& keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
- :  INIFileLine(keyname + (bWhitespace ? " = " : "=") + (bEscapeIfNeeded ? escapeValue(value) : value), INVALID_LINE), keyStringBegin(0), keyStringLength(keyname.size()),
+INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
+    : INIFileLine(std::string{keyname} + (bWhitespace ? " = " : "=") +
+                      (bEscapeIfNeeded ? escapeValue(value) : value),
+                  INVALID_LINE),
+      keyStringBegin(0), keyStringLength(keyname.size()),
     valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1) + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)), valueStringLength(value.size()),
     nextKey(nullptr), prevKey(nullptr) {
 }
@@ -72,11 +76,8 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
 
         return false;
 
-    } else {
-
-        return defaultValue;
-
     }
+    return defaultValue;
 }
 
 void INIFile::Key::setStringValue(const std::string_view newValue, bool bEscapeIfNeeded) {
@@ -114,12 +115,11 @@ bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
     return std::any_of(value.begin(), value.end(), [](char c) { return !isNormalChar(c); });
 }
 
-std::string INIFile::Key::escapeValue(const std::string& value) {
+std::string INIFile::Key::escapeValue(std::string value) {
     if(escapingValueNeeded(value)) {
         return "\"" + value + "\"";
-    } else {
-        return value;
     }
+    return value;
 }
 
 
@@ -128,8 +128,9 @@ INIFile::Section::Section(std::string completeLine, int lineNumber, int sections
     nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
 
-INIFile::Section::Section(const std::string& sectionname, bool bWhitespace)
- :  INIFileLine("[" + sectionname + "]", INVALID_LINE), sectionStringBegin(1), sectionStringLength(sectionname.size()),
+INIFile::Section::Section(std::string_view sectionname, bool bWhitespace)
+    : INIFileLine("[" + std::string{sectionname} + "]", INVALID_LINE), sectionStringBegin(1),
+      sectionStringLength(sectionname.size()),
     nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr), bWhitespace(bWhitespace) {
 }
 
@@ -168,24 +169,23 @@ INIFile::KeyIterator INIFile::Section::end() const {
     \param  key             keyname
     \return true, if the key exists, false otherwise
 */
-bool INIFile::Section::hasKey(const std::string& key) const {
-    return (getKey(key) != nullptr);
+bool INIFile::Section::hasKey(std::string_view key) const {
+    return getKey(key) != nullptr;
 }
 
-INIFile::Key* INIFile::Section::getKey(const std::string& keyname) const {
+INIFile::Key* INIFile::Section::getKey(std::string_view keyname) const {
     for(INIFile::Key& key : *this) {
-        if(key.keyStringLength == (int) keyname.size()) {
-                if(strncicmp(keyname.c_str(), key.completeLine.c_str()+key.keyStringBegin, keyname.size()) == 0) {
-                    return &key;
-                }
-        }
+        const auto key_begin = &key.completeLine[key.keyStringBegin];
+
+        if(upper_compare(keyname, std::string_view(key_begin, key.keyStringLength)))
+            return &key;
     }
 
     return nullptr;
 }
 
 
-void INIFile::Section::setStringValue(const std::string& key, const std::string& newValue, bool bEscapeIfNeeded) {
+void INIFile::Section::setStringValue(std::string_view key, const std::string& newValue, bool bEscapeIfNeeded) {
     if(hasKey(key)) {
         getKey(key)->setStringValue(newValue, bEscapeIfNeeded);
     } else {
@@ -241,11 +241,11 @@ void INIFile::Section::setStringValue(const std::string& key, const std::string&
     }
 }
 
-void INIFile::Section::setIntValue(const std::string& key, int newValue) {
+void INIFile::Section::setIntValue(std::string_view key, int newValue) {
     setStringValue(key, std::to_string(newValue), false);
 }
 
-void INIFile::Section::setBoolValue(const std::string& key, bool newValue) {
+void INIFile::Section::setBoolValue(std::string_view key, bool newValue) {
     if(newValue) {
         setStringValue(key, "true", false);
     } else {
@@ -253,7 +253,7 @@ void INIFile::Section::setBoolValue(const std::string& key, bool newValue) {
     }
 }
 
-void INIFile::Section::setDoubleValue(const std::string& key, double newValue) {
+void INIFile::Section::setDoubleValue(std::string_view key, double newValue) {
     setStringValue(key, std::to_string(newValue), false);
 }
 
@@ -284,15 +284,12 @@ void INIFile::Section::insertKey(Key* newKey) {
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
     \param  firstLineComment    A comment to put in the first line (no comment is added for an empty string)
 */
-INIFile::INIFile(bool bWhitespace, const std::string& firstLineComment)
- : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace)
+INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment)
+ : bWhitespace(bWhitespace)
 {
-    firstLine = nullptr;
-    sectionRoot = nullptr;
-
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
     if(!firstLineComment.empty()) {
-        firstLine = new INIFileLine("; " + firstLineComment, 0);
+        firstLine = new INIFileLine("; " + std::string{firstLineComment}, 0);
         auto* blankLine = new INIFileLine("",1);
         firstLine->nextLine = blankLine;
         blankLine->prevLine = firstLine;
@@ -308,10 +305,8 @@ INIFile::INIFile(bool bWhitespace, const std::string& firstLineComment)
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
 */
 INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
- : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
+ : bWhitespace(bWhitespace) {
 
-    firstLine = nullptr;
-    sectionRoot = nullptr;
     SDL_RWops * file = nullptr;
 
     // open file
@@ -329,7 +324,7 @@ INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace)
     \param  RWopsFile   Pointer to RWopsFile (can be readonly)
 */
 INIFile::INIFile(SDL_RWops * RWopsFile, bool bWhitespace)
- : firstLine(nullptr), sectionRoot(nullptr), bWhitespace(bWhitespace) {
+ : bWhitespace(bWhitespace) {
 
     if(RWopsFile == nullptr) {
         THROW(std::invalid_argument, "RWopsFile == nullptr!");
@@ -360,7 +355,7 @@ INIFile::~INIFile() {
     \param  section         sectionname
     \return true, if the section exists, false otherwise
 */
-bool INIFile::hasSection(const std::string& section) const {
+bool INIFile::hasSection(std::string_view section) const {
     return (getSectionInternal(section) != nullptr);
 }
 
@@ -370,14 +365,13 @@ bool INIFile::hasSection(const std::string& section) const {
     \param  sectionname the name of the section
     \return the section if found, nullptr otherwise
 */
-const INIFile::Section& INIFile::getSection(const std::string& sectionname) const {
+const INIFile::Section& INIFile::getSection(std::string_view sectionname) const {
     const Section* curSection = getSectionInternal(sectionname);
 
     if(curSection == nullptr) {
-        throw std::out_of_range("There is no section '" + sectionname + "' in this INI file");
-    } else {
-        return *curSection;
+        throw std::out_of_range("There is no section '" + std::string{sectionname} + "' in this INI file");
     }
+    return *curSection;
 }
 
 
@@ -387,7 +381,7 @@ const INIFile::Section& INIFile::getSection(const std::string& sectionname) cons
     \return true on success
 
 */
-bool INIFile::removeSection(const std::string& sectionname) {
+bool INIFile::removeSection(std::string_view sectionname) {
     clearSection(sectionname, false);
 
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
@@ -434,7 +428,7 @@ bool INIFile::removeSection(const std::string& sectionname) {
     \param  bBlankLineAtSectionEnd  add a blank line at the end of the now empty section
     \return true on success
 */
-bool INIFile::clearSection(const std::string& sectionname, bool bBlankLineAtSectionEnd) {
+bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectionEnd) {
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if(curSection == nullptr) {
         return false;
@@ -499,7 +493,7 @@ bool INIFile::hasKey(const std::string& section, const std::string& key) const {
     \param  keyname     the name of the key
     \return the key if found, nullptr otherwise
 */
-const INIFile::Key* INIFile::getKey(const std::string& sectionname, const std::string& keyname) const {
+const INIFile::Key* INIFile::getKey(std::string_view sectionname, std::string_view keyname) const {
     const INIFile::Section* curSection = getSectionInternal(sectionname);
     if(curSection == nullptr) {
         return nullptr;
@@ -559,25 +553,26 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
 
 
 
-/// Reads the string that is adressed by the section/key pair.
+/// Reads the string that is addressed by the section/key pair.
 /**
-    Returns the value that is adressed by the section/key pair as a string. If the key could not be found in
+    Returns the value that is addressed by the section/key pair as a string. If the key could not be found in
     this section defaultValue is returned. If no defaultValue is specified then "" is returned.
     \param  section         sectionname
     \param  key             keyname
     \param  defaultValue    default value for defaultValue is ""
     \return The read value or default
 */
-std::string INIFile::getStringValue(const std::string& section, const std::string& key, const std::string& defaultValue) const {
+std::string INIFile::getStringValue(std::string_view section, std::string_view key,
+                                    const std::string& defaultValue) const {
     const Key* curKey = getKey(section, key);
     if(curKey == nullptr) { return defaultValue; }
     return curKey->getStringValue();
 }
 
 
-/// Reads the int that is adressed by the section/key pair.
+/// Reads the int that is addressed by the section/key pair.
 /**
-    Returns the value that is adressed by the section/key pair as a int. If the key could not be found in
+    Returns the value that is addressed by the section/key pair as a int. If the key could not be found in
     this section defaultValue is returned. If no defaultValue is specified then 0 is returned. If the value
     could not be converted to an int 0 is returned.
     \param  section         sectionname
@@ -585,15 +580,15 @@ std::string INIFile::getStringValue(const std::string& section, const std::strin
     \param  defaultValue    default value for defaultValue is 0
     \return The read number, defaultValue or 0
 */
-int INIFile::getIntValue(const std::string& section, const std::string& key, int defaultValue) const {
+int INIFile::getIntValue(std::string_view section, std::string_view key, int defaultValue) const {
     const Key* curKey = getKey(section, key);
     if(curKey == nullptr) { return defaultValue; }
     return curKey->getIntValue(defaultValue);
 }
 
-/// Reads the boolean that is adressed by the section/key pair.
+/// Reads the boolean that is addressed by the section/key pair.
 /**
-    Returns the value that is adressed by the section/key pair as a boolean. If the key could not be found in
+    Returns the value that is addressed by the section/key pair as a boolean. If the key could not be found in
     this section defaultValue is returned. If no defaultValue is specified then false is returned. If the value
     is one of "true", "enabled", "on" or "1" then true is returned; if it is one of "false", "disabled", "off" or
     "0" than false is returned; otherwise defaultValue is returned.
@@ -602,15 +597,15 @@ int INIFile::getIntValue(const std::string& section, const std::string& key, int
     \param  defaultValue    default value for defaultValue is 0
     \return true for "true", "enabled", "on" and "1"<br>false for "false", "disabled", "off" and "0"
 */
-bool INIFile::getBoolValue(const std::string& section, const std::string& key, bool defaultValue) const {
+bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool defaultValue) const {
     const Key* curKey = getKey(section, key);
     if(curKey == nullptr) return defaultValue;
     return curKey->getBoolValue(defaultValue);
 }
 
-/// Reads the float that is adressed by the section/key pair.
+/// Reads the float that is addressed by the section/key pair.
 /**
-    Returns the value that is adressed by the section/key pair as a double. If the key could not be found in
+    Returns the value that is addressed by the section/key pair as a double. If the key could not be found in
     this section defaultValue is returned. If no defaultValue is specified then 0.0f is returned. If the value
     could not be converted to an float 0.0f is returned.
     \param  section         sectionname
@@ -618,16 +613,16 @@ bool INIFile::getBoolValue(const std::string& section, const std::string& key, b
     \param  defaultValue    default value for defaultValue is 0.0f
     \return The read number, defaultValue or 0.0f
 */
-float INIFile::getFloatValue(const std::string& section, const std::string& key, float defaultValue) const {
+float INIFile::getFloatValue(std::string_view section, std::string_view key, float defaultValue) const {
     const Key* curKey = getKey(section, key);
     if(curKey == nullptr) return defaultValue;
     return curKey->getFloatValue(defaultValue);
 }
 
 
-/// Reads the double that is adressed by the section/key pair.
+/// Reads the double that is addressed by the section/key pair.
 /**
-    Returns the value that is adressed by the section/key pair as a double. If the key could not be found in
+    Returns the value that is addressed by the section/key pair as a double. If the key could not be found in
     this section defaultValue is returned. If no defaultValue is specified then 0.0 is returned. If the value
     could not be converted to an double 0.0 is returned.
     \param  section         sectionname
@@ -635,15 +630,15 @@ float INIFile::getFloatValue(const std::string& section, const std::string& key,
     \param  defaultValue    default value for defaultValue is 0.0
     \return The read number, defaultValue or 0.0
 */
-double INIFile::getDoubleValue(const std::string& section, const std::string& key, double defaultValue) const {
+double INIFile::getDoubleValue(std::string_view section, std::string_view key, double defaultValue) const {
     const Key* curKey = getKey(section, key);
     if(curKey == nullptr) return defaultValue;
     return curKey->getDoubleValue(defaultValue);
 }
 
-/// Sets the string that is adressed by the section/key pair.
+/// Sets the string that is addressed by the section/key pair.
 /**
-    Sets the string that is adressed by the section/key pair to value. If the section and/or the key does not exist it will
+    Sets the string that is addressed by the section/key pair to value. If the section and/or the key does not exist it will
     be created. A valid sectionname/keyname is not allowed to contain '[',']',';' or '#' and can not start or end with
     whitespaces (' ' or '\\t').
     \param  section         sectionname
@@ -651,7 +646,8 @@ double INIFile::getDoubleValue(const std::string& section, const std::string& ke
     \param  value               value that should be set
     \param  bEscapeIfNeeded   escape the string if it contains any special characters
 */
-void INIFile::setStringValue(const std::string& section, const std::string& key, const std::string& value, bool bEscapeIfNeeded) {
+void INIFile::setStringValue(std::string_view section, std::string_view key, std::string value,
+                             bool bEscapeIfNeeded) {
     Section* curSection = getSectionOrCreate(section);
 
     if(curSection == nullptr) {
@@ -662,46 +658,42 @@ void INIFile::setStringValue(const std::string& section, const std::string& key,
     curSection->setStringValue(key, value, bEscapeIfNeeded);
 }
 
-/// Sets the int that is adressed by the section/key pair.
+/// Sets the int that is addressed by the section/key pair.
 /**
-    Sets the int that is adressed by the section/key pair to value. If the section and/or the key does not exist it will
+    Sets the int that is addressed by the section/key pair to value. If the section and/or the key does not exist it will
     be created. A valid sectionname/keyname is not allowed to contain '[',']',';' or '#' and can not start or end with
     whitespaces (' ' or '\\t').
     \param  section         sectionname
     \param  key             keyname
     \param  value           value that should be set
 */
-void INIFile::setIntValue(const std::string& section, const std::string& key, int value) {
+void INIFile::setIntValue(std::string_view section, std::string_view key, int value) {
     setStringValue(section, key, std::to_string(value), false);
 }
 
-/// Sets the boolean that is adressed by the section/key pair.
+/// Sets the boolean that is addressed by the section/key pair.
 /**
-    Sets the boolean that is adressed by the section/key pair to value. If the section and/or the key does not exist it will
+    Sets the boolean that is addressed by the section/key pair to value. If the section and/or the key does not exist it will
     be created. A valid sectionname/keyname is not allowed to contain '[',']',';' or '#' and can not start or end with
     whitespaces (' ' or '\\t').
     \param  section         sectionname
     \param  key             keyname
     \param  value           value that should be set
 */
-void INIFile::setBoolValue(const std::string& section, const std::string& key, bool value) {
-    if(value) {
-        setStringValue(section, key, "true", false);
-    } else {
-        setStringValue(section, key, "false", false);
-    }
+void INIFile::setBoolValue(std::string_view section, std::string_view key, bool value) {
+    setStringValue(section, key, value ? "true" : "false", false);
 }
 
-/// Sets the double that is adressed by the section/key pair.
+/// Sets the double that is addressed by the section/key pair.
 /**
-    Sets the double that is adressed by the section/key pair to value. If the section and/or the key does not exist it will
+    Sets the double that is addressed by the section/key pair to value. If the section and/or the key does not exist it will
     be created. A valid sectionname/keyname is not allowed to contain '[',']',';' or '#' and can not start or end with
     whitespaces (' ' or '\\t').
     \param  section         sectionname
     \param  key             keyname
     \param  value           value that should be set
 */
-void INIFile::setDoubleValue(const std::string& section, const std::string& key, double value) {
+void INIFile::setDoubleValue(std::string_view section, std::string_view key, double value) {
     setStringValue(section, key, std::to_string(value), false);
 }
 
@@ -730,7 +722,7 @@ INIFile::SectionIterator INIFile::end() const {
     \param  section the section to iterate over
     \return the iterator
 */
-INIFile::KeyIterator INIFile::begin(const std::string& section) const {
+INIFile::KeyIterator INIFile::begin(std::string_view section) const {
     const Section* curSection = getSectionInternal(section);
     if(curSection == nullptr) {
         return KeyIterator(nullptr);
@@ -745,8 +737,8 @@ INIFile::KeyIterator INIFile::begin(const std::string& section) const {
     \param  section the section to iterate over
     \return the iterator
 */
-INIFile::KeyIterator INIFile::end(const std::string& section) const {
-    return KeyIterator();
+INIFile::KeyIterator INIFile::end(std::string_view section) const {
+    return KeyIterator{};
 }
 
 /// Saves the changes made in the INI-File to a file.
@@ -842,7 +834,8 @@ void INIFile::readfile(SDL_RWops * file) {
 
                 break;
 
-            } else if(tmp != '\r') {
+            }
+            if(tmp != '\r') {
 
                 completeLine += tmp;
 
@@ -1000,25 +993,20 @@ void INIFile::insertSection(Section* newSection) {
 }
 
 
-const INIFile::Section* INIFile::getSectionInternal(const std::string& sectionname) const {
-    Section* curSection = sectionRoot;
-    int sectionnameSize = sectionname.size();
+const INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname) const {
+    
+    for(Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
+        const auto cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
 
-    while(curSection != nullptr) {
-        if(curSection->sectionStringLength == sectionnameSize) {
-                if(strncicmp(sectionname.c_str(), curSection->completeLine.c_str()+curSection->sectionStringBegin, sectionnameSize) == 0) {
-                    return curSection;
-                }
-        }
-
-        curSection = curSection->nextSection;
+        if(upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))
+            return curSection;
     }
 
     return nullptr;
 }
 
 
-INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
+INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
     auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
 
     if(curSection == nullptr) {
@@ -1063,7 +1051,7 @@ INIFile::Section* INIFile::getSectionOrCreate(const std::string& sectionname) {
 }
 
 
-bool INIFile::isValidSectionName(const std::string& sectionname) {
+bool INIFile::isValidSectionName(std::string_view sectionname) {
     for(char i : sectionname) {
         if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
             return false;
@@ -1073,8 +1061,8 @@ bool INIFile::isValidSectionName(const std::string& sectionname) {
     return !(isWhitespace(sectionname[0]) || isWhitespace(sectionname[sectionname.size()-1]));
 }
 
-bool INIFile::isValidKeyName(const std::string& keyname) {
-    for(char i : keyname) {
+bool INIFile::isValidKeyName(std::string_view keyname) {
+    for(auto i : keyname) {
         if( (!isNormalChar(i)) && (!isWhitespace(i)) ) {
             return false;
         }
@@ -1176,16 +1164,12 @@ bool INIFile::isNormalChar(unsigned char s) {
     return (!isWhitespace(s)) && (s >= 33) && (s != '"') && (s != ';') && (s != '#') && (s != '[') && (s != ']') && (s != '=');
 }
 
-int INIFile::strncicmp(const char *s1, const char *s2, size_t n) {
-    const char* p1 = s1;
-    const char* p2 = s2;
-    while((p1 < s1 + n) && (*p1 != 0) && (toupper(*p1) == toupper(*p2))) {
-        ++p1;
-        ++p2;
-    }
-    if(s1 + n == p1) {
-        return 0;
-    }         return (toupper(*p1) - toupper(*p2));
+bool INIFile::upper_compare(std::string_view s1, std::string_view s2) {
+    if(s1.size() != s2.size())
+        return false;
 
-   
+    return std::equal(
+    std::begin(s1), std::end(s1),
+    std::begin(s2), std::end(s2),
+    [](auto a, auto b) { return std::toupper(a) == std::toupper(b); });
 }

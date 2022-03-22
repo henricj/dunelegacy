@@ -18,92 +18,98 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define SCREEN_FORMAT               SDL_PIXELFORMAT_ARGB8888
-#define SCREEN_BPP                  SDL_BITSPERPIXEL(SCREEN_FORMAT)
-#define SCREEN_MIN_WIDTH            640
-#define SCREEN_MIN_HEIGHT           480
-#define SCREEN_DEFAULT_DISPLAYINDEX 0
+#define SCREEN_FORMAT SDL_PIXELFORMAT_ARGB8888
+#define SCREEN_BPP    SDL_BITSPERPIXEL(SCREEN_FORMAT)
+
+static constexpr auto SCREEN_MIN_WIDTH            = 640;
+static constexpr auto SCREEN_MIN_HEIGHT           = 480;
+static constexpr auto SCREEN_DEFAULT_DISPLAYINDEX = 0;
 
 // Yamaha's OPL used an interesting sampling frequency.
-#define AUDIO_FREQUENCY     49716
+static constexpr auto AUDIO_FREQUENCY = 49716;
 
-#define DEFAULT_PORT        28747
-#define DEFAULT_METASERVER  "http://dunelegacy.sourceforge.net/metaserver/metaserver.php"
+static constexpr auto DEFAULT_PORT       = 28747;
+static constexpr auto DEFAULT_METASERVER = "http://dunelegacy.sourceforge.net/metaserver/metaserver.php";
 
-#define SAVEMAGIC           8675309
-#define SAVEGAMEVERSION     9704
+static constexpr auto SAVEMAGIC       = 8675309;
+static constexpr auto SAVEGAMEVERSION = 9704;
 
-#define MAX_PLAYERNAMELENGTH    24
+static constexpr auto MAX_PLAYERNAMELENGTH = 24;
 
-#define DIAGONALSPEEDCONST (FixPt_SQRT2 >> 1)           // = sqrt(2)/2 = 0.707106781
+#define DIAGONALSPEEDCONST (FixPt_SQRT2 >> 1) // = sqrt(2)/2 = 0.707106781
 
+static constexpr auto GAMESPEED_MAX     = 32;
+static constexpr auto GAMESPEED_MIN     = 8;
+static constexpr auto GAMESPEED_DEFAULT = 16;
 
-#define GAMESPEED_MAX 32
-#define GAMESPEED_MIN 8
-#define GAMESPEED_DEFAULT 16
-#define MILLI2CYCLES(MILLISECONDS) ((MILLISECONDS)/GAMESPEED_DEFAULT)   // this is calculated in game milliseconds (dune 2 has about the same in game speed "fastest")
-#define VOLUME_MAX 100
-#define VOLUME_MIN 0
+constexpr auto MILLI2CYCLES(int milliseconds) {
+    // this is calculated in game milliseconds (dune 2 has about the same in game speed "fastest")
+    return milliseconds / GAMESPEED_DEFAULT;
+}
 
-#define NUM_ZOOMLEVEL   3
+static constexpr auto VOLUME_MAX = 100;
+static constexpr auto VOLUME_MIN = 0;
 
-#define WINLOSEFLAGS_AI_NO_BUILDINGS        0x01
-#define WINLOSEFLAGS_HUMAN_HAS_BUILDINGS    0x02
-#define WINLOSEFLAGS_QUOTA                  0x04
-#define WINLOSEFLAGS_TIMEOUT                0x08
+static constexpr auto NUM_ZOOMLEVEL = 3;
 
-#define MAX_XSIZE 256
-#define MAX_YSIZE 256
+static constexpr auto WINLOSEFLAGS_AI_NO_BUILDINGS     = 0x01;
+static constexpr auto WINLOSEFLAGS_HUMAN_HAS_BUILDINGS = 0x02;
+static constexpr auto WINLOSEFLAGS_QUOTA               = 0x04;
+static constexpr auto WINLOSEFLAGS_TIMEOUT             = 0x08;
 
-#define BUILDRANGE 2
-#define MIN_CARRYALL_LIFT_DISTANCE 6
-#define STRUCTURE_ANIMATIONTIMER 31
+static constexpr auto MAX_XSIZE = 256;
+static constexpr auto MAX_YSIZE = 256;
 
-#define RANDOMSPICEMIN (111 - 37)        //how much spice on each spice tile
-#define RANDOMSPICEMAX (111 + 37)
-#define RANDOMTHICKSPICEMIN (222 - 74)
-#define RANDOMTHICKSPICEMAX (222 + 74)
+static constexpr auto BUILDRANGE                 = 2;
+static constexpr auto MIN_CARRYALL_LIFT_DISTANCE = 6;
+static constexpr auto STRUCTURE_ANIMATIONTIMER   = 31;
 
-#define TILESIZE    64              // size of tile pieces 16x16 in zoom level 0
+static constexpr auto RANDOMSPICEMIN      = 111 - 37; // how much spice on each spice tile
+static constexpr auto RANDOMSPICEMAX      = 111 + 37;
+static constexpr auto RANDOMTHICKSPICEMIN = 222 - 74;
+static constexpr auto RANDOMTHICKSPICEMAX = 222 + 74;
 
-#define D2_TILESIZE 16              // the size of a tile in D2
+static constexpr auto TILESIZE = 64; // size of tile pieces 16x16 in zoom level 0
 
-#define SIDEBARWIDTH 144
-#define SIDEBAR_COLUMN_WIDTH 12
+static constexpr auto D2_TILESIZE = 16; // the size of a tile in D2
 
-#define NONE_ID (~0U)          // unsigned -1
-#define INVALID_POS (-1)
-#define INVALID (-1)
-#define INVALID_GAMECYCLE (~0U)
+static constexpr auto SIDEBARWIDTH         = 144;
+static constexpr auto SIDEBAR_COLUMN_WIDTH = 12;
 
-#define NUM_TEAMS 7
+static constexpr auto NONE_ID           = ~0U; // unsigned -1
+static constexpr auto INVALID_POS       = -1;
+static constexpr auto INVALID           = -1;
+static constexpr auto INVALID_GAMECYCLE = ~0U;
 
-#define DEVIATIONTIME MILLI2CYCLES(120*1000)
-#define TRACKSTIME MILLI2CYCLES((1 << 16))
-#define HARVESTERMAXSPICE 700
-#define HARVESTSPEED (0.1344_fix)
-#define BADLYDAMAGEDRATIO (0.5_fix)                //if health/getMaxHealth() < this, damage will become bad - smoke and shit
-#define HEAVILYDAMAGEDRATIO (025_fix)             //if health/getMaxHealth() < this, damage will become heavy damage - red color
+static constexpr auto NUM_TEAMS = 7;
+
+static constexpr auto DEVIATIONTIME     = MILLI2CYCLES(120 * 1000);
+static constexpr auto TRACKSTIME        = MILLI2CYCLES((1 << 16));
+static constexpr auto HARVESTERMAXSPICE = 700;
+#define HARVESTSPEED      (0.1344_fix)
+#define BADLYDAMAGEDRATIO (0.5_fix) // if health/getMaxHealth() < this, damage will become bad - smoke and shit
+
+#define HEAVILYDAMAGEDRATIO (025_fix) // if health/getMaxHealth() < this, damage will become heavy damage - red color
+
 #define HEAVILYDAMAGEDSPEEDMULTIPLIER (0.75_fix)
-#define NUMSELECTEDLISTS 9
-#define NUM_INFANTRY_PER_TILE 5                 //how many infantry can fit on a tile
+static constexpr auto NUMSELECTEDLISTS      = 9;
+static constexpr auto NUM_INFANTRY_PER_TILE = 5; // how many infantry can fit on a tile
 
 #define UNIT_REPAIRCOST (0.1_fix)
-#define DEFAULT_GUARDRANGE 10                   //0 - 10, how far unit will search for enemy when guarding
-#define DEFAULT_STARTINGCREDITS 3000
+static constexpr auto DEFAULT_GUARDRANGE      = 10; // 0 - 10, how far unit will search for enemy when guarding
+static constexpr auto DEFAULT_STARTINGCREDITS = 3000;
 
-#define HUMANPLAYERCLASS        "HumanPlayer"
-#define DEFAULTAIPLAYERCLASS    "qBotMedium"
-
+static constexpr auto HUMANPLAYERCLASS     = "HumanPlayer";
+static constexpr auto DEFAULTAIPLAYERCLASS = "qBotMedium";
 
 #ifndef RESTRICT
-#if defined(_MSC_VER)
-#define RESTRICT __restrict
-#elif defined(__GNUC__) || defined(__clang__)
-#define RESTRICT __restrict__
-#else
-#define RESTRICT
-#endif
+#    if defined(_MSC_VER)
+#        define RESTRICT __restrict
+#    elif defined(__GNUC__) || defined(__clang__)
+#        define RESTRICT __restrict__
+#    else
+#        define RESTRICT
+#    endif
 #endif // RESTRICT
 
-#endif //DEFINITIONS_H
+#endif // DEFINITIONS_H

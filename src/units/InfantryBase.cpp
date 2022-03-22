@@ -109,11 +109,11 @@ void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
 }
 
 void InfantryBase::blitToScreen() {
-    SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
-                                            screenborder->world2screenX(realX),
-                                            screenborder->world2screenY(realY),
-                                            numImagesX, numImagesY,
-                                            HAlign::Center, VAlign::Center);
+    const SDL_Rect dest = calcSpriteDrawingRect(  graphic[currentZoomlevel],
+                                                  screenborder->world2screenX(realX),
+                                                  screenborder->world2screenY(realY),
+                                                  numImagesX, numImagesY,
+                                                  HAlign::Center, VAlign::Center);
 
     auto temp = drawnAngle;
     if(temp == ANGLETYPE::UP) {
@@ -126,7 +126,7 @@ void InfantryBase::blitToScreen() {
         temp = ANGLETYPE::RIGHT;
     }
 
-    SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], static_cast<int>(temp), numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
+    const SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], static_cast<int>(temp), numImagesX, (walkFrame/10 == 3) ? 1 : walkFrame/10, numImagesY);
 
     Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 }
@@ -191,14 +191,14 @@ void InfantryBase::checkPos(const GameContext& context) {
         if (blockDistance(location, closestPoint) <= 0.5_fix) {
             StructureBase* pCapturedStructure = target.getStructurePointer();
             if (pCapturedStructure->getHealthColor() == COLOR_RED) {
-                House* pOwner = pCapturedStructure->getOwner();
-                auto targetID = pCapturedStructure->getItemID();
-                int posX = pCapturedStructure->getX();
-                int posY = pCapturedStructure->getY();
-                const auto origHouse = pCapturedStructure->getOriginalHouseID();
-                int oldHealth = lround(pCapturedStructure->getHealth());
-                bool isSelected = pCapturedStructure->isSelected();
-                bool isSelectedByOtherPlayer = pCapturedStructure->isSelectedByOtherPlayer();
+                House*     pOwner                  = pCapturedStructure->getOwner();
+                const auto targetID                = pCapturedStructure->getItemID();
+                const int  posX                    = pCapturedStructure->getX();
+                const int  posY                    = pCapturedStructure->getY();
+                const auto origHouse               = pCapturedStructure->getOriginalHouseID();
+                const int  oldHealth               = lround(pCapturedStructure->getHealth());
+                const bool isSelected              = pCapturedStructure->isSelected();
+                const bool isSelectedByOtherPlayer = pCapturedStructure->isSelectedByOtherPlayer();
 
                 FixPoint capturedSpice = 0;
 
@@ -312,7 +312,7 @@ void InfantryBase::checkPos(const GameContext& context) {
 
             }
             else {
-                int damage = lround(std::min(pCapturedStructure->getHealth() / 2, getHealth() * 2));
+                const int damage = lround(std::min(pCapturedStructure->getHealth() / 2, getHealth() * 2));
                 pCapturedStructure->handleDamage(context, damage, NONE_ID, getOwner());
             }
             // destroy unit indirectly
@@ -462,8 +462,8 @@ void InfantryBase::setSpeeds(const GameContext& context) {
         parent::setSpeeds(context);
     } else {
 
-        int sx = tilePositionOffset[oldTilePosition].x;
-        int sy = tilePositionOffset[oldTilePosition].y;
+        const int sx = tilePositionOffset[oldTilePosition].x;
+        const int sy = tilePositionOffset[oldTilePosition].y;
 
         int dx = 0;
         int dy = 0;
@@ -488,7 +488,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
         dx -= sx;
         dy -= sy;
 
-        FixPoint scale = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
+        const FixPoint scale = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed/FixPoint::sqrt((dx*dx + dy*dy));
         xSpeed = dx*scale;
         ySpeed = dy*scale;
     }
