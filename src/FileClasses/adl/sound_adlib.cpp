@@ -408,58 +408,58 @@ private:
 
     int32 _samplesPerCallback;
     int32 _samplesPerCallbackRemainder;
-    int32 _samplesTillCallback;
-    int32 _samplesTillCallbackRemainder;
+    int32 _samplesTillCallback          = 0;
+    int32 _samplesTillCallbackRemainder = 0;
 
-    int _lastProcessed;
-    int8 _flagTrigger;
-    int _curChannel;
-    uint8 _soundTrigger;
-    int _soundsPlaying;
+    int _lastProcessed  = 0;
+    int8 _flagTrigger   = 0;
+    int _curChannel     = 0;
+    uint8 _soundTrigger = 0;
+    int _soundsPlaying  = 0;
 
-    uint16 _rnd;
+    uint16 _rnd = 0x1234;
 
-    uint8 _unkValue1;
-    uint8 _unkValue2;
-    uint8 _unkValue3;
-    uint8 _unkValue4;
-    uint8 _unkValue5;
-    uint8 _unkValue6;
-    uint8 _unkValue7;
-    uint8 _unkValue8;
-    uint8 _unkValue9;
-    uint8 _unkValue10;
-    uint8 _unkValue11;
-    uint8 _unkValue12;
-    uint8 _unkValue13;
-    uint8 _unkValue14;
-    uint8 _unkValue15;
-    uint8 _unkValue16;
-    uint8 _unkValue17;
-    uint8 _unkValue18;
-    uint8 _unkValue19;
-    uint8 _unkValue20;
+    uint8 _unkValue1  = 0;
+    uint8 _unkValue2  = 0;
+    uint8 _unkValue3  = 0xFF;
+    uint8 _unkValue4  = 0;
+    uint8 _unkValue5  = 0;
+    uint8 _unkValue6  = 0;
+    uint8 _unkValue7  = 0;
+    uint8 _unkValue8  = 0;
+    uint8 _unkValue9  = 0;
+    uint8 _unkValue10 = 0;
+    uint8 _unkValue11 = 0;
+    uint8 _unkValue12 = 0;
+    uint8 _unkValue13 = 0;
+    uint8 _unkValue14 = 0;
+    uint8 _unkValue15 = 0;
+    uint8 _unkValue16 = 0;
+    uint8 _unkValue17 = 0;
+    uint8 _unkValue18 = 0;
+    uint8 _unkValue19 = 0;
+    uint8 _unkValue20 = 0;
 
-    int _flags;
+    int _flags = 0;
     std::unique_ptr<Copl> opl;
     int _rate;
 
-    uint8* _soundData;
+    uint8* _soundData = nullptr;
 
     uint8 _soundIdTable[0x10] = {0};
 
 public:
-    Channel _channels[10];
+    std::array<Channel, 10> _channels {};
 
 private:
-    uint8 _vibratoAndAMDepthBits;
-    uint8 _rhythmSectionBits;
+    uint8 _vibratoAndAMDepthBits = 0;
+    uint8 _rhythmSectionBits     = 0;
 
-    uint8 _curRegOffset;
-    uint8 _tempo;
+    uint8 _curRegOffset = 0;
+    uint8 _tempo        = 0;
 
-    const uint8* _tablePtr1;
-    const uint8* _tablePtr2;
+    const uint8* _tablePtr1 = nullptr;
+    const uint8* _tablePtr2 = nullptr;
 
     static const uint8 _regOffset[];
     static const uint16 _unkTable[];
@@ -469,47 +469,23 @@ private:
     static const uint8 _unkTable2_3[];
     static const uint8 _unkTables[][32];
 
-    uint16 _syncJumpMask;
+    uint16 _syncJumpMask = 0;
 
-    bool _v2;
+    bool _v2 = false;
 
     void lock() { }
     void unlock() { }
 };
 
-AdlibDriver::AdlibDriver(int rate) {
+AdlibDriver::AdlibDriver(int rate)
+    : _rate(rate) {
     setupOpcodeList();
     setupParserOpcodeTable();
 
-    _v2 = false;
-
-    _rate = rate;
-
-    _flags  = 0;
-    Copl* a = new CWemuopl(rate, false);
-    Copl* b = new CWemuopl(rate, false);
-    opl     = std::make_unique<CSurroundopl>(a, b, true);
+    auto a = std::make_unique<CWemuopl>(rate, false);
+    auto b = std::make_unique<CWemuopl>(rate, false);
+    opl    = std::make_unique<CSurroundopl>(std::move(a), std::move(b), true);
     // CSurroundopl now owns a and b and will free upon destruction
-
-    memset(_channels, 0, sizeof(_channels));
-    _soundData = nullptr;
-
-    _vibratoAndAMDepthBits = _curRegOffset = 0;
-
-    _lastProcessed = _flagTrigger = _curChannel = _rhythmSectionBits = 0;
-    _soundsPlaying                                                   = 0;
-    _rnd                                                             = 0x1234;
-
-    _tempo        = 0;
-    _soundTrigger = 0;
-
-    _unkValue3 = 0xFF;
-    _unkValue1 = _unkValue2 = _unkValue4 = _unkValue5 = 0;
-    _unkValue6 = _unkValue7 = _unkValue8 = _unkValue9 = _unkValue10 = 0;
-    _unkValue11 = _unkValue12 = _unkValue13 = _unkValue14 = _unkValue15 =
-        _unkValue16 = _unkValue17 = _unkValue18 = _unkValue19 = _unkValue20 = 0;
-
-    _tablePtr1 = _tablePtr2 = nullptr;
 
     // HACK: We use MusicSoundType here for now so we can adjust the volume in the launcher dialog.
     // This affects SFX too, but if we want to support different volumes for SFX and music we would
@@ -520,12 +496,8 @@ AdlibDriver::AdlibDriver(int rate) {
     // would be a good idea.
     //_mixer->playInputStream(Audio::Mixer::kMusicSoundType, &_soundHandle, this, -1, Audio::Mixer::kMaxChannelVolume, 0, false, true);
 
-    _samplesPerCallback           = getRate() / CALLBACKS_PER_SECOND;
-    _samplesPerCallbackRemainder  = getRate() % CALLBACKS_PER_SECOND;
-    _samplesTillCallback          = 0;
-    _samplesTillCallbackRemainder = 0;
-
-    _syncJumpMask = 0;
+    _samplesPerCallback          = getRate() / CALLBACKS_PER_SECOND;
+    _samplesPerCallbackRemainder = getRate() % CALLBACKS_PER_SECOND;
 }
 
 AdlibDriver::~AdlibDriver() = default;
@@ -657,7 +629,7 @@ int AdlibDriver::snd_writeByte(va_list& list) {
     const int c          = va_arg(list, int);
     uint8* ptr           = getProgram(a) + b;
     const uint8 oldValue = *ptr;
-    *ptr                 = (uint8)c;
+    *ptr                 = static_cast<uint8>(c);
     return oldValue;
 }
 
@@ -915,7 +887,7 @@ void AdlibDriver::writeOPL(uint8 reg, uint8 val) const {
 }
 
 void AdlibDriver::initChannel(Channel& channel) {
-    debugC(9, "initChannel(%d)", static_cast<int>(&channel - _channels));
+    debugC(9, "initChannel(%d)", static_cast<int>(&channel - _channels.data()));
     memset(&channel.dataptr, 0, sizeof(Channel) - (reinterpret_cast<char*>(&channel.dataptr) - reinterpret_cast<char*>(&channel)));
 
     channel.tempo    = 0xFF;
@@ -928,7 +900,7 @@ void AdlibDriver::initChannel(Channel& channel) {
 }
 
 void AdlibDriver::noteOff(Channel& channel) {
-    debugC(9, "noteOff(%d)", static_cast<int>(&channel - _channels));
+    debugC(9, "noteOff(%d)", static_cast<int>(&channel - _channels.data()));
 
     // The control channel has no corresponding Adlib channel
 
@@ -1007,7 +979,7 @@ uint16 AdlibDriver::getRandomNr() {
 }
 
 void AdlibDriver::setupDuration(uint8 duration, Channel& channel) {
-    debugC(9, "setupDuration(%d, %lu)", duration, (long)(&channel - _channels));
+    debugC(9, "setupDuration(%d, %lu)", duration, static_cast<unsigned long>(&channel - _channels.data()));
     if (channel.durationRandomness) {
         channel.duration = duration + (getRandomNr() & channel.durationRandomness);
         return;
@@ -1021,7 +993,7 @@ void AdlibDriver::setupDuration(uint8 duration, Channel& channel) {
 // to noteOn(), which will always play the current note.
 
 void AdlibDriver::setupNote(uint8 rawNote, Channel& channel, bool flag) {
-    debugC(9, "setupNote(%d, %lu)", rawNote, (long)(&channel - _channels));
+    debugC(9, "setupNote(%d, %lu)", rawNote, static_cast<unsigned long>(&channel - _channels.data()));
 
     channel.rawNote = rawNote;
 
@@ -1075,11 +1047,11 @@ void AdlibDriver::setupNote(uint8 rawNote, Channel& channel, bool flag) {
 }
 
 void AdlibDriver::setupInstrument(uint8 regOffset, uint8* dataptr, Channel& channel) {
-    debugC(9, "setupInstrument(%d, %p, %lu)", regOffset, (const void*)dataptr, (long)(&channel - _channels));
+    debugC(9, "setupInstrument(%d, %p, %lu)", regOffset,
+           static_cast<const void*>(dataptr), static_cast<unsigned long>(&channel - _channels.data()));
 
-    if (dataptr == nullptr) {
+    if (dataptr == nullptr)
         return;
-    }
 
     // Amplitude Modulation / Vibrato / Envelope Generator Type /
     // Keyboard Scaling Rate / Modulator Frequency Multiple
@@ -1127,7 +1099,7 @@ void AdlibDriver::setupInstrument(uint8 regOffset, uint8* dataptr, Channel& chan
 // primary effect 2.
 
 void AdlibDriver::noteOn(Channel& channel) {
-    debugC(9, "noteOn(%lu)", (long)(&channel - _channels));
+    debugC(9, "noteOn(%lu)", static_cast<unsigned long>(&channel - _channels.data()));
 
     // The "note on" bit is set, and the current note is played.
 
@@ -1141,7 +1113,7 @@ void AdlibDriver::noteOn(Channel& channel) {
 }
 
 void AdlibDriver::adjustVolume(Channel& channel) {
-    debugC(9, "adjustVolume(%lu)", (long)(&channel - _channels));
+    debugC(9, "adjustVolume(%lu)", static_cast<long>(&channel - _channels.data()));
     // Level Key Scaling / Total Level
 
     writeOPL(0x43 + _regOffset[_curChannel], calculateOpLevel2(channel));
@@ -1179,7 +1151,7 @@ void AdlibDriver::primaryEffect1(Channel& channel) {
     // that it won't be affected by any of the calculations below.
     uint16 unk2 = ((channel.regBx & 0x20) << 8) | (channel.regBx & 0x1C);
 
-    const auto unk3 = (int16)channel.unk30;
+    const auto unk3 = static_cast<int16>(channel.unk30);
 
     if (unk3 >= 0) {
         unk1 += unk3;
@@ -1400,7 +1372,7 @@ int AdlibDriver::update_jump(uint8*& dataptr, Channel& channel, uint8 value) {
     const int16 add = READ_LE_uint16(dataptr);
     dataptr += 2;
     dataptr += add;
-    if (_syncJumpMask & (1 << (&channel - _channels)))
+    if (_syncJumpMask & (1 << (&channel - _channels.data())))
         channel.lock = true;
     return 0;
 }
@@ -1725,7 +1697,7 @@ int AdlibDriver::update_setDurationRandomness(uint8*& dataptr, Channel& channel,
 }
 
 int AdlibDriver::update_changeChannelTempo(uint8*& dataptr, Channel& channel, uint8 value) {
-    int tempo = channel.tempo + (int8)value;
+    int tempo = channel.tempo + static_cast<int8>(value);
 
     if (tempo <= 0) {
         tempo = 1;
@@ -2346,7 +2318,7 @@ std::vector<int> SoundAdlibPC::getSubsongs() {
 
 bool SoundAdlibPC::init() {
     _driver->callback(2);
-    _driver->callback(16, int(4));
+    _driver->callback(16, static_cast<int>(4));
     return true;
 }
 
@@ -2416,17 +2388,17 @@ void SoundAdlibPC::play(uint8 track) {
 
     if (_sfxPlayingSound != -1) {
         // Restore the sounds's normal values.
-        _driver->callback(10, _sfxPlayingSound, int(1), int(_sfxPriority));
-        _driver->callback(10, _sfxPlayingSound, int(3), int(_sfxFourthByteOfSong));
+        _driver->callback(10, _sfxPlayingSound, static_cast<int>(1), static_cast<int>(_sfxPriority));
+        _driver->callback(10, _sfxPlayingSound, static_cast<int>(3), static_cast<int>(_sfxFourthByteOfSong));
         _sfxPlayingSound = -1;
     }
 
-    const int chan = _driver->callback(9, soundId, int(0));
+    const int chan = _driver->callback(9, soundId, static_cast<int>(0));
 
     if (chan >= 0 && chan != 9) {
         _sfxPlayingSound     = soundId;
-        _sfxPriority         = _driver->callback(9, soundId, int(1));
-        _sfxFourthByteOfSong = _driver->callback(9, soundId, int(3));
+        _sfxPriority         = _driver->callback(9, soundId, static_cast<int>(1));
+        _sfxFourthByteOfSong = _driver->callback(9, soundId, static_cast<int>(3));
 
         // In the cases I've seen, the mysterious fourth byte has been
         // the parameter for the update_setExtraLevel3() callback.
@@ -2441,9 +2413,9 @@ void SoundAdlibPC::play(uint8 track) {
 
         int newVal = ((((-_sfxFourthByteOfSong) + 63) * 0xFF) >> 8) & 0xFF;
         newVal     = -newVal + 63;
-        _driver->callback(10, soundId, int(3), newVal);
+        _driver->callback(10, soundId, static_cast<int>(3), newVal);
         newVal = ((_sfxPriority * 0xFF) >> 8) & 0xFF;
-        _driver->callback(10, soundId, int(1), newVal);
+        _driver->callback(10, soundId, static_cast<int>(1), newVal);
     }
 
     _driver->callback(6, soundId);
@@ -2472,13 +2444,13 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
     unk1();
 
     file_data = new uint8[file_size];
-    if (SDL_RWread(rwop, file_data, 1, file_size) != (unsigned int)file_size) {
+    if (SDL_RWread(rwop, file_data, 1, file_size) != static_cast<unsigned>(file_size)) {
         sdl2::log_info("SoundAdlibPC::internalLoadFile(): Cannot read from SDL_RWop!");
         delete[] file_data;
         return;
     }
 
-    _driver->callback(8, int(-1));
+    _driver->callback(8, static_cast<int>(-1));
     _soundDataPtr = nullptr;
 
     uint8* p = file_data;

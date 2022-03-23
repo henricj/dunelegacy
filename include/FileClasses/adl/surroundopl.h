@@ -42,19 +42,22 @@
 // one block is too high and the adjacent block is too low ;-)
 #define NEWBLOCK_LIMIT 32
 
+#include <memory>
+#include <vector>
+
 class CSurroundopl final : public Copl {
 private:
     bool use16bit;
-    short bufsize;
-    short *lbuf, *rbuf;
-    Copl *a, *b;
+    static constexpr auto default_bufsize = 4096;
+    std::vector<short> lbuf, rbuf;
+    std::unique_ptr<Copl> a, b;
     uint8_t iFMReg[2][256];
     uint8_t iTweakedFMReg[2][256];
     uint8_t iCurrentTweakedBlock[2][9]; // Current value of the Block in the tweaked OPL chip
     uint8_t iCurrentFNum[2][9];         // Current value of the FNum in the tweaked OPL chip
 
 public:
-    CSurroundopl(Copl* a, Copl* b, bool use16bit);
+    CSurroundopl(std::unique_ptr<Copl> a, std::unique_ptr<Copl> b, bool use16bit);
     ~CSurroundopl() override;
 
     void update(short* buf, int samples) override;

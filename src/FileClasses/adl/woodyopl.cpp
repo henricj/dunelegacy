@@ -146,14 +146,14 @@ static const Bitu wavemask[8] = {
 
 // where the first entry resides
 static const fltype wavestart[8] = {
-    (fltype)(0),
-    (fltype)(WAVPREC >> 1),
-    (fltype)(0),
-    (fltype)(WAVPREC >> 2),
-    (fltype)(0),
-    (fltype)(0),
-    (fltype)(0),
-    (fltype)(WAVPREC >> 3)};
+    static_cast<double>(0),
+    static_cast<double>((WAVPREC >> 1)),
+    static_cast<double>(0),
+    static_cast<double>((WAVPREC >> 2)),
+    static_cast<double>(0),
+    static_cast<double>(0),
+    static_cast<double>(0),
+    static_cast<double>((WAVPREC >> 3))};
 
 // envelope generator function constants
 static const fltype attackconst[4] = {1 / 2.82624, 1 / 2.25280, 1 / 1.88416, 1 / 1.59744};
@@ -161,9 +161,9 @@ static const fltype decrelconst[4] = {1 / 39.28064, 1 / 31.41608, 1 / 26.17344, 
 
 static fltype generator_add; // should be a chip parameter
 
-OPLChipClass::OPLChipClass(Bitu cnum) {
+OPLChipClass::OPLChipClass(Bitu cnum)
+    : chip_num(cnum) {
     // which OPL chip are we (needed for timers)
-    chip_num = cnum;
 }
 
 // no action, cell is off
@@ -173,18 +173,18 @@ void processcell_off(celltype* /*ctc*/, fltype /*modulator*/, fltype /*vib*/, fl
 // output level is sustained, mode changes only when cell is turned off (->release)
 // or when the keep-sustained bit is turned off (->sustain_nokeep)
 void processcell_sustain(celltype* ctc, fltype modulator, fltype vib, fltype trem) {
-    Bitu i = (Bitu)(ctc->t + modulator);
+    Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += (ctc->tinc * vib); // advance waveform time
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = static_cast<Bits>(ctc->generator_pos); // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;
     }
     ctc->generator_pos -= num_steps_add;
 
-    ctc->val = ctc->amp * ctc->vol * ((fltype)ctc->cur_wform[i & ctc->cur_wmask]) * trem;
+    ctc->val = ctc->amp * ctc->vol * static_cast<double>(ctc->cur_wform[i & ctc->cur_wmask]) * trem;
 }
 
 // cell in release mode, if output level reaches zero the cell is turned off
@@ -200,12 +200,12 @@ void processcell_release(celltype* ctc, fltype modulator, fltype vib, fltype tre
         ctc->step_amp = 0.0;
     }
 
-    Bitu i = (Bitu)(ctc->t + modulator);
+    Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += (ctc->tinc * vib); // advance waveform time
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = static_cast<Bits>(ctc->generator_pos); // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++; // sample counter
         if ((ctc->cur_env_step & ctc->env_step_r) == 0)
@@ -213,7 +213,7 @@ void processcell_release(celltype* ctc, fltype modulator, fltype vib, fltype tre
     }
     ctc->generator_pos -= num_steps_add;
 
-    ctc->val = ctc->step_amp * ctc->vol * ((fltype)ctc->cur_wform[i & ctc->cur_wmask]) * trem;
+    ctc->val = ctc->step_amp * ctc->vol * static_cast<double>(ctc->cur_wform[i & ctc->cur_wmask]) * trem;
     //  ctc->val = ctc->amp*ctc->vol*((fltype)ctc->cur_wform[i&ctc->cur_wmask])*trem;
 }
 
@@ -238,12 +238,12 @@ void processcell_decay(celltype* ctc, fltype modulator, fltype vib, fltype trem)
         }
     }
 
-    Bitu i = (Bitu)(ctc->t + modulator);
+    Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += (ctc->tinc * vib); // advance waveform time
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = static_cast<Bits>(ctc->generator_pos); // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;
         if ((ctc->cur_env_step & ctc->env_step_d) == 0)
@@ -251,7 +251,7 @@ void processcell_decay(celltype* ctc, fltype modulator, fltype vib, fltype trem)
     }
     ctc->generator_pos -= num_steps_add;
 
-    ctc->val = ctc->step_amp * ctc->vol * ((fltype)ctc->cur_wform[i & ctc->cur_wmask]) * trem;
+    ctc->val = ctc->step_amp * ctc->vol * static_cast<double>(ctc->cur_wform[i & ctc->cur_wmask]) * trem;
     //  ctc->val = ctc->amp*ctc->vol*((fltype)ctc->cur_wform[i&ctc->cur_wmask])*trem;
 }
 
@@ -266,12 +266,12 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
         ctc->step_amp = 1.0;
     }
 
-    Bitu i = (Bitu)(ctc->t + modulator);
+    Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += (ctc->tinc * vib); // advance waveform time
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    const Bits num_steps_add = (Bits)ctc->generator_pos; // determine number of std samples that have passed
+    const Bits num_steps_add = static_cast<Bits>(ctc->generator_pos); // determine number of std samples that have passed
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;                              // next sample
         if ((ctc->cur_env_step & ctc->env_step_a) == 0) { // check if next step already reached
@@ -284,7 +284,7 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
     }
     ctc->generator_pos -= num_steps_add;
 
-    ctc->val = ctc->step_amp * ctc->vol * ((fltype)ctc->cur_wform[i & ctc->cur_wmask]) * trem;
+    ctc->val = ctc->step_amp * ctc->vol * static_cast<double>(ctc->cur_wform[i & ctc->cur_wmask]) * trem;
     //  ctc->val = ctc->amp*ctc->vol*((fltype)ctc->cur_wform[i&ctc->cur_wmask])*trem;
 }
 
@@ -301,7 +301,7 @@ cftype_fptr cfuncs[6] = {
 void OPLChipClass::change_attackrate(Bitu regbase, celltype* c) {
     const Bits attackrate = adlibreg[ARC_ATTR_DECR + regbase] >> 4;
     if (attackrate) {
-        const auto f = (fltype)(pow(FL2, (fltype)attackrate + (c->toff >> 2) - 1) * attackconst[c->toff & 3] * recipsamp);
+        const auto f = (fltype)(pow(FL2, static_cast<double>(attackrate) + (c->toff >> 2) - 1) * attackconst[c->toff & 3] * recipsamp);
         // attack rate coefficients
         c->a0 = (fltype)(0.0377 * f);
         c->a1 = (fltype)(10.73 * f + 1);
@@ -331,7 +331,7 @@ void OPLChipClass::change_decayrate(Bitu regbase, celltype* c) {
     // decaymul should be 1.0 when decayrate==0
     if (decayrate) {
         const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
-        c->decaymul      = (fltype)(pow(FL2, f * pow(FL2, (fltype)(decayrate + (c->toff >> 2)))));
+        c->decaymul      = (fltype)(pow(FL2, f * pow(FL2, static_cast<double>(decayrate + (c->toff >> 2)))));
         const Bits steps = (decayrate * 4 + c->toff) >> 2;
         c->env_step_d    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
@@ -345,7 +345,7 @@ void OPLChipClass::change_releaserate(Bitu regbase, celltype* c) {
     // releasemul should be 1.0 when releaserate==0
     if (releaserate) {
         const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
-        c->releasemul    = (fltype)(pow(FL2, f * pow(FL2, (fltype)(releaserate + (c->toff >> 2)))));
+        c->releasemul    = (fltype)(pow(FL2, f * pow(FL2, static_cast<double>(releaserate + (c->toff >> 2)))));
         const Bits steps = (releaserate * 4 + c->toff) >> 2;
         c->env_step_r    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
@@ -358,7 +358,7 @@ void OPLChipClass::change_sustainlevel(Bitu regbase, celltype* c) {
     const Bits sustainlevel = adlibreg[ARC_SUSL_RELR + regbase] >> 4;
     // sustainlevel should be 0.0 when sustainlevel==15 (max)
     if (sustainlevel < 15) {
-        c->sustain_level = (fltype)(pow(FL2, (fltype)sustainlevel * (-FL05)));
+        c->sustain_level = (fltype)(pow(FL2, static_cast<double>(sustainlevel) * (-FL05)));
     } else {
         c->sustain_level = 0.0;
     }
@@ -393,16 +393,16 @@ void OPLChipClass::change_vibrato(Bitu regbase, celltype* c) {
 void OPLChipClass::change_feedback(Bitu chanbase, celltype* c) {
     const Bits feedback = adlibreg[ARC_FEEDBACK + chanbase] & 14;
     if (feedback)
-        c->mfb = (fltype)(pow(FL2, (fltype)((feedback >> 1) + 5)) * (WAVPREC / 2048.0) * FL05);
+        c->mfb = (fltype)(pow(FL2, static_cast<double>((feedback >> 1) + 5)) * (WAVPREC / 2048.0) * FL05);
     else
         c->mfb = 0.0;
 }
 
 void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
     // frequency
-    const Bits frn = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8) + (Bits)adlibreg[ARC_FREQ_NUM + chanbase];
+    const Bits frn = ((static_cast<Bits>(adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8) + static_cast<Bits>(adlibreg[ARC_FREQ_NUM + chanbase]);
     // block number/octave
-    const Bits oct = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) >> 2) & 7);
+    const Bits oct = ((static_cast<Bits>(adlibreg[ARC_KON_BNUM + chanbase]) >> 2) & 7);
     c->freq_high   = (frn >> 7) & 7;
 
     // keysplit
@@ -415,10 +415,10 @@ void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
         c->toff >>= 2;
 
     // 20+a0+b0:
-    c->tinc = (fltype)(frn << oct) * nfrqmul[adlibreg[ARC_TVS_KSR_MUL + regbase] & 15];
+    c->tinc = static_cast<double>(frn << oct) * nfrqmul[adlibreg[ARC_TVS_KSR_MUL + regbase] & 15];
     // 40+a0+b0:
-    const auto vol_in = (fltype)((fltype)(adlibreg[ARC_KSL_OUTLEV + regbase] & 63) +
-                                 (fltype)kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6] * ksl[oct][frn >> 6]);
+    const auto vol_in = (fltype)(static_cast<double>(adlibreg[ARC_KSL_OUTLEV + regbase] & 63) +
+                                 static_cast<double>(kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6]) * ksl[oct][frn >> 6]);
     c->vol            = (fltype)(pow(FL2, (fltype)(vol_in * -0.125 - 14)));
 
     // cell frequency changed, care about features that depend on it
@@ -448,7 +448,7 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
     ext_samplerate = samplerate;
     int_samplerate = samplerate;
 
-    generator_add = (fltype)INTFREQU / (fltype)int_samplerate;
+    generator_add = static_cast<double>(INTFREQU) / static_cast<double>(int_samplerate);
 
     memset((void*)adlibreg, 0, sizeof(adlibreg));
     memset((void*)cell, 0, sizeof(celltype) * MAXCELLS);
@@ -475,7 +475,7 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
         cell[i].env_step_skip_a = 0;
     }
 
-    recipsamp = FL1 / (fltype)int_samplerate;
+    recipsamp = FL1 / static_cast<double>(int_samplerate);
     for (i = 15; i >= 0; i--)
         nfrqmul[i] = (fltype)(frqmul[i] * INTFREQU / 512.0 * recipsamp * (WAVPREC / 2048.0));
 
@@ -493,7 +493,7 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
         vib_table[i] = vib_table[i - 4] * -1;
 
     // vibrato at 6.1 ?? (opl3 docs say 6.1, opl4 docs say 6.0, y8950 docs say 6.4)
-    vibtab_add = (fltype)((fltype)VIBTAB_SIZE * VIB_FREQ / (fltype)int_samplerate);
+    vibtab_add = (fltype)(static_cast<double>(VIBTAB_SIZE) * VIB_FREQ / static_cast<double>(int_samplerate));
     vibtab_pos = 0.0;
 
     for (i = 0; i < FIFOSIZE; i++)
@@ -509,16 +509,16 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
         trem_table_int[i] = static_cast<Bit32s>(i - 40 - 26); // upwards (1 to 12 -> -1/6 to -0.5/6)
 
     for (i = 0; i < TREMTAB_SIZE; i++) {
-        trem_table[i]                = (fltype)(((fltype)trem_table_int[i]) * 4.8 / 26.0 / 6.0);              // 4.8db
-        trem_table[TREMTAB_SIZE + i] = (fltype)((fltype)((Bit32s)(trem_table_int[i] / 4)) * 1.2 / 7.5 / 6.0); // 1.2db (?)
-                                                                                                              //      trem_table[i]=(fltype)(trem_table_int[(i)&(~3)])*1.0/13.0/6.0;                  // 1.0db
+        trem_table[i]                = (fltype)(static_cast<double>(trem_table_int[i]) * 4.8 / 26.0 / 6.0);              // 4.8db
+        trem_table[TREMTAB_SIZE + i] = (fltype)(static_cast<double>((Bit32s)(trem_table_int[i] / 4)) * 1.2 / 7.5 / 6.0); // 1.2db (?)
+                                                                                                                         //      trem_table[i]=(fltype)(trem_table_int[(i)&(~3)])*1.0/13.0/6.0;                  // 1.0db
 
         trem_table[i]                = (fltype)(pow(FL2, trem_table[i]));
         trem_table[TREMTAB_SIZE + i] = (fltype)(pow(FL2, trem_table[TREMTAB_SIZE + i]));
     }
 
     // tremolo at 3.7
-    tremtab_add = (fltype)((fltype)TREMTAB_SIZE * TREM_FREQ / (fltype)int_samplerate);
+    tremtab_add = (fltype)(static_cast<double>(TREMTAB_SIZE) * TREM_FREQ / static_cast<double>(int_samplerate));
     tremtab_pos = 0.0;
 
     static Bitu initfirstime = 0;
@@ -527,8 +527,8 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
 
         // create waveform tables
         for (i = 0; i < (WAVPREC >> 1); i++) {
-            wavtable[(i << 1) + WAVPREC]     = (Bit16s)(16384 * sin((fltype)((i << 1)) * PI * 2 / WAVPREC));
-            wavtable[(i << 1) + 1 + WAVPREC] = (Bit16s)(16384 * sin((fltype)((i << 1) + 1) * PI * 2 / WAVPREC));
+            wavtable[(i << 1) + WAVPREC]     = static_cast<Bit16s>(16384 * sin((fltype)((i << 1)) * PI * 2 / WAVPREC));
+            wavtable[(i << 1) + 1 + WAVPREC] = static_cast<Bit16s>(16384 * sin((fltype)((i << 1) + 1) * PI * 2 / WAVPREC));
             wavtable[i]                      = wavtable[(i << 1) + WAVPREC];
             // table to be verified, alternative: (zero-less)
             /*          wavtable[(i<<1)  +WAVPREC]  = (Bit16s)(16384*sin((fltype)(((i*2+1)<<1)-1)*PI/WAVPREC));
@@ -551,13 +551,13 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
         ksl[7][7] = 47;
         ksl[7][8] = 48;
         for (i = 9; i < 16; i++)
-            ksl[7][i] = (Bit8u)(i + 41);
+            ksl[7][i] = static_cast<Bit8u>(i + 41);
         for (j = 6; j >= 0; j--) {
             for (i = 0; i < 16; i++) {
-                oct = (Bits)ksl[j + 1][i] - 8;
+                oct = static_cast<Bits>(ksl[j + 1][i]) - 8;
                 if (oct < 0)
                     oct = 0;
-                ksl[j][i] = (Bit8u)oct;
+                ksl[j][i] = static_cast<Bit8u>(oct);
             }
         }
     }
@@ -839,7 +839,7 @@ static void clipit16(fltype f, Bit16s* a) {
     else if (f < -32767.5)
         *a = -32768;
     else
-        *a = (Bit16u)f;
+        *a = static_cast<Bit16u>(f);
 }
 
 // be careful with this
@@ -880,16 +880,16 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
             vibtab_pos += vibtab_add;
             if (vibtab_pos >= VIBTAB_SIZE)
                 vibtab_pos -= VIBTAB_SIZE;
-            vib_lut[i] = vib_table[(Bit32s)vibtab_pos]; // 14cents (14100 of a semitone)
+            vib_lut[i] = vib_table[static_cast<Bit32s>(vibtab_pos)]; // 14cents (14100 of a semitone)
 
             // cycle through tremolo table
             tremtab_pos += tremtab_add;
             if (tremtab_pos >= TREMTAB_SIZE)
                 tremtab_pos -= TREMTAB_SIZE;
             if (adlibreg[ARC_PERC_MODE] & 0x80)
-                trem_lut[i] = trem_table[(Bit32s)tremtab_pos];
+                trem_lut[i] = trem_table[static_cast<Bit32s>(tremtab_pos)];
             else
-                trem_lut[i] = trem_table[TREMTAB_SIZE + (Bit32s)tremtab_pos];
+                trem_lut[i] = trem_table[TREMTAB_SIZE + static_cast<Bit32s>(tremtab_pos)];
         }
         if ((adlibreg[ARC_PERC_MODE] & 0x40) == 0) {
             for (i = 0; i < endsamples; i++)
@@ -905,7 +905,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     if (cptr[9].vibrato) {
                         vibval1 = vibval_var1;
                         for (i = 0; i < endsamples; i++)
-                            vibval1[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                            vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval1 = val_const;
                     if (cptr[9].tremolo)
@@ -927,13 +927,13 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                         vibval1 = vibval_var1;
                         for (i = 0; i < endsamples; i++)
-                            vibval1[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[0].freq_high / 8)) * 0.0014) + FL1;
+                            vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval1 = val_const;
                     if ((cptr[9].vibrato) && (cptr[9].cf_sel != CF_TYPE_OFF)) {
                         vibval2 = vibval_var2;
                         for (i = 0; i < endsamples; i++)
-                            vibval2[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                            vibval2[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval2 = val_const;
                     if (cptr[0].tremolo)
@@ -964,13 +964,13 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                     vibval1 = vibval_var1;
                     for (i = 0; i < endsamples; i++)
-                        vibval1[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[0].freq_high / 8)) * 0.0014) + FL1;
+                        vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval1 = val_const;
                 if ((cptr[9].vibrato) && (cptr[9].cf_sel == CF_TYPE_OFF)) {
                     vibval2 = vibval_var2;
                     for (i = 0; i < endsamples; i++)
-                        vibval2[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                        vibval2[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval2 = val_const;
 
@@ -987,13 +987,13 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                     vibval3 = vibval_var1;
                     for (i = 0; i < endsamples; i++)
-                        vibval3[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[0].freq_high / 8)) * 0.0014) + FL1;
+                        vibval3[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval3 = val_const;
                 if ((cptr[9].vibrato) && (cptr[9].cf_sel == CF_TYPE_OFF)) {
                     vibval4 = vibval_var2;
                     for (i = 0; i < endsamples; i++)
-                        vibval4[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                        vibval4[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval4 = val_const;
 
@@ -1023,14 +1023,14 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     memcpy(&snarek3, &_snarek3, sizeof(float));
 
                     cptr = &cell[7];
-                    cfuncs[cptr[9].cf_sel](&cptr[9], (fltype)snarek1, vibval2[i], tremval2[i]); // Snare
-                    cfuncs[cptr[0].cf_sel](&cptr[0], (fltype)snarek2, vibval1[i], tremval1[i]); // Hihat
+                    cfuncs[cptr[9].cf_sel](&cptr[9], static_cast<double>(snarek1), vibval2[i], tremval2[i]); // Snare
+                    cfuncs[cptr[0].cf_sel](&cptr[0], static_cast<double>(snarek2), vibval1[i], tremval1[i]); // Hihat
                     fltype chanval = (cptr[0].val + cptr[9].val) * 2;
                     CHANVAL_OUT
 
                     cptr = &cell[8];
-                    cfuncs[cptr[9].cf_sel](&cptr[9], (fltype)snarek3, vibval4[i], tremval4[i]); // Cymbal
-                    cfuncs[cptr[0].cf_sel](&cptr[0], 0.0, vibval3[i], tremval3[i]);             // TomTom
+                    cfuncs[cptr[9].cf_sel](&cptr[9], static_cast<double>(snarek3), vibval4[i], tremval4[i]); // Cymbal
+                    cfuncs[cptr[0].cf_sel](&cptr[0], 0.0, vibval3[i], tremval3[i]);                          // TomTom
                     chanval = (cptr[0].val + cptr[9].val) * 2;
                     CHANVAL_OUT
                 }
@@ -1055,13 +1055,13 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                     vibval1 = vibval_var1;
                     for (i = 0; i < endsamples; i++)
-                        vibval1[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[0].freq_high / 8)) * 0.0014) + FL1;
+                        vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval1 = val_const;
                 if ((cptr[9].vibrato) && (cptr[9].cf_sel == CF_TYPE_OFF)) {
                     vibval2 = vibval_var2;
                     for (i = 0; i < endsamples; i++)
-                        vibval2[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                        vibval2[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval2 = val_const;
                 if (cptr[0].tremolo)
@@ -1090,13 +1090,13 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                     vibval1 = vibval_var1;
                     for (i = 0; i < endsamples; i++)
-                        vibval1[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[0].freq_high / 8)) * 0.0014) + FL1;
+                        vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval1 = val_const;
                 if ((cptr[9].vibrato) && (cptr[9].cf_sel != CF_TYPE_OFF)) {
                     vibval2 = vibval_var2;
                     for (i = 0; i < endsamples; i++)
-                        vibval2[i] = (fltype)(((Bit32s)(vib_lut[i] * cptr[9].freq_high / 8)) * 0.0014) + FL1;
+                        vibval2[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                 } else
                     vibval2 = val_const;
                 if (cptr[0].tremolo)

@@ -28,13 +28,13 @@
 #include <cstring> // for memset()
 //#include "debug.h"
 
-CSurroundopl::CSurroundopl(Copl* a, Copl* b, bool use16bit)
+CSurroundopl::CSurroundopl(std::unique_ptr<Copl> a, std::unique_ptr<Copl> b, bool use16bit)
     : use16bit(use16bit),
-      bufsize(4096),
-      a(a), b(b) {
-    currType   = TYPE_OPL2;
-    this->lbuf = new short[this->bufsize];
-    this->rbuf = new short[this->bufsize];
+      a(std::move(a)), b(std::move(b)) {
+    currType = TYPE_OPL2;
+
+    lbuf.resize(default_bufsize);
+    rbuf.resize(default_bufsize);
 
     memset(iFMReg, 0, sizeof(iFMReg));
     memset(iTweakedFMReg, 0, sizeof(iTweakedFMReg));
@@ -42,25 +42,17 @@ CSurroundopl::CSurroundopl(Copl* a, Copl* b, bool use16bit)
     memset(iCurrentFNum, 0, sizeof(iCurrentFNum));
 }
 
-CSurroundopl::~CSurroundopl() {
-    delete[] this->rbuf;
-    delete[] this->lbuf;
-    delete a;
-    delete b;
-}
+CSurroundopl::~CSurroundopl() = default;
 
 void CSurroundopl::update(short* buf, int samples) {
-    if (samples * 2 > this->bufsize) {
-        // Need to realloc the buffer
-        delete[] this->rbuf;
-        delete[] this->lbuf;
-        this->bufsize = samples * 2;
-        this->lbuf    = new short[this->bufsize];
-        this->rbuf    = new short[this->bufsize];
+    if (samples * 2 > rbuf.size()) {
+        // Need to resize the buffer
+        rbuf.resize(samples * 2);
+        lbuf.resize(rbuf.size());
     }
 
-    a->update(this->lbuf, samples);
-    b->update(this->rbuf, samples);
+    a->update(&lbuf[0], samples);
+    b->update(&rbuf[0], samples);
 
     // Copy the two mono OPL buffers into the stereo buffer
     for (int i = 0; i < samples; i++) {
@@ -68,8 +60,10 @@ void CSurroundopl::update(short* buf, int samples) {
             buf[i * 2]     = this->lbuf[i];
             buf[i * 2 + 1] = this->rbuf[i];
         } else {
-            ((char*)buf)[i * 2]     = ((char*)this->lbuf)[i];
-            ((char*)buf)[i * 2 + 1] = ((char*)this->rbuf)[i];
+            auto* char_buf = reinterpret_cast<char*>(buf);
+
+            char_buf[i * 2]     = reinterpret_cast<char*>(&lbuf[0])[i];
+            char_buf[i * 2 + 1] = reinterpret_cast<char*>(&rbuf[0])[i];
         }
     }
 }
@@ -92,7 +86,7 @@ void CSurroundopl::write(int reg, int val) {
         const uint8_t iBlock = (this->iFMReg[this->currChip][0xB0 + iChannel] >> 2) & 0x07;
         const uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8) | this->iFMReg[this->currChip][0xA0 + iChannel];
         // double dbOriginalFreq = 50000.0 * (double)iFNum * pow(2, iBlock - 20);
-        const double dbOriginalFreq = 49716.0 * (double)iFNum * pow(2, iBlock - 20);
+        const double dbOriginalFreq = 49716.0 * static_cast<double>(iFNum) * pow(2, iBlock - 20);
 
         uint8_t iNewBlock = iBlock;
         uint16_t iNewFNum = 0;
@@ -117,7 +111,7 @@ void CSurroundopl::write(int reg, int val) {
                 iNewFNum  = iFNum;
             } else {
                 iNewBlock++;
-                iNewFNum = (uint16_t)calcFNum();
+                iNewFNum = static_cast<uint16_t>(calcFNum());
             }
         } else if (dbNewFNum < 0 + NEWBLOCK_LIMIT) {
             // It's too low, so move down one block (octave) and recalculate
@@ -132,11 +126,11 @@ void CSurroundopl::write(int reg, int val) {
                 iNewFNum  = iFNum;
             } else {
                 iNewBlock--;
-                iNewFNum = (uint16_t)calcFNum();
+                iNewFNum = static_cast<uint16_t>(calcFNum());
             }
         } else {
             // Original calculation is within range, use that
-            iNewFNum = (uint16_t)dbNewFNum;
+            iNewFNum = static_cast<uint16_t>(dbNewFNum);
         }
 
         // Sanity check
