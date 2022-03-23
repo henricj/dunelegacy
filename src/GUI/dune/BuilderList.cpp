@@ -34,9 +34,9 @@
 
 #include <sstream>
 
-BuilderList::BuilderList(uint32_t builderObjectID) {
-    enableResizing(false, true);
-    this->builderObjectID = builderObjectID;
+BuilderList::BuilderList(uint32_t builderObjectID)
+    : builderObjectID(builderObjectID) {
+    BuilderList::enableResizing(false, true);
 
     upButton.setTextures(pGFXManager->getUIGraphic(UI_ButtonUp, pLocalHouse->getHouseID()),
                          pGFXManager->getUIGraphic(UI_ButtonUp_Pressed, pLocalHouse->getHouseID()));
@@ -45,34 +45,25 @@ BuilderList::BuilderList(uint32_t builderObjectID) {
                            pGFXManager->getUIGraphic(UI_ButtonDown_Pressed, pLocalHouse->getHouseID()));
 
     StaticContainer::addWidget(&upButton, Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, 0), upButton.getSize());
-    upButton.setOnClick(std::bind(&BuilderList::onUp, this));
+    upButton.setOnClick([this] { onUp(); });
 
     StaticContainer::addWidget(&downButton,
                                Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2,
                                      (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)),
                                downButton.getSize());
-    downButton.setOnClick(std::bind(&BuilderList::onDown, this));
+    downButton.setOnClick([this] { onDown(); });
 
     StaticContainer::addWidget(&orderButton,
                                Point(0, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) + BUILDERBTN_SPACING),
                                Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
-    orderButton.setOnClick(std::bind(&BuilderList::onOrder, this));
+    orderButton.setOnClick([this] { onOrder(); });
     orderButton.setText(_("Order"));
-
-    currentListPos = 0;
-
-    mouseLeftButton  = -1;
-    mouseRightButton = -1;
 
     pSoldOutTextTexture          = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, 12, true);
     pAlreadyBuiltTextTexture     = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
     pPlaceItTextTexture          = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, 12, true);
     pOnHoldTextTexture           = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, 12, true);
     pUnitLimitReachedTextTexture = pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, 12, true);
-
-    pLastTooltip      = nullptr;
-    tooltipText       = "";
-    lastMouseMovement = (1u << 31);
 
     resize(BuilderList::getMinimumSize().x, BuilderList::getMinimumSize().y);
 }
@@ -435,8 +426,8 @@ int BuilderList::getNumButtons(int height) {
 }
 
 Point BuilderList::getButtonPosition(int BtnNumber) {
-    return Point(BUILDERBTN_SPACING,
-                 ARROWBTN_HEIGHT + 2 * BUILDERBTN_SPACING + BtnNumber * (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING));
+    return {BUILDERBTN_SPACING,
+            ARROWBTN_HEIGHT + 2 * BUILDERBTN_SPACING + BtnNumber * (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING)};
 }
 
 int BuilderList::getButton(int x, int y) const {

@@ -33,8 +33,7 @@
 #include <misc/draw_util.h>
 
 RadarView::RadarView()
-    : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME) {
-    radarStaticAnimation = pGFXManager->getUIGraphic(UI_RadarAnimation);
+    : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME), radarStaticAnimation(pGFXManager->getUIGraphic(UI_RadarAnimation)) {
 
     radarSurface = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, 128, 128, SCREEN_BPP, SCREEN_FORMAT)};
     if (radarSurface == nullptr) {

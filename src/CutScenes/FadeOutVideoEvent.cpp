@@ -23,16 +23,12 @@
 
 #include <algorithm>
 
-FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical, bool bFadeWhite) {
+FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical, bool bFadeWhite)
+    : currentFrame(0), numFrames2FadeOut(numFrames2FadeOut), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
     const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
     pTexture                     = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
-
-    this->numFrames2FadeOut = numFrames2FadeOut;
-    this->bCenterVertical   = bCenterVertical;
-    this->bFadeWhite        = bFadeWhite;
-    currentFrame            = 0;
 }
 
 FadeOutVideoEvent::~FadeOutVideoEvent() = default;

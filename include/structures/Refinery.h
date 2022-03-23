@@ -71,11 +71,11 @@ protected:
 private:
     void init();
 
-    bool extractingSpice;    ///< Currently extracting spice?
-    ObjectPointer harvester; ///< The harvester currently in the refinery
-    uint32_t bookings;       ///< How many bookings?
+    bool extractingSpice = false; ///< Currently extracting spice?
+    ObjectPointer harvester;      ///< The harvester currently in the refinery
+    uint32_t bookings = 0;        ///< How many bookings?
 
-    bool firstRun; ///< On first deploy of a harvester we tell it to the user
+    bool firstRun = true; ///< On first deploy of a harvester we tell it to the user
 };
 
 #endif // REFINERY_H

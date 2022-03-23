@@ -124,7 +124,7 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t height,
 }
 
 Point DuneStyle::getMinimumCheckboxSize(std::string_view text) {
-    return Point(getTextWidth(text, 14) + 20 + 17, getTextHeight(14) + 8);
+    return {static_cast<int>(getTextWidth(text, 14)) + 20 + 17, static_cast<int>(getTextHeight(14)) + 8};
 }
 
 sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
@@ -183,7 +183,7 @@ sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t heig
 }
 
 Point DuneStyle::getMinimumRadioButtonSize(std::string_view text) {
-    return Point(getTextWidth(text, 14) + 16 + 15, getTextHeight(14) + 8);
+    return {static_cast<int>(getTextWidth(text, 14)) + 16 + 15, static_cast<int>(getTextHeight(14)) + 8};
 }
 
 sdl2::surface_ptr DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
@@ -294,7 +294,7 @@ sdl2::surface_ptr DuneStyle::createDropDownBoxButton(uint32_t size, bool pressed
 }
 
 Point DuneStyle::getMinimumButtonSize(std::string_view text) {
-    return Point(getTextWidth(text, 12) + 12, getTextHeight(12));
+    return {static_cast<int>(getTextWidth(text, 12)) + 12, static_cast<int>(getTextHeight(12))};
 }
 
 sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
@@ -346,7 +346,7 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height
 }
 
 Point DuneStyle::getMinimumTextBoxSize(int fontSize) {
-    return Point(10, getTextHeight(fontSize) + 6);
+    return {10, static_cast<int>(getTextHeight(fontSize)) + 6};
 }
 
 sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment,
@@ -428,7 +428,7 @@ sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t heigh
 }
 
 Point DuneStyle::getMinimumScrollBarArrowButtonSize() {
-    return Point(17, 17);
+    return {17, 17};
 }
 
 sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed, bool activated, uint32_t color) {

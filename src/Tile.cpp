@@ -38,8 +38,8 @@
 
 #define FOGTIME MILLI2CYCLES(10 * 1000)
 
-Tile::Tile() {
-    type = Terrain_Sand;
+Tile::Tile()
+    : type(Terrain_Sand) {
 
     for (auto i = 0; i < NUM_TEAMS; i++) {
         explored[i]   = false;

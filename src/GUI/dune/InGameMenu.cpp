@@ -56,14 +56,14 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 
     saveGameButton.setText(_("Save Game"));
     saveGameButton.setTextColor(color);
-    saveGameButton.setOnClick(std::bind(&InGameMenu::onSave, this));
+    saveGameButton.setOnClick([this] { onSave(); });
     mainVBox.addWidget(&saveGameButton);
 
     mainVBox.addWidget(VSpacer::create(3));
 
     loadGameButton.setText(_("Load Game"));
     loadGameButton.setTextColor(color);
-    loadGameButton.setOnClick(std::bind(&InGameMenu::onLoad, this));
+    loadGameButton.setOnClick([this] { onLoad(); });
     loadGameButton.setVisible(!bMultiplayer);
     loadGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&loadGameButton);
@@ -72,7 +72,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 
     gameSettingsButton.setText(_("Game Settings"));
     gameSettingsButton.setTextColor(color);
-    gameSettingsButton.setOnClick(std::bind(&InGameMenu::onSettings, this));
+    gameSettingsButton.setOnClick([this] { onSettings(); });
     gameSettingsButton.setVisible(!bMultiplayer);
     gameSettingsButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&gameSettingsButton);
@@ -81,7 +81,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 
     restartGameButton.setText(_("Restart Game"));
     restartGameButton.setTextColor(color);
-    restartGameButton.setOnClick(std::bind(&InGameMenu::onRestart, this));
+    restartGameButton.setOnClick([this] { onRestart(); });
     restartGameButton.setVisible(!bMultiplayer);
     restartGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&restartGameButton);
@@ -90,7 +90,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color)
 
     quitButton.setText(_("Quit to Menu"));
     quitButton.setTextColor(color);
-    quitButton.setOnClick(std::bind(&InGameMenu::onQuit, this));
+    quitButton.setOnClick([this] { onQuit(); });
     mainVBox.addWidget(&quitButton);
 
     mainVBox.addWidget(VSpacer::create(6));

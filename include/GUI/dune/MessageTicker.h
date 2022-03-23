@@ -44,7 +44,7 @@ public:
         \return the minimum size of this widget
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        return Point(0, 0);
+        return {0, 0};
     }
 
 private:

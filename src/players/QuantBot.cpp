@@ -116,12 +116,9 @@
  **/
 
 QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
-    : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
+    : Player(context, associatedHouse, playername, random), difficulty(difficulty), buildTimer(getRandomGen().rand(0, 3) * 50), attackTimer(MILLI2CYCLES(10000)), retreatTimer(MILLI2CYCLES(60000)) {
 
-    buildTimer = getRandomGen().rand(0, 3) * 50;
-
-    attackTimer  = MILLI2CYCLES(10000);
-    retreatTimer = MILLI2CYCLES(60000); // turning off
+    // turning off
 
     // Different AI logic for Campaign. Assumption is if player is loading they are playing a campaign game
     if ((context.game.gameType == GameType::Campaign) || (context.game.gameType == GameType::LoadSavegame) ||

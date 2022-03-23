@@ -31,12 +31,7 @@ Wall::Wall(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(wall_constants, objectID, initializer) {
     Wall::init();
 
-    setHealth(getMaxHealth());
-
-    bWallDestroyedUp    = false;
-    bWallDestroyedRight = false;
-    bWallDestroyedDown  = false;
-    bWallDestroyedLeft  = false;
+    Wall::setHealth(getMaxHealth());
 
     setWallTile(Wall_LeftRight);
 }

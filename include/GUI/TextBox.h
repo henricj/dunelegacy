@@ -29,14 +29,7 @@ class TextBox final : public Widget {
 public:
     /// default constructor
     TextBox() {
-        fontSize              = 14;
-        textcolor             = COLOR_DEFAULT;
-        textshadowcolor       = COLOR_DEFAULT;
-        maxTextLength         = -1;
-        pTextureWithoutCarret = nullptr;
-        pTextureWithCarret    = nullptr;
-        lastCarretTime        = SDL_GetTicks();
-        enableResizing(true, false);
+        Widget::enableResizing(true, false);
         resize(getMinimumSize().x, getMinimumSize().y);
     }
 
@@ -176,11 +169,11 @@ public:
         if this text box is resized or the text changes.
     */
     void updateTextures() override {
-        if (pTextureWithoutCarret == nullptr || pTextureWithCarret == nullptr) {
+        if (pTextureWithoutCaret == nullptr || pTextureWithCaret == nullptr) {
             invalidateTextures();
 
-            pTextureWithoutCarret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
-            pTextureWithCarret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithoutCaret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithCaret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
         }
     }
 
@@ -195,24 +188,24 @@ public:
 
         updateTextures();
 
-        if ((pTextureWithoutCarret == nullptr) || (pTextureWithCarret == nullptr)) {
+        if ((pTextureWithoutCaret == nullptr) || (pTextureWithCaret == nullptr)) {
             return;
         }
 
-        const SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pTextureWithoutCaret.get(), position.x, position.y);
 
         if (isActive()) {
-            if ((SDL_GetTicks() - lastCarretTime) < 500) {
-                Dune_RenderCopy(renderer, pTextureWithCarret.get(), nullptr, &dest);
+            if ((SDL_GetTicks() - lastCaretTime) < 500) {
+                Dune_RenderCopy(renderer, pTextureWithCaret.get(), nullptr, &dest);
             } else {
-                Dune_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
+                Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
             }
 
-            if (SDL_GetTicks() - lastCarretTime >= 1000) {
-                lastCarretTime = SDL_GetTicks();
+            if (SDL_GetTicks() - lastCaretTime >= 1000) {
+                lastCaretTime = SDL_GetTicks();
             }
         } else {
-            Dune_RenderCopy(renderer, pTextureWithoutCarret.get(), nullptr, &dest);
+            Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
         }
     }
 
@@ -234,7 +227,7 @@ public:
 
         if (pressed) {
             setActive();
-            lastCarretTime = SDL_GetTicks();
+            lastCaretTime = SDL_GetTicks();
         }
         return true;
     }
@@ -255,7 +248,7 @@ public:
         }
 
         if (key.keysym.sym == SDLK_BACKSPACE) {
-            if (text.size() != 0) {
+            if (!text.empty()) {
                 text = utf8Substr(text, 0, utf8Length(text) - 1);
                 if (pOnTextChange) {
                     pOnTextChange(true);
@@ -318,27 +311,27 @@ protected:
         This method frees all textures that are used by this text box
     */
     void invalidateTextures() override {
-        pTextureWithoutCarret.reset();
-        pTextureWithCarret.reset();
+        pTextureWithoutCaret.reset();
+        pTextureWithCaret.reset();
     }
 
 private:
-    int fontSize;             ///< the size of the font to use
-    uint32_t textcolor;       ///< Text color
-    uint32_t textshadowcolor; ///< Text shadow color
-    std::string text;         ///< text in this text box
-    int maxTextLength;        ///< the maximum length of the typed text
+    int fontSize             = 14;            ///< the size of the font to use
+    uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
+    uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
+    std::string text;                         ///< text in this text box
+    int maxTextLength = -1;                   ///< the maximum length of the typed text
 
     std::string allowedChars;   ///< a set of allowed characters, empty string for everything allowed
     std::string forbiddenChars; ///< a set of forbidden characters, empty string for everything allowed
 
-    uint32_t lastCarretTime; ///< Last time the carret changes from off to on or vise versa
+    uint32_t lastCaretTime = SDL_GetTicks(); ///< Last time the caret changes from off to on or vise versa
 
     std::function<void(bool)> pOnTextChange; ///< function that is called when the text of this text box changes
     std::function<void()> pOnReturn;         ///< function that is called when return is pressed
 
-    sdl2::texture_ptr pTextureWithoutCarret; ///< Texture with carret off
-    sdl2::texture_ptr pTextureWithCarret;    ///< Texture with carret on
+    sdl2::texture_ptr pTextureWithoutCaret; ///< Texture with caret off
+    sdl2::texture_ptr pTextureWithCaret;    ///< Texture with caret on
 };
 
 #endif // TEXTBOX_H

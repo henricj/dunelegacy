@@ -81,8 +81,8 @@ protected:
     void move(const GameContext& context) override;
     void navigate(const GameContext& context) override;
 
-    bool awaitingPickup;    ///< Is this unit waiting for pickup?
-    uint32_t bookedCarrier; ///< What is the carrier if waiting for pickup?
+    bool awaitingPickup    = false;   ///< Is this unit waiting for pickup?
+    uint32_t bookedCarrier = NONE_ID; ///< What is the carrier if waiting for pickup?
 };
 
 template<>

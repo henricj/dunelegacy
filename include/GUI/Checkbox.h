@@ -28,12 +28,8 @@ class Checkbox final : public Button {
 public:
     /// Default constructor
     Checkbox() {
-        textcolor       = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
-
-        Widget::enableResizing(true, false);
+        Checkbox::enableResizing(true, false);
         setToggleButton(true);
-        pCheckedActiveTexture = nullptr;
     }
 
     /// destructor
@@ -176,10 +172,10 @@ protected:
     }
 
 private:
-    uint32_t textcolor;                      ///< Text color
-    uint32_t textshadowcolor;                ///< Text shadow color
-    std::string text;                        ///< Text of this checkbox
-    sdl2::texture_ptr pCheckedActiveTexture; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+    uint32_t textcolor {COLOR_DEFAULT};       ///< Text color
+    uint32_t textshadowcolor {COLOR_DEFAULT}; ///< Text shadow color
+    std::string text;                         ///< Text of this checkbox
+    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 
 #endif // CHECKBOX_H

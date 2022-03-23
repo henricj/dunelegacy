@@ -45,9 +45,9 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    CustomGameMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    CustomGameMenu::setWindowWidget(&windowWidget);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 

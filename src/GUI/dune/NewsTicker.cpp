@@ -26,12 +26,9 @@
 #define MESSAGESCROLLTIME  (16 * MESSAGESCROLLSPEED)
 #define MESSAGETIME        (16 * MESSAGESCROLLSPEED)
 
-NewsTicker::NewsTicker() {
+NewsTicker::NewsTicker()
+    : pBackground(pGFXManager->getUIGraphic(UI_MessageBox)), pCurrentMessageTexture(nullptr), timer(-MESSAGETIME) {
     Widget::enableResizing(false, false);
-
-    timer                  = -MESSAGETIME;
-    pBackground            = pGFXManager->getUIGraphic(UI_MessageBox);
-    pCurrentMessageTexture = nullptr;
 
     Widget::resize(getTextureSize(pBackground));
 }

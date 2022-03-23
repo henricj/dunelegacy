@@ -66,10 +66,10 @@ private:
 
     void fixWall(const GameContext& context);
 
-    bool bWallDestroyedUp;
-    bool bWallDestroyedRight;
-    bool bWallDestroyedDown;
-    bool bWallDestroyedLeft;
+    bool bWallDestroyedUp    = false;
+    bool bWallDestroyedRight = false;
+    bool bWallDestroyedDown  = false;
+    bool bWallDestroyedLeft  = false;
 };
 
 #endif // WALL_H

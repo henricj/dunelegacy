@@ -19,22 +19,15 @@
 
 #include <cmath>
 
-ScrollBar::ScrollBar() {
-    color        = COLOR_DEFAULT;
-    minValue     = 1;
-    maxValue     = 1;
-    currentValue = 1;
-    bigStepSize  = 10;
-    bDragSlider  = false;
+ScrollBar::ScrollBar()
+    : color(COLOR_DEFAULT) {
 
     Widget::enableResizing(false, true);
 
     updateArrowButtonSurface();
 
-    arrow1.setOnClick(std::bind(&ScrollBar::onArrow1, this));
-    arrow2.setOnClick(std::bind(&ScrollBar::onArrow2, this));
-
-    pBackground = nullptr;
+    arrow1.setOnClick([this] { onArrow1(); });
+    arrow2.setOnClick([this] { onArrow2(); });
 
     resize(ScrollBar::getMinimumSize());
 }

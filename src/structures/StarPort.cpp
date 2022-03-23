@@ -31,23 +31,20 @@
 
 #include <units/Frigate.h>
 
-// Starport is counting in 30s from 10 to 0
-#define STARPORT_ARRIVETIME (MILLI2CYCLES(30 * 1000))
-
-#define STARPORT_NO_ARRIVAL_AWAITED -1
-
 namespace {
+// Starport is counting in 30s from 10 to 0
+constexpr auto STARPORT_ARRIVETIME = (MILLI2CYCLES(30 * 1000));
+
+constexpr auto STARPORT_NO_ARRIVAL_AWAITED = -1;
+
 constexpr BuilderBaseConstants star_port_constants {StarPort::item_id, Coord {3, 3}};
-}
+} // namespace
 
 StarPort::StarPort(uint32_t objectID, const ObjectInitializer& initializer)
-    : BuilderBase(star_port_constants, objectID, initializer) {
+    : BuilderBase(star_port_constants, objectID, initializer), arrivalTimer(STARPORT_NO_ARRIVAL_AWAITED) {
     StarPort::init();
 
     ObjectBase::setHealth(getMaxHealth());
-
-    arrivalTimer = STARPORT_NO_ARRIVAL_AWAITED;
-    deploying    = false;
 }
 
 StarPort::StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer)

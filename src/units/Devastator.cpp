@@ -38,8 +38,6 @@ Devastator::Devastator(uint32_t objectID, const ObjectInitializer& initializer)
     Devastator::init();
 
     ObjectBase::setHealth(getMaxHealth());
-
-    devastateTimer = 0;
 }
 
 Devastator::Devastator(uint32_t objectID, const ObjectStreamInitializer& initializer)

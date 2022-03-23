@@ -236,14 +236,14 @@ private:
 
     std::function<void()> pOnChange; ///< function that is called when this scrollbar changes its position
 
-    int currentValue;
-    int minValue;
-    int maxValue;
-    int bigStepSize; ///< the step size when clicking between the arrows and the slider
+    int currentValue = 1;
+    int minValue     = 1;
+    int maxValue     = 1;
+    int bigStepSize  = 10; ///< the step size when clicking between the arrows and the slider
     Point sliderPosition;
 
-    bool bDragSlider;
-    int dragPositionFromSliderTop;
+    bool bDragSlider              = false;
+    int dragPositionFromSliderTop = false;
 
     uint32_t color; ///< the color
 };

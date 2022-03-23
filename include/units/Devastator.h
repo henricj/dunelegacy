@@ -52,7 +52,7 @@ private:
     void init();
 
     // devastator state
-    int32_t devastateTimer; ///< When will this devastator devastate
+    int32_t devastateTimer = 0; ///< When will this devastator devastate
 
     // drawing information
     zoomable_texture turretGraphic {}; ///< The graphic of the turret

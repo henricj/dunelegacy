@@ -132,11 +132,11 @@ private:
     HOUSETYPE house;
     uint32_t color;
 
-    int mapSeed;
+    int mapSeed = INVALID;
     MapData mapdata;
     std::filesystem::path loadMapFilepath;
     std::string loadMapname;
-    bool loadMapSingleplayer;
+    bool loadMapSingleplayer = false;
 };
 
 #endif // NEWMAPWINDOW_H

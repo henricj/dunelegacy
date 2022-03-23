@@ -48,18 +48,15 @@ public:
     class Player {
     public:
         Player(std::string name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string brain = "Human", int maxunit = 0)
-            : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) {
-            quota   = 0;
-            credits = 2000;
-        }
+            : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) { }
 
         std::string name;
         HOUSETYPE house;
         HOUSETYPE colorOfHouse;
         bool bActive;
         bool bAnyHouse;
-        int quota;
-        int credits;
+        int quota   = 0;
+        int credits = 2000;
         std::string brain;
         int maxunit;
     };
@@ -81,7 +78,7 @@ public:
         }
 
         EditorMode(HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-            : mode(EditorMode_Unit), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+            : mode(EditorMode_Unit), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
         }
 
         enum {
@@ -118,7 +115,7 @@ public:
     public:
         Unit(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position, ANGLETYPE angle,
              ATTACKMODE attackmode)
-            : id(id), house(house), itemID(itemID), health(health), position(position), angle(angle), attackmode(attackmode) {
+            : id(id), house(house), angle(angle), itemID(itemID), health(health), position(position), attackmode(attackmode) {
         }
 
         int id;
@@ -297,28 +294,28 @@ private:
     SDL_Rect topBarPos;
     SDL_Rect bottomBarPos;
 
-    bool bQuitEditor;
+    bool bQuitEditor = false;
 
-    bool scrollDownMode;  ///< currently scrolling the map down?
-    bool scrollLeftMode;  ///< currently scrolling the map left?
-    bool scrollRightMode; ///< currently scrolling the map right?
-    bool scrollUpMode;    ///< currently scrolling the map up?
+    bool scrollDownMode  = false; ///< currently scrolling the map down?
+    bool scrollLeftMode  = false; ///< currently scrolling the map left?
+    bool scrollRightMode = false; ///< currently scrolling the map right?
+    bool scrollUpMode    = false; ///< currently scrolling the map up?
 
-    bool shift;
+    bool shift = false;
 
-    bool bChangedSinceLastSave;
+    bool bChangedSinceLastSave = false;
 
     EditorMode currentEditorMode;
 
     MirrorMode currentMirrorMode;
     std::unique_ptr<MapMirror> mapMirror;
 
-    bool bLeftMousePressed;
-    int lastTerrainEditPosX;
-    int lastTerrainEditPosY;
+    bool bLeftMousePressed  = false;
+    int lastTerrainEditPosX = -1;
+    int lastTerrainEditPosY = -1;
 
-    int selectedUnitID;
-    int selectedStructureID;
+    int selectedUnitID      = INVALID;
+    int selectedStructureID = INVALID;
     Coord selectedMapItemCoord; ///< only used for classic maps
 
     std::filesystem::path lastSaveName;

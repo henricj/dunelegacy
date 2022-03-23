@@ -451,12 +451,12 @@ private:
     std::function<void()> pOnSingleClick;         ///< this function is called when a list entry is single clicked
     std::function<void()> pOnDoubleClick;         ///< this function is called when a list entry is double clicked
 
-    uint32_t color;                 ///< the color
-    bool bAutohideScrollbar;        ///< hide the scrollbar if not needed (default = true)
-    bool bHighlightSelectedElement; ///< highlight selected element (default = true);
-    int firstVisibleElement;        ///< the index of the first shown element in the list
-    int selectedElement;            ///< the selected element
-    uint32_t lastClickTime;         ///< the time an element was clicked on the last time (needed for double clicking)
+    uint32_t color;                        ///< the color
+    bool bAutohideScrollbar        = true; ///< hide the scrollbar if not needed (default = true)
+    bool bHighlightSelectedElement = true; ///< highlight selected element (default = true);
+    int firstVisibleElement        = 0;    ///< the index of the first shown element in the list
+    int selectedElement            = -1;   ///< the selected element
+    uint32_t lastClickTime         = 0;    ///< the time an element was clicked on the last time (needed for double clicking)
 };
 
 #endif // LISTBOX_H

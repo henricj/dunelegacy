@@ -36,12 +36,8 @@
 
 StructureBase::StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
                              const ObjectInitializer& initializer)
-    : ObjectBase(structure_constants, objectID, initializer) {
+    : ObjectBase(structure_constants, objectID, initializer), degradeTimer(MILLI2CYCLES(15 * 1000)) {
     StructureBase::init();
-
-    repairing    = false;
-    fogged       = false;
-    degradeTimer = MILLI2CYCLES(15 * 1000);
 }
 
 StructureBase::StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,

@@ -69,10 +69,10 @@ private:
     void setSpeeds(const GameContext& context) override;
 
     // harvester state
-    bool harvestingMode;        ///< currently harvesting
-    bool returningToRefinery;   ///< currently on the way back to the refinery
-    FixPoint spice;             ///< loaded spice
-    uint32_t spiceCheckCounter; ///< Check for available spice on map to harvest
+    bool harvestingMode        = false; ///< currently harvesting
+    bool returningToRefinery   = false; ///< currently on the way back to the refinery
+    FixPoint spice             = 0;     ///< loaded spice
+    uint32_t spiceCheckCounter = 0;     ///< Check for available spice on map to harvest
 };
 
 #endif // HARVESTER_H

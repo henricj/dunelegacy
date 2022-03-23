@@ -17,19 +17,11 @@
 
 #include <GUI/ListBox.h>
 
-ListBox::ListBox() {
-    enableResizing(true, true);
+ListBox::ListBox()
+    : color(COLOR_DEFAULT) {
+    ListBox::enableResizing(true, true);
 
-    pBackground               = nullptr;
-    pForeground               = nullptr;
-    color                     = COLOR_DEFAULT;
-    bAutohideScrollbar        = true;
-    bHighlightSelectedElement = true;
-    firstVisibleElement       = 0;
-    selectedElement           = -1;
-    lastClickTime             = 0;
-
-    scrollbar.setOnChange(std::bind(&ListBox::onScrollbarChange, this));
+    scrollbar.setOnChange([this] { onScrollbarChange(); });
     resize(ListBox::getMinimumSize().x, ListBox::getMinimumSize().y);
 }
 

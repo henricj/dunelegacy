@@ -98,9 +98,9 @@ public:
 
 private:
     uint32_t curFrameStartTime;
-    uint32_t frameDurationTime;
-    int loopsLeft;
-    unsigned int curFrame;
+    uint32_t frameDurationTime = 1;
+    int loopsLeft              = -1;
+    unsigned int curFrame      = 0;
     unsigned int curFrameOverride;
     std::vector<sdl2::surface_ptr> frames;
     std::vector<sdl2::texture_ptr> frameTextures;

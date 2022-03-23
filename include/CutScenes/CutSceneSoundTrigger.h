@@ -33,9 +33,7 @@ public:
         \param  sound           the sound to play
     */
     CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound)
-        : CutSceneTrigger(frameNumber) {
-        this->sound = sound;
-    }
+        : CutSceneTrigger(frameNumber), sound(sound) { }
 
     CutSceneSoundTrigger(const CutSceneSoundTrigger&) = delete;
     CutSceneSoundTrigger(CutSceneSoundTrigger&&)      = delete;

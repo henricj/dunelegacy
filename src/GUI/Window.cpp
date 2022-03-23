@@ -21,11 +21,7 @@
 #include <misc/draw_util.h>
 
 Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
-    : position(x, y) {
-    closeChildWindowCounter   = 0;
-    pChildWindow              = nullptr;
-    pChildWindowAlreadyClosed = false;
-    pWindowWidget             = nullptr;
+    : closeChildWindowCounter(0), pChildWindow(nullptr), pChildWindowAlreadyClosed(false), pWindowWidget(nullptr), position(x, y) {
 
     resize(w, h);
 }

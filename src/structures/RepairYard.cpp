@@ -38,9 +38,7 @@ RepairYard::RepairYard(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(repair_yard_constants, objectID, initializer) {
     RepairYard::init();
 
-    setHealth(getMaxHealth());
-    bookings       = 0;
-    repairingAUnit = false;
+    RepairYard::setHealth(getMaxHealth());
 }
 
 RepairYard::RepairYard(uint32_t objectID, const ObjectStreamInitializer& initializer)

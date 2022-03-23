@@ -42,23 +42,7 @@
 #include <algorithm>
 #include <typeinfo>
 
-MapEditor::MapEditor()
-    : pInterface(nullptr) {
-    bQuitEditor     = false;
-    scrollDownMode  = false;
-    scrollLeftMode  = false;
-    scrollRightMode = false;
-    scrollUpMode    = false;
-    shift           = false;
-
-    bChangedSinceLastSave = false;
-
-    bLeftMousePressed   = false;
-    lastTerrainEditPosX = -1;
-    lastTerrainEditPosY = -1;
-
-    selectedUnitID      = INVALID;
-    selectedStructureID = INVALID;
+MapEditor::MapEditor() {
     selectedMapItemCoord.invalidate();
 
     currentZoomlevel = settings.video.preferredZoomLevel;
@@ -68,7 +52,8 @@ MapEditor::MapEditor()
     bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
     SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h};
-    screenborder           = std::make_unique<ScreenBorder>(gameBoardRect);
+
+    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
     setMap(MapData(128, 128, Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);

@@ -26,9 +26,8 @@
 
 #include <misc/exceptions.h>
 
-SoundPlayer::SoundPlayer() {
-
-    sfxVolume = settings.audio.sfxVolume;
+SoundPlayer::SoundPlayer()
+    : sfxVolume(settings.audio.sfxVolume) {
 
     if (!pSFXManager) {
         soundOn = false;

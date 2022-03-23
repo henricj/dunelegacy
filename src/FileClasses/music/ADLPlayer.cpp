@@ -25,9 +25,7 @@
 #include <mmath.h>
 
 ADLPlayer::ADLPlayer()
-    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer") {
-    pSoundAdlibPC = nullptr;
-}
+    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer"), pSoundAdlibPC(nullptr) { }
 
 ADLPlayer::~ADLPlayer() {
     setMusic(false);

@@ -32,9 +32,9 @@
 #define RANDOMTURRETTURNTIMER 8000 // less of this makes tank turrets randomly turn more
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : TrackedUnit(constants, objectID, initializer) {
-    drawnTurretAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
-    turretAngle      = static_cast<int>(drawnTurretAngle);
+    : TrackedUnit(constants, objectID, initializer), drawnTurretAngle(static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7))) {
+
+    turretAngle = static_cast<int>(drawnTurretAngle);
 }
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)

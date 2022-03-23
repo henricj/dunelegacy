@@ -70,10 +70,9 @@
 #include <iomanip>
 #include <sstream>
 
-Game::Game() {
+Game::Game()
+    : localPlayerName(settings.general.playerName) {
     currentZoomlevel = settings.video.preferredZoomLevel;
-
-    localPlayerName = settings.general.playerName;
 
     unitList.clear();      // holds all the units
     structureList.clear(); // all the structures

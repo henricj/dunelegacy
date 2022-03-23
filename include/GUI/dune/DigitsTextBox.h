@@ -36,11 +36,8 @@
 class DigitsTextBox final : public HBox {
 
 public:
-    DigitsTextBox() {
-        minValue = std::numeric_limits<int>::min();
-        maxValue = std::numeric_limits<int>::max();
-
-        incrementValue = 1;
+    DigitsTextBox()
+        : incrementValue(1), maxValue(std::numeric_limits<int>::max()), minValue(std::numeric_limits<int>::min()) {
 
         textBox.setText("0");
         textBox.setAllowedChars("-0123456789");
@@ -154,7 +151,7 @@ public:
     Point getMinimumSize() const override {
         if (textBox.getParent() != this || buttonVBox.getParent() != this) {
             // we are about to be destroyed
-            return Point(0, 0);
+            return {0, 0};
         }
 
         const Point textBoxMinimumSize    = textBox.getMinimumSize();
@@ -162,8 +159,8 @@ public:
 
         const std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
 
-        return Point(textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize()),
-                     std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y));
+        return {textBoxMinimumSize.x + buttonVBoxMinimumSize.x + static_cast<int>(GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize())),
+                std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
     }
 
 protected:

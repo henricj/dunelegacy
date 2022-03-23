@@ -26,8 +26,8 @@
 static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_HARKONNEN,
                                            HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
-HouseChoiceMenu::HouseChoiceMenu() {
-    currentHouseChoiceScrollPos = 0;
+HouseChoiceMenu::HouseChoiceMenu()
+    : currentHouseChoiceScrollPos(0) {
 
     // set up window
     const int xpos = std::max(0, (getRendererWidth() - 640) / 2);

@@ -40,8 +40,7 @@ Frigate::Frigate(uint32_t objectID, const ObjectInitializer& initializer)
 
     attackMode = GUARD;
 
-    respondable     = false;
-    droppedOffCargo = false;
+    respondable = false;
 }
 
 Frigate::Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer)

@@ -17,8 +17,7 @@
 
 #include <CutScenes/CutSceneTrigger.h>
 
-CutSceneTrigger::CutSceneTrigger(int frameNumber) {
-    this->frameNumber = frameNumber;
-}
+CutSceneTrigger::CutSceneTrigger(int frameNumber)
+    : frameNumber(frameNumber) { }
 
 CutSceneTrigger::~CutSceneTrigger() = default;

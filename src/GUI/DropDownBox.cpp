@@ -19,27 +19,15 @@
 
 #include <algorithm>
 
-DropDownBox::DropDownBox() {
+DropDownBox::DropDownBox()
+    : bShowListBox(false), bListBoxAbove(false), bAutocloseListBoxOnSelectionChange(true), bOnClickEnabled(true), pBackground(nullptr), pForeground(nullptr), pActiveForeground(nullptr), numVisibleEntries(7), color(), bHover(false) {
     enableResizing(true, false);
 
-    numVisibleEntries = 7;
-
-    color  = COLOR_DEFAULT;
-    bHover = false;
     updateButtonSurface();
 
-    openListBoxButton.setOnClick(std::bind(&DropDownBox::onOpenListBoxButton, this));
+    openListBoxButton.setOnClick([this] { onOpenListBoxButton(); });
 
-    listBox.setOnSelectionChange(std::bind(&DropDownBox::onSelectionChange, this, std::placeholders::_1));
-
-    pBackground       = nullptr;
-    pForeground       = nullptr;
-    pActiveForeground = nullptr;
-
-    bShowListBox                       = false;
-    bListBoxAbove                      = false;
-    bAutocloseListBoxOnSelectionChange = true;
-    bOnClickEnabled                    = true;
+    listBox.setOnSelectionChange([this](auto&& PH1) { onSelectionChange(std::forward<decltype(PH1)>(PH1)); });
 
     resize(DropDownBox::getMinimumSize().x, DropDownBox::getMinimumSize().y);
 }

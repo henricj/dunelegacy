@@ -32,7 +32,7 @@ Silo::Silo(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(silo_constants, objectID, initializer) {
     Silo::init();
 
-    setHealth(getMaxHealth());
+    Silo::setHealth(getMaxHealth());
 }
 
 Silo::Silo(uint32_t objectID, const ObjectStreamInitializer& initializer)

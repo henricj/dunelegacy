@@ -268,8 +268,8 @@ private:
     SymbolButton unitDetailsRotateLeftButton;
     SymbolButton unitDetailsRotateRightButton;
 
-    int currentTerrainType;
-    int currentTerrainPenSize;
+    int currentTerrainType    = -1;
+    int currentTerrainPenSize = -1;
 
     HOUSETYPE house;
     uint32_t color;

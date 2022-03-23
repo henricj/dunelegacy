@@ -31,19 +31,9 @@
 
 #include <sand.h>
 
-MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldAlreadyPlayedRegions) {
+MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldAlreadyPlayedRegions)
+    : house(newHouse), lastScenario((lastMission + 1) / 3 + 1), alreadyPlayedRegions(oldAlreadyPlayedRegions) {
     disableQuiting(true);
-    selectedRegion  = -1;
-    selectionTime   = 0;
-    stateSwitchTime = 0;
-
-    bFastBlending        = false;
-    curHouse2Blit        = static_cast<HOUSETYPE>(0);
-    curRegion2Blit       = 0;
-    curBlendBlitter      = nullptr;
-    lastScenario         = (lastMission + 1) / 3 + 1;
-    alreadyPlayedRegions = oldAlreadyPlayedRegions;
-    house                = newHouse;
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);

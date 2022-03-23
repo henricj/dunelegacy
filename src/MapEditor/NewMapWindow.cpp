@@ -47,9 +47,9 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
-    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    NewMapWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    setWindowWidget(&mainHBox);
+    NewMapWindow::setWindowWidget(&mainHBox);
 
     mainHBox.addWidget(HSpacer::create(16));
     mainHBox.addWidget(&mainVBox);

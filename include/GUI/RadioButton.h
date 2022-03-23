@@ -30,14 +30,8 @@ class RadioButton final : public Button {
 public:
     /// Default constructor
     RadioButton() {
-        textcolor       = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
-
         Widget::enableResizing(true, false);
         setToggleButton(true);
-        pCheckedActiveTexture = nullptr;
-
-        pRadioButtonManager = nullptr;
     }
 
     /// destructor
@@ -220,12 +214,12 @@ protected:
     }
 
 private:
-    uint32_t textcolor;                      ///< Text color
-    uint32_t textshadowcolor;                ///< Text shadow color
-    std::string text;                        ///< Text of this radio button
-    sdl2::texture_ptr pCheckedActiveTexture; ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
+    uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
+    uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
+    std::string text;                         ///< Text of this radio button
+    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
 
-    RadioButtonManager* pRadioButtonManager; ///< The Manager for managing the toggle states
+    RadioButtonManager* pRadioButtonManager {}; ///< The Manager for managing the toggle states
 };
 
 #endif // RADIOBUTTON_H

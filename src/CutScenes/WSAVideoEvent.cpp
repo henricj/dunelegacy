@@ -21,11 +21,10 @@
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
 
-WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical) {
-    this->pWsafile        = pWsafile;
-    this->bCenterVertical = bCenterVertical;
-    currentFrame          = 0;
-    pStreamingTexture     = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
+WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical)
+    : currentFrame(0), pWsafile(pWsafile), bCenterVertical(bCenterVertical) {
+
+    pStreamingTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
 }
 
 WSAVideoEvent::~WSAVideoEvent() = default;

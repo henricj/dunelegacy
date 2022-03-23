@@ -27,17 +27,11 @@
 #define CYCLES_PER_FRAME 5
 
 Explosion::Explosion()
-    : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN) {
-    frameTimer   = CYCLES_PER_FRAME;
-    currentFrame = 0;
-}
+    : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN), currentFrame(0), frameTimer(CYCLES_PER_FRAME) { }
 
 Explosion::Explosion(uint32_t explosionID, const Coord& position, HOUSETYPE house)
-    : explosionID(explosionID), position(position), house(house) {
+    : explosionID(explosionID), position(position), house(house), currentFrame(0), frameTimer(CYCLES_PER_FRAME) {
     init();
-
-    frameTimer   = CYCLES_PER_FRAME;
-    currentFrame = 0;
 }
 
 Explosion::Explosion(InputStream& stream) {

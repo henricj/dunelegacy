@@ -32,12 +32,9 @@ class UnitBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit UnitBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : ObjectBaseConstants {itemID} {
+        : ObjectBaseConstants {itemID}, bulletType_(bullet_id), numWeapons_(num_weapons) {
         aUnit_          = true;
         canAttackStuff_ = 0 != num_weapons;
-
-        numWeapons_ = num_weapons;
-        bulletType_ = bullet_id;
     }
 
     bool isTracked() const noexcept { return tracked_; }
@@ -252,7 +249,7 @@ public:
         nextSpotFound        = false;
         recalculatePathTimer = 0;
         nextSpotAngle        = ANGLETYPE::INVALID_ANGLE;
-        noCloserPointCount = 0;
+        noCloserPointCount   = 0;
     }
 
     bool isTracked() const { return unit_constants().isTracked(); }
@@ -312,37 +309,37 @@ protected:
     void drawSmoke(int x, int y) const;
 
     // unit state/properties
-    Coord guardPoint;       ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
-    Coord attackPos;        ///< The position to attack
-    bool goingToRepairYard; ///< Are we currently going to a repair yard?
-    bool pickedUp;          ///< Were we picked up by a carryall?
-    bool bFollow;           ///< Do we currently follow some other unit (specified by target)?
+    Coord guardPoint;               ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
+    Coord attackPos;                ///< The position to attack
+    bool goingToRepairYard = false; ///< Are we currently going to a repair yard?
+    bool pickedUp          = false; ///< Were we picked up by a carryall?
+    bool bFollow           = false; ///< Do we currently follow some other unit (specified by target)?
 
-    bool moving;            ///< Are we currently moving?
-    bool turning;           ///< Are we currently turning?
-    bool justStoppedMoving; ///< Do we have just stopped moving?
-    FixPoint xSpeed;        ///< Speed in x direction
-    FixPoint ySpeed;        ///< Speed in y direction
-    FixPoint bumpyOffsetX;  ///< The bumpy offset in x direction which is already included in realX
-    FixPoint bumpyOffsetY;  ///< The bumpy offset in y direction which is already included in realY
+    bool moving            = false; ///< Are we currently moving?
+    bool turning           = false; ///< Are we currently turning?
+    bool justStoppedMoving = false; ///< Do we have just stopped moving?
+    FixPoint xSpeed        = 0;     ///< Speed in x direction
+    FixPoint ySpeed        = 0;     ///< Speed in y direction
+    FixPoint bumpyOffsetX  = 0;     ///< The bumpy offset in x direction which is already included in realX
+    FixPoint bumpyOffsetY  = 0;     ///< The bumpy offset in y direction which is already included in realY
 
-    FixPoint targetDistance; ///< Distance to the destination
-    ANGLETYPE targetAngle;   ///< Angle to the destination
+    FixPoint targetDistance = 0; ///< Distance to the destination
+    ANGLETYPE targetAngle;       ///< Angle to the destination
 
     // path finding
-    uint8_t noCloserPointCount;   ///< How often have we tried to dinf a path?
-    bool nextSpotFound;           ///< Is the next spot to move to already found?
-    ANGLETYPE nextSpotAngle;      ///< The angle to get to the next spot
-    int32_t recalculatePathTimer; ///< This timer is for recalculating the best path after x ticks
-    Coord nextSpot;               ///< The next spot to move to
-    std::vector<Coord> pathList;  ///< The path to the destination found so far
+    uint8_t noCloserPointCount = 0;     ///< How often have we tried to dinf a path?
+    bool nextSpotFound         = false; ///< Is the next spot to move to already found?
+    ANGLETYPE nextSpotAngle;            ///< The angle to get to the next spot
+    int32_t recalculatePathTimer = 0;   ///< This timer is for recalculating the best path after x ticks
+    Coord nextSpot;                     ///< The next spot to move to
+    std::vector<Coord> pathList;        ///< The path to the destination found so far
 
-    int32_t findTargetTimer;      ///< When to look for the next target?
-    int32_t primaryWeaponTimer;   ///< When can the primary weapon shot again?
-    int32_t secondaryWeaponTimer; ///< When can the secondary weapon shot again?
+    int32_t findTargetTimer      = 0;       ///< When to look for the next target?
+    int32_t primaryWeaponTimer   = 0;       ///< When can the primary weapon shot again?
+    int32_t secondaryWeaponTimer = INVALID; ///< When can the secondary weapon shot again?
 
     // deviation
-    int32_t deviationTimer; ///< When to revert back to the original owner?
+    int32_t deviationTimer = INVALID; ///< When to revert back to the original owner?
 
     // drawing information
     int drawnFrame; ///< Which row in the picture should be drawn

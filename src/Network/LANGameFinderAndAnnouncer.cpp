@@ -65,9 +65,9 @@ struct PACKEDDATASTRUCTURE NetworkPacket_RequestGame {
 #    pragma pack(pop)
 #endif
 
-LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer() {
+LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
+    : announceSocket(enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM)) {
 
-    announceSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
     if (announceSocket == ENET_SOCKET_NULL) {
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Creating socket failed!");
     }

@@ -27,8 +27,8 @@
 class ENetPacketOStream final : public OutputStream {
 public:
     explicit ENetPacketOStream(enet_uint32 flags)
-        : currentPos(0) {
-        packet = enet_packet_create(nullptr, 16, flags);
+        : currentPos(0), packet(enet_packet_create(nullptr, 16, flags)) {
+
         if (packet == nullptr) {
             THROW(OutputStream::error, "ENetPacketOStream: enet_packet_create() failed!");
         }

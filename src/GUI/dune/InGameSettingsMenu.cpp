@@ -46,49 +46,49 @@ InGameSettingsMenu::InGameSettingsMenu()
 
     // Game speed
     gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
-    gameSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onGameSpeedMinus, this));
+    gameSpeedMinus.setOnClick([this] { onGameSpeedMinus(); });
     windowWidget.addWidget(&gameSpeedMinus, Point(5, 52), gameSpeedMinus.getSize());
 
     gameSpeedBar.setColor(color1);
     windowWidget.addWidget(&gameSpeedBar, Point(23, 56), Point(146, 6));
 
     gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
-    gameSpeedPlus.setOnClick(std::bind(&InGameSettingsMenu::onGameSpeedPlus, this));
+    gameSpeedPlus.setOnClick([this] { onGameSpeedPlus(); });
     windowWidget.addWidget(&gameSpeedPlus, Point(172, 52), gameSpeedPlus.getSize());
 
     // Volume
     volumeMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
-    volumeMinus.setOnClick(std::bind(&InGameSettingsMenu::onVolumeMinus, this));
+    volumeMinus.setOnClick([this] { onVolumeMinus(); });
     windowWidget.addWidget(&volumeMinus, Point(5, 83), volumeMinus.getSize());
 
     volumeBar.setColor(color1);
     windowWidget.addWidget(&volumeBar, Point(23, 87), Point(146, 6));
 
     volumePlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
-    volumePlus.setOnClick(std::bind(&InGameSettingsMenu::onVolumePlus, this));
+    volumePlus.setOnClick([this] { onVolumePlus(); });
     windowWidget.addWidget(&volumePlus, Point(172, 83), volumePlus.getSize());
 
     // Scroll speed
     scrollSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
-    scrollSpeedMinus.setOnClick(std::bind(&InGameSettingsMenu::onScrollSpeedMinus, this));
+    scrollSpeedMinus.setOnClick([this] { onScrollSpeedMinus(); });
     windowWidget.addWidget(&scrollSpeedMinus, Point(5, 114), scrollSpeedMinus.getSize());
 
     scrollSpeedBar.setColor(color1);
     windowWidget.addWidget(&scrollSpeedBar, Point(23, 118), Point(146, 6));
 
     scrollSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
-    scrollSpeedPlus.setOnClick(std::bind(&InGameSettingsMenu::onScrollSpeedPlus, this));
+    scrollSpeedPlus.setOnClick([this] { onScrollSpeedPlus(); });
     windowWidget.addWidget(&scrollSpeedPlus, Point(172, 114), scrollSpeedPlus.getSize());
 
     // buttons
     okButton.setText(_("OK"));
     okButton.setTextColor(color2);
-    okButton.setOnClick(std::bind(&InGameSettingsMenu::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
     windowWidget.addWidget(&okButton, Point(12, 134), Point(79, 15));
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color2);
-    cancelButton.setOnClick(std::bind(&InGameSettingsMenu::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
     windowWidget.addWidget(&cancelButton, Point(101, 134), Point(79, 15));
 
     init();

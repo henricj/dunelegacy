@@ -48,11 +48,10 @@ constexpr PalaceConstants palace_constants;
 } // namespace
 
 Palace::Palace(uint32_t objectID, const ObjectInitializer& initializer)
-    : StructureBase(palace_constants, objectID, initializer) {
+    : StructureBase(palace_constants, objectID, initializer), specialWeaponTimer(getMaxSpecialWeaponTimer()) {
     Palace::init();
 
     setHealth(getMaxHealth());
-    specialWeaponTimer = getMaxSpecialWeaponTimer();
 
     // TODO: Special weapon is available immediately but AI uses it only after first visual contact
     // specialTimer = 1; // we want the special weapon to be immediately ready

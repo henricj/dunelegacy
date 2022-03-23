@@ -92,8 +92,8 @@ protected:
     Sound_enum attackSound; ///< The id of the sound to play when attack
 
     // turret state
-    int32_t findTargetTimer; ///< Timer used for finding a new target
-    int32_t weaponTimer;     ///< Time until we can shot again
+    int32_t findTargetTimer = 0; ///< Timer used for finding a new target
+    int32_t weaponTimer     = 0; ///< Time until we can shot again
 };
 
 template<>

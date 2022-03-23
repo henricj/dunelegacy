@@ -87,13 +87,13 @@ private:
     void init();
 
     // sandworm state
-    int32_t kills;                      ///< How many units does this sandworm alreay killed?
-    int32_t attackFrameTimer;           ///< When to show the next attack frame
-    int32_t sleepTimer;                 ///< How long has this sandworm slept?
-    uint8_t warningWormSignPlayedFlags; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
+    int32_t kills                      = 0; ///< How many units does this sandworm alreay killed?
+    int32_t attackFrameTimer           = 0; ///< When to show the next attack frame
+    int32_t sleepTimer                 = 0; ///< How long has this sandworm slept?
+    uint8_t warningWormSignPlayedFlags = 0; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
 
     // drawing information
-    int32_t shimmerOffsetIndex;
+    int32_t shimmerOffsetIndex = -1;
     Coord lastLocs[SANDWORM_SEGMENTS]; ///< Last locations of the sandworm
 };
 

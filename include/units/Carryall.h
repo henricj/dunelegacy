@@ -80,10 +80,10 @@ private:
     // unit state/properties
     std::vector<uint32_t> pickedUpUnitList; ///< What units does this carryall carry?
 
-    bool owned; ///< Is this carryall owned or is it just here to drop something off
+    bool owned = true; ///< Is this carryall owned or is it just here to drop something off
 
-    bool aDropOfferer;    ///< This carryall just drops some units and vanishes afterwards
-    bool droppedOffCargo; ///< Is the cargo already dropped off?
+    bool aDropOfferer    = false; ///< This carryall just drops some units and vanishes afterwards
+    bool droppedOffCargo = false; ///< Is the cargo already dropped off?
 
     template<typename F>
     void removeUnits(const GameContext& context, F&& predicate) {

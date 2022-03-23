@@ -33,9 +33,6 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID, 
 
     angle      = initializer.game().randomGen.rand(0, 7);
     drawnAngle = static_cast<ANGLETYPE>(lround(angle));
-
-    findTargetTimer = 0;
-    weaponTimer     = 0;
 }
 
 TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID,

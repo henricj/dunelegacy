@@ -38,45 +38,21 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
-#define SMOKEDELAY    30
-#define UNITIDLETIMER (GAMESPEED_DEFAULT * 315) // about every 5s
+static constexpr auto SMOKEDELAY    = 30;
+static constexpr auto UNITIDLETIMER = (GAMESPEED_DEFAULT * 315); // about every 5s
 
 UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : ObjectBase(constants, objectID, initializer) {
+    : ObjectBase(constants, objectID, initializer), targetAngle(ANGLETYPE::INVALID_ANGLE), nextSpotAngle(drawnAngle) {
 
     UnitBase::init();
 
     drawnAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
     angle      = static_cast<int>(drawnAngle);
 
-    goingToRepairYard = false;
-    pickedUp          = false;
-    bFollow           = false;
-    guardPoint        = Coord::Invalid();
-    attackPos         = Coord::Invalid();
+    guardPoint = Coord::Invalid();
+    attackPos  = Coord::Invalid();
 
-    moving            = false;
-    turning           = false;
-    justStoppedMoving = false;
-    xSpeed            = 0;
-    ySpeed            = 0;
-    bumpyOffsetX      = 0;
-    bumpyOffsetY      = 0;
-
-    targetDistance = 0;
-    targetAngle    = ANGLETYPE::INVALID_ANGLE;
-
-    noCloserPointCount   = 0;
-    nextSpotFound        = false;
-    nextSpotAngle        = drawnAngle;
-    recalculatePathTimer = 0;
-    nextSpot             = Coord::Invalid();
-
-    findTargetTimer      = 0;
-    primaryWeaponTimer   = 0;
-    secondaryWeaponTimer = INVALID;
-
-    deviationTimer = INVALID;
+    nextSpot = Coord::Invalid();
 }
 
 UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)

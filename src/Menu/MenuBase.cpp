@@ -30,12 +30,7 @@
 #include <sand.h>
 
 MenuBase::MenuBase()
-    : Window(0, 0, 0, 0) {
-    bAllowQuiting = true;
-    retVal        = MENU_QUIT_DEFAULT;
-    bClearScreen  = true;
-    quiting       = false;
-}
+    : Window(0, 0, 0, 0) { }
 
 MenuBase::~MenuBase() = default;
 

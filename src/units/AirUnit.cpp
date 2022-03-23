@@ -31,9 +31,7 @@
 #include <misc/draw_util.h>
 
 AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : UnitBase(constants, objectID, initializer) {
-    currentMaxSpeed = 2;
-}
+    : UnitBase(constants, objectID, initializer) { }
 
 AirUnit::AirUnit(const AirUnitConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer)
     : UnitBase(constants, objectID, initializer) {

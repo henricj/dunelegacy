@@ -94,8 +94,8 @@ protected:
 private:
     void init();
 
-    int32_t arrivalTimer; ///< When will the frigate arrive?
-    bool deploying;       ///< Currently deploying units
+    int32_t arrivalTimer;   ///< When will the frigate arrive?
+    bool deploying = false; ///< Currently deploying units
 };
 
 #endif // STARPORT_H

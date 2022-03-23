@@ -1,12 +1,10 @@
 #include <misc/BlendBlitter.h>
 
 BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps)
-    : src {std::move(SrcPic)}, dest {DestPic}, destRect {DestPicRect}, numSteps {numSteps} {
-
-    N = static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h);
+    : src {std::move(SrcPic)}, dest {DestPic}, destRect {DestPicRect}, numSteps {numSteps}, StepsLeft(numSteps), N(static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h)), m(N) {
 
     // compute next greater 2^x value
-    m = N;
+
     m |= (m >> 1);
     m |= (m >> 2);
     m |= (m >> 4);
@@ -22,8 +20,6 @@ BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_R
     // (a-1) is divisible by all prime factors of log_2(m), and 4
 
     currentValue = random.rand(0, static_cast<int>(m - 1));
-
-    StepsLeft = numSteps;
 }
 
 int BlendBlitter::nextStep() {

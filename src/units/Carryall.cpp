@@ -41,11 +41,7 @@ Carryall::Carryall(uint32_t objectID, const ObjectInitializer& initializer)
 
     ObjectBase::setHealth(getMaxHealth());
 
-    owned = true;
-
-    aDropOfferer    = false;
-    droppedOffCargo = false;
-    respondable     = false;
+    respondable = false;
 }
 
 Carryall::Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer)

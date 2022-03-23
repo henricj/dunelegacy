@@ -58,9 +58,9 @@ private:
     unsigned int size;
 
 public:
-    BufferDataSource(char* data, unsigned int len) {
+    BufferDataSource(char* data, unsigned int len)
+        : size(len) {
         buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
-        size          = len;
     }
 
     ~BufferDataSource() override = default;
@@ -169,10 +169,8 @@ private:
     int freesrc;
 
 public:
-    SDLDataSource(SDL_RWops* rwop, int freesrc = 0) {
-        this->rwop    = rwop;
-        this->freesrc = freesrc;
-    }
+    SDLDataSource(SDL_RWops* rwop, int freesrc = 0)
+        : rwop(rwop), freesrc(freesrc) { }
 
     ~SDLDataSource() override {
         close();

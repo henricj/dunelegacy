@@ -212,11 +212,11 @@ public:
 class MapEditorUnitPlaceOperation final : public MapEditorOperation {
 public:
     MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-        : preferredID(preferredID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+        : preferredID(preferredID), position(position), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
     }
 
     MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-        : preferredID(INVALID), position(position), house(house), itemID(itemID), health(health), angle(angle), attackmode(attackmode) {
+        : preferredID(INVALID), position(position), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
     }
 
     ~MapEditorUnitPlaceOperation() override = default;

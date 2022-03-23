@@ -47,7 +47,7 @@ protected:
 private:
     void init();
 
-    bool droppedOffCargo; ///< Is the cargo already dropped off?
+    bool droppedOffCargo = false; ///< Is the cargo already dropped off?
 };
 
 #endif // FRIGATE_H

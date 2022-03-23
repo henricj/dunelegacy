@@ -32,8 +32,7 @@ class DigitsCounter final : public Widget {
 public:
     /// default constructor
     DigitsCounter() {
-        enableResizing(false, false);
-        count = 0;
+        Widget::enableResizing(false, false);
     }
 
     /// destructor
@@ -86,11 +85,11 @@ public:
         if (tex != nullptr) {
             return getTextureSize(tex);
         }
-        return Point(0, 0);
+        return {0, 0};
     }
 
 private:
-    unsigned int count;
+    unsigned int count = 0;
 };
 
 #endif // DIGITSCOUNTER_H

@@ -31,9 +31,8 @@
 #include <utility>
 
 MetaServerClient::MetaServerClient(std::string metaServerURL)
-    : metaServerURL(std::move(metaServerURL)) {
+    : metaServerURL(std::move(metaServerURL)), availableMetaServerCommandsSemaphore(SDL_CreateSemaphore(0)) {
 
-    availableMetaServerCommandsSemaphore = SDL_CreateSemaphore(0);
     if (availableMetaServerCommandsSemaphore == nullptr) {
         THROW(std::runtime_error, "Unable to create semaphore");
     }

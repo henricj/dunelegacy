@@ -117,7 +117,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(VSpacer::create(6));
 
     gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), pGFXManager->getUIGraphic(UI_Minus_Pressed));
-    gameSpeedMinus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedMinus, this));
+    gameSpeedMinus.setOnClick([this] { onGameSpeedMinus(); });
     gameSpeedHBox.addWidget(HSpacer::create(4));
     gameSpeedHBox.addWidget(&gameSpeedMinus);
     gameSpeedHBox.addWidget(HSpacer::create(2));
@@ -127,7 +127,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     currentGameSpeed = gameOptions.gameSpeed;
     updateGameSpeedBar();
     gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), pGFXManager->getUIGraphic(UI_Plus_Pressed));
-    gameSpeedPlus.setOnClick(std::bind(&GameOptionsWindow::onGameSpeedPlus, this));
+    gameSpeedPlus.setOnClick([this] { onGameSpeedPlus(); });
     gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedPlus);
     gameSpeedHBox.addWidget(HSpacer::create(4));
@@ -139,7 +139,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(VSpacer::create(6));
 
     okbutton.setText(_("OK"));
-    okbutton.setOnClick(std::bind(&GameOptionsWindow::onOK, this));
+    okbutton.setOnClick([this] { onOK(); });
     vboxRight.addWidget(&okbutton, 30);
     vboxRight.addWidget(VSpacer::create(6));
 

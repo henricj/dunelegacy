@@ -30,16 +30,12 @@ static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> hous
     HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
 
 SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
-    currentHouseChoiceScrollPos = 0;
-    selectedButton              = 1;
-    mission                     = 1;
-
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    SinglePlayerSkirmishMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    SinglePlayerSkirmishMenu::setWindowWidget(&windowWidget);
 
     // set up pictures in the background
     const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);

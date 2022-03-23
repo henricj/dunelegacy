@@ -50,18 +50,13 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectInitializer& initializer)
 
     Sandworm::init();
 
-    setHealth(getMaxHealth());
+    Sandworm::setHealth(getMaxHealth());
 
-    kills                      = 0;
-    attackFrameTimer           = 0;
-    sleepTimer                 = 0;
-    warningWormSignPlayedFlags = 0;
-    respondable                = false;
+    respondable = false;
 
     for (auto& lastLoc : lastLocs) {
         lastLoc.invalidate();
     }
-    shimmerOffsetIndex = -1;
 }
 
 Sandworm::Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer)

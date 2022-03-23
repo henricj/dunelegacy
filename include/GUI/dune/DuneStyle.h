@@ -136,14 +136,14 @@ public:
         \param  width           the width of the text box
         \param  height          the height of the text box
         \param  text            the text for this text box
-        \param  carret          true if a carret should be shown
+        \param  caret           true if a caret should be shown
         \param  fontSize        the size of the font to use
         \param  alignment       the alignment for this text box
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize, Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
     /**
         Returns the minumum size of a scroll bar arrow button.

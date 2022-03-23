@@ -48,7 +48,7 @@ protected:
 private:
     void init();
 
-    uint32_t timeLastShot;
+    uint32_t timeLastShot = 0;
 };
 
 #endif // ORNITHOPTER_H

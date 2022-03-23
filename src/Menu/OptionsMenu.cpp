@@ -41,7 +41,8 @@
 
 #include <algorithm>
 
-OptionsMenu::OptionsMenu() {
+OptionsMenu::OptionsMenu()
+    : currentGameOptions(settings.gameOptions) {
     determineAvailableScreenResolutions();
 
     const auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
@@ -50,8 +51,6 @@ OptionsMenu::OptionsMenu() {
 
     for (const auto& ll : languagesList)
         availLanguages.emplace_back(ll.u8string());
-
-    currentGameOptions = settings.gameOptions;
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);

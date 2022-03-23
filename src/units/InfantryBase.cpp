@@ -41,12 +41,9 @@ constexpr Coord tilePositionOffset[5] = {Coord(0, 0), Coord(-TILESIZE / 4, -TILE
 
 InfantryBase::InfantryBase(const InfantryBaseConstants& constants, uint32_t objectID,
                            const ObjectInitializer& initializer)
-    : GroundUnit(constants, objectID, initializer) {
+    : GroundUnit(constants, objectID, initializer), tilePosition(INVALID_POS), oldTilePosition(INVALID_POS) {
 
-    setHealth(getMaxHealth());
-
-    tilePosition    = INVALID_POS;
-    oldTilePosition = INVALID_POS;
+    InfantryBase::setHealth(getMaxHealth());
 }
 
 InfantryBase::InfantryBase(const InfantryBaseConstants& constants, uint32_t objectID,

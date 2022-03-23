@@ -74,9 +74,9 @@ private:
     PictureLabel duneLegacy;
     PictureLabel buttonBorder;
 
-    int currentHouseChoiceScrollPos;
-    int selectedButton;
-    int mission;
+    int currentHouseChoiceScrollPos = 0;
+    int selectedButton              = 1;
+    int mission                     = 1;
 };
 
 #endif // SINGLEPLAYERSKIRMISHMENU_H

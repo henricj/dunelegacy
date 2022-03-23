@@ -26,9 +26,7 @@
 #include <FileClasses/music/MusicPlayer.h>
 
 BriefingMenu::BriefingMenu(HOUSETYPE newHouse, int mission, int type)
-    : MentatMenu(newHouse) {
-    this->mission = mission;
-    this->type    = type;
+    : MentatMenu(newHouse), mission(mission), type(type) {
 
     const auto* const pMentatProceed        = pGFXManager->getUIGraphic(UI_MentatProceed);
     const auto* const pMentatProceedPressed = pGFXManager->getUIGraphic(UI_MentatProceed_Pressed);

@@ -25,9 +25,8 @@
 #include <globals.h>
 #include <sand.h>
 
-CutScene::CutScene() {
-    quiting = false;
-}
+CutScene::CutScene()
+    : quiting(false) { }
 
 CutScene::~CutScene() {
     // Fixes some flickering

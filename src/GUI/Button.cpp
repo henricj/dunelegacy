@@ -21,16 +21,8 @@
 
 #include <SoundPlayer.h>
 
-Button::Button() {
-    bPressed      = false;
-    bHover        = false;
-    bToggleButton = false;
-    bToggleState  = false;
-
-    pUnpressedTexture = nullptr;
-    pPressedTexture   = nullptr;
-    pActiveTexture    = nullptr;
-}
+Button::Button()
+    : pUnpressedTexture(nullptr), pPressedTexture(nullptr), pActiveTexture(nullptr), bPressed(false), bHover(false), bToggleButton(false), bToggleState(false) { }
 
 Button::~Button() = default;
 

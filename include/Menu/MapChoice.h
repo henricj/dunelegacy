@@ -29,14 +29,14 @@
 #include <mmath.h>
 #include <vector>
 
-#define MAPCHOICESTATE_FADEINPLANET 0
-#define MAPCHOICESTATE_SHOWPLANET   1
-#define MAPCHOICESTATE_BLENDPLANET  2
-#define MAPCHOICESTATE_SHOWMAPONLY  3
-#define MAPCHOICESTATE_BLENDMAP     4
-#define MAPCHOICESTATE_BLENDING     5
-#define MAPCHOICESTATE_ARROWS       6
-#define MAPCHOICESTATE_BLINKING     7
+static constexpr auto MAPCHOICESTATE_FADEINPLANET = 0;
+static constexpr auto MAPCHOICESTATE_SHOWPLANET   = 1;
+static constexpr auto MAPCHOICESTATE_BLENDPLANET  = 2;
+static constexpr auto MAPCHOICESTATE_SHOWMAPONLY  = 3;
+static constexpr auto MAPCHOICESTATE_BLENDMAP     = 4;
+static constexpr auto MAPCHOICESTATE_BLENDING     = 5;
+static constexpr auto MAPCHOICESTATE_ARROWS       = 6;
+static constexpr auto MAPCHOICESTATE_BLINKING     = 7;
 
 class MapChoice final : public MenuBase {
 public:
@@ -102,13 +102,13 @@ private:
     sdl2::texture_ptr mapTexture;
     std::array<Coord, 28> piecePosition;
     std::unique_ptr<BlendBlitter> curBlendBlitter;
-    HOUSETYPE curHouse2Blit;
-    unsigned int curRegion2Blit;
-    bool bFastBlending;
+    HOUSETYPE curHouse2Blit     = static_cast<HOUSETYPE>(0);
+    unsigned int curRegion2Blit = 0;
+    bool bFastBlending          = false;
     int mapChoiceState;
-    int selectedRegion;
-    uint32_t selectionTime;
-    uint32_t stateSwitchTime;
+    int selectedRegion       = -1;
+    uint32_t selectionTime   = 0;
+    uint32_t stateSwitchTime = 0;
     MessageTicker msgticker;
 
     SDL_Rect centerAreaRect;

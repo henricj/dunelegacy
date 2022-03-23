@@ -32,22 +32,12 @@
 
 #include <algorithm>
 
-Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget) {
-    airAttack = air;
-
-    this->shooterID = shooterID;
-
-    this->owner = currentGame->getObjectManager().getObject(shooterID)->getOwner();
-
-    this->bulletID = bulletID;
-
-    this->damage = damage;
+Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget)
+    : bulletID(bulletID), damage(damage), shooterID(shooterID), owner(currentGame->getObjectManager().getObject(shooterID)->getOwner()), destination(*newRealDestination), airAttack(air) {
 
     target.pointTo(pTarget);
 
     Bullet::init();
-
-    destination = *newRealDestination;
 
     if (bulletID == Bullet_Sonic) {
         const auto diffX = destination.x - newRealLocation->x;

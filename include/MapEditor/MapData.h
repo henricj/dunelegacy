@@ -25,14 +25,12 @@
 class MapData {
 
 public:
-    MapData() {
-        sizeX = 0;
-        sizeY = 0;
-    }
+    MapData()
+        : sizeX(0), sizeY(0) { }
 
-    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand) {
-        this->sizeX = sizeX;
-        this->sizeY = sizeY;
+    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand)
+        : sizeX(sizeX), sizeY(sizeY) {
+
         data.resize(sizeX * sizeY, terrainType);
     }
 

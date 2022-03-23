@@ -20,10 +20,9 @@
 #include <misc/SDL2pp.h>
 #include <misc/Scaler.h>
 
-CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical) {
+CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical)
+    : currentFrame(0), bCenterVertical(bCenterVertical) {
     pBlendBlitterTargetSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pStartSurface, 1, 1).get());
-    this->bCenterVertical      = bCenterVertical;
-    currentFrame               = 0;
 
     pStreamingTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, pBlendBlitterTargetSurface->w, pBlendBlitterTargetSurface->h)};
 

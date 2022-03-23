@@ -36,10 +36,7 @@
 #define ATTACKNOTIFICATIONTIME MILLI2CYCLES(2 * 60 * 1000)
 
 HumanPlayer::HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random)
-    : Player(context, associatedHouse, playername, random) {
-    alreadyShownTutorialHints   = currentGame->getGameInitSettings().getAlreadyShownTutorialHints();
-    lastAttackNotificationCycle = INVALID_GAMECYCLE;
-}
+    : Player(context, associatedHouse, playername, random), alreadyShownTutorialHints(currentGame->getGameInitSettings().getAlreadyShownTutorialHints()), lastAttackNotificationCycle(INVALID_GAMECYCLE) { }
 
 HumanPlayer::HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {

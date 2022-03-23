@@ -60,9 +60,9 @@ protected:
 private:
     void init();
 
-    bool repairingAUnit;      ///< Currently repairing?
-    ObjectPointer repairUnit; ///< The unit to repair
-    uint32_t bookings;        ///< Number of bookings for this repair yard
+    bool repairingAUnit = false; ///< Currently repairing?
+    ObjectPointer repairUnit;    ///< The unit to repair
+    uint32_t bookings = 0;       ///< Number of bookings for this repair yard
 };
 
 #endif // REPAIRYARD_H

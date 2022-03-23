@@ -27,13 +27,11 @@
 #include <regex>
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
-    : currentMentatTextIndex(-1), nextMentatTextSwitch(0) {
-    nextSpecialAnimation = SDL_GetTicks() + pGFXManager->random().rand(8000, 20000);
+    : nextSpecialAnimation(SDL_GetTicks() + pGFXManager->random().rand(8000, 20000)), currentMentatTextIndex(-1), nextMentatTextSwitch(0), house(newHouse) {
 
     Animation* anim = nullptr;
 
     disableQuiting(true);
-    house = newHouse;
 
     // set up window
     const DuneTexture* pBackground = nullptr;

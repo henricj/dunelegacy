@@ -37,8 +37,6 @@ Ornithopter::Ornithopter(uint32_t objectID, const ObjectInitializer& initializer
     Ornithopter::init();
 
     setHealth(getMaxHealth());
-
-    timeLastShot = 0;
 }
 
 Ornithopter::Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer)

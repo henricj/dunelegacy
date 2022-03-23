@@ -167,11 +167,11 @@ protected:
     virtual void updateStructureSpecificStuff(const GameContext& context) { }
 
     // structure state
-    bool repairing;   ///< currently repairing?
-    int degradeTimer; ///< after which time of insufficient power should we degrade this building again
+    bool repairing = false; ///< currently repairing?
+    int degradeTimer;       ///< after which time of insufficient power should we degrade this building again
 
     // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden building disappear when being destroyed)
-    bool fogged;          ///< Currently fogged?
+    bool fogged = false;  ///< Currently fogged?
     int lastVisibleFrame; ///< store picture drawn before fogged
 
     // drawing information

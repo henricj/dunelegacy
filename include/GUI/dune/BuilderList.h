@@ -23,14 +23,14 @@
 #include <GUI/TextButton.h>
 #include <misc/SDL2pp.h>
 
-#define ARROWBTN_WIDTH     48
-#define ARROWBTN_HEIGHT    16
-#define BUILDERBTN_HEIGHT  55
-#define BUILDERBTN_WIDTH   91
-#define BUILDERBTN_SPACING 5
-#define ORDERBTN_HEIGHT    16
+static constexpr auto ARROWBTN_WIDTH     = 48;
+static constexpr auto ARROWBTN_HEIGHT    = 16;
+static constexpr auto BUILDERBTN_HEIGHT  = 55;
+static constexpr auto BUILDERBTN_WIDTH   = 91;
+static constexpr auto BUILDERBTN_SPACING = 5;
+static constexpr auto ORDERBTN_HEIGHT    = 16;
 
-#define WIDGET_WIDTH (BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING)
+static constexpr auto WIDGET_WIDTH = BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING;
 
 class BuilderList final : public StaticContainer {
 public:
@@ -114,8 +114,8 @@ public:
         \return the minimum size of this widget
     */
     Point getMinimumSize() const override {
-        return Point(WIDGET_WIDTH,
-                     BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2 + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING);
+        return {WIDGET_WIDTH,
+                BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2 + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
     }
 
     static BuilderList* create(uint32_t builderObjectID) {
@@ -144,15 +144,15 @@ private:
     void onOrder() const;
     void onCancel() const;
 
-    int currentListPos;
+    int currentListPos = 0;
     PictureButton upButton;
     PictureButton downButton;
     uint32_t builderObjectID;
 
     TextButton orderButton;
 
-    int mouseLeftButton;
-    int mouseRightButton;
+    int mouseLeftButton  = -1;
+    int mouseRightButton = -1;
 
     sdl2::texture_ptr pSoldOutTextTexture;
     sdl2::texture_ptr pAlreadyBuiltTextTexture;
@@ -162,7 +162,7 @@ private:
 
     sdl2::texture_ptr pLastTooltip;
     std::string tooltipText;
-    uint32_t lastMouseMovement;
+    uint32_t lastMouseMovement = 1u << 31;
     Point lastMousePos;
 };
 

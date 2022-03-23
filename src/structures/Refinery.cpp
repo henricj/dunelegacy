@@ -30,23 +30,18 @@
 
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
-/* how fast is spice extracted */
-#define MAXIMUMHARVESTEREXTRACTSPEED (0.625_fix)
-
 namespace {
+/* how fast is spice extracted */
+constexpr auto MAXIMUMHARVESTEREXTRACTSPEED = 0.625_fix;
+
 constexpr StructureBaseConstants refinery_constants {Refinery::item_id, Coord {3, 2}};
-}
+} // namespace
 
 Refinery::Refinery(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(refinery_constants, objectID, initializer) {
     Refinery::init();
 
     ObjectBase::setHealth(getMaxHealth());
-
-    extractingSpice = false;
-    bookings        = 0;
-
-    firstRun = true;
 
     firstAnimFrame = 2;
     lastAnimFrame  = 3;

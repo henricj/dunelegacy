@@ -37,11 +37,8 @@
 #define REFINERYLIMIT    10
 
 SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty)
-    : Player(context, associatedHouse, playername, random), difficulty(difficulty) {
+    : Player(context, associatedHouse, playername, random), difficulty(difficulty), attackTimer(getRandomGen().rand(MILLI2CYCLES(6 * 60 * 1000), MILLI2CYCLES(11 * 60 * 1000))), buildTimer(getRandomGen().rand(0, 3) * 50) {
     SmartBot::init();
-
-    buildTimer  = getRandomGen().rand(0, 3) * 50;
-    attackTimer = getRandomGen().rand(MILLI2CYCLES(6 * 60 * 1000), MILLI2CYCLES(11 * 60 * 1000));
 }
 
 SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse)

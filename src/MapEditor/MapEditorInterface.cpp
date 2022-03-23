@@ -48,21 +48,15 @@
 #include <misc/draw_util.h>
 
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
-    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), radarView(pMapEditor) {
-    house = HOUSETYPE::HOUSE_HARKONNEN;
+    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), radarView(pMapEditor), currentEditStructureID(INVALID), currentEditUnitID(INVALID), house(HOUSETYPE::HOUSE_HARKONNEN) {
+
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
-    currentTerrainType    = -1;
-    currentTerrainPenSize = -1;
+    MapEditorInterface::setTransparentBackground(true);
 
-    currentEditStructureID = INVALID;
-    currentEditUnitID      = INVALID;
+    MapEditorInterface::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
 
-    setTransparentBackground(true);
-
-    setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
-
-    setWindowWidget(&windowWidget);
+    MapEditorInterface::setWindowWidget(&windowWidget);
 
     // top bar
     const auto* const pTopBarTexture = pGFXManager->getUIGraphic(UI_TopBar, HOUSETYPE::HOUSE_HARKONNEN);

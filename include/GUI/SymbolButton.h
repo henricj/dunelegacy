@@ -26,9 +26,7 @@ class SymbolButton final : public Button {
 public:
     /// Default constructor
     SymbolButton() {
-        enableResizing(true, true);
-        pSymbolSurface       = nullptr;
-        pActiveSymbolSurface = nullptr;
+        Widget::enableResizing(true, true);
     }
 
     /// destructor

@@ -54,12 +54,7 @@ Harvester::Harvester(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(harvester_constants, objectID, initializer) {
     Harvester::init();
 
-    setHealth(getMaxHealth());
-
-    spice               = 0;
-    harvestingMode      = false;
-    returningToRefinery = false;
-    spiceCheckCounter   = 0;
+    Harvester::setHealth(getMaxHealth());
 
     attackMode = GUARD;
 }
@@ -238,7 +233,6 @@ void Harvester::checkPos(const GameContext& context) {
         } else {
             spiceCheckCounter--;
         }
-
     }
 }
 

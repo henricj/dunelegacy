@@ -30,11 +30,7 @@
 #include <units/Carryall.h>
 
 GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : UnitBase(constants, objectID, initializer) {
-
-    awaitingPickup = false;
-    bookedCarrier  = NONE_ID;
-}
+    : UnitBase(constants, objectID, initializer) { }
 
 GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
