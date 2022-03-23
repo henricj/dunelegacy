@@ -570,7 +570,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
         const IndexedTextFile* pIndexedTextFile = iter->second.get();
 
-        if (commands[0].compare(0, 5, "DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
+        if (commands[0].compare(0, 5, "DUNE.") && index >= 281 && pIndexedTextFile->getNumStrings() == 335) {
 
             // Dune II 1.0 has 2 titles less
 

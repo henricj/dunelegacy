@@ -48,7 +48,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Reading this indexed textfile failed!");
     }
 
-    const int numIndexedStrings = (SDL_SwapLE16((reinterpret_cast<Uint16*>(filedata.data()))[0])) / 2 - 1;
+    const int numIndexedStrings = SDL_SwapLE16(reinterpret_cast<Uint16*>(filedata.data())[0]) / 2 - 1;
 
     auto* pIndex = reinterpret_cast<uint16_t*>(filedata.data());
     for (int i = 0; i <= numIndexedStrings; i++) {

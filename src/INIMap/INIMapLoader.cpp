@@ -405,7 +405,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
                 // skip this house
                 continue;
             }
-            const int randomIndex = pGame->randomGen.rand(0, (int)unboundedHouses.size() - 1);
+            const int randomIndex = pGame->randomGen.rand(0, static_cast<int>(unboundedHouses.size()) - 1);
             houseID               = unboundedHouses[randomIndex];
             unboundedHouses.erase(unboundedHouses.begin() + randomIndex);
 
@@ -424,7 +424,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
                 continue;
             }
 
-            const int randomIndex = pGame->randomGen.rand(0, (int)playerSectionsOnMap.size() - 1);
+            const int randomIndex = pGame->randomGen.rand(0, static_cast<int>(playerSectionsOnMap.size()) - 1);
             houseName             = playerSectionsOnMap[randomIndex];
             playerSectionsOnMap.erase(playerSectionsOnMap.begin() + randomIndex);
         }

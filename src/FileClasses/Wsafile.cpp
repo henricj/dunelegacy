@@ -287,14 +287,14 @@ void Wsafile::readdata(int numFiles, va_list args) {
         int wsaFilesize   = 0;
         auto* const rwop  = va_arg(args, SDL_RWops*);
         pFiledata[i]      = readfile(rwop, &wsaFilesize);
-        numberOfFrames[i] = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get())));
+        numberOfFrames[i] = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get()));
 
         if (i == 0) {
-            sizeX = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get() + 2)));
-            sizeY = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get() + 4)));
+            sizeX = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[0].get() + 2));
+            sizeY = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[0].get() + 4));
         } else {
-            if ((sizeX != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 2)))))
-                || (sizeY != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 4)))))) {
+            if (sizeX != SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get() + 2))
+                || sizeY != SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get() + 4))) {
                 THROW(std::runtime_error,
                       "Wsafile::readdata(): The wsa-files have different image dimensions. Cannot concatenate them!");
             }
@@ -332,7 +332,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         }
 
         if (pFiledata[i].get() + wsaFilesize
-            < (reinterpret_cast<unsigned char*>(index[i]) + sizeof(uint32_t) * numberOfFrames[i])) {
+            < reinterpret_cast<unsigned char*>(index[i]) + sizeof(uint32_t) * numberOfFrames[i]) {
             THROW(std::runtime_error, "Wsafile::readdata(): No valid WSA-File: File too small!");
         }
 

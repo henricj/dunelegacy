@@ -386,7 +386,7 @@ int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
         return 0;
     }
 
-    if ((info.type == 1 && track != 0) || (track >= info.tracks)) {
+    if (info.type == 1 && track != 0 || track >= info.tracks) {
         cerr << "Can't retrieve MIDI data, track out of range" << endl;
         return 0;
     }
@@ -506,7 +506,7 @@ int XMIDI::PutVLQ(DataSource* dest, unsigned int value) {
     buffer     = value & 0x7F;
     while (value >>= 7) {
         buffer <<= 8;
-        buffer |= ((value & 0x7F) | 0x80);
+        buffer |= value & 0x7F | 0x80;
         i++;
     }
     if (!dest)
@@ -538,15 +538,14 @@ void XMIDI::MovePatchVolAndPan(int channel) {
     midi_event* temp  = nullptr;
 
     for (current = list; current;) {
-        if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel) {
+        if (!patch && current->status >> 4 == 0xC && (current->status & 0xF) == channel) {
             patch = current;
-        } else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7
-                   && (current->status & 0xF) == channel) {
+        } else if (!vol && current->status >> 4 == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel) {
             vol = current;
-        } else if (!pan && (current->status >> 4) == 0xB && current->data[0] == 10
+        } else if (!pan && current->status >> 4 == 0xB && current->data[0] == 10
                    && (current->status & 0xF) == channel) {
             pan = current;
-        } else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0
+        } else if (!bank && current->status >> 4 == 0xB && current->data[0] == 0
                    && (current->status & 0xF) == channel) {
             bank = current;
         }
@@ -687,7 +686,7 @@ void XMIDI::DuplicateAndMerge(int num) {
 
         // Only need 1 end of track
         // So take the last one and ignore the rest;
-        if ((num_na != 1) && (track[i]->status == 0xff) && (track[i]->data[0] == 0x2f)) {
+        if (num_na != 1 && track[i]->status == 0xff && track[i]->data[0] == 0x2f) {
             track[i] = nullptr;
             continue;
         }
@@ -735,14 +734,14 @@ int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* 
     data = source->read1();
 
     // Bank changes are handled here
-    if ((status >> 4) == 0xB && data == 0) {
+    if (status >> 4 == 0xB && data == 0) {
         data = source->read1();
 
         bank127[status & 0xF] = FALSE;
 
         if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
             || convert_type == XMIDI_CONVERT_MT32_TO_GS127
-            || (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status & 0xF) == 9))
+            || convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status & 0xF) == 9)
             return 2;
 
         CreateNewEvent(time);
@@ -757,25 +756,25 @@ int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* 
     }
 
     // Handling for patch change mt32 conversion, probably should go elsewhere
-    if ((status >> 4) == 0xC && (status & 0xF) != 9 && convert_type != XMIDI_CONVERT_NOCONVERSION) {
+    if (status >> 4 == 0xC && (status & 0xF) != 9 && convert_type != XMIDI_CONVERT_NOCONVERSION) {
         if (convert_type == XMIDI_CONVERT_MT32_TO_GM) {
             data = mt32asgm[data];
-        } else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status & 0xF])
+        } else if (convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status & 0xF]
                    || convert_type == XMIDI_CONVERT_MT32_TO_GS || convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM) {
             CreateNewEvent(time);
-            current->status  = 0xB0 | (status & 0xF);
+            current->status  = 0xB0 | status & 0xF;
             current->data[0] = 0;
             current->data[1] = mt32asgs[data * 2 + 1];
 
             data = mt32asgs[data * 2];
         } else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127) {
             CreateNewEvent(time);
-            current->status  = 0xB0 | (status & 0xF);
+            current->status  = 0xB0 | status & 0xF;
             current->data[0] = 0;
             current->data[1] = 127;
         }
     } // Drum track handling
-    else if ((status >> 4) == 0xC && (status & 0xF) == 9
+    else if (status >> 4 == 0xC && (status & 0xF) == 9
              && (convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM || convert_type == XMIDI_CONVERT_MT32_TO_GS127)) {
         CreateNewEvent(time);
         current->status  = 0xB9;
@@ -829,7 +828,7 @@ int XMIDI::ConvertSystemMessage(const int time, const unsigned char status, Data
 
     current->buffer = new unsigned char[current->len];
 
-    source->read((char*)current->buffer, current->len);
+    source->read(reinterpret_cast<char*>(current->buffer), current->len);
 
     return i + current->len;
 }
@@ -919,7 +918,7 @@ int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
             default: break;
         }
     }
-    return (tempo * 3) / 25000;
+    return tempo * 3 / 25000;
 }
 
 // Converts and event list to a MTrk
@@ -946,12 +945,12 @@ unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
     }
 
     for (event = mlist; event && !end; event = event->next) {
-        delta = (event->time - time);
+        delta = event->time - time;
         time  = event->time;
 
         i += PutVLQ(dest, delta);
 
-        if ((event->status != last_status) || (event->status >= 0xF0)) {
+        if (event->status != last_status || event->status >= 0xF0) {
             if (dest)
                 dest->write1(event->status);
             i++;
@@ -1040,7 +1039,7 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
         }
 
         if (memcmp(buf, "EVNT", 4)) {
-            source->skip((len + 1) & ~1);
+            source->skip(len + 1 & ~1);
             continue;
         }
 
@@ -1059,7 +1058,7 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
         num++;
 
         // go to start of next track
-        source->seek(begin + ((len + 1) & ~1));
+        source->seek(begin + (len + 1 & ~1));
     }
 
     // Return how many were converted
@@ -1148,8 +1147,8 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
                 if (memcmp(buf, "INFO", 4)) {
                     // Must allign
-                    source->skip((chunk_len + 1) & ~1);
-                    i += (chunk_len + 1) & ~1;
+                    source->skip(chunk_len + 1 & ~1);
+                    i += chunk_len + 1 & ~1;
                     continue;
                 }
 
@@ -1169,7 +1168,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             // Ok now to start part 2
             // Goto the right place
-            source->seek(start + ((len + 1) & ~1));
+            source->seek(start + (len + 1 & ~1));
 
             // Read 4 bytes of type
             source->read(buf, 4);
@@ -1334,9 +1333,9 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
                 // Must allign
 
-                source->skip((chunk_len + 1) & ~1);
+                source->skip(chunk_len + 1 & ~1);
 
-                i += (chunk_len + 1) & ~1;
+                i += chunk_len + 1 & ~1;
 
                 continue;
             }

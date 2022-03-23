@@ -107,22 +107,22 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
-    if (SDL_RWread(rwop, &offset, sizeof(offset), 1) != 1) {
+    if (SDL_RWread(rwop, &offset, sizeof offset, 1) != 1) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     offset = SDL_SwapLE16(offset);
 
-    if (SDL_RWread(rwop, &version, sizeof(version), 1) != 1) {
+    if (SDL_RWread(rwop, &version, sizeof version, 1) != 1) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     version = SDL_SwapLE16(version);
 
-    if (SDL_RWread(rwop, &id, sizeof(id), 1) != 1) {
+    if (SDL_RWread(rwop, &id, sizeof id, 1) != 1) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     id = SDL_SwapLE16(id);
 
-    if (offset != sizeof(description) + sizeof(offset) + sizeof(version) + sizeof(id)) {
+    if (offset != sizeof description + sizeof offset + sizeof version + sizeof id) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid datablock offset in header!");
     }
 
@@ -132,7 +132,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid version (0x%X) in header!", version);
     }
 
-    if (id != (~version + 0x1234)) {
+    if (id != ~version + 0x1234) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid id in header!");
     }
 
@@ -167,7 +167,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                 }
                 len -= 2;
                 const auto tmp_rate = getSampleRateFromVOCRate(time_constant);
-                if ((rate != 0) && (rate != tmp_rate)) {
+                if (rate != 0 && rate != tmp_rate) {
                     sdl2::log_info(
                         "This voc-file contains data blocks with different sampling rates: old rate: %d, new rate: %d",
                         rate, tmp_rate);
@@ -177,7 +177,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                 // sdl2::log_info("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
 
                 if (packing == 0) {
-                    auto* tmp_ret_sound = (uint8_t*)SDL_realloc(ret_sound.get(), decsize + len);
+                    auto* tmp_ret_sound = static_cast<uint8_t*>(SDL_realloc(ret_sound.get(), decsize + len));
                     if (tmp_ret_sound == nullptr) {
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                     }
@@ -210,7 +210,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
 
                 uint32_t length = 0;
                 if (rate != 0) {
-                    length = static_cast<uint32_t>((static_cast<double>(SilenceRate) / static_cast<double>(rate))
+                    length = static_cast<uint32_t>(static_cast<double>(SilenceRate) / static_cast<double>(rate)
                                                    * SilenceLength)
                            + 1;
                 } else {
@@ -220,7 +220,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                     length = SilenceLength;
                 }
 
-                auto* tmp_ret_sound = (uint8_t*)SDL_realloc(ret_sound.get(), decsize + length);
+                auto* tmp_ret_sound = static_cast<uint8_t*>(SDL_realloc(ret_sound.get(), decsize + length));
                 if (tmp_ret_sound == nullptr) {
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                 }
@@ -320,7 +320,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     if (minValue + levelShift < 0) {
         levelShift = -minValue;
     } else if (maxValue + levelShift > 255) {
-        levelShift = (255 - maxValue);
+        levelShift = 255 - maxValue;
     }
 
     for (uint32_t i = 0; i < RawData_Samples; i++) {
@@ -335,7 +335,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     for (uint32_t i = NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + NUM_SAMPLES_OF_SILENCE; i++) {
-        RawDataFloat[i] = (static_cast<float>(RawDataUint8[i - NUM_SAMPLES_OF_SILENCE]) / 128.0f) - 1.0f;
+        RawDataFloat[i] = static_cast<float>(RawDataUint8[i - NUM_SAMPLES_OF_SILENCE]) / 128.0f - 1.0f;
     }
 
     for (uint32_t i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
@@ -375,7 +375,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         for (uint32_t x = 0; x < TargetDataFloat_Samples; x++) {
             const auto pos     = x / ConversionRatio;
             const auto i       = static_cast<int>(pos); // lrint(floor(pos));
-            TargetDataFloat[x] = RawDataFloat[i] * ((i + 1) - pos) + RawDataFloat[i + 1] * (pos - i);
+            TargetDataFloat[x] = RawDataFloat[i] * (i + 1 - pos) + RawDataFloat[i + 1] * (pos - i);
         }
     } else {
         if (odone != TargetDataFloat.size())
@@ -405,7 +405,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     // Convert floats back to integers but leave out 3/4 of silence
-    const auto ThreeQuaterSilenceLength = static_cast<int>((NUM_SAMPLES_OF_SILENCE * ConversionRatio) * (3.0f / 4.0f));
+    const auto ThreeQuaterSilenceLength = static_cast<int>(NUM_SAMPLES_OF_SILENCE * ConversionRatio * (3.0f / 4.0f));
     TargetData_Samples -= 2 * ThreeQuaterSilenceLength;
 
     auto myChunk = sdl2::mix_chunk_ptr {static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
@@ -440,7 +440,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_U8: {
             auto* TargetData = reinterpret_cast<uint8_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = Float2Uint8(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]);
+                const auto v = Float2Uint8(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]);
                 for (auto j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }
@@ -450,7 +450,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_S8: {
             auto* TargetData = reinterpret_cast<int8_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = Float2Sint8(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]);
+                const auto v = Float2Sint8(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]);
                 for (auto j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }
@@ -460,7 +460,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_U16LSB: {
             auto* TargetData = reinterpret_cast<uint16_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = SDL_SwapLE16(Float2Uint16(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]));
+                const auto v = SDL_SwapLE16(Float2Uint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (auto j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }
@@ -470,7 +470,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_S16LSB: {
             auto* TargetData = reinterpret_cast<int16_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = SDL_SwapLE16(Float2Sint16(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]));
+                const auto v = SDL_SwapLE16(Float2Sint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }
@@ -480,7 +480,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_U16MSB: {
             auto* TargetData = reinterpret_cast<uint16_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = SDL_SwapBE16(Float2Uint16(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]));
+                const auto v = SDL_SwapBE16(Float2Uint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }
@@ -490,7 +490,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_S16MSB: {
             auto* TargetData = reinterpret_cast<int16_t*>(myChunk->abuf);
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
-                const auto v = SDL_SwapBE16(Float2Sint16(TargetDataFloat[(i / channels) + ThreeQuaterSilenceLength]));
+                const auto v = SDL_SwapBE16(Float2Sint16(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]));
                 for (int j = 0; j < channels; j++) {
                     TargetData[i + j] = v;
                 }

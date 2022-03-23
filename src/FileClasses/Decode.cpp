@@ -68,7 +68,7 @@ int decode40(const unsigned char* image_in, unsigned char* image_out) {
         } else {
             // bit 7 = 1
             if (!(count = code & 0x7f)) {
-                count = SDL_SwapLE16(*((Uint16*)readp));
+                count = SDL_SwapLE16(*(Uint16*)readp);
                 readp += 2;
                 code = count >> 8;
                 if (~code & 0x80) {
@@ -152,8 +152,9 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             //
             // 0cccpppp p (2)
             //
-            const unsigned count        = ((readp[0] & 0x70) >> 4) + 3;
-            const unsigned short relpos = (((unsigned short)(readp[0] & 0xf)) << 8) | ((unsigned short)readp[1]);
+            const unsigned count = ((readp[0] & 0x70) >> 4) + 3;
+            const unsigned short relpos =
+                static_cast<unsigned short>(readp[0] & 0xf) << 8 | static_cast<unsigned short>(readp[1]);
             readp += 2;
             megacountb += count;
             memcpy_overlap(writep, writep - relpos, count);
@@ -163,8 +164,8 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             //
             // 11111111 c c p p (5)
             //
-            const unsigned short count = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
-            const unsigned short pos   = SDL_SwapLE16(*((unsigned short*)(readp + 3)));
+            const unsigned short count = SDL_SwapLE16(*(unsigned short*)(readp + 1));
+            const unsigned short pos   = SDL_SwapLE16(*(unsigned short*)(readp + 3));
             readp += 5;
             megacounte += count;
             memcpy_overlap(writep, image_out + pos, count);
@@ -174,7 +175,7 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             //
             // 11111110 c c v(4)
             //
-            const unsigned short count = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
+            const unsigned short count = SDL_SwapLE16(*(unsigned short*)(readp + 1));
             const unsigned char color  = readp[3];
             readp += 4;
             memset(writep, color, count);
@@ -186,7 +187,7 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             // 11cccccc p p (3)
             //
             const unsigned short count = (*readp & 0x3f) + 3;
-            const unsigned short pos   = SDL_SwapLE16(*((unsigned short*)(readp + 1)));
+            const unsigned short pos   = SDL_SwapLE16(*(unsigned short*)(readp + 1));
             readp += 3;
             megacountc += count;
             memcpy_overlap(writep, image_out + pos, count);

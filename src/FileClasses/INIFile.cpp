@@ -43,7 +43,7 @@ INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEsca
                   INVALID_LINE),
       keyStringBegin(0), keyStringLength(keyname.size()),
       valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1)
-                       + ((bEscapeIfNeeded && escapingValueNeeded(value)) ? 1 : 0)),
+                       + (bEscapeIfNeeded && escapingValueNeeded(value) ? 1 : 0)),
       valueStringLength(value.size()), nextKey(nullptr), prevKey(nullptr) { }
 
 INIFile::Key::~Key() = default;
@@ -65,10 +65,10 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
     // convert string to lower case
     std::transform(value.begin(), value.end(), value.begin(), static_cast<int (*)(int)>(std::tolower));
 
-    if ((value == "true") || (value == "enabled") || (value == "on") || (value == "1")) {
+    if (value == "true" || value == "enabled" || value == "on" || value == "1") {
         return true;
     }
-    if ((value == "false") || (value == "disabled") || (value == "off") || (value == "0")) {
+    if (value == "false" || value == "disabled" || value == "off" || value == "0") {
 
         return false;
     }
@@ -341,7 +341,7 @@ INIFile::~INIFile() {
     \return true, if the section exists, false otherwise
 */
 bool INIFile::hasSection(std::string_view section) const {
-    return (getSectionInternal(section) != nullptr);
+    return getSectionInternal(section) != nullptr;
 }
 
 /**
@@ -416,9 +416,9 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
         return false;
     }
 
-    INIFile::INIFileLine* pCurrentLine = (sectionRoot == curSection) ? firstLine : curSection->nextLine;
+    INIFile::INIFileLine* pCurrentLine = sectionRoot == curSection ? firstLine : curSection->nextLine;
 
-    while ((pCurrentLine != nullptr) && (pCurrentLine != curSection->nextSection)) {
+    while (pCurrentLine != nullptr && pCurrentLine != curSection->nextSection) {
         INIFile::INIFileLine* tmp = pCurrentLine->nextLine;
         delete pCurrentLine;
         pCurrentLine = tmp;
@@ -437,7 +437,7 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
     curSection->keyRoot = nullptr;
 
     // now we add one blank line if not last section
-    if (bBlankLineAtSectionEnd && (curSection->nextSection != nullptr)) {
+    if (bBlankLineAtSectionEnd && curSection->nextSection != nullptr) {
         auto* blankLine = new INIFileLine("", INVALID_LINE);
         if (curSection->nextLine != nullptr) {
             curSection->nextLine->prevLine = blankLine;
@@ -809,7 +809,7 @@ void INIFile::readfile(SDL_RWops* file) {
             }
         }
 
-        const auto* line  = (const unsigned char*)completeLine.c_str();
+        const auto* line  = reinterpret_cast<const unsigned char*>(completeLine.c_str());
         bool bSyntaxError = false;
 
         int ret = getNextChar(line, 0);
@@ -833,7 +833,7 @@ void INIFile::readfile(SDL_RWops* file) {
                 const int sectionstart = ret + 1;
                 const int sectionend   = skipName(line, ret + 1);
 
-                if ((line[sectionend] != ']') || (getNextChar(line, sectionend + 1) != -1)) {
+                if (line[sectionend] != ']' || getNextChar(line, sectionend + 1) != -1) {
                     bSyntaxError = true;
                 } else {
                     // valid section line
@@ -862,7 +862,7 @@ void INIFile::readfile(SDL_RWops* file) {
                     bSyntaxError = true;
                 } else {
                     ret = getNextChar(line, keyend);
-                    if ((ret == -1) || (line[ret] != '=')) {
+                    if (ret == -1 || line[ret] != '=') {
                         bSyntaxError = true;
                     } else {
                         const int valuestart = getNextChar(line, ret + 1);
@@ -874,7 +874,7 @@ void INIFile::readfile(SDL_RWops* file) {
 
                                 const int valueend = getNextQuote(line, valuestart + 1);
 
-                                if ((valueend == -1) || (getNextChar(line, valueend + 1) != -1)) {
+                                if (valueend == -1 || getNextChar(line, valueend + 1) != -1) {
                                     bSyntaxError = true;
                                 } else {
                                     // valid key/value line
@@ -1015,7 +1015,7 @@ INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
 
 bool INIFile::isValidSectionName(std::string_view sectionname) {
     for (const char i : sectionname) {
-        if ((!isNormalChar(i)) && (!isWhitespace(i))) {
+        if (!isNormalChar(i) && !isWhitespace(i)) {
             return false;
         }
     }
@@ -1025,7 +1025,7 @@ bool INIFile::isValidSectionName(std::string_view sectionname) {
 
 bool INIFile::isValidKeyName(std::string_view keyname) {
     for (const auto i : keyname) {
-        if ((!isNormalChar(i)) && (!isWhitespace(i))) {
+        if (!isNormalChar(i) && !isWhitespace(i)) {
             return false;
         }
     }
@@ -1035,7 +1035,7 @@ bool INIFile::isValidKeyName(std::string_view keyname) {
 
 int INIFile::getNextChar(const unsigned char* line, int startpos) {
     while (line[startpos] != '\0') {
-        if ((line[startpos] == ';') || (line[startpos] == '#')) {
+        if (line[startpos] == ';' || line[startpos] == '#') {
             // comment
             return -1;
         }
@@ -1050,7 +1050,7 @@ int INIFile::getNextChar(const unsigned char* line, int startpos) {
 
 int INIFile::skipName(const unsigned char* line, int startpos) {
     while (line[startpos] != '\0') {
-        if (isNormalChar(line[startpos]) || (line[startpos] == ' ') || (line[startpos] == '\t')) {
+        if (isNormalChar(line[startpos]) || line[startpos] == ' ' || line[startpos] == '\t') {
             startpos++;
         } else {
             return startpos;
@@ -1064,7 +1064,7 @@ int INIFile::skipValue(const unsigned char* line, int startpos) {
     while (line[i] != '\0') {
         if (isNormalChar(line[i]) || isWhitespace(line[i])) {
             i++;
-        } else if ((line[i] == ';') || (line[i] == '#')) {
+        } else if (line[i] == ';' || line[i] == '#') {
             // begin of a comment
             break;
         } else {
@@ -1088,7 +1088,7 @@ int INIFile::skipKey(const unsigned char* line, int startpos) {
     while (line[i] != '\0') {
         if (isNormalChar(line[i]) || isWhitespace(line[i])) {
             i++;
-        } else if ((line[i] == ';') || (line[i] == '#') || (line[i] == '=')) {
+        } else if (line[i] == ';' || line[i] == '#' || line[i] == '=') {
             // begin of a comment or '='
             break;
         } else {
@@ -1119,12 +1119,11 @@ int INIFile::getNextQuote(const unsigned char* line, int startpos) {
 }
 
 bool INIFile::isWhitespace(unsigned char s) {
-    return (s == ' ') || (s == '\t') || (s == '\n') || (s == '\r');
+    return s == ' ' || s == '\t' || s == '\n' || s == '\r';
 }
 
 bool INIFile::isNormalChar(unsigned char s) {
-    return (!isWhitespace(s)) && (s >= 33) && (s != '"') && (s != ';') && (s != '#') && (s != '[') && (s != ']')
-        && (s != '=');
+    return !isWhitespace(s) && s >= 33 && s != '"' && s != ';' && s != '#' && s != '[' && s != ']' && s != '=';
 }
 
 bool INIFile::upper_compare(std::string_view s1, std::string_view s2) {

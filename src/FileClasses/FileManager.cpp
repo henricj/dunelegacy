@@ -84,7 +84,7 @@ std::vector<std::filesystem::path> FileManager::getNeededFiles() {
         "VOC.PAK",    "MERC.PAK",    "FINALE.PAK", "INTRO.PAK", "INTROVOC.PAK", "SOUND.PAK",
     };
 
-    std::string LanguagePakFiles = (pTextManager != nullptr) ? _("LanguagePakFiles") : "";
+    std::string LanguagePakFiles = pTextManager != nullptr ? _("LanguagePakFiles") : "";
 
     if (LanguagePakFiles.empty()) {
         LanguagePakFiles = "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK";

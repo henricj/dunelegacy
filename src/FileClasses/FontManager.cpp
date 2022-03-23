@@ -82,7 +82,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view t
 
     const auto lineHeight = pFont->getTextHeight();
     const auto width      = pFont->getTextWidth(text);
-    const int height      = lineHeight * textLines.size() + (lineHeight * (textLines.size() - 1)) / 2;
+    const int height      = lineHeight * textLines.size() + lineHeight * (textLines.size() - 1) / 2;
 
     // create new picture surface
     auto pic = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, width, height, SCREEN_BPP, SCREEN_FORMAT)};

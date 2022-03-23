@@ -174,7 +174,7 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
 sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
     std::vector<uint32_t> tiles;
 
-    if ((tilesX == 0) || (tilesY == 0)) {
+    if (tilesX == 0 || tilesY == 0) {
         THROW(std::invalid_argument,
               "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
     }
@@ -202,8 +202,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     const auto sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
 
     for (auto i = 1u; i < tilesX * tilesY; i++) {
-        if (((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
-            || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
+        if ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY
+            || (pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX) {
             THROW(std::runtime_error, "Shpfile::getPictureArray(): Not all pictures have the same size!");
         }
     }
@@ -227,7 +227,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
             unsigned char type              = Fileheader[0];
 
             /* size and also checksum */
-            const auto size = SDL_SwapLE16(*(reinterpret_cast<const Uint16*>(Fileheader + 8)));
+            const auto size = SDL_SwapLE16(*reinterpret_cast<const Uint16*>(Fileheader + 8));
 
             memset(ImageOut.get(), 0, sizeX * sizeY);
 
@@ -366,7 +366,7 @@ void Shpfile::readIndex() {
         /* files with only one image might be different */
 
         ShpfileEntry newShpfileEntry;
-        if ((reinterpret_cast<const uint16_t*>(pFiledata.get()))[2] != 0) {
+        if (reinterpret_cast<const uint16_t*>(pFiledata.get())[2] != 0) {
             /* File has special header with only 2 byte offset */
             newShpfileEntry.startOffset = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[1]);
             newShpfileEntry.endOffset =
@@ -387,7 +387,7 @@ void Shpfile::readIndex() {
         if (reinterpret_cast<const uint16_t*>(pFiledata.get())[2] != 0) {
             /* File has special header with only 2 byte offset */
 
-            if (shpFilesize < static_cast<uint32_t>((NumFiles * 2) + 2 + 2)) {
+            if (shpFilesize < static_cast<uint32_t>(NumFiles * 2 + 2 + 2)) {
                 THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
@@ -410,19 +410,18 @@ void Shpfile::readIndex() {
 
             // Add the endOffset for the last file
             shpfileEntries.back().endOffset =
-                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 2))) - 1 + 2;
+                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + NumFiles * 2)) - 1 + 2;
         } else {
             /* File has normal 4 byte offsets */
 
-            if (shpFilesize < static_cast<uint32_t>((NumFiles * 4) + 2 + 2)) {
+            if (shpFilesize < static_cast<uint32_t>(NumFiles * 4 + 2 + 2)) {
                 THROW(std::runtime_error, "Shpfile::readIndex(): Shp-File-Header is not complete! Header too small!");
             }
 
             // now fill Index with start and end-offsets
             for (auto i = 0; i < NumFiles; i++) {
                 ShpfileEntry newShpfileEntry;
-                newShpfileEntry.startOffset =
-                    SDL_SwapLE32((reinterpret_cast<const Uint32*>(pFiledata.get() + 2))[i]) + 2;
+                newShpfileEntry.startOffset = SDL_SwapLE32(reinterpret_cast<const Uint32*>(pFiledata.get() + 2)[i]) + 2;
 
                 if (!shpfileEntries.empty()) {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
@@ -438,7 +437,7 @@ void Shpfile::readIndex() {
 
             // Add the endOffset for the last file
             shpfileEntries.back().endOffset =
-                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 4))) - 1 + 2;
+                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + NumFiles * 4)) - 1 + 2;
         }
     }
 }

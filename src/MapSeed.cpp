@@ -108,7 +108,7 @@ static void SmoothNeighbourhood(int16_t index, uint32_t* pMapArray) {
     int16_t Ycoord   = 0;
     int16_t Pos      = 0;
 
-    TileType = (int16_t)pMapArray[index];
+    TileType = static_cast<int16_t>(pMapArray[index]);
 
     if (TileType == 8) {
         pMapArray[index] = 9;
@@ -152,7 +152,7 @@ static uint16_t SeedRand() {
 
     // little endian is more useful for this algorithm
     Seed        = SDL_SwapLE32(Seed);
-    auto* pSeed = (uint8_t*)&Seed;
+    auto* pSeed = reinterpret_cast<uint8_t*>(&Seed);
 
     // shift right
     a = pSeed[0];
@@ -178,7 +178,7 @@ static uint16_t SeedRand() {
     carry = (carry == 1 ? 0 : 1);
 
     // subtract with carry
-    a = ((uint16_t)a) - (((uint16_t)pSeed[0]) + ((uint16_t)carry));
+    a = static_cast<uint16_t>(a) - (static_cast<uint16_t>(pSeed[0]) + static_cast<uint16_t>(carry));
 
     // shift right
     carry = a & 0x01;
@@ -239,10 +239,11 @@ void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap) {
     for (i = SeedRand() & 0x0F; i >= 0; i--) {
         randNum = SeedRand() & 0xFF;
         for (j = 0; j < 21; j++) {
-            index                      = randNum + OffsetArray1[j];
-            index                      = index >= 0 ? index : 0;
-            index                      = index <= (16 * 16 + 16) ? index : (16 * 16 + 16);
-            Array4x4TerrainGrid[index] = ((uint16_t)Array4x4TerrainGrid[index] + (SeedRand() & 0x0F)) & 0x0F;
+            index = randNum + OffsetArray1[j];
+            index = index >= 0 ? index : 0;
+            index = index <= (16 * 16 + 16) ? index : (16 * 16 + 16);
+            Array4x4TerrainGrid[index] =
+                (static_cast<uint16_t>(Array4x4TerrainGrid[index]) + (SeedRand() & 0x0F)) & 0x0F;
         }
     }
 
@@ -288,7 +289,7 @@ void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap) {
         // save the old row
         memcpy(oldMapRow, curMapRow, sizeof(curMapRow));
         for (i = 0; i < 64; i++) {
-            curMapRow[i] = (uint16_t)MapArray[Ycoord * 64 + i];
+            curMapRow[i] = static_cast<uint16_t>(MapArray[Ycoord * 64 + i]);
         }
 
         for (Xcoord = 0; Xcoord < 64; Xcoord++) {
@@ -319,7 +320,7 @@ void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap) {
     point.y = ((randNum - 3) < point.y ? randNum - 3 : point.y);
 
     for (i = 0; i < 64 * 64; i++) {
-        point.x = (uint16_t)MapArray[i];
+        point.x = static_cast<uint16_t>(MapArray[i]);
 
         if ((randNum + 4) < point.x) {
             MapArray[i] = 0x06;
@@ -386,14 +387,14 @@ void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap) {
 
     // smoothing
     for (i = 0; i < 64; i++) {
-        curMapRow[i] = (uint16_t)MapArray[i];
+        curMapRow[i] = static_cast<uint16_t>(MapArray[i]);
     }
 
     for (Ycoord = 0; Ycoord < 64; Ycoord++) {
         memcpy(oldMapRow, curMapRow, sizeof(curMapRow));
 
         for (i = 0; i < 64; i++) {
-            curMapRow[i] = (uint16_t)MapArray[Ycoord * 64 + i];
+            curMapRow[i] = static_cast<uint16_t>(MapArray[Ycoord * 64 + i]);
         }
 
         for (Xcoord = 0; Xcoord < 64; Xcoord++) {

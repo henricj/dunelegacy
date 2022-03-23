@@ -839,8 +839,8 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
-    context.game.getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE, objectID, (uint32_t)newAttackMode));
+    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,
+                                                        objectID, static_cast<uint32_t>(newAttackMode)));
 }
 
 /**
@@ -854,7 +854,7 @@ void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xP
     if (context.map.tileExists(xPos, yPos)) {
         context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID,
-                                                            (uint32_t)xPos, (uint32_t)yPos));
+                                                            static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     }
 }
 

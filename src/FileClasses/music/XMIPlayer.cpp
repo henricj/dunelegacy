@@ -299,7 +299,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
 
     currentMusicType = musicType;
 
-    if ((musicOn) && (filename != "")) {
+    if (musicOn && filename != "") {
         sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::u8path(filename));
         SDLDataSource input(inputrwop.release(), 1);
 

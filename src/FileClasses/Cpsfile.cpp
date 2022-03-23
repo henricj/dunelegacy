@@ -54,13 +54,13 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
     }
 
     unsigned int SizeXTimeSizeY = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 4));
-    SizeXTimeSizeY += SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 6)));
+    SizeXTimeSizeY += SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 6));
 
     if (SizeXTimeSizeY != SIZE_X * SIZE_Y) {
         THROW(std::runtime_error, "LoadCPS_RW(): Images must be 320x200 pixels big!");
     }
 
-    const uint16_t PaletteSize = SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 8)));
+    const uint16_t PaletteSize = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 8));
 
     const auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X * SIZE_Y);
     memset(pImageOut.get(), 0, SIZE_X * SIZE_Y);

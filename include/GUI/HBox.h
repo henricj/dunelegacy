@@ -127,7 +127,8 @@ public:
         double notOversizedWeightSum = 0.0;
         for (const HBox_WidgetData& widgetData : containedWidgets) {
             if (widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
-                if ((double)widgetData.pWidget->getMinimumSize().x > availableWidth * (widgetData.weight / weightSum)) {
+                if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
+                    > availableWidth * (widgetData.weight / weightSum)) {
                     neededOversizeWidth += widgetData.pWidget->getMinimumSize().x;
                 } else {
                     notOversizedWeightSum += widgetData.weight;
@@ -150,12 +151,12 @@ public:
                 if (widgetData.fixedWidth <= 0) {
                     if (numRemainingWidgets <= 1) {
                         widgetWidth = availableWidth;
-                    } else if ((double)widgetData.pWidget->getMinimumSize().x
+                    } else if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
                                > totalAvailableWidth * (widgetData.weight / weightSum)) {
                         widgetWidth = widgetData.pWidget->getMinimumSize().x;
                     } else {
-                        widgetWidth = (int32_t)((totalAvailableWidth - neededOversizeWidth)
-                                                * (widgetData.weight / notOversizedWeightSum));
+                        widgetWidth = static_cast<int32_t>((totalAvailableWidth - neededOversizeWidth)
+                                                           * (widgetData.weight / notOversizedWeightSum));
                     }
                     availableWidth -= widgetWidth;
                     numRemainingWidgets--;

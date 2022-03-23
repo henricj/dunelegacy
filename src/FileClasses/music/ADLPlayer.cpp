@@ -35,7 +35,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
     int musicNum         = -1;
     std::string filename = "";
 
-    if ((currentMusicType == musicType) && (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying()) {
+    if (currentMusicType == musicType && pSoundAdlibPC != nullptr && pSoundAdlibPC->isPlaying()) {
         return;
     }
 
@@ -278,7 +278,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
 
     currentMusicType = musicType;
 
-    if ((musicOn) && (!filename.empty())) {
+    if (musicOn && !filename.empty()) {
 
         Mix_HookMusic(nullptr, nullptr);
         delete pSoundAdlibPC;
@@ -307,7 +307,7 @@ void ADLPlayer::toggleSound() {
 }
 
 bool ADLPlayer::isMusicPlaying() {
-    return (pSoundAdlibPC != nullptr) && pSoundAdlibPC->isPlaying();
+    return pSoundAdlibPC != nullptr && pSoundAdlibPC->isPlaying();
 }
 
 void ADLPlayer::setMusic(bool value) {

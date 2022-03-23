@@ -125,8 +125,7 @@ void LANGameFinderAndAnnouncer::announceGame() {
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
-    NetworkPacket_AnnounceGame announcePacket;
-    memset(&announcePacket, 0, sizeof(NetworkPacket_AnnounceGame));
+    NetworkPacket_AnnounceGame announcePacket {};
 
     announcePacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     announcePacket.type        = NETWORKPACKET_ANNOUNCEGAME;
@@ -155,8 +154,7 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
-    NetworkPacket_RequestGame requestPacket;
-    memset(&requestPacket, 0, sizeof(NetworkPacket_RequestGame));
+    NetworkPacket_RequestGame requestPacket {};
 
     requestPacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     requestPacket.type        = NETWORKPACKET_REQUESTANNOUNCE;
@@ -281,8 +279,7 @@ void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
-    NetworkPacket_RemoveGameAnnouncement removeAnnouncementPacket;
-    memset(&removeAnnouncementPacket, 0, sizeof(NetworkPacket_RemoveGameAnnouncement));
+    NetworkPacket_RemoveGameAnnouncement removeAnnouncementPacket {};
 
     removeAnnouncementPacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     removeAnnouncementPacket.type        = NETWORKPACKET_REMOVEGAMEANNOUNCEMENT;

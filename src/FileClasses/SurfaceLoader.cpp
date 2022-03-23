@@ -1457,7 +1457,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
             THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
         }
 
-        if ((tmp->w != 184) || (tmp->h != 112)) {
+        if (tmp->w != 184 || tmp->h != 112) {
             THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
         }
 
@@ -1472,7 +1472,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
         // Now we can copy pixel by pixel
         for (auto y = 0; y < 55; y++) {
             for (auto x = 0; x < 91; x++) {
-                out[y * pSurface->pitch + x] = in[((y * 2) + 1) * tmp->pitch + (x * 2) + 1];
+                out[y * pSurface->pitch + x] = in[(y * 2 + 1) * tmp->pitch + x * 2 + 1];
             }
         }
     }
@@ -1488,12 +1488,11 @@ std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string
 }
 
 sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const {
-    const int windtrapColorQuantizizer = 255 / ((NUM_WINDTRAP_ANIMATIONS / 2) - 2);
+    const int windtrapColorQuantizizer = 255 / (NUM_WINDTRAP_ANIMATIONS / 2 - 2);
     const int windtrapSize             = windtrapPic->h;
     const int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
-    const int sizeY =
-        ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW)
-        * windtrapSize;
+    const int sizeY                    = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1)
+                    / NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
     sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
@@ -1507,7 +1506,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     dest.w = windtrapSize;
 
     for (auto i = 0; i < NUM_WINDTRAP_ANIMATIONS; i++) {
-        src.x = ((i / 3) % 2 == 0) ? 2 * windtrapSize : 3 * windtrapSize;
+        src.x = i / 3 % 2 == 0 ? 2 * windtrapSize : 3 * windtrapSize;
 
         SDL_Color windtrapColor;
         if (i < NUM_WINDTRAP_ANIMATIONS / 2) {
@@ -1532,7 +1531,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
         dest.x = dest.x % sizeX;
     }
 
-    if ((returnPic->w > 2048) || (returnPic->h > 2048)) {
+    if (returnPic->w > 2048 || returnPic->h > 2048) {
         sdl2::log_info("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!",
                        returnPic->w, returnPic->h);
     }
@@ -1549,7 +1548,7 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
             SDL_SetPaletteColors(arrowPic->format->palette,
-                                 &palette[houseToPaletteIndex[static_cast<int>(house)] + ((i + k) % 4)], 251 + k, 1);
+                                 &palette[houseToPaletteIndex[static_cast<int>(house)] + (i + k) % 4], 251 + k, 1);
         }
 
         SDL_BlitSurface(arrowPic, nullptr, returnPic.get(), &dest);
@@ -1587,7 +1586,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
-    if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
+    if (pSurface->w > 2048 || pSurface->h > 2048) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on "
                        "older GPUs!",
                        ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
@@ -1624,7 +1623,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
-    if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
+    if (pSurface->w > 2048 || pSurface->h > 2048) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on "
                        "older GPUs!",
                        ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);

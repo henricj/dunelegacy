@@ -93,11 +93,11 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
 
         size_t delimPos            = entryContent.find_first_of('*');
         std::string filename       = entryContent.substr(0, delimPos);
-        std::string nameAndContent = (delimPos == std::string::npos) ? "" : entryContent.substr(delimPos + 1);
+        std::string nameAndContent = delimPos == std::string::npos ? "" : entryContent.substr(delimPos + 1);
 
         size_t delimPos2    = nameAndContent.find(" \n");
         std::string name    = nameAndContent.substr(0, delimPos2);
-        std::string content = (delimPos2 == std::string::npos) ? "" : nameAndContent.substr(delimPos2 + 2);
+        std::string content = delimPos2 == std::string::npos ? "" : nameAndContent.substr(delimPos2 + 2);
 
         mentatEntries.emplace_back(convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name,
                                    content);

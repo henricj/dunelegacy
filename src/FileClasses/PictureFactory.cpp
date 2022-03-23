@@ -70,13 +70,13 @@ PictureFactory::PictureFactory() {
     dest.h = 67;
     for (dest.y = 0; dest.y < settings.video.height; dest.y += 67) {
         for (dest.x = 0; dest.x < settings.video.width; dest.x += 63) {
-            if ((dest.x % (63 * 2) == 0) && (dest.y % (67 * 2) == 0)) {
+            if (dest.x % (63 * 2) == 0 && dest.y % (67 * 2) == 0) {
                 SDL_Rect tmpDest = dest;
                 SDL_BlitSurface(PatternNormal.get(), nullptr, background.get(), &tmpDest);
-            } else if ((dest.x % (63 * 2) != 0) && (dest.y % (67 * 2) == 0)) {
+            } else if (dest.x % (63 * 2) != 0 && dest.y % (67 * 2) == 0) {
                 SDL_Rect tmpDest = dest;
                 SDL_BlitSurface(PatternHFlipped.get(), nullptr, background.get(), &tmpDest);
-            } else if ((dest.x % (63 * 2) == 0) && (dest.y % (67 * 2) != 0)) {
+            } else if (dest.x % (63 * 2) == 0 && dest.y % (67 * 2) != 0) {
                 SDL_Rect tmpDest = dest;
                 SDL_BlitSurface(PatternVFlipped.get(), nullptr, background.get(), &tmpDest);
             } else /*if((dest.x % (63*2) != 0) && (dest.y % (67*2) != 0))*/ {

@@ -261,7 +261,7 @@ public:
 
         bool bChanged = false;
         for (const char c : newText) {
-            if (((maxTextLength < 0) || ((int)utf8Length(text) < maxTextLength))
+            if (((maxTextLength < 0) || (static_cast<int>(utf8Length(text)) < maxTextLength))
                 && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
                 && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;

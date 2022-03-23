@@ -91,7 +91,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
         }
     }
 
-    if ((musicOn) && (!filename.empty())) {
+    if (musicOn && !filename.empty()) {
 
         Mix_HaltMusic();
 

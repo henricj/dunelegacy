@@ -35,10 +35,10 @@ CSurroundopl::CSurroundopl(std::unique_ptr<Copl> a, std::unique_ptr<Copl> b, boo
     lbuf.resize(default_bufsize);
     rbuf.resize(default_bufsize);
 
-    memset(iFMReg, 0, sizeof(iFMReg));
-    memset(iTweakedFMReg, 0, sizeof(iTweakedFMReg));
-    memset(iCurrentTweakedBlock, 0, sizeof(iCurrentTweakedBlock));
-    memset(iCurrentFNum, 0, sizeof(iCurrentFNum));
+    memset(iFMReg, 0, sizeof iFMReg);
+    memset(iTweakedFMReg, 0, sizeof iTweakedFMReg);
+    memset(iCurrentTweakedBlock, 0, sizeof iCurrentTweakedBlock);
+    memset(iCurrentFNum, 0, sizeof iCurrentFNum);
 }
 
 CSurroundopl::~CSurroundopl() = default;
@@ -74,17 +74,17 @@ void CSurroundopl::write(int reg, int val) {
     int iChannel  = -1;
     int iRegister = reg; // temp
     int iValue    = val; // temp
-    if ((iRegister >> 4 == 0xA) || (iRegister >> 4 == 0xB))
+    if (iRegister >> 4 == 0xA || iRegister >> 4 == 0xB)
         iChannel = iRegister & 0x0F;
 
     // Remember the FM state, so that the harmonic effect can access
     // previously assigned register values.
     this->iFMReg[this->currChip][iRegister] = iValue;
 
-    if ((iChannel >= 0)) { // && (i == 1)) {
-        const uint8_t iBlock = (this->iFMReg[this->currChip][0xB0 + iChannel] >> 2) & 0x07;
-        const uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8)
-                             | this->iFMReg[this->currChip][0xA0 + iChannel];
+    if (iChannel >= 0) { // && (i == 1)) {
+        const uint8_t iBlock = this->iFMReg[this->currChip][0xB0 + iChannel] >> 2 & 0x07;
+        const uint16_t iFNum =
+            (this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8 | this->iFMReg[this->currChip][0xA0 + iChannel];
         // double dbOriginalFreq = 50000.0 * (double)iFNum * pow(2, iBlock - 20);
         const double dbOriginalFreq = 49716.0 * static_cast<double>(iFNum) * pow(2, iBlock - 20);
 
@@ -147,10 +147,10 @@ void CSurroundopl::write(int reg, int val) {
             iNewFNum  = iFNum;
         }
 
-        if ((iRegister >= 0xB0) && (iRegister <= 0xB8)) {
+        if (iRegister >= 0xB0 && iRegister <= 0xB8) {
 
             // Overwrite the supplied value with the new F-Number and Block.
-            iValue = (iValue & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
+            iValue = iValue & ~0x1F | iNewBlock << 2 | iNewFNum >> 8 & 0x03;
 
             this->iCurrentTweakedBlock[this->currChip][iChannel] =
                 iNewBlock; // save it so we don't have to update register 0xB0 later on
@@ -163,18 +163,17 @@ void CSurroundopl::write(int reg, int val) {
                 b->write(iAdditionalReg, iAdditionalValue);
                 this->iTweakedFMReg[this->currChip][iAdditionalReg] = iAdditionalValue;
             }
-        } else if ((iRegister >= 0xA0) && (iRegister <= 0xA8)) {
+        } else if (iRegister >= 0xA0 && iRegister <= 0xA8) {
 
             // Overwrite the supplied value with the new F-Number.
             iValue = iNewFNum & 0xFF;
 
             // See if we need to update the block number, which is stored in a different register
             uint8_t iNewB0Value =
-                (this->iFMReg[this->currChip][0xB0 + iChannel] & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
-            if ((iNewB0Value & 0x20)
-                && // but only update if there's a note currently playing (otherwise we can just wait
-                (this->iTweakedFMReg[this->currChip][0xB0 + iChannel]
-                 != iNewB0Value) // until the next noteon and update it then)
+                this->iFMReg[this->currChip][0xB0 + iChannel] & ~0x1F | iNewBlock << 2 | iNewFNum >> 8 & 0x03;
+            if (iNewB0Value & 0x20 && // but only update if there's a note currently playing (otherwise we can just wait
+                this->iTweakedFMReg[this->currChip][0xB0 + iChannel]
+                    != iNewB0Value // until the next noteon and update it then)
             ) {
                 //              AdPlug_LogWrite("OPL INFO: CH%d - FNum %d/B#%d -> FNum %d/B#%d == keyon register
                 //              update!\n",

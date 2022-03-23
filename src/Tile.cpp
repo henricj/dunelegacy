@@ -1132,7 +1132,7 @@ int Tile::getHideTile(const Game* game, int teamID) const {
     const bool down  = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(game, teamID));
     const bool left  = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(game, teamID));
 
-    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
+    return (static_cast<int>(up) | (right << 1) | (down << 2) | (left << 3));
 }
 
 int Tile::getFogTile(const Game* game, int teamID) const {
@@ -1155,7 +1155,7 @@ int Tile::getFogTile(const Game* game, int teamID) const {
     const bool down  = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(game, teamID));
     const bool left  = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(game, teamID));
 
-    return (((int)up) | (right << 1) | (down << 2) | (left << 3));
+    return (static_cast<int>(up) | (right << 1) | (down << 2) | (left << 3));
 }
 
 template<typename Pred>

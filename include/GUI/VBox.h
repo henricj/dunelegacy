@@ -128,7 +128,7 @@ public:
         double notOversizedWeightSum = 0.0;
         for (const VBox_WidgetData& widgetData : containedWidgets) {
             if (widgetData.pWidget->resizingYAllowed() == true && widgetData.fixedHeight <= 0) {
-                if ((double)widgetData.pWidget->getMinimumSize().y
+                if (static_cast<double>(widgetData.pWidget->getMinimumSize().y)
                     > availableHeight * (widgetData.weight / weightSum)) {
                     neededOversizeHeight += widgetData.pWidget->getMinimumSize().y;
                 } else {
@@ -152,12 +152,12 @@ public:
                 if (widgetData.fixedHeight <= 0) {
                     if (numRemainingWidgets <= 1) {
                         WidgetHeight = availableHeight;
-                    } else if ((double)widgetData.pWidget->getMinimumSize().y
+                    } else if (static_cast<double>(widgetData.pWidget->getMinimumSize().y)
                                > totalAvailableHeight * (widgetData.weight / weightSum)) {
                         WidgetHeight = widgetData.pWidget->getMinimumSize().y;
                     } else {
-                        WidgetHeight = (int32_t)((totalAvailableHeight - neededOversizeHeight)
-                                                 * (widgetData.weight / notOversizedWeightSum));
+                        WidgetHeight = static_cast<int32_t>((totalAvailableHeight - neededOversizeHeight)
+                                                            * (widgetData.weight / notOversizedWeightSum));
                     }
                     availableHeight -= WidgetHeight;
                     numRemainingWidgets--;

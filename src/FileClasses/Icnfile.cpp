@@ -91,7 +91,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
         index = tmp;
     }
     MapfileEntry newMapfileEntry;
-    newMapfileEntry.numTiles = (mapFilesize / 2) - index;
+    newMapfileEntry.numTiles = mapFilesize / 2 - index;
     tilesets.push_back(newMapfileEntry);
 
     for (int i = 0; i < numTilesets; i++) {
@@ -118,7 +118,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
     SSET = pIcnFiledata.get() + 0x18;
 
     // check SSET-Section
-    if ((SSET[0] != 'S') || (SSET[1] != 'S') || (SSET[2] != 'E') || (SSET[3] != 'T')) {
+    if (SSET[0] != 'S' || SSET[1] != 'S' || SSET[2] != 'E' || SSET[3] != 'T') {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No SSET-Section found!\n");
     }
 
@@ -132,11 +132,11 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
     RPAL = SSET + SSET_Length;
 
     // check RPAL-Section
-    if ((RPAL[0] != 'R') || (RPAL[1] != 'P') || (RPAL[2] != 'A') || (RPAL[3] != 'L')) {
+    if (RPAL[0] != 'R' || RPAL[1] != 'P' || RPAL[2] != 'A' || RPAL[3] != 'L') {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No RPAL-Section found!\n");
     }
 
-    RPAL_Length = SDL_SwapBE32(*(reinterpret_cast<const Uint32*>(RPAL + 4)));
+    RPAL_Length = SDL_SwapBE32(*reinterpret_cast<const Uint32*>(RPAL + 4));
     RPAL += 8;
 
     if (pIcnFiledata.get() + icnFilesize < RPAL + RPAL_Length) {
@@ -146,18 +146,18 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
     RTBL = RPAL + RPAL_Length;
 
     // check RTBL-Section
-    if ((RTBL[0] != 'R') || (RTBL[1] != 'T') || (RTBL[2] != 'B') || (RTBL[3] != 'L')) {
+    if (RTBL[0] != 'R' || RTBL[1] != 'T' || RTBL[2] != 'B' || RTBL[3] != 'L') {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: No RTBL-Section found!\n");
     }
 
-    RTBL_Length = SDL_SwapBE32(*(reinterpret_cast<const Uint32*>(RTBL + 4)));
+    RTBL_Length = SDL_SwapBE32(*reinterpret_cast<const Uint32*>(RTBL + 4));
     RTBL += 8;
 
     if (pIcnFiledata.get() + icnFilesize < RTBL + RTBL_Length) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is bigger than ICN-File!\n");
     }
 
-    numFiles = SSET_Length / ((SIZE_X * SIZE_Y) / 2);
+    numFiles = SSET_Length / (SIZE_X * SIZE_Y / 2);
 
     if (RTBL_Length < numFiles) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Invalid ICN-File: RTBL-Section is too small!\n");
@@ -188,8 +188,8 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
         THROW(std::runtime_error, "Icnfile::getPicture(): Invalid palette!");
     }
 
-    const uint8_t* const RESTRICT palettestart = RPAL + (16 * RTBL[indexOfFile]);
-    const uint8_t* const RESTRICT filestart    = SSET + (indexOfFile * ((SIZE_X * SIZE_Y) / 2));
+    const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
+    const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
 
     // create new picture surface
     sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
@@ -253,7 +253,7 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
             mapfileIndex, tilesets.size());
     }
 
-    if ((tilesX == 0) && (tilesY == 0) && (tilesN == 0)) {
+    if (tilesX == 0 && tilesY == 0 && tilesN == 0) {
         // guest what is best
         const auto tmp = tilesets[mapfileIndex].numTiles;
         if (tmp == 24) {
@@ -261,19 +261,19 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
             tilesX = 2;
             tilesY = 2;
             tilesN = 6;
-        } else if ((tmp % 9) == 0) {
+        } else if (tmp % 9 == 0) {
             tilesX = 3;
             tilesY = 3;
             tilesN = tmp / 9;
-        } else if ((tmp % 6) == 0) {
+        } else if (tmp % 6 == 0) {
             tilesX = 3;
             tilesY = 2;
             tilesN = tmp / 6;
-        } else if ((tmp % 4) == 0) {
+        } else if (tmp % 4 == 0) {
             tilesX = 2;
             tilesY = 2;
             tilesN = tmp / 4;
-        } else if ((tmp >= 40) && ((tmp % 5) == 0)) {
+        } else if (tmp >= 40 && tmp % 5 == 0) {
             tilesX = tmp / 5;
             tilesY = 5;
             tilesN = 1;
@@ -283,16 +283,16 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
             tilesN = tmp;
         }
 
-    } else if (((tilesX == 0) || (tilesY == 0)) && (tilesN == 0)) {
+    } else if ((tilesX == 0 || tilesY == 0) && tilesN == 0) {
         THROW(std::invalid_argument, "Icnfile::getPictureArray(): Cannot read picture array with dimension 0!");
-    } else if ((tilesX == 0) && (tilesY == 0) && (tilesN != 0)) {
+    } else if (tilesX == 0 && tilesY == 0 && tilesN != 0) {
         if (tilesets[mapfileIndex].numTiles % tilesN == 0) {
             // guest what is best
             const int tmp = tilesets[mapfileIndex].numTiles / tilesN;
-            if ((tmp % 3) == 0) {
+            if (tmp % 3 == 0) {
                 tilesX = tmp / 3;
                 tilesY = 3;
-            } else if ((tmp % 2) == 0) {
+            } else if (tmp % 2 == 0) {
                 tilesX = tmp / 2;
                 tilesY = 2;
             } else {
@@ -334,11 +334,11 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
                     THROW(std::runtime_error, "Icnfile::getPictureArray(): Invalid palette!");
                 }
 
-                const uint8_t* const RESTRICT palettestart = RPAL + (16 * RTBL[IndexOfFile]);
-                const uint8_t* const RESTRICT filestart    = SSET + (IndexOfFile * ((SIZE_X * SIZE_Y) / 2));
+                const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[IndexOfFile];
+                const uint8_t* const RESTRICT filestart    = SSET + IndexOfFile * (SIZE_X * SIZE_Y / 2);
 
                 // Now we can copy to surface
-                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + (pic->pitch) * tile_y * SIZE_Y
+                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + pic->pitch * tile_y * SIZE_Y
                                              + (tile_x + n * tilesX) * SIZE_X;
                 for (int y = 0; y < SIZE_Y; y++) {
                     for (int x = 0; x < SIZE_X; x += 2) {
@@ -368,14 +368,14 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
 */
 sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength) const {
 
-    if ((startIndex >= numFiles) || (endIndex >= numFiles) || (startIndex > endIndex)) {
+    if (startIndex >= numFiles || endIndex >= numFiles || startIndex > endIndex) {
         THROW(std::invalid_argument,
               "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!",
               startIndex, endIndex, numFiles);
     }
 
     const auto numTiles = endIndex - startIndex + 1;
-    const auto numCols  = (maxRowLength == 0) ? numTiles : maxRowLength;
+    const auto numCols  = maxRowLength == 0 ? numTiles : maxRowLength;
     const auto numRows  = (numTiles + numCols - 1) / numCols;
 
     // create new picture surface
@@ -388,8 +388,8 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
     sdl2::surface_lock lock {pic.get()};
 
     uint32_t tileCount = 0u;
-    for (uint32_t row = 0u; (row < numRows) && (tileCount < numTiles); ++row) {
-        for (uint32_t col = 0u; (col < numCols) && (tileCount < numTiles); ++col) {
+    for (uint32_t row = 0u; row < numRows && tileCount < numTiles; ++row) {
+        for (uint32_t col = 0u; col < numCols && tileCount < numTiles; ++col) {
             const uint32_t indexOfFile = startIndex + tileCount;
 
             // check if palette is in range
@@ -397,12 +397,12 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
                 THROW(std::runtime_error, "Icnfile::getPictureRow(): Invalid palette!");
             }
 
-            const uint8_t* const RESTRICT palettestart = RPAL + (16 * RTBL[indexOfFile]);
-            const uint8_t* const RESTRICT filestart    = SSET + (indexOfFile * ((SIZE_X * SIZE_Y) / 2));
+            const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
+            const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
 
             // Now we can copy to surface
             unsigned char* RESTRICT dest =
-                static_cast<unsigned char*>(pic->pixels) + (row * SIZE_Y * pic->pitch) + (col * SIZE_X);
+                static_cast<unsigned char*>(pic->pixels) + row * SIZE_Y * pic->pitch + col * SIZE_X;
             for (int y = 0; y < SIZE_Y; ++y) {
                 for (int x = 0; x < SIZE_X; x += 2) {
                     unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
@@ -457,8 +457,8 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
             THROW(std::runtime_error, "Icnfile::getPictureRow2(): Invalid palette!");
         }
 
-        const uint8_t* const RESTRICT palettestart = RPAL + (16 * RTBL[indexOfFile]);
-        const uint8_t* const RESTRICT filestart    = SSET + (indexOfFile * ((SIZE_X * SIZE_Y) / 2));
+        const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
+        const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
 
         // Now we can copy to surface
         unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + i * SIZE_X;
