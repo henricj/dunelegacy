@@ -1044,11 +1044,11 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     switch (terrainType) {
         case TERRAINTYPE::Terrain_Slab: {
             return TERRAINTILETYPE::TerrainTile_Slab;
-        } break;
+        }
 
         case TERRAINTYPE::Terrain_Sand: {
             return TERRAINTILETYPE::TerrainTile_Sand;
-        } break;
+        }
 
         case Terrain_Rock: {
             // determine which surrounding tiles are rock
@@ -1087,11 +1087,11 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
 
         case TERRAINTYPE::Terrain_SpiceBloom: {
             return TERRAINTILETYPE::TerrainTile_SpiceBloom;
-        } break;
+        }
 
         case TERRAINTYPE::Terrain_SpecialBloom: {
             return TERRAINTILETYPE::TerrainTile_SpecialBloom;
-        } break;
+        }
 
         default:
             THROW(std::runtime_error, "Tile::getTerrainTile(): Invalid terrain type");

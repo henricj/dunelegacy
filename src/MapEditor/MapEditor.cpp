@@ -1475,7 +1475,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                 default: {
                     THROW(std::runtime_error, "MapEditor::DrawMap(): Invalid terrain type");
-                } break;
+                }
             }
 
             // draw map[x][y]

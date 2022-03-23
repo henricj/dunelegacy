@@ -411,7 +411,7 @@ void StructureBase::destroy(const GameContext& context) {
 
             default: {
                 THROW(std::runtime_error, "StructureBase::destroy(): Invalid structure size");
-            } break;
+            }
         }
     }
 

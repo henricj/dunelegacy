@@ -246,7 +246,7 @@ void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
 
         default: {
             return;
-        } break;
+        }
     }
 
     alreadyShownTutorialHints |= (1 << itemID);

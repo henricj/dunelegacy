@@ -28,11 +28,11 @@ MapMirror::~MapMirror() = default;
 std::unique_ptr<MapMirror> MapMirror::createMapMirror(MirrorMode mirrorMode, int mapsizeX, int mapsizeY) {
     // clang-format off
     switch(mirrorMode) {
-        case MirrorModeNone:        return std::make_unique<MapMirrorNone>(mapsizeX, mapsizeY);          break;
-        case MirrorModeHorizontal:  return std::make_unique<MapMirrorHorizontal>(mapsizeX, mapsizeY);    break;
-        case MirrorModeVertical:    return std::make_unique<MapMirrorVertical>(mapsizeX, mapsizeY);      break;
-        case MirrorModeBoth:        return std::make_unique<MapMirrorBoth>(mapsizeX, mapsizeY);          break;
-        case MirrorModePoint:       return std::make_unique<MapMirrorPoint>(mapsizeX, mapsizeY);         break;
+        case MirrorModeNone:        return std::make_unique<MapMirrorNone>(mapsizeX, mapsizeY);
+        case MirrorModeHorizontal:  return std::make_unique<MapMirrorHorizontal>(mapsizeX, mapsizeY);
+        case MirrorModeVertical:    return std::make_unique<MapMirrorVertical>(mapsizeX, mapsizeY);
+        case MirrorModeBoth:        return std::make_unique<MapMirrorBoth>(mapsizeX, mapsizeY);
+        case MirrorModePoint:       return std::make_unique<MapMirrorPoint>(mapsizeX, mapsizeY);
         default:                    return std::unique_ptr<MapMirror>();
     }
     // clang-format off

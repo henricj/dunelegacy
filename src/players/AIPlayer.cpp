@@ -707,16 +707,16 @@ bool AIPlayer::isAllowedToArm() const {
     switch (difficulty) {
         case Difficulty::Easy: {
             return (ownTeamScore < maxTeamScore);
-        } break;
+        }
 
         case Difficulty::Medium: {
             return (ownTeamScore < 2 * maxTeamScore);
-        } break;
+        }
 
         case Difficulty::Hard:
         default: {
             return true;
-        } break;
+        }
     }
 }
 

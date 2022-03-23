@@ -1445,12 +1445,12 @@ GameInitSettings Game::getNextGameInitSettings() {
                                                    ? pLocalPlayer->getAlreadyShownTutorialHints()
                                                    : gameInitSettings.getAlreadyShownTutorialHints();
             return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
-        } break;
+        }
 
         default: {
             sdl2::log_info("Game::getNextGameInitClass(): Wrong gameType for next Game.");
             return GameInitSettings();
-        } break;
+        }
     }
 }
 
@@ -1484,7 +1484,7 @@ int Game::whatNext() {
             whatNextParam = GAME_NEXTMISSION;
 
             return GAME_DEBRIEFING_LOST;
-        } break;
+        }
 
         case GameType::Skirmish: {
             if (bQuitGame) {
@@ -1496,7 +1496,7 @@ int Game::whatNext() {
             }
             whatNextParam = GAME_RETURN_TO_MENU;
             return GAME_DEBRIEFING_LOST;
-        } break;
+        }
 
         case GameType::CustomGame:
         case GameType::CustomMultiplayer: {
@@ -1505,11 +1505,11 @@ int Game::whatNext() {
             }
             whatNextParam = GAME_RETURN_TO_MENU;
             return GAME_CUSTOM_GAME_STATS;
-        } break;
+        }
 
         default: {
             return GAME_RETURN_TO_MENU;
-        } break;
+        }
     }
 }
 
@@ -1872,28 +1872,28 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
         case CursorMode_Attack: {
             handleSelectedObjectsAttackClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
             return false;
-        } break;
+        }
 
         case CursorMode_Move: {
             handleSelectedObjectsMoveClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
             return false;
-        } break;
+        }
 
         case CursorMode_Capture: {
             handleSelectedObjectsCaptureClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
             return false;
-        } break;
+        }
 
         case CursorMode_CarryallDrop: {
             handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
             return false;
-        } break;
+        }
 
         case CursorMode_Normal:
         default: {
             screenborder->setNewScreenCenter(worldPosition);
             return true;
-        } break;
+        }
     }
 }
 

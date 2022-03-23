@@ -1040,20 +1040,20 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
 
         case HUNT: {
             return true;
-        } break;
+        }
 
         case CARRYALLREQUESTED: {
             return false;
-        } break;
+        }
 
         case RETREAT: {
             return false;
-        } break;
+        }
 
         case STOP:
         default: {
             return false;
-        } break;
+        }
     }
 
     return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), pObject->getCenterPoint()) <= checkRange * TILESIZE);
@@ -1076,20 +1076,20 @@ bool UnitBase::isInAttackRange(const ObjectBase* object) const {
 
         case HUNT: {
             return true;
-        } break;
+        }
 
         case CARRYALLREQUESTED: {
             return false;
-        } break;
+        }
 
         case RETREAT: {
             return false;
-        } break;
+        }
 
         case STOP:
         default: {
             return false;
-        } break;
+        }
     }
 
     if (getItemID() == Unit_Sandworm) {

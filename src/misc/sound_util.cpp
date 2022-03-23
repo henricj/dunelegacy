@@ -151,5 +151,4 @@ sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename, const std::str
         return getChunkFromFile(alternativeFilename);
     }
     THROW(io_error, "Cannot open '%s' or '%s'!", filename, alternativeFilename);
-    return nullptr;
 }

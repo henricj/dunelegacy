@@ -591,7 +591,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     default: {
                         // should never be reached
                         continue;
-                    } break;
+                    }
                 }
             }
 

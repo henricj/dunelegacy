@@ -1291,7 +1291,7 @@ void QuantBot::attack(int militaryValue) {
     switch (difficulty) {
         case Difficulty::Defend: {
             return;
-        } break;
+        }
     }
 
     logDebug("Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",

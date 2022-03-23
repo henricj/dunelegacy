@@ -42,7 +42,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_MERCENARY:    anim = pGFXManager->getAnimation(Anim_MercenaryPlanet); break;
         default: {
             THROW(std::invalid_argument, "HouseChoiceInfoMenu::HouseChoiceInfoMenu(): Invalid house id '%d'.", static_cast<int>(newHouse));
-        } break;
+        }
     }
     // clang-format on
 

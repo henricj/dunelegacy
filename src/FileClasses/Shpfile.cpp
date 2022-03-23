@@ -302,7 +302,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 default: {
                     THROW(std::invalid_argument, "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!", TILE_GETTYPE(tiles[i]));
-                } break;
+                }
             }
         }
     }

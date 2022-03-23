@@ -423,7 +423,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         case AUDIO_S16MSB: SizeOfTargetSample = sizeof(int16_t) * channels; break;
         default: {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
-        } break;
+        }
     }
 
     if ((myChunk->abuf = static_cast<uint8_t*>(SDL_malloc(TargetData_Samples * SizeOfTargetSample))) == nullptr) {
@@ -494,7 +494,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
         default: {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid target sample format!");
-        } break;
+        }
     }
 
     return myChunk;

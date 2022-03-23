@@ -354,6 +354,6 @@ void Command::executeCommand(const GameContext& context) const {
 
         default: {
             THROW(std::invalid_argument, "Command::executeCommand(): Unknown CommandID!");
-        } break;
+        }
     }
 }

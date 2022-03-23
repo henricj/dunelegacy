@@ -95,11 +95,11 @@ std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const 
     switch (type) {
         case TriggerManager::Type_ReinforcementTrigger: {
             return std::make_unique<ReinforcementTrigger>(stream);
-        } break;
+        }
 
         case TriggerManager::Type_TimeoutTrigger: {
             return std::make_unique<TimeoutTrigger>(stream);
-        } break;
+        }
 
         default:
             THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");

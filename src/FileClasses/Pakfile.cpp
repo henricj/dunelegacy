@@ -317,7 +317,7 @@ int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
 
         default: {
             return -1;
-        } break;
+        }
     }
 
     if (newOffset > (pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1)) {

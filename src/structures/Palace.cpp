@@ -117,7 +117,7 @@ void Palace::doSpecialWeapon(const GameContext& context) {
         case HOUSETYPE::HOUSE_SARDAUKAR: {
             // wrong house (see DoLaunchDeathhand)
             return;
-        } break;
+        }
 
         case HOUSETYPE::HOUSE_ATREIDES:
         case HOUSETYPE::HOUSE_FREMEN: {
@@ -135,7 +135,7 @@ void Palace::doSpecialWeapon(const GameContext& context) {
 
         default: {
             THROW(std::runtime_error, "Palace::DoSpecialWeapon(): Invalid house");
-        } break;
+        }
     }
 }
 

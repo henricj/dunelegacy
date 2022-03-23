@@ -1326,7 +1326,7 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
 
             default: {
                 THROW(std::runtime_error, "SurfaceLoader::getAnimation(): Invalid animation ID %u", id);
-            } break;
+            }
         }
 
         if (id >= Anim_Barracks && id <= Anim_Slab4) {

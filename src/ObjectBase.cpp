@@ -453,12 +453,12 @@ const ObjectBase* ObjectBase::findTarget() const {
         case HUNT: {
             // check whole map
             return findClosestTarget();
-        } break;
+        }
 
         case STOP:
         default: {
             return nullptr;
-        } break;
+        }
     }
 
     if (getItemID() == Unit_Sandworm) {

@@ -425,7 +425,7 @@ int MetaServerClient::connectionThreadMain(void* data) {
 
                 case METASERVERCOMMAND_EXIT: {
                     return 0;
-                } break;
+                }
 
                 default: {
                     // ignore

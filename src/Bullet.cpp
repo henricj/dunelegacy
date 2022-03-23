@@ -215,11 +215,11 @@ void Bullet::init() {
 
         case Bullet_Sandworm: {
             THROW(std::domain_error, "Cannot init 'Bullet_Sandworm': Not allowed!");
-        } break;
+        }
 
         default: {
             THROW(std::domain_error, "Unknown Bullet type %d!", bulletID);
-        } break;
+        }
     }
 }
 

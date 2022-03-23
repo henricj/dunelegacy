@@ -741,7 +741,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
         case PLAYER_OPEN:
         case PLAYER_CLOSED: {
             return false;
-        } break;
+        }
 
         default: {
             // AI player
