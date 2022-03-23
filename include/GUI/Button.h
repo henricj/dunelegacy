@@ -33,7 +33,7 @@ public:
     Button();
 
     /// destructor
-    virtual ~Button();
+    ~Button() override;
 
     Button(const Button&) = delete;
     Button(Button&&)      = default;

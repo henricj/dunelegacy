@@ -20,7 +20,7 @@
 
 #include <GUI/GUIStyle.h>
 
-class DuneStyle : public GUIStyle {
+class DuneStyle final : public GUIStyle {
 public:
     /// default constructor
     DuneStyle()

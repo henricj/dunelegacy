@@ -31,9 +31,7 @@
 
 #include <DataTypes.h>
 
-#include <algorithm>
-
-class GameOptionsWindow : public Window {
+class GameOptionsWindow final : public Window {
 public:
     explicit GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions);
     ~GameOptionsWindow() override;

@@ -63,9 +63,7 @@ void CommandManager::load(InputStream& stream) {
             const auto cycle = stream.readUint32();
             addCommand(Command {stream}, cycle);
         }
-    } catch (InputStream::exception&) {
-        ;
-    }
+    } catch (InputStream::exception&) { }
 }
 
 void CommandManager::update() {

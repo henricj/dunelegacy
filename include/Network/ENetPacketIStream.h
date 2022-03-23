@@ -27,12 +27,10 @@
 
 #include <cmath>
 
-class ENetPacketIStream : public InputStream {
+class ENetPacketIStream final : public InputStream {
 public:
     explicit ENetPacketIStream(ENetPacket* pPacket)
-        : currentPos(0), packet(pPacket) {
-        ;
-    }
+        : currentPos(0), packet(pPacket) { }
 
     explicit ENetPacketIStream(const ENetPacketIStream& p)
         : currentPos(0), packet(nullptr) {

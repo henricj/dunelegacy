@@ -145,7 +145,6 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     loadButton.setVisible(bMultiplayer);
     loadButton.setEnabled(bMultiplayer);
     loadButton.setOnClick([this] { onLoad(); });
-    ;
     buttonHBox.addWidget(&loadButton, 0.175);
     buttonHBox.addWidget(Spacer::create(), 0.25);
 

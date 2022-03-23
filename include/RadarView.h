@@ -35,7 +35,7 @@ public:
     /**
         Destructor
     */
-    virtual ~RadarView();
+    ~RadarView() override;
 
     /**
         Get the map size in x direction

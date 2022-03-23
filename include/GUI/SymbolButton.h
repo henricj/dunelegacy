@@ -22,7 +22,7 @@
 #include <misc/SDL2pp.h>
 
 /// A class for a symbol button
-class SymbolButton : public Button {
+class SymbolButton final : public Button {
 public:
     /// Default constructor
     SymbolButton() {

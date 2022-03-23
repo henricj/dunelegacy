@@ -26,7 +26,7 @@
 class MenuBase : public Window {
 public:
     MenuBase();
-    virtual ~MenuBase();
+    ~MenuBase() override;
 
     MenuBase(const MenuBase&) = delete;
     MenuBase(MenuBase&&)      = delete;

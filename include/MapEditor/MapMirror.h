@@ -49,7 +49,7 @@ protected:
     int mapsizeY;
 };
 
-class MapMirrorNone : public MapMirror {
+class MapMirrorNone final : public MapMirror {
 public:
     MapMirrorNone(int mapsizeX, int mapsizeY);
 
@@ -64,7 +64,7 @@ public:
     [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
-class MapMirrorHorizontal : public MapMirror {
+class MapMirrorHorizontal final : public MapMirror {
 public:
     MapMirrorHorizontal(int mapsizeX, int mapsizeY);
 
@@ -79,7 +79,7 @@ public:
     [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
-class MapMirrorVertical : public MapMirror {
+class MapMirrorVertical final : public MapMirror {
 public:
     MapMirrorVertical(int mapsizeX, int mapsizeY);
 
@@ -94,7 +94,7 @@ public:
     [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
-class MapMirrorBoth : public MapMirror {
+class MapMirrorBoth final : public MapMirror {
 public:
     MapMirrorBoth(int mapsizeX, int mapsizeY);
 
@@ -109,7 +109,7 @@ public:
     [[nodiscard]] ANGLETYPE getAngle(ANGLETYPE angle, int i) const override;
 };
 
-class MapMirrorPoint : public MapMirror {
+class MapMirrorPoint final : public MapMirror {
 public:
     MapMirrorPoint(int mapsizeX, int mapsizeY);
 

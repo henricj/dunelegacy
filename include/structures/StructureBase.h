@@ -69,7 +69,7 @@ protected:
     const StructureBaseConstants& structure_constants() const noexcept { return *static_cast<const StructureBaseConstants*>(&constants_); }
 
 public:
-    virtual ~StructureBase() = 0;
+    ~StructureBase() override = 0;
 
     StructureBase(const StructureBase&) = delete;
     StructureBase(StructureBase&&)      = delete;

@@ -26,7 +26,7 @@
     This VideoEvent blends between two pictures. The blending is done in 30 steps revealing more and more pixels
     of the destination picture in every frame.
 */
-class CrossBlendVideoEvent : public VideoEvent {
+class CrossBlendVideoEvent final : public VideoEvent {
 public:
     /**
         Constructor

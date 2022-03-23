@@ -29,10 +29,10 @@
 // forward declarations
 class MapEditor;
 
-class INIMapEditorLoader : public INIMap {
+class INIMapEditorLoader final : public INIMap {
 public:
     INIMapEditorLoader(MapEditor* pMapEditor, inifile_ptr pINIFile);
-    ~INIMapEditorLoader();
+    ~INIMapEditorLoader() override;
 
 private:
     void load();

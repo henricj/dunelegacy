@@ -24,7 +24,7 @@
 /**
     This class is for showing the meanwhile videos after mission 4 and 8.
 */
-class Meanwhile : public CutScene {
+class Meanwhile final : public CutScene {
 public:
     /**
         Constructor

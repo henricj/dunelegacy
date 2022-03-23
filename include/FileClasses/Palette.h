@@ -23,7 +23,7 @@
 
 #include <string.h>
 
-class Palette {
+class Palette final {
 public:
     Palette() {
     }

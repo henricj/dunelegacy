@@ -42,7 +42,7 @@
 // one block is too high and the adjacent block is too low ;-)
 #define NEWBLOCK_LIMIT 32
 
-class CSurroundopl : public Copl {
+class CSurroundopl final : public Copl {
 private:
     bool use16bit;
     short bufsize;

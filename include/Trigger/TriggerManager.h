@@ -28,13 +28,13 @@
 /**
     This class manages triggers for the game play. A trigger is triggered at a specific game cycle.
 */
-class TriggerManager {
+class TriggerManager final {
 public:
     /// default constructor
     TriggerManager();
 
     /// destructor
-    virtual ~TriggerManager();
+    ~TriggerManager();
 
     /**
         Save all triggers to stream

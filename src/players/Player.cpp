@@ -210,7 +210,6 @@ void Player::doAttackObject(const TurretBase* pTurret, const ObjectBase* pTarget
         const_cast<TurretBase*>(pTurret)->doAttackObject(pTargetObject);
     } else {
         logWarn("The player '%s' tries to attack with a turret he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -219,7 +218,6 @@ void Player::doMove2Pos(const UnitBase* pUnit, int x, int y, bool bForced) const
         const_cast<UnitBase*>(pUnit)->doMove2Pos(context_, x, y, bForced);
     } else {
         logWarn("The player '%s' tries to move a unit he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -228,7 +226,6 @@ void Player::doMove2Object(const UnitBase* pUnit, const ObjectBase* pTargetObjec
         const_cast<UnitBase*>(pUnit)->doMove2Object(context_, pTargetObject);
     } else {
         logWarn("The player '%s' tries to move a unit (to an object) he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -237,7 +234,6 @@ void Player::doAttackPos(const UnitBase* pUnit, int x, int y, bool bForced) cons
         const_cast<UnitBase*>(pUnit)->doAttackPos(context_, x, y, bForced);
     } else {
         logWarn("The player '%s' tries to order a unit (to attack a position) he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -247,7 +243,6 @@ void Player::doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObje
         const_cast<UnitBase*>(pUnit)->doAttackObject(context_, pTargetObject, bForced);
     } else {
         logWarn("The player '%s' tries to attack with a unit he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -256,7 +251,6 @@ void Player::doSetAttackMode(const UnitBase* pUnit, ATTACKMODE attackMode) const
         const_cast<UnitBase*>(pUnit)->doSetAttackMode(context_, attackMode);
     } else {
         logWarn("The player '%s' tries to change the attack mode of a unit he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -265,7 +259,6 @@ void Player::doStartDevastate(const Devastator* pDevastator) const {
         const_cast<Devastator*>(pDevastator)->doStartDevastate();
     } else {
         logWarn("The player '%s' tries to devastate a devastator he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -274,7 +267,6 @@ void Player::doReturn(const Harvester* pHarvester) const {
         const_cast<Harvester*>(pHarvester)->doReturn();
     } else {
         logWarn("The player '%s' tries to return a harvester he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 
@@ -283,7 +275,6 @@ void Player::doCaptureStructure(const InfantryBase* pInfantry, const StructureBa
         const_cast<InfantryBase*>(pInfantry)->doCaptureStructure(context_, pTargetStructure);
     } else {
         logWarn("The player '%s' tries to capture with a unit he doesn't own or that is inactive!\n", playername.c_str());
-        return;
     }
 }
 

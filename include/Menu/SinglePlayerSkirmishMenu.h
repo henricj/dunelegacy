@@ -28,7 +28,7 @@
 #include <GUI/VBox.h>
 #include <GUI/dune/DigitsCounter.h>
 
-class SinglePlayerSkirmishMenu : public MenuBase {
+class SinglePlayerSkirmishMenu final : public MenuBase {
 public:
     SinglePlayerSkirmishMenu();
     ~SinglePlayerSkirmishMenu() override;

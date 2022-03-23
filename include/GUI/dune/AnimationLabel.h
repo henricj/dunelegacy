@@ -22,7 +22,7 @@
 #include <GUI/Widget.h>
 
 /// A widget for showing an animation
-class AnimationLabel : public Widget {
+class AnimationLabel final : public Widget {
 public:
     /// default constructor
     AnimationLabel()

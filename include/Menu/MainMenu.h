@@ -28,14 +28,14 @@
 class MainMenu final : public MenuBase {
 public:
     MainMenu();
-    virtual ~MainMenu();
+    ~MainMenu() override;
 
     MainMenu(const MainMenu&) = delete;
     MainMenu(MainMenu&&)      = delete;
     MainMenu& operator=(const MainMenu&) = delete;
     MainMenu& operator=(MainMenu&&) = delete;
 
-    virtual int showMenu() override;
+    int showMenu() override;
 
 private:
     void onSinglePlayer() const;

@@ -38,7 +38,7 @@
 #define MAPCHOICESTATE_ARROWS       6
 #define MAPCHOICESTATE_BLINKING     7
 
-class MapChoice : public MenuBase {
+class MapChoice final : public MenuBase {
 public:
     MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t alreadyPlayedRegions);
     ~MapChoice() override;

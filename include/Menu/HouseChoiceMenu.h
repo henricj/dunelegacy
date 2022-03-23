@@ -23,7 +23,7 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 
-class HouseChoiceMenu : public MenuBase {
+class HouseChoiceMenu final : public MenuBase {
 public:
     HouseChoiceMenu();
     ~HouseChoiceMenu() override;

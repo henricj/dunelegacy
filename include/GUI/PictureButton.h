@@ -22,7 +22,7 @@
 #include <misc/SDL2pp.h>
 
 /// A class for a picture button
-class PictureButton : public Button {
+class PictureButton final : public Button {
 public:
     /// Default constructor
     PictureButton() {
@@ -30,7 +30,7 @@ public:
     }
 
     /// destructor
-    virtual ~PictureButton() = default;
+    ~PictureButton() override = default;
 
     /**
         This method is used for setting the different surfaces for this button.
@@ -38,9 +38,9 @@ public:
         \param  pPressedSurface         This surface is shown when the button is pressed
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
     */
-    virtual void setSurfaces(sdl2::surface_ptr pUnpressedSurface,
-                             sdl2::surface_ptr pPressedSurface = nullptr,
-                             sdl2::surface_ptr pActiveSurface  = nullptr) override {
+    void setSurfaces(sdl2::surface_ptr pUnpressedSurface,
+                     sdl2::surface_ptr pPressedSurface = nullptr,
+                     sdl2::surface_ptr pActiveSurface  = nullptr) override {
 
         Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
 

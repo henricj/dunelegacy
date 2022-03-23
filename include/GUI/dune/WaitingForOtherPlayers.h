@@ -27,7 +27,7 @@
 
 #include <algorithm>
 
-class WaitingForOtherPlayers : public Window {
+class WaitingForOtherPlayers final : public Window {
 public:
     WaitingForOtherPlayers();
     ~WaitingForOtherPlayers() override;

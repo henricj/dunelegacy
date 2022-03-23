@@ -35,7 +35,7 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-class UnitInterface : public DefaultObjectInterface {
+class UnitInterface final : public DefaultObjectInterface {
 public:
     static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID) {
         auto tmp        = std::unique_ptr<UnitInterface> {new UnitInterface {context, objectID}};
@@ -282,7 +282,7 @@ protected:
 
         auto* pUnit = dynamic_cast<UnitBase*>(pObject);
         if (pUnit != nullptr) {
-            const ATTACKMODE AttackMode = pUnit->getAttackMode();
+            const auto AttackMode = pUnit->getAttackMode();
 
             guardButton.setToggleState(AttackMode == GUARD);
             areaGuardButton.setToggleState(AttackMode == AREAGUARD);

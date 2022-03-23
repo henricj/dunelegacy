@@ -24,14 +24,12 @@
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 
-#include <map>
 #include <memory>
-#include <string>
 
-class INIMapPreviewCreator : public INIMap {
+class INIMapPreviewCreator final : public INIMap {
 public:
     explicit INIMapPreviewCreator(INIMap::inifile_ptr pINIFile);
-    ~INIMapPreviewCreator();
+    ~INIMapPreviewCreator() override;
 
     sdl2::surface_ptr createMinimapImageOfMap(int borderWidth, uint32_t borderColor);
 };

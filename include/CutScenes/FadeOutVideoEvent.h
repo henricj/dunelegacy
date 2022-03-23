@@ -24,7 +24,7 @@
 /**
     This VideoEvent is used for fading out a picture
 */
-class FadeOutVideoEvent : public VideoEvent {
+class FadeOutVideoEvent final : public VideoEvent {
 public:
     /**
         Constructor

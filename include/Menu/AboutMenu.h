@@ -23,7 +23,7 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 
-class AboutMenu : public MenuBase {
+class AboutMenu final : public MenuBase {
 public:
     AboutMenu();
     ~AboutMenu() override;

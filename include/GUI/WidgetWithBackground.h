@@ -28,7 +28,7 @@ public:
     WidgetWithBackground(const WidgetWithBackground&) = delete;
     WidgetWithBackground(WidgetWithBackground&&)      = default;
 
-    ~WidgetWithBackground();
+    ~WidgetWithBackground() override;
 
     WidgetWithBackground& operator=(const WidgetWithBackground&) = delete;
     WidgetWithBackground& operator=(WidgetWithBackground&&) = default;

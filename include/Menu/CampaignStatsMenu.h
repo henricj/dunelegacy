@@ -26,7 +26,7 @@
 
 #include <string>
 
-class CampaignStatsMenu : public MenuBase {
+class CampaignStatsMenu final : public MenuBase {
 public:
     explicit CampaignStatsMenu(int level);
     ~CampaignStatsMenu() override;

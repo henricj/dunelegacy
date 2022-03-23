@@ -24,7 +24,7 @@
 
 #include <string>
 
-class ENetPacketOStream : public OutputStream {
+class ENetPacketOStream final : public OutputStream {
 public:
     explicit ENetPacketOStream(enet_uint32 flags)
         : currentPos(0) {
@@ -75,9 +75,7 @@ public:
         return pPacket;
     }
 
-    void flush() override {
-        ;
-    }
+    void flush() override { }
 
     // write operations
 

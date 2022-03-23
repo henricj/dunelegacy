@@ -685,11 +685,9 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             } else if (BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
                 if (getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true) == nullptr) {
                     logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
-                    continue;
                 }
             } else if ((BuildingStr != "Concrete") && (BuildingStr != "Wall")) {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
-                continue;
             }
         } else if (tmpkey.compare(0, 2, "ID") == 0) {
             // other structure
@@ -736,7 +734,6 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             }
         } else {
             logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
-            continue;
         }
     }
 }

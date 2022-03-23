@@ -26,7 +26,7 @@
 #include <string>
 
 /// A class for a radio button implemented as a toggle button
-class RadioButton : public Button {
+class RadioButton final : public Button {
 public:
     /// Default constructor
     RadioButton() {

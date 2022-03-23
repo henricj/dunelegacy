@@ -26,7 +26,7 @@
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 
-class SinglePlayerMenu : public MenuBase {
+class SinglePlayerMenu final : public MenuBase {
 public:
     SinglePlayerMenu();
     ~SinglePlayerMenu() override;

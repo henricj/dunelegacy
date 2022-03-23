@@ -26,10 +26,10 @@
 // Forward declarations
 class SoundAdlibPC;
 
-class ADLPlayer : public MusicPlayer {
+class ADLPlayer final : public MusicPlayer {
 public:
     ADLPlayer();
-    virtual ~ADLPlayer();
+    ~ADLPlayer() override;
 
     /*!
         change type of current music

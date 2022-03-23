@@ -24,7 +24,7 @@
 #include <string>
 
 /// A class for a text button
-class TextButton : public Button {
+class TextButton final : public Button {
 public:
     /// Default contructor
     TextButton() {
@@ -40,7 +40,7 @@ public:
     TextButton& operator=(TextButton&&) = default;
 
     /// destructor
-    virtual ~TextButton();
+    ~TextButton() override;
 
     /**
         This method sets a new text for this button and resizes this button

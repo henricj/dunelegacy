@@ -29,7 +29,7 @@
 class DropDownBox;
 
 /// A class for a list box widget
-class ListBox : public Widget {
+class ListBox final : public Widget {
 public:
     friend class DropDownBox;
 

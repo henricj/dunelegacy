@@ -36,7 +36,7 @@
 // forward declaration
 class MapEditor;
 
-class TeamsWindow : public Window {
+class TeamsWindow final : public Window {
 public:
     TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 

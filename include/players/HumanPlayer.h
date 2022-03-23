@@ -29,7 +29,7 @@ class UnitBase;
 class StructureBase;
 class ObjectBase;
 
-class HumanPlayer : public Player {
+class HumanPlayer final : public Player {
 public:
     /// This enum has the same int values as ItemID_enum for structures (exceptions are the first and the last entry)
     enum class TutorialHint {
@@ -58,7 +58,7 @@ public:
 
     HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
     HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
-    virtual ~HumanPlayer();
+    ~HumanPlayer() override;
     void save(OutputStream& stream) const override;
 
     void update() override;
@@ -69,7 +69,7 @@ public:
         \param  damage      the damage taken
         \param  damagerID   the shooter of the bullet, rocket, etc. if known; NONE_ID otherwise
     */
-    virtual void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
+    void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
     [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const {
         return alreadyShownTutorialHints;

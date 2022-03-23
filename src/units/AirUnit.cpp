@@ -148,7 +148,6 @@ void AirUnit::move(const GameContext& context) {
 
 FixPoint AirUnit::getDestinationAngle() const {
     return destinationAngleRad(realX, realY, destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2) * 8 / (FixPt_PI << 1);
-    ;
 }
 
 void AirUnit::turn(const GameContext& context) {

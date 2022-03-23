@@ -37,7 +37,7 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-class MultiUnitInterface : public ObjectInterface {
+class MultiUnitInterface final : public ObjectInterface {
 public:
     static std::unique_ptr<MultiUnitInterface> create(const GameContext& context) {
         auto tmp        = std::unique_ptr<MultiUnitInterface> {new MultiUnitInterface {context}};

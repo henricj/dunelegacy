@@ -183,9 +183,7 @@ void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerComman
 
 std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
 
-    while (SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) {
-        ; // try again in case of error
-    }
+    while (SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) { }
 
     SDL_LockMutex(sharedDataMutex);
 

@@ -32,7 +32,7 @@
 
 #include <misc/SDL2pp.h>
 
-class NewMapWindow : public Window {
+class NewMapWindow final : public Window {
 public:
     explicit NewMapWindow(HOUSETYPE currentHouse);
 

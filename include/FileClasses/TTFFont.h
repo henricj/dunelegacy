@@ -31,7 +31,7 @@ using font_ptr = sdl2::implementation::unique_ptr_deleter<TTF_Font, TTF_CloseFon
 /**
     This class can read a ttf font.
 */
-class TTFFont : public Font {
+class TTFFont final : public Font {
 public:
     TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
     ~TTFFont() override;

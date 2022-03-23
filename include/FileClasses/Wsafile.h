@@ -27,7 +27,7 @@
 /**
     This class can read the animation in a *.WSA-File and return it as SDL_Surfaces.
 */
-class Wsafile {
+class Wsafile final {
 public:
     explicit Wsafile(SDL_RWops* rwop);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1);
@@ -38,7 +38,7 @@ public:
     Wsafile(Wsafile&& wsafile)      = delete;
     Wsafile& operator=(const Wsafile& wsafile) = delete;
     Wsafile& operator=(Wsafile&& wsafile) = delete;
-    virtual ~Wsafile();
+    ~Wsafile();
 
     [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t FrameNumber) const;
     [[nodiscard]] sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;

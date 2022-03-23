@@ -34,10 +34,10 @@ class Game;
 class GameContext;
 class House;
 
-class INIMapLoader : public INIMap {
+class INIMapLoader final : public INIMap {
 public:
     INIMapLoader(Game* pGame, const std::filesystem::path& mapname, const std::string& mapdata = "");
-    ~INIMapLoader();
+    ~INIMapLoader() override;
 
     std::unique_ptr<Map> load();
 

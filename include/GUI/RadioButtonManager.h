@@ -24,7 +24,7 @@
 class RadioButton;
 
 /// A class for managing a bunch of radio buttons
-class RadioButtonManager {
+class RadioButtonManager final {
 public:
     /// Default constructor
     RadioButtonManager() = default;

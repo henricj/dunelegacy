@@ -81,7 +81,6 @@ OptionsMenu::OptionsMenu() {
     gameOptionsHBox.addWidget(Label::create(_("Default Game Options")), 190);
     gameOptionsButton.setText(_("Change..."));
     gameOptionsButton.setOnClick([this] { onGameOptions(); });
-    ;
     gameOptionsHBox.addWidget(&gameOptionsButton, 130);
 
     gameOptionsHBox.addWidget(Spacer::create(), 160);
@@ -147,7 +146,6 @@ OptionsMenu::OptionsMenu() {
         i++;
     }
     resolutionDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
-    ;
     resolutionHBox.addWidget(&resolutionDropDownBox, 130);
     resolutionHBox.addWidget(Spacer::create(), 5);
     zoomlevelDropDownBox.addEntry("Zoom 1x", 0);

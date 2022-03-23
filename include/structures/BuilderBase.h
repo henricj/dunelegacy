@@ -104,7 +104,7 @@ protected:
 public:
     using parent = StructureBase;
 
-    virtual ~BuilderBase() = 0;
+    ~BuilderBase() override = 0;
 
     BuilderBase(const BuilderBase&) = delete;
     BuilderBase(BuilderBase&&)      = delete;

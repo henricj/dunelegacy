@@ -41,7 +41,7 @@ public:
     }
 
     /// destructor
-    virtual ~ProgressBar() {
+    ~ProgressBar() override {
         invalidateTextures();
     }
 
@@ -171,7 +171,7 @@ class TextProgressBar : public ProgressBar {
 public:
     TextProgressBar() = default;
 
-    virtual ~TextProgressBar() = default;
+    ~TextProgressBar() override = default;
 
     TextProgressBar(const TextProgressBar&) = delete;
     TextProgressBar(TextProgressBar&&)      = delete;
@@ -253,7 +253,7 @@ public:
         Widget::enableResizing(false, false);
     }
 
-    virtual ~PictureProgressBar() = default;
+    ~PictureProgressBar() override = default;
 
     PictureProgressBar(const PictureProgressBar&) = delete;
     PictureProgressBar(PictureProgressBar&&)      = delete;

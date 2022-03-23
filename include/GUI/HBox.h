@@ -41,14 +41,10 @@ class HBox : public Container<HBox_WidgetData> {
 public:
     /// default constructor
     HBox()
-        : Container<HBox_WidgetData>() {
-        ;
-    }
+        : Container<HBox_WidgetData>() { }
 
     /// destructor
-    virtual ~HBox() {
-        ;
-    }
+    ~HBox() override { }
 
     /**
         This method adds a new widget to this container.

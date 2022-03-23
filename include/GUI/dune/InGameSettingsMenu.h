@@ -25,7 +25,7 @@
 #include <GUI/TextButton.h>
 #include <GUI/Window.h>
 
-class InGameSettingsMenu : public Window {
+class InGameSettingsMenu final : public Window {
 public:
     InGameSettingsMenu();
     ~InGameSettingsMenu() override;

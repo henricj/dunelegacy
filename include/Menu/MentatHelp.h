@@ -27,7 +27,7 @@
 #include <GUI/PictureButton.h>
 #include <GUI/dune/AnimationLabel.h>
 
-class MentatHelp : public MentatMenu {
+class MentatHelp final : public MentatMenu {
 public:
     MentatHelp(HOUSETYPE newHouse, int techLevel, int mission);
     ~MentatHelp() override;

@@ -37,7 +37,7 @@
 // forward declaration
 class MapEditor;
 
-class ReinforcementsWindow : public Window {
+class ReinforcementsWindow final : public Window {
 public:
     ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 

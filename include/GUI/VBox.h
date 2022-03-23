@@ -37,18 +37,14 @@ public:
 };
 
 /// A container class for vertical aligned widgets.
-class VBox : public Container<VBox_WidgetData> {
+class VBox final : public Container<VBox_WidgetData> {
 public:
     /// default constructor
     VBox()
-        : Container<VBox_WidgetData>() {
-        ;
-    }
+        : Container<VBox_WidgetData>() { }
 
     /// destructor
-    virtual ~VBox() {
-        ;
-    }
+    ~VBox() override { }
 
     /**
         This method adds a new widget to this container.

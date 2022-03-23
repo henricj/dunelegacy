@@ -24,7 +24,7 @@
 #include <queue>
 #include <string>
 
-class NewsTicker : public Widget {
+class NewsTicker final : public Widget {
 public:
     NewsTicker();
     ~NewsTicker() override;

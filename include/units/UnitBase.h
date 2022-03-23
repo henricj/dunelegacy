@@ -252,7 +252,6 @@ public:
         nextSpotFound        = false;
         recalculatePathTimer = 0;
         nextSpotAngle        = ANGLETYPE::INVALID_ANGLE;
-        ;
         noCloserPointCount = 0;
     }
 

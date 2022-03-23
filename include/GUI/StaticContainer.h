@@ -46,12 +46,10 @@ class StaticContainer : public Container<StaticContainer_WidgetData> {
 public:
     /// default constructor
     StaticContainer()
-        : Container<StaticContainer_WidgetData>() {
-        ;
-    }
+        : Container<StaticContainer_WidgetData>() { }
 
     /// default destructor
-    virtual ~StaticContainer() = default;
+    ~StaticContainer() override = default;
 
     /**
         This method adds a new widget to this container.

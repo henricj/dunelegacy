@@ -20,19 +20,15 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <Definitions.h>
-
 #include <SDL2/SDL_mixer.h>
-#include <string>
-#include <vector>
 
 // Forward declarations
 class CadlPlayer;
 
-class XMIPlayer : public MusicPlayer {
+class XMIPlayer final : public MusicPlayer {
 public:
     XMIPlayer();
-    virtual ~XMIPlayer();
+    ~XMIPlayer() override;
 
     /*!
         change type of current music

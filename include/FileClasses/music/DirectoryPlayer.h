@@ -25,10 +25,10 @@
 #include <string>
 #include <vector>
 
-class DirectoryPlayer : public MusicPlayer {
+class DirectoryPlayer final : public MusicPlayer {
 public:
     DirectoryPlayer();
-    virtual ~DirectoryPlayer();
+    ~DirectoryPlayer() override;
 
     /*!
         change type of current music

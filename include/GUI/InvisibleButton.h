@@ -21,7 +21,7 @@
 #include "Button.h"
 
 /// A class for a invisible button that can be clicked
-class InvisibleButton : public Button {
+class InvisibleButton final : public Button {
 public:
     /// Default contructor
     InvisibleButton() {
@@ -35,9 +35,7 @@ public:
         This method draws nothing to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override {
-        ;
-    }
+    void draw(Point position) override { }
 };
 
 #endif // INVISIBLEBUTTON_H

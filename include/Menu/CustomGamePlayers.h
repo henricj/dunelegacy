@@ -45,7 +45,7 @@
 
 class INIFile;
 
-class CustomGamePlayers : public MenuBase {
+class CustomGamePlayers final : public MenuBase {
 public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
     ~CustomGamePlayers() override;

@@ -52,14 +52,14 @@ public:
     virtual unsigned int getPos()   = 0;
 };
 
-class BufferDataSource : public DataSource {
+class BufferDataSource final : public DataSource {
 private:
     unsigned char *buf, *buf_ptr;
     unsigned int size;
 
 public:
     BufferDataSource(char* data, unsigned int len) {
-        buf = buf_ptr = (unsigned char*)data;
+        buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
         size          = len;
     }
 
@@ -67,7 +67,7 @@ public:
 
     unsigned int read1() override {
         unsigned char b0 = 0;
-        b0               = (unsigned char)*buf_ptr++;
+        b0               = *buf_ptr++;
         return (b0);
     }
 
@@ -163,7 +163,7 @@ public:
     [[nodiscard]] unsigned char* getPtr() const noexcept { return buf_ptr; }
 };
 
-class SDLDataSource : public DataSource {
+class SDLDataSource final : public DataSource {
 private:
     SDL_RWops* rwop;
     int freesrc;

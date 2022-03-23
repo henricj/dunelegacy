@@ -28,7 +28,7 @@
 
 #include <DataTypes.h>
 
-class CustomGameStatsMenu : public MenuBase {
+class CustomGameStatsMenu final : public MenuBase {
 public:
     CustomGameStatsMenu();
     ~CustomGameStatsMenu() override;

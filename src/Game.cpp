@@ -978,7 +978,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                 default: {
                     THROW(std::runtime_error, "Game::drawCursor(): Unknown cursor mode");
-                };
+                }
             }
         }
     }

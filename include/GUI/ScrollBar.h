@@ -25,7 +25,7 @@
 #include <functional>
 
 /// A class for a scroll bar
-class ScrollBar : public Widget {
+class ScrollBar final : public Widget {
 public:
     /// default constructor
     ScrollBar();

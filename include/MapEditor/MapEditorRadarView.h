@@ -28,7 +28,7 @@ class MapEditor;
 class MapData;
 
 /// This class manages the mini map at the top right corner of the screen
-class MapEditorRadarView : public RadarViewBase {
+class MapEditorRadarView final : public RadarViewBase {
 public:
     /**
         Constructor

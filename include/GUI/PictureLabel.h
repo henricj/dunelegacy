@@ -23,13 +23,13 @@
 #include <misc/draw_util.h>
 
 /// A class for showing a static picture
-class PictureLabel : public Widget {
+class PictureLabel final : public Widget {
 public:
     /// default constructor
     PictureLabel();
 
     /// destructor
-    virtual ~PictureLabel() = default;
+    ~PictureLabel() override = default;
 
     /**
         This method sets the surface for this picture label.

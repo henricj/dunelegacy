@@ -31,17 +31,17 @@
 class INIFile;
 
 /// This class stores all the unit/structure data
-class ObjectData {
+class ObjectData final {
 public:
     /**
-        Default constructur. Initializes everything with zero
+        Default constructor. Initializes everything with zero
     */
     ObjectData();
 
     /**
         Destructor.
     */
-    virtual ~ObjectData();
+    ~ObjectData();
 
     /**
         This method loads all data from an INI-File specified by filename. There should be two sections

@@ -25,7 +25,7 @@
 /**
     This VideoEvent is used for fading in a picture
 */
-class FadeInVideoEvent : public VideoEvent {
+class FadeInVideoEvent final : public VideoEvent {
 public:
     /**
         Constructor

@@ -23,7 +23,7 @@
 #include <functional>
 
 /// This widget reports the coordinate where the user clicked on
-class ClickMap : public Widget {
+class ClickMap final : public Widget {
 public:
     /// default constructor
     ClickMap() {

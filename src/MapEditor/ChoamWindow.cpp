@@ -69,7 +69,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     centralVBox.addWidget(VSpacer::create(4));
 
-    const auto& choam = pMapEditor->getChoam();
+    auto& choam = pMapEditor->getChoam();
 
     for (int i = 0; i < 7; i++) {
 

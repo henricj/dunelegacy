@@ -700,7 +700,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
         SDL_Rect dest = {8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
     } else {
-        ; // Nothing to do (use English)
+        // Nothing to do (use English)
     }
 
     // clear everything in the middle

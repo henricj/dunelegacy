@@ -40,7 +40,7 @@ public:
     }
 
     /// destructor
-    virtual ~Container() {
+    ~Container() override {
         while (containedWidgets.begin() != containedWidgets.end()) {
             Widget* curWidget = containedWidgets.front().pWidget;
             curWidget->destroy();

@@ -30,7 +30,7 @@
 
 #include <misc/string_util.h>
 
-class WindTrapInterface : public DefaultStructureInterface {
+class WindTrapInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID) {
         auto tmp        = std::unique_ptr<WindTrapInterface> {new WindTrapInterface {context, objectID}};

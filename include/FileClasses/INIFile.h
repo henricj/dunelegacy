@@ -78,7 +78,7 @@ public:
         INIFileLine* prevLine;
     };
 
-    class Key : public INIFileLine {
+    class Key final : public INIFileLine {
     public:
         Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin,
             int valuestringlength);
@@ -224,7 +224,7 @@ public:
         Key* key;
     };
 
-    class Section : public INIFileLine {
+    class Section final : public INIFileLine {
     public:
         Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength,
                 bool bWhitespace = true);

@@ -36,7 +36,7 @@
 /**
     This class can read shp-Files and return the contained pictures as a SDL_Surface.
 */
-class Shpfile {
+class Shpfile final {
 private:
     // Internal structure used for an index of contained files
     struct ShpfileEntry {

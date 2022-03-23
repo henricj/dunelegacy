@@ -33,7 +33,7 @@
 
 #include "MenuBase.h"
 
-class CustomGameMenu : public MenuBase {
+class CustomGameMenu final : public MenuBase {
 public:
     CustomGameMenu(bool multiplayer, bool LANServer = true);
     ~CustomGameMenu() override;

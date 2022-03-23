@@ -36,13 +36,13 @@
 class ObjectInterface;
 
 /// This class represents the in-game interface.
-class GameInterface : public Window {
+class GameInterface final : public Window {
 public:
     /// default constructor
     GameInterface(const GameContext& context);
 
     /// destructor
-    virtual ~GameInterface();
+    ~GameInterface() override;
 
     /**
         Draws this window to screen. This method should be called every frame.

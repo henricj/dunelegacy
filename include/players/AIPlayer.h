@@ -24,7 +24,7 @@
 
 #include <deque>
 
-class AIPlayer : public Player {
+class AIPlayer final : public Player {
 public:
     enum class Difficulty {
         Easy   = 0,

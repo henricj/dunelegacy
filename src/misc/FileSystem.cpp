@@ -76,8 +76,8 @@ void safe_tolower_inplace(std::u32string& s32) {
 // Work around standard brain damage
 // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-closed.html#721
 template<class I, class E, class S>
-struct codecvt : std::codecvt<I, E, S> {
-    ~codecvt() = default;
+struct codecvt final : std::codecvt<I, E, S> {
+    ~codecvt() override = default;
 };
 
 std::string safe_tolower(std::string_view s) {

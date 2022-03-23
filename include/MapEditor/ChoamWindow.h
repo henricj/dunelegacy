@@ -34,7 +34,7 @@
 // forward declaration
 class MapEditor;
 
-class ChoamWindow : public Window {
+class ChoamWindow final : public Window {
 public:
     ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse);
 

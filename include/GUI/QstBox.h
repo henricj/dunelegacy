@@ -28,8 +28,6 @@
 #include "Window.h"
 #include <misc/SDL2pp.h>
 
-#include <iostream>
-
 #define QSTBOX_BUTTON_INVALID (-1)
 #define QSTBOX_BUTTON1        (1)
 #define QSTBOX_BUTTON2        (2)

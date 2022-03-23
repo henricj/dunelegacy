@@ -22,7 +22,7 @@
 
 #include <DataTypes.h>
 
-class SmartBot : public Player {
+class SmartBot final : public Player {
 public:
     enum class Difficulty {
         Normal  = 0,

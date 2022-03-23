@@ -23,7 +23,7 @@
 
 #include <DataTypes.h>
 
-class QuantBot : public Player {
+class QuantBot final : public Player {
 public:
     enum class Difficulty {
         Easy   = 0,

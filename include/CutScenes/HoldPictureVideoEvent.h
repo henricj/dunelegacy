@@ -24,7 +24,7 @@
 /**
     This VideoEvent statical shows a picture for a number of frames.
 */
-class HoldPictureVideoEvent : public VideoEvent {
+class HoldPictureVideoEvent final : public VideoEvent {
 public:
     /**
         Constructor

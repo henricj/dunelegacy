@@ -414,7 +414,6 @@ void INIMapEditorLoader::loadUnits() {
 
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
-            continue;
         }
     }
 }
@@ -462,7 +461,6 @@ void INIMapEditorLoader::loadStructures() {
                 genID--;
             } else {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "' for GEN-Placement!");
-                continue;
             }
 
         } else if (tmpkey.compare(0, 2, "ID") == 0) {
@@ -505,7 +503,6 @@ void INIMapEditorLoader::loadStructures() {
             pMapEditor->structures.emplace_back(structureID, houseID, itemID, iHealth, Coord(getXPos(pos), getYPos(pos)));
         } else {
             logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
-            continue;
         }
     }
 }

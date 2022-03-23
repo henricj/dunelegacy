@@ -36,7 +36,7 @@
 class MapEditor;
 
 /// This class represents the map editor interface.
-class MapEditorInterface : public Window {
+class MapEditorInterface final : public Window {
 public:
     /// default constructor
     explicit MapEditorInterface(MapEditor* pMapEditor);

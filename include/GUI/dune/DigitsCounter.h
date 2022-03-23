@@ -28,7 +28,7 @@
 extern std::unique_ptr<GFXManager> pGFXManager;
 
 /// A widget for showing digits (like the credits in dune are shown)
-class DigitsCounter : public Widget {
+class DigitsCounter final : public Widget {
 public:
     /// default constructor
     DigitsCounter() {
@@ -37,7 +37,7 @@ public:
     }
 
     /// destructor
-    ~DigitsCounter() override { ; }
+    ~DigitsCounter() override { }
 
     /**
         Get the current count of this digits counter

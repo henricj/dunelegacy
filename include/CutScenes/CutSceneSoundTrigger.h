@@ -25,7 +25,7 @@
 /**
     This class is used for triggering sound effects and voices
 */
-class CutSceneSoundTrigger : public CutSceneTrigger {
+class CutSceneSoundTrigger final : public CutSceneTrigger {
 public:
     /**
         Constructor

@@ -24,7 +24,7 @@
 #include <GUI/VBox.h>
 #include <GUI/Window.h>
 
-class InGameMenu : public Window {
+class InGameMenu final : public Window {
 public:
     InGameMenu(bool bMultiplayer, int color);
     ~InGameMenu() override;

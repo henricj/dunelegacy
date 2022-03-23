@@ -26,7 +26,7 @@
 #include <vector>
 
 /// A class for a multiline text view widget
-class TextView : public Widget {
+class TextView final : public Widget {
 public:
     /// default constructor
     TextView();

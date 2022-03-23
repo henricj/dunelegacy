@@ -25,7 +25,6 @@
 #include <misc/string_util.h>
 
 #include <algorithm>
-#include <list>
 #include <string>
 
 /// a class for a text label

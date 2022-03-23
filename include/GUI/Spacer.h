@@ -23,7 +23,7 @@
 #include <iostream>
 
 /// A variable spacer class. This spacer fills in between widgets
-class Spacer : public Widget {
+class Spacer final : public Widget {
 public:
     /// default constructor
     Spacer()
@@ -32,7 +32,7 @@ public:
     }
 
     /// destructor
-    virtual ~Spacer() = default;
+    ~Spacer() override = default;
 
     /**
         Returns the minimum size of this spacer. That is (0,0).
@@ -54,7 +54,7 @@ public:
 };
 
 /// A horizontal fixed-size spacer class
-class HSpacer : public Widget {
+class HSpacer final : public Widget {
 public:
     /// default constructor
     HSpacer()
@@ -74,7 +74,7 @@ public:
     }
 
     /// destructor
-    virtual ~HSpacer() = default;
+    ~HSpacer() override = default;
 
     /**
         Returns the minimum size of this spacer. The returned size is (width,0).
@@ -102,7 +102,7 @@ private:
 };
 
 /// A vertical fixed-size spacer class
-class VSpacer : public Widget {
+class VSpacer final : public Widget {
 public:
     /// default constructor
     VSpacer()
@@ -122,7 +122,7 @@ public:
     }
 
     /// destructor
-    virtual ~VSpacer() = default;
+    ~VSpacer() override = default;
 
     /**
         Returns the minimum size of this spacer. The returned size is (0,height).

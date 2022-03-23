@@ -319,7 +319,6 @@ void InfantryBase::checkPos(const GameContext& context) {
             // destroy unit indirectly
             setTarget(nullptr);
             setHealth(0);
-            return;
         }
     } else if (target.getObjPointer() != nullptr && target.getObjPointer()->isAStructure()) {
         Coord closestPoint;
@@ -329,7 +328,6 @@ void InfantryBase::checkPos(const GameContext& context) {
             // destroy unit indirectly
             setTarget(nullptr);
             setHealth(0);
-            return;
         }
     }
 }
@@ -495,7 +493,6 @@ void InfantryBase::setSpeeds(const GameContext& context) {
 
 void InfantryBase::squash(const GameContext& context) {
     destroy(context);
-    return;
 }
 
 void InfantryBase::playConfirmSound() {

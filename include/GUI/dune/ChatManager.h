@@ -29,7 +29,7 @@
 /**
     This class manages all the chat messages that are shown on the screen.
 */
-class ChatManager : public Widget {
+class ChatManager final : public Widget {
 public:
     enum class MessageType {
         MSGTYPE_NORMAL  = 0,

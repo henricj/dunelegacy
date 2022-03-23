@@ -27,7 +27,7 @@ extern "C" {
 #include "woodyopl.h"
 }
 
-class CWemuopl : public Copl {
+class CWemuopl final : public Copl {
 public:
     CWemuopl(int rate, bool usestereo)
         : stereo(usestereo), opl(0) {

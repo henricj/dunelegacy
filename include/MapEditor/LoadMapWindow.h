@@ -29,7 +29,7 @@
 #include <GUI/Window.h>
 #include <misc/SDL2pp.h>
 
-class LoadMapWindow : public Window {
+class LoadMapWindow final : public Window {
 public:
     explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 

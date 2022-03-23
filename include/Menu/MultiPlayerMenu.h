@@ -26,7 +26,7 @@
 
 #include <list>
 
-class MultiPlayerMenu : public MenuBase {
+class MultiPlayerMenu final : public MenuBase {
 public:
     MultiPlayerMenu();
     ~MultiPlayerMenu() override;

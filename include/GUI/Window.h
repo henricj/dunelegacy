@@ -37,7 +37,7 @@ public:
     Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
     /// destructor
-    virtual ~Window();
+    ~Window() override;
 
     /**
         This method is called if a child widget is destroyed (see Widget::~Widget).

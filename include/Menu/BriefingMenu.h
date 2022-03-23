@@ -26,7 +26,7 @@
 #define DEBRIEFING_WIN  1
 #define DEBRIEFING_LOST 2
 
-class BriefingMenu : public MentatMenu {
+class BriefingMenu final : public MentatMenu {
 public:
     BriefingMenu(HOUSETYPE newHouse, int mission, int type);
     ~BriefingMenu() override;

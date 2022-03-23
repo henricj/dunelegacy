@@ -25,7 +25,7 @@
 #include <queue>
 #include <string>
 
-class MessageTicker : public Widget {
+class MessageTicker final : public Widget {
 public:
     MessageTicker();
     ~MessageTicker() override;

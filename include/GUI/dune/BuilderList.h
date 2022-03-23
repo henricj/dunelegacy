@@ -32,7 +32,7 @@
 
 #define WIDGET_WIDTH (BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING)
 
-class BuilderList : public StaticContainer {
+class BuilderList final : public StaticContainer {
 public:
     /**
         Handles a mouse movement.

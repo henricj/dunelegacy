@@ -73,8 +73,8 @@ void NewsTicker::draw(Point position) {
             // if no more messages leave
             if (messages.empty()) {
                 return;
-            };
-        };
+            }
+        }
 
         // draw text
         if (currentMessage != messages.front()) {
@@ -100,5 +100,5 @@ void NewsTicker::draw(Point position) {
             textLocation.h = cut.h = getHeight(pCurrentMessageTexture.get()) - cut.y;
             Dune_RenderCopyF(renderer, pCurrentMessageTexture.get(), &cut, &textLocation);
         }
-    };
+    }
 }

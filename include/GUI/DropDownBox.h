@@ -28,7 +28,7 @@
 #include <vector>
 
 /// A class for a dropdown box widget
-class DropDownBox : public Widget {
+class DropDownBox final : public Widget {
 public:
     /// default constructor
     DropDownBox();

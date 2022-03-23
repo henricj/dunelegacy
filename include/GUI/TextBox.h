@@ -25,7 +25,7 @@
 #include <string>
 
 /// A class for a text box
-class TextBox : public Widget {
+class TextBox final : public Widget {
 public:
     /// default constructor
     TextBox() {

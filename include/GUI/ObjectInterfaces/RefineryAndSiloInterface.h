@@ -30,7 +30,7 @@
 
 #include <misc/string_util.h>
 
-class RefineryAndSiloInterface : public DefaultStructureInterface {
+class RefineryAndSiloInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID) {
         auto tmp        = std::unique_ptr<RefineryAndSiloInterface> {new RefineryAndSiloInterface {context, objectID}};

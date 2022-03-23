@@ -25,7 +25,7 @@
 
 #define MENU_QUIT_HOUSECHOICE_YES (1)
 
-class HouseChoiceInfoMenu : public MentatMenu {
+class HouseChoiceInfoMenu final : public MentatMenu {
 public:
     HouseChoiceInfoMenu(HOUSETYPE newHouse);
     ~HouseChoiceInfoMenu() override;

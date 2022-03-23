@@ -33,7 +33,7 @@
 #include <limits>
 
 /// A class for a text box
-class DigitsTextBox : public HBox {
+class DigitsTextBox final : public HBox {
 
 public:
     DigitsTextBox() {

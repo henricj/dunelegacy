@@ -239,7 +239,6 @@ void Harvester::checkPos(const GameContext& context) {
             spiceCheckCounter--;
         }
 
-        return;
     }
 }
 

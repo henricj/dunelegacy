@@ -632,12 +632,11 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
             default: {
                 sdl2::log_info("NetworkManager: Unknown packet type %d", packetType);
-            };
+            }
         }
 
     } catch (InputStream::eof&) {
         sdl2::log_info("NetworkManager: Received packet is too small");
-        return;
     } catch (std::exception& e) {
         sdl2::log_info("NetworkManager: %s", e.what());
     }
@@ -674,7 +673,6 @@ void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStre
     for (ENetPeer* pCurrentPeer : peerList) {
         if (enet_peer_send(pCurrentPeer, channel, enetPacket) < 0) {
             sdl2::log_info("NetworkManager: Cannot send packet!");
-            continue;
         }
     }
 

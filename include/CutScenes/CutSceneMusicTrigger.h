@@ -25,7 +25,7 @@
 /**
     This class is used for triggering a music change
 */
-class CutSceneMusicTrigger : public CutSceneTrigger {
+class CutSceneMusicTrigger final : public CutSceneTrigger {
 public:
     /**
         Constructor

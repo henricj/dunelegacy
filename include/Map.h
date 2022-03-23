@@ -298,7 +298,6 @@ protected:
 
             if (!tile)
                 continue;
-            ;
 
             const auto result = predicate(*tile);
 

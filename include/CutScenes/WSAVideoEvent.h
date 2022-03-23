@@ -24,7 +24,7 @@
 /**
     This VideoEvent is used for playing a wsa video.
 */
-class WSAVideoEvent : public VideoEvent {
+class WSAVideoEvent final : public VideoEvent {
 public:
     /**
         Constructor
