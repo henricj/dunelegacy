@@ -116,7 +116,8 @@ void INIMapLoader::loadMap() {
             } break;
 
             default: {
-                logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + std::to_string(mapscale) + "'!");
+                logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(),
+                         "Unknown MapScale '" + std::to_string(mapscale) + "'!");
             } break;
         }
 
@@ -137,33 +138,23 @@ void INIMapLoader::loadMap() {
                 unsigned char seedmaptype = SeedMap[(j + logicalOffsetY) * 64 + i + logicalOffsetX] >> 4;
                 switch (seedmaptype) {
 
-                    case 0x7: /* Sand */
-                        type = Terrain_Sand;
-                        break;
+                    case 0x7: /* Sand */ type = Terrain_Sand; break;
 
                     case 0x2: /* Building */
-                    case 0x8: /* Rock */
-                        type = Terrain_Rock;
-                        break;
+                    case 0x8: /* Rock */ type = Terrain_Rock; break;
 
-                    case 0x9: /* Dunes */
-                        type = Terrain_Dunes;
-                        break;
+                    case 0x9: /* Dunes */ type = Terrain_Dunes; break;
 
-                    case 0xa: /* Mountain */
-                        type = Terrain_Mountain;
-                        break;
+                    case 0xa: /* Mountain */ type = Terrain_Mountain; break;
 
-                    case 0xb: /* Spice */
-                        type = Terrain_Spice;
-                        break;
+                    case 0xb: /* Spice */ type = Terrain_Spice; break;
 
-                    case 0xc: /* ThickSpice */
-                        type = Terrain_ThickSpice;
-                        break;
+                    case 0xc: /* ThickSpice */ type = Terrain_ThickSpice; break;
 
                     default:
-                        logWarning(inifile->getKey("MAP", "Seed")->getLineNumber(), "Unknown map type '" + std::to_string(seedmaptype) + "' for tile (" + std::to_string(i) + ", " + std::to_string(j) + ")!");
+                        logWarning(inifile->getKey("MAP", "Seed")->getLineNumber(),
+                                   "Unknown map type '" + std::to_string(seedmaptype) + "' for tile ("
+                                       + std::to_string(i) + ", " + std::to_string(j) + ")!");
                         type = Terrain_Sand;
                         break;
                 }
@@ -209,10 +200,12 @@ void INIMapLoader::loadMap() {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
                     if (!map->trySetTileType(context, xpos, ypos, Terrain_SpecialBloom)) {
-                        logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Special bloom position '" + SpecialPosition + "' outside map!");
+                        logWarning(inifile->getKey("MAP", "Special")->getLineNumber(),
+                                   "Special bloom position '" + SpecialPosition + "' outside map!");
                     }
                 } else {
-                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(),
+                               "Invalid special bloom position: '" + SpecialPosition + "'");
                 }
             }
         }
@@ -230,7 +223,8 @@ void INIMapLoader::loadMap() {
 
                     map->createSpiceField(context, Coord(xpos, ypos), 5, true);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(),
+                               "Invalid spice field position: '" + FieldPosition + "'");
                 }
             }
         }
@@ -246,11 +240,13 @@ void INIMapLoader::loadMap() {
         sizeY = inifile->getIntValue("MAP", "SizeY", 0);
 
         if (sizeX <= 0) {
-            logError(inifile->getKey("MAP", "SizeX")->getLineNumber(), "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
+            logError(inifile->getKey("MAP", "SizeX")->getLineNumber(),
+                     "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
         }
 
         if (sizeY <= 0) {
-            logError(inifile->getKey("MAP", "SizeY")->getLineNumber(), "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
+            logError(inifile->getKey("MAP", "SizeY")->getLineNumber(),
+                     "Invalid map size: " + std::to_string(sizeX) + "x" + std::to_string(sizeY) + "!");
         }
 
         logicalSizeX   = sizeX;
@@ -266,7 +262,8 @@ void INIMapLoader::loadMap() {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile->hasKey("MAP", rowKey)) {
-                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
+                logWarning(inifile->getSection("MAP").getLineNumber(),
+                           "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
 
@@ -275,9 +272,11 @@ void INIMapLoader::loadMap() {
             int rowLength = rowString.size();
 
             if (rowLength < sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is not long enough!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                           "Map row " + std::to_string(y) + " is not long enough!");
             } else if (rowLength > sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is too long!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                           "Map row " + std::to_string(y) + " is too long!");
                 rowLength = sizeX;
             }
 
@@ -326,7 +325,9 @@ void INIMapLoader::loadMap() {
                     } break;
 
                     default: {
-                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + std::to_string(x) + ", " + std::to_string(y) + ")!");
+                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                                   std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
+                                       + std::to_string(x) + ", " + std::to_string(y) + ")!");
                         type = Terrain_Sand;
                     } break;
                 }
@@ -344,7 +345,8 @@ void INIMapLoader::loadMap() {
 }
 
 /**
-    This method loads the houses on the map specified by the various house sections in the INI file ([Atreides], [Ordos], [Harkonnen]).
+    This method loads the houses on the map specified by the various house sections in the INI file ([Atreides],
+   [Ordos], [Harkonnen]).
 */
 void INIMapLoader::loadHouses(const GameContext& context) {
     const GameInitSettings::HouseInfoList& houseInfoList = pGame->getGameInitSettings().getHouseInfoList();
@@ -442,8 +444,8 @@ void INIMapLoader::loadHouses(const GameContext& context) {
 
         int quota = inifile->getIntValue(houseName, "Quota", 0);
 
-        pGame->house[static_cast<int>(houseID)] = std::make_unique<House>(
-            context, houseID, startingCredits, maxUnits, houseInfo.team, quota);
+        pGame->house[static_cast<int>(houseID)] =
+            std::make_unique<House>(context, houseID, startingCredits, maxUnits, houseInfo.team, quota);
         auto* const pNewHouse = pGame->getHouse(houseID);
 
         // add players
@@ -460,7 +462,9 @@ void INIMapLoader::loadHouses(const GameContext& context) {
 
             auto pPlayer = pPlayerData->create(context, pNewHouse, playerInfo.playerName);
 
-            if (((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) && (dynamic_cast<HumanPlayer*>(pPlayer.get()) != nullptr)) || (playerInfo.playerName == pGame->getLocalPlayerName())) {
+            if (((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer)
+                 && (dynamic_cast<HumanPlayer*>(pPlayer.get()) != nullptr))
+                || (playerInfo.playerName == pGame->getLocalPlayerName())) {
                 pLocalHouse  = pNewHouse;
                 pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
@@ -532,7 +536,8 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
             int pos = 0;
             if (!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), fmt::format("Invalid position string for '{}': '{}'!", UnitStr, PosStr));
+                logWarning(key.getLineNumber(),
+                           fmt::format("Invalid position string for '{}': '{}'!", UnitStr, PosStr));
                 continue;
             }
 
@@ -577,8 +582,8 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     case HOUSETYPE::HOUSE_FREMEN:
                     case HOUSETYPE::HOUSE_SARDAUKAR:
                     case HOUSETYPE::HOUSE_MERCENARY: {
-                        if (nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] &&
-                            pGame->objectData.data[Unit_SonicTank][static_cast<int>(houseID)].enabled) {
+                        if (nextSpecialUnitIsSonicTank[static_cast<int>(houseID)]
+                            && pGame->objectData.data[Unit_SonicTank][static_cast<int>(houseID)].enabled) {
                             itemID = Unit_SonicTank;
                             nextSpecialUnitIsSonicTank[static_cast<int>(houseID)] =
                                 !pGame->objectData.data[Unit_Devastator][static_cast<int>(houseID)].enabled;
@@ -618,9 +623,10 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     auto* newUnit =
                         house->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                     if (newUnit == nullptr) {
-                        logWarning(key.getLineNumber(),
-                                   fmt::format("Invalid or occupied position for '{}': '{}' ({}x{}/{}) after parsing {}!", UnitStr, PosStr,
-                                               getXPos(pos), getYPos(pos), PosStr, keyView));
+                        logWarning(
+                            key.getLineNumber(),
+                            fmt::format("Invalid or occupied position for '{}': '{}' ({}x{}/{}) after parsing {}!",
+                                        UnitStr, PosStr, getXPos(pos), getYPos(pos), PosStr, keyView));
                         continue;
                     }
 
@@ -638,7 +644,8 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                     }
                 }
             } else {
-                logWarning(key.getLineNumber(), fmt::format("Unable to get or create house {}!", static_cast<int>(houseID)));
+                logWarning(key.getLineNumber(),
+                           fmt::format("Unable to get or create house {}!", static_cast<int>(houseID)));
             }
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
@@ -680,11 +687,17 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                 continue;
             }
 
-            if (BuildingStr == "Concrete" && pGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].enabled) {
-                getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos), true);
-            } else if (BuildingStr == "Wall" && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
-                if (getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true) == nullptr) {
-                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
+            if (BuildingStr == "Concrete"
+                && pGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].enabled) {
+                getOrCreateHouse(context, houseID)
+                    ->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos), true);
+            } else if (BuildingStr == "Wall"
+                       && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
+                if (getOrCreateHouse(context, houseID)
+                        ->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true)
+                    == nullptr) {
+                    logWarning(key.getLineNumber(),
+                               fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                 }
             } else if ((BuildingStr != "Concrete") && (BuildingStr != "Wall")) {
                 logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
@@ -696,7 +709,8 @@ void INIMapLoader::loadStructures(const GameContext& context) {
 
             int pos = 0;
             if (!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), fmt::format("Invalid position string for '{}': '{}'!", BuildingStr, PosStr));
+                logWarning(key.getLineNumber(),
+                           fmt::format("Invalid position string for '{}': '{}'!", BuildingStr, PosStr));
                 continue;
             }
 
@@ -725,9 +739,12 @@ void INIMapLoader::loadStructures(const GameContext& context) {
             }
 
             if (itemID != 0 && pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
-                ObjectBase* newStructure = getOrCreateHouse(context, houseID)->placeStructure(NONE_ID, static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
+                ObjectBase* newStructure =
+                    getOrCreateHouse(context, houseID)
+                        ->placeStructure(NONE_ID, static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
                 if (newStructure == nullptr) {
-                    logWarning(key.getLineNumber(), fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
+                    logWarning(key.getLineNumber(),
+                               fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                     continue;
                 }
                 newStructure->setHealth(newStructure->getMaxHealth() * percentHealth);
@@ -755,7 +772,8 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
 
         if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime)) {
             if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
-                logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
+                logWarning(key.getLineNumber(),
+                           "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
         }
@@ -813,7 +831,9 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
             for (const auto& pTrigger : pGame->getTriggerManager().getTriggers()) {
                 auto* pReinforcementTrigger = dynamic_cast<ReinforcementTrigger*>(pTrigger.get());
 
-                if (pReinforcementTrigger != nullptr && pReinforcementTrigger->getCycleNumber() == dropCycle && pReinforcementTrigger->getHouseID() == houseID && pReinforcementTrigger->isRepeat() == bRepeat && pReinforcementTrigger->getDropLocation() == dropLocation) {
+                if (pReinforcementTrigger != nullptr && pReinforcementTrigger->getCycleNumber() == dropCycle
+                    && pReinforcementTrigger->getHouseID() == houseID && pReinforcementTrigger->isRepeat() == bRepeat
+                    && pReinforcementTrigger->getDropLocation() == dropLocation) {
 
                     // add the new reinforcement to this reinforcement (call only one carryall)
                     pReinforcementTrigger->addUnit(itemID);
@@ -824,7 +844,8 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
 
             if (!bInserted) {
                 getOrCreateHouse(context, houseID); // create house if not yet available
-                pGame->getTriggerManager().addTrigger(std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
+                pGame->getTriggerManager().addTrigger(
+                    std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
             }
         }
     }
@@ -845,7 +866,8 @@ void INIMapLoader::loadAITeams(const GameContext& context) {
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if (!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits)) {
+        if (!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits,
+                         strMaxUnits)) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }
@@ -897,7 +919,8 @@ void INIMapLoader::loadView(const GameContext& context) {
         const Coord tacticalPos(getXPos(tacticalPosInt), getYPos(tacticalPosInt));
 
         if (tacticalPos.x < 0 || tacticalPos.x >= sizeX || tacticalPos.y < 0 || tacticalPos.y >= sizeY) {
-            logWarning(inifile->getKey("BASIC", "TacticalPos")->getLineNumber(), "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
+            logWarning(inifile->getKey("BASIC", "TacticalPos")->getLineNumber(),
+                       "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
             context.game.setupView(context);
         } else {
             screenborder->setNewScreenCenter(tacticalPos * TILESIZE);
@@ -908,9 +931,8 @@ void INIMapLoader::loadView(const GameContext& context) {
 }
 
 /**
-    This method returns the house object of the specified house id. If it does not already exist a new AI Player is created and returned.
-    \param houseID the house to return or create
-    \return the house specified by house
+    This method returns the house object of the specified house id. If it does not already exist a new AI Player is
+   created and returned. \param houseID the house to return or create \return the house specified by house
 */
 House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE houseID) {
     auto& pHouse = pGame->house[pGame->getHouseIndex(houseID)];
@@ -966,8 +988,8 @@ House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE hous
         // probably not a good idea to treat any "anonymous" house as an AI player
         if(pNewHouse->getPlayerList().empty()) {
             const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByPlayerClass(DEFAULTAIPLAYERCLASS);
-            Player* pPlayer = pPlayerData->create(pNewHouse.get(), getHouseNameByNumber((HOUSETYPE) pNewHouse->getHouseID()));
-            pNewHouse->addPlayer(std::unique_ptr<Player>(pPlayer));
+            Player* pPlayer = pPlayerData->create(pNewHouse.get(), getHouseNameByNumber((HOUSETYPE)
+       pNewHouse->getHouseID())); pNewHouse->addPlayer(std::unique_ptr<Player>(pPlayer));
         }
         */
 

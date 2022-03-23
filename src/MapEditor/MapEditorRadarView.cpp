@@ -28,12 +28,13 @@
 
 #include <misc/draw_util.h>
 
-MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor)
-    : pMapEditor(pMapEditor) {
-    radarSurface = sdl2::surface_ptr {SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor) : pMapEditor(pMapEditor) {
+    radarSurface =
+        sdl2::surface_ptr {SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    radarTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT)};
+    radarTexture = sdl2::texture_ptr {
+        SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT)};
 }
 
 MapEditorRadarView::~MapEditorRadarView() = default;
@@ -47,7 +48,8 @@ int MapEditorRadarView::getMapSizeY() const {
 }
 
 void MapEditorRadarView::draw(Point position) {
-    const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
+    const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
+                                    RADARWIDTH, RADARHEIGHT};
 
     const MapData& map = pMapEditor->getMap();
 
@@ -67,8 +69,10 @@ void MapEditorRadarView::draw(Point position) {
     SDL_Rect radarRect;
     radarRect.x = (screenborder->getLeft() * map.getSizeX() * scale) / (map.getSizeX() * TILESIZE) + offsetX;
     radarRect.y = (screenborder->getTop() * map.getSizeY() * scale) / (map.getSizeY() * TILESIZE) + offsetY;
-    radarRect.w = ((screenborder->getRight() - screenborder->getLeft()) * map.getSizeX() * scale) / (map.getSizeX() * TILESIZE);
-    radarRect.h = ((screenborder->getBottom() - screenborder->getTop()) * map.getSizeY() * scale) / (map.getSizeY() * TILESIZE);
+    radarRect.w =
+        ((screenborder->getRight() - screenborder->getLeft()) * map.getSizeX() * scale) / (map.getSizeX() * TILESIZE);
+    radarRect.h =
+        ((screenborder->getBottom() - screenborder->getTop()) * map.getSizeY() * scale) / (map.getSizeY() * TILESIZE);
 
     if (radarRect.x < offsetX) {
         radarRect.w -= radarRect.x;
@@ -90,11 +94,8 @@ void MapEditorRadarView::draw(Point position) {
         radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
     }
 
-    renderDrawRect(renderer,
-                   radarPosition.x + radarRect.x,
-                   radarPosition.y + radarRect.y,
-                   radarPosition.x + (radarRect.x + radarRect.w),
-                   radarPosition.y + (radarRect.y + radarRect.h),
+    renderDrawRect(renderer, radarPosition.x + radarRect.x, radarPosition.y + radarRect.y,
+                   radarPosition.x + (radarRect.x + radarRect.w), radarPosition.y + (radarRect.y + radarRect.h),
                    COLOR_WHITE);
 }
 
@@ -144,7 +145,9 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             color = MapRGBA(radarSurface->format, color);
 
             for (int j = 0; j < scale; j++) {
-                uint32_t* p = ((uint32_t*)(static_cast<uint8_t*>(radarSurface->pixels) + (offsetY + scale * y + j) * radarSurface->pitch)) + (offsetX + scale * x);
+                uint32_t* p = ((uint32_t*)(static_cast<uint8_t*>(radarSurface->pixels)
+                                           + (offsetY + scale * y + j) * radarSurface->pitch))
+                            + (offsetX + scale * x);
 
                 for (int i = 0; i < scale; i++, p++) {
                     // Do not use putPixel here to avoid overhead
@@ -156,12 +159,12 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
     for (const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
 
-        if (unit.position.x >= 0 && unit.position.x < map.getSizeX() && unit.position.y >= 0 && unit.position.y < map.getSizeY()) {
+        if (unit.position.x >= 0 && unit.position.x < map.getSizeX() && unit.position.y >= 0
+            && unit.position.y < map.getSizeY()) {
 
             for (int i = 0; i < scale; i++) {
                 for (int j = 0; j < scale; j++) {
-                    putPixel(radarSurface.get(),
-                             offsetX + scale * unit.position.x + i,
+                    putPixel(radarSurface.get(), offsetX + scale * unit.position.x + i,
                              offsetY + scale * unit.position.y + j,
                              SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(unit.house)]]));
                 }
@@ -179,8 +182,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
                     for (int i = 0; i < scale; i++) {
                         for (int j = 0; j < scale; j++) {
-                            putPixel(radarSurface.get(),
-                                     offsetX + scale * (structure.position.x + x) + i,
+                            putPixel(radarSurface.get(), offsetX + scale * (structure.position.x + x) + i,
                                      offsetY + scale * (structure.position.y + y) + j,
                                      SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(structure.house)]]));
                         }

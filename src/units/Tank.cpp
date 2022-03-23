@@ -31,8 +31,7 @@ namespace {
 constexpr TankBaseConstants tank_constants {Tank::item_id, 1, Bullet_ShellMedium};
 }
 
-Tank::Tank(uint32_t objectID, const ObjectInitializer& initializer)
-    : TankBase(tank_constants, objectID, initializer) {
+Tank::Tank(uint32_t objectID, const ObjectInitializer& initializer) : TankBase(tank_constants, objectID, initializer) {
     Tank::init();
 
     setHealth(getMaxHealth());
@@ -64,7 +63,7 @@ void Tank::blitToScreen() {
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 

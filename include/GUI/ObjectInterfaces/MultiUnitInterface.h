@@ -46,8 +46,7 @@ public:
     }
 
 protected:
-    MultiUnitInterface(const GameContext& context)
-        : context_ {context} {
+    MultiUnitInterface(const GameContext& context) : context_ {context} {
         const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
@@ -190,21 +189,13 @@ protected:
         update();
     }
 
-    static void onMove() {
-        currentGame->currentCursorMode = Game::CursorMode_Move;
-    }
+    static void onMove() { currentGame->currentCursorMode = Game::CursorMode_Move; }
 
-    static void onAttack() {
-        currentGame->currentCursorMode = Game::CursorMode_Attack;
-    }
+    static void onAttack() { currentGame->currentCursorMode = Game::CursorMode_Attack; }
 
-    static void onCapture() {
-        currentGame->currentCursorMode = Game::CursorMode_Capture;
-    }
+    static void onCapture() { currentGame->currentCursorMode = Game::CursorMode_Capture; }
 
-    static void onCarryallDrop() {
-        currentGame->currentCursorMode = Game::CursorMode_CarryallDrop;
-    }
+    static void onCarryallDrop() { currentGame->currentCursorMode = Game::CursorMode_CarryallDrop; }
 
     void onReturn() {
         for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
@@ -246,29 +237,17 @@ protected:
         }
     }
 
-    void onGuard(const GameContext& context) {
-        setAttackMode(context, GUARD);
-    }
+    void onGuard(const GameContext& context) { setAttackMode(context, GUARD); }
 
-    void onAreaGuard(const GameContext& context) {
-        setAttackMode(context, AREAGUARD);
-    }
+    void onAreaGuard(const GameContext& context) { setAttackMode(context, AREAGUARD); }
 
-    void onStop(const GameContext& context) {
-        setAttackMode(context, STOP);
-    }
+    void onStop(const GameContext& context) { setAttackMode(context, STOP); }
 
-    void onAmbush(const GameContext& context) {
-        setAttackMode(context, AMBUSH);
-    }
+    void onAmbush(const GameContext& context) { setAttackMode(context, AMBUSH); }
 
-    void onHunt(const GameContext& context) {
-        setAttackMode(context, HUNT);
-    }
+    void onHunt(const GameContext& context) { setAttackMode(context, HUNT); }
 
-    void onRetreat(const GameContext& context) {
-        setAttackMode(context, RETREAT);
-    }
+    void onRetreat(const GameContext& context) { setAttackMode(context, RETREAT); }
 
     void setAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
         auto& [game, map, objectManager] = context;
@@ -372,7 +351,8 @@ protected:
         deployButton.setVisible(bShowDeploy);
         destructButton.setVisible(bShowDevastate);
         sendToRepairButton.setVisible(bShowRepair);
-        carryallDropButton.setVisible(bShowCarryallDrop && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
+        carryallDropButton.setVisible(bShowCarryallDrop
+                                      && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
 
         guardButton.setToggleState(bGuard);
         areaGuardButton.setToggleState(bAreaGuard);

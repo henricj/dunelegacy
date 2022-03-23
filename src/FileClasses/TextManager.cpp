@@ -52,7 +52,8 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
 TextManager::TextManager(std::string_view language) {
     const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
-    const auto languages = getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
+    const auto languages =
+        getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
 
     const auto language_file = languages.empty() ? std::filesystem::path {"English.en.po"} : languages.front();
 
@@ -74,9 +75,12 @@ void TextManager::loadData() {
     addOrigDuneText("MESSAGE." + ext);
 
     // load all mentat texts
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]  = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]     = std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
+        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
+        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
+    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
+        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
 }
 
 std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const {
@@ -502,32 +506,40 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
     // clang-format on
 }
 
-std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const {
+std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSETYPE house,
+                                                                          unsigned int techLevel) const {
     std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
     switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR:
         default: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries(); i++) {
-                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries();
+                 i++) {
+                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel
+                    <= techLevel) {
+                    mentatEntries.push_back(
+                        mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
                 }
             }
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES:
         case HOUSETYPE::HOUSE_FREMEN: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries(); i++) {
-                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries();
+                 i++) {
+                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel
+                    <= techLevel) {
+                    mentatEntries.push_back(
+                        mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
                 }
             }
         } break;
 
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries(); i++) {
+            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries();
+                 i++) {
                 if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel <= techLevel) {
                     mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i));
                 }

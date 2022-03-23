@@ -34,7 +34,8 @@
 */
 class CampaignAIPlayer final : public Player {
 public:
-    CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
+    CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
+                     const Random& random);
     CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~CampaignAIPlayer() override;
     void save(OutputStream& stream) const override;
@@ -48,9 +49,7 @@ public:
 private:
     class StructureInfo {
     public:
-        StructureInfo(ItemID_enum itemID, const Coord& location)
-            : itemID(itemID), location(location) {
-        }
+        StructureInfo(ItemID_enum itemID, const Coord& location) : itemID(itemID), location(location) { }
 
         StructureInfo(InputStream& stream) {
             itemID     = static_cast<ItemID_enum>(stream.readUint32());

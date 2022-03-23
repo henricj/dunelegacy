@@ -30,9 +30,10 @@ static const fix16_t X4_CORRECTION_COMPONENT = 0x399A;     /*!< Fix16 value of 0
 static const fix16_t PI_DIV_4                = 0x0000C90F; /*!< Fix16 value of PI/4 */
 static const fix16_t THREE_PI_DIV_4          = 0x00025B2F; /*!< Fix16 value of 3PI/4 */
 
-static const fix16_t fix16_maximum  = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
-static const fix16_t fix16_minimum  = 0x80000000; /*!< the minimum value of fix16_t */
-static const fix16_t fix16_overflow = 0x80000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
+static const fix16_t fix16_maximum = 0x7FFFFFFF; /*!< the maximum value of fix16_t */
+static const fix16_t fix16_minimum = 0x80000000; /*!< the minimum value of fix16_t */
+static const fix16_t fix16_overflow =
+    0x80000000; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
 static const fix16_t fix16_pi  = 205887;     /*!< fix16_t value of pi */
 static const fix16_t fix16_e   = 178145;     /*!< fix16_t value of e */
@@ -241,16 +242,16 @@ extern fix16_t fix16_from_str(const char* buf);
 #define FIXMATH_TOKLEN(token) (sizeof(#token) - 1)
 
 /** Helper macro for F16C. Handles pow(10, n) for n from 0 to 8. */
-#define FIXMATH_CONSTANT_POW10(times) ( \
-    (times == 0)   ? 1ULL               \
-    : (times == 1) ? 10ULL              \
-    : (times == 2) ? 100ULL             \
-    : (times == 3) ? 1000ULL            \
-    : (times == 4) ? 10000ULL           \
-    : (times == 5) ? 100000ULL          \
-    : (times == 6) ? 1000000ULL         \
-    : (times == 7) ? 10000000ULL        \
-                   : 100000000ULL)
+#define FIXMATH_CONSTANT_POW10(times)                                                                                  \
+    ((times == 0)   ? 1ULL                                                                                             \
+     : (times == 1) ? 10ULL                                                                                            \
+     : (times == 2) ? 100ULL                                                                                           \
+     : (times == 3) ? 1000ULL                                                                                          \
+     : (times == 4) ? 10000ULL                                                                                         \
+     : (times == 5) ? 100000ULL                                                                                        \
+     : (times == 6) ? 1000000ULL                                                                                       \
+     : (times == 7) ? 10000000ULL                                                                                      \
+                    : 100000000ULL)
 
 /** Helper macro for F16C, the type uint64_t is only used at compile time and
  *  shouldn't be visible in the generated code.
@@ -258,20 +259,15 @@ extern fix16_t fix16_from_str(const char* buf);
  * @note We do not use fix16_one instead of 65536ULL, because the
  *       "use of a const variable in a constant expression is nonstandard in C".
  */
-#define FIXMATH_CONVERT_MANTISSA(m)                                                                                                                                     \
-    ((unsigned)((                                                                                                                                                       \
-                    (                                                                                                                                                   \
-                        (uint64_t)(((1##m##ULL) - FIXMATH_CONSTANT_POW10(FIXMATH_TOKLEN(m))) * FIXMATH_CONSTANT_POW10(5 - FIXMATH_TOKLEN(m))) * 100000ULL * 65536ULL) + \
-                    5000000000ULL /* rounding: + 0.5 */                                                                                                                 \
-                    ) /                                                                                                                                                 \
-                10000000000LL))
+#define FIXMATH_CONVERT_MANTISSA(m)                                                                                    \
+    ((unsigned)((((uint64_t)(((1##m##ULL) - FIXMATH_CONSTANT_POW10(FIXMATH_TOKLEN(m)))                                 \
+                             * FIXMATH_CONSTANT_POW10(5 - FIXMATH_TOKLEN(m)))                                          \
+                  * 100000ULL * 65536ULL)                                                                              \
+                 + 5000000000ULL /* rounding: + 0.5 */                                                                 \
+                 )                                                                                                     \
+                / 10000000000LL))
 
-#define FIXMATH_COMBINE_I_M(i, m) \
-    (                             \
-        (                         \
-            (i)                   \
-            << 16) |              \
-        (FIXMATH_CONVERT_MANTISSA(m) & 0xFFFF))
+#define FIXMATH_COMBINE_I_M(i, m) (((i) << 16) | (FIXMATH_CONVERT_MANTISSA(m) & 0xFFFF))
 
 /** Create int16_t (Q16.16) constant from separate integer and mantissa part.
  *
@@ -294,10 +290,8 @@ extern fix16_t fix16_from_str(const char* buf);
  * @param i Signed integer constant with a value in the interval ]-32768:32767[.
  * @param m Positive integer constant in the interval ]0:99999[ (fractional part/mantissa).
  */
-#define F16C(i, m)                                                   \
-    ((fix16_t)(((#i[0]) == '-')                                      \
-                   ? -FIXMATH_COMBINE_I_M((unsigned)(((i) * -1)), m) \
-                   : FIXMATH_COMBINE_I_M(i, m)))
+#define F16C(i, m)                                                                                                     \
+    ((fix16_t)(((#i[0]) == '-') ? -FIXMATH_COMBINE_I_M((unsigned)(((i) * -1)), m) : FIXMATH_COMBINE_I_M(i, m)))
 
 #ifdef __cplusplus
 }

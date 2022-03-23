@@ -196,7 +196,8 @@ bool UnitBase::attack(const GameContext& context) {
     }
 
     if (primaryWeaponTimer == 0) {
-        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType,
+                                                      currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
             context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
         }
@@ -218,7 +219,8 @@ bool UnitBase::attack(const GameContext& context) {
     }
 
     if ((numWeapons() == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
-        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType,
+                                                      currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
             context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
         }
@@ -245,8 +247,9 @@ void UnitBase::blitToScreen() {
     const auto y = screenborder->world2screenY(realY);
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto source              = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-    const auto dest                = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+    const auto source =
+        calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
+    const auto dest = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
 
@@ -349,12 +352,14 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
     }
 
     // Adding this in as a surrogate for damage inflicted upon deviation.. Still not sure what the best value
-    // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an ornithopter
-    // which is likely to get killed
+    // should be... going in with a 25% of the units value unless its a devastator which we can destruct or an
+    // ornithopter which is likely to get killed
     if (getItemID() == Unit_Devastator || getItemID() == Unit_Ornithopter) {
-        newOwner->informHasDamaged(Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
+        newOwner->informHasDamaged(Unit_Deviator,
+                                   game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price);
     } else {
-        newOwner->informHasDamaged(Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
+        newOwner->informHasDamaged(
+            Unit_Deviator, game.objectData.data[getItemID()][static_cast<int>(newOwner->getHouseID())].price / 5);
     }
 }
 
@@ -393,7 +398,8 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default: selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2); break;
     }
 
-    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX),
+                                      screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
     Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
 }
 
@@ -483,7 +489,9 @@ void UnitBase::engageTarget(const GameContext& context) {
             // we want to capture the target building
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
-        } else if (isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly && context.map.tileExists(targetLocation) && !context.map.getTile(targetLocation)->isMountain() && forced) {
+        } else if (isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly
+                   && context.map.tileExists(targetLocation) && !context.map.getTile(targetLocation)->isMountain()
+                   && forced) {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
@@ -592,9 +600,13 @@ void UnitBase::move(const GameContext& context) {
     checkPos(context);
 }
 
-void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY) {
+void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX,
+                                   FixPoint toDistanceY) {
 
-    if (hasBumpyMovementOnRock() && ((currentGameMap->getTile(location)->getType() == Terrain_Rock) || (currentGameMap->getTile(location)->getType() == Terrain_Mountain) || (currentGameMap->getTile(location)->getType() == Terrain_ThickSpice))) {
+    if (hasBumpyMovementOnRock()
+        && ((currentGameMap->getTile(location)->getType() == Terrain_Rock)
+            || (currentGameMap->getTile(location)->getType() == Terrain_Mountain)
+            || (currentGameMap->getTile(location)->getType() == Terrain_ThickSpice))) {
         // bumping effect
 
         const FixPoint epsilon     = 0.005_fix;
@@ -693,18 +705,24 @@ void UnitBase::navigate(const GameContext& context) {
             if (pathList.empty() && (recalculatePathTimer == 0)) {
                 recalculatePathTimer = 100;
 
-                if (!SearchPathWithAStar() && (++noCloserPointCount >= 3) && (location != oldLocation)) { // try searching for a path a number of times then give up
+                if (!SearchPathWithAStar() && (++noCloserPointCount >= 3)
+                    && (location != oldLocation)) { // try searching for a path a number of times then give up
 
                     if (auto* const targetPtr = target.getObjPointer();
-                        targetPtr != nullptr && targetFriendly && (targetPtr->getItemID() != Structure_RepairYard) && ((targetPtr->getItemID() != Structure_Refinery) || (getItemID() != Unit_Harvester))) {
+                        targetPtr != nullptr && targetFriendly && (targetPtr->getItemID() != Structure_RepairYard)
+                        && ((targetPtr->getItemID() != Structure_Refinery) || (getItemID() != Unit_Harvester))) {
                         setTarget(nullptr);
                     }
 
                     /// This method will transport units if they get stuck inside a base
                     /// This often happens after an AI get nuked and has a hole in their base
-                    if (getOwner()->hasCarryalls() && this->isAGroundUnit() && (game.getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI()) && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
+                    if (getOwner()->hasCarryalls() && this->isAGroundUnit()
+                        && (game.getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
+                        && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
                         static_cast<GroundUnit*>(this)->requestCarryall(context);
-                    } else if (getOwner()->isAI() && (getItemID() == Unit_Harvester) && !static_cast<Harvester*>(this)->isReturning() && blockDistance(location, destination) >= 2) {
+                    } else if (getOwner()->isAI() && (getItemID() == Unit_Harvester)
+                               && !static_cast<Harvester*>(this)->isReturning()
+                               && blockDistance(location, destination) >= 2) {
                         // try getting back to a refinery
                         static_cast<Harvester*>(this)->doReturn();
                     } else {
@@ -774,7 +792,8 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
         const auto is_owner = tempTarget->getOwner()->getTeamID() == getOwner()->getTeamID();
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
-        game.getCommandManager().addCommand(Command {pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
+        game.getCommandManager().addCommand(
+            Command {pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
     } else {
         // move this unit
         game.getCommandManager().addCommand(Command {pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
@@ -796,13 +815,13 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
         if (tempTarget) {
             // attack unit/structure or move to structure
 
-            game.getCommandManager().addCommand(Command(
-                pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID, tempTarget->getObjectID()));
+            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT,
+                                                        objectID, tempTarget->getObjectID()));
         } else {
             // attack pos
             game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS,
-                                                        objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
-                                                        static_cast<uint32_t>(true)));
+                                                        objectID, static_cast<uint32_t>(xPos),
+                                                        static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
         }
     }
 }
@@ -820,7 +839,8 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
-    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE, objectID, (uint32_t)newAttackMode));
+    context.game.getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE, objectID, (uint32_t)newAttackMode));
 }
 
 /**
@@ -832,8 +852,9 @@ void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xP
         return;
 
     if (context.map.tileExists(xPos, yPos)) {
-        context.game.getCommandManager().addCommand(Command(
-            pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID, (uint32_t)xPos, (uint32_t)yPos));
+        context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+                                                            CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID,
+                                                            (uint32_t)xPos, (uint32_t)yPos));
     }
 }
 
@@ -1032,7 +1053,8 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
         }
     }
 
-    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), pObject->getCenterPoint()) <= checkRange * TILESIZE);
+    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), pObject->getCenterPoint())
+            <= checkRange * TILESIZE);
 }
 
 bool UnitBase::isInAttackRange(const ObjectBase* object) const {
@@ -1072,7 +1094,8 @@ bool UnitBase::isInAttackRange(const ObjectBase* object) const {
         checkRange = getViewRange() + 1;
     }
 
-    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), object->getCenterPoint()) <= checkRange * TILESIZE);
+    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), object->getCenterPoint())
+            <= checkRange * TILESIZE);
 }
 
 bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
@@ -1160,7 +1183,8 @@ void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
 
     if (getItemID() == Unit_Harvester) {
         const auto* harvester = static_cast<Harvester*>(this);
-        if (harvester->isReturning() && target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+        if (harvester->isReturning() && target && (target.getObjPointer() != nullptr)
+            && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
             static_cast<Refinery*>(target.getObjPointer())->unBook();
         }
     }
@@ -1233,8 +1257,10 @@ void UnitBase::targeting(const GameContext& context) {
 
         if (attackMode != STOP && attackMode != CARRYALLREQUESTED) {
 
-            // lets add a bit of logic to make units recalibrate their nearest target if the target isn't in weapon range
-            if (target && !attackPos && !forced && (attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)) {
+            // lets add a bit of logic to make units recalibrate their nearest target if the target isn't in weapon
+            // range
+            if (target && !attackPos && !forced
+                && (attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)) {
                 if (!isInWeaponRange(target.getObjPointer())) {
                     const auto* pNewTarget = findTarget();
 
@@ -1381,7 +1407,8 @@ void UnitBase::updateVisibleUnits(const GameContext& context) {
     const auto& game = context.game;
 
     game.for_each_house([&](auto& house) {
-        if (pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID()) && (&house != getOwner())) {
+        if (pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID())
+            && (&house != getOwner())) {
             house.informDirectContactWithEnemy();
             getOwner()->informDirectContactWithEnemy();
         }
@@ -1410,9 +1437,12 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
     if (ground_object_result.second == target.getObjectID()) {
         auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if ((pObject != nullptr) && (pObject->getObjectID() == target.getObjectID()) && targetFriendly && pObject->isAStructure() && (pObject->getOwner()->getTeamID() == owner->getTeamID()) && pObject->isVisible(getOwner()->getTeamID())) {
+        if ((pObject != nullptr) && (pObject->getObjectID() == target.getObjectID()) && targetFriendly
+            && pObject->isAStructure() && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+            && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
-            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard) && static_cast<const RepairYard*>(pObject)->isFree());
+            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)
+                    && static_cast<const RepairYard*>(pObject)->isFree());
         }
     }
     return false;
@@ -1461,5 +1491,4 @@ void UnitBase::drawSmoke(int x, int y) const {
     Dune_RenderCopy(renderer, pSmokeTex, &source, &dest);
 }
 
-void UnitBase::playAttackSound() {
-}
+void UnitBase::playAttackSound() { }

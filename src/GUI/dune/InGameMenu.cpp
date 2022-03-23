@@ -31,8 +31,7 @@
 #include <GUI/dune/InGameSettingsMenu.h>
 #include <GUI/dune/LoadSaveWindow.h>
 
-InGameMenu::InGameMenu(bool bMultiplayer, int color)
-    : Window(0, 0, 0, 0), bMultiplayer(bMultiplayer), color(color) {
+InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMultiplayer(bMultiplayer), color(color) {
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
     setBackground(pBackground);
@@ -116,8 +115,7 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
             }
             break;
 
-        default:
-            break;
+        default: break;
     }
 
     return Window::handleKeyPress(key);
@@ -189,10 +187,7 @@ void InGameMenu::onLoad() {
 }
 
 void InGameMenu::onRestart() {
-    QstBox* pQstBox = QstBox::create(_("Do you really want to restart this game?"),
-                                     _("Yes"),
-                                     _("No"),
-                                     QSTBOX_BUTTON2);
+    QstBox* pQstBox = QstBox::create(_("Do you really want to restart this game?"), _("Yes"), _("No"), QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 
@@ -200,10 +195,7 @@ void InGameMenu::onRestart() {
 }
 
 void InGameMenu::onQuit() {
-    QstBox* pQstBox = QstBox::create(_("Do you really want to quit this game?"),
-                                     _("Yes"),
-                                     _("No"),
-                                     QSTBOX_BUTTON2);
+    QstBox* pQstBox = QstBox::create(_("Do you really want to quit this game?"), _("Yes"), _("No"), QSTBOX_BUTTON2);
 
     pQstBox->setTextColor(color);
 

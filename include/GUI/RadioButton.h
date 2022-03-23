@@ -110,17 +110,13 @@ public:
         This method sets this radio button to checked or unchecked. It does the same as setToggleState().
         \param bChecked true = checked, false = unchecked
     */
-    void setChecked(bool bChecked) {
-        setToggleState(bChecked);
-    }
+    void setChecked(bool bChecked) { setToggleState(bChecked); }
 
     /**
         This method returns whether this radio button is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    [[nodiscard]] bool isChecked() const {
-        return getToggleState();
-    }
+    [[nodiscard]] bool isChecked() const { return getToggleState(); }
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
@@ -160,9 +156,7 @@ public:
         called if the new size is a valid size for this radio button (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the radio button to width and height. This method should only
@@ -196,11 +190,15 @@ protected:
         if (!pUnpressedTexture) {
             invalidateTextures();
 
-            setSurfaces(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
+            setSurfaces(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, false,
+                                                                         textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, false,
+                                                                         textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, true,
+                                                                         textcolor, textshadowcolor));
 
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
+            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createRadioButtonSurface(
+                getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
         }
     }
 
@@ -217,7 +215,8 @@ private:
     uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
     uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
     std::string text;                         ///< Text of this radio button
-    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the radio button is activated by keyboard or by mouse hover
+    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the radio button is activated by keyboard
+                                              ///< or by mouse hover
 
     RadioButtonManager* pRadioButtonManager {}; ///< The Manager for managing the toggle states
 };

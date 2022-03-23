@@ -200,11 +200,9 @@ public:
 
     class KeyIterator {
     public:
-        KeyIterator() noexcept
-            : key(nullptr) { }
+        KeyIterator() noexcept : key(nullptr) { }
 
-        explicit KeyIterator(Key* pKey) noexcept
-            : key(pKey) { }
+        explicit KeyIterator(Key* pKey) noexcept : key(pKey) { }
 
         Key& operator*() const noexcept { return *key; }
 
@@ -259,11 +257,9 @@ public:
 
     class SectionIterator {
     public:
-        SectionIterator() noexcept
-            : section(nullptr) { }
+        SectionIterator() noexcept : section(nullptr) { }
 
-        explicit SectionIterator(Section* pSection) noexcept
-            : section(pSection) { }
+        explicit SectionIterator(Section* pSection) noexcept : section(pSection) { }
 
         Section& operator*() const noexcept { return *section; }
 
@@ -303,15 +299,12 @@ public:
     [[nodiscard]] std::string getStringValue(std::string_view section, std::string_view key,
                                              const std::string& defaultValue = "") const;
     [[nodiscard]] int getIntValue(std::string_view section, std::string_view key, int defaultValue = 0) const;
-    [[nodiscard]] bool getBoolValue(std::string_view section, std::string_view key,
-                                    bool defaultValue = false) const;
-    [[nodiscard]] float getFloatValue(std::string_view section, std::string_view key,
-                                      float defaultValue = 0.0f) const;
+    [[nodiscard]] bool getBoolValue(std::string_view section, std::string_view key, bool defaultValue = false) const;
+    [[nodiscard]] float getFloatValue(std::string_view section, std::string_view key, float defaultValue = 0.0f) const;
     [[nodiscard]] double getDoubleValue(std::string_view section, std::string_view key,
                                         double defaultValue = 0.0) const;
 
-    void setStringValue(std::string_view section, std::string_view key, std::string value,
-                        bool bEscapeIfNeeded = true);
+    void setStringValue(std::string_view section, std::string_view key, std::string value, bool bEscapeIfNeeded = true);
     void setIntValue(std::string_view section, std::string_view key, int value);
     void setBoolValue(std::string_view section, std::string_view key, bool value);
     void setDoubleValue(std::string_view section, std::string_view key, double value);

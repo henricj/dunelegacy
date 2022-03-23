@@ -29,11 +29,9 @@ uint32_t getPixel(SDL_Surface* surface, int x, int y) {
     auto* const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
     switch (bpp) {
-        case 1:
-            return *p;
+        case 1: return *p;
 
-        case 2:
-            return *reinterpret_cast<uint16_t*>(p);
+        case 2: return *reinterpret_cast<uint16_t*>(p);
 
         case 3: {
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -54,8 +52,7 @@ uint32_t getPixel(SDL_Surface* surface, int x, int y) {
             SDL_GetRGBA(value, surface->format, &r, &g, &b, &a);
             return COLOR_RGBA(r, g, b, a);
         }
-        default:
-            THROW(std::runtime_error, "getPixel(): Invalid bpp value!");
+        default: THROW(std::runtime_error, "getPixel(): Invalid bpp value!");
     }
 }
 
@@ -68,13 +65,9 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
     auto* const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
     switch (bpp) {
-        case 1:
-            *p = color;
-            break;
+        case 1: *p = color; break;
 
-        case 2:
-            *reinterpret_cast<uint16_t*>(p) = color;
-            break;
+        case 2: *reinterpret_cast<uint16_t*>(p) = color; break;
 
         case 3: {
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
@@ -87,11 +80,8 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
             p[2] = color >> 16 & 0xff;
         } break;
 
-        case 4:
-            *reinterpret_cast<uint32_t*>(p) = MapRGBA(surface->format, color);
-            break;
-        default:
-            THROW(std::runtime_error, "putPixel(): Invalid bpp value!");
+        case 4: *reinterpret_cast<uint32_t*>(p) = MapRGBA(surface->format, color); break;
+        default: THROW(std::runtime_error, "putPixel(): Invalid bpp value!");
     }
 }
 
@@ -193,20 +183,19 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
 
     static bool need_workaround;
     static std::once_flag flag;
-    std::call_once(flag,
-                   [&] {
-                       need_workaround = false;
+    std::call_once(flag, [&] {
+        need_workaround = false;
 
-                       SDL_version version;
-                       SDL_GetVersion(&version);
+        SDL_version version;
+        SDL_GetVersion(&version);
 
-                       if (version.major > 2 || version.minor > 0 || version.patch > 4)
-                           return;
+        if (version.major > 2 || version.minor > 0 || version.patch > 4)
+            return;
 
-                       SDL_RendererInfo rendererInfo;
-                       SDL_GetRendererInfo(renderer, &rendererInfo);
-                       need_workaround = 0 == strcmp(rendererInfo.name, "opengl");
-                   });
+        SDL_RendererInfo rendererInfo;
+        SDL_GetRendererInfo(renderer, &rendererInfo);
+        need_workaround = 0 == strcmp(rendererInfo.name, "opengl");
+    });
 
     if (need_workaround) {
         if (SDL_GetRenderTarget(renderer) != nullptr)
@@ -244,7 +233,8 @@ void mapColor(SDL_Surface* surface, const uint8_t colorMap[256]) {
 sdl2::surface_ptr copySurface(SDL_Surface* inSurface) {
     sdl2::surface_ptr surface {SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags)};
     if (surface == nullptr) {
-        THROW(std::invalid_argument, std::string("copySurface(): SDL_ConvertSurface() failed: ") + std::string(SDL_GetError()));
+        THROW(std::invalid_argument,
+              std::string("copySurface(): SDL_ConvertSurface() failed: ") + std::string(SDL_GetError()));
     }
 
     copySurfaceAttributes(surface.get(), inSurface);
@@ -256,7 +246,8 @@ sdl2::surface_ptr convertSurfaceToDisplayFormat(SDL_Surface* inSurface) {
 
     sdl2::surface_ptr pSurface {SDL_ConvertSurfaceFormat(inSurface, SCREEN_FORMAT, 0)};
     if (pSurface == nullptr) {
-        THROW(std::invalid_argument, std::string("convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ") + std::string(SDL_GetError()));
+        THROW(std::invalid_argument, std::string("convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ")
+                                         + std::string(SDL_GetError()));
     }
 
     return pSurface;
@@ -272,13 +263,16 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     }
 
     if (inSurface->w > 2048 || inSurface->h > 2048) {
-        sdl2::log_info("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware limits on older GPUs!", inSurface->w, inSurface->h);
+        sdl2::log_info("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware "
+                       "limits on older GPUs!",
+                       inSurface->w, inSurface->h);
     }
 
     sdl2::texture_ptr pTexture {SDL_CreateTextureFromSurface(renderer, inSurface)};
 
     if (pTexture == nullptr) {
-        THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") + std::string(SDL_GetError()));
+        THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ")
+                                         + std::string(SDL_GetError()));
     }
 
     SDL_BlendMode blendMode;
@@ -290,8 +284,8 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     if (blendMode != SDL_BlendMode::SDL_BLENDMODE_NONE) {
         if (SDL_SetTextureBlendMode(pTexture.get(), blendMode)) {
             THROW(std::invalid_argument,
-                  std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ") +
-                      std::string(SDL_GetError()));
+                  std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ")
+                      + std::string(SDL_GetError()));
         }
     }
 
@@ -310,11 +304,13 @@ void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
     if (const auto has_ckey = SDL_HasColorKey(source)) {
         uint32_t ckey = 0;
         if (SDL_GetColorKey(source, &ckey)) {
-            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
+            THROW(std::runtime_error,
+                  "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
         }
 
         if (SDL_SetColorKey(target, SDL_TRUE, ckey)) {
-            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_SetColorKey() failed: " + std::string(SDL_GetError()));
+            THROW(std::runtime_error,
+                  "copySurfaceAttributes(): SDL_SetColorKey() failed: " + std::string(SDL_GetError()));
         }
     }
 
@@ -568,7 +564,8 @@ sdl2::surface_ptr createSurface(SDL_Surface* model, int width, int height) {
     if (0 == height)
         height = model->h;
 
-    auto copy = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, width, height, model->format->BitsPerPixel, model->format->format)};
+    auto copy = sdl2::surface_ptr {
+        SDL_CreateRGBSurfaceWithFormat(0, width, height, model->format->BitsPerPixel, model->format->format)};
 
     if (!copy)
         return nullptr;

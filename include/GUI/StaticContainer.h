@@ -24,13 +24,10 @@
 
 class StaticContainer_WidgetData {
 public:
-    StaticContainer_WidgetData()
-        : pWidget(nullptr), position(0, 0), size(0, 0) {
-    }
+    StaticContainer_WidgetData() : pWidget(nullptr), position(0, 0), size(0, 0) { }
 
     StaticContainer_WidgetData(Widget* pWidget, Point position, Point size)
-        : pWidget(pWidget), position(position), size(size) {
-    }
+        : pWidget(pWidget), position(position), size(size) { }
 
     Widget* pWidget;
     Point position;
@@ -45,8 +42,7 @@ public:
 class StaticContainer : public Container<StaticContainer_WidgetData> {
 public:
     /// default constructor
-    StaticContainer()
-        : Container<StaticContainer_WidgetData>() { }
+    StaticContainer() : Container<StaticContainer_WidgetData>() { }
 
     /// default destructor
     ~StaticContainer() override = default;
@@ -95,9 +91,7 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resized the container to width and height. This method should only be
@@ -120,9 +114,7 @@ protected:
         \param widgetData   the widget data to get the position from.
         \return The position of the left upper corner
     */
-    Point getPosition(const StaticContainer_WidgetData& widgetData) const override {
-        return widgetData.position;
-    }
+    Point getPosition(const StaticContainer_WidgetData& widgetData) const override { return widgetData.position; }
 
     void setWidgetGeometry(Widget* pWidget, Point position, Point size) {
         StaticContainer_WidgetData* pWidgetData = getWidgetDataFromWidget(pWidget);

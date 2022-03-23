@@ -35,8 +35,7 @@ public:
     }
 
 protected:
-    RepairYardInterface(const GameContext& context, int objectID)
-        : DefaultStructureInterface(context, objectID) {
+    RepairYardInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         mainHBox.addWidget(Spacer::create());
         mainHBox.addWidget(&repairUnitProgressBar);
         mainHBox.addWidget(Spacer::create());

@@ -685,7 +685,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
                 case GAME_DEBRIEFING_WIN: {
                     sdl2::log_info("Debriefing...");
                     { // Scope
-                        BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(), DEBRIEFING_WIN};
+                        BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
+                                               DEBRIEFING_WIN};
                         briefing.showMenu();
                     }
 
@@ -700,14 +701,15 @@ void startSinglePlayerGame(const GameInitSettings& init) {
                     if (currentGameInitInfo.getGameType() == GameType::Campaign) {
                         const int level = missionNumberToLevelNumber(currentGameInitInfo.getMission());
 
-                        if (level == 4 && (houseID == HOUSETYPE::HOUSE_HARKONNEN ||
-                                           houseID == HOUSETYPE::HOUSE_ATREIDES || houseID == HOUSETYPE::HOUSE_ORDOS)) {
+                        if (level == 4
+                            && (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES
+                                || houseID == HOUSETYPE::HOUSE_ORDOS)) {
                             sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, true);
                             meanwhile.run();
-                        } else if (level == 8 &&
-                                   (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES ||
-                                    houseID == HOUSETYPE::HOUSE_ORDOS)) {
+                        } else if (level == 8
+                                   && (houseID == HOUSETYPE::HOUSE_HARKONNEN || houseID == HOUSETYPE::HOUSE_ATREIDES
+                                       || houseID == HOUSETYPE::HOUSE_ORDOS)) {
                             sdl2::log_info("Playing meanwhile...");
                             Meanwhile meanwhile(houseID, false);
                             meanwhile.run();

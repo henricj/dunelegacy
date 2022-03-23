@@ -30,9 +30,8 @@
 
 /// Constructor
 /**
-    The constructor reads from the rwop all data and saves them internally. The SDL_RWops can be readonly but must support
-    seeking.
-    \param  rwop    SDL_RWops to the shp-File. (can be readonly)
+    The constructor reads from the rwop all data and saves them internally. The SDL_RWops can be readonly but must
+   support seeking. \param  rwop    SDL_RWops to the shp-File. (can be readonly)
 */
 Shpfile::Shpfile(SDL_RWops* rwop) {
     if (rwop == nullptr) {
@@ -68,7 +67,9 @@ Shpfile::~Shpfile() = default;
 */
 sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
     if (indexOfFile >= shpfileEntries.size()) {
-        THROW(std::invalid_argument, "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile, shpfileEntries.size());
+        THROW(std::invalid_argument,
+              "Shpfile::getPicture(): Requested index %ud is invalid for a shp file with %ud entries!", indexOfFile,
+              shpfileEntries.size());
     }
 
     auto* const Fileheader = pFiledata.get() + shpfileEntries[indexOfFile].startOffset;
@@ -174,7 +175,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     std::vector<uint32_t> tiles;
 
     if ((tilesX == 0) || (tilesY == 0)) {
-        THROW(std::invalid_argument, "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
+        THROW(std::invalid_argument,
+              "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
     }
 
     tiles.resize(tilesX * tilesY);
@@ -186,7 +188,9 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
         tiles[i] = va_arg(arg_ptr, int);
         if (TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
             va_end(arg_ptr);
-            THROW(std::invalid_argument, "Shpfile::getPictureArray(): Cannot read image %ud as there are only %ud images in this *.shp!", TILE_GETINDEX(tiles[i]), shpfileEntries.size());
+            THROW(std::invalid_argument,
+                  "Shpfile::getPictureArray(): Cannot read image %ud as there are only %ud images in this *.shp!",
+                  TILE_GETINDEX(tiles[i]), shpfileEntries.size());
         }
     }
 
@@ -198,7 +202,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     const auto sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
 
     for (auto i = 1u; i < tilesX * tilesY; i++) {
-        if (((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY) || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
+        if (((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY)
+            || ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX)) {
             THROW(std::runtime_error, "Shpfile::getPictureArray(): Not all pictures have the same size!");
         }
     }
@@ -270,19 +275,22 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
             switch (TILE_GETTYPE(tiles[i])) {
                 case TILE_NORMAL: {
                     for (auto y = 0; y < sizeY; y++) {
-                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch, ImageOut.get() + y * sizeX, sizeX);
+                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch,
+                               ImageOut.get() + y * sizeX, sizeX);
                     }
                 } break;
 
                 case TILE_FLIPH: {
                     for (auto y = 0; y < sizeY; y++) {
-                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch, ImageOut.get() + (sizeY - 1 - y) * sizeX, sizeX);
+                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch,
+                               ImageOut.get() + (sizeY - 1 - y) * sizeX, sizeX);
                     }
                 } break;
 
                 case TILE_FLIPV: {
                     for (auto y = 0; y < sizeY; y++) {
-                        unsigned char* const RESTRICT out      = static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
+                        unsigned char* const RESTRICT out =
+                            static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
                         const unsigned char* const RESTRICT in = ImageOut.get() + y * sizeX;
                         for (auto x = 0; x < sizeX; x++) {
                             out[x] = in[sizeX - 1 - x];
@@ -292,7 +300,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 case TILE_ROTATE: {
                     for (auto y = 0; y < sizeY; y++) {
-                        unsigned char* const RESTRICT out      = static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
+                        unsigned char* const RESTRICT out =
+                            static_cast<unsigned char*>(pic->pixels) + i * sizeX + (y + j * sizeY) * pic->pitch;
                         const unsigned char* const RESTRICT in = ImageOut.get() + (sizeY - 1 - y) * sizeX;
                         for (auto x = 0; x < sizeX; x++) {
                             out[x] = in[sizeX - 1 - x];
@@ -301,7 +310,10 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
                 } break;
 
                 default: {
-                    THROW(std::invalid_argument, "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!", TILE_GETTYPE(tiles[i]));
+                    THROW(std::invalid_argument,
+                          "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, TILE_FLIPH, "
+                          "TILE_FLIPV or TILE_ROTATE!",
+                          TILE_GETTYPE(tiles[i]));
                 }
             }
         }
@@ -318,10 +330,11 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     \param  endindex    index of the last picture
     \param  bDoublePic  if true, the picture is scaled up by a factor of 2
     \param  bSetColorKey    if true, black is set as transparency
-    \param  bLoopRewindBackwards if true, the animation is played forward and then backwards, if false, it is only played forward
-    \return a new animation object
+    \param  bLoopRewindBackwards if true, the animation is played forward and then backwards, if false, it is only
+   played forward \return a new animation object
 */
-std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey, bool bLoopRewindBackwards) {
+std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic,
+                                                 bool bSetColorKey, bool bLoopRewindBackwards) {
     auto animation = std::make_unique<Animation>();
 
     for (unsigned int i = startindex; i <= endindex; ++i) {
@@ -356,11 +369,14 @@ void Shpfile::readIndex() {
         if ((reinterpret_cast<const uint16_t*>(pFiledata.get()))[2] != 0) {
             /* File has special header with only 2 byte offset */
             newShpfileEntry.startOffset = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[1]);
-            newShpfileEntry.endOffset   = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[2]) - 1;
+            newShpfileEntry.endOffset =
+                static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[2]) - 1;
         } else {
             /* File has normal 4 byte offsets */
-            newShpfileEntry.startOffset = static_cast<uint32_t>(*reinterpret_cast<const uint32_t*>(pFiledata.get() + 2)) + 2;
-            newShpfileEntry.endOffset   = static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[3]) - 1 + 2;
+            newShpfileEntry.startOffset =
+                static_cast<uint32_t>(*reinterpret_cast<const uint32_t*>(pFiledata.get() + 2)) + 2;
+            newShpfileEntry.endOffset =
+                static_cast<uint32_t>(reinterpret_cast<const uint16_t*>(pFiledata.get())[3]) - 1 + 2;
         }
 
         shpfileEntries.push_back(newShpfileEntry);
@@ -384,7 +400,8 @@ void Shpfile::readIndex() {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if (newShpfileEntry.startOffset >= shpFilesize) {
-                        THROW(std::runtime_error, "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
+                        THROW(std::runtime_error,
+                              "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
                     }
                 }
 
@@ -392,7 +409,8 @@ void Shpfile::readIndex() {
             }
 
             // Add the endOffset for the last file
-            shpfileEntries.back().endOffset = static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 2))) - 1 + 2;
+            shpfileEntries.back().endOffset =
+                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 2))) - 1 + 2;
         } else {
             /* File has normal 4 byte offsets */
 
@@ -403,13 +421,15 @@ void Shpfile::readIndex() {
             // now fill Index with start and end-offsets
             for (auto i = 0; i < NumFiles; i++) {
                 ShpfileEntry newShpfileEntry;
-                newShpfileEntry.startOffset = SDL_SwapLE32((reinterpret_cast<const Uint32*>(pFiledata.get() + 2))[i]) + 2;
+                newShpfileEntry.startOffset =
+                    SDL_SwapLE32((reinterpret_cast<const Uint32*>(pFiledata.get() + 2))[i]) + 2;
 
                 if (!shpfileEntries.empty()) {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
 
                     if (newShpfileEntry.startOffset >= shpFilesize) {
-                        THROW(std::runtime_error, "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
+                        THROW(std::runtime_error,
+                              "Shpfile::readIndex(): Entry in this SHP-File is beyond the end of this file!");
                     }
                 }
 
@@ -417,7 +437,8 @@ void Shpfile::readIndex() {
             }
 
             // Add the endOffset for the last file
-            shpfileEntries.back().endOffset = static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 4))) - 1 + 2;
+            shpfileEntries.back().endOffset =
+                static_cast<uint32_t>(*reinterpret_cast<const uint16_t*>(pFiledata.get() + 2 + (NumFiles * 4))) - 1 + 2;
         }
     }
 }
@@ -458,7 +479,8 @@ void Shpfile::shpCorrectLF(const unsigned char* in, unsigned char* out, int size
     \param  data    the picture to be corrected
     \param  length  size of the picture
 */
-void Shpfile::applyPalOffsets(const unsigned char* const RESTRICT offsets, unsigned char* const RESTRICT data, unsigned int length) {
+void Shpfile::applyPalOffsets(const unsigned char* const RESTRICT offsets, unsigned char* const RESTRICT data,
+                              unsigned int length) {
     for (auto i = 0u; i < length; i++) {
         data[i] = offsets[data[i]];
     }

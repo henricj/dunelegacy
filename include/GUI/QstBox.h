@@ -66,9 +66,7 @@ public:
         called if the new size is a valid size for this question box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the question box to width and height. This method should only be
@@ -101,9 +99,7 @@ public:
         The number of the pressed button.
         \return the pressed button (either QSTBOX_BUTTON_INVALID, QSTBOX_BUTTON1 or QSTBOX_BUTTON2)
     */
-    int getPressedButtonID() const {
-        return pressedButtonID;
-    }
+    int getPressedButtonID() const { return pressedButtonID; }
 
     /**
         This static method creates a dynamic question box object with Text as the text in the question box.
@@ -115,7 +111,8 @@ public:
         \param  defaultFocus    Button which gets the focus on showing the question box
         \return The new question box (will be automatically destroyed when it's closed)
     */
-    static QstBox* create(const std::string& text, const std::string& button1Text = "Yes", const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
+    static QstBox* create(const std::string& text, const std::string& button1Text = "Yes",
+                          const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
         auto* qstbox       = new QstBox(text, button1Text, button2Text, defaultFocus);
         qstbox->pAllocated = true;
         return qstbox;
@@ -144,7 +141,8 @@ private:
         \param  button2Text     Text of button 2
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
-    void init(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus) {
+    void init(const std::string& text, const std::string& button1Text, const std::string& button2Text,
+              int defaultFocus) {
         setWindowWidget(&vbox);
         vbox.addWidget(VSpacer::create(6));
         vbox.addWidget(&textLabel);

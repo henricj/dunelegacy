@@ -96,9 +96,7 @@ public:
         Sets the current window position and size.
         \param  rect    position of this window
     */
-    virtual void setCurrentPosition(const SDL_Rect& rect) {
-        setCurrentPosition(rect.x, rect.y, rect.w, rect.h);
-    }
+    virtual void setCurrentPosition(const SDL_Rect& rect) { setCurrentPosition(rect.x, rect.y, rect.w, rect.h); }
 
     /**
         Handles the input recieved from SDL. Everytime a sdl event occures this method should
@@ -138,7 +136,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
 
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
@@ -205,9 +204,7 @@ public:
         This method resizes the window.
         \param  newSize the new size of this widget
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the window to width and height.

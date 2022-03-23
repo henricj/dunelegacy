@@ -31,8 +31,9 @@ public:
         Constructor
         \param  pSurface            The picture to fade in
         \param  numFrames2FadeIn    The number of frames the fading should take
-        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
-        \param  bFadeWhite          true = fade from white, false = fade from black (default is false)
+        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the
+       top of the screen (default is true) \param  bFadeWhite          true = fade from white, false = fade from black
+       (default is false)
     */
     FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bCenterVertical = true, bool bFadeWhite = false);
 
@@ -55,8 +56,9 @@ private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeInVideoEvent
     int numFrames2FadeIn;       ///< the number of frames the fading should take
     sdl2::texture_ptr pTexture; ///< the picture to fade in
-    bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
-    bool bFadeWhite;            ///< true = fade from white, false = fade from black
+    bool bCenterVertical; ///< true = center the surface vertically on the screen, false = blit the surface at the top
+                          ///< of the screen
+    bool bFadeWhite;      ///< true = fade from white, false = fade from black
 };
 
 #endif // FADEINVIDEOEVENT_H

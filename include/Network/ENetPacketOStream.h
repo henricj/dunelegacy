@@ -26,18 +26,14 @@
 
 class ENetPacketOStream final : public OutputStream {
 public:
-    explicit ENetPacketOStream(enet_uint32 flags)
-        : currentPos(0), packet(enet_packet_create(nullptr, 16, flags)) {
+    explicit ENetPacketOStream(enet_uint32 flags) : currentPos(0), packet(enet_packet_create(nullptr, 16, flags)) {
 
         if (packet == nullptr) {
             THROW(OutputStream::error, "ENetPacketOStream: enet_packet_create() failed!");
         }
     }
 
-    ENetPacketOStream(const ENetPacketOStream& p)
-        : currentPos(0), packet(nullptr) {
-        *this = p;
-    }
+    ENetPacketOStream(const ENetPacketOStream& p) : currentPos(0), packet(nullptr) { *this = p; }
 
     ~ENetPacketOStream() override {
         if (packet != nullptr) {
@@ -114,9 +110,7 @@ public:
         currentPos += sizeof(uint64_t);
     }
 
-    void writeBool(bool x) override {
-        writeUint8(x ? 1 : 0);
-    }
+    void writeBool(bool x) override { writeUint8(x ? 1 : 0); }
 
     void writeFloat(float x) override {
         uint32_t tmp = 0;

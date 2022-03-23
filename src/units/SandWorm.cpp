@@ -38,8 +38,7 @@
 namespace {
 class SandwormConstants : public GroundUnitConstants {
 public:
-    constexpr SandwormConstants()
-        : GroundUnitConstants {Sandworm::item_id} { canAttackStuff_ = true; }
+    constexpr SandwormConstants() : GroundUnitConstants {Sandworm::item_id} { canAttackStuff_ = true; }
 };
 
 constexpr SandwormConstants sandworm_constants;
@@ -148,7 +147,8 @@ void Sandworm::blitToScreen() {
                 continue;
             }
 
-            SDL_Rect dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x), screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
+            SDL_Rect dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x),
+                                            screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
 
             // switch to texture 'shimmerTex' for rendering
             SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
@@ -178,10 +178,8 @@ void Sandworm::blitToScreen() {
     }
 
     if (drawnFrame != INVALID) {
-        const SDL_Rect dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
-                                                      screenborder->world2screenX(realX),
-                                                      screenborder->world2screenY(realY),
-                                                      numImagesX, numImagesY,
+        const SDL_Rect dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
+                                                      screenborder->world2screenY(realY), numImagesX, numImagesY,
                                                       HAlign::Center, VAlign::Center);
         const SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
@@ -287,7 +285,8 @@ bool Sandworm::sleepOrDie(const GameContext& context) {
 void Sandworm::setTarget(const ObjectBase* newTarget) {
     parent::setTarget(newTarget);
 
-    if ((newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse) && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0)) {
+    if ((newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
+        && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0)) {
         soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
         warningWormSignPlayedFlags |= (1 << static_cast<int>(pLocalHouse->getHouseID()));
     }
@@ -351,9 +350,10 @@ bool Sandworm::update(const GameContext& context) {
                                 const Coord realPos = Coord(lround(realX), lround(realY));
                                 map.damage(context, objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
                                            false);
-                                // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive() method?
-                                if (wasAlive && target &&
-                                    (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
+                                // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive()
+                                // method?
+                                if (wasAlive && target
+                                    && (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
                                     kills++;
                                 }
                             }
@@ -410,7 +410,8 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
 }
 
 bool Sandworm::canPassTile(const Tile* pTile) const {
-    return !pTile->isRock() && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(currentGame->getObjectManager()) == this));
+    return !pTile->isRock()
+        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(currentGame->getObjectManager()) == this));
 }
 
 const ObjectBase* Sandworm::findTarget() const {

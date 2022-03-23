@@ -32,7 +32,10 @@
 
 class LoadSaveWindow final : public Window {
 public:
-    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories,
+                   const std::vector<std::string>& directoryTitles, std::string extension,
+                   int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "",
+                   Uint32 color = COLOR_DEFAULT);
     ~LoadSaveWindow() override;
 
     LoadSaveWindow(const LoadSaveWindow&) = delete;
@@ -75,13 +78,16 @@ public:
         \param  color       the color of the new dialog
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
-    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::filesystem::path& directory, const std::string& extension, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
+    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::filesystem::path& directory,
+                                  const std::string& extension, const std::string& preselectedFile = "",
+                                  Uint32 color = COLOR_DEFAULT) {
         std::vector<std::filesystem::path> directories;
         directories.push_back(directory);
         std::vector<std::string> directoryTitles;
         directoryTitles.emplace_back("");
 
-        auto* dlg       = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
+        auto* dlg =
+            new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
         dlg->pAllocated = true;
         return dlg;
     }
@@ -100,8 +106,13 @@ public:
         \param  color       the color of the new dialog
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
-    static LoadSaveWindow* create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, const std::string& extension, int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT) {
-        auto* dlg       = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension, preselectedDirectoryIndex, preselectedFile, color);
+    static LoadSaveWindow* create(bool bSave, const std::string& caption,
+                                  const std::vector<std::filesystem::path>& directories,
+                                  const std::vector<std::string>& directoryTitles, const std::string& extension,
+                                  int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "",
+                                  Uint32 color = COLOR_DEFAULT) {
+        auto* dlg       = new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension,
+                                             preselectedDirectoryIndex, preselectedFile, color);
         dlg->pAllocated = true;
         return dlg;
     }

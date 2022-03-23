@@ -24,9 +24,7 @@
 class InvisibleButton final : public Button {
 public:
     /// Default contructor
-    InvisibleButton() {
-        enableResizing(true, true);
-    }
+    InvisibleButton() { enableResizing(true, true); }
 
     /// destructor
     ~InvisibleButton() override = default;

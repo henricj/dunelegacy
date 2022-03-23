@@ -168,7 +168,9 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                 len -= 2;
                 const auto tmp_rate = getSampleRateFromVOCRate(time_constant);
                 if ((rate != 0) && (rate != tmp_rate)) {
-                    sdl2::log_info("This voc-file contains data blocks with different sampling rates: old rate: %d, new rate: %d", rate, tmp_rate);
+                    sdl2::log_info(
+                        "This voc-file contains data blocks with different sampling rates: old rate: %d, new rate: %d",
+                        rate, tmp_rate);
                 }
                 rate = tmp_rate;
 
@@ -208,9 +210,13 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
 
                 uint32_t length = 0;
                 if (rate != 0) {
-                    length = static_cast<uint32_t>((static_cast<double>(SilenceRate) / static_cast<double>(rate)) * SilenceLength) + 1;
+                    length = static_cast<uint32_t>((static_cast<double>(SilenceRate) / static_cast<double>(rate))
+                                                   * SilenceLength)
+                           + 1;
                 } else {
-                    sdl2::log_info("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it is not possible to adjust the silence sample rate to the sample rate of the other sound data in this file!");
+                    sdl2::log_info("LoadVOC_RW(): The silence in this voc-file is right at the beginning. Therefore it "
+                                   "is not possible to adjust the silence sample rate to the sample rate of the other "
+                                   "sound data in this file!");
                     length = SilenceLength;
                 }
 
@@ -234,8 +240,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
             case VOC_CODE_LOOPEND:
             case VOC_CODE_EXTENDED:
             case VOC_CODE_DATA_16:
-            default:
-                THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : %d", code);
+            default: THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : %d", code);
         }
     }
     return ret_sound;
@@ -360,9 +365,9 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
     size_t odone;
 
-    const auto* const serror = soxr_oneshot(RawData_Frequency, TargetFrequency, 1,
-                                            &RawDataFloat[0], RawData_Samples, nullptr,
-                                            &TargetDataFloat[0], TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
+    const auto* const serror =
+        soxr_oneshot(RawData_Frequency, TargetFrequency, 1, &RawDataFloat[0], RawData_Samples, nullptr,
+                     &TargetDataFloat[0], TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
 
     if (serror) {
         sdl2::log_error("Unable to resample from %g to %g: %s", RawData_Frequency, TargetFrequency, serror);

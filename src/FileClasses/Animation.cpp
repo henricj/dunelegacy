@@ -20,8 +20,7 @@
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
 
-Animation::Animation()
-    : curFrameStartTime(SDL_GetTicks()), curFrameOverride(INVALID_FRAME) { }
+Animation::Animation() : curFrameStartTime(SDL_GetTicks()), curFrameOverride(INVALID_FRAME) { }
 
 Animation::~Animation() = default;
 

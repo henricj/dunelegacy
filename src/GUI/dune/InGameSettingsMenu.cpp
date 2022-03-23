@@ -30,8 +30,7 @@
 
 #include <GUI/Spacer.h>
 
-InGameSettingsMenu::InGameSettingsMenu()
-    : Window(0, 0, 0, 0) {
+InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
     HOUSETYPE houseID   = pLocalHouse->getHouseID();
     const Uint32 color1 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
     const Uint32 color2 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
@@ -45,38 +44,44 @@ InGameSettingsMenu::InGameSettingsMenu()
     setWindowWidget(&windowWidget);
 
     // Game speed
-    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
+    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID),
+                               pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
     gameSpeedMinus.setOnClick([this] { onGameSpeedMinus(); });
     windowWidget.addWidget(&gameSpeedMinus, Point(5, 52), gameSpeedMinus.getSize());
 
     gameSpeedBar.setColor(color1);
     windowWidget.addWidget(&gameSpeedBar, Point(23, 56), Point(146, 6));
 
-    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
+    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID),
+                              pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
     gameSpeedPlus.setOnClick([this] { onGameSpeedPlus(); });
     windowWidget.addWidget(&gameSpeedPlus, Point(172, 52), gameSpeedPlus.getSize());
 
     // Volume
-    volumeMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
+    volumeMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID),
+                            pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
     volumeMinus.setOnClick([this] { onVolumeMinus(); });
     windowWidget.addWidget(&volumeMinus, Point(5, 83), volumeMinus.getSize());
 
     volumeBar.setColor(color1);
     windowWidget.addWidget(&volumeBar, Point(23, 87), Point(146, 6));
 
-    volumePlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
+    volumePlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID),
+                           pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
     volumePlus.setOnClick([this] { onVolumePlus(); });
     windowWidget.addWidget(&volumePlus, Point(172, 83), volumePlus.getSize());
 
     // Scroll speed
-    scrollSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID), pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
+    scrollSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID),
+                                 pGFXManager->getUIGraphic(UI_Minus_Pressed, houseID));
     scrollSpeedMinus.setOnClick([this] { onScrollSpeedMinus(); });
     windowWidget.addWidget(&scrollSpeedMinus, Point(5, 114), scrollSpeedMinus.getSize());
 
     scrollSpeedBar.setColor(color1);
     windowWidget.addWidget(&scrollSpeedBar, Point(23, 118), Point(146, 6));
 
-    scrollSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID), pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
+    scrollSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus, houseID),
+                                pGFXManager->getUIGraphic(UI_Plus_Pressed, houseID));
     scrollSpeedPlus.setOnClick([this] { onScrollSpeedPlus(); });
     windowWidget.addWidget(&scrollSpeedPlus, Point(172, 114), scrollSpeedPlus.getSize());
 
@@ -121,8 +126,7 @@ bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
             }
             break;
 
-        default:
-            break;
+        default: break;
     }
 
     return Window::handleKeyPress(key);

@@ -49,9 +49,7 @@ public:
         return MenuBase::doInput(event);
     }
 
-    void showNextMentatText() {
-        nextMentatTextSwitch = 0;
-    }
+    void showNextMentatText() { nextMentatTextSwitch = 0; }
 
     virtual void onMentatTextFinished() { }
 

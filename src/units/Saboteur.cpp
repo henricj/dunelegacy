@@ -30,8 +30,7 @@
 namespace {
 class SaboteurConstants : public InfantryBaseConstants {
 public:
-    constexpr SaboteurConstants()
-        : InfantryBaseConstants {Saboteur::item_id} { canAttackStuff_ = true; }
+    constexpr SaboteurConstants() : InfantryBaseConstants {Saboteur::item_id} { canAttackStuff_ = true; }
 };
 
 constexpr SaboteurConstants saboteur_constants;
@@ -116,8 +115,11 @@ void Saboteur::deploy(const GameContext& context, const Coord& newLocation) {
 }
 
 bool Saboteur::canAttack(const ObjectBase* object) const {
-    return object != nullptr && ((object->isAStructure() || (object->isAGroundUnit() && !object->isInfantry() && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
-                                 && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
+    return object != nullptr
+        && ((object->isAStructure()
+             || (object->isAGroundUnit() && !object->isInfantry()
+                 && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
+            && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
 }
 
 void Saboteur::destroy(const GameContext& context) {

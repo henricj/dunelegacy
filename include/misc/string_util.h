@@ -44,7 +44,8 @@
         std::string first, second;<br>
         SplitString("abc,xyz",first, second);<br>
     \param parseString  the string to parse
-    \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited substrings).
+    \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited
+   substrings).
 */
 template<class... Args>
 bool splitString(std::string_view parseString, std::string& arg0, Args&... args) {
@@ -197,12 +198,12 @@ inline size_t utf8Length(std::string_view str) {
 std::string utf8Substr(std::string_view str, size_t pos, size_t len = std::string_view::npos);
 
 /**
-    This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function pGetTextWidth is
-    used to determine how width a given text will be in pixels.
-    \param  text            the text to split; any hard line breaks '\n' are also considered
-    \param  linewidth       the maximum width of a line in pixel
-    \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value shall specify the width in pixels of its parameter.
-    \return the returned vector contains the complete text, split into multiple lines.
+    This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function
+   pGetTextWidth is used to determine how width a given text will be in pixels. \param  text            the text to
+   split; any hard line breaks '\n' are also considered \param  linewidth       the maximum width of a line in pixel
+    \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value
+   shall specify the width in pixels of its parameter. \return the returned vector contains the complete text, split
+   into multiple lines.
 */
 std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth,
                                         std::function<int(std::string_view)> pGetTextWidth);

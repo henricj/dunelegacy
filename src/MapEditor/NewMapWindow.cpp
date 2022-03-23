@@ -332,7 +332,8 @@ void NewMapWindow::onMapPropertiesChanged() {
 }
 
 sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, uint32_t borderColor) {
-    sdl2::surface_ptr pMinimap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr pMinimap = sdl2::surface_ptr {
+        SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!pMinimap) {
         return nullptr;
     }

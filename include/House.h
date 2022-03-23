@@ -58,7 +58,13 @@ public:
     [[nodiscard]] int getTeamID() const noexcept { return teamID; }
 
     [[nodiscard]] bool isAI() const noexcept { return ai; }
-    [[nodiscard]] bool isAlive() const noexcept { return (teamID == 0) || !(((numStructures - numItem[Structure_Wall]) <= 0) && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate] - numItem[Unit_Sandworm]) <= 0))); }
+    [[nodiscard]] bool isAlive() const noexcept {
+        return (teamID == 0)
+            || !(((numStructures - numItem[Structure_Wall]) <= 0)
+                 && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate]
+                       - numItem[Unit_Sandworm])
+                      <= 0)));
+    }
 
     [[nodiscard]] bool hasCarryalls() const noexcept { return (numItem[Unit_Carryall] > 0); }
     [[nodiscard]] bool hasBarracks() const noexcept { return (numItem[Structure_Barracks] > 0); }
@@ -77,7 +83,9 @@ public:
 
     [[nodiscard]] int getNumStructures() const noexcept { return numStructures; }
     [[nodiscard]] int getNumUnits() const noexcept { return numUnits; }
-    [[nodiscard]] int getNumItems(ItemID_enum itemID) const { return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0; }
+    [[nodiscard]] int getNumItems(ItemID_enum itemID) const {
+        return (isStructure(itemID) || isUnit(itemID)) ? numItem[itemID] : 0;
+    }
 
     [[nodiscard]] int getCapacity() const noexcept { return capacity; }
 
@@ -99,7 +107,9 @@ public:
     [[nodiscard]] int getNumBuiltItems(ItemID_enum itemID) const noexcept { return numItemBuilt[itemID]; }
     [[nodiscard]] int getNumKilledItems(ItemID_enum itemID) const noexcept { return numItemKills[itemID]; }
     [[nodiscard]] int getNumLostItems(ItemID_enum itemID) const noexcept { return numItemLosses[itemID]; }
-    [[nodiscard]] int32_t getNumItemDamageInflicted(ItemID_enum itemID) const noexcept { return numItemDamageInflicted[itemID]; }
+    [[nodiscard]] int32_t getNumItemDamageInflicted(ItemID_enum itemID) const noexcept {
+        return numItemDamageInflicted[itemID];
+    }
     [[nodiscard]] FixPoint getHarvestedSpice() const noexcept { return harvestedSpice; }
     [[nodiscard]] int getNumVisibleEnemyUnits() const noexcept { return numVisibleEnemyUnits; }
     [[nodiscard]] int getNumVisibleFriendlyUnits() const noexcept { return numVisibleFriendlyUnits; }
@@ -112,20 +122,17 @@ public:
     void informDirectContactWithEnemy() { bHadDirectContactWithEnemy = true; }
     [[nodiscard]] bool hadDirectContactWithEnemy() const { return bHadDirectContactWithEnemy; }
 
-    void informVisibleEnemyUnit() {
-        numVisibleEnemyUnits++;
-    }
+    void informVisibleEnemyUnit() { numVisibleEnemyUnits++; }
 
-    void informVisibleFriendlyUnit() {
-        numVisibleFriendlyUnits++;
-    }
+    void informVisibleFriendlyUnit() { numVisibleFriendlyUnits++; }
 
     /**
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
     [[nodiscard]] bool isGroundUnitLimitReached() const {
-        const int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+        const int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall]
+                                - numItem[Unit_Ornithopter];
         return (numGroundUnit + (numItem[Unit_Soldier] + 2) / 3 + (numItem[Unit_Trooper] + 2) / 3 >= maxUnits);
     }
 
@@ -134,7 +141,8 @@ public:
         \return true, if the limit is already reached, false if building further infantry units is allowed
     */
     [[nodiscard]] bool isInfantryUnitLimitReached() const {
-        const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+        const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall]
+                                 - numItem[Unit_Ornithopter];
         return (numGroundUnit + numItem[Unit_Soldier] / 3 + numItem[Unit_Trooper] / 3 >= maxUnits);
     }
 
@@ -184,8 +192,8 @@ public:
 
     void freeHarvester(int xPos, int yPos);
     void freeHarvester(const Coord& coord) { freeHarvester(coord.x, coord.y); }
-    StructureBase* placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos,
-                                  bool byScenario = false, bool bForcePlacing = false);
+    StructureBase* placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario = false,
+                                  bool bForcePlacing = false);
 
     template<typename UnitType>
     UnitType* createUnit(bool byScenario = false) {
@@ -220,13 +228,14 @@ protected:
     HOUSETYPE houseID; ///< The house number
     uint8_t teamID;    ///< The team number
 
-    int numStructures;                          ///< How many structures does this player have?
-    int numUnits;                               ///< How many units does this player have?
-    int numItem[Num_ItemID];                    ///< This array contains the number of structures/units of a certain type this player has
-    int numItemBuilt[Num_ItemID];               /// Number of items built by player
-    int numItemKills[Num_ItemID];               /// Number of items killed by player
-    int numItemLosses[Num_ItemID];              /// Number of items lost by player
-    int32_t numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
+    int numStructures;       ///< How many structures does this player have?
+    int numUnits;            ///< How many units does this player have?
+    int numItem[Num_ItemID]; ///< This array contains the number of structures/units of a certain type this player has
+    int numItemBuilt[Num_ItemID];  /// Number of items built by player
+    int numItemKills[Num_ItemID];  /// Number of items killed by player
+    int numItemLosses[Num_ItemID]; /// Number of items lost by player
+    int32_t
+        numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
 
     int capacity;         ///< Total spice capacity
     int producedPower;    ///< Power produced by this player
@@ -245,8 +254,10 @@ protected:
 
     int powerUsageTimer; ///< every N ticks you have to pay for your power usage
 
-    bool bHadContactWithEnemy;       ///< did this house already have contact with an enemy (= tiles with enemy units were explored by this house or allied houses)
-    bool bHadDirectContactWithEnemy; ///< did this house already have direct contact with an enemy (= tiles with enemy units were explored by this house)
+    bool bHadContactWithEnemy; ///< did this house already have contact with an enemy (= tiles with enemy units were
+                               ///< explored by this house or allied houses)
+    bool bHadDirectContactWithEnemy; ///< did this house already have direct contact with an enemy (= tiles with enemy
+                                     ///< units were explored by this house)
 
     int numVisibleEnemyUnits;    ///< the number of enemy units visible; will be reset to 0 each cycle
     int numVisibleFriendlyUnits; ///< the number of visible units from the same team; will be reset to 0 each cycle

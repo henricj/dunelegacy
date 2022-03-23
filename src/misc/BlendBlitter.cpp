@@ -1,7 +1,8 @@
 #include <misc/BlendBlitter.h>
 
 BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps)
-    : src {std::move(SrcPic)}, dest {DestPic}, destRect {DestPicRect}, numSteps {numSteps}, StepsLeft(numSteps), N(static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h)), m(N) {
+    : src {std::move(SrcPic)}, dest {DestPic}, destRect {DestPicRect}, numSteps {numSteps}, StepsLeft(numSteps),
+      N(static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h)), m(N) {
 
     // compute next greater 2^x value
 
@@ -42,8 +43,8 @@ int BlendBlitter::nextStep() {
         const uint32_t color = getPixel(src.get(), x, y);
 
         if (color != 0) {
-            if (destRect.x + x < dest->w && destRect.x + x >= 0 && destRect.x + x <= destRect.x + destRect.w &&
-                destRect.y + y < dest->h && destRect.y + y >= 0 && destRect.y + y <= destRect.y + destRect.h) {
+            if (destRect.x + x < dest->w && destRect.x + x >= 0 && destRect.x + x <= destRect.x + destRect.w
+                && destRect.y + y < dest->h && destRect.y + y >= 0 && destRect.y + y <= destRect.y + destRect.h) {
                 // is inside destRect and the destination surface
                 putPixel(dest, destRect.x + x, destRect.y + y, color);
             }

@@ -27,7 +27,8 @@
 #include <regex>
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
-    : nextSpecialAnimation(SDL_GetTicks() + pGFXManager->random().rand(8000, 20000)), currentMentatTextIndex(-1), nextMentatTextSwitch(0), house(newHouse) {
+    : nextSpecialAnimation(SDL_GetTicks() + pGFXManager->random().rand(8000, 20000)), currentMentatTextIndex(-1),
+      nextMentatTextSwitch(0), house(newHouse) {
 
     Animation* anim = nullptr;
 
@@ -171,7 +172,8 @@ MentatMenu::~MentatMenu() = default;
 
 void MentatMenu::setText(const std::string& text) {
     const std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
-    mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx), std::sregex_token_iterator());
+    mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx),
+                                           std::sregex_token_iterator());
     if (mentatTexts.empty()) {
         mentatTexts.push_back(text);
     }
@@ -187,7 +189,8 @@ void MentatMenu::setText(const std::string& text) {
 
 void MentatMenu::update() {
     // speedup blink of the eye
-    eyesAnim.getAnimation()->setFrameRate((eyesAnim.getAnimation()->getCurrentFrameNumber() == MentatEyesClosed) ? 4.0 : 0.5);
+    eyesAnim.getAnimation()->setFrameRate((eyesAnim.getAnimation()->getCurrentFrameNumber() == MentatEyesClosed) ? 4.0
+                                                                                                                 : 0.5);
 
     if (SDL_GetTicks() > nextMentatTextSwitch) {
         currentMentatTextIndex++;
@@ -232,13 +235,17 @@ void MentatMenu::update() {
 
     eyesAnim.getAnimation()->resetFrameOverride();
 
-    if ((mouseEyePos.x >= -eyesSize.x / 2 - 30) && (mouseEyePos.x <= -eyesSize.x / 2) && (mouseEyePos.y >= -eyesSize.y / 2 - 20) && (mouseEyePos.y <= eyesSize.y / 2)) {
+    if ((mouseEyePos.x >= -eyesSize.x / 2 - 30) && (mouseEyePos.x <= -eyesSize.x / 2)
+        && (mouseEyePos.y >= -eyesSize.y / 2 - 20) && (mouseEyePos.y <= eyesSize.y / 2)) {
         eyesAnim.getAnimation()->setFrameOverride(MentatEyesLeft);
-    } else if ((mouseEyePos.x <= eyesSize.x / 2 + 30) && (mouseEyePos.x >= eyesSize.x / 2) && (mouseEyePos.y >= -eyesSize.y / 2 - 20) && (mouseEyePos.y <= eyesSize.y / 2)) {
+    } else if ((mouseEyePos.x <= eyesSize.x / 2 + 30) && (mouseEyePos.x >= eyesSize.x / 2)
+               && (mouseEyePos.y >= -eyesSize.y / 2 - 20) && (mouseEyePos.y <= eyesSize.y / 2)) {
         eyesAnim.getAnimation()->setFrameOverride(MentatEyesRight);
-    } else if ((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y >= -eyesSize.y / 2 - 20) && (mouseEyePos.y <= eyesSize.y / 2)) {
+    } else if ((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y >= -eyesSize.y / 2 - 20)
+               && (mouseEyePos.y <= eyesSize.y / 2)) {
         eyesAnim.getAnimation()->setFrameOverride(MentatEyesNormal);
-    } else if ((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y > eyesSize.y / 2) && (mouseEyePos.y <= eyesSize.y / 2 + 15)) {
+    } else if ((abs(mouseEyePos.x) < eyesSize.x) && (mouseEyePos.y > eyesSize.y / 2)
+               && (mouseEyePos.y <= eyesSize.y / 2 + 15)) {
         eyesAnim.getAnimation()->setFrameOverride(MentatEyesDown);
     }
 
@@ -254,7 +261,8 @@ void MentatMenu::update() {
     if (bPressed) {
         if ((abs(mouseMouthPos.x) <= mouthSize.x / 2) && (abs(mouseMouthPos.y) <= mouthSize.y / 2)) {
             if (mouthAnim.getAnimation()->getCurrentFrameOverride() == INVALID_FRAME) {
-                mouthAnim.getAnimation()->setFrameOverride(pGFXManager->random().getRandOf(MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
+                mouthAnim.getAnimation()->setFrameOverride(pGFXManager->random().getRandOf(
+                    MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
             }
         } else {
             mouthAnim.getAnimation()->resetFrameOverride();
@@ -293,16 +301,9 @@ void MentatMenu::drawSpecificStuff() {
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) {
 
-    static const int missionnumber2AnimID[] = {Anim_ConstructionYard,
-                                               Anim_Harvester,
-                                               Anim_Radar,
-                                               Anim_Quad,
-                                               Anim_Tank,
-                                               Anim_RepairYard,
-                                               Anim_HeavyFactory,
-                                               Anim_IX,
-                                               Anim_Palace,
-                                               Anim_Sardaukar};
+    static const int missionnumber2AnimID[] = {
+        Anim_ConstructionYard, Anim_Harvester,    Anim_Radar, Anim_Quad,   Anim_Tank,
+        Anim_RepairYard,       Anim_HeavyFactory, Anim_IX,    Anim_Palace, Anim_Sardaukar};
 
     if (missionnumber < 0 || missionnumber > 9) {
         return missionnumber2AnimID[0];

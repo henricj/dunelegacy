@@ -26,7 +26,8 @@
 
 /// A class for representing one part of a cutscene.
 /**
-    Every CutScene consists of multiple Scene objects. This makes debugging the timings easier because all timings are relative to the scene start.
+    Every CutScene consists of multiple Scene objects. This makes debugging the timings easier because all timings are
+   relative to the scene start.
 */
 class Scene final {
 public:
@@ -76,8 +77,8 @@ public:
     }
 
     /**
-        This method draws the current frame. First the video and then the text is drawn. Afterwards CutSceneTriggers are triggered.
-        \return the milliseconds until the next frame shall be drawn.
+        This method draws the current frame. First the video and then the text is drawn. Afterwards CutSceneTriggers are
+       triggered. \return the milliseconds until the next frame shall be drawn.
     */
     int draw();
 

@@ -41,9 +41,7 @@ public:
 
     void destroy(const GameContext& context) override;
 
-    bool canDeploy() const {
-        return canDeploy(getLocation().x, getLocation().y);
-    }
+    bool canDeploy() const { return canDeploy(getLocation().x, getLocation().y); }
 
 private:
     void init();

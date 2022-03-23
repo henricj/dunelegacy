@@ -34,8 +34,7 @@
 
 #include <sstream>
 
-BuilderList::BuilderList(uint32_t builderObjectID)
-    : builderObjectID(builderObjectID) {
+BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObjectID) {
     BuilderList::enableResizing(false, true);
 
     upButton.setTextures(pGFXManager->getUIGraphic(UI_ButtonUp, pLocalHouse->getHouseID()),
@@ -48,22 +47,21 @@ BuilderList::BuilderList(uint32_t builderObjectID)
     upButton.setOnClick([this] { onUp(); });
 
     StaticContainer::addWidget(&downButton,
-                               Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2,
-                                     (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)),
+                               Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)),
                                downButton.getSize());
     downButton.setOnClick([this] { onDown(); });
 
-    StaticContainer::addWidget(&orderButton,
-                               Point(0, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) + BUILDERBTN_SPACING),
+    StaticContainer::addWidget(&orderButton, Point(0, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) + BUILDERBTN_SPACING),
                                Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
     orderButton.setOnClick([this] { onOrder(); });
     orderButton.setText(_("Order"));
 
-    pSoldOutTextTexture          = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, 12, true);
-    pAlreadyBuiltTextTexture     = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
-    pPlaceItTextTexture          = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, 12, true);
-    pOnHoldTextTexture           = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, 12, true);
-    pUnitLimitReachedTextTexture = pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, 12, true);
+    pSoldOutTextTexture      = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, 12, true);
+    pAlreadyBuiltTextTexture = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
+    pPlaceItTextTexture      = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, 12, true);
+    pOnHoldTextTexture       = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, 12, true);
+    pUnitLimitReachedTextTexture =
+        pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, 12, true);
 
     resize(BuilderList::getMinimumSize().x, BuilderList::getMinimumSize().y);
 }
@@ -102,20 +100,23 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         if (mouseLeftButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
-            if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isWaitingToPlace())) {
+            if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
+                && (pBuilder->isWaitingToPlace())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 if (currentGame->currentCursorMode == Game::CursorMode_Placing) {
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
                 } else {
                     currentGame->currentCursorMode = Game::CursorMode_Placing;
                 }
-            } else if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (pBuilder->isOnHold())) {
+            } else if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
+                       && (pBuilder->isOnHold())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(false);
             } else {
                 if (getItemIDFromIndex(mouseLeftButton) != ItemID_Invalid) {
                     soundPlayer->playSound(Sound_ButtonClick);
-                    pBuilder->handleProduceItemClick(getItemIDFromIndex(mouseLeftButton), SDL_GetModState() & KMOD_SHIFT);
+                    pBuilder->handleProduceItemClick(getItemIDFromIndex(mouseLeftButton),
+                                                     SDL_GetModState() & KMOD_SHIFT);
                 }
             }
         }
@@ -145,13 +146,15 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
         if (mouseRightButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
-            if ((getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (!pBuilder->isOnHold())) {
+            if ((getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
+                && (!pBuilder->isOnHold())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(true);
             } else {
                 if (getItemIDFromIndex(mouseRightButton) != ItemID_Invalid) {
                     soundPlayer->playSound(Sound_ButtonClick);
-                    pBuilder->handleCancelItemClick(getItemIDFromIndex(mouseRightButton), SDL_GetModState() & KMOD_SHIFT);
+                    pBuilder->handleCancelItemClick(getItemIDFromIndex(mouseRightButton),
+                                                    SDL_GetModState() & KMOD_SHIFT);
                 }
             }
         }
@@ -179,8 +182,9 @@ bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void BuilderList::draw(Point position) {
-    SDL_Rect blackRectDest = {position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING,
-                              getSize().x, getRealHeight(getSize().y) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING - ORDERBTN_HEIGHT};
+    SDL_Rect blackRectDest = {position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING, getSize().x,
+                              getRealHeight(getSize().y) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)
+                                  - BUILDERBTN_SPACING - ORDERBTN_HEIGHT};
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
     auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
@@ -220,7 +224,8 @@ void BuilderList::draw(Point position) {
             if ((i >= currentListPos) && (i < currentListPos + getNumButtons(getSize().y))) {
                 const auto* pTexture = resolveItemPicture(buildItem.itemID);
 
-                const auto dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x, position.y + getButtonPosition(i - currentListPos).y);
+                const auto dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x,
+                                                  position.y + getButtonPosition(i - currentListPos).y);
 
                 if (pTexture != nullptr) {
                     pTexture->draw(renderer, dest.x, dest.y);
@@ -241,29 +246,39 @@ void BuilderList::draw(Point position) {
                 }
 
                 // draw price
-                const auto pPriceTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
-                const auto drawLocation  = calcDrawingRect(pPriceTexture.get(), dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture.get()) + 3);
+                const auto pPriceTexture =
+                    pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
+                const auto drawLocation = calcDrawingRect(
+                    pPriceTexture.get(), dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture.get()) + 3);
                 Dune_RenderCopy(renderer, pPriceTexture.get(), nullptr, &drawLocation);
 
                 if (pStarport != nullptr) {
                     const auto bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
 
                     if (!pStarport->okToOrder() || bSoldOut) {
-                        SDL_FRect progressBar = {static_cast<float>(dest.x), static_cast<float>(dest.y), static_cast<float>(BUILDERBTN_WIDTH), static_cast<float>(BUILDERBTN_HEIGHT)};
+                        SDL_FRect progressBar = {static_cast<float>(dest.x), static_cast<float>(dest.y),
+                                                 static_cast<float>(BUILDERBTN_WIDTH),
+                                                 static_cast<float>(BUILDERBTN_HEIGHT)};
                         renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
                     }
 
                     if (bSoldOut) {
-                        SDL_Rect drawLocationSoldOut = calcDrawingRect(pSoldOutTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2, dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                        SDL_Rect drawLocationSoldOut =
+                            calcDrawingRect(pSoldOutTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
                         Dune_RenderCopy(renderer, pSoldOutTextTexture.get(), nullptr, &drawLocationSoldOut);
                     }
 
-                } else if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && buildItem.itemID == Structure_Palace && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
+                } else if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
+                           && buildItem.itemID == Structure_Palace
+                           && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
 
                     SDL_Rect progressBar = {dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT};
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
-                    SDL_Rect drawLocationAlreadyBuilt = calcDrawingRect(pAlreadyBuiltTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2, dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                    SDL_Rect drawLocationAlreadyBuilt =
+                        calcDrawingRect(pAlreadyBuiltTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                                        dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
                     Dune_RenderCopy(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
                 } else if (buildItem.itemID == pBuilder->getCurrentProducedItem()) {
                     FixPoint progress = pBuilder->getProductionProgress();
@@ -274,21 +289,31 @@ void BuilderList::draw(Point position) {
                     renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
                     if (pBuilder->isWaitingToPlace()) {
-                        SDL_Rect drawLocationWaitingToPlace = calcDrawingRect(pPlaceItTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2, dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                        SDL_Rect drawLocationWaitingToPlace =
+                            calcDrawingRect(pPlaceItTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
                         Dune_RenderCopy(renderer, pPlaceItTextTexture.get(), nullptr, &drawLocationWaitingToPlace);
                     } else if (pBuilder->isOnHold()) {
-                        SDL_Rect drawLocationOnHold = calcDrawingRect(pOnHoldTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2, dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                        SDL_Rect drawLocationOnHold =
+                            calcDrawingRect(pOnHoldTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
                         Dune_RenderCopy(renderer, pOnHoldTextTexture.get(), nullptr, &drawLocationOnHold);
                     } else if (pBuilder->isUnitLimitReached(buildItem.itemID)) {
-                        SDL_Rect drawLocationUnitLimitReached = calcDrawingRect(pUnitLimitReachedTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2, dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                        Dune_RenderCopy(renderer, pUnitLimitReachedTextTexture.get(), nullptr, &drawLocationUnitLimitReached);
+                        SDL_Rect drawLocationUnitLimitReached =
+                            calcDrawingRect(pUnitLimitReachedTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
+                        Dune_RenderCopy(renderer, pUnitLimitReachedTextTexture.get(), nullptr,
+                                        &drawLocationUnitLimitReached);
                     }
                 }
 
                 if (buildItem.num > 0) {
                     // draw number of this in build list
-                    sdl2::texture_ptr pNumberTexture = pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
-                    SDL_Rect drawLocationNumber      = calcDrawingRect(pNumberTexture.get(), dest.x + BUILDERBTN_WIDTH - 3, dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
+                    sdl2::texture_ptr pNumberTexture =
+                        pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
+                    SDL_Rect drawLocationNumber =
+                        calcDrawingRect(pNumberTexture.get(), dest.x + BUILDERBTN_WIDTH - 3,
+                                        dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
                     Dune_RenderCopy(renderer, pNumberTexture.get(), nullptr, &drawLocationNumber);
                 }
             }
@@ -347,7 +372,8 @@ void BuilderList::drawOverlay(Point position) {
             tooltipText  = text;
         }
 
-        const auto dest = calcDrawingRectF(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6, position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
+        const auto dest = calcDrawingRectF(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6,
+                                           position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
         Dune_RenderCopyF(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }
@@ -355,11 +381,11 @@ void BuilderList::drawOverlay(Point position) {
 void BuilderList::resize(uint32_t width, uint32_t height) {
     setWidgetGeometry(&upButton, Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, -2), upButton.getSize());
     setWidgetGeometry(&downButton,
-                      Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, getRealHeight(height) - ARROWBTN_HEIGHT - ORDERBTN_HEIGHT - BUILDERBTN_SPACING + 2),
+                      Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2,
+                            getRealHeight(height) - ARROWBTN_HEIGHT - ORDERBTN_HEIGHT - BUILDERBTN_SPACING + 2),
                       downButton.getSize());
 
-    setWidgetGeometry(&orderButton,
-                      Point(0, getRealHeight(height) - ORDERBTN_HEIGHT + 2),
+    setWidgetGeometry(&orderButton, Point(0, getRealHeight(height) - ORDERBTN_HEIGHT + 2),
                       Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
 
     StaticContainer::resize(width, height);
@@ -369,18 +395,18 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
 
     // move list to show currently produced item
     if (auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
-        const auto& buildList              = pBuilder->getBuildList();
-        const auto currentProducedItemIter = std::find_if(buildList.begin(),
-                                                          buildList.end(),
-                                                          [pBuilder](const BuildItem& buildItem) {
-                                                              return (buildItem.itemID == pBuilder->getCurrentProducedItem());
-                                                          });
+        const auto& buildList = pBuilder->getBuildList();
+        const auto currentProducedItemIter =
+            std::find_if(buildList.begin(), buildList.end(), [pBuilder](const BuildItem& buildItem) {
+                return (buildItem.itemID == pBuilder->getCurrentProducedItem());
+            });
 
         if (currentProducedItemIter != buildList.end()) {
-            const int shiftFromTopPos         = 1;
-            const auto biggestLegalPosition   = static_cast<int>(buildList.size()) - getNumButtons(getSize().y);
-            const auto currentProducedItemPos = static_cast<int>(std::distance(buildList.begin(), currentProducedItemIter));
-            currentListPos                    = std::max(0, std::min(currentProducedItemPos - shiftFromTopPos, biggestLegalPosition));
+            const int shiftFromTopPos       = 1;
+            const auto biggestLegalPosition = static_cast<int>(buildList.size()) - getNumButtons(getSize().y);
+            const auto currentProducedItemPos =
+                static_cast<int>(std::distance(buildList.begin(), currentProducedItemIter));
+            currentListPos = std::max(0, std::min(currentProducedItemPos - shiftFromTopPos, biggestLegalPosition));
         }
     }
 }
@@ -393,7 +419,8 @@ int BuilderList::getRealHeight(int height) {
     tmp -= BUILDERBTN_SPACING;
     const auto numButtons = tmp / (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING);
 
-    return numButtons * (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING) + 3 * BUILDERBTN_SPACING + 2 * ARROWBTN_HEIGHT + ORDERBTN_HEIGHT + BUILDERBTN_SPACING;
+    return numButtons * (BUILDERBTN_HEIGHT + BUILDERBTN_SPACING) + 3 * BUILDERBTN_SPACING + 2 * ARROWBTN_HEIGHT
+         + ORDERBTN_HEIGHT + BUILDERBTN_SPACING;
 }
 
 void BuilderList::onUp() {
@@ -434,7 +461,10 @@ int BuilderList::getButton(int x, int y) const {
     if (const auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         for (int i = 0; i < static_cast<int>(pBuilder->getBuildList().size()); i++) {
             if ((i >= currentListPos) && (i < currentListPos + getNumButtons(getSize().y))) {
-                if ((x >= getButtonPosition(i - currentListPos).x) && (x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH) && (y >= getButtonPosition(i - currentListPos).y) && (y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT)) {
+                if ((x >= getButtonPosition(i - currentListPos).x)
+                    && (x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH)
+                    && (y >= getButtonPosition(i - currentListPos).y)
+                    && (y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT)) {
 
                     return i;
                 }

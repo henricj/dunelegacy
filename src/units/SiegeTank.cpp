@@ -64,11 +64,11 @@ void SiegeTank::blitToScreen() {
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12), Coord(0, -20), Coord(0, -20), Coord(-4, -20),
+    static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
                                                       Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
 
     const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];

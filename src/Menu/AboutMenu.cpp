@@ -48,11 +48,10 @@ AboutMenu::AboutMenu() {
     dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
     windowWidget.addWidget(&buttonBorder, dest3);
 
-    text.setText("Written by\n   Anthony Cole,\n      Richard Schaller,\n         Stefan van der Wel\n            and many others!\n");
+    text.setText("Written by\n   Anthony Cole,\n      Richard Schaller,\n         Stefan van der Wel\n            and "
+                 "many others!\n");
     text.setAlignment(Alignment_Left);
-    windowWidget.addWidget(&text,
-                           Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 70),
-                           Point(170, 110));
+    windowWidget.addWidget(&text, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 70), Point(170, 110));
 }
 
 AboutMenu::~AboutMenu() = default;

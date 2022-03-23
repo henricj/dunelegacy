@@ -169,7 +169,8 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
             auto savegamedata = readCompleteFile(filename);
 
             auto servername = settings.general.playerName + "'s Game";
-            GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata), std::move(servername));
+            GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata),
+                                              std::move(servername));
 
             int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
             if (ret != MENU_QUIT_DEFAULT) {
@@ -196,9 +197,12 @@ void CustomGameMenu::onNext() {
     GameInitSettings gameInitSettings;
     if (bMultiplayer) {
         std::string servername = settings.general.playerName + "'s Game";
-        gameInitSettings       = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings =
+            GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername),
+                             multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     } else {
-        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
+        gameInitSettings = GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename),
+                                            multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }
 
     int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
@@ -247,7 +251,8 @@ void CustomGameMenu::onMapTypeChange(int buttonID) {
 
     mapList.clearAllEntries();
 
-    for (const auto& file : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+    for (const auto& file :
+         getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
         auto name = file.u8string();
         if (name.size() > 4)
             name = name.substr(0, name.size() - 4);

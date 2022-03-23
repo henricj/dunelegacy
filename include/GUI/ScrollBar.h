@@ -60,7 +60,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
 
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
@@ -84,9 +85,7 @@ public:
         called if the new size is a valid size for this scroll bar (See getMinumumSize).
         \param  newSize    the new size of this scroll bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the scroll bar to width and height. This method should only
@@ -155,9 +154,7 @@ public:
         Returns the current position
         \return the current value
     */
-    [[nodiscard]] [[nodiscard]] int getCurrentValue() const noexcept {
-        return currentValue;
-    }
+    [[nodiscard]] [[nodiscard]] int getCurrentValue() const noexcept { return currentValue; }
 
     /**
         Sets the current position. Should be in range
@@ -182,9 +179,7 @@ public:
         Sets the function that should be called when this scroll bar changes its position.
         \param  pOnChange   A function to be called on change
     */
-    void setOnChange(std::function<void()> pOnChange) {
-        this->pOnChange = pOnChange;
-    }
+    void setOnChange(std::function<void()> pOnChange) { this->pOnChange = pOnChange; }
 
     /**
         Sets the color for this scrollbar.
@@ -205,29 +200,24 @@ protected:
         Widget::updateTextures();
 
         if (!pBackground) {
-            pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
+            pBackground =
+                convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
         }
     }
 
     /**
         This method frees all textures that are used by this scrollbar
     */
-    void invalidateTextures() override {
-        pBackground.reset();
-    }
+    void invalidateTextures() override { pBackground.reset(); }
 
 private:
     void updateSliderButton();
 
     void updateArrowButtonSurface();
 
-    void onArrow1() {
-        setCurrentValue(currentValue - 1);
-    }
+    void onArrow1() { setCurrentValue(currentValue - 1); }
 
-    void onArrow2() {
-        setCurrentValue(currentValue + 1);
-    }
+    void onArrow2() { setCurrentValue(currentValue + 1); }
 
     sdl2::texture_ptr pBackground;
     PictureButton arrow1;

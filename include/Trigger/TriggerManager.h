@@ -67,7 +67,8 @@ public:
     [[nodiscard]] const std::deque<std::unique_ptr<Trigger>>& getTriggers() const { return triggers; }
 
 private:
-    std::deque<std::unique_ptr<Trigger>> triggers; ///< list of all triggers. sorted by the time when they shall be triggered.
+    std::deque<std::unique_ptr<Trigger>>
+        triggers; ///< list of all triggers. sorted by the time when they shall be triggered.
     std::vector<std::unique_ptr<Trigger>> active_trigger;
 
     typedef enum {

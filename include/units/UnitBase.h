@@ -285,7 +285,8 @@ protected:
     virtual void engageTarget(const GameContext& context);
     virtual void move(const GameContext& context);
 
-    virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY);
+    virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX,
+                                     FixPoint toDistanceY);
 
     virtual void navigate(const GameContext& context);
 
@@ -309,8 +310,8 @@ protected:
     void drawSmoke(int x, int y) const;
 
     // unit state/properties
-    Coord guardPoint;               ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
-    Coord attackPos;                ///< The position to attack
+    Coord guardPoint; ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit
+    Coord attackPos;  ///< The position to attack
     bool goingToRepairYard = false; ///< Are we currently going to a repair yard?
     bool pickedUp          = false; ///< Were we picked up by a carryall?
     bool bFollow           = false; ///< Do we currently follow some other unit (specified by target)?

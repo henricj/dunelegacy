@@ -41,9 +41,7 @@ public:
     }
 
     /// destructor
-    ~ProgressBar() override {
-        invalidateTextures();
-    }
+    ~ProgressBar() override { invalidateTextures(); }
 
     ProgressBar(const ProgressBar&) = delete;
     ProgressBar(ProgressBar&&)      = delete;
@@ -71,9 +69,7 @@ public:
         Return the current progress.
         \return the current progress in percent
     */
-    [[nodiscard]] double getProgress() const noexcept {
-        return percent;
-    }
+    [[nodiscard]] double getProgress() const noexcept { return percent; }
 
     /**
         Sets the color of the progress bar overlay
@@ -88,18 +84,14 @@ public:
         Specifies if a shadow is drawn or not.
         \param  bDrawShadow if true, a shadow is drawn
     */
-    void setDrawShadow(bool bDrawShadow) {
-        this->bDrawShadow = bDrawShadow;
-    }
+    void setDrawShadow(bool bDrawShadow) { this->bDrawShadow = bDrawShadow; }
 
     /**
         This method resized the progress bar. This method should only
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the progress bar to width and height. This method should only
@@ -129,7 +121,8 @@ public:
         if (pForeground) {
             const auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
             if (bDrawShadow) {
-                const SDL_Rect dest2 = {position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
+                const SDL_Rect dest2 = {position.x + 2, position.y + 2,
+                                        static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
                 renderFillRect(renderer, &dest2, COLOR_BLACK);
             }
 
@@ -147,7 +140,8 @@ protected:
         WidgetWithBackground::updateTextures();
 
         if (!pForeground) {
-            pForeground = convertSurfaceToTexture(GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
+            pForeground = convertSurfaceToTexture(
+                GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
         }
     }
 
@@ -228,18 +222,17 @@ protected:
         ProgressBar::updateTextures();
 
         if (!getBackground()) {
-            setBackground(GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, text, true, false,
-                                                                      textcolor, textshadowcolor)
-                              .get());
+            setBackground(
+                GUIStyle::getInstance()
+                    .createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor)
+                    .get());
         }
     }
 
     /**
         This method frees all textures that are used by this progress bar
     */
-    void invalidateTextures() override {
-        ProgressBar::invalidateTextures();
-    }
+    void invalidateTextures() override { ProgressBar::invalidateTextures(); }
 
     std::string text; ///< Text of this progress bar
 
@@ -249,9 +242,7 @@ protected:
 
 class PictureProgressBar : public ProgressBar {
 public:
-    PictureProgressBar() {
-        Widget::enableResizing(false, false);
-    }
+    PictureProgressBar() { Widget::enableResizing(false, false); }
 
     ~PictureProgressBar() override = default;
 
@@ -277,9 +268,7 @@ public:
         called if the new size is a valid size for this progress bar (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resized the progress bar to width and height. This method should only
@@ -287,9 +276,7 @@ public:
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */
-    void resize(uint32_t width, uint32_t height) override {
-        ProgressBar::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override { ProgressBar::resize(width, height); }
 
     /**
         Returns the minimum size of this progress bar. The progress bar should not

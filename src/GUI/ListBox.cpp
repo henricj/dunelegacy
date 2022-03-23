@@ -17,8 +17,7 @@
 
 #include <GUI/ListBox.h>
 
-ListBox::ListBox()
-    : color(COLOR_DEFAULT) {
+ListBox::ListBox() : color(COLOR_DEFAULT) {
     ListBox::enableResizing(true, true);
 
     scrollbar.setOnChange([this] { onScrollbarChange(); });
@@ -186,18 +185,21 @@ void ListBox::updateTextures() {
             surfaceHeight = 0;
         }
 
-        sdl2::surface_ptr pForegroundSurface = sdl2::surface_ptr {GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
+        sdl2::surface_ptr pForegroundSurface =
+            sdl2::surface_ptr {GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
 
-        const int numVisibleElements = static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
+        const int numVisibleElements =
+            static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
         for (int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;
 
-            sdl2::surface_ptr pSurface = sdl2::surface_ptr {GUIStyle::getInstance().createListBoxEntry(getSize().x - 4, getEntry(i),
-                                                                                                       bHighlightSelectedElement && (i == selectedElement),
-                                                                                                       color)};
+            sdl2::surface_ptr pSurface = sdl2::surface_ptr {GUIStyle::getInstance().createListBoxEntry(
+                getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i == selectedElement), color)};
 
-            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()));
+            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0,
+                                            (i - firstVisibleElement)
+                                                * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()));
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
         }
         pForeground = convertSurfaceToTexture(std::move(pForegroundSurface));

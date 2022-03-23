@@ -29,13 +29,7 @@ typedef sdl2::surface_ptr DoubleTiledSurfaceFunction(SDL_Surface*, int, int);
 
 class Scaler {
 public:
-    enum ScalerType {
-        Invalid   = -1,
-        ScaleHD   = 0,
-        Scale2x   = 1,
-        ScaleNN   = 2,
-        NumScaler = 3
-    };
+    enum ScalerType { Invalid = -1, ScaleHD = 0, Scale2x = 1, ScaleNN = 2, NumScaler = 3 };
 
     static DoubleSurfaceFunction* defaultDoubleSurface;
     static DoubleTiledSurfaceFunction* defaultDoubleTiledSurface;

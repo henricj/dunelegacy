@@ -42,19 +42,20 @@ int currentZoomlevel;       ///< 0 = the smallest zoom level, 1 = medium zoom le
 std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
 std::unique_ptr<MusicPlayer> musicPlayer; ///< manager for playing background music
 
-std::unique_ptr<FileManager> pFileManager;       ///< manager for loading files from PAKs
-std::unique_ptr<GFXManager> pGFXManager;         ///< manager for loading and managing graphics
-std::unique_ptr<SFXManager> pSFXManager;         ///< manager for loading and managing sounds
-std::unique_ptr<FontManager> pFontManager;       ///< manager for loading and managing fonts
-std::unique_ptr<TextManager> pTextManager;       ///< manager for loading and managing texts and providing localization
-std::unique_ptr<NetworkManager> pNetworkManager; ///< manager for all network events (nullptr if not in multiplayer game)
+std::unique_ptr<FileManager> pFileManager; ///< manager for loading files from PAKs
+std::unique_ptr<GFXManager> pGFXManager;   ///< manager for loading and managing graphics
+std::unique_ptr<SFXManager> pSFXManager;   ///< manager for loading and managing sounds
+std::unique_ptr<FontManager> pFontManager; ///< manager for loading and managing fonts
+std::unique_ptr<TextManager> pTextManager; ///< manager for loading and managing texts and providing localization
+std::unique_ptr<NetworkManager>
+    pNetworkManager; ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
 std::unique_ptr<Game> currentGame;          ///< the current running game
 std::unique_ptr<ScreenBorder> screenborder; ///< the screen border for the current running game
 Map* currentGameMap;                        ///< the map for the current running game
-House* pLocalHouse;                         ///< the house of the human player that is playing the current running game on this computer
-HumanPlayer* pLocalPlayer;                  ///< the player that is playing the current running game on this computer
+House* pLocalHouse;        ///< the house of the human player that is playing the current running game on this computer
+HumanPlayer* pLocalPlayer; ///< the player that is playing the current running game on this computer
 
 RobustList<UnitBase*> unitList;                  ///< the list of all units
 RobustList<StructureBase*> structureList;        ///< the list of all structures

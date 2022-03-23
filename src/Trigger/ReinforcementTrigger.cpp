@@ -31,12 +31,12 @@
 
 ReinforcementTrigger::ReinforcementTrigger(HOUSETYPE houseID, ItemID_enum itemID, DropLocation location, bool bRepeat,
                                            uint32_t triggerCycleNumber)
-    : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID), repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
+    : Trigger(triggerCycleNumber), dropLocation(location), houseID(houseID),
+      repeatCycle((bRepeat) ? triggerCycleNumber : 0) {
     droppedUnits.push_back(itemID);
 }
 
-ReinforcementTrigger::ReinforcementTrigger(InputStream& stream)
-    : Trigger(stream) {
+ReinforcementTrigger::ReinforcementTrigger(InputStream& stream) : Trigger(stream) {
     droppedUnits = stream.readUint32Vector<ItemID_enum>();
     dropLocation = static_cast<DropLocation>(stream.readUint32());
     houseID      = static_cast<HOUSETYPE>(stream.readSint32());
@@ -154,8 +154,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                 case DropLocation::Drop_Enemybase: {
                     if (const auto* pHouse = game.house_find_if([&](auto& house) {
-                            return house.getNumStructures() != 0 && house.getTeamID() != 0 &&
-                                   house.getTeamID() != dropHouse->getTeamID();
+                            return house.getNumStructures() != 0 && house.getTeamID() != 0
+                                && house.getTeamID() != dropHouse->getTeamID();
                         })) {
                         dropCoord = pHouse->getCenterOfMainBase();
                     }
@@ -163,8 +163,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                     if (dropCoord.isInvalid()) {
                         // no house with structures found => search for units
                         if (const auto* pHouse = game.house_find_if([&](auto& house) {
-                                return house.getNumUnits() != 0 && house.getTeamID() != 0 &&
-                                       house.getTeamID() != dropHouse->getTeamID();
+                                return house.getNumUnits() != 0 && house.getTeamID() != 0
+                                    && house.getTeamID() != dropHouse->getTeamID();
                             })) {
                             dropCoord = pHouse->getStrongestUnitPosition();
                         }

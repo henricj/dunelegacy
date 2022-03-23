@@ -89,7 +89,9 @@ void Ornithopter::checkPos(const GameContext& context) {
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
-    return (object != nullptr) && !object->isAFlyingUnit() && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm) && object->isVisible(getOwner()->getTeamID());
+    return (object != nullptr) && !object->isAFlyingUnit()
+        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeamID());
 }
 
 void Ornithopter::destroy(const GameContext& context) {

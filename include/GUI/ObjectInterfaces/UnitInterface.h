@@ -44,8 +44,7 @@ public:
     }
 
 protected:
-    explicit UnitInterface(const GameContext& context, int objectID)
-        : DefaultObjectInterface(context, objectID) {
+    explicit UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
         const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(HSpacer::create(4));
@@ -182,21 +181,13 @@ protected:
         update();
     }
 
-    static void onMove() {
-        currentGame->currentCursorMode = Game::CursorMode_Move;
-    }
+    static void onMove() { currentGame->currentCursorMode = Game::CursorMode_Move; }
 
-    static void onAttack() {
-        currentGame->currentCursorMode = Game::CursorMode_Attack;
-    }
+    static void onAttack() { currentGame->currentCursorMode = Game::CursorMode_Attack; }
 
-    static void onCapture() {
-        currentGame->currentCursorMode = Game::CursorMode_Capture;
-    }
+    static void onCapture() { currentGame->currentCursorMode = Game::CursorMode_Capture; }
 
-    static void onCarryallDrop() {
-        currentGame->currentCursorMode = Game::CursorMode_CarryallDrop;
-    }
+    static void onCarryallDrop() { currentGame->currentCursorMode = Game::CursorMode_CarryallDrop; }
 
     void OnSendToRepair() {
         auto* const pGroundUnit = currentGame->getObjectManager().getObject<GroundUnit>(objectID);
@@ -226,29 +217,17 @@ protected:
         }
     }
 
-    void onGuard() {
-        setAttackMode(GUARD);
-    }
+    void onGuard() { setAttackMode(GUARD); }
 
-    void onAreaGuard() {
-        setAttackMode(AREAGUARD);
-    }
+    void onAreaGuard() { setAttackMode(AREAGUARD); }
 
-    void onStop() {
-        setAttackMode(STOP);
-    }
+    void onStop() { setAttackMode(STOP); }
 
-    void onAmbush() {
-        setAttackMode(AMBUSH);
-    }
+    void onAmbush() { setAttackMode(AMBUSH); }
 
-    void onHunt() {
-        setAttackMode(HUNT);
-    }
+    void onHunt() { setAttackMode(HUNT); }
 
-    void onRetreat() {
-        setAttackMode(RETREAT);
-    }
+    void onRetreat() { setAttackMode(RETREAT); }
 
     void setAttackMode(ATTACKMODE newAttackMode) {
         auto* pUnit = context_.objectManager.getObject<UnitBase>(objectID);
@@ -277,7 +256,8 @@ protected:
         attackButton.setVisible(pObject->canAttack());
         captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
         carryallDropButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_CarryallDrop);
-        carryallDropButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops && pObject->getOwner()->hasCarryalls());
+        carryallDropButton.setVisible(currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops
+                                      && pObject->getOwner()->hasCarryalls());
         sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
         auto* pUnit = dynamic_cast<UnitBase*>(pObject);

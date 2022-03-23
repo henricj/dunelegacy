@@ -112,8 +112,7 @@ void SFXManager::loadEnglishVoice() {
                 HouseString    = "O";
                 HouseNameChunk = getChunkFromFile(HouseString + "MERC.VOC");
                 break;
-            default:
-                break;
+            default: break;
         }
 
         { // Scope
@@ -243,7 +242,8 @@ void SFXManager::loadEnglishVoice() {
     const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
 
     if (bad_voice != lngVoice.cend()) {
-        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", static_cast<int>(bad_voice - lngVoice.cbegin()));
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!",
+              static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 
     loadSounds();
@@ -342,7 +342,8 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
 
     if (bad_voice != lngVoice.cend()) {
-        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!", static_cast<int>(bad_voice - lngVoice.cbegin()));
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!",
+              static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 
     loadSounds();

@@ -63,7 +63,9 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
+            item2Produce =
+                std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
+                    ->itemID;
         } while ((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
         doProduceItem(item2Produce);

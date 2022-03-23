@@ -83,18 +83,7 @@ public:
     }
 
 private:
-    enum class ChannelGroup {
-        Voice,
-        UI,
-        Credits,
-        Explosion,
-        ExplosionStructure,
-        Gun,
-        Rocket,
-        Scream,
-        Sonic,
-        Other
-    };
+    enum class ChannelGroup { Voice, UI, Credits, Explosion, ExplosionStructure, Gun, Rocket, Scream, Sonic, Other };
 
     /*!
         the function plays a sound with a given volume

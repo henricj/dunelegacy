@@ -80,18 +80,8 @@ const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
 
 std::vector<std::filesystem::path> FileManager::getNeededFiles() {
     std::vector<std::filesystem::path> fileList = {
-        "LEGACY.PAK",
-        "OPENSD2.PAK",
-        "GFXHD.PAK",
-        "DUNE.PAK",
-        "SCENARIO.PAK",
-        "MENTAT.PAK",
-        "VOC.PAK",
-        "MERC.PAK",
-        "FINALE.PAK",
-        "INTRO.PAK",
-        "INTROVOC.PAK",
-        "SOUND.PAK",
+        "LEGACY.PAK", "OPENSD2.PAK", "GFXHD.PAK",  "DUNE.PAK",  "SCENARIO.PAK", "MENTAT.PAK",
+        "VOC.PAK",    "MERC.PAK",    "FINALE.PAK", "INTRO.PAK", "INTROVOC.PAK", "SOUND.PAK",
     };
 
     std::string LanguagePakFiles = (pTextManager != nullptr) ? _("LanguagePakFiles") : "";

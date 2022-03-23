@@ -39,7 +39,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
 
     setWindowWidget(&windowWidget);
 
-    const Uint32 localHouseColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+    const Uint32 localHouseColor =
+        SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
@@ -102,8 +103,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         curHouseStat.value1.setTextColor(textcolor);
         curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
         curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-        curHouseStat.progressBar1.setProgress(
-            (maxBuiltValue == 0) ? 0.0f : (house.getBuiltValue() * 100.0f / maxBuiltValue));
+        curHouseStat.progressBar1.setProgress((maxBuiltValue == 0) ? 0.0f
+                                                                   : (house.getBuiltValue() * 100.0f / maxBuiltValue));
         curHouseStat.progressBar1.setDrawShadow(true);
         curHouseStat.progressBar1.setColor(progresscolor);
         curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);

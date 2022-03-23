@@ -64,7 +64,7 @@ void Deviator::blitToScreen() {
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
@@ -99,8 +99,8 @@ void Deviator::destroy(const GameContext& context) {
 }
 
 bool Deviator::canAttack(const ObjectBase* object) const {
-    return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit() &&
-           (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID());
+    return (object != nullptr) && !object->isAStructure() && !object->isAFlyingUnit()
+        && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID());
 }
 
 void Deviator::playAttackSound() {

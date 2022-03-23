@@ -67,17 +67,13 @@ public:
 
     void refreshServerList() const;
 
-    [[nodiscard]] const std::list<GameServerInfo>& getServerInfoList() const {
-        return gameServerInfoList;
-    }
+    [[nodiscard]] const std::list<GameServerInfo>& getServerInfoList() const { return gameServerInfoList; }
 
     /**
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) {
-        this->pOnNewServer = pOnNewServer;
-    }
+    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer = pOnNewServer; }
 
     /**
         Sets the function that should be called when a server is updated

@@ -28,8 +28,7 @@ class IMemoryStream final : public InputStream {
 public:
     IMemoryStream();
 
-    IMemoryStream(const char* data, size_t length)
-        : bufferSize(length), pBuffer(data) { }
+    IMemoryStream(const char* data, size_t length) : bufferSize(length), pBuffer(data) { }
 
     ~IMemoryStream() override;
 

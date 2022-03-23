@@ -30,7 +30,8 @@ public:
         Constructor
         \param  pSurface            The picture to show
         \param  numFrames2Hold      The number of frames the picture should be shown
-        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
+        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the
+       top of the screen (default is true)
     */
     HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrames2Hold, bool bCenterVertical = true);
 
@@ -53,7 +54,8 @@ private:
     int currentFrame;           ///< the current frame number relative to the start of this HoldPictureVideoEvent
     int numFrames2Hold;         ///< the number of frames the picture should be shown
     sdl2::texture_ptr pTexture; ///< the picture to show
-    bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
+    bool bCenterVertical; ///< true = center the surface vertically on the screen, false = blit the surface at the top
+                          ///< of the screen
 };
 
 #endif // HOLDPICTUREVIDEOEVENT_H

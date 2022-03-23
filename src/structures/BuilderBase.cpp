@@ -30,47 +30,46 @@
 
 #include <GUI/ObjectInterfaces/BuilderInterface.h>
 
-constexpr ItemID_enum BuilderBase::itemOrder[] = {
-    Structure_Slab4,
-    Structure_Slab1,
-    Structure_IX,
-    Structure_StarPort,
-    Structure_HighTechFactory,
-    Structure_HeavyFactory,
-    Structure_RocketTurret,
-    Structure_RepairYard,
-    Structure_GunTurret,
-    Structure_WOR,
-    Structure_Barracks,
-    Structure_Wall,
-    Structure_LightFactory,
-    Structure_Silo,
-    Structure_Radar,
-    Structure_Refinery,
-    Structure_WindTrap,
-    Structure_Palace,
-    Unit_SonicTank,
-    Unit_Devastator,
-    Unit_Deviator,
-    Unit_Special,
-    Unit_Launcher,
-    Unit_SiegeTank,
-    Unit_Tank,
-    Unit_MCV,
-    Unit_Harvester,
-    Unit_Ornithopter,
-    Unit_Carryall,
-    Unit_Quad,
-    Unit_RaiderTrike,
-    Unit_Trike,
-    Unit_Troopers,
-    Unit_Trooper,
-    Unit_Infantry,
-    Unit_Soldier,
-    Unit_Frigate,
-    Unit_Sandworm,
-    Unit_Saboteur,
-    ItemID_Invalid};
+constexpr ItemID_enum BuilderBase::itemOrder[] = {Structure_Slab4,
+                                                  Structure_Slab1,
+                                                  Structure_IX,
+                                                  Structure_StarPort,
+                                                  Structure_HighTechFactory,
+                                                  Structure_HeavyFactory,
+                                                  Structure_RocketTurret,
+                                                  Structure_RepairYard,
+                                                  Structure_GunTurret,
+                                                  Structure_WOR,
+                                                  Structure_Barracks,
+                                                  Structure_Wall,
+                                                  Structure_LightFactory,
+                                                  Structure_Silo,
+                                                  Structure_Radar,
+                                                  Structure_Refinery,
+                                                  Structure_WindTrap,
+                                                  Structure_Palace,
+                                                  Unit_SonicTank,
+                                                  Unit_Devastator,
+                                                  Unit_Deviator,
+                                                  Unit_Special,
+                                                  Unit_Launcher,
+                                                  Unit_SiegeTank,
+                                                  Unit_Tank,
+                                                  Unit_MCV,
+                                                  Unit_Harvester,
+                                                  Unit_Ornithopter,
+                                                  Unit_Carryall,
+                                                  Unit_Quad,
+                                                  Unit_RaiderTrike,
+                                                  Unit_Trike,
+                                                  Unit_Troopers,
+                                                  Unit_Trooper,
+                                                  Unit_Infantry,
+                                                  Unit_Soldier,
+                                                  Unit_Frigate,
+                                                  Unit_Sandworm,
+                                                  Unit_Saboteur,
+                                                  ItemID_Invalid};
 
 BuilderBase::BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(constants, objectID, initializer) {
@@ -108,8 +107,7 @@ BuilderBase::BuilderBase(const BuilderBaseConstants& constants, uint32_t objectI
     }
 }
 
-void BuilderBase::init() {
-}
+void BuilderBase::init() { }
 
 BuilderBase::~BuilderBase() = default;
 
@@ -145,7 +143,8 @@ std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameCo
     return DefaultObjectInterface::create(context, objectID);
 }
 
-void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price) {
+void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+                             ItemID_enum itemID, int price) {
     if (iter != buildItemList.end()) {
         if (iter->itemID == itemID) {
             if (price != -1) {
@@ -163,7 +162,8 @@ void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<Buil
     buildItemList.insert(iter, BuildItem(itemID, price));
 }
 
-void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID) {
+void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+                             ItemID_enum itemID) {
     if (iter == buildItemList.end() || iter->itemID != itemID)
         return;
 
@@ -230,13 +230,15 @@ void BuilderBase::updateProductionProgress() {
 
     const auto* const tmp = getBuildItem(currentProducedItem);
 
-    if ((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) && (owner->getCredits() > 0)) {
+    if ((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem))
+        && (owner->getCredits() > 0)) {
 
         const FixPoint oldProgress = productionProgress;
 
         if (currentGame->getGameInitSettings().getGameOptions().instantBuild) {
-            const FixPoint totalBuildCosts = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
-            const auto buildCosts          = totalBuildCosts - productionProgress;
+            const FixPoint totalBuildCosts =
+                currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
+            const auto buildCosts = totalBuildCosts - productionProgress;
 
             productionProgress += owner->takeCredits(buildCosts);
         } else {
@@ -244,13 +246,15 @@ void BuilderBase::updateProductionProgress() {
             const auto buildSpeed = std::min(getHealth() / getMaxHealth(), buildSpeedLimit);
             const FixPoint totalBuildCosts =
                 currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
-            const auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime * 15;
-            const auto buildCosts          = totalBuildCosts / totalBuildGameTicks;
+            const auto totalBuildGameTicks =
+                currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime * 15;
+            const auto buildCosts = totalBuildCosts / totalBuildGameTicks;
 
             productionProgress += owner->takeCredits(buildCosts * buildSpeed);
 
             /* That was wrong. Build speed does not depend on power production
-                if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType == GameType::Skirmish)) && getOwner()->isAI())) {
+                if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType
+               == GameType::Skirmish)) && getOwner()->isAI())) {
                     //if not enough power, production is halved
                     ProductionProgress += owner->takeCredits(0.25_fix);
                 } else {
@@ -272,7 +276,9 @@ void BuilderBase::doBuildRandom(const GameContext& context) {
     if (buildList.empty())
         return;
 
-    const auto item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
+    const auto item2Produce =
+        std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
+            ->itemID;
     doProduceItem(item2Produce);
 }
 
@@ -293,7 +299,8 @@ int BuilderBase::getMaxUpgradeLevel() const {
     for (int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
         const auto& objData = currentGame->objectData.data[i][static_cast<int>(originalHouseID)];
 
-        if (objData.enabled && (objData.builder == static_cast<int>(itemID)) && (objData.techLevel <= currentGame->techLevel)) {
+        if (objData.enabled && (objData.builder == static_cast<int>(itemID))
+            && (objData.techLevel <= currentGame->techLevel)) {
             upgradeLevel = std::max(upgradeLevel, static_cast<int>(objData.upgradeLevel));
         }
     }
@@ -310,7 +317,8 @@ void BuilderBase::updateBuildList() {
 
         const auto& objData = currentGame->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
 
-        if (!objData.enabled || (objData.builder != static_cast<int>(itemID)) || (objData.upgradeLevel > curUpgradeLev) || (objData.techLevel > currentGame->techLevel)) {
+        if (!objData.enabled || (objData.builder != static_cast<int>(itemID)) || (objData.upgradeLevel > curUpgradeLev)
+            || (objData.techLevel > currentGame->techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
             removeItem(buildList, iter, itemID2Add);
         } else {
@@ -318,7 +326,8 @@ void BuilderBase::updateBuildList() {
             // check if prerequisites are met
             auto bPrerequisitesMet = true;
             for (int itemID2Test = Structure_FirstID; itemID2Test <= Structure_LastID; itemID2Test++) {
-                if (objData.prerequisiteStructuresSet[itemID2Test] && (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
+                if (objData.prerequisiteStructuresSet[itemID2Test]
+                    && (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
                     bPrerequisitesMet = false;
                     break;
                 }
@@ -389,7 +398,9 @@ void BuilderBase::produce_item(const GameContext& context) {
 
         if (newUnit != nullptr) {
             Coord unitDestination;
-            if (getOwner()->isAI() && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester) || (newUnit->getItemID() == Unit_MCV))) {
+            if (getOwner()->isAI()
+                && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester)
+                    || (newUnit->getItemID() == Unit_MCV))) {
                 // Don't want harvesters going to the rally point
                 unitDestination = location;
             } else {
@@ -452,11 +463,9 @@ bool BuilderBase::update(const GameContext& context) {
 void BuilderBase::removeBuiltItemFromProductionQueue() {
     productionProgress = 0;
 
-    const auto currentBuildItemIter = std::find_if(buildList.begin(),
-                                                   buildList.end(),
-                                                   [&](BuildItem& buildItem) {
-                                                       return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
-                                                   });
+    const auto currentBuildItemIter = std::find_if(buildList.begin(), buildList.end(), [&](BuildItem& buildItem) {
+        return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
+    });
 
     if (currentBuildItemIter != buildList.end()) {
         currentBuildItemIter->num--;
@@ -475,7 +484,8 @@ void BuilderBase::handleUpgradeClick() {
 void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     for (const auto& buildItem : buildList) {
         if (buildItem.itemID == itemID) {
-            if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace) && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
+            if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace)
+                && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                 // only one palace allowed
                 soundPlayer->playSound(Sound_InvalidAction);
                 return;
@@ -483,12 +493,13 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
         }
     }
 
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, static_cast<uint32_t>(multipleMode)));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM,
+                                                        objectID, itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, static_cast<uint32_t>(multipleMode)));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM,
+                                                        objectID, itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
@@ -515,7 +526,8 @@ void BuilderBase::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     for (BuildItem& buildItem : buildList) {
         if (buildItem.itemID == itemID) {
             for (int i = 0; i < (multipleMode ? 5 : 1); i++) {
-                if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace) && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
+                if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace)
+                    && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                     // only one palace allowed
                     return;
                 }
@@ -545,11 +557,9 @@ void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
 
                     bool bCancelCurrentItem = (itemID == currentProducedItem);
 
-                    const auto queueItemIter = std::find_if(currentProductionQueue.rbegin(),
-                                                            currentProductionQueue.rend(),
-                                                            [&](ProductionQueueItem& queueItem) {
-                                                                return (queueItem.itemID == itemID);
-                                                            });
+                    const auto queueItemIter =
+                        std::find_if(currentProductionQueue.rbegin(), currentProductionQueue.rend(),
+                                     [&](ProductionQueueItem& queueItem) { return (queueItem.itemID == itemID); });
 
                     if (queueItemIter != currentProductionQueue.rend()) {
                         if (buildItem.num == 0 && bCancelCurrentItem) {

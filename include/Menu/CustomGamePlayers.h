@@ -78,7 +78,8 @@ private:
 
     void checkPlayerBoxes();
     void addAllPlayersToGameInitSettings();
-    static bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername);
+    static bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player,
+                                     const std::string& playername);
 
     void onNext();
     void onCancel();
@@ -146,8 +147,9 @@ private:
     int numHouses;
     std::vector<HOUSETYPE> boundHousesOnMap;
     uint32_t startGameTime;
-    int brainEqHumanSlot;                                                ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
-    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)> slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
+    int brainEqHumanSlot; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
+    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>
+        slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
 };
 
 #endif // CUSTOMGAMEPLAYERS_H

@@ -25,10 +25,7 @@
 class AnimationLabel final : public Widget {
 public:
     /// default constructor
-    AnimationLabel()
-        : pAnim(nullptr) {
-        enableResizing(false, false);
-    }
+    AnimationLabel() : pAnim(nullptr) { enableResizing(false, false); }
 
     /// destructor
     ~AnimationLabel() override = default;
@@ -37,9 +34,7 @@ public:
         Set the current animation that should be shown in this widget.
         \param newAnimation the new animation to show
     */
-    void setAnimation(Animation* newAnimation) {
-        pAnim = newAnimation;
-    }
+    void setAnimation(Animation* newAnimation) { pAnim = newAnimation; }
 
     /**
         This method returns the stored animation.

@@ -56,7 +56,8 @@ public:
         NotEnoughConrete        = 20,
     };
 
-    HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random);
+    HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
+                const Random& random);
     HumanPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~HumanPlayer() override;
     void save(OutputStream& stream) const override;
@@ -71,9 +72,7 @@ public:
     */
     void onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) override;
 
-    [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const {
-        return alreadyShownTutorialHints;
-    }
+    [[nodiscard]] uint32_t getAlreadyShownTutorialHints() const { return alreadyShownTutorialHints; }
 
     /**
         The player just started to produce an item.

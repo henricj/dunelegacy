@@ -18,9 +18,7 @@ class xorshift1024star {
 public:
     typedef uint64_t result_type;
 
-    explicit xorshift1024star(result_type x = 1) {
-        seed(x);
-    }
+    explicit xorshift1024star(result_type x = 1) { seed(x); }
 
     template<class Seq>
     explicit xorshift1024star(Seq& seq) {
@@ -40,13 +38,9 @@ public:
         return sp * UINT64_C(1181783497276652981);
     }
 
-    static constexpr result_type min() {
-        return numeric_limits<result_type>::min();
-    }
+    static constexpr result_type min() { return numeric_limits<result_type>::min(); }
 
-    static constexpr result_type max() {
-        return numeric_limits<result_type>::max();
-    }
+    static constexpr result_type max() { return numeric_limits<result_type>::max(); }
 
     static constexpr size_t seed_words = sizeof(xorshift1024star::s_) / sizeof(unsigned int);
 
@@ -74,9 +68,7 @@ public:
         p_ = 0;
     }
 
-    void discard(unsigned long long count) {
-        (*this)();
-    }
+    void discard(unsigned long long count) { (*this)(); }
 };
 } // namespace ExtraGenerators
 

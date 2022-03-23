@@ -29,13 +29,9 @@
 
 class ENetPacketIStream final : public InputStream {
 public:
-    explicit ENetPacketIStream(ENetPacket* pPacket)
-        : currentPos(0), packet(pPacket) { }
+    explicit ENetPacketIStream(ENetPacket* pPacket) : currentPos(0), packet(pPacket) { }
 
-    explicit ENetPacketIStream(const ENetPacketIStream& p)
-        : currentPos(0), packet(nullptr) {
-        *this = p;
-    }
+    explicit ENetPacketIStream(const ENetPacketIStream& p) : currentPos(0), packet(nullptr) { *this = p; }
 
     ~ENetPacketIStream() override {
         if (packet != nullptr) {
@@ -113,9 +109,7 @@ public:
         return SDL_SwapLE64(tmp);
     }
 
-    bool readBool() override {
-        return readUint8() == 1 ? true : false;
-    }
+    bool readBool() override { return readUint8() == 1 ? true : false; }
 
     float readFloat() override {
         const uint32_t tmp = readUint32();

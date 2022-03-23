@@ -14,16 +14,12 @@ class xoroshiro128plus {
     uint64_t s0_;
     uint64_t s1_;
 
-    static uint64_t rotl(const uint64_t x, int k) {
-        return (x << k) | (x >> (64 - k));
-    }
+    static uint64_t rotl(const uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }
 
 public:
     typedef uint64_t result_type;
 
-    explicit xoroshiro128plus(result_type x = 1) {
-        seed(x);
-    }
+    explicit xoroshiro128plus(result_type x = 1) { seed(x); }
 
     template<class Seq>
     explicit xoroshiro128plus(Seq& seq) {
@@ -42,15 +38,12 @@ public:
         return result;
     }
 
-    static constexpr result_type min() {
-        return numeric_limits<result_type>::min();
-    }
+    static constexpr result_type min() { return numeric_limits<result_type>::min(); }
 
-    static constexpr result_type max() {
-        return numeric_limits<result_type>::max();
-    }
+    static constexpr result_type max() { return numeric_limits<result_type>::max(); }
 
-    static constexpr size_t seed_words = (sizeof(xoroshiro128plus::s0_) + sizeof(xoroshiro128plus::s1_)) / sizeof(unsigned int);
+    static constexpr size_t seed_words =
+        (sizeof(xoroshiro128plus::s0_) + sizeof(xoroshiro128plus::s1_)) / sizeof(unsigned int);
 
     void seed(result_type s) {
         seed_seq seq {s};
@@ -73,9 +66,7 @@ public:
         s1_ |= buffer[3];
     }
 
-    void discard(unsigned long long count) {
-        (*this)();
-    }
+    void discard(unsigned long long count) { (*this)(); }
 };
 } // namespace ExtraGenerators
 

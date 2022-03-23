@@ -42,13 +42,15 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxLeft.addWidget(Spacer::create());
 
     startWithExploredMapCheckbox.setText(_("Start with Explored Map"));
-    startWithExploredMapCheckbox.setTooltipText(_("If checked the complete map is unhidden at the beginning of the game."));
+    startWithExploredMapCheckbox.setTooltipText(
+        _("If checked the complete map is unhidden at the beginning of the game."));
     startWithExploredMapCheckbox.setChecked(gameOptions.startWithExploredMap);
     vboxLeft.addWidget(&startWithExploredMapCheckbox);
     vboxLeft.addWidget(VSpacer::create(6));
 
     structuresDegradeOnConcreteCheckbox.setText(_("Structures Degrade On Concrete"));
-    structuresDegradeOnConcreteCheckbox.setTooltipText(_("If checked structures will degrade on power shortage even if built on concrete."));
+    structuresDegradeOnConcreteCheckbox.setTooltipText(
+        _("If checked structures will degrade on power shortage even if built on concrete."));
     structuresDegradeOnConcreteCheckbox.setChecked(gameOptions.structuresDegradeOnConcrete);
     vboxLeft.addWidget(&structuresDegradeOnConcreteCheckbox);
     vboxLeft.addWidget(VSpacer::create(6));
@@ -72,12 +74,15 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxLeft.addWidget(VSpacer::create(6));
 
     maxUnitsOverrideCheckbox.setText(_("Override max. number of units"));
-    maxUnitsOverrideCheckbox.setTooltipText(_("If checked the maximum number of units per house can be overridden; otherwise it is map dependent."));
+    maxUnitsOverrideCheckbox.setTooltipText(
+        _("If checked the maximum number of units per house can be overridden; otherwise it is map dependent."));
     maxUnitsOverrideCheckbox.setChecked(gameOptions.maximumNumberOfUnitsOverride >= 0);
-    maxUnitsOverrideCheckbox.setOnClick([this] { maxUnitsOverrideTextBox.setVisible(maxUnitsOverrideCheckbox.isChecked()); });
+    maxUnitsOverrideCheckbox.setOnClick(
+        [this] { maxUnitsOverrideTextBox.setVisible(maxUnitsOverrideCheckbox.isChecked()); });
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideCheckbox);
     maxUnitsOverrideTextBox.setMinMax(0, 999);
-    maxUnitsOverrideTextBox.setValue((gameOptions.maximumNumberOfUnitsOverride < 0) ? 25 : gameOptions.maximumNumberOfUnitsOverride);
+    maxUnitsOverrideTextBox.setValue(
+        (gameOptions.maximumNumberOfUnitsOverride < 0) ? 25 : gameOptions.maximumNumberOfUnitsOverride);
     maxUnitsOverrideTextBox.setVisible(gameOptions.maximumNumberOfUnitsOverride >= 0);
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideTextBox);
     vboxLeft.addWidget(&maxUnitsOverrideHBox, 24);
@@ -87,13 +92,15 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
 
     concreteRequiredCheckbox.setText(_("Concrete Required"));
     /* xgettext:no-c-format */
-    concreteRequiredCheckbox.setTooltipText(_("If checked building on bare rock will result in 50% structure health penalty."));
+    concreteRequiredCheckbox.setTooltipText(
+        _("If checked building on bare rock will result in 50% structure health penalty."));
     concreteRequiredCheckbox.setChecked(gameOptions.concreteRequired);
     vboxRight.addWidget(&concreteRequiredCheckbox);
     vboxRight.addWidget(VSpacer::create(6));
 
     fogOfWarCheckbox.setText(_("Fog of War"));
-    fogOfWarCheckbox.setTooltipText(_("If checked explored terrain will become foggy when no unit or structure is next to it."));
+    fogOfWarCheckbox.setTooltipText(
+        _("If checked explored terrain will become foggy when no unit or structure is next to it."));
     fogOfWarCheckbox.setChecked(gameOptions.fogOfWar);
     vboxRight.addWidget(&fogOfWarCheckbox);
     vboxRight.addWidget(VSpacer::create(6));
@@ -152,18 +159,19 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
 GameOptionsWindow::~GameOptionsWindow() = default;
 
 void GameOptionsWindow::onOK() {
-    gameOptions.gameSpeed                    = currentGameSpeed;
-    gameOptions.concreteRequired             = concreteRequiredCheckbox.isChecked();
-    gameOptions.structuresDegradeOnConcrete  = structuresDegradeOnConcreteCheckbox.isChecked();
-    gameOptions.fogOfWar                     = fogOfWarCheckbox.isChecked();
-    gameOptions.startWithExploredMap         = startWithExploredMapCheckbox.isChecked();
-    gameOptions.instantBuild                 = instantBuildCheckbox.isChecked();
-    gameOptions.onlyOnePalace                = onlyOnePalaceCheckbox.isChecked();
-    gameOptions.rocketTurretsNeedPower       = rocketTurretsNeedPowerCheckbox.isChecked();
-    gameOptions.sandwormsRespawn             = sandwormsRespawnCheckbox.isChecked();
-    gameOptions.killedSandwormsDropSpice     = killedSandwormsDropSpiceCheckbox.isChecked();
-    gameOptions.manualCarryallDrops          = manualCarryallDropsCheckbox.isChecked();
-    gameOptions.maximumNumberOfUnitsOverride = maxUnitsOverrideCheckbox.isChecked() ? maxUnitsOverrideTextBox.getValue() : -1;
+    gameOptions.gameSpeed                   = currentGameSpeed;
+    gameOptions.concreteRequired            = concreteRequiredCheckbox.isChecked();
+    gameOptions.structuresDegradeOnConcrete = structuresDegradeOnConcreteCheckbox.isChecked();
+    gameOptions.fogOfWar                    = fogOfWarCheckbox.isChecked();
+    gameOptions.startWithExploredMap        = startWithExploredMapCheckbox.isChecked();
+    gameOptions.instantBuild                = instantBuildCheckbox.isChecked();
+    gameOptions.onlyOnePalace               = onlyOnePalaceCheckbox.isChecked();
+    gameOptions.rocketTurretsNeedPower      = rocketTurretsNeedPowerCheckbox.isChecked();
+    gameOptions.sandwormsRespawn            = sandwormsRespawnCheckbox.isChecked();
+    gameOptions.killedSandwormsDropSpice    = killedSandwormsDropSpiceCheckbox.isChecked();
+    gameOptions.manualCarryallDrops         = manualCarryallDropsCheckbox.isChecked();
+    gameOptions.maximumNumberOfUnitsOverride =
+        maxUnitsOverrideCheckbox.isChecked() ? maxUnitsOverrideTextBox.getValue() : -1;
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if (pParentWindow != nullptr) {

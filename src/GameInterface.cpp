@@ -30,8 +30,7 @@
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 
-GameInterface::GameInterface(const GameContext& context)
-    : Window {0, 0, 0, 0}, context_ {context} {
+GameInterface::GameInterface(const GameContext& context) : Window {0, 0, 0, 0}, context_ {context} {
     Window::setTransparentBackground(true);
 
     Window::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
@@ -72,7 +71,8 @@ GameInterface::GameInterface(const GameContext& context)
     topBarHBox.addWidget(Spacer::create());
 
     // add radar
-    windowWidget.addWidget(&radarView, Point(getRendererWidth() - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0), radarView.getMinimumSize());
+    windowWidget.addWidget(&radarView, Point(getRendererWidth() - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0),
+                           radarView.getMinimumSize());
     radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
         return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });
@@ -88,10 +88,12 @@ void GameInterface::draw(Point position) {
 
     // draw Power Indicator and Spice indicator
 
-    const SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2};
+    const SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4,
+                                        getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
 
-    const SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2};
+    const SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4,
+                                        getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
     int xCount = 0;
@@ -107,7 +109,9 @@ void GameInterface::draw(Point position) {
             yCount2 = powerIndicatorPos.h / 2;
         }
     } else {
-        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower()) / static_cast<double>(pLocalHouse->getPowerRequirement()) * static_cast<double>(powerIndicatorPos.h / 2));
+        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower())
+                         / static_cast<double>(pLocalHouse->getPowerRequirement())
+                         * static_cast<double>(powerIndicatorPos.h / 2));
     }
 
     if (yCount2 > powerIndicatorPos.h + 1) {
@@ -165,7 +169,8 @@ void GameInterface::draw(Point position) {
 
     for (int i = NumDigits - 1; i >= 0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
-        auto dest   = calcSpriteDrawingRect(digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i) * 10, 135, 10);
+        auto dest   = calcSpriteDrawingRect(
+              digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i) * 10, 135, 10);
         Dune_RenderCopy(renderer, digitsTex, &source, &dest);
     }
 }
@@ -206,8 +211,7 @@ void GameInterface::updateObjectInterface() {
 
             pObjectContainer = MultiUnitInterface::create(context_);
 
-            windowWidget.addWidget(pObjectContainer.get(),
-                                   Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+            windowWidget.addWidget(pObjectContainer.get(), Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
                                    Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
         } else {
             if (!pObjectContainer->update()) {

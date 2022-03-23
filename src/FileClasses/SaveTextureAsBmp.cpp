@@ -10,8 +10,7 @@ class RestoreRenderTarget final {
     SDL_Texture* const texture_;
 
 public:
-    RestoreRenderTarget(SDL_Renderer* renderer)
-        : renderer_(renderer), texture_(SDL_GetRenderTarget(renderer)) { }
+    RestoreRenderTarget(SDL_Renderer* renderer) : renderer_(renderer), texture_(SDL_GetRenderTarget(renderer)) { }
     ~RestoreRenderTarget() { SDL_SetRenderTarget(renderer_, texture_); }
 };
 } // namespace

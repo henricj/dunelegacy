@@ -32,9 +32,13 @@
 #include <cstdio>
 #include <utility>
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories, const std::vector<std::string>& directoryTitles, std::string extension, int preselectedDirectoryIndex, const std::string& preselectedFile,
-                               uint32_t color)
-    : Window(0, 0, 0, 0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles), extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex), preselectedFile(preselectedFile), color(color) {
+LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
+                               const std::vector<std::filesystem::path>& directories,
+                               const std::vector<std::string>& directoryTitles, std::string extension,
+                               int preselectedDirectoryIndex, const std::string& preselectedFile, uint32_t color)
+    : Window(0, 0, 0, 0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles),
+      extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex),
+      preselectedFile(preselectedFile), color(color) {
 
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
@@ -130,7 +134,8 @@ void LoadSaveWindow::updateEntries() {
     fileList.clearAllEntries();
 
     int preselectedFileIndex = -1;
-    for (const auto& fileName : getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
+    for (const auto& fileName :
+         getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
         const auto entryName = fileName.stem().u8string();
         fileList.addEntry(entryName);
 
@@ -161,13 +166,14 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
             if (index >= 0) {
 
-                auto* pQstBox = QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
+                auto* pQstBox = QstBox::create(
+                    fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
 
-                                               _("Yes"),
+                    _("Yes"),
 
-                                               _("No"),
+                    _("No"),
 
-                                               QSTBOX_BUTTON1);
+                    QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
@@ -228,7 +234,8 @@ void LoadSaveWindow::onOK() {
                 pParentWindow->closeChildWindow();
             }
         } else {
-            openWindow(MsgBox::create(_("Invalid file name! File names must not contain \\ or / and must not be empty!")));
+            openWindow(
+                MsgBox::create(_("Invalid file name! File names must not contain \\ or / and must not be empty!")));
         }
     }
 }

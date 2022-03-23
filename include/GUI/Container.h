@@ -23,8 +23,9 @@
 
 /// The abstract base class for container widgets
 /**
-    WidgetData is used for storing information for every widget added to the container. It must contain a pointer pWidget which stores the contained widget and can contain any
-    additional data needed by the derived container class for managing the widget size and position (like weight factors, margins, etc)
+    WidgetData is used for storing information for every widget added to the container. It must contain a pointer
+   pWidget which stores the contained widget and can contain any additional data needed by the derived container class
+   for managing the widget size and position (like weight factors, margins, etc)
 */
 template<class WidgetData>
 class Container : public Widget {
@@ -33,8 +34,7 @@ protected:
 
 public:
     /// default constructor
-    Container()
-        : Widget() {
+    Container() : Widget() {
         pActiveChildWidget = nullptr;
         enableResizing(true, true);
     }
@@ -133,7 +133,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override {
         if ((isEnabled() == false) || (isVisible() == false)) {
@@ -147,7 +148,8 @@ public:
             int childX = x - pos.x;
             int childY = y - pos.y;
 
-            if ((childX >= 0) && (childX < widgetData.pWidget->getSize().x) && (childY >= 0) && (childY < widgetData.pWidget->getSize().y)) {
+            if ((childX >= 0) && (childX < widgetData.pWidget->getSize().x) && (childY >= 0)
+                && (childY < widgetData.pWidget->getSize().y)) {
                 bProcessed = widgetData.pWidget->handleMouseWheel(childX, childY, up);
                 if (bProcessed) {
                     break;
@@ -260,7 +262,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override {
         if ((isEnabled() == false) || (isVisible() == false)) {
@@ -354,9 +357,7 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -364,9 +365,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(uint32_t width, uint32_t height) override {
-        Widget::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override { Widget::resize(width, height); }
 
     /**
         Returns the position of widget relative to the top left corner of this container

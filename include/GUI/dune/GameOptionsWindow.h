@@ -67,23 +67,26 @@ private:
     VBox vboxRight;                               ///< inner vertical box on the right side
     Label captionlabel;                           ///< label that contains the caption
     Checkbox concreteRequiredCheckbox;            ///< If not checked we can build without penalties on the bare rock
-    Checkbox structuresDegradeOnConcreteCheckbox; ///< If checked, structures will degrade on power shortage even when build on concrete
-    Checkbox fogOfWarCheckbox;                    ///< If checked explored terrain will become foggy when no unit or structure is next to it
-    Checkbox startWithExploredMapCheckbox;        ///< If checked the complete map is unhidden at the beginning of the game
-    Checkbox instantBuildCheckbox;                ///< If checked the building of structures and units does not take any time
-    Checkbox onlyOnePalaceCheckbox;               ///< If checked only one palace can be build per house
-    Checkbox rocketTurretsNeedPowerCheckbox;      ///< If checked rocket turrets are dysfunctional on power shortage
-    Checkbox sandwormsRespawnCheckbox;            ///< If checked killed sandworms respawn after some time
-    Checkbox killedSandwormsDropSpiceCheckbox;    ///< If checked killed sandworms drop some spice
-    Checkbox manualCarryallDropsCheckbox;         ///< If checked player can request carryall to transport units
-    HBox gameSpeedHBox;                           ///< The HBox containing the game speed selection
-    PictureButton gameSpeedPlus;                  ///< The button for increasing the game speed
-    PictureButton gameSpeedMinus;                 ///< The button for decreasing the game speed
-    TextProgressBar gameSpeedBar;                 ///< The bar showing the current game speed
-    HBox maxUnitsOverrideHBox;                    ///< The HBox containing the override option for the maximum number of units
-    Checkbox maxUnitsOverrideCheckbox;            ///< If checked the maximum number of units is set directly, otherwise it is determined by the map
-    DigitsTextBox maxUnitsOverrideTextBox;        ///< The maximum number of units
-    TextButton okbutton;                          ///< the ok button
+    Checkbox structuresDegradeOnConcreteCheckbox; ///< If checked, structures will degrade on power shortage even when
+                                                  ///< build on concrete
+    Checkbox
+        fogOfWarCheckbox; ///< If checked explored terrain will become foggy when no unit or structure is next to it
+    Checkbox startWithExploredMapCheckbox;   ///< If checked the complete map is unhidden at the beginning of the game
+    Checkbox instantBuildCheckbox;           ///< If checked the building of structures and units does not take any time
+    Checkbox onlyOnePalaceCheckbox;          ///< If checked only one palace can be build per house
+    Checkbox rocketTurretsNeedPowerCheckbox; ///< If checked rocket turrets are dysfunctional on power shortage
+    Checkbox sandwormsRespawnCheckbox;       ///< If checked killed sandworms respawn after some time
+    Checkbox killedSandwormsDropSpiceCheckbox; ///< If checked killed sandworms drop some spice
+    Checkbox manualCarryallDropsCheckbox;      ///< If checked player can request carryall to transport units
+    HBox gameSpeedHBox;                        ///< The HBox containing the game speed selection
+    PictureButton gameSpeedPlus;               ///< The button for increasing the game speed
+    PictureButton gameSpeedMinus;              ///< The button for decreasing the game speed
+    TextProgressBar gameSpeedBar;              ///< The bar showing the current game speed
+    HBox maxUnitsOverrideHBox;             ///< The HBox containing the override option for the maximum number of units
+    Checkbox maxUnitsOverrideCheckbox;     ///< If checked the maximum number of units is set directly, otherwise it is
+                                           ///< determined by the map
+    DigitsTextBox maxUnitsOverrideTextBox; ///< The maximum number of units
+    TextButton okbutton;                   ///< the ok button
 };
 
 #endif // GAMEOPTIONSWINDOW_H

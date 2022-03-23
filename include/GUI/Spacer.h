@@ -26,10 +26,7 @@
 class Spacer final : public Widget {
 public:
     /// default constructor
-    Spacer()
-        : Widget() {
-        enableResizing(true, true);
-    }
+    Spacer() : Widget() { enableResizing(true, true); }
 
     /// destructor
     ~Spacer() override = default;
@@ -57,8 +54,7 @@ public:
 class HSpacer final : public Widget {
 public:
     /// default constructor
-    HSpacer()
-        : Widget(), width {} {
+    HSpacer() : Widget(), width {} {
         resize(0, 0);
         enableResizing(false, false);
     }
@@ -67,8 +63,7 @@ public:
         Constructor.
         \param width    Width of this spacer.
     */
-    explicit HSpacer(uint32_t width)
-        : Widget(), width {width} {
+    explicit HSpacer(uint32_t width) : Widget(), width {width} {
         resize(width, 0);
         enableResizing(false, false);
     }
@@ -80,9 +75,7 @@ public:
         Returns the minimum size of this spacer. The returned size is (width,0).
         \return the minimum size of this spacer
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        return Point(width, 0);
-    }
+    [[nodiscard]] Point getMinimumSize() const override { return Point(width, 0); }
 
     /**
         This static method creates a dynamic horizontal spacer object.
@@ -105,8 +98,7 @@ private:
 class VSpacer final : public Widget {
 public:
     /// default constructor
-    VSpacer()
-        : Widget(), height {} {
+    VSpacer() : Widget(), height {} {
         resize(0, 0);
         enableResizing(false, false);
     }
@@ -115,8 +107,7 @@ public:
         Constructor.
         \param height   Height of this spacer.
     */
-    explicit VSpacer(uint32_t height)
-        : Widget(), height {height} {
+    explicit VSpacer(uint32_t height) : Widget(), height {height} {
         resize(0, height);
         enableResizing(false, false);
     }
@@ -128,9 +119,7 @@ public:
         Returns the minimum size of this spacer. The returned size is (0,height).
         \return the minimum size of this spacer
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        return Point(0, height);
-    }
+    [[nodiscard]] Point getMinimumSize() const override { return Point(0, height); }
 
     /**
         This static method creates a dynamic vertical spacer object.

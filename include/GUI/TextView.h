@@ -47,9 +47,7 @@ public:
         Gets the font size of this text view. Default font size of a text view is 14
         \return the font size of this text view
     */
-    [[nodiscard]] virtual int getTextFontSize() const {
-        return fontSize;
-    }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
 
     /**
         Sets the text color for this label.
@@ -57,7 +55,8 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
         \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
+                              Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         this->backgroundcolor = backgroundcolor;
@@ -66,7 +65,8 @@ public:
 
     /**
         Sets the alignment of the text in this label.
-        \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
+        \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
+       Alignment_Top or Alignment_Bottom)
     */
     virtual void setAlignment(Alignment_Enum alignment) {
         this->alignment = alignment;
@@ -75,11 +75,10 @@ public:
 
     /**
         Returns the alignment of the text in this label.
-        \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
+        \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
+       Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual Alignment_Enum getAlignment() const {
-        return alignment;
-    }
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment; }
 
     /**
         This method sets a new text for this label and resizes this label
@@ -119,7 +118,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
@@ -142,9 +142,7 @@ public:
         called if the new size is a valid size for this text view (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the text view to width and height. This method should only
@@ -181,23 +179,17 @@ public:
         Set if the scrollbar shall be hidden if not needed
         \param  bAutohideScrollbar  true = hide scrollbar, false = show always
     */
-    void setAutohideScrollbar(bool bAutohideScrollbar) {
-        this->bAutohideScrollbar = bAutohideScrollbar;
-    }
+    void setAutohideScrollbar(bool bAutohideScrollbar) { this->bAutohideScrollbar = bAutohideScrollbar; }
 
     /**
         Scrolls the text box to the start.
     */
-    void scrollToStart() {
-        scrollbar.setCurrentValue(0);
-    }
+    void scrollToStart() { scrollbar.setCurrentValue(0); }
 
     /**
         Scrolls the text box to the last line.
     */
-    void scrollToEnd() {
-        scrollbar.setCurrentValue(scrollbar.getRangeMax());
-    }
+    void scrollToEnd() { scrollbar.setCurrentValue(scrollbar.getRangeMax()); }
 
 protected:
     /**
@@ -222,7 +214,8 @@ private:
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
     std::string text;                           ///< the text of this label
 
-    Alignment_Enum alignment = static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top); ///< the alignment of this label
+    Alignment_Enum alignment =
+        static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top); ///< the alignment of this label
 
     sdl2::texture_ptr pBackground = nullptr;
     sdl2::texture_ptr pForeground = nullptr;

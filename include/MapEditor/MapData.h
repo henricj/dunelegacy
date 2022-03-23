@@ -25,34 +25,22 @@
 class MapData {
 
 public:
-    MapData()
-        : sizeX(0), sizeY(0) { }
+    MapData() : sizeX(0), sizeY(0) { }
 
-    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand)
-        : sizeX(sizeX), sizeY(sizeY) {
+    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand) : sizeX(sizeX), sizeY(sizeY) {
 
         data.resize(sizeX * sizeY, terrainType);
     }
 
-    const TERRAINTYPE& operator()(int x, int y) const {
-        return data.at(y * sizeX + x);
-    }
+    const TERRAINTYPE& operator()(int x, int y) const { return data.at(y * sizeX + x); }
 
-    TERRAINTYPE& operator()(int x, int y) {
-        return data.at(y * sizeX + x);
-    }
+    TERRAINTYPE& operator()(int x, int y) { return data.at(y * sizeX + x); }
 
-    [[nodiscard]] int getSizeX() const {
-        return sizeX;
-    }
+    [[nodiscard]] int getSizeX() const { return sizeX; }
 
-    [[nodiscard]] int getSizeY() const {
-        return sizeY;
-    }
+    [[nodiscard]] int getSizeY() const { return sizeY; }
 
-    [[nodiscard]] bool isInsideMap(int x, int y) const {
-        return ((x >= 0) && (x < sizeX) && (y >= 0) && (y < sizeY));
-    }
+    [[nodiscard]] bool isInsideMap(int x, int y) const { return ((x >= 0) && (x < sizeX) && (y >= 0) && (y < sizeY)); }
 
 private:
     std::vector<TERRAINTYPE> data;

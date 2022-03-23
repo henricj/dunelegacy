@@ -90,12 +90,15 @@ private:
     DuneTextures duneTextures;
 
     // Textures
-    std::array<std::array<std::array<sdl2::texture_ptr, NUM_ZOOMLEVEL>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS> objPicTex;
+    std::array<std::array<std::array<sdl2::texture_ptr, NUM_ZOOMLEVEL>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>,
+               NUM_OBJPICS>
+        objPicTex;
     std::array<sdl2::texture_ptr, NUM_SMALLDETAILPICS> smallDetailPicTex;
     std::array<sdl2::texture_ptr, NUM_TINYPICTURE> tinyPictureTex;
 
     std::array<std::array<sdl2::texture_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_UIGRAPHICS> uiGraphicTex;
-    std::array<std::array<sdl2::texture_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES> mapChoicePiecesTex;
+    std::array<std::array<sdl2::texture_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES>
+        mapChoicePiecesTex;
 
     std::vector<sdl2::texture_ptr> streamingTextureCache_;
 };

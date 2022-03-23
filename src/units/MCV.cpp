@@ -34,8 +34,7 @@ namespace {
 constexpr GroundUnitConstants mcv_constants {MCV::item_id, false};
 }
 
-MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer)
-    : GroundUnit(mcv_constants, objectID, initializer) {
+MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
     setHealth(getMaxHealth());
@@ -61,7 +60,8 @@ void MCV::init() {
 MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
 }
 
 bool MCV::doDeploy() {
@@ -74,7 +74,8 @@ bool MCV::doDeploy() {
         // first place construction yard and then destroy MCV, otherwise a player with only MCV left will lose
 
         // place construction yard (force placing to place on still existing MCV)
-        if (pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true) != nullptr) {
+        if (pOwner->placeStructure(NONE_ID, Structure_ConstructionYard, newLocation.x, newLocation.y, false, true)
+            != nullptr) {
             // we hide the MVC so we don't get a soldier on destroy
             setVisible(VIS_ALL, false);
 
@@ -93,7 +94,8 @@ bool MCV::doDeploy() {
 }
 
 bool MCV::canAttack(const ObjectBase* object) const {
-    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
+    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID())
+            && object->isVisible(getOwner()->getTeamID()));
 }
 
 void MCV::destroy(const GameContext& context) {

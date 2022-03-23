@@ -30,14 +30,13 @@
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
     static std::unique_ptr<DefaultStructureInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<DefaultStructureInterface> {new DefaultStructureInterface {context, objectID}};
+        auto tmp = std::unique_ptr<DefaultStructureInterface> {new DefaultStructureInterface {context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    DefaultStructureInterface(const GameContext& context, int objectID)
-        : DefaultObjectInterface(context, objectID) {
+    DefaultStructureInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
         const auto* const pUIRepair        = pGFXManager->getUIGraphic(UI_Repair);
         const auto* const pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
 

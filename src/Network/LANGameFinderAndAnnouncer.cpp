@@ -65,8 +65,7 @@ struct PACKEDDATASTRUCTURE NetworkPacket_RequestGame {
 #    pragma pack(pop)
 #endif
 
-LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer()
-    : announceSocket(enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM)) {
+LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer() : announceSocket(enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM)) {
 
     if (announceSocket == ENET_SOCKET_NULL) {
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Creating socket failed!");
@@ -187,7 +186,10 @@ void LANGameFinderAndAnnouncer::receivePackets() {
     } else if (receivedBytes < 0) {
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Receiving data failed!");
     } else {
-        if ((receivedBytes == sizeof(NetworkPacket_AnnounceGame)) && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER) && (announcePacket.type == NETWORKPACKET_ANNOUNCEGAME) && (strncmp(announcePacket.serverVersion, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE) == 0)) {
+        if ((receivedBytes == sizeof(NetworkPacket_AnnounceGame))
+            && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
+            && (announcePacket.type == NETWORKPACKET_ANNOUNCEGAME)
+            && (strncmp(announcePacket.serverVersion, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE) == 0)) {
 
             std::string serverName = std::string(announcePacket.serverName, LANGAME_ANNOUNCER_MAXGAMENAMESIZE);
             serverName.resize(strlen(serverName.c_str())); // strip off '\0' at the end of the std::string
@@ -211,7 +213,8 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 
             bool bUpdate = false;
             for (GameServerInfo& curGameServerInfo : gameServerInfoList) {
-                if ((curGameServerInfo.serverAddress.host == gameServerInfo.serverAddress.host) && (curGameServerInfo.serverAddress.port == gameServerInfo.serverAddress.port)) {
+                if ((curGameServerInfo.serverAddress.host == gameServerInfo.serverAddress.host)
+                    && (curGameServerInfo.serverAddress.port == gameServerInfo.serverAddress.port)) {
                     curGameServerInfo = gameServerInfo;
                     bUpdate           = true;
                     break;
@@ -228,7 +231,9 @@ void LANGameFinderAndAnnouncer::receivePackets() {
                     pOnNewServer(gameServerInfo);
                 }
             }
-        } else if ((receivedBytes == sizeof(NetworkPacket_RemoveGameAnnouncement)) && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER) && (announcePacket.type == NETWORKPACKET_REMOVEGAMEANNOUNCEMENT)) {
+        } else if ((receivedBytes == sizeof(NetworkPacket_RemoveGameAnnouncement))
+                   && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
+                   && (announcePacket.type == NETWORKPACKET_REMOVEGAMEANNOUNCEMENT)) {
 
             int serverPort = SDL_SwapLE16(announcePacket.serverPort);
 
@@ -245,7 +250,9 @@ void LANGameFinderAndAnnouncer::receivePackets() {
                     ++iter;
                 }
             }
-        } else if ((serverPort > 0) && (receivedBytes == sizeof(NetworkPacket_RequestGame)) && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER) && (announcePacket.type == NETWORKPACKET_REQUESTANNOUNCE)) {
+        } else if ((serverPort > 0) && (receivedBytes == sizeof(NetworkPacket_RequestGame))
+                   && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
+                   && (announcePacket.type == NETWORKPACKET_REQUESTANNOUNCE)) {
 
             announceGame();
         }

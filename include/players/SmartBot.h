@@ -24,13 +24,10 @@
 
 class SmartBot final : public Player {
 public:
-    enum class Difficulty {
-        Normal  = 0,
-        Defense = 1,
-        Hard    = 2
-    };
+    enum class Difficulty { Normal = 0, Defense = 1, Hard = 2 };
 
-    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+             Difficulty difficulty);
     SmartBot(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~SmartBot() override;
     void save(OutputStream& stream) const override;

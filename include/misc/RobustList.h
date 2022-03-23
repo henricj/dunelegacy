@@ -77,25 +77,19 @@ public:
     /**
         destructor
     */
-    ~RobustListIterator<T>() {
-        unregisterFromList();
-    }
+    ~RobustListIterator<T>() { unregisterFromList(); }
 
     /**
         This operator returns the element the iterator is currently pointing to
         \return a reference to the element the iterator is currently pointing to
     */
-    T& operator*() const {
-        return current->data;
-    }
+    T& operator*() const { return current->data; }
 
     /**
         This operator returns a pointer to the element the iterator is currently pointing to
         \return a pointer to the element the iterator is currently pointing to
     */
-    T* operator->() const {
-        return &(current->data);
-    }
+    T* operator->() const { return &(current->data); }
 
     /**
         This operator advances to the next element in the list. If the element the iterator is
@@ -176,9 +170,7 @@ public:
         \param  x   the other iterator
         \return false if both iterators point to the same element, true otherwise
     */
-    bool operator!=(const RobustListIterator<T>& x) const {
-        return !(operator==(x));
-    }
+    bool operator!=(const RobustListIterator<T>& x) const { return !(operator==(x)); }
 
     /**
         This operator copys the iterator x to this iterat.
@@ -206,9 +198,7 @@ public:
         Returns the list of this iterator
         \return the list of this iterator
     */
-    RobustList<T>* getList() {
-        return pList;
-    }
+    RobustList<T>* getList() { return pList; }
 
 private:
     /**
@@ -289,25 +279,19 @@ public:
     /**
         destructor
     */
-    ~RobustListConstIterator<T>() {
-        unregisterFromList();
-    }
+    ~RobustListConstIterator<T>() { unregisterFromList(); }
 
     /**
         This operator returns the element the iterator is currently pointing to
         \return a reference to the element the iterator is currently pointing to
     */
-    const T& operator*() const {
-        return current->data;
-    }
+    const T& operator*() const { return current->data; }
 
     /**
         This operator returns a pointer to the element the iterator is currently pointing to
         \return a pointer to the element the iterator is currently pointing to
     */
-    const T* operator->() const {
-        return &(current->data);
-    }
+    const T* operator->() const { return &(current->data); }
 
     /**
         This operator advances to the next element in the list. If the element the iterator is
@@ -388,9 +372,7 @@ public:
         \param  x   the other iterator
         \return false if both iterators point to the same element, true otherwise
     */
-    bool operator!=(const RobustListConstIterator<T>& x) const {
-        return !(operator==(x));
-    }
+    bool operator!=(const RobustListConstIterator<T>& x) const { return !(operator==(x)); }
 
     /**
         This operator copys the iterator x to this iterat.
@@ -418,9 +400,7 @@ public:
         Returns the list of this iterator
         \return the list of this iterator
     */
-    RobustList<T>* getList() {
-        return pList;
-    }
+    RobustList<T>* getList() { return pList; }
 
 private:
     /**
@@ -517,17 +497,13 @@ public:
         Returns the number of items (elements) currently stored in the list.
         \return number of elements in the list
     */
-    int size() const {
-        return numElements;
-    }
+    int size() const { return numElements; }
 
     /**
         Checks whether this list is empty.
         \returns true if the number of elements is zero, false otherwise.
     */
-    bool empty() const {
-        return (numElements == 0);
-    }
+    bool empty() const { return (numElements == 0); }
 
     /**
         Adds the element x at the beginning of the list.
@@ -560,68 +536,52 @@ public:
     /**
         Erases the first element from a list. These operations are illegal if the list is empty.
     */
-    void pop_front() {
-        removeElement(head->next);
-    }
+    void pop_front() { removeElement(head->next); }
 
     /**
         Erases the last element from a list. These operations are illegal if the list is empty.
     */
-    void pop_back() {
-        removeElement(tail->prev);
-    }
+    void pop_back() { removeElement(tail->prev); }
 
     /**
         Obtain a reference to the first element in the list (valid only if the list is not empty).
         This reference may be used to access the first element in the list.
         \return First element in the list.
     */
-    T& front() {
-        return head->next->data;
-    }
+    T& front() { return head->next->data; }
 
     /**
         Obtain a const reference to the first element in the list (valid only if the list is not empty).
         This reference may be used to access the first element in the list.
         \return First element in the list.
     */
-    const T& front() const {
-        return head->next->data;
-    }
+    const T& front() const { return head->next->data; }
 
     /**
         Obtain a reference to the last element in the list (valid only if the list is not empty).
         This reference may be used to access the last element in the list.
         \return Last element in the list.
     */
-    T& back() {
-        return tail->prev->data;
-    }
+    T& back() { return tail->prev->data; }
 
     /**
         Obtain a const reference to the last element in the list (valid only if the list is not empty).
         This reference may be used to access the last element in the list.
         \return Last element in the list.
     */
-    const T& back() const {
-        return tail->prev->data;
-    }
+    const T& back() const { return tail->prev->data; }
 
     /**
         Returns an iterator that references the beginning of the list.
         \return Iterator that points to the beginning of the list
     */
-    iterator begin() {
-        return iterator(head->next, this);
-    }
+    iterator begin() { return iterator(head->next, this); }
 
     /**
         Returns an const iterator that references the beginning of the list.
         \return Iterator that points to the beginning of the list
     */
-    const_iterator begin() const {
-        return const_iterator(head->next, this);
-    }
+    const_iterator begin() const { return const_iterator(head->next, this); }
 
     /**
         Returns an iterator that references a position just past the last element in the list.
@@ -695,9 +655,7 @@ public:
         numElements++;
     }
 
-    void erase(iterator position) {
-        removeElement(position.current);
-    }
+    void erase(iterator position) { removeElement(position.current); }
 
     /**
         Copys a list to this list. This will first delete all elements in this list
@@ -756,9 +714,7 @@ public:
         \param  x   The other list
         \return false if both list contain the same elements in the same order, true otherwise
     */
-    bool operator!=(const RobustList<T>& x) const {
-        return !this->operator==(x);
-    }
+    bool operator!=(const RobustList<T>& x) const { return !this->operator==(x); }
 
 private:
     /**

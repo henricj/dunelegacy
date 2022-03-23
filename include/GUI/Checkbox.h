@@ -33,9 +33,7 @@ public:
     }
 
     /// destructor
-    ~Checkbox() override {
-        Checkbox::invalidateTextures();
-    }
+    ~Checkbox() override { Checkbox::invalidateTextures(); }
 
     /**
         This method sets a new text for this checkbox and resizes it
@@ -68,17 +66,13 @@ public:
         This method sets this checkbox to checked or unchecked. It does the same as setToggleState().
         \param bChecked true = checked, false = unchecked
     */
-    void setChecked(bool bChecked) {
-        setToggleState(bChecked);
-    }
+    void setChecked(bool bChecked) { setToggleState(bChecked); }
 
     /**
         This method returns whether this checkbox is checked. It is the same as getToggleState().
         \return true = checked, false = unchecked
     */
-    [[nodiscard]] bool isChecked() const noexcept {
-        return getToggleState();
-    }
+    [[nodiscard]] bool isChecked() const noexcept { return getToggleState(); }
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
@@ -118,9 +112,7 @@ public:
         called if the new size is a valid size for this progress bar (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the checkbox to width and height. This method should only
@@ -138,9 +130,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        return GUIStyle::getInstance().getMinimumCheckboxSize(text);
-    }
+    [[nodiscard]] Point getMinimumSize() const override { return GUIStyle::getInstance().getMinimumCheckboxSize(text); }
 
 protected:
     /**
@@ -154,11 +144,15 @@ protected:
         if (!pUnpressedTexture) {
             invalidateTextures();
 
-            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
+            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false,
+                                                                      textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false,
+                                                                      textcolor, textshadowcolor),
+                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true,
+                                                                      textcolor, textshadowcolor));
 
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
+            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(
+                getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
         }
     }
 
@@ -175,7 +169,8 @@ private:
     uint32_t textcolor {COLOR_DEFAULT};       ///< Text color
     uint32_t textshadowcolor {COLOR_DEFAULT}; ///< Text shadow color
     std::string text;                         ///< Text of this checkbox
-    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+    sdl2::texture_ptr
+        pCheckedActiveTexture; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 
 #endif // CHECKBOX_H

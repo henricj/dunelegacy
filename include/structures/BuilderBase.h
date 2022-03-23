@@ -39,9 +39,7 @@ public:
         num          = 0;
     }
 
-    BuildItem(InputStream& stream) {
-        load(stream);
-    }
+    BuildItem(InputStream& stream) { load(stream); }
 
     void save(OutputStream& stream) const {
         stream.writeUint32(itemID);
@@ -62,17 +60,11 @@ public:
 
 class ProductionQueueItem final {
 public:
-    ProductionQueueItem()
-        : itemID(ItemID_enum::ItemID_Invalid), price(0) {
-    }
+    ProductionQueueItem() : itemID(ItemID_enum::ItemID_Invalid), price(0) { }
 
-    ProductionQueueItem(ItemID_enum _ItemID, uint32_t _price)
-        : itemID(_ItemID), price(_price) {
-    }
+    ProductionQueueItem(ItemID_enum _ItemID, uint32_t _price) : itemID(_ItemID), price(_price) { }
 
-    ProductionQueueItem(InputStream& stream) {
-        load(stream);
-    }
+    ProductionQueueItem(InputStream& stream) { load(stream); }
 
     void save(OutputStream& stream) const {
         stream.writeUint32(itemID);
@@ -188,7 +180,9 @@ public:
         to make it weaker, e.g. the campaign AI adjusts the build speed to the mission number
         \param newBuildSpeedLimit   the new limit; must be between 0 and 1
     */
-    void doSetBuildSpeedLimit(FixPoint newBuildSpeedLimit) { buildSpeedLimit = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit)); }
+    void doSetBuildSpeedLimit(FixPoint newBuildSpeedLimit) {
+        buildSpeedLimit = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit));
+    }
 
     bool isUpgrading() const noexcept { return upgrading; }
     bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
@@ -204,9 +198,7 @@ public:
     FixPoint getProductionProgress() const noexcept { return productionProgress; }
     const std::list<BuildItem>& getBuildList() const noexcept { return buildList; }
 
-    virtual bool isAvailableToBuild(ItemID_enum itemID) const {
-        return (getBuildItem(itemID) != nullptr);
-    }
+    virtual bool isAvailableToBuild(ItemID_enum itemID) const { return (getBuildItem(itemID) != nullptr); }
 
     /**
         Get the current build speed limit.
@@ -219,7 +211,8 @@ protected:
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID, int price = -1);
+    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
+                            ItemID_enum itemID, int price = -1);
 
     void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID);
 
@@ -253,13 +246,15 @@ protected:
 
     bool bCurrentItemOnHold {};                       ///< Is the currently produced item on hold?
     ItemID_enum currentProducedItem = ItemID_Invalid; ///< The ItemID of the currently produced item
-    FixPoint productionProgress {};                   ///< The current state of the production progress (measured in money spent)
-    uint32_t deployTimer {};                          ///< Timer for deploying a unit
+    FixPoint productionProgress {}; ///< The current state of the production progress (measured in money spent)
+    uint32_t deployTimer {};        ///< Timer for deploying a unit
 
-    FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it weaker.
+    FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it
+                              ///< weaker.
 
-    std::list<ProductionQueueItem> currentProductionQueue; ///< This list is the production queue (It contains the item IDs of the units/structures to produce)
-    std::list<BuildItem> buildList;                        ///< This list contains all the things that can be produced by this builder
+    std::list<ProductionQueueItem> currentProductionQueue; ///< This list is the production queue (It contains the item
+                                                           ///< IDs of the units/structures to produce)
+    std::list<BuildItem> buildList; ///< This list contains all the things that can be produced by this builder
 
 private:
     void init();

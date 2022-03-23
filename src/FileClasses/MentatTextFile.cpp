@@ -83,7 +83,8 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         const uint16_t techLevel = p[entryLength - 1];
 
         if (entryContentOffset >= mentatTextFilesize) {
-            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!", entryContentOffset);
+            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!",
+                  entryContentOffset);
         }
 
         std::string compressedEntryContent(reinterpret_cast<char*>(filedata.data()) + entryContentOffset);
@@ -98,7 +99,8 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         std::string name    = nameAndContent.substr(0, delimPos2);
         std::string content = (delimPos2 == std::string::npos) ? "" : nameAndContent.substr(delimPos2 + 2);
 
-        mentatEntries.emplace_back(convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name, content);
+        mentatEntries.emplace_back(convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name,
+                                   content);
 
         pCurrentPos += entryLength;
     }

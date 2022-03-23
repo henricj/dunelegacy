@@ -33,19 +33,13 @@ typedef std::array<const DuneTexture*, NUM_ZOOMLEVEL> zoomable_texture;
 
 class Coord final {
 public:
-    constexpr Coord() noexcept
-        : x(0), y(0) { }
+    constexpr Coord() noexcept : x(0), y(0) { }
 
-    constexpr Coord(int x, int y) noexcept
-        : x(x), y(y) { }
+    constexpr Coord(int x, int y) noexcept : x(x), y(y) { }
 
-    constexpr bool operator==(const Coord& c) const noexcept {
-        return (x == c.x && y == c.y);
-    }
+    constexpr bool operator==(const Coord& c) const noexcept { return (x == c.x && y == c.y); }
 
-    constexpr bool operator!=(const Coord& c) const noexcept {
-        return !operator==(c);
-    }
+    constexpr bool operator!=(const Coord& c) const noexcept { return !operator==(c); }
 
     constexpr Coord& operator+=(const Coord& c) noexcept {
         x += c.x;
@@ -100,21 +94,13 @@ public:
         y = INVALID_POS;
     }
 
-    [[nodiscard]] constexpr bool isValid() const noexcept {
-        return ((x != INVALID_POS) && (y != INVALID_POS));
-    }
+    [[nodiscard]] constexpr bool isValid() const noexcept { return ((x != INVALID_POS) && (y != INVALID_POS)); }
 
-    [[nodiscard]] constexpr bool isInvalid() const noexcept {
-        return ((x == INVALID_POS) || (y == INVALID_POS));
-    }
+    [[nodiscard]] constexpr bool isInvalid() const noexcept { return ((x == INVALID_POS) || (y == INVALID_POS)); }
 
-    static constexpr Coord Invalid() noexcept {
-        return Coord(INVALID_POS, INVALID_POS);
-    }
+    static constexpr Coord Invalid() noexcept { return Coord(INVALID_POS, INVALID_POS); }
 
-    explicit constexpr operator bool() const noexcept {
-        return isValid();
-    }
+    explicit constexpr operator bool() const noexcept { return isValid(); }
 
 public:
     int x;
@@ -123,25 +109,26 @@ public:
 
 typedef enum : int8_t {
     ATTACKMODE_INVALID [[maybe_unused]] = -1,
-    GUARD                               = 0, ///< The unit will attack enemy units but will not move or follow enemy units.
-    AREAGUARD                           = 1, ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a relatively large radius, and return to their original position after their target was either destroyed or left the immediate area.
-    AMBUSH                              = 2, ///< Ambush means a unit will remain in position until sighted by the enemy, and then proceed to attack any enemy units it might find on the map.
-    HUNT                                = 3, ///< Hunt makes a unit start from its position towards enemy units, even if the player has not sighted the AI (normally the AI will not attack until there has been a contact between the player's and the AI's units). Also works for human units, they'll go towards any enemy units on the map just as the mission starts.
-    HARVEST                             = 4, ///< Only used by the map editor
-    SABOTAGE                            = 5, ///< Only used by the map editor
-    STOP                                = 6,
-    CAPTURE                             = 7, ///< Capture is only used for infantry units when ordered to capture a building
-    CARRYALLREQUESTED                   = 8, ///< This allows a unit to keep requesting a carryall even if one isn't available right now
-    RETREAT                             = 9, ///< Ignore other units
+    GUARD     = 0, ///< The unit will attack enemy units but will not move or follow enemy units.
+    AREAGUARD = 1, ///< Area Guard is the most common command for pre-placed AI units. They will scan for targets in a
+                   ///< relatively large radius, and return to their original position after their target was either
+                   ///< destroyed or left the immediate area.
+    AMBUSH = 2, ///< Ambush means a unit will remain in position until sighted by the enemy, and then proceed to attack
+                ///< any enemy units it might find on the map.
+    HUNT = 3, ///< Hunt makes a unit start from its position towards enemy units, even if the player has not sighted the
+              ///< AI (normally the AI will not attack until there has been a contact between the player's and the AI's
+              ///< units). Also works for human units, they'll go towards any enemy units on the map just as the mission
+              ///< starts.
+    HARVEST           = 4, ///< Only used by the map editor
+    SABOTAGE          = 5, ///< Only used by the map editor
+    STOP              = 6,
+    CAPTURE           = 7, ///< Capture is only used for infantry units when ordered to capture a building
+    CARRYALLREQUESTED = 8, ///< This allows a unit to keep requesting a carryall even if one isn't available right now
+    RETREAT           = 9, ///< Ignore other units
     ATTACKMODE_MAX [[maybe_unused]]
 } ATTACKMODE;
 
-enum class GameState {
-    Start,
-    Loading,
-    Running,
-    Deinitialize
-};
+enum class GameState { Start, Loading, Running, Deinitialize };
 
 enum class GameType {
     Invalid [[maybe_unused]] = -1,
@@ -204,16 +191,21 @@ public:
         GameOptionsClass() noexcept
             : gameSpeed(GAMESPEED_DEFAULT), concreteRequired(true), structuresDegradeOnConcrete(true), fogOfWar(false),
               startWithExploredMap(false), instantBuild(false), onlyOnePalace(false), rocketTurretsNeedPower(false),
-              sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false), maximumNumberOfUnitsOverride(-1) {
-        }
+              sandwormsRespawn(false), killedSandwormsDropSpice(false), manualCarryallDrops(false),
+              maximumNumberOfUnitsOverride(-1) { }
 
         bool operator==(const GameOptionsClass& goc) const noexcept {
-            return (gameSpeed == goc.gameSpeed) && (concreteRequired == goc.concreteRequired) && (structuresDegradeOnConcrete == goc.structuresDegradeOnConcrete) && (fogOfWar == goc.fogOfWar) && (startWithExploredMap == goc.startWithExploredMap) && (instantBuild == goc.instantBuild) && (onlyOnePalace == goc.onlyOnePalace) && (rocketTurretsNeedPower == goc.rocketTurretsNeedPower) && (sandwormsRespawn == goc.sandwormsRespawn) && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice) && (manualCarryallDrops == goc.manualCarryallDrops) && (maximumNumberOfUnitsOverride == goc.maximumNumberOfUnitsOverride);
+            return (gameSpeed == goc.gameSpeed) && (concreteRequired == goc.concreteRequired)
+                && (structuresDegradeOnConcrete == goc.structuresDegradeOnConcrete) && (fogOfWar == goc.fogOfWar)
+                && (startWithExploredMap == goc.startWithExploredMap) && (instantBuild == goc.instantBuild)
+                && (onlyOnePalace == goc.onlyOnePalace) && (rocketTurretsNeedPower == goc.rocketTurretsNeedPower)
+                && (sandwormsRespawn == goc.sandwormsRespawn)
+                && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice)
+                && (manualCarryallDrops == goc.manualCarryallDrops)
+                && (maximumNumberOfUnitsOverride == goc.maximumNumberOfUnitsOverride);
         }
 
-        bool operator!=(const GameOptionsClass& goc) const {
-            return !this->operator==(goc);
-        }
+        bool operator!=(const GameOptionsClass& goc) const { return !this->operator==(goc); }
 
         int gameSpeed;
         bool concreteRequired;

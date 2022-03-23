@@ -31,12 +31,7 @@
 */
 class ChatManager final : public Widget {
 public:
-    enum class MessageType {
-        MSGTYPE_NORMAL  = 0,
-        MSGTYPE_INFO    = 1,
-        MSGTYPE_PICTURE = 2,
-        NUM_MSGTYPE
-    };
+    enum class MessageType { MSGTYPE_NORMAL = 0, MSGTYPE_INFO = 1, MSGTYPE_PICTURE = 2, NUM_MSGTYPE };
 
     /**
         default constructor

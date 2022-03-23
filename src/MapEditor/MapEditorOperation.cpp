@@ -128,7 +128,8 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveStructureOperation::perform(M
 
     for (auto iter = structures.begin(); iter != structures.end(); ++iter) {
         if (iter->id == id) {
-            auto redoOperation = std::make_unique<MapEditorStructurePlaceOperation>(iter->id, iter->position, iter->house, iter->itemID, iter->health);
+            auto redoOperation = std::make_unique<MapEditorStructurePlaceOperation>(
+                iter->id, iter->position, iter->house, iter->itemID, iter->health);
 
             structures.erase(iter);
 
@@ -161,7 +162,8 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
 
     for (auto iter = units.begin(); iter != units.end(); ++iter) {
         if (iter->id == id) {
-            auto redoOperation = std::make_unique<MapEditorUnitPlaceOperation>(iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode);
+            auto redoOperation = std::make_unique<MapEditorUnitPlaceOperation>(
+                iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode);
 
             units.erase(iter);
 
@@ -218,7 +220,8 @@ std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor* pM
 
     pMapEditor->informPlayersChanged();
 
-    return std::make_unique<MapEditorChangePlayer>(playerNum, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota, oldMaxunit);
+    return std::make_unique<MapEditorChangePlayer>(playerNum, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota,
+                                                   oldMaxunit);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor* pMapEditor) {

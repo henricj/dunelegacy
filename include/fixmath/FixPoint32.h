@@ -27,13 +27,10 @@
 
 class FixPoint32 final {
 public:
-    constexpr FixPoint32() noexcept
-        : value {0} { }
+    constexpr FixPoint32() noexcept : value {0} { }
     constexpr FixPoint32(const FixPoint32& inValue) noexcept = default;
-    constexpr FixPoint32(const int inValue) noexcept
-        : value {inValue * fix32_one} { }
-    constexpr FixPoint32(const unsigned int inValue) noexcept
-        : value {static_cast<int>(inValue) * fix32_one} { }
+    constexpr FixPoint32(const int inValue) noexcept : value {inValue * fix32_one} { }
+    constexpr FixPoint32(const unsigned int inValue) noexcept : value {static_cast<int>(inValue) * fix32_one} { }
 
     constexpr FixPoint32(FixPoint32&& inValue) noexcept = default;
 
@@ -42,9 +39,7 @@ public:
 
     ~FixPoint32() = default;
 
-    explicit FixPoint32(const std::string& inValue) {
-        value = fix32_from_str(inValue.c_str());
-    }
+    explicit FixPoint32(const std::string& inValue) { value = fix32_from_str(inValue.c_str()); }
 
     static constexpr FixPoint32 FromRawValue(const fix32_t value) noexcept {
         FixPoint32 x;
@@ -151,40 +146,45 @@ public:
         ret += other;
         return ret;
     }
-    // constexpr FixPoint32 operator+(const int other) const noexcept          { auto ret = *this; ret += FixPoint32(other); return ret; }
-    // constexpr FixPoint32 operator+(const unsigned int other) const noexcept { return operator+(static_cast<int>(other)); }
+    // constexpr FixPoint32 operator+(const int other) const noexcept          { auto ret = *this; ret +=
+    // FixPoint32(other); return ret; } constexpr FixPoint32 operator+(const unsigned int other) const noexcept { return
+    // operator+(static_cast<int>(other)); }
 
     constexpr FixPoint32 operator-(const FixPoint32& other) const noexcept {
         auto ret = *this;
         ret -= other;
         return ret;
     }
-    // constexpr FixPoint32 operator-(const int other) const noexcept          { auto ret = *this; ret -= FixPoint32(other); return ret; }
-    // constexpr FixPoint32 operator-(const unsigned int other) const noexcept { return operator-(static_cast<int>(other)); }
+    // constexpr FixPoint32 operator-(const int other) const noexcept          { auto ret = *this; ret -=
+    // FixPoint32(other); return ret; } constexpr FixPoint32 operator-(const unsigned int other) const noexcept { return
+    // operator-(static_cast<int>(other)); }
 
     FixPoint32 operator*(const FixPoint32& other) const noexcept {
         auto ret = *this;
         ret *= other;
         return ret;
     }
-    // constexpr FixPoint32 operator*(const int other) const noexcept          { auto ret = *this; ret *= FixPoint32(other); return ret; }
-    // constexpr FixPoint32 operator*(const unsigned int other) const noexcept { return operator*(static_cast<int>(other)); }
+    // constexpr FixPoint32 operator*(const int other) const noexcept          { auto ret = *this; ret *=
+    // FixPoint32(other); return ret; } constexpr FixPoint32 operator*(const unsigned int other) const noexcept { return
+    // operator*(static_cast<int>(other)); }
 
     FixPoint32 operator/(const FixPoint32& other) const {
         auto ret = *this;
         ret /= other;
         return ret;
     }
-    // constexpr FixPoint32 operator/(const int other) const          { auto ret = *this; ret /= FixPoint32(other); return ret; }
-    // constexpr FixPoint32 operator/(const unsigned int other) const { return operator/(static_cast<int>(other)); }
+    // constexpr FixPoint32 operator/(const int other) const          { auto ret = *this; ret /= FixPoint32(other);
+    // return ret; } constexpr FixPoint32 operator/(const unsigned int other) const { return
+    // operator/(static_cast<int>(other)); }
 
     FixPoint32 operator%(const FixPoint32& other) const {
         auto ret = *this;
         ret %= other;
         return ret;
     }
-    // constexpr FixPoint32 operator%(const int other) const          { auto ret = *this; ret %= FixPoint32(other); return ret; }
-    // constexpr FixPoint32 operator%(const unsigned int other) const { return operator%(static_cast<int>(other)); }
+    // constexpr FixPoint32 operator%(const int other) const          { auto ret = *this; ret %= FixPoint32(other);
+    // return ret; } constexpr FixPoint32 operator%(const unsigned int other) const { return
+    // operator%(static_cast<int>(other)); }
 
     constexpr bool operator==(const FixPoint32& other) const noexcept { return value == other.value; }
     // bool operator==(const int other) const noexcept                 { return value == fix32_from_int(other); }

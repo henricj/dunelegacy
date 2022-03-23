@@ -54,25 +54,19 @@ public:
         Checks whether the newticker currently shows a message
         \return true if a message is shown, false otherwise
     */
-    virtual bool newsTickerHasMessage() {
-        return newsticker.hasMessage();
-    }
+    virtual bool newsTickerHasMessage() { return newsticker.hasMessage(); }
 
     /**
         This method adds a message to the news ticker
         \param  text    the message to add
     */
-    virtual void addToNewsTicker(const std::string& text) {
-        newsticker.addMessage(text);
-    }
+    virtual void addToNewsTicker(const std::string& text) { newsticker.addMessage(text); }
 
     /**
         This method adds a urgent message to the news ticker
         \param  text    the urgent message to add
     */
-    virtual void addUrgentMessageToNewsTicker(const std::string& text) {
-        newsticker.addUrgentMessage(text);
-    }
+    virtual void addUrgentMessageToNewsTicker(const std::string& text) { newsticker.addUrgentMessage(text); }
 
     /**
         Returns the radar view
@@ -98,11 +92,13 @@ private:
     // runs before windowWidget's dtor.
     StaticContainer windowWidget; ///< The main widget of this interface
 
-    std::unique_ptr<ObjectInterface> pObjectContainer; ///< The container holding information about the currently selected unit/structure
-    uint32_t objectID {NONE_ID};                       ///< The id of the currently selected object
+    std::unique_ptr<ObjectInterface>
+        pObjectContainer;        ///< The container holding information about the currently selected unit/structure
+    uint32_t objectID {NONE_ID}; ///< The id of the currently selected object
 
-    HBox topBarHBox;             ///< The container for the top bar containing newsticker, options button and mentat button
-    NewsTicker newsticker;       ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
+    HBox topBarHBox; ///< The container for the top bar containing newsticker, options button and mentat button
+    NewsTicker
+        newsticker; ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
     PictureButton optionsButton; ///< Button for accessing the ingame menu
     PictureButton mentatButton;  ///< Button for accessing the mentat menu
     PictureLabel topBar;         ///< The background of the top bar

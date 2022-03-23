@@ -70,8 +70,7 @@
 #include <iomanip>
 #include <sstream>
 
-Game::Game()
-    : localPlayerName(settings.general.playerName) {
+Game::Game() : localPlayerName(settings.general.playerName) {
     currentZoomlevel = settings.video.preferredZoomLevel;
 
     unitList.clear();      // holds all the units
@@ -155,7 +154,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
             map            = loader.load();
             currentGameMap = map.get();
 
-            if (!bReplay && gameInitSettings.getGameType() != GameType::CustomGame && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
+            if (!bReplay && gameInitSettings.getGameType() != GameType::CustomGame
+                && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
                 sdl2::log_info("Briefing...");
                 BriefingMenu(gameInitSettings.getHouseID(), gameInitSettings.getMission(), BRIEFING).showMenu();
@@ -230,13 +230,13 @@ void Game::processObjects() {
     if (selection_changed)
         selectionChanged();
 
-    bulletList.erase(std::remove_if(std::begin(bulletList), std::end(bulletList),
-                                    [&](auto& b) { return b->update(context); }),
-                     std::end(bulletList));
+    bulletList.erase(
+        std::remove_if(std::begin(bulletList), std::end(bulletList), [&](auto& b) { return b->update(context); }),
+        std::end(bulletList));
 
-    explosionList.erase(std::remove_if(std::begin(explosionList), std::end(explosionList),
-                                       [](auto& e) { return e->update(); }),
-                        std::end(explosionList));
+    explosionList.erase(
+        std::remove_if(std::begin(explosionList), std::end(explosionList), [](auto& e) { return e->update(); }),
+        std::end(explosionList));
 }
 
 void Game::drawScreen() {
@@ -269,46 +269,40 @@ void Game::drawScreen() {
 
     /* draw ground */
 
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitGround(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                   screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitGround(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw structures */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitStructures(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                       screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitStructures(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                         screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw underground units */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitUndergroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                             screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitUndergroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                               screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw dead objects */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitDeadUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                      screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitDeadUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                        screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw infantry */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitInfantry(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitInfantry(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                       screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw non-infantry ground units */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitNonInfantryGroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                                   screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitNonInfantryGroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     /* draw bullets */
     for (const auto& pBullet : bulletList) {
@@ -321,11 +315,10 @@ void Game::drawScreen() {
     }
 
     /* draw air units */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      t.blitAirUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        t.blitAirUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                       screenborder->world2screenY(t.getLocation().y * TILESIZE));
+    });
 
     // draw the gathering point line if a structure is selected
     if (selectedList.size() == 1) {
@@ -336,13 +329,12 @@ void Game::drawScreen() {
     }
 
     /* draw selection rectangles */
-    map->for_each(x1, y1, x2, y2,
-                  [&](Tile& t) {
-                      if (debug || t.isExploredByTeam(this, pLocalHouse->getTeamID())) {
-                          t.blitSelectionRects(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                               screenborder->world2screenY(t.getLocation().y * TILESIZE));
-                      }
-                  });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
+        if (debug || t.isExploredByTeam(this, pLocalHouse->getTeamID())) {
+            t.blitSelectionRects(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                                 screenborder->world2screenY(t.getLocation().y * TILESIZE));
+        }
+    });
 
     //////////////////////////////draw unexplored/shade
 
@@ -352,43 +344,42 @@ void Game::drawScreen() {
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
 
-        map->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1,
-                      [&](Tile& t) {
-                          const auto x = t.getLocation().x;
-                          const auto y = t.getLocation().y;
+        map->for_each(top_left.x - 1, top_left.y - 1, bottom_right.x + 1, bottom_right.y + 1, [&](Tile& t) {
+            const auto x = t.getLocation().x;
+            const auto y = t.getLocation().y;
 
-                          const auto* const pTile = &t;
+            const auto* const pTile = &t;
 
-                          const auto& border = screenborder;
-                          const auto team_id = pLocalHouse->getTeamID();
+            const auto& border = screenborder;
+            const auto team_id = pLocalHouse->getTeamID();
 
-                          const SDL_Rect drawLocation = {border->world2screenX(x * TILESIZE), border->world2screenY(y * TILESIZE),
-                                                         zoomedTileSize, zoomedTileSize};
+            const SDL_Rect drawLocation = {border->world2screenX(x * TILESIZE), border->world2screenY(y * TILESIZE),
+                                           zoomedTileSize, zoomedTileSize};
 
-                          if (pTile->isExploredByTeam(this, team_id)) {
-                              const auto hideTile = t.getHideTile(this, team_id);
+            if (pTile->isExploredByTeam(this, team_id)) {
+                const auto hideTile = t.getHideTile(this, team_id);
 
-                              if (hideTile != 0) {
-                                  const SDL_Rect source = {hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
-                                  Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
-                              }
+                if (hideTile != 0) {
+                    const SDL_Rect source = {hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
+                    Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                }
 
-                              if (fogOfWar) {
-                                  const auto fogTile = pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
+                if (fogOfWar) {
+                    const auto fogTile =
+                        pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
 
-                                  if (fogTile != 0) {
-                                      const SDL_Rect source = {fogTile * zoomedTileSize, 0,
-                                                               zoomedTileSize, zoomedTileSize};
-                                      Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
-                                  }
-                              }
-                          } else {
-                              if (!debug) {
-                                  const SDL_Rect source = {zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
-                                  Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
-                              }
-                          }
-                      });
+                    if (fogTile != 0) {
+                        const SDL_Rect source = {fogTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
+                        Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                    }
+                }
+            } else {
+                if (!debug) {
+                    const SDL_Rect source = {zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
+                    Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                }
+            }
+        });
     }
 
     SDL_RenderSetClipRect(renderer, nullptr);
@@ -444,13 +435,17 @@ void Game::drawScreen() {
                         for (int j = yPos; j < (yPos + structuresize.y); j++) {
                             const DuneTexture* image = nullptr;
 
-                            if (!withinRange || !map->tileExists(i, j) || !map->getTile(i, j)->isRock() || map->getTile(i, j)->isMountain() || map->getTile(i, j)->hasAGroundObject() || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4)) && map->getTile(i, j)->isConcrete())) {
+                            if (!withinRange || !map->tileExists(i, j) || !map->getTile(i, j)->isRock()
+                                || map->getTile(i, j)->isMountain() || map->getTile(i, j)->hasAGroundObject()
+                                || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4))
+                                    && map->getTile(i, j)->isConcrete())) {
                                 image = invalidPlace;
                             } else {
                                 image = validPlace;
                             }
 
-                            image->draw(renderer, screenborder->world2screenX(i * TILESIZE), screenborder->world2screenY(j * TILESIZE));
+                            image->draw(renderer, screenborder->world2screenX(i * TILESIZE),
+                                        screenborder->world2screenY(j * TILESIZE));
                         }
                     }
                 }
@@ -473,12 +468,8 @@ void Game::drawScreen() {
         }
 
         // draw the mouse selection rectangle
-        renderDrawRect(renderer,
-                       screenborder->world2screenX(selectionRect.x),
-                       screenborder->world2screenY(selectionRect.y),
-                       finalMouseX,
-                       finalMouseY,
-                       COLOR_WHITE);
+        renderDrawRect(renderer, screenborder->world2screenX(selectionRect.x),
+                       screenborder->world2screenY(selectionRect.y), finalMouseX, finalMouseY, COLOR_WHITE);
     }
 
     ///////////draw action indicator
@@ -486,11 +477,9 @@ void Game::drawScreen() {
     if ((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE, TILESIZE)))) {
         const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
         auto source                    = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
-        auto drawLocation              = calcSpriteDrawingRectF(pUIIndicator,
-                                                                screenborder->world2screenX(indicatorPosition.x),
-                                                                screenborder->world2screenY(indicatorPosition.y),
-                                                                3, 1,
-                                                                HAlign::Center, VAlign::Center);
+        auto drawLocation = calcSpriteDrawingRectF(pUIIndicator, screenborder->world2screenX(indicatorPosition.x),
+                                                   screenborder->world2screenY(indicatorPosition.y), 3, 1,
+                                                   HAlign::Center, VAlign::Center);
         Dune_RenderCopyF(renderer, pUIIndicator, &source, &drawLocation);
     }
 
@@ -500,7 +489,8 @@ void Game::drawScreen() {
 
     // draw chat message currently typed
     if (chatMode) {
-        const auto pChatTexture = pFontManager->createTextureWithText("Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
+        const auto pChatTexture = pFontManager->createTextureWithText(
+            "Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
         const auto drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
         Dune_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
@@ -511,8 +501,7 @@ void Game::drawScreen() {
 
         const auto pTexture = pFontManager->createTextureWithMultilineText(str, COLOR_WHITE, 14);
 
-        const auto drawLocation =
-            calcDrawingRect(pTexture.get(), static_cast<int>(sideBarPos.x - 14 * 8), 60);
+        const auto drawLocation = calcDrawingRect(pTexture.get(), static_cast<int>(sideBarPos.x - 14 * 8), 60);
 
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
     }
@@ -554,7 +543,9 @@ void Game::drawScreen() {
         }
 
         const auto pFinishMessageTexture = pFontManager->createTextureWithText(message, COLOR_WHITE, 28);
-        const auto drawLocation          = calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x / 2, topBarPos.h + (getRendererHeight() - topBarPos.h) / 2, HAlign::Center, VAlign::Center);
+        const auto drawLocation =
+            calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x / 2,
+                            topBarPos.h + (getRendererHeight() - topBarPos.h) / 2, HAlign::Center, VAlign::Center);
         Dune_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
     }
 
@@ -640,8 +631,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         pInterface->handleMouseRight(mouse->x, mouse->y, true);
                     } break;
 
-                    default:
-                        break;
+                    default: break;
                 }
 
                 switch (mouse->button) {
@@ -652,14 +642,16 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                             case CursorMode_Placing: {
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handlePlacementClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    handlePlacementClick(context, screenborder->screen2MapX(mouse->x),
+                                                         screenborder->screen2MapY(mouse->y));
                                 }
                             } break;
 
                             case CursorMode_Attack: {
 
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x),
+                                                                     screenborder->screen2MapY(mouse->y));
                                 }
 
                             } break;
@@ -667,7 +659,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             case CursorMode_Move: {
 
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x),
+                                                                   screenborder->screen2MapY(mouse->y));
                                 }
 
                             } break;
@@ -675,7 +668,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             case CursorMode_CarryallDrop: {
 
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsRequestCarryallDropClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    handleSelectedObjectsRequestCarryallDropClick(context,
+                                                                                  screenborder->screen2MapX(mouse->x),
+                                                                                  screenborder->screen2MapY(mouse->y));
                                 }
 
                             } break;
@@ -683,7 +678,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             case CursorMode_Capture: {
 
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y));
+                                    handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x),
+                                                                      screenborder->screen2MapY(mouse->y));
                                 }
 
                             } break;
@@ -712,11 +708,14 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         if (currentCursorMode != CursorMode_Normal) {
                             // cancel special cursor mode
                             currentCursorMode = CursorMode_Normal;
-                        } else if ((!selectedList.empty() && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse)) && (((objectManager.getObject(*selectedList.begin()))->isRespondable())))) {
+                        } else if ((!selectedList.empty()
+                                    && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse))
+                                    && (((objectManager.getObject(*selectedList.begin()))->isRespondable())))) {
                             // if user has a controllable unit selected
 
                             if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                if (handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x), screenborder->screen2MapY(mouse->y))) {
+                                if (handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x),
+                                                                     screenborder->screen2MapY(mouse->y))) {
                                     indicatorFrame      = 0;
                                     indicatorPosition.x = screenborder->screen2worldX(mouse->x);
                                     indicatorPosition.y = screenborder->screen2worldY(mouse->y);
@@ -724,8 +723,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             }
                         }
                     } break; // end of SDL_BUTTON_RIGHT
-                    default:
-                        break;
+                    default: break;
                 }
             } break;
 
@@ -746,8 +744,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                     case SDL_BUTTON_RIGHT: {
                         pInterface->handleMouseRight(mouse->x, mouse->y, false);
                     } break;
-                    default:
-                        break;
+                    default: break;
                 }
 
                 if (selectionMode && (mouse->button == SDL_BUTTON_LEFT)) {
@@ -774,11 +771,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                     const int rectStartX = selectionRect.x / TILESIZE;
                     const int rectStartY = selectionRect.y / TILESIZE;
 
-                    map->selectObjects(pLocalHouse,
-                                       rectStartX, rectStartY, rectFinishX, rectFinishY,
+                    map->selectObjects(pLocalHouse, rectStartX, rectStartY, rectFinishX, rectFinishY,
                                        screenborder->screen2worldX(finalMouseX),
-                                       screenborder->screen2worldY(finalMouseY),
-                                       SDL_GetModState() & KMOD_SHIFT);
+                                       screenborder->screen2worldY(finalMouseY), SDL_GetModState() & KMOD_SHIFT);
 
                     if (selectedList.size() == 1) {
                         auto* pHarvester = objectManager.getObject<Harvester>(*selectedList.begin());
@@ -789,7 +784,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             const auto percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                             if (percent > 0) {
                                 if (pHarvester->isAwaitingPickup()) {
-                                    harvesterMessage += fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
+                                    harvesterMessage +=
+                                        fmt::sprintf(_("@DUNE.ENG|124#full and awaiting pickup"), percent);
                                 } else if (pHarvester->isReturning()) {
                                     harvesterMessage += fmt::sprintf(_("@DUNE.ENG|123#full and returning"), percent);
                                 } else if (pHarvester->isHarvesting()) {
@@ -825,12 +821,12 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                 bQuitGame = true;
             } break;
 
-            default:
-                break;
+            default: break;
         }
     }
 
-    if ((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
+    if ((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr)
+        && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
 
         const auto* keystate = SDL_GetKeyboardState(nullptr);
         scrollDownMode       = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
@@ -891,7 +887,8 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         }
     } else {
         const SDL_Point mouse_point {drawnMouseX, drawnMouseY};
-        if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr) || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
+        if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr)
+            || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
@@ -943,7 +940,8 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                         xPos = screenborder->screen2MapX(drawnMouseX);
                         yPos = screenborder->screen2MapY(drawnMouseY);
                     } else if (isOnRadarView(drawnMouseX, drawnMouseY)) {
-                        const auto position = pInterface->getRadarView().getWorldCoords(drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
+                        const auto position = pInterface->getRadarView().getWorldCoords(
+                            drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
 
                         xPos = position.x / TILESIZE;
                         yPos = position.y / TILESIZE;
@@ -956,7 +954,8 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                             auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
 
-                            if ((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
+                            if ((pStructure != nullptr) && (pStructure->canBeCaptured())
+                                && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
                                 dest.y += static_cast<int>(getGameCycleCount() / 10) % 5;
                             }
                         }
@@ -1029,7 +1028,8 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
         auto* const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
         if (pPlayer != nullptr) {
             if (pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
-                // sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount, pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
+                // sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount,
+                // pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
                 bWaitForNetwork = true;
                 break;
             }
@@ -1071,7 +1071,10 @@ void Game::updateGame(const GameContext& context) {
     }
 #endif
 
-    std::for_each(house.begin(), house.end(), [](auto& h) { if (h) h->update(); });
+    std::for_each(house.begin(), house.end(), [](auto& h) {
+        if (h)
+            h->update();
+    });
 
     screenborder->update(pGFXManager->random());
 
@@ -1124,7 +1127,9 @@ void Game::runMainLoop(const GameContext& context) {
         }
     }
 
-    sdl2::log_info("Sizes: Tile %d UnitBase %d StructureBase %d Harvester %d ConstructionYard %d Palace %d", sizeof(Tile), sizeof(UnitBase), sizeof(StructureBase), sizeof(Harvester), sizeof(ConstructionYard), sizeof(Palace));
+    sdl2::log_info("Sizes: Tile %d UnitBase %d StructureBase %d Harvester %d ConstructionYard %d Palace %d",
+                   sizeof(Tile), sizeof(UnitBase), sizeof(StructureBase), sizeof(Harvester), sizeof(ConstructionYard),
+                   sizeof(Palace));
 
     gameState = GameState::Running;
 
@@ -1134,7 +1139,10 @@ void Game::runMainLoop(const GameContext& context) {
     bShowTime = winFlags & WINLOSEFLAGS_TIMEOUT;
 
     // Check if a player has lost
-    std::for_each(house.begin(), house.end(), [](auto& h) { if (h && !h->isAlive()) h->lose(true); });
+    std::for_each(house.begin(), house.end(), [](auto& h) {
+        if (h && !h->isAlive())
+            h->lose(true);
+    });
 
     if (bReplay) {
         cmdManager.setReadOnly(true);
@@ -1167,7 +1175,8 @@ void Game::runMainLoop(const GameContext& context) {
 
                 sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
                                 fmt::format("Unable to open the replay file {}: {}",
-                                            std::filesystem::path {replayname2}.filename().string(), replay2_error.message())
+                                            std::filesystem::path {replayname2}.filename().string(),
+                                            replay2_error.message())
                                     .c_str());
             }
         }
@@ -1190,17 +1199,27 @@ void Game::runMainLoop(const GameContext& context) {
             // TODO: Report problem to user...?
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
 
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(), _("Unable to open the replay log file.").c_str(), window);
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(),
+                                     _("Unable to open the replay log file.").c_str(), window);
 
             quitGame();
         }
     }
 
     if (pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage([cm = &pInterface->getChatManager()](const auto& username, const auto& message) { cm->addChatMessage(username, message); });
-        pNetworkManager->setOnReceiveCommandList([cm = &cmdManager](const auto& playername, const auto& commands) { cm->addCommandList(playername, commands); });
-        pNetworkManager->setOnReceiveSelectionList([this](const auto& name, const auto& newSelectionList, auto groupListIndex) { this->onReceiveSelectionList(name, newSelectionList, groupListIndex); });
-        pNetworkManager->setOnPeerDisconnected([this](const auto& name, auto bHost, auto cause) { onPeerDisconnected(name, bHost, cause); });
+        pNetworkManager->setOnReceiveChatMessage(
+            [cm = &pInterface->getChatManager()](const auto& username, const auto& message) {
+                cm->addChatMessage(username, message);
+            });
+        pNetworkManager->setOnReceiveCommandList([cm = &cmdManager](const auto& playername, const auto& commands) {
+            cm->addCommandList(playername, commands);
+        });
+        pNetworkManager->setOnReceiveSelectionList(
+            [this](const auto& name, const auto& newSelectionList, auto groupListIndex) {
+                this->onReceiveSelectionList(name, newSelectionList, groupListIndex);
+            });
+        pNetworkManager->setOnPeerDisconnected(
+            [this](const auto& name, auto bHost, auto cause) { onPeerDisconnected(name, bHost, cause); });
 
         cmdManager.setNetworkCycleBuffer(MILLI2CYCLES(pNetworkManager->getMaxPeerRoundTripTime()) + 5);
     }
@@ -1440,9 +1459,8 @@ GameInitSettings Game::getNextGameInitSettings() {
                 alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }
 
-            const uint32_t alreadyShownTutorialHints = won
-                                                         ? pLocalPlayer->getAlreadyShownTutorialHints()
-                                                         : gameInitSettings.getAlreadyShownTutorialHints();
+            const uint32_t alreadyShownTutorialHints =
+                won ? pLocalPlayer->getAlreadyShownTutorialHints() : gameInitSettings.getAlreadyShownTutorialHints();
             return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
         }
 
@@ -1531,20 +1549,23 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     uint32_t magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
-        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC, magicNum);
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC,
+                       magicNum);
         return false;
     }
 
     uint32_t savegameVersion = stream.readUint32();
     if (savegameVersion != SAVEGAMEVERSION) {
-        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!", SAVEGAMEVERSION, savegameVersion);
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!",
+                       SAVEGAMEVERSION, savegameVersion);
         return false;
     }
 
     std::string duneVersion = stream.readString();
 
-    // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the settings saved in the savegame
-    const bool bMultiplayerLoad                            = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
+    // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the
+    // settings saved in the savegame
+    const bool bMultiplayerLoad = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
     const GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
 
     // read gameInitSettings
@@ -1796,7 +1817,8 @@ void Game::unselectAll(const Dune::selected_set_type& aList) const {
     }
 }
 
-void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex) {
+void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList,
+                                  int groupListIndex) {
     auto* pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
 
     if (pHumanPlayer == nullptr) {
@@ -1884,7 +1906,8 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
         }
 
         case CursorMode_CarryallDrop: {
-            handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE, worldPosition.y / TILESIZE);
+            handleSelectedObjectsRequestCarryallDropClick(context, worldPosition.x / TILESIZE,
+                                                          worldPosition.y / TILESIZE);
             return false;
         }
 
@@ -2113,7 +2136,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if (currentCursorMode != CursorMode_Capture) {
                 for (uint32_t objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
-                    if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable() && pObject->canAttack() && pObject->isInfantry()) {
+                    if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()
+                        && pObject->canAttack() && pObject->isInfantry()) {
                         currentCursorMode = CursorMode_Capture;
                         break;
                     }
@@ -2127,11 +2151,14 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 for (uint32_t objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
                     House* pOwner       = pObject->getOwner();
-                    if (pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable() && pObject->canAttack()) {
+                    if (pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()
+                        && pObject->canAttack()) {
                         currentCursorMode = CursorMode_Attack;
                         break;
                     }
-                    if ((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
+                    if ((pObject->getItemID() == Structure_Palace)
+                        && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
+                            || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
                         if (static_cast<Palace*>(pObject)->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
@@ -2241,7 +2268,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             } else {
                 // Place structure
                 if (selectedList.size() == 1) {
-                    ConstructionYard* pConstructionYard = dynamic_cast<ConstructionYard*>(objectManager.getObject(*selectedList.begin()));
+                    ConstructionYard* pConstructionYard =
+                        dynamic_cast<ConstructionYard*>(objectManager.getObject(*selectedList.begin()));
                     if (pConstructionYard != nullptr) {
                         if (currentCursorMode == CursorMode_Placing) {
                             currentCursorMode = CursorMode_Normal;
@@ -2278,7 +2306,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 auto* const pObject = objectManager.getObject(objectID);
                 if (auto* const structure = dune_cast<StructureBase>(pObject)) {
                     structure->handleRepairClick();
-                } else if (auto* const groundUnit = dune_cast<GroundUnit>(pObject); groundUnit && groundUnit->getHealth() < pObject->getMaxHealth()) {
+                } else if (auto* const groundUnit = dune_cast<GroundUnit>(pObject);
+                           groundUnit && groundUnit->getHealth() < pObject->getMaxHealth()) {
                     groundUnit->handleSendToRepairClick();
                 }
             }
@@ -2359,8 +2388,11 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
     const auto structuresize = getStructureSize(placeItem);
 
     if (placeItem == Structure_Slab1) {
-        if ((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner())) && (map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())) && (!map->getTile(xPos, yPos)->isConcrete())) {
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
+        if ((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
+            && (map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()))
+            && (!map->getTile(xPos, yPos)->isConcrete())) {
+            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
+                                                   pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2372,9 +2404,20 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         return false;
     }
     if (placeItem == Structure_Slab4) {
-        if ((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()) || map->isWithinBuildRange(xPos + 1, yPos, pBuilder->getOwner()) || map->isWithinBuildRange(xPos + 1, yPos + 1, pBuilder->getOwner()) || map->isWithinBuildRange(xPos, yPos + 1, pBuilder->getOwner())) && ((map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()) || map->okayToPlaceStructure(xPos + 1, yPos, 1, 1, false, pBuilder->getOwner()) || map->okayToPlaceStructure(xPos + 1, yPos + 1, 1, 1, false, pBuilder->getOwner()) || map->okayToPlaceStructure(xPos, yPos, 1, 1 + 1, false, pBuilder->getOwner()))) && ((!map->getTile(xPos, yPos)->isConcrete()) || (!map->getTile(xPos + 1, yPos)->isConcrete()) || (!map->getTile(xPos, yPos + 1)->isConcrete()) || (!map->getTile(xPos + 1, yPos + 1)->isConcrete()))) {
+        if ((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner())
+             || map->isWithinBuildRange(xPos + 1, yPos, pBuilder->getOwner())
+             || map->isWithinBuildRange(xPos + 1, yPos + 1, pBuilder->getOwner())
+             || map->isWithinBuildRange(xPos, yPos + 1, pBuilder->getOwner()))
+            && ((map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner())
+                 || map->okayToPlaceStructure(xPos + 1, yPos, 1, 1, false, pBuilder->getOwner())
+                 || map->okayToPlaceStructure(xPos + 1, yPos + 1, 1, 1, false, pBuilder->getOwner())
+                 || map->okayToPlaceStructure(xPos, yPos, 1, 1 + 1, false, pBuilder->getOwner())))
+            && ((!map->getTile(xPos, yPos)->isConcrete()) || (!map->getTile(xPos + 1, yPos)->isConcrete())
+                || (!map->getTile(xPos, yPos + 1)->isConcrete())
+                || (!map->getTile(xPos + 1, yPos + 1)->isConcrete()))) {
 
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
+                                                   pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
             soundPlayer->playSound(Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2386,7 +2429,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         return false;
     }
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
-        getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
+        getCommandManager().addCommand(
+            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
         // the user has tried to place and has been successful
         soundPlayer->playSound(Sound_PlaceStructure);
         currentCursorMode = CursorMode_Normal;
@@ -2400,7 +2444,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
         // then we try to move all units outside the building area
 
-        // generate a independent temporal random number generator as we are in input handling code (and outside game logic code)
+        // generate a independent temporal random number generator as we are in input handling code (and outside game
+        // logic code)
 
         auto& uiRandom = pGFXManager->random();
 
@@ -2420,7 +2465,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
                     for (const auto objectID : pTile->getInfantryList()) {
                         auto* pInfantry = getObjectManager().getObject<InfantryBase>(objectID);
                         if ((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
-                            const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom, pInfantry->getLocation(), structuresize);
+                            const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom,
+                                                                            pInfantry->getLocation(), structuresize);
                             pInfantry->handleMoveClick(context, newDestination.x, newDestination.y);
                         }
                     }
@@ -2444,7 +2490,9 @@ bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos
             pResponder = dune_cast<UnitBase>(pObject);
             if (pResponder)
                 pResponder->handleAttackClick(context, xPos, yPos);
-        } else if ((pObject->getItemID() == Structure_Palace) && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN) || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
+        } else if ((pObject->getItemID() == Structure_Palace)
+                   && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
+                       || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
             if (auto* const pPalace = dune_cast<Palace>(pObject)) {
                 if (pPalace->isSpecialWeaponReady()) {
                     pPalace->handleDeathhandClick(context, xPos, yPos);
@@ -2522,7 +2570,8 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
     }
 
     auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
-    if ((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
+    if ((pStructure != nullptr) && (pStructure->canBeCaptured())
+        && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 
         for (const auto objectID : selectedList) {
@@ -2606,7 +2655,8 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
     if (pStructure2Select == nullptr) {
         // start over at the beginning
         for (auto* pStructure : structureList) {
-            if ((itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse) && !pStructure->isSelected()) {
+            if ((itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse)
+                && !pStructure->isSelected()) {
                 pStructure2Select = pStructure;
                 break;
             }

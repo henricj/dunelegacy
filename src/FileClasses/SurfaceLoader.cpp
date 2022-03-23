@@ -35,26 +35,102 @@
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
-#define GROUNDUNIT_ROW(i)    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL
-#define AIRUNIT_ROW(i)       (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH
-#define ORNITHOPTER_ROW(i)   (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV, (i + 3) | TILE_ROTATE, i | TILE_FLIPH, (i + 3) | TILE_FLIPH
+#define GROUNDUNIT_ROW(i)                                                                                              \
+    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV,         \
+        (i + 3) | TILE_FLIPV, (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL
+#define AIRUNIT_ROW(i)                                                                                                 \
+    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV,         \
+        (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH
+#define ORNITHOPTER_ROW(i)                                                                                             \
+    (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV,         \
+        (i + 3) | TILE_ROTATE, i | TILE_FLIPH, (i + 3) | TILE_FLIPH
 #define INFANTRY_ROW(i)      (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_NORMAL
 #define MULTIINFANTRY_ROW(i) (i + 4) | TILE_NORMAL, i | TILE_NORMAL, (i + 4) | TILE_FLIPV, (i + 8) | TILE_NORMAL
-#define HARVESTERSAND_ROW(i) (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV, (i + 9) | TILE_FLIPV, (i + 12) | TILE_NORMAL, (i + 9) | TILE_NORMAL
-#define ROCKET_ROW(i)        (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL, (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, \
-                      (i + 4) | TILE_FLIPV, (i + 3) | TILE_ROTATE, (i + 2) | TILE_ROTATE, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH, (i + 2) | TILE_FLIPH, (i + 3) | TILE_FLIPH
+#define HARVESTERSAND_ROW(i)                                                                                           \
+    (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV,         \
+        (i + 9) | TILE_FLIPV, (i + 12) | TILE_NORMAL, (i + 9) | TILE_NORMAL
+#define ROCKET_ROW(i)                                                                                                  \
+    (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL, (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL,       \
+        (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, (i + 4) | TILE_FLIPV, (i + 3) | TILE_ROTATE, \
+        (i + 2) | TILE_ROTATE, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH, (i + 2) | TILE_FLIPH,      \
+        (i + 3) | TILE_FLIPH
 
 namespace {
-const std::array<std::string, NUM_OBJPICS> ObjPicNames = {{"Tank_Base", "Tank_Gun", "Siegetank_Base", "Siegetank_Gun", "Devastator_Base",
-                                                           "Devastator_Gun", "Sonictank_Gun", "Launcher_Gun", "Quad", "Trike", "Harvester", "Harvester_Sand", "MCV", "Carryall", "CarryallShadow",
-                                                           "Frigate", "FrigateShadow", "Ornithopter", "OrnithopterShadow", "Trooper", "Troopers", "Soldier", "Infantry", "Saboteur", "Sandworm",
-                                                           "ConstructionYard", "Windtrap", "Refinery", "Barracks", "WOR", "Radar", "LightFactory", "Silo", "HeavyFactory", "HighTechFactory",
-                                                           "IX", "Palace", "RepairYard", "Starport", "GunTurret", "RocketTurret", "Wall",
-                                                           "Bullet_SmallRocket", "Bullet_MediumRocket", "Bullet_LargeRocket", "Bullet_Small", "Bullet_Medium", "Bullet_Large", "Bullet_Sonic",
-                                                           "Bullet_SonicTemp", "Hit_Gas", "Hit_ShellSmall", "Hit_ShellMedium", "Hit_ShellLarge", "ExplosionSmall", "ExplosionMedium1",
-                                                           "ExplosionMedium2", "ExplosionLarge1", "ExplosionLarge2", "ExplosionSmallUnit", "ExplosionFlames", "ExplosionSpiceBloom",
-                                                           "DeadInfantry", "DeadAirUnit", "Smoke", "SandwormShimmerMask", "SandwormShimmerTemp", "Terrain", "DestroyedStructure", "RockDamage",
-                                                           "SandDamage", "Terrain_Hidden", "Terrain_HiddenFog", "Terrain_Tracks", "Star"}};
+const std::array<std::string, NUM_OBJPICS> ObjPicNames = {{"Tank_Base",
+                                                           "Tank_Gun",
+                                                           "Siegetank_Base",
+                                                           "Siegetank_Gun",
+                                                           "Devastator_Base",
+                                                           "Devastator_Gun",
+                                                           "Sonictank_Gun",
+                                                           "Launcher_Gun",
+                                                           "Quad",
+                                                           "Trike",
+                                                           "Harvester",
+                                                           "Harvester_Sand",
+                                                           "MCV",
+                                                           "Carryall",
+                                                           "CarryallShadow",
+                                                           "Frigate",
+                                                           "FrigateShadow",
+                                                           "Ornithopter",
+                                                           "OrnithopterShadow",
+                                                           "Trooper",
+                                                           "Troopers",
+                                                           "Soldier",
+                                                           "Infantry",
+                                                           "Saboteur",
+                                                           "Sandworm",
+                                                           "ConstructionYard",
+                                                           "Windtrap",
+                                                           "Refinery",
+                                                           "Barracks",
+                                                           "WOR",
+                                                           "Radar",
+                                                           "LightFactory",
+                                                           "Silo",
+                                                           "HeavyFactory",
+                                                           "HighTechFactory",
+                                                           "IX",
+                                                           "Palace",
+                                                           "RepairYard",
+                                                           "Starport",
+                                                           "GunTurret",
+                                                           "RocketTurret",
+                                                           "Wall",
+                                                           "Bullet_SmallRocket",
+                                                           "Bullet_MediumRocket",
+                                                           "Bullet_LargeRocket",
+                                                           "Bullet_Small",
+                                                           "Bullet_Medium",
+                                                           "Bullet_Large",
+                                                           "Bullet_Sonic",
+                                                           "Bullet_SonicTemp",
+                                                           "Hit_Gas",
+                                                           "Hit_ShellSmall",
+                                                           "Hit_ShellMedium",
+                                                           "Hit_ShellLarge",
+                                                           "ExplosionSmall",
+                                                           "ExplosionMedium1",
+                                                           "ExplosionMedium2",
+                                                           "ExplosionLarge1",
+                                                           "ExplosionLarge2",
+                                                           "ExplosionSmallUnit",
+                                                           "ExplosionFlames",
+                                                           "ExplosionSpiceBloom",
+                                                           "DeadInfantry",
+                                                           "DeadAirUnit",
+                                                           "Smoke",
+                                                           "SandwormShimmerMask",
+                                                           "SandwormShimmerTemp",
+                                                           "Terrain",
+                                                           "DestroyedStructure",
+                                                           "RockDamage",
+                                                           "SandDamage",
+                                                           "Terrain_Hidden",
+                                                           "Terrain_HiddenFog",
+                                                           "Terrain_Tracks",
+                                                           "Star"}};
 
 /**
     Number of columns and rows each obj pic has
@@ -192,7 +268,8 @@ SurfaceLoader::SurfaceLoader() {
     Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL").get());
 
     const auto elapsed = std::chrono::steady_clock::now() - start;
-    sdl2::log_info("SurfaceLoader load time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
+    sdl2::log_info("SurfaceLoader load time: %s",
+                   std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
 
     // create PictureFactory
     auto PicFactory = std::make_unique<PictureFactory>();
@@ -1097,8 +1174,8 @@ SurfaceLoader::SurfaceLoader() {
             replaceColor(display_surface.get(), oldColor, newColor);
 
             if (SDL_SetSurfaceBlendMode(display_surface.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND))
-                THROW(std::runtime_error, std::string("SurfaceLoader(): SDL_SetSurfaceBlendMode() failed: ") +
-                                              std::string(SDL_GetError()));
+                THROW(std::runtime_error,
+                      std::string("SurfaceLoader(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
 
             objPic[static_cast<int>(id)][static_cast<int>(house)][zoom] = std::move(display_surface);
         };
@@ -1123,7 +1200,9 @@ SurfaceLoader::SurfaceLoader() {
                 auto& windtrap = objPic[ObjPic_Windtrap][h][zoom];
 
                 if (!windtrap)
-                    THROW(std::runtime_error, fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom).c_str());
+                    THROW(std::runtime_error,
+                          fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom)
+                              .c_str());
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 windtrap = generateWindtrapAnimationFrames(windtrap.get());
@@ -1135,7 +1214,8 @@ SurfaceLoader::SurfaceLoader() {
 
     // Create map choice arrows
     { // Scope
-        for (auto id = UI_MapChoiceArrow_None; id <= UI_MapChoiceArrow_Left; id = static_cast<UIGraphics_Enum>(id + 1)) {
+        for (auto id = UI_MapChoiceArrow_None; id <= UI_MapChoiceArrow_Left;
+             id      = static_cast<UIGraphics_Enum>(id + 1)) {
             sdl2::surface_ptr source;
 
             for_each_housetype([&](const auto& house) {
@@ -1145,7 +1225,8 @@ SurfaceLoader::SurfaceLoader() {
                     source = std::move(surface);
 
                 if (!source)
-                    THROW(std::runtime_error, "No source surface for generating id %d for house %d", static_cast<int>(id), static_cast<int>(house));
+                    THROW(std::runtime_error, "No source surface for generating id %d for house %d",
+                          static_cast<int>(id), static_cast<int>(house));
 
                 assert(!surface);
 
@@ -1159,7 +1240,8 @@ SurfaceLoader::~SurfaceLoader() = default;
 
 SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
     if (id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurface(): Unit Picture with ID %u is not available!", id);
+        THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurface(): Unit Picture with ID %u is not available!",
+              id);
     }
 
     const auto idx = static_cast<int>(house);
@@ -1174,8 +1256,7 @@ SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house
             THROW(std::runtime_error, "SurfaceLoader::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
         }
 
-        surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(),
-                                       PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
+        surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
     }
 
     return surface.get();
@@ -1197,7 +1278,8 @@ SDL_Surface* SurfaceLoader::getTinyPictureSurface(unsigned int id) {
 
 SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house) {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not available!", id);
+        THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not available!",
+              id);
     }
 
     auto& target = uiGraphic[id][static_cast<int>(house)];
@@ -1210,8 +1292,7 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
         }
 
         // remap to this color
-        target =
-            mapSurfaceColorRange(harkonnen, PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
+        target = mapSurfaceColorRange(harkonnen, PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
     }
 
     return target.get();
@@ -1219,16 +1300,20 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
 
 SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE house) {
     if (num >= NUM_MAPCHOICEPIECES) {
-        THROW(std::invalid_argument, "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
+        THROW(std::invalid_argument,
+              "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
     }
 
     if (mapChoicePieces[num][static_cast<int>(house)] == nullptr) {
         // remap to this color
         if (mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] == nullptr) {
-            THROW(std::runtime_error, "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
+            THROW(std::runtime_error,
+                  "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
         }
 
-        mapChoicePieces[num][static_cast<int>(house)] = mapSurfaceColorRange(mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
+        mapChoicePieces[num][static_cast<int>(house)] =
+            mapSurfaceColorRange(mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
+                                 PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
     }
 
     return mapChoicePieces[num][static_cast<int>(house)].get();
@@ -1257,17 +1342,22 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
             } break;
 
             case Anim_FremenPlanet: {
-                animation[Anim_FremenPlanet] = PictureFactory::createFremenPlanet(uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)].get());
+                animation[Anim_FremenPlanet] = PictureFactory::createFremenPlanet(
+                    uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)].get());
                 animation[Anim_FremenPlanet]->setFrameRate(10);
             } break;
 
             case Anim_SardaukarPlanet: {
-                animation[Anim_SardaukarPlanet] = PictureFactory::createSardaukarPlanet(getAnimation(Anim_OrdosPlanet), uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_SARDAUKAR)].get());
+                animation[Anim_SardaukarPlanet] = PictureFactory::createSardaukarPlanet(
+                    getAnimation(Anim_OrdosPlanet),
+                    uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_SARDAUKAR)].get());
                 animation[Anim_SardaukarPlanet]->setFrameRate(10);
             } break;
 
             case Anim_MercenaryPlanet: {
-                animation[Anim_MercenaryPlanet] = PictureFactory::createMercenaryPlanet(getAnimation(Anim_AtreidesPlanet), uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)].get());
+                animation[Anim_MercenaryPlanet] = PictureFactory::createMercenaryPlanet(
+                    getAnimation(Anim_AtreidesPlanet),
+                    uiGraphic[UI_Herald_ColoredLarge][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)].get());
                 animation[Anim_MercenaryPlanet]->setFrameRate(10);
             } break;
 
@@ -1340,9 +1430,7 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
 std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename) const {
     try {
         return std::make_unique<Shpfile>(pFileManager->openFile(filename).get());
-    } catch (std::exception& e) {
-        THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
-    }
+    } catch (std::exception& e) { THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what()); }
 }
 
 std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename) const {
@@ -1403,7 +1491,9 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     const int windtrapColorQuantizizer = 255 / ((NUM_WINDTRAP_ANIMATIONS / 2) - 2);
     const int windtrapSize             = windtrapPic->h;
     const int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
-    const int sizeY                    = ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW) * windtrapSize;
+    const int sizeY =
+        ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW)
+        * windtrapSize;
     sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
@@ -1443,20 +1533,23 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     }
 
     if ((returnPic->w > 2048) || (returnPic->h > 2048)) {
-        sdl2::log_info("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!", returnPic->w, returnPic->h);
+        sdl2::log_info("Warning: Size of sprite sheet for windtrap is %dx%d; may exceed hardware limits on older GPUs!",
+                       returnPic->w, returnPic->h);
     }
 
     return returnPic;
 }
 
 sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) {
-    sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr returnPic {
+        SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
 
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
-            SDL_SetPaletteColors(arrowPic->format->palette, &palette[houseToPaletteIndex[static_cast<int>(house)] + ((i + k) % 4)], 251 + k, 1);
+            SDL_SetPaletteColors(arrowPic->format->palette,
+                                 &palette[houseToPaletteIndex[static_cast<int>(house)] + ((i + k) % 4)], 251 + k, 1);
         }
 
         SDL_BlitSurface(arrowPic, nullptr, returnPic.get(), &dest);
@@ -1471,12 +1564,14 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     const std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr {Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+            pSurface = sdl2::surface_ptr {
+                Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
-            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so
+            // make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
             SDL_BlitSurface(pOverlay.get(), nullptr, pSurface.get(), nullptr);
@@ -1484,14 +1579,18 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr {Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+            pSurface = sdl2::surface_ptr {
+                Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr {Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+        pSurface = sdl2::surface_ptr {
+            Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
     if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on "
+                       "older GPUs!",
+                       ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;
@@ -1502,12 +1601,14 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
     const std::string filename = "Mask_3x_" + ObjPicNames.at(id) + ".png";
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr {Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+            pSurface = sdl2::surface_ptr {
+                Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
-            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
+            // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so
+            // make them temporarily different
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 1;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 1;
             SDL_BlitSurface(pOverlay.get(), nullptr, pSurface.get(), nullptr);
@@ -1515,14 +1616,18 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr {Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+            pSurface = sdl2::surface_ptr {
+                Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr {Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
+        pSurface = sdl2::surface_ptr {
+            Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
     if ((pSurface->w > 2048) || (pSurface->h > 2048)) {
-        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on older GPUs!", ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+        sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on "
+                       "older GPUs!",
+                       ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
     }
 
     return pSurface;

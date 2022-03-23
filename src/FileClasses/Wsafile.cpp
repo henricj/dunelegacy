@@ -38,10 +38,9 @@ Wsafile::Wsafile(SDL_RWops* rwop) {
 
 /// Constructor
 /**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in the class.
-    Both animations are concatinated.
-    \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
+   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
+   the class. Both animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
 */
 Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1) {
@@ -50,10 +49,9 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1) {
 
 /// Constructor
 /**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in the class.
-    All three animations are concatinated.
-    \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
+   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
+   the class. All three animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
     \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
 */
@@ -63,10 +61,9 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2) {
 
 /// Constructor
 /**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in the class.
-    All four animations are concatinated.
-    \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
+   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
+   the class. All four animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
     \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
     \param  rwop3   SDL_RWops for the forth wsa-File. (can be readonly)
@@ -77,11 +74,10 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops
 
 /// Constructor
 /**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in the class.
-    All animations are concatinated.
-    \param  num     Number of Files
-    \param  ...     SDL_RWops for each wsa-File. (can be readonly)
+    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
+   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
+   the class. All animations are concatinated. \param  num     Number of Files \param  ...     SDL_RWops for each
+   wsa-File. (can be readonly)
 */
 Wsafile::Wsafile(int num, ...) {
     va_list args;
@@ -105,7 +101,9 @@ Wsafile::~Wsafile() = default;
 */
 sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
     if (frameNumber >= numFrames) {
-        THROW(std::invalid_argument, "Wsafile::getPicture(): Requested frame number is %ud but the file contains only %ud frames!", frameNumber, numFrames);
+        THROW(std::invalid_argument,
+              "Wsafile::getPicture(): Requested frame number is %ud but the file contains only %ud frames!",
+              frameNumber, numFrames);
     }
 
     // create new picture surface
@@ -159,7 +157,8 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
                 return pic;
             }
 
-            const unsigned char* const RESTRICT pImage = &decodedFrames[i * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY)];
+            const unsigned char* const RESTRICT pImage =
+                &decodedFrames[i * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY)];
 
             // Now we can copy this frame line by line
             for (int line = 0; line < sizeY; ++line) {
@@ -181,7 +180,8 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
     \param  bSetColorKey    if true, black is set as transparency
     \return a new animation object
 */
-std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic, bool bSetColorKey) const {
+std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic,
+                                                 bool bSetColorKey) const {
     auto animation = std::make_unique<Animation>();
 
     for (unsigned int i = startindex; i <= endindex; i++) {
@@ -201,7 +201,8 @@ std::unique_ptr<Animation> Wsafile::getAnimation(unsigned int startindex, unsign
     \param  x               x-dimension of one frame
     \param  y               y-dimension of one frame
 */
-void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const {
+void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
+                           unsigned char* pDecodedFrames, int x, int y) const {
     for (int i = 0; i < numberOfFrames; ++i) {
         auto dec80 = std::make_unique<unsigned char[]>(x * y * 2);
 
@@ -292,8 +293,10 @@ void Wsafile::readdata(int numFiles, va_list args) {
             sizeX = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get() + 2)));
             sizeY = SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[0].get() + 4)));
         } else {
-            if ((sizeX != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 2))))) || (sizeY != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 4)))))) {
-                THROW(std::runtime_error, "Wsafile::readdata(): The wsa-files have different image dimensions. Cannot concatenate them!");
+            if ((sizeX != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 2)))))
+                || (sizeY != (SDL_SwapLE16(*(reinterpret_cast<Uint16*>(pFiledata[i].get() + 4)))))) {
+                THROW(std::runtime_error,
+                      "Wsafile::readdata(): The wsa-files have different image dimensions. Cannot concatenate them!");
             }
         }
 
@@ -328,7 +331,8 @@ void Wsafile::readdata(int numFiles, va_list args) {
             }
         }
 
-        if (pFiledata[i].get() + wsaFilesize < (reinterpret_cast<unsigned char*>(index[i]) + sizeof(uint32_t) * numberOfFrames[i])) {
+        if (pFiledata[i].get() + wsaFilesize
+            < (reinterpret_cast<unsigned char*>(index[i]) + sizeof(uint32_t) * numberOfFrames[i])) {
             THROW(std::runtime_error, "Wsafile::readdata(): No valid WSA-File: File too small!");
         }
 
@@ -343,12 +347,14 @@ void Wsafile::readdata(int numFiles, va_list args) {
     pFiledata[0].reset();
 
     if (numFiles > 1) {
-        auto* nextFreeFrame = &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
+        auto* nextFreeFrame =
+            &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
 
         for (int i = 1; i < numFiles; i++) {
             if (extended[i]) {
                 // copy last frame
-                memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY), static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY));
+                memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY),
+                       static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY));
             }
             assert(nextFreeFrame + sizeX * sizeY <= &decodedFrames[decodedFrames.size() - 1]);
             decodeFrames(pFiledata[i].get(), index[i], numberOfFrames[i], nextFreeFrame, sizeX, sizeY);

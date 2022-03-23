@@ -64,9 +64,7 @@ public:
         called if the new size is a valid size for this message box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the message box to width and height. This method should only be
@@ -112,10 +110,7 @@ protected:
     /** protected constructor (See create)
         \param  text    Text of this message box
     */
-    explicit MsgBox(const std::string& text)
-        : Window(50, 50, 50, 50) {
-        init(text);
-    }
+    explicit MsgBox(const std::string& text) : Window(50, 50, 50, 50) { init(text); }
 
     /// destructor
     ~MsgBox() override = default;

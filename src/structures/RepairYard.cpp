@@ -155,7 +155,9 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
                 While this is fixing the original code, it can cause imbalances in combat as tanks
                 can be kept at the frontline letting an initial successful attack snowball
             */
-        } else if (!pRepairUnit->isAwaitingPickup() && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
+        } else if (!pRepairUnit->isAwaitingPickup()
+                   && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE
+                   && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
             // find carryall
             Carryall* pCarryall = nullptr;
             if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {

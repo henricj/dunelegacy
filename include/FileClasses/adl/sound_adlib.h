@@ -87,13 +87,9 @@ public:
 
     Mix_Chunk* getSubsong(int Num);
 
-    void setVolume(int newVolume) noexcept {
-        volume = newVolume;
-    }
+    void setVolume(int newVolume) noexcept { volume = newVolume; }
 
-    [[nodiscard]] int getVolume() const noexcept {
-        return volume;
-    }
+    [[nodiscard]] int getVolume() const noexcept { return volume; }
 
 private:
     void internalLoadFile(SDL_RWops* rwop);

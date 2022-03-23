@@ -257,8 +257,7 @@ protected:
         \param  pTargetObject   the object to attack
         \param  bForced         true, if the unit should ignore everything else
     */
-    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject,
-                        bool bForced) const;
+    void doAttackObject(const UnitBase* pUnit, const ObjectBase* pTargetObject, bool bForced) const;
 
     /**
         Change the attack mode of pUnit to attackMode.

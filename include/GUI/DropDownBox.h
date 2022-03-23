@@ -75,7 +75,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
@@ -84,7 +85,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override;
 
@@ -114,9 +116,7 @@ public:
         called if the new size is a valid size for this dropdownbox (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the dropdownbox to width and height. This method should only
@@ -187,18 +187,14 @@ public:
         Returns the number of entries in this dropdown box
         \return number of entries
     */
-    [[nodiscard]] int getNumEntries() const {
-        return listBox.getNumEntries();
-    }
+    [[nodiscard]] int getNumEntries() const { return listBox.getNumEntries(); }
 
     /**
         Returns the text of the entry specified by index.
         \param  index   the zero-based index of the entry
         \return the text of the entry
     */
-    [[nodiscard]] std::string getEntry(unsigned int index) const {
-        return listBox.getEntry(index);
-    }
+    [[nodiscard]] std::string getEntry(unsigned int index) const { return listBox.getEntry(index); }
 
     /**
         Sets the text of the entry specified by index.
@@ -216,85 +212,65 @@ public:
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] int getEntryIntData(unsigned int index) const {
-        return listBox.getEntryIntData(index);
-    }
+    [[nodiscard]] int getEntryIntData(unsigned int index) const { return listBox.getEntryIntData(index); }
 
     /**
         Sets the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \param  value    the value to set
     */
-    void setEntryIntData(unsigned int index, int value) {
-        listBox.setEntryIntData(index, value);
-    }
+    void setEntryIntData(unsigned int index, int value) { listBox.setEntryIntData(index, value); }
 
     /**
         Returns the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \return the data of the entry
     */
-    [[nodiscard]] void* getEntryPtrData(unsigned int index) const {
-        return listBox.getEntryPtrData(index);
-    }
+    [[nodiscard]] void* getEntryPtrData(unsigned int index) const { return listBox.getEntryPtrData(index); }
 
     /**
         Sets the data assigned to the entry specified by index.
         \param  index   the zero-based index of the entry
         \param  data    the data to set
     */
-    void setEntryPtrData(unsigned int index, void* data) {
-        listBox.setEntryPtrData(index, data);
-    }
+    void setEntryPtrData(unsigned int index, void* data) { listBox.setEntryPtrData(index, data); }
 
     /**
         Returns the text of the selected entry.
         \return the text of the entry ("" if non is selected)
     */
-    [[nodiscard]] std::string getSelectedEntry() const {
-        return listBox.getSelectedEntry();
-    }
+    [[nodiscard]] std::string getSelectedEntry() const { return listBox.getSelectedEntry(); }
 
     /**
         Returns the data assigned to the selected entry.
         \return the data of the entry (-1 if non is selected)
     */
-    [[nodiscard]] int getSelectedEntryIntData() const {
-        return listBox.getSelectedEntryIntData();
-    }
+    [[nodiscard]] int getSelectedEntryIntData() const { return listBox.getSelectedEntryIntData(); }
 
     /**
         Returns the data assigned to the selected entry.
         \return the data of the entry (nullptr if non is selected)
     */
-    [[nodiscard]] void* getSelectedEntryPtrData() const {
-        return listBox.getSelectedEntryPtrData();
-    }
+    [[nodiscard]] void* getSelectedEntryPtrData() const { return listBox.getSelectedEntryPtrData(); }
 
     /**
         Returns the zero-based index of the current selected entry.
         \return the index of the selected element (-1 if none is selected)
     */
-    [[nodiscard]] int getSelectedIndex() const {
-        return listBox.getSelectedIndex();
-    }
+    [[nodiscard]] int getSelectedIndex() const { return listBox.getSelectedIndex(); }
 
     /**
         Sets the selected item. The user is informed about this switch
         by calling pOnSelectionChange(false)
         \param index    the new index (-1 == select nothing)
     */
-    void setSelectedItem(int index) {
-        setSelectedItem(index, false);
-    }
+    void setSelectedItem(int index) { setSelectedItem(index, false); }
 
     /**
         Sets the number of visible entries when the list is opened
         \param  newNumVisibleEntries    the number of entries (default=7)
     */
-    void setNumVisibleEntries(int newNumVisibleEntries) {
-        numVisibleEntries = newNumVisibleEntries;
-    }
+    void setNumVisibleEntries(int newNumVisibleEntries) { numVisibleEntries = newNumVisibleEntries; }
 
     /**
         Removes the entry which is specified by index
@@ -332,9 +308,7 @@ public:
         a on mouse hover effect is only active if a OnClick function is set.
         \param  pOnClick    A function to be called on click
     */
-    void setOnClick(std::function<void()> pOnClick) {
-        this->pOnClick = pOnClick;
-    }
+    void setOnClick(std::function<void()> pOnClick) { this->pOnClick = pOnClick; }
 
     /**
         Sets this widget active. The parent widgets are also activated and the
@@ -371,9 +345,7 @@ public:
         Enable or disable the onClick event for this dropdownbox.
         \param  bOnClickEnabled true = enable the onClick event for this dropdownbox, false = disable onClick event
     */
-    virtual void setOnClickEnabled(bool bOnClickEnabled) {
-        this->bOnClickEnabled = bOnClickEnabled;
-    }
+    virtual void setOnClickEnabled(bool bOnClickEnabled) { this->bOnClickEnabled = bOnClickEnabled; }
 
     /**
         Returns whether the onClick event for this dropdownbox is enabled.
@@ -408,9 +380,7 @@ protected:
         \param index    the new index (-1 == select nothing)
         \param bInteractive true = interactive change of the selection, false = changed by calling setSelectedEntry()
     */
-    void setSelectedItem(int index, bool bInteractive) {
-        listBox.setSelectedItem(index, bInteractive);
-    }
+    void setSelectedItem(int index, bool bInteractive) { listBox.setSelectedItem(index, bInteractive); }
 
 private:
     void onSelectionChange(bool bInteractive);
@@ -427,13 +397,12 @@ private:
 
     void updateBackground();
 
-    void onOpenListBoxButton() {
-        bShowListBox = !bShowListBox;
-    }
+    void onOpenListBoxButton() { bShowListBox = !bShowListBox; }
 
     bool bShowListBox;
     bool bListBoxAbove;
-    bool bAutocloseListBoxOnSelectionChange; ///< This is a small hack to allow the list box to be open while selection with up/down keys
+    bool bAutocloseListBoxOnSelectionChange; ///< This is a small hack to allow the list box to be open while selection
+                                             ///< with up/down keys
     bool bOnClickEnabled;                    ///< Is the onClick event enabled for this widget?
 
     sdl2::texture_ptr pBackground;

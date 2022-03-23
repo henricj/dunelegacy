@@ -23,9 +23,7 @@
 #include <list>
 
 struct StructureSmoke {
-    StructureSmoke(const Coord& pos, uint32_t gameCycle)
-        : realPos(pos), startGameCycle(gameCycle) {
-    }
+    StructureSmoke(const Coord& pos, uint32_t gameCycle) : realPos(pos), startGameCycle(gameCycle) { }
 
     explicit StructureSmoke(InputStream& stream) {
         realPos.x      = stream.readSint32();
@@ -62,11 +60,14 @@ public:
     using parent = ObjectBase;
 
 protected:
-    StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID, const ObjectInitializer& initializer);
+    StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
+                  const ObjectInitializer& initializer);
     StructureBase(const StructureBaseConstants& structure_constants, uint32_t objectID,
                   const ObjectStreamInitializer& initializer);
 
-    const StructureBaseConstants& structure_constants() const noexcept { return *static_cast<const StructureBaseConstants*>(&constants_); }
+    const StructureBaseConstants& structure_constants() const noexcept {
+        return *static_cast<const StructureBaseConstants*>(&constants_);
+    }
 
 public:
     ~StructureBase() override = 0;
@@ -170,7 +171,8 @@ protected:
     bool repairing = false; ///< currently repairing?
     int degradeTimer;       ///< after which time of insufficient power should we degrade this building again
 
-    // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden building disappear when being destroyed)
+    // TODO: fogging is currently broken (fogged and lastVisibleFrame differ in multiplayer between players; hidden
+    // building disappear when being destroyed)
     bool fogged = false;  ///< Currently fogged?
     int lastVisibleFrame; ///< store picture drawn before fogged
 

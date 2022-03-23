@@ -77,8 +77,7 @@ private:
 
 class ObjectStreamInitializer final {
 public:
-    ObjectStreamInitializer(InputStream& inputStream)
-        : stream_ {inputStream} { }
+    ObjectStreamInitializer(InputStream& inputStream) : stream_ {inputStream} { }
 
     ObjectStreamInitializer()                               = delete;
     ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
@@ -104,8 +103,7 @@ public:
     bool isInfantry() const noexcept { return infantry_; }
     bool isAUnit() const noexcept { return aUnit_; }
 
-    constexpr explicit ObjectBaseConstants(ItemID_enum itemID)
-        : itemID {itemID} { }
+    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID {itemID} { }
 
     // constant for all objects of the same type
     const ItemID_enum itemID; ///< The ItemID of this object.
@@ -130,7 +128,8 @@ class ObjectBase {
 
 protected:
     ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectInitializer& initializer);
-    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
+    ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
+               const ObjectStreamInitializer& initializer);
 
 public:
     using parent = ObjectBase;
@@ -231,7 +230,9 @@ public:
     void setSelected(bool value) noexcept { selected = value; }
     void setSelectedByOtherPlayer(bool value) noexcept { selectedByOtherPlayer = value; }
     void setDestination(const Coord& location) { setDestination(location.x, location.y); }
-    void setLocation(const GameContext& context, const Coord& location) { setLocation(context, location.x, location.y); }
+    void setLocation(const GameContext& context, const Coord& location) {
+        setLocation(context, location.x, location.y);
+    }
     bool hasATarget() const noexcept { return (target); }
     bool hasObjectID(uint32_t id) const noexcept { return (objectID == id); }
     bool isActive() const noexcept { return active; }
@@ -294,7 +295,8 @@ protected:
     House* owner;              ///< The owner of this object
 
     Coord location;    ///< The current position of this object in tile coordinates
-    Coord oldLocation; ///< The previous position of this object in tile coordinates (used when moving from one tile to the next tile)
+    Coord oldLocation; ///< The previous position of this object in tile coordinates (used when moving from one tile to
+                       ///< the next tile)
     Coord destination; ///< The destination tile
     FixPoint realX;    ///< The x-coordinate of this object in world coordinates
     FixPoint realY;    ///< The y-coordinate of this object in world coordinates
@@ -302,13 +304,13 @@ protected:
     FixPoint angle;       ///< The current angle of this unit/structure (8 = 360°)
     ANGLETYPE drawnAngle; ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
 
-    bool active;                ///< Is this unit/structure active?
-    bool respondable;           ///< Is this unit/structure respondable to commands?
-    bool byScenario;            ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
-    bool selected;              ///< Is this object currently selected?
+    bool active;      ///< Is this unit/structure active?
+    bool respondable; ///< Is this unit/structure respondable to commands?
+    bool byScenario;  ///< Did this unit/structure either already exist at the start of the map or is a reinforcement?
+    bool selected;    ///< Is this object currently selected?
     bool selectedByOtherPlayer; ///< This is only used in multiplayer games where two players control one house
 
-    bool forced;           ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
+    bool forced; ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
     bool targetFriendly;   ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
     ObjectPointer target;  ///< The target to attack or move to
     ATTACKMODE attackMode; ///< The attack mode of this unit/structure
@@ -319,9 +321,10 @@ protected:
     bool badlyDamaged; ///< Is the health below 50%?
 
     zoomable_texture graphic {}; ///< The graphic for this object
-    int graphicID  = -1;         ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
-    int numImagesX = 0;          ///< The number of images in x direction
-    int numImagesY = 0;          ///< The number of images in y direction
+    int graphicID =
+        -1; ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
+    int numImagesX = 0; ///< The number of images in x direction
+    int numImagesY = 0; ///< The number of images in y direction
 
 private:
     FixPoint health; ///< The health of this object

@@ -35,9 +35,7 @@ class INIMap {
 protected:
     typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
 
-    explicit INIMap(inifile_ptr pINIFile)
-        : inifile(std::move(pINIFile)) {
-    }
+    explicit INIMap(inifile_ptr pINIFile) : inifile(std::move(pINIFile)) { }
 
     INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "");
 
@@ -49,9 +47,7 @@ protected:
         Log a warning while reading the scenario file.
         \param  warning the warning message
     */
-    void logWarning(const std::string& warning) {
-        sdl2::log_info("%s: %s", mapname.c_str(), warning.c_str());
-    }
+    void logWarning(const std::string& warning) { sdl2::log_info("%s: %s", mapname.c_str(), warning.c_str()); }
 
     /**
         Log a warning while reading the scenario file.
@@ -67,9 +63,7 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(const std::string& error) {
-        THROW(std::runtime_error, mapname + ": " + error);
-    }
+    void logError(const std::string& error) { THROW(std::runtime_error, mapname + ": " + error); }
 
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
@@ -86,8 +80,12 @@ protected:
     */
     void checkFeatures();
 
-    [[nodiscard]] int getXPos(int pos) const { return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX; }
-    [[nodiscard]] int getYPos(int pos) const { return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY; }
+    [[nodiscard]] int getXPos(int pos) const {
+        return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX;
+    }
+    [[nodiscard]] int getYPos(int pos) const {
+        return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY;
+    }
 
     bool save(const std::filesystem::path& filename) const;
 

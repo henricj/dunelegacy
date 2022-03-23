@@ -22,12 +22,12 @@
 #include <type_traits>
 
 /**
-    This template behaves similar to std::unique_ptr (a pointer that is deleted upon destruction) but it allows to alternatively
-    store a raw pointer (a pointer that is NOT deleted upon destruction). The former is the case when it is initialized or copied from
-    a std::unique_ptr while the latter is done when initialized (without deleter) or copied from a raw pointer.
-    The template parameter T is the type of the pointer to store (arrays are not supported). The template parameter deleter is either the
-    function pointer type void (*)(T*) or a stateless functor expecting a T* as argument. Stateful functors, lambdas and std::functions
-    are not supported.
+    This template behaves similar to std::unique_ptr (a pointer that is deleted upon destruction) but it allows to
+   alternatively store a raw pointer (a pointer that is NOT deleted upon destruction). The former is the case when it is
+   initialized or copied from a std::unique_ptr while the latter is done when initialized (without deleter) or copied
+   from a raw pointer. The template parameter T is the type of the pointer to store (arrays are not supported). The
+   template parameter deleter is either the function pointer type void (*)(T*) or a stateless functor expecting a T* as
+   argument. Stateful functors, lambdas and std::functions are not supported.
 */
 template<typename T, typename deleter = std::default_delete<T>>
 class unique_or_nonowning_ptr {
@@ -38,36 +38,26 @@ public:
     typedef typename internal_ptr_type::element_type element_type;
     typedef typename internal_ptr_type::deleter_type deleter_type;
 
-    static void noop_deleter(T* p) {
-    }
+    static void noop_deleter(T* p) { }
 
-    static void functor_deleter(T* p) {
-        deleter()(p);
-    }
+    static void functor_deleter(T* p) { deleter()(p); }
 
-    constexpr unique_or_nonowning_ptr() noexcept
-        : ptr(nullptr, &noop_deleter) { }
+    constexpr unique_or_nonowning_ptr() noexcept : ptr(nullptr, &noop_deleter) { }
 
-    constexpr unique_or_nonowning_ptr(std::nullptr_t) noexcept
-        : ptr(nullptr, &noop_deleter) { }
+    constexpr unique_or_nonowning_ptr(std::nullptr_t) noexcept : ptr(nullptr, &noop_deleter) { }
 
-    unique_or_nonowning_ptr(T* p) noexcept
-        : ptr(p, &noop_deleter) { }
+    unique_or_nonowning_ptr(T* p) noexcept : ptr(p, &noop_deleter) { }
 
-    unique_or_nonowning_ptr(T* p, deleter_func_ptr d) noexcept
-        : ptr(p, d) { }
+    unique_or_nonowning_ptr(T* p, deleter_func_ptr d) noexcept : ptr(p, d) { }
 
-    unique_or_nonowning_ptr(unique_or_nonowning_ptr&& u) noexcept
-        : ptr(std::move(u.ptr)) { }
+    unique_or_nonowning_ptr(unique_or_nonowning_ptr&& u) noexcept : ptr(std::move(u.ptr)) { }
 
     template<typename = std::enable_if<std::is_pointer<deleter>::value>, int>
     unique_or_nonowning_ptr(std::unique_ptr<T, deleter>&& u) noexcept
-        : ptr(internal_ptr_type(u.release(), u.get_deleter())) {
-    }
+        : ptr(internal_ptr_type(u.release(), u.get_deleter())) { }
 
     unique_or_nonowning_ptr(std::unique_ptr<T, deleter>&& u) noexcept
-        : ptr(internal_ptr_type(u.release(), &functor_deleter)) {
-    }
+        : ptr(internal_ptr_type(u.release(), &functor_deleter)) { }
 
     unique_or_nonowning_ptr& operator=(T* p) noexcept {
         ptr = internal_ptr_type(p, &noop_deleter);
@@ -98,45 +88,25 @@ public:
     unique_or_nonowning_ptr(const unique_or_nonowning_ptr&) = delete;
     unique_or_nonowning_ptr& operator=(const unique_or_nonowning_ptr&) = delete;
 
-    typename std::add_lvalue_reference<T>::type operator*() const {
-        return ptr.get();
-    }
+    typename std::add_lvalue_reference<T>::type operator*() const { return ptr.get(); }
 
-    pointer operator->() const noexcept {
-        return ptr.operator->();
-    }
+    pointer operator->() const noexcept { return ptr.operator->(); }
 
-    [[nodiscard]] pointer get() const noexcept {
-        return ptr.get();
-    }
+    [[nodiscard]] pointer get() const noexcept { return ptr.get(); }
 
-    deleter_type& get_deleter() noexcept {
-        return ptr.get_deleter();
-    }
+    deleter_type& get_deleter() noexcept { return ptr.get_deleter(); }
 
-    [[nodiscard]] const deleter_type& get_deleter() const noexcept {
-        return ptr.get_deleter();
-    }
+    [[nodiscard]] const deleter_type& get_deleter() const noexcept { return ptr.get_deleter(); }
 
-    explicit operator bool() const noexcept {
-        return nullptr != ptr;
-    }
+    explicit operator bool() const noexcept { return nullptr != ptr; }
 
-    pointer release() noexcept {
-        return ptr.release();
-    }
+    pointer release() noexcept { return ptr.release(); }
 
-    void reset(pointer p = pointer()) noexcept {
-        ptr.reset(p);
-    }
+    void reset(pointer p = pointer()) noexcept { ptr.reset(p); }
 
-    void reset(std::unique_ptr<T, deleter>&& p) noexcept {
-        this->operator=(std::move(p));
-    }
+    void reset(std::unique_ptr<T, deleter>&& p) noexcept { this->operator=(std::move(p)); }
 
-    void swap(unique_or_nonowning_ptr& u) noexcept {
-        ptr.swap(u.ptr);
-    }
+    void swap(unique_or_nonowning_ptr& u) noexcept { ptr.swap(u.ptr); }
 
 private:
     internal_ptr_type ptr;

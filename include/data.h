@@ -166,7 +166,8 @@ constexpr bool isFlyingUnit(ItemID_enum itemID) noexcept {
     \return true if it is an infantry unit, false otherwise
 */
 constexpr bool isInfantryUnit(ItemID_enum itemID) noexcept {
-    return (itemID == Unit_Soldier) || (itemID == Unit_Trooper) || (itemID == Unit_Infantry) || (itemID == Unit_Troopers) || (itemID == Unit_Saboteur);
+    return (itemID == Unit_Soldier) || (itemID == Unit_Trooper) || (itemID == Unit_Infantry)
+        || (itemID == Unit_Troopers) || (itemID == Unit_Saboteur);
 }
 
 #endif // DATA_H

@@ -55,9 +55,7 @@ public:
     */
     bool canBeCaptured() const noexcept override { return false; }
 
-    int getPercentComplete() const {
-        return specialWeaponTimer * 100 / getMaxSpecialWeaponTimer();
-    }
+    int getPercentComplete() const { return specialWeaponTimer * 100 / getMaxSpecialWeaponTimer(); }
 
     bool isSpecialWeaponReady() const { return (specialWeaponTimer == 0); }
     int getSpecialWeaponTimer() const { return specialWeaponTimer; }

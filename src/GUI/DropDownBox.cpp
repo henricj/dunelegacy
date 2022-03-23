@@ -20,7 +20,9 @@
 #include <algorithm>
 
 DropDownBox::DropDownBox()
-    : bShowListBox(false), bListBoxAbove(false), bAutocloseListBoxOnSelectionChange(true), bOnClickEnabled(true), pBackground(nullptr), pForeground(nullptr), pActiveForeground(nullptr), numVisibleEntries(7), color(), bHover(false) {
+    : bShowListBox(false), bListBoxAbove(false), bAutocloseListBoxOnSelectionChange(true), bOnClickEnabled(true),
+      pBackground(nullptr), pForeground(nullptr), pActiveForeground(nullptr), numVisibleEntries(7), color(),
+      bHover(false) {
     enableResizing(true, false);
 
     updateButtonSurface();
@@ -59,7 +61,8 @@ bool DropDownBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     if ((!isEnabled()) || (!isVisible())) {
         // onClick works even when widget is disabled
         if (bOnClickEnabled && isVisible() && pOnClick) {
-            if ((x >= 0) && (x < getSize().x - openListBoxButton.getSize().x - 1) && (y >= 0) && (y < getSize().y) && (pressed)) {
+            if ((x >= 0) && (x < getSize().x - openListBoxButton.getSize().x - 1) && (y >= 0) && (y < getSize().y)
+                && (pressed)) {
                 pOnClick();
             }
         }
@@ -241,7 +244,9 @@ void DropDownBox::resize(uint32_t width, uint32_t height) {
 }
 
 void DropDownBox::resizeListBox() {
-    const int listBoxHeight = std::max(1, std::min(numVisibleEntries, getNumEntries())) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()) + 2;
+    const int listBoxHeight = std::max(1, std::min(numVisibleEntries, getNumEntries()))
+                                * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight())
+                            + 2;
     listBox.resize(getSize().x - 1, listBoxHeight);
 }
 
@@ -281,8 +286,10 @@ void DropDownBox::invalidateForeground() {
 void DropDownBox::updateForeground() {
     if (!pForeground && !pActiveForeground) {
         if (listBox.getSelectedIndex() >= 0) {
-            pForeground       = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color));
-            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color));
+            pForeground       = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(
+                      getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color));
+            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(
+                getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color));
         }
     }
 }

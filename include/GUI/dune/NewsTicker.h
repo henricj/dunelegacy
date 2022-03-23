@@ -58,7 +58,9 @@ private:
 
     public:
         [[nodiscard]] bool empty() const noexcept { return queue_.empty(); }
-        [[nodiscard]] bool contains(const T& value) const { return std::end(queue_) != std::find(std::begin(queue_), std::end(queue_), value); }
+        [[nodiscard]] bool contains(const T& value) const {
+            return std::end(queue_) != std::find(std::begin(queue_), std::end(queue_), value);
+        }
         void clear() { queue_.clear(); }
         [[nodiscard]] auto size() const { return queue_.size(); }
         auto& front() { return queue_.front(); }

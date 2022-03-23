@@ -25,7 +25,8 @@ class CutSceneTrigger {
 public:
     /**
         Constructor
-        \param  frameNumber the frame number relative to the start of the current scene where this trigger should be triggered.
+        \param  frameNumber the frame number relative to the start of the current scene where this trigger should be
+       triggered.
     */
     explicit CutSceneTrigger(int frameNumber);
 
@@ -41,9 +42,7 @@ public:
         This method returns the frame number where this trigger shall be triggered.
         \return the frame number where this trigger shall be triggered
     */
-    [[nodiscard]] int getTriggerFrameNumber() const noexcept {
-        return frameNumber;
-    }
+    [[nodiscard]] int getTriggerFrameNumber() const noexcept { return frameNumber; }
 
     /**
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()

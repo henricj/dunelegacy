@@ -242,8 +242,7 @@ void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t d
     getOwner()->noteDamageLocation(this, damage, damagerID);
 }
 
-void ObjectBase::handleInterfaceEvent(SDL_Event* event) {
-}
+void ObjectBase::handleInterfaceEvent(SDL_Event* event) { }
 
 std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
     return DefaultObjectInterface::create(context, objectID);
@@ -295,8 +294,8 @@ void ObjectBase::setTarget(const ObjectBase* newTarget) {
 
     if (target) {
         if (const auto* targetPtr = target.getObjPointer()) {
-            friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) &&
-                       (targetPtr->getItemID() != Unit_Sandworm);
+            friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm)
+                    && (targetPtr->getItemID() != Unit_Sandworm);
         }
     }
 
@@ -310,12 +309,15 @@ void ObjectBase::unassignFromMap(const Coord& location) const {
 }
 
 bool ObjectBase::canAttack(const ObjectBase* object) const {
-    return canAttack() && (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit()) && (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) || (object->getItemID() == Unit_Sandworm));
+    return canAttack() && (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit())
+        && (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()))
+            || (object->getItemID() == Unit_Sandworm));
 }
 
 bool ObjectBase::isOnScreen() const {
     const Coord position {lround(getRealX()), lround(getRealY())};
-    const Coord size {getWidth(graphic[currentZoomlevel]) / numImagesX, getHeight(graphic[currentZoomlevel]) / numImagesY};
+    const Coord size {getWidth(graphic[currentZoomlevel]) / numImagesX,
+                      getHeight(graphic[currentZoomlevel]) / numImagesY};
 
     return screenborder->isInsideScreen(position, size);
 }
@@ -479,13 +481,16 @@ const ObjectBase* ObjectBase::findTarget() const {
             const auto targetDistance = blockDistance(location, coord);
             if (targetDistance <= checkRange) {
                 const Tile* pTile = currentGameMap->getTile(coord);
-                if (pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID()) && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID()) && pTile->hasAnObject()) {
+                if (pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID())
+                    && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID()) && pTile->hasAnObject()) {
 
                     auto* const pNewTarget = pTile->getObject(currentGame->getObjectManager());
                     if (!pNewTarget)
                         continue;
 
-                    if (((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall) || pClosestTarget == nullptr) && canAttack(pNewTarget)) {
+                    if (((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall)
+                         || pClosestTarget == nullptr)
+                        && canAttack(pNewTarget)) {
                         if (targetDistance < closestTargetDistance) {
                             pClosestTarget        = pNewTarget;
                             closestTargetDistance = targetDistance;
@@ -524,8 +529,10 @@ template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
     static_assert(std::is_constructible<ObjectType, Args...>::value, "ObjectType is not constructible");
     static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
-    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value, "ObjectType's parent is not derived from ObjectBase");
-    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value, "ObjectType's parent is not a base class");
+    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value,
+                  "ObjectType's parent is not derived from ObjectBase");
+    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value,
+                  "ObjectType's parent is not a base class");
 
     return std::make_unique<ObjectType>(std::forward<Args>(args)...);
 }
@@ -579,7 +586,8 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
 
 } // anonymous namespace
 
-std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID, const ObjectInitializer& initializer) {
+std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID,
+                                                     const ObjectInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 

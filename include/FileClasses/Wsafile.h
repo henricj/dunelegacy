@@ -42,7 +42,8 @@ public:
 
     [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t FrameNumber) const;
     [[nodiscard]] sdl2::surface_ptr getAnimationAsPictureRow(int numFramesX = std::numeric_limits<int>::max()) const;
-    [[nodiscard]] std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic = true, bool bSetColorKey = true) const;
+    [[nodiscard]] std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex,
+                                                          bool bDoublePic = true, bool bSetColorKey = true) const;
 
     /// Returns the number of frames
     /**
@@ -71,7 +72,8 @@ public:
     [[nodiscard]] bool isAnimationLooped() const noexcept { return looped; }
 
 private:
-    void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames, unsigned char* pDecodedFrames, int x, int y) const;
+    void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
+                      unsigned char* pDecodedFrames, int x, int y) const;
     std::unique_ptr<unsigned char[]> readfile(SDL_RWops* rwop, int* filesize) const;
     void readdata(int numFiles, ...);
     void readdata(int numFiles, va_list args);

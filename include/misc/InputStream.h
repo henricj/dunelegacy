@@ -76,9 +76,7 @@ public:
         Reads in a FixPoint value.
         \return the read value
     */
-    FixPoint readFixPoint() {
-        return FixPoint::FromRawValue(readSint64());
-    }
+    FixPoint readFixPoint() { return FixPoint::FromRawValue(readSint64()); }
 
     /**
         Reads in up to 8 boolean values from a single byte
@@ -92,7 +90,8 @@ public:
         \param  pVal8   the 8th boolean value
 
     */
-    void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr, bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr);
+    void readBools(bool* pVal1 = nullptr, bool* pVal2 = nullptr, bool* pVal3 = nullptr, bool* pVal4 = nullptr,
+                   bool* pVal5 = nullptr, bool* pVal6 = nullptr, bool* pVal7 = nullptr, bool* pVal8 = nullptr);
 
     /**
         Reads a vector of Uint8 written by writeUint8Vector().
@@ -169,8 +168,7 @@ public:
 
     class eof : public InputStream::exception {
     public:
-        explicit eof(std::string str) noexcept
-            : str(std::move(str)) { }
+        explicit eof(std::string str) noexcept : str(std::move(str)) { }
         eof(const eof&)          = default;
         eof(eof&&)               = default;
         ~eof() noexcept override = default;
@@ -186,8 +184,7 @@ public:
 
     class error : public InputStream::exception {
     public:
-        explicit error(std::string str) noexcept
-            : str(std::move(str)) { }
+        explicit error(std::string str) noexcept : str(std::move(str)) { }
         error(const error&)        = default;
         error(error&&)             = default;
         ~error() noexcept override = default;

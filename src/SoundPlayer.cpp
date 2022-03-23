@@ -26,8 +26,7 @@
 
 #include <misc/exceptions.h>
 
-SoundPlayer::SoundPlayer()
-    : sfxVolume(settings.audio.sfxVolume) {
+SoundPlayer::SoundPlayer() : sfxVolume(settings.audio.sfxVolume) {
 
     if (!pSFXManager) {
         soundOn = false;
@@ -76,7 +75,8 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
     if (!soundOn)
         return;
 
-    if (!currentGameMap->tileExists(location) || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID())) {
+    if (!currentGameMap->tileExists(location)
+        || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID())) {
         return;
     }
 

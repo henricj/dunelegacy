@@ -112,10 +112,12 @@ void ScreenBorder::adjustScreenBorderToMapsize(int newMapSizeX, int newMapSizeY)
         topLeftCornerOnScreen.x     = zoomedWorld2world(gameBoardRect.x);
         bottomRightCornerOnScreen.x = zoomedWorld2world(gameBoardRect.x + gameBoardRect.w);
     } else {
-        topLeftCorner.x             = 0;
-        bottomRightCorner.x         = worldSizeX;
-        topLeftCornerOnScreen.x     = zoomedWorld2world(gameBoardRect.x) + (zoomedWorld2world(gameBoardRect.w) - worldSizeX) / 2;
-        bottomRightCornerOnScreen.x = zoomedWorld2world(gameBoardRect.x) + (zoomedWorld2world(gameBoardRect.w) - worldSizeX) / 2 + worldSizeX;
+        topLeftCorner.x     = 0;
+        bottomRightCorner.x = worldSizeX;
+        topLeftCornerOnScreen.x =
+            zoomedWorld2world(gameBoardRect.x) + (zoomedWorld2world(gameBoardRect.w) - worldSizeX) / 2;
+        bottomRightCornerOnScreen.x =
+            zoomedWorld2world(gameBoardRect.x) + (zoomedWorld2world(gameBoardRect.w) - worldSizeX) / 2 + worldSizeX;
     }
 
     if (worldSizeY >= zoomedWorld2world(gameBoardRect.h)) {
@@ -124,9 +126,11 @@ void ScreenBorder::adjustScreenBorderToMapsize(int newMapSizeX, int newMapSizeY)
         topLeftCornerOnScreen.y     = zoomedWorld2world(gameBoardRect.y);
         bottomRightCornerOnScreen.y = zoomedWorld2world(gameBoardRect.y + gameBoardRect.h);
     } else {
-        topLeftCorner.y             = 0;
-        bottomRightCorner.y         = worldSizeY;
-        topLeftCornerOnScreen.y     = zoomedWorld2world(gameBoardRect.y) + (zoomedWorld2world(gameBoardRect.h) - worldSizeY) / 2;
-        bottomRightCornerOnScreen.y = zoomedWorld2world(gameBoardRect.y) + (zoomedWorld2world(gameBoardRect.h) - worldSizeY) / 2 + worldSizeY;
+        topLeftCorner.y     = 0;
+        bottomRightCorner.y = worldSizeY;
+        topLeftCornerOnScreen.y =
+            zoomedWorld2world(gameBoardRect.y) + (zoomedWorld2world(gameBoardRect.h) - worldSizeY) / 2;
+        bottomRightCornerOnScreen.y =
+            zoomedWorld2world(gameBoardRect.y) + (zoomedWorld2world(gameBoardRect.h) - worldSizeY) / 2 + worldSizeY;
     }
 }

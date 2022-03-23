@@ -178,7 +178,9 @@ Icnfile::~Icnfile() = default;
 */
 sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
     if (indexOfFile >= numFiles) {
-        THROW(std::invalid_argument, "Icnfile::getPicture(): Specified index (%ud) is not valid for a icn file with %ud tiles!", indexOfFile, numFiles);
+        THROW(std::invalid_argument,
+              "Icnfile::getPicture(): Specified index (%ud) is not valid for a icn file with %ud tiles!", indexOfFile,
+              numFiles);
     }
 
     // check if palette is in range
@@ -218,11 +220,12 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
 
 /// Returns an array of pictures in the icn-File
 /**
-    This method returns a SDL_Surface containing multiple tiles/pictures. Which tiles to include is specified by MapfileIndex. The
-    MapfileIndex specifies the tileset. One tileset constists of multiple tiles of the icn-File.
-    The last 3 parameters specify how to arrange the tiles:
+    This method returns a SDL_Surface containing multiple tiles/pictures. Which tiles to include is specified by
+   MapfileIndex. The MapfileIndex specifies the tileset. One tileset constists of multiple tiles of the icn-File. The
+   last 3 parameters specify how to arrange the tiles:
      - If all 3 parameters are 0 then a "random" layout is choosen, which should look good.
-     - If tilesX and tilesY is set to non-zero values then the result surface contains tilesX*tilesY tiles and this tilesN-times side by side.
+     - If tilesX and tilesY is set to non-zero values then the result surface contains tilesX*tilesY tiles and this
+   tilesN-times side by side.
      - If all there parameters are non-zero then the result surface is exactly in this arrangement.
 
     tilesX*tilesY*tilesN must always the number of tiles in this tileset.<br><br>
@@ -244,7 +247,10 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
 */
 sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, int tilesY, int tilesN) {
     if (mapfileIndex >= tilesets.size()) {
-        THROW(std::invalid_argument, "Icnfile::getPictureArray(): Specified map file index (%ud) is not valid for a map file with %ud tilesets!", mapfileIndex, tilesets.size());
+        THROW(
+            std::invalid_argument,
+            "Icnfile::getPictureArray(): Specified map file index (%ud) is not valid for a map file with %ud tilesets!",
+            mapfileIndex, tilesets.size());
     }
 
     if ((tilesX == 0) && (tilesY == 0) && (tilesN == 0)) {
@@ -294,11 +300,17 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
                 tilesY = 1;
             }
         } else {
-            THROW(std::invalid_argument, "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which are no multiple of the requested number of blocks (%d)!", mapfileIndex, tilesets[mapfileIndex].numTiles, tilesN);
+            THROW(std::invalid_argument,
+                  "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which are no multiple of the "
+                  "requested number of blocks (%d)!",
+                  mapfileIndex, tilesets[mapfileIndex].numTiles, tilesN);
         }
     } else {
         if (static_cast<unsigned int>(tilesX * tilesY * tilesN) != tilesets[mapfileIndex].numTiles) {
-            THROW(std::invalid_argument, "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which is not equal to the number of requested tiles (%d*%d*%d)!", mapfileIndex, tilesets[mapfileIndex].numTiles, tilesX, tilesY, tilesN);
+            THROW(std::invalid_argument,
+                  "Icnfile::getPictureArray(): Number of tiles for index %ud are %ud which is not equal to the number "
+                  "of requested tiles (%d*%d*%d)!",
+                  mapfileIndex, tilesets[mapfileIndex].numTiles, tilesX, tilesY, tilesN);
         }
     }
 
@@ -326,7 +338,8 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
                 const uint8_t* const RESTRICT filestart    = SSET + (IndexOfFile * ((SIZE_X * SIZE_Y) / 2));
 
                 // Now we can copy to surface
-                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + (pic->pitch) * tile_y * SIZE_Y + (tile_x + n * tilesX) * SIZE_X;
+                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + (pic->pitch) * tile_y * SIZE_Y
+                                             + (tile_x + n * tilesX) * SIZE_X;
                 for (int y = 0; y < SIZE_Y; y++) {
                     for (int x = 0; x < SIZE_X; x += 2) {
                         unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
@@ -350,13 +363,15 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
     tiles from startIndex to endIndex.
     \param  startIndex      The first tile to use
     \param  endIndex        The last tile to use
-    \param  maxRowLength    Used to limit the number of tiles per row and put the remaining tiles on the following rows (0 equals no row limitation)
-    \return the result surface with (endIndex-startIndex+1) tiles.
+    \param  maxRowLength    Used to limit the number of tiles per row and put the remaining tiles on the following rows
+   (0 equals no row limitation) \return the result surface with (endIndex-startIndex+1) tiles.
 */
 sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength) const {
 
     if ((startIndex >= numFiles) || (endIndex >= numFiles) || (startIndex > endIndex)) {
-        THROW(std::invalid_argument, "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!", startIndex, endIndex, numFiles);
+        THROW(std::invalid_argument,
+              "Icnfile::getPictureRow(): Invalid start index (%ud) or end index (%ud) for an icn file with %ud tiles!",
+              startIndex, endIndex, numFiles);
     }
 
     const auto numTiles = endIndex - startIndex + 1;
@@ -386,7 +401,8 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
             const uint8_t* const RESTRICT filestart    = SSET + (indexOfFile * ((SIZE_X * SIZE_Y) / 2));
 
             // Now we can copy to surface
-            unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + (row * SIZE_Y * pic->pitch) + (col * SIZE_X);
+            unsigned char* RESTRICT dest =
+                static_cast<unsigned char*>(pic->pixels) + (row * SIZE_Y * pic->pitch) + (col * SIZE_X);
             for (int y = 0; y < SIZE_Y; ++y) {
                 for (int x = 0; x < SIZE_X; x += 2) {
                     unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
@@ -430,7 +446,9 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
 
         if (indexOfFile >= numFiles) {
             va_end(arg_ptr);
-            THROW(std::invalid_argument, "Icnfile::getPictureRow2(): Specified index (%ud) is not valid for an icn file with %ud tiles!", indexOfFile, numFiles);
+            THROW(std::invalid_argument,
+                  "Icnfile::getPictureRow2(): Specified index (%ud) is not valid for an icn file with %ud tiles!",
+                  indexOfFile, numFiles);
         }
 
         // check if palette is in range

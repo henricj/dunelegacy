@@ -59,7 +59,8 @@ MainMenu::MainMenu() {
     windowWidget.addWidget(&buttonBorder, dest3);
 
     // set up menu buttons
-    windowWidget.addWidget(&MenuButtons, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
+    windowWidget.addWidget(&MenuButtons, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64),
+                           Point(160, 111));
 
     singlePlayerButton.setText(_("SINGLE PLAYER"));
     singlePlayerButton.setOnClick([this] { onSinglePlayer(); });

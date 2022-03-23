@@ -19,8 +19,10 @@
 #include <FileClasses/FontManager.h>
 #include <globals.h>
 
-TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn, bool bFadeOut, bool bCenterVertical)
-    : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut), bCenterVertical(bCenterVertical) {
+TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn,
+                     bool bFadeOut, bool bCenterVertical)
+    : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut),
+      bCenterVertical(bCenterVertical) {
     const sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, 28, true);
     pTexture                         = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pSurface.get())};
 

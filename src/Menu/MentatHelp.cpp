@@ -30,8 +30,7 @@
 
 #include <Game.h>
 
-MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission)
-    : MentatMenu(newHouse), mission(mission) {
+MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
 
     mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
 

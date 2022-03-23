@@ -58,8 +58,7 @@ private:
     unsigned int size;
 
 public:
-    BufferDataSource(char* data, unsigned int len)
-        : size(len) {
+    BufferDataSource(char* data, unsigned int len) : size(len) {
         buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
     }
 
@@ -124,9 +123,7 @@ public:
         buf_ptr += len;
     }
 
-    void write1(unsigned int val) override {
-        *buf_ptr++ = val & 0xff;
-    }
+    void write1(unsigned int val) override { *buf_ptr++ = val & 0xff; }
 
     void write2(unsigned int val) override {
         *buf_ptr++ = val & 0xff;
@@ -169,12 +166,9 @@ private:
     int freesrc;
 
 public:
-    SDLDataSource(SDL_RWops* rwop, int freesrc = 0)
-        : rwop(rwop), freesrc(freesrc) { }
+    SDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
 
-    ~SDLDataSource() override {
-        close();
-    }
+    ~SDLDataSource() override { close(); }
 
     virtual void close() {
         if (freesrc && rwop != nullptr) {
@@ -237,9 +231,7 @@ public:
         return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
     }
 
-    void read(char* b, size_t len) override {
-        SDL_RWread(rwop, b, 1, len);
-    }
+    void read(char* b, size_t len) override { SDL_RWread(rwop, b, 1, len); }
 
     void write1(unsigned int val) override {
         const uint8_t b0 = val & 0xff;
@@ -282,21 +274,13 @@ public:
         SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
     }
 
-    void seek(unsigned int pos) override {
-        SDL_RWseek(rwop, pos, SEEK_SET);
-    }
+    void seek(unsigned int pos) override { SDL_RWseek(rwop, pos, SEEK_SET); }
 
-    void skip(int pos) override {
-        SDL_RWseek(rwop, pos, SEEK_CUR);
-    }
+    void skip(int pos) override { SDL_RWseek(rwop, pos, SEEK_CUR); }
 
-    unsigned int getSize() override {
-        return static_cast<unsigned int>(SDL_RWsize(rwop));
-    }
+    unsigned int getSize() override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
 
-    unsigned int getPos() override {
-        return static_cast<unsigned int>(SDL_RWtell(rwop));
-    }
+    unsigned int getPos() override { return static_cast<unsigned int>(SDL_RWtell(rwop)); }
 };
 
 #endif

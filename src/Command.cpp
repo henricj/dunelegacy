@@ -37,8 +37,7 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-Command::Command(uint8_t playerID, uint8_t* data, uint32_t length)
-    : playerID(playerID) {
+Command::Command(uint8_t playerID, uint8_t* data, uint32_t length) : playerID(playerID) {
     if (length % 4 != 0) {
         THROW(std::invalid_argument, "Command::Command(): Length must be multiple of 4!");
     }
@@ -103,7 +102,8 @@ void Command::executeCommand(const GameContext& context) const {
             if (unit == nullptr) {
                 return;
             }
-            unit->doMove2Pos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]), static_cast<bool>(parameter[3]));
+            unit->doMove2Pos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]),
+                             static_cast<bool>(parameter[3]));
         } break;
 
         case CMDTYPE::CMD_UNIT_MOVE2OBJECT: {
@@ -125,7 +125,8 @@ void Command::executeCommand(const GameContext& context) const {
             if (unit == nullptr) {
                 return;
             }
-            unit->doAttackPos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]), static_cast<bool>(parameter[3]));
+            unit->doAttackPos(context, static_cast<int>(parameter[1]), static_cast<int>(parameter[2]),
+                              static_cast<bool>(parameter[3]));
         } break;
 
         case CMDTYPE::CMD_UNIT_ATTACKOBJECT: {
@@ -152,7 +153,8 @@ void Command::executeCommand(const GameContext& context) const {
 
         case CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP: {
             if (parameter.size() != 3) {
-                THROW(std::invalid_argument, "Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
+                THROW(std::invalid_argument,
+                      "Command::executeCommand(): CMD_UNIT_REQUESTCARRYALLDROP needs 3 Parameters!");
             }
             auto* const pGroundUnit = objectManager.getObject<GroundUnit>(parameter[0]);
             if (pGroundUnit == nullptr) {
@@ -185,7 +187,8 @@ void Command::executeCommand(const GameContext& context) const {
 
         case CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE: {
             if (parameter.size() != 1) {
-                THROW(std::invalid_argument, "Command::executeCommand(): CMD_DEVASTATOR_STARTDEVASTATE needs 1 Parameter!");
+                THROW(std::invalid_argument,
+                      "Command::executeCommand(): CMD_DEVASTATOR_STARTDEVASTATE needs 1 Parameter!");
             }
             auto* const pDevastator = objectManager.getObject<Devastator>(parameter[0]);
             if (pDevastator == nullptr) {
@@ -218,7 +221,8 @@ void Command::executeCommand(const GameContext& context) const {
 
         case CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION: {
             if (parameter.size() != 3) {
-                THROW(std::invalid_argument, "Command::executeCommand(): CMD_STRUCTURE_SETDEPLOYPOSITION needs 3 Parameters!");
+                THROW(std::invalid_argument,
+                      "Command::executeCommand(): CMD_STRUCTURE_SETDEPLOYPOSITION needs 3 Parameters!");
             }
             auto* const pStructure = objectManager.getObject<StructureBase>(parameter[0]);
             if (pStructure == nullptr) {
@@ -344,7 +348,9 @@ void Command::executeCommand(const GameContext& context) const {
 
             const auto currentSeed = game.randomGen.getState();
             if (currentSeed[0] != parameter[0]) {
-                sdl2::log_info("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not match: %ud != %ud", game.getGameCycleCount(), parameter[0], currentSeed[0]);
+                sdl2::log_info("Warning: Game is asynchronous in game cycle %d! Saved seed and current seed do not "
+                               "match: %ud != %ud",
+                               game.getGameCycleCount(), parameter[0], currentSeed[0]);
 #ifdef TEST_SYNC
                 context.game.saveGame("test.sav");
                 exit(0);

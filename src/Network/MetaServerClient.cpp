@@ -81,14 +81,16 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
     this->numPlayers = numPlayers;
     this->maxPlayers = maxPlayers;
 
-    enqueueMetaServerCommand(std::make_unique<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+    enqueueMetaServerCommand(
+        std::make_unique<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
     lastAnnounceUpdate = SDL_GetTicks();
 }
 
 void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
     if (serverPort > 0) {
         this->numPlayers = numPlayers;
-        enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+        enqueueMetaServerCommand(
+            std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
         lastAnnounceUpdate = SDL_GetTicks();
     }
 }
@@ -120,7 +122,8 @@ void MetaServerClient::update() {
 
     if (serverPort != 0) {
         if (SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+            enqueueMetaServerCommand(
+                std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
             lastAnnounceUpdate = SDL_GetTicks();
         }
     }
@@ -252,7 +255,8 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     }
 
                     if (result.substr(0, 2) != "OK") {
-                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
+                        const std::string errorMsg =
+                            result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_ADD, errorMsg);
                     }
@@ -298,7 +302,8 @@ int MetaServerClient::connectionThreadMain(void* data) {
                         } catch (std::exception&) {
                             // adding the game again did not work => report updating error
 
-                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
+                            const std::string errorMsg =
+                                result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                             pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
 
@@ -308,7 +313,8 @@ int MetaServerClient::connectionThreadMain(void* data) {
                         if (result2.substr(0, 2) != "OK") {
                             // adding the game again did not work => report updating error
 
-                            const std::string errorMsg = result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
+                            const std::string errorMsg =
+                                result1.substr(result1.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                             pMetaServerClient->setErrorMessage(METASERVERCOMMAND_UPDATE, errorMsg);
                         }
@@ -389,11 +395,13 @@ int MetaServerClient::connectionThreadMain(void* data) {
                             gameServerInfo.serverName    = parts[2];
                             gameServerInfo.serverVersion = parts[3];
                             gameServerInfo.mapName       = parts[4];
-                            if (!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1) || (gameServerInfo.maxPlayers > 12)) {
+                            if (!parseString(parts[6], gameServerInfo.maxPlayers) || (gameServerInfo.maxPlayers < 1)
+                                || (gameServerInfo.maxPlayers > 12)) {
                                 continue;
                             }
 
-                            if (!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0) || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
+                            if (!parseString(parts[5], gameServerInfo.numPlayers) || (gameServerInfo.numPlayers < 0)
+                                || (gameServerInfo.numPlayers > gameServerInfo.maxPlayers)) {
                                 continue;
                             }
 
@@ -413,7 +421,8 @@ int MetaServerClient::connectionThreadMain(void* data) {
                         pMetaServerClient->setNewGameServerInfoList(newGameServerInfoList);
 
                     } else {
-                        const std::string errorMsg = result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
+                        const std::string errorMsg =
+                            result.substr(result.find_first_not_of("\x0D\x0A", 5), std::string::npos);
 
                         pMetaServerClient->setErrorMessage(METASERVERCOMMAND_LIST, errorMsg);
                     }
@@ -428,8 +437,6 @@ int MetaServerClient::connectionThreadMain(void* data) {
                     // ignore
                 } break;
             }
-        } catch (std::exception& e) {
-            sdl2::log_info("MetaServerClient::connectionThreadMain(): %s", e.what());
-        }
+        } catch (std::exception& e) { sdl2::log_info("MetaServerClient::connectionThreadMain(): %s", e.what()); }
     }
 }

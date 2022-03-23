@@ -60,7 +60,8 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     Label_Explanation.setTextColor(color);
     Label_Explanation.setTextFontSize(12);
-    Label_Explanation.setText(_("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
+    Label_Explanation.setText(
+        _("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
     centralVBox.addWidget(&Label_Explanation);
 
     centralVBox.addWidget(VSpacer::create(4));
@@ -113,9 +114,9 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
-        std::string entryName = player.bActive ? (player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++)
-                                                                   : player.name)
-                                               : ("(" + player.name + ")");
+        std::string entryName = player.bActive
+                                  ? (player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name)
+                                  : ("(" + player.name + ")");
         playerDropDownBox.addEntry(entryName, static_cast<int>(player.house));
     }
     playerDropDownBox.setSelectedItem(0);
@@ -144,14 +145,22 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     hBox3.addWidget(&dropLocationLabel, 120);
     dropLocationDropDownBox.setColor(color);
     dropLocationDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_North), static_cast<int>(DropLocation::Drop_North));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_East), static_cast<int>(DropLocation::Drop_East));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_South), static_cast<int>(DropLocation::Drop_South));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_West), static_cast<int>(DropLocation::Drop_West));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Air), static_cast<int>(DropLocation::Drop_Air));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Visible), static_cast<int>(DropLocation::Drop_Visible));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Enemybase), static_cast<int>(DropLocation::Drop_Enemybase));
-    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Homebase), static_cast<int>(DropLocation::Drop_Homebase));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_North),
+                                     static_cast<int>(DropLocation::Drop_North));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_East),
+                                     static_cast<int>(DropLocation::Drop_East));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_South),
+                                     static_cast<int>(DropLocation::Drop_South));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_West),
+                                     static_cast<int>(DropLocation::Drop_West));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Air),
+                                     static_cast<int>(DropLocation::Drop_Air));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Visible),
+                                     static_cast<int>(DropLocation::Drop_Visible));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Enemybase),
+                                     static_cast<int>(DropLocation::Drop_Enemybase));
+    dropLocationDropDownBox.addEntry(resolveDropLocationName(DropLocation::Drop_Homebase),
+                                     static_cast<int>(DropLocation::Drop_Homebase));
     dropLocationDropDownBox.setSelectedItem(7);
     hBox3.addWidget(&dropLocationDropDownBox, 120);
     hBox3.addWidget(HSpacer::create(15));
@@ -261,11 +270,11 @@ void ReinforcementsWindow::onAdd() {
 
     const int index = reinforcementsListBox.getSelectedIndex();
 
-    const ReinforcementInfo reinforcementInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                                              static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
-                                              static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData()),
-                                              timeTextBox.getValue(),
-                                              repeatCheckbox.isChecked());
+    const ReinforcementInfo reinforcementInfo(
+        static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
+        static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
+        static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData()), timeTextBox.getValue(),
+        repeatCheckbox.isChecked());
     reinforcements.insert(reinforcements.begin() + index + 1, reinforcementInfo);
     reinforcementsListBox.insertEntry(index + 1, getDescribingString(reinforcementInfo));
     reinforcementsListBox.setSelectedItem(index + 1);
@@ -277,7 +286,8 @@ void ReinforcementsWindow::onRemove() {
     if (index >= 0) {
         reinforcements.erase(reinforcements.begin() + index);
         reinforcementsListBox.removeEntry(index);
-        reinforcementsListBox.setSelectedItem(index < reinforcementsListBox.getNumEntries() ? index : (reinforcementsListBox.getNumEntries() - 1));
+        reinforcementsListBox.setSelectedItem(
+            index < reinforcementsListBox.getNumEntries() ? index : (reinforcementsListBox.getNumEntries() - 1));
     }
 }
 
@@ -322,9 +332,10 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
             ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
             reinforcementInfo.houseID            = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
             reinforcementInfo.unitID             = static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.dropLocation       = static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.droptime           = timeTextBox.getValue();
-            reinforcementInfo.bRepeat            = repeatCheckbox.isChecked();
+            reinforcementInfo.dropLocation =
+                static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData());
+            reinforcementInfo.droptime = timeTextBox.getValue();
+            reinforcementInfo.bRepeat  = repeatCheckbox.isChecked();
             reinforcementsListBox.setEntry(index, getDescribingString(reinforcementInfo));
         }
     }
@@ -332,15 +343,16 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {
 
-    return getPlayerName((HOUSETYPE)reinforcementInfo.houseID) + ", " + resolveItemName(reinforcementInfo.unitID) + ", " + resolveDropLocationName(reinforcementInfo.dropLocation) + ", " + std::to_string(reinforcementInfo.droptime) + " min" + (reinforcementInfo.bRepeat ? ", +" : "");
+    return getPlayerName((HOUSETYPE)reinforcementInfo.houseID) + ", " + resolveItemName(reinforcementInfo.unitID) + ", "
+         + resolveDropLocationName(reinforcementInfo.dropLocation) + ", " + std::to_string(reinforcementInfo.droptime)
+         + " min" + (reinforcementInfo.bRepeat ? ", +" : "");
 }
 
 std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
         if (player.house == house) {
-            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
-                                    : (_("House") + " " + player.name);
+            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum) : (_("House") + " " + player.name);
         }
 
         if (player.bActive && player.bAnyHouse) {

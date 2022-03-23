@@ -25,8 +25,7 @@
 #define MESSAGESCROLLTIME  (20 * MESSAGESCROLLSPEED)
 #define MESSAGETIME        (15 * MESSAGESCROLLSPEED)
 
-MessageTicker::MessageTicker()
-    : timer(-MESSAGETIME) {
+MessageTicker::MessageTicker() : timer(-MESSAGETIME) {
     enableResizing(false, false);
 
     Widget::resize(0, 0);

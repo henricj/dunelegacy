@@ -22,7 +22,8 @@
 #include <SoundPlayer.h>
 
 Button::Button()
-    : pUnpressedTexture(nullptr), pPressedTexture(nullptr), pActiveTexture(nullptr), bPressed(false), bHover(false), bToggleButton(false), bToggleState(false) { }
+    : pUnpressedTexture(nullptr), pPressedTexture(nullptr), pActiveTexture(nullptr), bPressed(false), bHover(false),
+      bToggleButton(false), bToggleState(false) { }
 
 Button::~Button() = default;
 
@@ -161,7 +162,7 @@ void Button::drawOverlay(Point position) {
         return;
 
     const auto renderRect = getRendererSize();
-    auto dest             = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    auto dest = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
     if (dest.x + dest.w >= renderRect.w) {
         // do not draw tooltip outside screen
         dest.x = renderRect.w - dest.w;

@@ -53,7 +53,8 @@ void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
 
 namespace {
 template<typename Scale>
-sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle, Scale&& scale) {
+sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle,
+                                Scale&& scale) {
     if (src == nullptr)
         return nullptr;
 
@@ -252,11 +253,14 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
             for (int y = 0; y < tileHeight; ++y) {
                 for (int x = 0; x < tileWidth; ++x) {
-                    uint8_t E       = srcPixels[(j * tileHeight + y) * source_pitch + (i * tileWidth + x)];
-                    const uint8_t B = srcPixels[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + x)];
-                    const uint8_t H = srcPixels[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch + (i * tileWidth + x)];
-                    uint8_t D       = srcPixels[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
-                    uint8_t F       = srcPixels[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
+                    uint8_t E = srcPixels[(j * tileHeight + y) * source_pitch + (i * tileWidth + x)];
+                    const uint8_t B =
+                        srcPixels[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + x)];
+                    const uint8_t H = srcPixels[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch
+                                                + (i * tileWidth + x)];
+                    uint8_t D = srcPixels[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
+                    uint8_t F = srcPixels[(j * tileHeight + y) * source_pitch
+                                          + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
 
                     uint8_t E0 = 0;
                     uint8_t E1 = 0;
@@ -351,15 +355,21 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
             for (int y = 0; y < tileHeight; ++y) {
                 for (int x = 0; x < tileWidth; ++x) {
-                    const uint8_t A = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
-                    uint8_t B       = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + x)];
-                    const uint8_t C = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
-                    uint8_t D       = source[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
-                    uint8_t E       = source[(j * tileHeight + y) * source_pitch + (i * tileWidth + x)];
-                    uint8_t F       = source[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
-                    const uint8_t G = source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
-                    uint8_t H       = source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch + (i * tileWidth + x)];
-                    const uint8_t I = source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
+                    const uint8_t A = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch
+                                             + (i * tileWidth + std::max(0, x - 1))];
+                    uint8_t B = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch + (i * tileWidth + x)];
+                    const uint8_t C = source[(j * tileHeight + std::max(0, y - 1)) * source_pitch
+                                             + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
+                    uint8_t D = source[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::max(0, x - 1))];
+                    uint8_t E = source[(j * tileHeight + y) * source_pitch + (i * tileWidth + x)];
+                    uint8_t F =
+                        source[(j * tileHeight + y) * source_pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
+                    const uint8_t G = source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch
+                                             + (i * tileWidth + std::max(0, x - 1))];
+                    uint8_t H =
+                        source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch + (i * tileWidth + x)];
+                    const uint8_t I = source[(j * tileHeight + std::min(tileHeight - 1, y + 1)) * source_pitch
+                                             + (i * tileWidth + std::min(tileWidth - 1, x + 1))];
 
                     uint8_t E0 = 0;
                     uint8_t E1 = 0;

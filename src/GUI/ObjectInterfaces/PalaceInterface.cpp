@@ -88,8 +88,8 @@ void PalaceInterface::onSpecial(const GameContext& context) const {
     auto* pPalace = context.objectManager.getObject<Palace>(objectID);
 
     if (pPalace != nullptr) {
-        if ((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN) ||
-            (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
+        if ((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
+            || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
             currentGame->currentCursorMode = Game::CursorMode_Attack;
         } else {
             pPalace->handleSpecialClick(context);

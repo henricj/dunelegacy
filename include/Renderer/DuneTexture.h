@@ -11,8 +11,8 @@ struct DuneTextureRect final {
 
     explicit DuneTextureRect(const SDL_Rect& rect) {
         assert(rect.x >= 0 && rect.y >= 0 && rect.w > 0 && rect.h > 0);
-        assert(rect.x <= std::numeric_limits<short>::max() && rect.y <= std::numeric_limits<short>::max() &&
-               rect.w <= std::numeric_limits<short>::max() && rect.h <= std::numeric_limits<short>::max());
+        assert(rect.x <= std::numeric_limits<short>::max() && rect.y <= std::numeric_limits<short>::max()
+               && rect.w <= std::numeric_limits<short>::max() && rect.h <= std::numeric_limits<short>::max());
 
         x = static_cast<short>(rect.x);
         y = static_cast<short>(rect.y);
@@ -31,7 +31,7 @@ struct DuneTextureRect final {
     }
 
     DuneTextureRect& operator=(const DuneTextureRect&) = default;
-    DuneTextureRect& operator                          =(const SDL_Rect& rect) { return operator=(DuneTextureRect {rect}); }
+    DuneTextureRect& operator=(const SDL_Rect& rect) { return operator=(DuneTextureRect {rect}); }
 };
 
 struct DuneTexture final {
@@ -42,11 +42,9 @@ struct DuneTexture final {
     DuneTexture(const DuneTexture&) = default;
     DuneTexture(DuneTexture&&)      = default;
 
-    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect)
-        : texture_ {texture}, source_ {rect} { }
+    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect) : texture_ {texture}, source_ {rect} { }
 
-    explicit DuneTexture(SDL_Texture* texture)
-        : texture_ {texture} {
+    explicit DuneTexture(SDL_Texture* texture) : texture_ {texture} {
         if (!texture) {
             return;
         }

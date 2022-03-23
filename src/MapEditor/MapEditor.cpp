@@ -47,9 +47,10 @@ MapEditor::MapEditor() {
 
     currentZoomlevel = settings.video.preferredZoomLevel;
 
-    sideBarPos   = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos    = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
-    bottomBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
+    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    bottomBarPos =
+        calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
 
     SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h};
 
@@ -71,8 +72,8 @@ std::string MapEditor::generateMapname() {
     const auto numPlayers =
         std::count_if(players.begin(), players.end(), [](const MapEditor::Player& player) { return player.bActive; });
 
-    return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY()) +
-           " - " + _("New Map");
+    return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY())
+         + " - " + _("New Map");
 }
 
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
@@ -136,19 +137,31 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
 
     // setup default players
     if (getMapVersion() < 2) {
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, true, false, "Human", 25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, true, false, "CPU", 25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, true, false, "CPU", 25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "CPU", 25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, true, false, "CPU", 25);
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN,
+                             HOUSETYPE::HOUSE_HARKONNEN, true, false, "Human", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES,
+                             HOUSETYPE::HOUSE_ATREIDES, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS,
+                             HOUSETYPE::HOUSE_ORDOS, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN,
+                             HOUSETYPE::HOUSE_FREMEN, false, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR,
+                             HOUSETYPE::HOUSE_SARDAUKAR, true, false, "CPU", 25);
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY,
+                             HOUSETYPE::HOUSE_MERCENARY, false, false, "CPU", 25);
     } else {
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, true, true, "Team1");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, true, true, "Team2");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, true, true, "Team3");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, true, true, "Team5");
-        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN,
+                             HOUSETYPE::HOUSE_HARKONNEN, true, true, "Team1");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES,
+                             HOUSETYPE::HOUSE_ATREIDES, true, true, "Team2");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS,
+                             HOUSETYPE::HOUSE_ORDOS, true, true, "Team3");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN,
+                             HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR,
+                             HOUSETYPE::HOUSE_SARDAUKAR, true, true, "Team5");
+        players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY,
+                             HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
     }
 
     // setup default choam
@@ -180,7 +193,8 @@ bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAre
 
         const Coord structureSize = getStructureSize(structure.itemID);
         const Coord position      = structure.position;
-        if ((x >= position.x) && (x < position.x + structureSize.x) && (y >= position.y) && (y < position.y + structureSize.y)) {
+        if ((x >= position.x) && (x < position.x + structureSize.x) && (y >= position.y)
+            && (y < position.y + structureSize.y)) {
             return true;
         }
     }
@@ -271,7 +285,8 @@ void MapEditor::undoLastOperation() {
     if (!undoOperationStack.empty()) {
         redoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while ((!undoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>(undoOperationStack.top().get())) {
+        while ((!undoOperationStack.empty())
+               && !dynamic_cast<MapEditorStartOperation*>(undoOperationStack.top().get())) {
             redoOperationStack.push(undoOperationStack.top()->perform(this));
             undoOperationStack.pop();
         }
@@ -286,7 +301,8 @@ void MapEditor::redoLastOperation() {
     if (!redoOperationStack.empty()) {
         undoOperationStack.push(std::make_unique<MapEditorStartOperation>());
 
-        while ((!redoOperationStack.empty()) && !dynamic_cast<MapEditorStartOperation*>(redoOperationStack.top().get())) {
+        while ((!redoOperationStack.empty())
+               && !dynamic_cast<MapEditorStartOperation*>(redoOperationStack.top().get())) {
             undoOperationStack.push(redoOperationStack.top()->perform(this));
             redoOperationStack.pop();
         }
@@ -325,12 +341,18 @@ void MapEditor::loadMap(const std::filesystem::path& filepath) {
     units.clear();
     players.clear();
 
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_HARKONNEN, false, true, "Team1");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ATREIDES, false, true, "Team2");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS, false, true, "Team3");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR, HOUSETYPE::HOUSE_SARDAUKAR, false, false, "Team5");
-    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_HARKONNEN), HOUSETYPE::HOUSE_HARKONNEN,
+                         HOUSETYPE::HOUSE_HARKONNEN, false, true, "Team1");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ATREIDES), HOUSETYPE::HOUSE_ATREIDES,
+                         HOUSETYPE::HOUSE_ATREIDES, false, true, "Team2");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_ORDOS), HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_ORDOS,
+                         false, true, "Team3");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_FREMEN), HOUSETYPE::HOUSE_FREMEN,
+                         HOUSETYPE::HOUSE_FREMEN, false, false, "Team4");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_SARDAUKAR), HOUSETYPE::HOUSE_SARDAUKAR,
+                         HOUSETYPE::HOUSE_SARDAUKAR, false, false, "Team5");
+    players.emplace_back(getHouseNameByNumber(HOUSETYPE::HOUSE_MERCENARY), HOUSETYPE::HOUSE_MERCENARY,
+                         HOUSETYPE::HOUSE_MERCENARY, false, false, "Team6");
 
     // load map
     loadedINIFile = std::make_unique<INIFile>(filepath, false);
@@ -413,7 +435,8 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         int cursorPos = (logicalOffsetY + mapInfo.cursorPos.y) * logicalSizeX + (logicalOffsetX + mapInfo.cursorPos.x);
         loadedINIFile->setIntValue("BASIC", "CursorPos", cursorPos);
-        int tacticalPos = (logicalOffsetY + mapInfo.tacticalPos.y) * logicalSizeX + (logicalOffsetX + mapInfo.tacticalPos.x);
+        int tacticalPos =
+            (logicalOffsetY + mapInfo.tacticalPos.y) * logicalSizeX + (logicalOffsetX + mapInfo.tacticalPos.x);
         loadedINIFile->setIntValue("BASIC", "TacticalPos", tacticalPos);
 
         // field, spice bloom and special bloom
@@ -606,10 +629,10 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (aiteams.size() >= 16)) ? 0 : 1;
         for (const AITeamInfo& aiteamInfo : aiteams) {
-            std::string value = house2housename[static_cast<int>(aiteamInfo.houseID)] + "," +
-                                getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + "," +
-                                getAITeamTypeNameByID(aiteamInfo.aiTeamType) + "," +
-                                std::to_string(aiteamInfo.minUnits) + "," + std::to_string(aiteamInfo.maxUnits);
+            std::string value = house2housename[static_cast<int>(aiteamInfo.houseID)] + ","
+                              + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + ","
+                              + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + "," + std::to_string(aiteamInfo.minUnits)
+                              + "," + std::to_string(aiteamInfo.maxUnits);
             loadedINIFile->setStringValue("TEAMS", std::to_string(currentIndex), value, false);
             currentIndex++;
         }
@@ -626,9 +649,12 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         int angle = static_cast<int>(unit.angle);
 
-        angle = (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
+        angle =
+            (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
 
-        std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + "," + std::to_string(unit.health) + "," + std::to_string(position) + "," + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
+        std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + ","
+                              + std::to_string(unit.health) + "," + std::to_string(position) + ","
+                              + std::to_string(angle) + "," + getAttackModeNameByMode(unit.attackmode);
 
         loadedINIFile->setStringValue("UNITS", unitKey, unitValue, false);
     }
@@ -637,10 +663,12 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     for (const Structure& structure : structures) {
         int position = (logicalOffsetY + structure.position.y) * logicalSizeX + (logicalOffsetX + structure.position.x);
 
-        if ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4) || (structure.itemID == Structure_Wall)) {
+        if ((structure.itemID == Structure_Slab1) || (structure.itemID == Structure_Slab4)
+            || (structure.itemID == Structure_Wall)) {
             std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
-            std::string structureValue = house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID);
+            std::string structureValue =
+                house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
 
@@ -648,7 +676,9 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
             std::string structureKey = fmt::sprintf("ID%.3d", structure.id);
 
-            std::string structureValue = house2housename[static_cast<int>(structure.house)] + "," + getItemNameByID(structure.itemID) + "," + std::to_string(structure.health) + "," + std::to_string(position);
+            std::string structureValue = house2housename[static_cast<int>(structure.house)] + ","
+                                       + getItemNameByID(structure.itemID) + "," + std::to_string(structure.health)
+                                       + "," + std::to_string(position);
 
             loadedINIFile->setStringValue("STRUCTURES", structureKey, structureValue, false);
         }
@@ -662,7 +692,10 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements.size() >= 16)) ? 0 : 1;
         for (const ReinforcementInfo& reinforcement : reinforcements) {
-            std::string value = house2housename[static_cast<int>(reinforcement.houseID)] + "," + getItemNameByID(reinforcement.unitID) + "," + getDropLocationNameByID(reinforcement.dropLocation) + "," + std::to_string(reinforcement.droptime);
+            std::string value = house2housename[static_cast<int>(reinforcement.houseID)] + ","
+                              + getItemNameByID(reinforcement.unitID) + ","
+                              + getDropLocationNameByID(reinforcement.dropLocation) + ","
+                              + std::to_string(reinforcement.droptime);
             if (reinforcement.bRepeat) {
                 value += ",+";
             }
@@ -672,7 +705,8 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     if (!loadedINIFile->saveChangesTo(filepath, getMapVersion() < 2)) {
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s", filepath.u8string().c_str());
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+                        filepath.u8string().c_str());
     }
 
     lastSaveName          = filepath;
@@ -733,7 +767,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
         } break;
 
         case EditorMode::EditorMode_Structure: {
-            if (!bRepeated || currentEditorMode.itemID == Structure_Slab1 || currentEditorMode.itemID == Structure_Wall) {
+            if (!bRepeated || currentEditorMode.itemID == Structure_Slab1
+                || currentEditorMode.itemID == Structure_Wall) {
 
                 const Coord structureSize = getStructureSize(currentEditorMode.itemID);
 
@@ -747,7 +782,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                     for (int x = position.x; x < position.x + structureSize.x; x++) {
                         for (int y = position.y; y < position.y + structureSize.y; y++) {
-                            if (!map.isInsideMap(x, y) || isTileBlocked(x, y, true, (currentEditorMode.itemID != Structure_Slab1))) {
+                            if (!map.isInsideMap(x, y)
+                                || isTileBlocked(x, y, true, (currentEditorMode.itemID != Structure_Slab1))) {
                                 return;
                             }
                         }
@@ -765,7 +801,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
-                    for (int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
+                    for (int k = static_cast<int>(currentHouse);
+                         k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
                         if (players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
                             nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                             break;
@@ -775,11 +812,13 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                     if (nextHouse != HOUSETYPE::HOUSE_INVALID) {
                         const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
 
-                        MapEditorStructurePlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health);
+                        MapEditorStructurePlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID,
+                                                                        currentEditorMode.health);
 
                         addUndoOperation(placeOperation.perform(this));
 
-                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1)
+                                                              % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                     }
                 }
             }
@@ -792,7 +831,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                 for (int i = 0; i < mapMirror->getSize(); i++) {
                     const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
-                    if (!map.isInsideMap(position.x, position.y) || isTileBlocked(position.x, position.y, false, true)) {
+                    if (!map.isInsideMap(position.x, position.y)
+                        || isTileBlocked(position.x, position.y, false, true)) {
                         return;
                     }
                 }
@@ -819,10 +859,13 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                         const auto angle = mapMirror->getAngle(currentEditorMode.angle, i);
 
-                        MapEditorUnitPlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health, angle, currentEditorMode.attackmode);
+                        MapEditorUnitPlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID,
+                                                                   currentEditorMode.health, angle,
+                                                                   currentEditorMode.attackmode);
 
                         addUndoOperation(placeOperation.perform(this));
-                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1)
+                                                              % static_cast<int>(HOUSETYPE::NUM_HOUSES));
                     }
                 }
             }
@@ -1020,8 +1063,7 @@ void MapEditor::processInput() {
                             }
                         } break;
 
-                        default:
-                            break;
+                        default: break;
                     }
 
                 } break;
@@ -1051,7 +1093,8 @@ void MapEditor::processInput() {
 
                                 pInterface->deselectAll();
                             } else if (selectedStructureID != INVALID) {
-                                // We only try deleting structures if we had not yet deleted a unit (e.g. a unit on concrete)
+                                // We only try deleting structures if we had not yet deleted a unit (e.g. a unit on
+                                // concrete)
                                 clearRedoOperations();
                                 startOperation();
 
@@ -1101,8 +1144,7 @@ void MapEditor::processInput() {
 
                         } break;
 
-                        default:
-                            break;
+                        default: break;
                     }
                 } break;
 
@@ -1226,7 +1268,9 @@ void MapEditor::processInput() {
                                             const Coord& position     = structure.position;
                                             const Coord structureSize = getStructureSize(structure.itemID);
 
-                                            if (!bUnitSelected && (xpos >= position.x) && (xpos < position.x + structureSize.x) && (ypos >= position.y) && (ypos < position.y + structureSize.y)) {
+                                            if (!bUnitSelected && (xpos >= position.x)
+                                                && (xpos < position.x + structureSize.x) && (ypos >= position.y)
+                                                && (ypos < position.y + structureSize.y)) {
                                                 selectedStructureID = structure.id;
                                                 bStructureSelected  = true;
                                                 pInterface->onObjectSelected();
@@ -1239,7 +1283,13 @@ void MapEditor::processInput() {
                                             pInterface->deselectAll();
 
                                             // find map items (spice bloom, special bloom or spice field)
-                                            if ((std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(xpos, ypos)) != spiceBlooms.end()) || (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(xpos, ypos)) != specialBlooms.end()) || (std::find(spiceFields.begin(), spiceFields.end(), Coord(xpos, ypos)) != spiceFields.end())) {
+                                            if ((std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(xpos, ypos))
+                                                 != spiceBlooms.end())
+                                                || (std::find(specialBlooms.begin(), specialBlooms.end(),
+                                                              Coord(xpos, ypos))
+                                                    != specialBlooms.end())
+                                                || (std::find(spiceFields.begin(), spiceFields.end(), Coord(xpos, ypos))
+                                                    != spiceFields.end())) {
                                                 selectedMapItemCoord = Coord(xpos, ypos);
                                             }
                                         }
@@ -1263,10 +1313,10 @@ void MapEditor::processInput() {
 
     if ((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
         const uint8_t* keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode          = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-        scrollLeftMode          = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode         = (drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
-        scrollUpMode            = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+        scrollDownMode  = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode  = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode = (drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode    = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if (scrollLeftMode && scrollRightMode) {
             // do nothing
@@ -1324,12 +1374,17 @@ void MapEditor::drawCursor() {
         pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
         dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
-        if ((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
+        if ((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone)
+            && (!pInterface->hasChildWindow())) {
 
             const DuneTexture* pMirrorIcon = nullptr;
             switch (currentMirrorMode) {
-                case MirrorModeHorizontal: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon); break;
-                case MirrorModeVertical: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon); break;
+                case MirrorModeHorizontal:
+                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);
+                    break;
+                case MirrorModeVertical:
+                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);
+                    break;
                 case MirrorModeBoth: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorBothIcon); break;
                 case MirrorModePoint: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorPointIcon); break;
                 default: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon); break;
@@ -1351,7 +1406,8 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
         if (std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y)) != spiceFields.end()) {
             terrainType = Terrain_ThickSpice;
         } else if (std::find_if(spiceFields.begin(), spiceFields.end(),
-                                [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; }) != spiceFields.end()) {
+                                [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; })
+                   != spiceFields.end()) {
             terrainType = Terrain_Spice;
         }
     }
@@ -1400,12 +1456,20 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                 case Terrain_Rock: {
                     // determine which surrounding tiles are rock
-                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Rock) || (getTerrain(x, y - 1) == Terrain_Slab) || (getTerrain(x, y - 1) == Terrain_Mountain);
-                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Rock) || (getTerrain(x + 1, y) == Terrain_Slab) || (getTerrain(x + 1, y) == Terrain_Mountain);
-                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Rock) || (getTerrain(x, y + 1) == Terrain_Slab) || (getTerrain(x, y + 1) == Terrain_Mountain);
-                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Rock) || (getTerrain(x - 1, y) == Terrain_Slab) || (getTerrain(x - 1, y) == Terrain_Mountain);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Rock)
+                                || (getTerrain(x, y - 1) == Terrain_Slab) || (getTerrain(x, y - 1) == Terrain_Mountain);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Rock)
+                                   || (getTerrain(x + 1, y) == Terrain_Slab)
+                                   || (getTerrain(x + 1, y) == Terrain_Mountain);
+                    const int down = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Rock)
+                                  || (getTerrain(x, y + 1) == Terrain_Slab)
+                                  || (getTerrain(x, y + 1) == Terrain_Mountain);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Rock)
+                                  || (getTerrain(x - 1, y) == Terrain_Slab)
+                                  || (getTerrain(x - 1, y) == Terrain_Mountain);
 
-                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Rock) + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Rock)
+                         + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Dunes: {
@@ -1415,7 +1479,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                     const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Dunes);
                     const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Dunes);
 
-                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Dunes) + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Dunes)
+                         + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Mountain: {
@@ -1425,18 +1490,23 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                     const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Mountain);
                     const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Mountain);
 
-                    tile =
-                        static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Mountain) + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Mountain)
+                         + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_Spice: {
                     // determine which surrounding tiles are spice
-                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Spice) || (getTerrain(x, y - 1) == Terrain_ThickSpice);
-                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Spice) || (getTerrain(x + 1, y) == Terrain_ThickSpice);
-                    const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Spice) || (getTerrain(x, y + 1) == Terrain_ThickSpice);
-                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Spice) || (getTerrain(x - 1, y) == Terrain_ThickSpice);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Spice)
+                                || (getTerrain(x, y - 1) == Terrain_ThickSpice);
+                    const int right = (x + 1 >= map.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Spice)
+                                   || (getTerrain(x + 1, y) == Terrain_ThickSpice);
+                    const int down = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Spice)
+                                  || (getTerrain(x, y + 1) == Terrain_ThickSpice);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Spice)
+                                  || (getTerrain(x - 1, y) == Terrain_ThickSpice);
 
-                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Spice) + (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Spice)
+                         + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_ThickSpice: {
@@ -1446,8 +1516,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                     const int down  = (y + 1 >= map.getSizeY()) || (getTerrain(x, y + 1) == Terrain_ThickSpice);
                     const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_ThickSpice);
 
-                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_ThickSpice) +
-                           (up | (right << 1) | (down << 2) | (left << 3));
+                    tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_ThickSpice)
+                         + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
                 case Terrain_SpiceBloom: {
@@ -1464,9 +1534,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
 
             // draw map[x][y]
-            SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize, (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize,
-                               zoomedTilesize, zoomedTilesize};
-            SDL_FRect drawLocation = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)), static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
+            SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize,
+                               (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
+            SDL_FRect drawLocation = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
+                                      static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
             Dune_RenderCopyF(renderer, terrainSprite, &source, &drawLocation);
         }
@@ -1483,23 +1554,24 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             // Load Terrain sprite
             const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
-            SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
-                               zoomedTilesize};
+            SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
+                               zoomedTilesize, zoomedTilesize};
             SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
-            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w), static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                      static_cast<int>(dest.h)};
         } else if (structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
             const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
 
             for (int y = position.y; y < position.y + 2; y++) {
                 for (int x = position.x; x < position.x + 2; x++) {
-                    SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0, zoomedTilesize,
-                                       zoomedTilesize};
+                    SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
+                                       zoomedTilesize, zoomedTilesize};
                     SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
                                       static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
@@ -1569,7 +1641,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             const auto* const WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
             SDL_Rect source = {maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
-            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)), static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
+                              static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
+                              static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
@@ -1605,7 +1679,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID) * TILESIZE);
 
-            SDL_Rect source = {frameSize.x * (structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x, frameSize.y};
+            SDL_Rect source = {frameSize.x * (structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x,
+                               frameSize.y};
             SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
                               static_cast<float>(frameSize.x), static_cast<float>(frameSize.y)};
@@ -1617,7 +1692,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         }
 
         // draw selection frame
-        if (!bCompleteMap && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id) != selectedStructures.end())) {
+        if (!bCompleteMap
+            && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id)
+                != selectedStructures.end())) {
             // now draw the selection box thing, with parts at all corners of structure
 
             DuneDrawSelectionBox(renderer, selectionDest);
@@ -1628,51 +1705,20 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const Coord& position = unit.position;
 
-        constexpr Coord tankTurretOffset[] = {Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0),
-                                              Coord(0, 0)};
+        constexpr Coord tankTurretOffset[] = {Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0),
+                                              Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0)};
 
-        constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),
-                                                   Coord(0, -20),
-                                                   Coord(0, -20),
-                                                   Coord(-4, -20),
-                                                   Coord(-8, -12),
-                                                   Coord(-8, -4),
-                                                   Coord(-4, -12),
-                                                   Coord(8, -4)};
+        constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
+                                                   Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
 
-        constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8),
-                                                   Coord(0, -8)};
+        constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                   Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-        constexpr Coord launcherTurretOffset[] = {Coord(0, -12),
-                                                  Coord(0, -8),
-                                                  Coord(0, -8),
-                                                  Coord(0, -8),
-                                                  Coord(0, -12),
-                                                  Coord(0, -8),
-                                                  Coord(0, -8),
-                                                  Coord(0, -8)};
+        constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                  Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-        constexpr Coord devastatorTurretOffset[] = {
-            Coord(8, -16),
-            Coord(-4, -12),
-            Coord(0, -16),
-            Coord(4, -12),
-            Coord(-8, -16),
-            Coord(0, -12),
-            Coord(-4, -12),
-            Coord(0, -12)};
+        constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),  Coord(4, -12),
+                                                    Coord(-8, -16), Coord(0, -12),  Coord(-4, -12), Coord(0, -12)};
 
         int objectPicBase      = 0;
         int framesX            = static_cast<int>(ANGLETYPE::NUM_ANGLES);
@@ -1715,24 +1761,25 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         auto source             = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
         int frameSizeX          = source.w;
         int frameSizeY          = source.h;
-        const auto drawLocation = calcSpriteDrawingRectF(pObjectSprite,
-                                                         pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
-                                                         pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)),
-                                                         framesX, framesY, HAlign::Center, VAlign::Center);
+        const auto drawLocation = calcSpriteDrawingRectF(
+            pObjectSprite, pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
+            pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)), framesX, framesY, HAlign::Center,
+            VAlign::Center);
 
         Dune_RenderCopyF(renderer, pObjectSprite, &source, &drawLocation);
 
         if (objectPicGun >= 0) {
             const auto* const pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
 
-            auto source2 = calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
+            auto source2 =
+                calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
 
             const auto& gun = gunOffset[static_cast<int>(unit.angle)];
             const auto sx   = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
             const auto sy   = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
 
-            const auto drawLocation2 = calcSpriteDrawingRectF(pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
-                                                              HAlign::Center, VAlign::Center);
+            const auto drawLocation2 = calcSpriteDrawingRectF(
+                pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopyF(renderer, pGunSprite, &source2, &drawLocation2);
         }
@@ -1740,10 +1787,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         if (unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
             const auto* const pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
 
-            auto drawLocation2 = calcDrawingRect(pStarSprite,
-                                                 pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)) + frameSizeX / 2 - 1,
-                                                 pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)) + frameSizeY / 2 - 1,
-                                                 HAlign::Right, VAlign::Bottom);
+            auto drawLocation2 = calcDrawingRect(
+                pStarSprite,
+                pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)) + frameSizeX / 2 - 1,
+                pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)) + frameSizeY / 2 - 1,
+                HAlign::Right, VAlign::Bottom);
 
             pStarSprite->draw(renderer, drawLocation2.x, drawLocation2.y);
         }
@@ -1786,7 +1834,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         } break;
     }
 
-    if (!bCompleteMap && !pInterface->hasChildWindow() && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+    if (!bCompleteMap && !pInterface->hasChildWindow()
+        && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
 
         int xPos = pScreenborder->screen2MapX(drawnMouseX);
         int yPos = pScreenborder->screen2MapY(drawnMouseY);
@@ -1828,15 +1877,17 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                         for (int k = 0; k < mapMirror->getSize(); k++) {
                             Coord pos = mapMirror->getCoord(Coord(x, y), k);
 
-                            if (!map.isInsideMap(pos.x, pos.y) || isTileBlocked(pos.x, pos.y, true, (currentEditorMode.itemID != Structure_Slab1))) {
+                            if (!map.isInsideMap(pos.x, pos.y)
+                                || isTileBlocked(pos.x, pos.y, true, (currentEditorMode.itemID != Structure_Slab1))) {
                                 image = invalidPlace;
                             } else if ((image != invalidPlace) && (map(pos.x, pos.y) != Terrain_Rock)) {
                                 image = greyPlace;
                             }
                         }
 
-                        SDL_Rect drawLocation = {pScreenborder->world2screenX(x * TILESIZE), pScreenborder->world2screenY(y * TILESIZE),
-                                                 zoomedTilesize, zoomedTilesize};
+                        SDL_Rect drawLocation = {pScreenborder->world2screenX(x * TILESIZE),
+                                                 pScreenborder->world2screenY(y * TILESIZE), zoomedTilesize,
+                                                 zoomedTilesize};
                         Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
                     }
                 }
@@ -1855,15 +1906,17 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                         image = invalidPlace;
                     }
                 }
-                auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x * TILESIZE), pScreenborder->world2screenY(position.y * TILESIZE));
+                auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x * TILESIZE),
+                                                    pScreenborder->world2screenY(position.y * TILESIZE));
                 Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
             }
         } else if (currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
             if (mapInfo.tacticalPos.isValid()) {
 
-                SDL_Rect dest = {pScreenborder->world2screenX(xPos * TILESIZE), pScreenborder->world2screenY(yPos * TILESIZE),
-                                 world2zoomedWorld(15 * TILESIZE), world2zoomedWorld(10 * TILESIZE)};
+                SDL_Rect dest = {pScreenborder->world2screenX(xPos * TILESIZE),
+                                 pScreenborder->world2screenY(yPos * TILESIZE), world2zoomedWorld(15 * TILESIZE),
+                                 world2zoomedWorld(10 * TILESIZE)};
                 renderDrawRect(renderer, &dest, COLOR_WHITE);
             }
         }
@@ -1897,7 +1950,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     }
 
     // draw selection rect for map items (spice bloom, special bloom or spice field)
-    if (!bCompleteMap && selectedMapItemCoord.isValid() && ((std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end()) || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end()) || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()))) {
+    if (!bCompleteMap && selectedMapItemCoord.isValid()
+        && ((std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end())
+            || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
+            || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()))) {
 
         const DuneTexture* selectionBox = nullptr;
 
@@ -1908,10 +1964,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
         }
 
-        SDL_Rect dest = calcDrawingRect(selectionBox,
-                                        pScreenborder->world2screenX((selectedMapItemCoord.x * TILESIZE) + (TILESIZE / 2)),
-                                        pScreenborder->world2screenY((selectedMapItemCoord.y * TILESIZE) + (TILESIZE / 2)),
-                                        HAlign::Center, VAlign::Center);
+        SDL_Rect dest = calcDrawingRect(
+            selectionBox, pScreenborder->world2screenX((selectedMapItemCoord.x * TILESIZE) + (TILESIZE / 2)),
+            pScreenborder->world2screenY((selectedMapItemCoord.y * TILESIZE) + (TILESIZE / 2)), HAlign::Center,
+            VAlign::Center);
 
         Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
     }
@@ -1934,7 +1990,8 @@ void MapEditor::saveMapshot() {
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
-    const auto renderTarget = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
+    const auto renderTarget =
+        sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
     if (renderTarget == nullptr) {
         sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;

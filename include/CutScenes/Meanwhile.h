@@ -66,7 +66,8 @@ private:
     };
     /// \endcond
 
-    std::unique_ptr<Wsafile> pMeanwhile; ///< the video elements not showing the imperator. This video sequence is not shown continuesly but interrupted by the imperator
+    std::unique_ptr<Wsafile> pMeanwhile; ///< the video elements not showing the imperator. This video sequence is not
+                                         ///< shown continuesly but interrupted by the imperator
     std::unique_ptr<Wsafile> pImperator; ///< the imperator talking
 };
 

@@ -86,7 +86,9 @@ void StarPort::doBuildRandom(const GameContext& context) {
         auto item2Produce = ItemID_Invalid;
 
         do {
-            item2Produce = std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
+            item2Produce =
+                std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
+                    ->itemID;
         } while ((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV) || (item2Produce == Unit_Carryall));
 
         doProduceItem(item2Produce);
@@ -117,7 +119,8 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
 }
 
 void StarPort::handlePlaceOrderClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
 }
 
 void StarPort::handleCancelOrderClick() {
@@ -286,14 +289,17 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                     auto* newUnit = getOwner()->createUnit(newUnitItemID);
                     if (newUnit != nullptr) {
                         Coord unitDestination;
-                        if (getOwner()->isAI() && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester) || (newUnit->getItemID() == Unit_MCV))) {
+                        if (getOwner()->isAI()
+                            && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester)
+                                || (newUnit->getItemID() == Unit_MCV))) {
                             // Don't want harvesters going to the rally point
                             unitDestination = location;
                         } else {
                             unitDestination = destination;
                         }
 
-                        const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
+                        const auto spot =
+                            context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
                         newUnit->deploy(context, spot);
 
                         if (unitDestination.isValid()) {
@@ -317,11 +323,10 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                     }
                 }
 
-                const auto currentProducedBuildItem = std::find_if(buildList.begin(),
-                                                                   buildList.end(),
-                                                                   [&](BuildItem& buildItem) {
-                                                                       return (buildItem.itemID == currentProductionQueue.front().itemID);
-                                                                   });
+                const auto currentProducedBuildItem =
+                    std::find_if(buildList.begin(), buildList.end(), [&](BuildItem& buildItem) {
+                        return (buildItem.itemID == currentProductionQueue.front().itemID);
+                    });
                 if (currentProducedBuildItem != buildList.end()) {
                     currentProducedBuildItem->num--;
                 }

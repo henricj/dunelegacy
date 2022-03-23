@@ -43,8 +43,7 @@ public:
 
     void createSandRegions();
     void damage(const GameContext& context, uint32_t damagerID, House* damagerOwner, const Coord& realPos,
-                uint32_t bulletID,
-                FixPoint damage, int damageRadius, bool air);
+                uint32_t bulletID, FixPoint damage, int damageRadius, bool air);
     static Coord getMapPos(ANGLETYPE angle, const Coord& source);
     void removeObjectFromMap(uint32_t objectID);
     void spiceRemoved(const GameContext& context, const Coord& coord);
@@ -56,15 +55,17 @@ public:
     }
 
     bool findSpice(Coord& destination, const Coord& origin);
-    bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits = false) const;
-    [[nodiscard]] bool isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
+    bool okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired,
+                              const House* pHouse, bool bIgnoreUnits = false) const;
+    [[nodiscard]] bool
+    isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX,
+                    int buildingSizeY) const; // Allows AI to check to see if a gap exists between the current structure
     bool isWithinBuildRange(int x, int y, const House* pHouse) const;
     static ANGLETYPE getPosAngle(const Coord& source, const Coord& pos);
     [[nodiscard]] Coord findClosestEdgePoint(const Coord& origin, const Coord& buildingSize) const;
 
     Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen,
-                         const Coord& gatherPoint  = Coord::Invalid(),
-                         const Coord& buildingSize = Coord(0, 0));
+                         const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0, 0));
     const // building size is num squares
         Coord
         findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(),
@@ -74,15 +75,13 @@ public:
 
     void createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice = false);
 
-    [[nodiscard]] int32_t getSizeX() const noexcept {
-        return sizeX;
-    }
+    [[nodiscard]] int32_t getSizeX() const noexcept { return sizeX; }
 
-    [[nodiscard]] int32_t getSizeY() const noexcept {
-        return sizeY;
-    }
+    [[nodiscard]] int32_t getSizeY() const noexcept { return sizeY; }
 
-    [[nodiscard]] int getKey(const Tile& tile) const noexcept { return tile_index(tile.getLocation().x, tile.getLocation().y); }
+    [[nodiscard]] int getKey(const Tile& tile) const noexcept {
+        return tile_index(tile.getLocation().x, tile.getLocation().y);
+    }
 
     [[nodiscard]] int getKey(int xPos, int yPos) const {
         if (!tileExists(xPos, yPos))
@@ -95,9 +94,7 @@ public:
         return ((xPos >= 0) && (xPos < sizeX) && (yPos >= 0) && (yPos < sizeY));
     }
 
-    [[nodiscard]] bool tileExists(const Coord& pos) const noexcept {
-        return tileExists(pos.x, pos.y);
-    }
+    [[nodiscard]] bool tileExists(const Coord& pos) const noexcept { return tileExists(pos.x, pos.y); }
 
     Tile* tryGetTile(int xPos, int yPos) noexcept {
         if (!tileExists(xPos, yPos))
@@ -131,13 +128,9 @@ public:
         return tile;
     }
 
-    [[nodiscard]] const Tile* getTile(const Coord& location) const {
-        return getTile(location.x, location.y);
-    }
+    [[nodiscard]] const Tile* getTile(const Coord& location) const { return getTile(location.x, location.y); }
 
-    Tile* getTile(const Coord& location) {
-        return getTile(location.x, location.y);
-    }
+    Tile* getTile(const Coord& location) { return getTile(location.x, location.y); }
 
     template<class... Args>
     void add_bullet(Args&&... args) {
@@ -157,8 +150,7 @@ public:
 protected:
     template<typename F>
     void location_for_each(int x1, int y1, int x2, int y2, F&& f) const {
-        static_assert(std::is_invocable<F, int, int>::value,
-                      "The function must be of the form void F(int, int)");
+        static_assert(std::is_invocable<F, int, int>::value, "The function must be of the form void F(int, int)");
 
         if (x1 < 0)
             x1 = 0;
@@ -226,16 +218,17 @@ protected:
     }
     template<typename Filter, typename F>
     void index_for_each_filter(int x1, int y1, int x2, int y2, Filter&& filter, F&& f) const {
-        location_for_each(x1, y1, x2, y2, [&](int x, int y) { if (filter(x, y)) f(tile_index(x, y)); });
+        location_for_each(x1, y1, x2, y2, [&](int x, int y) {
+            if (filter(x, y))
+                f(tile_index(x, y));
+        });
     }
     class BoxOffsets {
         std::vector<std::vector<std::pair<int, int>>> box_sets_;
 
     public:
         BoxOffsets(int size, Coord box = Coord(1, 1));
-        std::vector<std::pair<int, int>>& search_set(int depth) {
-            return box_sets_[depth - 1];
-        }
+        std::vector<std::pair<int, int>>& search_set(int depth) { return box_sets_[depth - 1]; }
 
         [[nodiscard]] size_t max_depth() const noexcept { return box_sets_.size(); }
     };
@@ -260,7 +253,8 @@ public:
 
     template<typename Predicate>
     bool find(int x1, int y1, int x2, int y2, Predicate&& predicate) {
-        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value, "The Predicate must of the form bool Predicate(Tile&)");
+        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value,
+                      "The Predicate must of the form bool Predicate(Tile&)");
         return index_find(x1, y1, x2, y2, [&](int index) { return predicate(tiles[index]); });
     }
 
@@ -274,13 +268,12 @@ public:
         index_for_each_filter(x1, y1, x2, y2, filter, [&](int index) { f(tiles[index]); });
     }
 
-    enum class SearchResult { NotDone,
-                              DoneAtDepth,
-                              Done };
+    enum class SearchResult { NotDone, DoneAtDepth, Done };
 
 protected:
     template<typename Offsets, typename Predicate>
-    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Random& generator, Predicate&& predicate) const {
+    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Random& generator,
+                                       Predicate&& predicate) const {
 
         const auto size = offsets.size();
         auto found      = false;
@@ -312,7 +305,8 @@ protected:
     }
 
     template<typename Predicate>
-    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator, Predicate&& predicate) const {
+    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator,
+                                 Predicate&& predicate) const {
 
         if (0 == depth) {
             const auto* const tile = tryGetTile(x, y);
@@ -365,7 +359,8 @@ protected:
 
 public:
     template<typename Predicate>
-    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator, Predicate&& predicate) const {
+    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator,
+                                Predicate&& predicate) const {
 
         if (buildingSize == Coord {2, 2})
             return search_all_by_box_edge_2x2(x, y, generator, predicate);
@@ -423,7 +418,8 @@ public:
             f(tiles[tile_index(x + 1, y)]);
     }
 
-    template<bool EmptyTile = true, bool PredicateValue = true, int AllEmptyMask = EmptyTile ? 0x0f : 0, int AllTrueMask = 0x0f, typename F>
+    template<bool EmptyTile = true, bool PredicateValue = true, int AllEmptyMask = EmptyTile ? 0x0f : 0,
+             int AllTrueMask = 0x0f, typename F>
     int get_neighbor_mask(int x, int y, F&& predicate) {
         const auto e_up    = tileExists(x, y - 1);
         const auto e_right = tileExists(x + 1, y);
@@ -571,15 +567,14 @@ private:
     const int32_t sizeX;                  ///< number of tiles this map is wide (read only)
     const int32_t sizeY;                  ///< number of tiles this map is high (read only)
     std::vector<Tile> tiles;              ///< the 2d-array containing all the tiles of the map
-    ObjectBase* lastSinglySelectedObject; ///< The last selected object. If selected again all units of the same type are selected
+    ObjectBase* lastSinglySelectedObject; ///< The last selected object. If selected again all units of the same type
+                                          ///< are selected
 
     std::queue<uint32_t> removedObjects;
 
     void init_tile_location();
 
-    [[nodiscard]] int tile_index(int xPos, int yPos) const noexcept {
-        return xPos * sizeY + yPos;
-    }
+    [[nodiscard]] int tile_index(int xPos, int yPos) const noexcept { return xPos * sizeY + yPos; }
 
     AStarSearch pathfinder_;
 

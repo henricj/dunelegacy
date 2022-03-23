@@ -30,69 +30,54 @@
 #define AIUPDATEINTERVAL 50
 
 static const std::map<uint32_t, int> buildPriorityMap = {
-    {Unit_Carryall, 2},
-    {Unit_Ornithopter, 6},
-    {Unit_Infantry, 2},
-    {Unit_Troopers, 3},
-    {Unit_Soldier, 1},
-    {Unit_Trooper, 2},
-    {Unit_Saboteur, 0},
-    {Unit_Launcher, 8},
-    {Unit_Deviator, 3},
-    {Unit_Tank, 7},
-    {Unit_SiegeTank, 9},
-    {Unit_Devastator, 10},
-    {Unit_SonicTank, 7},
-    {Unit_Trike, 3},
-    {Unit_RaiderTrike, 4},
-    {Unit_Quad, 5},
-    {Unit_Harvester, 1},
-    {Unit_MCV, 1}};
+    {Unit_Carryall, 2},  {Unit_Ornithopter, 6}, {Unit_Infantry, 2},  {Unit_Troopers, 3}, {Unit_Soldier, 1},
+    {Unit_Trooper, 2},   {Unit_Saboteur, 0},    {Unit_Launcher, 8},  {Unit_Deviator, 3}, {Unit_Tank, 7},
+    {Unit_SiegeTank, 9}, {Unit_Devastator, 10}, {Unit_SonicTank, 7}, {Unit_Trike, 3},    {Unit_RaiderTrike, 4},
+    {Unit_Quad, 5},      {Unit_Harvester, 1},   {Unit_MCV, 1}};
 
-static const std::unordered_map<uint32_t, int> targetPriorityMap = {
-    {Unit_Carryall, 36},
-    {Unit_Ornithopter, 105},
-    {Unit_Infantry, 40},
-    {Unit_Troopers, 100},
-    {Unit_Soldier, 20},
-    {Unit_Trooper, 50},
-    {Unit_Saboteur, 700},
-    {Unit_Launcher, 250},
-    {Unit_Deviator, 225},
-    {Unit_Tank, 180},
-    {Unit_SiegeTank, 280},
-    {Unit_Devastator, 355},
-    {Unit_SonicTank, 190},
-    {Unit_Trike, 100},
-    {Unit_RaiderTrike, 115},
-    {Unit_Quad, 120},
-    {Unit_Harvester, 160},
-    {Unit_MCV, 160},
-    {Unit_Frigate, 0},
-    {Unit_Sandworm, 0},
-    {Structure_Slab1, 5},
-    {Structure_Slab4, 10},
-    {Structure_Palace, 400},
-    {Structure_LightFactory, 200},
-    {Structure_HeavyFactory, 600},
-    {Structure_HighTechFactory, 200},
-    {Structure_IX, 100},
-    {Structure_WOR, 175},
-    {Structure_ConstructionYard, 300},
-    {Structure_WindTrap, 300},
-    {Structure_Barracks, 100},
-    {Structure_StarPort, 250},
-    {Structure_Refinery, 300},
-    {Structure_RepairYard, 600},
-    {Structure_Wall, 30},
-    {Structure_GunTurret, 225},
-    {Structure_RocketTurret, 175},
-    {Structure_Silo, 150},
-    {Structure_Radar, 275}};
+static const std::unordered_map<uint32_t, int> targetPriorityMap = {{Unit_Carryall, 36},
+                                                                    {Unit_Ornithopter, 105},
+                                                                    {Unit_Infantry, 40},
+                                                                    {Unit_Troopers, 100},
+                                                                    {Unit_Soldier, 20},
+                                                                    {Unit_Trooper, 50},
+                                                                    {Unit_Saboteur, 700},
+                                                                    {Unit_Launcher, 250},
+                                                                    {Unit_Deviator, 225},
+                                                                    {Unit_Tank, 180},
+                                                                    {Unit_SiegeTank, 280},
+                                                                    {Unit_Devastator, 355},
+                                                                    {Unit_SonicTank, 190},
+                                                                    {Unit_Trike, 100},
+                                                                    {Unit_RaiderTrike, 115},
+                                                                    {Unit_Quad, 120},
+                                                                    {Unit_Harvester, 160},
+                                                                    {Unit_MCV, 160},
+                                                                    {Unit_Frigate, 0},
+                                                                    {Unit_Sandworm, 0},
+                                                                    {Structure_Slab1, 5},
+                                                                    {Structure_Slab4, 10},
+                                                                    {Structure_Palace, 400},
+                                                                    {Structure_LightFactory, 200},
+                                                                    {Structure_HeavyFactory, 600},
+                                                                    {Structure_HighTechFactory, 200},
+                                                                    {Structure_IX, 100},
+                                                                    {Structure_WOR, 175},
+                                                                    {Structure_ConstructionYard, 300},
+                                                                    {Structure_WindTrap, 300},
+                                                                    {Structure_Barracks, 100},
+                                                                    {Structure_StarPort, 250},
+                                                                    {Structure_Refinery, 300},
+                                                                    {Structure_RepairYard, 600},
+                                                                    {Structure_Wall, 30},
+                                                                    {Structure_GunTurret, 225},
+                                                                    {Structure_RocketTurret, 175},
+                                                                    {Structure_Silo, 150},
+                                                                    {Structure_Radar, 275}};
 
-CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random)
-    : Player(context, associatedHouse, playername, random) {
-}
+CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
+                                   const Random& random)
+    : Player(context, associatedHouse, playername, random) { }
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
@@ -128,8 +113,7 @@ void CampaignAIPlayer::update() {
     updateUnits();
 }
 
-void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) {
-}
+void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) { }
 
 void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
     if (structureQueue.size() < 5) {
@@ -173,7 +157,8 @@ void CampaignAIPlayer::updateStructures() {
             const auto* pPalace = static_cast<const Palace*>(pStructure);
             if (pPalace->isSpecialWeaponReady()) {
 
-                if (getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
+                if (getHouse()->getHouseID() != HOUSETYPE::HOUSE_HARKONNEN
+                    && getHouse()->getHouseID() != HOUSETYPE::HOUSE_SARDAUKAR) {
                     doSpecialWeapon(pPalace);
                 } else {
                     const House* pBestHouse = nullptr;
@@ -186,14 +171,16 @@ void CampaignAIPlayer::updateStructures() {
                             pBestHouse = &house;
                         } else if (house.getNumStructures() > pBestHouse->getNumStructures()) {
                             pBestHouse = &house;
-                        } else if (pBestHouse->getNumStructures() == 0 &&
-                                   (house.getNumUnits() > pBestHouse->getNumUnits())) {
+                        } else if (pBestHouse->getNumStructures() == 0
+                                   && (house.getNumUnits() > pBestHouse->getNumUnits())) {
                             pBestHouse = &house;
                         }
                     });
 
                     if (pBestHouse) {
-                        const Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();
+                        const Coord target = pBestHouse->getNumStructures() > 0
+                                               ? pBestHouse->getCenterOfMainBase()
+                                               : pBestHouse->getStrongestUnitPosition();
                         doLaunchDeathhand(pPalace, target.x, target.y);
                     }
                 }
@@ -225,7 +212,8 @@ void CampaignAIPlayer::updateStructures() {
                             const auto location    = iter->location;
                             const Coord itemsize   = getStructureSize(itemID);
                             const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
-                            if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
+                            if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false,
+                                                              pConstYard->getOwner())) {
                                 doPlaceStructure(pConstYard, location.x, location.y);
                             } else if (itemID == Structure_Slab1) {
                                 // forget about concrete
@@ -300,11 +288,13 @@ void CampaignAIPlayer::updateStructures() {
 
 void CampaignAIPlayer::updateUnits() {
     for (const UnitBase* pUnit : getUnitList()) {
-        if (pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario() || pUnit->hasATarget()) {
+        if (pUnit->getOwner() != getHouse() || pUnit->wasForced() || !pUnit->isRespondable() || pUnit->isByScenario()
+            || pUnit->hasATarget()) {
             continue;
         }
 
-        if ((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV) || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
+        if ((pUnit->getItemID() == Unit_Harvester) || (pUnit->getItemID() == Unit_MCV)
+            || (pUnit->getItemID() == Unit_Carryall) || (pUnit->getItemID() == Unit_Frigate)) {
             continue;
         }
 

@@ -40,8 +40,7 @@
 namespace {
 class PalaceConstants : public StructureBaseConstants {
 public:
-    constexpr PalaceConstants()
-        : StructureBaseConstants(Palace::item_id, Coord {3, 3}) { canAttackStuff_ = true; }
+    constexpr PalaceConstants() : StructureBaseConstants(Palace::item_id, Coord {3, 3}) { canAttackStuff_ = true; }
 };
 
 constexpr PalaceConstants palace_constants;
@@ -93,7 +92,8 @@ std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext
 }
 
 void Palace::handleSpecialClick(const GameContext& context) {
-    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID));
+    context.game.getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID));
 }
 
 void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos) {
@@ -101,8 +101,9 @@ void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos
     const auto& map = context.map;
 
     if (map.tileExists(xPos, yPos)) {
-        game.getCommandManager().addCommand(
-            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
+        game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,
+                                                    objectID, static_cast<uint32_t>(xPos),
+                                                    static_cast<uint32_t>(yPos)));
     }
 }
 
@@ -154,10 +155,10 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
     const auto deathOffY = lround(FixPoint::cos(randAngle) * radius);
 
     const auto centerPoint = getCenterPoint();
-    const Coord dest(x * TILESIZE + TILESIZE / 2 + deathOffX,
-                     y * TILESIZE + TILESIZE / 2 + deathOffY);
+    const Coord dest(x * TILESIZE + TILESIZE / 2 + deathOffX, y * TILESIZE + TILESIZE / 2 + deathOffY);
 
-    context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false, nullptr);
+    context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
+                           nullptr);
     soundPlayer->playSoundAt(Sound_Rocket, getLocation());
 
     if (getOwner() != pLocalHouse) {
@@ -178,7 +179,8 @@ void Palace::updateStructureSpecificStuff(const GameContext& context) {
                 context.game.addToNewsTicker(_("Palace is ready"));
             } else if (getOwner()->isAI()) {
 
-                if ((originalHouseID == HOUSETYPE::HOUSE_HARKONNEN) || (originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
+                if ((originalHouseID == HOUSETYPE::HOUSE_HARKONNEN)
+                    || (originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
                     // Harkonnen and Sardaukar
 
                     // old tergetting logic used by default AI
@@ -208,16 +210,12 @@ bool Palace::callFremen(const GameContext& context) {
     do {
         x = randomGen.rand(1, map.getSizeX() - 2);
         y = randomGen.rand(1, map.getSizeY() - 2);
-    } while ((map.getTile(x - 1, y - 1)->hasAGroundObject() ||
-              map.getTile(x, y - 1)->hasAGroundObject() ||
-              map.getTile(x + 1, y - 1)->hasAGroundObject() ||
-              map.getTile(x - 1, y)->hasAGroundObject() ||
-              map.getTile(x, y)->hasAGroundObject() ||
-              map.getTile(x + 1, y)->hasAGroundObject() ||
-              map.getTile(x - 1, y + 1)->hasAGroundObject() ||
-              map.getTile(x, y + 1)->hasAGroundObject() ||
-              map.getTile(x + 1, y + 1)->hasAGroundObject()) &&
-             (count++ <= 1000));
+    } while ((map.getTile(x - 1, y - 1)->hasAGroundObject() || map.getTile(x, y - 1)->hasAGroundObject()
+              || map.getTile(x + 1, y - 1)->hasAGroundObject() || map.getTile(x - 1, y)->hasAGroundObject()
+              || map.getTile(x, y)->hasAGroundObject() || map.getTile(x + 1, y)->hasAGroundObject()
+              || map.getTile(x - 1, y + 1)->hasAGroundObject() || map.getTile(x, y + 1)->hasAGroundObject()
+              || map.getTile(x + 1, y + 1)->hasAGroundObject())
+             && (count++ <= 1000));
 
     if (count < 1000) {
 

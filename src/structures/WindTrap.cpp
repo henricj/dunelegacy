@@ -44,10 +44,10 @@ void WindTrap::init() {
     assert(itemID == Structure_WindTrap);
     owner->incrementStructures(itemID);
 
-    graphicID      = ObjPic_Windtrap;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-    numImagesY     = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    graphicID  = ObjPic_Windtrap;
+    graphic    = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    numImagesY = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
     firstAnimFrame = 2;
     lastAnimFrame  = 2 + NUM_WINDTRAP_ANIMATIONS - 1;
 }
@@ -83,7 +83,8 @@ void WindTrap::setHealth(FixPoint newHealth) {
 }
 
 int WindTrap::getProducedPower() const {
-    const int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
+    const int windTrapProducedPower =
+        abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
 
     const FixPoint ratio = getHealth() / getMaxHealth();
     return lround(ratio * windTrapProducedPower);

@@ -98,7 +98,8 @@ void INIMapEditorLoader::loadMap() {
             } break;
 
             default: {
-                logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(), "Unknown MapScale '" + std::to_string(mapscale) + "'!");
+                logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(),
+                         "Unknown MapScale '" + std::to_string(mapscale) + "'!");
             } break;
         }
 
@@ -124,7 +125,8 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(BloomPos);
                     pMapEditor->getSpiceBlooms().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid spice bloom position: '" + BloomPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(),
+                               "Invalid spice bloom position: '" + BloomPosition + "'");
                 }
             }
         }
@@ -141,7 +143,8 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(SpecialPos);
                     pMapEditor->getSpecialBlooms().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid special bloom position: '" + SpecialPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(),
+                               "Invalid special bloom position: '" + SpecialPosition + "'");
                 }
             }
         }
@@ -158,7 +161,8 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(FieldPos);
                     pMapEditor->getSpiceFields().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid spice field position: '" + FieldPosition + "'");
+                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(),
+                               "Invalid spice field position: '" + FieldPosition + "'");
                 }
             }
         }
@@ -184,7 +188,8 @@ void INIMapEditorLoader::loadMap() {
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile->hasKey("MAP", rowKey)) {
-                logWarning(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
+                logWarning(inifile->getSection("MAP").getLineNumber(),
+                           "Map row " + std::to_string(y) + " does not exist!");
                 continue;
             }
 
@@ -193,9 +198,11 @@ void INIMapEditorLoader::loadMap() {
             int rowLength = rowString.size();
 
             if (rowLength < sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is not long enough!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                           "Map row " + std::to_string(y) + " is not long enough!");
             } else if (rowLength > sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), "Map row " + std::to_string(y) + " is too long!");
+                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                           "Map row " + std::to_string(y) + " is too long!");
                 rowLength = sizeX;
             }
 
@@ -244,7 +251,9 @@ void INIMapEditorLoader::loadMap() {
                     } break;
 
                     default: {
-                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + std::to_string(x) + ", " + std::to_string(y) + ")!");
+                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                                   std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
+                                       + std::to_string(x) + ", " + std::to_string(y) + ")!");
                         type = Terrain_Sand;
                     } break;
                 }
@@ -258,7 +267,8 @@ void INIMapEditorLoader::loadMap() {
 }
 
 /**
-    This method loads the houses on the map specified by the various house sections in the INI file ([Atreides], [Ordos], [Harkonnen]).
+    This method loads the houses on the map specified by the various house sections in the INI file ([Atreides],
+   [Ordos], [Harkonnen]).
 */
 void INIMapEditorLoader::loadHouses() {
     for (int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
@@ -271,7 +281,8 @@ void INIMapEditorLoader::loadHouses() {
             player.bAnyHouse = false;
             player.credits   = inifile->getIntValue(houseName, "Credits", 0);
             player.quota     = inifile->getIntValue(houseName, "Quota", 0);
-            player.maxunit   = inifile->hasKey(houseName, "MaxUnit") ? inifile->getIntValue(houseName, "MaxUnit", 0) : inifile->getIntValue(houseName, "MaxUnits", 0);
+            player.maxunit   = inifile->hasKey(houseName, "MaxUnit") ? inifile->getIntValue(houseName, "MaxUnit", 0)
+                                                                     : inifile->getIntValue(houseName, "MaxUnits", 0);
 
             std::string brain = inifile->getStringValue(houseName, "Brain", "");
             if (!brain.empty()) {
@@ -294,7 +305,9 @@ void INIMapEditorLoader::loadHouses() {
                     player.bAnyHouse = true;
                     player.credits   = inifile->getIntValue(sectionname, "Credits", 0);
                     player.quota     = inifile->getIntValue(sectionname, "Quota", 0);
-                    player.maxunit   = inifile->hasKey(sectionname, "MaxUnit") ? inifile->getIntValue(sectionname, "MaxUnit", 0) : inifile->getIntValue(sectionname, "MaxUnits", 0);
+                    player.maxunit   = inifile->hasKey(sectionname, "MaxUnit")
+                                         ? inifile->getIntValue(sectionname, "MaxUnit", 0)
+                                         : inifile->getIntValue(sectionname, "MaxUnits", 0);
 
                     std::string brain = inifile->getStringValue(sectionname, "Brain", "");
                     if (!brain.empty()) {
@@ -398,7 +411,8 @@ void INIMapEditorLoader::loadUnits() {
                 attackmode = AREAGUARD;
             }
 
-            if (itemID == Unit_Soldier || itemID == Unit_Saboteur || itemID == Unit_Trooper || itemID == Unit_Infantry || itemID == Unit_Troopers) {
+            if (itemID == Unit_Soldier || itemID == Unit_Saboteur || itemID == Unit_Trooper || itemID == Unit_Infantry
+                || itemID == Unit_Troopers) {
                 if (angle == ANGLETYPE::UP) {
                     angle = ANGLETYPE::UP;
                 } else if (angle == ANGLETYPE::DOWN) {
@@ -410,7 +424,8 @@ void INIMapEditorLoader::loadUnits() {
                 }
             }
 
-            pMapEditor->units.emplace_back(unitID, houseID, itemID, iHealth, Coord(getXPos(pos), getYPos(pos)), angle, attackmode);
+            pMapEditor->units.emplace_back(unitID, houseID, itemID, iHealth, Coord(getXPos(pos), getYPos(pos)), angle,
+                                           attackmode);
 
         } else {
             logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
@@ -500,7 +515,8 @@ void INIMapEditorLoader::loadStructures() {
                 continue;
             }
 
-            pMapEditor->structures.emplace_back(structureID, houseID, itemID, iHealth, Coord(getXPos(pos), getYPos(pos)));
+            pMapEditor->structures.emplace_back(structureID, houseID, itemID, iHealth,
+                                                Coord(getXPos(pos), getYPos(pos)));
         } else {
             logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
         }
@@ -524,7 +540,8 @@ void INIMapEditorLoader::loadReinforcements() {
 
         if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime)) {
             if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
-                logWarning(key.getLineNumber(), "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
+                logWarning(key.getLineNumber(),
+                           "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
                 continue;
             }
         }
@@ -578,7 +595,8 @@ void INIMapEditorLoader::loadAITeams() {
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if (!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits, strMaxUnits)) {
+        if (!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits,
+                         strMaxUnits)) {
             logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
             continue;
         }

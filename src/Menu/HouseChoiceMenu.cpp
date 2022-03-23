@@ -23,11 +23,11 @@
 #include <Menu/HouseChoiceInfoMenu.h>
 #include <SoundPlayer.h>
 
-static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES, HOUSETYPE::HOUSE_ORDOS, HOUSETYPE::HOUSE_HARKONNEN,
-                                           HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
+static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,
+                                           HOUSETYPE::HOUSE_HARKONNEN, HOUSETYPE::HOUSE_MERCENARY,
+                                           HOUSETYPE::HOUSE_FREMEN,    HOUSETYPE::HOUSE_SARDAUKAR};
 
-HouseChoiceMenu::HouseChoiceMenu()
-    : currentHouseChoiceScrollPos(0) {
+HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
     // set up window
     const int xpos = std::max(0, (getRendererWidth() - 640) / 2);
@@ -88,13 +88,16 @@ void HouseChoiceMenu::onHouseButton(int button) {
 
 void HouseChoiceMenu::updateHouseChoice() {
     // House1 button
-    house1Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 0]));
+    house1Button.setTextures(
+        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 0]));
 
     // House2 button
-    house2Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 1]));
+    house2Button.setTextures(
+        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 1]));
 
     // House3 button
-    house3Button.setTextures(pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 2]));
+    house3Button.setTextures(
+        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 2]));
 }
 
 void HouseChoiceMenu::onHouseLeft() {

@@ -24,12 +24,9 @@
 
 class HBox_WidgetData {
 public:
-    HBox_WidgetData()
-        : pWidget(nullptr), fixedWidth(0), weight(0.0) { }
-    HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth)
-        : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
-    HBox_WidgetData(Widget* _pWidget, double _weight)
-        : pWidget(_pWidget), fixedWidth(-1), weight(_weight) { }
+    HBox_WidgetData() : pWidget(nullptr), fixedWidth(0), weight(0.0) { }
+    HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
+    HBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedWidth(-1), weight(_weight) { }
 
     Widget* pWidget;
     int32_t fixedWidth;
@@ -40,8 +37,7 @@ public:
 class HBox : public Container<HBox_WidgetData> {
 public:
     /// default constructor
-    HBox()
-        : Container<HBox_WidgetData>() { }
+    HBox() : Container<HBox_WidgetData>() { }
 
     /// destructor
     ~HBox() override { }
@@ -96,9 +92,7 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -156,10 +150,12 @@ public:
                 if (widgetData.fixedWidth <= 0) {
                     if (numRemainingWidgets <= 1) {
                         widgetWidth = availableWidth;
-                    } else if ((double)widgetData.pWidget->getMinimumSize().x > totalAvailableWidth * (widgetData.weight / weightSum)) {
+                    } else if ((double)widgetData.pWidget->getMinimumSize().x
+                               > totalAvailableWidth * (widgetData.weight / weightSum)) {
                         widgetWidth = widgetData.pWidget->getMinimumSize().x;
                     } else {
-                        widgetWidth = (int32_t)((totalAvailableWidth - neededOversizeWidth) * (widgetData.weight / notOversizedWeightSum));
+                        widgetWidth = (int32_t)((totalAvailableWidth - neededOversizeWidth)
+                                                * (widgetData.weight / notOversizedWeightSum));
                     }
                     availableWidth -= widgetWidth;
                     numRemainingWidgets--;

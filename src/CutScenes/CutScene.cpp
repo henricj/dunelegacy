@@ -25,8 +25,7 @@
 #include <globals.h>
 #include <sand.h>
 
-CutScene::CutScene()
-    : quiting(false) { }
+CutScene::CutScene() : quiting(false) { }
 
 CutScene::~CutScene() {
     // Fixes some flickering
@@ -124,5 +123,6 @@ std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char*
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3) {
-    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get(), pFileManager->openFile(name3).get());
+    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get(),
+                                     pFileManager->openFile(name3).get());
 }

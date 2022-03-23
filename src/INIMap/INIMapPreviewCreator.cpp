@@ -15,23 +15,21 @@
 
 #include <algorithm>
 
-INIMapPreviewCreator::INIMapPreviewCreator(INIMap::inifile_ptr pINIFile)
-    : INIMap(std::move(pINIFile)) {
-}
+INIMapPreviewCreator::INIMapPreviewCreator(INIMap::inifile_ptr pINIFile) : INIMap(std::move(pINIFile)) { }
 
 INIMapPreviewCreator::~INIMapPreviewCreator() = default;
 
 /**
-    This method is used to create a mini map of a map file before the map is being played (e.g. in the map selection menu).
-    The surface is 128x128 pixels plus 2*borderWidth and the map is scaled appropriately.
-    \param  borderWidth the width of the border
-    \param  borderColor the color of the border
-    \return the minimap of size (128+2*borderWidth)x(128+2*borderWidth)
+    This method is used to create a mini map of a map file before the map is being played (e.g. in the map selection
+   menu). The surface is 128x128 pixels plus 2*borderWidth and the map is scaled appropriately. \param  borderWidth the
+   width of the border \param  borderColor the color of the border \return the minimap of size
+   (128+2*borderWidth)x(128+2*borderWidth)
 */
 sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, uint32_t borderColor) {
     checkFeatures();
 
-    auto pMinimap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    auto pMinimap = sdl2::surface_ptr {
+        SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (pMinimap == nullptr) {
         return nullptr;
     }
@@ -120,7 +118,8 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                         for (int y = -5; y <= 5; y++) {
 
                             if (xpos + x >= 0 && xpos + x < logicalSizeX && ypos + y >= 0 && ypos + y < logicalSizeY) {
-                                if (((SeedMap[64 * (ypos + y) + (xpos + x)] >> 4) == 0x7) && (distanceFrom(xpos, ypos, xpos + x, ypos + y) <= 5)) {
+                                if (((SeedMap[64 * (ypos + y) + (xpos + x)] >> 4) == 0x7)
+                                    && (distanceFrom(xpos, ypos, xpos + x, ypos + y) <= 5)) {
 
                                     SeedMap[64 * (ypos + y) + (xpos + x)] = (x == 0 && y == 0) ? 0xC0 : 0xB0;
                                 }
@@ -129,7 +128,8 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     }
 
                 } else {
-                    logError(inifile->getKey("MAP", "Field")->getLineNumber(), "Invalid value for key Field: " + FieldString);
+                    logError(inifile->getKey("MAP", "Field")->getLineNumber(),
+                             "Invalid value for key Field: " + FieldString);
                 }
             }
         }
@@ -194,12 +194,14 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for (int i = 0; i < scale; i++) {
                             for (int j = 0; j < scale; j++) {
-                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY, COLOR_BLOOM);
+                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY,
+                                         COLOR_BLOOM);
                             }
                         }
                     }
                 } else {
-                    logError(inifile->getKey("MAP", "Bloom")->getLineNumber(), "Invalid value for key Bloom: " + BloomString);
+                    logError(inifile->getKey("MAP", "Bloom")->getLineNumber(),
+                             "Invalid value for key Bloom: " + BloomString);
                 }
             }
         }
@@ -218,12 +220,14 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     if (xpos >= 0 && xpos < sizeX && ypos >= 0 && ypos < sizeY) {
                         for (int i = 0; i < scale; i++) {
                             for (int j = 0; j < scale; j++) {
-                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY, COLOR_BLOOM);
+                                putPixel(pMinimap.get(), xpos * scale + i + offsetX, ypos * scale + j + offsetY,
+                                         COLOR_BLOOM);
                             }
                         }
                     }
                 } else {
-                    logError(inifile->getKey("MAP", "Special")->getLineNumber(), "Invalid value for key Special: " + SpecialString);
+                    logError(inifile->getKey("MAP", "Special")->getLineNumber(),
+                             "Invalid value for key Special: " + SpecialString);
                 }
             }
         }
@@ -250,7 +254,8 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
             std::string rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile->hasKey("MAP", rowKey)) {
-                logError(inifile->getSection("MAP").getLineNumber(), "Map row " + std::to_string(y) + " does not exist!");
+                logError(inifile->getSection("MAP").getLineNumber(),
+                         "Map row " + std::to_string(y) + " does not exist!");
             }
 
             std::string rowString = inifile->getStringValue("MAP", rowKey);
@@ -294,7 +299,9 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     } break;
 
                     default: {
-                        logError(inifile->getKey("MAP", rowKey)->getLineNumber(), std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile (" + std::to_string(x) + ", " + std::to_string(y) + ")!");
+                        logError(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                                 std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
+                                     + std::to_string(x) + ", " + std::to_string(y) + ")!");
                     } break;
                 }
 

@@ -65,7 +65,8 @@ SinglePlayerMenu::SinglePlayerMenu() {
     windowWidget.addWidget(&buttonBorder, dest3);
 
     // set up menu buttons
-    windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
+    windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64),
+                           Point(160, 111));
 
     campaignButton.setText(_("CAMPAIGN"));
     campaignButton.setOnClick([this] { onCampaign(); });
@@ -121,7 +122,8 @@ void SinglePlayerMenu::onCampaign() {
             init.addHouseInfo(humanHouseInfo);
         } else {
             GameInitSettings::HouseInfo aiHouseInfo(houseID, 2);
-            aiHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI));
+            aiHouseInfo.addPlayerInfo(
+                GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI));
             init.addHouseInfo(aiHouseInfo);
         }
     });

@@ -32,8 +32,11 @@
 
 #include <algorithm>
 
-Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget)
-    : bulletID(bulletID), damage(damage), shooterID(shooterID), owner(currentGame->getObjectManager().getObject(shooterID)->getOwner()), destination(*newRealDestination), airAttack(air) {
+Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID,
+               int damage, bool air, const ObjectBase* pTarget)
+    : bulletID(bulletID), damage(damage), shooterID(shooterID),
+      owner(currentGame->getObjectManager().getObject(shooterID)->getOwner()), destination(*newRealDestination),
+      airAttack(air) {
 
     target.pointTo(pTarget);
 
@@ -43,7 +46,8 @@ Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* ne
         const auto diffX = destination.x - newRealLocation->x;
         auto diffY       = destination.y - newRealLocation->y;
 
-        const int weaponrange = currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
+        const int weaponrange =
+            currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
 
         if ((diffX == 0) && (diffY == 0)) {
             diffY = weaponrange * TILESIZE;
@@ -200,7 +204,7 @@ void Bullet::init() {
             speed           = 6; // For Sonic bullets this is only half the actual speed; see Bullet::update()
             numFrames       = 1;
             detonationTimer = 45;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN); // no color remapping
+            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN); // no color remapping
         } break;
 
         case Bullet_Sandworm: {
@@ -251,8 +255,9 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         return;
     }
 
-    const auto dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
-                                            numFrames, 1, HAlign::Center, VAlign::Center);
+    const auto dest =
+        calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
+                              screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
 
     if (bulletID == Bullet_Sonic) {
         static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
@@ -277,11 +282,10 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        const SDL_Rect scaled_source {
-            static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
-            static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
-            static_cast<int>(lround(static_cast<float>(w) * scaleX)),
-            static_cast<int>(lround(static_cast<float>(h) * scaleY))};
+        const SDL_Rect scaled_source {static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
+                                      static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
+                                      static_cast<int>(lround(static_cast<float>(w) * scaleX)),
+                                      static_cast<int>(lround(static_cast<float>(h) * scaleY))};
 
         const sdl2::surface_ptr screen_copy {
             SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
@@ -340,7 +344,8 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
         Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
     } else {
-        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle : 0, numFrames);
+        const auto source =
+            calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle : 0, numFrames);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
@@ -392,8 +397,8 @@ bool Bullet::update(const GameContext& context) {
     location.x = floor(realX / TILESIZE);
     location.y = floor(realY / TILESIZE);
 
-    if ((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5) ||
-        (location.y >= currentGameMap->getSizeY() + 5)) {
+    if ((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5)
+        || (location.y >= currentGameMap->getSizeY() + 5)) {
         // it's off the map => delete it
         return true;
     }
@@ -442,8 +447,8 @@ bool Bullet::update(const GameContext& context) {
         if (tile && tile->hasANonInfantryGroundObject()) {
             auto* structure = tile->getNonInfantryGroundObject(context.objectManager);
 
-            if (structure && structure->isAStructure() &&
-                ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {
+            if (structure && structure->isAStructure()
+                && ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {
                 destroy(context);
 
                 return true;

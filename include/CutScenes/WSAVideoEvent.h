@@ -29,7 +29,8 @@ public:
     /**
         Constructor
         \param  pWsafile            The video to play
-        \param  bCenterVertical     true = center the video vertically on the screen, false = blit the video frames at the top of the screen (default is true)
+        \param  bCenterVertical     true = center the video vertically on the screen, false = blit the video frames at
+       the top of the screen (default is true)
     */
     WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical = true);
 
@@ -52,7 +53,8 @@ private:
     int currentFrame;                    ///< the current frame number relative to the start of this WSAVideoEvent
     Wsafile* pWsafile;                   ///< the video to play
     sdl2::texture_ptr pStreamingTexture; ///< the texture used for rendering from
-    bool bCenterVertical;                ///< true = center the video vertically on the screen, false = blit the video frames at the top of the screen
+    bool bCenterVertical; ///< true = center the video vertically on the screen, false = blit the video frames at the
+                          ///< top of the screen
 };
 
 #endif // WSAVIDEOEVENT_H

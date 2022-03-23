@@ -41,8 +41,7 @@
 
 #include <algorithm>
 
-OptionsMenu::OptionsMenu()
-    : currentGameOptions(settings.gameOptions) {
+OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     determineAvailableScreenResolutions();
 
     const auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
@@ -286,7 +285,8 @@ void OptionsMenu::onOptionsOK() {
 
     int serverport = 0;
     if (!parseString(portTextBox.getText(), serverport) || serverport <= 0 || serverport > 65535) {
-        openWindow(MsgBox::create(fmt::sprintf(_("Server Port must be between 1 and 65535!\nDefault Server Port is %d!"), DEFAULT_PORT)));
+        openWindow(MsgBox::create(
+            fmt::sprintf(_("Server Port must be between 1 and 65535!\nDefault Server Port is %d!"), DEFAULT_PORT)));
         return;
     }
 
@@ -298,18 +298,21 @@ void OptionsMenu::onOptionsOK() {
 
     settings.general.playerName        = playername;
     const auto selectedLanguage        = languageDropDownBox.getSelectedEntryIntData();
-    const std::string languageFilename = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size()) ? "English.en.po" : availLanguages[selectedLanguage];
+    const std::string languageFilename = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size())
+                                           ? "English.en.po"
+                                           : availLanguages[selectedLanguage];
     settings.general.language          = languageFilename.substr(languageFilename.size() - 5, 2);
     settings.general.playIntro         = introCheckbox.isChecked();
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
 
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
-    settings.ai.campaignAI                       = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
+    settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
 
-    const int selectedResolution      = resolutionDropDownBox.getSelectedEntryIntData();
-    settings.video.physicalWidth      = (selectedResolution >= 0) ? availScreenRes[selectedResolution].x : 0;
-    settings.video.physicalHeight     = (selectedResolution >= 0) ? availScreenRes[selectedResolution].y : 0;
-    const int factor                  = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+    const int selectedResolution  = resolutionDropDownBox.getSelectedEntryIntData();
+    settings.video.physicalWidth  = (selectedResolution >= 0) ? availScreenRes[selectedResolution].x : 0;
+    settings.video.physicalHeight = (selectedResolution >= 0) ? availScreenRes[selectedResolution].y : 0;
+    const int factor =
+        getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
     settings.video.width              = settings.video.physicalWidth / factor;
     settings.video.height             = settings.video.physicalHeight / factor;
     settings.video.preferredZoomLevel = zoomlevelDropDownBox.getSelectedEntryIntData();
@@ -370,16 +373,19 @@ void OptionsMenu::saveConfiguration2File() {
 
     myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
     myINIFile.setBoolValue("Game Options", "Concrete Required", settings.gameOptions.concreteRequired);
-    myINIFile.setBoolValue("Game Options", "Structures Degrade On Concrete", settings.gameOptions.structuresDegradeOnConcrete);
+    myINIFile.setBoolValue("Game Options", "Structures Degrade On Concrete",
+                           settings.gameOptions.structuresDegradeOnConcrete);
     myINIFile.setBoolValue("Game Options", "Fog of War", settings.gameOptions.fogOfWar);
     myINIFile.setBoolValue("Game Options", "Start with Explored Map", settings.gameOptions.startWithExploredMap);
     myINIFile.setBoolValue("Game Options", "Instant Build", settings.gameOptions.instantBuild);
     myINIFile.setBoolValue("Game Options", "Only One Palace", settings.gameOptions.onlyOnePalace);
     myINIFile.setBoolValue("Game Options", "Rocket-Turrets Need Power", settings.gameOptions.rocketTurretsNeedPower);
     myINIFile.setBoolValue("Game Options", "Sandworms Respawn", settings.gameOptions.sandwormsRespawn);
-    myINIFile.setBoolValue("Game Options", "Killed Sandworms Drop Spice", settings.gameOptions.killedSandwormsDropSpice);
+    myINIFile.setBoolValue("Game Options", "Killed Sandworms Drop Spice",
+                           settings.gameOptions.killedSandwormsDropSpice);
     myINIFile.setBoolValue("Game Options", "Manual Carryall Drops", settings.gameOptions.manualCarryallDrops);
-    myINIFile.setIntValue("Game Options", "Maximum Number of Units Override", settings.gameOptions.maximumNumberOfUnitsOverride);
+    myINIFile.setIntValue("Game Options", "Maximum Number of Units Override",
+                          settings.gameOptions.maximumNumberOfUnitsOverride);
 
     myINIFile.setIntValue("Network", "ServerPort", settings.network.serverPort);
     myINIFile.setStringValue("Network", "MetaServer", settings.network.metaServer);

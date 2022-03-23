@@ -31,8 +31,7 @@ public:
     class CommandListEntry {
     public:
         CommandListEntry(uint32_t cycle, std::vector<Command>&& commands)
-            : cycle(cycle), commands(std::move(commands)) {
-        }
+            : cycle(cycle), commands(std::move(commands)) { }
 
         explicit CommandListEntry(InputStream& stream) {
             cycle                  = stream.readUint32();

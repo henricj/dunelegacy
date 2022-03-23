@@ -34,9 +34,7 @@ public:
     }
 
     /// destructor
-    ~TextBox() override {
-        invalidateTextures();
-    }
+    ~TextBox() override { invalidateTextures(); }
 
     /**
         Returns true.
@@ -48,9 +46,7 @@ public:
         This method sets a new text for this text box.
         \param  Text The new text for this text box
     */
-    virtual void setText(const std::string& text) {
-        setText(text, false);
-    }
+    virtual void setText(const std::string& text) { setText(text, false); }
 
     /**
         Get the text of this text box.
@@ -71,9 +67,7 @@ public:
         Gets the font size of this text box. Default font size of a text box is 14
         \return the font size of this text box
     */
-    [[nodiscard]] virtual int getTextFontSize() const {
-        return fontSize;
-    }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
 
     /**
         Sets the text color for this text box.
@@ -90,48 +84,36 @@ public:
         Sets the maximum length of the typed text
         \param  maxTextLength   the maximum length, -1 = unlimited
     */
-    virtual void setMaximumTextLength(int maxTextLength) {
-        this->maxTextLength = maxTextLength;
-    }
+    virtual void setMaximumTextLength(int maxTextLength) { this->maxTextLength = maxTextLength; }
 
     /**
         Gets the maximum length of the typed text
     */
-    [[nodiscard]] virtual int getMaximumTextLength() const {
-        return maxTextLength;
-    }
+    [[nodiscard]] virtual int getMaximumTextLength() const { return maxTextLength; }
 
     /**
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual void setAllowedChars(const std::string& allowedChars = "") {
-        this->allowedChars = allowedChars;
-    }
+    virtual void setAllowedChars(const std::string& allowedChars = "") { this->allowedChars = allowedChars; }
 
     /**
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    virtual void setForbiddenChars(const std::string& forbiddenChars = "") {
-        this->forbiddenChars = forbiddenChars;
-    }
+    virtual void setForbiddenChars(const std::string& forbiddenChars = "") { this->forbiddenChars = forbiddenChars; }
 
     /**
         Sets the function that should be called when the text of this text box changes.
         \param  pOnTextChange   A function to call on text change
     */
-    void setOnTextChange(std::function<void(bool)> pOnTextChange) {
-        this->pOnTextChange = pOnTextChange;
-    }
+    void setOnTextChange(std::function<void(bool)> pOnTextChange) { this->pOnTextChange = pOnTextChange; }
 
     /**
         Sets the method that should be called when return is pressed
         \param  pOnReturn   A function to call on pressing return
     */
-    void setOnReturn(std::function<void()> pOnReturn) {
-        this->pOnReturn = pOnReturn;
-    }
+    void setOnReturn(std::function<void()> pOnReturn) { this->pOnReturn = pOnReturn; }
 
     /**
         Returns the minimum size of this text box. The text box should not
@@ -148,9 +130,7 @@ public:
         called if the new size is a valid size for this text box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the text box to width and height. This method should only be
@@ -172,8 +152,10 @@ public:
         if (pTextureWithoutCaret == nullptr || pTextureWithCaret == nullptr) {
             invalidateTextures();
 
-            pTextureWithoutCaret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
-            pTextureWithCaret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithoutCaret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
+                getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
+            pTextureWithCaret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
+                   getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
         }
     }
 
@@ -279,7 +261,9 @@ public:
 
         bool bChanged = false;
         for (const char c : newText) {
-            if (((maxTextLength < 0) || ((int)utf8Length(text) < maxTextLength)) && (allowedChars.empty() || allowedChars.find(c) != std::string::npos) && (forbiddenChars.find(c) == std::string::npos)) {
+            if (((maxTextLength < 0) || ((int)utf8Length(text) < maxTextLength))
+                && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
+                && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;
                 bChanged = true;
             }

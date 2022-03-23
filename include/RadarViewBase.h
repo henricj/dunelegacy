@@ -39,8 +39,7 @@ public:
     /**
         Constructor
     */
-    RadarViewBase()
-        : Widget(), bRadarInteraction(false) {
+    RadarViewBase() : Widget(), bRadarInteraction(false) {
         resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
     }
 
@@ -83,7 +82,10 @@ public:
         const int offsetFromRightX  = 128 - getMapSizeX() * scale - offsetX;
         const int offsetFromBottomY = 128 - getMapSizeY() * scale - offsetY;
 
-        return ((mouseX >= offsetX + RADARVIEW_BORDERTHICKNESS) && (mouseX < RADARWIDTH - offsetFromRightX + RADARVIEW_BORDERTHICKNESS) && (mouseY >= offsetY + RADARVIEW_BORDERTHICKNESS) && (mouseY < RADARHEIGHT - offsetFromBottomY + RADARVIEW_BORDERTHICKNESS));
+        return ((mouseX >= offsetX + RADARVIEW_BORDERTHICKNESS)
+                && (mouseX < RADARWIDTH - offsetFromRightX + RADARVIEW_BORDERTHICKNESS)
+                && (mouseY >= offsetY + RADARVIEW_BORDERTHICKNESS)
+                && (mouseY < RADARHEIGHT - offsetFromBottomY + RADARVIEW_BORDERTHICKNESS));
     }
 
     /**
@@ -106,9 +108,8 @@ public:
     }
 
     /**
-        This method calculates the scale and the offsets that are necessary to show a minimap centered inside a 128x128 rectangle.
-        \param  MapSizeX    The width of the map in tiles
-        \param  MapSizeY    The height of the map in tiles
+        This method calculates the scale and the offsets that are necessary to show a minimap centered inside a 128x128
+       rectangle. \param  MapSizeX    The width of the map in tiles \param  MapSizeY    The height of the map in tiles
         \param  scale       The scale factor is saved here
         \param  offsetX     The offset in x direction is saved here
         \param  offsetY     The offset in y direction is saved here
@@ -140,7 +141,9 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override { return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS)); }
+    [[nodiscard]] Point getMinimumSize() const override {
+        return Point(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
+    }
 
     /**
         Handles a mouse movement.
@@ -202,12 +205,14 @@ public:
         Sets the function that should be called when the radar view is clicked.
         \param  pOnRadarClick   A function to be called on click
     */
-    void setOnRadarClick(std::function<bool(Coord, bool, bool)> pOnRadarClick) {
-        this->pOnRadarClick = pOnRadarClick;
-    }
+    void setOnRadarClick(std::function<bool(Coord, bool, bool)> pOnRadarClick) { this->pOnRadarClick = pOnRadarClick; }
 
 protected:
-    std::function<bool(Coord, bool, bool)> pOnRadarClick; ///< this function is called when the user clicks on the radar (1st parameter is world coordinate; 2nd parameter is whether the right mouse button was pressed; 3rd parameter is whether the mouse was moved while being pressed, e.g. dragging; return value shall be true if dragging should start or continue)
+    std::function<bool(Coord, bool, bool)>
+        pOnRadarClick; ///< this function is called when the user clicks on the radar (1st parameter is world
+                       ///< coordinate; 2nd parameter is whether the right mouse button was pressed; 3rd parameter is
+                       ///< whether the mouse was moved while being pressed, e.g. dragging; return value shall be true
+                       ///< if dragging should start or continue)
 
     bool bRadarInteraction; ///< currently dragging on the radar? (e.g. moving the view rectangle on the radar)
 };

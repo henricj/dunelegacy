@@ -47,8 +47,10 @@ class MapEditor {
 public:
     class Player {
     public:
-        Player(std::string name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse, std::string brain = "Human", int maxunit = 0)
-            : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse), brain(std::move(brain)), maxunit(maxunit) { }
+        Player(std::string name, HOUSETYPE house, HOUSETYPE colorOfHouse, bool bActive, bool bAnyHouse,
+               std::string brain = "Human", int maxunit = 0)
+            : name(std::move(name)), house(house), colorOfHouse(colorOfHouse), bActive(bActive), bAnyHouse(bAnyHouse),
+              brain(std::move(brain)), maxunit(maxunit) { }
 
         std::string name;
         HOUSETYPE house;
@@ -65,21 +67,17 @@ public:
     public:
         EditorMode() = default;
 
-        explicit EditorMode(bool dummy)
-            : mode(EditorMode_TacticalPos) {
-        }
+        explicit EditorMode(bool dummy) : mode(EditorMode_TacticalPos) { }
 
         EditorMode(TERRAINTYPE terrainType, int pensize)
-            : mode(EditorMode_Terrain), terrainType(terrainType), pensize(pensize) {
-        }
+            : mode(EditorMode_Terrain), terrainType(terrainType), pensize(pensize) { }
 
         EditorMode(HOUSETYPE house, ItemID_enum itemID, int health)
-            : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) {
-        }
+            : mode(EditorMode_Structure), house(house), itemID(itemID), health(health) { }
 
         EditorMode(HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-            : mode(EditorMode_Unit), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
-        }
+            : mode(EditorMode_Unit), house(house), angle(angle), itemID(itemID), health(health),
+              attackmode(attackmode) { }
 
         enum {
             EditorMode_Selection,
@@ -101,8 +99,7 @@ public:
     class Structure {
     public:
         Structure(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position)
-            : id(id), house(house), itemID(itemID), health(health), position(position) {
-        }
+            : id(id), house(house), itemID(itemID), health(health), position(position) { }
 
         int id;
         HOUSETYPE house;
@@ -115,8 +112,8 @@ public:
     public:
         Unit(int id, HOUSETYPE house, ItemID_enum itemID, int health, Coord position, ANGLETYPE angle,
              ATTACKMODE attackmode)
-            : id(id), house(house), angle(angle), itemID(itemID), health(health), position(position), attackmode(attackmode) {
-        }
+            : id(id), house(house), angle(angle), itemID(itemID), health(health), position(position),
+              attackmode(attackmode) { }
 
         int id;
         HOUSETYPE house;
@@ -135,9 +132,7 @@ public:
 
     void RunEditor();
 
-    void onQuit() {
-        bQuitEditor = true;
-    }
+    void onQuit() { bQuitEditor = true; }
 
     [[nodiscard]] const std::filesystem::path& getLastSaveName() const { return lastSaveName; }
 
@@ -145,9 +140,7 @@ public:
 
     [[nodiscard]] std::string generateMapname();
 
-    std::vector<Player>& getPlayers() {
-        return players;
-    }
+    std::vector<Player>& getPlayers() { return players; }
 
     void informPlayersChanged() { pInterface->onHouseChanges(); }
 
@@ -168,9 +161,7 @@ public:
 
     void setMap(const MapData& mapdata, const MapInfo& newMapInfo);
 
-    MapData& getMap() {
-        return map;
-    }
+    MapData& getMap() { return map; }
 
     std::vector<Coord>& getSpiceBlooms() { return spiceBlooms; }
 
@@ -188,13 +179,9 @@ public:
 
     std::vector<AITeamInfo>& getAITeams() { return aiteams; }
 
-    void setAITeams(const std::vector<AITeamInfo>& newAITeams) {
-        aiteams = newAITeams;
-    }
+    void setAITeams(const std::vector<AITeamInfo>& newAITeams) { aiteams = newAITeams; }
 
-    std::vector<Structure>& getStructureList() {
-        return structures;
-    }
+    std::vector<Structure>& getStructureList() { return structures; }
 
     [[nodiscard]] Structure* getStructure(int structureID) {
         const auto it =
@@ -217,9 +204,7 @@ public:
     Structure* getSelectedStructure() { return getStructure(selectedStructureID); }
     [[nodiscard]] const Structure* getSelectedStructure() const { return getStructure(selectedStructureID); }
 
-    std::vector<Unit>& getUnitList() {
-        return units;
-    }
+    std::vector<Unit>& getUnitList() { return units; }
 
     [[nodiscard]] const Unit* getUnit(int unitID) const {
         for (const auto& unit : units) {
@@ -243,9 +228,7 @@ public:
 
     [[nodiscard]] std::vector<int> getMirrorUnits(int unitID, bool bAddMissingAsInvalid = false) const;
 
-    [[nodiscard]] int getSelectedUnitID() const {
-        return selectedUnitID;
-    }
+    [[nodiscard]] int getSelectedUnitID() const { return selectedUnitID; }
 
     [[nodiscard]] const Unit* getSelectedUnit() const { return getUnit(selectedUnitID); }
 

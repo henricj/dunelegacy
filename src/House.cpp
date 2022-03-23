@@ -45,8 +45,7 @@
 #include <algorithm>
 #include <numeric>
 
-House::House(const GameContext& context)
-    : choam(this), context(context) {
+House::House(const GameContext& context) : choam(this), context(context) {
     ai = true;
 
     numUnits      = 0;
@@ -70,7 +69,8 @@ House::~House() = default;
 
 House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID, int quota)
     : House(context) {
-    houseID      = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse : static_cast<HOUSETYPE>(0);
+    houseID      = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse
+                                                                                             : static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
     storedCredits   = 0;
@@ -98,8 +98,7 @@ House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int
     powerUsageTimer        = 0;
 }
 
-House::House(const GameContext& context, InputStream& stream)
-    : House(context) {
+House::House(const GameContext& context, InputStream& stream) : House(context) {
     houseID = static_cast<HOUSETYPE>(stream.readUint8());
     teamID  = stream.readUint8();
 
@@ -145,11 +144,13 @@ House::House(const GameContext& context, InputStream& stream)
 }
 
 UnitBase* House::createUnit(ItemID_enum itemID, bool byScenario) {
-    return context.objectManager.createObjectFromItemId<UnitBase>(itemID, ObjectInitializer {context.game, this, byScenario});
+    return context.objectManager.createObjectFromItemId<UnitBase>(itemID,
+                                                                  ObjectInitializer {context.game, this, byScenario});
 }
 
 StructureBase* House::createStructure(ItemID_enum itemID, bool byScenario) {
-    return context.objectManager.createObjectFromItemId<StructureBase>(itemID, ObjectInitializer {context.game, this, byScenario});
+    return context.objectManager.createObjectFromItemId<StructureBase>(
+        itemID, ObjectInitializer {context.game, this, byScenario});
 }
 
 void House::save(OutputStream& stream) const {
@@ -264,8 +265,8 @@ FixPoint House::takeCredits(FixPoint amount) {
 }
 
 void House::printStat() const {
-    sdl2::log_info("House %s: (Number of Units: %d, Number of Structures: %d)", getHouseNameByNumber(getHouseID()).c_str(),
-                   numUnits, numStructures);
+    sdl2::log_info("House %s: (Number of Units: %d, Number of Structures: %d)",
+                   getHouseNameByNumber(getHouseID()).c_str(), numUnits, numStructures);
     sdl2::log_info("Barracks: %d\t\tWORs: %d", numItem[Structure_Barracks], numItem[Structure_WOR]);
     sdl2::log_info("Light Factories: %d\tHeavy Factories: %d", numItem[Structure_LightFactory],
                    numItem[Structure_HeavyFactory]);
@@ -341,8 +342,8 @@ void House::incrementUnits(ItemID_enum itemID) {
 
     assert(numUnits + numStructures == std::accumulate(std::begin(numItem), std::end(numItem), 0));
 
-    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
-        itemID != Unit_Harvester && itemID != Unit_Sandworm) {
+    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV
+        && itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
         militaryValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
     }
@@ -365,8 +366,8 @@ void House::decrementUnits(ItemID_enum itemID) {
         pPlayer->onDecrementUnits(itemID);
     }
 
-    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV &&
-        itemID != Unit_Harvester && itemID != Unit_Sandworm) {
+    if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV
+        && itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
         lossValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
     }
@@ -466,7 +467,8 @@ void House::informHasKilled(ItemID_enum itemID) {
     } else {
         numDestroyedUnits++;
 
-        if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV && itemID != Unit_Harvester && itemID != Unit_Sandworm) {
+        if (itemID != Unit_Saboteur && itemID != Unit_Frigate && itemID != Unit_Carryall && itemID != Unit_MCV
+            && itemID != Unit_Harvester && itemID != Unit_Sandworm) {
 
             killValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
         }
@@ -499,13 +501,13 @@ void House::win() {
 void House::lose(bool bSilent) const {
     if (!bSilent) {
         try {
-            context.game.addToNewsTicker(fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
-        } catch (std::exception& e) {
-            sdl2::log_info("House::lose(): %s", e.what());
-        }
+            context.game.addToNewsTicker(
+                fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
+        } catch (std::exception& e) { sdl2::log_info("House::lose(): %s", e.what()); }
     }
 
-    if ((getTeamID() == pLocalHouse->getTeamID()) && ((context.game.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
+    if ((getTeamID() == pLocalHouse->getTeamID())
+        && ((context.game.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
 
         bool finished = true;
 
@@ -534,7 +536,8 @@ void House::lose(bool bSilent) const {
 
         for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
             auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
-            if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
+            if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0
+                && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
@@ -587,8 +590,8 @@ void House::freeHarvester(int xPos, int yPos) {
     carryall->setTarget(refinery);
 }
 
-StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos,
-                                     bool byScenario, bool bForcePlacing) {
+StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario,
+                                     bool bForcePlacing) {
     const auto& [game, map, objectManager] = context;
 
     auto* const tile = map.tryGetTile(xPos, yPos);
@@ -597,7 +600,8 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
 
     auto* pBuilder = builderID == NONE_ID ? nullptr : objectManager.getObject<BuilderBase>(builderID);
 
-    if (game.getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace && getNumItems(Structure_Palace) > 0) {
+    if (game.getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace
+        && getNumItems(Structure_Palace) > 0) {
         if (this == pLocalHouse && pBuilder->isSelected()) {
             game.currentCursorMode = Game::CursorMode_Normal;
         }
@@ -610,7 +614,8 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             // Slabs are no normal buildings
             tile->setType(context, Terrain_Slab);
             tile->setOwner(getHouseID());
-            map.viewMap(getHouseID(), xPos, yPos, game.objectData.data[Structure_Slab1][static_cast<int>(houseID)].viewrange);
+            map.viewMap(getHouseID(), xPos, yPos,
+                        game.objectData.data[Structure_Slab1][static_cast<int>(houseID)].viewrange);
             //      context.map.getTile(xPos, yPos)->clearTerrain();
 
             if (pBuilder != nullptr) {
@@ -630,16 +635,16 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
 
         case Structure_Slab4: {
             // Slabs are no normal buildings
-            map.for_each(xPos, yPos, xPos + 2, yPos + 2,
-                         [&](Tile& t) {
-                             if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
-                                 return;
+            map.for_each(xPos, yPos, xPos + 2, yPos + 2, [&](Tile& t) {
+                if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
+                    return;
 
-                             t.setType(context, Terrain_Slab);
-                             t.setOwner(houseID);
-                             context.map.viewMap(getHouseID(), t.getLocation().x, t.getLocation().y, context.game.objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
-                             // pTile->clearTerrain();
-                         });
+                t.setType(context, Terrain_Slab);
+                t.setOwner(houseID);
+                context.map.viewMap(getHouseID(), t.getLocation().x, t.getLocation().y,
+                                    context.game.objectData.data[Structure_Slab4][static_cast<int>(houseID)].viewrange);
+                // pTile->clearTerrain();
+            });
 
             if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
@@ -694,7 +699,9 @@ StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int
             }
 
             // at the beginning of the game the first refinery gets a harvester for free (brought by a carryall)
-            if ((itemID == Structure_Refinery) && (((context.game.gameState == GameState::Start) && (numItem[Unit_Harvester] <= 0)) || (builderID != NONE_ID))) {
+            if ((itemID == Structure_Refinery)
+                && (((context.game.gameState == GameState::Start) && (numItem[Unit_Harvester] <= 0))
+                    || (builderID != NONE_ID))) {
                 freeHarvester(xPos, yPos);
             }
 
@@ -804,7 +811,8 @@ Coord House::getStrongestUnitPosition() const {
     int32_t strongestUnitCost   = 0;
     for (const UnitBase* pUnit : unitList) {
         if (pUnit->getOwner() == this) {
-            const int32_t currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
+            const int32_t currentCost =
+                context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
 
             if (currentCost > strongestUnitCost) {
                 strongestUnitPosition = pUnit->getLocation();
@@ -828,7 +836,8 @@ void House::decrementHarvesters() {
             StructureBase* pClosestRefinery = nullptr;
 
             for (StructureBase* pStructure : structureList) {
-                if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this) && (pStructure->getHealth() > 0)) {
+                if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this)
+                    && (pStructure->getHealth() > 0)) {
                     Coord pos = pStructure->getLocation();
 
                     Coord closestPoint        = pStructure->getClosestPoint(pos);

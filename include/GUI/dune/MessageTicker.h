@@ -43,9 +43,7 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        return {0, 0};
-    }
+    [[nodiscard]] Point getMinimumSize() const override { return {0, 0}; }
 
 private:
     std::queue<sdl2::texture_ptr> messageTextures;

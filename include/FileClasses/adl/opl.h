@@ -24,11 +24,7 @@
 
 class Copl {
 public:
-    typedef enum {
-        TYPE_OPL2,
-        TYPE_OPL3,
-        TYPE_DUAL_OPL2
-    } ChipType;
+    typedef enum { TYPE_OPL2, TYPE_OPL3, TYPE_DUAL_OPL2 } ChipType;
 
     Copl() noexcept
 
@@ -56,9 +52,7 @@ public:
     virtual void init(void) = 0; // reinitialize OPL chip(s)
 
     // return this OPL chip's type
-    [[nodiscard]] ChipType gettype() const noexcept {
-        return currType;
-    }
+    [[nodiscard]] ChipType gettype() const noexcept { return currType; }
 
     // Emulation only: fill buffer
     virtual void update(short* buf, int samples) { }

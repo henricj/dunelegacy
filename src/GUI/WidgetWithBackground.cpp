@@ -79,7 +79,9 @@ const DuneTexture* WidgetWithBackground::getBackground() {
     if (bTransparentBackground)
         return nullptr;
 
-    if (bSelfGeneratedBackground && (!pBackground || !*pBackground || pBackground->source_.w != getSize().x || pBackground->source_.h != getSize().y)) {
+    if (bSelfGeneratedBackground
+        && (!pBackground || !*pBackground || pBackground->source_.w != getSize().x
+            || pBackground->source_.h != getSize().y)) {
         const auto surface = createBackground();
 
         setBackground(surface.get());

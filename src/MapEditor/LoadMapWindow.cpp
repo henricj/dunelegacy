@@ -35,8 +35,7 @@
 
 #include <globals.h>
 
-LoadMapWindow::LoadMapWindow(uint32_t color)
-    : Window(0, 0, 0, 0), color(color) {
+LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) {
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
@@ -153,13 +152,14 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
             if (index >= 0) {
 
-                QstBox* pQstBox = QstBox::create(fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
+                QstBox* pQstBox = QstBox::create(
+                    fmt::sprintf(_("Do you really want to delete '%s' ?"), mapList.getEntry(index).c_str()),
 
-                                                 _("Yes"),
+                    _("Yes"),
 
-                                                 _("No"),
+                    _("No"),
 
-                                                 QSTBOX_BUTTON1);
+                    QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
@@ -238,7 +238,8 @@ void LoadMapWindow::onMapTypeChange(int buttonID) {
 
     mapList.clearAllEntries();
 
-    for (const auto& filename : getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
+    for (const auto& filename :
+         getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
         mapList.addEntry(filename.stem().u8string());
     }
 

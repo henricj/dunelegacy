@@ -61,14 +61,16 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         const auto& playerInfo = players[i];
 
-        const Uint32 currentColor = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
+        const Uint32 currentColor =
+            SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
 
         centralVBox.addWidget(VSpacer::create(15));
 
         playerWidgets[i].playerCheckbox.setTextColor(currentColor);
         playerWidgets[i].playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
         if (pMapEditor->getMapVersion() < 2) {
-            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)) + ":");
+            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i))
+                                                    + ":");
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 150);
         } else {
             playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
@@ -84,7 +86,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].houseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].houseRadioButton, 110);
 
-            playerWidgets[i].radioButtonManager.registerRadioButtons(2, &playerWidgets[i].anyHouseRadioButton, &playerWidgets[i].houseRadioButton);
+            playerWidgets[i].radioButtonManager.registerRadioButtons(2, &playerWidgets[i].anyHouseRadioButton,
+                                                                     &playerWidgets[i].houseRadioButton);
             if (playerInfo.bAnyHouse) {
                 playerWidgets[i].anyHouseRadioButton.setChecked(true);
             } else {
@@ -241,8 +244,9 @@ void PlayerSettingsWindow::onOK() {
     pMapEditor->startOperation();
 
     for (int i = 0; i < playerWidgets.size(); i++) {
-        const bool bActive      = playerWidgets[i].playerCheckbox.isChecked();
-        const bool bAnyHouse    = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
+        const bool bActive = playerWidgets[i].playerCheckbox.isChecked();
+        const bool bAnyHouse =
+            pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
         const int credits       = playerWidgets[i].creditsTextBox.getValue();
         const std::string brain = playerWidgets[i].teamDropDownBox.getSelectedEntry();
         const int quota         = playerWidgets[i].spiceQuotaTextBox.getValue();

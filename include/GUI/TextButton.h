@@ -74,9 +74,7 @@ public:
         called if the new size is a valid size for this button (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the button to width and height. This method should only
@@ -94,9 +92,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        return GUIStyle::getInstance().getMinimumButtonSize(text);
-    }
+    [[nodiscard]] Point getMinimumSize() const override { return GUIStyle::getInstance().getMinimumButtonSize(text); }
 
 protected:
     /**

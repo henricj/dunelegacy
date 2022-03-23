@@ -75,7 +75,8 @@ int getPortFromURL(const std::string& url) {
 }
 
 std::string percentEncode(const std::string& s) {
-    const std::string unreservedCharacters = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~"; // see RFC 3986
+    const std::string unreservedCharacters =
+        "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~"; // see RFC 3986
 
     std::string result;
     for (const char c : s) {
@@ -178,7 +179,8 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     enet_socket_destroy(httpSocket);
 
     if (result.substr(9, 3) != "200") {
-        THROW(std::runtime_error, "Server Error: Received status code '" + result.substr(9, 3) + "' from " + domain + ": " + result.substr(0, result.find(newline)));
+        THROW(std::runtime_error, "Server Error: Received status code '" + result.substr(9, 3) + "' from " + domain
+                                      + ": " + result.substr(0, result.find(newline)));
     }
 
     const size_t contentStart = result.find(doubleNewline);

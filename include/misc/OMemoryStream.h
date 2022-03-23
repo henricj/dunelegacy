@@ -30,13 +30,9 @@ public:
 
     void open();
 
-    [[nodiscard]] const char* getData() const {
-        return pBuffer;
-    }
+    [[nodiscard]] const char* getData() const { return pBuffer; }
 
-    [[nodiscard]] size_t getDataLength() const {
-        return (bReadOnly == true) ? bufferSize : currentPos;
-    }
+    [[nodiscard]] size_t getDataLength() const { return (bReadOnly == true) ? bufferSize : currentPos; }
 
     void flush() override;
 

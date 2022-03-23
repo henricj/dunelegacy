@@ -60,9 +60,7 @@ public:
 private:
     void init();
 
-    void setWallTile(int newTile) {
-        curAnimFrame = firstAnimFrame = lastAnimFrame = newTile;
-    }
+    void setWallTile(int newTile) { curAnimFrame = firstAnimFrame = lastAnimFrame = newTile; }
 
     void fixWall(const GameContext& context);
 

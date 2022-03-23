@@ -27,55 +27,43 @@
 class Point final {
 public:
     /// Default constructor.
-    Point()
-        : x(0), y(0) { }
+    Point() : x(0), y(0) { }
 
     /** A constructor that initializes the point with x and y
         \param x the x coordinate
         \param y the y coordinate
     */
-    Point(int32_t x, int32_t y)
-        : x(x), y(y) { }
+    Point(int32_t x, int32_t y) : x(x), y(y) { }
 
     /** operator for adding two points.
         \param p the point to add
         \return the sum of both points
     */
-    Point operator+(const Point& p) const {
-        return Point(x + p.x, y + p.y);
-    }
+    Point operator+(const Point& p) const { return Point(x + p.x, y + p.y); }
 
     /** operator for subtracting two points.
         \param p the point to add
         \return this point minus p
     */
-    Point operator-(const Point& p) const {
-        return Point(x - p.x, y - p.y);
-    }
+    Point operator-(const Point& p) const { return Point(x - p.x, y - p.y); }
 
     /** operator for multiplying every both coordinates with an integer value.
         \param c the scalar to multiply with
         \return this point times c
     */
-    Point operator*(int32_t c) const {
-        return Point(x * c, y * c);
-    }
+    Point operator*(int32_t c) const { return Point(x * c, y * c); }
 
     /** operator for dividing every both coordinates by an integer value.
         \param c the scalar to devide by
         \return this point divided by c
     */
-    Point operator/(int32_t c) const {
-        return Point(x / c, y / c);
-    }
+    Point operator/(int32_t c) const { return Point(x / c, y / c); }
 
     /** operator for comparing two Points.
         \param op the other operator
         \return true if both coordinates are equal, false otherwise
     */
-    bool operator==(const Point& op) const {
-        return (x == op.x) && (y == op.y);
-    }
+    bool operator==(const Point& op) const { return (x == op.x) && (y == op.y); }
 
     /// The x coordinate
     int32_t x;
@@ -253,9 +241,7 @@ public:
         resizingYAllowed, getMinimumSize).
         \param  newSize the new size of this widget
     */
-    virtual void resize(Point newSize) {
-        resize(newSize.x, newSize.y);
-    }
+    virtual void resize(Point newSize) { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the widget to width and height. This method should only be
@@ -276,8 +262,7 @@ public:
         if (parent != nullptr) {
             parent->resizeAll();
         } else {
-            resize(std::max(getMinimumSize().x, getSize().x),
-                   std::max(getMinimumSize().y, getSize().y));
+            resize(std::max(getMinimumSize().x, getSize().x), std::max(getMinimumSize().y, getSize().y));
         }
     }
 
@@ -312,7 +297,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     virtual bool handleMouseWheel(int32_t x, int32_t y, bool up) { return false; }
 
@@ -366,7 +352,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     virtual bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) { return false; }
 
@@ -423,17 +410,13 @@ public:
         Sets the function that should be called when this widget gains focus.
         \param  pOnGainFocus    A function to call on focus gain
     */
-    void setOnGainFocus(std::function<void()> pOnGainFocus) {
-        this->pOnGainFocus = std::move(pOnGainFocus);
-    }
+    void setOnGainFocus(std::function<void()> pOnGainFocus) { this->pOnGainFocus = std::move(pOnGainFocus); }
 
     /**
         Sets the function that should be called when this widget loses focus.
         \param  pOnLostFocus    A function to call on focus loss
     */
-    void setOnLostFocus(std::function<void()> pOnLostFocus) {
-        this->pOnLostFocus = std::move(pOnLostFocus);
-    }
+    void setOnLostFocus(std::function<void()> pOnLostFocus) { this->pOnLostFocus = std::move(pOnLostFocus); }
 
 protected:
     /**
@@ -472,22 +455,19 @@ protected:
         \param  active  true = activate, false = deactivate
         \param  childWidget the widget to activate/deactivate
     */
-    virtual void setActiveChildWidget(bool active, Widget* childWidget) {
-    }
+    virtual void setActiveChildWidget(bool active, Widget* childWidget) { }
 
     /**
         This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    virtual void updateTextures() {
-    }
+    virtual void updateTextures() { }
 
     /**
         This method frees all textures that are used by this widget
     */
-    virtual void invalidateTextures() {
-    }
+    virtual void invalidateTextures() { }
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true
     bool pAllocated {};

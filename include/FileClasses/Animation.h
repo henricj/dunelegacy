@@ -62,13 +62,9 @@ public:
         }
     }
 
-    void setFrameDurationTime(uint32_t frameDurationTime) noexcept {
-        this->frameDurationTime = frameDurationTime;
-    }
+    void setFrameDurationTime(uint32_t frameDurationTime) noexcept { this->frameDurationTime = frameDurationTime; }
 
-    [[nodiscard]] uint32_t getFrameDurationTime() const noexcept {
-        return frameDurationTime;
-    }
+    [[nodiscard]] uint32_t getFrameDurationTime() const noexcept { return frameDurationTime; }
 
     void addFrame(sdl2::surface_ptr newFrame, bool bDoublePic = false, bool bSetColorKey = false);
 
@@ -79,9 +75,7 @@ public:
         loopsLeft = loops;
     }
 
-    [[nodiscard]] int getLoopsLeft() const noexcept {
-        return loopsLeft;
-    }
+    [[nodiscard]] int getLoopsLeft() const noexcept { return loopsLeft; }
 
     [[nodiscard]] bool isFinished() const noexcept {
         if (loopsLeft == -1 || loopsLeft > 0) {

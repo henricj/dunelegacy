@@ -34,7 +34,8 @@
 #include <stack>
 
 Map::Map(Game& game, int xSize, int ySize)
-    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr), pathfinder_(this), random_ {game.randomFactory.create("Map")} {
+    : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr),
+      pathfinder_(this), random_ {game.randomFactory.create("Map")} {
 
     tiles.resize(sizeX * sizeY);
 
@@ -107,18 +108,17 @@ void Map::createSandRegions() {
 
                 pTile->setSandRegion(region);
 
-                index_for_each_angle(pTile->location.x, pTile->location.y,
-                                     [&](ANGLETYPE angle, int index) {
-                                         if (!visited[index])
-                                             return;
+                index_for_each_angle(pTile->location.x, pTile->location.y, [&](ANGLETYPE angle, int index) {
+                    if (!visited[index])
+                        return;
 
-                                         auto* const tile_angle = &tiles[index];
+                    auto* const tile_angle = &tiles[index];
 
-                                         if (!tile_angle->isRock()) {
-                                             tileQueue.push(tile_angle);
-                                             visited[index] = true;
-                                         }
-                                     });
+                    if (!tile_angle->isRock()) {
+                        tileQueue.push(tile_angle);
+                        visited[index] = true;
+                    }
+                });
             }
             region++;
         }
@@ -126,8 +126,7 @@ void Map::createSandRegions() {
 }
 
 void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerOwner, const Coord& realPos,
-                 uint32_t bulletID,
-                 FixPoint damage, int damageRadius, bool air) {
+                 uint32_t bulletID, FixPoint damage, int damageRadius, bool air) {
     const auto location = Coord(realPos.x / TILESIZE, realPos.y / TILESIZE);
 
     std::vector<Dune::object_id_type> affectedAirUnits;
@@ -146,7 +145,8 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
     if (bulletID == Bullet_Sandworm) {
         for (const auto objectID : affectedGroundAndUndergroundUnits) {
             auto* pObject = context.objectManager.getObject(objectID);
-            if (pObject && (pObject->getItemID() != Unit_Sandworm) && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
+            if (pObject && (pObject->getItemID() != Unit_Sandworm)
+                && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
                 pObject->setVisible(VIS_ALL, false);
                 pObject->handleDamage(context, lround(damage), damagerID, damagerOwner);
             }
@@ -154,7 +154,8 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
     } else {
         if (air) {
             // air damage
-            if ((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket)) {
+            if ((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket)
+                || (bulletID == Bullet_SmallRocket)) {
                 for (const auto objectID : affectedAirUnits) {
                     auto* pAirUnit = dynamic_cast<AirUnit*>(context.objectManager.getObject(objectID));
                     if (pAirUnit == nullptr)
@@ -167,9 +168,11 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                         continue;
 
                     if (bulletID == Bullet_DRocket) {
-                        if ((pAirUnit->getItemID() != Unit_Carryall) && (pAirUnit->getItemID() != Unit_Sandworm) && (pAirUnit->getItemID() != Unit_Frigate)) {
+                        if ((pAirUnit->getItemID() != Unit_Carryall) && (pAirUnit->getItemID() != Unit_Sandworm)
+                            && (pAirUnit->getItemID() != Unit_Frigate)) {
                             // try to deviate
-                            if (random_.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pAirUnit->getOriginalHouseID()))) {
+                            if (random_.randFixPoint()
+                                < getDeviateWeakness(static_cast<HOUSETYPE>(pAirUnit->getOriginalHouseID()))) {
                                 pAirUnit->deviate(context, damagerOwner);
                             }
                         }
@@ -190,10 +193,13 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                     const auto topLeftCorner     = pStructure->getLocation() * TILESIZE;
                     const auto bottomRightCorner = topLeftCorner + pStructure->getStructureSize() * TILESIZE;
 
-                    if (realPos.x >= topLeftCorner.x && realPos.y >= topLeftCorner.y && realPos.x < bottomRightCorner.x && realPos.y < bottomRightCorner.y) {
+                    if (realPos.x >= topLeftCorner.x && realPos.y >= topLeftCorner.y && realPos.x < bottomRightCorner.x
+                        && realPos.y < bottomRightCorner.y) {
                         pStructure->handleDamage(context, lround(damage), damagerID, damagerOwner);
 
-                        if ((bulletID == Bullet_LargeRocket || bulletID == Bullet_Rocket || bulletID == Bullet_TurretRocket || bulletID == Bullet_SmallRocket) && (pStructure->getHealth() < pStructure->getMaxHealth() / 2)) {
+                        if ((bulletID == Bullet_LargeRocket || bulletID == Bullet_Rocket
+                             || bulletID == Bullet_TurretRocket || bulletID == Bullet_SmallRocket)
+                            && (pStructure->getHealth() < pStructure->getMaxHealth() / 2)) {
                             if (pStructure->getNumSmoke() < 5) {
                                 pStructure->addSmoke(realPos, context.game.getGameCycleCount());
                             }
@@ -207,9 +213,11 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
 
                     if (distance <= damageRadius) {
                         if (bulletID == Bullet_DRocket) {
-                            if ((pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Sandworm) && (pUnit->getItemID() != Unit_Frigate)) {
+                            if ((pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Sandworm)
+                                && (pUnit->getItemID() != Unit_Frigate)) {
                                 // try to deviate
-                                if (random_.randFixPoint() < getDeviateWeakness(static_cast<HOUSETYPE>(pUnit->getOriginalHouseID()))) {
+                                if (random_.randFixPoint()
+                                    < getDeviateWeakness(static_cast<HOUSETYPE>(pUnit->getOriginalHouseID()))) {
                                     pUnit->deviate(context, damagerOwner);
                                 }
                             }
@@ -225,14 +233,15 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
 
             auto* const pTile = tryGetTile(location.x, location.y);
 
-            if (pTile && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) ||
-                          (bulletID == Bullet_SmallRocket) || (bulletID == Bullet_LargeRocket))) {
+            if (pTile
+                && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket)
+                    || (bulletID == Bullet_LargeRocket))) {
                 if (auto* object = pTile->getGroundObject(context.objectManager); !object || !object->isAStructure()) {
                     const auto type = pTile->getType();
 
-                    if (((type == TERRAINTYPE::Terrain_Rock) &&
-                         (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull)) ||
-                        (type == TERRAINTYPE::Terrain_Slab)) {
+                    if (((type == TERRAINTYPE::Terrain_Rock)
+                         && (pTile->getTerrainTile() == Tile::TERRAINTILETYPE::TerrainTile_RockFull))
+                        || (type == TERRAINTYPE::Terrain_Slab)) {
                         if (type == TERRAINTYPE::Terrain_Slab) {
                             pTile->setType(context, TERRAINTYPE::Terrain_Rock);
                             pTile->setDestroyedStructureTile(Destroyed1x1Structure);
@@ -247,12 +256,11 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                                          realPos);
 
                     } else if ((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
-                        const auto damage_tile =
-                            bulletID == BulletID_enum::Bullet_SmallRocket
-                                ? random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage1),
-                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage2))
-                                : random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage3),
-                                               static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage4));
+                        const auto damage_tile = bulletID == BulletID_enum::Bullet_SmallRocket
+                                                   ? random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage1),
+                                                                  static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage2))
+                                                   : random_.rand(static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage3),
+                                                                  static_cast<int>(Tile::SANDDAMAGETYPE::SandDamage4));
 
                         pTile->addDamage(Tile::TerrainDamage_enum::Terrain_SandDamage, damage_tile, realPos);
                     }
@@ -313,7 +321,8 @@ bool Map::isAStructureGap(const GameContext& context, int x, int y, int building
     return true;
 }
 
-bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired, const House* pHouse, bool bIgnoreUnits) const {
+bool Map::okayToPlaceStructure(int x, int y, int buildingSizeX, int buildingSizeY, bool tilesRequired,
+                               const House* pHouse, bool bIgnoreUnits) const {
     bool withinBuildRange = false;
 
     for (auto i = x; i < x + buildingSizeX; i++) {
@@ -409,7 +418,8 @@ Coord Map::getMapPos(ANGLETYPE angle, const Coord& source) {
 }
 
 // building size is num squares
-Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, const Coord& gatherPoint, const Coord& buildingSize) {
+Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, const Coord& gatherPoint,
+                          const Coord& buildingSize) {
     if (pUnit->isAFlyingUnit()) {
         return origin + Coord(random.rand(0, buildingSize.x - 1), random.rand(0, buildingSize.y - 1));
     }
@@ -417,31 +427,30 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, 
     auto closestDistance = FixPt_MAX;
     Coord closestPoint;
 
-    const auto found = search_all_by_box_edge(origin.x, origin.y, buildingSize, random,
-                                              [&](const Tile& t) {
-                                                  if (!pUnit->canPassTile(&t))
-                                                      return SearchResult::NotDone;
+    const auto found = search_all_by_box_edge(origin.x, origin.y, buildingSize, random, [&](const Tile& t) {
+        if (!pUnit->canPassTile(&t))
+            return SearchResult::NotDone;
 
-                                                  if (pUnit->isTracked()) {
-                                                      if (t.hasInfantry()) {
-                                                          // we do not deploy on enemy infantry
-                                                          return SearchResult::NotDone;
-                                                      }
-                                                  }
+        if (pUnit->isTracked()) {
+            if (t.hasInfantry()) {
+                // we do not deploy on enemy infantry
+                return SearchResult::NotDone;
+            }
+        }
 
-                                                  if (gatherPoint.isInvalid()) {
-                                                      closestPoint = t.location;
-                                                      return SearchResult::Done;
-                                                  }
+        if (gatherPoint.isInvalid()) {
+            closestPoint = t.location;
+            return SearchResult::Done;
+        }
 
-                                                  if (blockDistance(t.location, gatherPoint) < closestDistance) {
-                                                      closestDistance = blockDistance(t.location, gatherPoint);
-                                                      closestPoint    = t.location;
-                                                      return SearchResult::DoneAtDepth;
-                                                  }
+        if (blockDistance(t.location, gatherPoint) < closestDistance) {
+            closestDistance = blockDistance(t.location, gatherPoint);
+            closestPoint    = t.location;
+            return SearchResult::DoneAtDepth;
+        }
 
-                                                  return SearchResult::NotDone;
-                                              });
+        return SearchResult::NotDone;
+    });
 
     if (found)
         return closestPoint;
@@ -502,7 +511,8 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
     ObjectBase* lastCheckedObject  = nullptr;
     ObjectBase* lastSelectedObject = nullptr;
 
-    // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from the selected group of units
+    // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from the
+    // selected group of units
     if (!objectARGMode) {
         currentGame->unselectAll(currentGame->getSelectedList());
         currentGame->getSelectedList().clear();
@@ -528,7 +538,9 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
                         auto* const tile = tryGetTile(i, j);
 
                         if (tile && tile->hasAnObject()) {
-                            tile->selectAllPlayersUnitsOfType(currentGame.get(), pHouse->getHouseID(), lastSinglySelectedObject->getItemID(), &lastCheckedObject, &lastSelectedObject);
+                            tile->selectAllPlayersUnitsOfType(currentGame.get(), pHouse->getHouseID(),
+                                                              lastSinglySelectedObject->getItemID(), &lastCheckedObject,
+                                                              &lastSelectedObject);
                         }
                     }
                 }
@@ -559,8 +571,10 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             for (auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 auto* const tile = tryGetTile(i, j);
 
-                if (tile && tile->hasAnObject() && tile->isExploredByTeam(currentGame.get(), pHouse->getTeamID()) && !tile->isFoggedByTeam(currentGame.get(), pHouse->getTeamID())) {
-                    tile->selectAllPlayersUnits(currentGame.get(), pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
+                if (tile && tile->hasAnObject() && tile->isExploredByTeam(currentGame.get(), pHouse->getTeamID())
+                    && !tile->isFoggedByTeam(currentGame.get(), pHouse->getTeamID())) {
+                    tile->selectAllPlayersUnits(currentGame.get(), pHouse->getHouseID(), &lastCheckedObject,
+                                                &lastSelectedObject);
                 }
             }
         }
@@ -579,14 +593,13 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
 
 bool Map::findSpice(Coord& destination, const Coord& origin) {
 
-    return search_all_by_box_edge(origin.x, origin.y, random_,
-                                  [&](const Tile& t) {
-                                      if (t.hasAGroundObject() || !t.hasSpice())
-                                          return SearchResult::NotDone;
+    return search_all_by_box_edge(origin.x, origin.y, random_, [&](const Tile& t) {
+        if (t.hasAGroundObject() || !t.hasSpice())
+            return SearchResult::NotDone;
 
-                                      destination = t.location;
-                                      return SearchResult::Done;
-                                  });
+        destination = t.location;
+        return SearchResult::Done;
+    });
 }
 
 /**
@@ -600,8 +613,8 @@ void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
     if (!pCenterTile || pCenterTile->getType() != Terrain_Sand)
         return;
 
-    // thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non thick
-    // only check tile right, up, left and down of this one
+    // thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non
+    // thick only check tile right, up, left and down of this one
     for_each_neighbor(coord.x, coord.y, [&](Tile& t) {
         if (t.isThickSpice())
             t.setType(context, Terrain_Spice);
@@ -623,17 +636,14 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
     const auto cycle_count = currentGame->getGameCycleCount();
 
     for_each_filter(
-        location.x - maxViewRange, location.y - maxViewRange,
-        location.x + maxViewRange + 1, location.y + maxViewRange + 1,
+        location.x - maxViewRange, location.y - maxViewRange, location.x + maxViewRange + 1,
+        location.y + maxViewRange + 1,
         [&](int x, int y) {
-            const auto distance = maxViewRange <= 1
-                                    ? maximumDistance(location, {x, y})
-                                    : blockDistanceApprox(location, {x, y});
+            const auto distance =
+                maxViewRange <= 1 ? maximumDistance(location, {x, y}) : blockDistanceApprox(location, {x, y});
             return distance <= maxViewRange;
         },
-        [&](Tile& t) {
-            t.setExplored(houseID, cycle_count);
-        });
+        [&](Tile& t) { t.setExplored(houseID, cycle_count); });
 }
 
 /**
@@ -646,12 +656,13 @@ void Map::createSpiceField(const GameContext& context, Coord location, int radiu
 
     for_each_filter(
         location.x - radius, location.y - radius, location.x + radius, location.y + radius,
-        [&](int x, int y) { return distanceFrom(location, {x, y}) <= radius; },
+        [&](int x, int y) {
+            return distanceFrom(location, {x, y}) <= radius;
+        },
         [&](Tile& t) {
             if (t.isSand()) {
-                const auto terrain = centerIsThickSpice && (t.location == location)
-                                       ? Terrain_ThickSpice
-                                       : Terrain_Spice;
+                const auto terrain =
+                    centerIsThickSpice && (t.location == location) ? Terrain_ThickSpice : Terrain_Spice;
 
                 t.setType(context, terrain);
             }

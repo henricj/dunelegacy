@@ -29,8 +29,7 @@
 //#include "debug.h"
 
 CSurroundopl::CSurroundopl(std::unique_ptr<Copl> a, std::unique_ptr<Copl> b, bool use16bit)
-    : use16bit(use16bit),
-      a(std::move(a)), b(std::move(b)) {
+    : use16bit(use16bit), a(std::move(a)), b(std::move(b)) {
     currType = TYPE_OPL2;
 
     lbuf.resize(default_bufsize);
@@ -84,7 +83,8 @@ void CSurroundopl::write(int reg, int val) {
 
     if ((iChannel >= 0)) { // && (i == 1)) {
         const uint8_t iBlock = (this->iFMReg[this->currChip][0xB0 + iChannel] >> 2) & 0x07;
-        const uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8) | this->iFMReg[this->currChip][0xA0 + iChannel];
+        const uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8)
+                             | this->iFMReg[this->currChip][0xA0 + iChannel];
         // double dbOriginalFreq = 50000.0 * (double)iFNum * pow(2, iBlock - 20);
         const double dbOriginalFreq = 49716.0 * static_cast<double>(iFNum) * pow(2, iBlock - 20);
 
@@ -103,7 +103,8 @@ void CSurroundopl::write(int reg, int val) {
 
             if (iNewBlock > 6) {
                 // Uh oh, we're already at the highest octave!
-                //              AdPlug_LogWrite("OPL WARN: FNum %d/B#%d would need block 8+ after being transposed (new FNum is %d)\n",
+                //              AdPlug_LogWrite("OPL WARN: FNum %d/B#%d would need block 8+ after being transposed (new
+                //              FNum is %d)\n",
                 //                  iFNum, iBlock, (int)dbNewFNum);
                 // The best we can do here is to just play the same note out of the second OPL, so at least it shouldn't
                 // sound *too* bad (hopefully it will just miss out on the nice harmonic.)
@@ -118,7 +119,8 @@ void CSurroundopl::write(int reg, int val) {
 
             if (iNewBlock == 0) {
                 // Uh oh, we're already at the lowest octave!
-                //              AdPlug_LogWrite("OPL WARN: FNum %d/B#%d would need block -1 after being transposed (new FNum is %d)!\n",
+                //              AdPlug_LogWrite("OPL WARN: FNum %d/B#%d would need block -1 after being transposed (new
+                //              FNum is %d)!\n",
                 //                  iFNum, iBlock, (int)dbNewFNum);
                 // The best we can do here is to just play the same note out of the second OPL, so at least it shouldn't
                 // sound *too* bad (hopefully it will just miss out on the nice harmonic.)
@@ -136,7 +138,8 @@ void CSurroundopl::write(int reg, int val) {
         // Sanity check
         if (iNewFNum > 1023) {
             // Uh oh, the new FNum is still out of range! (This shouldn't happen)
-            //          AdPlug_LogWrite("OPL ERR: Original note (FNum %d/B#%d is still out of range after change to FNum %d/B#%d!\n",
+            //          AdPlug_LogWrite("OPL ERR: Original note (FNum %d/B#%d is still out of range after change to FNum
+            //          %d/B#%d!\n",
             //              iFNum, iBlock, iNewFNum, iNewBlock);
             // The best we can do here is to just play the same note out of the second OPL, so at least it shouldn't
             // sound *too* bad (hopefully it will just miss out on the nice harmonic.)
@@ -149,8 +152,9 @@ void CSurroundopl::write(int reg, int val) {
             // Overwrite the supplied value with the new F-Number and Block.
             iValue = (iValue & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
 
-            this->iCurrentTweakedBlock[this->currChip][iChannel] = iNewBlock; // save it so we don't have to update register 0xB0 later on
-            this->iCurrentFNum[this->currChip][iChannel]         = static_cast<uint8_t>(iNewFNum);
+            this->iCurrentTweakedBlock[this->currChip][iChannel] =
+                iNewBlock; // save it so we don't have to update register 0xB0 later on
+            this->iCurrentFNum[this->currChip][iChannel] = static_cast<uint8_t>(iNewFNum);
 
             if (this->iTweakedFMReg[this->currChip][0xA0 + iChannel] != (iNewFNum & 0xFF)) {
                 // Need to write out low bits
@@ -165,12 +169,15 @@ void CSurroundopl::write(int reg, int val) {
             iValue = iNewFNum & 0xFF;
 
             // See if we need to update the block number, which is stored in a different register
-            uint8_t iNewB0Value = (this->iFMReg[this->currChip][0xB0 + iChannel] & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
-            if (
-                (iNewB0Value & 0x20) &&                                               // but only update if there's a note currently playing (otherwise we can just wait
-                (this->iTweakedFMReg[this->currChip][0xB0 + iChannel] != iNewB0Value) // until the next noteon and update it then)
+            uint8_t iNewB0Value =
+                (this->iFMReg[this->currChip][0xB0 + iChannel] & ~0x1F) | (iNewBlock << 2) | ((iNewFNum >> 8) & 0x03);
+            if ((iNewB0Value & 0x20)
+                && // but only update if there's a note currently playing (otherwise we can just wait
+                (this->iTweakedFMReg[this->currChip][0xB0 + iChannel]
+                 != iNewB0Value) // until the next noteon and update it then)
             ) {
-                //              AdPlug_LogWrite("OPL INFO: CH%d - FNum %d/B#%d -> FNum %d/B#%d == keyon register update!\n",
+                //              AdPlug_LogWrite("OPL INFO: CH%d - FNum %d/B#%d -> FNum %d/B#%d == keyon register
+                //              update!\n",
                 //                  iChannel, iFNum, iBlock, iNewFNum, iNewBlock);
                 // The note is already playing, so we need to adjust the upper bits too
                 const uint8_t iAdditionalReg = 0xB0 + iChannel;

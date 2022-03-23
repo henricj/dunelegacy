@@ -266,7 +266,9 @@ public:
     [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; }
 
     [[nodiscard]] const GameInitSettings& getGameInitSettings() const noexcept { return gameInitSettings; }
-    void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) { this->nextGameInitSettings = nextGameInitSettings; }
+    void setNextGameInitSettings(const GameInitSettings& nextGameInitSettings) {
+        this->nextGameInitSettings = nextGameInitSettings;
+    }
 
     /**
         This method should be called if whatNext() returns GAME_NEXTMISSION or GAME_LOAD. You should
@@ -332,14 +334,17 @@ public:
         pLocalPlayer->onSelectionChanged(selectedList);
     }
 
-    void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList, int groupListIndex);
+    void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList,
+                                int groupListIndex);
 
     /**
-        Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players per house).
-        \return list of currently selected units/structures by the other player
+        Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players
+       per house). \return list of currently selected units/structures by the other player
     */
     Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList; }
-    [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept { return selectedByOtherPlayerList; }
+    [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept {
+        return selectedByOtherPlayerList;
+    }
 
     /**
         Called when a peer disconnects the game.
@@ -385,8 +390,8 @@ public:
     [[nodiscard]] bool areCheatsEnabled() const noexcept { return bCheatsEnabled; }
 
     /**
-        Returns the name of the local player; this method should be used instead of using settings.general.playerName directly
-        \return the local player name
+        Returns the name of the local player; this method should be used instead of using settings.general.playerName
+       directly \return the local player name
     */
     [[nodiscard]] const std::string& getLocalPlayerName() const noexcept { return localPlayerName; }
 
@@ -528,16 +533,15 @@ private:
     bool handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos);
 
     /**
-        Selects the next structure of any of the types specified in itemIDs. If none of this type is currently selected the first one is selected.
-        \param  itemIDs  the ids of the structures to select
+        Selects the next structure of any of the types specified in itemIDs. If none of this type is currently selected
+       the first one is selected. \param  itemIDs  the ids of the structures to select
     */
     void selectNextStructureOfType(const Dune::selected_set_type& itemIDs);
 
     /**
         Returns the game speed of this game: The number of ms per game cycle.
-        For singleplayer games this is a global setting (but can be adjusted in the in-game settings menu). For multiplayer games the game speed
-        can be set by the person creating the game.
-        \return the current game speed
+        For singleplayer games this is a global setting (but can be adjusted in the in-game settings menu). For
+       multiplayer games the game speed can be set by the person creating the game. \return the current game speed
     */
     [[nodiscard]] int getGameSpeed() const;
 
@@ -591,9 +595,10 @@ private:
     int indicatorTimer      = 0;
     Coord indicatorPosition = Coord::Invalid();
 
-    float averageFrameTime  = 31.25f; ///< The weighted average of the frame time of all previous frames (smoothed fps = 1000.0f/averageFrameTime)
-    float averageRenderTime = 10.0f;  ///< The weighted average of the render time
-    float averageUpdateTime = 10.0f;  ///< The weighted average of the update time
+    float averageFrameTime = 31.25f; ///< The weighted average of the frame time of all previous frames (smoothed fps =
+                                     ///< 1000.0f/averageFrameTime)
+    float averageRenderTime = 10.0f; ///< The weighted average of the render time
+    float averageUpdateTime = 10.0f; ///< The weighted average of the update time
 
     int lastTargetGameCycleTime {}; //< Remember the last time the target gameCycleCount was updated
 
@@ -611,9 +616,12 @@ private:
 
     ////////////////////
 
-    GameInitSettings gameInitSettings;                  ///< the init settings this game was started with
-    GameInitSettings nextGameInitSettings;              ///< the init settings the next game shall be started with (restarting the mission, loading a savegame)
-    GameInitSettings::HouseInfoList houseInfoListSetup; ///< this saves with which houses and players the game was actually set up. It is a copy of gameInitSettings::houseInfoList but without random houses
+    GameInitSettings gameInitSettings;     ///< the init settings this game was started with
+    GameInitSettings nextGameInitSettings; ///< the init settings the next game shall be started with (restarting the
+                                           ///< mission, loading a savegame)
+    GameInitSettings::HouseInfoList
+        houseInfoListSetup; ///< this saves with which houses and players the game was actually set up. It is a copy of
+                            ///< gameInitSettings::houseInfoList but without random houses
 
     ObjectManager objectManager; ///< This manages all the object and maps object ids to the actual objects
 
@@ -635,27 +643,35 @@ private:
 
     bool bCheatsEnabled = false; ///< Cheat codes are enabled?
 
-    bool finished              = false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool finished =
+        false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
     bool won                   = false; ///< If the game is finished, is it won or lost
     uint32_t finishedLevelTime = 0;     ///< The time in milliseconds when the level was finished (won or lost)
     bool finishedLevel         = false; ///< Set, when the game is really finished and the end message was shown
 
-    std::unique_ptr<GameInterface> pInterface;                       ///< This is the whole interface (top bar and side bar)
-    std::unique_ptr<InGameMenu> pInGameMenu;                         ///< This is the menu that is opened by the option button
-    std::unique_ptr<MentatHelp> pInGameMentat;                       ///< This is the mentat dialog opened by the mentat button
-    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers; ///< This is the dialog that pops up when we are waiting for other players during network hangs
-    uint32_t startWaitingForOtherPlayersTime = 0;                    ///< The time in milliseconds when we started waiting for other players
+    std::unique_ptr<GameInterface> pInterface; ///< This is the whole interface (top bar and side bar)
+    std::unique_ptr<InGameMenu> pInGameMenu;   ///< This is the menu that is opened by the option button
+    std::unique_ptr<MentatHelp> pInGameMentat; ///< This is the mentat dialog opened by the mentat button
+    std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers; ///< This is the dialog that pops up when we are
+                                                                     ///< waiting for other players during network hangs
+    uint32_t startWaitingForOtherPlayersTime =
+        0; ///< The time in milliseconds when we started waiting for other players
 
-    bool bSelectionChanged = false;                        ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
-    Dune::selected_set_type selectedList;                  ///< A set of all selected units/structures
-    Dune::selected_set_type selectedByOtherPlayerList;     ///< This is only used in multiplayer games where two players control one house
+    bool bSelectionChanged =
+        false; ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)
+    Dune::selected_set_type selectedList; ///< A set of all selected units/structures
+    Dune::selected_set_type
+        selectedByOtherPlayerList; ///< This is only used in multiplayer games where two players control one house
     std::vector<std::unique_ptr<Explosion>> explosionList; ///< A list containing all the explosions that must be drawn
 
-    std::string localPlayerName;                                     ///< the name of the local player
-    std::unordered_multimap<std::string, Player*> playerName2Player; ///< mapping player names to players (one entry per player)
-    std::unordered_map<uint8_t, Player*> playerID2Player;            ///< mapping player ids to players (one entry per player)
+    std::string localPlayerName; ///< the name of the local player
+    std::unordered_multimap<std::string, Player*>
+        playerName2Player;                                ///< mapping player names to players (one entry per player)
+    std::unordered_map<uint8_t, Player*> playerID2Player; ///< mapping player ids to players (one entry per player)
 
-    std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)> house; ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are nullptr
+    std::array<std::unique_ptr<House>, static_cast<size_t>(HOUSETYPE::NUM_HOUSES)>
+        house; ///< All the houses of this game, index by their houseID; has the size NUM_HOUSES; unused houses are
+               ///< nullptr
 };
 
 #endif // GAME_H

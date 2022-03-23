@@ -29,8 +29,7 @@ extern "C" {
 
 class CWemuopl final : public Copl {
 public:
-    CWemuopl(int rate, bool usestereo)
-        : stereo(usestereo), opl(0) {
+    CWemuopl(int rate, bool usestereo) : stereo(usestereo), opl(0) {
         opl.adlib_init(rate);
         currType = TYPE_OPL2;
     }

@@ -89,7 +89,8 @@ public:
         \param  val8    the 8th boolean value
 
     */
-    void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false, bool val6 = false, bool val7 = false, bool val8 = false);
+    void writeBools(bool val1 = false, bool val2 = false, bool val3 = false, bool val4 = false, bool val5 = false,
+                    bool val6 = false, bool val7 = false, bool val8 = false);
 
     /**
         Writes out a complete vector of Uint8
@@ -135,8 +136,7 @@ public:
 
     class eof : public OutputStream::exception {
     public:
-        explicit eof(const std::string& str) noexcept
-            : str(str) { }
+        explicit eof(const std::string& str) noexcept : str(str) { }
         ~eof() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
@@ -147,8 +147,7 @@ public:
 
     class error : public OutputStream::exception {
     public:
-        explicit error(const std::string& str) noexcept
-            : str(str) { }
+        explicit error(const std::string& str) noexcept : str(str) { }
         ~error() noexcept override = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }

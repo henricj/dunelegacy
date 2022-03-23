@@ -34,7 +34,8 @@ FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, 
 FadeInVideoEvent::~FadeInVideoEvent() = default;
 
 int FadeInVideoEvent::draw() {
-    const SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    const SDL_Rect dest =
+        calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
     const int alpha = std::min(255, (255 * currentFrame) / numFrames2FadeIn);
     if (bFadeWhite) {

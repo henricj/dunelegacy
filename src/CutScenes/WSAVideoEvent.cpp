@@ -24,17 +24,20 @@
 WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical)
     : currentFrame(0), pWsafile(pWsafile), bCenterVertical(bCenterVertical) {
 
-    pStreamingTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
+    pStreamingTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
+                                                             2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
 }
 
 WSAVideoEvent::~WSAVideoEvent() = default;
 
 int WSAVideoEvent::draw() {
-    const sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).get()).get());
+    const sdl2::surface_ptr pSurface =
+        convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).get()).get());
 
     SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSurface->pixels, pSurface->pitch);
 
-    const SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    const SDL_Rect dest =
+        calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
     Dune_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
 

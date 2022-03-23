@@ -91,7 +91,8 @@ fix16_t fix16_sin(fix16_t inAngle) {
     tempOut += (tempAngle / 362880);
     tempAngle = fix16_mul(tempAngle, tempAngleSq);
     tempOut -= (tempAngle / 39916800);
-#    else                    // Fast implementation, runs at 159% the speed of above 'accurate' version with an slightly lower accuracy of ~2.3%
+#    else // Fast implementation, runs at 159% the speed of above 'accurate' version with an slightly lower accuracy of
+          // ~2.3%
     fix16_t tempOut;
     tempOut = fix16_mul(-13, tempAngleSq) + 546;
     tempOut = fix16_mul(tempOut, tempAngleSq) - 10923;

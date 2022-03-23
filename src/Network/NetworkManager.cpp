@@ -65,14 +65,17 @@ NetworkManager::~NetworkManager() {
     enet_deinitialize();
 }
 
-void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
+void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
+                                 GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
     if (bLANServer) {
         if (pLANGameFinderAndAnnouncer != nullptr) {
-            pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
+            pLANGameFinderAndAnnouncer->startAnnounce(
+                serverName, host->address.port, pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
         }
     } else {
         if (pMetaServerClient != nullptr) {
-            pMetaServerClient->startAnnounce(serverName, host->address.port, pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
+            pMetaServerClient->startAnnounce(serverName, host->address.port,
+                                             pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
         }
     }
 
@@ -179,7 +182,8 @@ void NetworkManager::update() {
                         // get change event list first
                         const ChangeEventList changeEventList = pGetChangeEventListForNewPlayerCallback(peerData->name);
 
-                        debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
+                        debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
+                                     peerData->name.c_str());
                         peerList.push_back(pCurrentPeer);
                         peerData->peerState = PeerData::PeerState::Connected;
                         peerData->timeout   = 0;
@@ -246,7 +250,8 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (bIsServer) {
                     // Server
-                    debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
+                    debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
+                                 peer->address.port);
 
                     auto newPeerData     = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
@@ -275,7 +280,8 @@ void NetworkManager::update() {
                         peerData->peerState = PeerData::PeerState::WaitingForOtherPeersToConnect;
                         peerData->timeout   = 0;
                     } else {
-                        debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
+                        debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
+                                     peer->address.port);
 
                         const auto* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
 
@@ -308,8 +314,10 @@ void NetworkManager::update() {
             } break;
 
             case ENET_EVENT_TYPE_RECEIVE: {
-                // debugNetwork("NetworkManager: A packet of length %u was received from %s:%u on channel %u on this server.\n",
-                //                 (unsigned int) event.packet->dataLength, Address2String(peer->address).c_str(), peer->address.port, event.channelID);
+                // debugNetwork("NetworkManager: A packet of length %u was received from %s:%u on channel %u on this
+                // server.\n",
+                //                 (unsigned int) event.packet->dataLength, Address2String(peer->address).c_str(),
+                //                 peer->address.port, event.channelID);
 
                 ENetPacketIStream packetStream(event.packet);
 
@@ -321,10 +329,13 @@ void NetworkManager::update() {
 
                 const int disconnectCause = event.data;
 
-                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown", disconnectCause);
+                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(),
+                             peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown",
+                             disconnectCause);
 
                 if (peerData != nullptr) {
-                    if (std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer) != awaitingConnectionList.end()) {
+                    if (std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer)
+                        != awaitingConnectionList.end()) {
                         if (peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                             packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
@@ -422,7 +433,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 }
 
                 for (auto* const pAwaitingConnectionPeer : awaitingConnectionList) {
-                    if ((pAwaitingConnectionPeer->address.host == address.host) && (pAwaitingConnectionPeer->address.port == address.port)) {
+                    if ((pAwaitingConnectionPeer->address.host == address.host)
+                        && (pAwaitingConnectionPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
@@ -446,7 +458,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                             break;
                         }
 
-                        if ((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
+                        if ((pCurrentPeer->address.host == address.host)
+                            && (pCurrentPeer->address.port == address.port)) {
 
                             peerData->notYetConnectedPeers.remove(peer);
 
@@ -460,10 +473,12 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                                 sendPacketToAllConnectedPeers(packetOStream);
 
                                 // get change event list first
-                                ChangeEventList changeEventList = pGetChangeEventListForNewPlayerCallback(peerData->name);
+                                ChangeEventList changeEventList =
+                                    pGetChangeEventListForNewPlayerCallback(peerData->name);
 
                                 // move peer to peer list
-                                debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
+                                debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
+                                             peerData->name.c_str());
                                 peerList.push_back(pCurrentPeer);
                                 peerData->peerState = PeerData::PeerState::Connected;
                                 peerData->timeout   = 0;
@@ -484,12 +499,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     for (auto iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
                         auto* const pCurrentPeer = *iter;
 
-                        if ((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
+                        if ((pCurrentPeer->address.host == address.host)
+                            && (pCurrentPeer->address.port == address.port)) {
                             auto* peerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if (!peerData) {
                                 continue;
                             }
-                            debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
+                            debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
+                                         peerData->name.c_str());
                             peerList.push_back(pCurrentPeer);
                             peerData->peerState = PeerData::PeerState::Connected;
                             peerData->timeout   = 0;
@@ -637,9 +654,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
     } catch (InputStream::eof&) {
         sdl2::log_info("NetworkManager: Received packet is too small");
-    } catch (std::exception& e) {
-        sdl2::log_info("NetworkManager: %s", e.what());
-    }
+    } catch (std::exception& e) { sdl2::log_info("NetworkManager: %s", e.what()); }
 }
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {

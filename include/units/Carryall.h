@@ -56,15 +56,11 @@ public:
 
     void setTarget(const ObjectBase* newTarget) override;
 
-    bool hasCargo() const noexcept {
-        return !pickedUpUnitList.empty();
-    }
+    bool hasCargo() const noexcept { return !pickedUpUnitList.empty(); }
 
     void setOwned(bool b) noexcept { owned = b; }
 
-    void setDropOfferer(bool status) {
-        aDropOfferer = status;
-    }
+    void setDropOfferer(bool status) { aDropOfferer = status; }
 
     bool isBooked() const noexcept { return (target || hasCargo()); }
 

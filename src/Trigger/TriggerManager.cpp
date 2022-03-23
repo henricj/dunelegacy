@@ -101,7 +101,6 @@ std::unique_ptr<Trigger> TriggerManager::loadTrigger(InputStream& stream) const 
             return std::make_unique<TimeoutTrigger>(stream);
         }
 
-        default:
-            THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
+        default: THROW(std::runtime_error, "TriggerManager::loadTrigger(): Unknown trigger type!");
     }
 }

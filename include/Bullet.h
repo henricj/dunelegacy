@@ -29,7 +29,8 @@ class House;
 
 class Bullet final {
 public:
-    Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID, int damage, bool air, const ObjectBase* pTarget);
+    Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID,
+           int damage, bool air, const ObjectBase* pTarget);
     explicit Bullet(InputStream& stream);
     void init();
     ~Bullet();

@@ -24,8 +24,7 @@
 /**
  * \brief          MD5 context structure
  */
-typedef struct
-{
+typedef struct {
     unsigned long total[2];   /*!< number of bytes processed  */
     unsigned long state[4];   /*!< intermediate digest state  */
     unsigned char buffer[64]; /*!< data block being processed */
@@ -89,8 +88,7 @@ int md5_file(const char* path, unsigned char output[16]);
  * \param key      HMAC secret key
  * \param keylen   length of the HMAC key
  */
-void md5_hmac_starts(md5_context* ctx,
-                     const unsigned char* key, int keylen);
+void md5_hmac_starts(md5_context* ctx, const unsigned char* key, int keylen);
 
 /**
  * \brief          MD5 HMAC process buffer
@@ -99,8 +97,7 @@ void md5_hmac_starts(md5_context* ctx,
  * \param input    buffer holding the  data
  * \param ilen     length of the input data
  */
-void md5_hmac_update(md5_context* ctx,
-                     const unsigned char* input, int ilen);
+void md5_hmac_update(md5_context* ctx, const unsigned char* input, int ilen);
 
 /**
  * \brief          MD5 HMAC final digest
@@ -126,9 +123,7 @@ void md5_hmac_reset(md5_context* ctx);
  * \param ilen     length of the input data
  * \param output   HMAC-MD5 result
  */
-void md5_hmac(const unsigned char* key, int keylen,
-              const unsigned char* input, int ilen,
-              unsigned char output[16]);
+void md5_hmac(const unsigned char* key, int keylen, const unsigned char* input, int ilen, unsigned char output[16]);
 
 /**
  * \brief          Checkup routine

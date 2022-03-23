@@ -83,12 +83,7 @@ public:
     void switchRadarMode(bool bOn);
 
 private:
-    enum class RadarMode {
-        RadarOff,
-        RadarOn,
-        AnimationRadarOff,
-        AnimationRadarOn
-    };
+    enum class RadarMode { RadarOff, RadarOn, AnimationRadarOff, AnimationRadarOn };
 
     void updateRadarSurface(int scale, int offsetX, int offsetY);
 

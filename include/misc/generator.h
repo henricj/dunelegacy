@@ -13,25 +13,18 @@ struct generator {
     struct promise_type {
         std::variant<T const*, std::exception_ptr> value;
 
-        promise_type& get_return_object() {
-            return *this;
-        }
+        promise_type& get_return_object() { return *this; }
 
-        std::experimental::suspend_always initial_suspend() {
-            return {};
-        }
+        std::experimental::suspend_always initial_suspend() { return {}; }
 
-        std::experimental::suspend_always final_suspend() {
-            return {};
-        }
+        std::experimental::suspend_always final_suspend() { return {}; }
 
         std::experimental::suspend_always yield_value(T const& other) {
             value = std::addressof(other);
             return {};
         }
 
-        void return_void() {
-        }
+        void return_void() { }
 
         template<typename Expression>
         Expression&& await_transform(Expression&& expression) {
@@ -39,9 +32,7 @@ struct generator {
             return std::forward<Expression>(expression);
         }
 
-        void unhandled_exception() {
-            value = std::move(std::current_exception());
-        }
+        void unhandled_exception() { value = std::move(std::current_exception()); }
 
         void rethrow_if_failed() {
             if (value.index() == 1) {
@@ -63,13 +54,9 @@ struct generator {
 
         handle_type handle;
 
-        iterator(std::nullptr_t)
-            : handle(nullptr) {
-        }
+        iterator(std::nullptr_t) : handle(nullptr) { }
 
-        iterator(handle_type handle_type)
-            : handle(handle_type) {
-        }
+        iterator(handle_type handle_type) : handle(handle_type) { }
 
         iterator& operator++() {
             handle.resume();
@@ -85,21 +72,13 @@ struct generator {
 
         iterator operator++(int) = delete;
 
-        bool operator==(iterator const& other) const {
-            return handle == other.handle;
-        }
+        bool operator==(iterator const& other) const { return handle == other.handle; }
 
-        bool operator!=(iterator const& other) const {
-            return !(*this == other);
-        }
+        bool operator!=(iterator const& other) const { return !(*this == other); }
 
-        T const& operator*() const {
-            return *std::get<0>(handle.promise().value);
-        }
+        T const& operator*() const { return *std::get<0>(handle.promise().value); }
 
-        T const* operator->() const {
-            return std::addressof(operator*());
-        }
+        T const* operator->() const { return std::addressof(operator*()); }
     };
 
     iterator begin() {
@@ -117,22 +96,15 @@ struct generator {
         return handle;
     }
 
-    iterator end() {
-        return nullptr;
-    }
+    iterator end() { return nullptr; }
 
-    generator(promise_type& promise)
-        : handle(handle_type::from_promise(promise)) {
-    }
+    generator(promise_type& promise) : handle(handle_type::from_promise(promise)) { }
 
     generator()                 = default;
     generator(generator const&) = delete;
     generator& operator=(generator const&) = delete;
 
-    generator(generator&& other)
-        : handle(other.handle) {
-        other.handle = nullptr;
-    }
+    generator(generator&& other) : handle(other.handle) { other.handle = nullptr; }
 
     generator& operator=(generator&& other) {
         if (this != &other) {

@@ -88,7 +88,8 @@ bool Carryall::update(const GameContext& context) {
     if (pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || hasCargo()) {
-        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2);
+        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
+                            destination.y * TILESIZE + TILESIZE / 2);
     }
 
     if (dist >= 0) {
@@ -114,7 +115,9 @@ bool Carryall::update(const GameContext& context) {
     // to the map (e.g. new harvester)
     if (active) {
         const auto& map = context.map;
-        if (aDropOfferer && droppedOffCargo && (!hasCargo()) && ((getRealX() < -TILESIZE) || (getRealX() > (map.getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE) || (getRealY() > (map.getSizeY() + 1) * TILESIZE))) {
+        if (aDropOfferer && droppedOffCargo && (!hasCargo())
+            && ((getRealX() < -TILESIZE) || (getRealX() > (map.getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE)
+                || (getRealY() > (map.getSizeY() + 1) * TILESIZE))) {
             setVisible(VIS_ALL, false);
             destroy(context);
             return false;
@@ -171,7 +174,8 @@ void Carryall::checkPos(const GameContext& context) {
                     const auto r     = game.randomGen.rand(3, i / 2);
                     const auto angle = 2 * FixPt_PI * game.randomGen.randFixPoint();
 
-                    auto dropCoord = location + Coord(lround(r * FixPoint::sin(angle)), lround(-r * FixPoint::cos(angle)));
+                    auto dropCoord =
+                        location + Coord(lround(r * FixPoint::sin(angle)), lround(-r * FixPoint::cos(angle)));
                     if (map.tileExists(dropCoord) && !map.getTile(dropCoord)->hasAGroundObject()) {
                         setDestination(dropCoord);
                         break;
@@ -222,7 +226,8 @@ void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
     if (tile)
         deployUnit(context, tile, pUnit);
     else
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location %d, %d", location.x, location.y);
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location %d, %d", location.x,
+                        location.y);
 
     post_deployUnits();
 }
@@ -402,9 +407,11 @@ void Carryall::pickupTarget(const GameContext& context) {
             return;
         }
 
-        if (pGroundUnitTarget->hasATarget() || (pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation()) || pGroundUnitTarget->isBadlyDamaged()) {
+        if (pGroundUnitTarget->hasATarget() || (pGroundUnitTarget->getDestination() != pGroundUnitTarget->getLocation())
+            || pGroundUnitTarget->isBadlyDamaged()) {
 
-            if (pGroundUnitTarget->isBadlyDamaged() || (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester)) {
+            if (pGroundUnitTarget->isBadlyDamaged()
+                || (!pGroundUnitTarget->hasATarget() && pGroundUnitTarget->getItemID() != Unit_Harvester)) {
                 pGroundUnitTarget->doRepair(context);
             }
 
@@ -486,7 +493,9 @@ void Carryall::targeting(const GameContext& context) {
 void Carryall::turn(const GameContext& context) {
     const auto& map = context.map;
 
-    if (active && aDropOfferer && droppedOffCargo && (!hasCargo()) && ((getRealX() < TILESIZE / 2) || (getRealX() > map.getSizeX() * TILESIZE - TILESIZE / 2) || (getRealY() < TILESIZE / 2) || (getRealY() > map.getSizeY() * TILESIZE - TILESIZE / 2))) {
+    if (active && aDropOfferer && droppedOffCargo && (!hasCargo())
+        && ((getRealX() < TILESIZE / 2) || (getRealX() > map.getSizeX() * TILESIZE - TILESIZE / 2)
+            || (getRealY() < TILESIZE / 2) || (getRealY() > map.getSizeY() * TILESIZE - TILESIZE / 2))) {
         // already partially outside the map => do not turn
         return;
     }

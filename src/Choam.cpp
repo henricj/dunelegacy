@@ -14,9 +14,7 @@
 // change amount of available units every 30s
 #define CHOAM_CHANGE_AMOUNT (MILLI2CYCLES(30 * 1000))
 
-Choam::Choam(House* pHouse)
-    : house(pHouse) {
-}
+Choam::Choam(House* pHouse) : house(pHouse) { }
 
 Choam::~Choam() = default;
 
@@ -47,7 +45,8 @@ int Choam::getPrice(ItemID_enum itemID) const {
 }
 
 bool Choam::isCheap(ItemID_enum itemID) const {
-    return (getPrice(itemID) < currentGame->objectData.data[itemID][static_cast<int>(house->getHouseID())].price * 1.3_fix); // A bit of logic to make starports better
+    return (getPrice(itemID) < currentGame->objectData.data[itemID][static_cast<int>(house->getHouseID())].price
+                                   * 1.3_fix); // A bit of logic to make starports better
 }
 
 int Choam::getNumAvailable(ItemID_enum itemID) const {

@@ -108,7 +108,7 @@ MultiPlayerMenu::MultiPlayerMenu() {
 
     // Start Network Manager
     sdl2::log_info("Starting network...");
-    pNetworkManager                     = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
+    pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
     LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
     pLANGFAA->setOnUpdateServer([this](auto interactive) { onUpdateLANServer(interactive); });
@@ -194,7 +194,10 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         InternetGameList.clear();
 
         for (GameServerInfo& gameServerInfo : LANGameList) {
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
+                                    + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
+                                    + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &gameServerInfo);
         }
 
@@ -217,12 +220,14 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
     internetGamesButton.setToggleState(buttonID == 1);
 }
 
-void MultiPlayerMenu::onGameListSelectionChange(bool bInteractive) {
-}
+void MultiPlayerMenu::onGameListSelectionChange(bool bInteractive) { }
 
 void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
     LANGameList.push_back(gameServerInfo);
-    const std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+    const std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
+                                  + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                  + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
+                                  + std::to_string(gameServerInfo.maxPlayers) + ")";
     gameList.addEntry(description, &LANGameList.back());
 }
 
@@ -238,7 +243,10 @@ void MultiPlayerMenu::onUpdateLANServer(GameServerInfo gameServerInfo) {
     }
 
     if (index < LANGameList.size()) {
-        const std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+        const std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
+                                      + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                      + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
+                                      + std::to_string(gameServerInfo.maxPlayers) + ")";
 
         gameList.setEntry(index, description);
     }
@@ -263,7 +271,8 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
     while (oldListIter != InternetGameList.end()) {
         GameServerInfo& gameServerInfo = *oldListIter;
 
-        if (std::find(gameServerInfoList.begin(), gameServerInfoList.end(), gameServerInfo) == gameServerInfoList.end()) {
+        if (std::find(gameServerInfoList.begin(), gameServerInfoList.end(), gameServerInfo)
+            == gameServerInfoList.end()) {
             // not found => remove
             gameList.removeEntry(index);
             oldListIter = InternetGameList.erase(oldListIter);
@@ -291,11 +300,17 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
         if (oldListIndex >= InternetGameList.size()) {
             // not found => add at the end
             InternetGameList.push_back(gameServerInfo);
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
+                                    + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
+                                    + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &InternetGameList.back());
         } else {
             // found => update
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
+            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
+                                    + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
+                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
+                                    + std::to_string(gameServerInfo.maxPlayers) + ")";
 
             gameList.setEntry(oldListIndex, description);
         }
@@ -327,7 +342,8 @@ void MultiPlayerMenu::onMetaServerError(int errorcause, const std::string& error
     }
 }
 
-void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings, const ChangeEventList& changeEventList) {
+void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings,
+                                        const ChangeEventList& changeEventList) {
     closeChildWindow();
 
     pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());

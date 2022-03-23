@@ -102,8 +102,7 @@ static const fltype kslmul[4] = {
 };
 
 // frequency multiplicator lookup table
-static const fltype frqmul[16] = {
-    0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 12, 12, 15, 15};
+static const fltype frqmul[16] = {0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 12, 12, 15, 15};
 // calculated frequency multiplication values (depend on sampling rate)
 static fltype nfrqmul[16];
 
@@ -111,49 +110,27 @@ static fltype nfrqmul[16];
 static Bit8u ksl[8][16];
 
 // map a channel number to the register offset of the modulator
-static const Bit8u modulatorbase[9] = {
-    0, 1, 2,
-    8, 9, 10,
-    16, 17, 18};
+static const Bit8u modulatorbase[9] = {0, 1, 2, 8, 9, 10, 16, 17, 18};
 
 // map a register base to a modulator cell number
-static const Bit8u regbase2modcell[22] = {
-    0, 1, 2, 0, 1, 2, 0, 0, 3, 4, 5, 3, 4, 5, 0, 0, 6, 7, 8, 6, 7, 8};
+static const Bit8u regbase2modcell[22] = {0, 1, 2, 0, 1, 2, 0, 0, 3, 4, 5, 3, 4, 5, 0, 0, 6, 7, 8, 6, 7, 8};
 
 OPLChipClass* oplchip[2];
 
 // start of the waveform
-static const Bitu waveform[8] = {
-    WAVPREC,
-    WAVPREC >> 1,
-    WAVPREC,
-    (WAVPREC * 3) >> 2,
-    0,
-    0,
-    (WAVPREC * 5) >> 2,
-    WAVPREC << 1};
+static const Bitu waveform[8] = {WAVPREC, WAVPREC >> 1,       WAVPREC,     (WAVPREC * 3) >> 2, 0,
+                                 0,       (WAVPREC * 5) >> 2, WAVPREC << 1};
 
 // length of the waveform as mask
-static const Bitu wavemask[8] = {
-    WAVPREC - 1,
-    WAVPREC - 1,
-    (WAVPREC >> 1) - 1,
-    (WAVPREC >> 1) - 1,
-    WAVPREC - 1,
-    ((WAVPREC * 3) >> 2) - 1,
-    WAVPREC >> 1,
-    WAVPREC - 1};
+static const Bitu wavemask[8] = {WAVPREC - 1,        WAVPREC - 1, (WAVPREC >> 1) - 1,
+                                 (WAVPREC >> 1) - 1, WAVPREC - 1, ((WAVPREC * 3) >> 2) - 1,
+                                 WAVPREC >> 1,       WAVPREC - 1};
 
 // where the first entry resides
-static const fltype wavestart[8] = {
-    static_cast<double>(0),
-    static_cast<double>((WAVPREC >> 1)),
-    static_cast<double>(0),
-    static_cast<double>((WAVPREC >> 2)),
-    static_cast<double>(0),
-    static_cast<double>(0),
-    static_cast<double>(0),
-    static_cast<double>((WAVPREC >> 3))};
+static const fltype wavestart[8] = {static_cast<double>(0), static_cast<double>((WAVPREC >> 1)),
+                                    static_cast<double>(0), static_cast<double>((WAVPREC >> 2)),
+                                    static_cast<double>(0), static_cast<double>(0),
+                                    static_cast<double>(0), static_cast<double>((WAVPREC >> 3))};
 
 // envelope generator function constants
 static const fltype attackconst[4] = {1 / 2.82624, 1 / 2.25280, 1 / 1.88416, 1 / 1.59744};
@@ -161,14 +138,12 @@ static const fltype decrelconst[4] = {1 / 39.28064, 1 / 31.41608, 1 / 26.17344, 
 
 static fltype generator_add; // should be a chip parameter
 
-OPLChipClass::OPLChipClass(Bitu cnum)
-    : chip_num(cnum) {
+OPLChipClass::OPLChipClass(Bitu cnum) : chip_num(cnum) {
     // which OPL chip are we (needed for timers)
 }
 
 // no action, cell is off
-void processcell_off(celltype* /*ctc*/, fltype /*modulator*/, fltype /*vib*/, fltype /*trem*/) {
-}
+void processcell_off(celltype* /*ctc*/, fltype /*modulator*/, fltype /*vib*/, fltype /*trem*/) { }
 
 // output level is sustained, mode changes only when cell is turned off (->release)
 // or when the keep-sustained bit is turned off (->sustain_nokeep)
@@ -271,7 +246,8 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    const Bits num_steps_add = static_cast<Bits>(ctc->generator_pos); // determine number of std samples that have passed
+    const Bits num_steps_add =
+        static_cast<Bits>(ctc->generator_pos); // determine number of std samples that have passed
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;                              // next sample
         if ((ctc->cur_env_step & ctc->env_step_a) == 0) { // check if next step already reached
@@ -290,18 +266,16 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
 
 typedef void (*cftype_fptr)(celltype*, fltype, fltype, fltype);
 
-cftype_fptr cfuncs[6] = {
-    processcell_attack,
-    processcell_decay,
-    processcell_release,
-    processcell_sustain, // sustain phase (keeping level)
-    processcell_release, // sustain_nokeep phase (release-style)
-    processcell_off};
+cftype_fptr cfuncs[6] = {processcell_attack,  processcell_decay, processcell_release,
+                         processcell_sustain, // sustain phase (keeping level)
+                         processcell_release, // sustain_nokeep phase (release-style)
+                         processcell_off};
 
 void OPLChipClass::change_attackrate(Bitu regbase, celltype* c) {
     const Bits attackrate = adlibreg[ARC_ATTR_DECR + regbase] >> 4;
     if (attackrate) {
-        const auto f = (fltype)(pow(FL2, static_cast<double>(attackrate) + (c->toff >> 2) - 1) * attackconst[c->toff & 3] * recipsamp);
+        const auto f = (fltype)(pow(FL2, static_cast<double>(attackrate) + (c->toff >> 2) - 1)
+                                * attackconst[c->toff & 3] * recipsamp);
         // attack rate coefficients
         c->a0 = (fltype)(0.0377 * f);
         c->a1 = (fltype)(10.73 * f + 1);
@@ -400,7 +374,8 @@ void OPLChipClass::change_feedback(Bitu chanbase, celltype* c) {
 
 void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
     // frequency
-    const Bits frn = ((static_cast<Bits>(adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8) + static_cast<Bits>(adlibreg[ARC_FREQ_NUM + chanbase]);
+    const Bits frn = ((static_cast<Bits>(adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8)
+                   + static_cast<Bits>(adlibreg[ARC_FREQ_NUM + chanbase]);
     // block number/octave
     const Bits oct = ((static_cast<Bits>(adlibreg[ARC_KON_BNUM + chanbase]) >> 2) & 7);
     c->freq_high   = (frn >> 7) & 7;
@@ -417,9 +392,10 @@ void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
     // 20+a0+b0:
     c->tinc = static_cast<double>(frn << oct) * nfrqmul[adlibreg[ARC_TVS_KSR_MUL + regbase] & 15];
     // 40+a0+b0:
-    const auto vol_in = (fltype)(static_cast<double>(adlibreg[ARC_KSL_OUTLEV + regbase] & 63) +
-                                 static_cast<double>(kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6]) * ksl[oct][frn >> 6]);
-    c->vol            = (fltype)(pow(FL2, (fltype)(vol_in * -0.125 - 14)));
+    const auto vol_in =
+        (fltype)(static_cast<double>(adlibreg[ARC_KSL_OUTLEV + regbase] & 63)
+                 + static_cast<double>(kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6]) * ksl[oct][frn >> 6]);
+    c->vol = (fltype)(pow(FL2, (fltype)(vol_in * -0.125 - 14)));
 
     // cell frequency changed, care about features that depend on it
     change_attackrate(regbase, c);
@@ -509,9 +485,11 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
         trem_table_int[i] = static_cast<Bit32s>(i - 40 - 26); // upwards (1 to 12 -> -1/6 to -0.5/6)
 
     for (i = 0; i < TREMTAB_SIZE; i++) {
-        trem_table[i]                = (fltype)(static_cast<double>(trem_table_int[i]) * 4.8 / 26.0 / 6.0);              // 4.8db
-        trem_table[TREMTAB_SIZE + i] = (fltype)(static_cast<double>((Bit32s)(trem_table_int[i] / 4)) * 1.2 / 7.5 / 6.0); // 1.2db (?)
-                                                                                                                         //      trem_table[i]=(fltype)(trem_table_int[(i)&(~3)])*1.0/13.0/6.0;                  // 1.0db
+        trem_table[i] = (fltype)(static_cast<double>(trem_table_int[i]) * 4.8 / 26.0 / 6.0); // 4.8db
+        trem_table[TREMTAB_SIZE + i] =
+            (fltype)(static_cast<double>((Bit32s)(trem_table_int[i] / 4)) * 1.2 / 7.5
+                     / 6.0); // 1.2db (?)
+                             //      trem_table[i]=(fltype)(trem_table_int[(i)&(~3)])*1.0/13.0/6.0; // 1.0db
 
         trem_table[i]                = (fltype)(pow(FL2, trem_table[i]));
         trem_table[TREMTAB_SIZE + i] = (fltype)(pow(FL2, trem_table[TREMTAB_SIZE + i]));
@@ -527,9 +505,10 @@ void OPLChipClass::adlib_init(Bits samplerate, bool highprec /*=false*/) {
 
         // create waveform tables
         for (i = 0; i < (WAVPREC >> 1); i++) {
-            wavtable[(i << 1) + WAVPREC]     = static_cast<Bit16s>(16384 * sin((fltype)((i << 1)) * PI * 2 / WAVPREC));
-            wavtable[(i << 1) + 1 + WAVPREC] = static_cast<Bit16s>(16384 * sin((fltype)((i << 1) + 1) * PI * 2 / WAVPREC));
-            wavtable[i]                      = wavtable[(i << 1) + WAVPREC];
+            wavtable[(i << 1) + WAVPREC] = static_cast<Bit16s>(16384 * sin((fltype)((i << 1)) * PI * 2 / WAVPREC));
+            wavtable[(i << 1) + 1 + WAVPREC] =
+                static_cast<Bit16s>(16384 * sin((fltype)((i << 1) + 1) * PI * 2 / WAVPREC));
+            wavtable[i] = wavtable[(i << 1) + WAVPREC];
             // table to be verified, alternative: (zero-less)
             /*          wavtable[(i<<1)  +WAVPREC]  = (Bit16s)(16384*sin((fltype)(((i*2+1)<<1)-1)*PI/WAVPREC));
                         wavtable[(i<<1)+1+WAVPREC]  = (Bit16s)(16384*sin((fltype)(((i*2+1)<<1)  )*PI/WAVPREC));
@@ -626,8 +605,7 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                 case 0x08:
                     // CSW, note select
                     break;
-                default:
-                    break;
+                default: break;
             }
             break;
         case ARC_TVS_KSR_MUL:
@@ -722,7 +700,9 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                 if ((val & 8) > (old_val & 8)) { // Snare
                     cellon(20, &cell[16]);
                     change_cellfreq(16, 20, &cell[16]);
-                    cell[16].tinc *= 2 * (nfrqmul[adlibreg[ARC_TVS_KSR_MUL + 17] & 15] / nfrqmul[adlibreg[ARC_TVS_KSR_MUL + 20] & 15]);
+                    cell[16].tinc *=
+                        2
+                        * (nfrqmul[adlibreg[ARC_TVS_KSR_MUL + 17] & 15] / nfrqmul[adlibreg[ARC_TVS_KSR_MUL + 20] & 15]);
                     // ??? :
                     if (((adlibreg[ARC_WAVE_SEL + 20] & 7) >= 3) && ((adlibreg[ARC_WAVE_SEL + 20] & 7) <= 5))
                         cell[16].vol = 0;
@@ -809,8 +789,7 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                 }
             }
         } break;
-        default:
-            break;
+        default: break;
     }
 }
 
@@ -846,8 +825,7 @@ static void clipit16(fltype f, Bit16s* a) {
 // uses cptr and chanval, outputs into outbufl(/outbufr)
 // for opl3 check if opl3-mode is enabled (which uses stereo panning)
 #undef CHANVAL_OUT
-#define CHANVAL_OUT \
-    outbufl[i] += chanval;
+#define CHANVAL_OUT outbufl[i] += chanval;
 
 void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
     Bits i = 0;
@@ -905,7 +883,8 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     if (cptr[9].vibrato) {
                         vibval1 = vibval_var1;
                         for (i = 0; i < endsamples; i++)
-                            vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
+                            vibval1[i] =
+                                (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval1 = val_const;
                     if (cptr[9].tremolo)
@@ -927,13 +906,15 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
                         vibval1 = vibval_var1;
                         for (i = 0; i < endsamples; i++)
-                            vibval1[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
+                            vibval1[i] =
+                                (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[0].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval1 = val_const;
                     if ((cptr[9].vibrato) && (cptr[9].cf_sel != CF_TYPE_OFF)) {
                         vibval2 = vibval_var2;
                         for (i = 0; i < endsamples; i++)
-                            vibval2[i] = (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
+                            vibval2[i] =
+                                (fltype)(static_cast<Bit32s>(vib_lut[i] * cptr[9].freq_high / 8) * 0.0014) + FL1;
                     } else
                         vibval2 = val_const;
                     if (cptr[0].tremolo)
@@ -947,7 +928,8 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
 
                     // calculate channel output
                     for (i = 0; i < endsamples; i++) {
-                        cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i], tremval1[i]);
+                        cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i],
+                                               tremval1[i]);
                         cfuncs[cptr[9].cf_sel](&cptr[9], cptr[0].val * MODFACTOR, vibval2[i], tremval2[i]);
 
                         fltype chanval = cptr[9].val * 2;
@@ -957,8 +939,8 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
             }
 
             // Snare/Hihat (j=7), Cymbal/TomTom (j=8)
-            if ((cell[7].cf_sel != CF_TYPE_OFF) || (cell[8].cf_sel != CF_TYPE_OFF) ||
-                (cell[16].cf_sel != CF_TYPE_OFF) || (cell[17].cf_sel != CF_TYPE_OFF)) {
+            if ((cell[7].cf_sel != CF_TYPE_OFF) || (cell[8].cf_sel != CF_TYPE_OFF) || (cell[16].cf_sel != CF_TYPE_OFF)
+                || (cell[17].cf_sel != CF_TYPE_OFF)) {
 
                 cptr = &cell[7];
                 if ((cptr[0].vibrato) && (cptr[0].cf_sel != CF_TYPE_OFF)) {
@@ -1076,7 +1058,8 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 // calculate channel output
                 for (i = 0; i < endsamples; i++) {
                     // carrier1
-                    cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i], tremval1[i]);
+                    cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i],
+                                           tremval1[i]);
                     // carrier2
                     cfuncs[cptr[9].cf_sel](&cptr[9], 0.0, vibval2[i], tremval2[i]);
 
@@ -1111,7 +1094,8 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                 // calculate channel output
                 for (i = 0; i < endsamples; i++) {
                     // modulator
-                    cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i], tremval1[i]);
+                    cfuncs[cptr[0].cf_sel](&cptr[0], (cptr[0].lastval + cptr[0].val) * cptr[0].mfb, vibval1[i],
+                                           tremval1[i]);
                     // carrier
                     cfuncs[cptr[9].cf_sel](&cptr[9], cptr[0].val * MODFACTOR, vibval2[i], tremval2[i]);
 

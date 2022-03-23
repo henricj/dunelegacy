@@ -201,8 +201,9 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
     /* Get the user conf directory using the silly-ass function if it
        is available.
      */
-    if (dwFlags && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
-                                                        NULL, SHGFP_TYPE_CURRENT, &szPath[0]))) {
+    if (dwFlags
+        && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0), NULL,
+                                                SHGFP_TYPE_CURRENT, &szPath[0]))) {
 
         output_path = &szPath[0];
         output_path /= L"" PACKAGE;
@@ -223,8 +224,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
            to the executable, as that's what most existing software seems
            to do.
          */
-    } else if (flags == FNKDAT_CONF || flags == FNKDAT_USER || flags == FNKDAT_DATA ||
-               flags == (FNKDAT_VAR | FNKDAT_DATA)) {
+    } else if (flags == FNKDAT_CONF || flags == FNKDAT_USER || flags == FNKDAT_DATA
+               || flags == (FNKDAT_VAR | FNKDAT_DATA)) {
         const wchar_t* szCommandLine = GetCommandLineW();
 
         const wchar_t* command_end;
@@ -350,8 +351,9 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
                 return {false, std::filesystem::path {}};
 
             std::filesystem::permissions(parent,
-                                         std::filesystem::perms::owner_all | std::filesystem::perms::group_all |
-                                             std::filesystem::perms::others_exec | std::filesystem::perms::others_read,
+                                         std::filesystem::perms::owner_all | std::filesystem::perms::group_all
+                                             | std::filesystem::perms::others_exec
+                                             | std::filesystem::perms::others_read,
                                          std::filesystem::perm_options::replace, ec);
             if (ec) {
                 return {false, std::filesystem::path {}};

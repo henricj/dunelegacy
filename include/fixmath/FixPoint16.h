@@ -37,9 +37,7 @@ public:
     FixPoint16(const int inValue) { value = fix16_from_int(inValue); }
     FixPoint16(const unsigned int inValue) { value = fix16_from_int(static_cast<int>(inValue)); }
 
-    explicit FixPoint16(const std::string& inValue) {
-        value = fix16_from_str(inValue.c_str());
-    }
+    explicit FixPoint16(const std::string& inValue) { value = fix16_from_str(inValue.c_str()); }
 
     static FixPoint16 FromRawValue(const fix16_t value) {
         FixPoint16 x;

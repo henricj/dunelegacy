@@ -54,8 +54,7 @@ public:
 
 class MapEditorStartOperation final : public MapEditorOperation {
 public:
-    MapEditorStartOperation() {
-    }
+    MapEditorStartOperation() { }
 
     ~MapEditorStartOperation() override = default;
 
@@ -64,9 +63,7 @@ public:
 
 class MapEditorTerrainEditOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainEditOperation(int x, int y, TERRAINTYPE terrainType)
-        : x(x), y(y), terrainType(terrainType) {
-    }
+    MapEditorTerrainEditOperation(int x, int y, TERRAINTYPE terrainType) : x(x), y(y), terrainType(terrainType) { }
 
     ~MapEditorTerrainEditOperation() override = default;
 
@@ -79,9 +76,7 @@ public:
 
 class MapEditorTerrainAddSpiceBloomOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainAddSpiceBloomOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainAddSpiceBloomOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainAddSpiceBloomOperation() override = default;
 
@@ -93,9 +88,7 @@ public:
 
 class MapEditorTerrainRemoveSpiceBloomOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainRemoveSpiceBloomOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainRemoveSpiceBloomOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainRemoveSpiceBloomOperation() override = default;
 
@@ -107,9 +100,7 @@ public:
 
 class MapEditorTerrainAddSpecialBloomOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainAddSpecialBloomOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainAddSpecialBloomOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainAddSpecialBloomOperation() override = default;
 
@@ -121,9 +112,7 @@ public:
 
 class MapEditorTerrainRemoveSpecialBloomOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainRemoveSpecialBloomOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainRemoveSpecialBloomOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainRemoveSpecialBloomOperation() override = default;
 
@@ -135,9 +124,7 @@ public:
 
 class MapEditorTerrainAddSpiceFieldOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainAddSpiceFieldOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainAddSpiceFieldOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainAddSpiceFieldOperation() override = default;
 
@@ -149,9 +136,7 @@ public:
 
 class MapEditorTerrainRemoveSpiceFieldOperation final : public MapEditorOperation {
 public:
-    MapEditorTerrainRemoveSpiceFieldOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorTerrainRemoveSpiceFieldOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorTerrainRemoveSpiceFieldOperation() override = default;
 
@@ -163,9 +148,7 @@ public:
 
 class MapEditorSetTacticalPositionOperation final : public MapEditorOperation {
 public:
-    MapEditorSetTacticalPositionOperation(int x, int y)
-        : x(x), y(y) {
-    }
+    MapEditorSetTacticalPositionOperation(int x, int y) : x(x), y(y) { }
 
     ~MapEditorSetTacticalPositionOperation() override = default;
 
@@ -178,12 +161,10 @@ public:
 class MapEditorStructurePlaceOperation final : public MapEditorOperation {
 public:
     MapEditorStructurePlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health)
-        : preferredID(preferredID), position(position), house(house), itemID(itemID), health(health) {
-    }
+        : preferredID(preferredID), position(position), house(house), itemID(itemID), health(health) { }
 
     MapEditorStructurePlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health)
-        : preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) {
-    }
+        : preferredID(INVALID), position(position), house(house), itemID(itemID), health(health) { }
 
     ~MapEditorStructurePlaceOperation() override = default;
 
@@ -198,9 +179,7 @@ public:
 
 class MapEditorRemoveStructureOperation final : public MapEditorOperation {
 public:
-    explicit MapEditorRemoveStructureOperation(int id)
-        : id(id) {
-    }
+    explicit MapEditorRemoveStructureOperation(int id) : id(id) { }
 
     ~MapEditorRemoveStructureOperation() override = default;
 
@@ -211,13 +190,15 @@ public:
 
 class MapEditorUnitPlaceOperation final : public MapEditorOperation {
 public:
-    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-        : preferredID(preferredID), position(position), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
-    }
+    MapEditorUnitPlaceOperation(int preferredID, Coord position, HOUSETYPE house, ItemID_enum itemID, int health,
+                                ANGLETYPE angle, ATTACKMODE attackmode)
+        : preferredID(preferredID), position(position), house(house), angle(angle), itemID(itemID), health(health),
+          attackmode(attackmode) { }
 
-    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-        : preferredID(INVALID), position(position), house(house), angle(angle), itemID(itemID), health(health), attackmode(attackmode) {
-    }
+    MapEditorUnitPlaceOperation(Coord position, HOUSETYPE house, ItemID_enum itemID, int health, ANGLETYPE angle,
+                                ATTACKMODE attackmode)
+        : preferredID(INVALID), position(position), house(house), angle(angle), itemID(itemID), health(health),
+          attackmode(attackmode) { }
 
     ~MapEditorUnitPlaceOperation() override = default;
 
@@ -234,9 +215,7 @@ public:
 
 class MapEditorRemoveUnitOperation final : public MapEditorOperation {
 public:
-    explicit MapEditorRemoveUnitOperation(int id)
-        : id(id) {
-    }
+    explicit MapEditorRemoveUnitOperation(int id) : id(id) { }
 
     ~MapEditorRemoveUnitOperation() override = default;
 
@@ -247,9 +226,7 @@ public:
 
 class MapEditorEditStructureOperation final : public MapEditorOperation {
 public:
-    MapEditorEditStructureOperation(int id, int health)
-        : id(id), health(health) {
-    }
+    MapEditorEditStructureOperation(int id, int health) : id(id), health(health) { }
 
     ~MapEditorEditStructureOperation() override = default;
 
@@ -262,8 +239,7 @@ public:
 class MapEditorEditUnitOperation final : public MapEditorOperation {
 public:
     MapEditorEditUnitOperation(int id, int health, ANGLETYPE angle, ATTACKMODE attackmode)
-        : id(id), health(health), angle(angle), attackmode(attackmode) {
-    }
+        : id(id), health(health), angle(angle), attackmode(attackmode) { }
 
     ~MapEditorEditUnitOperation() override = default;
 
@@ -277,9 +253,10 @@ public:
 
 class MapEditorChangePlayer final : public MapEditorOperation {
 public:
-    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, std::string brain, int quota = 0, int maxunit = 0)
-        : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(std::move(brain)), quota(quota), maxunit(maxunit) {
-    }
+    MapEditorChangePlayer(int playerNum, bool bActive, bool bAnyHouse, int credits, std::string brain, int quota = 0,
+                          int maxunit = 0)
+        : playerNum(playerNum), bActive(bActive), bAnyHouse(bAnyHouse), credits(credits), brain(std::move(brain)),
+          quota(quota), maxunit(maxunit) { }
 
     ~MapEditorChangePlayer() override = default;
 
@@ -296,9 +273,7 @@ public:
 
 class MapEditorChangeChoam final : public MapEditorOperation {
 public:
-    MapEditorChangeChoam(ItemID_enum itemID, int amount)
-        : itemID(itemID), amount(amount) {
-    }
+    MapEditorChangeChoam(ItemID_enum itemID, int amount) : itemID(itemID), amount(amount) { }
 
     ~MapEditorChangeChoam() override = default;
 
@@ -311,8 +286,7 @@ public:
 class MapEditorChangeReinforcements final : public MapEditorOperation {
 public:
     explicit MapEditorChangeReinforcements(std::vector<ReinforcementInfo>& reinforcements)
-        : reinforcements(reinforcements) {
-    }
+        : reinforcements(reinforcements) { }
 
     ~MapEditorChangeReinforcements() override = default;
 
@@ -323,9 +297,7 @@ public:
 
 class MapEditorChangeTeams final : public MapEditorOperation {
 public:
-    explicit MapEditorChangeTeams(std::vector<AITeamInfo>& aiteams)
-        : aiteams(aiteams) {
-    }
+    explicit MapEditorChangeTeams(std::vector<AITeamInfo>& aiteams) : aiteams(aiteams) { }
 
     ~MapEditorChangeTeams() override = default;
 
@@ -336,9 +308,7 @@ public:
 
 class MapEditorChangeMapInfo final : public MapEditorOperation {
 public:
-    explicit MapEditorChangeMapInfo(MapInfo& mapInfo)
-        : mapInfo(mapInfo) {
-    }
+    explicit MapEditorChangeMapInfo(MapInfo& mapInfo) : mapInfo(mapInfo) { }
 
     ~MapEditorChangeMapInfo() override = default;
 

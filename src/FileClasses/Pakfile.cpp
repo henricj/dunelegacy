@@ -75,7 +75,8 @@ Pakfile::~Pakfile() {
             uint32_t startoffset = fileEntrie.startOffset + headersize;
 #endif
             SDL_RWwrite(fPakFile, (char*)&startoffset, sizeof(uint32_t), 1);
-            SDL_RWwrite(fPakFile, fileEntrie.filename.u8string().c_str(), fileEntrie.filename.u8string().length() + 1, 1);
+            SDL_RWwrite(fPakFile, fileEntrie.filename.u8string().c_str(), fileEntrie.filename.u8string().length() + 1,
+                        1);
         }
         uint32_t tmp = 0;
         SDL_RWwrite(fPakFile, (char*)&tmp, sizeof(uint32_t), 1);
@@ -103,7 +104,8 @@ Pakfile::~Pakfile() {
 */
 const std::filesystem::path& Pakfile::getFilename(unsigned int index) const {
     if (index >= fileEntries.size()) {
-        THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index, fileEntries.size());
+        THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index,
+              fileEntries.size());
     }
 
     return fileEntries[index].filename;
@@ -159,12 +161,10 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
 /// Opens a file in this PAK-File.
 /**
     This method opens the file specified by filename. It is only allowed if the Pakfile is opened for reading.
-    The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWsize, SDL_RWseek and SDL_RWclose. No writing
-    is supported.<br>
-    NOTICE: The returned SDL_RWops-Structure is only valid as long as this Pakfile-Object exists. It gets
-    invalid as soon as Pakfile:~Pakfile() is executed.
-    \param  filename    The name of this file
-    \return SDL_RWops for this file
+    The returned SDL_RWops-structure can be used readonly with SDL_RWread, SDL_RWsize, SDL_RWseek and SDL_RWclose. No
+   writing is supported.<br> NOTICE: The returned SDL_RWops-Structure is only valid as long as this Pakfile-Object
+   exists. It gets invalid as soon as Pakfile:~Pakfile() is executed. \param  filename    The name of this file \return
+   SDL_RWops for this file
 */
 sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     if (write) {
@@ -181,7 +181,8 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     }
 
     if (index == -1) {
-        THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename.string().c_str());
+        THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!",
+              filename.string().c_str());
     }
 
     // alloc RWop
@@ -219,7 +220,8 @@ bool Pakfile::exists(const std::filesystem::path& filename) const {
 }
 
 size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
-    if ((pRWop == nullptr) || (ptr == nullptr) || (pRWop->hidden.unknown.data1 == nullptr) || (pRWop->type != PAKFILE_RWOP_TYPE)) {
+    if ((pRWop == nullptr) || (ptr == nullptr) || (pRWop->hidden.unknown.data1 == nullptr)
+        || (pRWop->type != PAKFILE_RWOP_TYPE)) {
         return 0;
     }
 
@@ -282,7 +284,8 @@ int64_t Pakfile::SizeFile(SDL_RWops* pRWop) {
         return -1;
     }
 
-    return static_cast<int64_t>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
+    return static_cast<int64_t>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset
+                                - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
 }
 
 int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
@@ -312,7 +315,8 @@ int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
         } break;
 
         case SEEK_END: {
-            newOffset = pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1 + offset;
+            newOffset = pPakfile->fileEntries[pRWopData->fileIndex].endOffset
+                      - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1 + offset;
         } break;
 
         default: {
@@ -320,7 +324,8 @@ int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
         }
     }
 
-    if (newOffset > (pPakfile->fileEntries[pRWopData->fileIndex].endOffset - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1)) {
+    if (newOffset > (pPakfile->fileEntries[pRWopData->fileIndex].endOffset
+                     - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1)) {
         return -1;
     }
 

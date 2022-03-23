@@ -29,8 +29,7 @@
 #include <main.h>
 #include <sand.h>
 
-MenuBase::MenuBase()
-    : Window(0, 0, 0, 0) { }
+MenuBase::MenuBase() : Window(0, 0, 0, 0) { }
 
 MenuBase::~MenuBase() = default;
 
@@ -120,8 +119,7 @@ void MenuBase::draw() {
     SDL_RenderSetClipRect(renderer, nullptr);
 }
 
-void MenuBase::drawSpecificStuff() {
-}
+void MenuBase::drawSpecificStuff() { }
 
 bool MenuBase::doInput(SDL_Event& event) {
     switch (event.type) {

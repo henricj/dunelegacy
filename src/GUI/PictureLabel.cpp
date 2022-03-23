@@ -1,4 +1,3 @@
 #include <GUI/PictureLabel.h>
 
-PictureLabel::PictureLabel() {
-}
+PictureLabel::PictureLabel() { }

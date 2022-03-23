@@ -81,8 +81,9 @@ void GroundUnit::checkPos(const GameContext& context) {
     /*
         Go to repair yard if low on health
     */
-    if (active && (getHealth() < getMaxHealth() / 2) && !goingToRepairYard && owner->hasRepairYard() && !pickedUp && owner->hasCarryalls() && owner->getHouseID() == originalHouseID // stop deviated units from being repaired
-        && !isInfantry() && !forced) {                                                                                                                                               // Stefan - Allow units with targets to be picked up for repairs
+    if (active && (getHealth() < getMaxHealth() / 2) && !goingToRepairYard && owner->hasRepairYard() && !pickedUp
+        && owner->hasCarryalls() && owner->getHouseID() == originalHouseID // stop deviated units from being repaired
+        && !isInfantry() && !forced) { // Stefan - Allow units with targets to be picked up for repairs
 
         doRepair(context);
     }
@@ -103,7 +104,9 @@ void GroundUnit::checkPos(const GameContext& context) {
                         setGettingRepaired();
                     } else {
                         // the repair yard is already in use by some other unit => move out
-                        const Coord newDestination = currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(), pRepairYard->getStructureSize());
+                        const Coord newDestination =
+                            currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(),
+                                                           pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
                 }
@@ -237,7 +240,8 @@ void GroundUnit::navigate(const GameContext& context) {
 }
 
 void GroundUnit::handleSendToRepairClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID));
 }
 
 void GroundUnit::doRepair(const GameContext& context) noexcept {

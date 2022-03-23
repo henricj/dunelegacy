@@ -25,6 +25,7 @@
 #define SPICEFIELDS 7
 #define DUNEFIELDS  3
 
-MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone);
+MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields = ROCKFIELDS,
+                          int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone);
 
 #endif // MAPGENERATOR_H

@@ -36,7 +36,8 @@ HoldPictureVideoEvent::~HoldPictureVideoEvent() = default;
 
 int HoldPictureVideoEvent::draw() {
     if (pTexture != nullptr) {
-        const SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+        const SDL_Rect dest =
+            calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 

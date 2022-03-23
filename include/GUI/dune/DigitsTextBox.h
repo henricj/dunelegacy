@@ -93,13 +93,9 @@ public:
         resizeAll();
     }
 
-    void setIncrementValue(int newIncrementValue) {
-        incrementValue = newIncrementValue;
-    }
+    void setIncrementValue(int newIncrementValue) { incrementValue = newIncrementValue; }
 
-    void setValue(int newValue) {
-        setValue(newValue, false);
-    }
+    void setValue(int newValue) { setValue(newValue, false); }
 
     int getValue() const {
         int x = 0;
@@ -123,7 +119,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override {
         if ((!isEnabled()) || (!isVisible())) {
@@ -159,8 +156,10 @@ public:
 
         const std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
 
-        return {textBoxMinimumSize.x + buttonVBoxMinimumSize.x + static_cast<int>(GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize())),
-                std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
+        return {
+            textBoxMinimumSize.x + buttonVBoxMinimumSize.x
+                + static_cast<int>(GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize())),
+            std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
     }
 
 protected:

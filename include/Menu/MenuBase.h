@@ -45,9 +45,7 @@ public:
     void draw() override;
     virtual bool doInput(SDL_Event& event);
 
-    void setClearScreen(bool bClearScreen) {
-        this->bClearScreen = bClearScreen;
-    }
+    void setClearScreen(bool bClearScreen) { this->bClearScreen = bClearScreen; }
 
 protected:
     bool doEventsUntil(int until);

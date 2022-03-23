@@ -19,8 +19,7 @@
 
 #include <cmath>
 
-ScrollBar::ScrollBar()
-    : color(COLOR_DEFAULT) {
+ScrollBar::ScrollBar() : color(COLOR_DEFAULT) {
 
     Widget::enableResizing(false, true);
 
@@ -42,7 +41,8 @@ void ScrollBar::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
         const auto SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
         const auto Range            = (maxValue - minValue + 1);
 
-        const double OneTickHeight = static_cast<double>(SliderAreaHeight - sliderButton.getSize().y) / static_cast<double>(Range - 1);
+        const double OneTickHeight =
+            static_cast<double>(SliderAreaHeight - sliderButton.getSize().y) / static_cast<double>(Range - 1);
 
         setCurrentValue(static_cast<int>((y - dragPositionFromSliderTop - arrow1.getSize().y) / OneTickHeight));
     }
@@ -54,7 +54,8 @@ bool ScrollBar::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     }
 
     if (x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
-        if (arrow1.handleMouseLeft(x, y, pressed) || arrow2.handleMouseLeft(x, y - getSize().y + arrow2.getSize().y, pressed)) {
+        if (arrow1.handleMouseLeft(x, y, pressed)
+            || arrow2.handleMouseLeft(x, y - getSize().y + arrow2.getSize().y, pressed)) {
             // one of the arrow buttons clicked
             return true;
         }

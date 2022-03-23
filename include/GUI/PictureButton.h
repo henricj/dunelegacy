@@ -25,9 +25,7 @@
 class PictureButton final : public Button {
 public:
     /// Default constructor
-    PictureButton() {
-        enableResizing(false, false);
-    }
+    PictureButton() { enableResizing(false, false); }
 
     /// destructor
     ~PictureButton() override = default;
@@ -38,9 +36,8 @@ public:
         \param  pPressedSurface         This surface is shown when the button is pressed
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
     */
-    void setSurfaces(sdl2::surface_ptr pUnpressedSurface,
-                     sdl2::surface_ptr pPressedSurface = nullptr,
-                     sdl2::surface_ptr pActiveSurface  = nullptr) override {
+    void setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface = nullptr,
+                     sdl2::surface_ptr pActiveSurface = nullptr) override {
 
         Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
 

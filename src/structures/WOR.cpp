@@ -26,8 +26,7 @@ namespace {
 constexpr BuilderBaseConstants wor_constants {WOR::item_id, Coord {2, 2}};
 }
 
-WOR::WOR(uint32_t objectID, const ObjectInitializer& initializer)
-    : BuilderBase(wor_constants, objectID, initializer) {
+WOR::WOR(uint32_t objectID, const ObjectInitializer& initializer) : BuilderBase(wor_constants, objectID, initializer) {
     WOR::init();
 
     setHealth(getMaxHealth());

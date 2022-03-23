@@ -20,13 +20,7 @@
 
 #include <DataTypes.h>
 
-typedef enum {
-    MirrorModeNone,
-    MirrorModeHorizontal,
-    MirrorModeVertical,
-    MirrorModeBoth,
-    MirrorModePoint
-} MirrorMode;
+typedef enum { MirrorModeNone, MirrorModeHorizontal, MirrorModeVertical, MirrorModeBoth, MirrorModePoint } MirrorMode;
 
 class MapMirror {
 public:
@@ -55,9 +49,7 @@ public:
 
     [[nodiscard]] int getSize() const override { return 1; }
 
-    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1, 1)) const override {
-        return true;
-    }
+    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1, 1)) const override { return true; }
 
     [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1, 1)) const override;
 
@@ -101,7 +93,8 @@ public:
     [[nodiscard]] int getSize() const override { return 4; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1, 1)) const override {
-        return !((coord.x < mapsizeX / 2 && coord.x + objectSize.x - 1 >= mapsizeX / 2) || (coord.y < mapsizeY / 2 && coord.y + objectSize.y - 1 >= mapsizeY / 2));
+        return !((coord.x < mapsizeX / 2 && coord.x + objectSize.x - 1 >= mapsizeX / 2)
+                 || (coord.y < mapsizeY / 2 && coord.y + objectSize.y - 1 >= mapsizeY / 2));
     }
 
     [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1, 1)) const override;
@@ -116,7 +109,8 @@ public:
     [[nodiscard]] int getSize() const override { return 2; }
 
     [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1, 1)) const override {
-        return !((coord.x < mapsizeX / 2 && coord.x + objectSize.x - 1 >= mapsizeX / 2) && (coord.y < mapsizeY / 2 && coord.y + objectSize.y - 1 >= mapsizeY / 2));
+        return !((coord.x < mapsizeX / 2 && coord.x + objectSize.x - 1 >= mapsizeX / 2)
+                 && (coord.y < mapsizeY / 2 && coord.y + objectSize.y - 1 >= mapsizeY / 2));
     }
 
     [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1, 1)) const override;

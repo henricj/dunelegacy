@@ -52,7 +52,9 @@ private:
     };
 
     TileData& getMapData(const Coord& coord) noexcept { return mapData[coord.y * sizeX + coord.x]; }
-    [[nodiscard]] const TileData& getMapData(const Coord& coord) const noexcept { return mapData[coord.y * sizeX + coord.x]; }
+    [[nodiscard]] const TileData& getMapData(const Coord& coord) const noexcept {
+        return mapData[coord.y * sizeX + coord.x];
+    }
 
     TileData& getMapData(int key) noexcept { return mapData[key]; }
     [[nodiscard]] const TileData& getMapData(int key) const noexcept { return mapData[key]; }

@@ -34,8 +34,7 @@ class texture_lock final {
     int pitch_ {};
 
 public:
-    explicit texture_lock(SDL_Texture* texture)
-        : texture_(texture) {
+    explicit texture_lock(SDL_Texture* texture) : texture_(texture) {
         assert(texture);
 
         if (!texture_)
@@ -46,8 +45,7 @@ public:
 
         THROW(std::runtime_error, "Unable to lock SDL texture!");
     }
-    explicit texture_lock(SDL_Texture* texture, SDL_Rect& rect)
-        : texture_(texture) {
+    explicit texture_lock(SDL_Texture* texture, SDL_Rect& rect) : texture_(texture) {
         assert(texture);
 
         if (!texture_)
@@ -174,11 +172,12 @@ using sdl_ptr = implementation::unique_ptr_arg_deleter<T, void, SDL_free>;
 using surface_ptr                     = implementation::unique_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
 using surface_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Surface, SDL_FreeSurface>;
 using texture_ptr                     = implementation::unique_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
-using texture_unique_or_nonowning_ptr = implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
-using palette_ptr                     = implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette>;
-using pixel_format_ptr                = implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat>;
-using renderer_ptr                    = implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer>;
-using RWops_ptr                       = std::unique_ptr<SDL_RWops, implementation::RWops_deleter>;
+using texture_unique_or_nonowning_ptr =
+    implementation::unique_or_nonowning_ptr_deleter<SDL_Texture, SDL_DestroyTexture>;
+using palette_ptr      = implementation::unique_ptr_deleter<SDL_Palette, SDL_FreePalette>;
+using pixel_format_ptr = implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat>;
+using renderer_ptr     = implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer>;
+using RWops_ptr        = std::unique_ptr<SDL_RWops, implementation::RWops_deleter>;
 
 using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk>;
 

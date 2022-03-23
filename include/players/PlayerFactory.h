@@ -28,23 +28,22 @@ class PlayerFactory {
 public:
     class PlayerData {
     public:
-        using create_functor = std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, const Random&)>;
-        using load_functor   = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*)>;
+        using create_functor =
+            std::function<std::unique_ptr<Player>(const GameContext&, House*, const std::string&, const Random&)>;
+        using load_functor = std::function<std::unique_ptr<Player>(const GameContext&, InputStream&, House*)>;
 
         PlayerData(std::string&& playerclass, std::string&& name, create_functor&& pCreate, load_functor&& pLoad)
-            : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)), pLoad(std::move(pLoad)) {
-        }
+            : playerclass(std::move(playerclass)), name(std::move(name)), pCreate(std::move(pCreate)),
+              pLoad(std::move(pLoad)) { }
 
-        [[nodiscard]] const std::string& getPlayerClass() const {
-            return playerclass;
-        }
+        [[nodiscard]] const std::string& getPlayerClass() const { return playerclass; }
 
-        [[nodiscard]] const std::string& getName() const {
-            return name;
-        }
+        [[nodiscard]] const std::string& getName() const { return name; }
 
-        std::unique_ptr<Player> create(const GameContext& context, House* associatedHouse, const std::string& playername) const {
-            auto pPlayer = pCreate(context, associatedHouse, playername, create_random(context, associatedHouse, playername));
+        std::unique_ptr<Player> create(const GameContext& context, House* associatedHouse,
+                                       const std::string& playername) const {
+            auto pPlayer =
+                pCreate(context, associatedHouse, playername, create_random(context, associatedHouse, playername));
             pPlayer->setPlayerclass(playerclass);
             return pPlayer;
         }
@@ -62,7 +61,8 @@ public:
         const load_functor pLoad;
 
         Random create_random(const GameContext& context, House* house, std::string_view playername) const {
-            const auto random_name = fmt::format("player {} {} {} {}", name, static_cast<int>(house->getHouseID()), playerclass, playername);
+            const auto random_name =
+                fmt::format("player {} {} {} {}", name, static_cast<int>(house->getHouseID()), playerclass, playername);
 
             return context.game.randomFactory.create(random_name);
         }

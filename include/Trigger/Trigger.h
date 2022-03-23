@@ -31,8 +31,7 @@ public:
         Constructor
         \param  triggerCycleNumber  the game cycle this trigger shall be triggered
     */
-    explicit Trigger(uint32_t triggerCycleNumber)
-        : cycleNumber(triggerCycleNumber) { }
+    explicit Trigger(uint32_t triggerCycleNumber) : cycleNumber(triggerCycleNumber) { }
 
     Trigger(const Trigger&) = default;
     Trigger(Trigger&&)      = default;
@@ -43,9 +42,7 @@ public:
         This constructor constructs the trigger from a stream.
         \param  stream  the stream to read from
     */
-    explicit Trigger(InputStream& stream) {
-        cycleNumber = stream.readUint32();
-    }
+    explicit Trigger(InputStream& stream) { cycleNumber = stream.readUint32(); }
 
     /// destructor
     virtual ~Trigger() = default;
@@ -54,9 +51,7 @@ public:
         This method saves this trigger to a stream.
         \param  stream  the stream to save to
     */
-    virtual void save(OutputStream& stream) const {
-        stream.writeUint32(cycleNumber);
-    }
+    virtual void save(OutputStream& stream) const { stream.writeUint32(cycleNumber); }
 
     /**
         This method returns the game cycle this trigger shall be triggered.

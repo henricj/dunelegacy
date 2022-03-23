@@ -80,7 +80,10 @@ void Frigate::save(OutputStream& stream) const {
 void Frigate::checkPos(const GameContext& context) {
     AirUnit::checkPos(context);
 
-    if ((location == destination) && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE / 2), destination.y * TILESIZE + (TILESIZE / 2)) < TILESIZE / 8)) {
+    if ((location == destination)
+        && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE / 2),
+                         destination.y * TILESIZE + (TILESIZE / 2))
+            < TILESIZE / 8)) {
         auto* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
 
         if (pStarport != nullptr) {
@@ -101,7 +104,8 @@ bool Frigate::update(const GameContext& context) {
     if (pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || !droppedOffCargo) {
-        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2);
+        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
+                            destination.y * TILESIZE + TILESIZE / 2);
     }
 
     if (dist >= 0) {
@@ -131,7 +135,9 @@ bool Frigate::update(const GameContext& context) {
 
     // check if this frigate has to be removed because it has just brought all units to the Starport
     if (active) {
-        if (droppedOffCargo && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY() + 1) * TILESIZE))) {
+        if (droppedOffCargo
+            && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX() + 1) * TILESIZE)
+                || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY() + 1) * TILESIZE))) {
 
             setVisible(VIS_ALL, false);
             destroy(context);
@@ -148,7 +154,9 @@ void Frigate::deploy(const GameContext& context, const Coord& newLocation) {
 }
 
 void Frigate::turn(const GameContext& context) {
-    if (active && droppedOffCargo && ((getRealX() < TILESIZE / 2) || (getRealX() > currentGameMap->getSizeX() * TILESIZE - TILESIZE / 2) || (getRealY() < TILESIZE / 2) || (getRealY() > currentGameMap->getSizeY() * TILESIZE - TILESIZE / 2))) {
+    if (active && droppedOffCargo
+        && ((getRealX() < TILESIZE / 2) || (getRealX() > currentGameMap->getSizeX() * TILESIZE - TILESIZE / 2)
+            || (getRealY() < TILESIZE / 2) || (getRealY() > currentGameMap->getSizeY() * TILESIZE - TILESIZE / 2))) {
         // already partially outside the map => do not turn
         return;
     }

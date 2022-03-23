@@ -25,9 +25,7 @@
 class SymbolButton final : public Button {
 public:
     /// Default constructor
-    SymbolButton() {
-        Widget::enableResizing(true, true);
-    }
+    SymbolButton() { Widget::enableResizing(true, true); }
 
     /// destructor
     ~SymbolButton() override = default;
@@ -37,7 +35,8 @@ public:
         \param  pSymbolSurface          This is the symbol to show
         \param  pActiveSymbolSurface    This is the symbol to show on mouse over
     */
-    virtual void setSymbol(sdl2::surface_unique_or_nonowning_ptr pSymbolSurface, sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface = nullptr) {
+    virtual void setSymbol(sdl2::surface_unique_or_nonowning_ptr pSymbolSurface,
+                           sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface = nullptr) {
         if (!pSymbolSurface) {
             return;
         }
@@ -53,9 +52,7 @@ public:
         called if the new size is a valid size for this button (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resized the button to width and height. This method should only
@@ -92,8 +89,10 @@ protected:
         if (!pUnpressedTexture) {
             invalidateTextures();
 
-            sdl2::surface_ptr pUnpressed = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
-            sdl2::surface_ptr pPressed   = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
+            sdl2::surface_ptr pUnpressed =
+                GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
+            sdl2::surface_ptr pPressed =
+                GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
             sdl2::surface_ptr pActive;
 
             if (pSymbolSurface) {
@@ -102,7 +101,8 @@ protected:
 
                 dest.x++;
                 dest.y++;
-                SDL_BlitSurface(pActiveSymbolSurface ? pActiveSymbolSurface.get() : pSymbolSurface.get(), nullptr, pPressed.get(), &dest);
+                SDL_BlitSurface(pActiveSymbolSurface ? pActiveSymbolSurface.get() : pSymbolSurface.get(), nullptr,
+                                pPressed.get(), &dest);
             }
 
             if (pActiveSymbolSurface) {

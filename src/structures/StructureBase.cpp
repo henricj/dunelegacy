@@ -102,24 +102,24 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
 
     const auto& game = context.game;
 
-    map->for_each(pos.x, pos.y, pos.x + getStructureSizeX(), pos.y + getStructureSizeY(),
-                  [&](Tile& t) {
-                      t.assignNonInfantryGroundObject(getObjectID());
+    map->for_each(pos.x, pos.y, pos.x + getStructureSizeX(), pos.y + getStructureSizeY(), [&](Tile& t) {
+        t.assignNonInfantryGroundObject(getObjectID());
 
-                      if (!t.isConcrete() && game.getGameInitSettings().getGameOptions().concreteRequired && (game.gameState != GameState::Start)) {
-                          bFoundNonConcreteTile = true;
+        if (!t.isConcrete() && game.getGameInitSettings().getGameOptions().concreteRequired
+            && (game.gameState != GameState::Start)) {
+            bFoundNonConcreteTile = true;
 
-                          if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
-                              setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * getStructureSizeX() * getStructureSizeY()));
-                          }
-                      }
-                      t.setType(context, Terrain_Rock);
-                      t.setOwner(getOwner()->getHouseID());
+            if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
+                setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * getStructureSizeX() * getStructureSizeY()));
+            }
+        }
+        t.setType(context, Terrain_Rock);
+        t.setOwner(getOwner()->getHouseID());
 
-                      setVisible(VIS_ALL, true);
-                      setActive(true);
-                      setRespondable(true);
-                  });
+        setVisible(VIS_ALL, true);
+        setActive(true);
+        setRespondable(true);
+    });
 
     map->viewMap(getOwner()->getHouseID(), pos, getViewRange());
 
@@ -133,22 +133,20 @@ void StructureBase::blitToScreen() {
     const auto indexX = index % numImagesX;
     const auto indexY = index / numImagesX;
 
-    const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
-                                              screenborder->world2screenX(lround(realX)),
-                                              screenborder->world2screenY(lround(realY)),
-                                              numImagesX, numImagesY);
+    const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(lround(realX)),
+                                              screenborder->world2screenY(lround(realY)), numImagesX, numImagesY);
     const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], indexX, numImagesX, indexY, numImagesY);
 
     Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 
     if (!fogged) {
-        const auto* const pSmokeTex = pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
-        auto smokeSource            = calcSpriteSourceRect(pSmokeTex, 0, 3);
+        const auto* const pSmokeTex =
+            pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+        auto smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
         for (const auto& structureSmoke : smoke) {
-            const auto smokeDest = calcSpriteDrawingRect(pSmokeTex,
-                                                         screenborder->world2screenX(structureSmoke.realPos.x),
-                                                         screenborder->world2screenY(structureSmoke.realPos.y),
-                                                         3, 1, HAlign::Center, VAlign::Bottom);
+            const auto smokeDest = calcSpriteDrawingRect(
+                pSmokeTex, screenborder->world2screenX(structureSmoke.realPos.x),
+                screenborder->world2screenY(structureSmoke.realPos.y), 3, 1, HAlign::Center, VAlign::Bottom);
             const auto cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
             auto smokeFrame = static_cast<int>((cycleDiff / 25) % 4);
@@ -181,8 +179,8 @@ void StructureBase::drawSelectionBox() {
 
     // health bar
     const SDL_FRect healthRect {static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
-                                static_cast<float>(lround((getHealth() / getMaxHealth()) *
-                                                          (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
+                                static_cast<float>(lround((getHealth() / getMaxHealth())
+                                                          * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
                                 static_cast<float>(currentZoomlevel + 1)};
     renderFillRectF(renderer, &healthRect, getHealthColor());
 }
@@ -199,24 +197,22 @@ void StructureBase::drawOtherPlayerSelectionBox() {
 }
 
 void StructureBase::drawGatheringPointLine() {
-    if (!isABuilder() || getItemID() == Structure_ConstructionYard || !destination.isValid() || getOwner() != pLocalHouse)
+    if (!isABuilder() || getItemID() == Structure_ConstructionYard || !destination.isValid()
+        || getOwner() != pLocalHouse)
         return;
 
     const auto indicatorPosition = destination * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
     const auto structurePosition = getCenterPoint();
 
-    renderDrawLine(renderer,
-                   screenborder->world2screenX(structurePosition.x), screenborder->world2screenY(structurePosition.y),
-                   screenborder->world2screenX(indicatorPosition.x), screenborder->world2screenY(indicatorPosition.y),
-                   COLOR_HALF_TRANSPARENT);
+    renderDrawLine(renderer, screenborder->world2screenX(structurePosition.x),
+                   screenborder->world2screenY(structurePosition.y), screenborder->world2screenX(indicatorPosition.x),
+                   screenborder->world2screenY(indicatorPosition.y), COLOR_HALF_TRANSPARENT);
 
     const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
     const auto source              = calcSpriteSourceRect(pUIIndicator, 0, 3);
-    const auto drawLocation        = calcSpriteDrawingRect(pUIIndicator,
-                                                           screenborder->world2screenX(indicatorPosition.x),
-                                                           screenborder->world2screenY(indicatorPosition.y),
-                                                           3, 1,
-                                                           HAlign::Center, VAlign::Center);
+    const auto drawLocation =
+        calcSpriteDrawingRect(pUIIndicator, screenborder->world2screenX(indicatorPosition.x),
+                              screenborder->world2screenY(indicatorPosition.y), 3, 1, HAlign::Center, VAlign::Center);
 
     // Render twice
     Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
@@ -237,15 +233,15 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
-    if ((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y) ||
-        (yPos >= (location.y + getStructureSizeY()))) {
+    if ((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y)
+        || (yPos >= (location.y + getStructureSizeY()))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
                                                             static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     } else {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
+        currentGame->getCommandManager().addCommand(
+            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                    static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
     }
 }
 
@@ -287,13 +283,15 @@ bool StructureBase::update(const GameContext& context) {
     }
 
     // degrade
-    if ((degradeTimer >= 0) && context.game.getGameInitSettings().getGameOptions().concreteRequired && (owner->getPowerRequirement() > owner->getProducedPower())) {
+    if ((degradeTimer >= 0) && context.game.getGameInitSettings().getGameOptions().concreteRequired
+        && (owner->getPowerRequirement() > owner->getProducedPower())) {
         degradeTimer--;
         if (degradeTimer <= 0) {
             degradeTimer = MILLI2CYCLES(15 * 1000);
 
             int damageMultiplier = 1;
-            if (owner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN || owner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
+            if (owner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN
+                || owner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
                 damageMultiplier = 3;
             } else if (owner->getHouseID() == HOUSETYPE::HOUSE_ORDOS) {
                 damageMultiplier = 2;
@@ -318,10 +316,13 @@ bool StructureBase::update(const GameContext& context) {
         if (owner->getCredits() >= 5) {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
-            const auto fraction        = (2 * 256) / getMaxHealth();
-            const FixPoint repairprice = FixPoint(fraction * context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price) / 256;
+            const auto fraction = (2 * 256) / getMaxHealth();
+            const FixPoint repairprice =
+                FixPoint(fraction * context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price)
+                / 256;
 
-            // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of that
+            // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of
+            // that
             const auto repairHealth = 5_fix / 30_fix;
             owner->takeCredits(repairprice / 30);
             const auto newHealth = getHealth() + repairHealth;
@@ -371,12 +372,15 @@ void StructureBase::destroy(const GameContext& context) {
     static const int DestroyedStructureTilesWall[] = {DestroyedStructure_Wall};
     static const int DestroyedStructureTiles1x1[]  = {Destroyed1x1Structure};
     static const int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
-                                                     Destroyed2x2Structure_BottomLeft, Destroyed2x2Structure_BottomRight};
-    static const int DestroyedStructureTiles3x2[]  = {Destroyed3x2Structure_TopLeft, Destroyed3x2Structure_TopCenter, Destroyed3x2Structure_TopRight,
-                                                     Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
-    static const int DestroyedStructureTiles3x3[]  = {Destroyed3x3Structure_TopLeft, Destroyed3x3Structure_TopCenter, Destroyed3x3Structure_TopRight,
-                                                     Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
-                                                     Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
+                                                     Destroyed2x2Structure_BottomLeft,
+                                                     Destroyed2x2Structure_BottomRight};
+    static const int DestroyedStructureTiles3x2[]  = {
+        Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
+        Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
+    static const int DestroyedStructureTiles3x3[] = {
+        Destroyed3x3Structure_TopLeft,    Destroyed3x3Structure_TopCenter,    Destroyed3x3Structure_TopRight,
+        Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
+        Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
 
     if (itemID == Structure_Wall) {
         pDestroyedStructureTiles     = DestroyedStructureTilesWall;

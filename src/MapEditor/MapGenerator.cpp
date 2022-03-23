@@ -30,17 +30,15 @@
 class MapGenerator {
 
 public:
-    MapGenerator(int sizeX, int sizeY, const Random& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS, MirrorMode mirrorMode = MirrorModeNone)
-        : map(sizeX, sizeY), randGen {random}, rockfields(rockfields),
-          spicefields(spicefields) {
+    MapGenerator(int sizeX, int sizeY, const Random& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS,
+                 MirrorMode mirrorMode = MirrorModeNone)
+        : map(sizeX, sizeY), randGen {random}, rockfields(rockfields), spicefields(spicefields) {
         sdl2::log_info("Using random %s", to_hex(randGen.getState()));
 
         mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
     }
 
-    MapData& getMap() {
-        return map;
-    }
+    MapData& getMap() { return map; }
 
     /**
         Creates a random map
@@ -286,7 +284,8 @@ private:
                     // Do not place the spice spot, priority is ROCK!
                     continue;
                 }
-                if ((map(x, y) == Terrain_Spice) && ((side4(x, y, Terrain_Spice) + side4(x, y, Terrain_ThickSpice)) >= 4)) {
+                if ((map(x, y) == Terrain_Spice)
+                    && ((side4(x, y, Terrain_Spice) + side4(x, y, Terrain_ThickSpice)) >= 4)) {
 
                     // "upgrade" spice to thick spice
 
@@ -379,9 +378,9 @@ MapData generateRandomMap(int sizeX, int sizeY, int randSeed, int rockfields, in
 
     // Using zero will leave the factory initialized from std::random_device
     if (randSeed) {
-        const std::array<uint8_t, 4> seed {static_cast<uint8_t>(randSeed & 0xff), static_cast<uint8_t>((randSeed >> 8) & 0xff),
-                                           static_cast<uint8_t>((randSeed >> 16) & 0xff),
-                                           static_cast<uint8_t>((randSeed >> 24) & 0xff)};
+        const std::array<uint8_t, 4> seed {
+            static_cast<uint8_t>(randSeed & 0xff), static_cast<uint8_t>((randSeed >> 8) & 0xff),
+            static_cast<uint8_t>((randSeed >> 16) & 0xff), static_cast<uint8_t>((randSeed >> 24) & 0xff)};
 
         randomFactory.setSeed(seed);
     }

@@ -32,8 +32,7 @@ public:
     class PlayerInfo {
     public:
         PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
-            : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) {
-        }
+            : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) { }
 
         explicit PlayerInfo(InputStream& stream) {
             playerName  = stream.readString();
@@ -51,9 +50,7 @@ public:
 
     class HouseInfo {
     public:
-        HouseInfo(HOUSETYPE newHouseID, int newTeam)
-            : houseID(newHouseID), team(newTeam) {
-        }
+        HouseInfo(HOUSETYPE newHouseID, int newTeam) : houseID(newHouseID), team(newTeam) { }
 
         explicit HouseInfo(InputStream& stream) {
             houseID = static_cast<HOUSETYPE>(stream.readSint32());
@@ -103,8 +100,9 @@ public:
         Constructor for continuing a campaign at the specified mission
         \param  prevGameInitInfoClass       the init settings of the previous mission in the campaign
         \param  nextMission                 the number of the mission to continue the campaign
-        \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid playing these again)
-        \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum HumanPlayer::TutorialHint)
+        \param  alreadyPlayedRegions        a bit set describing which regions were already played (used to forbid
+       playing these again) \param  alreadyShownTutorialHints   contains flags for each tutorial hint (see enum
+       HumanPlayer::TutorialHint)
     */
     GameInitSettings(const GameInitSettings& prevGameInitInfoClass, int nextMission, uint32_t alreadyPlayedRegions,
                      uint32_t alreadyShownTutorialHints);
@@ -124,7 +122,8 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse,
+                     const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the start of a multiplayer custom map
@@ -134,7 +133,8 @@ public:
         \param  multiplePlayersPerHouse     allow multiple players per house
         \param  gameOptions         the options for this game
     */
-    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
+    GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName,
+                     bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions);
 
     /**
         Constructor for specifying the loading of a savegame. If the given filename contains no valid savegame
@@ -179,7 +179,9 @@ public:
     }
 
     [[nodiscard]] bool isMultiplePlayersPerHouse() const noexcept { return multiplePlayersPerHouse; }
-    void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept { this->multiplePlayersPerHouse = multiplePlayersPerHouse; }
+    void setMultiplePlayersPerHouse(bool multiplePlayersPerHouse) noexcept {
+        this->multiplePlayersPerHouse = multiplePlayersPerHouse;
+    }
     [[nodiscard]] const SettingsClass::GameOptionsClass& getGameOptions() const noexcept { return gameOptions; }
     void setGameSpeed(int gameSpeed) noexcept { gameOptions.gameSpeed = gameSpeed; }
 
@@ -193,14 +195,14 @@ private:
     static std::string getScenarioFilename(HOUSETYPE newHouse, int mission);
 
     /**
-        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
-        \param savegame the name of the file to check
+        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error
+       an exception is thrown. \param savegame the name of the file to check
     */
     static void checkSaveGame(const std::filesystem::path& savegame);
 
     /**
-        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error an exception is thrown.
-        \param stream the strean to read the data from
+        This method checks if it is possible to load a savegame and if the magic number is correct. If there is an error
+       an exception is thrown. \param stream the strean to read the data from
     */
     static void checkSaveGame(InputStream& stream);
 

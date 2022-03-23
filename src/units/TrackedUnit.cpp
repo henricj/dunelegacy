@@ -29,13 +29,11 @@
 #include <Map.h>
 
 TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : GroundUnit(constants, objectID, initializer) {
-}
+    : GroundUnit(constants, objectID, initializer) { }
 
 TrackedUnit::TrackedUnit(const TrackedUnitConstants& constants, uint32_t objectID,
                          const ObjectStreamInitializer& initializer)
-    : GroundUnit(constants, objectID, initializer) {
-}
+    : GroundUnit(constants, objectID, initializer) { }
 
 TrackedUnit::~TrackedUnit() = default;
 
@@ -67,16 +65,17 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
     if (ground_object_result.second == target.getObjectID()) {
         auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if ((pObject != nullptr) && targetFriendly && pObject->isAStructure() &&
-            (pObject->getOwner()->getTeamID() == owner->getTeamID()) && pObject->isVisible(getOwner()->getTeamID())) {
+        if ((pObject != nullptr) && targetFriendly && pObject->isAStructure()
+            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+            && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
             if (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {
                 return static_cast<const RepairYard*>(pObject)->isFree();
             }
 
             if (const auto* const pHarvester = dune_cast<Harvester>(this)) {
-                return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery) &&
-                        static_cast<const Refinery*>(pObject)->isFree());
+                return (pHarvester->isReturning() && (pObject->getItemID() == Structure_Refinery)
+                        && static_cast<const Refinery*>(pObject)->isFree());
             }
 
             return false;

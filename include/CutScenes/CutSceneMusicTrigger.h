@@ -32,9 +32,7 @@ public:
         \param  frameNumber     the frame number relative to the scene start where the music shall be changed
         \param  musicType       the type of the new music
     */
-    CutSceneMusicTrigger(int frameNumber, MUSICTYPE musicType)
-        : CutSceneTrigger(frameNumber), musicType(musicType) {
-    }
+    CutSceneMusicTrigger(int frameNumber, MUSICTYPE musicType) : CutSceneTrigger(frameNumber), musicType(musicType) { }
 
     CutSceneMusicTrigger(const CutSceneMusicTrigger&) = delete;
     CutSceneMusicTrigger(CutSceneMusicTrigger&&)      = delete;
@@ -48,9 +46,7 @@ public:
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
         \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
     */
-    void trigger(int currentFrameNumber) override {
-        musicPlayer->changeMusic(musicType);
-    }
+    void trigger(int currentFrameNumber) override { musicPlayer->changeMusic(musicType); }
 
 private:
     MUSICTYPE musicType; ///< the type of the new music

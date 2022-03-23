@@ -32,8 +32,7 @@ public:
         \param  frameNumber     the frame number relative to the scene start where the sound shall be played
         \param  sound           the sound to play
     */
-    CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound)
-        : CutSceneTrigger(frameNumber), sound(sound) { }
+    CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound) : CutSceneTrigger(frameNumber), sound(sound) { }
 
     CutSceneSoundTrigger(const CutSceneSoundTrigger&) = delete;
     CutSceneSoundTrigger(CutSceneSoundTrigger&&)      = delete;
@@ -47,9 +46,7 @@ public:
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
         \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
     */
-    void trigger(int currentFrameNumber) override {
-        soundPlayer->playSound(sound);
-    }
+    void trigger(int currentFrameNumber) override { soundPlayer->playSound(sound); }
 
 private:
     Mix_Chunk* sound; ///< the sound to play

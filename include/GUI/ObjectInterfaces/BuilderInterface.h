@@ -42,8 +42,7 @@ public:
     }
 
 protected:
-    explicit BuilderInterface(const GameContext& context, int objectID)
-        : DefaultStructureInterface(context, objectID) {
+    explicit BuilderInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         upgradeButton.setText(_("Upgrade"));
@@ -76,7 +75,10 @@ protected:
             starportTimerLabel.setTextFontSize(28);
             starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
             starportTimerLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
-            topBox.addWidget(&starportTimerLabel, topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture) + Point(0, 4), objPicture.getSize());
+            topBox.addWidget(&starportTimerLabel,
+                             topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture)
+                                 + Point(0, 4),
+                             objPicture.getSize());
         }
     }
 
@@ -117,7 +119,8 @@ protected:
             upgradeButton.setEnabled(!pBuilder->isUpgrading());
 
             if (pBuilder->isUpgrading()) {
-                upgradeProgressBar.setProgress(((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toDouble());
+                upgradeProgressBar.setProgress(
+                    ((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toDouble());
             }
 
             if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {

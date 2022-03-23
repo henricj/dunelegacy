@@ -24,28 +24,29 @@
 
 //! \enum MUSICTYPE
 /*! Types of music available in the game*/
-typedef enum { MUSIC_ATTACK = 0, /*!< Played when at least one of player's units was hit. */
-               MUSIC_PEACE,      /*!< Played most of the time when the enemy is not attacking. */
-               MUSIC_INTRO,      /*!< Background music for intro. */
-               MUSIC_MENU,       /*!< The menu background music. */
-               MUSIC_BRIEFING_H, /*!< Harkonnen briefing background music. */
-               MUSIC_BRIEFING_A, /*!< Atreides briefing background music. */
-               MUSIC_BRIEFING_O, /*!< Ordos briefing background music. */
-               MUSIC_WIN_H,      /*!< Harkonnen victory screen background music.. */
-               MUSIC_WIN_A,      /*!< Atreides victory screen background music.. */
-               MUSIC_WIN_O,      /*!< Ordos victory screen background music.. */
-               MUSIC_LOSE_H,     /*!< Harkonnen failure screen background music.. */
-               MUSIC_LOSE_A,     /*!< Atreides failure screen background music.. */
-               MUSIC_LOSE_O,     /*!< Ordos failure screen background music.. */
-               MUSIC_GAMESTAT,   /*!< Game statistics background music. */
-               MUSIC_MAPCHOICE,  /*!< The map choice background music. */
-               MUSIC_MEANWHILE,  /*!< Meanwhile cutscene background music. */
-               MUSIC_FINALE_H,   /*!< Harkonnen finale cutscene background music. */
-               MUSIC_FINALE_A,   /*!< Atreides finale cutscene background music. */
-               MUSIC_FINALE_O,   /*!< Ordos finale cutscene background music. */
-               MUSIC_NUM_MUSIC_TYPES,
+typedef enum {
+    MUSIC_ATTACK = 0, /*!< Played when at least one of player's units was hit. */
+    MUSIC_PEACE,      /*!< Played most of the time when the enemy is not attacking. */
+    MUSIC_INTRO,      /*!< Background music for intro. */
+    MUSIC_MENU,       /*!< The menu background music. */
+    MUSIC_BRIEFING_H, /*!< Harkonnen briefing background music. */
+    MUSIC_BRIEFING_A, /*!< Atreides briefing background music. */
+    MUSIC_BRIEFING_O, /*!< Ordos briefing background music. */
+    MUSIC_WIN_H,      /*!< Harkonnen victory screen background music.. */
+    MUSIC_WIN_A,      /*!< Atreides victory screen background music.. */
+    MUSIC_WIN_O,      /*!< Ordos victory screen background music.. */
+    MUSIC_LOSE_H,     /*!< Harkonnen failure screen background music.. */
+    MUSIC_LOSE_A,     /*!< Atreides failure screen background music.. */
+    MUSIC_LOSE_O,     /*!< Ordos failure screen background music.. */
+    MUSIC_GAMESTAT,   /*!< Game statistics background music. */
+    MUSIC_MAPCHOICE,  /*!< The map choice background music. */
+    MUSIC_MEANWHILE,  /*!< Meanwhile cutscene background music. */
+    MUSIC_FINALE_H,   /*!< Harkonnen finale cutscene background music. */
+    MUSIC_FINALE_A,   /*!< Atreides finale cutscene background music. */
+    MUSIC_FINALE_O,   /*!< Ordos finale cutscene background music. */
+    MUSIC_NUM_MUSIC_TYPES,
 
-               MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
+    MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
 } MUSICTYPE;
 
 class MusicPlayer {

@@ -25,8 +25,7 @@
 
 class Palette final {
 public:
-    Palette() {
-    }
+    Palette() { }
 
     explicit Palette(int numPaletteEntries) {
         pSDLPalette = sdl2::palette_ptr {SDL_AllocPalette(numPaletteEntries)};
@@ -35,13 +34,9 @@ public:
         }
     }
 
-    explicit Palette(const SDL_Palette* pSDLPalette) {
-        setSDLPalette(pSDLPalette);
-    }
+    explicit Palette(const SDL_Palette* pSDLPalette) { setSDLPalette(pSDLPalette); }
 
-    Palette(const Palette& palette) {
-        *this = palette;
-    }
+    Palette(const Palette& palette) { *this = palette; }
 
     virtual ~Palette() = default;
 
@@ -71,9 +66,7 @@ public:
         return pSDLPalette->colors[i];
     }
 
-    [[nodiscard]] SDL_Palette* getSDLPalette() const {
-        return pSDLPalette.get();
-    }
+    [[nodiscard]] SDL_Palette* getSDLPalette() const { return pSDLPalette.get(); }
 
     void setSDLPalette(const SDL_Palette* pSDLPalette) {
         if (!pSDLPalette) {

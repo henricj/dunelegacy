@@ -52,15 +52,14 @@ void ObjectManager::load(InputStream& stream) {
 
         auto pObject = loadObject(stream, objectID);
         if (objectID != pObject->getObjectID()) {
-            sdl2::log_info("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!", objectID,
-                           pObject->getObjectID());
+            sdl2::log_info("ObjectManager::load(): The loaded object has a different ID than expected (%d!=%d)!",
+                           objectID, pObject->getObjectID());
         }
 
         const auto& [_, ok] = objectMap.emplace(objectID, std::move(pObject));
         if (!ok) {
             // there is already such an object
-            sdl2::log_info("ObjectManager::load(): The object with this id already exists (%d)!",
-                           objectID);
+            sdl2::log_info("ObjectManager::load(): The object with this id already exists (%d)!", objectID);
         }
     }
 }

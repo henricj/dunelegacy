@@ -56,9 +56,7 @@ public:
     /**
     \return the number of strings in this file
     */
-    [[nodiscard]] unsigned int getNumStrings() const noexcept {
-        return indexedStrings.size();
-    }
+    [[nodiscard]] unsigned int getNumStrings() const noexcept { return indexedStrings.size(); }
 
 private:
     std::vector<std::string> indexedStrings;

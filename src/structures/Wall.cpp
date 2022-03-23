@@ -201,9 +201,11 @@ void Wall::fixWall(const GameContext& context) {
     } else if ((!left) && (right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpRight : 19 + destroyedTileIndex; // missing bottom left edge
     } else if ((left) && (!right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 14 + destroyedTileIndex; // missing above, right and below
+        maketile =
+            (destroyedTileIndex == 0) ? Wall_LeftRight : 14 + destroyedTileIndex; // missing above, right and below
     } else if ((!left) && (right) && (!up) && (!down)) {
-        maketile = (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; // missing above, left and below
+        maketile =
+            (destroyedTileIndex == 0) ? Wall_LeftRight : 13 + destroyedTileIndex; // missing above, left and below
     } else if ((!left) && (!right) && (up) && (!down)) {
         maketile = (destroyedTileIndex == 0) ? Wall_UpDown : 16 + destroyedTileIndex; // only up
     } else if ((!left) && (!right) && (!up) && (down)) {

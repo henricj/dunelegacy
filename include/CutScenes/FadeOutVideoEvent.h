@@ -30,10 +30,12 @@ public:
         Constructor
         \param  pSurface            The picture to fade out
         \param  numFrames2FadeOut   The number of frames the fading should take
-        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the top of the screen (default is true)
-        \param  bFadeWhite          true = fade to white, false = fade to black (default is false)
+        \param  bCenterVertical     true = center the surface vertically on the screen, false = blit the surface at the
+       top of the screen (default is true) \param  bFadeWhite          true = fade to white, false = fade to black
+       (default is false)
     */
-    FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical = true, bool bFadeWhite = false);
+    FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical = true,
+                      bool bFadeWhite = false);
 
     /// destructor
     ~FadeOutVideoEvent() override;
@@ -54,8 +56,9 @@ private:
     int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent
     int numFrames2FadeOut;      ///< the number of frames the fading should take
     sdl2::texture_ptr pTexture; ///< the picture to fade out
-    bool bCenterVertical;       ///< true = center the surface vertically on the screen, false = blit the surface at the top of the screen
-    bool bFadeWhite;            ///< true = fade to white, false = fade to black
+    bool bCenterVertical; ///< true = center the surface vertically on the screen, false = blit the surface at the top
+                          ///< of the screen
+    bool bFadeWhite;      ///< true = fade to white, false = fade to black
 };
 
 #endif // FADEOUTVIDEOEVENT_H

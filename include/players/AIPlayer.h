@@ -26,13 +26,10 @@
 
 class AIPlayer final : public Player {
 public:
-    enum class Difficulty {
-        Easy   = 0,
-        Medium = 1,
-        Hard   = 2
-    };
+    enum class Difficulty { Easy = 0, Medium = 1, Hard = 2 };
 
-    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random, Difficulty difficulty);
+    AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername, const Random& random,
+             Difficulty difficulty);
     AIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse);
     ~AIPlayer() override;
     void save(OutputStream& stream) const override;

@@ -129,11 +129,9 @@ void Explosion::blitToScreen() const {
     const uint16_t height = getHeight(graphic[currentZoomlevel]);
 
     if (screenborder->isInsideScreen(position, Coord(width, height))) {
-        const SDL_Rect dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
-                                                      screenborder->world2screenX(position.x),
-                                                      screenborder->world2screenY(position.y),
-                                                      numFrames, 1,
-                                                      HAlign::Center, VAlign::Center);
+        const SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(position.x),
+                                                    screenborder->world2screenY(position.y), numFrames, 1,
+                                                    HAlign::Center, VAlign::Center);
         const SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], currentFrame, numFrames);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }

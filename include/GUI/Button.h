@@ -77,33 +77,25 @@ public:
         Returns the current tooltip text.
         \return the current tooltip text
     */
-    [[nodiscard]] const std::string& getTooltipText() const noexcept {
-        return tooltipText;
-    }
+    [[nodiscard]] const std::string& getTooltipText() const noexcept { return tooltipText; }
 
     /**
         Sets the function that should be called when this button is clicked on.
         \param  pOnClick    A function to call on click
     */
-    void setOnClick(std::function<void()> pOnClick) noexcept {
-        this->pOnClick = pOnClick;
-    }
+    void setOnClick(std::function<void()> pOnClick) noexcept { this->pOnClick = pOnClick; }
 
     /**
         Sets whether this button is a toggle button.
         \param bToggleButton    true = toggle button, false = normal button
     */
-    void setToggleButton(bool bToggleButton) {
-        this->bToggleButton = bToggleButton;
-    }
+    void setToggleButton(bool bToggleButton) { this->bToggleButton = bToggleButton; }
 
     /**
         Returns whether this button is a toggle button
         \return true = toggle button, false = normal button
     */
-    [[nodiscard]] bool isToggleButton() const noexcept {
-        return bToggleButton;
-    }
+    [[nodiscard]] bool isToggleButton() const noexcept { return bToggleButton; }
 
     /**
         This method sets the current toggle state. If this button is no
@@ -120,9 +112,7 @@ public:
         This method returns whether this button is currently toggled or not.
         \return true = toggled, false = untoggled
     */
-    [[nodiscard]] bool getToggleState() const {
-        return bToggleState;
-    }
+    [[nodiscard]] bool getToggleState() const { return bToggleState; }
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -182,7 +172,8 @@ protected:
 
     const DuneTexture* pUnpressedTexture; ///< Texture that is normally shown
     const DuneTexture* pPressedTexture;   ///< Texture that is shown when the button is pressed
-    const DuneTexture* pActiveTexture;    ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+    const DuneTexture*
+        pActiveTexture; ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
     /**
         This method frees all textures that are used by this button

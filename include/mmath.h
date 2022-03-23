@@ -121,10 +121,8 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
 }
 
 /**
-    Calculates the block distance the same as the original, that is diffX + diffY/2 for diffX > diffY and diffX/2 + diffY for diffX <= diffY
-    \param  p1  first coordinate
-    \param  p2  second coordinate
-    \return the distance
+    Calculates the block distance the same as the original, that is diffX + diffY/2 for diffX > diffY and diffX/2 +
+   diffY for diffX <= diffY \param  p1  first coordinate \param  p2  second coordinate \return the distance
 */
 inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
     const int diffX = abs(p1.x - p2.x);

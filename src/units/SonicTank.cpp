@@ -64,7 +64,7 @@ void SonicTank::blitToScreen() {
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 

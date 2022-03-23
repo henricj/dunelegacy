@@ -49,7 +49,8 @@ inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
     if (((color & AMASK) >> ASHIFT) != 255) {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     }
-    SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT, (color & AMASK) >> ASHIFT);
+    SDL_SetRenderDrawColor(renderer, (color & RMASK) >> RSHIFT, (color & GMASK) >> GSHIFT, (color & BMASK) >> BSHIFT,
+                           (color & AMASK) >> ASHIFT);
 }
 
 inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
@@ -130,11 +131,9 @@ sdl2::surface_ptr flipVSurface(SDL_Surface* inputPic);
 sdl2::surface_ptr createShadowSurface(SDL_Surface* source);
 
 /**
-    This function maps all the colors in source which are between srcColor and srcColor+7 to colors between destColor and destColor+7. This is
-    useful for mapping the house color.
-    \param  source      The source image
-    \param  srcColor    Color range to change = [srcColor;srcColor+7]
-    \param  destColor   Color range to change to = [destColor;destColor+7]
+    This function maps all the colors in source which are between srcColor and srcColor+7 to colors between destColor
+   and destColor+7. This is useful for mapping the house color. \param  source      The source image \param  srcColor
+   Color range to change = [srcColor;srcColor+7] \param  destColor   Color range to change to = [destColor;destColor+7]
     \return The mapped surface
 */
 sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int destColor);
@@ -152,8 +151,8 @@ sdl2::surface_ptr createSurface(SDL_Surface* model, int width = 0, int height = 
     This function create a new surface with the same format and other attributes as the model surface containing
     a copy of the data from the source surface in the srcrect.
     \param  source     The source surface
-    \param  srcrect    The rectangle containing the data to be copied (if it is nullptr, the the entire source will be copied.
-    \return The new surface
+    \param  srcrect    The rectangle containing the data to be copied (if it is nullptr, the the entire source will be
+   copied. \return The new surface
 */
 sdl2::surface_ptr cloneSurface(SDL_Surface* source, const SDL_Rect* srcrect);
 

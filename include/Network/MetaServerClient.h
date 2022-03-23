@@ -69,7 +69,8 @@ public:
 
     void update();
 
-    const std::string metaServerURL; ///< The url of the meta server which is used for receiving the list of game servers and publish own games to
+    const std::string metaServerURL; ///< The url of the meta server which is used for receiving the list of game
+                                     ///< servers and publish own games to
 
 private:
     /**
@@ -86,8 +87,8 @@ private:
     void enqueueMetaServerCommand(std::unique_ptr<MetaServerCommand> metaServerCommand);
 
     /**
-        Dequeues a command from the command queue. This method shall only be called from the metaserver connection thread.
-        \return a shared pointer to the first command in the queue
+        Dequeues a command from the command queue. This method shall only be called from the metaserver connection
+       thread. \return a shared pointer to the first command in the queue
     */
     std::unique_ptr<MetaServerCommand> dequeueMetaServerCommand();
 
@@ -106,15 +107,24 @@ private:
 
     // Shared data (used by main thread and connection thread):
 
-    std::list<std::unique_ptr<MetaServerCommand>> metaServerCommandList; ///< The command queue for the metaserver connection thread (shared between main thread and metaserver connection thread, \see sharedDataMutex)
-    SDL_sem* availableMetaServerCommandsSemaphore;                       ///< This semaphore counts how many commands are available in the metaServerCommandList
+    std::list<std::unique_ptr<MetaServerCommand>>
+        metaServerCommandList; ///< The command queue for the metaserver connection thread (shared between main thread
+                               ///< and metaserver connection thread, \see sharedDataMutex)
+    SDL_sem* availableMetaServerCommandsSemaphore; ///< This semaphore counts how many commands are available in the
+                                                   ///< metaServerCommandList
 
-    int metaserverErrorCause        = 0;          ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
-    std::string metaserverError     = "";         ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
-    bool bUpdatedGameServerInfoList = false;      ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to false in the main thread (\see sharedDataMutex)
-    std::list<GameServerInfo> gameServerInfoList; ///< A list of all available game servers. Writen by the metaserver connection thread and read by the main thread (\see sharedDataMutex)
+    int metaserverErrorCause = 0; ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
+    std::string metaserverError =
+        ""; ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
+    bool bUpdatedGameServerInfoList =
+        false; ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to
+               ///< false in the main thread (\see sharedDataMutex)
+    std::list<GameServerInfo>
+        gameServerInfoList; ///< A list of all available game servers. Writen by the metaserver connection thread and
+                            ///< read by the main thread (\see sharedDataMutex)
 
-    SDL_mutex* sharedDataMutex; ///< This mutex must be locked before any shared data structures between the main thread and the metaserver connection thread is read or modified)
+    SDL_mutex* sharedDataMutex; ///< This mutex must be locked before any shared data structures between the main thread
+                                ///< and the metaserver connection thread is read or modified)
 
     SDL_Thread* connectionThread; ///< The metaserver connection thread that processes all the metaserver communication
 
@@ -130,8 +140,9 @@ private:
     uint32_t lastAnnounceUpdate       = 0; ///< The last time the game was announced
     uint32_t lastServerInfoListUpdate = 0; ///< The last time the server list was updated by a request to the metaserver
 
-    std::function<void(std::list<GameServerInfo>&)> pOnGameServerInfoList; ///< Callback for updates to the game server list
-    std::function<void(int, std::string)> pOnMetaServerError;              ///< Callback for metaserver errors
+    std::function<void(std::list<GameServerInfo>&)>
+        pOnGameServerInfoList;                                ///< Callback for updates to the game server list
+    std::function<void(int, std::string)> pOnMetaServerError; ///< Callback for metaserver errors
 };
 
 #endif // METASERVERCLIENT_H

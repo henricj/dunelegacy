@@ -21,7 +21,8 @@
 #include <misc/draw_util.h>
 
 Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
-    : closeChildWindowCounter(0), pChildWindow(nullptr), pChildWindowAlreadyClosed(false), pWindowWidget(nullptr), position(x, y) {
+    : closeChildWindowCounter(0), pChildWindow(nullptr), pChildWindowAlreadyClosed(false), pWindowWidget(nullptr),
+      position(x, y) {
 
     resize(w, h);
 }
@@ -164,8 +165,8 @@ bool Window::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     }
 
     if (isEnabled() && (pWindowWidget != nullptr)) {
-        const bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
-                                pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
+        const bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
+                             || pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
         if (pressed && (!bProcessed)) {
             pWindowWidget->setActive(false);
             pWindowWidget->setActive(true);
@@ -182,8 +183,8 @@ bool Window::handleMouseRight(int32_t x, int32_t y, bool pressed) {
     }
 
     if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
-               pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
+        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
+            || pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
     }
     return false;
 }
@@ -194,8 +195,8 @@ bool Window::handleMouseWheel(int32_t x, int32_t y, bool up) {
     }
 
     if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up) ||
-               pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
+        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
+            || pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
     }
     return false;
 }

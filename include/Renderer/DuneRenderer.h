@@ -59,7 +59,8 @@ inline int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture,
         assert(srcrect->x + srcrect->w <= texture->source_.w);
         assert(srcrect->y + srcrect->h <= texture->source_.h);
 
-        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w,
+                               srcrect->h};
 
         return SDL_RenderCopyEx(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
     }
@@ -81,7 +82,8 @@ inline int Dune_RenderCopyExF(SDL_Renderer* renderer, const DuneTexture* texture
         assert(srcrect->x + srcrect->w <= texture->source_.w);
         assert(srcrect->y + srcrect->h <= texture->source_.h);
 
-        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w,
+                               srcrect->h};
 
         return SDL_RenderCopyExF(renderer, texture->texture_, &offset, dstrect, angle, center, flip);
     }
@@ -102,7 +104,8 @@ inline void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, 
         assert(srcrect->x + srcrect->w <= texture->source_.w);
         assert(srcrect->y + srcrect->h <= texture->source_.h);
 
-        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w,
+                               srcrect->h};
 
         SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect);
     } else {
@@ -123,7 +126,8 @@ inline void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture,
         assert(srcrect->x + srcrect->w <= texture->source_.w);
         assert(srcrect->y + srcrect->h <= texture->source_.h);
 
-        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
+        const SDL_Rect offset {texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w,
+                               srcrect->h};
 
         SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect);
     } else {

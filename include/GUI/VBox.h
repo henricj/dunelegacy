@@ -24,12 +24,10 @@
 
 class VBox_WidgetData {
 public:
-    VBox_WidgetData()
-        : pWidget(nullptr), fixedHeight(0), weight(0.0) { }
+    VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { }
     VBox_WidgetData(Widget* _pWidget, int32_t _fixedHeight)
         : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
-    VBox_WidgetData(Widget* _pWidget, double _weight)
-        : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
+    VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
 
     Widget* pWidget;
     int32_t fixedHeight;
@@ -40,8 +38,7 @@ public:
 class VBox final : public Container<VBox_WidgetData> {
 public:
     /// default constructor
-    VBox()
-        : Container<VBox_WidgetData>() { }
+    VBox() : Container<VBox_WidgetData>() { }
 
     /// destructor
     ~VBox() override { }
@@ -96,9 +93,7 @@ public:
         called if the new size is a valid size for this container (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -133,7 +128,8 @@ public:
         double notOversizedWeightSum = 0.0;
         for (const VBox_WidgetData& widgetData : containedWidgets) {
             if (widgetData.pWidget->resizingYAllowed() == true && widgetData.fixedHeight <= 0) {
-                if ((double)widgetData.pWidget->getMinimumSize().y > availableHeight * (widgetData.weight / weightSum)) {
+                if ((double)widgetData.pWidget->getMinimumSize().y
+                    > availableHeight * (widgetData.weight / weightSum)) {
                     neededOversizeHeight += widgetData.pWidget->getMinimumSize().y;
                 } else {
                     notOversizedWeightSum += widgetData.weight;
@@ -156,10 +152,12 @@ public:
                 if (widgetData.fixedHeight <= 0) {
                     if (numRemainingWidgets <= 1) {
                         WidgetHeight = availableHeight;
-                    } else if ((double)widgetData.pWidget->getMinimumSize().y > totalAvailableHeight * (widgetData.weight / weightSum)) {
+                    } else if ((double)widgetData.pWidget->getMinimumSize().y
+                               > totalAvailableHeight * (widgetData.weight / weightSum)) {
                         WidgetHeight = widgetData.pWidget->getMinimumSize().y;
                     } else {
-                        WidgetHeight = (int32_t)((totalAvailableHeight - neededOversizeHeight) * (widgetData.weight / notOversizedWeightSum));
+                        WidgetHeight = (int32_t)((totalAvailableHeight - neededOversizeHeight)
+                                                 * (widgetData.weight / notOversizedWeightSum));
                     }
                     availableHeight -= WidgetHeight;
                     numRemainingWidgets--;

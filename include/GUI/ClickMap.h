@@ -26,9 +26,7 @@
 class ClickMap final : public Widget {
 public:
     /// default constructor
-    ClickMap() {
-        enableResizing(true, true);
-    }
+    ClickMap() { enableResizing(true, true); }
 
     /// destructor
     ~ClickMap() override = default;
@@ -37,9 +35,7 @@ public:
         Sets the function that should be called when this click map is clicked on.
         \param  pOnClick    A function to call when this map is clicked on
     */
-    void setOnClick(std::function<void(int, int)> pOnClick) {
-        this->pOnClick = pOnClick;
-    }
+    void setOnClick(std::function<void(int, int)> pOnClick) { this->pOnClick = pOnClick; }
 
     /**
         Handles a left mouse click.

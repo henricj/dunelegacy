@@ -59,12 +59,14 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
 
     timeLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, (totalTime % 3600) / 60));
-    windowWidget.addWidget(&timeLabel, (getSize() / 2) + Point(+180 - timeLabel.getSize().x, -172), timeLabel.getSize());
+    windowWidget.addWidget(&timeLabel, (getSize() / 2) + Point(+180 - timeLabel.getSize().x, -172),
+                           timeLabel.getSize());
 
     yourRankLabel.setAlignment(Alignment_HCenter);
     yourRankLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     yourRankLabel.setText(_("@DUNE.ENG|23#You have attained the rank"));
-    windowWidget.addWidget(&yourRankLabel, (getSize() / 2) + Point(-yourRankLabel.getSize().x / 2, -126), yourRankLabel.getSize());
+    windowWidget.addWidget(&yourRankLabel, (getSize() / 2) + Point(-yourRankLabel.getSize().x / 2, -126),
+                           yourRankLabel.getSize());
 
     rankLabel.setAlignment(Alignment_HCenter);
     rankLabel.setText(rank);
@@ -73,17 +75,21 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     spiceHarvestedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     spiceHarvestedByLabel.setAlignment(Alignment_HCenter);
     spiceHarvestedByLabel.setText(_("@DUNE.ENG|26#Spice harvested by"));
-    windowWidget.addWidget(&spiceHarvestedByLabel, (getSize() / 2) + Point(-spiceHarvestedByLabel.getSize().x / 2, -40), spiceHarvestedByLabel.getSize());
+    windowWidget.addWidget(&spiceHarvestedByLabel, (getSize() / 2) + Point(-spiceHarvestedByLabel.getSize().x / 2, -40),
+                           spiceHarvestedByLabel.getSize());
 
     unitsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     unitsDestroyedByLabel.setAlignment(Alignment_HCenter);
     unitsDestroyedByLabel.setText(_("@DUNE.ENG|24#Units destroyed by"));
-    windowWidget.addWidget(&unitsDestroyedByLabel, (getSize() / 2) + Point(-unitsDestroyedByLabel.getSize().x / 2, 34), unitsDestroyedByLabel.getSize());
+    windowWidget.addWidget(&unitsDestroyedByLabel, (getSize() / 2) + Point(-unitsDestroyedByLabel.getSize().x / 2, 34),
+                           unitsDestroyedByLabel.getSize());
 
     buildingsDestroyedByLabel.setTextColor(COLOR_WHITE, COLOR_BLACK, COLOR_THICKSPICE);
     buildingsDestroyedByLabel.setAlignment(Alignment_HCenter);
     buildingsDestroyedByLabel.setText(_("@DUNE.ENG|25#Buildings destroyed by"));
-    windowWidget.addWidget(&buildingsDestroyedByLabel, (getSize() / 2) + Point(-buildingsDestroyedByLabel.getSize().x / 2, 108), buildingsDestroyedByLabel.getSize());
+    windowWidget.addWidget(&buildingsDestroyedByLabel,
+                           (getSize() / 2) + Point(-buildingsDestroyedByLabel.getSize().x / 2, 108),
+                           buildingsDestroyedByLabel.getSize());
 
     // spice statistics
 
@@ -108,7 +114,8 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy1Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy1Label.setAlignment(Alignment_Right);
     enemy1Label.setText(_("@DUNE.ENG|330#Enemy:"));
-    windowWidget.addWidget(&enemy1Label, (getSize() / 2) + Point(-229 - enemy1Label.getSize().x, -3), enemy1Label.getSize());
+    windowWidget.addWidget(&enemy1Label, (getSize() / 2) + Point(-229 - enemy1Label.getSize().x, -3),
+                           enemy1Label.getSize());
 
     spiceEnemyShadowProgressBar.setColor(COLOR_BLACK);
     spiceEnemyShadowProgressBar.setProgress(0.0);
@@ -146,7 +153,8 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy2Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy2Label.setAlignment(Alignment_Right);
     enemy2Label.setText(_("@DUNE.ENG|330#Enemy:"));
-    windowWidget.addWidget(&enemy2Label, (getSize() / 2) + Point(-229 - enemy2Label.getSize().x, 71), enemy2Label.getSize());
+    windowWidget.addWidget(&enemy2Label, (getSize() / 2) + Point(-229 - enemy2Label.getSize().x, 71),
+                           enemy2Label.getSize());
 
     unitsEnemyShadowProgressBar.setColor(COLOR_BLACK);
     unitsEnemyShadowProgressBar.setProgress(0.0);
@@ -184,11 +192,13 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy3Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy3Label.setAlignment(Alignment_Right);
     enemy3Label.setText(_("@DUNE.ENG|330#Enemy:"));
-    windowWidget.addWidget(&enemy3Label, (getSize() / 2) + Point(-229 - enemy2Label.getSize().x, 145), enemy3Label.getSize());
+    windowWidget.addWidget(&enemy3Label, (getSize() / 2) + Point(-229 - enemy2Label.getSize().x, 145),
+                           enemy3Label.getSize());
 
     buildingsEnemyShadowProgressBar.setColor(COLOR_BLACK);
     buildingsEnemyShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&buildingsEnemyShadowProgressBar, (getSize() / 2) + Point(-228 + 2, 151 + 2), Point(440, 12));
+    windowWidget.addWidget(&buildingsEnemyShadowProgressBar, (getSize() / 2) + Point(-228 + 2, 151 + 2),
+                           Point(440, 12));
 
     buildingsEnemyProgressBar.setColor(colorEnemy);
     buildingsEnemyProgressBar.setProgress(0.0);
@@ -347,8 +357,9 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_HumanBuildings: {
-            const float MaxBuildingsDestroyed = static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
-            const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxBuildingsDestroyed =
+                static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
+            const float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByHuman / MaxBuildingsDestroyed) {
@@ -376,13 +387,15 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_AIBuildings: {
-            const float MaxBuildingsDestroyed = static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
-            const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxBuildingsDestroyed =
+                static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
+            const float BuildingsComplete = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByAI / MaxBuildingsDestroyed) {
                 AI_PercentBuildingsComplete = BuildingsComplete * 100.0f;
-                buildingsEnemyLabel.setText(std::to_string(static_cast<int>(BuildingsComplete * MaxBuildingsDestroyed)));
+                buildingsEnemyLabel.setText(
+                    std::to_string(static_cast<int>(BuildingsComplete * MaxBuildingsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentBuildingsComplete = structuresDestroyedByAI * 100.0f / MaxBuildingsDestroyed;
@@ -441,7 +454,10 @@ void CampaignStatsMenu::calculateScore(int level) {
 
     for (const StructureBase* pStructure : structureList) {
         if (!pStructure->getOwner()->isAI()) {
-            totalScore += currentGame->objectData.data[pStructure->getItemID()][static_cast<int>(pStructure->getOriginalHouseID())].price / 100;
+            totalScore += currentGame->objectData
+                              .data[pStructure->getItemID()][static_cast<int>(pStructure->getOriginalHouseID())]
+                              .price
+                        / 100;
         }
     }
 

@@ -30,8 +30,7 @@
 #    include <Windows.h>
 #endif
 
-IFileStream::IFileStream()
-    : fp(nullptr) { }
+IFileStream::IFileStream() : fp(nullptr) { }
 
 IFileStream::~IFileStream() {
     close();

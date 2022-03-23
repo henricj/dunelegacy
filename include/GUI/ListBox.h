@@ -61,7 +61,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
@@ -84,9 +85,7 @@ public:
         called if the new size is a valid size for this list box (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
     /**
         This method resizes the list box to width and height. This method should only
         called if the new size is a valid size for this list box (See getMinumumSize).
@@ -170,9 +169,7 @@ public:
         Returns the number of entries in this list box
         \return number of entries
     */
-    [[nodiscard]] int getNumEntries() const {
-        return entries.size();
-    }
+    [[nodiscard]] int getNumEntries() const { return entries.size(); }
 
     /**
         Returns the text of the entry specified by index.
@@ -278,18 +275,14 @@ public:
         Returns the zero-based index of the current selected entry.
         \return the index of the selected element (-1 if none is selected)
     */
-    [[nodiscard]] int getSelectedIndex() const {
-        return selectedElement;
-    }
+    [[nodiscard]] int getSelectedIndex() const { return selectedElement; }
 
     /**
         Sets the selected item and scrolls the scrollbar to that position. The user
         is informed about this switch by calling pOnSelectionChange(false)
         \param index    the new index (-1 == select nothing)
     */
-    void setSelectedItem(int index) {
-        setSelectedItem(index, false);
-    }
+    void setSelectedItem(int index) { setSelectedItem(index, false); }
 
     /**
         Removes the entry which is specified by index
@@ -331,17 +324,13 @@ public:
         Sets the function that should be called when a list entry is single clicked.
         \param  pOnSingleClick  A function to be called on single click
     */
-    void setOnSingleClick(std::function<void()> pOnSingleClick) {
-        this->pOnSingleClick = pOnSingleClick;
-    }
+    void setOnSingleClick(std::function<void()> pOnSingleClick) { this->pOnSingleClick = pOnSingleClick; }
 
     /**
         Sets the function that should be called when a list entry is double clicked.
         \param  pOnDoubleClick  A function to be called on double click
     */
-    void setOnDoubleClick(std::function<void()> pOnDoubleClick) {
-        this->pOnDoubleClick = pOnDoubleClick;
-    }
+    void setOnDoubleClick(std::function<void()> pOnDoubleClick) { this->pOnDoubleClick = pOnDoubleClick; }
 
     /**
         Sets the color for this list box.
@@ -363,9 +352,7 @@ public:
         Set if the scrollbar shall be hidden if not needed
         \param  bAutohideScrollbar  true = hide scrollbar, false = show always
     */
-    void setAutohideScrollbar(bool bAutohideScrollbar) {
-        this->bAutohideScrollbar = bAutohideScrollbar;
-    }
+    void setAutohideScrollbar(bool bAutohideScrollbar) { this->bAutohideScrollbar = bAutohideScrollbar; }
 
     /**
         Checks if the scrollbar is currently visible.
@@ -425,15 +412,9 @@ private:
 
     class ListEntry {
     public:
-        ListEntry(std::string text, int intData)
-            : text(std::move(text)) {
-            data.intData = intData;
-        }
+        ListEntry(std::string text, int intData) : text(std::move(text)) { data.intData = intData; }
 
-        ListEntry(std::string text, void* ptrData)
-            : text(std::move(text)) {
-            data.ptrData = ptrData;
-        }
+        ListEntry(std::string text, void* ptrData) : text(std::move(text)) { data.ptrData = ptrData; }
 
         std::string text;
         union {
@@ -456,7 +437,7 @@ private:
     bool bHighlightSelectedElement = true; ///< highlight selected element (default = true);
     int firstVisibleElement        = 0;    ///< the index of the first shown element in the list
     int selectedElement            = -1;   ///< the selected element
-    uint32_t lastClickTime         = 0;    ///< the time an element was clicked on the last time (needed for double clicking)
+    uint32_t lastClickTime = 0; ///< the time an element was clicked on the last time (needed for double clicking)
 };
 
 #endif // LISTBOX_H

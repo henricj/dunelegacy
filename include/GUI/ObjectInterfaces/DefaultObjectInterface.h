@@ -45,8 +45,7 @@ public:
     ~DefaultObjectInterface() override = default;
 
 protected:
-    DefaultObjectInterface(const GameContext& context, int objectID)
-        : context_ {context} {
+    DefaultObjectInterface(const GameContext& context, int objectID) : context_ {context} {
         ObjectBase* pObject = context_.objectManager.getObject(objectID);
         if (pObject == nullptr) {
             THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);

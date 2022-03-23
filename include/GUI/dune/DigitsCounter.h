@@ -31,9 +31,7 @@ extern std::unique_ptr<GFXManager> pGFXManager;
 class DigitsCounter final : public Widget {
 public:
     /// default constructor
-    DigitsCounter() {
-        Widget::enableResizing(false, false);
-    }
+    DigitsCounter() { Widget::enableResizing(false, false); }
 
     /// destructor
     ~DigitsCounter() override { }

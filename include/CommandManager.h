@@ -30,7 +30,8 @@
 class GameContext;
 
 /**
-    The command manager collects all the given user commands (e.g. move unit u to position (x,y)) . These commands might be transfered over a network.
+    The command manager collects all the given user commands (e.g. move unit u to position (x,y)) . These commands might
+   be transfered over a network.
 */
 class CommandManager final {
 public:
@@ -48,9 +49,9 @@ public:
     ~CommandManager();
 
     /**
-        This method sets a stream where all commands are written when they are added to the command manager. This can be used for
-        logging the complete game and enable a replay afterwards.
-        \param  pStream     pointer to a stream all new commands will be written to (the stream must be created with new). nullptr for disabling.
+        This method sets a stream where all commands are written when they are added to the command manager. This can be
+       used for logging the complete game and enable a replay afterwards. \param  pStream     pointer to a stream all
+       new commands will be written to (the stream must be created with new). nullptr for disabling.
     */
     void setStream(std::unique_ptr<OutputStream> pStream) { this->pStream = std::move(pStream); }
 
@@ -122,10 +123,11 @@ public:
     void executeCommands(const GameContext& context, uint32_t CycleNumber) const;
 
 private:
-    std::vector<std::vector<Command>> timeslot; ///< a vector of vectors containing the scheduled commands. At index x is a list of all commands scheduled for game cycle x.
+    std::vector<std::vector<Command>> timeslot; ///< a vector of vectors containing the scheduled commands. At index x
+                                                ///< is a list of all commands scheduled for game cycle x.
     std::unique_ptr<OutputStream> pStream;      ///< a stream all added commands will be written to. May be nullptr
-    bool bReadOnly {};                          ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
-    uint32_t networkCycleBuffer {};             ///< the number of frames a command is given in advance
+    bool bReadOnly {};              ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
+    uint32_t networkCycleBuffer {}; ///< the number of frames a command is given in advance
 };
 
 #endif // COMMANDMANAGER_H

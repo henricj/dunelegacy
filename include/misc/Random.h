@@ -39,8 +39,7 @@ public:
     static constexpr size_t state_bytes = generator_type::state_words * sizeof(generator_type::state_type);
 
 protected:
-    explicit Random(const generator_type& generator)
-        : generator_ {generator} { }
+    explicit Random(const generator_type& generator) : generator_ {generator} { }
 
 public:
     Random() = default;
@@ -90,7 +89,9 @@ public:
         \param  max max is the greatest possible value that is returned
         \return a random integer on interval [min; max]
     */
-    uint32_t rand(uint32_t min, uint32_t max) { return lemire_uniform_uint32_distribution {max - min + 1}(generator_) + min; }
+    uint32_t rand(uint32_t min, uint32_t max) {
+        return lemire_uniform_uint32_distribution {max - min + 1}(generator_) + min;
+    }
 
     /**
         Calculates a random number with the "Linear congruential generator" (see numerical recipes for more details)

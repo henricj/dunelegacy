@@ -30,25 +30,11 @@ DirectoryPlayer::DirectoryPlayer()
     // determine path to config file
     auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 
-    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = {"/music/attack/",
-                                                                           "/music/peace/",
-                                                                           "/music/intro/",
-                                                                           "/music/menu/",
-                                                                           "/music/briefingH/",
-                                                                           "/music/briefingA/",
-                                                                           "/music/briefingO/",
-                                                                           "/music/winH/",
-                                                                           "/music/winA/",
-                                                                           "/music/winO/",
-                                                                           "/music/loseH/",
-                                                                           "/music/loseA/",
-                                                                           "/music/loseO/",
-                                                                           "/music/gamestats/",
-                                                                           "/music/mapchoice/",
-                                                                           "/music/meanwhile/",
-                                                                           "/music/finaleH/",
-                                                                           "/music/finaleA/",
-                                                                           "/music/finaleO/"};
+    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = {
+        "/music/attack/",    "/music/peace/",     "/music/intro/",   "/music/menu/",      "/music/briefingH/",
+        "/music/briefingA/", "/music/briefingO/", "/music/winH/",    "/music/winA/",      "/music/winO/",
+        "/music/loseH/",     "/music/loseA/",     "/music/loseO/",   "/music/gamestats/", "/music/mapchoice/",
+        "/music/meanwhile/", "/music/finaleH/",   "/music/finaleA/", "/music/finaleO/"};
 
     for (int i = 0; i < MUSIC_NUM_MUSIC_TYPES; i++) {
         const char* dirName = musicDirectoryNames[i] + 1; // skip '/' at the beginning

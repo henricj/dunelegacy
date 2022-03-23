@@ -65,7 +65,8 @@ public:
         \param  x x-coordinate (relative to the left top corner of the widget)
         \param  y y-coordinate (relative to the left top corner of the widget)
         \param  up  true = mouse wheel up, false = mouse wheel down
-        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not processed by the widget
+        \return true = the mouse wheel scrolling was processed by the widget, false = mouse wheel scrolling was not
+       processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override;
 
@@ -94,9 +95,7 @@ public:
         called if the new size is a valid size for this builder list (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the builder list to width and height. This method should only be
@@ -114,8 +113,8 @@ public:
         \return the minimum size of this widget
     */
     Point getMinimumSize() const override {
-        return {WIDGET_WIDTH,
-                BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2 + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
+        return {WIDGET_WIDTH, BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2
+                                  + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
     }
 
     static BuilderList* create(uint32_t builderObjectID) {

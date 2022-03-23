@@ -24,7 +24,8 @@ GUIStyle::GUIStyle() = default;
 GUIStyle::~GUIStyle() = default;
 
 sdl2::surface_ptr GUIStyle::createEmptySurface(uint32_t width, uint32_t height, bool transparent) {
-    sdl2::surface_ptr pSurface = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr pSurface =
+        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};
 
     if (!pSurface) {
         return nullptr;

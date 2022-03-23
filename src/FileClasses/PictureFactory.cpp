@@ -53,7 +53,8 @@ PictureFactory::PictureFactory() {
     creditsBorder = getSubPicture(ScreenPic.get(), 257, 2, 63, 13);
 
     // background
-    background = sdl2::surface_ptr {SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, 8, 0, 0, 0, 0)};
+    background =
+        sdl2::surface_ptr {SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, 8, 0, 0, 0, 0)};
     if (background == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
@@ -197,9 +198,11 @@ PictureFactory::PictureFactory() {
     messageBoxBorder = getSubPicture(ScreenPic.get(), 0, 17, 320, 22);
 
     if (pFileManager->exists("MISC." + _("LanguageFileExtension"))) {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
+        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(
+            LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
     } else {
-        mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).get());
+        mentatHouseChoiceQuestionSurface =
+            Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).get());
     }
 
     // create builder list upper cap
@@ -336,10 +339,12 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
     }
 
     if (bEditor) {
-        SDL_Rect dest12 = calcDrawingRect(decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32 - 14, HAlign::Left, VAlign::Bottom);
+        SDL_Rect dest12 = calcDrawingRect(decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32 - 14,
+                                          HAlign::Left, VAlign::Bottom);
         SDL_BlitSurface(decorationBorder.vspacer.get(), nullptr, sideBar.get(), &dest12);
 
-        drawHLine(sideBar.get(), 0, sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h - 2, decorationBorder.vspacer.get()->w - 1, 96);
+        drawHLine(sideBar.get(), 0, sideBar->h - 32 - 12 - decorationBorder.vspacer.get()->h - 2,
+                  decorationBorder.vspacer.get()->w - 1, 96);
         drawHLine(sideBar.get(), 0, sideBar->h - 32 - 12 - 1, decorationBorder.vspacer.get()->w - 1, 0);
 
         SDL_Rect dest13 = calcDrawingRect(decorationBorder.ball.get(), 0, getHeight(sideBar.get()) - 32 - 12);
@@ -348,7 +353,8 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
         drawHLine(sideBar.get(), 0, sideBar->h - 32 - 1, decorationBorder.vspacer.get()->w - 1, 0);
         SDL_Rect dest14 = calcDrawingRect(decorationBorder.vspacer.get(), 0, getHeight(sideBar.get()) - 32);
         SDL_BlitSurface(decorationBorder.vspacer.get(), nullptr, sideBar.get(), &dest14);
-        drawHLine(sideBar.get(), 0, sideBar->h - 32 + decorationBorder.vspacer.get()->h, decorationBorder.vspacer.get()->w - 1, 96);
+        drawHLine(sideBar.get(), 0, sideBar->h - 32 + decorationBorder.vspacer.get()->h,
+                  decorationBorder.vspacer.get()->w - 1, 96);
     } else {
         SDL_Rect dest15 = calcDrawingRect(creditsBorder.get(), 46, 132);
         SDL_BlitSurface(creditsBorder.get(), nullptr, sideBar.get(), &dest15);
@@ -423,13 +429,16 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
     SDL_Rect dest1 = calcDrawingRect(frame[DecorationType].leftUpperCorner.get(), dest->x, dest->y);
     SDL_BlitSurface(frame[DecorationType].leftUpperCorner.get(), nullptr, Pic, &dest1);
 
-    SDL_Rect dest2 = calcDrawingRect(frame[DecorationType].rightUpperCorner.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
+    SDL_Rect dest2 =
+        calcDrawingRect(frame[DecorationType].rightUpperCorner.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
     SDL_BlitSurface(frame[DecorationType].rightUpperCorner.get(), nullptr, Pic, &dest2);
 
-    SDL_Rect dest3 = calcDrawingRect(frame[DecorationType].leftLowerCorner.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
+    SDL_Rect dest3 = calcDrawingRect(frame[DecorationType].leftLowerCorner.get(), dest->x, dest->h - 1, HAlign::Left,
+                                     VAlign::Bottom);
     SDL_BlitSurface(frame[DecorationType].leftLowerCorner.get(), nullptr, Pic, &dest3);
 
-    SDL_Rect dest4 = calcDrawingRect(frame[DecorationType].rightLowerCorner.get(), dest->w - 1, dest->h - 1, HAlign::Right, VAlign::Bottom);
+    SDL_Rect dest4 = calcDrawingRect(frame[DecorationType].rightLowerCorner.get(), dest->w - 1, dest->h - 1,
+                                     HAlign::Right, VAlign::Bottom);
     SDL_BlitSurface(frame[DecorationType].rightLowerCorner.get(), nullptr, Pic, &dest4);
 
     // hborders
@@ -441,7 +450,8 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
         SDL_BlitSurface(frame[DecorationType].hborder.get(), nullptr, Pic, &tmpDest);
     }
 
-    SDL_Rect dest6 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
+    SDL_Rect dest6 =
+        calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
     for (dest6.x = frame[DecorationType].leftLowerCorner.get()->w + dest->x;
          dest6.x <= dest->w - frame[DecorationType].rightLowerCorner.get()->w - 1;
          dest6.x += frame[DecorationType].hborder.get()->w) {
@@ -458,7 +468,8 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
         SDL_BlitSurface(frame[DecorationType].vborder.get(), nullptr, Pic, &tmpDest);
     }
 
-    SDL_Rect dest8 = calcDrawingRect(frame[DecorationType].vborder.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
+    SDL_Rect dest8 =
+        calcDrawingRect(frame[DecorationType].vborder.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
     for (dest8.y = frame[DecorationType].rightUpperCorner.get()->h + dest->y;
          dest8.y <= dest->h - frame[DecorationType].rightLowerCorner.get()->h - 1;
          dest8.y += frame[DecorationType].vborder.get()->h) {
@@ -508,14 +519,16 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
 
     sdl2::surface_ptr VersionText {pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
 
-    SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2, HAlign::Center, VAlign::Center);
+    SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
+                                     HAlign::Center, VAlign::Center);
     SDL_BlitSurface(VersionText.get(), nullptr, Version.get(), &dest4);
 
     VersionText.reset();
 
     drawFrame(Version.get(), SimpleFrame);
 
-    SDL_Rect dest5 = calcDrawingRect(Version.get(), getWidth(Pic.get()) - 11, getHeight(Pic.get()) - 11, HAlign::Right, VAlign::Bottom);
+    SDL_Rect dest5 = calcDrawingRect(Version.get(), getWidth(Pic.get()) - 11, getHeight(Pic.get()) - 11, HAlign::Right,
+                                     VAlign::Bottom);
     SDL_BlitSurface(Version.get(), nullptr, Pic.get(), &dest5);
 
     return Pic;
@@ -542,14 +555,17 @@ sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) con
         } break;
 
         default:
-            THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!", static_cast<int>(House));
+            THROW(std::invalid_argument, "PictureFactory::createGameStatsBackground(): Unknown house %d!",
+                  static_cast<int>(House));
     }
 
     pLogo = Scaler::defaultDoubleSurface(pLogo.get());
 
-    auto dest1 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 - 320 + 2, getHeight(gameStatsBackground.get()) / 2 - 200 + 16);
+    auto dest1 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 - 320 + 2,
+                                 getHeight(gameStatsBackground.get()) / 2 - 200 + 16);
     SDL_BlitSurface(pLogo.get(), nullptr, pSurface.get(), &dest1);
-    auto dest2 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 + 320 - 3, getHeight(gameStatsBackground.get()) / 2 - 200 + 16, HAlign::Right, VAlign::Top);
+    auto dest2 = calcDrawingRect(pLogo.get(), getWidth(gameStatsBackground.get()) / 2 + 320 - 3,
+                                 getHeight(gameStatsBackground.get()) / 2 - 200 + 16, HAlign::Right, VAlign::Top);
     SDL_BlitSurface(pLogo.get(), nullptr, pSurface.get(), &dest2);
 
     return pSurface;
@@ -625,22 +641,18 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
 
 sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
     static const unsigned char index2greyindex[] = {
-        0, 0, 0, 13, 233, 127, 0, 131, 0, 0, 0, 0, 0, 13, 14, 15,
-        15, 127, 127, 14, 14, 14, 14, 130, 24, 131, 131, 13, 13, 29, 30, 31,
-        0, 128, 128, 14, 14, 14, 14, 130, 130, 24, 24, 14, 13, 13, 0, 29,
-        0, 0, 30, 0, 0, 183, 0, 0, 0, 0, 0, 0, 14, 30, 30, 30,
-        126, 0, 0, 126, 128, 0, 0, 14, 14, 14, 0, 14, 14, 0, 0, 0,
-        14, 14, 0, 0, 0, 0, 0, 14, 0, 0, 130, 13, 131, 13, 13, 29,
-        30, 30, 183, 175, 175, 0, 0, 0, 0, 0, 0, 0, 14, 233, 14, 14,
-        14, 14, 14, 130, 24, 0, 0, 0, 131, 0, 122, 0, 24, 0, 0, 0,
-        0, 14, 130, 131, 29, 133, 134, 127, 233, 14, 14, 24, 131, 13, 29, 183,
-        30, 30, 183, 183, 175, 175, 150, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        24, 13, 29, 183, 175, 0, 0, 30, 0, 0, 13, 0, 0, 30, 174, 175,
-        14, 24, 131, 13, 30, 183, 175, 122, 0, 0, 0, 0, 0, 0, 0, 0,
-        14, 24, 131, 13, 30, 122, 175, 0, 0, 0, 0, 13, 0, 0, 0, 0,
-        14, 24, 131, 13, 30, 122, 175, 24, 14, 0, 0, 29, 0, 0, 0, 0,
-        14, 24, 131, 13, 30, 122, 175, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 13, 0, 30, 30, 183, 250, 250, 0, 0, 0, 0, 0};
+        0,   0,   0,   13,  233, 127, 0,   131, 0,   0,   0,   0,   0,   13, 14,  15,  15,  127, 127, 14, 14,  14,
+        14,  130, 24,  131, 131, 13,  13,  29,  30,  31,  0,   128, 128, 14, 14,  14,  14,  130, 130, 24, 24,  14,
+        13,  13,  0,   29,  0,   0,   30,  0,   0,   183, 0,   0,   0,   0,  0,   0,   14,  30,  30,  30, 126, 0,
+        0,   126, 128, 0,   0,   14,  14,  14,  0,   14,  14,  0,   0,   0,  14,  14,  0,   0,   0,   0,  0,   14,
+        0,   0,   130, 13,  131, 13,  13,  29,  30,  30,  183, 175, 175, 0,  0,   0,   0,   0,   0,   0,  14,  233,
+        14,  14,  14,  14,  14,  130, 24,  0,   0,   0,   131, 0,   122, 0,  24,  0,   0,   0,   0,   14, 130, 131,
+        29,  133, 134, 127, 233, 14,  14,  24,  131, 13,  29,  183, 30,  30, 183, 183, 175, 175, 150, 0,  0,   0,
+        0,   0,   0,   0,   0,   0,   24,  13,  29,  183, 175, 0,   0,   30, 0,   0,   13,  0,   0,   30, 174, 175,
+        14,  24,  131, 13,  30,  183, 175, 122, 0,   0,   0,   0,   0,   0,  0,   0,   14,  24,  131, 13, 30,  122,
+        175, 0,   0,   0,   0,   13,  0,   0,   0,   0,   14,  24,  131, 13, 30,  122, 175, 24,  14,  0,  0,   29,
+        0,   0,   0,   0,   14,  24,  131, 13,  30,  122, 175, 0,   0,   0,  0,   0,   0,   0,   0,   0,  0,   0,
+        0,   0,   13,  0,   30,  30,  183, 250, 250, 0,   0,   0,   0,   0};
 
     auto pic = copySurface(HouseChoice);
 
@@ -690,13 +702,15 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     }
 
     if (settings.general.language == "de") {
-        auto tmp      = getSubPicture(pMapChoiceScreen.get(), 8, 120, 303, 23);
-        tmp           = copySurface(tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
+        auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 120, 303, 23);
+        tmp      = copySurface(
+                 tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_Rect dest = {8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
     } else if (settings.general.language == "fr") {
-        auto tmp      = getSubPicture(pMapChoiceScreen.get(), 8, 96, 303, 23);
-        tmp           = copySurface(tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
+        auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 96, 303, 23);
+        tmp      = copySurface(
+                 tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_Rect dest = {8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
     } else {
@@ -707,7 +721,9 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     const SDL_Rect clearRect = {8, 24, 304, 119};
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
-    pMapChoiceScreen          = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(House)]).get());
+    pMapChoiceScreen = Scaler::defaultDoubleSurface(
+        mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(House)])
+            .get());
     auto pFullMapChoiceScreen = copySurface(background.get());
 
     SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen.get(), pFullMapChoiceScreen.get());
@@ -848,9 +864,11 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
     return newAnimation;
 }
 
-std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
+std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation,
+                                                                 SDL_Surface* heraldSard) {
 
-    const sdl2::surface_ptr maskSurface {Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
+    const sdl2::surface_ptr maskSurface {
+        Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
     auto newAnimation = std::make_unique<Animation>();
@@ -894,7 +912,8 @@ std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordo
     return newAnimation;
 }
 
-std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Surface* heraldMerc) {
+std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation,
+                                                                 SDL_Surface* heraldMerc) {
 
     auto newAnimation = std::make_unique<Animation>();
 

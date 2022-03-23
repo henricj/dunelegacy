@@ -29,20 +29,13 @@ class ChangeEventList {
 public:
     class ChangeEvent {
     public:
-        enum class EventType {
-            ChangeHouse,
-            ChangeTeam,
-            ChangePlayer,
-            SetHumanPlayer
-        };
+        enum class EventType { ChangeHouse, ChangeTeam, ChangePlayer, SetHumanPlayer };
 
         ChangeEvent(EventType eventType, uint32_t slot, uint32_t newValue)
-            : eventType(eventType), slot(slot), newValue(newValue) {
-        }
+            : eventType(eventType), slot(slot), newValue(newValue) { }
 
         ChangeEvent(uint32_t slot, std::string newStringValue)
-            : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) {
-        }
+            : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) { }
 
         explicit ChangeEvent(InputStream& stream) {
             eventType = static_cast<EventType>(stream.readUint32());

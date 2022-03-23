@@ -137,7 +137,8 @@ public:
 
         auto* const pObject = dune_cast<ObjectType>(object.get());
         if (!pObject) {
-            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "createObjectFromItemId() created the wrong type of object for build item type %d", itemID);
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
+                            "createObjectFromItemId() created the wrong type of object for build item type %d", itemID);
             return nullptr;
         }
 

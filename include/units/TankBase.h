@@ -22,7 +22,8 @@
 
 class TankBaseConstants : public TrackedUnitConstants {
 public:
-    constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0, BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
+    constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0,
+                                         BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
         : TrackedUnitConstants {itemID, num_weapons, bullet_id} {
         turreted_ = true;
     }

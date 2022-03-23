@@ -87,8 +87,10 @@ void AirUnit::blitToScreen() {
             const int x = screenborder->world2screenX(realX + 4);
             const int y = screenborder->world2screenY(realY + 12);
 
-            const SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-            const SDL_Rect dest   = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            const SDL_Rect source =
+                calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
+            const SDL_Rect dest =
+                calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
         }
@@ -96,8 +98,10 @@ void AirUnit::blitToScreen() {
         const int x = screenborder->world2screenX(realX);
         const int y = screenborder->world2screenY(realY);
 
-        const SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-        const SDL_Rect dest   = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        const SDL_Rect source =
+            calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
+        const SDL_Rect dest =
+            calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
     } else {
@@ -105,8 +109,10 @@ void AirUnit::blitToScreen() {
             const int x = screenborder->world2screenX(realX + 4);
             const int y = screenborder->world2screenY(realY + 12);
 
-            const SDL_Rect source = calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-            const SDL_Rect dest   = calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            const SDL_Rect source =
+                calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
+            const SDL_Rect dest =
+                calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopy(renderer, shadow, &source, &dest);
         }
@@ -114,8 +120,10 @@ void AirUnit::blitToScreen() {
         const int x = screenborder->world2screenX(realX);
         const int y = screenborder->world2screenY(realY);
 
-        const SDL_Rect source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-        const SDL_Rect dest   = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        const SDL_Rect source =
+            calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
+        const SDL_Rect dest =
+            calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
     }
@@ -145,7 +153,9 @@ void AirUnit::move(const GameContext& context) {
 }
 
 FixPoint AirUnit::getDestinationAngle() const {
-    return destinationAngleRad(realX, realY, destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2) * 8 / (FixPt_PI << 1);
+    return destinationAngleRad(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
+                               destination.y * TILESIZE + TILESIZE / 2)
+         * 8 / (FixPt_PI << 1);
 }
 
 void AirUnit::turn(const GameContext& context) {
@@ -166,15 +176,13 @@ void AirUnit::turn(const GameContext& context) {
         }
 
         if (angleLeft <= angleRight) {
-            angle +=
-                std::min(turn_speed, angleLeft);
+            angle += std::min(turn_speed, angleLeft);
             if (angle > static_cast<int>(ANGLETYPE::NUM_ANGLES)) {
                 angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES);
             }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         } else {
-            angle -=
-                std::min(turn_speed, angleRight);
+            angle -= std::min(turn_speed, angleRight);
             if (angle < 0) {
                 angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
             }

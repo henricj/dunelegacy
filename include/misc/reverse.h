@@ -3,7 +3,9 @@
 namespace Dune {
 namespace implementation {
 template<typename T>
-struct reverse_adapter { T& iterable; };
+struct reverse_adapter {
+    T& iterable;
+};
 
 template<typename T>
 auto begin(reverse_adapter<T> w) {

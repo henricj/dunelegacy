@@ -23,7 +23,8 @@
 
 std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delimRegex) {
     const std::regex rgx(delimRegex);
-    return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1), std::sregex_token_iterator());
+    return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1),
+                                    std::sregex_token_iterator());
 }
 
 /**
@@ -48,7 +49,8 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
             std::string nextKey  = replacement.first;
             const size_t nextPos = result.find(nextKey, currentPos);
 
-            if (nextPos != std::string::npos && (nextPos < bestNextPos || nextPos == bestNextPos && nextKey.length() > bestNextKey.length())) {
+            if (nextPos != std::string::npos
+                && (nextPos < bestNextPos || nextPos == bestNextPos && nextKey.length() > bestNextKey.length())) {
 
                 // best match so far (either smaller position or same position but longer match)
                 bestNextPos   = nextPos;
@@ -133,7 +135,8 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     return result;
 }
 
-std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::string_view)> pGetTextWidth) {
+std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth,
+                                        std::function<int(std::string_view)> pGetTextWidth) {
     // split text into single lines at every '\n'
     size_t startpos = 0;
     size_t nextpos  = 0;
@@ -255,23 +258,17 @@ std::string convertCP850ToUTF8(std::string_view text) {
 }
 
 std::string decodeString(std::string_view text) {
-    static constexpr char decodeTable1[16]    = {' ', 'e', 't', 'a', 'i', 'n', 'o', 's', 'r', 'l', 'h', 'c', 'd', 'u', 'p', 'm'};
-    static constexpr char decodeTable2[16][9] = {{'t', 'a', 's', 'i', 'o', ' ', 'w', 'b'},
-                                                 {' ', 'r', 'n', 's', 'd', 'a', 'l', 'm'},
-                                                 {'h', ' ', 'i', 'e', 'o', 'r', 'a', 's'},
-                                                 {'n', 'r', 't', 'l', 'c', ' ', 's', 'y'},
-                                                 {'n', 's', 't', 'c', 'l', 'o', 'e', 'r'},
-                                                 {' ', 'd', 't', 'g', 'e', 's', 'i', 'o'},
-                                                 {'n', 'r', ' ', 'u', 'f', 'm', 's', 'w'},
-                                                 {' ', 't', 'e', 'p', '.', 'i', 'c', 'a'},
-                                                 {'e', ' ', 'o', 'i', 'a', 'd', 'u', 'r'},
-                                                 {' ', 'l', 'a', 'e', 'i', 'y', 'o', 'd'},
-                                                 {'e', 'i', 'a', ' ', 'o', 't', 'r', 'u'},
-                                                 {'e', 't', 'o', 'a', 'k', 'h', 'l', 'r'},
-                                                 {' ', 'e', 'i', 'u', ',', '.', 'o', 'a'},
-                                                 {'n', 's', 'r', 'c', 't', 'l', 'a', 'i'},
-                                                 {'l', 'e', 'o', 'i', 'r', 'a', 't', 'p'},
-                                                 {'e', 'a', 'o', 'i', 'p', ' ', 'b', 'm'}};
+    static constexpr char decodeTable1[16]    = {' ', 'e', 't', 'a', 'i', 'n', 'o', 's',
+                                              'r', 'l', 'h', 'c', 'd', 'u', 'p', 'm'};
+    static constexpr char decodeTable2[16][9] = {
+        {'t', 'a', 's', 'i', 'o', ' ', 'w', 'b'}, {' ', 'r', 'n', 's', 'd', 'a', 'l', 'm'},
+        {'h', ' ', 'i', 'e', 'o', 'r', 'a', 's'}, {'n', 'r', 't', 'l', 'c', ' ', 's', 'y'},
+        {'n', 's', 't', 'c', 'l', 'o', 'e', 'r'}, {' ', 'd', 't', 'g', 'e', 's', 'i', 'o'},
+        {'n', 'r', ' ', 'u', 'f', 'm', 's', 'w'}, {' ', 't', 'e', 'p', '.', 'i', 'c', 'a'},
+        {'e', ' ', 'o', 'i', 'a', 'd', 'u', 'r'}, {' ', 'l', 'a', 'e', 'i', 'y', 'o', 'd'},
+        {'e', 'i', 'a', ' ', 'o', 't', 'r', 'u'}, {'e', 't', 'o', 'a', 'k', 'h', 'l', 'r'},
+        {' ', 'e', 'i', 'u', ',', '.', 'o', 'a'}, {'n', 's', 'r', 'c', 't', 'l', 'a', 'i'},
+        {'l', 'e', 'o', 'i', 'r', 'a', 't', 'p'}, {'e', 'a', 'o', 'i', 'p', ' ', 'b', 'm'}};
 
     std::string out;
     out.reserve(text.length());

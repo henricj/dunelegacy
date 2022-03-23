@@ -26,15 +26,18 @@ public:
         return ui_graphics_.at(static_cast<int>(house)).at(id);
     }
 
-    [[nodiscard]] const DuneTexture& get_generated_picture(GeneratedPicture id) const { return generated_pictures_.at(static_cast<int>(id)); }
+    [[nodiscard]] const DuneTexture& get_generated_picture(GeneratedPicture id) const {
+        return generated_pictures_.at(static_cast<int>(id));
+    }
 
     using object_pictures_type =
         std::array<std::array<std::array<DuneTexture, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS>,
                    NUM_ZOOMLEVEL>;
     using small_details_type = std::array<DuneTexture, NUM_SMALLDETAILPICS>;
     using tiny_pictures_type = std::array<DuneTexture, NUM_TINYPICTURE>;
-    using ui_graphics_type   = std::array<std::array<DuneTexture, NUM_UIGRAPHICS>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>;
-    using generated_type     = std::array<DuneTexture, NUM_GENERATEDPICTURES>;
+    using ui_graphics_type =
+        std::array<std::array<DuneTexture, NUM_UIGRAPHICS>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>;
+    using generated_type = std::array<DuneTexture, NUM_GENERATEDPICTURES>;
 
 private:
     DuneTextures();

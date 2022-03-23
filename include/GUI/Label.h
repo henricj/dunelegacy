@@ -31,9 +31,7 @@
 class Label : public Widget {
 public:
     /// default constructor
-    Label() {
-        enableResizing(true, true);
-    }
+    Label() { enableResizing(true, true); }
 
     /// destructor
     ~Label() override = default;
@@ -51,9 +49,7 @@ public:
         Gets the font size of this label. Default font size of a label is 14
         \return the font size of this label
     */
-    [[nodiscard]] virtual int getTextFontSize() const {
-        return fontSize;
-    }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
 
     /**
         Sets the text color for this label.
@@ -61,7 +57,8 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
         \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
+                              Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         this->textcolor       = textcolor;
         this->textshadowcolor = textshadowcolor;
         this->backgroundcolor = backgroundcolor;
@@ -70,7 +67,8 @@ public:
 
     /**
         Sets the alignment of the text in this label.
-        \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
+        \param alignment Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
+       Alignment_Top or Alignment_Bottom)
     */
     virtual void setAlignment(Alignment_Enum alignment) {
         this->alignment = alignment;
@@ -79,11 +77,10 @@ public:
 
     /**
         Returns the alignment of the text in this label.
-        \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter, Alignment_Top or Alignment_Bottom)
+        \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
+       Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual Alignment_Enum getAlignment() const {
-        return alignment;
-    }
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment; }
 
     /**
         This method sets a new text for this label and resizes this label
@@ -108,9 +105,7 @@ public:
         called if the new size is a valid size for this label (See getMinumumSize).
         \param  newSize the new size of this progress bar
     */
-    void resize(Point newSize) override {
-        resize(newSize.x, newSize.y);
-    }
+    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the label to width and height. This method should only
@@ -168,7 +163,8 @@ public:
             return;
         }
 
-        const SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2, position.y + getSize().y / 2, HAlign::Center, VAlign::Center);
+        const SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2,
+                                              position.y + getSize().y / 2, HAlign::Center, VAlign::Center);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 
@@ -182,7 +178,8 @@ public:
        \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+    static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT,
+                         Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
         auto* label = new Label();
         label->setText(text);
         label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
@@ -200,31 +197,29 @@ protected:
         Widget::updateTextures();
 
         if (!pTexture) {
-            const auto textLines = greedyWordWrap(text,
-                                                  getSize().x,
-                                                  [font = fontSize](std::string_view tmp) {
-                                                      return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
-                                                  });
+            const auto textLines = greedyWordWrap(text, getSize().x, [font = fontSize](std::string_view tmp) {
+                return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
+            });
 
-            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x, getSize().y, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
+            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(
+                getSize().x, getSize().y, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
         }
     }
 
     /**
         This method frees all textures that are used by this label
     */
-    void invalidateTextures() override {
-        pTexture.reset();
-    }
+    void invalidateTextures() override { pTexture.reset(); }
 
 private:
-    int fontSize           = 14;                                                                  ///< the size of the font to use
-    Uint32 textcolor       = COLOR_DEFAULT;                                                       ///< the text color
-    Uint32 textshadowcolor = COLOR_DEFAULT;                                                       ///< the color of the shadow of the text
-    Uint32 backgroundcolor = COLOR_TRANSPARENT;                                                   ///< the color of the label background
-    std::string text;                                                                             ///< the text of this label
-    sdl2::texture_ptr pTexture = nullptr;                                                         ///< the texture of this label
-    Alignment_Enum alignment   = static_cast<Alignment_Enum>(Alignment_Left | Alignment_VCenter); ///< the alignment of this label
+    int fontSize           = 14;                ///< the size of the font to use
+    Uint32 textcolor       = COLOR_DEFAULT;     ///< the text color
+    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text;                           ///< the text of this label
+    sdl2::texture_ptr pTexture = nullptr;       ///< the texture of this label
+    Alignment_Enum alignment =
+        static_cast<Alignment_Enum>(Alignment_Left | Alignment_VCenter); ///< the alignment of this label
 };
 
 #endif // LABEL_H

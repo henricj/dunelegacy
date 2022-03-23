@@ -68,7 +68,8 @@ public:
 
     [[nodiscard]] bool isServer() const noexcept { return bIsServer; }
 
-    void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName, GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
+    void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
+                     GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
     void stopServer();
 
@@ -104,13 +105,9 @@ public:
 
     int getMaxPeerRoundTripTime();
 
-    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() {
-        return pLANGameFinderAndAnnouncer.get();
-    }
+    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer.get(); }
 
-    MetaServerClient* getMetaServerClient() {
-        return pMetaServerClient.get();
-    }
+    MetaServerClient* getMetaServerClient() { return pMetaServerClient.get(); }
 
     /**
         Sets the function that should be called when a chat message is received
@@ -148,7 +145,8 @@ public:
         Sets the function that can be used to retreive all house/player changes to get the current state
         \param pGetChangeEventListForNewPlayerCallback    function to call
     */
-    void setGetChangeEventListForNewPlayerCallback(std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback) {
+    void setGetChangeEventListForNewPlayerCallback(
+        std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback) {
         this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
     }
 
@@ -156,9 +154,7 @@ public:
         Sets the function that should be called when the game is about to start and the time (in ms) left is received
         \param  pOnStartGame    function to call on receive
     */
-    void setOnStartGame(std::function<void(unsigned int)> pOnStartGame) {
-        this->pOnStartGame = pOnStartGame;
-    }
+    void setOnStartGame(std::function<void(unsigned int)> pOnStartGame) { this->pOnStartGame = pOnStartGame; }
 
     /**
         Sets the function that should be called when a command list is received.
@@ -172,7 +168,8 @@ public:
         Sets the function that should be called when a selection list is received.
         \param  pOnReceiveSelectionList function to call on receive
     */
-    void setOnReceiveSelectionList(std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList) {
+    void setOnReceiveSelectionList(
+        std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList) {
         this->pOnReceiveSelectionList = pOnReceiveSelectionList;
     }
 
@@ -197,9 +194,7 @@ private:
             Connected
         };
 
-        PeerData(ENetPeer* pPeer, PeerState peerState)
-            : pPeer(pPeer), peerState(peerState), timeout(0) {
-        }
+        PeerData(ENetPeer* pPeer, PeerState peerState) : pPeer(pPeer), peerState(peerState), timeout(0) { }
 
         ENetPeer* pPeer;
 

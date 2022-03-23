@@ -45,8 +45,10 @@ public:
     int getTextHeight(unsigned int fontSize);
     sdl2::surface_ptr createSurfaceWithText(std::string_view, uint32_t color, unsigned int fontSize);
     sdl2::texture_ptr createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
-    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize, bool bCentered = false);
+    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize,
+                                                     bool bCentered = false);
+    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize,
+                                                     bool bCentered = false);
 
 private:
     Font* getFont(unsigned int fontSize) {

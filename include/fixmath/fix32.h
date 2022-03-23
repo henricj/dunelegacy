@@ -30,9 +30,10 @@ static const fix32_t fix32_X4_CORRECTION_COMPONENT = 0x000000003999999AULL; /*!<
 static const fix32_t fix32_PI_DIV_4                = 0x00000000C90FDAA2ULL; /*!< Fix32 value of PI/4 */
 static const fix32_t fix32_THREE_PI_DIV_4          = 0x000000025B2F8FE6ULL; /*!< Fix32 value of 3PI/4 */
 
-static const fix32_t fix32_maximum  = 0x7FFFFFFFFFFFFFFFULL; /*!< the maximum value of fix32_t */
-static const fix32_t fix32_minimum  = 0x8000000000000000ULL; /*!< the minimum value of fix32_t */
-static const fix32_t fix32_overflow = 0x8000000000000000ULL; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
+static const fix32_t fix32_maximum = 0x7FFFFFFFFFFFFFFFULL; /*!< the maximum value of fix32_t */
+static const fix32_t fix32_minimum = 0x8000000000000000ULL; /*!< the minimum value of fix32_t */
+static const fix32_t fix32_overflow =
+    0x8000000000000000ULL; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
 static const fix32_t fix32_pi  = 0x00000003243F6A89ULL; /*!< fix32_t value of pi */
 static const fix32_t fix32_e   = 0x00000002B7E15163ULL; /*!< fix32_t value of e */
@@ -249,42 +250,37 @@ extern fix32_t fix32_from_str(const char* buf);
 #define FIXMATH_TOKLEN(token) (sizeof(#token) - 1)
 
 /** Helper macro for F32C. Handles pow(10, n) for n from 0 to 16. */
-#define FIXMATH64_CONSTANT_POW10(times) ( \
-    (times == 0)    ? 1ULL                \
-    : (times == 1)  ? 10ULL               \
-    : (times == 2)  ? 100ULL              \
-    : (times == 3)  ? 1000ULL             \
-    : (times == 4)  ? 10000ULL            \
-    : (times == 5)  ? 100000ULL           \
-    : (times == 6)  ? 1000000ULL          \
-    : (times == 7)  ? 10000000ULL         \
-    : (times == 8)  ? 100000000ULL        \
-    : (times == 9)  ? 1000000000ULL       \
-    : (times == 10) ? 10000000000ULL      \
-    : (times == 11) ? 100000000000ULL     \
-    : (times == 12) ? 1000000000000ULL    \
-    : (times == 13) ? 10000000000000ULL   \
-    : (times == 14) ? 100000000000000ULL  \
-    : (times == 15) ? 1000000000000000ULL \
-                    : 10000000000000000ULL)
+#define FIXMATH64_CONSTANT_POW10(times)                                                                                \
+    ((times == 0)    ? 1ULL                                                                                            \
+     : (times == 1)  ? 10ULL                                                                                           \
+     : (times == 2)  ? 100ULL                                                                                          \
+     : (times == 3)  ? 1000ULL                                                                                         \
+     : (times == 4)  ? 10000ULL                                                                                        \
+     : (times == 5)  ? 100000ULL                                                                                       \
+     : (times == 6)  ? 1000000ULL                                                                                      \
+     : (times == 7)  ? 10000000ULL                                                                                     \
+     : (times == 8)  ? 100000000ULL                                                                                    \
+     : (times == 9)  ? 1000000000ULL                                                                                   \
+     : (times == 10) ? 10000000000ULL                                                                                  \
+     : (times == 11) ? 100000000000ULL                                                                                 \
+     : (times == 12) ? 1000000000000ULL                                                                                \
+     : (times == 13) ? 10000000000000ULL                                                                               \
+     : (times == 14) ? 100000000000000ULL                                                                              \
+     : (times == 15) ? 1000000000000000ULL                                                                             \
+                     : 10000000000000000ULL)
 
 /** Helper macro for F32C.
  *
  * @note We do not use fix32_one instead of 4294967296ULL, because the
  *       "use of a const variable in a constant expression is nonstandard in C".
  */
-#define FIXMATH64_CONVERT_MANTISSA(m)                                                                                                                                 \
-    ((unsigned)((                                                                                                                                                     \
-                    (                                                                                                                                                 \
-                        (uint64_t)(((1##m##ULL) - FIXMATH64_CONSTANT_POW10(FIXMATH_TOKLEN(m))) * FIXMATH64_CONSTANT_POW10(9 - FIXMATH_TOKLEN(m))) * 4294967296ULL)) / \
-                1000000000LL))
+#define FIXMATH64_CONVERT_MANTISSA(m)                                                                                  \
+    ((unsigned)((((uint64_t)(((1##m##ULL) - FIXMATH64_CONSTANT_POW10(FIXMATH_TOKLEN(m)))                               \
+                             * FIXMATH64_CONSTANT_POW10(9 - FIXMATH_TOKLEN(m)))                                        \
+                  * 4294967296ULL))                                                                                    \
+                / 1000000000LL))
 
-#define FIXMATH64_COMBINE_I_M(i, m) \
-    (                               \
-        (                           \
-            (i)                     \
-            << 32) |                \
-        (FIXMATH64_CONVERT_MANTISSA(m) & 0xFFFFFFFF))
+#define FIXMATH64_COMBINE_I_M(i, m) (((i) << 32) | (FIXMATH64_CONVERT_MANTISSA(m) & 0xFFFFFFFF))
 
 /** Create int16_t (Q32.32) constant from separate integer and mantissa part.
  *
@@ -307,10 +303,9 @@ extern fix32_t fix32_from_str(const char* buf);
  * @param i Signed integer constant with a value in the interval ]-2147483648:2147483647[.
  * @param m Positive integer constant in the interval ]0:999999999[ (fractional part/mantissa).
  */
-#define F32C(i, m)                                                 \
-    ((fix32_t)(((#i[0]) == '-')                                    \
-                   ? -FIXMATH64_COMBINE_I_M((((i##LL) * -1LL)), m) \
-                   : FIXMATH64_COMBINE_I_M((uint64_t)((i##LL)), m)))
+#define F32C(i, m)                                                                                                     \
+    ((fix32_t)(((#i[0]) == '-') ? -FIXMATH64_COMBINE_I_M((((i##LL) * -1LL)), m)                                        \
+                                : FIXMATH64_COMBINE_I_M((uint64_t)((i##LL)), m)))
 
 #ifdef __cplusplus
 }

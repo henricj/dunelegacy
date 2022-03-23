@@ -18,16 +18,12 @@ class xoshiro256starstar {
     uint64_t s2_;
     uint64_t s3_;
 
-    static uint64_t rotl(const uint64_t x, int k) {
-        return (x << k) | (x >> (64 - k));
-    }
+    static uint64_t rotl(const uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }
 
 public:
     typedef uint64_t result_type;
 
-    explicit xoshiro256starstar(unsigned int x = 1) {
-        seed(x);
-    }
+    explicit xoshiro256starstar(unsigned int x = 1) { seed(x); }
 
     template<class Seq>
     explicit xoshiro256starstar(Seq& seq) {
@@ -51,7 +47,8 @@ public:
     }
 
     void jump() {
-        static constexpr uint64_t JUMP[] = {0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa, 0x39abdc4529b1661c};
+        static constexpr uint64_t JUMP[] = {0x180ec6d33cfd0aba, 0xd5a61266f0c9392c, 0xa9582618e03fc9aa,
+                                            0x39abdc4529b1661c};
 
         uint64_t s0 = 0;
         uint64_t s1 = 0;
@@ -74,13 +71,9 @@ public:
         s3_ = s3;
     }
 
-    static constexpr result_type min() {
-        return numeric_limits<result_type>::min();
-    }
+    static constexpr result_type min() { return numeric_limits<result_type>::min(); }
 
-    static constexpr result_type max() {
-        return numeric_limits<result_type>::max();
-    }
+    static constexpr result_type max() { return numeric_limits<result_type>::max(); }
 
     static constexpr size_t state_words = 4;
     typedef uint64_t state_type;

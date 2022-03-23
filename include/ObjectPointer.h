@@ -29,8 +29,7 @@ class StructureBase;
 class ObjectPointer {
 public:
     ObjectPointer() { objectID = NONE_ID; }
-    explicit ObjectPointer(uint32_t newItemID)
-        : objectID(newItemID) { }
+    explicit ObjectPointer(uint32_t newItemID) : objectID(newItemID) { }
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); }
     ~ObjectPointer() = default;
 
@@ -50,9 +49,7 @@ public:
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    operator bool() const {
-        return (objectID != NONE_ID);
-    }
+    operator bool() const { return (objectID != NONE_ID); }
 
 private:
     mutable uint32_t objectID;

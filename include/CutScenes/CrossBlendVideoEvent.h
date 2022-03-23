@@ -32,7 +32,8 @@ public:
         Constructor
         \param  pStartSurface      The picture to blend from
         \param  pEndSurface        The picture to blend to
-        \param  bCenterVertical    true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen (default is true)
+        \param  bCenterVertical    true = center the surfaces vertically on the screen, false = blit the surfaces at the
+       top of the screen (default is true)
     */
     CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical = true);
 
@@ -52,11 +53,12 @@ public:
     bool isFinished() override;
 
 private:
-    int currentFrame;                             ///< the current frame number relative to the start of this CrossBlendVideoEvent
+    int currentFrame; ///< the current frame number relative to the start of this CrossBlendVideoEvent
     std::unique_ptr<BlendBlitter> pBlendBlitter;  ///< the used blend blitter
     sdl2::surface_ptr pBlendBlitterTargetSurface; ///< the picture holding the current blending frame
     sdl2::texture_ptr pStreamingTexture;          ///< the texture used for rendering from
-    bool bCenterVertical;                         ///< true = center the surfaces vertically on the screen, false = blit the surfaces at the top of the screen
+    bool bCenterVertical; ///< true = center the surfaces vertically on the screen, false = blit the surfaces at the top
+                          ///< of the screen
 };
 
 #endif // CROSSBLENDVIDEOEVENT_H

@@ -62,13 +62,16 @@ RocketTurret::~RocketTurret() = default;
 void RocketTurret::updateStructureSpecificStuff(const GameContext& context) {
     const auto& game = context.game;
 
-    if ((!game.getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower()) || (((game.gameType == GameType::Campaign) || (game.gameType == GameType::Skirmish)) && getOwner()->isAI())) {
+    if ((!game.getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower())
+        || (((game.gameType == GameType::Campaign) || (game.gameType == GameType::Skirmish)) && getOwner()->isAI())) {
         parent::updateStructureSpecificStuff(context);
     }
 }
 
 bool RocketTurret::canAttack(const ObjectBase* object) const {
-    return object != nullptr && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm) && object->isVisible(getOwner()->getTeamID());
+    return object != nullptr
+        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+        && object->isVisible(getOwner()->getTeamID());
 }
 
 void RocketTurret::attack(const GameContext& context) {
@@ -88,8 +91,8 @@ void RocketTurret::attack(const GameContext& context) {
         if (!pObject->isAFlyingUnit()) {
             const auto& turret_data = game.objectData.data[Structure_GunTurret][static_cast<int>(originalHouseID)];
 
-            map.add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret,
-                           turret_data.weapondamage, false, pObject);
+            map.add_bullet(objectID, &centerPoint, &targetCenterPoint, Bullet_ShellTurret, turret_data.weapondamage,
+                           false, pObject);
 
             map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
             soundPlayer->playSoundAt(Sound_ExplosionSmall, location);

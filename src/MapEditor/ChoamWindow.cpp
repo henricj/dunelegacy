@@ -28,13 +28,9 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
-static constexpr ItemID_enum choamUnits[] = {Unit_Carryall, Unit_Ornithopter,
-                                             Unit_Harvester, Unit_MCV,
-                                             Unit_Trike, Unit_RaiderTrike,
-                                             Unit_Quad, Unit_Tank,
-                                             Unit_Launcher, Unit_SiegeTank,
-                                             Unit_Devastator, Unit_Deviator,
-                                             Unit_SonicTank, ItemID_Invalid};
+static constexpr ItemID_enum choamUnits[] = {
+    Unit_Carryall, Unit_Ornithopter, Unit_Harvester, Unit_MCV,        Unit_Trike,    Unit_RaiderTrike, Unit_Quad,
+    Unit_Tank,     Unit_Launcher,    Unit_SiegeTank, Unit_Devastator, Unit_Deviator, Unit_SonicTank,   ItemID_Invalid};
 
 ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
@@ -64,7 +60,8 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     Label_Explanation.setTextColor(color);
     Label_Explanation.setTextFontSize(12);
-    Label_Explanation.setText(_("These units are available at the starport. The given amount of these units is available at the start of the game and every 30s one unit is added."));
+    Label_Explanation.setText(_("These units are available at the starport. The given amount of these units is "
+                                "available at the start of the game and every 30s one unit is added."));
     centralVBox.addWidget(&Label_Explanation);
 
     centralVBox.addWidget(VSpacer::create(4));

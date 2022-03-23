@@ -19,8 +19,8 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, gs
 
     for (const auto& tile : tiles) {
         if (tile.x + tile.w > w || tile.y + tile.h > h)
-            THROW(std::invalid_argument, "The tile (%dx%d at %dx%d) must be inside the texture (%dx%d)", tile.w,
-                  tile.h, tile.x, tile.x, w, h);
+            THROW(std::invalid_argument, "The tile (%dx%d at %dx%d) must be inside the texture (%dx%d)", tile.w, tile.h,
+                  tile.x, tile.x, w, h);
     }
 #endif
 

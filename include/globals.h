@@ -66,19 +66,20 @@ extern int currentZoomlevel;       ///< 0 = the smallest zoom level, 1 = medium 
 extern std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
 extern std::unique_ptr<MusicPlayer> musicPlayer; ///< manager for playing background music
 
-extern std::unique_ptr<FileManager> pFileManager;       ///< manager for loading files from PAKs
-extern std::unique_ptr<GFXManager> pGFXManager;         ///< manager for loading and managing graphics
-extern std::unique_ptr<SFXManager> pSFXManager;         ///< manager for loading and managing sounds
-extern std::unique_ptr<FontManager> pFontManager;       ///< manager for loading and managing fonts
-extern std::unique_ptr<TextManager> pTextManager;       ///< manager for loading and managing texts and providing localization
-extern std::unique_ptr<NetworkManager> pNetworkManager; ///< manager for all network events (nullptr if not in multiplayer game)
+extern std::unique_ptr<FileManager> pFileManager; ///< manager for loading files from PAKs
+extern std::unique_ptr<GFXManager> pGFXManager;   ///< manager for loading and managing graphics
+extern std::unique_ptr<SFXManager> pSFXManager;   ///< manager for loading and managing sounds
+extern std::unique_ptr<FontManager> pFontManager; ///< manager for loading and managing fonts
+extern std::unique_ptr<TextManager> pTextManager; ///< manager for loading and managing texts and providing localization
+extern std::unique_ptr<NetworkManager>
+    pNetworkManager; ///< manager for all network events (nullptr if not in multiplayer game)
 
 // game stuff
 extern std::unique_ptr<Game> currentGame;          ///< the current running game
 extern std::unique_ptr<ScreenBorder> screenborder; ///< the screen border for the current running game
 extern Map* currentGameMap;                        ///< the map for the current running game
-extern House* pLocalHouse;                         ///< the house of the human player that is playing the current running game on this computer
-extern HumanPlayer* pLocalPlayer;                  ///< the player that is playing the current running game on this computer
+extern House* pLocalHouse; ///< the house of the human player that is playing the current running game on this computer
+extern HumanPlayer* pLocalPlayer; ///< the player that is playing the current running game on this computer
 
 extern RobustList<UnitBase*> unitList;                  ///< the list of all units
 extern RobustList<StructureBase*> structureList;        ///< the list of all structures
@@ -90,7 +91,9 @@ extern SettingsClass settings; ///< the settings read from the settings file
 extern bool debug; ///< is set for debugging purposes
 
 // constants
-inline static constexpr int houseToPaletteIndex[static_cast<int>(HOUSETYPE::NUM_HOUSES)] = {PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY}; ///< the base colors for the different houses
-inline static constexpr char houseChar[]                                                 = {'H', 'A', 'O', 'F', 'S', 'M'};                                                                                   ///< character for each house
+inline static constexpr int houseToPaletteIndex[static_cast<int>(HOUSETYPE::NUM_HOUSES)] = {
+    PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES,  PALCOLOR_ORDOS,
+    PALCOLOR_FREMEN,    PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY};           ///< the base colors for the different houses
+inline static constexpr char houseChar[] = {'H', 'A', 'O', 'F', 'S', 'M'}; ///< character for each house
 
 #endif // GLOBALS_H

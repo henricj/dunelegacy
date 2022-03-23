@@ -75,26 +75,19 @@ void Devastator::blitToScreen() {
 
     const auto* const pUnitGraphic = graphic[currentZoomlevel];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1               = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
 
-    constexpr Coord devastatorTurretOffset[] = {
-        Coord(8, -16),
-        Coord(-4, -12),
-        Coord(0, -16),
-        Coord(4, -12),
-        Coord(-8, -16),
-        Coord(0, -12),
-        Coord(-4, -12),
-        Coord(0, -12)};
+    constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),  Coord(4, -12),
+                                                Coord(-8, -16), Coord(0, -12),  Coord(-4, -12), Coord(0, -12)};
 
     const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
     const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest2                 = calcSpriteDrawingRect(pTurretGraphic,
-                                                             screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
-                                                             screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y),
-                                                             numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto dest2                 = calcSpriteDrawingRect(
+                        pTurretGraphic, screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
+                        screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+                        HAlign::Center, VAlign::Center);
 
     Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
 
@@ -104,7 +97,8 @@ void Devastator::blitToScreen() {
 }
 
 void Devastator::handleStartDevastateClick() {
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE, objectID));
+    currentGame->getCommandManager().addCommand(
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE, objectID));
 }
 
 void Devastator::doStartDevastate() {

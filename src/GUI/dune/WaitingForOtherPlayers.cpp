@@ -25,8 +25,7 @@
 
 #include <Game.h>
 
-WaitingForOtherPlayers::WaitingForOtherPlayers()
-    : Window(50, 50, 50, 50) {
+WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
     setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
 

@@ -39,8 +39,7 @@ public:
     }
 
 protected:
-    RefineryAndSiloInterface(const GameContext& context, int objectID)
-        : DefaultStructureInterface(context, objectID) {
+    RefineryAndSiloInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
         const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);

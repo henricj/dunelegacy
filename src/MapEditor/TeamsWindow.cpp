@@ -142,9 +142,12 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     aiTeamTypeDropDownBox.setColor(color);
     aiTeamTypeDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
     aiTeamTypeDropDownBox.addEntry(_("Foot (Infantry, Troopers)"), static_cast<int>(AITeamType::AITeamType_Foot));
-    aiTeamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"), static_cast<int>(AITeamType::AITeamType_Wheeled));
-    aiTeamTypeDropDownBox.addEntry(_("Tracked (Tank, Launcher, Siege Tank,...)"), static_cast<int>(AITeamType::AITeamType_Tracked));
-    aiTeamTypeDropDownBox.addEntry(_("Winged (Carryall, Ornithopter, Frigate)"), static_cast<int>(AITeamType::AITeamType_Winged));
+    aiTeamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"),
+                                   static_cast<int>(AITeamType::AITeamType_Wheeled));
+    aiTeamTypeDropDownBox.addEntry(_("Tracked (Tank, Launcher, Siege Tank,...)"),
+                                   static_cast<int>(AITeamType::AITeamType_Tracked));
+    aiTeamTypeDropDownBox.addEntry(_("Winged (Carryall, Ornithopter, Frigate)"),
+                                   static_cast<int>(AITeamType::AITeamType_Winged));
     aiTeamTypeDropDownBox.addEntry(_("Slither (Sandworm)"), static_cast<int>(AITeamType::AITeamType_Slither));
     aiTeamTypeDropDownBox.addEntry(_("Harvester (Harvester)"), static_cast<int>(AITeamType::AITeamType_Harvester));
     aiTeamTypeDropDownBox.setSelectedItem(0);
@@ -261,8 +264,7 @@ void TeamsWindow::onAdd() {
     const AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
                                 static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
                                 static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
-                                minUnitsTextBox.getValue(),
-                                maxUnitsTextBox.getValue());
+                                minUnitsTextBox.getValue(), maxUnitsTextBox.getValue());
     aiteams.insert(aiteams.begin() + index + 1, aiteamInfo);
     teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
     teamsListBox.setSelectedItem(index + 1);
@@ -341,12 +343,13 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
         const int index = teamsListBox.getSelectedIndex();
 
         if (index >= 0) {
-            AITeamInfo& aiteamInfo    = aiteams.at(index);
-            aiteamInfo.houseID        = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.aiTeamBehavior = static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.aiTeamType     = static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.minUnits       = minUnitsTextBox.getValue();
-            aiteamInfo.maxUnits       = maxUnitsTextBox.getValue();
+            AITeamInfo& aiteamInfo = aiteams.at(index);
+            aiteamInfo.houseID     = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
+            aiteamInfo.aiTeamBehavior =
+                static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
+            aiteamInfo.aiTeamType = static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData());
+            aiteamInfo.minUnits   = minUnitsTextBox.getValue();
+            aiteamInfo.maxUnits   = maxUnitsTextBox.getValue();
             teamsListBox.setEntry(index, getDescribingString(aiteamInfo));
         }
     }
@@ -354,15 +357,16 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
 
 std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
 
-    return getPlayerName((HOUSETYPE)aiteamInfo.houseID) + ", " + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + ", " + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", " + std::to_string(aiteamInfo.minUnits) + ", " + std::to_string(aiteamInfo.maxUnits);
+    return getPlayerName((HOUSETYPE)aiteamInfo.houseID) + ", " + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior)
+         + ", " + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", " + std::to_string(aiteamInfo.minUnits) + ", "
+         + std::to_string(aiteamInfo.maxUnits);
 }
 
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) const {
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
         if (player.house == house) {
-            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum)
-                                    : (_("House") + " " + player.name);
+            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum) : (_("House") + " " + player.name);
         }
 
         if (player.bActive && player.bAnyHouse) {

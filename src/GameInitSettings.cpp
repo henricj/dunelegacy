@@ -28,7 +28,8 @@
 GameInitSettings::GameInitSettings() = default;
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
-    : gameType(GameType::Campaign), houseID(newHouseID), mission(1), alreadyShownTutorialHints(0), gameOptions(gameOptions) {
+    : gameType(GameType::Campaign), houseID(newHouseID), mission(1), alreadyShownTutorialHints(0),
+      gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
 }
 
@@ -41,18 +42,21 @@ GameInitSettings::GameInitSettings(const GameInitSettings& prevGameInitInfoClass
     filename                        = getScenarioFilename(houseID, mission);
 }
 
-GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission, const SettingsClass::GameOptionsClass& gameOptions)
+GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, int newMission,
+                                   const SettingsClass::GameOptionsClass& gameOptions)
     : gameType(GameType::Skirmish), houseID(newHouseID), mission(newMission), gameOptions(gameOptions) {
     filename = getScenarioFilename(houseID, mission);
 }
 
-GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
-    : gameType(GameType::CustomGame), filename(std::move(mapfile)), filedata(std::move(filedata)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-}
+GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata,
+                                   bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+    : gameType(GameType::CustomGame), filename(std::move(mapfile)), filedata(std::move(filedata)),
+      multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) { }
 
-GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName, bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
-    : gameType(GameType::CustomMultiplayer), filename(std::move(mapfile)), filedata(std::move(filedata)), servername(std::move(serverName)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) {
-}
+GameInitSettings::GameInitSettings(std::filesystem::path&& mapfile, std::string&& filedata, std::string&& serverName,
+                                   bool multiplePlayersPerHouse, const SettingsClass::GameOptionsClass& gameOptions)
+    : gameType(GameType::CustomMultiplayer), filename(std::move(mapfile)), filedata(std::move(filedata)),
+      servername(std::move(serverName)), multiplePlayersPerHouse(multiplePlayersPerHouse), gameOptions(gameOptions) { }
 
 GameInitSettings::GameInitSettings(std::filesystem::path&& savegame)
     : gameType(GameType::LoadSavegame), filename(std::move(savegame)) {
@@ -133,11 +137,13 @@ void GameInitSettings::save(OutputStream& stream) const {
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {
     if ((static_cast<int>(newHouse) < 0) || (newHouse >= HOUSETYPE::NUM_HOUSES)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id " + std::to_string(static_cast<int>(newHouse)) + ".");
+        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): Invalid house id "
+                                         + std::to_string(static_cast<int>(newHouse)) + ".");
     }
 
     if ((mission < 0) || (mission > 22)) {
-        THROW(std::invalid_argument, "GameInitSettings::getScenarioFilename(): There is no mission number " + std::to_string(mission) + ".");
+        THROW(std::invalid_argument,
+              "GameInitSettings::getScenarioFilename(): There is no mission number " + std::to_string(mission) + ".");
     }
 
     std::string name = "SCEN?0??.INI";
@@ -178,10 +184,12 @@ void GameInitSettings::checkSaveGame(InputStream& stream) {
     }
 
     if (savegameVersion < SAVEGAMEVERSION) {
-        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with an older version:\n" + duneVersion);
+        THROW(std::runtime_error,
+              "Cannot load this savegame,\n because it was created with an older version:\n" + duneVersion);
     }
 
     if (savegameVersion > SAVEGAMEVERSION) {
-        THROW(std::runtime_error, "Cannot load this savegame,\n because it was created with a newer version:\n" + duneVersion);
+        THROW(std::runtime_error,
+              "Cannot load this savegame,\n because it was created with a newer version:\n" + duneVersion);
     }
 }

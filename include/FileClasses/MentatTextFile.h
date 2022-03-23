@@ -33,15 +33,10 @@ class MentatTextFile {
 public:
     class MentatEntry {
     public:
-        MentatEntry(std::string title,
-                    unsigned int numMenuEntry,
-                    unsigned int menuLevel,
-                    unsigned int techLevel,
-                    std::string filename,
-                    std::string name,
-                    std::string content)
-            : title(std::move(title)), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel), filename(std::move(filename)), name(std::move(name)), content(std::move(content)) {
-        }
+        MentatEntry(std::string title, unsigned int numMenuEntry, unsigned int menuLevel, unsigned int techLevel,
+                    std::string filename, std::string name, std::string content)
+            : title(std::move(title)), numMenuEntry(numMenuEntry), menuLevel(menuLevel), techLevel(techLevel),
+              filename(std::move(filename)), name(std::move(name)), content(std::move(content)) { }
 
         std::string title;
         unsigned int numMenuEntry;
@@ -78,9 +73,7 @@ public:
     /**
     \return the number of strings in this file
     */
-    [[nodiscard]] unsigned int getNumEntries() const {
-        return mentatEntries.size();
-    }
+    [[nodiscard]] unsigned int getNumEntries() const { return mentatEntries.size(); }
 
 private:
     std::vector<MentatEntry> mentatEntries;

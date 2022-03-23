@@ -81,7 +81,8 @@ typedef int8_t Bit8s;
 
 // vibrato constants
 #define VIBTAB_SIZE 8
-#define VIB_FREQ    ((fltype)(INTFREQU / 8192)) // vibrato at 6.1hz ?? (opl3 docs say 6.1, opl4 docs say 6.0, y8950 docs say 6.4)
+#define VIB_FREQ                                                                                                       \
+    ((fltype)(INTFREQU / 8192)) // vibrato at 6.1hz ?? (opl3 docs say 6.1, opl4 docs say 6.0, y8950 docs say 6.4)
 
 // tremolo constants and table
 #define TREMTAB_SIZE 53
@@ -114,11 +115,11 @@ typedef struct cell_type_struct {
     bool vibrato, tremolo; // vibrato/tremolo enable bits
 
     // variables used to provide non-continuous envelopes
-    fltype generator_pos;                    // for non-standard sample rates we need to determine how many samples have passed
-    Bits cur_env_step;                       // current (standardized) sample position
+    fltype generator_pos; // for non-standard sample rates we need to determine how many samples have passed
+    Bits cur_env_step;    // current (standardized) sample position
     Bits env_step_a, env_step_d, env_step_r; // number of std samples of one step (for attack/decay/release mode)
     Bit8u step_skip_pos;                     // position of 8-cyclic step skipping (always 2^x to check against mask)
-    Bits env_step_skip_a;                    // bitmask that determines if a step is skipped (respective bit is zero then)
+    Bits env_step_skip_a; // bitmask that determines if a step is skipped (respective bit is zero then)
 
 } celltype;
 

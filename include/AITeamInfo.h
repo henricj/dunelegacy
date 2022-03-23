@@ -25,8 +25,8 @@
 class AITeamInfo {
 public:
     AITeamInfo(HOUSETYPE houseID, AITeamBehavior aiTeamBehavior, AITeamType aiTeamType, int minUnits, int maxUnits)
-        : houseID(houseID), aiTeamBehavior(aiTeamBehavior), aiTeamType(aiTeamType), minUnits(minUnits), maxUnits(maxUnits) {
-    }
+        : houseID(houseID), aiTeamBehavior(aiTeamBehavior), aiTeamType(aiTeamType), minUnits(minUnits),
+          maxUnits(maxUnits) { }
 
     explicit AITeamInfo(InputStream& stream) {
         houseID        = static_cast<HOUSETYPE>(stream.readUint32());
