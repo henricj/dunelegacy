@@ -51,7 +51,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color)
     mainHBox.addWidget(HSpacer::create(16));
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
-    titleLabel.setAlignment((Alignment_Enum)(Alignment_HCenter | Alignment_VCenter));
+    titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Load Map"));
     mainVBox.addWidget(&titleLabel);
 
@@ -66,20 +66,20 @@ LoadMapWindow::LoadMapWindow(uint32_t color)
     singleplayerUserMapsButton.setText(_("SP User Maps"));
     singleplayerUserMapsButton.setTextColor(color);
     singleplayerUserMapsButton.setToggleButton(true);
-    singleplayerUserMapsButton.setOnClick(std::bind(&LoadMapWindow::onMapTypeChange, this, 0));
+    singleplayerUserMapsButton.setOnClick([this] { onMapTypeChange(0); });
     mapTypeButtonsHBox.addWidget(&singleplayerUserMapsButton);
 
     multiplayerUserMapsButton.setText(_("MP User Maps"));
     multiplayerUserMapsButton.setTextColor(color);
     multiplayerUserMapsButton.setToggleButton(true);
-    multiplayerUserMapsButton.setOnClick(std::bind(&LoadMapWindow::onMapTypeChange, this, 1));
+    multiplayerUserMapsButton.setOnClick([this] { onMapTypeChange(1); });
     mapTypeButtonsHBox.addWidget(&multiplayerUserMapsButton);
 
     mapTypeButtonsHBox.addWidget(Spacer::create(), 5.0);
     mapList.setColor(color);
     mapList.setAutohideScrollbar(false);
-    mapList.setOnSelectionChange(std::bind(&LoadMapWindow::onMapListSelectionChange, this, std::placeholders::_1));
-    mapList.setOnDoubleClick(std::bind(&LoadMapWindow::onLoad, this));
+    mapList.setOnSelectionChange([this](auto&& PH1) { onMapListSelectionChange(std::forward<decltype(PH1)>(PH1)); });
+    mapList.setOnDoubleClick([this] { onLoad(); });
     leftVBox.addWidget(&mapList, 0.95);
 
     leftVBox.addWidget(VSpacer::create(10));

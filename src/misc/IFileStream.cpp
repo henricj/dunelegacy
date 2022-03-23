@@ -128,7 +128,7 @@ uint64_t IFileStream::readUint64() {
 }
 
 bool IFileStream::readBool() {
-    return (readUint8() == 1);
+    return readUint8() == 1;
 }
 
 float IFileStream::readFloat() {

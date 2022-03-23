@@ -86,10 +86,10 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t height,
 
     if (alignment & Alignment_VCenter) {
         const int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-        textpos_y            = (((int)height) - textheight) / 2;
+        textpos_y            = (static_cast<int>(height) - textheight) / 2;
     } else if (alignment & Alignment_Bottom) {
         const int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-        textpos_y            = ((int)height) - textheight - spacing;
+        textpos_y            = static_cast<int>(height) - textheight - spacing;
     } else {
         // Alignment_Top
         textpos_y = spacing;
@@ -521,16 +521,16 @@ sdl2::surface_ptr DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t h
     if (color == COLOR_DEFAULT) {
         // default color
 
-        const int max_i = std::max((int)lround(percent * ((((int)width) - 4) / 100.0)), 0);
+        const int max_i = std::max(static_cast<int>(lround(percent * ((static_cast<int>(width) - 4) / 100.0))), 0);
 
         sdl2::surface_lock lock(pSurface.get());
 
-        const SDL_Rect dest = {2, 2, max_i, ((int)height) - 4};
+        const SDL_Rect dest = {2, 2, max_i, static_cast<int>(height) - 4};
         SDL_FillRect(pSurface.get(), &dest, COLOR_HALF_TRANSPARENT);
     } else {
         const int max_i = lround(percent * (width / 100.0));
 
-        const SDL_Rect dest = {0, 0, max_i, (int)height};
+        const SDL_Rect dest = {0, 0, max_i, static_cast<int>(height)};
         SDL_FillRect(pSurface.get(), &dest, color);
     }
 

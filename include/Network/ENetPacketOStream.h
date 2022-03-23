@@ -92,25 +92,25 @@ public:
 
     void writeUint8(uint8_t x) override {
         ensureBufferSize(currentPos + sizeof(uint8_t));
-        *((uint8_t*)(packet->data + currentPos)) = x;
+        *(uint8_t*)(packet->data + currentPos) = x;
         currentPos += sizeof(uint8_t);
     }
 
     void writeUint16(uint16_t x) override {
         ensureBufferSize(currentPos + sizeof(uint16_t));
-        *((uint16_t*)(packet->data + currentPos)) = SDL_SwapLE16(x);
+        *reinterpret_cast<uint16_t*>(packet->data + currentPos) = SDL_SwapLE16(x);
         currentPos += sizeof(uint16_t);
     }
 
     void writeUint32(uint32_t x) override {
         ensureBufferSize(currentPos + sizeof(uint32_t));
-        *((uint32_t*)(packet->data + currentPos)) = SDL_SwapLE32(x);
+        *reinterpret_cast<uint32_t*>(packet->data + currentPos) = SDL_SwapLE32(x);
         currentPos += sizeof(uint32_t);
     }
 
     void writeUint64(uint64_t x) override {
         ensureBufferSize(currentPos + sizeof(uint64_t));
-        *((uint64_t*)(packet->data + currentPos)) = SDL_SwapLE64(x);
+        *reinterpret_cast<uint64_t*>(packet->data + currentPos) = SDL_SwapLE64(x);
         currentPos += sizeof(uint64_t);
     }
 
@@ -129,7 +129,7 @@ public:
             return;
         }
 
-        size_t newBufferSize = ((packet->dataLength * 3) / 2);
+        size_t newBufferSize = packet->dataLength * 3 / 2;
         if (newBufferSize < minBufferSize) {
             newBufferSize = minBufferSize;
         }

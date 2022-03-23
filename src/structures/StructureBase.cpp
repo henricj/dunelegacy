@@ -241,11 +241,11 @@ void StructureBase::handleActionClick(const GameContext& context, int xPos, int 
         (yPos >= (location.y + getStructureSizeY()))) {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            (uint32_t)xPos, (uint32_t)yPos));
+                                                            static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     } else {
         currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            (uint32_t)NONE_ID, (uint32_t)NONE_ID));
+                                                            static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
     }
 }
 

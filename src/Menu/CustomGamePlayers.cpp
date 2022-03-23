@@ -199,7 +199,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.houseHBox.addWidget(&curHouseInfo.houseLabel, 60);
 
         if (bLoadMultiplayer) {
-            if (i < (int)houseInfoListSetup.size()) {
+            if (i < static_cast<int>(houseInfoListSetup.size())) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
                 if (gisHouseInfo.houseID == HOUSETYPE::HOUSE_INVALID) {
@@ -225,7 +225,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.houseHBox.addWidget(&curHouseInfo.houseDropDown, 95);
 
         if (bLoadMultiplayer) {
-            if (i < (int)houseInfoListSetup.size()) {
+            if (i < static_cast<int>(houseInfoListSetup.size())) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
                 curHouseInfo.teamDropDown.addEntry(_("Team") + " " + std::to_string(gisHouseInfo.team), gisHouseInfo.team);
@@ -255,7 +255,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1Label, 68);
 
         if (bLoadMultiplayer) {
-            if (i < (int)houseInfoListSetup.size()) {
+            if (i < static_cast<int>(houseInfoListSetup.size())) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
                 if (gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
@@ -312,7 +312,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player2Label, 68);
 
         if (bLoadMultiplayer) {
-            if (i < (int)houseInfoListSetup.size()) {
+            if (i < static_cast<int>(houseInfoListSetup.size())) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
                 if (gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
@@ -468,7 +468,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
 
         switch (changeEvent.eventType) {
             case ChangeEventList::ChangeEvent::EventType::ChangeHouse: {
-                auto houseType = (HOUSETYPE)changeEvent.newValue;
+                auto houseType = static_cast<HOUSETYPE>(changeEvent.newValue);
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
@@ -481,7 +481,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
             } break;
 
             case ChangeEventList::ChangeEvent::EventType::ChangeTeam: {
-                const int newTeam = (int)changeEvent.newValue;
+                const int newTeam = static_cast<int>(changeEvent.newValue);
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
@@ -494,7 +494,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
             } break;
 
             case ChangeEventList::ChangeEvent::EventType::ChangePlayer: {
-                const int newPlayer = (int)changeEvent.newValue;
+                const int newPlayer = static_cast<int>(changeEvent.newValue);
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot / 2];
 
@@ -714,7 +714,7 @@ void CustomGamePlayers::addAllPlayersToGameInitSettings() {
         const int player2       = curHouseInfo.player2DropDown.getSelectedEntryIntData();
         std::string player2name = curHouseInfo.player2DropDown.getSelectedEntry();
 
-        GameInitSettings::HouseInfo newHouseInfo((HOUSETYPE)houseID, team);
+        GameInitSettings::HouseInfo newHouseInfo(static_cast<HOUSETYPE>(houseID), team);
 
         bool bAdded = false;
         bAdded |= addPlayerToHouseInfo(newHouseInfo, player1, player1name);
@@ -1000,7 +1000,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             } else {
                 bAddHouse = (h == static_cast<int>(house));
 
-                if (((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) && isBoundedHouseOnMap((HOUSETYPE)h)) {
+                if (((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) && isBoundedHouseOnMap(static_cast<HOUSETYPE>(h))) {
                     // check if this entry is random or a bounded house but is needed for a bounded house
                     bAddHouse = true;
                     for (int j = 0; j < numHouses; j++) {
@@ -1291,7 +1291,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
                     currentItemIndex++;
                 } else {
                     if (h == static_cast<int>(house)) {
-                        houseDropDownBox.insertEntry(currentItemIndex, getHouseNameByNumber((HOUSETYPE)h), h);
+                        houseDropDownBox.insertEntry(currentItemIndex, getHouseNameByNumber(static_cast<HOUSETYPE>(h)), h);
 
                         if (bSelect) {
                             houseDropDownBox.setSelectedItem(currentItemIndex);

@@ -163,7 +163,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
     }
 
     textLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
-    textLabel.setAlignment((Alignment_Enum)(Alignment_Left | Alignment_Top));
+    textLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top));
     textLabel.setVisible(false);
 }
 
@@ -193,7 +193,7 @@ void MentatMenu::update() {
         currentMentatTextIndex++;
 
         std::string text;
-        if (currentMentatTextIndex >= (int)mentatTexts.size()) {
+        if (currentMentatTextIndex >= static_cast<int>(mentatTexts.size())) {
             onMentatTextFinished();
             nextMentatTextSwitch = 0xFFFFFFFF;
             text                 = "";

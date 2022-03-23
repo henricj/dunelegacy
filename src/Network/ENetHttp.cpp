@@ -81,7 +81,7 @@ std::string percentEncode(const std::string& s) {
     for (const char c : s) {
         if (unreservedCharacters.find_first_of(c) == std::string::npos) {
             // percent encode
-            result += fmt::sprintf("%%%.2X", (unsigned char)c);
+            result += fmt::sprintf("%%%.2X", static_cast<unsigned char>(c));
         } else {
             // copy unmodifed
             result += c;
@@ -118,7 +118,7 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
         filepath += percentEncode(param.first) + "=" + percentEncode(param.second);
     }
 
-    return loadFromHttp(domain, filepath, (unsigned short)port);
+    return loadFromHttp(domain, filepath, static_cast<unsigned short>(port));
 }
 
 std::string loadFromHttp(const std::string& domain, const std::string& filepath, unsigned short port) {
@@ -170,7 +170,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 
         result.append(resultBuffer, receiveLength);
 
-        if ((size_t)receiveLength < sizeof(resultBuffer)) {
+        if (static_cast<size_t>(receiveLength) < sizeof(resultBuffer)) {
             break;
         }
     }

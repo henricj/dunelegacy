@@ -68,7 +68,7 @@ public:
             THROW(InputStream::eof, "ENetPacketIStream::readString(): End-of-File reached!");
         }
 
-        std::string resultString((char*)(packet->data + currentPos), length);
+        std::string resultString(reinterpret_cast<char*>(packet->data + currentPos), length);
         currentPos += length;
         return resultString;
     }
@@ -78,7 +78,7 @@ public:
             THROW(InputStream::eof, "ENetPacketIStream::readUint8(): End-of-File reached!");
         }
 
-        const uint8_t tmp = *((uint8_t*)(packet->data + currentPos));
+        const uint8_t tmp = *(packet->data + currentPos);
         currentPos += sizeof(uint8_t);
         return tmp;
     }
@@ -88,7 +88,7 @@ public:
             THROW(InputStream::eof, "ENetPacketIStream::readUint16(): End-of-File reached!");
         }
 
-        const uint16_t tmp = *((uint16_t*)(packet->data + currentPos));
+        const uint16_t tmp = *reinterpret_cast<uint16_t*>(packet->data + currentPos);
         currentPos += sizeof(uint16_t);
         return SDL_SwapLE16(tmp);
     }
@@ -98,7 +98,7 @@ public:
             THROW(InputStream::eof, "ENetPacketIStream::readUint32(): End-of-File reached!");
         }
 
-        const uint32_t tmp = *((uint32_t*)(packet->data + currentPos));
+        const uint32_t tmp = *reinterpret_cast<uint32_t*>(packet->data + currentPos);
         currentPos += sizeof(uint32_t);
         return SDL_SwapLE32(tmp);
     }
@@ -108,13 +108,13 @@ public:
             THROW(InputStream::eof, "ENetPacketIStream::readUint64(): End-of-File reached!");
         }
 
-        const uint64_t tmp = *((uint64_t*)(packet->data + currentPos));
+        const uint64_t tmp = *reinterpret_cast<uint64_t*>(packet->data + currentPos);
         currentPos += sizeof(uint64_t);
         return SDL_SwapLE64(tmp);
     }
 
     bool readBool() override {
-        return (readUint8() == 1 ? true : false);
+        return readUint8() == 1 ? true : false;
     }
 
     float readFloat() override {

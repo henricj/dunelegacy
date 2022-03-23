@@ -223,8 +223,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
            to the executable, as that's what most existing software seems
            to do.
          */
-    } else if ((flags == FNKDAT_CONF) || (flags == FNKDAT_USER) || (flags == FNKDAT_DATA) ||
-               (flags == (FNKDAT_VAR | FNKDAT_DATA))) {
+    } else if (flags == FNKDAT_CONF || flags == FNKDAT_USER || flags == FNKDAT_DATA ||
+               flags == (FNKDAT_VAR | FNKDAT_DATA)) {
         const wchar_t* szCommandLine = GetCommandLineW();
 
         const wchar_t* command_end;
@@ -341,7 +341,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
     output_path = output_path.lexically_normal().make_preferred();
 
     /* do the mkdir(s), if asked to */
-    if ((flags & FNKDAT_CREAT)) {
+    if (flags & FNKDAT_CREAT) {
         const auto parent = output_path.parent_path();
 
         if (!parent.empty()) {

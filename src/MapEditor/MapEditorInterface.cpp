@@ -880,7 +880,7 @@ void MapEditorInterface::onSave() {
 
         const auto pathName = getBasename(getDirname(lastSaveName));
 
-        for (int i = 0; i < (int)mapDirectories.size(); i++) {
+        for (int i = 0; i < static_cast<int>(mapDirectories.size()); i++) {
             if (getBasename(mapDirectories[i]) == pathName) {
                 lastSaveDirectoryIndex = i;
                 break;
@@ -1011,7 +1011,7 @@ void MapEditorInterface::onTerrainButton(int terrainType) {
     editorModeClassicTerrain_SpiceField.setToggleState((terrainType == Terrain_Spice));
 
     if (currentTerrainType >= 0) {
-        pMapEditor->setEditorMode(MapEditor::EditorMode((TERRAINTYPE)currentTerrainType, currentTerrainPenSize));
+        pMapEditor->setEditorMode(MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType), currentTerrainPenSize));
     }
 }
 
@@ -1023,7 +1023,7 @@ void MapEditorInterface::onTerrainPenButton(int pensize) {
     editorModeTerrain_Pen5x5.setToggleState((pensize == 5));
 
     if (currentTerrainType >= 0) {
-        pMapEditor->setEditorMode(MapEditor::EditorMode((TERRAINTYPE)currentTerrainType, currentTerrainPenSize));
+        pMapEditor->setEditorMode(MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType), currentTerrainPenSize));
     }
 }
 
@@ -1053,7 +1053,7 @@ void MapEditorInterface::onStructButton(ItemID_enum structType) {
     editorModeStructs_Palace.setToggleState((structType == Structure_Palace));
 
     if (structType >= 0) {
-        const auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
+        const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, structType, 256));
     }
 }
@@ -1081,7 +1081,7 @@ void MapEditorInterface::onUnitButton(ItemID_enum unitType) {
     editorModeUnits_Ornithopter.setToggleState((unitType == Unit_Ornithopter));
 
     if (unitType >= 0) {
-        const auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
+        const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
     }
 }
@@ -1138,7 +1138,7 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
     }
 
     const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
-    for (int i = 0; i < (int)mirrorUnits.size(); i++) {
+    for (int i = 0; i < static_cast<int>(mirrorUnits.size()); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
@@ -1175,7 +1175,7 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
     }
 
     const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
-    for (int i = 0; i < (int)mirrorUnits.size(); i++) {
+    for (int i = 0; i < static_cast<int>(mirrorUnits.size()); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
@@ -1212,7 +1212,7 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
 
         for (const int selectedUnit : selectedUnits) {
             const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
-            MapEditorEditUnitOperation editUnitOperation(pUnit->id, pUnit->health, pUnit->angle, (ATTACKMODE)unitDetailsAttackModeDropDownBox.getSelectedEntryIntData());
+            MapEditorEditUnitOperation editUnitOperation(pUnit->id, pUnit->health, pUnit->angle, static_cast<ATTACKMODE>(unitDetailsAttackModeDropDownBox.getSelectedEntryIntData()));
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }
     }
@@ -1323,7 +1323,7 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
 }
 
 void MapEditorInterface::onMirrorModeButton(int mode) {
-    pMapEditor->setMirrorMode((MirrorMode)mode);
+    pMapEditor->setMirrorMode(static_cast<MirrorMode>(mode));
 
     mirrorModeNoneButton.setToggleState((mode == MirrorModeNone));
     mirrorModeHorizontalButton.setToggleState((mode == MirrorModeHorizontal));

@@ -144,7 +144,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             color = MapRGBA(radarSurface->format, color);
 
             for (int j = 0; j < scale; j++) {
-                uint32_t* p = ((uint32_t*)((uint8_t*)radarSurface->pixels + (offsetY + scale * y + j) * radarSurface->pitch)) + (offsetX + scale * x);
+                uint32_t* p = ((uint32_t*)(static_cast<uint8_t*>(radarSurface->pixels) + (offsetY + scale * y + j) * radarSurface->pitch)) + (offsetX + scale * x);
 
                 for (int i = 0; i < scale; i++, p++) {
                     // Do not use putPixel here to avoid overhead

@@ -62,39 +62,39 @@ MainMenu::MainMenu() {
     windowWidget.addWidget(&MenuButtons, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
 
     singlePlayerButton.setText(_("SINGLE PLAYER"));
-    singlePlayerButton.setOnClick(std::bind(&MainMenu::onSinglePlayer, this));
+    singlePlayerButton.setOnClick([this] { onSinglePlayer(); });
     MenuButtons.addWidget(&singlePlayerButton);
     singlePlayerButton.setActive();
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     multiPlayerButton.setText(_("MULTIPLAYER"));
-    multiPlayerButton.setOnClick(std::bind(&MainMenu::onMultiPlayer, this));
+    multiPlayerButton.setOnClick([this] { onMultiPlayer(); });
     MenuButtons.addWidget(&multiPlayerButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     //    MenuButtons.addWidget(VSpacer::create(16));
     mapEditorButton.setText(_("MAP EDITOR"));
-    mapEditorButton.setOnClick(std::bind(&MainMenu::onMapEditor, this));
+    mapEditorButton.setOnClick([this] { onMapEditor(); });
     MenuButtons.addWidget(&mapEditorButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     optionsButton.setText(_("OPTIONS"));
-    optionsButton.setOnClick(std::bind(&MainMenu::onOptions, this));
+    optionsButton.setOnClick([this] { onOptions(); });
     MenuButtons.addWidget(&optionsButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     aboutButton.setText(_("ABOUT"));
-    aboutButton.setOnClick(std::bind(&MainMenu::onAbout, this));
+    aboutButton.setOnClick([this] { onAbout(); });
     MenuButtons.addWidget(&aboutButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     quitButton.setText(_("QUIT"));
-    quitButton.setOnClick(std::bind(&MainMenu::onQuit, this));
+    quitButton.setOnClick([this] { onQuit(); });
     MenuButtons.addWidget(&quitButton);
 }
 

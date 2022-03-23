@@ -100,7 +100,7 @@ void TextView::resize(uint32_t width, uint32_t height) {
     const int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
     const int numVisibleLines = height / lineHeight;
-    scrollbar.setRange(0, std::max(0, ((int)textLines.size()) - numVisibleLines));
+    scrollbar.setRange(0, std::max(0, static_cast<int>(textLines.size()) - numVisibleLines));
     scrollbar.setBigStepSize(std::max(1, numVisibleLines - 1));
 
     Widget::resize(width, height);

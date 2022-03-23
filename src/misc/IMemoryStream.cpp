@@ -60,7 +60,7 @@ uint64_t IMemoryStream::readUint64() {
 }
 
 bool IMemoryStream::readBool() {
-    return (readUint8() == 1 ? true : false);
+    return readUint8() == 1 ? true : false;
 }
 
 float IMemoryStream::readFloat() {

@@ -66,9 +66,9 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         centralVBox.addWidget(VSpacer::create(15));
 
         playerWidgets[i].playerCheckbox.setTextColor(currentColor);
-        playerWidgets[i].playerCheckbox.setOnClick(std::bind(&PlayerSettingsWindow::onPlayerCheckbox, this, i));
+        playerWidgets[i].playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
         if (pMapEditor->getMapVersion() < 2) {
-            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE)i) + ":");
+            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)) + ":");
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 150);
         } else {
             playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
@@ -185,7 +185,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
-    okButton.setOnClick(std::bind(&PlayerSettingsWindow::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
 

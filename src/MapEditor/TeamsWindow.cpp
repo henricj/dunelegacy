@@ -259,8 +259,8 @@ void TeamsWindow::onAdd() {
     const int index = teamsListBox.getSelectedIndex();
 
     const AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                                (AITeamBehavior)aiTeamBehaviorDropDownBox.getSelectedEntryIntData(),
-                                (AITeamType)aiTeamTypeDropDownBox.getSelectedEntryIntData(),
+                                static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
+                                static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
                                 minUnitsTextBox.getValue(),
                                 maxUnitsTextBox.getValue());
     aiteams.insert(aiteams.begin() + index + 1, aiteamInfo);
@@ -343,8 +343,8 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
         if (index >= 0) {
             AITeamInfo& aiteamInfo    = aiteams.at(index);
             aiteamInfo.houseID        = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
-            aiteamInfo.aiTeamBehavior = (AITeamBehavior)aiTeamBehaviorDropDownBox.getSelectedEntryIntData();
-            aiteamInfo.aiTeamType     = (AITeamType)aiTeamTypeDropDownBox.getSelectedEntryIntData();
+            aiteamInfo.aiTeamBehavior = static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
+            aiteamInfo.aiTeamType     = static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData());
             aiteamInfo.minUnits       = minUnitsTextBox.getValue();
             aiteamInfo.maxUnits       = maxUnitsTextBox.getValue();
             teamsListBox.setEntry(index, getDescribingString(aiteamInfo));

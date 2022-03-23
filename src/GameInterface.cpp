@@ -73,7 +73,6 @@ GameInterface::GameInterface(const GameContext& context)
 
     // add radar
     windowWidget.addWidget(&radarView, Point(getRendererWidth() - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0), radarView.getMinimumSize());
-    // radarView.setOnRadarClick(std::bind(&Game::onRadarClick, currentGame, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
         return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });

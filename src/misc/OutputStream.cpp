@@ -28,8 +28,8 @@ void OutputStream::writeFixPoint(FixPoint x) {
 }
 
 void OutputStream::writeBools(bool val1, bool val2, bool val3, bool val4, bool val5, bool val6, bool val7, bool val8) {
-    const uint8_t val = static_cast<uint8_t>(val1) | (val2 << 1) | (val3 << 2) | (val4 << 3) | (val5 << 4) | (val6 << 5) |
-                        (val7 << 6) | (val8 << 7);
+    const uint8_t val = static_cast<uint8_t>(val1) | val2 << 1 | val3 << 2 | val4 << 3 | val5 << 4 | val6 << 5 |
+                        val7 << 6 | val8 << 7;
     writeUint8(val);
 }
 

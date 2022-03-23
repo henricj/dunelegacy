@@ -65,7 +65,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse)
     yesButton.setTextures(pMentatYes, pMentatYesPressed);
     yesButton.setEnabled(false);
     yesButton.setVisible(false);
-    yesButton.setOnClick(std::bind(&HouseChoiceInfoMenu::onYes, this));
+    yesButton.setOnClick([this] { onYes(); });
     windowWidget.addWidget(&yesButton, Point(370, 340), getTextureSize(pMentatYes));
 
     const auto* const pMentatNo        = pGFXManager->getUIGraphic(UI_MentatNo);

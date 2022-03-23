@@ -624,7 +624,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         int position = (logicalOffsetY + unit.position.y) * logicalSizeX + (logicalOffsetX + unit.position.x);
 
-        int angle = (int)unit.angle;
+        int angle = static_cast<int>(unit.angle);
 
         angle = (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
 

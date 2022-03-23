@@ -733,7 +733,7 @@ int NetworkManager::getMaxPeerRoundTripTime() {
     int maxPeerRTT = 0;
 
     for (const ENetPeer* pCurrentPeer : peerList) {
-        maxPeerRTT = std::max(maxPeerRTT, (int)(pCurrentPeer->roundTripTime));
+        maxPeerRTT = std::max(maxPeerRTT, static_cast<int>(pCurrentPeer->roundTripTime));
     }
 
     return maxPeerRTT;

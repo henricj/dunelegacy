@@ -28,21 +28,21 @@ void InputStream::readBools(bool* pVal1, bool* pVal2, bool* pVal3, bool* pVal4, 
     uint8_t val = readUint8();
 
     if (pVal1 != nullptr)
-        *pVal1 = ((val & 0x01) != 0);
+        *pVal1 = (val & 0x01) != 0;
     if (pVal2 != nullptr)
-        *pVal2 = ((val & 0x02) != 0);
+        *pVal2 = (val & 0x02) != 0;
     if (pVal3 != nullptr)
-        *pVal3 = ((val & 0x04) != 0);
+        *pVal3 = (val & 0x04) != 0;
     if (pVal4 != nullptr)
-        *pVal4 = ((val & 0x08) != 0);
+        *pVal4 = (val & 0x08) != 0;
     if (pVal5 != nullptr)
-        *pVal5 = ((val & 0x10) != 0);
+        *pVal5 = (val & 0x10) != 0;
     if (pVal6 != nullptr)
-        *pVal6 = ((val & 0x20) != 0);
+        *pVal6 = (val & 0x20) != 0;
     if (pVal7 != nullptr)
-        *pVal7 = ((val & 0x40) != 0);
+        *pVal7 = (val & 0x40) != 0;
     if (pVal8 != nullptr)
-        *pVal8 = ((val & 0x80) != 0);
+        *pVal8 = (val & 0x80) != 0;
 }
 
 std::vector<uint8_t> InputStream::readUint8Vector() {

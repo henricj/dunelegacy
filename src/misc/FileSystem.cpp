@@ -93,7 +93,7 @@ std::string safe_tolower(std::string_view s) {
 } // namespace
 
 static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) {
-    return (a.name.compare(b.name) < 0);
+    return a.name.compare(b.name) < 0;
 }
 static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
@@ -113,7 +113,7 @@ static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
 }
 
 static bool cmp_Name_Dsc(const FileInfo& a, const FileInfo& b) {
-    return (a.name.compare(b.name) > 0);
+    return a.name.compare(b.name) > 0;
 }
 static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
@@ -305,9 +305,9 @@ std::string readCompleteFile(const std::filesystem::path& filename) {
         return "";
     }
 
-    const std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t)filesize);
+    const std::unique_ptr<char[]> filedata = std::make_unique<char[]>(static_cast<size_t>(filesize));
 
-    if (SDL_RWread(RWopsFile.get(), filedata.get(), (size_t)filesize, 1) != 1) {
+    if (SDL_RWread(RWopsFile.get(), filedata.get(), static_cast<size_t>(filesize), 1) != 1) {
         return "";
     }
 
@@ -351,7 +351,7 @@ std::filesystem::path getDuneLegacyDataDir() {
         dataDir = dataDir.lexically_normal();
 #endif
 
-        if ((dataDir.empty()) || (dataDir == ".") || (dataDir == "./") || (dataDir == ".\\")) {
+        if (dataDir.empty() || dataDir == "." || dataDir == "./" || dataDir == ".\\") {
             const sdl2::sdl_ptr<char> basePath {SDL_GetBasePath()};
 
             if (basePath == nullptr) {

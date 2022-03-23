@@ -48,7 +48,7 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
             std::string nextKey  = replacement.first;
             const size_t nextPos = result.find(nextKey, currentPos);
 
-            if ((nextPos != std::string::npos) && ((nextPos < bestNextPos) || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())))) {
+            if (nextPos != std::string::npos && (nextPos < bestNextPos || nextPos == bestNextPos && nextKey.length() > bestNextKey.length())) {
 
                 // best match so far (either smaller position or same position but longer match)
                 bestNextPos   = nextPos;
@@ -71,13 +71,13 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
 std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     std::string result;
-    const size_t estimatedLength = (len == std::string::npos) ? (str.length() - pos) : len;
+    const size_t estimatedLength = len == std::string::npos ? str.length() - pos : len;
     result.reserve(estimatedLength);
 
     auto iter = str.cbegin();
 
     size_t currentPos = 0;
-    while ((iter != str.cend()) && (currentPos != pos)) {
+    while (iter != str.cend() && currentPos != pos) {
         auto c = static_cast<unsigned char>(*iter);
 
         if ((c & 0x80) == 0) {
@@ -100,7 +100,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     }
 
     size_t resultLen = 0;
-    while ((iter != str.cend()) && (resultLen != len)) {
+    while (iter != str.cend() && resultLen != len) {
         auto c = static_cast<unsigned char>(*iter);
 
         size_t numBytes = 0;
@@ -121,7 +121,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
             numBytes = 1;
         }
 
-        while ((iter < str.cend()) && (numBytes > 0)) {
+        while (iter < str.cend() && numBytes > 0) {
             result += *iter;
             numBytes--;
             ++iter;
@@ -198,7 +198,7 @@ std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth, st
 
                     do {
                         warppos++;
-                    } while ((warppos < hardLine.length()) && !utf8IsStartByte(hardLine[warppos]));
+                    } while (warppos < hardLine.length() && !utf8IsStartByte(hardLine[warppos]));
 
                     if (warppos >= hardLine.length()) {
                         oldwarppos = hardLine.length();
@@ -247,8 +247,8 @@ std::string convertCP850ToUTF8(std::string_view text) {
             result += c;
         } else {
             c = cp850toISO8859_1[c - 128];
-            result += (0xC0 | (c >> 6));
-            result += (0x80 | (c & 0x3F));
+            result += 0xC0 | c >> 6;
+            result += 0x80 | c & 0x3F;
         }
     }
     return result;
@@ -280,7 +280,7 @@ std::string decodeString(std::string_view text) {
         unsigned char databyte = text[i];
 
         if (databyte & 0x80) {
-            const unsigned char index1 = (databyte >> 3u) & 0xFu;
+            const unsigned char index1 = databyte >> 3u & 0xFu;
             const unsigned char index2 = databyte & 0x7u;
 
             out += decodeTable1[index1];

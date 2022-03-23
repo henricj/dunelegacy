@@ -237,11 +237,11 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             float Human_PercentSpiceComplete = NAN;
             if (SpiceComplete < spiceHarvestedByHuman / MaxSpiceHarvested) {
                 Human_PercentSpiceComplete = SpiceComplete * 100.0f;
-                spiceYouLabel.setText(std::to_string((int)(SpiceComplete * MaxSpiceHarvested)));
+                spiceYouLabel.setText(std::to_string(static_cast<int>(SpiceComplete * MaxSpiceHarvested)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentSpiceComplete = spiceHarvestedByHuman * 100.0f / MaxSpiceHarvested;
-                spiceYouLabel.setText(std::to_string((int)spiceHarvestedByHuman));
+                spiceYouLabel.setText(std::to_string(static_cast<int>(spiceHarvestedByHuman)));
                 soundPlayer->playSound(Sound_Tick);
                 currentState          = State_Between_HumanSpice_and_AISpice;
                 currentStateStartTime = SDL_GetTicks();
@@ -266,11 +266,11 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             float AI_PercentSpiceComplete = NAN;
             if (SpiceComplete < spiceHarvestedByAI / MaxSpiceHarvested) {
                 AI_PercentSpiceComplete = SpiceComplete * 100.0f;
-                spiceEnemyLabel.setText(std::to_string((int)(SpiceComplete * MaxSpiceHarvested)));
+                spiceEnemyLabel.setText(std::to_string(static_cast<int>(SpiceComplete * MaxSpiceHarvested)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentSpiceComplete = spiceHarvestedByAI * 100.0f / MaxSpiceHarvested;
-                spiceEnemyLabel.setText(std::to_string((int)spiceHarvestedByAI));
+                spiceEnemyLabel.setText(std::to_string(static_cast<int>(spiceHarvestedByAI)));
                 soundPlayer->playSound(Sound_Tick);
                 currentState          = State_Between_AISpice_and_HumanUnits;
                 currentStateStartTime = SDL_GetTicks();
@@ -289,13 +289,13 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_HumanUnits: {
-            const float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            const float MaxUnitsDestroyed = static_cast<float>(max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200));
             const float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentUnitsComplete = NAN;
             if (UnitsComplete < unitsDestroyedByHuman / MaxUnitsDestroyed) {
                 Human_PercentUnitsComplete = UnitsComplete * 100.0f;
-                unitsYouLabel.setText(std::to_string((int)(UnitsComplete * MaxUnitsDestroyed)));
+                unitsYouLabel.setText(std::to_string(static_cast<int>(UnitsComplete * MaxUnitsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentUnitsComplete = unitsDestroyedByHuman * 100.0f / MaxUnitsDestroyed;
@@ -318,13 +318,13 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_AIUnits: {
-            const float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            const float MaxUnitsDestroyed = static_cast<float>(max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200));
             const float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentUnitsComplete = NAN;
             if (UnitsComplete < unitsDestroyedByAI / MaxUnitsDestroyed) {
                 AI_PercentUnitsComplete = UnitsComplete * 100.0f;
-                unitsEnemyLabel.setText(std::to_string((int)(UnitsComplete * MaxUnitsDestroyed)));
+                unitsEnemyLabel.setText(std::to_string(static_cast<int>(UnitsComplete * MaxUnitsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentUnitsComplete = unitsDestroyedByAI * 100.0f / MaxUnitsDestroyed;
@@ -347,13 +347,13 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_HumanBuildings: {
-            const float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            const float MaxBuildingsDestroyed = static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
             const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByHuman / MaxBuildingsDestroyed) {
                 Human_PercentBuildingsComplete = BuildingsComplete * 100.0f;
-                buildingsYouLabel.setText(std::to_string((int)(BuildingsComplete * MaxBuildingsDestroyed)));
+                buildingsYouLabel.setText(std::to_string(static_cast<int>(BuildingsComplete * MaxBuildingsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 Human_PercentBuildingsComplete = structuresDestroyedByHuman * 100.0f / MaxBuildingsDestroyed;
@@ -376,13 +376,13 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_AIBuildings: {
-            const float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            const float MaxBuildingsDestroyed = static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
             const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByAI / MaxBuildingsDestroyed) {
                 AI_PercentBuildingsComplete = BuildingsComplete * 100.0f;
-                buildingsEnemyLabel.setText(std::to_string((int)(BuildingsComplete * MaxBuildingsDestroyed)));
+                buildingsEnemyLabel.setText(std::to_string(static_cast<int>(BuildingsComplete * MaxBuildingsDestroyed)));
                 soundPlayer->playSound(Sound_CreditsTick);
             } else {
                 AI_PercentBuildingsComplete = structuresDestroyedByAI * 100.0f / MaxBuildingsDestroyed;
@@ -437,7 +437,7 @@ void CampaignStatsMenu::calculateScore(int level) {
         }
     });
 
-    totalScore += ((int)totalHumanCredits) / 100;
+    totalScore += static_cast<int>(totalHumanCredits) / 100;
 
     for (const StructureBase* pStructure : structureList) {
         if (!pStructure->getOwner()->isAI()) {

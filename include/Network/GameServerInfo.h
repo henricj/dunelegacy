@@ -39,7 +39,9 @@ public:
         \return true if equal, false otherwise
     */
     bool operator==(const GameServerInfo& gameServerInfo) const {
-        return ((serverAddress.host == gameServerInfo.serverAddress.host) && (serverAddress.port == gameServerInfo.serverAddress.port) && (serverName == gameServerInfo.serverName) && (mapName == gameServerInfo.mapName) && (maxPlayers == gameServerInfo.maxPlayers));
+        return serverAddress.host == gameServerInfo.serverAddress.host
+            && serverAddress.port == gameServerInfo.serverAddress.port && serverName == gameServerInfo.serverName
+            && mapName == gameServerInfo.mapName && maxPlayers == gameServerInfo.maxPlayers;
     }
 };
 

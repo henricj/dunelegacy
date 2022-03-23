@@ -176,7 +176,7 @@ void Random::get_generator_state(const generator_type& generator, gsl::span<uint
             if (it == state.end())
                 THROW(std::runtime_error, "Invalid state buffer");
 
-            *it++ = static_cast<uint8_t>(n >> (8 * (sizeof(decltype(n)) - 1)));
+            *it++ = static_cast<uint8_t>(n >> 8 * (sizeof(decltype(n)) - 1));
             n <<= 8;
         }
     }
@@ -192,8 +192,8 @@ void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
 
     digestpp::kmac256 kmac {8 * key_.size()};
 
-    kmac.set_key(master_key, sizeof(master_key));
-    kmac.set_customization(&master_customization[0], sizeof(master_customization));
+    kmac.set_key(master_key, sizeof master_key);
+    kmac.set_customization(&master_customization[0], sizeof master_customization);
 
     kmac.absorb(&seed_[0], seed_.size());
 
@@ -236,11 +236,11 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 
     const auto system_now = std::chrono::system_clock::now().time_since_epoch().count();
     buffer.push_back(system_now & ~0U);
-    buffer.push_back((system_now >> 32) & ~0U);
+    buffer.push_back(system_now >> 32 & ~0U);
 
     const auto steady_now = std::chrono::steady_clock::now().time_since_epoch().count();
     buffer.push_back(steady_now & ~0U);
-    buffer.push_back((steady_now >> 32) & ~0U);
+    buffer.push_back(steady_now >> 32 & ~0U);
 
     std::generate_n(std::back_inserter(buffer), size, [&] { return rd(); });
 
@@ -250,14 +250,14 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     digestpp::kmac256 kmac {8 * seed_size};
 
     kmac.set_key(name.data(), name.size());
-    kmac.set_customization(&create_customization[0], sizeof(create_customization));
+    kmac.set_customization(&create_customization[0], sizeof create_customization);
 
     kmac.absorb(buffer.begin(), buffer.end());
 
     for (auto i = 0; i < 5; ++i) {
         std::generate(buffer.begin(), buffer.end(), [&] { return rd(); });
         kmac.absorb(buffer.begin(), buffer.end());
-        kmac.absorb(&seed_stir[0], sizeof(seed_stir));
+        kmac.absorb(&seed_stir[0], sizeof seed_stir);
     }
 
     kmac.digest(std::back_inserter(output));
@@ -278,7 +278,7 @@ Random RandomFactory::create(std::string_view name) const {
     digestpp::kmac128 kmac {8 * seed_bytes};
 
     kmac.set_key(key_.data(), key_.size());
-    kmac.set_customization(&generate_customization[0], sizeof(generate_customization));
+    kmac.set_customization(&generate_customization[0], sizeof generate_customization);
 
     kmac.absorb(name.data(), name.size());
 

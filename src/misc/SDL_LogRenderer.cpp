@@ -143,28 +143,28 @@ void SDL_LogRenderer(const SDL_RendererInfo* info) {
 
     sdl2::log_info("  Renderer %s:\n", info->name);
 
-    SDL_snprintf(text, sizeof(text), "    Flags: 0x%8.8X", info->flags);
-    SDL_snprintfcat(text, sizeof(text), " (");
+    SDL_snprintf(text, sizeof text, "    Flags: 0x%8.8X", info->flags);
+    SDL_snprintfcat(text, sizeof text, " (");
     int count = 0;
-    for (auto i = 0; i < sizeof(info->flags) * 8; ++i) {
-        const uint32_t flag = (1 << i);
+    for (auto i = 0; i < sizeof info->flags * 8; ++i) {
+        const uint32_t flag = 1 << i;
         if (info->flags & flag) {
             if (count > 0) {
-                SDL_snprintfcat(text, sizeof(text), " | ");
+                SDL_snprintfcat(text, sizeof text, " | ");
             }
-            SDLTest_PrintRendererFlag(text, sizeof(text), flag);
+            SDLTest_PrintRendererFlag(text, sizeof text, flag);
             ++count;
         }
     }
-    SDL_snprintfcat(text, sizeof(text), ")");
+    SDL_snprintfcat(text, sizeof text, ")");
     sdl2::log_info("%s\n", text);
 
-    SDL_snprintf(text, sizeof(text), "    Texture formats (%d): ", info->num_texture_formats);
-    for (auto i = 0; i < (int)info->num_texture_formats; ++i) {
+    SDL_snprintf(text, sizeof text, "    Texture formats (%d): ", info->num_texture_formats);
+    for (auto i = 0; i < static_cast<int>(info->num_texture_formats); ++i) {
         if (i > 0) {
-            SDL_snprintfcat(text, sizeof(text), ", ");
+            SDL_snprintfcat(text, sizeof text, ", ");
         }
-        SDLTest_PrintPixelFormat(text, sizeof(text), info->texture_formats[i]);
+        SDLTest_PrintPixelFormat(text, sizeof text, info->texture_formats[i]);
     }
     sdl2::log_info("%s\n", text);
 

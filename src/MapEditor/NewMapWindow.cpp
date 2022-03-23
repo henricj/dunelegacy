@@ -70,15 +70,15 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     emptyMapRadioButton.setText(_("Empty Map"));
     emptyMapRadioButton.setTextColor(color);
-    emptyMapRadioButton.setOnClick(std::bind(&NewMapWindow::onMapTypeChanged, this, 0));
+    emptyMapRadioButton.setOnClick([this] { onMapTypeChanged(0); });
     mapTypeHBox.addWidget(&emptyMapRadioButton);
     randomMapRadioButton.setText(_("Random Map"));
     randomMapRadioButton.setTextColor(color);
-    randomMapRadioButton.setOnClick(std::bind(&NewMapWindow::onMapTypeChanged, this, 1));
+    randomMapRadioButton.setOnClick([this] { onMapTypeChanged(1); });
     mapTypeHBox.addWidget(&randomMapRadioButton);
     seedMapRadioButton.setText(_("Dune2-compatible  Map"));
     seedMapRadioButton.setTextColor(color);
-    seedMapRadioButton.setOnClick(std::bind(&NewMapWindow::onMapTypeChanged, this, 2));
+    seedMapRadioButton.setOnClick([this] { onMapTypeChanged(2); });
     mapTypeHBox.addWidget(&seedMapRadioButton);
     mapTypeRadioButtons.registerRadioButtons(3, &emptyMapRadioButton, &randomMapRadioButton, &seedMapRadioButton);
     mapTypeHBox.addWidget(Spacer::create(), 5.0);
@@ -95,7 +95,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mapSizeXDropDownBox.addEntry("64", 64);
     mapSizeXDropDownBox.addEntry("128", 128);
     mapSizeXDropDownBox.setSelectedItem(2);
-    mapSizeXDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    mapSizeXDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
     mapSizeYLabel.setText(_("Map Height:"));
     mapSizeYLabel.setTextColor(color);
     mapSizeYDropDownBox.setColor(color);
@@ -103,7 +103,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mapSizeYDropDownBox.addEntry("64", 64);
     mapSizeYDropDownBox.addEntry("128", 128);
     mapSizeYDropDownBox.setSelectedItem(2);
-    mapSizeYDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    mapSizeYDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
 
     mapScaleLabel.setText(_("Map Scale:"));
     mapScaleLabel.setTextColor(color);
@@ -112,7 +112,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mapScaleDropDownBox.addEntry(_("Small (32x32)"), 1);
     mapScaleDropDownBox.addEntry(_("Normal (62x62)"), 0);
     mapScaleDropDownBox.setSelectedItem(2);
-    mapScaleDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    mapScaleDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
 
     basicMapPropertiesVBox.addWidget(VSpacer::create(4));
     basicMapPropertiesVBox.addWidget(&rngHBox);
@@ -126,7 +126,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     rngSeedTextBox.setMinMax(0, 32767);
     rngSeedTextBox.setValue(pGFXManager->random().rand(0, 32767));
     rngSeedTextBox.setColor(house, color);
-    rngSeedTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    rngSeedTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rngSeedTextBox, 80);
 
     rngHBox.addWidget(HSpacer::create(2));
@@ -138,7 +138,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     rockDigitsTextBox.setMinMax(0, 99);
     rockDigitsTextBox.setValue(ROCKFIELDS);
     rockDigitsTextBox.setColor(house, color);
-    rockDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    rockDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rockDigitsTextBox, 45);
 
     rngHBox.addWidget(HSpacer::create(2));
@@ -150,7 +150,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     spiceDigitsTextBox.setMinMax(0, 99);
     spiceDigitsTextBox.setValue(SPICEFIELDS);
     spiceDigitsTextBox.setColor(house, color);
-    spiceDigitsTextBox.setOnValueChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    spiceDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&spiceDigitsTextBox, 45);
 
     rngHBox.addWidget(Spacer::create(), 3.0);
@@ -168,7 +168,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mirrorModeDropDownBox.addEntry(_("Horizontal and vertical"), MirrorModeBoth);
     mirrorModeDropDownBox.addEntry(_("Inverse"), MirrorModePoint);
     mirrorModeDropDownBox.setSelectedItem(0);
-    mirrorModeDropDownBox.setOnSelectionChange(std::bind(&NewMapWindow::onMapPropertiesChanged, this));
+    mirrorModeDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
     mirrorModeDropDownBox.setColor(color);
     mirrorModeHBox.addWidget(&mirrorModeDropDownBox, 160);
     mirrorModeHBox.addWidget(Spacer::create(), 5.0);
@@ -206,7 +206,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
-    cancelButton.setOnClick(std::bind(&NewMapWindow::onCancel, this));
+    cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
 
@@ -214,7 +214,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     loadButton.setText(_("Load Map") + "...");
     loadButton.setTextColor(color);
-    loadButton.setOnClick(std::bind(&NewMapWindow::onLoad, this));
+    loadButton.setOnClick([this] { onLoad(); });
 
     buttonHBox.addWidget(&loadButton);
 
@@ -222,7 +222,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     createButton.setText(_("Create"));
     createButton.setTextColor(color);
-    createButton.setOnClick(std::bind(&NewMapWindow::onCreate, this));
+    createButton.setOnClick([this] { onCreate(); });
 
     buttonHBox.addWidget(&createButton);
 
@@ -315,7 +315,7 @@ void NewMapWindow::onMapPropertiesChanged() {
         const int rock  = rockDigitsTextBox.getValue();
         const int spice = spiceDigitsTextBox.getValue();
 
-        const auto mirrorMode = (MirrorMode)mirrorModeDropDownBox.getSelectedEntryIntData();
+        const auto mirrorMode = static_cast<MirrorMode>(mirrorModeDropDownBox.getSelectedEntryIntData());
 
         mapSeed = INVALID;
         mapdata = generateRandomMap(sizeX, sizeY, seed, rock, spice, mirrorMode);

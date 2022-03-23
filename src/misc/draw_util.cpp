@@ -26,7 +26,7 @@
 uint32_t getPixel(SDL_Surface* surface, int x, int y) {
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    auto* const p = static_cast<uint8_t*>(surface->pixels) + (y * surface->pitch) + (x * bpp);
+    auto* const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
 
     switch (bpp) {
         case 1:
@@ -78,13 +78,13 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
 
         case 3: {
             if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-                p[0] = (color >> 16) & 0xff;
-                p[1] = (color >> 8) & 0xff;
+                p[0] = color >> 16 & 0xff;
+                p[1] = color >> 8 & 0xff;
                 p[2] = color & 0xff;
             }
             p[0] = color & 0xff;
-            p[1] = (color >> 8) & 0xff;
-            p[2] = (color >> 16) & 0xff;
+            p[1] = color >> 8 & 0xff;
+            p[2] = color >> 16 & 0xff;
         } break;
 
         case 4:
@@ -175,7 +175,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     }
 
     sdl2::surface_ptr pScreen {SDL_CreateRGBSurface(0, w, h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
-    if ((pScreen == nullptr)) {
+    if (pScreen == nullptr) {
         sdl2::log_warn("Warning: renderReadSurface() create surface failed: %s", SDL_GetError());
         return nullptr;
     }
@@ -233,7 +233,7 @@ void mapColor(SDL_Surface* surface, const uint8_t colorMap[256]) {
     sdl2::surface_lock lock {surface};
 
     for (auto y = 0; y < surface->h; y++) {
-        uint8_t* RESTRICT p = static_cast<uint8_t*>(surface->pixels) + (y * surface->pitch);
+        uint8_t* RESTRICT p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch;
 
         for (auto x = 0; x < surface->w; ++x, ++p) {
             *p = colorMap[*p];
@@ -364,7 +364,7 @@ sdl2::surface_ptr getSubFrame(SDL_Surface* pic, int i, int j, int numX, int numY
 }
 
 sdl2::surface_ptr combinePictures(SDL_Surface* basePicture, SDL_Surface* topPicture, int x, int y) {
-    if ((basePicture == nullptr) || (topPicture == nullptr)) {
+    if (basePicture == nullptr || topPicture == nullptr) {
         return nullptr;
     }
 
@@ -538,7 +538,7 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
     for (auto y = 0; y < retPic->h; ++y) {
         auto* p = &pixels[y * lock.pitch()];
         for (auto x = 0; x < retPic->w; ++x, ++p) {
-            if ((*p >= srcColor) && (*p < srcColor + 7))
+            if (*p >= srcColor && *p < srcColor + 7)
                 *p -= srcColor - destColor;
         }
     }

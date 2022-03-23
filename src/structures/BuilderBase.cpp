@@ -483,17 +483,17 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
         }
     }
 
-    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, (uint32_t)multipleMode));
+    currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID, itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
     currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, (uint32_t)multipleMode));
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_CANCELITEM, objectID, itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
     currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, (uint32_t)OnHold));
+        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_SETONHOLD, objectID, static_cast<uint32_t>(OnHold)));
 }
 
 bool BuilderBase::doUpgrade(const GameContext& context) {

@@ -30,9 +30,7 @@
 
 class MetaServerCommand {
 public:
-    explicit MetaServerCommand(int type)
-        : type(type) {
-    }
+    explicit MetaServerCommand(int type) : type(type) { }
 
     MetaServerCommand(const MetaServerCommand&) = delete;
     MetaServerCommand(MetaServerCommand&&)      = delete;
@@ -42,9 +40,7 @@ public:
     MetaServerCommand& operator=(const MetaServerCommand&) = delete;
     MetaServerCommand& operator=(MetaServerCommand&&) = delete;
 
-    virtual bool operator==(const MetaServerCommand& metaServerCommand) const {
-        return (type == metaServerCommand.type);
-    }
+    virtual bool operator==(const MetaServerCommand& metaServerCommand) const { return type == metaServerCommand.type; }
 
     int type;
 };
@@ -55,9 +51,8 @@ class MetaServerAdd final : public MetaServerCommand {
 public:
     MetaServerAdd(std::string serverName, int serverPort, std::string secret, std::string mapName, uint8_t numPlayers,
                   uint8_t maxPlayers)
-        : MetaServerCommand(METASERVERCOMMAND_ADD), serverName(std::move(serverName)), serverPort(serverPort), secret(std::move(secret)),
-          mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) {
-    }
+        : MetaServerCommand(METASERVERCOMMAND_ADD), serverName(std::move(serverName)), serverPort(serverPort),
+          secret(std::move(secret)), mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) { }
 
     bool operator==(const MetaServerCommand& metaServerCommand) const override {
         const auto* pMetaServerAdd = dynamic_cast<const MetaServerAdd*>(&metaServerCommand);
@@ -65,17 +60,9 @@ public:
             return false;
         }
 
-        return ((serverName == pMetaServerAdd->serverName)
-
-                && (serverPort == pMetaServerAdd->serverPort)
-
-                && (secret == pMetaServerAdd->secret)
-
-                && (mapName == pMetaServerAdd->mapName)
-
-                && (numPlayers == pMetaServerAdd->numPlayers)
-
-                && (maxPlayers == pMetaServerAdd->maxPlayers));
+        return serverName == pMetaServerAdd->serverName && serverPort == pMetaServerAdd->serverPort
+            && secret == pMetaServerAdd->secret && mapName == pMetaServerAdd->mapName
+            && numPlayers == pMetaServerAdd->numPlayers && maxPlayers == pMetaServerAdd->maxPlayers;
     }
 
     std::string serverName;
@@ -90,9 +77,8 @@ class MetaServerUpdate final : public MetaServerCommand {
 public:
     MetaServerUpdate(std::string serverName, int serverPort, std::string secret, std::string mapName,
                      uint8_t numPlayers, uint8_t maxPlayers)
-        : MetaServerCommand(METASERVERCOMMAND_UPDATE), serverName(std::move(serverName)), serverPort(serverPort), secret(std::move(secret)),
-          mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) {
-    }
+        : MetaServerCommand(METASERVERCOMMAND_UPDATE), serverName(std::move(serverName)), serverPort(serverPort),
+          secret(std::move(secret)), mapName(std::move(mapName)), numPlayers(numPlayers), maxPlayers(maxPlayers) { }
 
     bool operator==(const MetaServerCommand& metaServerCommand) const override {
         const auto* pMetaServerUpdate = dynamic_cast<const MetaServerUpdate*>(&metaServerCommand);
@@ -100,17 +86,9 @@ public:
             return false;
         }
 
-        return ((serverName == pMetaServerUpdate->serverName)
-
-                && (serverPort == pMetaServerUpdate->serverPort)
-
-                && (secret == pMetaServerUpdate->secret)
-
-                && (mapName == pMetaServerUpdate->mapName)
-
-                && (numPlayers == pMetaServerUpdate->numPlayers)
-
-                && (maxPlayers == pMetaServerUpdate->maxPlayers));
+        return serverName == pMetaServerUpdate->serverName && serverPort == pMetaServerUpdate->serverPort
+            && secret == pMetaServerUpdate->secret && mapName == pMetaServerUpdate->mapName
+            && numPlayers == pMetaServerUpdate->numPlayers && maxPlayers == pMetaServerUpdate->maxPlayers;
     }
 
     std::string serverName;
@@ -124,8 +102,7 @@ public:
 class MetaServerRemove final : public MetaServerCommand {
 public:
     MetaServerRemove(int serverPort, std::string secret)
-        : MetaServerCommand(METASERVERCOMMAND_REMOVE), serverPort(serverPort), secret(std::move(secret)) {
-    }
+        : MetaServerCommand(METASERVERCOMMAND_REMOVE), serverPort(serverPort), secret(std::move(secret)) { }
 
     bool operator==(const MetaServerCommand& metaServerCommand) const override {
         const auto* pMetaServerRemove = dynamic_cast<const MetaServerRemove*>(&metaServerCommand);
@@ -133,9 +110,9 @@ public:
             return false;
         }
 
-        return ((serverPort == pMetaServerRemove->serverPort)
+        return serverPort == pMetaServerRemove->serverPort
 
-                && (secret == pMetaServerRemove->secret));
+            && secret == pMetaServerRemove->secret;
     }
 
     int serverPort;
@@ -144,16 +121,12 @@ public:
 
 class MetaServerList final : public MetaServerCommand {
 public:
-    MetaServerList()
-        : MetaServerCommand(METASERVERCOMMAND_LIST) {
-    }
+    MetaServerList() : MetaServerCommand(METASERVERCOMMAND_LIST) { }
 };
 
 class MetaServerExit final : public MetaServerCommand {
 public:
-    MetaServerExit()
-        : MetaServerCommand(METASERVERCOMMAND_EXIT) {
-    }
+    MetaServerExit() : MetaServerCommand(METASERVERCOMMAND_EXIT) { }
 };
 
 #endif // METASERVERCOMMANDS_H

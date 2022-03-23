@@ -102,7 +102,7 @@ void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos
 
     if (map.tileExists(xPos, yPos)) {
         game.getCommandManager().addCommand(
-            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, (uint32_t)xPos, (uint32_t)yPos));
+            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND, objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     }
 }
 

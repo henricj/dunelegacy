@@ -145,7 +145,7 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
         if (mouseRightButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
-            if ((getItemIDFromIndex(mouseRightButton) == (int)pBuilder->getCurrentProducedItem()) && (!pBuilder->isOnHold())) {
+            if ((getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem())) && (!pBuilder->isOnHold())) {
                 soundPlayer->playSound(Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(true);
             } else {

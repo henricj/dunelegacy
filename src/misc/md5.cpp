@@ -215,7 +215,7 @@ void md5_update(md5_context* ctx, const unsigned char* input, int ilen) {
     ctx->total[0] += ilen;
     ctx->total[0] &= 0xFFFFFFFF;
 
-    if (ctx->total[0] < (unsigned long)ilen)
+    if (ctx->total[0] < static_cast<unsigned long>(ilen))
         ctx->total[1]++;
 
     if (left && ilen >= fill) {
@@ -258,14 +258,14 @@ void md5_finish(md5_context* ctx, unsigned char output[16]) {
     unsigned long low = 0;
     unsigned char msglen[8];
 
-    high = (ctx->total[0] >> 29) | (ctx->total[1] << 3);
-    low  = (ctx->total[0] << 3);
+    high = ctx->total[0] >> 29 | ctx->total[1] << 3;
+    low  = ctx->total[0] << 3;
 
     PUT_ULONG_LE(low, msglen, 0);
     PUT_ULONG_LE(high, msglen, 4);
 
     last = ctx->total[0] & 0x3F;
-    padn = (last < 56) ? (56 - last) : (120 - last);
+    padn = last < 56 ? 56 - last : 120 - last;
 
     md5_update(ctx, (unsigned char*)md5_padding, padn);
     md5_update(ctx, msglen, 8);
@@ -299,19 +299,19 @@ int md5_file(const char* path, unsigned char output[16]) {
     unsigned char buf[4 * 1024];
 
     if ((rwops = SDL_RWFromFile(path, "rb")) == nullptr)
-        return (1);
+        return 1;
 
     md5_starts(&ctx);
 
-    while ((n = SDL_RWread(rwops, buf, 1, sizeof(buf))) > 0)
-        md5_update(&ctx, buf, (int)n);
+    while ((n = SDL_RWread(rwops, buf, 1, sizeof buf)) > 0)
+        md5_update(&ctx, buf, static_cast<int>(n));
 
     md5_finish(&ctx, output);
 
     memset(&ctx, 0, sizeof(md5_context));
 
     SDL_RWclose(rwops);
-    return (0);
+    return 0;
 }
 
 /*
@@ -331,14 +331,14 @@ void md5_hmac_starts(md5_context* ctx, const unsigned char* key, int keylen) {
     memset(ctx->opad, 0x5C, 64);
 
     for (i = 0; i < keylen; i++) {
-        ctx->ipad[i] = (unsigned char)(ctx->ipad[i] ^ key[i]);
-        ctx->opad[i] = (unsigned char)(ctx->opad[i] ^ key[i]);
+        ctx->ipad[i] = static_cast<unsigned char>(ctx->ipad[i] ^ key[i]);
+        ctx->opad[i] = static_cast<unsigned char>(ctx->opad[i] ^ key[i]);
     }
 
     md5_starts(ctx);
     md5_update(ctx, ctx->ipad, 64);
 
-    memset(sum, 0, sizeof(sum));
+    memset(sum, 0, sizeof sum);
 }
 
 /*
@@ -360,7 +360,7 @@ void md5_hmac_finish(md5_context* ctx, unsigned char output[16]) {
     md5_update(ctx, tmpbuf, 16);
     md5_finish(ctx, output);
 
-    memset(tmpbuf, 0, sizeof(tmpbuf));
+    memset(tmpbuf, 0, sizeof tmpbuf);
 }
 
 /*

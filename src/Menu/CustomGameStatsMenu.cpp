@@ -91,7 +91,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         Uint32 textcolor     = SDL2RGB(palette[houseToPaletteIndex[i] + 3]);
         Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i] + 1]);
 
-        curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber((HOUSETYPE)i));
+        curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)));
         curHouseStat.houseName.setTextColor(textcolor);
         curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 145);
         curHouseStat.houseHBox.addWidget(Spacer::create(), 5);
@@ -170,7 +170,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
 
     okButton.setText(_("OK"));
     okButton.setTextColor(localHouseColor);
-    okButton.setOnClick(std::bind(&CustomGameStatsMenu::onOK, this));
+    okButton.setOnClick([this] { onOK(); });
     buttonHBox.addWidget(&okButton, 0.2);
     buttonHBox.addWidget(HSpacer::create(90));
 }

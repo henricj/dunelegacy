@@ -68,14 +68,14 @@ SinglePlayerMenu::SinglePlayerMenu() {
     windowWidget.addWidget(&menuButtonsVBox, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64), Point(160, 111));
 
     campaignButton.setText(_("CAMPAIGN"));
-    campaignButton.setOnClick(std::bind(&SinglePlayerMenu::onCampaign, this));
+    campaignButton.setOnClick([this] { onCampaign(); });
     menuButtonsVBox.addWidget(&campaignButton);
     campaignButton.setActive();
 
     menuButtonsVBox.addWidget(VSpacer::create(3));
 
     customButton.setText(_("CUSTOM GAME"));
-    customButton.setOnClick(std::bind(&SinglePlayerMenu::onCustom, this));
+    customButton.setOnClick([this] { onCustom(); });
     menuButtonsVBox.addWidget(&customButton);
 
     menuButtonsVBox.addWidget(VSpacer::create(3));
@@ -112,11 +112,11 @@ void SinglePlayerMenu::onCampaign() {
         return;
     }
 
-    GameInitSettings init((HOUSETYPE)player, settings.gameOptions);
+    GameInitSettings init(static_cast<HOUSETYPE>(player), settings.gameOptions);
 
     for_each_housetype([&](const auto houseID) {
         if (houseID == static_cast<HOUSETYPE>(player)) {
-            GameInitSettings::HouseInfo humanHouseInfo((HOUSETYPE)player, 1);
+            GameInitSettings::HouseInfo humanHouseInfo(static_cast<HOUSETYPE>(player), 1);
             humanHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS));
             init.addHouseInfo(humanHouseInfo);
         } else {
