@@ -30,7 +30,7 @@
 
 #include "Widget.h"
 
-#define COLOR_DEFAULT COLOR_INVALID
+static constexpr auto COLOR_DEFAULT = COLOR_INVALID;
 
 enum Alignment_Enum {
     Alignment_VCenter = 1,
