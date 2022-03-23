@@ -63,7 +63,7 @@ void DropDownBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) 
 }
 
 bool DropDownBox::handleMouseMovementOverlay(int32_t x, int32_t y) {
-    int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
+    const int newY = bListBoxAbove ? (y + listBox.getSize().y) : (y - getSize().y);
     return bShowListBox && x >= 0 && x < listBox.getSize().x && newY >= 0 && newY < listBox.getSize().y;
 }
 
@@ -170,7 +170,7 @@ bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
     Widget::handleKeyPress(key);
     if (isActive()) {
         // disable autoclosing of the list box
-        bool bSavedAutoclose               = bAutocloseListBoxOnSelectionChange;
+        const bool bSavedAutoclose         = bAutocloseListBoxOnSelectionChange;
         bAutocloseListBoxOnSelectionChange = false;
 
         switch (key.keysym.sym) {
@@ -217,7 +217,7 @@ void DropDownBox::draw(Point position) {
     updateBackground();
 
     if (pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
@@ -225,10 +225,10 @@ void DropDownBox::draw(Point position) {
 
     if (pForeground != nullptr && pActiveForeground != nullptr) {
         if (((bHover) && pOnClick) || isActive()) {
-            SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
+            const SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
             Dune_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
         } else {
-            SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 2);
+            const SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 2);
             Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
         }
     }
@@ -253,7 +253,7 @@ void DropDownBox::resize(uint32_t width, uint32_t height) {
 }
 
 void DropDownBox::resizeListBox() {
-    int listBoxHeight = std::max(1, std::min(numVisibleEntries, getNumEntries())) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()) + 2;
+    const int listBoxHeight = std::max(1, std::min(numVisibleEntries, getNumEntries())) * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()) + 2;
     listBox.resize(getSize().x - 1, listBoxHeight);
 }
 

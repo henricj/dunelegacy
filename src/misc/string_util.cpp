@@ -22,7 +22,7 @@
 #include <vector>
 
 std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delimRegex) {
-    std::regex rgx(delimRegex);
+    const std::regex rgx(delimRegex);
     return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1), std::sregex_token_iterator());
 }
 
@@ -45,8 +45,8 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
         for (const auto& replacement : replacementMap) {
 
-            std::string nextKey = replacement.first;
-            size_t nextPos      = result.find(nextKey, currentPos);
+            std::string nextKey  = replacement.first;
+            const size_t nextPos = result.find(nextKey, currentPos);
 
             if ((nextPos != std::string::npos) && ((nextPos < bestNextPos) || ((nextPos == bestNextPos) && (nextKey.length() > bestNextKey.length())))) {
 
@@ -71,7 +71,7 @@ std::string replaceAll(const std::string& str, const std::map<std::string, std::
 
 std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     std::string result;
-    size_t estimatedLength = (len == std::string::npos) ? (str.length() - pos) : len;
+    const size_t estimatedLength = (len == std::string::npos) ? (str.length() - pos) : len;
     result.reserve(estimatedLength);
 
     auto iter = str.cbegin();
@@ -239,7 +239,7 @@ std::string convertCP850ToUTF8(std::string_view text) {
 
     std::string result;
     result.reserve(text.length());
-    for (char i : text) {
+    for (const char i : text) {
         auto c = static_cast<unsigned char>(i);
         if (c == 0x0D) {
             result += "\n";
@@ -318,7 +318,7 @@ std::string to_hex(gsl::span<const uint8_t> data) {
 
     auto count = -1;
     char buffer[2];
-    for (auto n : data) {
+    for (const auto n : data) {
         if (++count > 7) {
             count = 0;
             s.append(1, '-');
@@ -346,7 +346,7 @@ std::string to_hex(gsl::span<const uint32_t> data) {
 
     auto first = true;
     char buffer[8];
-    for (auto n : data) {
+    for (const auto n : data) {
         if (first) {
             first = false;
         } else
@@ -376,7 +376,7 @@ std::string to_hex(gsl::span<const uint64_t> data) {
 
     auto first = true;
     char buffer[16];
-    for (auto n : data) {
+    for (const auto n : data) {
         if (first) {
             first = false;
         } else

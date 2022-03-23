@@ -88,10 +88,10 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
         currentMusicType = musicType;
     } else {
         // MUSIC_RANDOM
-        int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
+        const int maxnum = musicFileList[MUSIC_ATTACK].size() + musicFileList[MUSIC_PEACE].size();
 
         if (maxnum > 0) {
-            unsigned int randnum = random().rand(0, maxnum - 1);
+            const unsigned int randnum = random().rand(0, maxnum - 1);
 
             if (randnum < musicFileList[MUSIC_ATTACK].size()) {
                 musicNum         = randnum;

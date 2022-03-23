@@ -86,8 +86,8 @@ fix32_t fix32_log(fix32_t inValue) {
         // Solving e(x) = y using Newton's method
         // f(x) = e(x) - y
         // f'(x) = e(x)
-        fix32_t e = fix32_exp(guess);
-        delta     = fix32_div(inValue - e, e);
+        const fix32_t e = fix32_exp(guess);
+        delta           = fix32_div(inValue - e, e);
 
         // It's unlikely that logarithm is very large, so avoid overshooting.
         if (delta > fix32_from_int(3))
@@ -103,7 +103,7 @@ static inline fix32_t fix32_rs(fix32_t x) {
 #ifdef FIXMATH_NO_ROUNDING
     return (x >> 1);
 #else
-    fix32_t y = (x >> 1) + (x & 1);
+    const fix32_t y = (x >> 1) + (x & 1);
     return y;
 #endif
 }
@@ -167,7 +167,7 @@ fix32_t fix32_log2(fix32_t x) {
         if (x == 1)
             return fix32_from_int(-32);
 
-        fix32_t inverse = fix32_div(fix32_one, x);
+        const fix32_t inverse = fix32_div(fix32_one, x);
         return -fix32__log2_inner(inverse);
     }
 
@@ -180,7 +180,7 @@ fix32_t fix32_log2(fix32_t x) {
  * This is a wrapper for fix32_log2 which implements saturation arithmetic.
  */
 fix32_t fix32_slog2(fix32_t x) {
-    fix32_t retval = fix32_log2(x);
+    const fix32_t retval = fix32_log2(x);
     // The only overflow possible is when the input is negative.
     if (retval == fix32_overflow)
         return fix32_minimum;

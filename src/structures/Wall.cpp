@@ -77,7 +77,7 @@ void Wall::destroy(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
     // fix wall to the north
-    if (auto* tile = map.tryGetTile(location.x, location.y - 1)) {
+    if (const auto* tile = map.tryGetTile(location.x, location.y - 1)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedDown = true;
             pWall->fixWall(context);
@@ -85,7 +85,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the south
-    if (auto* tile = map.tryGetTile(location.x, location.y + 1)) {
+    if (const auto* tile = map.tryGetTile(location.x, location.y + 1)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedUp = true;
             pWall->fixWall(context);
@@ -93,7 +93,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the west
-    if (auto* tile = map.tryGetTile(location.x - 1, location.y)) {
+    if (const auto* tile = map.tryGetTile(location.x - 1, location.y)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedRight = true;
             pWall->fixWall(context);
@@ -101,7 +101,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the east
-    if (auto* tile = map.tryGetTile(location.x + 1, location.y)) {
+    if (const auto* tile = map.tryGetTile(location.x + 1, location.y)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedLeft = true;
             pWall->fixWall(context);
@@ -160,8 +160,8 @@ void Wall::setLocation(const GameContext& context, int xPos, int yPos) {
 */
 void Wall::fixWall(const GameContext& context) {
 
-    int i = location.x;
-    int j = location.y;
+    const int i = location.x;
+    const int j = location.y;
 
     int maketile = Wall_LeftRight;
 
@@ -169,10 +169,10 @@ void Wall::fixWall(const GameContext& context) {
 
     // clang-format off
     // Walls
-    bool up    = map.hasAGroundObject<Wall>(context, i    , j - 1) || bWallDestroyedUp;
-    bool right = map.hasAGroundObject<Wall>(context, i + 1, j    ) || bWallDestroyedRight;
-    bool down  = map.hasAGroundObject<Wall>(context, i    , j + 1) || bWallDestroyedDown;
-    bool left  = map.hasAGroundObject<Wall>(context, i - 1, j    ) || bWallDestroyedLeft;
+    const bool up    = map.hasAGroundObject<Wall>(context, i    , j - 1) || bWallDestroyedUp;
+    const bool right = map.hasAGroundObject<Wall>(context, i + 1, j    ) || bWallDestroyedRight;
+    const bool down  = map.hasAGroundObject<Wall>(context, i    , j + 1) || bWallDestroyedDown;
+    const bool left  = map.hasAGroundObject<Wall>(context, i - 1, j    ) || bWallDestroyedLeft;
     // clang-format on
 
     // calculate destroyed tile index

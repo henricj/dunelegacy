@@ -137,8 +137,8 @@ sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
 */
 sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
-    numFramesX     = std::min(numFramesX, static_cast<int>(numFrames));
-    int numFramesY = (numFrames + numFramesX - 1) / numFramesX;
+    numFramesX           = std::min(numFramesX, static_cast<int>(numFrames));
+    const int numFramesY = (numFrames + numFramesX - 1) / numFramesX;
 
     // create new picture surface
     auto pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, sizeX * numFramesX, sizeY * numFramesY, 8, 0, 0, 0, 0)};
@@ -154,7 +154,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
     for (auto y = 0; y < numFramesY; y++) {
         for (auto x = 0; x < numFramesX; x++) {
-            auto i = y * numFramesX + x;
+            const auto i = y * numFramesX + x;
             if (i >= numFrames) {
                 return pic;
             }

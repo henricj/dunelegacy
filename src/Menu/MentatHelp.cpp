@@ -141,13 +141,13 @@ void MentatHelp::onExit() {
 }
 
 void MentatHelp::onListBoxClick() {
-    int index = mentatTopicsList.getSelectedIndex();
+    const int index = mentatTopicsList.getSelectedIndex();
 
     if (index < 0) {
         return;
     }
 
-    MentatTextFile::MentatEntry& mentatEntry = mentatEntries[index];
+    const MentatTextFile::MentatEntry& mentatEntry = mentatEntries[index];
 
     if (mentatEntry.menuLevel != 1) {
         return;
@@ -157,7 +157,7 @@ void MentatHelp::onListBoxClick() {
     std::string text;
     std::string name;
 
-    int missionnumber = ((mission + 1) / 3) + 1;
+    const int missionnumber = ((mission + 1) / 3) + 1;
 
     if (mentatEntry.filename == "0") {
         animID = getMissionSpecificAnim(missionnumber);

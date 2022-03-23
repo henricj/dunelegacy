@@ -138,7 +138,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color)
 
 bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
     if (pChildWindow != nullptr) {
-        bool ret = pChildWindow->handleKeyPress(key);
+        const bool ret = pChildWindow->handleKeyPress(key);
         return ret;
     }
 
@@ -149,7 +149,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
         }
         if (key.keysym.sym == SDLK_DELETE) {
 
-            int index = mapList.getSelectedIndex();
+            const int index = mapList.getSelectedIndex();
 
             if (index >= 0) {
 
@@ -177,7 +177,7 @@ void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if (pQstBox != nullptr) {
         if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
-            int index = mapList.getSelectedIndex();
+            const int index = mapList.getSelectedIndex();
             if (index >= 0) {
                 const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
 
@@ -270,7 +270,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
 
     if (inimap.hasKey("MAP", "Seed")) {
         // old map format with seed value
-        int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
+        const int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
 
         switch (mapscale) {
             case 0: {

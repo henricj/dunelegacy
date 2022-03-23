@@ -83,7 +83,7 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
     /* size and also checksum */
     const auto size = SDL_SwapLE16(*reinterpret_cast<const Uint16*>(Fileheader + 8));
 
-    auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
+    const auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
 
     switch (type) {
 
@@ -204,7 +204,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     }
 
     std::vector<unsigned char> DecodeDestination;
-    auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
+    const auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
 
     // create new picture surface
     sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, sizeX * tilesX, sizeY * tilesY, 8, 0, 0, 0, 0)};
@@ -343,7 +343,7 @@ std::unique_ptr<Animation> Shpfile::getAnimation(unsigned int startindex, unsign
 */
 void Shpfile::readIndex() {
     // First get number of files in shp-file
-    Uint16 NumFiles = SDL_SwapLE16(reinterpret_cast<const Uint16*>(pFiledata.get())[0]);
+    const Uint16 NumFiles = SDL_SwapLE16(reinterpret_cast<const Uint16*>(pFiledata.get())[0]);
 
     if (NumFiles == 0) {
         THROW(std::runtime_error, "Shpfile::readIndex(): There is no file in this shp-File!");
@@ -439,7 +439,7 @@ void Shpfile::shpCorrectLF(const unsigned char* in, unsigned char* out, int size
             *out = val;
             out++;
         } else {
-            unsigned char count = *in;
+            const unsigned char count = *in;
             in++;
             if (count == 0) {
                 return;

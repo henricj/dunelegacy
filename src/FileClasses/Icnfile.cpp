@@ -46,25 +46,25 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
 
     std::unique_ptr<uint8_t[]> pMapFiledata;
 
-    int64_t icnEndOffset = SDL_RWsize(icnRWop);
+    const int64_t icnEndOffset = SDL_RWsize(icnRWop);
     if (icnEndOffset <= 0) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.icn-File!");
     }
 
-    auto icnFilesize = static_cast<size_t>(icnEndOffset);
-    pIcnFiledata     = std::make_unique<uint8_t[]>(icnFilesize);
+    const auto icnFilesize = static_cast<size_t>(icnEndOffset);
+    pIcnFiledata           = std::make_unique<uint8_t[]>(icnFilesize);
 
     if (SDL_RWread(icnRWop, &pIcnFiledata[0], icnFilesize, 1) != 1) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Reading this *.icn-File failed!");
     }
 
-    int64_t mapEndOffset = SDL_RWsize(mapRWop);
+    const int64_t mapEndOffset = SDL_RWsize(mapRWop);
     if (mapEndOffset <= 0) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Cannot determine size of this *.map-File!");
     }
 
-    auto mapFilesize = static_cast<size_t>(mapEndOffset);
-    pMapFiledata     = std::make_unique<uint8_t[]>(mapFilesize);
+    const auto mapFilesize = static_cast<size_t>(mapEndOffset);
+    pMapFiledata           = std::make_unique<uint8_t[]>(mapFilesize);
 
     if (SDL_RWread(mapRWop, &pMapFiledata[0], mapFilesize, 1) != 1) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): Reading this *.map-File failed!");
@@ -75,7 +75,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): This *.map-File is too short!");
     }
 
-    Uint16 numTilesets = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pMapFiledata.get()));
+    const Uint16 numTilesets = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pMapFiledata.get()));
 
     if (mapFilesize < static_cast<size_t>(numTilesets * 2)) {
         THROW(std::runtime_error, "Icnfile::Icnfile(): This *.map-File is too short!");
@@ -84,7 +84,7 @@ Icnfile::Icnfile(SDL_RWops* icnRWop, SDL_RWops* mapRWop) {
     // calculate size for all entries
     Uint16 index = SDL_SwapLE16(reinterpret_cast<Uint16*>(pMapFiledata.get())[0]);
     for (int i = 1; i < numTilesets; i++) {
-        Uint16 tmp = SDL_SwapLE16(reinterpret_cast<Uint16*>(pMapFiledata.get())[i]);
+        const Uint16 tmp = SDL_SwapLE16(reinterpret_cast<Uint16*>(pMapFiledata.get())[i]);
         MapfileEntry newMapfileEntry;
         newMapfileEntry.numTiles = tmp - index;
         tilesets.push_back(newMapfileEntry);
@@ -315,7 +315,7 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
     for (int n = 0; n < tilesN; n++) {
         for (int tile_y = 0; tile_y < tilesY; ++tile_y) {
             for (int tile_x = 0; tile_x < tilesX; ++tile_x) {
-                int IndexOfFile = tilesets[mapfileIndex].tileIndices[tileidx];
+                const int IndexOfFile = tilesets[mapfileIndex].tileIndices[tileidx];
 
                 // check if palette is in range
                 if (RTBL[IndexOfFile] >= RPAL_Length / 16) {
@@ -375,7 +375,7 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
     uint32_t tileCount = 0u;
     for (uint32_t row = 0u; (row < numRows) && (tileCount < numTiles); ++row) {
         for (uint32_t col = 0u; (col < numCols) && (tileCount < numTiles); ++col) {
-            uint32_t indexOfFile = startIndex + tileCount;
+            const uint32_t indexOfFile = startIndex + tileCount;
 
             // check if palette is in range
             if (RTBL[indexOfFile] >= RPAL_Length / 16) {

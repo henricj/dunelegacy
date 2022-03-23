@@ -80,8 +80,8 @@ public:
 
         calculateScaleAndOffsets(getMapSizeX(), getMapSizeY(), scale, offsetX, offsetY);
 
-        int offsetFromRightX  = 128 - getMapSizeX() * scale - offsetX;
-        int offsetFromBottomY = 128 - getMapSizeY() * scale - offsetY;
+        const int offsetFromRightX  = 128 - getMapSizeX() * scale - offsetX;
+        const int offsetFromBottomY = 128 - getMapSizeY() * scale - offsetY;
 
         return ((mouseX >= offsetX + RADARVIEW_BORDERTHICKNESS) && (mouseX < RADARWIDTH - offsetFromRightX + RADARVIEW_BORDERTHICKNESS) && (mouseY >= offsetY + RADARVIEW_BORDERTHICKNESS) && (mouseY < RADARHEIGHT - offsetFromBottomY + RADARVIEW_BORDERTHICKNESS));
     }
@@ -93,7 +93,7 @@ public:
         \return the world coordinates
     */
     [[nodiscard]] Coord getWorldCoords(int mouseX, int mouseY) const {
-        Coord positionOnRadar(mouseX - RADARVIEW_BORDERTHICKNESS, mouseY - RADARVIEW_BORDERTHICKNESS);
+        const Coord positionOnRadar(mouseX - RADARVIEW_BORDERTHICKNESS, mouseY - RADARVIEW_BORDERTHICKNESS);
 
         int scale   = 1;
         int offsetX = 0;

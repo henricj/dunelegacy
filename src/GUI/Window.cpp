@@ -157,7 +157,7 @@ void Window::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     }
 
     if (isEnabled() && (pWindowWidget != nullptr)) {
-        bool insideOverlay = pWindowWidget->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
+        const bool insideOverlay = pWindowWidget->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
         pWindowWidget->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
     }
 }
@@ -168,8 +168,8 @@ bool Window::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     }
 
     if (isEnabled() && (pWindowWidget != nullptr)) {
-        bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
-                          pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
+        const bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed) ||
+                                pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
         if (pressed && (!bProcessed)) {
             pWindowWidget->setActive(false);
             pWindowWidget->setActive(true);

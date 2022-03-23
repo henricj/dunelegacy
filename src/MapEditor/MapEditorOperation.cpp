@@ -35,7 +35,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::p
 
     std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
 
-    auto iter = std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y));
+    const auto iter = std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y));
 
     if (iter != spiceBlooms.end()) {
         spiceBlooms.erase(iter);
@@ -59,7 +59,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation:
 
     std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
 
-    auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y));
+    const auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y));
 
     if (iter != specialBlooms.end()) {
         specialBlooms.erase(iter);
@@ -83,7 +83,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::p
 
     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
-    auto iter = std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y));
+    const auto iter = std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y));
 
     if (iter != spiceFields.end()) {
         spiceFields.erase(iter);

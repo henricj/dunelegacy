@@ -224,10 +224,10 @@ void ReinforcementsWindow::onOK() {
 }
 
 void ReinforcementsWindow::onUp() {
-    int index = reinforcementsListBox.getSelectedIndex();
+    const int index = reinforcementsListBox.getSelectedIndex();
 
     if (index >= 1) {
-        ReinforcementInfo reinforcementInfo = reinforcements.at(index);
+        const ReinforcementInfo reinforcementInfo = reinforcements.at(index);
         reinforcements.erase(reinforcements.begin() + index);
         reinforcementsListBox.removeEntry(index);
 
@@ -238,10 +238,10 @@ void ReinforcementsWindow::onUp() {
 }
 
 void ReinforcementsWindow::onDown() {
-    int index = reinforcementsListBox.getSelectedIndex();
+    const int index = reinforcementsListBox.getSelectedIndex();
 
     if ((index >= 0) && (index < reinforcementsListBox.getNumEntries() - 1)) {
-        ReinforcementInfo reinforcementInfo = reinforcements.at(index);
+        const ReinforcementInfo reinforcementInfo = reinforcements.at(index);
         reinforcements.erase(reinforcements.begin() + index);
         reinforcementsListBox.removeEntry(index);
 
@@ -259,20 +259,20 @@ void ReinforcementsWindow::onAdd() {
         return;
     }
 
-    int index = reinforcementsListBox.getSelectedIndex();
+    const int index = reinforcementsListBox.getSelectedIndex();
 
-    ReinforcementInfo reinforcementInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                                        static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
-                                        (DropLocation)dropLocationDropDownBox.getSelectedEntryIntData(),
-                                        timeTextBox.getValue(),
-                                        repeatCheckbox.isChecked());
+    const ReinforcementInfo reinforcementInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
+                                              static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData()),
+                                              (DropLocation)dropLocationDropDownBox.getSelectedEntryIntData(),
+                                              timeTextBox.getValue(),
+                                              repeatCheckbox.isChecked());
     reinforcements.insert(reinforcements.begin() + index + 1, reinforcementInfo);
     reinforcementsListBox.insertEntry(index + 1, getDescribingString(reinforcementInfo));
     reinforcementsListBox.setSelectedItem(index + 1);
 }
 
 void ReinforcementsWindow::onRemove() {
-    int index = reinforcementsListBox.getSelectedIndex();
+    const int index = reinforcementsListBox.getSelectedIndex();
 
     if (index >= 0) {
         reinforcements.erase(reinforcements.begin() + index);
@@ -282,7 +282,7 @@ void ReinforcementsWindow::onRemove() {
 }
 
 void ReinforcementsWindow::onSelectionChange(bool bInteractive) {
-    int index = reinforcementsListBox.getSelectedIndex();
+    const int index = reinforcementsListBox.getSelectedIndex();
 
     if (index >= 0) {
         ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
@@ -316,7 +316,7 @@ void ReinforcementsWindow::onSelectionChange(bool bInteractive) {
 
 void ReinforcementsWindow::onEntryChange(bool bInteractive) {
     if (bInteractive) {
-        int index = reinforcementsListBox.getSelectedIndex();
+        const int index = reinforcementsListBox.getSelectedIndex();
 
         if (index >= 0) {
             ReinforcementInfo& reinforcementInfo = reinforcements.at(index);

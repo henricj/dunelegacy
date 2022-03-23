@@ -104,7 +104,7 @@ inline int getHeight(const DuneTexture* pTexture) noexcept {
     \return the rectangle for drawing the specified sprite from pSurface when passed to SDL_BlitSurface
 */
 inline SDL_Rect calcSpriteSourceRect(SDL_Surface* pSurface, int col, int numCols, int row = 0, int numRows = 1) {
-    SDL_Rect rect = {col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols, pSurface->h / numRows};
+    const SDL_Rect rect = {col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols, pSurface->h / numRows};
     return rect;
 }
 
@@ -121,7 +121,7 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     int w;
     int h;
     SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
-    SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
+    const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
     return rect;
 }
 
@@ -458,7 +458,7 @@ inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HA
     \return the rectangle for drawing pSurface at the specified position when passed to SDL_BlitSurface
 */
 inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, SDL_Surface* pBaseSurface, HAlign halign = HAlign::Center, VAlign valign = VAlign::Center) {
-    SDL_Rect rect = {0, 0, pBaseSurface->w, pBaseSurface->h};
+    const SDL_Rect rect = {0, 0, pBaseSurface->w, pBaseSurface->h};
     return calcAlignedDrawingRect(pSurface, rect, halign, valign);
 }
 

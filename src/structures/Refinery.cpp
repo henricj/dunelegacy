@@ -141,7 +141,7 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pHarvester->getGuardPoint());
     } else {
-        Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
+        const Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
         pHarvester->deploy(context, deployPos);
     }
 

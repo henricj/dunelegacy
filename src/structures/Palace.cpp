@@ -98,8 +98,8 @@ void Palace::handleSpecialClick(const GameContext& context) {
 }
 
 void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos) {
-    auto& game = context.game;
-    auto& map  = context.map;
+    auto& game      = context.game;
+    const auto& map = context.map;
 
     if (map.tileExists(xPos, yPos)) {
         game.getCommandManager().addCommand(

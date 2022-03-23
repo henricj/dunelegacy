@@ -8,10 +8,10 @@
 fix16_t fix16_add(fix16_t a, fix16_t b) {
     // Use unsigned integers because overflow with signed integers is
     // an undefined operation (http://www.airs.com/blog/archives/120).
-    uint32_t _a = a;
+    const uint32_t _a = a;
 
-    uint32_t _b  = b;
-    uint32_t sum = _a + _b;
+    const uint32_t _b  = b;
+    const uint32_t sum = _a + _b;
 
     // Overflow can only happen if sign of a == sign of b, and then
     // it causes sign of sum != sign of a.
@@ -22,10 +22,10 @@ fix16_t fix16_add(fix16_t a, fix16_t b) {
 }
 
 fix16_t fix16_sub(fix16_t a, fix16_t b) {
-    uint32_t _a = a;
+    const uint32_t _a = a;
 
-    uint32_t _b   = b;
-    uint32_t diff = _a - _b;
+    const uint32_t _b   = b;
+    const uint32_t diff = _a - _b;
 
     // Overflow can only happen if sign of a != sign of b, and then
     // it causes sign of diff != sign of a.
@@ -37,7 +37,7 @@ fix16_t fix16_sub(fix16_t a, fix16_t b) {
 
 /* Saturating arithmetic */
 fix16_t fix16_sadd(fix16_t a, fix16_t b) {
-    fix16_t result = fix16_add(a, b);
+    const fix16_t result = fix16_add(a, b);
 
     if (result == fix16_overflow)
         return (a >= 0) ? fix16_maximum : fix16_minimum;
@@ -46,7 +46,7 @@ fix16_t fix16_sadd(fix16_t a, fix16_t b) {
 }
 
 fix16_t fix16_ssub(fix16_t a, fix16_t b) {
-    fix16_t result = fix16_sub(a, b);
+    const fix16_t result = fix16_sub(a, b);
 
     if (result == fix16_overflow)
         return (a >= 0) ? fix16_maximum : fix16_minimum;
@@ -67,7 +67,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
 
 #    ifndef FIXMATH_NO_OVERFLOW
     // The upper 17 bits should all be the same (the sign).
-    uint32_t upper = (product >> 47);
+    const uint32_t upper = (product >> 47);
 #    endif
 
     if (product < 0) {
@@ -261,7 +261,7 @@ fix16_t fix16_mul(fix16_t inArg0, fix16_t inArg1) {
 #ifndef FIXMATH_NO_OVERFLOW
 /* Wrapper around fix16_mul to add saturating arithmetic. */
 fix16_t fix16_smul(fix16_t inArg0, fix16_t inArg1) {
-    fix16_t result = fix16_mul(inArg0, inArg1);
+    const fix16_t result = fix16_mul(inArg0, inArg1);
 
     if (result == fix16_overflow) {
         if ((inArg0 >= 0) == (inArg1 >= 0))
@@ -314,8 +314,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b) {
     // This improves speed in the worst-case scenarios where N and D are large
     // It gets a lower estimate for the result by N/(D >> 17 + 1).
     if (divider & 0xFFF00000) {
-        uint32_t shifted_div = ((divider >> 17) + 1);
-        quotient             = remainder / shifted_div;
+        const uint32_t shifted_div = ((divider >> 17) + 1);
+        quotient                   = remainder / shifted_div;
         remainder -= ((uint64_t)quotient * divider) >> 17;
     }
 
@@ -445,7 +445,7 @@ fix16_t fix16_div(fix16_t a, fix16_t b) {
 #ifndef FIXMATH_NO_OVERFLOW
 /* Wrapper around fix16_div to add saturating arithmetic. */
 fix16_t fix16_sdiv(fix16_t inArg0, fix16_t inArg1) {
-    fix16_t result = fix16_div(inArg0, inArg1);
+    const fix16_t result = fix16_div(inArg0, inArg1);
 
     if (result == fix16_overflow) {
         if ((inArg0 >= 0) == (inArg1 >= 0))

@@ -172,7 +172,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 MentatMenu::~MentatMenu() = default;
 
 void MentatMenu::setText(const std::string& text) {
-    std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
+    const std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
     mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx), std::sregex_token_iterator());
     if (mentatTexts.empty()) {
         mentatTexts.push_back(text);
@@ -225,7 +225,7 @@ void MentatMenu::update() {
     }
 
     const Point mouse(drawnMouseX - getPosition().x, drawnMouseY - getPosition().y);
-    bool bPressed = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT));
+    const bool bPressed = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT));
 
     const Point eyesPos     = windowWidget.getWidgetPosition(&eyesAnim);
     const Point& eyesSize   = eyesAnim.getSize();

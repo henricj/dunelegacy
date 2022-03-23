@@ -228,7 +228,7 @@ void BuilderBase::updateProductionProgress() {
     if (currentProducedItem == ItemID_Invalid)
         return;
 
-    auto* const tmp = getBuildItem(currentProducedItem);
+    const auto* const tmp = getBuildItem(currentProducedItem);
 
     if ((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem)) && (owner->getCredits() > 0)) {
 
@@ -244,8 +244,8 @@ void BuilderBase::updateProductionProgress() {
             const auto buildSpeed = std::min(getHealth() / getMaxHealth(), buildSpeedLimit);
             const FixPoint totalBuildCosts =
                 currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
-            auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime * 15;
-            const auto buildCosts    = totalBuildCosts / totalBuildGameTicks;
+            const auto totalBuildGameTicks = currentGame->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime * 15;
+            const auto buildCosts          = totalBuildCosts / totalBuildGameTicks;
 
             productionProgress += owner->takeCredits(buildCosts * buildSpeed);
 

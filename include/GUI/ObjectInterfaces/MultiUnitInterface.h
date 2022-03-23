@@ -48,7 +48,7 @@ public:
 protected:
     MultiUnitInterface(const GameContext& context)
         : context_ {context} {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
 
@@ -322,13 +322,13 @@ protected:
             ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
             auto* pUnit         = dynamic_cast<UnitBase*>(pObject);
             if (pUnit != nullptr) {
-                ATTACKMODE attackMode = pUnit->getAttackMode();
-                bGuard                = bGuard && (attackMode == GUARD);
-                bAreaGuard            = bAreaGuard && (attackMode == AREAGUARD);
-                bStop                 = bStop && (attackMode == STOP);
-                bAmbush               = bAmbush && (attackMode == AMBUSH);
-                bHunt                 = bHunt && (attackMode == HUNT);
-                bRetreat              = bRetreat && (attackMode == RETREAT);
+                const ATTACKMODE attackMode = pUnit->getAttackMode();
+                bGuard                      = bGuard && (attackMode == GUARD);
+                bAreaGuard                  = bAreaGuard && (attackMode == AREAGUARD);
+                bStop                       = bStop && (attackMode == STOP);
+                bAmbush                     = bAmbush && (attackMode == AMBUSH);
+                bHunt                       = bHunt && (attackMode == HUNT);
+                bRetreat                    = bRetreat && (attackMode == RETREAT);
 
                 if (pUnit->canAttack()) {
                     bShowAttack = true;

@@ -356,7 +356,7 @@ void BuilderList::drawOverlay(Point position) {
             tooltipText  = text;
         }
 
-        auto dest = calcDrawingRectF(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6, position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
+        const auto dest = calcDrawingRectF(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6, position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
         Dune_RenderCopyF(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }
@@ -440,7 +440,7 @@ Point BuilderList::getButtonPosition(int BtnNumber) {
 }
 
 int BuilderList::getButton(int x, int y) const {
-    if (auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
+    if (const auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         for (int i = 0; i < static_cast<int>(pBuilder->getBuildList().size()); i++) {
             if ((i >= currentListPos) && (i < currentListPos + getNumButtons(getSize().y))) {
                 if ((x >= getButtonPosition(i - currentListPos).x) && (x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH) && (y >= getButtonPosition(i - currentListPos).y) && (y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT)) {

@@ -169,7 +169,7 @@ public:
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2, position.y + getSize().y / 2, HAlign::Center, VAlign::Center);
+        const SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2, position.y + getSize().y / 2, HAlign::Center, VAlign::Center);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 

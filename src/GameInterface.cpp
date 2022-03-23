@@ -89,10 +89,10 @@ void GameInterface::draw(Point position) {
 
     // draw Power Indicator and Spice indicator
 
-    SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2};
+    const SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4, getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
 
-    SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2};
+    const SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4, getRendererHeight() - 146 - 2};
     renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
 
     int xCount = 0;
@@ -172,8 +172,8 @@ void GameInterface::draw(Point position) {
 }
 
 void GameInterface::updateObjectInterface() {
-    auto& selected  = currentGame->getSelectedList();
-    const auto size = selected.size();
+    const auto& selected = currentGame->getSelectedList();
+    const auto size      = selected.size();
     if (size == 1) {
         auto* pObject          = currentGame->getObjectManager().getObject(*(selected.begin()));
         const auto newObjectID = pObject->getObjectID();

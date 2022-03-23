@@ -69,8 +69,8 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) {
 
 sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) const {
 
-    auto rwop          = pFileManager->openFile(adlFile);
-    auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
+    const auto rwop          = pFileManager->openFile(adlFile);
+    const auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
     pSoundAdlibPC->setVolume(volume);
     sdl2::mix_chunk_ptr chunk {pSoundAdlibPC->getSubsong(index)};
 
@@ -293,8 +293,8 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
 
     // "Warning Wormsign"
     if (pFileManager->exists(languagePrefix + "WORMY.VOC")) {
-        auto WarningChunk         = getChunkFromFile(languagePrefix + "WARNING.VOC");
-        auto WormSignChunk        = getChunkFromFile(languagePrefix + "WORMY.VOC");
+        const auto WarningChunk   = getChunkFromFile(languagePrefix + "WARNING.VOC");
+        const auto WormSignChunk  = getChunkFromFile(languagePrefix + "WORMY.VOC");
         lngVoice[WarningWormSign] = concat2Chunks(WarningChunk.get(), WormSignChunk.get());
     } else {
         lngVoice[WarningWormSign] = getChunkFromFile(languagePrefix + "WARNING.VOC");

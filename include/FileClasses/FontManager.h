@@ -50,7 +50,7 @@ public:
 
 private:
     Font* getFont(unsigned int fontSize) {
-        auto iter = fonts.find(fontSize);
+        const auto iter = fonts.find(fontSize);
 
         if (iter != fonts.end()) {
             return iter->second.get();

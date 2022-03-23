@@ -178,7 +178,7 @@ void processcell_sustain(celltype* ctc, fltype modulator, fltype vib, fltype tre
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;
     }
@@ -205,7 +205,7 @@ void processcell_release(celltype* ctc, fltype modulator, fltype vib, fltype tre
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++; // sample counter
         if ((ctc->cur_env_step & ctc->env_step_r) == 0)
@@ -243,7 +243,7 @@ void processcell_decay(celltype* ctc, fltype modulator, fltype vib, fltype trem)
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
+    const Bits num_steps_add = (Bits)ctc->generator_pos; // number of (standardized) samples
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;
         if ((ctc->cur_env_step & ctc->env_step_d) == 0)
@@ -271,7 +271,7 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
     ctc->lastval = ctc->val;
 
     ctc->generator_pos += generator_add;
-    Bits num_steps_add = (Bits)ctc->generator_pos; // determine number of std samples that have passed
+    const Bits num_steps_add = (Bits)ctc->generator_pos; // determine number of std samples that have passed
     for (Bits ct = 0; ct < num_steps_add; ct++) {
         ctc->cur_env_step++;                              // next sample
         if ((ctc->cur_env_step & ctc->env_step_a) == 0) { // check if next step already reached
@@ -299,20 +299,20 @@ cftype_fptr cfuncs[6] = {
     processcell_off};
 
 void OPLChipClass::change_attackrate(Bitu regbase, celltype* c) {
-    Bits attackrate = adlibreg[ARC_ATTR_DECR + regbase] >> 4;
+    const Bits attackrate = adlibreg[ARC_ATTR_DECR + regbase] >> 4;
     if (attackrate) {
-        auto f = (fltype)(pow(FL2, (fltype)attackrate + (c->toff >> 2) - 1) * attackconst[c->toff & 3] * recipsamp);
+        const auto f = (fltype)(pow(FL2, (fltype)attackrate + (c->toff >> 2) - 1) * attackconst[c->toff & 3] * recipsamp);
         // attack rate coefficients
         c->a0 = (fltype)(0.0377 * f);
         c->a1 = (fltype)(10.73 * f + 1);
         c->a2 = (fltype)(-17.57 * f);
         c->a3 = (fltype)(7.42 * f);
 
-        Bits step_skip = attackrate * 4 + c->toff;
-        Bits steps     = step_skip >> 2;
-        c->env_step_a  = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
+        Bits step_skip   = attackrate * 4 + c->toff;
+        const Bits steps = step_skip >> 2;
+        c->env_step_a    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
 
-        Bits step_num                  = (step_skip <= 48) ? (4 - (step_skip & 3)) : 0;
+        const Bits step_num            = (step_skip <= 48) ? (4 - (step_skip & 3)) : 0;
         static Bit8u step_skip_mask[5] = {0xff, 0xfe, 0xee, 0xba, 0xaa};
         c->env_step_skip_a             = step_skip_mask[step_num];
     } else {
@@ -327,13 +327,13 @@ void OPLChipClass::change_attackrate(Bitu regbase, celltype* c) {
 }
 
 void OPLChipClass::change_decayrate(Bitu regbase, celltype* c) {
-    Bits decayrate = adlibreg[ARC_ATTR_DECR + regbase] & 15;
+    const Bits decayrate = adlibreg[ARC_ATTR_DECR + regbase] & 15;
     // decaymul should be 1.0 when decayrate==0
     if (decayrate) {
-        auto f        = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
-        c->decaymul   = (fltype)(pow(FL2, f * pow(FL2, (fltype)(decayrate + (c->toff >> 2)))));
-        Bits steps    = (decayrate * 4 + c->toff) >> 2;
-        c->env_step_d = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
+        const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
+        c->decaymul      = (fltype)(pow(FL2, f * pow(FL2, (fltype)(decayrate + (c->toff >> 2)))));
+        const Bits steps = (decayrate * 4 + c->toff) >> 2;
+        c->env_step_d    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
         c->decaymul   = 1.0;
         c->env_step_d = 0;
@@ -341,13 +341,13 @@ void OPLChipClass::change_decayrate(Bitu regbase, celltype* c) {
 }
 
 void OPLChipClass::change_releaserate(Bitu regbase, celltype* c) {
-    Bits releaserate = adlibreg[ARC_SUSL_RELR + regbase] & 15;
+    const Bits releaserate = adlibreg[ARC_SUSL_RELR + regbase] & 15;
     // releasemul should be 1.0 when releaserate==0
     if (releaserate) {
-        auto f        = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
-        c->releasemul = (fltype)(pow(FL2, f * pow(FL2, (fltype)(releaserate + (c->toff >> 2)))));
-        Bits steps    = (releaserate * 4 + c->toff) >> 2;
-        c->env_step_r = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
+        const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
+        c->releasemul    = (fltype)(pow(FL2, f * pow(FL2, (fltype)(releaserate + (c->toff >> 2)))));
+        const Bits steps = (releaserate * 4 + c->toff) >> 2;
+        c->env_step_r    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
         c->releasemul = 1.0;
         c->env_step_r = 0;
@@ -355,7 +355,7 @@ void OPLChipClass::change_releaserate(Bitu regbase, celltype* c) {
 }
 
 void OPLChipClass::change_sustainlevel(Bitu regbase, celltype* c) {
-    Bits sustainlevel = adlibreg[ARC_SUSL_RELR + regbase] >> 4;
+    const Bits sustainlevel = adlibreg[ARC_SUSL_RELR + regbase] >> 4;
     // sustainlevel should be 0.0 when sustainlevel==15 (max)
     if (sustainlevel < 15) {
         c->sustain_level = (fltype)(pow(FL2, (fltype)sustainlevel * (-FL05)));
@@ -391,7 +391,7 @@ void OPLChipClass::change_vibrato(Bitu regbase, celltype* c) {
 
 // change amount of self-feedback
 void OPLChipClass::change_feedback(Bitu chanbase, celltype* c) {
-    Bits feedback = adlibreg[ARC_FEEDBACK + chanbase] & 14;
+    const Bits feedback = adlibreg[ARC_FEEDBACK + chanbase] & 14;
     if (feedback)
         c->mfb = (fltype)(pow(FL2, (fltype)((feedback >> 1) + 5)) * (WAVPREC / 2048.0) * FL05);
     else
@@ -400,14 +400,14 @@ void OPLChipClass::change_feedback(Bitu chanbase, celltype* c) {
 
 void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
     // frequency
-    Bits frn = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8) + (Bits)adlibreg[ARC_FREQ_NUM + chanbase];
+    const Bits frn = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) & 3) << 8) + (Bits)adlibreg[ARC_FREQ_NUM + chanbase];
     // block number/octave
-    Bits oct     = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) >> 2) & 7);
-    c->freq_high = (frn >> 7) & 7;
+    const Bits oct = ((((Bits)adlibreg[ARC_KON_BNUM + chanbase]) >> 2) & 7);
+    c->freq_high   = (frn >> 7) & 7;
 
     // keysplit
-    Bits note_sel = (adlibreg[8] >> 6) & 1;
-    c->toff       = ((frn >> 9) & (note_sel ^ 1)) | ((frn >> 8) & note_sel);
+    const Bits note_sel = (adlibreg[8] >> 6) & 1;
+    c->toff             = ((frn >> 9) & (note_sel ^ 1)) | ((frn >> 8) & note_sel);
     c->toff += (oct << 1);
 
     // envelope scaling (KSR)
@@ -417,9 +417,9 @@ void OPLChipClass::change_cellfreq(Bitu chanbase, Bitu regbase, celltype* c) {
     // 20+a0+b0:
     c->tinc = (fltype)(frn << oct) * nfrqmul[adlibreg[ARC_TVS_KSR_MUL + regbase] & 15];
     // 40+a0+b0:
-    auto vol_in = (fltype)((fltype)(adlibreg[ARC_KSL_OUTLEV + regbase] & 63) +
-                           (fltype)kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6] * ksl[oct][frn >> 6]);
-    c->vol      = (fltype)(pow(FL2, (fltype)(vol_in * -0.125 - 14)));
+    const auto vol_in = (fltype)((fltype)(adlibreg[ARC_KSL_OUTLEV + regbase] & 63) +
+                                 (fltype)kslmul[adlibreg[ARC_KSL_OUTLEV + regbase] >> 6] * ksl[oct][frn >> 6]);
+    c->vol            = (fltype)(pow(FL2, (fltype)(vol_in * -0.125 - 14)));
 
     // cell frequency changed, care about features that depend on it
     change_attackrate(regbase, c);
@@ -633,12 +633,12 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         case ARC_TVS_KSR_MUL:
         case ARC_TVS_KSR_MUL + 0x10: {
             // tremolo/vibrato/sustain keeping enabled; key scale rate; frequency multiplication
-            int num   = idx & 7;
-            Bitu base = (idx - ARC_TVS_KSR_MUL) & 0xff;
+            const int num   = idx & 7;
+            const Bitu base = (idx - ARC_TVS_KSR_MUL) & 0xff;
             if ((num < 6) && (base < 22)) {
-                Bitu modcell  = regbase2modcell[second_set ? (base + 22) : base];
-                Bitu regbase  = base + second_set;
-                Bitu chanbase = second_set ? (modcell - 18 + ARC_SECONDSET) : modcell;
+                const Bitu modcell  = regbase2modcell[second_set ? (base + 22) : base];
+                const Bitu regbase  = base + second_set;
+                const Bitu chanbase = second_set ? (modcell - 18 + ARC_SECONDSET) : modcell;
 
                 // change tremolo/vibrato and sustain keeping of this cell
                 celltype* ccellptr = &cell[modcell + ((num < 3) ? 0 : 9)];
@@ -653,11 +653,11 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         case ARC_KSL_OUTLEV:
         case ARC_KSL_OUTLEV + 0x10: {
             // key scale level; output rate
-            int num   = idx & 7;
-            Bitu base = (idx - ARC_KSL_OUTLEV) & 0xff;
+            const int num   = idx & 7;
+            const Bitu base = (idx - ARC_KSL_OUTLEV) & 0xff;
             if ((num < 6) && (base < 22)) {
-                Bitu modcell  = regbase2modcell[second_set ? (base + 22) : base];
-                Bitu chanbase = second_set ? (modcell - 18 + ARC_SECONDSET) : modcell;
+                const Bitu modcell  = regbase2modcell[second_set ? (base + 22) : base];
+                const Bitu chanbase = second_set ? (modcell - 18 + ARC_SECONDSET) : modcell;
 
                 // change frequency calculations of this cell as
                 // key scale level and output rate can be changed
@@ -668,11 +668,11 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         case ARC_ATTR_DECR:
         case ARC_ATTR_DECR + 0x10: {
             // attack/decay rates
-            int num   = idx & 7;
-            Bitu base = (idx - ARC_ATTR_DECR) & 0xff;
+            const int num   = idx & 7;
+            const Bitu base = (idx - ARC_ATTR_DECR) & 0xff;
             if ((num < 6) && (base < 22)) {
-                Bitu modcell = regbase2modcell[second_set ? (base + 22) : base];
-                Bitu regbase = base + second_set;
+                const Bitu modcell = regbase2modcell[second_set ? (base + 22) : base];
+                const Bitu regbase = base + second_set;
 
                 // change attack rate and decay rate of this cell
                 celltype* ccellptr = &cell[modcell + ((num < 3) ? 0 : 9)];
@@ -683,11 +683,11 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         case ARC_SUSL_RELR:
         case ARC_SUSL_RELR + 0x10: {
             // sustain level; release rate
-            int num   = idx & 7;
-            Bitu base = (idx - ARC_SUSL_RELR) & 0xff;
+            const int num   = idx & 7;
+            const Bitu base = (idx - ARC_SUSL_RELR) & 0xff;
             if ((num < 6) && (base < 22)) {
-                Bitu modcell = regbase2modcell[second_set ? (base + 22) : base];
-                Bitu regbase = base + second_set;
+                const Bitu modcell = regbase2modcell[second_set ? (base + 22) : base];
+                const Bitu regbase = base + second_set;
 
                 // change sustain level and release rate of this cell
                 celltype* ccellptr = &cell[modcell + ((num < 3) ? 0 : 9)];
@@ -697,13 +697,13 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         } break;
         case ARC_FREQ_NUM: {
             // 0xa0-0xa8 low8 frequency
-            Bitu base = (idx - ARC_FREQ_NUM) & 0xff;
+            const Bitu base = (idx - ARC_FREQ_NUM) & 0xff;
             if (base < 9) {
-                Bits cellbase = second_set ? (base + 18) : base;
+                const Bits cellbase = second_set ? (base + 18) : base;
                 // regbase of modulator:
-                Bits modbase = modulatorbase[base] + second_set;
+                const Bits modbase = modulatorbase[base] + second_set;
 
-                Bitu chanbase = base + second_set;
+                const Bitu chanbase = base + second_set;
 
                 change_cellfreq(chanbase, modbase, &cell[cellbase]);
                 change_cellfreq(chanbase, modbase + 3, &cell[cellbase + 9]);
@@ -749,7 +749,7 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                 if ((val & 1) > (old_val & 1)) { // Hihat
                     cellon(17, &cell[7]);
                     change_cellfreq(7, 17, &cell[7]);
-                    Bitu hval = adlibreg[ARC_WAVE_SEL + 17] & 7;
+                    const Bitu hval = adlibreg[ARC_WAVE_SEL + 17] & 7;
                     if ((hval == 1) || (hval == 4) || (hval == 5) || (hval == 7))
                         cell[7].vol = 0;
                     if (hval == 6) {
@@ -761,11 +761,11 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                 break;
             }
             // regular 0xb0-0xb8
-            Bitu base = (idx - ARC_KON_BNUM) & 0xff;
+            const Bitu base = (idx - ARC_KON_BNUM) & 0xff;
             if (base < 9) {
-                Bits cellbase = second_set ? (base + 18) : base;
+                const Bits cellbase = second_set ? (base + 18) : base;
                 // regbase of modulator:
-                Bits modbase = modulatorbase[base] + second_set;
+                const Bits modbase = modulatorbase[base] + second_set;
 
                 if ((val & 32) > (old_val & 32)) {
                     // key switched ON
@@ -779,7 +779,7 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
                         cell[cellbase + 9].cf_sel = CF_TYPE_REL;
                 }
 
-                Bitu chanbase = base + second_set;
+                const Bitu chanbase = base + second_set;
 
                 // change frequency calculations of modulator and carrier (2op) as
                 // the frequency of the channel has changed
@@ -789,17 +789,17 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
         } break;
         case ARC_FEEDBACK: {
             // 0xc0-0xc8 feedback/modulation type (AM/FM)
-            Bitu base = (idx - ARC_FEEDBACK) & 0xff;
+            const Bitu base = (idx - ARC_FEEDBACK) & 0xff;
             if (base < 9) {
-                Bits cellbase = second_set ? (base + 18) : base;
-                Bitu chanbase = base + second_set;
+                const Bits cellbase = second_set ? (base + 18) : base;
+                const Bitu chanbase = base + second_set;
                 change_feedback(chanbase, &cell[cellbase]);
             }
         } break;
         case ARC_WAVE_SEL:
         case ARC_WAVE_SEL + 0x10: {
-            int num   = idx & 7;
-            Bitu base = (idx - ARC_WAVE_SEL) & 0xff;
+            const int num   = idx & 7;
+            const Bitu base = (idx - ARC_WAVE_SEL) & 0xff;
             if ((num < 6) && (base < 22)) {
                 if (adlibreg[0x01] & 0x20) {
                     // wave selection enabled, change waveform
@@ -865,7 +865,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
 
     Bits _snarek = 0;
 
-    Bits samples_to_process = numsamples;
+    const Bits samples_to_process = numsamples;
 
     for (Bits cursmp = 0; cursmp < samples_to_process; cursmp += endsamples) {
         endsamples = samples_to_process - cursmp;
@@ -1037,7 +1037,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
             }
         }
 
-        Bitu max_channel = NUM_CHANNELS;
+        const Bitu max_channel = NUM_CHANNELS;
         for (j = max_channel - 1; j >= 0; j--) {
             // skip percussion cells
             if ((adlibreg[ARC_PERC_MODE] & 0x20) && (j >= 6) && (j < 9))

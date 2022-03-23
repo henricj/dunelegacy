@@ -96,7 +96,7 @@ CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, House* associated
 
 CampaignAIPlayer::CampaignAIPlayer(const GameContext& context, InputStream& stream, House* associatedHouse)
     : Player(context, stream, associatedHouse) {
-    auto numStructureInfo = stream.readUint32();
+    const auto numStructureInfo = stream.readUint32();
     for (uint32_t i = 0; i < numStructureInfo; i++) {
         structureQueue.emplace_back(stream);
     }
@@ -193,7 +193,7 @@ void CampaignAIPlayer::updateStructures() {
                     });
 
                     if (pBestHouse) {
-                        Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();
+                        const Coord target = pBestHouse->getNumStructures() > 0 ? pBestHouse->getCenterOfMainBase() : pBestHouse->getStrongestUnitPosition();
                         doLaunchDeathhand(pPalace, target.x, target.y);
                     }
                 }
@@ -219,11 +219,11 @@ void CampaignAIPlayer::updateStructures() {
             if (pBuilder->getItemID() == Structure_ConstructionYard) {
                 // rebuild the last five destroyed buildings
                 if (pBuilder->isWaitingToPlace()) {
-                    ItemID_enum itemID = pBuilder->getCurrentProducedItem();
+                    const ItemID_enum itemID = pBuilder->getCurrentProducedItem();
                     for (auto iter = structureQueue.begin(); iter != structureQueue.end(); ++iter) {
                         if (iter->itemID == itemID) {
                             const auto location    = iter->location;
-                            Coord itemsize         = getStructureSize(itemID);
+                            const Coord itemsize   = getStructureSize(itemID);
                             const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                             if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                 doPlaceStructure(pConstYard, location.x, location.y);
@@ -315,7 +315,7 @@ void CampaignAIPlayer::updateUnits() {
                 continue;
             }
 
-            int priority = calculateTargetPriority(pUnit, pCandidate);
+            const int priority = calculateTargetPriority(pUnit, pCandidate);
             if (priority > bestCandidatePriority) {
                 bestCandidatePriority = priority;
                 pBestCandidate        = pCandidate;
@@ -327,7 +327,7 @@ void CampaignAIPlayer::updateUnits() {
                 continue;
             }
 
-            int priority = calculateTargetPriority(pUnit, pCandidate);
+            const int priority = calculateTargetPriority(pUnit, pCandidate);
             if (priority > bestCandidatePriority) {
                 bestCandidatePriority = priority;
                 pBestCandidate        = pCandidate;
@@ -347,8 +347,8 @@ int CampaignAIPlayer::calculateTargetPriority(const UnitBase* pUnit, const Objec
 
     const auto it = targetPriorityMap.find(pObject->getItemID());
 
-    int priority = it == targetPriorityMap.end() ? 0 : it->second;
-    int distance = blockDistanceApprox(pUnit->getLocation(), pObject->getLocation());
+    const int priority = it == targetPriorityMap.end() ? 0 : it->second;
+    const int distance = blockDistanceApprox(pUnit->getLocation(), pObject->getLocation());
 
     return (distance > 0) ? ((priority / distance) + 1) : priority;
 }

@@ -358,19 +358,19 @@ void Game::drawScreen() {
                           const auto x = t.getLocation().x;
                           const auto y = t.getLocation().y;
 
-                          auto* const pTile = &t;
+                          const auto* const pTile = &t;
 
                           const auto& border = screenborder;
                           const auto team_id = pLocalHouse->getTeamID();
 
-                          SDL_Rect drawLocation = {border->world2screenX(x * TILESIZE), border->world2screenY(y * TILESIZE),
-                                                   zoomedTileSize, zoomedTileSize};
+                          const SDL_Rect drawLocation = {border->world2screenX(x * TILESIZE), border->world2screenY(y * TILESIZE),
+                                                         zoomedTileSize, zoomedTileSize};
 
                           if (pTile->isExploredByTeam(this, team_id)) {
                               const auto hideTile = t.getHideTile(this, team_id);
 
                               if (hideTile != 0) {
-                                  SDL_Rect source = {hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
+                                  const SDL_Rect source = {hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
                                   Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                               }
 
@@ -378,14 +378,14 @@ void Game::drawScreen() {
                                   const auto fogTile = pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
 
                                   if (fogTile != 0) {
-                                      SDL_Rect source = {fogTile * zoomedTileSize, 0,
-                                                         zoomedTileSize, zoomedTileSize};
+                                      const SDL_Rect source = {fogTile * zoomedTileSize, 0,
+                                                               zoomedTileSize, zoomedTileSize};
                                       Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                                   }
                               }
                           } else {
                               if (!debug) {
-                                  SDL_Rect source = {zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
+                                  const SDL_Rect source = {zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
                                   Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
                               }
                           }
@@ -577,9 +577,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
     // first of all update mouse
     if (event.type == SDL_MOUSEMOTION) {
-        SDL_MouseMotionEvent* mouse = &event.motion;
-        drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width - 1));
-        drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height - 1));
+        const SDL_MouseMotionEvent* mouse = &event.motion;
+        drawnMouseX                       = std::max(0, std::min(mouse->x, settings.video.width - 1));
+        drawnMouseY                       = std::max(0, std::min(mouse->y, settings.video.height - 1));
     }
 
     if (pInGameMenu != nullptr) {
@@ -616,7 +616,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
             case SDL_TEXTINPUT: {
                 if (chatMode) {
-                    auto* const newText = event.text.text;
+                    const auto* const newText = event.text.text;
                     if (utf8Length(typingChatMessage) + utf8Length(newText) <= 60) {
                         typingChatMessage += newText;
                     }
@@ -630,7 +630,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
             } break;
 
             case SDL_MOUSEBUTTONDOWN: {
-                auto* const mouse = &event.button;
+                const auto* const mouse = &event.button;
 
                 switch (mouse->button) {
                     case SDL_BUTTON_LEFT: {
@@ -731,13 +731,13 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
             } break;
 
             case SDL_MOUSEMOTION: {
-                auto* const mouse = &event.motion;
+                const auto* const mouse = &event.motion;
 
                 pInterface->handleMouseMovement(mouse->x, mouse->y);
             } break;
 
             case SDL_MOUSEBUTTONUP: {
-                auto* const mouse = &event.button;
+                const auto* const mouse = &event.button;
 
                 switch (mouse->button) {
                     case SDL_BUTTON_LEFT: {
@@ -769,11 +769,11 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         rectFinishX = map->getSizeX() - 1;
                     }
 
-                    int rectFinishY = screenborder->screen2MapY(finalMouseY);
+                    const int rectFinishY = screenborder->screen2MapY(finalMouseY);
 
                     // convert start also to map coordinates
-                    int rectStartX = selectionRect.x / TILESIZE;
-                    int rectStartY = selectionRect.y / TILESIZE;
+                    const int rectStartX = selectionRect.x / TILESIZE;
+                    const int rectStartY = selectionRect.y / TILESIZE;
 
                     map->selectObjects(pLocalHouse,
                                        rectStartX, rectStartY, rectFinishX, rectFinishY,
@@ -951,7 +951,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                     }
 
                     if ((xPos != INVALID_POS) && (yPos != INVALID_POS)) {
-                        auto* const pTile = map->getTile(xPos, yPos);
+                        const auto* const pTile = map->getTile(xPos, yPos);
 
                         if (pTile->isExploredByTeam(this, pLocalHouse->getTeamID())) {
 
@@ -1367,7 +1367,7 @@ void Game::runMainLoop(const GameContext& context) {
 
         auto mapnameBase = getBasename(gameInitSettings.getFilename(), true);
         mapnameBase += ".rpl";
-        auto rplName          = std::filesystem::path {"replay"} / mapnameBase;
+        const auto rplName    = std::filesystem::path {"replay"} / mapnameBase;
         auto [ok, replayname] = fnkdat(rplName, FNKDAT_USER | FNKDAT_CREAT);
 
         OFileStream replystream;
@@ -1441,9 +1441,9 @@ GameInitSettings Game::getNextGameInitSettings() {
                 alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }
 
-            uint32_t alreadyShownTutorialHints = won
-                                                   ? pLocalPlayer->getAlreadyShownTutorialHints()
-                                                   : gameInitSettings.getAlreadyShownTutorialHints();
+            const uint32_t alreadyShownTutorialHints = won
+                                                         ? pLocalPlayer->getAlreadyShownTutorialHints()
+                                                         : gameInitSettings.getAlreadyShownTutorialHints();
             return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
         }
 
@@ -1456,7 +1456,7 @@ GameInitSettings Game::getNextGameInitSettings() {
 
 int Game::whatNext() {
     if (whatNextParam != GAME_NOTHING) {
-        int tmp       = whatNextParam;
+        const int tmp = whatNextParam;
         whatNextParam = GAME_NOTHING;
         return tmp;
     }
@@ -1520,7 +1520,7 @@ bool Game::loadSaveGame(const std::filesystem::path& filename) {
         return false;
     }
 
-    bool ret = loadSaveGame(fs);
+    const bool ret = loadSaveGame(fs);
 
     fs.close();
 
@@ -1545,8 +1545,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     std::string duneVersion = stream.readString();
 
     // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the settings saved in the savegame
-    bool bMultiplayerLoad                            = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
-    GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
+    const bool bMultiplayerLoad                            = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
+    const GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
 
     // read gameInitSettings
     gameInitSettings = GameInitSettings(stream);
@@ -1786,13 +1786,13 @@ void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
 }
 
 void Game::selectAll(const Dune::selected_set_type& aList) const {
-    for (auto objectID : aList) {
+    for (const auto objectID : aList) {
         objectManager.getObject(objectID)->setSelected(true);
     }
 }
 
 void Game::unselectAll(const Dune::selected_set_type& aList) const {
-    for (auto objectID : aList) {
+    for (const auto objectID : aList) {
         objectManager.getObject(objectID)->setSelected(false);
     }
 }
@@ -1811,7 +1811,7 @@ void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_
             return;
         }
 
-        for (auto objectID : selectedByOtherPlayerList) {
+        for (const auto objectID : selectedByOtherPlayerList) {
             auto* pObject = objectManager.getObject(objectID);
             if (pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(false);
@@ -1820,7 +1820,7 @@ void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_
 
         selectedByOtherPlayerList = newSelectionList;
 
-        for (uint32_t objectID : selectedByOtherPlayerList) {
+        for (const uint32_t objectID : selectedByOtherPlayerList) {
             ObjectBase* pObject = objectManager.getObject(objectID);
             if (pObject != nullptr) {
                 pObject->setSelectedByOtherPlayer(true);
@@ -1912,7 +1912,7 @@ void Game::handleChatInput(const GameContext& context, SDL_KeyboardEvent& keyboa
 
             std::stringstream md5stream;
             md5stream << std::setfill('0') << std::hex << std::uppercase << "0x";
-            for (int i : md5sum) {
+            for (const int i : md5sum) {
                 md5stream << std::setw(2) << i;
             }
 
@@ -2407,7 +2407,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
 
         for (int y = yPos; y < yPos + structuresize.y; y++) {
             for (int x = xPos; x < xPos + structuresize.x; x++) {
-                auto* const pTile = map->getTile(x, y);
+                const auto* const pTile = map->getTile(x, y);
                 if (pTile->hasANonInfantryGroundObject()) {
                     auto* const pObject = pTile->getNonInfantryGroundObject(objectManager);
                     if (pObject && pObject->getOwner() == pBuilder->getOwner()) {
@@ -2418,7 +2418,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
                         }
                     }
                 } else if (pTile->hasInfantry()) {
-                    for (auto objectID : pTile->getInfantryList()) {
+                    for (const auto objectID : pTile->getInfantryList()) {
                         auto* pInfantry = getObjectManager().getObject<InfantryBase>(objectID);
                         if ((pInfantry != nullptr) && (pInfantry->getOwner() == pBuilder->getOwner())) {
                             const auto newDestination = map->findDeploySpot(pInfantry, Coord(xPos, yPos), uiRandom, pInfantry->getLocation(), structuresize);
@@ -2435,7 +2435,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
 
 bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
-    for (auto objectID : selectedList) {
+    for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject(objectID);
         if (!pObject)
             continue;
@@ -2466,7 +2466,7 @@ bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos
 bool Game::handleSelectedObjectsMoveClick(const GameContext& context, int xPos, int yPos) {
     UnitBase* pResponder = nullptr;
 
-    for (auto objectID : selectedList) {
+    for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject<UnitBase>(objectID);
         if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
             pResponder = pObject;
@@ -2498,7 +2498,7 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& cont
         return false;
     }
 
-    for (auto objectID : selectedList) {
+    for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject<UnitBase>(objectID);
         if (pObject && pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
             pResponder = pObject;
@@ -2526,7 +2526,7 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
     if ((pStructure != nullptr) && (pStructure->canBeCaptured()) && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 
-        for (auto objectID : selectedList) {
+        for (const auto objectID : selectedList) {
             auto* const pObject = objectManager.getObject<InfantryBase>(objectID);
             if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
                 pResponder = pObject;
@@ -2549,7 +2549,7 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
 bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos, int yPos) {
     // let unit handle right click on map or target
     ObjectBase* pResponder = nullptr;
-    for (auto objectID : selectedList) {
+    for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject(objectID);
         if (pObject && pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
             pObject->handleActionClick(context, xPos, yPos);

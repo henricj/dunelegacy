@@ -49,8 +49,8 @@ public:
         // the whole map shall be of type Terrain_Sand
 
         for (int i = 0; i < rockfields; i++) {
-            int spotX = randGen.rand(0, map.getSizeX() - 1);
-            int spotY = randGen.rand(0, map.getSizeY() - 1);
+            const int spotX = randGen.rand(0, map.getSizeX() - 1);
+            const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Rock);
         }
@@ -61,8 +61,8 @@ public:
 
         // Spice fields
         for (int i = 0; i < spicefields; i++) {
-            int spotX = randGen.rand(0, map.getSizeX() - 1);
-            int spotY = randGen.rand(0, map.getSizeY() - 1);
+            const int spotX = randGen.rand(0, map.getSizeX() - 1);
+            const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Spice);
         }
@@ -77,8 +77,8 @@ public:
 
         // Spice fields
         for (int i = 0; i < DUNEFIELDS; i++) {
-            int spotX = randGen.rand(0, map.getSizeX() - 1);
-            int spotY = randGen.rand(0, map.getSizeY() - 1);
+            const int spotX = randGen.rand(0, map.getSizeX() - 1);
+            const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             makeSpot(spotX, spotY, Terrain_Dunes);
         }
@@ -206,7 +206,7 @@ private:
                     if (side4(i, j, type) >= 3) {
                         // Seems enough of the type around it so make this also of this type
                         for (int m = 0; m < mapMirror->getSize(); m++) {
-                            Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                            const Coord position        = mapMirror->getCoord(Coord(i, j), m);
                             map(position.x, position.y) = type;
                         }
                     }
@@ -215,7 +215,7 @@ private:
                         // Gamble, fifty fifty... set this type or not?
                         if (randGen.rand(0, 1) == 1) {
                             for (int m = 0; m < mapMirror->getSize(); m++) {
-                                Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                                const Coord position        = mapMirror->getCoord(Coord(i, j), m);
                                 map(position.x, position.y) = type;
                             }
                         }
@@ -232,7 +232,7 @@ private:
         for (int i = 0; i < map.getSizeX(); i++) {
             for (int j = 0; j < map.getSizeY(); j++) {
 
-                int numSpiceTiles = side4(i, j, Terrain_Spice) + side4(i, j, Terrain_ThickSpice);
+                const int numSpiceTiles = side4(i, j, Terrain_Spice) + side4(i, j, Terrain_ThickSpice);
 
                 if (map(i, j) != Terrain_ThickSpice && (numSpiceTiles >= 4)) {
                     // Found something else than what thickining
@@ -240,7 +240,7 @@ private:
                     if (side4(i, j, Terrain_ThickSpice) >= 3) {
                         // Seems enough of ThickSpice around it so make this also ThickSpice
                         for (int m = 0; m < mapMirror->getSize(); m++) {
-                            Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                            const Coord position        = mapMirror->getCoord(Coord(i, j), m);
                             map(position.x, position.y) = Terrain_ThickSpice;
                         }
                     }
@@ -249,7 +249,7 @@ private:
                         // Gamble, fifty fifty... set this to ThickSpice or not?
                         if (randGen.rand(0, 1) == 1) {
                             for (int m = 0; m < mapMirror->getSize(); m++) {
-                                Coord position              = mapMirror->getCoord(Coord(i, j), m);
+                                const Coord position        = mapMirror->getCoord(Coord(i, j), m);
                                 map(position.x, position.y) = Terrain_ThickSpice;
                             }
                         }
@@ -266,9 +266,9 @@ private:
         \param type      type of the spot
     */
     void makeSpot(int x, int y, TERRAINTYPE type) {
-        int spotSize = (640 * map.getSizeX() * map.getSizeY()) / (64 * 64);
+        const int spotSize = (640 * map.getSizeX() * map.getSizeY()) / (64 * 64);
         for (int j = 0; j < spotSize; j++) {
-            int dir = randGen.rand(0, 3); // Random Dir
+            const int dir = randGen.rand(0, 3); // Random Dir
 
             switch (dir) {
                 case 0: x--; break;
@@ -306,7 +306,7 @@ private:
             }
 
             for (int m = 0; m < mapMirror->getSize(); m++) {
-                Coord position              = mapMirror->getCoord(Coord(x, y), m);
+                const Coord position        = mapMirror->getCoord(Coord(x, y), m);
                 map(position.x, position.y) = type2Place;
             }
         }
@@ -319,12 +319,12 @@ private:
     void addRockBits(int amount) {
         int done = 0;
         for (int j = 0; (done < amount) && (j < 1000); j++) {
-            int spotX = randGen.rand(0, map.getSizeX() - 1);
-            int spotY = randGen.rand(0, map.getSizeY() - 1);
+            const int spotX = randGen.rand(0, map.getSizeX() - 1);
+            const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             if (map(spotX, spotY) == Terrain_Sand) {
                 for (int m = 0; m < mapMirror->getSize(); m++) {
-                    Coord position              = mapMirror->getCoord(Coord(spotX, spotY), m);
+                    const Coord position        = mapMirror->getCoord(Coord(spotX, spotY), m);
                     map(position.x, position.y) = Terrain_Rock;
                 }
                 done++;
@@ -339,12 +339,12 @@ private:
     void addSpiceBlooms(int amount) {
         int done = 0;
         for (int j = 0; (done < amount) && (j < 1000); j++) {
-            int spotX = randGen.rand(0, map.getSizeX() - 1);
-            int spotY = randGen.rand(0, map.getSizeY() - 1);
+            const int spotX = randGen.rand(0, map.getSizeX() - 1);
+            const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
             if (map(spotX, spotY) == Terrain_Sand) {
                 for (int m = 0; m < mapMirror->getSize(); m++) {
-                    Coord position              = mapMirror->getCoord(Coord(spotX, spotY), m);
+                    const Coord position        = mapMirror->getCoord(Coord(spotX, spotY), m);
                     map(position.x, position.y) = Terrain_SpiceBloom;
                 }
                 done++;

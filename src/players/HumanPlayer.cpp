@@ -139,8 +139,8 @@ void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObje
         return;
     }
 
-    for (auto objectID : selectedObjectIDs) {
-        auto* pObject = currentGame->getObjectManager().getObject(objectID);
+    for (const auto objectID : selectedObjectIDs) {
+        const auto* pObject = currentGame->getObjectManager().getObject(objectID);
         if (pObject->getOwner() != getHouse()) {
             continue;
         }
@@ -271,7 +271,7 @@ bool HumanPlayer::hasConcreteAtPositionOfSize(const Coord& pos, const Coord& con
                 return false;
             }
 
-            Tile* pTile = currentGameMap->getTile(x, y);
+            const Tile* pTile = currentGameMap->getTile(x, y);
             if ((pTile->getType() != Terrain_Slab) || (pTile->getOwner() != getHouse()->getHouseID()) || pTile->isBlocked()) {
                 return false;
             }

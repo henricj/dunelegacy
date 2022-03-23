@@ -110,7 +110,7 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, getStructureSize());
+        const Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, getStructureSize());
 
         pRepairUnit->setForced(false);
         pRepairUnit->doSetAttackMode(context, (pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);

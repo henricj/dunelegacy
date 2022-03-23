@@ -104,7 +104,7 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
 
     auto bFoundNonConcreteTile = false;
 
-    auto& game = context.game;
+    const auto& game = context.game;
 
     map->for_each(pos.x, pos.y, pos.x + getStructureSizeX(), pos.y + getStructureSizeY(),
                   [&](Tile& t) {
@@ -137,11 +137,11 @@ void StructureBase::blitToScreen() {
     const auto indexX = index % numImagesX;
     const auto indexY = index / numImagesX;
 
-    auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
-                                        screenborder->world2screenX(lround(realX)),
-                                        screenborder->world2screenY(lround(realY)),
-                                        numImagesX, numImagesY);
-    auto source = calcSpriteSourceRect(graphic[currentZoomlevel], indexX, numImagesX, indexY, numImagesY);
+    const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel],
+                                              screenborder->world2screenX(lround(realX)),
+                                              screenborder->world2screenY(lround(realY)),
+                                              numImagesX, numImagesY);
+    const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], indexX, numImagesX, indexY, numImagesY);
 
     Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
 

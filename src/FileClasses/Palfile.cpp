@@ -25,12 +25,12 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         THROW(std::invalid_argument, "Palfile::Palfile(): rwop == nullptr!");
     }
 
-    int64_t endOffset = SDL_RWsize(rwop);
+    const int64_t endOffset = SDL_RWsize(rwop);
     if (endOffset < 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Cannot determine size of this *.pal-File!");
     }
 
-    auto filesize = static_cast<size_t>(endOffset);
+    const auto filesize = static_cast<size_t>(endOffset);
 
     if (filesize % 3 != 0) {
         THROW(std::runtime_error, "Palfile::Palfile(): Filesize must be multiple of 3!");
@@ -65,7 +65,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         }
     }
 
-    sdl2::palette_ptr sdl_palette {SDL_AllocPalette(numColors)};
+    const sdl2::palette_ptr sdl_palette {SDL_AllocPalette(numColors)};
 
     SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, numColors);
 

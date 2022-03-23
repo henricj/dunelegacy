@@ -221,10 +221,10 @@ void TeamsWindow::onOK() {
 }
 
 void TeamsWindow::onUp() {
-    int index = teamsListBox.getSelectedIndex();
+    const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 1) {
-        AITeamInfo aiteamInfo = aiteams.at(index);
+        const AITeamInfo aiteamInfo = aiteams.at(index);
         aiteams.erase(aiteams.begin() + index);
         teamsListBox.removeEntry(index);
 
@@ -235,10 +235,10 @@ void TeamsWindow::onUp() {
 }
 
 void TeamsWindow::onDown() {
-    int index = teamsListBox.getSelectedIndex();
+    const int index = teamsListBox.getSelectedIndex();
 
     if ((index >= 0) && (index < teamsListBox.getNumEntries() - 1)) {
-        AITeamInfo aiteamInfo = aiteams.at(index);
+        const AITeamInfo aiteamInfo = aiteams.at(index);
         aiteams.erase(aiteams.begin() + index);
         teamsListBox.removeEntry(index);
 
@@ -256,20 +256,20 @@ void TeamsWindow::onAdd() {
         return;
     }
 
-    int index = teamsListBox.getSelectedIndex();
+    const int index = teamsListBox.getSelectedIndex();
 
-    AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
-                          (AITeamBehavior)aiTeamBehaviorDropDownBox.getSelectedEntryIntData(),
-                          (AITeamType)aiTeamTypeDropDownBox.getSelectedEntryIntData(),
-                          minUnitsTextBox.getValue(),
-                          maxUnitsTextBox.getValue());
+    const AITeamInfo aiteamInfo(static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData()),
+                                (AITeamBehavior)aiTeamBehaviorDropDownBox.getSelectedEntryIntData(),
+                                (AITeamType)aiTeamTypeDropDownBox.getSelectedEntryIntData(),
+                                minUnitsTextBox.getValue(),
+                                maxUnitsTextBox.getValue());
     aiteams.insert(aiteams.begin() + index + 1, aiteamInfo);
     teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
     teamsListBox.setSelectedItem(index + 1);
 }
 
 void TeamsWindow::onRemove() {
-    int index = teamsListBox.getSelectedIndex();
+    const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 0) {
         aiteams.erase(aiteams.begin() + index);
@@ -279,7 +279,7 @@ void TeamsWindow::onRemove() {
 }
 
 void TeamsWindow::onSelectionChange(bool bInteractive) {
-    int index = teamsListBox.getSelectedIndex();
+    const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 0) {
         AITeamInfo& aiteamInfo = aiteams.at(index);
@@ -312,8 +312,8 @@ void TeamsWindow::onSelectionChange(bool bInteractive) {
 
 void TeamsWindow::onMinUnitsChange(bool bInteractive) {
     if (bInteractive) {
-        int minUnits = minUnitsTextBox.getValue();
-        int maxUnits = maxUnitsTextBox.getValue();
+        const int minUnits = minUnitsTextBox.getValue();
+        const int maxUnits = maxUnitsTextBox.getValue();
 
         if (minUnits > maxUnits) {
             maxUnitsTextBox.setValue(minUnits);
@@ -325,8 +325,8 @@ void TeamsWindow::onMinUnitsChange(bool bInteractive) {
 
 void TeamsWindow::onMaxUnitsChange(bool bInteractive) {
     if (bInteractive) {
-        int minUnits = minUnitsTextBox.getValue();
-        int maxUnits = maxUnitsTextBox.getValue();
+        const int minUnits = minUnitsTextBox.getValue();
+        const int maxUnits = maxUnitsTextBox.getValue();
 
         if (minUnits > maxUnits) {
             minUnitsTextBox.setValue(maxUnits);
@@ -338,7 +338,7 @@ void TeamsWindow::onMaxUnitsChange(bool bInteractive) {
 
 void TeamsWindow::onEntryChange(bool bInteractive) {
     if (bInteractive) {
-        int index = teamsListBox.getSelectedIndex();
+        const int index = teamsListBox.getSelectedIndex();
 
         if (index >= 0) {
             AITeamInfo& aiteamInfo    = aiteams.at(index);

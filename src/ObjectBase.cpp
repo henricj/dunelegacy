@@ -294,7 +294,7 @@ void ObjectBase::setTarget(const ObjectBase* newTarget) {
     auto friendly = false;
 
     if (target) {
-        if (auto* targetPtr = target.getObjPointer()) {
+        if (const auto* targetPtr = target.getObjPointer()) {
             friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm) &&
                        (targetPtr->getItemID() != Unit_Sandworm);
         }
@@ -478,7 +478,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 
             const auto targetDistance = blockDistance(location, coord);
             if (targetDistance <= checkRange) {
-                Tile* pTile = currentGameMap->getTile(coord);
+                const Tile* pTile = currentGameMap->getTile(coord);
                 if (pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID()) && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID()) && pTile->hasAnObject()) {
 
                     auto* const pNewTarget = pTile->getObject(currentGame->getObjectManager());

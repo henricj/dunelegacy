@@ -56,7 +56,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     mainVBox.addWidget(&centralVBox, 360);
 
-    auto& players = pMapEditor->getPlayers();
+    const auto& players = pMapEditor->getPlayers();
     for (int i = 0; i < players.size(); i++) {
 
         const auto& playerInfo = players[i];
@@ -241,12 +241,12 @@ void PlayerSettingsWindow::onOK() {
     pMapEditor->startOperation();
 
     for (int i = 0; i < playerWidgets.size(); i++) {
-        bool bActive      = playerWidgets[i].playerCheckbox.isChecked();
-        bool bAnyHouse    = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
-        int credits       = playerWidgets[i].creditsTextBox.getValue();
-        std::string brain = playerWidgets[i].teamDropDownBox.getSelectedEntry();
-        int quota         = playerWidgets[i].spiceQuotaTextBox.getValue();
-        int maxunit       = playerWidgets[i].maxUnitsTextBox.getValue();
+        const bool bActive      = playerWidgets[i].playerCheckbox.isChecked();
+        const bool bAnyHouse    = pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
+        const int credits       = playerWidgets[i].creditsTextBox.getValue();
+        const std::string brain = playerWidgets[i].teamDropDownBox.getSelectedEntry();
+        const int quota         = playerWidgets[i].spiceQuotaTextBox.getValue();
+        const int maxunit       = playerWidgets[i].maxUnitsTextBox.getValue();
 
         MapEditorChangePlayer changePlayerOperation(i, bActive, bAnyHouse, credits, brain, quota, maxunit);
 
@@ -260,7 +260,7 @@ void PlayerSettingsWindow::onOK() {
 }
 
 void PlayerSettingsWindow::onPlayerCheckbox(int i) {
-    bool bChecked = playerWidgets[i].playerCheckbox.isChecked();
+    const bool bChecked = playerWidgets[i].playerCheckbox.isChecked();
 
     playerWidgets[i].anyHouseRadioButton.setVisible(bChecked);
     playerWidgets[i].houseRadioButton.setVisible(bChecked);

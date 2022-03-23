@@ -75,7 +75,7 @@ void RadarView::draw(Point position) {
 
             SDL_UpdateTexture(radarTexture.get(), nullptr, radarSurface->pixels, radarSurface->pitch);
 
-            SDL_Rect dest = calcDrawingRect(radarTexture.get(), radarPosition.x, radarPosition.y);
+            const SDL_Rect dest = calcDrawingRect(radarTexture.get(), radarPosition.x, radarPosition.y);
             Dune_RenderCopy(renderer, radarTexture.get(), nullptr, &dest);
 
             SDL_Rect radarRect;
@@ -115,16 +115,16 @@ void RadarView::draw(Point position) {
 
         case RadarMode::AnimationRadarOff:
         case RadarMode::AnimationRadarOn: {
-            auto source = calcSpriteSourceRect(radarStaticAnimation,
-                                               animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
-                                               NUM_STATIC_ANIMATIONS_PER_ROW,
-                                               animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
-                                               (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            auto dest   = calcSpriteDrawingRect(radarStaticAnimation,
-                                                radarPosition.x,
-                                                radarPosition.y,
-                                                NUM_STATIC_ANIMATIONS_PER_ROW,
-                                                (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            const auto source = calcSpriteSourceRect(radarStaticAnimation,
+                                                     animFrame % NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                     (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            const auto dest   = calcSpriteDrawingRect(radarStaticAnimation,
+                                                      radarPosition.x,
+                                                      radarPosition.y,
+                                                      NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                      (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
             Dune_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
@@ -195,7 +195,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
 
     auto* map = currentGameMap;
 
-    auto radar_on = ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
+    const auto radar_on = ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
 
     map->for_all([&](Tile& t) {
         auto color = t.getRadarColor(currentGame.get(), pLocalHouse, radar_on);

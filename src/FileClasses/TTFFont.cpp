@@ -50,7 +50,7 @@ TTFFont::~TTFFont() = default;
 void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor) {
 
     if (!text.empty()) {
-        sdl2::surface_ptr pTextSurface {TTF_RenderUTF8_Solid(pTTFFont.get(), std::string {text}.c_str(), RGBA2SDL(baseColor))};
+        const sdl2::surface_ptr pTextSurface {TTF_RenderUTF8_Solid(pTTFFont.get(), std::string {text}.c_str(), RGBA2SDL(baseColor))};
         if (!pTextSurface) {
             THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Solid() failed: %s!", TTF_GetError());
         }

@@ -31,12 +31,12 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::invalid_argument, "IndexedTextFile:IndexedTextFile(): rwop == nullptr!");
     }
 
-    int64_t endOffset = SDL_RWsize(rwop);
+    const int64_t endOffset = SDL_RWsize(rwop);
     if (endOffset < 0) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Cannot determine size of this file!");
     }
 
-    auto indexedTextFilesize = static_cast<size_t>(endOffset);
+    const auto indexedTextFilesize = static_cast<size_t>(endOffset);
 
     if (indexedTextFilesize < 2) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): No valid indexed textfile: File too small!");
@@ -48,7 +48,7 @@ IndexedTextFile::IndexedTextFile(SDL_RWops* rwop, bool bDecode) {
         THROW(std::runtime_error, "IndexedTextFile:IndexedTextFile(): Reading this indexed textfile failed!");
     }
 
-    int numIndexedStrings = (SDL_SwapLE16(((Uint16*)filedata.data())[0])) / 2 - 1;
+    const int numIndexedStrings = (SDL_SwapLE16(((Uint16*)filedata.data())[0])) / 2 - 1;
 
     auto* pIndex = (uint16_t*)filedata.data();
     for (int i = 0; i <= numIndexedStrings; i++) {

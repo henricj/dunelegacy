@@ -63,7 +63,7 @@ int Scene::draw() {
         break;
     }
 
-    for (auto& pTextEvent : textEvents) {
+    for (const auto& pTextEvent : textEvents) {
         pTextEvent->draw(currentFrameNumber);
     }
 
@@ -72,7 +72,7 @@ int Scene::draw() {
 
     // 4.: Process Triggers
     while (!triggerList.empty()) {
-        auto& pTrigger = triggerList.front();
+        const auto& pTrigger = triggerList.front();
 
         if (pTrigger->getTriggerFrameNumber() > currentFrameNumber) {
             break;

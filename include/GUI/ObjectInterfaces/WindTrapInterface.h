@@ -41,7 +41,7 @@ public:
 protected:
     WindTrapInterface(const GameContext& context, int objectID)
         : DefaultStructureInterface(context, objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 
@@ -65,7 +65,7 @@ protected:
             return false;
         }
 
-        House* pOwner = pObject->getOwner();
+        const House* pOwner = pObject->getOwner();
 
         requiredEnergyLabel.setText(" " + _("Required") + ": " + std::to_string(pOwner->getPowerRequirement()));
         producedEnergyLabel.setText(" " + _("Produced") + ": " + std::to_string(pOwner->getProducedPower()));

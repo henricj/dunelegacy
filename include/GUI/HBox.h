@@ -145,7 +145,7 @@ public:
             }
         }
 
-        int32_t totalAvailableWidth = availableWidth;
+        const int32_t totalAvailableWidth = availableWidth;
         for (const HBox_WidgetData& widgetData : containedWidgets) {
             int32_t widgetHeight;
             if (widgetData.pWidget->resizingYAllowed() == true) {

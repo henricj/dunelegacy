@@ -62,7 +62,7 @@ std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameConte
 }
 
 bool WindTrap::update(const GameContext& context) {
-    bool bResult = StructureBase::update(context);
+    const bool bResult = StructureBase::update(context);
 
     if (bResult) {
         // we are still alive
@@ -75,16 +75,16 @@ bool WindTrap::update(const GameContext& context) {
 }
 
 void WindTrap::setHealth(FixPoint newHealth) {
-    int producedPowerBefore = getProducedPower();
+    const int producedPowerBefore = getProducedPower();
     StructureBase::setHealth(newHealth);
-    int producedPowerAfterwards = getProducedPower();
+    const int producedPowerAfterwards = getProducedPower();
 
     owner->setProducedPower(owner->getProducedPower() - producedPowerBefore + producedPowerAfterwards);
 }
 
 int WindTrap::getProducedPower() const {
-    int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
+    const int windTrapProducedPower = abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
 
-    FixPoint ratio = getHealth() / getMaxHealth();
+    const FixPoint ratio = getHealth() / getMaxHealth();
     return lround(ratio * windTrapProducedPower);
 }

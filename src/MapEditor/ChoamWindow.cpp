@@ -69,7 +69,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     centralVBox.addWidget(VSpacer::create(4));
 
-    auto& choam = pMapEditor->getChoam();
+    const auto& choam = pMapEditor->getChoam();
 
     for (int i = 0; i < 7; i++) {
 
@@ -148,8 +148,8 @@ void ChoamWindow::onOK() {
     pMapEditor->startOperation();
 
     for (unsigned int i = 0; i < sizeof(choamUnits) / sizeof(choamUnits[0]); i++) {
-        int rowNum         = i / 2;
-        ItemID_enum itemID = choamUnits[i];
+        const int rowNum         = i / 2;
+        const ItemID_enum itemID = choamUnits[i];
 
         if (itemID != ItemID_Invalid) {
 
@@ -185,7 +185,7 @@ void ChoamWindow::onOK() {
 void ChoamWindow::onUnitCheckbox(ItemID_enum itemID) {
     for (unsigned int i = 0; i < sizeof(choamUnits) / sizeof(choamUnits[0]); i++) {
         if (choamUnits[i] == itemID) {
-            int rowNum = i / 2;
+            const int rowNum = i / 2;
 
             if ((i % 2) == 0) {
                 choamRows[rowNum].TextBox_Unit1.setVisible(choamRows[rowNum].Checkbox_Unit1.isChecked());

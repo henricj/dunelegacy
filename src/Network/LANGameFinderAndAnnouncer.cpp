@@ -141,7 +141,7 @@ void LANGameFinderAndAnnouncer::announceGame() {
     ENetBuffer enetBuffer;
     enetBuffer.data       = &announcePacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_AnnounceGame);
-    int err               = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // blocked
     } else if (err < 0) {
@@ -165,7 +165,7 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
     ENetBuffer enetBuffer;
     enetBuffer.data       = &requestPacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_RequestGame);
-    int err               = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // blocked
     } else if (err < 0) {
@@ -253,7 +253,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 }
 
 void LANGameFinderAndAnnouncer::updateServerInfoList() {
-    uint32_t currentTime = SDL_GetTicks();
+    const uint32_t currentTime = SDL_GetTicks();
 
     auto iter = gameServerInfoList.begin();
     while (iter != gameServerInfoList.end()) {
@@ -284,7 +284,7 @@ void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
     ENetBuffer enetBuffer;
     enetBuffer.data       = &removeAnnouncementPacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_RemoveGameAnnouncement);
-    int err               = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // would have blocked, need to resend later
     } else if (err < 0) {

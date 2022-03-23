@@ -727,7 +727,7 @@ MapEditorInterface::~MapEditorInterface() = default;
 
 void MapEditorInterface::onHouseChanges() {
 
-    int currentSelection = houseDropDownBox.getSelectedEntryIntData();
+    const int currentSelection = houseDropDownBox.getSelectedEntryIntData();
 
     houseDropDownBox.clearAllEntries();
 
@@ -810,7 +810,7 @@ void MapEditorInterface::onObjectSelected() {
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
     auto* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
     if (pNewMapWindow != nullptr) {
-        auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
+        const auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
             pMapEditor->loadMap(loadMapFilepath);
@@ -826,7 +826,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
 
     auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
     if (pLoadMapWindow != nullptr) {
-        auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
+        const auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
             pMapEditor->loadMap(loadMapFilepath);
@@ -884,7 +884,7 @@ void MapEditorInterface::onSave() {
     } else {
         mapname = getBasename(lastSaveName, true);
 
-        auto pathName = getBasename(getDirname(lastSaveName));
+        const auto pathName = getBasename(getDirname(lastSaveName));
 
         for (int i = 0; i < (int)mapDirectories.size(); i++) {
             if (getBasename(mapDirectories[i]) == pathName) {
@@ -1059,7 +1059,7 @@ void MapEditorInterface::onStructButton(ItemID_enum structType) {
     editorModeStructs_Palace.setToggleState((structType == Structure_Palace));
 
     if (structType >= 0) {
-        auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
+        const auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, structType, 256));
     }
 }
@@ -1087,7 +1087,7 @@ void MapEditorInterface::onUnitButton(ItemID_enum unitType) {
     editorModeUnits_Ornithopter.setToggleState((unitType == Unit_Ornithopter));
 
     if (unitType >= 0) {
-        auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
+        const auto house = (HOUSETYPE)houseDropDownBox.getSelectedEntryIntData();
         pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
     }
 }
@@ -1102,9 +1102,9 @@ void MapEditorInterface::onStructureHealthDropDown(bool bInteractive) {
             currentEditStructureID = pMapEditor->getSelectedStructureID();
         }
 
-        std::vector<int> selectedStructures = pMapEditor->getMirrorStructures(currentEditStructureID);
+        const std::vector<int> selectedStructures = pMapEditor->getMirrorStructures(currentEditStructureID);
 
-        for (int selectedStructure : selectedStructures) {
+        for (const int selectedStructure : selectedStructures) {
             MapEditorEditStructureOperation editStructureOperation(selectedStructure, structureDetailsHealthDropDownBox.getSelectedEntryIntData());
             pMapEditor->addUndoOperation(editStructureOperation.perform(pMapEditor));
         }
@@ -1121,10 +1121,10 @@ void MapEditorInterface::onUnitHealthDropDown(bool bInteractive) {
             currentEditUnitID = pMapEditor->getSelectedUnitID();
         }
 
-        std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
+        const std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
 
-        for (int selectedUnit : selectedUnits) {
-            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
+        for (const int selectedUnit : selectedUnits) {
+            const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(pUnit->id, unitDetailsHealthDropDownBox.getSelectedEntryIntData(), pUnit->angle, pUnit->attackmode);
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }
@@ -1143,13 +1143,13 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
         currentEditUnitID = unitID;
     }
 
-    std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
+    const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
     for (int i = 0; i < (int)mirrorUnits.size(); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
 
-        MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
+        const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
         auto currentAngle = pMirrorUnit->angle;
         currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
@@ -1180,13 +1180,13 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
         currentEditUnitID = unitID;
     }
 
-    std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
+    const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
     for (int i = 0; i < (int)mirrorUnits.size(); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
 
-        MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
+        const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
         auto currentAngle = pMirrorUnit->angle;
         currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
@@ -1214,10 +1214,10 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
             currentEditUnitID = pMapEditor->getSelectedUnitID();
         }
 
-        std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
+        const std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
 
-        for (int selectedUnit : selectedUnits) {
-            MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
+        for (const int selectedUnit : selectedUnits) {
+            const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(pUnit->id, pUnit->health, pUnit->angle, (ATTACKMODE)unitDetailsAttackModeDropDownBox.getSelectedEntryIntData());
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }

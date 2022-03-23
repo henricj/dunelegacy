@@ -28,7 +28,7 @@ void Choam::save(OutputStream& stream) const {
 }
 
 void Choam::load(InputStream& stream) {
-    uint32_t num = stream.readUint32();
+    const uint32_t num = stream.readUint32();
     for (uint32_t i = 0; i < num; i++) {
         BuildItem tmp;
         tmp.load(stream);
@@ -86,7 +86,7 @@ void Choam::update(const GameContext& context) {
     auto& game = context.game;
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_AMOUNT) == 0) {
-        int index                 = game.randomGen.rand(0u, availableItems.size() - 1);
+        const int index           = game.randomGen.rand(0u, availableItems.size() - 1);
         availableItems[index].num = std::min(availableItems[index].num + 1, 10u);
     }
 

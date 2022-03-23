@@ -89,10 +89,10 @@ void CSurroundopl::write(int reg, int val) {
     this->iFMReg[this->currChip][iRegister] = iValue;
 
     if ((iChannel >= 0)) { // && (i == 1)) {
-        uint8_t iBlock = (this->iFMReg[this->currChip][0xB0 + iChannel] >> 2) & 0x07;
-        uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8) | this->iFMReg[this->currChip][0xA0 + iChannel];
+        const uint8_t iBlock = (this->iFMReg[this->currChip][0xB0 + iChannel] >> 2) & 0x07;
+        const uint16_t iFNum = ((this->iFMReg[this->currChip][0xB0 + iChannel] & 0x03) << 8) | this->iFMReg[this->currChip][0xA0 + iChannel];
         // double dbOriginalFreq = 50000.0 * (double)iFNum * pow(2, iBlock - 20);
-        double dbOriginalFreq = 49716.0 * (double)iFNum * pow(2, iBlock - 20);
+        const double dbOriginalFreq = 49716.0 * (double)iFNum * pow(2, iBlock - 20);
 
         uint8_t iNewBlock = iBlock;
         uint16_t iNewFNum = 0;
@@ -101,7 +101,7 @@ void CSurroundopl::write(int reg, int val) {
 // double dbNewFNum = (dbOriginalFreq+(dbOriginalFreq/FREQ_OFFSET)) / (50000.0 * pow(2, iNewBlock - 20));
 //#define calcFNum() ((dbOriginalFreq+(dbOriginalFreq/FREQ_OFFSET)) / (50000.0 * pow(2, iNewBlock - 20)))
 #define calcFNum() ((dbOriginalFreq + (dbOriginalFreq / FREQ_OFFSET)) / (49716.0 * pow(2, iNewBlock - 20)))
-        double dbNewFNum = calcFNum();
+        const double dbNewFNum = calcFNum();
 
         // Make sure it's in range for the OPL chip
         if (dbNewFNum > 1023 - NEWBLOCK_LIMIT) {
@@ -160,8 +160,8 @@ void CSurroundopl::write(int reg, int val) {
 
             if (this->iTweakedFMReg[this->currChip][0xA0 + iChannel] != (iNewFNum & 0xFF)) {
                 // Need to write out low bits
-                uint8_t iAdditionalReg   = 0xA0 + iChannel;
-                uint8_t iAdditionalValue = iNewFNum & 0xFF;
+                const uint8_t iAdditionalReg   = 0xA0 + iChannel;
+                const uint8_t iAdditionalValue = iNewFNum & 0xFF;
                 b->write(iAdditionalReg, iAdditionalValue);
                 this->iTweakedFMReg[this->currChip][iAdditionalReg] = iAdditionalValue;
             }
@@ -179,7 +179,7 @@ void CSurroundopl::write(int reg, int val) {
                 //              AdPlug_LogWrite("OPL INFO: CH%d - FNum %d/B#%d -> FNum %d/B#%d == keyon register update!\n",
                 //                  iChannel, iFNum, iBlock, iNewFNum, iNewBlock);
                 // The note is already playing, so we need to adjust the upper bits too
-                uint8_t iAdditionalReg = 0xB0 + iChannel;
+                const uint8_t iAdditionalReg = 0xB0 + iChannel;
                 b->write(iAdditionalReg, iNewB0Value);
                 this->iTweakedFMReg[this->currChip][iAdditionalReg] = iNewB0Value;
             } // else the note is not playing, the upper bits will be set when the note is next played

@@ -42,12 +42,12 @@ void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
 }
 
 bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
+    const int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
 
     if ((x >= 0) && (x < getSize().x - scrollbarWidth) && (y >= 0) && (y < getSize().y)) {
 
         if (pressed) {
-            int index = ((y - 1) / GUIStyle::getInstance().getListBoxEntryHeight()) + firstVisibleElement;
+            const int index = ((y - 1) / GUIStyle::getInstance().getListBoxEntryHeight()) + firstVisibleElement;
             if ((index >= 0) && (index < getNumEntries())) {
                 selectedElement = index;
 
@@ -114,11 +114,11 @@ void ListBox::draw(Point position) {
     updateTextures();
 
     if (pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
-    SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 1);
+    const SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 1);
     Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
 
     Point ScrollBarPos = position;
@@ -150,7 +150,7 @@ void ListBox::setActive() {
 }
 
 void ListBox::setSelectedItem(int index, bool bInteractive) {
-    bool bChanged = (index != selectedElement);
+    const bool bChanged = (index != selectedElement);
 
     if (index <= -1) {
         selectedElement = -1;
@@ -158,7 +158,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
     } else if ((index >= 0) && (index < getNumEntries())) {
         selectedElement = index;
 
-        int numVisibleElements = ((getSize().y - 2) / GUIStyle::getInstance().getListBoxEntryHeight()) + 1;
+        const int numVisibleElements = ((getSize().y - 2) / GUIStyle::getInstance().getListBoxEntryHeight()) + 1;
 
         if (selectedElement >= firstVisibleElement + numVisibleElements - 1) {
             firstVisibleElement = selectedElement - (numVisibleElements - 1) + 1;
@@ -196,7 +196,7 @@ void ListBox::updateTextures() {
 
         sdl2::surface_ptr pForegroundSurface = sdl2::surface_ptr {GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
 
-        int numVisibleElements = static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
+        const int numVisibleElements = static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
         for (int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;

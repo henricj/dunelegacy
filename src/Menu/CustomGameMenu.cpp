@@ -285,7 +285,7 @@ void CustomGameMenu::onMapListSelectionChange(bool bInteractive) {
 
     if (inimap.hasKey("MAP", "Seed")) {
         // old map format with seed value
-        int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
+        const int mapscale = inimap.getIntValue("BASIC", "MapScale", -1);
 
         switch (mapscale) {
             case 0: {

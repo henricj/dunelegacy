@@ -30,8 +30,8 @@ HouseChoiceMenu::HouseChoiceMenu() {
     currentHouseChoiceScrollPos = 0;
 
     // set up window
-    int xpos = std::max(0, (getRendererWidth() - 640) / 2);
-    int ypos = std::max(0, (getRendererHeight() - 400) / 2);
+    const int xpos = std::max(0, (getRendererWidth() - 640) / 2);
+    const int ypos = std::max(0, (getRendererHeight() - 400) / 2);
 
     setCurrentPosition(xpos, ypos, 640, 400);
 
@@ -82,7 +82,7 @@ void HouseChoiceMenu::onHouseButton(int button) {
     }
     // clang-format on
 
-    int ret = HouseChoiceInfoMenu(selectedHouse).showMenu();
+    const int ret = HouseChoiceInfoMenu(selectedHouse).showMenu();
     quit(ret == MENU_QUIT_DEFAULT ? MENU_QUIT_DEFAULT : static_cast<int>(selectedHouse));
 }
 

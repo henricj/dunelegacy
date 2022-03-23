@@ -35,19 +35,19 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
         return nullptr;
     }
 
-    int64_t endOffset = SDL_RWsize(RWop);
+    const int64_t endOffset = SDL_RWsize(RWop);
     if (endOffset <= 0) {
         THROW(std::runtime_error, "LoadCPS_RW(): Cannot determine size of this *.cps-File!");
     }
 
-    auto cpsFilesize = static_cast<size_t>(endOffset);
-    auto pFiledata   = std::make_unique<uint8_t[]>(cpsFilesize);
+    const auto cpsFilesize = static_cast<size_t>(endOffset);
+    const auto pFiledata   = std::make_unique<uint8_t[]>(cpsFilesize);
 
     if (SDL_RWread(RWop, pFiledata.get(), cpsFilesize, 1) != 1) {
         THROW(std::runtime_error, "LoadCPS_RW(): Reading this *.cps-File failed!");
     }
 
-    uint16_t format = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 2));
+    const uint16_t format = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 2));
 
     if (format != 0x0004) {
         THROW(std::runtime_error, "LoadCPS_RW(): Only Format80 encoded *.cps-Files are supported!");
@@ -60,9 +60,9 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
         THROW(std::runtime_error, "LoadCPS_RW(): Images must be 320x200 pixels big!");
     }
 
-    uint16_t PaletteSize = SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 8)));
+    const uint16_t PaletteSize = SDL_SwapLE16(*(reinterpret_cast<uint16_t*>(pFiledata.get() + 8)));
 
-    auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X * SIZE_Y);
+    const auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X * SIZE_Y);
     memset(pImageOut.get(), 0, SIZE_X * SIZE_Y);
 
     if (decode80(pFiledata.get() + 10 + PaletteSize, pImageOut.get(), 0) == -2) {

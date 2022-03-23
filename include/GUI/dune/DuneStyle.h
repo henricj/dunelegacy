@@ -247,10 +247,10 @@ private:
     sdl2::surface_ptr createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize);
 
     uint32_t brightenUp(uint32_t color) {
-        Uint32 r = (color & RMASK) >> RSHIFT;
-        Uint32 g = (color & GMASK) >> GSHIFT;
-        Uint32 b = (color & BMASK) >> BSHIFT;
-        Uint32 a = (color & AMASK) >> ASHIFT;
+        Uint32 r       = (color & RMASK) >> RSHIFT;
+        Uint32 g       = (color & GMASK) >> GSHIFT;
+        Uint32 b       = (color & BMASK) >> BSHIFT;
+        const Uint32 a = (color & AMASK) >> ASHIFT;
 
         r = std::min(255U, (r * 3) / 2);
         g = std::min(255U, (g * 3) / 2);

@@ -282,7 +282,7 @@ protected:
 
         auto* pUnit = dynamic_cast<UnitBase*>(pObject);
         if (pUnit != nullptr) {
-            ATTACKMODE AttackMode = pUnit->getAttackMode();
+            const ATTACKMODE AttackMode = pUnit->getAttackMode();
 
             guardButton.setToggleState(AttackMode == GUARD);
             areaGuardButton.setToggleState(AttackMode == AREAGUARD);

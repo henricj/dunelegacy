@@ -49,7 +49,7 @@ void ScrollBar::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
         const auto SliderAreaHeight = getSize().y - arrow1.getSize().y - arrow2.getSize().y;
         const auto Range            = (maxValue - minValue + 1);
 
-        double OneTickHeight = static_cast<double>(SliderAreaHeight - sliderButton.getSize().y) / static_cast<double>(Range - 1);
+        const double OneTickHeight = static_cast<double>(SliderAreaHeight - sliderButton.getSize().y) / static_cast<double>(Range - 1);
 
         setCurrentValue(static_cast<int>((y - dragPositionFromSliderTop - arrow1.getSize().y) / OneTickHeight));
     }
@@ -118,7 +118,7 @@ void ScrollBar::draw(Point position) {
     updateTextures();
 
     if (pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
@@ -138,8 +138,8 @@ void ScrollBar::resize(uint32_t width, uint32_t height) {
 }
 
 void ScrollBar::updateSliderButton() {
-    auto Range            = static_cast<double>(maxValue - minValue + 1);
-    int ArrowHeight       = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
+    const auto Range      = static_cast<double>(maxValue - minValue + 1);
+    const int ArrowHeight = GUIStyle::getInstance().getMinimumScrollBarArrowButtonSize().y;
     auto SliderAreaHeight = static_cast<double>(getSize().y - 2 * ArrowHeight);
 
     if (SliderAreaHeight < 0.0) {

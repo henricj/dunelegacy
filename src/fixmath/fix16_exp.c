@@ -84,8 +84,8 @@ fix16_t fix16_log(fix16_t inValue) {
         // Solving e(x) = y using Newton's method
         // f(x) = e(x) - y
         // f'(x) = e(x)
-        fix16_t e = fix16_exp(guess);
-        delta     = fix16_div(inValue - e, e);
+        const fix16_t e = fix16_exp(guess);
+        delta           = fix16_div(inValue - e, e);
 
         // It's unlikely that logarithm is very large, so avoid overshooting.
         if (delta > fix16_from_int(3))
@@ -101,7 +101,7 @@ static inline fix16_t fix16_rs(fix16_t x) {
 #ifdef FIXMATH_NO_ROUNDING
     return (x >> 1);
 #else
-    fix16_t y = (x >> 1) + (x & 1);
+    const fix16_t y = (x >> 1) + (x & 1);
     return y;
 #endif
 }
@@ -165,7 +165,7 @@ fix16_t fix16_log2(fix16_t x) {
         if (x == 1)
             return fix16_from_int(-16);
 
-        fix16_t inverse = fix16_div(fix16_one, x);
+        const fix16_t inverse = fix16_div(fix16_one, x);
         return -fix16__log2_inner(inverse);
     }
 
@@ -178,7 +178,7 @@ fix16_t fix16_log2(fix16_t x) {
  * This is a wrapper for fix16_log2 which implements saturation arithmetic.
  */
 fix16_t fix16_slog2(fix16_t x) {
-    fix16_t retval = fix16_log2(x);
+    const fix16_t retval = fix16_log2(x);
     // The only overflow possible is when the input is negative.
     if (retval == fix16_overflow)
         return fix16_minimum;

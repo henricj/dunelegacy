@@ -199,7 +199,7 @@ public:
             return;
         }
 
-        SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pTextureWithoutCarret.get(), position.x, position.y);
 
         if (isActive()) {
             if ((SDL_GetTicks() - lastCarretTime) < 500) {
@@ -282,10 +282,10 @@ public:
             return true;
         }
 
-        std::string newText = textInput.text;
+        const std::string newText = textInput.text;
 
         bool bChanged = false;
-        for (char c : newText) {
+        for (const char c : newText) {
             if (((maxTextLength < 0) || ((int)utf8Length(text) < maxTextLength)) && (allowedChars.empty() || allowedChars.find(c) != std::string::npos) && (forbiddenChars.find(c) == std::string::npos)) {
                 text += c;
                 bChanged = true;
@@ -306,8 +306,8 @@ protected:
         \param  bInteractive    Was this text change initiated by the user?
     */
     virtual void setText(const std::string& text, bool bInteractive) {
-        bool bChanged = (text != this->text);
-        this->text    = text;
+        const bool bChanged = (text != this->text);
+        this->text          = text;
         invalidateTextures();
         if (bChanged && pOnTextChange) {
             pOnTextChange(bInteractive);

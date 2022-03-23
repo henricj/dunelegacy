@@ -52,14 +52,14 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
 TextManager::TextManager(std::string_view language) {
     const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
-    auto languages = getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
+    const auto languages = getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
 
     const auto language_file = languages.empty() ? std::filesystem::path {"English.en.po"} : languages.front();
 
     const auto language_path = locale_directory / language_file;
     sdl2::log_info("Loading localization from '%s'...", language_path.u8string().c_str());
-    auto rwops      = openReadOnlyRWops(language_path.u8string());
-    localizedString = loadPOFile(rwops.get(), language_file.u8string());
+    const auto rwops = openReadOnlyRWops(language_path.u8string());
+    localizedString  = loadPOFile(rwops.get(), language_file.u8string());
 }
 
 TextManager::~TextManager() = default;
@@ -544,19 +544,19 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
         commentStart = unprocessedString.size();
     }
 
-    std::string commandString = unprocessedString.substr(1, commentStart - 1);
+    const std::string commandString = unprocessedString.substr(1, commentStart - 1);
 
-    std::vector<std::string> commands = splitStringToStringVector(commandString, "\\|");
+    const std::vector<std::string> commands = splitStringToStringVector(commandString, "\\|");
 
     int index = -1;
     if (commands.size() < 2 || !parseString(commands[1], index)) {
         return unprocessedString;
     }
-    auto iter = origDuneText.find(commands[0]);
+    const auto iter = origDuneText.find(commands[0]);
 
     if (iter != origDuneText.end()) {
 
-        IndexedTextFile* pIndexedTextFile = iter->second.get();
+        const IndexedTextFile* pIndexedTextFile = iter->second.get();
 
         if (commands[0].compare(0, 5, "DUNE.") && (index >= 281) && pIndexedTextFile->getNumStrings() == 335) {
 

@@ -83,7 +83,7 @@ public:
     */
     void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override {
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             widgetData.pWidget->handleMouseMovement(x - pos.x, y - pos.y, insideOverlay);
         }
     }
@@ -102,7 +102,7 @@ public:
 
         bool bWidgetFound = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
@@ -122,7 +122,7 @@ public:
 
         bool bWidgetFound = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseRight(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
@@ -142,7 +142,7 @@ public:
 
         bool bProcessed = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
 
             int childX = x - pos.x;
             int childY = y - pos.y;
@@ -156,7 +156,7 @@ public:
         }
 
         if ((bProcessed == false) && (pActiveChildWidget != nullptr)) {
-            Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
+            const Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
             return pActiveChildWidget->handleMouseWheel(x - pos.x, y - pos.y, up);
         }
 
@@ -208,7 +208,7 @@ public:
     bool handleMouseMovementOverlay(int32_t x, int32_t y) override {
         bool insideOverlay = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             insideOverlay |= widgetData.pWidget->handleMouseMovementOverlay(x - pos.x, y - pos.y);
         }
 
@@ -229,7 +229,7 @@ public:
 
         bool bWidgetFound = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseLeftOverlay(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
@@ -249,7 +249,7 @@ public:
 
         bool bWidgetFound = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseRightOverlay(x - pos.x, y - pos.y, pressed);
         }
         return bWidgetFound;
@@ -269,7 +269,7 @@ public:
 
         bool bProcessed = false;
         for (const WidgetData& widgetData : containedWidgets) {
-            Point pos = getPosition(widgetData);
+            const Point pos = getPosition(widgetData);
 
             int childX = x - pos.x;
             int childY = y - pos.y;
@@ -281,7 +281,7 @@ public:
         }
 
         if ((bProcessed == false) && (pActiveChildWidget != nullptr)) {
-            Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
+            const Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
             return pActiveChildWidget->handleMouseWheelOverlay(x - pos.x, y - pos.y, up);
         }
 

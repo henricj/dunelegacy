@@ -79,17 +79,17 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t height,
     if (textshadowcolor == COLOR_DEFAULT)
         textshadowcolor = defaultShadowColor;
 
-    int fontheight = getTextHeight(fontSize);
-    int spacing    = 2;
+    const int fontheight = getTextHeight(fontSize);
+    const int spacing    = 2;
 
     int textpos_y = 0;
 
     if (alignment & Alignment_VCenter) {
-        int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-        textpos_y      = (((int)height) - textheight) / 2;
+        const int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
+        textpos_y            = (((int)height) - textheight) / 2;
     } else if (alignment & Alignment_Bottom) {
-        int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
-        textpos_y      = ((int)height) - textheight - spacing;
+        const int textheight = fontheight * textLines.size() + spacing * (textLines.size() - 1);
+        textpos_y            = ((int)height) - textheight - spacing;
     } else {
         // Alignment_Top
         textpos_y = spacing;
@@ -171,12 +171,12 @@ sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t heig
         }
     }
 
-    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
-    SDL_Rect textRect1             = calcDrawingRect(textSurface1.get(), 10 + 2 + 17, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
+    const sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
+    SDL_Rect textRect1                   = calcDrawingRect(textSurface1.get(), 10 + 2 + 17, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
 
-    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, 14);
-    SDL_Rect textRect2             = calcDrawingRect(textSurface2.get(), 10 + 1 + 17, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
+    const sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, 14);
+    SDL_Rect textRect2                   = calcDrawingRect(textSurface2.get(), 10 + 1 + 17, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
 
     return surface;
@@ -237,12 +237,12 @@ sdl2::surface_ptr DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t h
         drawHLineNoLock(surface.get(), 9, 16, 12, textcolor);
     }
 
-    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
-    SDL_Rect textRect1             = calcDrawingRect(textSurface1.get(), 8 + 2 + 15, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
+    const sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
+    SDL_Rect textRect1                   = calcDrawingRect(textSurface1.get(), 8 + 2 + 15, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
 
-    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, 14);
-    SDL_Rect textRect2             = calcDrawingRect(textSurface2.get(), 8 + 1 + 15, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
+    const sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, textcolor, 14);
+    SDL_Rect textRect2                   = calcDrawingRect(textSurface2.get(), 8 + 1 + 15, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
 
     return surface;
@@ -275,7 +275,7 @@ sdl2::surface_ptr DuneStyle::createDropDownBoxButton(uint32_t size, bool pressed
         drawRect(surface.get(), 1, 1, surface->w - 2, surface->h - 2, buttonEdgeBottomRightColor);
     }
 
-    int col = (pressed | activated) ? brightenUp(color) : color;
+    const int col = (pressed | activated) ? brightenUp(color) : color;
 
     int x1 = 3;
     int x2 = size - 3 - 1;
@@ -334,12 +334,12 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height
     if (textshadowcolor == COLOR_DEFAULT)
         textshadowcolor = defaultShadowColor;
 
-    sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
-    SDL_Rect textRect1             = calcDrawingRect(textSurface1.get(), surface->w / 2 + 2 + (pressed ? 1 : 0), surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+    const sdl2::surface_ptr textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
+    SDL_Rect textRect1                   = calcDrawingRect(textSurface1.get(), surface->w / 2 + 2 + (pressed ? 1 : 0), surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
 
-    sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
-    SDL_Rect textRect2             = calcDrawingRect(textSurface2.get(), surface->w / 2 + 1 + (pressed ? 1 : 0), surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+    const sdl2::surface_ptr textSurface2 = createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
+    SDL_Rect textRect2                   = calcDrawingRect(textSurface2.get(), surface->w / 2 + 1 + (pressed ? 1 : 0), surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
     SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
 
     return surface;
@@ -375,10 +375,10 @@ sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t heigh
 
     // create text in this text box
     if (text.size() != 0) {
-        auto textSurface1  = createSurfaceWithText(text, textshadowcolor, fontSize);
-        auto textSurface2  = createSurfaceWithText(text, textcolor, fontSize);
-        SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
-        SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 0, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
+        const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, fontSize);
+        const auto textSurface2 = createSurfaceWithText(text, textcolor, fontSize);
+        SDL_Rect textRect1      = calcDrawingRect(textSurface1.get(), 0, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
+        SDL_Rect textRect2      = calcDrawingRect(textSurface2.get(), 0, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
 
         if (alignment & Alignment_Left) {
             textRect1.x = 6;
@@ -458,7 +458,7 @@ sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed,
         drawRect(surface.get(), 1, 1, surface->w - 2, surface->h - 2, buttonEdgeBottomRightColor);
     }
 
-    int col = (pressed | activated) ? brightenUp(color) : color;
+    const int col = (pressed | activated) ? brightenUp(color) : color;
 
     // draw arrow
     if (down) {
@@ -503,8 +503,8 @@ sdl2::surface_ptr DuneStyle::createListBoxEntry(uint32_t width, std::string_view
         SDL_FillRect(surface.get(), nullptr, COLOR_TRANSPARENT);
     }
 
-    sdl2::surface_ptr textSurface = createSurfaceWithText(text, color, 12);
-    SDL_Rect textRect             = calcDrawingRect(textSurface.get(), 3, surface->h / 2 + 2, HAlign::Left, VAlign::Center);
+    const sdl2::surface_ptr textSurface = createSurfaceWithText(text, color, 12);
+    SDL_Rect textRect                   = calcDrawingRect(textSurface.get(), 3, surface->h / 2 + 2, HAlign::Left, VAlign::Center);
     SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
 
     return surface;
@@ -521,16 +521,16 @@ sdl2::surface_ptr DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t h
     if (color == COLOR_DEFAULT) {
         // default color
 
-        int max_i = std::max((int)lround(percent * ((((int)width) - 4) / 100.0)), 0);
+        const int max_i = std::max((int)lround(percent * ((((int)width) - 4) / 100.0)), 0);
 
         sdl2::surface_lock lock(pSurface.get());
 
-        SDL_Rect dest = {2, 2, max_i, ((int)height) - 4};
+        const SDL_Rect dest = {2, 2, max_i, ((int)height) - 4};
         SDL_FillRect(pSurface.get(), &dest, COLOR_HALF_TRANSPARENT);
     } else {
-        int max_i = lround(percent * (width / 100.0));
+        const int max_i = lround(percent * (width / 100.0));
 
-        SDL_Rect dest = {0, 0, max_i, (int)height};
+        const SDL_Rect dest = {0, 0, max_i, (int)height};
         SDL_FillRect(pSurface.get(), &dest, color);
     }
 
@@ -538,7 +538,7 @@ sdl2::surface_ptr DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t h
 }
 
 sdl2::surface_ptr DuneStyle::createToolTip(std::string_view text) {
-    sdl2::surface_ptr helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, 12);
+    const sdl2::surface_ptr helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, 12);
     if (helpTextSurface == nullptr) {
         return nullptr;
     }

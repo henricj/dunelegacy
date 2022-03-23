@@ -52,7 +52,7 @@ SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* assoc
     attackTimer = stream.readSint32();
     buildTimer  = stream.readSint32();
 
-    uint32_t NumPlaceLocations = stream.readUint32();
+    const uint32_t NumPlaceLocations = stream.readUint32();
     for (uint32_t i = 0; i < NumPlaceLocations; i++) {
         int32_t x = stream.readSint32();
         int32_t y = stream.readSint32();
@@ -146,7 +146,7 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
         if (pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
 
             if ((pUnit->getAttackMode() != HUNT) && !pUnit->hasATarget()) {
-                ItemID_enum itemID = pUnit->getItemID();
+                const ItemID_enum itemID = pUnit->getItemID();
                 if ((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Frigate) && (pUnit->getItemID() != Unit_Saboteur) && (pUnit->getItemID() != Unit_Sandworm)) {
 
                     if (pUnit->getItemID() == Unit_Launcher) {
@@ -166,8 +166,8 @@ void SmartBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder) {
 }
 
 Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
-    int structureSizeX = getStructureSize(itemID).x;
-    int structureSizeY = getStructureSize(itemID).y;
+    const int structureSizeX = getStructureSize(itemID).x;
+    const int structureSizeY = getStructureSize(itemID).y;
 
     int minX = getMap().getSizeX();
     int maxX = -1;
@@ -213,8 +213,8 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
     Coord bestLocation  = Coord::Invalid();
     int count           = 0;
     do {
-        int x = getRandomGen().rand(minX, maxX);
-        int y = getRandomGen().rand(minY, maxY);
+        const int x = getRandomGen().rand(minX, maxX);
+        const int y = getRandomGen().rand(minY, maxY);
 
         Coord pos = Coord(x, y);
 
@@ -332,7 +332,7 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
 int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int structureSizeY) {
     int numAdjacentStructureTiles = 0;
 
-    auto& map = getMap();
+    const auto& map = getMap();
 
     for (int y = pos.y; y < pos.y + structureSizeY; y++) {
         if (map.hasAStructure(context_, pos.x - 1, y)) {
@@ -659,12 +659,12 @@ void SmartBot::build(const GameContext& context) {
 
                 if (pBuilder->isWaitingToPlace()) {
                     // find total region of possible placement and place in random ok position
-                    const auto itemID = pBuilder->getCurrentProducedItem();
-                    Coord itemsize    = getStructureSize(itemID);
+                    const auto itemID    = pBuilder->getCurrentProducedItem();
+                    const Coord itemsize = getStructureSize(itemID);
 
                     // see if there is already a spot to put it stored
                     if (!placeLocations.empty()) {
-                        Coord location         = placeLocations.front();
+                        const Coord location   = placeLocations.front();
                         const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                         if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner()) && getMap().isAStructureGap(context_, location.x, location.y, itemsize.x, itemsize.y)) {
                             doPlaceStructure(pConstYard, location.x, location.y);
@@ -737,7 +737,7 @@ void SmartBot::checkAllUnits() {
                     if (pMCV->canDeploy()) {
                         doDeploy(pMCV);
                     } else {
-                        Coord pos = findPlaceLocation(Structure_ConstructionYard);
+                        const Coord pos = findPlaceLocation(Structure_ConstructionYard);
                         doMove2Pos(pMCV, pos.x, pos.y, true);
                     }
                 }

@@ -145,7 +145,7 @@ void setVideoMode(int displayIndex)
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
 
-    SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
+    const SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
     SDL_DisplayMode closestDisplayMode;
 
     if(settings.video.fullscreen) {
@@ -391,7 +391,7 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
     playername[0] = toupper(playername[0]);
 
     // replace player name, language, server port and metaserver
-    std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
+    const std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
 
     if(SDL_RWwrite(file.get(), strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
         THROW(sdl_error, "Writing config file failed: %s!", SDL_GetError());

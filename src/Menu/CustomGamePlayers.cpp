@@ -454,7 +454,7 @@ void CustomGamePlayers::update() {
             quit(MENU_QUIT_GAME_FINISHED);
         } else {
             static uint32_t lastSecondLeft = 0;
-            uint32_t secondsLeft           = ((startGameTime - SDL_GetTicks()) / 1000) + 1;
+            const uint32_t secondsLeft     = ((startGameTime - SDL_GetTicks()) / 1000) + 1;
             if (lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
                 addInfoMessage("Starting game in " + std::to_string(secondsLeft) + "...");
@@ -481,7 +481,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
             } break;
 
             case ChangeEventList::ChangeEvent::EventType::ChangeTeam: {
-                int newTeam = (int)changeEvent.newValue;
+                const int newTeam = (int)changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot];
 
@@ -494,7 +494,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
             } break;
 
             case ChangeEventList::ChangeEvent::EventType::ChangePlayer: {
-                int newPlayer = (int)changeEvent.newValue;
+                const int newPlayer = (int)changeEvent.newValue;
 
                 HouseInfo& curHouseInfo = houseInfo[changeEvent.slot / 2];
 
@@ -519,7 +519,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
 
             case ChangeEventList::ChangeEvent::EventType::SetHumanPlayer: {
                 const std::string& name = changeEvent.newStringValue;
-                int slot                = changeEvent.slot;
+                const int slot          = changeEvent.slot;
 
                 setPlayer2Slot(name, slot);
 
@@ -532,7 +532,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
     }
 
     if ((pNetworkManager != nullptr) && bServer) {
-        ChangeEventList changeEventList2 = getChangeEventList();
+        const ChangeEventList changeEventList2 = getChangeEventList();
 
         pNetworkManager->sendChangeEventList(changeEventList2);
     }
@@ -580,7 +580,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
     // look for an open left slot
     for (int i = 0; i < numHouses; i++) {
         HouseInfo& curHouseInfo = houseInfo[i];
-        int player1             = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+        const int player1       = curHouseInfo.player1DropDown.getSelectedEntryIntData();
 
         if (player1 == PLAYER_OPEN) {
             newPlayerSlot = 2 * i;
@@ -592,7 +592,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
     if ((newPlayerSlot == INVALID) && gameInitSettings.isMultiplePlayersPerHouse()) {
         for (int i = 0; i < numHouses; i++) {
             HouseInfo& curHouseInfo = houseInfo[i];
-            int player2             = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+            const int player2       = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
             if (player2 == PLAYER_OPEN) {
                 newPlayerSlot = 2 * i + 1;
@@ -605,8 +605,8 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
     if (newPlayerSlot == INVALID) {
         for (int i = 0; i < numHouses; i++) {
             HouseInfo& curHouseInfo = houseInfo[i];
-            int player1             = curHouseInfo.player1DropDown.getSelectedEntryIntData();
-            int player2             = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+            const int player1       = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+            const int player2       = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
             if (player1 != PLAYER_HUMAN) {
                 newPlayerSlot = 2 * i;
@@ -624,7 +624,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
     if (newPlayerSlot != INVALID) {
         setPlayer2Slot(newPlayerName, newPlayerSlot);
 
-        ChangeEventList::ChangeEvent changeEvent(newPlayerSlot, newPlayerName);
+        const ChangeEventList::ChangeEvent changeEvent(newPlayerSlot, newPlayerName);
 
         // add changeEvent to changeEventList for the new player
         changeEventList.changeEventList.push_back(changeEvent);
@@ -650,21 +650,21 @@ void CustomGamePlayers::onNext() {
     for (int i = 0; i < houseInfo.size(); i++) {
         auto& curHouseInfo = houseInfo[i];
 
-        int currentPlayer1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
-        int currentPlayer2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+        const int currentPlayer1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+        const int currentPlayer2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
         if ((currentPlayer1 != PLAYER_OPEN && currentPlayer1 != PLAYER_CLOSED) || (currentPlayer2 != PLAYER_OPEN && currentPlayer2 != PLAYER_CLOSED)) {
             numUsedHouses++;
 
-            int currentTeam = curHouseInfo.teamDropDown.getSelectedEntryIntData();
-            bool bTeamFound = false;
+            const int currentTeam = curHouseInfo.teamDropDown.getSelectedEntryIntData();
+            bool bTeamFound       = false;
             for (int j = 0; j < i; j++) {
-                int player1 = houseInfo[j].player1DropDown.getSelectedEntryIntData();
-                int player2 = houseInfo[j].player2DropDown.getSelectedEntryIntData();
+                const int player1 = houseInfo[j].player1DropDown.getSelectedEntryIntData();
+                const int player2 = houseInfo[j].player2DropDown.getSelectedEntryIntData();
 
                 if ((player1 != PLAYER_OPEN && player1 != PLAYER_CLOSED) || (player2 != PLAYER_OPEN && player2 != PLAYER_CLOSED)) {
 
-                    int team = houseInfo[j].teamDropDown.getSelectedEntryIntData();
+                    const int team = houseInfo[j].teamDropDown.getSelectedEntryIntData();
                     if (currentTeam == team) {
                         bTeamFound = true;
                     }
@@ -689,8 +689,8 @@ void CustomGamePlayers::onNext() {
         addAllPlayersToGameInitSettings();
 
         if (pNetworkManager != nullptr) {
-            unsigned int timeLeft = 5000;
-            startGameTime         = SDL_GetTicks() + timeLeft;
+            const unsigned int timeLeft = 5000;
+            startGameTime               = SDL_GetTicks() + timeLeft;
             pNetworkManager->sendStartGame(timeLeft);
 
             disableAllDropDownBoxes();
@@ -708,10 +708,10 @@ void CustomGamePlayers::addAllPlayersToGameInitSettings() {
     for (auto& curHouseInfo : houseInfo) {
 
         int houseID             = curHouseInfo.houseDropDown.getSelectedEntryIntData();
-        int team                = curHouseInfo.teamDropDown.getSelectedEntryIntData();
-        int player1             = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+        const int team          = curHouseInfo.teamDropDown.getSelectedEntryIntData();
+        const int player1       = curHouseInfo.player1DropDown.getSelectedEntryIntData();
         std::string player1name = curHouseInfo.player1DropDown.getSelectedEntry();
-        int player2             = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+        const int player2       = curHouseInfo.player2DropDown.getSelectedEntryIntData();
         std::string player2name = curHouseInfo.player2DropDown.getSelectedEntry();
 
         GameInitSettings::HouseInfo newHouseInfo((HOUSETYPE)houseID, team);
@@ -765,7 +765,7 @@ void CustomGamePlayers::onCancel() {
 }
 
 void CustomGamePlayers::onSendChatMessage() {
-    std::string message = chatTextBox.getText();
+    const std::string message = chatTextBox.getText();
     addChatMessage(settings.general.playerName, message);
     chatTextBox.setText("");
 
@@ -798,7 +798,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
 
     if (pMap->hasKey("MAP", "Seed")) {
         // old map format with seed value
-        int mapscale = pMap->getIntValue("BASIC", "MapScale", -1);
+        const int mapscale = pMap->getIntValue("BASIC", "MapScale", -1);
 
         switch (mapscale) {
             case 0: {
@@ -930,9 +930,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         pNetworkManager->sendChangeEventList(changeEventList);
     }
 
-    int numBoundHouses      = boundHousesOnMap.size();
-    int numUsedBoundHouses  = 0;
-    int numUsedRandomHouses = 0;
+    const int numBoundHouses = boundHousesOnMap.size();
+    int numUsedBoundHouses   = 0;
+    int numUsedRandomHouses  = 0;
     for (int i = 0; i < numHouses; i++) {
         const auto selectedHouseID = static_cast<HOUSETYPE>(houseInfo[i].houseDropDown.getSelectedEntryIntData());
 
@@ -952,7 +952,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
         if (houseInfoNum == -1 || houseInfoNum == i) {
 
-            Uint32 color = (house == HOUSETYPE::HOUSE_INVALID) ? COLOR_RGB(20, 20, 40) : SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+            const Uint32 color = (house == HOUSETYPE::HOUSE_INVALID) ? COLOR_RGB(20, 20, 40) : SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
             curHouseInfo.houseDropDown.setColor(color);
             curHouseInfo.teamDropDown.setColor(color);
@@ -1038,7 +1038,7 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
 
 void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnum) {
     if (bInteractive && boxnum >= 0 && pNetworkManager != nullptr) {
-        DropDownBox& dropDownBox = (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
+        const DropDownBox& dropDownBox = (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
 
@@ -1052,7 +1052,7 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
 }
 
 void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
-    DropDownBox& dropDownBox = (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
+    const DropDownBox& dropDownBox = (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
     if (dropDownBox.getSelectedEntryIntData() == PLAYER_CLOSED) {
         return;
@@ -1129,7 +1129,7 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
     DropDownBox& dropDownBox = (slot % 2 == 0) ? houseInfo[slot / 2].player1DropDown : houseInfo[slot / 2].player2DropDown;
 
     std::string oldPlayerName = "";
-    int oldPlayerType         = dropDownBox.getSelectedEntryIntData();
+    const int oldPlayerType   = dropDownBox.getSelectedEntryIntData();
     if (oldPlayerType == PLAYER_HUMAN) {
         oldPlayerName = dropDownBox.getSelectedEntry();
     }
@@ -1204,8 +1204,8 @@ void CustomGamePlayers::checkPlayerBoxes() {
     for (int i = 0; i < numHouses; i++) {
         HouseInfo& curHouseInfo = houseInfo[i];
 
-        int player1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
-        int player2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+        const int player1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+        const int player2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
         if (player1 != PLAYER_OPEN) {
             numPlayers++;

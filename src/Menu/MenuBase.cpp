@@ -113,7 +113,7 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
-    SDL_Rect clipRect {getPosition().x, getPosition().y, getSize().x, getSize().y};
+    const SDL_Rect clipRect {getPosition().x, getPosition().y, getSize().x, getSize().y};
     SDL_RenderSetClipRect(renderer, &clipRect);
 
     Window::draw();
@@ -171,9 +171,9 @@ bool MenuBase::doInput(SDL_Event& event) {
         } break;
 
         case SDL_MOUSEMOTION: {
-            SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width - 1));
-            drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height - 1));
+            const SDL_MouseMotionEvent* mouse = &event.motion;
+            drawnMouseX                       = std::max(0, std::min(mouse->x, settings.video.width - 1));
+            drawnMouseY                       = std::max(0, std::min(mouse->y, settings.video.height - 1));
         } break;
 
         case SDL_QUIT: {

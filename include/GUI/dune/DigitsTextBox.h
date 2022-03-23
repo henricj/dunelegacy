@@ -83,7 +83,7 @@ public:
         minValue = newMinValue;
         maxValue = newMaxValue;
 
-        int currentValue = getValue();
+        const int currentValue = getValue();
 
         if (currentValue < minValue) {
             setValue(minValue, false);
@@ -157,10 +157,10 @@ public:
             return Point(0, 0);
         }
 
-        Point textBoxMinimumSize    = textBox.getMinimumSize();
-        Point buttonVBoxMinimumSize = buttonVBox.getMinimumSize();
+        const Point textBoxMinimumSize    = textBox.getMinimumSize();
+        const Point buttonVBoxMinimumSize = buttonVBox.getMinimumSize();
 
-        std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
+        const std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
 
         return Point(textBoxMinimumSize.x + buttonVBoxMinimumSize.x + GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize()),
                      std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y));

@@ -169,7 +169,7 @@ SDL_Texture* GFXManager::getTempStreamingTexture(SDL_Renderer* renderer, int wid
     }
 
     { // Scope
-        auto& texture = streamingTextureCache_.emplace_back(
+        const auto& texture = streamingTextureCache_.emplace_back(
             SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, width, height));
 
         return texture.get();

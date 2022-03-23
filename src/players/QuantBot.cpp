@@ -313,8 +313,8 @@ void QuantBot::update() {
 
             case GameMode::Custom: {
                 // add a unit ratio based on map size
-                double ratio = 0.0;
-                int mapsize  = currentGameMap->getSizeX() * currentGameMap->getSizeY();
+                double ratio      = 0.0;
+                const int mapsize = currentGameMap->getSizeX() * currentGameMap->getSizeY();
                 if (mapsize <= 1024) {
                     ratio = 0.20;
                 } else if (mapsize <= 2048) {
@@ -444,7 +444,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerI
 
     // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
     // Don't trigger with fremen or saboteur
-    bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES) && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
+    const bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES) && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
     if (gameMode == GameMode::Campaign && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag && !bPossiblyOwnFremen && (pObject->getItemID() != Unit_Saboteur)) {
         campaignAIAttackFlag = true;
     } else if (pObject->isAStructure()) {
@@ -465,7 +465,7 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerI
     } else if (pObject->isAGroundUnit()) {
         const auto* pGroundUnit = static_cast<const GroundUnit*>(pObject);
 
-        Coord squadCenterLocation = findSquadCenter(pGroundUnit->getOwner()->getHouseID());
+        const Coord squadCenterLocation = findSquadCenter(pGroundUnit->getOwner()->getHouseID());
 
         if (pGroundUnit->isAwaitingPickup()) {
             return;
@@ -547,7 +547,7 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
                 placeLocation.y     = placeLocationY;
 
                 if (getMap().okayToPlaceStructure(placeLocationX, placeLocationY, 2, 2, false, nullptr)) {
-                    int locationScore = lround(blockDistance(pMCV->getLocation(), placeLocation));
+                    const int locationScore = lround(blockDistance(pMCV->getLocation(), placeLocation));
                     if (locationScore < bestLocationScore) {
                         bestLocationScore = locationScore;
                         bestLocation.x    = placeLocationX;
@@ -569,28 +569,28 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
     int bestLocationX     = -1;
     int bestLocationY     = -1;
     int bestLocationScore = -10000;
-    int newSizeX          = getStructureSize(itemID).x;
-    int newSizeY          = getStructureSize(itemID).y;
+    const int newSizeX    = getStructureSize(itemID).x;
+    const int newSizeY    = getStructureSize(itemID).y;
     Coord bestLocation    = Coord::Invalid();
 
     for (const StructureBase* pStructureExisting : getStructureList()) {
         if (pStructureExisting->getOwner() == getHouse()) {
 
-            int existingStartX = pStructureExisting->getX();
-            int existingStartY = pStructureExisting->getY();
+            const int existingStartX = pStructureExisting->getX();
+            const int existingStartY = pStructureExisting->getY();
 
-            int existingSizeX = pStructureExisting->getStructureSizeX();
-            int existingSizeY = pStructureExisting->getStructureSizeY();
+            const int existingSizeX = pStructureExisting->getStructureSizeX();
+            const int existingSizeY = pStructureExisting->getStructureSizeY();
 
-            int existingEndX = existingStartX + existingSizeX;
-            int existingEndY = existingStartY + existingSizeY;
+            const int existingEndX = existingStartX + existingSizeX;
+            const int existingEndY = existingStartY + existingSizeY;
 
             squadRallyLocation = findSquadRallyLocation();
 
-            bool existingIsBuilder = (pStructureExisting->getItemID() == Structure_HeavyFactory || pStructureExisting->getItemID() == Structure_RepairYard || pStructureExisting->getItemID() == Structure_LightFactory || pStructureExisting->getItemID() == Structure_WOR || pStructureExisting->getItemID() == Structure_Barracks || pStructureExisting->getItemID() == Structure_StarPort);
+            const bool existingIsBuilder = (pStructureExisting->getItemID() == Structure_HeavyFactory || pStructureExisting->getItemID() == Structure_RepairYard || pStructureExisting->getItemID() == Structure_LightFactory || pStructureExisting->getItemID() == Structure_WOR || pStructureExisting->getItemID() == Structure_Barracks || pStructureExisting->getItemID() == Structure_StarPort);
 
-            bool sizeMatchX = (existingSizeX == newSizeX);
-            bool sizeMatchY = (existingSizeY == newSizeY);
+            const bool sizeMatchX = (existingSizeX == newSizeX);
+            const bool sizeMatchY = (existingSizeY == newSizeY);
 
             for (int placeLocationX = existingStartX - newSizeX; placeLocationX <= existingEndX; placeLocationX++) {
                 for (int placeLocationY = existingStartY - newSizeY; placeLocationY <= existingEndY; placeLocationY++) {
@@ -598,11 +598,11 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
                         if (getMap().okayToPlaceStructure(placeLocationX, placeLocationY, newSizeX, newSizeY,
                                                           false, (itemID == Structure_ConstructionYard) ? nullptr : getHouse())) {
 
-                            int placeLocationEndX = placeLocationX + newSizeX;
-                            int placeLocationEndY = placeLocationY + newSizeY;
+                            const int placeLocationEndX = placeLocationX + newSizeX;
+                            const int placeLocationEndY = placeLocationY + newSizeY;
 
-                            bool alignedX = (placeLocationX == existingStartX && sizeMatchX);
-                            bool alignedY = (placeLocationY == existingStartY && sizeMatchY);
+                            const bool alignedX = (placeLocationX == existingStartX && sizeMatchX);
+                            const bool alignedY = (placeLocationY == existingStartY && sizeMatchY);
 
                             // bool placeGapExists = (placeLocationEndX < existingStartX || placeLocationX > existingEndX || placeLocationEndY < existingStartY || placeLocationY > existingEndY);
 
@@ -1257,7 +1257,7 @@ void QuantBot::scrambleUnitsAndDefend(const ObjectBase* pIntruder, int numUnits)
     for (const UnitBase* pUnit : getUnitList()) {
         if (pUnit->isRespondable() && (pUnit->getOwner() == getHouse())) {
             if (!pUnit->hasATarget() && !pUnit->wasForced()) {
-                ItemID_enum itemID = pUnit->getItemID();
+                const ItemID_enum itemID = pUnit->getItemID();
                 if ((itemID != Unit_Harvester) && (pUnit->getItemID() != Unit_MCV) && (pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Frigate) && (pUnit->getItemID() != Unit_Saboteur) && (pUnit->getItemID() != Unit_Sandworm)) {
 
                     doSetAttackMode(pUnit, AREAGUARD);
@@ -1461,7 +1461,7 @@ void QuantBot::retreatAllUnits() {
 
 */
 void QuantBot::checkAllUnits() {
-    Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
+    const Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
 
     for (const UnitBase* pUnit : getUnitList()) {
         if (pUnit->getOwner() == getHouse()) {
@@ -1476,7 +1476,7 @@ void QuantBot::checkAllUnits() {
                             // logDebug("MCV: Deployed");
                             doDeploy(pMCV);
                         } else if (!pMCV->isMoving() && !pMCV->wasForced()) {
-                            Coord pos = findMcvPlaceLocation(pMCV);
+                            const Coord pos = findMcvPlaceLocation(pMCV);
                             doMove2Pos(pMCV, pos.x, pos.y, true);
                             /*
                             if(getHouse()->getNumItems(Unit_Carryall) > 0){
@@ -1506,7 +1506,7 @@ void QuantBot::checkAllUnits() {
 
                 default: {
 
-                    int squadRadius = lround(FixPoint::sqrt(getHouse()->getNumUnits() - getHouse()->getNumItems(Unit_Harvester) - getHouse()->getNumItems(Unit_Carryall) - getHouse()->getNumItems(Unit_Ornithopter) - getHouse()->getNumItems(Unit_Sandworm) - getHouse()->getNumItems(Unit_MCV))) + 1;
+                    const int squadRadius = lround(FixPoint::sqrt(getHouse()->getNumUnits() - getHouse()->getNumItems(Unit_Harvester) - getHouse()->getNumItems(Unit_Carryall) - getHouse()->getNumItems(Unit_Ornithopter) - getHouse()->getNumItems(Unit_Sandworm) - getHouse()->getNumItems(Unit_MCV))) + 1;
 
                     if (pUnit->getOwner()->getHouseID() != pUnit->getOriginalHouseID()) {
                         // If its a devastator and its not ours, blow it up!!

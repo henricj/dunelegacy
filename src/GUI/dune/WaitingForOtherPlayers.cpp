@@ -48,8 +48,8 @@ WaitingForOtherPlayers::WaitingForOtherPlayers()
 
     update();
 
-    int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
-    int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
+    const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
+    const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
 
     setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
 }
@@ -61,7 +61,7 @@ void WaitingForOtherPlayers::update() {
 
     // test if we need to wait for data to arrive
     for (const std::string& playername : pNetworkManager->getConnectedPeers()) {
-        if (auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername))) {
+        if (const auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername))) {
             if (pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();
             }

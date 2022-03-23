@@ -31,11 +31,11 @@ WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical) {
 WSAVideoEvent::~WSAVideoEvent() = default;
 
 int WSAVideoEvent::draw() {
-    sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).get()).get());
+    const sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pWsafile->getPicture(currentFrame).get()).get());
 
     SDL_UpdateTexture(pStreamingTexture.get(), nullptr, pSurface->pixels, pSurface->pitch);
 
-    SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    const SDL_Rect dest = calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
     Dune_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
 

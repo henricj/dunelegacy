@@ -73,7 +73,7 @@ SDL_Texture* Animation::getFrameTexture() {
     if (frameTextures.size() <= index) {
         // vector<>.resize() doesn't work with unique_ptr<>
         frameTextures.reserve(frames.size());
-        unsigned int needed = index - frameTextures.size() + 1;
+        const unsigned int needed = index - frameTextures.size() + 1;
         std::fill_n(std::back_inserter(frameTextures), needed, nullptr);
     }
 

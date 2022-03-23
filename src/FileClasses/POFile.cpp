@@ -38,8 +38,8 @@ static std::string unescapeString(const std::string& str) {
 }
 
 static std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
-    size_t firstQuote = str.find_first_of('\"');
-    size_t lastQuote  = str.find_last_of('\"');
+    const size_t firstQuote = str.find_first_of('\"');
+    const size_t lastQuote  = str.find_last_of('\"');
 
     if (firstQuote == std::string::npos || lastQuote == std::string::npos) {
         sdl2::log_info("%s:%d: Missing opening or closing quotes!", filename.c_str(), lineNum);
@@ -73,7 +73,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
         unsigned char tmp = 0;
 
         while (true) {
-            size_t readbytes = SDL_RWread(rwop, &tmp, 1, 1);
+            const size_t readbytes = SDL_RWread(rwop, &tmp, 1, 1);
             if (readbytes == 0) {
                 bFinished = true;
                 break;
@@ -88,7 +88,7 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
             }
         }
 
-        size_t lineStart = completeLine.find_first_not_of(" \t");
+        const size_t lineStart = completeLine.find_first_not_of(" \t");
         if (lineStart == std::string::npos || completeLine[lineStart] == '#') {
             // blank line or comment line
             continue;

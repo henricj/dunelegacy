@@ -97,7 +97,7 @@ void StarPort::doBuildRandom(const GameContext& context) {
 }
 
 void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
-    auto& choam             = owner->getChoam();
+    const auto& choam       = owner->getChoam();
     const auto numAvailable = choam.getNumAvailable(itemID);
 
     if (numAvailable <= 0) {
@@ -221,7 +221,7 @@ void StarPort::doCancelOrder() {
 void StarPort::updateBuildList() {
     auto iter = buildList.begin();
 
-    auto& choam = owner->getChoam();
+    const auto& choam = owner->getChoam();
 
     for (auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 

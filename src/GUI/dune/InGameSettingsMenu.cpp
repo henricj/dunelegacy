@@ -32,9 +32,9 @@
 
 InGameSettingsMenu::InGameSettingsMenu()
     : Window(0, 0, 0, 0) {
-    HOUSETYPE houseID = pLocalHouse->getHouseID();
-    Uint32 color1     = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
-    Uint32 color2     = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
+    HOUSETYPE houseID   = pLocalHouse->getHouseID();
+    const Uint32 color1 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
+    const Uint32 color2 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
 
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);

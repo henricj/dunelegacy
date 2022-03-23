@@ -29,7 +29,7 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 
     const auto total_pixels = [&]() {
         auto sum = 0;
-        for (auto& r : rectangles)
+        for (const auto& r : rectangles)
             sum += r.w * r.h;
         return sum;
     }();
@@ -701,7 +701,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                 if (!texture)
                     THROW(std::runtime_error, "Unable to create UI graphics texture");
 
-                for (auto key : keys)
+                for (const auto key : keys)
                     ui_graphic_packer.update(factory23, key, texture.get());
                 keys.clear();
 

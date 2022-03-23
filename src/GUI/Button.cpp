@@ -64,7 +64,7 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         if (bPressed) {
             bPressed = false;
             if (bToggleButton) {
-                bool oldState = getToggleState();
+                const bool oldState = getToggleState();
                 setToggleState(!bToggleState);
                 if (getToggleState() != oldState) {
                     soundPlayer->playSound(Sound_ButtonClick);
@@ -91,7 +91,7 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
 
     if (key.keysym.sym == SDLK_SPACE) {
         if (bToggleButton) {
-            bool oldState = getToggleState();
+            const bool oldState = getToggleState();
             setToggleState(!bToggleState);
             if (getToggleState() != oldState) {
                 soundPlayer->playSound(Sound_ButtonClick);

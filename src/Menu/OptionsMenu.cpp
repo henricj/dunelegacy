@@ -44,7 +44,7 @@
 OptionsMenu::OptionsMenu() {
     determineAvailableScreenResolutions();
 
-    auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
+    const auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
     std::vector<std::string> availLanguages;
     availLanguages.reserve(languagesList.size());
 
@@ -250,9 +250,9 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
     bool bChanged = false;
 
     bChanged |= (settings.general.playerName != nameTextBox.getText());
-    int languageIndex = languageDropDownBox.getSelectedEntryIntData();
+    const int languageIndex = languageDropDownBox.getSelectedEntryIntData();
     if (languageIndex >= 0 && languageIndex < availLanguages.size()) {
-        std::string languageFilename = availLanguages[languageIndex];
+        const std::string languageFilename = availLanguages[languageIndex];
         bChanged |= (settings.general.language != languageFilename.substr(languageFilename.size() - 5, 2));
     }
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
@@ -260,7 +260,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
     bChanged |= (settings.general.playIntro != introCheckbox.isChecked());
     bChanged |= (settings.general.showTutorialHints != showTutorialHintsCheckbox.isChecked());
 
-    int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
+    const int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
     if (selectedResolution >= 0) {
         bChanged |= (settings.video.physicalWidth != availScreenRes[selectedResolution].x);
         bChanged |= (settings.video.physicalHeight != availScreenRes[selectedResolution].y);
@@ -301,7 +301,7 @@ void OptionsMenu::onOptionsOK() {
 
     settings.general.playerName        = playername;
     const auto selectedLanguage        = languageDropDownBox.getSelectedEntryIntData();
-    std::string languageFilename       = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size()) ? "English.en.po" : availLanguages[selectedLanguage];
+    const std::string languageFilename = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size()) ? "English.en.po" : availLanguages[selectedLanguage];
     settings.general.language          = languageFilename.substr(languageFilename.size() - 5, 2);
     settings.general.playIntro         = introCheckbox.isChecked();
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
@@ -309,10 +309,10 @@ void OptionsMenu::onOptionsOK() {
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
     settings.ai.campaignAI                       = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
 
-    int selectedResolution            = resolutionDropDownBox.getSelectedEntryIntData();
+    const int selectedResolution      = resolutionDropDownBox.getSelectedEntryIntData();
     settings.video.physicalWidth      = (selectedResolution >= 0) ? availScreenRes[selectedResolution].x : 0;
     settings.video.physicalHeight     = (selectedResolution >= 0) ? availScreenRes[selectedResolution].y : 0;
-    int factor                        = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
+    const int factor                  = getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
     settings.video.width              = settings.video.physicalWidth / factor;
     settings.video.height             = settings.video.physicalHeight / factor;
     settings.video.preferredZoomLevel = zoomlevelDropDownBox.getSelectedEntryIntData();
@@ -409,8 +409,8 @@ void OptionsMenu::determineAvailableScreenResolutions() {
     // full screen.
 
     SDL_DisplayMode displayMode;
-    int displayIndex    = SDL_GetWindowDisplayIndex(window);
-    int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
+    const int displayIndex    = SDL_GetWindowDisplayIndex(window);
+    const int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
     for (int i = numDisplayModes - 1; i >= 0; i--) {
         if (SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
             addResolution(Coord {displayMode.w, displayMode.h});
@@ -470,7 +470,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         appendRes(1920, 1200);
     }
 
-    Coord currentRes(settings.video.physicalWidth, settings.video.physicalHeight);
+    const Coord currentRes(settings.video.physicalWidth, settings.video.physicalHeight);
 
     addResolution(currentRes);
 }

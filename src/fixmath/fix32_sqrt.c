@@ -10,11 +10,11 @@
  * to break it for now. It doesn't slow the code much overall.
  */
 fix32_t fix32_sqrt(fix32_t inValue) {
-    uint8_t neg     = (inValue < 0);
-    uint64_t num    = (neg ? -inValue : inValue);
-    uint64_t result = 0;
-    uint64_t bit    = 0;
-    uint8_t n       = 0;
+    const uint8_t neg = (inValue < 0);
+    uint64_t num      = (neg ? -inValue : inValue);
+    uint64_t result   = 0;
+    uint64_t bit      = 0;
+    uint8_t n         = 0;
 
     // Many numbers will be less than 15, so
     // this gives a good balance between time spent

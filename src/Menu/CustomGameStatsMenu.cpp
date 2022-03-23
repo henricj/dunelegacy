@@ -159,7 +159,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     mainVBox.addWidget(VSpacer::create(14), 0.0);
 
     buttonHBox.addWidget(HSpacer::create(70));
-    int totalTime = currentGame->getGameTime() / 1000;
+    const int totalTime = currentGame->getGameTime() / 1000;
     timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, (totalTime % 3600) / 60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);

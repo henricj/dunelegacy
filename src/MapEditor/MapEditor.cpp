@@ -193,8 +193,8 @@ bool MapEditor::isTileBlocked(int x, int y, bool bSlabIsBlocking, bool bUnitsAre
             continue;
         }
 
-        Coord structureSize = getStructureSize(structure.itemID);
-        Coord position      = structure.position;
+        const Coord structureSize = getStructureSize(structure.itemID);
+        const Coord position      = structure.position;
         if ((x >= position.x) && (x < position.x + structureSize.x) && (y >= position.y) && (y < position.y + structureSize.y)) {
             return true;
         }
@@ -706,7 +706,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
             if (getMapVersion() < 2) {
                 // classic map
                 if (!bRepeated && map.isInsideMap(xpos, ypos)) {
-                    TERRAINTYPE terrainType = currentEditorMode.terrainType;
+                    const TERRAINTYPE terrainType = currentEditorMode.terrainType;
 
                     switch (terrainType) {
                         case Terrain_SpiceBloom: {
@@ -732,9 +732,9 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
             } else {
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
-                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
+                    const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
-                    int halfsize = currentEditorMode.pensize / 2;
+                    const int halfsize = currentEditorMode.pensize / 2;
                     for (int y = position.y - halfsize; y <= position.y + halfsize; y++) {
                         for (int x = position.x - halfsize; x <= position.x + halfsize; x++) {
                             if (map.isInsideMap(x, y)) {
@@ -750,7 +750,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
         case EditorMode::EditorMode_Structure: {
             if (!bRepeated || currentEditorMode.itemID == Structure_Slab1 || currentEditorMode.itemID == Structure_Wall) {
 
-                Coord structureSize = getStructureSize(currentEditorMode.itemID);
+                const Coord structureSize = getStructureSize(currentEditorMode.itemID);
 
                 if (!mapMirror->mirroringPossible(Coord(xpos, ypos), structureSize)) {
                     return;
@@ -758,7 +758,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 // check if all places are free
                 for (int i = 0; i < mapMirror->getSize(); i++) {
-                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
+                    const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
 
                     for (int x = position.x; x < position.x + structureSize.x; x++) {
                         for (int y = position.y; y < position.y + structureSize.y; y++) {
@@ -775,8 +775,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                     startOperation();
                 }
 
-                auto currentHouse   = currentEditorMode.house;
-                bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
+                auto currentHouse         = currentEditorMode.house;
+                const bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
@@ -788,7 +788,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                     }
 
                     if (nextHouse != HOUSETYPE::HOUSE_INVALID) {
-                        Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
+                        const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i, structureSize);
 
                         MapEditorStructurePlaceOperation placeOperation(position, nextHouse, currentEditorMode.itemID, currentEditorMode.health);
 
@@ -805,7 +805,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 // first check if all places are free
                 for (int i = 0; i < mapMirror->getSize(); i++) {
-                    Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
+                    const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
                     if (!map.isInsideMap(position.x, position.y) || isTileBlocked(position.x, position.y, false, true)) {
                         return;
@@ -816,8 +816,8 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                 startOperation();
 
-                auto currentHouse   = currentEditorMode.house;
-                bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
+                auto currentHouse         = currentEditorMode.house;
+                const bool bHouseIsActive = players[static_cast<int>(currentHouse)].bActive;
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
@@ -830,7 +830,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                     }
 
                     if (nextHouse != HOUSETYPE::HOUSE_INVALID) {
-                        Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
+                        const Coord position = mapMirror->getCoord(Coord(xpos, ypos), i);
 
                         const auto angle = mapMirror->getAngle(currentEditorMode.angle, i);
 
@@ -967,9 +967,9 @@ void MapEditor::processInput() {
 
         // first of all update mouse
         if (event.type == SDL_MOUSEMOTION) {
-            SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX                 = std::max(0, std::min(mouse->x, settings.video.width - 1));
-            drawnMouseY                 = std::max(0, std::min(mouse->y, settings.video.height - 1));
+            const SDL_MouseMotionEvent* mouse = &event.motion;
+            drawnMouseX                       = std::max(0, std::min(mouse->x, settings.video.width - 1));
+            drawnMouseY                       = std::max(0, std::min(mouse->y, settings.video.height - 1));
         }
 
         if (pInterface->hasChildWindow()) {
@@ -1058,7 +1058,7 @@ void MapEditor::processInput() {
 
                                 std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
-                                for (int selectedUnit : selectedUnits) {
+                                for (const int selectedUnit : selectedUnits) {
                                     MapEditorRemoveUnitOperation removeOperation(selectedUnit);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
@@ -1072,7 +1072,7 @@ void MapEditor::processInput() {
 
                                 std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-                                for (int selectedStructure : selectedStructures) {
+                                for (const int selectedStructure : selectedStructures) {
                                     MapEditorRemoveStructureOperation removeOperation(selectedStructure);
                                     addUndoOperation(removeOperation.perform(this));
                                 }
@@ -1128,8 +1128,8 @@ void MapEditor::processInput() {
                         if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
                             // if mouse is not over side bar
 
-                            int xpos = screenborder->screen2MapX(drawnMouseX);
-                            int ypos = screenborder->screen2MapY(drawnMouseY);
+                            const int xpos = screenborder->screen2MapX(drawnMouseX);
+                            const int ypos = screenborder->screen2MapY(drawnMouseY);
 
                             if ((xpos != lastTerrainEditPosX) || (ypos != lastTerrainEditPosY)) {
                                 performMapEdit(xpos, ypos, true);
@@ -1142,11 +1142,11 @@ void MapEditor::processInput() {
                     if (event.wheel.y != 0) {
                         if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
                             // if mouse is not over side bar
-                            int xpos = screenborder->screen2MapX(drawnMouseX);
-                            int ypos = screenborder->screen2MapY(drawnMouseY);
+                            const int xpos = screenborder->screen2MapX(drawnMouseX);
+                            const int ypos = screenborder->screen2MapY(drawnMouseY);
 
                             for (const Unit& unit : units) {
-                                Coord position = unit.position;
+                                const Coord position = unit.position;
                                 if ((position.x == xpos) && (position.y == ypos)) {
                                     if (event.wheel.y > 0) {
                                         pInterface->onUnitRotateLeft(unit.id);
@@ -1163,7 +1163,7 @@ void MapEditor::processInput() {
                 } break;
 
                 case SDL_MOUSEBUTTONDOWN: {
-                    SDL_MouseButtonEvent* mouse = &event.button;
+                    const SDL_MouseButtonEvent* mouse = &event.button;
 
                     switch (mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -1174,8 +1174,8 @@ void MapEditor::processInput() {
                                 if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                     // if mouse is not over side bar
 
-                                    int xpos = screenborder->screen2MapX(mouse->x);
-                                    int ypos = screenborder->screen2MapY(mouse->y);
+                                    const int xpos = screenborder->screen2MapX(mouse->x);
+                                    const int ypos = screenborder->screen2MapY(mouse->y);
 
                                     performMapEdit(xpos, ypos, false);
                                 }
@@ -1197,7 +1197,7 @@ void MapEditor::processInput() {
                 } break;
 
                 case SDL_MOUSEBUTTONUP: {
-                    SDL_MouseButtonEvent* mouse = &event.button;
+                    const SDL_MouseButtonEvent* mouse = &event.button;
 
                     switch (mouse->button) {
                         case SDL_BUTTON_LEFT: {
@@ -1214,8 +1214,8 @@ void MapEditor::processInput() {
                                     if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
                                         // if mouse is not over side bar
 
-                                        int xpos = screenborder->screen2MapX(mouse->x);
-                                        int ypos = screenborder->screen2MapY(mouse->y);
+                                        const int xpos = screenborder->screen2MapX(mouse->x);
+                                        const int ypos = screenborder->screen2MapY(mouse->y);
 
                                         selectedUnitID      = INVALID;
                                         selectedStructureID = INVALID;
@@ -1224,7 +1224,7 @@ void MapEditor::processInput() {
                                         bool bUnitSelected = false;
 
                                         for (const Unit& unit : units) {
-                                            Coord position = unit.position;
+                                            const Coord position = unit.position;
 
                                             if ((position.x == xpos) && (position.y == ypos)) {
                                                 selectedUnitID = unit.id;
@@ -1238,8 +1238,8 @@ void MapEditor::processInput() {
                                         bool bStructureSelected = false;
 
                                         for (const Structure& structure : structures) {
-                                            const Coord& position = structure.position;
-                                            Coord structureSize   = getStructureSize(structure.itemID);
+                                            const Coord& position     = structure.position;
+                                            const Coord structureSize = getStructureSize(structure.itemID);
 
                                             if (!bUnitSelected && (xpos >= position.x) && (xpos < position.x + structureSize.x) && (ypos >= position.y) && (ypos < position.y + structureSize.y)) {
                                                 selectedStructureID = structure.id;
@@ -1949,7 +1949,7 @@ void MapEditor::saveMapshot() {
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
-    auto renderTarget = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
+    const auto renderTarget = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
     if (renderTarget == nullptr) {
         sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;
@@ -1969,7 +1969,7 @@ void MapEditor::saveMapshot() {
 
     drawMap(&tmpScreenborder, true);
 
-    sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
+    const sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
     SavePNG(pMapshotSurface.get(), mapshotFilename.u8string().c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);

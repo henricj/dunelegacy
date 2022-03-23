@@ -123,7 +123,7 @@ void MainMenu::onMapEditor() const {
 
 void MainMenu::onOptions() {
     OptionsMenu optionsMenu;
-    int ret = optionsMenu.showMenu();
+    const int ret = optionsMenu.showMenu();
 
     if (ret == MENU_QUIT_REINITIALIZE) {
         quit(MENU_QUIT_REINITIALIZE);

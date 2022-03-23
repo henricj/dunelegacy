@@ -127,9 +127,9 @@ public:
         WidgetWithBackground::draw(position);
 
         if (pForeground) {
-            auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
+            const auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
             if (bDrawShadow) {
-                SDL_Rect dest2 = {position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
+                const SDL_Rect dest2 = {position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
                 renderFillRect(renderer, &dest2, COLOR_BLACK);
             }
 

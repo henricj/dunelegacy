@@ -347,7 +347,7 @@ sdl2::surface_ptr getSubPicture(SDL_Surface* pic, int left, int top, int width, 
         THROW(std::invalid_argument, "getSubPicture(): pic == nullptr!");
     }
 
-    SDL_Rect rect {left, top, width, height};
+    const SDL_Rect rect {left, top, width, height};
 
     return cloneSurface(pic, &rect);
 }
@@ -512,7 +512,7 @@ sdl2::surface_ptr createShadowSurface(SDL_Surface* source) {
         }
     }
 
-    SDL_Color transparent = {0, 0, 0, 128};
+    const SDL_Color transparent = {0, 0, 0, 128};
     SDL_SetPaletteColors(retPic->format->palette, &transparent, PALCOLOR_BLACK, 1);
 
     return retPic;

@@ -103,7 +103,7 @@ void Tile::load(InputStream& stream) {
 
     if (bHasDamage) {
         damage.clear();
-        uint32_t numDamage = stream.readUint32();
+        const uint32_t numDamage = stream.readUint32();
         damage.reserve(numDamage);
         for (uint32_t i = 0; i < numDamage; i++) {
             DAMAGETYPE newDamage;
@@ -118,7 +118,7 @@ void Tile::load(InputStream& stream) {
 
     if (bHasDeadUnits) {
         deadUnits.clear();
-        uint32_t numDeadUnits = stream.readUint32();
+        const uint32_t numDeadUnits = stream.readUint32();
         deadUnits.reserve(numDeadUnits);
         for (uint32_t i = 0; i < numDeadUnits; i++) {
             DEADUNITTYPE newDeadUnit;
@@ -167,7 +167,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeBools(explored[0], explored[1], explored[2], explored[3], explored[4], explored[5], explored[6]);
 
     stream.writeBools((lastAccess[0] != 0), (lastAccess[1] != 0), (lastAccess[2] != 0), (lastAccess[3] != 0), (lastAccess[4] != 0), (lastAccess[5] != 0), (lastAccess[6] != 0));
-    for (auto lastAccessFromTeam : lastAccess) {
+    for (const auto lastAccessFromTeam : lastAccess) {
         if (lastAccessFromTeam != 0) {
             stream.writeUint32(lastAccessFromTeam);
         }
@@ -215,7 +215,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
 
     stream.writeBools((tracksCreationTimeToSave[0] != 0), (tracksCreationTimeToSave[1] != 0), (tracksCreationTimeToSave[2] != 0), (tracksCreationTimeToSave[3] != 0),
                       (tracksCreationTimeToSave[4] != 0), (tracksCreationTimeToSave[5] != 0), (tracksCreationTimeToSave[6] != 0), (tracksCreationTimeToSave[7] != 0));
-    for (auto i : tracksCreationTimeToSave) {
+    for (const auto i : tracksCreationTimeToSave) {
         if (i != 0) {
             stream.writeUint32(i);
         }
@@ -252,7 +252,7 @@ int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int
     if (currentPosition < 0) {
         std::array<bool, NUM_INFANTRY_PER_TILE> used {};
 
-        for (auto objectID : assignedInfantryList) {
+        for (const auto objectID : assignedInfantryList) {
             auto* const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
             if (pInfantry == nullptr) {
                 continue;
@@ -285,12 +285,12 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject(game->getObjectManager())->isAStructure())
         return;
 
-    const auto tileIndex       = static_cast<int>(getTerrainTile());
-    const auto indexX          = tileIndex % NUM_TERRAIN_TILES_X;
-    const auto indexY          = tileIndex / NUM_TERRAIN_TILES_X;
-    const auto zoomed_tilesize = world2zoomedWorld(TILESIZE);
-    SDL_Rect source            = {indexX * zoomed_tilesize, indexY * zoomed_tilesize, zoomed_tilesize, zoomed_tilesize};
-    SDL_Rect drawLocation      = {xPos, yPos, zoomed_tilesize, zoomed_tilesize};
+    const auto tileIndex        = static_cast<int>(getTerrainTile());
+    const auto indexX           = tileIndex % NUM_TERRAIN_TILES_X;
+    const auto indexY           = tileIndex / NUM_TERRAIN_TILES_X;
+    const auto zoomed_tilesize  = world2zoomedWorld(TILESIZE);
+    SDL_Rect source             = {indexX * zoomed_tilesize, indexY * zoomed_tilesize, zoomed_tilesize, zoomed_tilesize};
+    const SDL_Rect drawLocation = {xPos, yPos, zoomed_tilesize, zoomed_tilesize};
 
     // draw terrain
     if (destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
@@ -299,7 +299,7 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
 
     if (destroyedStructureTile != DestroyedStructure_None) {
         const auto* const pDestroyedStructureTex = pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
-        SDL_Rect source2                         = {destroyedStructureTile * zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize};
+        const SDL_Rect source2                   = {destroyedStructureTile * zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize};
         Dune_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
     }
 
@@ -441,7 +441,7 @@ void Tile::blitInfantry(Game* game, int xPos, int yPos) {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
-    for (auto objectID : assignedInfantryList) {
+    for (const auto objectID : assignedInfantryList) {
         auto* pInfantry = game->getObjectManager().getObject<InfantryBase>(objectID);
         if (pInfantry == nullptr) {
             continue;
@@ -459,7 +459,7 @@ void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
-    for (auto objectID : assignedNonInfantryGroundObjectList) {
+    for (const auto objectID : assignedNonInfantryGroundObjectList) {
         auto* pObject = game->getObjectManager().getObject(objectID);
 
         if (pObject && pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeamID())) {
@@ -474,7 +474,7 @@ void Tile::blitAirUnits(Game* game, int xPos, int yPos) {
     auto* const player_house = pLocalHouse;
     const auto is_fogged     = isFoggedByTeam(game, player_house->getTeamID());
 
-    for (auto objectID : assignedAirUnitList) {
+    for (const auto objectID : assignedAirUnitList) {
         auto* pAirUnit = game->getObjectManager().getObject<AirUnit>(objectID);
         if (pAirUnit == nullptr) {
             continue;
@@ -600,7 +600,7 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
 
             sandRegion = NONE_ID;
             if (hasAnUndergroundUnit()) {
-                auto units = std::move(assignedUndergroundUnitList);
+                const auto units = std::move(assignedUndergroundUnitList);
                 assignedUndergroundUnitList.clear();
 
                 for (const auto object_id : units) {
@@ -658,8 +658,8 @@ void Tile::squash(const GameContext& context) const {
 int Tile::getInfantryTeam(const ObjectManager& objectManager) const {
     int team = INVALID;
     if (hasInfantry()) {
-        if (auto* infantry = getInfantry(objectManager)) {
-            if (auto* owner = infantry->getOwner())
+        if (const auto* infantry = getInfantry(objectManager)) {
+            if (const auto* owner = infantry->getOwner())
                 team = owner->getTeamID();
         }
     }
@@ -1112,10 +1112,10 @@ int Tile::getHideTile(const Game* game, int teamID) const {
     }
 
     // determine what tiles are unexplored
-    bool up    = (!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isExploredByTeam(game, teamID));
-    bool right = (!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isExploredByTeam(game, teamID));
-    bool down  = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(game, teamID));
-    bool left  = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(game, teamID));
+    const bool up    = (!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isExploredByTeam(game, teamID));
+    const bool right = (!map->tileExists(x + 1, y)) || (!map->getTile(x + 1, y)->isExploredByTeam(game, teamID));
+    const bool down  = (!map->tileExists(x, y + 1)) || (!map->getTile(x, y + 1)->isExploredByTeam(game, teamID));
+    const bool left  = (!map->tileExists(x - 1, y)) || (!map->getTile(x - 1, y)->isExploredByTeam(game, teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }
@@ -1132,10 +1132,10 @@ int Tile::getFogTile(const Game* game, int teamID) const {
     }
 
     // determine what tiles are fogged
-    bool up    = (!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isFoggedByTeam(game, teamID));
-    bool right = (!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isFoggedByTeam(game, teamID));
-    bool down  = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(game, teamID));
-    bool left  = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(game, teamID));
+    const bool up    = (!map->tileExists(x, y - 1)) || (map->getTile(x, y - 1)->isFoggedByTeam(game, teamID));
+    const bool right = (!map->tileExists(x + 1, y)) || (map->getTile(x + 1, y)->isFoggedByTeam(game, teamID));
+    const bool down  = (!map->tileExists(x, y + 1)) || (map->getTile(x, y + 1)->isFoggedByTeam(game, teamID));
+    const bool left  = (!map->tileExists(x - 1, y)) || (map->getTile(x - 1, y)->isFoggedByTeam(game, teamID));
 
     return (((int)up) | (right << 1) | (down << 2) | (left << 3));
 }

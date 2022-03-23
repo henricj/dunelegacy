@@ -1362,9 +1362,9 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
     }
 
     { // Scope
-        auto myWsafile = std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
+        const auto myWsafile = std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
 
-        sdl2::surface_ptr tmp {myWsafile->getPicture(0)};
+        const sdl2::surface_ptr tmp {myWsafile->getPicture(0)};
         if (tmp == nullptr) {
             THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
         }
@@ -1375,8 +1375,8 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 
         palette.applyToSurface(pSurface.get());
 
-        sdl2::surface_lock lock_out {pSurface.get()};
-        sdl2::surface_lock lock_in {tmp.get()};
+        const sdl2::surface_lock lock_out {pSurface.get()};
+        const sdl2::surface_lock lock_in {tmp.get()};
 
         char* RESTRICT const out      = static_cast<char*>(lock_out.pixels());
         const char* RESTRICT const in = static_cast<const char*>(lock_in.pixels());
@@ -1393,17 +1393,17 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {
-    auto file      = pFileManager->openFile(filename);
-    auto wsafile   = std::make_unique<Wsafile>(file.get());
-    auto animation = wsafile->getAnimation(0, wsafile->getNumFrames() - 1, true, false);
+    const auto file    = pFileManager->openFile(filename);
+    const auto wsafile = std::make_unique<Wsafile>(file.get());
+    auto animation     = wsafile->getAnimation(0, wsafile->getNumFrames() - 1, true, false);
     return animation;
 }
 
 sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const {
-    int windtrapColorQuantizizer = 255 / ((NUM_WINDTRAP_ANIMATIONS / 2) - 2);
-    int windtrapSize             = windtrapPic->h;
-    int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
-    int sizeY                    = ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW) * windtrapSize;
+    const int windtrapColorQuantizizer = 255 / ((NUM_WINDTRAP_ANIMATIONS / 2) - 2);
+    const int windtrapSize             = windtrapPic->h;
+    const int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
+    const int sizeY                    = ((2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW) * windtrapSize;
     sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
@@ -1468,12 +1468,12 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
 
 sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) const {
     sdl2::surface_ptr pSurface;
-    std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
+    const std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
             pSurface = sdl2::surface_ptr {Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
-            sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
+            const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different
@@ -1504,7 +1504,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
         if (pFileManager->exists(filename)) {
             pSurface = sdl2::surface_ptr {Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
-            sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
+            const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so make them temporarily different

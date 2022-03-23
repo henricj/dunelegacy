@@ -54,12 +54,12 @@ fix32_t fix32_sin(fix32_t inAngle) {
     }
 
 #ifndef FIXMATH_NO_CACHE
-    fix32_t tempIndex = ((inAngle >> 5) & 0x00000FFF);
+    const fix32_t tempIndex = ((inAngle >> 5) & 0x00000FFF);
     if (_fix32_sin_cache_index[tempIndex] == inAngle)
         return _fix32_sin_cache_value[tempIndex];
 #endif
 
-    fix32_t tempAngleSq = fix32_mul(tempAngle, tempAngle);
+    const fix32_t tempAngleSq = fix32_mul(tempAngle, tempAngle);
 
     // Most accurate version, accurate to ~2.1%
     fix32_t tempOut = tempAngle;

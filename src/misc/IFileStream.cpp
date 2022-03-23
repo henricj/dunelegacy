@@ -133,8 +133,8 @@ bool IFileStream::readBool() {
 }
 
 float IFileStream::readFloat() {
-    uint32_t tmp = readUint32();
-    float tmp2   = NAN;
+    const uint32_t tmp = readUint32();
+    float tmp2         = NAN;
     memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     return tmp2;
 }

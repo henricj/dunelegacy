@@ -401,8 +401,8 @@ int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
 }
 
 void XMIDI::DeleteEventList(midi_event* mlist) {
-    midi_event* event = nullptr;
-    midi_event* next  = nullptr;
+    const midi_event* event = nullptr;
+    midi_event* next        = nullptr;
 
     next  = mlist;
     event = mlist;
@@ -796,7 +796,7 @@ int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* 
 
     // XMI Note On handling
     midi_event* prev = current;
-    int i            = GetVLQ(source, delta);
+    const int i      = GetVLQ(source, delta);
     CreateNewEvent(time + delta * 3);
 
     current->status  = status;
@@ -835,14 +835,14 @@ int XMIDI::ConvertSystemMessage(const int time, const unsigned char status, Data
 // XMIDI and Midi to List
 // Returns XMIDI PPQN
 int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
-    int time               = 0;
-    unsigned int data      = 0;
-    int end                = 0;
-    int tempo              = 500000;
-    int tempo_set          = 0;
-    unsigned int status    = 0;
-    int play_size          = 2;
-    unsigned int file_size = source->getSize();
+    int time                     = 0;
+    unsigned int data            = 0;
+    int end                      = 0;
+    int tempo                    = 500000;
+    int tempo_set                = 0;
+    unsigned int status          = 0;
+    int play_size                = 2;
+    const unsigned int file_size = source->getSize();
 
     if (is_xmi)
         play_size = 3;
@@ -895,7 +895,7 @@ int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
 
             case MIDI_STATUS_SYSEX:
                 if (status == 0xFF) {
-                    int pos           = source->getPos();
+                    const int pos     = source->getPos();
                     unsigned int data = source->read1();
 
                     if (data == 0x2F) { // End
@@ -1019,7 +1019,7 @@ unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
     }
 
     if (dest) {
-        int cur_pos = dest->getPos();
+        const int cur_pos = dest->getPos();
         dest->seek(size_pos);
         dest->write4high(i - 8);
         dest->seek(cur_pos);
@@ -1051,8 +1051,8 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
             continue;
         }
 
-        list      = nullptr;
-        int begin = source->getPos();
+        list            = nullptr;
+        const int begin = source->getPos();
 
         // Convert it
         if (!(ppqn = ConvertFiletoList(source, TRUE))) {
@@ -1088,8 +1088,8 @@ int XMIDI::ExtractTracksFromMid(DataSource* source) {
             continue;
         }
 
-        list      = nullptr;
-        int begin = source->getPos();
+        list            = nullptr;
+        const int begin = source->getPos();
 
         // Convert it
         if (!ConvertFiletoList(source, FALSE)) {

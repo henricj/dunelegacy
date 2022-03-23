@@ -186,7 +186,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     if (pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON1)
         return;
 
-    int index = fileList.getSelectedIndex();
+    const int index = fileList.getSelectedIndex();
     if (index < 0)
         return;
 
@@ -218,7 +218,7 @@ void LoadSaveWindow::onOK() {
             }
         }
     } else {
-        auto savename = saveName.getText();
+        const auto savename = saveName.getText();
 
         if (!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
             filename = directories[currentDirectoryIndex] / (saveName.getText() + "." + extension);
@@ -253,7 +253,7 @@ void LoadSaveWindow::onSelectionChange(bool bInteractive) {
     if (!bSaveWindow)
         return;
 
-    int index = fileList.getSelectedIndex();
+    const int index = fileList.getSelectedIndex();
     if (index >= 0) {
         saveName.setText(fileList.getEntry(index));
     }

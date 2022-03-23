@@ -294,7 +294,7 @@ bool existsFile(const std::filesystem::path& path) {
 }
 
 std::string readCompleteFile(const std::filesystem::path& filename) {
-    auto RWopsFile = sdl2::RWops_ptr {SDL_RWFromFile(filename.u8string().c_str(), "r")};
+    const auto RWopsFile = sdl2::RWops_ptr {SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
     if (!RWopsFile) {
         return "";
@@ -305,7 +305,7 @@ std::string readCompleteFile(const std::filesystem::path& filename) {
         return "";
     }
 
-    std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t)filesize);
+    const std::unique_ptr<char[]> filedata = std::make_unique<char[]>((size_t)filesize);
 
     if (SDL_RWread(RWopsFile.get(), filedata.get(), (size_t)filesize, 1) != 1) {
         return "";
@@ -323,7 +323,7 @@ std::filesystem::path getBasename(const std::filesystem::path& filepath, bool bS
         return "/";
     }
 
-    auto path = filepath.lexically_normal();
+    const auto path = filepath.lexically_normal();
 
     return bStripExtension ? path.stem() : path.filename();
 }
@@ -335,7 +335,7 @@ std::filesystem::path getDirname(const std::filesystem::path& filepath) {
         return "/";
     }
 
-    auto path = filepath.lexically_normal();
+    const auto path = filepath.lexically_normal();
 
     return path.parent_path();
 }

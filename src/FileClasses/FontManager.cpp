@@ -75,7 +75,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view t
         }
     } while (nextpos != std::string::npos);
 
-    auto* const pFont = getFont(fontSize);
+    const auto* const pFont = getFont(fontSize);
 
     const auto lineHeight = pFont->getTextHeight();
     const auto width      = pFont->getTextWidth(text);

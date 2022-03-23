@@ -144,7 +144,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
     });
 
     if (bulletID == Bullet_Sandworm) {
-        for (auto objectID : affectedGroundAndUndergroundUnits) {
+        for (const auto objectID : affectedGroundAndUndergroundUnits) {
             auto* pObject = context.objectManager.getObject(objectID);
             if (pObject && (pObject->getItemID() != Unit_Sandworm) && (pObject->isAGroundUnit() || pObject->isInfantry()) && (pObject->getLocation() == location)) {
                 pObject->setVisible(VIS_ALL, false);
@@ -155,7 +155,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
         if (air) {
             // air damage
             if ((bulletID == Bullet_DRocket) || (bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket)) {
-                for (auto objectID : affectedAirUnits) {
+                for (const auto objectID : affectedAirUnits) {
                     auto* pAirUnit = dynamic_cast<AirUnit*>(context.objectManager.getObject(objectID));
                     if (pAirUnit == nullptr)
                         continue;
@@ -181,7 +181,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
             }
         } else {
             // non air damage
-            for (auto objectID : affectedGroundAndUndergroundUnits) {
+            for (const auto objectID : affectedGroundAndUndergroundUnits) {
                 auto* const pObject = context.objectManager.getObject(objectID);
 
                 if (pObject && pObject->isAStructure()) {

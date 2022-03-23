@@ -24,8 +24,8 @@
 #include <algorithm>
 
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical, bool bFadeWhite) {
-    sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-    pTexture               = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
+    const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
+    pTexture                     = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 
@@ -38,9 +38,9 @@ FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOu
 FadeOutVideoEvent::~FadeOutVideoEvent() = default;
 
 int FadeOutVideoEvent::draw() {
-    SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+    const SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    int alpha = std::max(0, 255 - (255 * currentFrame) / numFrames2FadeOut);
+    const int alpha = std::max(0, 255 - (255 * currentFrame) / numFrames2FadeOut);
     if (bFadeWhite) {
         // fade to white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

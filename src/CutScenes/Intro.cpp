@@ -95,17 +95,17 @@ Intro::Intro() {
     pHarkonnen     = create_wsafile("INTRO8A.WSA", "INTRO8B.WSA", "INTRO8C.WSA");
     pDestroyedTank = create_wsafile("INTRO5.WSA");
 
-    IndexedTextFile intro_text {pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
+    const IndexedTextFile intro_text {pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
 
     wind            = getChunkFromFile("WIND2BP.VOC");
     carryallLanding = getChunkFromFile("CLANK.VOC");
     harvester       = getChunkFromFile("BRAKES2P.VOC");
 
     {
-        auto singleGunshot    = getChunkFromFile("GUNSHOT.VOC");
-        auto fourGunshots     = concat4Chunks(singleGunshot.get(), singleGunshot.get(), singleGunshot.get(), singleGunshot.get());
-        auto thirteenGunshots = concat4Chunks(fourGunshots.get(), fourGunshots.get(), fourGunshots.get(), singleGunshot.get());
-        gunshot               = concat3Chunks(thirteenGunshots.get(), singleGunshot.get(), singleGunshot.get());
+        const auto singleGunshot    = getChunkFromFile("GUNSHOT.VOC");
+        const auto fourGunshots     = concat4Chunks(singleGunshot.get(), singleGunshot.get(), singleGunshot.get(), singleGunshot.get());
+        const auto thirteenGunshots = concat4Chunks(fourGunshots.get(), fourGunshots.get(), fourGunshots.get(), singleGunshot.get());
+        gunshot                     = concat3Chunks(thirteenGunshots.get(), singleGunshot.get(), singleGunshot.get());
     }
 
     glass   = getChunkFromFile("GLASS.VOC");
@@ -114,7 +114,7 @@ Intro::Intro() {
     blowup1 = getChunkFromFile("BLOWUP1.VOC");
     blowup2 = getChunkFromFile("BLOWUP2.VOC");
 
-    bool bEnableVoice = (settings.general.language == "en");
+    const bool bEnableVoice = (settings.general.language == "en");
     if (bEnableVoice) {
         // Load english voice
         for (int i = 0; i < Voice_NUM_ENTRIES; i++) {

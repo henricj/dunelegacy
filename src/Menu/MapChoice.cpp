@@ -84,8 +84,8 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
             // first time we're on the map choice screen
 
             // create black rectangle
-            mapSurface    = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
-            SDL_Rect dest = {16, 48, 608, 240};
+            mapSurface          = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
+            const SDL_Rect dest = {16, 48, 608, 240};
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
             mapTexture = sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
             SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
@@ -317,8 +317,8 @@ void MapChoice::drawSpecificStuff() {
 bool MapChoice::doInput(SDL_Event& event) {
     if ((event.type == SDL_MOUSEBUTTONUP) && (event.button.button == SDL_BUTTON_LEFT)) {
         if (mapChoiceState == MAPCHOICESTATE_ARROWS) {
-            int x = event.button.x - centerAreaRect.x;
-            int y = event.button.y - centerAreaRect.y;
+            const int x = event.button.x - centerAreaRect.x;
+            const int y = event.button.y - centerAreaRect.y;
 
             if ((x > 0) && (x < centerAreaRect.w) && (y > 0) && (y < centerAreaRect.h)) {
                 auto* const clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
@@ -415,9 +415,9 @@ void MapChoice::loadINI() {
             }
             // clang-format on
 
-            std::string strValue = RegionINI.getStringValue(strSection, key);
+            const std::string strValue = RegionINI.getStringValue(strSection, key);
             if (!strValue.empty()) {
-                std::vector<std::string> strRegions = splitStringToStringVector(strValue);
+                const std::vector<std::string> strRegions = splitStringToStringVector(strValue);
 
                 for (auto& strRegion : strRegions) {
                     group[i].newRegion[static_cast<int>(h)].push_back(atol(strRegion.c_str()));

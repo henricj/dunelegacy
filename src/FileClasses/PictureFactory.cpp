@@ -260,8 +260,8 @@ PictureFactory::PictureFactory() {
 PictureFactory::~PictureFactory() = default;
 
 sdl2::surface_ptr PictureFactory::createTopBar() const {
-    auto topBar    = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
-    SDL_Rect dest1 = {0, 31, getWidth(topBar.get()), 12};
+    auto topBar          = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
+    const SDL_Rect dest1 = {0, 31, getWidth(topBar.get()), 12};
     SDL_FillRect(topBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 32);
@@ -281,8 +281,8 @@ sdl2::surface_ptr PictureFactory::createTopBar() const {
 }
 
 sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
-    auto sideBar   = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, settings.video.height);
-    SDL_Rect dest1 = {0, 0, 13, getHeight(sideBar.get())};
+    auto sideBar         = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, settings.video.height);
+    const SDL_Rect dest1 = {0, 0, 13, getHeight(sideBar.get())};
     SDL_FillRect(sideBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.vborder.get(), 0, 0);
@@ -305,7 +305,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
     SDL_BlitSurface(decorationBorder.vspacer.get(), nullptr, sideBar.get(), &dest5);
     drawHLine(sideBar.get(), 0, 44 + decorationBorder.vspacer.get()->h, decorationBorder.vspacer.get()->w - 1, 96);
 
-    SDL_Rect dest6 = {13, 0, getWidth(sideBar.get()) - 1, 132};
+    const SDL_Rect dest6 = {13, 0, getWidth(sideBar.get()) - 1, 132};
     SDL_FillRect(sideBar.get(), &dest6, PALCOLOR_TRANSPARENT);
     drawRect(sideBar.get(), 13, 1, sideBar->w - 2, 130, 115);
 
@@ -358,8 +358,8 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
 }
 
 sdl2::surface_ptr PictureFactory::createBottomBar() const {
-    auto BottomBar = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
-    SDL_Rect dest1 = {0, 0, getWidth(BottomBar.get()), 13};
+    auto BottomBar       = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
+    const SDL_Rect dest1 = {0, 0, getWidth(BottomBar.get()), 13};
     SDL_FillRect(BottomBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 0);
@@ -504,7 +504,7 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
     SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(), 11, getHeight(Pic.get()) - 11, HAlign::Left, VAlign::Bottom);
     SDL_BlitSurface(ordosLogo.get(), nullptr, Pic.get(), &dest3);
 
-    sdl2::surface_ptr Version {getSubPicture(background.get(), 0, 0, 75, 32)};
+    const sdl2::surface_ptr Version {getSubPicture(background.get(), 0, 0, 75, 32)};
 
     sdl2::surface_ptr VersionText {pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
 
@@ -615,7 +615,7 @@ sdl2::surface_ptr PictureFactory::createMessageBoxBorder() const {
 sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) const {
     auto Pic = copySurface(HouseChoice);
 
-    SDL_Rect dest = {0, 50, getWidth(Pic.get()), getHeight(Pic.get()) - 50};
+    const SDL_Rect dest = {0, 50, getWidth(Pic.get()), getHeight(Pic.get()) - 50};
     SDL_FillRect(Pic.get(), &dest, PALCOLOR_BLACK);
 
     drawFrame(Pic.get(), SimpleFrame, nullptr);
@@ -704,7 +704,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     }
 
     // clear everything in the middle
-    SDL_Rect clearRect = {8, 24, 304, 119};
+    const SDL_Rect clearRect = {8, 24, 304, 119};
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
     pMapChoiceScreen          = Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(House)]).get());
@@ -725,7 +725,7 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(HOUSETYPE Hous
     benePalette.applyToSurface(pSurface.get());
     SDL_SetColorKey(pSurface.get(), SDL_TRUE, 0);
 
-    auto pQuestionPart1 = getSubPicture(mentatHouseChoiceQuestionSurface.get(), 0, 0, 416, 48);
+    const auto pQuestionPart1 = getSubPicture(mentatHouseChoiceQuestionSurface.get(), 0, 0, 416, 48);
 
     sdl2::surface_ptr pQuestionPart2 = nullptr;
 
@@ -763,7 +763,7 @@ sdl2::surface_ptr PictureFactory::createBuilderListLowerCap() const {
 sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     auto pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
-    auto pBlueReplaced = mapSurfaceColorRange(pRedReplaced.get(), PALCOLOR_ATREIDES, PALCOLOR_FREMEN + 1);
+    const auto pBlueReplaced = mapSurfaceColorRange(pRedReplaced.get(), PALCOLOR_ATREIDES, PALCOLOR_FREMEN + 1);
     pRedReplaced.reset();
 
     replaceColor(pBlueReplaced.get(), 170, 194);
@@ -787,7 +787,7 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) {
-    auto pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR - 1);
+    const auto pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR - 1);
 
     replaceColor(pGreenReplaced.get(), 3, 209);
 
@@ -796,7 +796,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 
     auto pFrameAndCurtain = combinePictures(pGreenReplaced.get(), pCurtain.get(), 7, 7);
 
-    auto pMask = sdl2::surface_ptr {LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get())};
+    const auto pMask = sdl2::surface_ptr {LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get())};
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -807,13 +807,13 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) {
     auto pBlueReplaced = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_MERCENARY);
 
-    auto pRedReplaced = mapSurfaceColorRange(pBlueReplaced.get(), PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);
+    const auto pRedReplaced = mapSurfaceColorRange(pBlueReplaced.get(), PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);
     pBlueReplaced.reset();
 
     auto pCurtain = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
     pCurtain      = getSubPicture(pCurtain.get(), 7, 7, 69, 49);
 
-    auto pFrameAndCurtain = combinePictures(pRedReplaced.get(), pCurtain.get(), 7, 7);
+    const auto pFrameAndCurtain = combinePictures(pRedReplaced.get(), pCurtain.get(), 7, 7);
 
     auto pSoldier = Wsafile(pFileManager->openFile("INFANTRY.WSA").get()).getPicture(0);
     pSoldier      = getSubPicture(pSoldier.get(), 49, 17, 83, 91);
@@ -837,8 +837,8 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
     auto newFrame = sdl2::surface_ptr {LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get())};
     newFrame      = getSubPicture(newFrame.get(), -68, -34, 368, 224);
 
-    SDL_Rect src  = {0, 0, getWidth(heraldFre) - 2, 126};
-    SDL_Rect dest = {12, 66, getWidth(heraldFre) - 2, getHeight(heraldFre)};
+    const SDL_Rect src = {0, 0, getWidth(heraldFre) - 2, 126};
+    SDL_Rect dest      = {12, 66, getWidth(heraldFre) - 2, getHeight(heraldFre)};
     SDL_BlitSurface(heraldFre, &src, newFrame.get(), &dest);
 
     drawRect(newFrame.get(), 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
@@ -850,7 +850,7 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
 
 std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
-    sdl2::surface_ptr maskSurface {Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
+    const sdl2::surface_ptr maskSurface {Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
     auto newAnimation = std::make_unique<Animation>();

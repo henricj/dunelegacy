@@ -24,8 +24,8 @@ HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrame
     if (pSurface == nullptr) {
         pTexture = nullptr;
     } else {
-        sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-        pTexture               = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
+        const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
+        pTexture                     = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
     }
     this->numFrames2Hold  = numFrames2Hold;
     this->bCenterVertical = bCenterVertical;
@@ -36,7 +36,7 @@ HoldPictureVideoEvent::~HoldPictureVideoEvent() = default;
 
 int HoldPictureVideoEvent::draw() {
     if (pTexture != nullptr) {
-        SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
+        const SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
         Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
     }
 

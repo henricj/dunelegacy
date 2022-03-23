@@ -32,7 +32,7 @@ std::string getDomainFromURL(const std::string& url) {
         domainStart += 7;
     }
 
-    size_t domainEnd = url.find_first_of(":/", domainStart);
+    const size_t domainEnd = url.find_first_of(":/", domainStart);
 
     return url.substr(domainStart, domainEnd - domainStart);
 }
@@ -44,7 +44,7 @@ std::string getFilePathFromURL(const std::string& url) {
         domainStart += 7;
     }
 
-    size_t domainEnd = url.find_first_of('/', domainStart);
+    const size_t domainEnd = url.find_first_of('/', domainStart);
 
     return url.substr(domainEnd, std::string::npos);
 }
@@ -56,14 +56,14 @@ int getPortFromURL(const std::string& url) {
         domainStart += 7;
     }
 
-    size_t domainEnd = url.find_first_of(":/", domainStart);
+    const size_t domainEnd = url.find_first_of(":/", domainStart);
 
     if (domainEnd == std::string::npos) {
         return 0;
     }
 
     if (url.at(domainEnd) == ':') {
-        int port = strtol(&url[domainEnd + 1], nullptr, 10);
+        const int port = strtol(&url[domainEnd + 1], nullptr, 10);
 
         if (port <= 0) {
             return -1;
@@ -78,7 +78,7 @@ std::string percentEncode(const std::string& s) {
     const std::string unreservedCharacters = "-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~"; // see RFC 3986
 
     std::string result;
-    for (char c : s) {
+    for (const char c : s) {
         if (unreservedCharacters.find_first_of(c) == std::string::npos) {
             // percent encode
             result += fmt::sprintf("%%%.2X", (unsigned char)c);
@@ -93,7 +93,7 @@ std::string percentEncode(const std::string& s) {
 
 std::string loadFromHttp(const std::string& url, const std::map<std::string, std::string>& parameters) {
 
-    std::string domain = getDomainFromURL(url);
+    const std::string domain = getDomainFromURL(url);
 
     std::string filepath = getFilePathFromURL(url);
 
@@ -129,7 +129,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 
     address.port = port;
 
-    ENetSocket httpSocket = enet_socket_create(ENET_SOCKET_TYPE_STREAM);
+    const ENetSocket httpSocket = enet_socket_create(ENET_SOCKET_TYPE_STREAM);
     if (httpSocket == ENET_SOCKET_NULL) {
         THROW(std::runtime_error, "Unable to create socket");
     }
@@ -140,7 +140,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 
     const std::string newline       = "\x0D\x0A";
     const std::string doubleNewline = newline + newline;
-    std::string request             = "GET " + filepath + " HTTP/1.0" + newline + "Host: " + domain + doubleNewline;
+    const std::string request       = "GET " + filepath + " HTTP/1.0" + newline + "Host: " + domain + doubleNewline;
 
     ENetBuffer sendBuffer;
     memset(&sendBuffer, 0, sizeof(sendBuffer));
@@ -162,7 +162,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
         receiveBuffer.data       = resultBuffer;
         receiveBuffer.dataLength = sizeof(resultBuffer);
 
-        int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
+        const int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
 
         if (receiveLength < 0) {
             THROW(std::runtime_error, "Error while receiving from '" + domain + "'");
@@ -181,7 +181,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
         THROW(std::runtime_error, "Server Error: Received status code '" + result.substr(9, 3) + "' from " + domain + ": " + result.substr(0, result.find(newline)));
     }
 
-    size_t contentStart = result.find(doubleNewline);
+    const size_t contentStart = result.find(doubleNewline);
 
     std::string content = result.substr(contentStart + doubleNewline.length());
 

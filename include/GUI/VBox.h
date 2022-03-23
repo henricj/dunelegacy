@@ -145,7 +145,7 @@ public:
             }
         }
 
-        int32_t totalAvailableHeight = availableHeight;
+        const int32_t totalAvailableHeight = availableHeight;
         for (const VBox_WidgetData& widgetData : containedWidgets) {
             int32_t widgetWidth;
             if (widgetData.pWidget->resizingXAllowed() == true) {

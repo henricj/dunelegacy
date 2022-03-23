@@ -191,8 +191,8 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
     Coord bestLocation  = Coord::Invalid();
     int count           = 0;
     do {
-        int x = getRandomGen().rand(minX, maxX);
-        int y = getRandomGen().rand(minY, maxY);
+        const int x = getRandomGen().rand(minX, maxX);
+        const int y = getRandomGen().rand(minY, maxY);
 
         Coord pos = Coord(x, y);
 
@@ -576,7 +576,7 @@ void AIPlayer::build() {
 
                             // see if there is already a spot to put it stored
                             if (!placeLocations.empty()) {
-                                Coord location         = placeLocations.front();
+                                const Coord location   = placeLocations.front();
                                 const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
                                 if (getMap().okayToPlaceStructure(location.x, location.y, itemsize.x, itemsize.y, false, pConstYard->getOwner())) {
                                     doPlaceStructure(pConstYard, location.x, location.y);
@@ -702,7 +702,7 @@ bool AIPlayer::isAllowedToArm() const {
         }
     });
 
-    int ownTeamScore = teamScore[getHouse()->getTeamID()];
+    const int ownTeamScore = teamScore[getHouse()->getTeamID()];
 
     switch (difficulty) {
         case Difficulty::Easy: {

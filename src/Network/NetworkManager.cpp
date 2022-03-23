@@ -177,7 +177,7 @@ void NetworkManager::update() {
                         // => change immediately to connected
 
                         // get change event list first
-                        ChangeEventList changeEventList = pGetChangeEventListForNewPlayerCallback(peerData->name);
+                        const ChangeEventList changeEventList = pGetChangeEventListForNewPlayerCallback(peerData->name);
 
                         debugNetwork("Moving '%s' from awaiting connection list to peer list\n", peerData->name.c_str());
                         peerList.push_back(pCurrentPeer);
@@ -277,7 +277,7 @@ void NetworkManager::update() {
                     } else {
                         debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(), peer->address.port);
 
-                        auto* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
+                        const auto* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
 
                         if (pConnectPeerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             if (peerData == nullptr) {
@@ -319,7 +319,7 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_DISCONNECT: {
                 std::unique_ptr<PeerData> peerData {static_cast<PeerData*>(peer->data)};
 
-                int disconnectCause = event.data;
+                const int disconnectCause = event.data;
 
                 debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(), peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown", disconnectCause);
 
@@ -734,7 +734,7 @@ void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedLis
 int NetworkManager::getMaxPeerRoundTripTime() {
     int maxPeerRTT = 0;
 
-    for (ENetPeer* pCurrentPeer : peerList) {
+    for (const ENetPeer* pCurrentPeer : peerList) {
         maxPeerRTT = std::max(maxPeerRTT, (int)(pCurrentPeer->roundTripTime));
     }
 

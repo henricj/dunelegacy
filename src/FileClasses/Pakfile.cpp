@@ -125,7 +125,7 @@ void Pakfile::addFile(SDL_RWops* rwop, const std::string& filename) {
         THROW(std::invalid_argument, "Pakfile::addFile(): rwop==nullptr is not allowed!");
     }
 
-    auto filelength = static_cast<size_t>(SDL_RWsize(rwop));
+    const auto filelength = static_cast<size_t>(SDL_RWsize(rwop));
 
     char* extendedBuffer = nullptr;
     if ((extendedBuffer = (char*)realloc(writeOutData, numWriteOutData + filelength)) == nullptr) {
@@ -235,7 +235,7 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
         return 0;
     }
 
-    uint32_t readstartoffset = pPakfile->fileEntries[pRWopData->fileIndex].startOffset + pRWopData->fileOffset;
+    const uint32_t readstartoffset = pPakfile->fileEntries[pRWopData->fileIndex].startOffset + pRWopData->fileOffset;
 
     if (readstartoffset > pPakfile->fileEntries[pRWopData->fileIndex].endOffset) {
         return 0;
@@ -272,8 +272,8 @@ int64_t Pakfile::SizeFile(SDL_RWops* pRWop) {
         return -1;
     }
 
-    auto* pRWopData   = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
-    Pakfile* pPakfile = pRWopData->curPakfile;
+    const auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    Pakfile* pPakfile     = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return -1;
     }
@@ -333,7 +333,7 @@ int Pakfile::CloseFile(SDL_RWops* pRWop) {
         return -1;
     }
 
-    auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
     delete pRWopData;
     pRWop->hidden.unknown.data1 = nullptr;
     SDL_FreeRW(pRWop);
@@ -375,7 +375,7 @@ void Pakfile::readIndex() {
         fileEntries.push_back(newEntry);
     }
 
-    int64_t filesize = SDL_RWsize(fPakFile);
+    const int64_t filesize = SDL_RWsize(fPakFile);
     if (filesize < 0) {
         THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWsize() failed!");
     }

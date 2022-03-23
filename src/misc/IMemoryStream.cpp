@@ -8,7 +8,7 @@ IMemoryStream::IMemoryStream()  = default;
 IMemoryStream::~IMemoryStream() = default;
 
 std::string IMemoryStream::readString() {
-    uint32_t length = readUint32();
+    const uint32_t length = readUint32();
 
     if (currentPos + length > bufferSize) {
         THROW(InputStream::eof, "IMemoryStream::readString(): End-of-File reached!");
@@ -24,7 +24,7 @@ uint8_t IMemoryStream::readUint8() {
         THROW(InputStream::eof, "IMemoryStream::readUint8(): End-of-File reached!");
     }
 
-    uint8_t tmp = *reinterpret_cast<const uint8_t*>(pBuffer + currentPos);
+    const uint8_t tmp = *reinterpret_cast<const uint8_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint8_t);
     return tmp;
 }
@@ -34,7 +34,7 @@ uint16_t IMemoryStream::readUint16() {
         THROW(InputStream::eof, "IMemoryStream::readUint16(): End-of-File reached!");
     }
 
-    uint16_t tmp = *reinterpret_cast<const uint16_t*>(pBuffer + currentPos);
+    const uint16_t tmp = *reinterpret_cast<const uint16_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint16_t);
     return SDL_SwapLE16(tmp);
 }
@@ -44,7 +44,7 @@ uint32_t IMemoryStream::readUint32() {
         THROW(InputStream::eof, "IMemoryStream::readUint32(): End-of-File reached!");
     }
 
-    uint32_t tmp = *reinterpret_cast<const uint32_t*>(pBuffer + currentPos);
+    const uint32_t tmp = *reinterpret_cast<const uint32_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint32_t);
     return SDL_SwapLE32(tmp);
 }
@@ -54,7 +54,7 @@ uint64_t IMemoryStream::readUint64() {
         THROW(InputStream::eof, "IMemoryStream::readUint64(): End-of-File reached!");
     }
 
-    uint64_t tmp = *reinterpret_cast<const uint64_t*>(pBuffer + currentPos);
+    const uint64_t tmp = *reinterpret_cast<const uint64_t*>(pBuffer + currentPos);
     currentPos += sizeof(uint64_t);
     return SDL_SwapLE64(tmp);
 }
@@ -64,8 +64,8 @@ bool IMemoryStream::readBool() {
 }
 
 float IMemoryStream::readFloat() {
-    uint32_t tmp = readUint32();
-    float tmp2   = NAN;
+    const uint32_t tmp = readUint32();
+    float tmp2         = NAN;
     memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
     return tmp2;
 }

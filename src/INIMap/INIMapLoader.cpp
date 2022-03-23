@@ -403,8 +403,8 @@ void INIMapLoader::loadHouses(const GameContext& context) {
                 // skip this house
                 continue;
             }
-            int randomIndex = pGame->randomGen.rand(0, (int)unboundedHouses.size() - 1);
-            houseID         = unboundedHouses[randomIndex];
+            const int randomIndex = pGame->randomGen.rand(0, (int)unboundedHouses.size() - 1);
+            houseID               = unboundedHouses[randomIndex];
             unboundedHouses.erase(unboundedHouses.begin() + randomIndex);
 
             pGame->houseInfoListSetup.back().houseID = houseID;
@@ -422,8 +422,8 @@ void INIMapLoader::loadHouses(const GameContext& context) {
                 continue;
             }
 
-            int randomIndex = pGame->randomGen.rand(0, (int)playerSectionsOnMap.size() - 1);
-            houseName       = playerSectionsOnMap[randomIndex];
+            const int randomIndex = pGame->randomGen.rand(0, (int)playerSectionsOnMap.size() - 1);
+            houseName             = playerSectionsOnMap[randomIndex];
             playerSectionsOnMap.erase(playerSectionsOnMap.begin() + randomIndex);
         }
 
@@ -435,9 +435,9 @@ void INIMapLoader::loadHouses(const GameContext& context) {
         if (pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
             maxUnits = pGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
         } else {
-            int defaultMaxUnit = std::max(25, 25 * (sizeX * sizeY) / (64 * 64));
-            int maxUnit        = inifile->getIntValue(houseName, "MaxUnit", defaultMaxUnit);
-            maxUnits           = inifile->getIntValue(houseName, "MaxUnits", maxUnit);
+            const int defaultMaxUnit = std::max(25, 25 * (sizeX * sizeY) / (64 * 64));
+            const int maxUnit        = inifile->getIntValue(houseName, "MaxUnit", defaultMaxUnit);
+            maxUnits                 = inifile->getIntValue(houseName, "MaxUnits", maxUnit);
         }
 
         int quota = inifile->getIntValue(houseName, "Quota", 0);

@@ -28,8 +28,8 @@ class Coord;
 
 inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
 
-    FixPoint diffX = x2 - x1;
-    FixPoint diffY = -(y2 - y1); // flip y
+    const FixPoint diffX = x2 - x1;
+    const FixPoint diffY = -(y2 - y1); // flip y
 
     if (diffX == 0 && diffY == 0) {
         return FixPt_PI / 2;
@@ -64,7 +64,7 @@ inline FixPoint Deg256ToRad(FixPoint angle) {
     \return the angle between angle1 and angle2.
 */
 inline int angleDiff(ANGLETYPE angle1, ANGLETYPE angle2) {
-    int diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
+    const int diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
     return std::min(diff, static_cast<int>(ANGLETYPE::NUM_ANGLES) - diff);
 }
 
@@ -77,19 +77,19 @@ inline ANGLETYPE destinationDrawnAngle(const Coord& p1, const Coord& p2) {
 }
 
 inline FixPoint distanceFrom(const Coord& p1, const Coord& p2) {
-    FixPoint first  = (p1.x - p2.x);
-    FixPoint second = (p1.y - p2.y);
+    const FixPoint first  = (p1.x - p2.x);
+    const FixPoint second = (p1.y - p2.y);
 
-    FixPoint z = FixPoint::sqrt(first * first + second * second);
+    const FixPoint z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
 
 inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_y) {
-    FixPoint first  = (x - to_x);
-    FixPoint second = (y - to_y);
+    const FixPoint first  = (x - to_x);
+    const FixPoint second = (y - to_y);
 
-    FixPoint z = FixPoint::sqrt(first * first + second * second);
+    const FixPoint z = FixPoint::sqrt(first * first + second * second);
 
     return z;
 }
@@ -111,8 +111,8 @@ inline int maximumDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
-    int diffX = abs(p1.x - p2.x);
-    int diffY = abs(p1.y - p2.y);
+    const int diffX = abs(p1.x - p2.x);
+    const int diffY = abs(p1.y - p2.y);
 
     if (diffX > diffY) {
         return diffX + diffY * (FixPt_SQRT2 - 1);
@@ -127,8 +127,8 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
-    int diffX = abs(p1.x - p2.x);
-    int diffY = abs(p1.y - p2.y);
+    const int diffX = abs(p1.x - p2.x);
+    const int diffY = abs(p1.y - p2.y);
 
     if (diffX > diffY) {
         return ((diffX * 2 + diffY) + 1) / 2;
@@ -137,7 +137,7 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
 }
 
 inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
-    auto int_angle = static_cast<int>(angle);
+    const auto int_angle = static_cast<int>(angle);
 
     if (int_angle >= 0 && int_angle < static_cast<int>(ANGLETYPE::NUM_ANGLES))
         return angle;

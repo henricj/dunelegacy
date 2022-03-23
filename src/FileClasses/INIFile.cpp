@@ -330,8 +330,8 @@ INIFile::INIFile(SDL_RWops* RWopsFile, bool bWhitespace)
 INIFile::~INIFile() {
     INIFileLine* curLine = firstLine;
     while (curLine != nullptr) {
-        INIFileLine* tmp = curLine;
-        curLine          = curLine->nextLine;
+        const INIFileLine* tmp = curLine;
+        curLine                = curLine->nextLine;
         delete tmp;
     }
 
@@ -732,7 +732,7 @@ INIFile::KeyIterator INIFile::end(std::string_view section) const {
     \return true on success otherwise false.
 */
 bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding) const {
-    sdl2::RWops_ptr file {SDL_RWFromFile(filename.u8string().c_str(), "wb")};
+    const sdl2::RWops_ptr file {SDL_RWFromFile(filename.u8string().c_str(), "wb")};
 
     if (!file) {
         return false;
@@ -808,7 +808,7 @@ void INIFile::readfile(SDL_RWops* file) {
         unsigned char tmp = 0;
 
         while (true) {
-            size_t readbytes = SDL_RWread(file, &tmp, 1, 1);
+            const size_t readbytes = SDL_RWread(file, &tmp, 1, 1);
             if (readbytes == 0) {
                 readfinished = true;
                 break;
@@ -844,8 +844,8 @@ void INIFile::readfile(SDL_RWops* file) {
 
             if (line[ret] == '[') {
                 // section line
-                int sectionstart = ret + 1;
-                int sectionend   = skipName(line, ret + 1);
+                const int sectionstart = ret + 1;
+                const int sectionend   = skipName(line, ret + 1);
 
                 if ((line[sectionend] != ']') || (getNextChar(line, sectionend + 1) != -1)) {
                     bSyntaxError = true;
@@ -868,8 +868,8 @@ void INIFile::readfile(SDL_RWops* file) {
             } else {
 
                 // might be key/value line
-                int keystart = ret;
-                int keyend   = skipKey(line, keystart);
+                const int keystart = ret;
+                const int keyend   = skipKey(line, keystart);
 
                 if (keystart == keyend) {
                     bSyntaxError = true;
@@ -878,14 +878,14 @@ void INIFile::readfile(SDL_RWops* file) {
                     if ((ret == -1) || (line[ret] != '=')) {
                         bSyntaxError = true;
                     } else {
-                        int valuestart = getNextChar(line, ret + 1);
+                        const int valuestart = getNextChar(line, ret + 1);
                         if (valuestart == -1) {
                             bSyntaxError = true;
                         } else {
                             if (line[valuestart] == '"') {
                                 // now get the next '"'
 
-                                int valueend = getNextQuote(line, valuestart + 1);
+                                const int valueend = getNextQuote(line, valuestart + 1);
 
                                 if ((valueend == -1) || (getNextChar(line, valueend + 1) != -1)) {
                                     bSyntaxError = true;
@@ -906,7 +906,7 @@ void INIFile::readfile(SDL_RWops* file) {
                                 }
 
                             } else {
-                                int valueend = skipValue(line, valuestart);
+                                const int valueend = skipValue(line, valuestart);
 
                                 if (getNextChar(line, valueend) != -1) {
                                     bSyntaxError = true;
@@ -1025,7 +1025,7 @@ INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
 }
 
 bool INIFile::isValidSectionName(std::string_view sectionname) {
-    for (char i : sectionname) {
+    for (const char i : sectionname) {
         if ((!isNormalChar(i)) && (!isWhitespace(i))) {
             return false;
         }
@@ -1035,7 +1035,7 @@ bool INIFile::isValidSectionName(std::string_view sectionname) {
 }
 
 bool INIFile::isValidKeyName(std::string_view keyname) {
-    for (auto i : keyname) {
+    for (const auto i : keyname) {
         if ((!isNormalChar(i)) && (!isWhitespace(i))) {
             return false;
         }

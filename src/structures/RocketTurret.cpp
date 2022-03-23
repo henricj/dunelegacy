@@ -60,7 +60,7 @@ void RocketTurret::init() {
 RocketTurret::~RocketTurret() = default;
 
 void RocketTurret::updateStructureSpecificStuff(const GameContext& context) {
-    auto& game = context.game;
+    const auto& game = context.game;
 
     if ((!game.getGameInitSettings().getGameOptions().rocketTurretsNeedPower || getOwner()->hasPower()) || (((game.gameType == GameType::Campaign) || (game.gameType == GameType::Skirmish)) && getOwner()->isAI())) {
         parent::updateStructureSpecificStuff(context);

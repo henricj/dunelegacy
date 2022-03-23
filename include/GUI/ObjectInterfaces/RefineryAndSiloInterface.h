@@ -41,7 +41,7 @@ public:
 protected:
     RefineryAndSiloInterface(const GameContext& context, int objectID)
         : DefaultStructureInterface(context, objectID) {
-        Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 
@@ -65,7 +65,7 @@ protected:
             return false;
         }
 
-        House* pOwner = pObject->getOwner();
+        const House* pOwner = pObject->getOwner();
 
         capacityLabel.setText(" " + _("Capacity") + ": " + std::to_string(pOwner->getCapacity()));
         storedCreditsLabel.setText(" " + _("Stored") + ": " + std::to_string(lround(pOwner->getStoredCredits())));

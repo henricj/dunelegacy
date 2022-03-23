@@ -591,7 +591,7 @@ int AdlibDriver::snd_startSong(va_list& list) {
     if (ptr == nullptr)
         return 0;
 
-    uint8 chan = *ptr;
+    const uint8 chan = *ptr;
 
     if ((songId << 1) != 0) {
         if (chan == 9) {
@@ -610,7 +610,7 @@ int AdlibDriver::snd_startSong(va_list& list) {
 }
 
 int AdlibDriver::snd_isChannelPlaying(va_list& list) {
-    int channel = va_arg(list, int);
+    const int channel = va_arg(list, int);
     if (_channels[channel].dataptr)
         return 1;
     return 0;
@@ -640,8 +640,8 @@ int AdlibDriver::snd_unkOpcode3(va_list& list) {
 }
 
 int AdlibDriver::snd_readByte(va_list& list) {
-    int a            = va_arg(list, int);
-    int b            = va_arg(list, int);
+    const int a      = va_arg(list, int);
+    const int b      = va_arg(list, int);
     const uint8* ptr = getProgram(a);
     if (ptr == nullptr) {
         warning("AdlibDriver::snd_readByte(): ptr == NULL!");
@@ -652,12 +652,12 @@ int AdlibDriver::snd_readByte(va_list& list) {
 }
 
 int AdlibDriver::snd_writeByte(va_list& list) {
-    int a          = va_arg(list, int);
-    int b          = va_arg(list, int);
-    int c          = va_arg(list, int);
-    uint8* ptr     = getProgram(a) + b;
-    uint8 oldValue = *ptr;
-    *ptr           = (uint8)c;
+    const int a          = va_arg(list, int);
+    const int b          = va_arg(list, int);
+    const int c          = va_arg(list, int);
+    uint8* ptr           = getProgram(a) + b;
+    const uint8 oldValue = *ptr;
+    *ptr                 = (uint8)c;
     return oldValue;
 }
 
@@ -685,13 +685,13 @@ int AdlibDriver::snd_setNullvar3(va_list& list) {
 }
 
 int AdlibDriver::snd_setFlag(va_list& list) {
-    int oldFlags = _flags;
+    const int oldFlags = _flags;
     _flags |= va_arg(list, int);
     return oldFlags;
 }
 
 int AdlibDriver::snd_clearFlag(va_list& list) {
-    int oldFlags = _flags;
+    const int oldFlags = _flags;
     _flags &= ~(va_arg(list, int));
     return oldFlags;
 }
@@ -706,7 +706,7 @@ void AdlibDriver::callback() {
     setupPrograms();
     executePrograms();
 
-    uint8 temp = _unkValue3;
+    const uint8 temp = _unkValue3;
     _unkValue3 += _tempo;
     if (_unkValue3 < temp) {
         if (!(--_unkValue2)) {
@@ -719,9 +719,9 @@ void AdlibDriver::callback() {
 
 void AdlibDriver::setupPrograms() {
     while (_lastProcessed != _soundsPlaying) {
-        uint8* ptr     = getProgram(_soundIdTable[_lastProcessed]);
-        uint8 chan     = *ptr++;
-        uint8 priority = *ptr++;
+        uint8* ptr           = getProgram(_soundIdTable[_lastProcessed]);
+        const uint8 chan     = *ptr++;
+        const uint8 priority = *ptr++;
 
         // Only start this sound if its priority is higher than the one
         // already playing.
@@ -826,7 +826,7 @@ void AdlibDriver::executePrograms() {
         if (channel.tempoReset)
             channel.tempo = _tempo;
 
-        uint8 backup = channel.position;
+        const uint8 backup = channel.position;
         channel.position += channel.tempo;
         if (channel.position < backup) {
             if (--channel.duration) {
@@ -845,8 +845,8 @@ void AdlibDriver::executePrograms() {
                 // quill in Kyra 1.
                 uint8* dataptr = channel.dataptr;
                 while (dataptr) {
-                    uint8 opcode = *dataptr++;
-                    uint8 param  = *dataptr++;
+                    uint8 opcode      = *dataptr++;
+                    const uint8 param = *dataptr++;
 
                     if (opcode & 0x80) {
                         opcode &= 0x7F;
@@ -961,7 +961,7 @@ void AdlibDriver::unkOutput2(uint8 chan) {
     if (_rhythmSectionBits && chan >= 6)
         return;
 
-    uint8 offset = _regOffset[chan];
+    const uint8 offset = _regOffset[chan];
 
     // The channel is cleared: First the attack/delay rate, then the
     // sustain level/release rate, and finally the note is turned off.
@@ -1000,7 +1000,7 @@ void AdlibDriver::unkOutput2(uint8 chan) {
 
 uint16 AdlibDriver::getRandomNr() {
     _rnd += 0x9248;
-    uint16 lowBits = _rnd & 7;
+    const uint16 lowBits = _rnd & 7;
     _rnd >>= 3;
     _rnd |= (lowBits << 13);
     return _rnd;
@@ -1134,10 +1134,10 @@ void AdlibDriver::noteOn(Channel& channel) {
     channel.regBx |= 0x20;
     writeOPL(0xB0 + _curChannel, channel.regBx);
 
-    int8 shift    = 9 - channel.unk33;
-    uint16 temp   = channel.regAx | (channel.regBx << 8);
-    channel.unk37 = ((temp & 0x3FF) >> shift) & 0xFF;
-    channel.unk38 = channel.unk36;
+    const int8 shift = 9 - channel.unk33;
+    uint16 temp      = channel.regAx | (channel.regBx << 8);
+    channel.unk37    = ((temp & 0x3FF) >> shift) & 0xFF;
+    channel.unk38    = channel.unk36;
 }
 
 void AdlibDriver::adjustVolume(Channel& channel) {
@@ -1167,7 +1167,7 @@ void AdlibDriver::adjustVolume(Channel& channel) {
 
 void AdlibDriver::primaryEffect1(Channel& channel) {
     debugC(9, "Calling primaryEffect1 (channel: %d)", _curChannel);
-    uint8 temp = channel.unk31;
+    const uint8 temp = channel.unk31;
     channel.unk31 += channel.unk29;
     if (channel.unk31 >= temp)
         return;
@@ -1179,7 +1179,7 @@ void AdlibDriver::primaryEffect1(Channel& channel) {
     // that it won't be affected by any of the calculations below.
     uint16 unk2 = ((channel.regBx & 0x20) << 8) | (channel.regBx & 0x1C);
 
-    auto unk3 = (int16)channel.unk30;
+    const auto unk3 = (int16)channel.unk30;
 
     if (unk3 >= 0) {
         unk1 += unk3;
@@ -1255,7 +1255,7 @@ void AdlibDriver::primaryEffect2(Channel& channel) {
         return;
     }
 
-    uint8 temp = channel.unk41;
+    const uint8 temp = channel.unk41;
     channel.unk41 += channel.unk32;
     if (channel.unk41 < temp) {
         uint16 unk1 = channel.unk37;
@@ -1305,7 +1305,7 @@ void AdlibDriver::primaryEffect2(Channel& channel) {
 
 void AdlibDriver::secondaryEffect1(Channel& channel) {
     debugC(9, "Calling secondaryEffect1 (channel: %d)", _curChannel);
-    uint8 temp = channel.unk18;
+    const uint8 temp = channel.unk18;
     channel.unk18 += channel.unk19;
     if (channel.unk18 < temp) {
         if (--channel.unk21 < 0)
@@ -1397,7 +1397,7 @@ int AdlibDriver::update_setNoteSpacing(uint8*& dataptr, Channel& channel, uint8 
 
 int AdlibDriver::update_jump(uint8*& dataptr, Channel& channel, uint8 value) {
     --dataptr;
-    int16 add = READ_LE_uint16(dataptr);
+    const int16 add = READ_LE_uint16(dataptr);
     dataptr += 2;
     dataptr += add;
     if (_syncJumpMask & (1 << (&channel - _channels)))
@@ -1407,7 +1407,7 @@ int AdlibDriver::update_jump(uint8*& dataptr, Channel& channel, uint8 value) {
 
 int AdlibDriver::update_jumpToSubroutine(uint8*& dataptr, Channel& channel, uint8 value) {
     --dataptr;
-    int16 add = READ_LE_uint16(dataptr);
+    const int16 add = READ_LE_uint16(dataptr);
     dataptr += 2;
     channel.dataptrStack[channel.dataptrStackPos++] = dataptr;
     dataptr += add;
@@ -1475,8 +1475,8 @@ int AdlibDriver::update_stopOtherChannel(uint8*& dataptr, Channel& channel, uint
 }
 
 int AdlibDriver::update_waitForEndOfProgram(uint8*& dataptr, Channel& channel, uint8 value) {
-    uint8* ptr = getProgram(value);
-    uint8 chan = *ptr;
+    const uint8* ptr = getProgram(value);
+    const uint8 chan = *ptr;
 
     if (!_channels[chan].dataptr)
         return 0;
@@ -1514,7 +1514,7 @@ int AdlibDriver::update_setBaseFreq(uint8*& dataptr, Channel& channel, uint8 val
 int AdlibDriver::update_setupPrimaryEffect2(uint8*& dataptr, Channel& channel, uint8 value) {
     channel.unk32         = value;
     channel.unk33         = *dataptr++;
-    uint8 temp            = *dataptr++;
+    const uint8 temp      = *dataptr++;
     channel.unk34         = temp + 1;
     channel.unk35         = temp << 1;
     channel.unk36         = *dataptr++;
@@ -1595,7 +1595,7 @@ int AdlibDriver::update_setExtraLevel3(uint8*& dataptr, Channel& channel, uint8 
 }
 
 int AdlibDriver::update_setExtraLevel2(uint8*& dataptr, Channel& channel, uint8 value) {
-    int channelBackUp = _curChannel;
+    const int channelBackUp = _curChannel;
 
     _curChannel            = value;
     Channel& channel2      = _channels[value];
@@ -1607,7 +1607,7 @@ int AdlibDriver::update_setExtraLevel2(uint8*& dataptr, Channel& channel, uint8 
 }
 
 int AdlibDriver::update_changeExtraLevel2(uint8*& dataptr, Channel& channel, uint8 value) {
-    int channelBackUp = _curChannel;
+    const int channelBackUp = _curChannel;
 
     _curChannel       = value;
     Channel& channel2 = _channels[value];
@@ -1650,7 +1650,7 @@ int AdlibDriver::update_changeExtraLevel1(uint8*& dataptr, Channel& channel, uin
 }
 
 int AdlibDriver::updateCallback38(uint8*& dataptr, Channel& channel, uint8 value) {
-    int channelBackUp = _curChannel;
+    const int channelBackUp = _curChannel;
 
     _curChannel       = value;
     Channel& channel2 = _channels[value];
@@ -1659,7 +1659,7 @@ int AdlibDriver::updateCallback38(uint8*& dataptr, Channel& channel, uint8 value
     channel2.opExtraLevel2                = 0;
 
     if (value != 9) {
-        uint8 outValue = _regOffset[value];
+        const uint8 outValue = _regOffset[value];
 
         // Feedback strength / Connection type
         writeOPL(0xC0 + _curChannel, 0x00);
@@ -1757,8 +1757,8 @@ int AdlibDriver::update_nop2(uint8*& dataptr, Channel& channel, uint8 value) {
 }
 
 int AdlibDriver::update_setupRhythmSection(uint8*& dataptr, Channel& channel, uint8 value) {
-    int channelBackUp   = _curChannel;
-    int regOffsetBackUp = _curRegOffset;
+    const int channelBackUp   = _curChannel;
+    const int regOffsetBackUp = _curRegOffset;
 
     _curChannel   = 6;
     _curRegOffset = _regOffset[6];
@@ -1833,7 +1833,7 @@ int AdlibDriver::update_removeRhythmSection(uint8*& dataptr, Channel& channel, u
 }
 
 int AdlibDriver::updateCallback51(uint8*& dataptr, Channel& channel, uint8 value) {
-    uint8 value2 = *dataptr++;
+    const uint8 value2 = *dataptr++;
 
     if (value & 1) {
         _unkValue12 = value2;
@@ -1874,7 +1874,7 @@ int AdlibDriver::updateCallback51(uint8*& dataptr, Channel& channel, uint8 value
 }
 
 int AdlibDriver::updateCallback52(uint8*& dataptr, Channel& channel, uint8 value) {
-    uint8 value2 = *dataptr++;
+    const uint8 value2 = *dataptr++;
 
     if (value & 1) {
         _unkValue11 = checkValue(value2 + _unkValue7 + _unkValue11 + _unkValue12);
@@ -1915,7 +1915,7 @@ int AdlibDriver::updateCallback52(uint8*& dataptr, Channel& channel, uint8 value
 }
 
 int AdlibDriver::updateCallback53(uint8*& dataptr, Channel& channel, uint8 value) {
-    uint8 value2 = *dataptr++;
+    const uint8 value2 = *dataptr++;
 
     if (value & 1) {
         _unkValue11 = value2;
@@ -2351,10 +2351,10 @@ bool SoundAdlibPC::init() {
 }
 
 void SoundAdlibPC::process() {
-    uint8 trigger = _driver->callback(11);
+    const uint8 trigger = _driver->callback(11);
 
     if (trigger < _numSoundTriggers) {
-        int soundId = _soundTriggers[trigger];
+        const int soundId = _soundTriggers[trigger];
 
         if (soundId)
             playTrack(soundId);
@@ -2397,10 +2397,10 @@ void SoundAdlibPC::callback(void* userdata, uint8_t* audiobuf, int len) {
 
     self->process();
 
-    auto* buf   = reinterpret_cast<int16*>(audiobuf);
-    int samples = self->_driver->readBuffer(buf, len / self->getsampsize());
+    auto* buf         = reinterpret_cast<int16*>(audiobuf);
+    const int samples = self->_driver->readBuffer(buf, len / self->getsampsize());
 
-    int volume = self->getVolume();
+    const int volume = self->getVolume();
     for (int i = 0; i < 2 * samples; i++) {
         buf[i] = static_cast<int16>(buf[i] * volume / MIX_MAX_VOLUME);
     }

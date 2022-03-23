@@ -58,22 +58,22 @@ void TextView::draw(Point position) {
     updateTextures();
 
     if (pBackground != nullptr) {
-        SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
+        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
         Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
     }
 
     if (pForeground != nullptr) {
-        int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+        const int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
-        SDL_Rect src = {0,
-                        scrollbar.getCurrentValue() * lineHeight,
-                        getWidth(pForeground.get()),
-                        std::min(getHeight(pForeground.get()), getSize().y - 2)};
+        const SDL_Rect src = {0,
+                              scrollbar.getCurrentValue() * lineHeight,
+                              getWidth(pForeground.get()),
+                              std::min(getHeight(pForeground.get()), getSize().y - 2)};
 
-        SDL_Rect dest = {position.x + 2,
-                         position.y + 1,
-                         getWidth(pForeground.get()),
-                         std::min(getHeight(pForeground.get()), getSize().y - 2)};
+        const SDL_Rect dest = {position.x + 2,
+                               position.y + 1,
+                               getWidth(pForeground.get()),
+                               std::min(getHeight(pForeground.get()), getSize().y - 2)};
         Dune_RenderCopy(renderer, pForeground.get(), &src, &dest);
     }
 
@@ -90,16 +90,16 @@ void TextView::resize(uint32_t width, uint32_t height) {
 
     scrollbar.resize(scrollbar.getMinimumSize().x, height);
 
-    int fontSize                       = this->fontSize;
-    std::vector<std::string> textLines = greedyWordWrap(text,
-                                                        getSize().x - scrollbar.getSize().x - 4,
-                                                        [fontSize](std::string_view tmp) {
-                                                            return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
-                                                        });
+    int fontSize                             = this->fontSize;
+    const std::vector<std::string> textLines = greedyWordWrap(text,
+                                                              getSize().x - scrollbar.getSize().x - 4,
+                                                              [fontSize](std::string_view tmp) {
+                                                                  return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
+                                                              });
 
-    int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+    const int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
 
-    int numVisibleLines = height / lineHeight;
+    const int numVisibleLines = height / lineHeight;
     scrollbar.setRange(0, std::max(0, ((int)textLines.size()) - numVisibleLines));
     scrollbar.setBigStepSize(std::max(1, numVisibleLines - 1));
 
@@ -112,15 +112,15 @@ void TextView::updateTextures() {
     }
 
     if (pForeground == nullptr) {
-        int fontSize                       = this->fontSize;
-        std::vector<std::string> textLines = greedyWordWrap(text,
-                                                            getSize().x - scrollbar.getSize().x - 4,
-                                                            [fontSize](std::string_view tmp) {
-                                                                return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
-                                                            });
+        int fontSize                             = this->fontSize;
+        const std::vector<std::string> textLines = greedyWordWrap(text,
+                                                                  getSize().x - scrollbar.getSize().x - 4,
+                                                                  [fontSize](std::string_view tmp) {
+                                                                      return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
+                                                                  });
 
-        int lineHeight  = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
-        int labelHeight = lineHeight * textLines.size() + 2;
-        pForeground     = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
+        const int lineHeight  = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+        const int labelHeight = lineHeight * textLines.size() + 2;
+        pForeground           = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
     }
 }

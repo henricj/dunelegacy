@@ -47,7 +47,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     openList.clear();
     openList.reserve(2 * std::max(sizeX, sizeY));
 
-    auto* const destinationTile = pMap->getTile(destination);
+    const auto* const destinationTile = pMap->getTile(destination);
 
     const FixPoint rotationSpeed = 1_fix / (currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(pUnit->getOriginalHouseID())].turnspeed * TILESIZE);
 
@@ -111,7 +111,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                                          g += angleDiff(angle, posAngle) * rotationSpeed;
                                      }
 
-                                     auto& next_map_data = getMapData(nextKey);
+                                     const auto& next_map_data = getMapData(nextKey);
                                      if (!next_map_data.bClosed) {
                                          const auto h = blockDistance(nextCoord, destination);
 
@@ -207,7 +207,7 @@ bool AStarSearch::getFoundPath(Map* pMap, std::vector<Coord>& path) const {
         return false;
     }
 
-    for (auto* p = bestCoord; p->parentKey; p = p->parentKey) {
+    for (const auto* p = bestCoord; p->parentKey; p = p->parentKey) {
         path.push_back(p->coord);
     }
 

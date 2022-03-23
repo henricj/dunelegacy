@@ -182,7 +182,7 @@ std::string FileManager::md5FromFilename(const std::filesystem::path& filename) 
     }
     std::stringstream stream;
     stream << std::setfill('0') << std::hex;
-    for (int i : md5sum) {
+    for (const int i : md5sum) {
         stream << std::setw(2) << i;
     }
     return stream.str();

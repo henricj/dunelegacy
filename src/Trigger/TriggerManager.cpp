@@ -62,7 +62,7 @@ void TriggerManager::trigger(const GameContext& context, uint32_t CycleNumber) {
     if (clear)
         triggers.clear();
 
-    for (auto& t : active_trigger)
+    for (const auto& t : active_trigger)
         t->trigger(context);
 
     active_trigger.clear();

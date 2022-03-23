@@ -102,7 +102,7 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
     // Now we can copy pixel by pixel
     for (int y = 0; y < src->h; y++) {
         for (int x = 0; x < src->w; x++) {
-            char val                                                                     = *(((char*)(src->pixels)) + y * src->pitch + x);
+            const char val                                                               = *(((char*)(src->pixels)) + y * src->pitch + x);
             *(((char*)(returnPic->pixels)) + 2 * y * returnPic->pitch + 2 * x)           = val;
             *(((char*)(returnPic->pixels)) + 2 * y * returnPic->pitch + 2 * x + 1)       = val;
             *(((char*)(returnPic->pixels)) + (2 * y + 1) * returnPic->pitch + 2 * x)     = val;
@@ -148,7 +148,7 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
     // Now we can copy pixel by pixel
     for (int y = 0; y < src->h; y++) {
         for (int x = 0; x < src->w; x++) {
-            char val                                                                     = *(((char*)(src->pixels)) + y * src->pitch + x);
+            const char val                                                               = *(((char*)(src->pixels)) + y * src->pitch + x);
             *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x)           = val;
             *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x + 1)       = val;
             *(((char*)(returnPic->pixels)) + 3 * y * returnPic->pitch + 3 * x + 2)       = val;
@@ -196,8 +196,8 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    int srcWidth  = src->w;
-    int srcHeight = src->h;
+    const int srcWidth  = src->w;
+    const int srcHeight = src->h;
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 2, srcHeight * 2, 8, 0, 0, 0, 0)};
@@ -210,8 +210,8 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
     auto* srcPixels  = (uint8_t*)src->pixels;
     auto* destPixels = (uint8_t*)returnPic->pixels;
 
-    int tileWidth  = srcWidth / tilesX;
-    int tileHeight = srcHeight / tilesY;
+    const int tileWidth  = srcWidth / tilesX;
+    const int tileHeight = srcHeight / tilesY;
 
     sdl2::surface_lock return_lock {returnPic.get()};
     sdl2::surface_lock src_lock {src};
@@ -236,11 +236,11 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
 
             for (int y = 0; y < tileHeight; ++y) {
                 for (int x = 0; x < tileWidth; ++x) {
-                    uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
-                    uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
-                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t E       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
+                    const uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
+                    const uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
+                    uint8_t D       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t F       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
                     uint8_t E0 = 0;
 
@@ -295,8 +295,8 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
         return nullptr;
     }
 
-    int srcWidth  = src->w;
-    int srcHeight = src->h;
+    const int srcWidth  = src->w;
+    const int srcHeight = src->h;
 
     // create new picture surface
     auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 3, srcHeight * 3, 8, 0, 0, 0, 0)};
@@ -309,8 +309,8 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
     auto* srcPixels  = (uint8_t*)src->pixels;
     auto* destPixels = (uint8_t*)returnPic->pixels;
 
-    int tileWidth  = srcWidth / tilesX;
-    int tileHeight = srcHeight / tilesY;
+    const int tileWidth  = srcWidth / tilesX;
+    const int tileHeight = srcHeight / tilesY;
 
     sdl2::surface_lock return_lock {returnPic.get()};
     sdl2::surface_lock src_lock {src};
@@ -335,15 +335,15 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
             for (int y = 0; y < tileHeight; ++y) {
                 for (int x = 0; x < tileWidth; ++x) {
-                    uint8_t A = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
-                    uint8_t B = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t C = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
-                    uint8_t D = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
-                    uint8_t E = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
-                    uint8_t F = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
-                    uint8_t G = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
-                    uint8_t H = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
-                    uint8_t I = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    const uint8_t A = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t B       = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + x));
+                    const uint8_t C = *(srcPixels + (j * tileHeight + std::max(0, y - 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    uint8_t D       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t E       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + x));
+                    uint8_t F       = *(srcPixels + (j * tileHeight + y) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
+                    const uint8_t G = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::max(0, x - 1)));
+                    uint8_t H       = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + x));
+                    const uint8_t I = *(srcPixels + (j * tileHeight + std::min(tileHeight - 1, y + 1)) * src->pitch + (i * tileWidth + std::min(tileWidth - 1, x + 1)));
 
                     uint8_t E0 = 0;
 

@@ -302,27 +302,27 @@ void NewMapWindow::onMapTypeChanged(int buttonID) {
 void NewMapWindow::onMapPropertiesChanged() {
 
     if (emptyMapRadioButton.isChecked()) {
-        int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
-        int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
+        const int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
+        const int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
         mapdata = MapData(sizeX, sizeY, Terrain_Sand);
     } else if (randomMapRadioButton.isChecked()) {
-        int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
-        int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
+        const int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
+        const int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
 
-        int seed  = rngSeedTextBox.getValue();
-        int rock  = rockDigitsTextBox.getValue();
-        int spice = spiceDigitsTextBox.getValue();
+        const int seed  = rngSeedTextBox.getValue();
+        const int rock  = rockDigitsTextBox.getValue();
+        const int spice = spiceDigitsTextBox.getValue();
 
-        auto mirrorMode = (MirrorMode)mirrorModeDropDownBox.getSelectedEntryIntData();
+        const auto mirrorMode = (MirrorMode)mirrorModeDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
         mapdata = generateRandomMap(sizeX, sizeY, seed, rock, spice, mirrorMode);
 
     } else if (seedMapRadioButton.isChecked()) {
-        int seed  = rngSeedTextBox.getValue();
-        int scale = mapScaleDropDownBox.getSelectedEntryIntData();
+        const int seed  = rngSeedTextBox.getValue();
+        const int scale = mapScaleDropDownBox.getSelectedEntryIntData();
 
         mapSeed = seed;
         mapdata = createMapWithSeed(seed, scale);
@@ -337,7 +337,7 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
         return nullptr;
     }
     SDL_FillRect(pMinimap.get(), nullptr, borderColor);
-    SDL_Rect dest = {borderWidth, borderWidth, pMinimap->w - 2 * borderWidth, pMinimap->h - 2 * borderWidth};
+    const SDL_Rect dest = {borderWidth, borderWidth, pMinimap->w - 2 * borderWidth, pMinimap->h - 2 * borderWidth};
     SDL_FillRect(pMinimap.get(), &dest, COLOR_BLACK);
 
     int scale   = 1;
@@ -352,9 +352,9 @@ sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borde
     for (int y = 0; y < mapdata.getSizeY(); y++) {
         for (int x = 0; x < mapdata.getSizeX(); x++) {
 
-            TERRAINTYPE terrainType = mapdata(x, y);
+            const TERRAINTYPE terrainType = mapdata(x, y);
 
-            uint32_t color = getColorByTerrainType(terrainType);
+            const uint32_t color = getColorByTerrainType(terrainType);
 
             for (int i = 0; i < scale; i++) {
                 for (int j = 0; j < scale; j++) {

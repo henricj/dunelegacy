@@ -8,7 +8,7 @@ static const uint32_t scales[8] = {
 
 static char* itoa_loop(char* buf, uint32_t scale, uint32_t value, bool skip) {
     while (scale) {
-        unsigned digit = (value / scale);
+        const unsigned digit = (value / scale);
 
         if (!skip || digit || scale == 1) {
             skip   = false;
@@ -27,10 +27,10 @@ void fix16_to_str(fix16_t value, char* buf, int decimals) {
         *buf++ = '-';
 
     /* Separate the integer and decimal parts of the value */
-    unsigned intpart  = uvalue >> 16;
-    uint32_t fracpart = uvalue & 0xFFFF;
-    uint32_t scale    = scales[decimals & 7];
-    fracpart          = fix16_mul(fracpart, scale);
+    unsigned intpart     = uvalue >> 16;
+    uint32_t fracpart    = uvalue & 0xFFFF;
+    const uint32_t scale = scales[decimals & 7];
+    fracpart             = fix16_mul(fracpart, scale);
 
     if (fracpart >= scale) {
         /* Handle carry from decimal part */

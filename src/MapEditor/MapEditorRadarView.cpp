@@ -47,7 +47,7 @@ int MapEditorRadarView::getMapSizeY() const {
 }
 
 void MapEditorRadarView::draw(Point position) {
-    SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
+    const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS, RADARWIDTH, RADARHEIGHT};
 
     const MapData& map = pMapEditor->getMap();
 
@@ -80,12 +80,12 @@ void MapEditorRadarView::draw(Point position) {
         radarRect.y = offsetY;
     }
 
-    int offsetFromRightX = 128 - map.getSizeX() * scale - offsetX;
+    const int offsetFromRightX = 128 - map.getSizeX() * scale - offsetX;
     if (radarRect.x + radarRect.w > radarPosition.w - offsetFromRightX) {
         radarRect.w = radarPosition.w - offsetFromRightX - radarRect.x - 1;
     }
 
-    int offsetFromBottomY = 128 - map.getSizeY() * scale - offsetY;
+    const int offsetFromBottomY = 128 - map.getSizeY() * scale - offsetY;
     if (radarRect.y + radarRect.h > radarPosition.h - offsetFromBottomY) {
         radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
     }
@@ -126,7 +126,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
             // check for classic map items (spice blooms, special blooms)
             std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
-            for (auto& spiceBloom : spiceBlooms) {
+            for (const auto& spiceBloom : spiceBlooms) {
                 if (spiceBloom.x == x && spiceBloom.y == y) {
                     color = COLOR_BLOOM;
                     break;
@@ -134,7 +134,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             }
 
             std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
-            for (auto& specialBloom : specialBlooms) {
+            for (const auto& specialBloom : specialBlooms) {
                 if (specialBloom.x == x && specialBloom.y == y) {
                     color = COLOR_BLOOM;
                     break;
@@ -170,7 +170,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
     }
 
     for (const MapEditor::Structure& structure : pMapEditor->getStructureList()) {
-        Coord structureSize = getStructureSize(structure.itemID);
+        const Coord structureSize = getStructureSize(structure.itemID);
 
         for (int y = 0; y < structureSize.y; y++) {
             for (int x = 0; x < structureSize.x; x++) {

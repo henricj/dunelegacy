@@ -55,8 +55,8 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse)
     questionLabel.setVisible(false);
 
     // init textbox but skip first line (this line contains "House ???")
-    std::string desc = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
-    int linebreak    = desc.find("\n", 0) + 1;
+    std::string desc    = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
+    const int linebreak = desc.find("\n", 0) + 1;
     setText(desc.substr(linebreak, desc.length() - linebreak));
 
     const auto* const pMentatYes        = pGFXManager->getUIGraphic(UI_MentatYes);

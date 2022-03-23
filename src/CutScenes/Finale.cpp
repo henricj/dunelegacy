@@ -68,7 +68,7 @@ Finale::Finale(HOUSETYPE house) {
         pImperatorShocked = std::make_unique<Wsafile>(pFileManager->openFile("EFINALB.WSA").get());
     }
 
-    auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
+    const auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
     if (pPlanetDuneNormalSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open BIGPLAN.CPS!");
     }

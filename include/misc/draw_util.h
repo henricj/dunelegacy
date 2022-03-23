@@ -76,8 +76,8 @@ inline void renderDrawRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
 }
 
 inline void renderDrawRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
-                      static_cast<float>(y2 - y1 + 1)};
+    const SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
+                            static_cast<float>(y2 - y1 + 1)};
     renderDrawRectF(renderer, &rect, color);
 }
 
@@ -92,8 +92,8 @@ inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
 }
 
 inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
-                      static_cast<float>(y2 - y1 + 1)};
+    const SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
+                            static_cast<float>(y2 - y1 + 1)};
     renderFillRectF(renderer, &rect, color);
 }
 

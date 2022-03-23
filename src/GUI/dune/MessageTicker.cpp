@@ -66,7 +66,7 @@ void MessageTicker::draw(Point position) {
 
     if (timer > 0) {
         // start scrolling the text
-        int newsTickerInnerEdgeY = position.y + 10;
+        const int newsTickerInnerEdgeY = position.y + 10;
         textLocation.y -= (timer / MESSAGESCROLLSPEED);
         if (textLocation.y < newsTickerInnerEdgeY) {
             cut.y          = newsTickerInnerEdgeY - textLocation.y;

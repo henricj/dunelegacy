@@ -8,10 +8,10 @@
 fix32_t fix32_add(fix32_t a, fix32_t b) {
     // Use unsigned integers because overflow with signed integers is
     // an undefined operation (http://www.airs.com/blog/archives/120).
-    uint64_t _a = a;
+    const uint64_t _a = a;
 
-    uint64_t _b  = b;
-    uint64_t sum = _a + _b;
+    const uint64_t _b  = b;
+    const uint64_t sum = _a + _b;
 
     // Overflow can only happen if sign of a == sign of b, and then
     // it causes sign of sum != sign of a.
@@ -22,10 +22,10 @@ fix32_t fix32_add(fix32_t a, fix32_t b) {
 }
 
 fix32_t fix32_sub(fix32_t a, fix32_t b) {
-    uint64_t _a = a;
+    const uint64_t _a = a;
 
-    uint64_t _b   = b;
-    uint64_t diff = _a - _b;
+    const uint64_t _b   = b;
+    const uint64_t diff = _a - _b;
 
     // Overflow can only happen if sign of a != sign of b, and then
     // it causes sign of diff != sign of a.
@@ -37,7 +37,7 @@ fix32_t fix32_sub(fix32_t a, fix32_t b) {
 
 /* Saturating arithmetic */
 fix32_t fix32_sadd(fix32_t a, fix32_t b) {
-    fix32_t result = fix32_add(a, b);
+    const fix32_t result = fix32_add(a, b);
 
     if (result == fix32_overflow)
         return (a >= 0) ? fix32_maximum : fix32_minimum;
@@ -46,7 +46,7 @@ fix32_t fix32_sadd(fix32_t a, fix32_t b) {
 }
 
 fix32_t fix32_ssub(fix32_t a, fix32_t b) {
-    fix32_t result = fix32_sub(a, b);
+    const fix32_t result = fix32_sub(a, b);
 
     if (result == fix32_overflow)
         return (a >= 0) ? fix32_maximum : fix32_minimum;
@@ -69,22 +69,22 @@ fix32_t fix32_mul(fix32_t inArg0, fix32_t inArg1) {
     //				 AD
     //				AC
     //			 |----| 128 bit product
-    int64_t A = (inArg0 >> 32);
+    const int64_t A = (inArg0 >> 32);
 
-    int64_t C  = (inArg1 >> 32);
-    uint64_t B = (inArg0 & 0xFFFFFFFF);
+    const int64_t C  = (inArg1 >> 32);
+    const uint64_t B = (inArg0 & 0xFFFFFFFF);
 
-    uint64_t D = (inArg1 & 0xFFFFFFFF);
+    const uint64_t D = (inArg1 & 0xFFFFFFFF);
 
-    int64_t AC    = A * C;
-    int64_t AD_CB = A * D + C * B;
-    uint64_t BD   = B * D;
+    const int64_t AC    = A * C;
+    const int64_t AD_CB = A * D + C * B;
+    const uint64_t BD   = B * D;
 
     int64_t product_hi = AC + (AD_CB >> 32);
 
     // Handle carry from lower 64 bits to upper part of result.
-    uint64_t ad_cb_temp = AD_CB << 32;
-    uint64_t product_lo = BD + ad_cb_temp;
+    const uint64_t ad_cb_temp = AD_CB << 32;
+    uint64_t product_lo       = BD + ad_cb_temp;
     if (product_lo < BD)
         product_hi++;
 
@@ -101,7 +101,7 @@ fix32_t fix32_mul(fix32_t inArg0, fix32_t inArg1) {
     // achieves proper rounding to result-1, except in the corner
     // case of negative numbers and lowest word = 0x80000000.
     // To handle that, we also have to subtract 1 for negative numbers.
-    uint64_t product_lo_tmp = product_lo;
+    const uint64_t product_lo_tmp = product_lo;
     product_lo -= 0x80000000;
     product_lo -= (uint64_t)product_hi >> 63;
     if (product_lo > product_lo_tmp)
@@ -120,7 +120,7 @@ fix32_t fix32_mul(fix32_t inArg0, fix32_t inArg1) {
 #ifndef FIXMATH_NO_OVERFLOW
 /* Wrapper around fix32_mul to add saturating arithmetic. */
 fix32_t fix32_smul(fix32_t inArg0, fix32_t inArg1) {
-    fix32_t result = fix32_mul(inArg0, inArg1);
+    const fix32_t result = fix32_mul(inArg0, inArg1);
 
     if (result == fix32_overflow) {
         if ((inArg0 >= 0) == (inArg1 >= 0))
@@ -172,27 +172,27 @@ fix32_t fix32_div(fix32_t a, fix32_t b) {
     // This improves speed in the worst-case scenarios where N and D are large
     // It gets a lower estimate for the result by N/(D >> 33 + 1).
     if (divider & 0xFFFFFFF000000000ULL) {
-        uint64_t shifted_div = ((divider >> 33) + 1);
-        quotient             = remainder / shifted_div;
+        const uint64_t shifted_div = ((divider >> 33) + 1);
+        quotient                   = remainder / shifted_div;
 
         // Implement this:		remainder -= ((uint128_t)quotient * divider) >> 33;
 
-        int64_t A = (quotient >> 32);
+        const int64_t A = (quotient >> 32);
 
-        int64_t C  = (divider >> 32);
-        uint64_t B = (quotient & 0xFFFFFFFF);
+        const int64_t C  = (divider >> 32);
+        const uint64_t B = (quotient & 0xFFFFFFFF);
 
-        uint64_t D = (divider & 0xFFFFFFFF);
+        const uint64_t D = (divider & 0xFFFFFFFF);
 
-        int64_t AC    = A * C;
-        int64_t AD_CB = A * D + C * B;
-        uint64_t BD   = B * D;
+        const int64_t AC    = A * C;
+        const int64_t AD_CB = A * D + C * B;
+        const uint64_t BD   = B * D;
 
         int64_t product_hi = AC + (AD_CB >> 32);
 
         // Handle carry from lower 64 bits to upper part of result.
-        uint64_t ad_cb_temp = (uint64_t)AD_CB << 32u;
-        uint64_t product_lo = BD + ad_cb_temp;
+        const uint64_t ad_cb_temp = (uint64_t)AD_CB << 32u;
+        const uint64_t product_lo = BD + ad_cb_temp;
         if (product_lo < BD)
             product_hi++;
 
@@ -249,7 +249,7 @@ fix32_t fix32_div(fix32_t a, fix32_t b) {
 #ifndef FIXMATH_NO_OVERFLOW
 /* Wrapper around fix32_div to add saturating arithmetic. */
 fix32_t fix32_sdiv(fix32_t inArg0, fix32_t inArg1) {
-    fix32_t result = fix32_div(inArg0, inArg1);
+    const fix32_t result = fix32_div(inArg0, inArg1);
 
     if (result == fix32_overflow) {
         if ((inArg0 >= 0) == (inArg1 >= 0))

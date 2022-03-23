@@ -125,7 +125,7 @@ public:
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
     [[nodiscard]] bool isGroundUnitLimitReached() const {
-        int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+        const int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
         return (numGroundUnit + (numItem[Unit_Soldier] + 2) / 3 + (numItem[Unit_Trooper] + 2) / 3 >= maxUnits);
     }
 

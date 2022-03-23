@@ -69,7 +69,7 @@ void INIMapEditorLoader::loadMap() {
     pMapEditor->mapInfo.techLevel = inifile->getIntValue("BASIC", "TechLevel", 0);
 
     if (version < 2) {
-        int mapscale = inifile->getIntValue("BASIC", "MapScale", 0);
+        const int mapscale = inifile->getIntValue("BASIC", "MapScale", 0);
 
         pMapEditor->mapInfo.mapSeed = inifile->getIntValue("MAP", "Seed", 0);
 
@@ -105,16 +105,16 @@ void INIMapEditorLoader::loadMap() {
         logicalSizeX = 64;
         logicalSizeY = 64;
 
-        int cursorPos                   = inifile->getIntValue("BASIC", "CursorPos", 0);
+        const int cursorPos             = inifile->getIntValue("BASIC", "CursorPos", 0);
         pMapEditor->mapInfo.cursorPos   = Coord(getXPos(cursorPos), getYPos(cursorPos));
-        int tacticalPos                 = inifile->getIntValue("BASIC", "TacticalPos", 0);
+        const int tacticalPos           = inifile->getIntValue("BASIC", "TacticalPos", 0);
         pMapEditor->mapInfo.tacticalPos = Coord(getXPos(tacticalPos), getYPos(tacticalPos));
 
         // field, spice bloom and special bloom
 
-        std::string BloomString = inifile->getStringValue("MAP", "Bloom");
+        const std::string BloomString = inifile->getStringValue("MAP", "Bloom");
         if (!BloomString.empty()) {
-            std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
+            const std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
 
             for (auto& BloomPosition : BloomPositions) {
                 // set bloom
@@ -129,9 +129,9 @@ void INIMapEditorLoader::loadMap() {
             }
         }
 
-        std::string SpecialString = inifile->getStringValue("MAP", "Special");
+        const std::string SpecialString = inifile->getStringValue("MAP", "Special");
         if (!SpecialString.empty()) {
-            std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
+            const std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
 
             for (auto& SpecialPosition : SpecialPositions) {
                 // set special
@@ -146,9 +146,9 @@ void INIMapEditorLoader::loadMap() {
             }
         }
 
-        std::string FieldString = inifile->getStringValue("MAP", "Field");
+        const std::string FieldString = inifile->getStringValue("MAP", "Field");
         if (!FieldString.empty()) {
-            std::vector<std::string> FieldPositions = splitStringToStringVector(FieldString);
+            const std::vector<std::string> FieldPositions = splitStringToStringVector(FieldString);
 
             for (auto& FieldPosition : FieldPositions) {
                 // set bloom
@@ -170,8 +170,8 @@ void INIMapEditorLoader::loadMap() {
         pMapEditor->mapInfo.tacticalPos = Coord::Invalid();
         pMapEditor->mapInfo.mapSeed     = INVALID;
 
-        int sizeX = inifile->getIntValue("MAP", "SizeX", 0);
-        int sizeY = inifile->getIntValue("MAP", "SizeY", 0);
+        const int sizeX = inifile->getIntValue("MAP", "SizeX", 0);
+        const int sizeY = inifile->getIntValue("MAP", "SizeY", 0);
 
         pMapEditor->map = MapData(sizeX, sizeY);
 

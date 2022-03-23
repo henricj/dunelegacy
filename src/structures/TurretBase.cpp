@@ -69,8 +69,8 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
         if (!canAttack(target.getObjPointer()) || !targetInWeaponRange()) {
             setTarget(nullptr);
         } else if (targetInWeaponRange()) {
-            Coord closestPoint     = target.getObjPointer()->getClosestPoint(location);
-            const auto wantedAngle = destinationDrawnAngle(location, closestPoint);
+            const Coord closestPoint = target.getObjPointer()->getClosestPoint(location);
+            const auto wantedAngle   = destinationDrawnAngle(location, closestPoint);
 
             if (angle != static_cast<int>(wantedAngle)) {
                 // turn
@@ -118,8 +118,8 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
 void TurretBase::handleActionCommand(const GameContext& context, int xPos, int yPos) {
     auto& [game, map, objectManager] = context;
 
-    if (auto* tile = map.tryGetTile(xPos, yPos)) {
-        ObjectBase* tempTarget = tile->getObject(objectManager);
+    if (const auto* tile = map.tryGetTile(xPos, yPos)) {
+        const ObjectBase* tempTarget = tile->getObject(objectManager);
         game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,
                                                     objectID, tempTarget->getObjectID()));
     }

@@ -43,8 +43,8 @@
 CampaignStatsMenu::CampaignStatsMenu(int level) {
     calculateScore(level);
 
-    Uint32 colorYou   = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 1]);
-    Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
+    const Uint32 colorYou   = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 1]);
+    const Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window
     const auto* pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
@@ -231,8 +231,8 @@ void CampaignStatsMenu::drawSpecificStuff() {
 void CampaignStatsMenu::doState(int elapsedTime) {
     switch (currentState) {
         case State_HumanSpice: {
-            float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
-            float SpiceComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
+            const float SpiceComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentSpiceComplete = NAN;
             if (SpiceComplete < spiceHarvestedByHuman / MaxSpiceHarvested) {
@@ -260,8 +260,8 @@ void CampaignStatsMenu::doState(int elapsedTime) {
         } break;
 
         case State_AISpice: {
-            float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
-            float SpiceComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
+            const float SpiceComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentSpiceComplete = NAN;
             if (SpiceComplete < spiceHarvestedByAI / MaxSpiceHarvested) {
@@ -289,8 +289,8 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_HumanUnits: {
-            float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
-            float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            const float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentUnitsComplete = NAN;
             if (UnitsComplete < unitsDestroyedByHuman / MaxUnitsDestroyed) {
@@ -318,8 +318,8 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_AIUnits: {
-            float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
-            float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxUnitsDestroyed = (float)max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
+            const float UnitsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentUnitsComplete = NAN;
             if (UnitsComplete < unitsDestroyedByAI / MaxUnitsDestroyed) {
@@ -347,8 +347,8 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_HumanBuildings: {
-            float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
-            float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByHuman / MaxBuildingsDestroyed) {
@@ -376,8 +376,8 @@ void CampaignStatsMenu::doState(int elapsedTime) {
             break;
 
         case State_AIBuildings: {
-            float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
-            float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
+            const float MaxBuildingsDestroyed = (float)max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
+            const float BuildingsComplete     = std::min(elapsedTime / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentBuildingsComplete = NAN;
             if (BuildingsComplete < structuresDestroyedByAI / MaxBuildingsDestroyed) {

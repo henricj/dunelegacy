@@ -198,8 +198,8 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
 
     players.push_back(std::move(newPlayer));
 
-    auto newPlayerID     = static_cast<uint8_t>((static_cast<uint8_t>(houseID) << 4) | players.size());
-    pNewPlayer->playerID = newPlayerID;
+    const auto newPlayerID = static_cast<uint8_t>((static_cast<uint8_t>(houseID) << 4) | players.size());
+    pNewPlayer->playerID   = newPlayerID;
 
     context.game.registerPlayer(pNewPlayer);
 }
@@ -330,7 +330,7 @@ void House::update() {
 
     choam.update(context);
 
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->update();
     }
 }
@@ -361,7 +361,7 @@ void House::decrementUnits(ItemID_enum itemID) {
         numItem[itemID]--;
     }
 
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->onDecrementUnits(itemID);
     }
 
@@ -423,13 +423,13 @@ void House::decrementStructures(ItemID_enum itemID, const Coord& location) {
     if (!isAlive())
         lose();
 
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->onDecrementStructures(itemID, location);
     }
 }
 
 void House::noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damagerID) {
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->onDamage(pObject, damage, damagerID);
     }
 }
@@ -439,7 +439,7 @@ void House::noteDamageLocation(ObjectBase* pObject, int damage, uint32_t damager
     \param pObject   the object that was built
 */
 void House::informWasBuilt(ObjectBase* pObject) {
-    auto itemID = pObject->getItemID();
+    const auto itemID = pObject->getItemID();
     if (pObject->isAStructure()) {
         structureBuiltValue += context.game.objectData.data[itemID][static_cast<int>(houseID)].price;
         numBuiltStructures++;
@@ -450,7 +450,7 @@ void House::informWasBuilt(ObjectBase* pObject) {
 
     numItemBuilt[itemID]++;
 
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->onObjectWasBuilt(pObject);
     }
 }
@@ -474,7 +474,7 @@ void House::informHasKilled(ItemID_enum itemID) {
 
     numItemKills[itemID]++;
 
-    for (auto& pPlayer : players) {
+    for (const auto& pPlayer : players) {
         pPlayer->onIncrementUnitKills(itemID);
     }
 }
@@ -763,7 +763,7 @@ UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenar
     if (!newUnit)
         return nullptr;
 
-    Coord pos = Coord(xPos, yPos);
+    const Coord pos = Coord(xPos, yPos);
     if (newUnit->canPass(xPos, yPos)) {
         newUnit->deploy(context, pos);
     } else {
@@ -804,7 +804,7 @@ Coord House::getStrongestUnitPosition() const {
     int32_t strongestUnitCost   = 0;
     for (const UnitBase* pUnit : unitList) {
         if (pUnit->getOwner() == this) {
-            int32_t currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
+            const int32_t currentCost = context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
 
             if (currentCost > strongestUnitCost) {
                 strongestUnitPosition = pUnit->getLocation();

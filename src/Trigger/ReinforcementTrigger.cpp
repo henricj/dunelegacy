@@ -143,9 +143,9 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
             switch (dropLocation) {
                 case DropLocation::Drop_Air: {
-                    int x     = game.randomGen.rand(0, map.getSizeX() - 1);
-                    int y     = game.randomGen.rand(0, map.getSizeY() - 1);
-                    dropCoord = Coord(x, y);
+                    const int x = game.randomGen.rand(0, map.getSizeX() - 1);
+                    const int y = game.randomGen.rand(0, map.getSizeY() - 1);
+                    dropCoord   = Coord(x, y);
                 } break;
 
                 case DropLocation::Drop_Visible: {
@@ -153,7 +153,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                 } break;
 
                 case DropLocation::Drop_Enemybase: {
-                    if (auto* pHouse = game.house_find_if([&](auto& house) {
+                    if (const auto* pHouse = game.house_find_if([&](auto& house) {
                             return house.getNumStructures() != 0 && house.getTeamID() != 0 &&
                                    house.getTeamID() != dropHouse->getTeamID();
                         })) {
@@ -162,7 +162,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                     if (dropCoord.isInvalid()) {
                         // no house with structures found => search for units
-                        if (auto* pHouse = game.house_find_if([&](auto& house) {
+                        if (const auto* pHouse = game.house_find_if([&](auto& house) {
                                 return house.getNumUnits() != 0 && house.getTeamID() != 0 &&
                                        house.getTeamID() != dropHouse->getTeamID();
                             })) {
@@ -172,9 +172,9 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                     if (dropCoord.isInvalid()) {
                         // no house with units or structures found => random position
-                        int x     = game.randomGen.rand(0, map.getSizeX() - 1);
-                        int y     = game.randomGen.rand(0, map.getSizeY() - 1);
-                        dropCoord = Coord(x, y);
+                        const int x = game.randomGen.rand(0, map.getSizeX() - 1);
+                        const int y = game.randomGen.rand(0, map.getSizeY() - 1);
+                        dropCoord   = Coord(x, y);
                     }
 
                 } break;
@@ -189,9 +189,9 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                             dropCoord = dropHouse->getStrongestUnitPosition();
                         } else {
                             // house has no units => random position
-                            int x     = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                            int y     = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
-                            dropCoord = Coord(x, y);
+                            const int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
+                            const int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                            dropCoord   = Coord(x, y);
                         }
                     }
                 } break;
@@ -217,7 +217,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                     auto* carryall = dropHouse->createUnit<Carryall>();
                     carryall->setOwned(false);
 
-                    for (auto itemID2Drop : droppedUnits) {
+                    for (const auto itemID2Drop : droppedUnits) {
                         auto* pUnit2Drop = dropHouse->createUnit(itemID2Drop);
                         pUnit2Drop->setActive(false);
                         carryall->giveCargo(context, pUnit2Drop);

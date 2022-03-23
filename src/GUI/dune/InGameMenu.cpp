@@ -126,8 +126,8 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 void InGameMenu::onChildWindowClose(Window* pChildWindow) {
     auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if (pLoadSaveWindow != nullptr) {
-        auto FileName = pLoadSaveWindow->getFilename();
-        bool bSave    = pLoadSaveWindow->isSaveWindow();
+        auto FileName    = pLoadSaveWindow->getFilename();
+        const bool bSave = pLoadSaveWindow->isSaveWindow();
 
         if (!FileName.empty()) {
             if (!bSave) {
