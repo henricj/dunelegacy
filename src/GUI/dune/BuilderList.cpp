@@ -102,7 +102,7 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
             assert(pBuilder);
             if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
                 && (pBuilder->isWaitingToPlace())) {
-                soundPlayer->playSound(Sound_ButtonClick);
+                soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 if (currentGame->currentCursorMode == Game::CursorMode_Placing) {
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
                 } else {
@@ -110,11 +110,11 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
                 }
             } else if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
                        && (pBuilder->isOnHold())) {
-                soundPlayer->playSound(Sound_ButtonClick);
+                soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(false);
             } else {
                 if (getItemIDFromIndex(mouseLeftButton) != ItemID_Invalid) {
-                    soundPlayer->playSound(Sound_ButtonClick);
+                    soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                     pBuilder->handleProduceItemClick(getItemIDFromIndex(mouseLeftButton),
                                                      SDL_GetModState() & KMOD_SHIFT);
                 }
@@ -148,11 +148,11 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
             assert(pBuilder);
             if ((getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
                 && (!pBuilder->isOnHold())) {
-                soundPlayer->playSound(Sound_ButtonClick);
+                soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(true);
             } else {
                 if (getItemIDFromIndex(mouseRightButton) != ItemID_Invalid) {
-                    soundPlayer->playSound(Sound_ButtonClick);
+                    soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                     pBuilder->handleCancelItemClick(getItemIDFromIndex(mouseRightButton),
                                                     SDL_GetModState() & KMOD_SHIFT);
                 }

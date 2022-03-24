@@ -92,7 +92,7 @@ void Launcher::destroy(const GameContext& context) {
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     parent::destroy(context);
@@ -105,5 +105,5 @@ bool Launcher::canAttack(const ObjectBase* object) const {
 }
 
 void Launcher::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Rocket, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
 }

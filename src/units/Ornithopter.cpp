@@ -105,7 +105,7 @@ void Ornithopter::destroy(const GameContext& context) {
 }
 
 void Ornithopter::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Rocket, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
 }
 
 bool Ornithopter::canPassTile(const Tile* pTile) const {

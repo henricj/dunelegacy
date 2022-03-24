@@ -48,7 +48,7 @@ void RocketTurret::init() {
     assert(itemID == Structure_RocketTurret);
     owner->incrementStructures(itemID);
 
-    attackSound = Sound_Rocket;
+    attackSound = Sound_enum::Sound_Rocket;
 
     graphicID    = ObjPic_RocketTurret;
     graphic      = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
@@ -95,7 +95,7 @@ void RocketTurret::attack(const GameContext& context) {
                            false, pObject);
 
             map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
-            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
             weaponTimer = turret_data.weaponreloadtime;
         }
     } else {

@@ -1862,7 +1862,7 @@ void Game::setGameWon() {
         won               = true;
         finished          = true;
         finishedLevelTime = SDL_GetTicks();
-        soundPlayer->playVoice(YourMissionIsComplete, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::YourMissionIsComplete, pLocalHouse->getHouseID());
     }
 }
 
@@ -1871,7 +1871,7 @@ void Game::setGameLost() {
         won               = false;
         finished          = true;
         finishedLevelTime = SDL_GetTicks();
-        soundPlayer->playVoice(YouHaveFailedYourMission, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }
 
@@ -2380,7 +2380,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
     if (placeItem == ItemID_Invalid) {
         // We lost a race with another team member
         currentGame->addToNewsTicker(_("There is no item to place."));
-        soundPlayer->playSound(Sound_InvalidAction); // can't place noise
+        soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
         currentCursorMode = CursorMode_Normal;
         return true;
     }
@@ -2394,13 +2394,13 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
                                                    pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
-            soundPlayer->playSound(Sound_PlaceStructure);
+            soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
         }
         // the user has tried to place but clicked on impossible point
         currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-        soundPlayer->playSound(Sound_InvalidAction); // can't place noise
+        soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
         return false;
     }
     if (placeItem == Structure_Slab4) {
@@ -2419,26 +2419,26 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
             getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
                                                    pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
-            soundPlayer->playSound(Sound_PlaceStructure);
+            soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
             return true;
         }
         // the user has tried to place but clicked on impossible point
         currentGame->addToNewsTicker(_("@DUNE.ENG|135#Cannot place slab here."));
-        soundPlayer->playSound(Sound_InvalidAction); // can't place noise
+        soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
         return false;
     }
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
         getCommandManager().addCommand(
             Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
         // the user has tried to place and has been successful
-        soundPlayer->playSound(Sound_PlaceStructure);
+        soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
         currentCursorMode = CursorMode_Normal;
         return true;
     }
     // the user has tried to place but clicked on impossible point
     currentGame->addToNewsTicker(fmt::sprintf(_("@DUNE.ENG|134#Cannot place %%s here."), resolveItemName(placeItem)));
-    soundPlayer->playSound(Sound_InvalidAction); // can't place noise
+    soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
 
     // is this building area only blocked by units?
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {

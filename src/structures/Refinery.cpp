@@ -124,7 +124,7 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
 
     if (firstRun) {
         if (getOwner() == pLocalHouse) {
-            soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
         }
     }
 

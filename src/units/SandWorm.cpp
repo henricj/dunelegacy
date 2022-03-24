@@ -116,7 +116,7 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
 bool Sandworm::attack(const GameContext& context) {
     if (primaryWeaponTimer == 0) {
         if (target) {
-            soundPlayer->playSoundAt(Sound_WormAttack, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
             drawnFrame         = 0;
             attackFrameTimer   = SANDWORM_ATTACKFRAMETIME;
             primaryWeaponTimer = getWeaponReloadTime();
@@ -194,7 +194,7 @@ void Sandworm::checkPos(const GameContext& context) {
         const auto* const infantry = context.map.tryGetInfantry(context, location.x, location.y);
 
         if (infantry && infantry->getOwner() == pLocalHouse) {
-            soundPlayer->playVoice(SomethingUnderTheSand, infantry->getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::SomethingUnderTheSand, infantry->getOwner()->getHouseID());
         }
     }
 }
@@ -287,7 +287,7 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
 
     if ((newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
         && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0)) {
-        soundPlayer->playVoice(WarningWormSign, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::WarningWormSign, pLocalHouse->getHouseID());
         warningWormSignPlayedFlags |= (1 << static_cast<int>(pLocalHouse->getHouseID()));
     }
 }
@@ -443,5 +443,5 @@ ANGLETYPE Sandworm::getCurrentAttackAngle() const {
 }
 
 void Sandworm::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_WormAttack, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
 }

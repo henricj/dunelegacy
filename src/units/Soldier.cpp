@@ -67,5 +67,5 @@ bool Soldier::canAttack(const ObjectBase* object) const {
 }
 
 void Soldier::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Gun, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_Gun, location);
 }

@@ -809,10 +809,10 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
         return;
 
     // a spice bloom
-    soundPlayer->playSoundAt(Sound_Bloom, getLocation());
+    soundPlayer->playSoundAt(Sound_enum::Sound_Bloom, getLocation());
     screenborder->shakeScreen(18);
     if (pTrigger == pLocalHouse) {
-        soundPlayer->playVoice(BloomLocated, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::BloomLocated, pLocalHouse->getHouseID());
     }
 
     setType(context, Terrain_Spice); // Set this tile to spice first

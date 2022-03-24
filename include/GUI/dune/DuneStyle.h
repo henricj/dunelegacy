@@ -243,14 +243,14 @@ public:
     unsigned int getTextWidth(std::string_view text, unsigned int FontNum) override;
 
 public:
-    static const Uint32 defaultForegroundColor = COLOR_RGB(125, 0, 0);
-    static const Uint32 defaultShadowColor     = COLOR_LIGHTYELLOW;
+    static constexpr Uint32 defaultForegroundColor = COLOR_RGB(125, 0, 0);
+    static constexpr Uint32 defaultShadowColor     = COLOR_LIGHTYELLOW;
 
-    static const Uint32 buttonBackgroundColor        = COLOR_RGB(202, 141, 16);
-    static const Uint32 pressedButtonBackgroundColor = COLOR_RGB(182, 125, 12);
-    static const Uint32 buttonBorderColor            = COLOR_RGB(60, 36, 0);
-    static const Uint32 buttonEdgeBottomRightColor   = COLOR_RGB(153, 105, 0);
-    static const Uint32 buttonEdgeTopLeftColor       = COLOR_RGB(255, 190, 76);
+    static constexpr Uint32 buttonBackgroundColor        = COLOR_RGB(202, 141, 16);
+    static constexpr Uint32 pressedButtonBackgroundColor = COLOR_RGB(182, 125, 12);
+    static constexpr Uint32 buttonBorderColor            = COLOR_RGB(60, 36, 0);
+    static constexpr Uint32 buttonEdgeBottomRightColor   = COLOR_RGB(153, 105, 0);
+    static constexpr Uint32 buttonEdgeTopLeftColor       = COLOR_RGB(255, 190, 76);
 
 private:
     /**

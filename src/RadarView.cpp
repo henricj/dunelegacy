@@ -177,13 +177,13 @@ void RadarView::update() {
 }
 
 void RadarView::switchRadarMode(bool bOn) {
-    soundPlayer->playSound(Sound_RadarNoise);
+    soundPlayer->playSound(Sound_enum::Sound_RadarNoise);
 
     if (bOn) {
-        soundPlayer->playVoice(RadarActivated, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::RadarActivated, pLocalHouse->getHouseID());
         currentRadarMode = RadarMode::AnimationRadarOn;
     } else {
-        soundPlayer->playVoice(RadarDeactivated, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::RadarDeactivated, pLocalHouse->getHouseID());
         currentRadarMode = RadarMode::AnimationRadarOff;
     }
 }

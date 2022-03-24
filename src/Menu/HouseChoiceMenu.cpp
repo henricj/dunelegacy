@@ -75,9 +75,9 @@ void HouseChoiceMenu::onHouseButton(int button) {
 
     // clang-format off
     switch(selectedHouse) {
-        case HOUSETYPE::HOUSE_HARKONNEN:    soundPlayer->playVoice(HouseHarkonnen, selectedHouse); break;
-        case HOUSETYPE::HOUSE_ATREIDES:     soundPlayer->playVoice(HouseAtreides, selectedHouse); break;
-        case HOUSETYPE::HOUSE_ORDOS:        soundPlayer->playVoice(HouseOrdos, selectedHouse); break;
+        case HOUSETYPE::HOUSE_HARKONNEN:    soundPlayer->playVoice(Voice_enum::HouseHarkonnen, selectedHouse); break;
+        case HOUSETYPE::HOUSE_ATREIDES:     soundPlayer->playVoice(Voice_enum::HouseAtreides, selectedHouse); break;
+        case HOUSETYPE::HOUSE_ORDOS:        soundPlayer->playVoice(Voice_enum::HouseOrdos, selectedHouse); break;
         default:                /* no sounds for the other houses avail.*/  break;
     }
     // clang-format on

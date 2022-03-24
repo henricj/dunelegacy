@@ -47,7 +47,7 @@ TurretBase::TurretBase(const TurretBaseConstants& constants, uint32_t objectID,
 }
 
 void TurretBase::init() {
-    attackSound = Sound_Gun;
+    attackSound = Sound_enum::Sound_Gun;
 
     attackMode = AREAGUARD;
 }

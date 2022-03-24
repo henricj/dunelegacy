@@ -200,7 +200,7 @@ void Carryall::checkPos(const GameContext& context) {
 }
 
 void Carryall::pre_deployUnits(const GameContext& context) {
-    soundPlayer->playSoundAt(Sound_Drop, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
 
     currentMaxSpeed = 0;
     setSpeeds(context);

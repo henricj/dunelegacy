@@ -54,7 +54,7 @@ void AirUnit::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_Medium2, position, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     UnitBase::destroy(context);

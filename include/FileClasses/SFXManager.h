@@ -29,7 +29,7 @@
 #define NUM_MAPCHOICEARROWS 9
 
 // Voice
-typedef enum {
+enum class Voice_enum {
     HarvesterDeployed,
     UnitDeployed,
     UnitLaunched,
@@ -56,10 +56,10 @@ typedef enum {
     HouseAtreides,
     HouseOrdos,
     NUM_VOICE
-} Voice_enum;
+};
 
 // Sound
-typedef enum {
+enum class Sound_enum {
     Sound_PlaceStructure,
     Sound_ButtonClick,
     Sound_InvalidAction,
@@ -89,7 +89,7 @@ typedef enum {
     Sound_Sonic,
     Sound_RocketSmall,
     NUM_SOUNDCHUNK
-} Sound_enum;
+};
 
 class SFXManager final {
 public:
@@ -117,7 +117,7 @@ private:
     [[nodiscard]] Mix_Chunk* getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const;
 
     std::vector<sdl2::mix_chunk_ptr> lngVoice;
-    std::array<sdl2::mix_chunk_ptr, NUM_SOUNDCHUNK> soundChunk;
+    std::array<sdl2::mix_chunk_ptr, static_cast<int>(Sound_enum::NUM_SOUNDCHUNK)> soundChunk;
 };
 
 #endif // SFXMANAGER_H

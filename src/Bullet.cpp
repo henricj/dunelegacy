@@ -486,12 +486,12 @@ void Bullet::destroy(const GameContext& context) const {
     switch (bulletID) {
         case Bullet_DRocket: {
             map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            soundPlayer->playSoundAt(Sound_ExplosionGas, position);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionGas, position);
             game.addExplosion(Explosion_Gas, position, houseID);
         } break;
 
         case Bullet_LargeRocket: {
-            soundPlayer->playSoundAt(Sound_ExplosionLarge, position);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, position);
 
             for (auto i = 0; i < 5; i++) {
                 for (auto j = 0; j < 5; j++) {

@@ -120,7 +120,7 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
     repairUnit.pointTo(NONE_ID);
 
     if (getOwner() == pLocalHouse) {
-        soundPlayer->playVoice(VehicleRepaired, getOwner()->getHouseID());
+        soundPlayer->playVoice(Voice_enum::VehicleRepaired, getOwner()->getHouseID());
     }
 }
 

@@ -88,12 +88,12 @@ void Tank::destroy(const GameContext& context) {
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionMedium, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     TankBase::destroy(context);
 }
 
 void Tank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
 }

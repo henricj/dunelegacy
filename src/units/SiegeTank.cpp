@@ -95,7 +95,7 @@ void SiegeTank::destroy(const GameContext& context) {
 
         if (isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);
-            soundPlayer->playSoundAt(Sound_ExplosionLarge, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
         }
     }
 
@@ -103,5 +103,5 @@ void SiegeTank::destroy(const GameContext& context) {
 }
 
 void SiegeTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
 }

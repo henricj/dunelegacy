@@ -439,7 +439,7 @@ void StructureBase::destroy(const GameContext& context) {
     objectManager.removeObject(getObjectID());
 
     if (isVisible(pLocalHouse->getTeamID()))
-        soundPlayer->playSoundAt(Sound_ExplosionStructure, location);
+        soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location);
 }
 
 Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {

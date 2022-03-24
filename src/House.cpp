@@ -307,7 +307,8 @@ void House::update() {
     const auto credits = getCredits();
     if (oldCredits != credits) {
         if ((this == pLocalHouse) && (credits > 0)) {
-            soundPlayer->playSound(credits > oldCredits ? Sound_CreditsTick : Sound_CreditsTickDown);
+            soundPlayer->playSound(credits > oldCredits ? Sound_enum::Sound_CreditsTick
+                                                        : Sound_enum::Sound_CreditsTickDown);
         }
         oldCredits = credits;
     }

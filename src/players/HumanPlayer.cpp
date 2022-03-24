@@ -74,7 +74,7 @@ void HumanPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damag
     }
 
     if (pObject->isAStructure() && pObject->getOwner() == getHouse()) {
-        soundPlayer->playVoice(BaseIsUnderAttack, getHouse()->getHouseID());
+        soundPlayer->playVoice(Voice_enum::BaseIsUnderAttack, getHouse()->getHouseID());
         lastAttackNotificationCycle = getGameCycleCount();
     }
 }

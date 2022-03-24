@@ -91,7 +91,7 @@ void Frigate::checkPos(const GameContext& context) {
             setTarget(nullptr);
             setDestination(guardPoint);
             droppedOffCargo = true;
-            soundPlayer->playSoundAt(Sound_Drop, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
         }
     }
 }

@@ -129,11 +129,12 @@ void GroundUnit::checkPos(const GameContext& context) {
 }
 
 void GroundUnit::playConfirmSound() {
-    soundPlayer->playVoice(pGFXManager->random().getRandOf(Acknowledged, Affirmative), getOwner()->getHouseID());
+    soundPlayer->playVoice(pGFXManager->random().getRandOf(Voice_enum::Acknowledged, Voice_enum::Affirmative),
+                           getOwner()->getHouseID());
 }
 
 void GroundUnit::playSelectSound() {
-    soundPlayer->playVoice(Reporting, getOwner()->getHouseID());
+    soundPlayer->playVoice(Voice_enum::Reporting, getOwner()->getHouseID());
 }
 
 /**

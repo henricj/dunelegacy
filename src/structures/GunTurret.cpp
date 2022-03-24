@@ -43,7 +43,7 @@ void GunTurret::init() {
     assert(itemID == Structure_GunTurret);
     owner->incrementStructures(itemID);
 
-    attackSound = Sound_ExplosionSmall;
+    attackSound = Sound_enum::Sound_ExplosionSmall;
 
     graphicID    = ObjPic_GunTurret;
     graphic      = pGFXManager->getObjPic(ObjPic_GunTurret, getOwner()->getHouseID());

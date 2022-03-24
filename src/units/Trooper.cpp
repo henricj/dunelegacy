@@ -61,5 +61,5 @@ bool Trooper::canAttack(const ObjectBase* object) const {
 }
 
 void Trooper::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_RocketSmall, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_RocketSmall, location);
 }

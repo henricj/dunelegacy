@@ -347,7 +347,7 @@ void InfantryBase::destroy(const GameContext& context) {
                                       owner->getHouseID(), Coord(lround(realX), lround(realY)));
 
                 if (isVisible(getOwner()->getTeamID())) {
-                    soundPlayer->playSoundAt(Sound_Squashed, location);
+                    soundPlayer->playSoundAt(Sound_enum::Sound_Squashed, location);
                 }
             } else {
                 // this unit has captured a building
@@ -358,8 +358,9 @@ void InfantryBase::destroy(const GameContext& context) {
             pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), Coord(lround(realX), lround(realY)));
 
             if (isVisible(getOwner()->getTeamID())) {
-                const auto sound_id = pGFXManager->random().getRandOf(Sound_Scream1, Sound_Scream2, Sound_Scream3,
-                                                                      Sound_Scream4, Sound_Scream5, Sound_Trumpet);
+                const auto sound_id = pGFXManager->random().getRandOf(
+                    Sound_enum::Sound_Scream1, Sound_enum::Sound_Scream2, Sound_enum::Sound_Scream3,
+                    Sound_enum::Sound_Scream4, Sound_enum::Sound_Scream5, Sound_enum::Sound_Trumpet);
                 soundPlayer->playSoundAt(sound_id, location);
             }
         }
@@ -507,9 +508,10 @@ void InfantryBase::squash(const GameContext& context) {
 }
 
 void InfantryBase::playConfirmSound() {
-    soundPlayer->playVoice(pGFXManager->random().getRandOf(MovingOut, InfantryOut), getOwner()->getHouseID());
+    soundPlayer->playVoice(pGFXManager->random().getRandOf(Voice_enum::MovingOut, Voice_enum::InfantryOut),
+                           getOwner()->getHouseID());
 }
 
 void InfantryBase::playSelectSound() {
-    soundPlayer->playVoice(YesSir, getOwner()->getHouseID());
+    soundPlayer->playVoice(Voice_enum::YesSir, getOwner()->getHouseID());
 }

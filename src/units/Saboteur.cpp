@@ -128,7 +128,7 @@ void Saboteur::destroy(const GameContext& context) {
     context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
     if (isVisible(getOwner()->getTeamID())) {
-        soundPlayer->playSoundAt(Sound_ExplosionLarge, location);
+        soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
     }
 
     parent::destroy(context);

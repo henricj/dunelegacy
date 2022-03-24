@@ -100,7 +100,7 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     const auto numAvailable = choam.getNumAvailable(itemID);
 
     if (numAvailable <= 0) {
-        soundPlayer->playSound(Sound_InvalidAction);
+        soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
         currentGame->addToNewsTicker(_("This unit is sold out"));
         return;
     }
@@ -108,7 +108,7 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     for (const auto& buildItem : buildList) {
         if (buildItem.itemID == itemID) {
             if ((owner->getCredits() < static_cast<int>(buildItem.price))) {
-                soundPlayer->playSound(Sound_InvalidAction);
+                soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
             }
@@ -262,7 +262,7 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
             currentProducedItem = ItemID_Invalid;
 
             if (getOwner() == pLocalHouse) {
-                soundPlayer->playVoice(FrigateHasArrived, getOwner()->getHouseID());
+                soundPlayer->playVoice(Voice_enum::FrigateHasArrived, getOwner()->getHouseID());
                 context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
             }
         }
@@ -310,11 +310,11 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 
                         if (getOwner() == pLocalHouse) {
                             if (isFlyingUnit(newUnitItemID)) {
-                                soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
+                                soundPlayer->playVoice(Voice_enum::UnitLaunched, getOwner()->getHouseID());
                             } else if (newUnitItemID == Unit_Harvester) {
-                                soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
+                                soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
                             } else {
-                                soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
+                                soundPlayer->playVoice(Voice_enum::UnitDeployed, getOwner()->getHouseID());
                             }
                         }
 

@@ -348,13 +348,13 @@ void BuilderBase::setWaitingToPlace() {
 
     if (owner == pLocalHouse) {
         if (isStructure(currentProducedItem)) {
-            soundPlayer->playVoice(ConstructionComplete, getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::ConstructionComplete, getOwner()->getHouseID());
         } else if (isFlyingUnit(currentProducedItem)) {
-            soundPlayer->playVoice(UnitLaunched, getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::UnitLaunched, getOwner()->getHouseID());
         } else if (currentProducedItem == Unit_Harvester) {
-            soundPlayer->playVoice(HarvesterDeployed, getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
         } else {
-            soundPlayer->playVoice(UnitDeployed, getOwner()->getHouseID());
+            soundPlayer->playVoice(Voice_enum::UnitDeployed, getOwner()->getHouseID());
         }
     }
 
@@ -487,7 +487,7 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
             if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace && (itemID == Structure_Palace)
                 && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
                 // only one palace allowed
-                soundPlayer->playSound(Sound_InvalidAction);
+                soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
                 return;
             }
         }

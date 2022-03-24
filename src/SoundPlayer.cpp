@@ -59,10 +59,14 @@ void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
     if (!soundOn || !pSFXManager)
         return;
 
+    const auto voice_index = static_cast<int>(id);
+    if (voice_index < 0 || voice_index >= static_cast<int>(Voice_enum::NUM_VOICE))
+        THROW(std::invalid_argument, "The voice ID %d is invalid!", voice_index);
+
     Mix_Chunk* tmp = nullptr;
 
     if ((tmp = pSFXManager->getVoice(id, houseID)) == nullptr) {
-        THROW(std::invalid_argument, "There is no voice with ID %d!", id);
+        THROW(std::invalid_argument, "There is no voice with ID %d!", voice_index);
     }
 
     const auto channel = Mix_PlayChannel(Mix_GroupAvailable(static_cast<int>(ChannelGroup::Voice)), tmp, 0);
@@ -116,8 +120,12 @@ void SoundPlayer::playSound(Sound_enum id) const {
 }
 
 void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
-    if (!soundOn || !pSFXManager || soundID < 0 || soundID >= NUM_SOUNDCHUNK)
+    if (!soundOn || !pSFXManager)
         return;
+
+    const auto sound_index = static_cast<int>(soundID);
+    if (sound_index < 0 || sound_index >= static_cast<int>(Sound_enum::NUM_SOUNDCHUNK))
+        THROW(std::invalid_argument, "The sound ID %d is invalid!", sound_index);
 
     static constexpr ChannelGroup soundID2ChannelGroup[] = {
         ChannelGroup::UI,                 // Sound_PlaceStructure
@@ -150,15 +158,14 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
         ChannelGroup::Rocket,             // Sound_RocketSmall
     };
 
-    static_assert(NUM_SOUNDCHUNK == std::size(soundID2ChannelGroup));
+    static_assert(static_cast<size_t>(Sound_enum::NUM_SOUNDCHUNK) == std::size(soundID2ChannelGroup));
 
     Mix_Chunk* sound = nullptr;
 
-    if ((sound = pSFXManager->getSound(soundID)) == nullptr) {
-        THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
-    }
+    if ((sound = pSFXManager->getSound(soundID)) == nullptr)
+        THROW(std::invalid_argument, "There is no sound with ID %d!", sound_index);
 
-    const auto group = static_cast<int>(soundID2ChannelGroup[soundID]);
+    const auto group = static_cast<int>(soundID2ChannelGroup[sound_index]);
 
     const auto channel = Mix_GroupAvailable(group);
     const auto actual  = Mix_PlayChannel(channel, sound, 0);

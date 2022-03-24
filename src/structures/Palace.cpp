@@ -159,11 +159,11 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
 
     context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
                            nullptr);
-    soundPlayer->playSoundAt(Sound_Rocket, getLocation());
+    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, getLocation());
 
     if (getOwner() != pLocalHouse) {
         context.game.addToNewsTicker(_("@DUNE.ENG|81#Missile is approaching"));
-        soundPlayer->playVoice(MissileApproaching, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::MissileApproaching, pLocalHouse->getHouseID());
     }
 
     specialWeaponTimer = getMaxSpecialWeaponTimer();
@@ -271,7 +271,7 @@ bool Palace::spawnSaboteur(const GameContext& context) {
     if (getOwner()->isAI()) {
         saboteur->doSetAttackMode(context, HUNT);
         context.game.addToNewsTicker(_("@DUNE.ENG|79#Saboteur is approaching"));
-        soundPlayer->playVoice(SaboteurApproaching, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::SaboteurApproaching, pLocalHouse->getHouseID());
     }
 
     return true;

@@ -61,12 +61,12 @@ void RaiderTrike::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
     GroundUnit::destroy(context);
 }
 
 void RaiderTrike::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_MachineGun, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location);
 }

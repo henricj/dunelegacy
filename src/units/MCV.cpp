@@ -104,7 +104,7 @@ void MCV::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
     GroundUnit::destroy(context);

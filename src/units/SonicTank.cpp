@@ -91,7 +91,7 @@ void SonicTank::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_ExplosionSmall, location);
+            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
     parent::destroy(context);
@@ -109,5 +109,5 @@ bool SonicTank::canAttack(const ObjectBase* object) const {
 }
 
 void SonicTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_Sonic, location);
+    soundPlayer->playSoundAt(Sound_enum::Sound_Sonic, location);
 }
