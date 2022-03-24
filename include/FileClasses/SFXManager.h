@@ -101,8 +101,8 @@ public:
     SFXManager& operator=(const SFXManager&) = delete;
     SFXManager& operator=(SFXManager&&) = delete;
 
-    Mix_Chunk* getVoice(Voice_enum id, HOUSETYPE house);
-    Mix_Chunk* getSound(Sound_enum id);
+    Mix_Chunk* getVoice(Voice_enum id, HOUSETYPE house) const;
+    Mix_Chunk* getSound(Sound_enum id) const;
 
 private:
     [[nodiscard]] sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index,

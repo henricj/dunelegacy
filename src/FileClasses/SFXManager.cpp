@@ -53,14 +53,14 @@ SFXManager::SFXManager() {
 
 SFXManager::~SFXManager() = default;
 
-Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) {
+Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) const {
     if (settings.general.language == "de" || settings.general.language == "fr") {
         return getNonEnglishVoice(id, house);
     }
     return getEnglishVoice(id, house);
 }
 
-Mix_Chunk* SFXManager::getSound(Sound_enum id) {
+Mix_Chunk* SFXManager::getSound(Sound_enum id) const {
     if (id < 0 || id >= soundChunk.size())
         return nullptr;
 
