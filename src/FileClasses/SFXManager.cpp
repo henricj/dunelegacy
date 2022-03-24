@@ -61,7 +61,7 @@ Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) {
 }
 
 Mix_Chunk* SFXManager::getSound(Sound_enum id) {
-    if (id >= soundChunk.size())
+    if (id < 0 || id >= soundChunk.size())
         return nullptr;
 
     return soundChunk[id].get();

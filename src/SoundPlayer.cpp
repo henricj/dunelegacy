@@ -116,14 +116,15 @@ void SoundPlayer::playSound(Sound_enum id) const {
 }
 
 void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
-    if (!soundOn || !pSFXManager)
+    if (!soundOn || !pSFXManager || soundID < 0 || soundID >= NUM_SOUNDCHUNK)
         return;
 
-    static const ChannelGroup soundID2ChannelGroup[] = {
+    static constexpr ChannelGroup soundID2ChannelGroup[] = {
         ChannelGroup::UI,                 // Sound_PlaceStructure
         ChannelGroup::UI,                 // Sound_ButtonClick
         ChannelGroup::UI,                 // Sound_InvalidAction
         ChannelGroup::Credits,            // Sound_CreditsTick
+        ChannelGroup::Credits,            // Sound_CreditsTickDown
         ChannelGroup::Credits,            // Sound_Tick
         ChannelGroup::UI,                 // Sound_RadarNoise
         ChannelGroup::Explosion,          // Sound_ExplosionGas
@@ -149,15 +150,19 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
         ChannelGroup::Rocket,             // Sound_RocketSmall
     };
 
+    static_assert(NUM_SOUNDCHUNK == std::size(soundID2ChannelGroup));
+
     Mix_Chunk* sound = nullptr;
 
     if ((sound = pSFXManager->getSound(soundID)) == nullptr) {
         THROW(std::invalid_argument, "There is no sound with ID %d!", soundID);
     }
 
-    auto channel = Mix_GroupAvailable(static_cast<int>(soundID2ChannelGroup[soundID]));
-    channel      = Mix_PlayChannel(channel, sound, 0);
-    if (channel != -1) {
-        Mix_Volume(channel, volume);
+    const auto group = static_cast<int>(soundID2ChannelGroup[soundID]);
+
+    const auto channel = Mix_GroupAvailable(group);
+    const auto actual  = Mix_PlayChannel(channel, sound, 0);
+    if (actual != -1) {
+        Mix_Volume(actual, volume);
     }
 }
