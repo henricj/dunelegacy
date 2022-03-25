@@ -320,7 +320,7 @@ INIFile::INIFile(SDL_RWops* RWopsFile, bool bWhitespace) : bWhitespace(bWhitespa
 
 /// Destructor.
 /**
-    This is the destructor. Changes to the INI-Files are not automaticly saved. Call INIFile::SaveChangesTo() for that
+    This is the destructor. Changes to the INI-Files are not automatically saved. Call INIFile::SaveChangesTo() for that
    purpose.
 */
 INIFile::~INIFile() {
