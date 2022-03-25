@@ -224,6 +224,66 @@
         "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreaded"
       },
       "inherits": "windows-clang-x64-release"
+    },
+    {
+      "name": "linux-base",
+      "hidden": true,
+      "inherits": "default",
+      "displayName": "Linux default",
+      "description": "Default Linux build",
+      "binaryDir": "${sourceDir}/out/build/${presetName}"
+    },
+    {
+      "name": "linux-debug",
+      "inherits": "linux-base",
+      "displayName": "Linux Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "linux-release",
+      "inherits": "linux-base",
+      "displayName": "Linux Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "linux-asan-debug",
+      "inherits": "linux-debug",
+      "displayName": "Linux ASAN Debug",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "VCPKG_TARGET_TRIPLET": "x64-linux-asan"
+      }
+    },
+    {
+      "name": "linux-asan-release",
+      "inherits": "linux-release",
+      "displayName": "Linux ASAN Release",
+      "cacheVariables": {
+        "DUNE_ASAN": true,
+        "VCPKG_TARGET_TRIPLET": "x64-linux-asan"
+      }
+    },
+    {
+      "name": "linux-ubsan-debug",
+      "displayName": "Linux UBAN Debug",
+      "inherits": "linux-debug",
+      "cacheVariables": {
+        "DUNE_UBSAN": true,
+        "VCPKG_TARGET_TRIPLET": "x64-linux-ubsan"
+      }
+    },
+    {
+      "name": "linux-ubsan-release",
+      "displayName": "Linux UBAN Release",
+      "inherits": "linux-release",
+      "cacheVariables": {
+        "DUNE_UBSAN": true,
+        "VCPKG_TARGET_TRIPLET": "x64-linux-ubsan"
+      }
     }
   ]
 }

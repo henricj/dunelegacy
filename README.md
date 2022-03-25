@@ -93,7 +93,7 @@ too few tests):
 ```bat
 mkdir out\build\x64-avx2-Release
 cd out\build\x64-avx2-Release
-cmake -G Ninja -profile=windows-x64-avx2-release -B . -S ../../..
+cmake --preset=windows-x64-avx2-release -B . -S ../../..
 cmake --build .
 ctest
 ```
@@ -128,6 +128,16 @@ too few tests):
 mkdir -p out/build/x64-Release
 cd out/build/x64-Release
 cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DVCPKG_TARGET_TRIPLET:STRING=x64-linux ../../..
+cmake --build .
+ctest
+```
+
+With a sufficiently recent version of CMake, a preset can be used.
+
+```sh
+mkdir -p out/build/linux-release
+cd out/build/linux-release
+cmake --preset=linux-release -B . -S ../../..
 cmake --build .
 ctest
 ```
