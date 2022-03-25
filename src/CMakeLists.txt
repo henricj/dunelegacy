@@ -664,7 +664,7 @@ endif()
 
 install(TARGETS dunelegacy RUNTIME DESTINATION .)
 
-set(CLANGFORMAT_SOURCES ${SOURCES} ${HEADERS})
+set(CLANGFORMAT_SOURCES ${SOURCES} ${EXE_SOURCES} ${HEADERS})
 
 add_custom_target(
 	clangformat

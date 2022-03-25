@@ -22,14 +22,14 @@
 #include <config.h>
 
 #include <FileClasses/FileManager.h>
-#include <FileClasses/GFXManager.h>
-#include <FileClasses/SFXManager.h>
 #include <FileClasses/FontManager.h>
-#include <FileClasses/TextManager.h>
+#include <FileClasses/GFXManager.h>
 #include <FileClasses/INIFile.h>
 #include <FileClasses/Palfile.h>
-#include <FileClasses/music/DirectoryPlayer.h>
+#include <FileClasses/SFXManager.h>
+#include <FileClasses/TextManager.h>
 #include <FileClasses/music/ADLPlayer.h>
+#include <FileClasses/music/DirectoryPlayer.h>
 #include <FileClasses/music/XMIPlayer.h>
 
 #include <GUI/GUIStyle.h>
@@ -37,12 +37,12 @@
 
 #include <Menu/MainMenu.h>
 
-#include <misc/fnkdat.h>
 #include <misc/FileSystem.h>
-#include <misc/Scaler.h>
-#include <misc/string_util.h>
-#include <misc/exceptions.h>
 #include <misc/SDL2pp.h>
+#include <misc/Scaler.h>
+#include <misc/exceptions.h>
+#include <misc/fnkdat.h>
+#include <misc/string_util.h>
 
 #include <SoundPlayer.h>
 
@@ -56,11 +56,11 @@
 #include <fmt/core.h>
 #include <lodepng.h>
 
-#include <iostream>
-#include <typeinfo>
-#include <future>
-#include <random>
 #include <fcntl.h>
+#include <future>
+#include <iostream>
+#include <random>
+#include <typeinfo>
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -87,21 +87,23 @@
 #endif
 
 #ifdef __APPLE__
-    #include <MacFunctions.h>
+#    include <MacFunctions.h>
 #endif
 
-#if !defined(__GNUG__) || (defined(_GLIBCXX_HAS_GTHREADS) && defined(_GLIBCXX_USE_C99_STDINT_TR1) && (ATOMIC_INT_LOCK_FREE > 1) && !defined(_GLIBCXX_HAS_GTHREADS))
+#if !defined(__GNUG__)                                                                                                 \
+    || (defined(_GLIBCXX_HAS_GTHREADS) && defined(_GLIBCXX_USE_C99_STDINT_TR1) && (ATOMIC_INT_LOCK_FREE > 1)           \
+        && !defined(_GLIBCXX_HAS_GTHREADS))
 // g++ does not provide std::async on all platforms
-#define HAS_ASYNC
+#    define HAS_ASYNC
 #endif
 
 #if HAVE_CXXBI_H
-#include <cxxabi.h>
+#    include <cxxabi.h>
 inline std::string demangleSymbol(const char* symbolname) {
-    int status = 0;
+    int status       = 0;
     std::size_t size = 0;
-    char* result = abi::__cxa_demangle(symbolname, nullptr, &size, &status);
-    if(status != 0) {
+    char* result     = abi::__cxa_demangle(symbolname, nullptr, &size, &status);
+    if (status != 0) {
         return std::string(symbolname);
     } else {
         std::string name = std::string(result);
@@ -127,29 +129,29 @@ static void printUsage() {
 }
 
 int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) {
-    if(physicalWidth >= 1280*3 && physicalHeight >= 720*3) {
+    if (physicalWidth >= 1280 * 3 && physicalHeight >= 720 * 3) {
         return 3;
-    } if(physicalWidth >= 640*2 && physicalHeight >= 480*2) {
+    }
+    if (physicalWidth >= 640 * 2 && physicalHeight >= 480 * 2) {
 
         return 2;
-
     }
     return 1;
 }
 
-void setVideoMode(int displayIndex)
-{
+void setVideoMode(int displayIndex) {
     int videoFlags = 0;
 
-    if(settings.video.fullscreen) {
+    if (settings.video.fullscreen) {
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
 
-    const SDL_DisplayMode targetDisplayMode = { 0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
+    const SDL_DisplayMode targetDisplayMode = {0, settings.video.physicalWidth, settings.video.physicalHeight, 0,
+                                               nullptr};
     SDL_DisplayMode closestDisplayMode;
 
-    if(settings.video.fullscreen) {
-        if(SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
+    if (settings.video.fullscreen) {
+        if (SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
             sdl2::log_info("Warning: Falling back to a display resolution of 640x480!");
             settings.video.physicalWidth  = 640;
             settings.video.physicalHeight = 480;
@@ -167,7 +169,7 @@ void setVideoMode(int displayIndex)
         SDL_DisplayMode displayMode;
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
-        if(settings.video.physicalWidth > displayMode.w || settings.video.physicalHeight > displayMode.h) {
+        if (settings.video.physicalWidth > displayMode.w || settings.video.physicalHeight > displayMode.h) {
             settings.video.physicalWidth  = displayMode.w;
             settings.video.physicalHeight = displayMode.h;
         }
@@ -178,34 +180,33 @@ void setVideoMode(int displayIndex)
         settings.video.height = settings.video.physicalHeight / factor;
     }
 
-    sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", settings.video.physicalWidth, settings.video.physicalHeight,
-        settings.video.width, settings.video.height, videoFlags);
+    sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", settings.video.physicalWidth,
+                   settings.video.physicalHeight, settings.video.width, settings.video.height, videoFlags);
 
-    window = SDL_CreateWindow("Dune Legacy",
-                              SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
-                              settings.video.physicalWidth, settings.video.physicalHeight,
-                              videoFlags);
+    window = SDL_CreateWindow("Dune Legacy", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
+                              SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), settings.video.physicalWidth,
+                              settings.video.physicalHeight, videoFlags);
 
     sdl2::log_info("Available renderers:");
 
     { // Scope
         const auto n = SDL_GetNumRenderDrivers();
 
-        for(auto i = 0; i < n; ++i) {
+        for (auto i = 0; i < n; ++i) {
             SDL_RendererInfo info;
-            if(0 == SDL_GetRenderDriverInfo(i, &info))
+            if (0 == SDL_GetRenderDriverInfo(i, &info))
                 sdl2::log_info("   %s", info.name);
         }
     }
 
-    if(settings.video.renderer != "default")
+    if (settings.video.renderer != "default")
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
 
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
 
 #if defined(_WIN32)
     // Prefer DX11 on Windows
-    if(settings.video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
+    if (settings.video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
 #    if defined(_DEBUG)
     SDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG, "1");
@@ -215,7 +216,7 @@ void setVideoMode(int displayIndex)
     { // Scope
         const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER);
 
-        if(render_driver_hint)
+        if (render_driver_hint)
             sdl2::log_info("   requested render driver: %s", render_driver_hint);
     }
 
@@ -225,23 +226,23 @@ void setVideoMode(int displayIndex)
         if (0 == SDL_GetRendererInfo(renderer, &info)) {
             sdl2::SDL_LogRenderer(&info);
 
-            auto *const end = info.texture_formats + info.num_texture_formats;
-            auto *const sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
+            auto* const end    = info.texture_formats + info.num_texture_formats;
+            auto* const sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
 
             if (sf_ptr == end)
                 sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the renderer's texture_formats");
-        }
-        else {
-            const auto *const error = SDL_GetError();
+        } else {
+            const auto* const error = SDL_GetError();
 
             sdl2::log_error(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: %s", error);
         }
     }
     SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
-    screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width, settings.video.height);
+    screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width,
+                                      settings.video.height);
 
     uint32_t screen_format = 0;
-    int      screen_access = 0;
+    int screen_access      = 0;
     if (0 == SDL_QueryTexture(screenTexture, &screen_format, &screen_access, nullptr, nullptr)) {
         if (screen_format != SCREEN_FORMAT)
             sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", std::to_string(screen_format).c_str());
@@ -250,22 +251,21 @@ void setVideoMode(int displayIndex)
     SDL_ShowCursor(SDL_DISABLE);
 }
 
-namespace
-{
+namespace {
 bool pendingFullscreen = false;
 }
 
-void toggleFullscreen()
-{ pendingFullscreen = !pendingFullscreen; }
+void toggleFullscreen() {
+    pendingFullscreen = !pendingFullscreen;
+}
 
-void updateFullscreen()
-{
-    if(!pendingFullscreen)
+void updateFullscreen() {
+    if (!pendingFullscreen)
         return;
 
     pendingFullscreen = false;
 
-    if(SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+    if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         // switch to windowed mode
         sdl2::log_info("Switching to windowed mode.");
         SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
@@ -292,20 +292,18 @@ void updateFullscreen()
     SDL_Delay(100);
 }
 
-std::filesystem::path getConfigFilepath()
-{
+std::filesystem::path getConfigFilepath() {
     // determine path to config file
     auto [ok, tmp] = fnkdat(CONFIGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
 
     return tmp;
 }
 
-std::filesystem::path getLogFilepath()
-{
+std::filesystem::path getLogFilepath() {
     // determine path to config file
     auto [ok, tmp] = fnkdat(LOGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
 
-    if(!ok) {
+    if (!ok) {
         THROW(std::runtime_error, "fnkdat() failed!");
     }
 
@@ -315,11 +313,12 @@ std::filesystem::path getLogFilepath()
 void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
     sdl2::log_info("Creating config file '%s'", configfilepath.u8string());
 
-    const auto file = sdl2::RWops_ptr{ SDL_RWFromFile(configfilepath.u8string().c_str(), "w") };
-    if(!file) {
+    const auto file = sdl2::RWops_ptr {SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
+    if (!file) {
         THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
 
+    // clang-format off
     static constexpr char configfile[] =
                                 "[General]\n"
                                 "Play Intro = false          # Play the intro when starting the game?\n"
@@ -373,16 +372,17 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
                                 "Killed Sandworms Drop Spice = false     # If true, killed sandworms drop some spice\n"
                                 "Manual Carryall Drops = false           # If true, player can request carryall to transport units\n"
                                 "Maximum Number of Units Override = -1   # Override the maximum number of units each house is allowed to build (-1 = do not override)\n";
+    // clang-format on
 
-    char playername[MAX_PLAYERNAMELENGTH+1] = "Player";
+    char playername[MAX_PLAYERNAMELENGTH + 1] = "Player";
 
 #ifdef _WIN32
-    DWORD playernameLength = MAX_PLAYERNAMELENGTH+1;
+    DWORD playernameLength = MAX_PLAYERNAMELENGTH + 1;
     GetUserName(playername, &playernameLength);
 #else
     struct passwd* pwent = getpwuid(getuid());
 
-    if(pwent != nullptr) {
+    if (pwent != nullptr) {
         strncpy(playername, pwent->pw_name, MAX_PLAYERNAMELENGTH + 1);
         playername[MAX_PLAYERNAMELENGTH] = '\0';
     }
@@ -393,22 +393,15 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
     // replace player name, language, server port and metaserver
     const std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
 
-    if(SDL_RWwrite(file.get(), strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
+    if (SDL_RWwrite(file.get(), strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
         THROW(sdl_error, "Writing config file failed: %s!", SDL_GetError());
     }
 }
 
-void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message) {
-    
-    static constexpr std::string_view priorityStrings[] = {
-        "<UNK> ",
-        "VERBOSE ",
-        "DEBUG   ",
-        "INFO    ",
-        "WARN    ",
-        "ERROR   ",
-        "CRITICAL"
-    };
+void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message) {
+
+    static constexpr std::string_view priorityStrings[] = {"<UNK> ",   "VERBOSE ", "DEBUG   ", "INFO    ",
+                                                           "WARN    ", "ERROR   ", "CRITICAL"};
 
     static constexpr auto priorityStringsSize = static_cast<int>(std::size(priorityStrings));
 
@@ -427,22 +420,23 @@ void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, c
 void showMissingFilesMessageBox() {
     SDL_ShowCursor(SDL_ENABLE);
 
-    std::string instruction = "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
+    std::string instruction =
+        "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
-    for(const auto& missingFile : FileManager::getMissingFiles()) {
+    for (const auto& missingFile : FileManager::getMissingFiles()) {
         instruction += " " + missingFile.u8string() + "\n";
         sdl2::log_error("missing required %s", missingFile.u8string());
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
-    for(const auto& searchPath : FileManager::getSearchPath()) {
+    for (const auto& searchPath : FileManager::getSearchPath()) {
         instruction += " " + searchPath.u8string() + "\n";
         sdl2::log_info("search path %s", searchPath.u8string());
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
 
-    if(SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
+    if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
         const auto error = SDL_GetError();
         sdl2::log_error("message box failed: %s", error);
 
@@ -455,24 +449,25 @@ std::string getUserLanguage() {
 
 #ifdef _WIN32
     char ISO639_LanguageName[10];
-    if(GetLocaleInfo(GetUserDefaultLCID(), LOCALE_SISO639LANGNAME, ISO639_LanguageName, sizeof(ISO639_LanguageName)) == 0) {
+    if (GetLocaleInfo(GetUserDefaultLCID(), LOCALE_SISO639LANGNAME, ISO639_LanguageName, sizeof(ISO639_LanguageName))
+        == 0) {
         return "";
     }
     pLang = ISO639_LanguageName;
 
-#elif defined (__APPLE__)
+#elif defined(__APPLE__)
     pLang = getMacLanguage();
-    if(pLang == nullptr) {
+    if (pLang == nullptr) {
         return "";
     }
 
 #else
     // should work on most unices
     pLang = getenv("LC_ALL");
-    if(pLang == nullptr) {
+    if (pLang == nullptr) {
         // try LANG
         pLang = getenv("LANG");
-        if(pLang == nullptr) {
+        if (pLang == nullptr) {
             return "";
         }
     }
@@ -480,7 +475,7 @@ std::string getUserLanguage() {
 
     sdl2::log_info("User locale is '%s'", pLang);
 
-    if(strlen(pLang) < 2) {
+    if (strlen(pLang) < 2) {
         return "";
     }
     return strToLower(std::string(pLang, 2));
@@ -501,8 +496,7 @@ void log_gcc() {
 #elif defined(_MSC_VER)
 void log_msvc() {
 #    if defined(_MSC_FULL_VER)
-    sdl2::log_info("   Compiler: MSVC %d.%d.%d.%d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000,
-                   _MSC_BUILD);
+    sdl2::log_info("   Compiler: MSVC %d.%d.%d.%d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000, _MSC_BUILD);
 
     sdl2::log_info("   MSVC runtime: "
 #        if defined(_MT)
@@ -552,7 +546,7 @@ void log_msvc() {
 
 #    if defined(_CONTROL_FLOW_GUARD)
     sdl2::log_info("   Control flow guard");
-#endif
+#    endif
 }
 #endif
 
@@ -565,9 +559,8 @@ void log_windows_sdk() {
     sdl2::log_info("   Windows SDK %d.%d.%d.%d", OSVER(WDK_NTDDI_VERSION) >> 24,
                    0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
 #    endif
-    sdl2::log_info("   Minimum Windows %d.%d.%d.%d",
-        OSVER(NTDDI_VERSION) >> 24, 0xff & (OSVER(NTDDI_VERSION) >> 16),
-        SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
+    sdl2::log_info("   Minimum Windows %d.%d.%d.%d", OSVER(NTDDI_VERSION) >> 24, 0xff & (OSVER(NTDDI_VERSION) >> 16),
+                   SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
 }
 #endif // defined(NTDDI_VERSION)
 
@@ -663,9 +656,9 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
     // check if configfile exists
     const auto config_filepath = getConfigFilepath();
 
-    if(!existsFile(config_filepath)) {
+    if (!existsFile(config_filepath)) {
         std::string userLanguage = getUserLanguage();
-        if(userLanguage.empty()) {
+        if (userLanguage.empty()) {
             userLanguage = "en";
         }
 
@@ -680,11 +673,11 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
     pTextManager = std::make_unique<TextManager>(settings.general.language);
 
     const auto missingFiles = FileManager::getMissingFiles();
-    if(!missingFiles.empty()) {
+    if (!missingFiles.empty()) {
         // set back to English
         auto setBackToEnglishWarning =
             fmt::sprintf("The following files are missing for language \"%s\":\n", _("LanguageFileExtension"));
-        for(const auto& filename : missingFiles) {
+        for (const auto& filename : missingFiles) {
             setBackToEnglishWarning += filename.u8string() + "\n";
         }
         setBackToEnglishWarning += "\nLanguage is changed to English!";
@@ -694,7 +687,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
 
         settings.general.language = "en";
         myINIFile.setStringValue("General", "Language", settings.general.language);
-        if(!myINIFile.saveChangesTo(config_filepath)) {
+        if (!myINIFile.saveChangesTo(config_filepath)) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                             config_filepath.u8string().c_str());
         }
@@ -703,22 +696,22 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         pTextManager = std::make_unique<TextManager>(settings.general.language);
     }
 
-    for(int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) {
         // check for overriding params
         std::string parameter(argv[i]);
 
-        if((parameter == "-f") || (parameter == "--fullscreen")) {
+        if ((parameter == "-f") || (parameter == "--fullscreen")) {
             settings.video.fullscreen = true;
-        } else if((parameter == "-w") || (parameter == "--window")) {
+        } else if ((parameter == "-w") || (parameter == "--window")) {
             settings.video.fullscreen = false;
-        } else if(parameter.compare(0, 13, "--PlayerName=") == 0) {
+        } else if (parameter.compare(0, 13, "--PlayerName=") == 0) {
             settings.general.playerName = parameter.substr(strlen("--PlayerName="));
-        } else if(parameter.compare(0, 13, "--ServerPort=") == 0) {
+        } else if (parameter.compare(0, 13, "--ServerPort=") == 0) {
             settings.network.serverPort = atol(argv[i] + strlen("--ServerPort="));
         }
     }
 
-    if(bFirstGamestart && bFirstInit) {
+    if (bFirstGamestart && bFirstInit) {
         SDL_DisplayMode displayMode;
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
@@ -735,7 +728,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         myINIFile.setIntValue("Video", "Physical Height", settings.video.physicalHeight);
         myINIFile.setIntValue("Video", "Preferred Zoom Level", 1);
 
-        if(!myINIFile.saveChangesTo(getConfigFilepath())) {
+        if (!myINIFile.saveChangesTo(getConfigFilepath())) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                             getConfigFilepath().u8string().c_str());
         }
@@ -755,12 +748,12 @@ bool run_game(int argc, char* argv[]) {
     cursorFrame = UI_CursorNormal;
 
     do {
-        if(configure_game(argc, argv, bFirstInit))
+        if (configure_game(argc, argv, bFirstInit))
             bFirstGamestart = true;
 
-        if(bFirstInit) {
+        if (bFirstInit) {
             sdl2::log_info("Initializing audio...");
-            if(Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
+            if (Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
                 // SDL_Quit();
                 // THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY,
                 // SDL_GetError());
@@ -800,7 +793,7 @@ bool run_game(int argc, char* argv[]) {
         // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
         auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
             const auto start   = std::chrono::steady_clock::now();
-            auto       ret     = std::make_unique<SFXManager>();
+            auto ret           = std::make_unique<SFXManager>();
             const auto elapsed = std::chrono::steady_clock::now() - start;
             return std::make_pair(std::move(ret), elapsed);
         });
@@ -821,7 +814,7 @@ bool run_game(int argc, char* argv[]) {
             pSFXManager    = std::move(sfxResult.first);
             sdl2::log_info("SFXManager time: %s",
                            std::to_string(std::chrono::duration<double>(sfxResult.second).count()).c_str());
-        } catch(const std::exception& e) {
+        } catch (const std::exception& e) {
             pSFXManager        = nullptr;
             const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
                                               "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
@@ -832,17 +825,17 @@ bool run_game(int argc, char* argv[]) {
 
         GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
 
-        if(bFirstInit) {
+        if (bFirstInit) {
             sdl2::log_info("Starting sound player...");
             soundPlayer = std::make_unique<SoundPlayer>();
 
-            if(settings.audio.musicType == "directory") {
+            if (settings.audio.musicType == "directory") {
                 sdl2::log_info("Starting directory music player...");
                 musicPlayer = std::make_unique<DirectoryPlayer>();
-            } else if(settings.audio.musicType == "adl") {
+            } else if (settings.audio.musicType == "adl") {
                 sdl2::log_info("Starting ADL music player...");
                 musicPlayer = std::make_unique<ADLPlayer>();
-            } else if(settings.audio.musicType == "xmi") {
+            } else if (settings.audio.musicType == "xmi") {
                 sdl2::log_info("Starting XMI music player...");
                 musicPlayer = std::make_unique<XMIPlayer>();
             } else {
@@ -853,7 +846,7 @@ bool run_game(int argc, char* argv[]) {
         }
 
         // Playing intro
-        if(((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
+        if (((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
             sdl2::log_info("Playing intro...");
             Intro().run();
         }
@@ -861,8 +854,9 @@ bool run_game(int argc, char* argv[]) {
         bFirstInit = false;
 
         sdl2::log_info("Starting main menu...");
+
         { // Scope
-            if(MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
+            if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
                 bExitGame = true;
             }
         }
@@ -872,7 +866,7 @@ bool run_game(int argc, char* argv[]) {
         GUIStyle::destroyGUIStyle();
 
         // clear everything
-        if(bExitGame) {
+        if (bExitGame) {
             musicPlayer.reset();
             soundPlayer.reset();
             Mix_HaltMusic();
@@ -893,7 +887,7 @@ bool run_game(int argc, char* argv[]) {
         SDL_DestroyWindow(window);
 
         sdl2::log_info("Deinitialization finished!");
-    } while(!bExitGame);
+    } while (!bExitGame);
 
     return true;
 }
@@ -916,7 +910,7 @@ struct DuneHeapDebug { };
 
 struct SDL_handle final {
     SDL_handle(Uint32 flags) {
-        if(SDL_Init(flags) < 0)
+        if (SDL_Init(flags) < 0)
             THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
     }
     ~SDL_handle() { SDL_Quit(); }
@@ -924,12 +918,13 @@ struct SDL_handle final {
 
 struct TTF_handle final {
     TTF_handle() {
-        if(TTF_Init() < 0)
+        if (TTF_Init() < 0)
             THROW(sdl_error, "Couldn't initialize SDL2_ttf: %s!", TTF_GetError());
     }
     ~TTF_handle() { TTF_Quit(); }
 };
-}
+
+} // namespace
 
 int main(int argc, char* argv[]) {
     DuneHeapDebug heap_debug;
@@ -945,21 +940,21 @@ int main(int argc, char* argv[]) {
 
         // init fnkdat
         auto [ok, tmp] = fnkdat(FNKDAT_INIT);
-        if(!ok) {
+        if (!ok) {
             THROW(std::runtime_error, "Cannot initialize fnkdat!");
         }
 
         bool bShowDebugLog = false;
-        for(int i = 1; i < argc; i++) {
+        for (int i = 1; i < argc; i++) {
             // check for overriding params
             std::string parameter(argv[i]);
 
-            if(parameter == "--showlog") {
+            if (parameter == "--showlog") {
                 // special parameter which does not overwrite settings
                 bShowDebugLog = true;
-            } else if((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w") ||
-                      (parameter == "--window") || (parameter.compare(0, 13, "--PlayerName=") == 0) ||
-                      (parameter.compare(0, 13, "--ServerPort=") == 0)) {
+            } else if ((parameter == "-f") || (parameter == "--fullscreen") || (parameter == "-w")
+                       || (parameter == "--window") || (parameter.compare(0, 13, "--PlayerName=") == 0)
+                       || (parameter.compare(0, 13, "--ServerPort=") == 0)) {
                 // normal parameter for overwriting settings
                 // handle later
             } else {
@@ -968,18 +963,18 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        if(!bShowDebugLog) {
+        if (!bShowDebugLog) {
             // get utf8-encoded log file path
             auto logfilePath = getLogFilepath();
 
 #ifdef _WIN32
 
             FILE* discard = nullptr;
-            if(freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
+            if (freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
                 THROW(io_error, "Initializing stdin failed!");
-            if(freopen_s(&discard, R"(\\.\NUL)", "a", stdout))
+            if (freopen_s(&discard, R"(\\.\NUL)", "a", stdout))
                 THROW(io_error, "Initializing stdout failed!");
-            if(freopen_s(&discard, R"(\\.\NUL)", "a", stderr))
+            if (freopen_s(&discard, R"(\\.\NUL)", "a", stderr))
                 THROW(io_error, "Initializing stderr failed!");
 
             const auto fn_out = _fileno(stdout);
@@ -991,21 +986,21 @@ int main(int argc, char* argv[]) {
                 CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
                             FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
 
-            if(log_handle == INVALID_HANDLE_VALUE) {
+            if (log_handle == INVALID_HANDLE_VALUE) {
                 // use stdout in this error case as stderr is not yet ready
                 THROW(io_error, "Opening logfile '%s' as stdout failed!", logfilePath.string().c_str());
             }
 
-            if(!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))
+            if (!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))
                 THROW(io_error, "Initializing output handle failed!");
-            if(!SetStdHandle(STD_ERROR_HANDLE, log_handle))
+            if (!SetStdHandle(STD_ERROR_HANDLE, log_handle))
                 THROW(io_error, "Initializing error handle failed!");
 
             const auto log_fd = _open_osfhandle(reinterpret_cast<intptr_t>(log_handle), _O_TEXT);
 
-            if(_dup2(log_fd, fn_out))
+            if (_dup2(log_fd, fn_out))
                 THROW(io_error, "Redirecting output failed!");
-            if(_dup2(log_fd, fn_err))
+            if (_dup2(log_fd, fn_err))
                 THROW(io_error, "Redirecting error failed!");
 
             // No buffering
@@ -1017,16 +1012,16 @@ int main(int argc, char* argv[]) {
             char* pLogfilePath = (char*)logfilePath.c_str();
 
             int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if(d < 0) {
+            if (d < 0) {
                 THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
             }
             // Hint: fileno(stdout) != STDOUT_FILENO on Win32
-            if(dup2(d, fileno(stdout)) < 0) {
+            if (dup2(d, fileno(stdout)) < 0) {
                 THROW(io_error, "Redirecting stdout failed!");
             }
 
             // Hint: fileno(stderr) != STDERR_FILENO on Win32
-            if(dup2(d, fileno(stderr)) < 0) {
+            if (dup2(d, fileno(stderr)) < 0) {
                 THROW(io_error, "Redirecting stderr failed!");
             }
 
@@ -1040,7 +1035,7 @@ int main(int argc, char* argv[]) {
         // First check for missing files
         auto missingFiles = FileManager::getMissingFiles();
 
-        if(!missingFiles.empty()) {
+        if (!missingFiles.empty()) {
             // create data directory inside config directory
             auto [ok, tmp] = fnkdat("data", FNKDAT_USER | FNKDAT_CREAT);
 
@@ -1055,11 +1050,11 @@ int main(int argc, char* argv[]) {
 
         sdl2::log_info("Initializing SDL...");
 
-        SDL_handle sdl_handle{SDL_INIT_TIMER | SDL_INIT_VIDEO};
+        SDL_handle sdl_handle {SDL_INIT_TIMER | SDL_INIT_VIDEO};
 
         SDL_version compiledVersion;
         SDL_version linkedVersion;
-        SDL_VERSION(&compiledVersion);
+        SDL_VERSION(&compiledVersion)
         SDL_GetVersion(&linkedVersion);
         sdl2::log_info("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
         sdl2::log_info("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
@@ -1079,15 +1074,15 @@ int main(int argc, char* argv[]) {
 
         // deinit fnkdat
         auto [ok2, tmp2] = fnkdat(FNKDAT_UNINIT);
-        if(!ok2) {
+        if (!ok2) {
             THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
         }
 
         return okay ? EXIT_SUCCESS : EXIT_FAILURE;
-    } catch(const std::exception& e) {
-        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name()) +
-                              std::string("\' was thrown:\n\n") + e.what() +
-                              std::string("\n\nDune Legacy will now be terminated!");
+    } catch (const std::exception& e) {
+        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name())
+                            + std::string("\' was thrown:\n\n") + e.what()
+                            + std::string("\n\nDune Legacy will now be terminated!");
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message.c_str());
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
