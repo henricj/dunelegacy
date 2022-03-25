@@ -6,27 +6,9 @@
 
 namespace dune {
 
-inline std::optional<std::tm> dune_localtime() {
-    time_t rawtime;
-    std::time(&rawtime);
+std::optional<std::tm> dune_localtime();
 
-    std::tm timeinfo;
-
-#if HAVE_MS_LOCALTIME_S
-    if(const auto error = localtime_s(&timeinfo, &rawtime))
-        return std::nullopt;
-#elif HAVE_LOCALTIME_R
-    if(const auto* result = localtime_r(&rawtime, &timeinfo); !result)
-        return std::nullopt;
-#else
-    if(const auto* result = localtime(&rawtime))
-        timeinfo = *result;
-    else
-        return std::nullopt;
-#endif
-
-    return timeinfo;
-}
+std::string dune_localtime_string();
 
 } // namespace dune
 

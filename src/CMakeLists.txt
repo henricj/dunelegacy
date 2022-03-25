@@ -173,6 +173,7 @@ set(MISC_SOURCES
 	misc/SDL_LogRenderer.cpp
 	misc/Scaler.cpp
 	misc/draw_util.cpp
+	misc/dune_localtime.cpp
 	misc/fnkdat.cpp
 	misc/md5.cpp
 	misc/sound_util.cpp
@@ -415,6 +416,7 @@ set(HEADERS
 ../include/misc/BlendBlitter.h
 ../include/misc/DrawingRectHelper.h
 ../include/misc/draw_util.h
+../include/misc/dune_localtime.h
 ../include/misc/exceptions.h
 ../include/misc/FileSystem.h
 ../include/misc/fnkdat.h
