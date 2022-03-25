@@ -17,6 +17,7 @@
 
 #include <FileClasses/Decode.h>
 
+#include <misc/dune_endian.h>
 #include <misc/SDL2pp.h>
 #include <misc/exceptions.h>
 
@@ -68,7 +69,7 @@ int decode40(const unsigned char* image_in, unsigned char* image_out) {
         } else {
             // bit 7 = 1
             if (!(count = code & 0x7f)) {
-                count = SDL_SwapLE16(*(Uint16*)readp);
+                count = dune::read_le_uint16(readp);
                 readp += 2;
                 code = count >> 8;
                 if (~code & 0x80) {
@@ -164,8 +165,8 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             //
             // 11111111 c c p p (5)
             //
-            const unsigned short count = SDL_SwapLE16(*(unsigned short*)(readp + 1));
-            const unsigned short pos   = SDL_SwapLE16(*(unsigned short*)(readp + 3));
+            const unsigned short count = dune::read_le_uint16(readp + 1);
+            const unsigned short pos   = dune::read_le_uint16(readp + 3);
             readp += 5;
             megacounte += count;
             memcpy_overlap(writep, image_out + pos, count);
@@ -175,7 +176,7 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             //
             // 11111110 c c v(4)
             //
-            const unsigned short count = SDL_SwapLE16(*(unsigned short*)(readp + 1));
+            const unsigned short count = dune::read_le_uint16(readp + 1);
             const unsigned char color  = readp[3];
             readp += 4;
             memset(writep, color, count);
@@ -187,7 +188,7 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             // 11cccccc p p (3)
             //
             const unsigned short count = (*readp & 0x3f) + 3;
-            const unsigned short pos   = SDL_SwapLE16(*(unsigned short*)(readp + 1));
+            const unsigned short pos   = dune::read_le_uint16(readp + 1);
             readp += 3;
             megacountc += count;
             memcpy_overlap(writep, image_out + pos, count);

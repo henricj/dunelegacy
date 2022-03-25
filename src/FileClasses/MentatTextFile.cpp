@@ -17,12 +17,12 @@
 
 #include <FileClasses/MentatTextFile.h>
 
+#include <misc/dune_endian.h>
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
 
 #include <SDL2/SDL_endian.h>
-#include <algorithm>
-#include <cstdio>
+
 #include <string>
 
 MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
@@ -71,7 +71,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
     while (pCurrentPos < pMentNameSectionEnd) {
         unsigned int entryLength = *pCurrentPos;
 
-        Uint32 entryContentOffset = SDL_SwapBE32(reinterpret_cast<Uint32*>(pCurrentPos + 1)[0]);
+        Uint32 entryContentOffset = dune::read_be_uint32(reinterpret_cast<Uint32*>(pCurrentPos + 1)[0]);
 
         const auto* p = reinterpret_cast<char*>(pCurrentPos);
 

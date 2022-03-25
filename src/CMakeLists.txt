@@ -416,6 +416,7 @@ set(HEADERS
 ../include/misc/BlendBlitter.h
 ../include/misc/DrawingRectHelper.h
 ../include/misc/draw_util.h
+../include/misc/dune_endian.h
 ../include/misc/dune_localtime.h
 ../include/misc/exceptions.h
 ../include/misc/FileSystem.h

@@ -18,12 +18,11 @@
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 #include <FileClasses/Shpfile.h>
+#include <misc/dune_endian.h>
 #include <misc/exceptions.h>
 
 #include <Definitions.h>
 
-#include <cstdio>
-#include <cstdlib>
 #include <misc/SDL2pp.h>
 
 #include "globals.h"
@@ -421,7 +420,8 @@ void Shpfile::readIndex() {
             // now fill Index with start and end-offsets
             for (auto i = 0; i < NumFiles; i++) {
                 ShpfileEntry newShpfileEntry;
-                newShpfileEntry.startOffset = SDL_SwapLE32(reinterpret_cast<const Uint32*>(pFiledata.get() + 2)[i]) + 2;
+                newShpfileEntry.startOffset =
+                    dune::read_le_uint32(reinterpret_cast<const Uint32*>(pFiledata.get() + 2)[i]) + 2;
 
                 if (!shpfileEntries.empty()) {
                     shpfileEntries.back().endOffset = newShpfileEntry.startOffset - 1;
