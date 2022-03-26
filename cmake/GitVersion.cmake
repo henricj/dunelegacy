@@ -56,6 +56,8 @@ if(WIN32 )
     string(REPLACE "\\" "" DUNE_WINDOWS_SDK_VERSION "${DUNE_WINDOWS_SDK_VERSION}" )  # Sometimes it has trailing slash (!)
 endif()
 
+file(MAKE_DIRECTORY ${DUNE_GENERATED_TMP_DIR})
+file(MAKE_DIRECTORY ${DUNE_GENERATED_INCLUDE_DIR})
 
 execute_process(
    COMMAND
