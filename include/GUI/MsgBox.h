@@ -131,7 +131,7 @@ private:
         hbox.addWidget(&vbox2);
         vbox2.addWidget(VSpacer::create(4));
         okbutton.setText("OK");
-        okbutton.setOnClick(std::bind(&MsgBox::onOK, this));
+        okbutton.setOnClick([this] { onOK(); });
         vbox2.addWidget(&okbutton);
         vbox2.addWidget(VSpacer::create(4));
         hbox.addWidget(Spacer::create());

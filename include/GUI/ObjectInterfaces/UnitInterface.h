@@ -89,7 +89,7 @@ protected:
         returnButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_ReturnIcon));
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
         returnButton.setVisible((itemID == Unit_Harvester));
-        returnButton.setOnClick(std::bind(&UnitInterface::onReturn, this));
+        returnButton.setOnClick([this] { onReturn(); });
         commandHBox.addWidget(&returnButton);
 
         commandHBox.addWidget(HSpacer::create(2));
@@ -97,7 +97,7 @@ protected:
         deployButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DeployIcon));
         deployButton.setTooltipText(_("Build a new construction yard"));
         deployButton.setVisible((itemID == Unit_MCV));
-        deployButton.setOnClick(std::bind(&UnitInterface::onDeploy, this));
+        deployButton.setOnClick([this] { onDeploy(); });
         commandHBox.addWidget(&deployButton);
 
         commandHBox.addWidget(HSpacer::create(2));
@@ -105,14 +105,14 @@ protected:
         destructButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DestructIcon));
         destructButton.setTooltipText(_("Self-destruct this unit"));
         destructButton.setVisible((itemID == Unit_Devastator));
-        destructButton.setOnClick(std::bind(&UnitInterface::onDestruct, this));
+        destructButton.setOnClick([this] { onDestruct(); });
         commandHBox.addWidget(&destructButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
         sendToRepairButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_SendToRepairIcon));
         sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
-        sendToRepairButton.setOnClick(std::bind(&UnitInterface::OnSendToRepair, this));
+        sendToRepairButton.setOnClick([this] { OnSendToRepair(); });
         commandHBox.addWidget(&sendToRepairButton);
 
         buttonVBox.addWidget(&commandHBox, 26);
@@ -123,7 +123,7 @@ protected:
         guardButton.setTextColor(color);
         guardButton.setTooltipText(_("Unit will not move from location"));
         guardButton.setToggleButton(true);
-        guardButton.setOnClick(std::bind(&UnitInterface::onGuard, this));
+        guardButton.setOnClick([this] { onGuard(); });
         buttonVBox.addWidget(&guardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -132,7 +132,7 @@ protected:
         areaGuardButton.setTextColor(color);
         areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
         areaGuardButton.setToggleButton(true);
-        areaGuardButton.setOnClick(std::bind(&UnitInterface::onAreaGuard, this));
+        areaGuardButton.setOnClick([this] { onAreaGuard(); });
         buttonVBox.addWidget(&areaGuardButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -141,7 +141,7 @@ protected:
         stopButton.setTextColor(color);
         stopButton.setTooltipText(_("Unit will not move, nor attack"));
         stopButton.setToggleButton(true);
-        stopButton.setOnClick(std::bind(&UnitInterface::onStop, this));
+        stopButton.setOnClick([this] { onStop(); });
         buttonVBox.addWidget(&stopButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -150,7 +150,7 @@ protected:
         ambushButton.setTextColor(color);
         ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
         ambushButton.setToggleButton(true);
-        ambushButton.setOnClick(std::bind(&UnitInterface::onAmbush, this));
+        ambushButton.setOnClick([this] { onAmbush(); });
         buttonVBox.addWidget(&ambushButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -159,7 +159,7 @@ protected:
         huntButton.setTextColor(color);
         huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
         huntButton.setToggleButton(true);
-        huntButton.setOnClick(std::bind(&UnitInterface::onHunt, this));
+        huntButton.setOnClick([this] { onHunt(); });
         buttonVBox.addWidget(&huntButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));
@@ -168,7 +168,7 @@ protected:
         retreatButton.setTextColor(color);
         retreatButton.setTooltipText(_("Unit will retreat back to base"));
         retreatButton.setToggleButton(true);
-        retreatButton.setOnClick(std::bind(&UnitInterface::onRetreat, this));
+        retreatButton.setOnClick([this] { onRetreat(); });
         buttonVBox.addWidget(&retreatButton, 26);
 
         buttonVBox.addWidget(VSpacer::create(6));

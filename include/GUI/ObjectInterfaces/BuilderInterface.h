@@ -49,7 +49,7 @@ protected:
         upgradeButton.setTextColor(color);
         upgradeButton.setVisible(false);
         upgradeButton.setTooltipText(_("Upgrade this structure (Hotkey: U)"));
-        upgradeButton.setOnClick(std::bind(&BuilderInterface::onUpgrade, this));
+        upgradeButton.setOnClick([this] { onUpgrade(); });
 
         upgradeProgressBar.setText(_("Upgrade"));
         upgradeProgressBar.setTextColor(color);

@@ -153,11 +153,11 @@ private:
         hbox.addWidget(&vbox2, 0.6);
         vbox2.addWidget(VSpacer::create(4));
         button1.setText(button1Text);
-        button1.setOnClick(std::bind(&QstBox::onButton, this, QSTBOX_BUTTON1));
+        button1.setOnClick([this] { onButton(QSTBOX_BUTTON1); });
         hbox2.addWidget(&button1);
         hbox2.addWidget(HSpacer::create(6));
         button2.setText(button2Text);
-        button2.setOnClick(std::bind(&QstBox::onButton, this, QSTBOX_BUTTON2));
+        button2.setOnClick([this] { onButton(QSTBOX_BUTTON2); });
         hbox2.addWidget(&button2);
         vbox2.addWidget(&hbox2);
         vbox2.addWidget(VSpacer::create(4));

@@ -77,7 +77,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
     mapTypeButtonsHBox.addWidget(Spacer::create(), 5.0);
     mapList.setColor(color);
     mapList.setAutohideScrollbar(false);
-    mapList.setOnSelectionChange([this](auto&& PH1) { onMapListSelectionChange(std::forward<decltype(PH1)>(PH1)); });
+    mapList.setOnSelectionChange([this](auto flag) { onMapListSelectionChange(flag); });
     mapList.setOnDoubleClick([this] { onLoad(); });
     leftVBox.addWidget(&mapList, 0.95);
 

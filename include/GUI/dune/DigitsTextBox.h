@@ -41,22 +41,22 @@ public:
 
         textBox.setText("0");
         textBox.setAllowedChars("-0123456789");
-        textBox.setOnLostFocus(std::bind(&DigitsTextBox::onTextBoxLostFocus, this));
-        addWidget(&textBox);
+        textBox.setOnLostFocus([this] { onTextBoxLostFocus(); });
+        DigitsTextBox::addWidget(&textBox);
 
         buttonVBox.addWidget(Spacer::create());
 
-        plusButton.setOnClick(std::bind(&DigitsTextBox::onIncrement, this));
+        plusButton.setOnClick([this] { onIncrement(); });
         buttonVBox.addWidget(&plusButton, 0.0);
 
-        minusButton.setOnClick(std::bind(&DigitsTextBox::onDecrement, this));
+        minusButton.setOnClick([this] { onDecrement(); });
         buttonVBox.addWidget(&minusButton, 0.0);
 
         buttonVBox.addWidget(Spacer::create());
 
         updateSurfaces();
 
-        addWidget(&buttonVBox, 0.0);
+        DigitsTextBox::addWidget(&buttonVBox, 0.0);
     }
 
     ~DigitsTextBox() override {

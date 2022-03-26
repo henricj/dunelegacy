@@ -29,7 +29,7 @@ DropDownBox::DropDownBox()
 
     openListBoxButton.setOnClick([this] { onOpenListBoxButton(); });
 
-    listBox.setOnSelectionChange([this](auto&& PH1) { onSelectionChange(std::forward<decltype(PH1)>(PH1)); });
+    listBox.setOnSelectionChange([this](auto flag) { onSelectionChange(flag); });
 
     resize(DropDownBox::getMinimumSize().x, DropDownBox::getMinimumSize().y);
 }
