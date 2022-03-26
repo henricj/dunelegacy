@@ -25,7 +25,6 @@
 #include <functional>
 #include <memory>
 
-#include <enet/enet.h>
 #include <list>
 #include <string>
 

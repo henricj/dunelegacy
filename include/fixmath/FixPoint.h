@@ -22,10 +22,10 @@
 
 typedef FixPoint32 FixPoint;
 
-#define FixPt_MAX   FixPt32_MAX
-#define FixPt_PI    FixPt32_PI
-#define FixPt_E     FixPt32_E
-#define FixPt_SQRT2 FixPt32_SQRT2
+inline constexpr auto FixPt_MAX   = FixPt32_MAX;
+inline constexpr auto FixPt_PI    = FixPt32_PI;
+inline constexpr auto FixPt_E     = FixPt32_E;
+inline constexpr auto FixPt_SQRT2 = FixPt32_SQRT2;
 
 namespace fix32_parserimpl {
 #pragma warning(push)

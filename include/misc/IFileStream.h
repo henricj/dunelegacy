@@ -19,7 +19,6 @@
 #define IFILESTREAM_H
 
 #include "InputStream.h"
-#include <cstdlib>
 #include <string>
 
 class IFileStream final : public InputStream {

@@ -19,12 +19,11 @@
 #define TEXTEVENT_H
 
 #include <Colors.h>
-#include <Definitions.h>
 #include <misc/SDL2pp.h>
 
 #include <string>
 
-#define TEXT_FADE_TIME 16
+inline constexpr auto TEXT_FADE_TIME = 16;
 
 /**
     This class is used for showing text while playing a cutscene. It can show the video in the middle of the screen

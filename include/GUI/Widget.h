@@ -18,6 +18,8 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include "Renderer/DuneTexture.h"
+
 #include <misc/SDL2pp.h>
 
 #include <algorithm>

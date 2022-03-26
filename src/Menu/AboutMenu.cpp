@@ -25,9 +25,9 @@ AboutMenu::AboutMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    AboutMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    AboutMenu::setWindowWidget(&windowWidget);
 
     // set up pictures in the background
     const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);

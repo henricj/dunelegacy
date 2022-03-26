@@ -3,7 +3,6 @@
 #pragma once
 
 #include <cstdint>
-#include <climits>
 #include <limits>
 
 // Generate uniform random numbers in the closed range [0U, upper_bound]

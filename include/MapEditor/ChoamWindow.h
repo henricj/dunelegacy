@@ -24,12 +24,10 @@
 #include <GUI/DropDownBox.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
-#include <GUI/RadioButton.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 #include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
-#include <misc/SDL2pp.h>
 
 // forward declaration
 class MapEditor;

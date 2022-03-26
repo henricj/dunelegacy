@@ -20,7 +20,6 @@
 
 #include <cstdint>
 #include <filesystem>
-#include <list>
 #include <stdint.h>
 #include <string>
 #include <utility>

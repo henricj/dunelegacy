@@ -31,7 +31,7 @@ Trooper::Trooper(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(trooper_constants, objectID, initializer) {
     Trooper::init();
 
-    setHealth(getMaxHealth());
+    Trooper::setHealth(getMaxHealth());
 }
 
 Trooper::Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer)

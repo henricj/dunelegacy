@@ -20,7 +20,6 @@
 
 #include <SDL2/SDL_mixer.h>
 #include <misc/SDL2pp.h>
-#include <misc/sdl_support.h>
 #include <string>
 
 namespace sdl2 {

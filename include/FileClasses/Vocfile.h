@@ -18,7 +18,6 @@
 #ifndef VOCFILE_H
 #define VOCFILE_H
 
-#include <SDL2/SDL_mixer.h>
 #include <misc/SDL2pp.h>
 
 /**

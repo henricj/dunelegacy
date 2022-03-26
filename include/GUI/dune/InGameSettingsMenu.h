@@ -18,7 +18,6 @@
 #ifndef INGAMESETTINGSMENU
 #define INGAMESETTINGSMENU
 
-#include "Definitions.h"
 #include <GUI/PictureButton.h>
 #include <GUI/ProgressBar.h>
 #include <GUI/StaticContainer.h>

@@ -20,8 +20,6 @@
 
 #include <misc/SDL2pp.h>
 
-#include <misc/sdl_support.h>
-
 #include <string>
 
 typedef sdl2::surface_ptr DoubleSurfaceFunction(SDL_Surface*);

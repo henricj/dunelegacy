@@ -33,7 +33,6 @@
 #include <misc/FileSystem.h>
 #include <misc/IMemoryStream.h>
 #include <misc/draw_util.h>
-#include <misc/fnkdat.h>
 #include <misc/string_util.h>
 
 #include <INIMap/INIMapPreviewCreator.h>
@@ -41,20 +40,21 @@
 #include <globals.h>
 #include <sand.h>
 
-#define PLAYER_HUMAN  0
-#define PLAYER_OPEN   -1
-#define PLAYER_CLOSED -2
+namespace {
+constexpr auto PLAYER_HUMAN  = 0;
+constexpr auto PLAYER_OPEN   = -1;
+constexpr auto PLAYER_CLOSED = -2;
+} // namespace
 
 CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server, bool LANServer)
-    : gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer), startGameTime(0),
-      brainEqHumanSlot(-1) {
+    : gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer) {
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    CustomGamePlayers::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    CustomGamePlayers::setWindowWidget(&windowWidget);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
@@ -177,7 +177,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         chatVBox.setEnabled(false);
     }
 
-    bool bLoadMultiplayer = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
+    bool bLoadMultiplayer = gameInitSettings.getGameType() == GameType::LoadMultiplayer;
 
     buttonHBox.addWidget(Spacer::create(), 0.0625);
 
@@ -294,7 +294,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                 }
             }
 
-        } else if (bServer && (!thisPlayerPlaced)) {
+        } else if (bServer && !thisPlayerPlaced) {
             curHouseInfo.player1DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
             curHouseInfo.player1DropDown.setSelectedItem(0);
             curHouseInfo.player1DropDown.setEnabled(bServer);
@@ -327,7 +327,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                 if (gisHouseInfo.houseID == HOUSETYPE::HOUSE_UNUSED) {
                     curHouseInfo.player2DropDown.addEntry(_("closed"), PLAYER_CLOSED);
                 } else if (gisHouseInfo.playerInfoList.size() >= 2) {
-                    GameInitSettings::PlayerInfo playerInfo = *(++gisHouseInfo.playerInfoList.begin());
+                    GameInitSettings::PlayerInfo playerInfo = *++gisHouseInfo.playerInfoList.begin();
                     if (playerInfo.playerClass == HUMANPLAYERCLASS) {
                         if (!thisPlayerPlaced) {
                             curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
@@ -351,7 +351,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                     }
                 }
             }
-        } else if (bServer && (!thisPlayerPlaced)) {
+        } else if (bServer && !thisPlayerPlaced) {
             curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
             curHouseInfo.player2DropDown.setSelectedItem(0);
             curHouseInfo.player2DropDown.setEnabled(bServer);
@@ -398,7 +398,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             && dropDownBox2.getSelectedEntry() != settings.general.playerName) {
             if (dropDownBox1.getSelectedEntryIntData() == PLAYER_OPEN) {
                 setPlayer2Slot(settings.general.playerName, brainEqHumanSlot * 2);
-            } else if ((dropDownBox2.getSelectedEntryIntData() == PLAYER_OPEN)
+            } else if (dropDownBox2.getSelectedEntryIntData() == PLAYER_OPEN
                        && gameInitSettings.isMultiplePlayersPerHouse()) {
                 setPlayer2Slot(settings.general.playerName, brainEqHumanSlot * 2 + 1);
             }
@@ -468,7 +468,7 @@ void CustomGamePlayers::update() {
             quit(MENU_QUIT_GAME_FINISHED);
         } else {
             static uint32_t lastSecondLeft = 0;
-            const uint32_t secondsLeft     = ((startGameTime - SDL_GetTicks()) / 1000) + 1;
+            const uint32_t secondsLeft     = (startGameTime - SDL_GetTicks()) / 1000 + 1;
             if (lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
                 addInfoMessage("Starting game in " + std::to_string(secondsLeft) + "...");
@@ -545,7 +545,7 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
         }
     }
 
-    if ((pNetworkManager != nullptr) && bServer) {
+    if (pNetworkManager != nullptr && bServer) {
         const ChangeEventList changeEventList2 = getChangeEventList();
 
         pNetworkManager->sendChangeEventList(changeEventList2);
@@ -605,7 +605,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
     }
 
     // if multiple players per house look for an open right slot
-    if ((newPlayerSlot == INVALID) && gameInitSettings.isMultiplePlayersPerHouse()) {
+    if (newPlayerSlot == INVALID && gameInitSettings.isMultiplePlayersPerHouse()) {
         for (int i = 0; i < numHouses; i++) {
             HouseInfo& curHouseInfo = houseInfo[i];
             const int player2       = curHouseInfo.player2DropDown.getSelectedEntryIntData();
@@ -628,7 +628,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
                 newPlayerSlot = 2 * i;
                 break;
             }
-            if (gameInitSettings.isMultiplePlayersPerHouse() && (player2 != PLAYER_HUMAN)) {
+            if (gameInitSettings.isMultiplePlayersPerHouse() && player2 != PLAYER_HUMAN) {
 
                 newPlayerSlot = 2 * i + 1;
 
@@ -669,8 +669,8 @@ void CustomGamePlayers::onNext() {
         const int currentPlayer1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
         const int currentPlayer2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
-        if ((currentPlayer1 != PLAYER_OPEN && currentPlayer1 != PLAYER_CLOSED)
-            || (currentPlayer2 != PLAYER_OPEN && currentPlayer2 != PLAYER_CLOSED)) {
+        if (currentPlayer1 != PLAYER_OPEN && currentPlayer1 != PLAYER_CLOSED
+            || currentPlayer2 != PLAYER_OPEN && currentPlayer2 != PLAYER_CLOSED) {
             numUsedHouses++;
 
             const int currentTeam = curHouseInfo.teamDropDown.getSelectedEntryIntData();
@@ -679,8 +679,8 @@ void CustomGamePlayers::onNext() {
                 const int player1 = houseInfo[j].player1DropDown.getSelectedEntryIntData();
                 const int player2 = houseInfo[j].player2DropDown.getSelectedEntryIntData();
 
-                if ((player1 != PLAYER_OPEN && player1 != PLAYER_CLOSED)
-                    || (player2 != PLAYER_OPEN && player2 != PLAYER_CLOSED)) {
+                if (player1 != PLAYER_OPEN && player1 != PLAYER_CLOSED
+                    || player2 != PLAYER_OPEN && player2 != PLAYER_CLOSED) {
 
                     const int team = houseInfo[j].teamDropDown.getSelectedEntryIntData();
                     if (currentTeam == team) {
@@ -769,7 +769,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
                 return false;
             }
 
-            playerName = (houseID == HOUSETYPE::HOUSE_INVALID) ? pPlayerData->getName() : getHouseNameByNumber(houseID);
+            playerName  = houseID == HOUSETYPE::HOUSE_INVALID ? pPlayerData->getName() : getHouseNameByNumber(houseID);
             playerClass = pPlayerData->getPlayerClass();
 
         } break;
@@ -921,8 +921,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
     }
 
     for (int p = 0;
-         (p < static_cast<int>(HOUSETYPE::NUM_HOUSES)) && (currentIndex < static_cast<int>(HOUSETYPE::NUM_HOUSES));
-         p++) {
+         p < static_cast<int>(HOUSETYPE::NUM_HOUSES) && currentIndex < static_cast<int>(HOUSETYPE::NUM_HOUSES); p++) {
         if (pMap->hasSection("Player" + std::to_string(p + 1))) {
             std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p + 1), "Brain",
                                                                    "Team " + std::to_string(currentIndex + p + 1)));
@@ -976,7 +975,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
         if (houseInfoNum == -1 || houseInfoNum == i) {
 
-            const Uint32 color = (house == HOUSETYPE::HOUSE_INVALID)
+            const Uint32 color = house == HOUSETYPE::HOUSE_INVALID
                                    ? COLOR_RGB(20, 20, 40)
                                    : SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
@@ -1006,7 +1005,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
             bool bCheck = 0;
 
-            if ((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house))) {
+            if (house == HOUSETYPE::HOUSE_INVALID || isBoundedHouseOnMap(house)) {
                 bCheck = numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses;
             } else {
                 bCheck = numUsedBoundHouses + numUsedRandomHouses >= numBoundHouses;
@@ -1024,9 +1023,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
                     }
                 }
             } else {
-                bAddHouse = (h == static_cast<int>(house));
+                bAddHouse = h == static_cast<int>(house);
 
-                if (((house == HOUSETYPE::HOUSE_INVALID) || (isBoundedHouseOnMap(house)))
+                if ((house == HOUSETYPE::HOUSE_INVALID || isBoundedHouseOnMap(house))
                     && isBoundedHouseOnMap(static_cast<HOUSETYPE>(h))) {
                     // check if this entry is random or a bounded house but is needed for a bounded house
                     bAddHouse = true;
@@ -1067,7 +1066,7 @@ void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseIn
 void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnum) {
     if (bInteractive && boxnum >= 0 && pNetworkManager != nullptr) {
         const DropDownBox& dropDownBox =
-            (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
+            boxnum % 2 == 0 ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
         int selectedPlayer = dropDownBox.getSelectedEntryIntData();
 
@@ -1083,7 +1082,7 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
 
 void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
     const DropDownBox& dropDownBox =
-        (boxnum % 2 == 0) ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
+        boxnum % 2 == 0 ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
     if (dropDownBox.getSelectedEntryIntData() == PLAYER_CLOSED) {
         return;
@@ -1105,7 +1104,7 @@ void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool b
     } else {
         for (int i = 0; i < numHouses * 2; i++) {
             DropDownBox& curDropDownBox =
-                (i % 2 == 0) ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
+                i % 2 == 0 ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
 
             if (curDropDownBox.getSelectedEntryIntData() == PLAYER_HUMAN
                 && curDropDownBox.getSelectedEntry() == playername) {
@@ -1160,7 +1159,7 @@ void CustomGamePlayers::onStartGame(unsigned int timeLeft) {
 
 void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) {
     DropDownBox& dropDownBox =
-        (slot % 2 == 0) ? houseInfo[slot / 2].player1DropDown : houseInfo[slot / 2].player2DropDown;
+        slot % 2 == 0 ? houseInfo[slot / 2].player1DropDown : houseInfo[slot / 2].player2DropDown;
 
     std::string oldPlayerName = "";
     const int oldPlayerType   = dropDownBox.getSelectedEntryIntData();
@@ -1169,8 +1168,7 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
     }
 
     for (int i = 0; i < numHouses * 2; i++) {
-        DropDownBox& curDropDownBox =
-            (i % 2 == 0) ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
+        DropDownBox& curDropDownBox = i % 2 == 0 ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
 
         if (curDropDownBox.getSelectedEntryIntData() == PLAYER_HUMAN
             && curDropDownBox.getSelectedEntry() == playername) {
@@ -1251,8 +1249,8 @@ void CustomGamePlayers::checkPlayerBoxes() {
             numPlayers++;
         }
 
-        if ((!gameInitSettings.isMultiplePlayersPerHouse()) || (player1 == PLAYER_OPEN && player2 == PLAYER_OPEN)
-            || (curHouseInfo.player2DropDown.getNumEntries() == 0)) {
+        if (!gameInitSettings.isMultiplePlayersPerHouse() || player1 == PLAYER_OPEN && player2 == PLAYER_OPEN
+            || curHouseInfo.player2DropDown.getNumEntries() == 0) {
             curHouseInfo.player2DropDown.setVisible(false);
             curHouseInfo.player2DropDown.setEnabled(false);
             curHouseInfo.player2Label.setVisible(false);
@@ -1274,8 +1272,8 @@ void CustomGamePlayers::checkPlayerBoxes() {
                 }
             }
 
-            if ((gameInitSettings.getGameType() == GameType::LoadMultiplayer) && (player2 != PLAYER_OPEN)
-                && (player2 != PLAYER_HUMAN)) {
+            if (gameInitSettings.getGameType() == GameType::LoadMultiplayer && player2 != PLAYER_OPEN
+                && player2 != PLAYER_HUMAN) {
                 curHouseInfo.player2DropDown.setEnabled(false);
             } else {
                 curHouseInfo.player2DropDown.setEnabled(bEnableDropDown2);
@@ -1316,7 +1314,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
         } else {
 
             int currentItemIndex =
-                (houseDropDownBox.getEntryIntData(0) == static_cast<int>(HOUSETYPE::HOUSE_INVALID)) ? 1 : 0;
+                houseDropDownBox.getEntryIntData(0) == static_cast<int>(HOUSETYPE::HOUSE_INVALID) ? 1 : 0;
 
             for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
                 if (currentItemIndex < houseDropDownBox.getNumEntries()

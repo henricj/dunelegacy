@@ -22,9 +22,9 @@
 #include <GUI/PictureButton.h>
 #include <GUI/dune/AnimationLabel.h>
 
-#define BRIEFING        0
-#define DEBRIEFING_WIN  1
-#define DEBRIEFING_LOST 2
+inline constexpr auto BRIEFING        = 0;
+inline constexpr auto DEBRIEFING_WIN  = 1;
+inline constexpr auto DEBRIEFING_LOST = 2;
 
 class BriefingMenu final : public MentatMenu {
 public:

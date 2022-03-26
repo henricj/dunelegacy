@@ -22,11 +22,11 @@
 #include <string>
 #include <utility>
 
-#define METASERVERCOMMAND_ADD    1
-#define METASERVERCOMMAND_UPDATE 2
-#define METASERVERCOMMAND_REMOVE 3
-#define METASERVERCOMMAND_LIST   4
-#define METASERVERCOMMAND_EXIT   5
+inline constexpr auto METASERVERCOMMAND_ADD    = 1;
+inline constexpr auto METASERVERCOMMAND_UPDATE = 2;
+inline constexpr auto METASERVERCOMMAND_REMOVE = 3;
+inline constexpr auto METASERVERCOMMAND_LIST   = 4;
+inline constexpr auto METASERVERCOMMAND_EXIT   = 5;
 
 class MetaServerCommand {
 public:

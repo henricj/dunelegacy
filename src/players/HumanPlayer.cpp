@@ -33,7 +33,7 @@
 
 #include <Network/NetworkManager.h>
 
-#define ATTACKNOTIFICATIONTIME MILLI2CYCLES(2 * 60 * 1000)
+static constexpr auto ATTACKNOTIFICATIONTIME = MILLI2CYCLES(2 * 60 * 1000);
 
 HumanPlayer::HumanPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
                          const Random& random)

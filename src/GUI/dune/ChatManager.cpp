@@ -28,9 +28,11 @@
 #include <algorithm>
 #include <ctime>
 
-#define MAX_MESSAGESHOWTIME  11000
-#define MAX_NUMBEROFMESSAGES 25
-#define LEFT_BORDER_WIDTH    70
+namespace {
+inline constexpr auto MAX_MESSAGESHOWTIME  = 11000;
+inline constexpr auto MAX_NUMBEROFMESSAGES = 25;
+inline constexpr auto LEFT_BORDER_WIDTH    = 70;
+} // namespace
 
 ChatManager::ChatManager() = default;
 

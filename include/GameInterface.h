@@ -21,7 +21,6 @@
 #include <GUI/HBox.h>
 #include <GUI/PictureButton.h>
 #include <GUI/PictureLabel.h>
-#include <GUI/Spacer.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/Window.h>
 #include <GUI/dune/ChatManager.h>

@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "GUI/Spacer.h"
 #include <FileClasses/TextManager.h>
 #include <Network/NetworkManager.h>
 #include <players/HumanPlayer.h>
@@ -26,7 +27,7 @@
 #include <Game.h>
 
 WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
-    setWindowWidget(&vbox);
+    WaitingForOtherPlayers::setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
 
     vbox.addWidget(&textLabel);
@@ -50,7 +51,7 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
     const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
     const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
 
-    setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
+    WaitingForOtherPlayers::setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
 }
 
 WaitingForOtherPlayers::~WaitingForOtherPlayers() = default;

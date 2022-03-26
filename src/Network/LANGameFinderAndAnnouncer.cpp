@@ -21,9 +21,9 @@
 
 #include <config.h>
 
-#define NETWORKPACKET_ANNOUNCEGAME           1
-#define NETWORKPACKET_REMOVEGAMEANNOUNCEMENT 2
-#define NETWORKPACKET_REQUESTANNOUNCE        3
+inline constexpr auto NETWORKPACKET_ANNOUNCEGAME           = 1;
+inline constexpr auto NETWORKPACKET_REMOVEGAMEANNOUNCEMENT = 2;
+inline constexpr auto NETWORKPACKET_REQUESTANNOUNCE        = 3;
 
 #ifdef _MSC_VER_
 #    pragma pack(push, 1)

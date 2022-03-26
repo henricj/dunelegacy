@@ -31,7 +31,7 @@ HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectInitializer& ini
     : BuilderBase(high_tech_factory_constants, objectID, initializer) {
     HighTechFactory::init();
 
-    setHealth(getMaxHealth());
+    HighTechFactory::setHealth(getMaxHealth());
 }
 
 HighTechFactory::HighTechFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)

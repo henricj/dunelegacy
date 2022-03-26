@@ -23,7 +23,6 @@
 #include <misc/SDL2pp.h>
 
 #include <string>
-#include <vector>
 
 /// A class for a multiline text view widget
 class TextView final : public Widget {

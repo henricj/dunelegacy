@@ -27,8 +27,10 @@
 #include <cstdlib>
 #include <cstring>
 
-#define SIZE_X 320
-#define SIZE_Y 200
+namespace {
+inline constexpr auto SIZE_X = 320;
+inline constexpr auto SIZE_Y = 200;
+} // namespace
 
 sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
     if (RWop == nullptr) {

@@ -38,8 +38,8 @@
 #include <structures/RepairYard.h>
 #include <units/Harvester.h>
 
-static constexpr auto SMOKEDELAY    = 30;
-static constexpr auto UNITIDLETIMER = (GAMESPEED_DEFAULT * 315); // about every 5s
+inline constexpr auto SMOKEDELAY    = 30;
+inline constexpr auto UNITIDLETIMER = (GAMESPEED_DEFAULT * 315); // about every 5s
 
 UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : ObjectBase(constants, objectID, initializer), targetAngle(ANGLETYPE::INVALID_ANGLE), nextSpotAngle(drawnAngle) {

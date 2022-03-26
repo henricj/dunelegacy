@@ -23,6 +23,8 @@
 #include <ObjectPointer.h>
 #include <fixmath/FixPoint.h>
 
+#include "data.h"
+
 #include <globals.h>
 
 #include <bitset>
@@ -41,7 +43,8 @@ class Coord;
 template<class WidgetData>
 class Container;
 
-struct GameContext {
+class GameContext {
+public:
     GameContext(Game& game, Map& map, ObjectManager& objectManager)
         : game {game}, map {map}, objectManager {objectManager} { }
 
@@ -50,7 +53,7 @@ struct GameContext {
     ObjectManager& objectManager;
 };
 
-#define VIS_ALL -1
+inline constexpr auto VIS_ALL = -1;
 
 class ObjectInitializer final {
 public:

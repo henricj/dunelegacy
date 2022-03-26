@@ -20,7 +20,6 @@
 
 #include <GameInitSettings.h>
 
-#include <GUI/Checkbox.h>
 #include <GUI/DropDownBox.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
@@ -34,14 +33,14 @@
 
 #include <Network/ChangeEventList.h>
 
+#include "MenuBase.h"
 #include <DataTypes.h>
 
-#include <list>
+#include <array>
 #include <string>
+#include <vector>
 
-#include "MenuBase.h"
-
-#define MENU_QUIT_GAME_FINISHED (-2)
+inline constexpr auto MENU_QUIT_GAME_FINISHED = -2;
 
 class INIFile;
 
@@ -146,8 +145,9 @@ private:
     std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
     int numHouses;
     std::vector<HOUSETYPE> boundHousesOnMap;
-    uint32_t startGameTime;
-    int brainEqHumanSlot; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
+    uint32_t startGameTime = 0;
+    int brainEqHumanSlot =
+        -1; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
     std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>
         slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
 };

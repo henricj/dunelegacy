@@ -19,7 +19,6 @@
 #define CUTSCENE_H
 
 #include <CutScenes/Scene.h>
-#include <FileClasses/Palette.h>
 #include <FileClasses/Wsafile.h>
 #include <misc/SDL2pp.h>
 

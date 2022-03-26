@@ -28,19 +28,15 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/Random.h>
-#include <misc/RobustList.h>
-#include <misc/SDL2pp.h>
 #include <players/HumanPlayer.h>
 #include <players/Player.h>
 
 #include <DataTypes.h>
 
-#include <stdarg.h>
 #include <string>
 
 #include <array>
 #include <filesystem>
-#include <map>
 #include <unordered_set>
 #include <utility>
 
@@ -53,15 +49,15 @@ class ObjectManager;
 class House;
 class Explosion;
 
-#define END_WAIT_TIME (6 * 1000)
+inline constexpr auto END_WAIT_TIME = 6 * 1000;
 
-#define GAME_NOTHING           -1
-#define GAME_RETURN_TO_MENU    0
-#define GAME_NEXTMISSION       1
-#define GAME_LOAD              2
-#define GAME_DEBRIEFING_WIN    3
-#define GAME_DEBRIEFING_LOST   4
-#define GAME_CUSTOM_GAME_STATS 5
+inline constexpr auto GAME_NOTHING           = -1;
+inline constexpr auto GAME_RETURN_TO_MENU    = 0;
+inline constexpr auto GAME_NEXTMISSION       = 1;
+inline constexpr auto GAME_LOAD              = 2;
+inline constexpr auto GAME_DEBRIEFING_WIN    = 3;
+inline constexpr auto GAME_DEBRIEFING_LOST   = 4;
+inline constexpr auto GAME_CUSTOM_GAME_STATS = 5;
 
 class Game final {
 public:

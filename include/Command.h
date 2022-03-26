@@ -21,8 +21,6 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-#include <misc/SDL2pp.h>
-
 #include <type_traits>
 #include <vector>
 
@@ -115,12 +113,6 @@ public:
         \return the ID of this command
     */
     [[nodiscard]] CMDTYPE getCommandID() const noexcept { return commandID; }
-
-    /**
-        Gets the parameters of this command.
-        \return the parameters of this command
-    */
-    [[nodiscard]] const std::vector<uint32_t> getParameter() const { return parameter; }
 
     /**
         Executes this command. This takes the appropriate actions to run this command.

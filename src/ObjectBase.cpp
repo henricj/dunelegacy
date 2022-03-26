@@ -97,7 +97,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
     selectedByOtherPlayer = false;
 
     forced = false;
-    setTarget(nullptr);
+    ObjectBase::setTarget(nullptr);
     targetFriendly = false;
     attackMode     = GUARD;
 

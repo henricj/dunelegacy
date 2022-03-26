@@ -23,9 +23,10 @@
 
 #include <gsl/gsl>
 
-#define ROCKFILLER  2 // how many times random generator will try to remove sand "holes" for rock from the map
-#define SPICEFILLER 2 // for spice
-#define DUNESFILLER 1
+inline constexpr auto ROCKFILLER =
+    2; // how many times random generator will try to remove sand "holes" for rock from the map
+inline constexpr auto SPICEFILLER = 2; // for spice
+inline constexpr auto DUNESFILLER = 1;
 
 class MapGenerator {
 

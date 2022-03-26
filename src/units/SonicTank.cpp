@@ -35,7 +35,7 @@ SonicTank::SonicTank(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(sonic_tank_constants, objectID, initializer) {
     SonicTank::init();
 
-    setHealth(getMaxHealth());
+    SonicTank::setHealth(getMaxHealth());
 }
 
 SonicTank::SonicTank(uint32_t objectID, const ObjectStreamInitializer& initializer)

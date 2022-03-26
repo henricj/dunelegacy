@@ -21,8 +21,6 @@
 #include "Animation.h"
 #include <misc/SDL2pp.h>
 
-#include <stdarg.h>
-
 /// A class for loading a *.WSA-File.
 /**
     This class can read the animation in a *.WSA-File and return it as SDL_Surfaces.

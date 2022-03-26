@@ -5,19 +5,13 @@
 
 #include <GUI/ClickMap.h>
 #include <GUI/HBox.h>
-#include <GUI/InvisibleButton.h>
 #include <GUI/Label.h>
 #include <GUI/ListBox.h>
-#include <GUI/PictureLabel.h>
-#include <GUI/ProgressBar.h>
-#include <GUI/ScrollBar.h>
-#include <GUI/Spacer.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/SymbolButton.h>
 #include <GUI/TextBox.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
-#include <GUI/Window.h>
 
 #include <Network/ChangeEventList.h>
 #include <Network/LANGameFinderAndAnnouncer.h>

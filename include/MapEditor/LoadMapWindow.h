@@ -18,8 +18,6 @@
 #ifndef LOADMAPWINDOW_H
 #define LOADMAPWINDOW_H
 
-#include <MapEditor/MapData.h>
-
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
 #include <GUI/ListBox.h>

@@ -20,8 +20,6 @@
 
 #include <ObjectBase.h>
 
-#include <list>
-
 struct StructureSmoke {
     StructureSmoke(const Coord& pos, uint32_t gameCycle) : realPos(pos), startGameCycle(gameCycle) { }
 

@@ -20,7 +20,6 @@
 
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <misc/SDL2pp.h>
 
 /**
     This class is the base class for all triggers.

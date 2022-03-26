@@ -23,7 +23,6 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/RobustList.h>
-#include <misc/string_util.h>
 
 class GameInitSettings;
 class Random;

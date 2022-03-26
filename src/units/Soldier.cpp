@@ -31,7 +31,7 @@ Soldier::Soldier(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(soldier_constants, objectID, initializer) {
     Soldier::init();
 
-    setHealth(getMaxHealth());
+    Soldier::setHealth(getMaxHealth());
 }
 
 Soldier::Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer)

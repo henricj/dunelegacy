@@ -26,7 +26,7 @@
 class ClickMap final : public Widget {
 public:
     /// default constructor
-    ClickMap() { enableResizing(true, true); }
+    ClickMap() { ClickMap::enableResizing(true, true); }
 
     /// destructor
     ~ClickMap() override = default;

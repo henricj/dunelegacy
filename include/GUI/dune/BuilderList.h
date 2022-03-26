@@ -23,14 +23,14 @@
 #include <GUI/TextButton.h>
 #include <misc/SDL2pp.h>
 
-static constexpr auto ARROWBTN_WIDTH     = 48;
-static constexpr auto ARROWBTN_HEIGHT    = 16;
-static constexpr auto BUILDERBTN_HEIGHT  = 55;
-static constexpr auto BUILDERBTN_WIDTH   = 91;
-static constexpr auto BUILDERBTN_SPACING = 5;
-static constexpr auto ORDERBTN_HEIGHT    = 16;
+inline constexpr auto ARROWBTN_WIDTH     = 48;
+inline constexpr auto ARROWBTN_HEIGHT    = 16;
+inline constexpr auto BUILDERBTN_HEIGHT  = 55;
+inline constexpr auto BUILDERBTN_WIDTH   = 91;
+inline constexpr auto BUILDERBTN_SPACING = 5;
+inline constexpr auto ORDERBTN_HEIGHT    = 16;
 
-static constexpr auto WIDGET_WIDTH = BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING;
+inline constexpr auto WIDGET_WIDTH = BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING;
 
 class BuilderList final : public StaticContainer {
 public:

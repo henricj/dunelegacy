@@ -21,7 +21,6 @@
 #include <DataTypes.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <misc/SDL2pp.h>
 
 class Explosion final {
 public:

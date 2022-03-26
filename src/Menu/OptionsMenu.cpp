@@ -54,9 +54,9 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    OptionsMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    OptionsMenu::setWindowWidget(&windowWidget);
 
     windowWidget.addWidget(&mainVBox, Point(50, 50), Point(getSize().x - 100, getSize().y - 100));
 
@@ -245,33 +245,33 @@ OptionsMenu::~OptionsMenu() = default;
 void OptionsMenu::onChangeOption(bool bInteractive) {
     bool bChanged = false;
 
-    bChanged |= (settings.general.playerName != nameTextBox.getText());
+    bChanged |= settings.general.playerName != nameTextBox.getText();
     const int languageIndex = languageDropDownBox.getSelectedEntryIntData();
     if (languageIndex >= 0 && languageIndex < availLanguages.size()) {
         const std::string languageFilename = availLanguages[languageIndex];
-        bChanged |= (settings.general.language != languageFilename.substr(languageFilename.size() - 5, 2));
+        bChanged |= settings.general.language != languageFilename.substr(languageFilename.size() - 5, 2);
     }
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
-    bChanged |= ((pPlayerData == nullptr) || (settings.ai.campaignAI != pPlayerData->getPlayerClass()));
-    bChanged |= (settings.general.playIntro != introCheckbox.isChecked());
-    bChanged |= (settings.general.showTutorialHints != showTutorialHintsCheckbox.isChecked());
+    bChanged |= pPlayerData == nullptr || settings.ai.campaignAI != pPlayerData->getPlayerClass();
+    bChanged |= settings.general.playIntro != introCheckbox.isChecked();
+    bChanged |= settings.general.showTutorialHints != showTutorialHintsCheckbox.isChecked();
 
     const int selectedResolution = resolutionDropDownBox.getSelectedEntryIntData();
     if (selectedResolution >= 0) {
-        bChanged |= (settings.video.physicalWidth != availScreenRes[selectedResolution].x);
-        bChanged |= (settings.video.physicalHeight != availScreenRes[selectedResolution].y);
+        bChanged |= settings.video.physicalWidth != availScreenRes[selectedResolution].x;
+        bChanged |= settings.video.physicalHeight != availScreenRes[selectedResolution].y;
     }
-    bChanged |= (settings.video.preferredZoomLevel != zoomlevelDropDownBox.getSelectedEntryIntData());
-    bChanged |= (settings.video.fullscreen != fullScreenCheckbox.isChecked());
-    bChanged |= (settings.video.scaler != scalerDropDownBox.getSelectedEntry());
+    bChanged |= settings.video.preferredZoomLevel != zoomlevelDropDownBox.getSelectedEntryIntData();
+    bChanged |= settings.video.fullscreen != fullScreenCheckbox.isChecked();
+    bChanged |= settings.video.scaler != scalerDropDownBox.getSelectedEntry();
 
-    bChanged |= (settings.audio.playSFX != playSFXCheckbox.isChecked());
-    bChanged |= (settings.audio.playMusic != playMusicCheckbox.isChecked());
+    bChanged |= settings.audio.playSFX != playSFXCheckbox.isChecked();
+    bChanged |= settings.audio.playMusic != playMusicCheckbox.isChecked();
 
-    bChanged |= (settings.gameOptions != currentGameOptions);
+    bChanged |= settings.gameOptions != currentGameOptions;
 
-    bChanged |= (settings.network.serverPort != atoi(portTextBox.getText().c_str()));
-    bChanged |= (settings.network.metaServer != metaServerTextBox.getText());
+    bChanged |= settings.network.serverPort != atoi(portTextBox.getText().c_str());
+    bChanged |= settings.network.metaServer != metaServerTextBox.getText();
 
     acceptButton.setVisible(bChanged);
 }
@@ -298,7 +298,7 @@ void OptionsMenu::onOptionsOK() {
 
     settings.general.playerName        = playername;
     const auto selectedLanguage        = languageDropDownBox.getSelectedEntryIntData();
-    const std::string languageFilename = (selectedLanguage < 0 || selectedLanguage >= availLanguages.size())
+    const std::string languageFilename = selectedLanguage < 0 || selectedLanguage >= availLanguages.size()
                                            ? "English.en.po"
                                            : availLanguages[selectedLanguage];
     settings.general.language          = languageFilename.substr(languageFilename.size() - 5, 2);
@@ -306,11 +306,11 @@ void OptionsMenu::onOptionsOK() {
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();
 
     const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
-    settings.ai.campaignAI = ((pPlayerData != nullptr) ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS);
+    settings.ai.campaignAI = pPlayerData != nullptr ? pPlayerData->getPlayerClass() : DEFAULTAIPLAYERCLASS;
 
     const int selectedResolution  = resolutionDropDownBox.getSelectedEntryIntData();
-    settings.video.physicalWidth  = (selectedResolution >= 0) ? availScreenRes[selectedResolution].x : 0;
-    settings.video.physicalHeight = (selectedResolution >= 0) ? availScreenRes[selectedResolution].y : 0;
+    settings.video.physicalWidth  = selectedResolution >= 0 ? availScreenRes[selectedResolution].x : 0;
+    settings.video.physicalHeight = selectedResolution >= 0 ? availScreenRes[selectedResolution].y : 0;
     const int factor =
         getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
     settings.video.width              = settings.video.physicalWidth / factor;

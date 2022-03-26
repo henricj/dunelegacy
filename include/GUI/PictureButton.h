@@ -25,7 +25,7 @@
 class PictureButton final : public Button {
 public:
     /// Default constructor
-    PictureButton() { enableResizing(false, false); }
+    PictureButton() { PictureButton::enableResizing(false, false); }
 
     /// destructor
     ~PictureButton() override = default;

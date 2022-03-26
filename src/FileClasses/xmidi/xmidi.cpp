@@ -23,20 +23,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using namespace std;
 
-#define TRUE  1
-#define FALSE 0
+#ifndef TRUE
+#    define TRUE true
+#endif
+#ifndef FALSE
+#    define FALSE false
+#endif
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a
 // patch change. This is to ensure that the default state of a midi file is with
 // the tracks centred, unless the first patch change says otherwise.
-#define PATCH_VOL_PAN_BIAS 5
+inline constexpr auto PATCH_VOL_PAN_BIAS = 5;
 
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
 // This is only suitable for music that doesn'tdo timbre changes
 // XMIDIs that contain Timbre changes will not convert properly
-const char XMIDI::mt32asgm[128] = {
+constexpr char XMIDI::mt32asgm[128] = {
     0,   // 0    Piano 1
     1,   // 1    Piano 2
     2,   // 2    Piano 3 (synth)
@@ -169,7 +173,7 @@ const char XMIDI::mt32asgm[128] = {
 
 // Same as above, except include patch changes
 // so GS instruments can be used
-const char XMIDI::mt32asgs[256] = {
+constexpr char XMIDI::mt32asgs[256] = {
     0,   0, // 0    Piano 1
     1,   0, // 1    Piano 2
     2,   0, // 2    Piano 3 (synth)

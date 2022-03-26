@@ -24,7 +24,9 @@
 #include <ScreenBorder.h>
 #include <misc/exceptions.h>
 
-#define CYCLES_PER_FRAME 5
+namespace {
+inline constexpr auto CYCLES_PER_FRAME = 5;
+}
 
 Explosion::Explosion()
     : explosionID(NONE_ID), house(HOUSETYPE::HOUSE_HARKONNEN), currentFrame(0), frameTimer(CYCLES_PER_FRAME) { }

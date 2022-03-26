@@ -33,11 +33,11 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
     const int xpos = std::max(0, (getRendererWidth() - 640) / 2);
     const int ypos = std::max(0, (getRendererHeight() - 400) / 2);
 
-    setCurrentPosition(xpos, ypos, 640, 400);
+    HouseChoiceMenu::setCurrentPosition(xpos, ypos, 640, 400);
 
-    setTransparentBackground(true);
+    HouseChoiceMenu::setTransparentBackground(true);
 
-    setWindowWidget(&windowWidget);
+    HouseChoiceMenu::setWindowWidget(&windowWidget);
 
     selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge));
     windowWidget.addWidget(&selectYourHouseLabel, Point(0, 0), Point(100, 640));
@@ -105,7 +105,7 @@ void HouseChoiceMenu::onHouseLeft() {
         currentHouseChoiceScrollPos--;
         updateHouseChoice();
 
-        houseLeftButton.setVisible((currentHouseChoiceScrollPos > 0));
+        houseLeftButton.setVisible(currentHouseChoiceScrollPos > 0);
         houseRightButton.setVisible(true);
     }
 }
@@ -116,6 +116,6 @@ void HouseChoiceMenu::onHouseRight() {
         updateHouseChoice();
 
         houseLeftButton.setVisible(true);
-        houseRightButton.setVisible((currentHouseChoiceScrollPos < 3));
+        houseRightButton.setVisible(currentHouseChoiceScrollPos < 3);
     }
 }

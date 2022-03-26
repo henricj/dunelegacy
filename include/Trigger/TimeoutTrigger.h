@@ -20,8 +20,6 @@
 
 #include <Trigger/Trigger.h>
 
-#include <vector>
-
 /**
     This trigger is used for ending the game when the game has run for the specified time. What player has won is
    determined by the Lose-Flags.

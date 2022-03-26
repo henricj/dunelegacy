@@ -20,10 +20,7 @@
 
 #include <misc/SDL2pp.h>
 
-#include <cstdarg>
 #include <vector>
-
-#include <misc/sdl_support.h>
 
 /// A class for loading a *.ICN-File and the corresponding *.MAP-File.
 /**

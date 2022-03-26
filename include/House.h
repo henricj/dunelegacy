@@ -22,11 +22,9 @@
 #include <AITeamInfo.h>
 #include <Choam.h>
 #include <DataTypes.h>
-#include <Definitions.h>
 #include <data.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
-#include <players/Player.h>
 
 #include <memory>
 

@@ -25,7 +25,7 @@
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
     : Window(50, 50, 626, 340), gameOptions(initialGameOptions) {
 
-    setWindowWidget(&vbox);
+    GameOptionsWindow::setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
 
     captionlabel.setText(_("Game Options"));
@@ -153,7 +153,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
     const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
 
-    setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
+    GameOptionsWindow::setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
 }
 
 GameOptionsWindow::~GameOptionsWindow() = default;

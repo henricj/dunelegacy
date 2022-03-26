@@ -18,8 +18,6 @@
 #ifndef PLAYERSETTINGSWINDOW_H
 #define PLAYERSETTINGSWINDOW_H
 
-#include <MapEditor/MapData.h>
-
 #include <GUI/Checkbox.h>
 #include <GUI/DropDownBox.h>
 #include <GUI/HBox.h>
@@ -30,8 +28,6 @@
 #include <GUI/VBox.h>
 #include <GUI/Window.h>
 #include <GUI/dune/DigitsTextBox.h>
-
-#include <misc/SDL2pp.h>
 
 // forward declaration
 class MapEditor;

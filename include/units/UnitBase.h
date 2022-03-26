@@ -23,8 +23,6 @@
 
 #include <House.h>
 
-#include <deque>
-
 // forward declarations
 class Tile;
 

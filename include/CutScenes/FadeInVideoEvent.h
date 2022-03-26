@@ -19,7 +19,6 @@
 #define FADEINVIDEOEVENT_H
 
 #include <CutScenes/VideoEvent.h>
-#include <FileClasses/Palette.h>
 #include <misc/SDL2pp.h>
 
 /**

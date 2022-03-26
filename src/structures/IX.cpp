@@ -29,7 +29,7 @@ constexpr StructureBaseConstants ix_constants {IX::item_id, Coord {2, 2}};
 IX::IX(uint32_t objectID, const ObjectInitializer& initializer) : StructureBase(ix_constants, objectID, initializer) {
     IX::init();
 
-    setHealth(getMaxHealth());
+    IX::setHealth(getMaxHealth());
 }
 
 IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer)

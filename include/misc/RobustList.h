@@ -18,8 +18,6 @@
 #ifndef ROBUSTLIST_H
 #define ROBUSTLIST_H
 
-#include <stdlib.h>
-
 /// One list element
 template<typename T>
 class RobustListNode {

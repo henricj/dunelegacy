@@ -26,7 +26,7 @@
 #include <string>
 #include <string_view>
 
-#define INVALID_LINE (-1)
+inline constexpr auto INVALID_LINE = -1;
 
 //!  A class for reading and writing *.ini configuration files.
 /*!

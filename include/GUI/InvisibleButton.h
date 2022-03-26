@@ -23,8 +23,8 @@
 /// A class for a invisible button that can be clicked
 class InvisibleButton final : public Button {
 public:
-    /// Default contructor
-    InvisibleButton() { enableResizing(true, true); }
+    /// Default constructor
+    InvisibleButton() { InvisibleButton::enableResizing(true, true); }
 
     /// destructor
     ~InvisibleButton() override = default;

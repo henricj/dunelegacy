@@ -34,7 +34,7 @@ Quad::Quad(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(quad_constants, objectID, initializer) {
     Quad::init();
 
-    setHealth(getMaxHealth());
+    Quad::setHealth(getMaxHealth());
 }
 
 Quad::Quad(uint32_t objectID, const ObjectStreamInitializer& initializer)

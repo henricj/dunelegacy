@@ -20,8 +20,6 @@
 
 #include <RadarViewBase.h>
 
-#include <DataTypes.h>
-
 #include <misc/SDL2pp.h>
 
 class MapEditor;

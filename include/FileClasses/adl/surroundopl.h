@@ -32,7 +32,7 @@
 // The right-channel is increased in frequency by itself divided by this amount.
 // The right value should not noticeably change the pitch, but it should provide
 // a nice stereo harmonic effect.
-#define FREQ_OFFSET 128.0 // 96.0
+inline constexpr auto FREQ_OFFSET = 128.0; // 96.0
 
 // Number of FNums away from the upper/lower limit before switching to the next
 // block (octave.)  By rights it should be zero, but for some reason this seems
@@ -40,7 +40,7 @@
 // time.  Setting it higher means it will switch blocks sooner and that seems
 // to help.  Don't set it too high or it'll get stuck in an infinite loop if
 // one block is too high and the adjacent block is too low ;-)
-#define NEWBLOCK_LIMIT 32
+inline constexpr auto NEWBLOCK_LIMIT = 32;
 
 #include <memory>
 #include <vector>
@@ -48,7 +48,7 @@
 class CSurroundopl final : public Copl {
 private:
     bool use16bit;
-    static constexpr auto default_bufsize = 4096;
+    static inline constexpr auto default_bufsize = 4096;
     std::vector<short> lbuf, rbuf;
     std::unique_ptr<Copl> a, b;
     uint8_t iFMReg[2][256];

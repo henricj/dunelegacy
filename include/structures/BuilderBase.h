@@ -22,8 +22,9 @@
 
 #include <data.h>
 
+#include <algorithm>
 #include <list>
-#include <string>
+#include <memory>
 
 class BuildItem final {
 public:

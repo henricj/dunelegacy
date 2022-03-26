@@ -22,7 +22,6 @@
 
 #include <SDL2/SDL_mixer.h>
 #include <filesystem>
-#include <string>
 #include <vector>
 
 class DirectoryPlayer final : public MusicPlayer {

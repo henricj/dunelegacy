@@ -33,8 +33,8 @@
 
 #include <algorithm>
 
-#define AIUPDATEINTERVAL 50
-#define REFINERYLIMIT    10
+inline constexpr auto AIUPDATEINTERVAL = 50;
+inline constexpr auto REFINERYLIMIT    = 10;
 
 SmartBot::SmartBot(const GameContext& context, House* associatedHouse, const std::string& playername,
                    const Random& random, Difficulty difficulty)

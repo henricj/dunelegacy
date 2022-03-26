@@ -20,15 +20,12 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/FontManager.h>
 #include <FileClasses/TextManager.h>
 
 #include <House.h>
 
 #include <GUI/Label.h>
 #include <GUI/VBox.h>
-
-#include <misc/string_util.h>
 
 class RefineryAndSiloInterface final : public DefaultStructureInterface {
 public:

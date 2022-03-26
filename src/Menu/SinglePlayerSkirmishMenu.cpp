@@ -25,6 +25,8 @@
 #include <GameInitSettings.h>
 #include <sand.h>
 
+#include "GUI/Spacer.h"
+
 static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseOrder = {
     HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
     HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
@@ -120,7 +122,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
 
     missionCounter.setCount(mission);
     windowWidget.addWidget(&missionCounter,
-                           Point(((getRendererWidth() / 4) * 3 + 160 / 4) - 83 / 2, getRendererHeight() / 2 + 89),
+                           Point(getRendererWidth() / 4 * 3 + 160 / 4 - 83 / 2, getRendererHeight() / 2 + 89),
                            missionCounter.getMinimumSize());
 
     const auto* const pPlus        = pGFXManager->getUIGraphic(UI_Plus);
@@ -129,7 +131,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     missionPlusButton.setOnClick([&] { onMissionIncrement(); });
     windowWidget.addWidget(
         &missionPlusButton,
-        Point(((getRendererWidth() / 4) * 3 + 160 / 4) - getWidth(pPlus) / 2 + 72, getRendererHeight() / 2 + 96),
+        Point(getRendererWidth() / 4 * 3 + 160 / 4 - getWidth(pPlus) / 2 + 72, getRendererHeight() / 2 + 96),
         getTextureSize(pPlus));
 
     const auto* const pMinus        = pGFXManager->getUIGraphic(UI_Minus);
@@ -138,7 +140,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     missionMinusButton.setOnClick([&] { onMissionDecrement(); });
     windowWidget.addWidget(
         &missionMinusButton,
-        Point(((getRendererWidth() / 4) * 3 + 160 / 4) - getWidth(pMinus) / 2 + 72, getRendererHeight() / 2 + 109),
+        Point(getRendererWidth() / 4 * 3 + 160 / 4 - getWidth(pMinus) / 2 + 72, getRendererHeight() / 2 + 109),
         getTextureSize(pMinus));
 }
 
@@ -174,17 +176,17 @@ void SinglePlayerSkirmishMenu::onCancel() {
 void SinglePlayerSkirmishMenu::onSelectHouseButton(int button) {
     selectedButton = button;
 
-    house1Button.setEnabled((selectedButton != 0));
-    house2Button.setEnabled((selectedButton != 1));
-    house3Button.setEnabled((selectedButton != 2));
+    house1Button.setEnabled(selectedButton != 0);
+    house2Button.setEnabled(selectedButton != 1);
+    house3Button.setEnabled(selectedButton != 2);
 
-    house1Picture.setVisible((selectedButton != 0));
-    house2Picture.setVisible((selectedButton != 1));
-    house3Picture.setVisible((selectedButton != 2));
+    house1Picture.setVisible(selectedButton != 0);
+    house2Picture.setVisible(selectedButton != 1);
+    house3Picture.setVisible(selectedButton != 2);
 
-    house1SelectedPicture.setVisible((selectedButton == 0));
-    house2SelectedPicture.setVisible((selectedButton == 1));
-    house3SelectedPicture.setVisible((selectedButton == 2));
+    house1SelectedPicture.setVisible(selectedButton == 0);
+    house2SelectedPicture.setVisible(selectedButton == 1);
+    house3SelectedPicture.setVisible(selectedButton == 2);
 }
 
 void SinglePlayerSkirmishMenu::onHouseLeft() {
@@ -194,7 +196,7 @@ void SinglePlayerSkirmishMenu::onHouseLeft() {
         onSelectHouseButton(selectedButton);
         updateHouseChoice();
 
-        houseLeftButton.setVisible((currentHouseChoiceScrollPos > 0));
+        houseLeftButton.setVisible(currentHouseChoiceScrollPos > 0);
         houseRightButton.setVisible(true);
     }
 }
@@ -207,7 +209,7 @@ void SinglePlayerSkirmishMenu::onHouseRight() {
         updateHouseChoice();
 
         houseLeftButton.setVisible(true);
-        houseRightButton.setVisible((currentHouseChoiceScrollPos < 3));
+        houseRightButton.setVisible(currentHouseChoiceScrollPos < 3);
     }
 }
 

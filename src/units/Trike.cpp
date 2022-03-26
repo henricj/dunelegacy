@@ -34,7 +34,7 @@ Trike::Trike(uint32_t objectID, const ObjectInitializer& initializer)
     : GroundUnit(trike_constants, objectID, initializer) {
     Trike::init();
 
-    setHealth(getMaxHealth());
+    Trike::setHealth(getMaxHealth());
 }
 
 Trike::Trike(uint32_t objectID, const ObjectStreamInitializer& initializer)

@@ -30,12 +30,12 @@
 
 #include <units/InfantryBase.h>
 
-#define MAX_SANDWORMSLEEPTIME 50000
-#define MIN_SANDWORMSLEEPTIME 10000
-
-#define SANDWORM_ATTACKFRAMETIME 10
-
 namespace {
+inline constexpr auto MAX_SANDWORMSLEEPTIME = 50000;
+inline constexpr auto MIN_SANDWORMSLEEPTIME = 10000;
+
+inline constexpr auto SANDWORM_ATTACKFRAMETIME = 10;
+
 class SandwormConstants : public GroundUnitConstants {
 public:
     constexpr SandwormConstants() : GroundUnitConstants {Sandworm::item_id} { canAttackStuff_ = true; }

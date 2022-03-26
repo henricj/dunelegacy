@@ -27,7 +27,6 @@
 #include <GUI/TextBox.h>
 #include <GUI/VBox.h>
 
-#include <misc/draw_util.h>
 #include <misc/string_util.h>
 
 #include <limits>
@@ -36,9 +35,7 @@
 class DigitsTextBox final : public HBox {
 
 public:
-    DigitsTextBox()
-        : incrementValue(1), maxValue(std::numeric_limits<int>::max()), minValue(std::numeric_limits<int>::min()) {
-
+    DigitsTextBox() {
         textBox.setText("0");
         textBox.setAllowedChars("-0123456789");
         textBox.setOnLostFocus([this] { onTextBoxLostFocus(); });
@@ -225,10 +222,10 @@ private:
 
     std::function<void(bool)> pOnValueChange;
 
-    int minValue;
-    int maxValue;
+    int minValue = std::numeric_limits<int>::min();
+    int maxValue = std::numeric_limits<int>::max();
 
-    int incrementValue;
+    int incrementValue = 1;
 
     HOUSETYPE house {HOUSETYPE::HOUSE_HARKONNEN};
 };

@@ -23,8 +23,6 @@
 
 #include <Renderer/DuneRenderer.h>
 
-#include <misc/sdl_support.h>
-
 /**
     Return the pixel value at (x, y) in surface
     NOTE: The surface must be locked before calling this!

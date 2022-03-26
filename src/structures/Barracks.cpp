@@ -23,14 +23,14 @@
 #include <House.h>
 
 namespace {
-const BuilderBaseConstants barracks_constants {Barracks::item_id, Coord {2, 2}};
+constexpr BuilderBaseConstants barracks_constants {Barracks::item_id, Coord {2, 2}};
 }
 
 Barracks::Barracks(uint32_t objectID, const ObjectInitializer& initializer)
     : BuilderBase(barracks_constants, objectID, initializer) {
     Barracks::init();
 
-    setHealth(getMaxHealth());
+    Barracks::setHealth(getMaxHealth());
 }
 
 Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer)

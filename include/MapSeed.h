@@ -18,8 +18,6 @@
 #ifndef MAPSEED_H
 #define MAPSEED_H
 
-#include <misc/SDL2pp.h>
-
 #include <MapEditor/MapData.h>
 
 void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap);

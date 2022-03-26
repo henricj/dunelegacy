@@ -29,7 +29,6 @@
 
 #include <INIMap/INIMapEditorLoader.h>
 
-#include <ScreenBorder.h>
 #include <misc/SDL2pp.h>
 
 #include <AITeamInfo.h>

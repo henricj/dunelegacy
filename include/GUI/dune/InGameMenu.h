@@ -19,7 +19,6 @@
 #define INGAMEMENU_H
 
 #include <GUI/HBox.h>
-#include <GUI/Spacer.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 #include <GUI/Window.h>

@@ -38,7 +38,7 @@
 
 #include <algorithm>
 
-#define AIUPDATEINTERVAL 50
+inline constexpr auto AIUPDATEINTERVAL = 50;
 
 /**
  TODO

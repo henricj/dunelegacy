@@ -18,9 +18,6 @@
 #ifndef INIMAPPREVIEWCREATOR_H
 #define INIMAPPREVIEWCREATOR_H
 
-#include <DataTypes.h>
-#include <FileClasses/INIFile.h>
-
 #include <INIMap/INIMap.h>
 #include <misc/SDL2pp.h>
 

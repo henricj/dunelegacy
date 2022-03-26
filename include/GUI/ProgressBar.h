@@ -19,6 +19,8 @@
 #define PROGRESSBAR_H
 
 #include "WidgetWithBackground.h"
+
+#include "misc/DrawingRectHelper.h"
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 
@@ -37,11 +39,11 @@ public:
         color       = COLOR_DEFAULT;
         bDrawShadow = false;
         pForeground = nullptr;
-        enableResizing(true, true);
+        ProgressBar::enableResizing(true, true);
     }
 
     /// destructor
-    ~ProgressBar() override { invalidateTextures(); }
+    ~ProgressBar() override { ProgressBar::invalidateTextures(); }
 
     ProgressBar(const ProgressBar&) = delete;
     ProgressBar(ProgressBar&&)      = delete;

@@ -19,15 +19,12 @@
 #define MENTATMENU_H
 
 #include "MenuBase.h"
-#include <GUI/Button.h>
 #include <GUI/Label.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/dune/AnimationLabel.h>
 
 #include <misc/SDL2pp.h>
-#include <misc/string_util.h>
 
-#include <cstdio>
 #include <string>
 
 class MentatMenu : public MenuBase {
@@ -75,8 +72,8 @@ protected:
     uint32_t nextSpecialAnimation;
 
     std::vector<std::string> mentatTexts;
-    int currentMentatTextIndex;
-    uint32_t nextMentatTextSwitch;
+    int currentMentatTextIndex    = -1;
+    uint32_t nextMentatTextSwitch = 0;
     HOUSETYPE house;
 
     StaticContainer windowWidget;

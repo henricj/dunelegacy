@@ -25,6 +25,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include "GUI/Spacer.h"
+
 #include <Game.h>
 #include <House.h>
 #include <sand.h>
@@ -35,9 +37,9 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    CustomGameStatsMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    CustomGameStatsMenu::setWindowWidget(&windowWidget);
 
     const Uint32 localHouseColor =
         SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
@@ -103,8 +105,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         curHouseStat.value1.setTextColor(textcolor);
         curHouseStat.houseHBox.addWidget(&curHouseStat.value1, 50);
         curHouseStat.houseHBox.addWidget(HSpacer::create(2));
-        curHouseStat.progressBar1.setProgress((maxBuiltValue == 0) ? 0.0f
-                                                                   : (house.getBuiltValue() * 100.0f / maxBuiltValue));
+        curHouseStat.progressBar1.setProgress(maxBuiltValue == 0 ? 0.0f
+                                                                 : house.getBuiltValue() * 100.0f / maxBuiltValue);
         curHouseStat.progressBar1.setDrawShadow(true);
         curHouseStat.progressBar1.setColor(progresscolor);
         curHouseStat.vBox1.addWidget(Spacer::create(), 0.5);
@@ -121,7 +123,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         curHouseStat.houseHBox.addWidget(&curHouseStat.value2, 50);
         curHouseStat.houseHBox.addWidget(HSpacer::create(2));
         curHouseStat.progressBar2.setProgress(
-            (maxDestroyedValue == 0) ? 0.0f : (house.getDestroyedValue() * 100.0f / maxDestroyedValue));
+            maxDestroyedValue == 0 ? 0.0f : house.getDestroyedValue() * 100.0f / maxDestroyedValue);
         curHouseStat.progressBar2.setDrawShadow(true);
         curHouseStat.progressBar2.setColor(progresscolor);
         curHouseStat.vBox2.addWidget(Spacer::create(), 0.5);
@@ -138,7 +140,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         curHouseStat.houseHBox.addWidget(&curHouseStat.value3, 50);
         curHouseStat.houseHBox.addWidget(HSpacer::create(2));
         curHouseStat.progressBar3.setProgress(
-            (maxSpiceHarvested == 0.0f) ? 0.0f : (house.getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested));
+            maxSpiceHarvested == 0.0f ? 0.0f : house.getHarvestedSpice().toFloat() * 100.0f / maxSpiceHarvested);
         curHouseStat.progressBar3.setDrawShadow(true);
         curHouseStat.progressBar3.setColor(progresscolor);
         curHouseStat.vBox3.addWidget(Spacer::create(), 0.5);
@@ -161,7 +163,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
 
     buttonHBox.addWidget(HSpacer::create(70));
     const int totalTime = currentGame->getGameTime() / 1000;
-    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, (totalTime % 3600) / 60));
+    timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, totalTime % 3600 / 60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);
 

@@ -19,7 +19,6 @@
 #define SINGLEPLAYERMENU_H
 
 #include "MenuBase.h"
-#include <GUI/PictureButton.h>
 #include <GUI/PictureLabel.h>
 #include <GUI/Spacer.h>
 #include <GUI/StaticContainer.h>

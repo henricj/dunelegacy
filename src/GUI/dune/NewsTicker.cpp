@@ -22,9 +22,9 @@
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>
 
-#define MESSAGESCROLLSPEED 16
-#define MESSAGESCROLLTIME  (16 * MESSAGESCROLLSPEED)
-#define MESSAGETIME        (16 * MESSAGESCROLLSPEED)
+inline constexpr auto MESSAGESCROLLSPEED = 16;
+inline constexpr auto MESSAGESCROLLTIME  = (16 * MESSAGESCROLLSPEED);
+inline constexpr auto MESSAGETIME        = (16 * MESSAGESCROLLSPEED);
 
 NewsTicker::NewsTicker()
     : pBackground(pGFXManager->getUIGraphic(UI_MessageBox)), pCurrentMessageTexture(nullptr), timer(-MESSAGETIME) {

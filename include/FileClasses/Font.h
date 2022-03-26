@@ -20,6 +20,8 @@
 
 #include <string_view>
 
+struct SDL_Surface;
+
 class Font {
 public:
     Font()          = default;

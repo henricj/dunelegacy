@@ -21,36 +21,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef RANDGEN_XMIDI_H
 #define RANDGEN_XMIDI_H
 
-#include <cstring>
 //#include <windows.h>
 #include "databuf.h"
 
-#define BOOL int
+using BOOL = int;
 
 // Conversion types for Midi files
-#define XMIDI_CONVERT_NOCONVERSION      0
-#define XMIDI_CONVERT_MT32_TO_GM        1
-#define XMIDI_CONVERT_MT32_TO_GS        2
-#define XMIDI_CONVERT_MT32_TO_GS127     3 // This one is broken so don't use
-#define XMIDI_CONVERT_MT32_TO_GS127DRUM 4 // This one is broken so don't use
-#define XMIDI_CONVERT_GS127_TO_GS       5
+inline constexpr auto XMIDI_CONVERT_NOCONVERSION      = 0;
+inline constexpr auto XMIDI_CONVERT_MT32_TO_GM        = 1;
+inline constexpr auto XMIDI_CONVERT_MT32_TO_GS        = 2;
+inline constexpr auto XMIDI_CONVERT_MT32_TO_GS127     = 3; // This one is broken so don't use
+inline constexpr auto XMIDI_CONVERT_MT32_TO_GS127DRUM = 4; // This one is broken so don't use
+inline constexpr auto XMIDI_CONVERT_GS127_TO_GS       = 5;
 
 // Midi Status Bytes
-#define MIDI_STATUS_NOTE_OFF    0x8
-#define MIDI_STATUS_NOTE_ON     0x9
-#define MIDI_STATUS_AFTERTOUCH  0xA
-#define MIDI_STATUS_CONTROLLER  0xB
-#define MIDI_STATUS_PROG_CHANGE 0xC
-#define MIDI_STATUS_PRESSURE    0xD
-#define MIDI_STATUS_PITCH_WHEEL 0xE
-#define MIDI_STATUS_SYSEX       0xF
+inline constexpr auto MIDI_STATUS_NOTE_OFF    = 0x8;
+inline constexpr auto MIDI_STATUS_NOTE_ON     = 0x9;
+inline constexpr auto MIDI_STATUS_AFTERTOUCH  = 0xA;
+inline constexpr auto MIDI_STATUS_CONTROLLER  = 0xB;
+inline constexpr auto MIDI_STATUS_PROG_CHANGE = 0xC;
+inline constexpr auto MIDI_STATUS_PRESSURE    = 0xD;
+inline constexpr auto MIDI_STATUS_PITCH_WHEEL = 0xE;
+inline constexpr auto MIDI_STATUS_SYSEX       = 0xF;
 
 // XMIDI Controllers
-#define XMIDI_CONTROLLER_FOR_LOOP   116
-#define XMIDI_CONTROLLER_NEXT_BREAK 117
+inline constexpr auto XMIDI_CONTROLLER_FOR_LOOP   = 116;
+inline constexpr auto XMIDI_CONTROLLER_NEXT_BREAK = 117;
 
 // Maximum number of for loops we'll allow
-#define XMIDI_MAX_FOR_LOOP_COUNT 128
+inline constexpr auto XMIDI_MAX_FOR_LOOP_COUNT = 128;
 
 struct midi_event {
     int time {0};

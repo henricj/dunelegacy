@@ -24,8 +24,6 @@
 #include <Renderer/DuneTextures.h>
 
 #include "Animation.h"
-#include "Shpfile.h"
-#include "Wsafile.h"
 #include "misc/Random.h"
 
 #include <DataTypes.h>

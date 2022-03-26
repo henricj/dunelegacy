@@ -34,9 +34,9 @@ MainMenu::MainMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    MainMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    MainMenu::setWindowWidget(&windowWidget);
 
     // set up pictures in the background
     // set up pictures in the background

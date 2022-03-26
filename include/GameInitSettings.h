@@ -19,7 +19,6 @@
 #define GAMEINITINFOCLASS_H
 
 #include "DataTypes.h"
-#include "Definitions.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 

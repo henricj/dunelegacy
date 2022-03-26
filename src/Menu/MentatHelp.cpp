@@ -110,7 +110,7 @@ void MentatHelp::drawSpecificStuff() {
 }
 
 bool MentatHelp::doInput(SDL_Event& event) {
-    if ((!mentatTopicsList.isVisible()) && (event.type == SDL_MOUSEBUTTONDOWN)) {
+    if (!mentatTopicsList.isVisible() && event.type == SDL_MOUSEBUTTONDOWN) {
         showNextMentatText();
         return true;
     }
@@ -156,7 +156,7 @@ void MentatHelp::onListBoxClick() {
     std::string text;
     std::string name;
 
-    const int missionnumber = ((mission + 1) / 3) + 1;
+    const int missionnumber = (mission + 1) / 3 + 1;
 
     if (mentatEntry.filename == "0") {
         animID = getMissionSpecificAnim(missionnumber);

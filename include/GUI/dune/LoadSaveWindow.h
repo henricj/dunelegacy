@@ -18,7 +18,6 @@
 #ifndef LOADSAVEWINDOW_H
 #define LOADSAVEWINDOW_H
 
-#include <Definitions.h>
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
 #include <GUI/ListBox.h>

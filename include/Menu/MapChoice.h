@@ -23,20 +23,18 @@
 #include <GUI/dune/MessageTicker.h>
 #include <misc/BlendBlitter.h>
 #include <misc/SDL2pp.h>
-#include <misc/draw_util.h>
 
 #include <array>
-#include <mmath.h>
 #include <vector>
 
-static constexpr auto MAPCHOICESTATE_FADEINPLANET = 0;
-static constexpr auto MAPCHOICESTATE_SHOWPLANET   = 1;
-static constexpr auto MAPCHOICESTATE_BLENDPLANET  = 2;
-static constexpr auto MAPCHOICESTATE_SHOWMAPONLY  = 3;
-static constexpr auto MAPCHOICESTATE_BLENDMAP     = 4;
-static constexpr auto MAPCHOICESTATE_BLENDING     = 5;
-static constexpr auto MAPCHOICESTATE_ARROWS       = 6;
-static constexpr auto MAPCHOICESTATE_BLINKING     = 7;
+inline constexpr auto MAPCHOICESTATE_FADEINPLANET = 0;
+inline constexpr auto MAPCHOICESTATE_SHOWPLANET   = 1;
+inline constexpr auto MAPCHOICESTATE_BLENDPLANET  = 2;
+inline constexpr auto MAPCHOICESTATE_SHOWMAPONLY  = 3;
+inline constexpr auto MAPCHOICESTATE_BLENDMAP     = 4;
+inline constexpr auto MAPCHOICESTATE_BLENDING     = 5;
+inline constexpr auto MAPCHOICESTATE_ARROWS       = 6;
+inline constexpr auto MAPCHOICESTATE_BLINKING     = 7;
 
 class MapChoice final : public MenuBase {
 public:

@@ -63,7 +63,7 @@
 // Basic Adlib Programming:
 // http://www.gamedev.net/reference/articles/article446.asp
 
-#define CALLBACKS_PER_SECOND 72
+inline constexpr auto CALLBACKS_PER_SECOND = 72;
 
 #define ADLIB_ARRAYSIZE(x) ((int)(sizeof(x) / sizeof(x[0])))
 

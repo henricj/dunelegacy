@@ -21,14 +21,14 @@
 
 #include <FileClasses/FontManager.h>
 
-#define MESSAGESCROLLSPEED 5
-#define MESSAGESCROLLTIME  (20 * MESSAGESCROLLSPEED)
-#define MESSAGETIME        (15 * MESSAGESCROLLSPEED)
+inline constexpr auto MESSAGESCROLLSPEED = 5;
+inline constexpr auto MESSAGESCROLLTIME  = (20 * MESSAGESCROLLSPEED);
+inline constexpr auto MESSAGETIME        = (15 * MESSAGESCROLLSPEED);
 
 MessageTicker::MessageTicker() : timer(-MESSAGETIME) {
-    enableResizing(false, false);
+    MessageTicker::enableResizing(false, false);
 
-    Widget::resize(0, 0);
+    MessageTicker::resize(0, 0);
 }
 
 MessageTicker::~MessageTicker() = default;

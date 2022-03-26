@@ -21,13 +21,12 @@
 #include "Animation.h"
 #include <misc/SDL2pp.h>
 
-#include <cstdarg>
 #include <vector>
 
-#define TILE_NORMAL 0x00010000
-#define TILE_FLIPH  0x00100000
-#define TILE_FLIPV  0x01000000
-#define TILE_ROTATE 0x10000000
+inline constexpr auto TILE_NORMAL = 0x00010000;
+inline constexpr auto TILE_FLIPH  = 0x00100000;
+inline constexpr auto TILE_FLIPV  = 0x01000000;
+inline constexpr auto TILE_ROTATE = 0x10000000;
 
 #define TILE_GETINDEX(x) (x & 0x0000FFFF)
 #define TILE_GETTYPE(x)  (x & 0xFFFF0000)

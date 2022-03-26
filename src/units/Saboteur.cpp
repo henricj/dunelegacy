@@ -40,7 +40,7 @@ Saboteur::Saboteur(uint32_t objectID, const ObjectInitializer& initializer)
     : InfantryBase(saboteur_constants, objectID, initializer) {
     Saboteur::init();
 
-    setHealth(getMaxHealth());
+    Saboteur::setHealth(getMaxHealth());
 
     setVisible(VIS_ALL, false);
     setVisible(getOwner()->getTeamID(), true);

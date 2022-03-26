@@ -20,9 +20,6 @@
 
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <SDL2/SDL_mixer.h>
-#include <vector>
-
 // Forward declarations
 class SoundAdlibPC;
 

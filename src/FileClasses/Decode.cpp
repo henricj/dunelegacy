@@ -17,8 +17,8 @@
 
 #include <FileClasses/Decode.h>
 
-#include <misc/dune_endian.h>
 #include <misc/SDL2pp.h>
+#include <misc/dune_endian.h>
 #include <misc/exceptions.h>
 
 void memcpy_overlap(unsigned char* dst, const unsigned char* src, unsigned cnt) {

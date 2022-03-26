@@ -25,7 +25,6 @@
 
 #include <functional>
 #include <string>
-#include <vector>
 
 /// A class for a dropdown box widget
 class DropDownBox final : public Widget {

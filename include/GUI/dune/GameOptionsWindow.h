@@ -23,7 +23,6 @@
 #include <GUI/Label.h>
 #include <GUI/PictureButton.h>
 #include <GUI/ProgressBar.h>
-#include <GUI/Spacer.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 #include <GUI/Window.h>

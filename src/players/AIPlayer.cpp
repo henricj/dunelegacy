@@ -34,7 +34,7 @@
 #include <algorithm>
 #include <array>
 
-#define AIUPDATEINTERVAL 50
+inline constexpr auto AIUPDATEINTERVAL = 50;
 
 AIPlayer::AIPlayer(const GameContext& context, House* associatedHouse, const std::string& playername,
                    const Random& random, Difficulty difficulty)

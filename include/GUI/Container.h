@@ -36,7 +36,7 @@ public:
     /// default constructor
     Container() : Widget() {
         pActiveChildWidget = nullptr;
-        enableResizing(true, true);
+        Container::enableResizing(true, true);
     }
 
     /// destructor

@@ -25,9 +25,9 @@
 #include <Map.h>
 #include <SoundPlayer.h>
 
-#define ORNITHOPTER_FRAMETIME 3
-
 namespace {
+inline constexpr auto ORNITHOPTER_FRAMETIME = 3;
+
 constexpr AirUnitConstants ornithopter_constants {Ornithopter::item_id, 1, Bullet_SmallRocket};
 } // namespace
 
@@ -36,7 +36,7 @@ Ornithopter::Ornithopter(uint32_t objectID, const ObjectInitializer& initializer
 
     Ornithopter::init();
 
-    setHealth(getMaxHealth());
+    Ornithopter::setHealth(getMaxHealth());
 }
 
 Ornithopter::Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initializer)

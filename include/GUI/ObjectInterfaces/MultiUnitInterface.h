@@ -22,6 +22,7 @@
 
 #include <globals.h>
 
+#include "GUI/Spacer.h"
 #include <GUI/HBox.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/VBox.h>
@@ -49,9 +50,10 @@ protected:
     MultiUnitInterface(const GameContext& context) : context_ {context} {
         const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
-        addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
+        MultiUnitInterface::addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
 
-        addWidget(&mainHBox, Point(0, 80), Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
+        MultiUnitInterface::addWidget(&mainHBox, Point(0, 80),
+                                      Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
 
         topBox.addWidget(&topBoxHBox, Point(0, 22), Point(SIDEBARWIDTH - 25, 58));
 

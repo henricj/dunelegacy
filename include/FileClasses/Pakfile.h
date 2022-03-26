@@ -21,12 +21,10 @@
 #include <misc/SDL2pp.h>
 
 #include <filesystem>
-#include <inttypes.h>
-#include <stdio.h>
 #include <string>
 #include <vector>
 
-#define PAKFILE_RWOP_TYPE 0x9A5F17EC
+inline constexpr auto PAKFILE_RWOP_TYPE = 0x9a5f17ecU;
 
 /// A class for reading PAK-Files.
 /**
@@ -50,7 +48,7 @@ private:
     };
 
 public:
-    Pakfile(const std::filesystem::path& pakfilename, bool write = false);
+    explicit Pakfile(const std::filesystem::path& pakfilename, bool write = false);
     ~Pakfile();
 
     [[nodiscard]] const std::filesystem::path& getFilename(unsigned int index) const;

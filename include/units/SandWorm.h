@@ -18,7 +18,7 @@
 #ifndef SANDWORM_H
 #define SANDWORM_H
 
-#define SANDWORM_SEGMENTS 4 // how many shimmer things will be drawn per worm
+inline constexpr auto SANDWORM_SEGMENTS = 4; // how many shimmer things will be drawn per worm}
 
 #include <units/GroundUnit.h>
 

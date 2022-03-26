@@ -26,12 +26,12 @@
 #include <list>
 #include <string>
 
-#define LANGAME_ANNOUNCER_PORT               28746
-#define LANGAME_ANNOUNCER_INTERVAL           3000
-#define LANGAME_ANNOUNCER_MAGICNUMBER        82071105
-#define LANGAME_ANNOUNCER_MAXGAMENAMESIZE    32
-#define LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE 32
-#define LANGAME_ANNOUNCER_MAXMAPNAMESIZE     64
+inline constexpr auto LANGAME_ANNOUNCER_PORT               = 28746;
+inline constexpr auto LANGAME_ANNOUNCER_INTERVAL           = 3000;
+inline constexpr auto LANGAME_ANNOUNCER_MAGICNUMBER        = 82071105;
+inline constexpr auto LANGAME_ANNOUNCER_MAXGAMENAMESIZE    = 32;
+inline constexpr auto LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE = 32;
+inline constexpr auto LANGAME_ANNOUNCER_MAXMAPNAMESIZE     = 64;
 
 class LANGameFinderAndAnnouncer {
 public:

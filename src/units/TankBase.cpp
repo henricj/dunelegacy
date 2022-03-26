@@ -29,7 +29,7 @@
 
 #include <structures/StructureBase.h>
 
-#define RANDOMTURRETTURNTIMER 8000 // less of this makes tank turrets randomly turn more
+inline constexpr auto RANDOMTURRETTURNTIMER = 8000; // less of this makes tank turrets randomly turn more
 
 TankBase::TankBase(const TankBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(constants, objectID, initializer),

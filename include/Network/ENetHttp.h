@@ -21,7 +21,7 @@
 #include <map>
 #include <string>
 
-#define PORT_HTTP 80
+inline constexpr auto PORT_HTTP = 80;
 
 std::string getDomainFromURL(const std::string& url);
 

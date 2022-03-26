@@ -36,7 +36,9 @@
 #include <units/AirUnit.h>
 #include <units/InfantryBase.h>
 
-#define FOGTIME MILLI2CYCLES(10 * 1000)
+namespace {
+inline constexpr auto FOGTIME = MILLI2CYCLES(10 * 1000);
+}
 
 Tile::Tile() : type(Terrain_Sand) {
 

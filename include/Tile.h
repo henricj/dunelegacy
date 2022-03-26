@@ -20,18 +20,15 @@
 
 #include <DataTypes.h>
 #include <data.h>
-#include <mmath.h>
 
 #include <fixmath/FixPoint.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
-#include "FileClasses/GFXManager.h"
-#include <algorithm>
-#include <list>
+#include <array>
 #include <vector>
 
-#define DAMAGE_PER_TILE 5
+inline constexpr auto DAMAGE_PER_TILE = 5;
 
 // forward declarations
 class House;

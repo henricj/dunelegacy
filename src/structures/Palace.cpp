@@ -35,7 +35,7 @@
 
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 
-#define PALACE_DEATHHAND_WEAPONDAMAGE 100
+inline constexpr auto PALACE_DEATHHAND_WEAPONDAMAGE = 100;
 
 namespace {
 class PalaceConstants : public StructureBaseConstants {
@@ -50,7 +50,7 @@ Palace::Palace(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(palace_constants, objectID, initializer), specialWeaponTimer(getMaxSpecialWeaponTimer()) {
     Palace::init();
 
-    setHealth(getMaxHealth());
+    Palace::setHealth(getMaxHealth());
 
     // TODO: Special weapon is available immediately but AI uses it only after first visual contact
     // specialTimer = 1; // we want the special weapon to be immediately ready

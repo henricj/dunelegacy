@@ -21,9 +21,9 @@
 #include "Font.h"
 
 #include <misc/SDL2pp.h>
-#include <misc/sdl_support.h>
 
 #include <map>
+#include <memory>
 #include <string_view>
 
 /// A class for managing fonts.

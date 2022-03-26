@@ -22,16 +22,14 @@
 
 #include <DataTypes.h>
 
-#include <misc/SDL2pp.h>
-
 #include <functional>
 
-#define NUM_STATIC_FRAMES     21
-#define NUM_STATIC_FRAME_TIME 5
+inline constexpr auto NUM_STATIC_FRAMES     = 21;
+inline constexpr auto NUM_STATIC_FRAME_TIME = 5;
 
-#define RADARVIEW_BORDERTHICKNESS 2
-#define RADARWIDTH                128
-#define RADARHEIGHT               128
+inline constexpr auto RADARVIEW_BORDERTHICKNESS = 2;
+inline constexpr auto RADARWIDTH                = 128;
+inline constexpr auto RADARHEIGHT               = 128;
 
 /// This class manages the mini map at the top right corner of the screen
 class RadarViewBase : public Widget {
@@ -40,7 +38,8 @@ public:
         Constructor
     */
     RadarViewBase() : Widget(), bRadarInteraction(false) {
-        resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS), RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
+        RadarViewBase::resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),
+                              RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
     }
 
     /**

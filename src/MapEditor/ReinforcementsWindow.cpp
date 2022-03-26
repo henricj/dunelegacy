@@ -41,9 +41,9 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
-    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    ReinforcementsWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    setWindowWidget(&mainHBox);
+    ReinforcementsWindow::setWindowWidget(&mainHBox);
 
     mainHBox.addWidget(HSpacer::create(16));
     mainHBox.addWidget(&mainVBox);

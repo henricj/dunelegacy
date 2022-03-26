@@ -19,10 +19,8 @@
 #define INIMAPLOADER_H
 
 #include <DataTypes.h>
-#include <FileClasses/INIFile.h>
 
 #include <INIMap/INIMap.h>
-#include <misc/SDL2pp.h>
 
 #include <filesystem>
 #include <map>

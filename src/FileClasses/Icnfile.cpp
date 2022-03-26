@@ -26,8 +26,10 @@
 #include <cstdio>
 #include <cstdlib>
 
-#define SIZE_X 16
-#define SIZE_Y 16
+namespace {
+inline constexpr auto SIZE_X = 16;
+inline constexpr auto SIZE_Y = 16;
+} // namespace
 
 /// Constructor
 /**

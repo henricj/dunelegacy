@@ -4,7 +4,6 @@
 #include <fmt/core.h>
 
 #include <array>
-#include <cstring>
 
 namespace dune {
 

@@ -18,7 +18,6 @@
 #ifndef DEVASTATOR_H
 #define DEVASTATOR_H
 
-#include <FileClasses/GFXManager.h>
 #include <units/TrackedUnit.h>
 
 class Devastator final : public TrackedUnit {

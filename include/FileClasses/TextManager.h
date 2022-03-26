@@ -29,12 +29,10 @@
 #include <string_view>
 #include <vector>
 
-#include <algorithm>
-
-#define MISSION_DESCRIPTION 0
-#define MISSION_WIN         1
-#define MISSION_LOSE        2
-#define MISSION_ADVICE      3
+inline constexpr auto MISSION_DESCRIPTION = 0;
+inline constexpr auto MISSION_WIN         = 1;
+inline constexpr auto MISSION_LOSE        = 2;
+inline constexpr auto MISSION_ADVICE      = 3;
 
 class TextManager {
 public:

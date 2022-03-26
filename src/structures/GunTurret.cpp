@@ -31,7 +31,7 @@ GunTurret::GunTurret(uint32_t objectID, const ObjectInitializer& initializer)
     : TurretBase(gun_turret_constants, objectID, initializer) {
     GunTurret::init();
 
-    setHealth(getMaxHealth());
+    GunTurret::setHealth(getMaxHealth());
 }
 
 GunTurret::GunTurret(uint32_t objectID, const ObjectStreamInitializer& initializer)

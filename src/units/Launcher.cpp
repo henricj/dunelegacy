@@ -35,7 +35,7 @@ Launcher::Launcher(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(launcher_constants, objectID, initializer) {
     Launcher::init();
 
-    setHealth(getMaxHealth());
+    Launcher::setHealth(getMaxHealth());
 }
 
 Launcher::Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer)

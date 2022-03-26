@@ -31,7 +31,7 @@ LightFactory::LightFactory(uint32_t objectID, const ObjectInitializer& initializ
     : BuilderBase(light_factory_constants, objectID, initializer) {
     LightFactory::init();
 
-    setHealth(getMaxHealth());
+    LightFactory::setHealth(getMaxHealth());
 }
 
 LightFactory::LightFactory(uint32_t objectID, const ObjectStreamInitializer& initializer)

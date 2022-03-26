@@ -46,7 +46,7 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse, int mission, int type)
 
     int mission_number;
     if (mission != 22) {
-        mission_number = ((mission + 1) / 3) + 1;
+        mission_number = (mission + 1) / 3 + 1;
     } else {
         mission_number = 9;
     }

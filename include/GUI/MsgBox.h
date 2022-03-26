@@ -29,7 +29,6 @@
 #include <misc/SDL2pp.h>
 
 #include <algorithm>
-#include <iostream>
 
 /// A simple class for a message box
 class MsgBox : public Window {

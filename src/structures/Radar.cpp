@@ -32,7 +32,7 @@ Radar::Radar(uint32_t objectID, const ObjectInitializer& initializer)
     : StructureBase(radar_constants, objectID, initializer) {
     Radar::init();
 
-    setHealth(getMaxHealth());
+    Radar::setHealth(getMaxHealth());
 }
 
 Radar::Radar(uint32_t objectID, const ObjectStreamInitializer& initializer)

@@ -123,12 +123,12 @@ void MenuBase::drawSpecificStuff() { }
 
 bool MenuBase::doInput(SDL_Event& event) {
     switch (event.type) {
-        case (SDL_KEYDOWN): {
+        case SDL_KEYDOWN: {
             // Look for a keypress
             switch (event.key.keysym.sym) {
 
                 case SDLK_ESCAPE: {
-                    if ((pChildWindow == nullptr) && (bAllowQuiting)) {
+                    if (pChildWindow == nullptr && bAllowQuiting) {
                         quit();
                     }
                 } break;
@@ -170,7 +170,7 @@ bool MenuBase::doInput(SDL_Event& event) {
         } break;
 
         case SDL_QUIT: {
-            if ((pChildWindow == nullptr) && (bAllowQuiting)) {
+            if (pChildWindow == nullptr && bAllowQuiting) {
                 quit();
             }
         } break;

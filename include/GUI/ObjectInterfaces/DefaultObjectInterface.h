@@ -20,19 +20,16 @@
 
 #include "ObjectInterface.h"
 
+#include "GUI/Spacer.h"
 #include <GUI/PictureLabel.h>
+#include <misc/exceptions.h>
 
 #include <globals.h>
 
 #include <Game.h>
-
 #include <sand.h>
 
-#include <misc/exceptions.h>
-
-#include <House.h>
 #include <ObjectBase.h>
-#include <units/UnitBase.h>
 
 class DefaultObjectInterface : public ObjectInterface {
 public:
@@ -54,9 +51,10 @@ protected:
         this->objectID = objectID;
         itemID         = pObject->getItemID();
 
-        addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
+        DefaultObjectInterface::addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
 
-        addWidget(&mainHBox, Point(0, 80), Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
+        DefaultObjectInterface::addWidget(&mainHBox, Point(0, 80),
+                                          Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
 
         topBox.addWidget(&topBoxHBox, Point(0, 22), Point(SIDEBARWIDTH - 25, 58));
 

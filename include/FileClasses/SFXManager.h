@@ -25,9 +25,6 @@
 #include <array>
 #include <string>
 
-#define NUM_MAPCHOICEPIECES 28
-#define NUM_MAPCHOICEARROWS 9
-
 // Voice
 enum class Voice_enum {
     HarvesterDeployed,

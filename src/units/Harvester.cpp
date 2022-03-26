@@ -34,21 +34,21 @@
 
 #include <misc/draw_util.h>
 
+namespace {
 /* how often is the same sandframe redrawn */
-#define HARVESTERDELAY 30
+inline constexpr auto HARVESTERDELAY = 30;
 
 /* how often to change harvester position while harvesting */
-#define RANDOMHARVESTMOVE 500
+inline constexpr auto RANDOMHARVESTMOVE = 500;
 
 /* how much is the harvester movement slowed down when full  */
-#define MAXIMUMHARVESTERSLOWDOWN 0.4_fix
+inline constexpr auto MAXIMUMHARVESTERSLOWDOWN = 0.4_fix;
 
 /* number spice output frames - 1 */
-#define LASTSANDFRAME 2
+inline constexpr auto LASTSANDFRAME = 2;
 
-namespace {
 constexpr TrackedUnitConstants harvester_constants {Harvester::item_id};
-}
+} // namespace
 
 Harvester::Harvester(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(harvester_constants, objectID, initializer) {

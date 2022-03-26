@@ -39,9 +39,9 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
     const auto* pBackground = pGFXManager->getUIGraphic(UI_OptionsMenu, houseID);
     setBackground(pBackground);
 
-    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    InGameSettingsMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    setWindowWidget(&windowWidget);
+    InGameSettingsMenu::setWindowWidget(&windowWidget);
 
     // Game speed
     gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus, houseID),

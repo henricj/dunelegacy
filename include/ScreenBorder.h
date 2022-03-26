@@ -21,14 +21,13 @@
 #include <DataTypes.h>
 
 #include <fixmath/FixPoint.h>
-#include <globals.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <mmath.h>
 
 #include <algorithm>
 
-#define SCROLLBORDER 3
+inline constexpr auto SCROLLBORDER = 3;
 
 /// This class manages everything that is related to the current view onto the map.
 class ScreenBorder final {

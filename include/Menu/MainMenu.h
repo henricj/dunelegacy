@@ -20,7 +20,6 @@
 
 #include "MenuBase.h"
 #include <GUI/PictureLabel.h>
-#include <GUI/Spacer.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>

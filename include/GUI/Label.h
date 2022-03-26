@@ -31,7 +31,7 @@
 class Label : public Widget {
 public:
     /// default constructor
-    Label() { enableResizing(true, true); }
+    Label() { Label::enableResizing(true, true); }
 
     /// destructor
     ~Label() override = default;

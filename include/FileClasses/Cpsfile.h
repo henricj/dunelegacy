@@ -20,8 +20,6 @@
 
 #include <misc/SDL2pp.h>
 
-#include <misc/sdl_support.h>
-
 /**
     This function reads a cps-File from a SDL_RWop and returns it as a std::unique_ptr<SDL_Surface>. The SDL_RWops can
    be readonly but must support seeking. \param  RWop    SDL_RWops to the cps-File. (can be readonly) \return Picture in

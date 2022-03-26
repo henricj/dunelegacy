@@ -20,10 +20,7 @@
 
 #include <Colors.h>
 #include <DataTypes.h>
-#include <Definitions.h>
 #include <FileClasses/Palette.h>
-#include <data.h>
-#include <misc/DrawingRectHelper.h>
 #include <misc/RobustList.h>
 
 #include <misc/SDL2pp.h>

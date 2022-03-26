@@ -18,17 +18,16 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <string_view>
-
 #include <fixmath/FixPoint.h>
-
-#include <misc/SDL2pp.h>
 
 #include "misc/lemire_uniform_uint32_distribution.h"
 #include "misc/random_uint64_to_uint32.h"
 #include "misc/random_xoshiro256starstar.h"
 
 #include <gsl/gsl>
+
+#include <array>
+#include <vector>
 
 class RandomFactory;
 

@@ -18,17 +18,12 @@
 #ifndef INTRO_H
 #define INTRO_H
 
-#include <SDL2/SDL_mixer.h>
-#include <array>
-#include <misc/sdl_support.h>
-#include <misc/sound_util.h>
-#include <string>
-
 #include <misc/SDL2pp.h>
-#include <misc/sound_util.h>
 
 #include <CutScenes/CutScene.h>
 #include <FileClasses/Wsafile.h>
+
+#include <memory>
 
 /**
     This class is for showing the intro video.

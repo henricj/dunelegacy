@@ -29,30 +29,29 @@
 #include <misc/SDL2pp.h>
 #include <misc/string_util.h>
 
-#include <cstdarg>
 #include <enet/enet.h>
 #include <functional>
 #include <list>
 #include <string>
 
-#define NETWORKDISCONNECT_QUIT          1
-#define NETWORKDISCONNECT_TIMEOUT       2
-#define NETWORKDISCONNECT_PLAYER_EXISTS 3
-#define NETWORKDISCONNECT_GAME_FULL     4
+inline constexpr auto NETWORKDISCONNECT_QUIT          = 1;
+inline constexpr auto NETWORKDISCONNECT_TIMEOUT       = 2;
+inline constexpr auto NETWORKDISCONNECT_PLAYER_EXISTS = 3;
+inline constexpr auto NETWORKDISCONNECT_GAME_FULL     = 4;
 
-#define NETWORKPACKET_UNKNOWN         0
-#define NETWORKPACKET_CONNECT         1
-#define NETWORKPACKET_DISCONNECT      2
-#define NETWORKPACKET_PEER_CONNECTED  3
-#define NETWORKPACKET_SENDGAMEINFO    4
-#define NETWORKPACKET_SENDNAME        5
-#define NETWORKPACKET_CHATMESSAGE     6
-#define NETWORKPACKET_CHANGEEVENTLIST 7
-#define NETWORKPACKET_STARTGAME       8
-#define NETWORKPACKET_COMMANDLIST     9
-#define NETWORKPACKET_SELECTIONLIST   10
+inline constexpr auto NETWORKPACKET_UNKNOWN         = 0;
+inline constexpr auto NETWORKPACKET_CONNECT         = 1;
+inline constexpr auto NETWORKPACKET_DISCONNECT      = 2;
+inline constexpr auto NETWORKPACKET_PEER_CONNECTED  = 3;
+inline constexpr auto NETWORKPACKET_SENDGAMEINFO    = 4;
+inline constexpr auto NETWORKPACKET_SENDNAME        = 5;
+inline constexpr auto NETWORKPACKET_CHATMESSAGE     = 6;
+inline constexpr auto NETWORKPACKET_CHANGEEVENTLIST = 7;
+inline constexpr auto NETWORKPACKET_STARTGAME       = 8;
+inline constexpr auto NETWORKPACKET_COMMANDLIST     = 9;
+inline constexpr auto NETWORKPACKET_SELECTIONLIST   = 10;
 
-#define AWAITING_CONNECTION_TIMEOUT 5000
+inline constexpr auto AWAITING_CONNECTION_TIMEOUT = 5000;
 
 class GameInitSettings;
 

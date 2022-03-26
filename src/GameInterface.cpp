@@ -23,6 +23,7 @@
 #include <Game.h>
 #include <House.h>
 
+#include "GUI/Spacer.h"
 #include <GUI/ObjectInterfaces/MultiUnitInterface.h>
 #include <GUI/ObjectInterfaces/ObjectInterface.h>
 #include <ObjectBase.h>

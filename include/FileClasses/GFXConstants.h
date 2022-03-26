@@ -1,12 +1,12 @@
 #ifndef GFXCONSTANTS_H
 #define GFXCONSTANTS_H
 
-#define NUM_TERRAIN_TILES_X             11
-#define NUM_TERRAIN_TILES_Y             8
-#define NUM_MAPCHOICEPIECES             28
-#define NUM_WINDTRAP_ANIMATIONS         (2 * STRUCTURE_ANIMATIONTIMER + 4)
-#define NUM_WINDTRAP_ANIMATIONS_PER_ROW 10
-#define NUM_STATIC_ANIMATIONS_PER_ROW   7
+inline constexpr auto NUM_TERRAIN_TILES_X             = 11;
+inline constexpr auto NUM_TERRAIN_TILES_Y             = 8;
+inline constexpr auto NUM_MAPCHOICEPIECES             = 28;
+inline constexpr auto NUM_WINDTRAP_ANIMATIONS         = (2 * STRUCTURE_ANIMATIONTIMER + 4);
+inline constexpr auto NUM_WINDTRAP_ANIMATIONS_PER_ROW = 10;
+inline constexpr auto NUM_STATIC_ANIMATIONS_PER_ROW   = 7;
 //
 // ObjPics
 enum ObjPic_enum {

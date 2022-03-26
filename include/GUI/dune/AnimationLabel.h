@@ -25,7 +25,7 @@
 class AnimationLabel final : public Widget {
 public:
     /// default constructor
-    AnimationLabel() : pAnim(nullptr) { enableResizing(false, false); }
+    AnimationLabel() : pAnim(nullptr) { AnimationLabel::enableResizing(false, false); }
 
     /// destructor
     ~AnimationLabel() override = default;

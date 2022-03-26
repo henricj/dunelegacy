@@ -36,9 +36,9 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
     const auto* pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
     setBackground(pBackground);
 
-    setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    InGameMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    setWindowWidget(&mainHBox);
+    InGameMenu::setWindowWidget(&mainHBox);
 
     mainHBox.addWidget(HSpacer::create(22));
     mainHBox.addWidget(&mainVBox);

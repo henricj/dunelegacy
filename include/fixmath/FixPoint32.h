@@ -235,10 +235,10 @@ private:
     fix32_t value;
 };
 
-inline static constexpr auto FixPt32_MAX {FixPoint32::FromRawValue(fix32_maximum)};
-inline static constexpr auto FixPt32_PI {FixPoint32::FromRawValue(fix32_pi)};
-inline static constexpr auto FixPt32_E {FixPoint32::FromRawValue(fix32_e)};
-inline static constexpr auto FixPt32_SQRT2 {FixPoint32::FromRawValue(0x000000016A09E668LL)};
+inline constexpr auto FixPt32_MAX {FixPoint32::FromRawValue(fix32_maximum)};
+inline constexpr auto FixPt32_PI {FixPoint32::FromRawValue(fix32_pi)};
+inline constexpr auto FixPt32_E {FixPoint32::FromRawValue(fix32_e)};
+inline constexpr auto FixPt32_SQRT2 {FixPoint32::FromRawValue(0x000000016A09E668LL)};
 
 static constexpr FixPoint32 operator+(int value, const FixPoint32& other) noexcept {
     return other + value;

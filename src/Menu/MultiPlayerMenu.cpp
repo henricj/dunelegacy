@@ -19,9 +19,9 @@ MultiPlayerMenu::MultiPlayerMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
+    MultiPlayerMenu::resize(getTextureSize(pBackground));
 
-    setWindowWidget(&windowWidget);
+    MultiPlayerMenu::setWindowWidget(&windowWidget);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 46));
 
@@ -187,7 +187,7 @@ void MultiPlayerMenu::onQuit() {
 
 void MultiPlayerMenu::onGameTypeChange(int buttonID) {
     MetaServerClient* pMetaServerClient = pNetworkManager->getMetaServerClient();
-    if ((buttonID == 0) && internetGamesButton.getToggleState()) {
+    if (buttonID == 0 && internetGamesButton.getToggleState()) {
         // LAN Games
 
         gameList.clearAllEntries();
@@ -204,7 +204,7 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         // stop listening on internet games
         pMetaServerClient->setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)>());
         pMetaServerClient->setOnMetaServerError(std::function<void(int, const std::string&)>());
-    } else if ((buttonID == 1) && (LANGamesButton.getToggleState())) {
+    } else if (buttonID == 1 && LANGamesButton.getToggleState()) {
         // Internet Games
 
         gameList.clearAllEntries();

@@ -34,7 +34,7 @@ RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer
     : GroundUnit(raider_trike_constants, objectID, initializer) {
     RaiderTrike::init();
 
-    setHealth(getMaxHealth());
+    RaiderTrike::setHealth(getMaxHealth());
 }
 
 RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectStreamInitializer& initializer)

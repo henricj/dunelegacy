@@ -37,7 +37,7 @@ constexpr GroundUnitConstants mcv_constants {MCV::item_id, false};
 MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
     MCV::init();
 
-    setHealth(getMaxHealth());
+    MCV::setHealth(getMaxHealth());
     attackMode = GUARD;
 }
 

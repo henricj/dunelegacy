@@ -35,18 +35,20 @@
 #include <string>
 #include <vector>
 
-#define VOC_CODE_TERM      0
-#define VOC_CODE_DATA      1
-#define VOC_CODE_CONT      2
-#define VOC_CODE_SILENCE   3
-#define VOC_CODE_MARKER    4
-#define VOC_CODE_TEXT      5
-#define VOC_CODE_LOOPBEGIN 6
-#define VOC_CODE_LOOPEND   7
-#define VOC_CODE_EXTENDED  8
-#define VOC_CODE_DATA_16   9
+namespace {
+inline constexpr auto VOC_CODE_TERM      = 0;
+inline constexpr auto VOC_CODE_DATA      = 1;
+inline constexpr auto VOC_CODE_CONT      = 2;
+inline constexpr auto VOC_CODE_SILENCE   = 3;
+inline constexpr auto VOC_CODE_MARKER    = 4;
+inline constexpr auto VOC_CODE_TEXT      = 5;
+inline constexpr auto VOC_CODE_LOOPBEGIN = 6;
+inline constexpr auto VOC_CODE_LOOPEND   = 7;
+inline constexpr auto VOC_CODE_EXTENDED  = 8;
+inline constexpr auto VOC_CODE_DATA_16   = 9;
 
-#define NUM_SAMPLES_OF_SILENCE 160
+inline constexpr auto NUM_SAMPLES_OF_SILENCE = 160;
+} // namespace
 
 /**
  * Take a sample rate parameter as it occurs in a VOC sound header, and

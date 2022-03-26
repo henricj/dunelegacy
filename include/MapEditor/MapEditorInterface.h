@@ -24,7 +24,6 @@
 #include <GUI/HBox.h>
 #include <GUI/Label.h>
 #include <GUI/PictureLabel.h>
-#include <GUI/Spacer.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/SymbolButton.h>
 #include <GUI/TextButton.h>

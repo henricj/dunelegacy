@@ -20,15 +20,12 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/FontManager.h>
 #include <FileClasses/TextManager.h>
 
 #include <GUI/Label.h>
 #include <GUI/ProgressBar.h>
 #include <GUI/TextButton.h>
 #include <GUI/dune/BuilderList.h>
-
-#include <misc/draw_util.h>
 
 #include <structures/BuilderBase.h>
 #include <structures/StarPort.h>

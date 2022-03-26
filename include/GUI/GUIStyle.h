@@ -19,18 +19,16 @@
 #define GUISTYLE_H
 
 #include <Colors.h>
-#include <FileClasses/FontManager.h> // For Font IDs
 
 #include <misc/SDL2pp.h>
 #include <misc/exceptions.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string_view>
-
 #include "Widget.h"
 
-static constexpr auto COLOR_DEFAULT = COLOR_INVALID;
+#include <memory>
+#include <string_view>
+
+inline constexpr auto COLOR_DEFAULT = COLOR_INVALID;
 
 enum Alignment_Enum {
     Alignment_VCenter = 1,
