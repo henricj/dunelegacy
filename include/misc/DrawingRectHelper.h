@@ -104,6 +104,11 @@ inline int getHeight(const DuneTexture* pTexture) noexcept {
     \return the rectangle for drawing the specified sprite from pSurface when passed to SDL_BlitSurface
 */
 inline SDL_Rect calcSpriteSourceRect(SDL_Surface* pSurface, int col, int numCols, int row = 0, int numRows = 1) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+    assert(col >= 0 && col < numCols);
+    assert(row >= 0 && row < numRows);
+
     const SDL_Rect rect = {col * (pSurface->w / numCols), row * (pSurface->h / numRows), pSurface->w / numCols,
                            pSurface->h / numRows};
     return rect;
@@ -119,6 +124,11 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Surface* pSurface, int col, int numCols
     \return the rectangle for drawing the specified sprite from pTexture when passed to SDL_RenderCopy
 */
 inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols, int row = 0, int numRows = 1) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+    assert(col >= 0 && col < numCols);
+    assert(row >= 0 && row < numRows);
+
     int w;
     int h;
     SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
@@ -136,6 +146,11 @@ inline SDL_Rect calcSpriteSourceRect(SDL_Texture* pTexture, int col, int numCols
     \return the rectangle for drawing the specified sprite from pTexture when passed to SDL_RenderCopy
 */
 inline SDL_Rect calcSpriteSourceRect(const DuneTexture* pTexture, int col, int numCols, int row = 0, int numRows = 1) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+    assert(col >= 0 && col < numCols);
+    assert(row >= 0 && row < numRows);
+
     const auto w        = pTexture->source_.w;
     const auto h        = pTexture->source_.h;
     const SDL_Rect rect = {col * (w / numCols), row * (h / numRows), w / numCols, h / numRows};
@@ -154,6 +169,9 @@ inline SDL_Rect calcSpriteSourceRect(const DuneTexture* pTexture, int col, int n
 */
 inline SDL_Rect calcSpriteDrawingRect(SDL_Surface* pSurface, int x, int y, int numCols, int numRows = 1,
                                       HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+
     SDL_Rect rect = {x, y, pSurface->w / numCols, pSurface->h / numRows};
 
     switch (halign) {
@@ -183,6 +201,9 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Surface* pSurface, int x, int y, int n
 */
 inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int numCols, int numRows = 1,
                                       HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+
     SDL_Rect rect = {x, y, 0, 0};
     SDL_QueryTexture(pTexture, nullptr, nullptr, &rect.w, &rect.h);
 
@@ -216,6 +237,9 @@ inline SDL_Rect calcSpriteDrawingRect(SDL_Texture* pTexture, int x, int y, int n
 */
 inline SDL_FRect calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int numCols, int numRows = 1,
                                         HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+
     int w, h;
     SDL_QueryTexture(pTexture, nullptr, nullptr, &w, &h);
 
@@ -253,6 +277,9 @@ inline SDL_FRect calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int
 */
 inline SDL_Rect calcSpriteDrawingRect(const DuneTexture* pTexture, int x, int y, int numCols, int numRows = 1,
                                       HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+
     SDL_Rect rect = {x, y, pTexture->source_.w, pTexture->source_.h};
 
     rect.w /= numCols;
@@ -285,6 +312,9 @@ inline SDL_Rect calcSpriteDrawingRect(const DuneTexture* pTexture, int x, int y,
 */
 inline SDL_FRect calcSpriteDrawingRectF(const DuneTexture* pTexture, int x, int y, int numCols, int numRows = 1,
                                         HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    assert(numCols > 0);
+    assert(numRows > 0);
+
     auto w = pTexture->source_.w;
     auto h = pTexture->source_.h;
 
