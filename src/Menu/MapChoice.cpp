@@ -270,7 +270,8 @@ void MapChoice::drawSpecificStuff() {
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
                 const int arrowFrame =
-                    static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
+                    static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128U % 4U);
+                assert(arrowFrame >= 0 && arrowFrame < 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
                 const auto dest = calcSpriteDrawingRectF(
                     arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
@@ -360,7 +361,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
         return;
 
     for (unsigned int s = 1; s < scenario; s++) {
-        auto g = group[s];
+        const auto& g = group[s];
 
         for_each_housetype([&](const auto h) {
             for (int pieceNum : g.newRegion[static_cast<int>(h)]) {

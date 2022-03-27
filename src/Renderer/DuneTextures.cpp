@@ -6,12 +6,17 @@
 
 DuneTextures::DuneTextures() = default;
 
+// clang-format off
+
 DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pictures_type&& object_pictures,
                            small_details_type&& small_details, tiny_pictures_type&& tiny_pictures,
-                           ui_graphics_type&& ui_graphics, generated_type&& generated_pictures)
-    : object_pictures_{std::move(object_pictures)}, small_details_{std::move(small_details)},
-      tiny_pictures_{std::move(tiny_pictures)}, ui_graphics_{std::move(ui_graphics)},
-      generated_pictures_{std::move(generated_pictures)}, textures_{std::move(textures)} { }
+                           ui_graphics_type&& ui_graphics, map_choice_type&& map_choice,
+                           generated_type&& generated_pictures)
+    : object_pictures_{object_pictures}, small_details_{small_details}, tiny_pictures_{tiny_pictures},
+      ui_graphics_{ui_graphics}, map_choice_{map_choice}, generated_pictures_{generated_pictures},
+      textures_{std::move(textures)} { }
+
+// clang-format on
 
 DuneTextures::~DuneTextures() = default;
 
@@ -518,6 +523,56 @@ private:
     textures_type dune_textures_;
 };
 
+class MapChoicePacker final {
+public:
+    using identifier_type = std::tuple<uint32_t, HOUSETYPE>;
+    using textures_type   = DuneTextures::map_choice_type;
+
+    void initialize(SurfaceLoader* surfaceLoader) {
+
+        for (auto id = 0u; id < NUM_MAPCHOICEPIECES; ++id) {
+
+            for_each_housetype([&](auto house) {
+                auto* surface = surfaceLoader->getMapChoicePieceSurface(id, house);
+
+                if (!surface)
+                    return;
+
+                surfaces_.add({id, house}, surface);
+            });
+        }
+    }
+
+    int add(AtlasFactory23& factory23) { return factory23.add(surfaces_); }
+
+    void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
+        factory23.update<identifier_type>(key, texture, [&](auto n) -> DuneTexture& { return lookup_dune_texture(n); });
+    }
+
+    void update_duplicates() {
+        surfaces_.update_duplicates([&](const auto& identifier) -> DuneTexture& {
+            const auto& [id, house] = identifier;
+
+            return dune_textures_.at(static_cast<int>(house)).at(id);
+        });
+    }
+
+    [[nodiscard]] textures_type dune_textures() const { return dune_textures_; }
+
+private:
+    [[nodiscard]] DuneTexture& lookup_dune_texture(int n) {
+        const auto identifier = surfaces_[n];
+
+        const auto& [id, house] = identifier;
+
+        return dune_textures_.at(static_cast<int>(house)).at(id);
+    }
+
+    PackableSurfaces<identifier_type> surfaces_;
+
+    textures_type dune_textures_;
+};
+
 template<typename TexturesType, typename IdentifierType>
 class PackerBase {
 public:
@@ -634,12 +689,14 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
     ObjectPicturePacker object_picture_packer;
     UiGraphicPacker ui_graphic_packer;
+    MapChoicePacker map_choice_packer;
     TinyPicturePacker tiny_picture_packer;
     SmallDetailPicsPacker small_detail_pics_packer;
     GeneratedPicturesPacker generated_pictures_packer;
 
     object_picture_packer.initialize(surfaceLoader);
     ui_graphic_packer.initialize(surfaceLoader);
+    map_choice_packer.initialize(surfaceLoader);
     tiny_picture_packer.initialize(surfaceLoader);
     small_detail_pics_packer.initialize(surfaceLoader);
     generated_pictures_packer.initialize(surfaceLoader);
@@ -737,6 +794,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         { // Scope
             const auto ugp_key = ui_graphic_packer.add(factory23, combined_ui_graphic);
 
+            const auto mcp_key = map_choice_packer.add(factory23);
             const auto tpp_key = tiny_picture_packer.add(factory23);
             const auto sdp_key = small_detail_pics_packer.add(factory23);
             const auto gpp_key = generated_pictures_packer.add(factory23);
@@ -747,6 +805,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                 THROW(std::runtime_error, "Unable to create combined texture");
 
             ui_graphic_packer.update(factory23, ugp_key, texture.get());
+            map_choice_packer.update(factory23, mcp_key, texture.get());
             tiny_picture_packer.update(factory23, tpp_key, texture.get());
             small_detail_pics_packer.update(factory23, sdp_key, texture.get());
             generated_pictures_packer.update(factory23, gpp_key, texture.get());
@@ -759,6 +818,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         // Now, fill in duplicates
         object_picture_packer.update_duplicates();
         ui_graphic_packer.update_duplicates();
+        map_choice_packer.update_duplicates();
         tiny_picture_packer.update_duplicates();
         small_detail_pics_packer.update_duplicates();
         generated_pictures_packer.update_duplicates();
@@ -777,5 +837,6 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                         small_detail_pics_packer.dune_textures(),
                         tiny_picture_packer.dune_textures(),
                         ui_graphic_packer.dune_textures(),
+                        map_choice_packer.dune_textures(),
                         generated_pictures_packer.dune_textures()};
 }

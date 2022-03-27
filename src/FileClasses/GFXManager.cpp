@@ -155,7 +155,7 @@ const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE hou
               num);
     }
 
-    const auto& texture = duneTextures.get_ui_graphic(num, house);
+    const auto& texture = duneTextures.get_map_choice(num, house);
 
     if (!texture)
         sdl2::log_info("Unable to get map choice piece %u for house %d", num, static_cast<int>(house));
