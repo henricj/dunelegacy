@@ -1,7 +1,7 @@
 #include <Renderer/DuneTileTexture.h>
 
 DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, gsl::span<const SDL_Rect> tiles)
-    : texture_ {texture} {
+    : texture_{texture} {
     if (rows < 1)
         THROW(std::invalid_argument, "The rows argument is out of range (%d)", rows);
 
@@ -26,5 +26,5 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, gs
 
     source_.reserve(tiles.size());
     std::transform(tiles.begin(), tiles.end(), std::back_inserter(source_),
-                   [](const auto& tile) { return DuneTextureRect {tile}; });
+                   [](const auto& tile) { return DuneTextureRect{tile}; });
 }

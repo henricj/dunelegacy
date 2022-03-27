@@ -84,7 +84,7 @@ public:
             EditorMode_Structure,
             EditorMode_Unit,
             EditorMode_TacticalPos
-        } mode {EditorMode_Selection};
+        } mode{EditorMode_Selection};
 
         TERRAINTYPE terrainType = Terrain_Sand;
         int pensize             = 0;

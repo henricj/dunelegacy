@@ -70,10 +70,10 @@ protected:
     virtual sdl2::surface_ptr createBackground();
 
 private:
-    const DuneTexture* pBackground {}; ///< background texture
+    const DuneTexture* pBackground{}; ///< background texture
 
-    bool bTransparentBackground {}; ///< true = no background is drawn
-    bool bSelfGeneratedBackground {
+    bool bTransparentBackground{}; ///< true = no background is drawn
+    bool bSelfGeneratedBackground{
         true}; ///< true = background is created by this window, false = created by someone else
 
     sdl2::texture_ptr localTexture_;

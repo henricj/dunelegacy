@@ -25,7 +25,7 @@
 #include <GUI/ObjectInterfaces/RadarInterface.h>
 
 namespace {
-constexpr StructureBaseConstants radar_constants {Radar::item_id, Coord {2, 2}};
+constexpr StructureBaseConstants radar_constants{Radar::item_id, Coord{2, 2}};
 }
 
 Radar::Radar(uint32_t objectID, const ObjectInitializer& initializer)

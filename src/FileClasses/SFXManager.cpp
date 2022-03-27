@@ -74,7 +74,7 @@ sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int i
     const auto rwop          = pFileManager->openFile(adlFile);
     const auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
     pSoundAdlibPC->setVolume(volume);
-    sdl2::mix_chunk_ptr chunk {pSoundAdlibPC->getSubsong(index)};
+    sdl2::mix_chunk_ptr chunk{pSoundAdlibPC->getSubsong(index)};
 
     return chunk;
 }

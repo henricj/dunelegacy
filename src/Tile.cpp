@@ -257,7 +257,7 @@ int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int
     auto newPosition = currentPosition;
 
     if (currentPosition < 0) {
-        std::array<bool, NUM_INFANTRY_PER_TILE> used {};
+        std::array<bool, NUM_INFANTRY_PER_TILE> used{};
 
         for (const auto objectID : assignedInfantryList) {
             auto* const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));

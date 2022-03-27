@@ -24,7 +24,7 @@ TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, in
     : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut),
       bCenterVertical(bCenterVertical) {
     const sdl2::surface_ptr pSurface = pFontManager->createSurfaceWithMultilineText(text, color, 28, true);
-    pTexture                         = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pSurface.get())};
+    pTexture                         = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, pSurface.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }

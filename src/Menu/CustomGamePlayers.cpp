@@ -86,7 +86,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     if (gameInitSettings.getGameType() == GameType::CustomGame
         || gameInitSettings.getGameType() == GameType::CustomMultiplayer) {
-        auto RWops = sdl2::RWops_ptr {
+        auto RWops = sdl2::RWops_ptr{
             SDL_RWFromConstMem(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size())};
 
         INIFile inimap(RWops.get());
@@ -116,7 +116,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             houseInfoListSetup.push_back(GameInitSettings::HouseInfo(memStream));
         }
 
-        auto RWops = sdl2::RWops_ptr {
+        auto RWops = sdl2::RWops_ptr{
             SDL_RWFromConstMem(tmpGameInitSettings.getFiledata().c_str(), tmpGameInitSettings.getFiledata().size())};
 
         INIFile inimap(RWops.get());
@@ -470,7 +470,7 @@ void CustomGamePlayers::update() {
         } else {
             using namespace std::chrono_literals;
 
-            static dune::dune_clock::duration lastSecondLeft {};
+            static dune::dune_clock::duration lastSecondLeft{};
             const auto secondsLeft = 1s + (startGameTime - dune::dune_clock::now());
             if (lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
@@ -862,7 +862,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
         INIMapPreviewCreator mapPreviewCreator(pMap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch (...) {
-        pMapSurface = sdl2::surface_ptr {GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
+        pMapSurface = sdl2::surface_ptr{GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
         nextButton.setEnabled(false);
     }
     minimap.setSurface(std::move(pMapSurface));

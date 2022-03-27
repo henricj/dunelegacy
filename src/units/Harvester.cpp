@@ -47,7 +47,7 @@ inline constexpr auto MAXIMUMHARVESTERSLOWDOWN = 0.4_fix;
 /* number spice output frames - 1 */
 inline constexpr auto LASTSANDFRAME = 2;
 
-constexpr TrackedUnitConstants harvester_constants {Harvester::item_id};
+constexpr TrackedUnitConstants harvester_constants{Harvester::item_id};
 } // namespace
 
 Harvester::Harvester(uint32_t objectID, const ObjectInitializer& initializer)

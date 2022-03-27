@@ -44,7 +44,7 @@ private:
     uint32_t explosionID;
     Coord position;
     HOUSETYPE house;
-    zoomable_texture graphic {};
+    zoomable_texture graphic{};
     int numFrames = 0;
     int currentFrame;
     int frameTimer;

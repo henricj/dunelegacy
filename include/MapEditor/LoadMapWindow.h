@@ -94,7 +94,7 @@ private:
 
     std::filesystem::path loadMapFilepath;
     std::string loadMapname;
-    bool loadMapSingleplayer {false};
+    bool loadMapSingleplayer{false};
     std::filesystem::path currentMapDirectory;
 };
 

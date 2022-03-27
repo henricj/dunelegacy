@@ -96,8 +96,8 @@ public:
     [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; }
 
 private:
-    dune::dune_clock::time_point curFrameStartTime {dune::dune_clock::now()};
-    dune::dune_clock::duration frameDurationTime {dune::as_dune_clock_duration(1)};
+    dune::dune_clock::time_point curFrameStartTime{dune::dune_clock::now()};
+    dune::dune_clock::duration frameDurationTime{dune::as_dune_clock_duration(1)};
     int loopsLeft         = -1;
     unsigned int curFrame = 0;
     unsigned int curFrameOverride;

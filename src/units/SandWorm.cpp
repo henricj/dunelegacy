@@ -38,7 +38,7 @@ inline constexpr auto SANDWORM_ATTACKFRAMETIME = 10;
 
 class SandwormConstants : public GroundUnitConstants {
 public:
-    constexpr SandwormConstants() : GroundUnitConstants {Sandworm::item_id} { canAttackStuff_ = true; }
+    constexpr SandwormConstants() : GroundUnitConstants{Sandworm::item_id} { canAttackStuff_ = true; }
 };
 
 constexpr SandwormConstants sandworm_constants;

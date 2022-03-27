@@ -31,7 +31,7 @@
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 
-GameInterface::GameInterface(const GameContext& context) : Window {0, 0, 0, 0}, context_ {context} {
+GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
     Window::setTransparentBackground(true);
 
     Window::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());

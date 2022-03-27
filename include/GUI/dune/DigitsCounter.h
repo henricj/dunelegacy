@@ -61,7 +61,7 @@ public:
 
         char creditsBuffer[3];
         const auto& [ptr, ec] = std::to_chars(std::begin(creditsBuffer), std::end(creditsBuffer), count);
-        if (ec == std::errc {}) {
+        if (ec == std::errc{}) {
             const auto digits = static_cast<int>(ptr - std::begin(creditsBuffer));
 
             for (auto i = digits - 1; i >= 0; i--) {

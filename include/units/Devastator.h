@@ -54,8 +54,8 @@ private:
     int32_t devastateTimer = 0; ///< When will this devastator devastate
 
     // drawing information
-    zoomable_texture turretGraphic {}; ///< The graphic of the turret
-    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic{}; ///< The graphic of the turret
+    int gunGraphicID;                 ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // DEVASTATOR_H

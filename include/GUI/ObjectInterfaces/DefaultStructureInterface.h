@@ -30,7 +30,7 @@
 class DefaultStructureInterface : public DefaultObjectInterface {
 public:
     static std::unique_ptr<DefaultStructureInterface> create(const GameContext& context, int objectID) {
-        auto tmp = std::unique_ptr<DefaultStructureInterface> {new DefaultStructureInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<DefaultStructureInterface>{new DefaultStructureInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

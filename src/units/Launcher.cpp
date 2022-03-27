@@ -28,7 +28,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr TrackedUnitConstants launcher_constants {Launcher::item_id, 2, Bullet_Rocket};
+constexpr TrackedUnitConstants launcher_constants{Launcher::item_id, 2, Bullet_Rocket};
 }
 
 Launcher::Launcher(uint32_t objectID, const ObjectInitializer& initializer)

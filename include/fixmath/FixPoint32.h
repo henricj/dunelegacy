@@ -27,10 +27,10 @@
 
 class FixPoint32 final {
 public:
-    constexpr FixPoint32() noexcept : value {0} { }
+    constexpr FixPoint32() noexcept : value{0} { }
     constexpr FixPoint32(const FixPoint32& inValue) noexcept = default;
-    constexpr FixPoint32(const int inValue) noexcept : value {inValue * fix32_one} { }
-    constexpr FixPoint32(const unsigned int inValue) noexcept : value {static_cast<int>(inValue) * fix32_one} { }
+    constexpr FixPoint32(const int inValue) noexcept : value{inValue * fix32_one} { }
+    constexpr FixPoint32(const unsigned int inValue) noexcept : value{static_cast<int>(inValue) * fix32_one} { }
 
     constexpr FixPoint32(FixPoint32&& inValue) noexcept = default;
 
@@ -235,10 +235,10 @@ private:
     fix32_t value;
 };
 
-inline constexpr auto FixPt32_MAX {FixPoint32::FromRawValue(fix32_maximum)};
-inline constexpr auto FixPt32_PI {FixPoint32::FromRawValue(fix32_pi)};
-inline constexpr auto FixPt32_E {FixPoint32::FromRawValue(fix32_e)};
-inline constexpr auto FixPt32_SQRT2 {FixPoint32::FromRawValue(0x000000016A09E668LL)};
+inline constexpr auto FixPt32_MAX{FixPoint32::FromRawValue(fix32_maximum)};
+inline constexpr auto FixPt32_PI{FixPoint32::FromRawValue(fix32_pi)};
+inline constexpr auto FixPt32_E{FixPoint32::FromRawValue(fix32_e)};
+inline constexpr auto FixPt32_SQRT2{FixPoint32::FromRawValue(0x000000016A09E668LL)};
 
 static constexpr FixPoint32 operator+(int value, const FixPoint32& other) noexcept {
     return other + value;

@@ -9,9 +9,9 @@ DuneTextures::DuneTextures() = default;
 DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pictures_type&& object_pictures,
                            small_details_type&& small_details, tiny_pictures_type&& tiny_pictures,
                            ui_graphics_type&& ui_graphics, generated_type&& generated_pictures)
-    : object_pictures_ {std::move(object_pictures)}, small_details_ {std::move(small_details)},
-      tiny_pictures_ {std::move(tiny_pictures)}, ui_graphics_ {std::move(ui_graphics)},
-      generated_pictures_ {std::move(generated_pictures)}, textures_ {std::move(textures)} { }
+    : object_pictures_{std::move(object_pictures)}, small_details_{std::move(small_details)},
+      tiny_pictures_{std::move(tiny_pictures)}, ui_graphics_{std::move(ui_graphics)},
+      generated_pictures_{std::move(generated_pictures)}, textures_{std::move(textures)} { }
 
 DuneTextures::~DuneTextures() = default;
 
@@ -46,7 +46,7 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 
     if (failed) {
         sdl2::log_info("Packing failed ");
-        return {false, rectpack2D::rect_wh {}};
+        return {false, rectpack2D::rect_wh{}};
     }
 
     sdl2::log_info(fmt::format("Packed in {}x{}", result_size.w, result_size.h).c_str());
@@ -64,11 +64,11 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
 #if _DEBUG
     for (auto i = 0; i < rectangles.size() - 1; ++i) {
         const auto& a = rectangles[i];
-        SDL_Rect sa {a.x, a.y, a.w, a.h};
+        SDL_Rect sa{a.x, a.y, a.w, a.h};
 
         for (auto j = i + 1; j < rectangles.size(); ++j) {
             const auto& b = rectangles[j];
-            SDL_Rect sb {b.x, b.y, b.w, b.h};
+            SDL_Rect sb{b.x, b.y, b.w, b.h};
 
             if (SDL_HasIntersection(&sa, &sb)) {
                 sdl2::log_info("Failed packing");
@@ -87,8 +87,8 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
     if (a == b)
         return true;
 
-    const sdl2::surface_lock lock_a {a};
-    const sdl2::surface_lock lock_b {b};
+    const sdl2::surface_lock lock_a{a};
+    const sdl2::surface_lock lock_b{b};
 
     const auto* pa = static_cast<const char*>(lock_a.pixels());
     const auto* pb = static_cast<const char*>(lock_b.pixels());
@@ -109,8 +109,8 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
 class Packer final {
     std::vector<rect_type> rectangles_;
 
-    int w_ {};
-    int h_ {};
+    int w_{};
+    int h_{};
 
 public:
     void clear() { rectangles_.clear(); }
@@ -149,7 +149,7 @@ class PackableSet {
 public:
     using packer_set_type = std::vector<std::tuple<int, int, SDL_Surface*>>;
 
-    PackableSet(packer_set_type&& set) : set_ {set} { }
+    PackableSet(packer_set_type&& set) : set_{set} { }
 
     template<typename F>
     void for_each(const Packer& packer, F&& f) {
@@ -208,7 +208,7 @@ public:
             output.emplace_back(static_cast<int>(idx), i, record.surface);
         }
 
-        return PackableSet {std::move(output)};
+        return PackableSet{std::move(output)};
     }
 
     template<typename Predicate>
@@ -227,7 +227,7 @@ public:
             output.emplace_back(static_cast<int>(idx), i, record.surface);
         }
 
-        return PackableSet {std::move(output)};
+        return PackableSet{std::move(output)};
     }
 
     void add_duplicate(int key, Identifier identifier) {
@@ -284,15 +284,15 @@ public:
         if (!packer_.pack(max_side))
             return nullptr;
 
-        const sdl2::surface_ptr atlas_surface {
+        const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
         const auto draw = [&](const auto r, int s_idx, SDL_Surface* surface) {
-            SDL_Rect dst {r.x, r.y, r.w, r.h};
+            SDL_Rect dst{r.x, r.y, r.w, r.h};
 
             if (!drawSurface(surface, nullptr, atlas_surface.get(), &dst)) {
                 // Retry after converting from palette to 32-bit surface...
-                const sdl2::surface_ptr copy {SDL_ConvertSurfaceFormat(surface, format, 0)};
+                const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
                 if (!copy) {
                     sdl2::log_warn("Unable to copy surface: %s", SDL_GetError());
@@ -319,7 +319,7 @@ public:
 
         // SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
-        auto texture = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
+        auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
 
         if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
             sdl2::log_warn("Unable to set texture atlas blend mode");
@@ -335,9 +335,9 @@ public:
         const auto& set = surface_sets_.at(key);
 
         set.for_each(packer_, [&](const auto& r, auto s_idx, auto* surface) {
-            const SDL_Rect rect {r.x, r.y, r.w, r.h};
+            const SDL_Rect rect{r.x, r.y, r.w, r.h};
 
-            lookup(s_idx) = DuneTexture {texture, rect};
+            lookup(s_idx) = DuneTexture{texture, rect};
         });
     }
 
@@ -772,10 +772,10 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     //    SaveTextureAsBmp(renderer, texture.get(), path.u8string().c_str());
     //}
 
-    return DuneTextures {std::move(textures),
-                         object_picture_packer.object_pictures2(),
-                         small_detail_pics_packer.dune_textures(),
-                         tiny_picture_packer.dune_textures(),
-                         ui_graphic_packer.dune_textures(),
-                         generated_pictures_packer.dune_textures()};
+    return DuneTextures{std::move(textures),
+                        object_picture_packer.object_pictures2(),
+                        small_detail_pics_packer.dune_textures(),
+                        tiny_picture_packer.dune_textures(),
+                        ui_graphic_packer.dune_textures(),
+                        generated_pictures_packer.dune_textures()};
 }

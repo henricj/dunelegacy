@@ -27,7 +27,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants trike_constants {Trike::item_id, 2, Bullet_ShellSmall};
+constexpr GroundUnitConstants trike_constants{Trike::item_id, 2, Bullet_ShellSmall};
 }
 
 Trike::Trike(uint32_t objectID, const ObjectInitializer& initializer)

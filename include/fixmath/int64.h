@@ -69,10 +69,10 @@ typedef struct {
 } __int64_t;
 
 static inline __int64_t int64_const(int32_t hi, uint32_t lo) {
-    return (__int64_t) {hi, lo};
+    return (__int64_t){hi, lo};
 }
 static inline __int64_t int64_from_int32(int32_t x) {
-    return (__int64_t) {(x < 0 ? -1 : 0), x};
+    return (__int64_t){(x < 0 ? -1 : 0), x};
 }
 static inline int32_t int64_hi(__int64_t x) {
     return x.hi;
@@ -126,13 +126,13 @@ static inline __int64_t int64_shift(__int64_t x, int8_t y) {
     __int64_t ret;
     if (y > 0) {
         if (y >= 32)
-            return (__int64_t) {0, 0};
+            return (__int64_t){0, 0};
         ret.hi = (x.hi << y) | (x.lo >> (32 - y));
         ret.lo = (x.lo << y);
     } else {
         y = -y;
         if (y >= 32)
-            return (__int64_t) {0, 0};
+            return (__int64_t){0, 0};
         ret.lo = (x.lo >> y) | (x.hi << (32 - y));
         ret.hi = (x.hi >> y);
     }
@@ -150,7 +150,7 @@ static inline __int64_t int64_mul_i32_i32(int32_t x, int32_t y) {
     r_hi += (r_md >> 16);
     r_lo += (r_md << 16);
 
-    return (__int64_t) {r_hi, r_lo};
+    return (__int64_t){r_hi, r_lo};
 }
 
 static inline __int64_t int64_mul_i64_i32(__int64_t x, int32_t y) {

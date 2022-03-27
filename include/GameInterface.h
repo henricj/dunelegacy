@@ -92,8 +92,8 @@ private:
     StaticContainer windowWidget; ///< The main widget of this interface
 
     std::unique_ptr<ObjectInterface>
-        pObjectContainer;        ///< The container holding information about the currently selected unit/structure
-    uint32_t objectID {NONE_ID}; ///< The id of the currently selected object
+        pObjectContainer;       ///< The container holding information about the currently selected unit/structure
+    uint32_t objectID{NONE_ID}; ///< The id of the currently selected object
 
     HBox topBarHBox; ///< The container for the top bar containing newsticker, options button and mentat button
     NewsTicker

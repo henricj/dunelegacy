@@ -2,10 +2,10 @@
 #define DUNETEXTURE_H
 
 struct DuneTextureRect final {
-    short x {};
-    short y {};
-    short w {};
-    short h {};
+    short x{};
+    short y{};
+    short w{};
+    short h{};
 
     DuneTextureRect() = default;
 
@@ -20,31 +20,31 @@ struct DuneTextureRect final {
         h = static_cast<short>(rect.h);
     }
 
-    [[nodiscard]] SDL_Rect as_sdl() const noexcept { return SDL_Rect {x, y, w, h}; }
+    [[nodiscard]] SDL_Rect as_sdl() const noexcept { return SDL_Rect{x, y, w, h}; }
     [[nodiscard]] SDL_FRect as_sdlf() const noexcept {
-        return SDL_FRect {static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+        return SDL_FRect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
     }
 
     static DuneTextureRect create(int x, int y, int w, int h) {
-        const SDL_Rect rect {x, y, w, h};
+        const SDL_Rect rect{x, y, w, h};
         return DuneTextureRect(rect);
     }
 
     DuneTextureRect& operator=(const DuneTextureRect&) = default;
-    DuneTextureRect& operator=(const SDL_Rect& rect) { return operator=(DuneTextureRect {rect}); }
+    DuneTextureRect& operator=(const SDL_Rect& rect) { return operator=(DuneTextureRect{rect}); }
 };
 
 struct DuneTexture final {
-    SDL_Texture* texture_ {};
+    SDL_Texture* texture_{};
     DuneTextureRect source_;
 
     DuneTexture()                   = default;
     DuneTexture(const DuneTexture&) = default;
     DuneTexture(DuneTexture&&)      = default;
 
-    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect) : texture_ {texture}, source_ {rect} { }
+    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect) : texture_{texture}, source_{rect} { }
 
-    explicit DuneTexture(SDL_Texture* texture) : texture_ {texture} {
+    explicit DuneTexture(SDL_Texture* texture) : texture_{texture} {
         if (!texture) {
             return;
         }

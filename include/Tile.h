@@ -477,12 +477,12 @@ private:
 
     FixPoint spice; ///< how much spice on this particular tile is left
 
-    zoomable_texture sprite {}; ///< the graphic to draw
+    zoomable_texture sprite{}; ///< the graphic to draw
 
     int32_t destroyedStructureTile; ///< the tile drawn for a destroyed structure
-    mutable TERRAINTILETYPE terrainTile {TERRAINTILETYPE::TerrainTile_Invalid};
+    mutable TERRAINTILETYPE terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
     std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)>
-        tracksCreationTime {};           ///< Contains the game cycle the tracks on sand appeared
+        tracksCreationTime{};            ///< Contains the game cycle the tracks on sand appeared
     std::vector<DAMAGETYPE> damage;      ///< damage positions
     std::vector<DEADUNITTYPE> deadUnits; ///< dead units
 
@@ -492,8 +492,8 @@ private:
     std::vector<uint32_t> assignedNonInfantryGroundObjectList; ///< all structures/vehicles on this tile
 
     std::array<uint32_t, NUM_TEAMS>
-        lastAccess {};                       ///< contains for every team when this tile was seen last by this house
-    std::array<bool, NUM_TEAMS> explored {}; ///< contains for every team if this tile is explored
+        lastAccess{};                       ///< contains for every team when this tile was seen last by this house
+    std::array<bool, NUM_TEAMS> explored{}; ///< contains for every team if this tile is explored
 
     void update_impl();
 

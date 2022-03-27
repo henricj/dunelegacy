@@ -194,13 +194,13 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
     const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Icnfile::getPicture(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy to surface
     auto* RESTRICT dest = static_cast<unsigned char*>(pic->pixels);
@@ -317,13 +317,13 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
     }
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, SIZE_X * tilesX * tilesN, SIZE_Y * tilesY, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X * tilesX * tilesN, SIZE_Y * tilesY, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Icnfile::getPictureArray(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     int tileidx = 0;
     for (int n = 0; n < tilesN; n++) {
@@ -381,13 +381,13 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
     const auto numRows  = (numTiles + numCols - 1) / numCols;
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, SIZE_X * numCols, SIZE_Y * numRows, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X * numCols, SIZE_Y * numRows, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Icnfile::getPictureRow(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     uint32_t tileCount = 0u;
     for (uint32_t row = 0u; row < numRows && tileCount < numTiles; ++row) {
@@ -432,13 +432,13 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
 sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, SIZE_X * numTiles, SIZE_Y, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X * numTiles, SIZE_Y, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Icnfile::getPictureRow2(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     va_list arg_ptr;
     va_start(arg_ptr, numTiles);

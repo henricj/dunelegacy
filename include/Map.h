@@ -362,13 +362,13 @@ public:
     bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator,
                                 Predicate&& predicate) const {
 
-        if (buildingSize == Coord {2, 2})
+        if (buildingSize == Coord{2, 2})
             return search_all_by_box_edge_2x2(x, y, generator, predicate);
-        if (buildingSize == Coord {2, 3})
+        if (buildingSize == Coord{2, 3})
             return search_all_by_box_edge_2x3(x, y, generator, predicate);
-        if (buildingSize == Coord {3, 2})
+        if (buildingSize == Coord{3, 2})
             return search_all_by_box_edge_3x2(x, y, generator, predicate);
-        if (buildingSize == Coord {3, 3})
+        if (buildingSize == Coord{3, 3})
             return search_all_by_box_edge_3x3(x, y, generator, predicate);
 
         return search_all_by_box_edge(x, y, generator, predicate);

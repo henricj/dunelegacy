@@ -118,7 +118,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     basicMapPropertiesVBox.addWidget(&rngHBox);
 
     std::random_device rd;
-    std::uniform_int_distribution<> uniform {0, 32767};
+    std::uniform_int_distribution<> uniform{0, 32767};
 
     rngSeedLabel.setText(_("Random Seed:"));
     rngSeedLabel.setTextColor(color);
@@ -332,7 +332,7 @@ void NewMapWindow::onMapPropertiesChanged() {
 }
 
 sdl2::surface_ptr NewMapWindow::createMinimapPicture(MapData& mapdata, int borderWidth, uint32_t borderColor) {
-    sdl2::surface_ptr pMinimap = sdl2::surface_ptr {
+    sdl2::surface_ptr pMinimap = sdl2::surface_ptr{
         SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!pMinimap) {
         return nullptr;

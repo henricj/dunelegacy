@@ -6,7 +6,7 @@
 #include <structures/Palace.h>
 
 std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<PalaceInterface> {new PalaceInterface {context, objectID}};
+    auto tmp        = std::unique_ptr<PalaceInterface>{new PalaceInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
@@ -14,10 +14,10 @@ std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& cont
 sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, GeneratedPicture id) {
     auto* const deathHandSurface = surfaceLoader->getSmallDetailSurface(Picture_DeathHand);
 
-    const sdl2::surface_ptr pText {pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, 12)};
+    const sdl2::surface_ptr pText{pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, 12)};
 
-    sdl2::surface_ptr pReady {SDL_CreateRGBSurface(0, getWidth(deathHandSurface), getHeight(deathHandSurface),
-                                                   SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr pReady{SDL_CreateRGBSurface(0, getWidth(deathHandSurface), getHeight(deathHandSurface),
+                                                  SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_FillRect(pReady.get(), nullptr, COLOR_TRANSPARENT);
 
     auto dest = calcAlignedDrawingRect(pText.get(), pReady.get());

@@ -224,7 +224,7 @@ inline SDL_FRect calcSpriteDrawingRectF(SDL_Texture* pTexture, int x, int y, int
     if (numRows > 1)
         h /= numRows;
 
-    SDL_FRect rect {static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
     switch (halign) {
         case HAlign::Left: /*nothing*/ break;
@@ -293,7 +293,7 @@ inline SDL_FRect calcSpriteDrawingRectF(const DuneTexture* pTexture, int x, int 
     if (numRows > 1)
         h /= numRows;
 
-    SDL_FRect rect {static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
     switch (halign) {
         case HAlign::Left: /*nothing*/ break;

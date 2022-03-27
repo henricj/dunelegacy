@@ -38,7 +38,7 @@
 class UnitInterface final : public DefaultObjectInterface {
 public:
     static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<UnitInterface> {new UnitInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<UnitInterface>{new UnitInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

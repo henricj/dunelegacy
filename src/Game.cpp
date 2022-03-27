@@ -149,7 +149,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
                 techLevel = ((gameInitSettings.getMission() + 1) / 3) + 1;
             }
 
-            INIMapLoader loader {this, gameInitSettings.getFilename(), gameInitSettings.getFiledata()};
+            INIMapLoader loader{this, gameInitSettings.getFilename(), gameInitSettings.getFiledata()};
 
             map            = loader.load();
             currentGameMap = map.get();
@@ -192,7 +192,7 @@ void Game::processObjects() {
     // update all tiles
     map->for_all([](Tile& t) { t.update(); });
 
-    const GameContext context {*this, *currentGameMap, objectManager};
+    const GameContext context{*this, *currentGameMap, objectManager};
 
     for (auto* pStructure : structureList) {
         pStructure->update(context);
@@ -523,7 +523,7 @@ void Game::drawScreen() {
 
         SDL_SetRenderDrawColor(renderer, 0, 242, 0, 128);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        const std::array<SDL_Rect, 2> rects {{{10, height - 20 - 36, 12, 36}, {10 + 12 + 8, height - 20 - 36, 12, 36}}};
+        const std::array<SDL_Rect, 2> rects{{{10, height - 20 - 36, 12, 36}, {10 + 12 + 8, height - 20 - 36, 12, 36}}};
 
         SDL_RenderFillRects(renderer, rects.data(), rects.size());
     } else if (gameCycleCount < skipToGameCycle) {
@@ -888,7 +888,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
             }
         }
     } else {
-        const SDL_Point mouse_point {drawnMouseX, drawnMouseY};
+        const SDL_Point mouse_point{drawnMouseX, drawnMouseY};
         if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr)
             || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
@@ -1039,7 +1039,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
     }
 
     if (bWaitForNetwork) {
-        if (startWaitingForOtherPlayersTime == dune::dune_clock::time_point {}) {
+        if (startWaitingForOtherPlayersTime == dune::dune_clock::time_point{}) {
             // we just started waiting
             startWaitingForOtherPlayersTime = dune::dune_clock::now();
         } else {
@@ -1057,7 +1057,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
 
         SDL_Delay(10);
     } else {
-        startWaitingForOtherPlayersTime = dune::dune_clock::time_point {};
+        startWaitingForOtherPlayersTime = dune::dune_clock::time_point{};
         pWaitingForOtherPlayers.reset();
     }
 }
@@ -1100,7 +1100,7 @@ void Game::updateGame(const GameContext& context) {
 void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::time_point until) {
     using namespace std::chrono_literals;
 
-    SDL_Event event {};
+    SDL_Event event{};
 
     while (!bQuitGame && !finishedLevel) {
         const auto remaining = until - dune::dune_clock::now();
@@ -1162,7 +1162,7 @@ void Game::runMainLoop(const GameContext& context) {
         auto isOpen = ok && pStream->open(replayname);
 
         if (!isOpen) {
-            const std::error_code replay_error {errno, std::generic_category()};
+            const std::error_code replay_error{errno, std::generic_category()};
 
             sdl2::log_error(
                 SDL_LOG_CATEGORY_APPLICATION,
@@ -1179,11 +1179,11 @@ void Game::runMainLoop(const GameContext& context) {
                     break;
                 }
 
-                const std::error_code replay2_error {errno, std::generic_category()};
+                const std::error_code replay2_error{errno, std::generic_category()};
 
                 sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
                                 fmt::format("Unable to open the replay file {}: {}",
-                                            std::filesystem::path {replayname2}.filename().string(),
+                                            std::filesystem::path{replayname2}.filename().string(),
                                             replay2_error.message())
                                     .c_str());
             }
@@ -1394,7 +1394,7 @@ void Game::runMainLoop(const GameContext& context) {
 
         auto mapnameBase = getBasename(gameInitSettings.getFilename(), true);
         mapnameBase += ".rpl";
-        const auto rplName    = std::filesystem::path {"replay"} / mapnameBase;
+        const auto rplName    = std::filesystem::path{"replay"} / mapnameBase;
         auto [ok, replayname] = fnkdat(rplName, FNKDAT_USER | FNKDAT_CREAT);
 
         OFileStream replystream;
@@ -1602,7 +1602,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     map            = std::make_unique<Map>(*this, mapSizeX, mapSizeY);
     currentGameMap = map.get();
 
-    const GameContext context {*this, *map, this->getObjectManager()};
+    const GameContext context{*this, *map, this->getObjectManager()};
 
     // read GameCycleCount
     gameCycleCount = stream.readUint32();
@@ -1614,7 +1614,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     auto seed = stream.readUint8Vector();
     if (seed.size() != decltype(randomGen)::state_bytes)
         THROW(std::runtime_error, "Random state size mismatch!");
-    randomGen.setState(gsl::span<const uint8_t, Random::state_bytes> {seed});
+    randomGen.setState(gsl::span<const uint8_t, Random::state_bytes>{seed});
 
     // read in the unit/structure data
     objectData.load(stream);

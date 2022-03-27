@@ -24,7 +24,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr InfantryBaseConstants soldier_constants {Soldier::item_id, 1, Bullet_ShellSmall};
+constexpr InfantryBaseConstants soldier_constants{Soldier::item_id, 1, Bullet_ShellSmall};
 }
 
 Soldier::Soldier(uint32_t objectID, const ObjectInitializer& initializer)

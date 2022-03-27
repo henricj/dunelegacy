@@ -48,7 +48,7 @@ std::unique_ptr<Map> INIMapLoader::load() {
     currentGameMap = map.get();
     auto cleanup   = gsl::finally([] { currentGameMap = nullptr; });
 
-    const GameContext context {*pGame, *map, pGame->getObjectManager()};
+    const GameContext context{*pGame, *map, pGame->getObjectManager()};
 
     loadHouses(context);
     loadUnits(context);
@@ -130,7 +130,7 @@ void INIMapLoader::loadMap() {
 
         map = std::make_unique<Map>(*pGame, sizeX, sizeY);
 
-        GameContext context {*pGame, *map, pGame->getObjectManager()};
+        GameContext context{*pGame, *map, pGame->getObjectManager()};
 
         for (int j = 0; j < map->getSizeY(); j++) {
             for (int i = 0; i < map->getSizeX(); i++) {
@@ -256,7 +256,7 @@ void INIMapLoader::loadMap() {
 
         map = std::make_unique<Map>(*pGame, sizeX, sizeY);
 
-        GameContext context {*pGame, *map, pGame->getObjectManager()};
+        GameContext context{*pGame, *map, pGame->getObjectManager()};
 
         for (int y = 0; y < sizeY; y++) {
             std::string rowKey = fmt::sprintf("%.3d", y);

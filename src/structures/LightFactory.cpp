@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants light_factory_constants {LightFactory::item_id, Coord {2, 2}};
+constexpr BuilderBaseConstants light_factory_constants{LightFactory::item_id, Coord{2, 2}};
 }
 
 LightFactory::LightFactory(uint32_t objectID, const ObjectInitializer& initializer)

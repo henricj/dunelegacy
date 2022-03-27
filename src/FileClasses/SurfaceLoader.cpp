@@ -135,7 +135,7 @@ const std::array<std::string, NUM_OBJPICS> ObjPicNames = {{"Tank_Base",
 /**
     Number of columns and rows each obj pic has
 */
-constexpr Coord objPicTiles[] {
+constexpr Coord objPicTiles[]{
     {8, 1},                                     // ObjPic_Tank_Base
     {8, 1},                                     // ObjPic_Tank_Gun
     {8, 1},                                     // ObjPic_Siegetank_Base
@@ -831,7 +831,7 @@ SurfaceLoader::SurfaceLoader() {
     {
         auto* const surface = uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
 
-        sdl2::surface_lock lock {surface};
+        sdl2::surface_lock lock{surface};
 
         for (auto y = 48; y < 48 + 240; y++) {
             for (auto x = 16; x < 16 + 608; x++) {
@@ -1442,7 +1442,7 @@ std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename)
 }
 
 sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filename) const {
-    sdl2::surface_ptr pSurface {SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, 91, 55, 8, 0, 0, 0, 0)};
 
     // create new picture surface
     if (pSurface == nullptr) {
@@ -1452,7 +1452,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
     { // Scope
         const auto myWsafile = std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
 
-        const sdl2::surface_ptr tmp {myWsafile->getPicture(0)};
+        const sdl2::surface_ptr tmp{myWsafile->getPicture(0)};
         if (tmp == nullptr) {
             THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
         }
@@ -1463,8 +1463,8 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 
         palette.applyToSurface(pSurface.get());
 
-        const sdl2::surface_lock lock_out {pSurface.get()};
-        const sdl2::surface_lock lock_in {tmp.get()};
+        const sdl2::surface_lock lock_out{pSurface.get()};
+        const sdl2::surface_lock lock_in{tmp.get()};
 
         char* RESTRICT const out      = static_cast<char*>(lock_out.pixels());
         const char* RESTRICT const in = static_cast<const char*>(lock_in.pixels());
@@ -1493,7 +1493,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     const int sizeX                    = NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
     const int sizeY                    = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1)
                     / NUM_WINDTRAP_ANIMATIONS_PER_ROW * windtrapSize;
-    sdl2::surface_ptr returnPic {SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr returnPic{SDL_CreateRGBSurface(0, sizeX, sizeY, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
     // copy building phase
@@ -1540,7 +1540,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
 }
 
 sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house) {
-    sdl2::surface_ptr returnPic {
+    sdl2::surface_ptr returnPic{
         SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
@@ -1563,7 +1563,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     const std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr {
+            pSurface = sdl2::surface_ptr{
                 Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
@@ -1578,11 +1578,11 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr {
+            pSurface = sdl2::surface_ptr{
                 Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr {
+        pSurface = sdl2::surface_ptr{
             Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 
@@ -1600,7 +1600,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
     const std::string filename = "Mask_3x_" + ObjPicNames.at(id) + ".png";
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
-            pSurface = sdl2::surface_ptr {
+            pSurface = sdl2::surface_ptr{
                 Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
             const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
@@ -1615,11 +1615,11 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
             sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
-            pSurface = sdl2::surface_ptr {
+            pSurface = sdl2::surface_ptr{
                 Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
     } else {
-        pSurface = sdl2::surface_ptr {
+        pSurface = sdl2::surface_ptr{
             Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
     }
 

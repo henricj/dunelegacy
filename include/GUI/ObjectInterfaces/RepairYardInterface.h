@@ -29,7 +29,7 @@
 class RepairYardInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RepairYardInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RepairYardInterface> {new RepairYardInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<RepairYardInterface>{new RepairYardInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

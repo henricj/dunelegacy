@@ -25,7 +25,7 @@
 #include <GUI/ObjectInterfaces/RefineryAndSiloInterface.h>
 
 namespace {
-constexpr StructureBaseConstants silo_constants {Silo::item_id, Coord {2, 2}};
+constexpr StructureBaseConstants silo_constants{Silo::item_id, Coord{2, 2}};
 }
 
 Silo::Silo(uint32_t objectID, const ObjectInitializer& initializer)

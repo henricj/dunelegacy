@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-constexpr StructureBaseConstants wall_constants {Wall::item_id, Coord {1, 1}};
+constexpr StructureBaseConstants wall_constants{Wall::item_id, Coord{1, 1}};
 }
 
 Wall::Wall(uint32_t objectID, const ObjectInitializer& initializer)

@@ -27,7 +27,7 @@ public:
 private:
     sdl2::surface_ptr src;
     SDL_Surface* dest;
-    SDL_Rect destRect {};
+    SDL_Rect destRect{};
     int numSteps;
     int StepsLeft;
 

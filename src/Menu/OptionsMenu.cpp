@@ -92,7 +92,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     languageHBox.addWidget(Spacer::create(), 0.5);
     languageHBox.addWidget(Label::create(_("Language")), 190);
 
-    for (auto i = decltype(availLanguages.size()) {0}; i < availLanguages.size(); i++) {
+    for (auto i = decltype(availLanguages.size()){0}; i < availLanguages.size(); i++) {
         languageDropDownBox.addEntry(availLanguages[i].substr(0, availLanguages[i].size() - 6), i);
         if (availLanguages[i].substr(availLanguages[i].size() - 5, 2) == settings.general.language) {
             languageDropDownBox.setSelectedItem(i);
@@ -416,7 +416,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
     const int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
     for (int i = numDisplayModes - 1; i >= 0; i--) {
         if (SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
-            addResolution(Coord {displayMode.w, displayMode.h});
+            addResolution(Coord{displayMode.w, displayMode.h});
         }
     }
 
@@ -460,7 +460,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
                                              [&](const auto& screenRes) { return screenRes.x > x && screenRes.y > y; });
 
             if (can_fit)
-                addResolution(Coord {x, y});
+                addResolution(Coord{x, y});
         };
 
         appendRes(640, 480);

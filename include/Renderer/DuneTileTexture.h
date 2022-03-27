@@ -32,7 +32,7 @@ private:
         return source_.at(column + row * columns_).as_sdl();
     }
 
-    SDL_Texture* texture_ {};
+    SDL_Texture* texture_{};
     int columns_;
     std::vector<DuneTextureRect> source_;
 };

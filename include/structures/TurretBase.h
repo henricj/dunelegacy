@@ -25,7 +25,7 @@
 class TurretBaseConstants : public StructureBaseConstants {
 public:
     constexpr explicit TurretBaseConstants(ItemID_enum itemID, BulletID_enum bullet_type)
-        : StructureBaseConstants {itemID, Coord {1, 1}}, bulletType_ {bullet_type} {
+        : StructureBaseConstants{itemID, Coord{1, 1}}, bulletType_{bullet_type} {
         canAttackStuff_ = true;
     }
 

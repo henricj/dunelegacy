@@ -46,16 +46,16 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
     if (!rwops)
         THROW(sdl_error, "Opening file '%s' failed: %s!", normal.u8string().c_str(), SDL_GetError());
 
-    return sdl2::RWops_ptr {rwops};
+    return sdl2::RWops_ptr{rwops};
 }
 
 TextManager::TextManager(std::string_view language) {
     const auto locale_directory = getDuneLegacyDataDir() / "locale";
 
     const auto languages =
-        getFileNamesList(locale_directory, std::string {language} + ".po", true, FileListOrder_Name_Asc);
+        getFileNamesList(locale_directory, std::string{language} + ".po", true, FileListOrder_Name_Asc);
 
-    const auto language_file = languages.empty() ? std::filesystem::path {"English.en.po"} : languages.front();
+    const auto language_file = languages.empty() ? std::filesystem::path{"English.en.po"} : languages.front();
 
     const auto language_path = locale_directory / language_file;
     sdl2::log_info("Loading localization from '%s'...", language_path.u8string().c_str());

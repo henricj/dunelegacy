@@ -72,13 +72,13 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
     }
 
     // create new picture surface
-    auto pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
+    auto pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy line by line
     char* RESTRICT p = static_cast<char*>(pic->pixels);

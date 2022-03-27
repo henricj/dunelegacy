@@ -45,11 +45,11 @@ private:
                  small_details_type&& small_details, tiny_pictures_type&& tiny_pictures, ui_graphics_type&& ui_graphics,
                  generated_type&& generated_pictures);
 
-    const object_pictures_type object_pictures_ {};
-    const small_details_type small_details_ {};
-    const tiny_pictures_type tiny_pictures_ {};
-    const ui_graphics_type ui_graphics_ {};
-    const generated_type generated_pictures_ {};
+    const object_pictures_type object_pictures_{};
+    const small_details_type small_details_{};
+    const tiny_pictures_type tiny_pictures_{};
+    const ui_graphics_type ui_graphics_{};
+    const generated_type generated_pictures_{};
 
     std::vector<sdl2::texture_ptr> textures_;
 };

@@ -793,12 +793,12 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
         game.getCommandManager().addCommand(
-            Command {pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
+            Command{pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
     } else {
         // move this unit
-        game.getCommandManager().addCommand(Command {pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
-                                                     static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
-                                                     static_cast<uint32_t>(true)});
+        game.getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
+                                                    static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
+                                                    static_cast<uint32_t>(true)});
     }
 }
 

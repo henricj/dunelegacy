@@ -83,7 +83,7 @@ public:
     int draw();
 
 private:
-    int currentFrameNumber {}; ///< current frame number in this frame
+    int currentFrameNumber{}; ///< current frame number in this frame
 
     std::queue<std::unique_ptr<VideoEvent>> videoEvents;     ///< queue of all VideoEvents in this scene
     std::list<std::unique_ptr<TextEvent>> textEvents;        ///< list of all TextEvents in this scene

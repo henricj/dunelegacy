@@ -73,7 +73,7 @@ protected:
 
     std::vector<std::string> mentatTexts;
     int currentMentatTextIndex = -1;
-    dune::dune_clock::time_point nextMentatTextSwitch {};
+    dune::dune_clock::time_point nextMentatTextSwitch{};
     HOUSETYPE house;
 
     StaticContainer windowWidget;

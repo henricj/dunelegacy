@@ -51,7 +51,7 @@ AIPlayer::AIPlayer(const GameContext& context, InputStream& stream, House* assoc
     buildTimer  = stream.readSint32();
 
     const auto NumPlaceLocations = stream.readUint32();
-    for (auto i = decltype(NumPlaceLocations) {0}; i < NumPlaceLocations; ++i) {
+    for (auto i = decltype(NumPlaceLocations){0}; i < NumPlaceLocations; ++i) {
         const auto x = stream.readSint32();
         const auto y = stream.readSint32();
 
@@ -775,7 +775,7 @@ void AIPlayer::checkAllUnits() {
 }
 
 bool AIPlayer::isAllowedToArm() const {
-    std::array<int, NUM_TEAMS> teamScore {};
+    std::array<int, NUM_TEAMS> teamScore{};
 
     int maxTeamScore = 0;
     currentGame->for_each_house([&](const auto& house) {

@@ -126,8 +126,8 @@ private:
     std::vector<std::vector<Command>> timeslot; ///< a vector of vectors containing the scheduled commands. At index x
                                                 ///< is a list of all commands scheduled for game cycle x.
     std::unique_ptr<OutputStream> pStream;      ///< a stream all added commands will be written to. May be nullptr
-    bool bReadOnly {};              ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
-    uint32_t networkCycleBuffer {}; ///< the number of frames a command is given in advance
+    bool bReadOnly{};              ///< true = addCommand() is a NO-OP, false = addCommand() has normal behaviour
+    uint32_t networkCycleBuffer{}; ///< the number of frames a command is given in advance
 };
 
 #endif // COMMANDMANAGER_H

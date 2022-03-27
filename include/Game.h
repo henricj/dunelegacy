@@ -594,7 +594,7 @@ private:
     float averageUpdateTime = 10.0f; ///< The weighted average of the update time
 
     dune::dune_clock::time_point
-        lastTargetGameCycleTime {}; //< Remember the last time the target gameCycleCount was updated
+        lastTargetGameCycleTime{}; //< Remember the last time the target gameCycleCount was updated
 
     uint32_t gameCycleCount = 0;
 
@@ -625,11 +625,11 @@ private:
 
     std::unique_ptr<Map> map;
 
-    bool bQuitGame = false;                        ///< Should the game quit after this game tick
-    bool bPause    = false;                        ///< Is the game currently halted
-    dune::dune_clock::time_point pauseGameTime {}; ///< Remember when the game was paused
-    bool bMenu   = false;                          ///< Is there currently a menu shown (options or mentat menu)
-    bool bReplay = false;                          ///< Is this game actually a replay
+    bool bQuitGame = false;                       ///< Should the game quit after this game tick
+    bool bPause    = false;                       ///< Is the game currently halted
+    dune::dune_clock::time_point pauseGameTime{}; ///< Remember when the game was paused
+    bool bMenu   = false;                         ///< Is there currently a menu shown (options or mentat menu)
+    bool bReplay = false;                         ///< Is this game actually a replay
 
     bool bShowFPS = false; ///< Show the FPS
 
@@ -641,7 +641,7 @@ private:
         false;        ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
     bool won = false; ///< If the game is finished, is it won or lost
     dune::dune_clock::time_point
-        finishedLevelTime {};   ///< The time in milliseconds when the level was finished (won or lost)
+        finishedLevelTime{};    ///< The time in milliseconds when the level was finished (won or lost)
     bool finishedLevel = false; ///< Set, when the game is really finished and the end message was shown
 
     std::unique_ptr<GameInterface> pInterface; ///< This is the whole interface (top bar and side bar)
@@ -650,7 +650,7 @@ private:
     std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers; ///< This is the dialog that pops up when we are
                                                                      ///< waiting for other players during network hangs
     dune::dune_clock::time_point
-        startWaitingForOtherPlayersTime {}; ///< The time in milliseconds when we started waiting for other players
+        startWaitingForOtherPlayersTime{}; ///< The time in milliseconds when we started waiting for other players
 
     bool bSelectionChanged =
         false; ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)

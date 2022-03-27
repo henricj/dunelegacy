@@ -53,9 +53,9 @@ public:
     void ensureBufferSize(size_t minBufferSize);
 
 private:
-    size_t currentPos {};
-    size_t bufferSize {};
-    char* pBuffer {};
+    size_t currentPos{};
+    size_t bufferSize{};
+    char* pBuffer{};
 };
 
 #endif // OMEMORYSTREAM_H

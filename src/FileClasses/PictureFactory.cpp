@@ -53,8 +53,7 @@ PictureFactory::PictureFactory() {
     creditsBorder = getSubPicture(ScreenPic.get(), 257, 2, 63, 13);
 
     // background
-    background =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, 8, 0, 0, 0, 0)};
+    background = sdl2::surface_ptr{SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, 8, 0, 0, 0, 0)};
     if (background == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
@@ -206,7 +205,7 @@ PictureFactory::PictureFactory() {
     }
 
     // create builder list upper cap
-    builderListUpperCap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0)};
+    builderListUpperCap = sdl2::surface_ptr{SDL_CreateRGBSurface(0, 112, 21, 8, 0, 0, 0, 0)};
     if (builderListUpperCap == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
@@ -232,7 +231,7 @@ PictureFactory::PictureFactory() {
     SDL_SetColorKey(builderListUpperCap.get(), SDL_TRUE, 0);
 
     // create builder list lower cap
-    builderListLowerCap = sdl2::surface_ptr {SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0)};
+    builderListLowerCap = sdl2::surface_ptr{SDL_CreateRGBSurface(0, 112, 17, 8, 0, 0, 0, 0)};
     if (builderListLowerCap == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
@@ -385,13 +384,13 @@ sdl2::surface_ptr PictureFactory::createBottomBar() const {
 }
 
 sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
-    sdl2::surface_ptr placingGrid {SDL_CreateRGBSurface(0, size, size, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr placingGrid{SDL_CreateRGBSurface(0, size, size, 8, 0, 0, 0, 0)};
     if (placingGrid == nullptr) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
     palette.applyToSurface(placingGrid.get());
-    sdl2::surface_lock lock {placingGrid.get()};
+    sdl2::surface_lock lock{placingGrid.get()};
 
     for (auto y = 0; y < size; y++) {
         auto* const out = static_cast<uint8_t*>(placingGrid->pixels) + y * placingGrid->pitch;
@@ -483,7 +482,7 @@ sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType, int w
     if (UseBackground) {
         Pic = getSubPicture(background.get(), 0, 0, width, height);
     } else {
-        Pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+        Pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
         if (Pic == nullptr) {
             THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
         }
@@ -515,9 +514,9 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
     SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(), 11, getHeight(Pic.get()) - 11, HAlign::Left, VAlign::Bottom);
     SDL_BlitSurface(ordosLogo.get(), nullptr, Pic.get(), &dest3);
 
-    const sdl2::surface_ptr Version {getSubPicture(background.get(), 0, 0, 75, 32)};
+    const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
-    sdl2::surface_ptr VersionText {pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
+    sdl2::surface_ptr VersionText{pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
 
     SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
                                      HAlign::Center, VAlign::Center);
@@ -669,7 +668,7 @@ sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice
 }
 
 sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
-    sdl2::surface_ptr pMapChoiceScreen {LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS").get())};
+    sdl2::surface_ptr pMapChoiceScreen{LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS").get())};
     if (pMapChoiceScreen == nullptr) {
         THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
     }
@@ -733,7 +732,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
 }
 
 sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const {
-    sdl2::surface_ptr pSurface {SDL_CreateRGBSurface(0, 416 + 208, 48, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, 416 + 208, 48, 8, 0, 0, 0, 0)};
     if (pSurface == nullptr) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
@@ -812,7 +811,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 
     auto pFrameAndCurtain = combinePictures(pGreenReplaced.get(), pCurtain.get(), 7, 7);
 
-    const auto pMask = sdl2::surface_ptr {LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get())};
+    const auto pMask = sdl2::surface_ptr{LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get())};
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -850,7 +849,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     auto newAnimation = std::make_unique<Animation>();
 
-    auto newFrame = sdl2::surface_ptr {LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get())};
+    auto newFrame = sdl2::surface_ptr{LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get())};
     newFrame      = getSubPicture(newFrame.get(), -68, -34, 368, 224);
 
     const SDL_Rect src = {0, 0, getWidth(heraldFre) - 2, 126};
@@ -867,7 +866,7 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
 std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation,
                                                                  SDL_Surface* heraldSard) {
 
-    const sdl2::surface_ptr maskSurface {
+    const sdl2::surface_ptr maskSurface{
         Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
@@ -1032,7 +1031,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
-    sdl2::surface_ptr mappedSurface {mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN)};
+    sdl2::surface_ptr mappedSurface{mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN)};
 
     uint8_t colorMap[256];
     for (int i = 0; i < 256; i++) {

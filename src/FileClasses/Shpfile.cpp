@@ -128,13 +128,13 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
     }
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Shpfile::getPicture(): Cannot create surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     const unsigned char* RESTRICT const in = ImageOut.get();
     char* const RESTRICT out               = static_cast<char*>(pic->pixels);
@@ -211,13 +211,13 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
     const auto ImageOut = std::make_unique<unsigned char[]>(sizeX * sizeY);
 
     // create new picture surface
-    sdl2::surface_ptr pic {SDL_CreateRGBSurface(0, sizeX * tilesX, sizeY * tilesY, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, sizeX * tilesX, sizeY * tilesY, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Shpfile::getPictureArray(): Cannot create Surface!");
     }
 
     palette.applyToSurface(pic.get());
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     for (auto j = 0u; j < tilesY; j++) {
         for (auto i = 0u; i < tilesX; i++) {

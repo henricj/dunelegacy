@@ -47,7 +47,7 @@ void ObjectManager::load(InputStream& stream) {
 
     objectMap.reserve(numObjects);
 
-    for (auto i = decltype(numObjects) {0}; i < numObjects; i++) {
+    for (auto i = decltype(numObjects){0}; i < numObjects; i++) {
         auto objectID = stream.readUint32();
 
         auto pObject = loadObject(stream, objectID);
@@ -81,7 +81,7 @@ bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
 std::unique_ptr<ObjectBase> ObjectManager::loadObject(InputStream& stream, uint32_t objectID) {
     const auto itemID = static_cast<ItemID_enum>(stream.readUint32());
 
-    auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer {stream});
+    auto newObject = ObjectBase::loadObject(itemID, objectID, ObjectStreamInitializer{stream});
     if (!newObject) {
         THROW(std::runtime_error, "Error while loading an object!");
     }

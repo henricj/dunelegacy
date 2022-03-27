@@ -39,7 +39,7 @@ public:
         localTexture_.reset(); // Free the old one before we try to create another.
         localTexture_ = convertSurfaceToTexture(pSurface.get());
 
-        privateDuneTexture_ = DuneTexture {localTexture_.get()};
+        privateDuneTexture_ = DuneTexture{localTexture_.get()};
 
         setTexture(&privateDuneTexture_);
     }
@@ -91,7 +91,7 @@ public:
     }
 
 private:
-    const DuneTexture* pTexture {}; ///< The texture that is shown
+    const DuneTexture* pTexture{}; ///< The texture that is shown
     sdl2::texture_ptr localTexture_;
     DuneTexture privateDuneTexture_;
 };

@@ -28,7 +28,7 @@ public:
     Palette() { }
 
     explicit Palette(int numPaletteEntries) {
-        pSDLPalette = sdl2::palette_ptr {SDL_AllocPalette(numPaletteEntries)};
+        pSDLPalette = sdl2::palette_ptr{SDL_AllocPalette(numPaletteEntries)};
         if (!pSDLPalette) {
             throw;
         }
@@ -73,7 +73,7 @@ public:
             this->pSDLPalette.reset();
             return;
         }
-        auto pNewSDLPalette = sdl2::palette_ptr {SDL_AllocPalette(pSDLPalette->ncolors)};
+        auto pNewSDLPalette = sdl2::palette_ptr{SDL_AllocPalette(pSDLPalette->ncolors)};
         memcpy(pNewSDLPalette->colors, pSDLPalette->colors, pSDLPalette->ncolors * sizeof(SDL_Color));
 
         this->pSDLPalette = std::move(pNewSDLPalette);

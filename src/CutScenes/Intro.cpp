@@ -60,7 +60,7 @@ Intro::Intro() {
     pHarkonnen     = create_wsafile("INTRO8A.WSA", "INTRO8B.WSA", "INTRO8C.WSA");
     pDestroyedTank = create_wsafile("INTRO5.WSA");
 
-    const IndexedTextFile intro_text {pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
+    const IndexedTextFile intro_text{pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
 
     wind            = getChunkFromFile("WIND2BP.VOC");
     carryallLanding = getChunkFromFile("CLANK.VOC");

@@ -27,7 +27,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants quad_constants {Quad::item_id, 2, Bullet_ShellSmall};
+constexpr GroundUnitConstants quad_constants{Quad::item_id, 2, Bullet_ShellSmall};
 }
 
 Quad::Quad(uint32_t objectID, const ObjectInitializer& initializer)

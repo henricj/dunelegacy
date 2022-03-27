@@ -431,7 +431,7 @@ HOUSETYPE getHouseByName(std::string_view name) {
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
     if (const auto idx = static_cast<int>(house); idx >= 0 && house < HOUSETYPE::NUM_HOUSES) {
-        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)] {
+        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)]{
             "Harkonnen", "Atreides", "Ordos", "Fremen", "Sardaukar", "Mercenary"};
         return houseName[idx];
     }
@@ -640,7 +640,7 @@ void startReplay(const std::filesystem::path& filename) {
 
     currentGame->initReplay(filename);
 
-    const GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
     currentGame->runMainLoop(context);
 
     currentGame.reset();
@@ -674,7 +674,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
         // get init settings from game as it might have changed (through loading the game)
         currentGameInitInfo = currentGame->getGameInitSettings();
 
-        GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+        GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
         context.game.runMainLoop(context);
 
         sdl2::log_info("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
@@ -685,8 +685,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
                 case GAME_DEBRIEFING_WIN: {
                     sdl2::log_info("Debriefing...");
                     { // Scope
-                        BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
-                                               DEBRIEFING_WIN};
+                        BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
+                                              DEBRIEFING_WIN};
                         briefing.showMenu();
                     }
 
@@ -723,8 +723,8 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                 case GAME_DEBRIEFING_LOST: {
                     sdl2::log_info("Debriefing...");
-                    BriefingMenu briefing {currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
-                                           DEBRIEFING_LOST};
+                    BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
+                                          DEBRIEFING_LOST};
                     briefing.showMenu();
                 } break;
 
@@ -769,7 +769,7 @@ void startMultiPlayerGame(const GameInitSettings& init) {
     // get init settings from game as it might have changed (through loading the game)
     currentGameInitInfo = currentGame->getGameInitSettings();
 
-    const GameContext context {*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
     currentGame->runMainLoop(context);
 
     if (currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {

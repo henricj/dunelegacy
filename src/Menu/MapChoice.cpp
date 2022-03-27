@@ -77,7 +77,7 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
             mapSurface          = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
             const SDL_Rect dest = {16, 48, 608, 240};
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
-            mapTexture = sdl2::texture_ptr {
+            mapTexture = sdl2::texture_ptr{
                 SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
             SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
@@ -325,7 +325,7 @@ bool MapChoice::doInput(SDL_Event& event) {
 
                 uint8_t regionNum = 0;
                 { // Scope
-                    sdl2::surface_lock lock {clickmap};
+                    sdl2::surface_lock lock{clickmap};
 
                     regionNum = static_cast<uint8_t*>(clickmap->pixels)[y * clickmap->pitch + x];
                 }
@@ -352,7 +352,7 @@ bool MapChoice::doInput(SDL_Event& event) {
 void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
     // Load map surface
     mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
-    mapTexture = sdl2::texture_ptr {
+    mapTexture = sdl2::texture_ptr{
         SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
     SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 

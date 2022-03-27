@@ -48,7 +48,7 @@ public:
     */
     void setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)> pOnGameServerInfoList) {
         this->pOnGameServerInfoList = pOnGameServerInfoList;
-        lastServerInfoListUpdate    = dune::dune_clock::time_point {};
+        lastServerInfoListUpdate    = dune::dune_clock::time_point{};
     }
 
     /**
@@ -136,9 +136,9 @@ private:
     uint8_t numPlayers = 0; ///< The current number of players in the currently set up game
     uint8_t maxPlayers = 0; ///< The maximum number of players in the currently set up game
 
-    dune::dune_clock::time_point lastAnnounceUpdate {}; ///< The last time the game was announced
+    dune::dune_clock::time_point lastAnnounceUpdate{}; ///< The last time the game was announced
     dune::dune_clock::time_point
-        lastServerInfoListUpdate {}; ///< The last time the server list was updated by a request to the metaserver
+        lastServerInfoListUpdate{}; ///< The last time the server list was updated by a request to the metaserver
 
     std::function<void(std::list<GameServerInfo>&)>
         pOnGameServerInfoList;                                ///< Callback for updates to the game server list

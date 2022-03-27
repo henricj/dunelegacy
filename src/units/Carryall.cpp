@@ -32,7 +32,7 @@
 #include <units/Harvester.h>
 
 namespace {
-constexpr AirUnitConstants carryall_constants {Carryall::item_id};
+constexpr AirUnitConstants carryall_constants{Carryall::item_id};
 } // namespace
 
 Carryall::Carryall(uint32_t objectID, const ObjectInitializer& initializer)

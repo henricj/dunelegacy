@@ -77,7 +77,7 @@ private:
     std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_UIGRAPHICS> uiGraphic;
     std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES>
         mapChoicePieces;
-    std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation {};
+    std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation{};
 
     std::array<sdl2::surface_ptr, NUM_SMALLDETAILPICS> smallDetailPic;
     std::array<sdl2::surface_ptr, NUM_TINYPICTURE> tinyPicture;

@@ -29,8 +29,8 @@
 namespace sdl2 {
 class texture_lock final {
     SDL_Texture* const texture_;
-    void* pixels_ {};
-    int pitch_ {};
+    void* pixels_{};
+    int pitch_{};
 
 public:
     explicit texture_lock(SDL_Texture* texture) : texture_(texture) {
@@ -77,7 +77,7 @@ class surface_lock final {
 
 public:
     explicit surface_lock(SDL_Surface* surface)
-        : surface_(SDL_MUSTLOCK(surface) ? surface : nullptr), pixels_ {surface->pixels}, pitch_ {surface->pitch} {
+        : surface_(SDL_MUSTLOCK(surface) ? surface : nullptr), pixels_{surface->pixels}, pitch_{surface->pitch} {
         assert(surface);
 
         if (!surface_)

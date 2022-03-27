@@ -25,7 +25,7 @@ HoldPictureVideoEvent::HoldPictureVideoEvent(SDL_Surface* pSurface, int numFrame
         pTexture = nullptr;
     } else {
         const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-        pTexture                     = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
+        pTexture                     = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, pTmp.get())};
     }
     this->numFrames2Hold  = numFrames2Hold;
     this->bCenterVertical = bCenterVertical;

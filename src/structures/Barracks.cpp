@@ -23,7 +23,7 @@
 #include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants barracks_constants {Barracks::item_id, Coord {2, 2}};
+constexpr BuilderBaseConstants barracks_constants{Barracks::item_id, Coord{2, 2}};
 }
 
 Barracks::Barracks(uint32_t objectID, const ObjectInitializer& initializer)

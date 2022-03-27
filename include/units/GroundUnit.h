@@ -24,7 +24,7 @@ class GroundUnitConstants : public UnitBaseConstants {
 public:
     constexpr explicit GroundUnitConstants(ItemID_enum itemID, int num_weapons = 0,
                                            BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : UnitBaseConstants {itemID, num_weapons, bullet_id} {
+        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
         aGroundUnit_ = true;
     }
 };

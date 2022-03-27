@@ -46,7 +46,7 @@ public:
         (sizeof(xoroshiro128plus::s0_) + sizeof(xoroshiro128plus::s1_)) / sizeof(unsigned int);
 
     void seed(result_type s) {
-        seed_seq seq {s};
+        seed_seq seq{s};
 
         seed(seq);
     }

@@ -43,8 +43,8 @@ private:
     void init();
 
     // drawing information
-    zoomable_texture turretGraphic {}; ///< The turret graphic
-    int gunGraphicID;                  ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic{}; ///< The turret graphic
+    int gunGraphicID;                 ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // SONICTANK_H

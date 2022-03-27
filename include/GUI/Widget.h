@@ -472,16 +472,16 @@ protected:
     virtual void invalidateTextures() { }
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true
-    bool pAllocated {};
+    bool pAllocated{};
 
 private:
-    bool visible {true}; ///< Is this widget visible?
-    bool enabled {true}; ///< Is this widget enabled?
-    bool active {};      ///< Is this widget active?
-    bool resizeX {};     ///< Is this widget resizable in X direction?
-    bool resizeY {};     ///< Is this widget resizable in Y direction?
-    Point size;          ///< The size of this widget
-    Widget* parent {};   ///< The parent widget
+    bool visible{true}; ///< Is this widget visible?
+    bool enabled{true}; ///< Is this widget enabled?
+    bool active{};      ///< Is this widget active?
+    bool resizeX{};     ///< Is this widget resizable in X direction?
+    bool resizeY{};     ///< Is this widget resizable in Y direction?
+    Point size;         ///< The size of this widget
+    Widget* parent{};   ///< The parent widget
 
     std::function<void()> pOnGainFocus; ///< function that is called when this widget gains focus
     std::function<void()> pOnLostFocus; ///< function that is called when this widget loses focus

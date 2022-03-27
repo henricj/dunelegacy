@@ -42,7 +42,7 @@ void CutScene::run() {
 
         const auto nextFrameTime = draw();
 
-        const auto frameDone = std::chrono::milliseconds {nextFrameTime} + frameStart;
+        const auto frameDone = std::chrono::milliseconds{nextFrameTime} + frameStart;
 
         for (;;) {
             const auto now = dune::dune_clock::now();

@@ -29,7 +29,7 @@
 #include <Map.h>
 
 namespace {
-constexpr TurretBaseConstants gun_turret_constants {RocketTurret::item_id, Bullet_TurretRocket};
+constexpr TurretBaseConstants gun_turret_constants{RocketTurret::item_id, Bullet_TurretRocket};
 }
 
 RocketTurret::RocketTurret(uint32_t objectID, const ObjectInitializer& initializer)

@@ -65,10 +65,10 @@ public:
         Construct a command with CMDTYPE id and no parameter.
         \param  id  the id of the command
     */
-    Command(uint8_t playerID, CMDTYPE id) : playerID {playerID}, commandID {id} { }
+    Command(uint8_t playerID, CMDTYPE id) : playerID{playerID}, commandID{id} { }
 
     template<typename... Parameters, typename = std::enable_if_t<(std::is_convertible_v<Parameters, uint32_t> && ...)>>
-    Command(uint8_t playerID, CMDTYPE id, Parameters&&... parameters) : playerID {playerID}, commandID {id} {
+    Command(uint8_t playerID, CMDTYPE id, Parameters&&... parameters) : playerID{playerID}, commandID{id} {
         // Pilfered from https://stackoverflow.com/a/39659128
         parameter.reserve(sizeof...(parameters));
         (parameter.push_back(parameters), ...);

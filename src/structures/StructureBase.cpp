@@ -178,10 +178,10 @@ void StructureBase::drawSelectionBox() {
     DuneDrawSelectionBox(renderer, dest);
 
     // health bar
-    const SDL_FRect healthRect {static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
-                                static_cast<float>(lround((getHealth() / getMaxHealth())
-                                                          * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
-                                static_cast<float>(currentZoomlevel + 1)};
+    const SDL_FRect healthRect{static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
+                               static_cast<float>(lround((getHealth() / getMaxHealth())
+                                                         * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
+                               static_cast<float>(currentZoomlevel + 1)};
     renderFillRectF(renderer, &healthRect, getHealthColor());
 }
 

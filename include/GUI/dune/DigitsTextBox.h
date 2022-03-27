@@ -227,7 +227,7 @@ private:
 
     int incrementValue = 1;
 
-    HOUSETYPE house {HOUSETYPE::HOUSE_HARKONNEN};
+    HOUSETYPE house{HOUSETYPE::HOUSE_HARKONNEN};
 };
 
 #endif // DIGITSTEXTBOX_H

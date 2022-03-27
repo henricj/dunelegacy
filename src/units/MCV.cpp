@@ -31,7 +31,7 @@
 #include <players/HumanPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants mcv_constants {MCV::item_id, false};
+constexpr GroundUnitConstants mcv_constants{MCV::item_id, false};
 }
 
 MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(mcv_constants, objectID, initializer) {
@@ -80,7 +80,7 @@ bool MCV::doDeploy() {
             setVisible(VIS_ALL, false);
 
             // destroy MCV but with base class method since we want no explosion
-            GroundUnit::destroy(GameContext {*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
+            GroundUnit::destroy(GameContext{*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
 
             return true;
         }

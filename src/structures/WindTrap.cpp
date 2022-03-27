@@ -25,7 +25,7 @@
 #include <GUI/ObjectInterfaces/WindTrapInterface.h>
 
 namespace {
-constexpr StructureBaseConstants wind_trap_constants {WindTrap::item_id, Coord {2, 2}};
+constexpr StructureBaseConstants wind_trap_constants{WindTrap::item_id, Coord{2, 2}};
 }
 
 WindTrap::WindTrap(uint32_t objectID, const ObjectInitializer& initializer)

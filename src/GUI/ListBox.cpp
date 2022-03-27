@@ -188,7 +188,7 @@ void ListBox::updateTextures() {
         }
 
         sdl2::surface_ptr pForegroundSurface =
-            sdl2::surface_ptr {GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
+            sdl2::surface_ptr{GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
 
         const int numVisibleElements =
             static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
@@ -196,7 +196,7 @@ void ListBox::updateTextures() {
             if (i >= getNumEntries())
                 break;
 
-            sdl2::surface_ptr pSurface = sdl2::surface_ptr {GUIStyle::getInstance().createListBoxEntry(
+            sdl2::surface_ptr pSurface = sdl2::surface_ptr{GUIStyle::getInstance().createListBoxEntry(
                 getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i == selectedElement), color)};
 
             SDL_Rect dest = calcDrawingRect(pSurface.get(), 0,

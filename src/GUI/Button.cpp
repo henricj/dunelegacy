@@ -186,9 +186,9 @@ void Button::invalidateTextures() {
     pPressedTexture   = nullptr;
     pActiveTexture    = nullptr;
 
-    localDuneUnpressed_ = DuneTexture {};
-    localDunePressed_   = DuneTexture {};
-    localDuneActive_    = DuneTexture {};
+    localDuneUnpressed_ = DuneTexture{};
+    localDunePressed_   = DuneTexture{};
+    localDuneActive_    = DuneTexture{};
 
     localUnpressed_.reset();
     localPressed_.reset();
@@ -201,9 +201,9 @@ void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr 
     localPressed_   = convertSurfaceToTexture(pPressedSurface.get());
     localActive_    = convertSurfaceToTexture(pActiveSurface.get());
 
-    localDuneUnpressed_ = DuneTexture {localUnpressed_.get()};
-    localDunePressed_   = DuneTexture {localPressed_.get()};
-    localDuneActive_    = DuneTexture {localActive_.get()};
+    localDuneUnpressed_ = DuneTexture{localUnpressed_.get()};
+    localDunePressed_   = DuneTexture{localPressed_.get()};
+    localDuneActive_    = DuneTexture{localActive_.get()};
 
     setTextures(&localDuneUnpressed_, &localDunePressed_, localActive_ ? &localDuneActive_ : nullptr);
 }

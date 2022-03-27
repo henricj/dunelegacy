@@ -31,7 +31,7 @@
 #include <GUI/ObjectInterfaces/RepairYardInterface.h>
 
 namespace {
-constexpr StructureBaseConstants repair_yard_constants {RepairYard::item_id, Coord {3, 2}};
+constexpr StructureBaseConstants repair_yard_constants{RepairYard::item_id, Coord{3, 2}};
 }
 
 RepairYard::RepairYard(uint32_t objectID, const ObjectInitializer& initializer)

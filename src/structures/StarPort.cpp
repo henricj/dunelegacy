@@ -37,7 +37,7 @@ constexpr auto STARPORT_ARRIVETIME = (MILLI2CYCLES(30 * 1000));
 
 constexpr auto STARPORT_NO_ARRIVAL_AWAITED = -1;
 
-constexpr BuilderBaseConstants star_port_constants {StarPort::item_id, Coord {3, 3}};
+constexpr BuilderBaseConstants star_port_constants{StarPort::item_id, Coord{3, 3}};
 } // namespace
 
 StarPort::StarPort(uint32_t objectID, const ObjectInitializer& initializer)

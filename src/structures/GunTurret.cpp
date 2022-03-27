@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-constexpr TurretBaseConstants gun_turret_constants {GunTurret::item_id, Bullet_ShellTurret};
+constexpr TurretBaseConstants gun_turret_constants{GunTurret::item_id, Bullet_ShellTurret};
 }
 
 GunTurret::GunTurret(uint32_t objectID, const ObjectInitializer& initializer)

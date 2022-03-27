@@ -28,7 +28,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr TrackedUnitConstants deviator_constants {Deviator::item_id, 1, Bullet_DRocket};
+constexpr TrackedUnitConstants deviator_constants{Deviator::item_id, 1, Bullet_DRocket};
 }
 
 Deviator::Deviator(uint32_t objectID, const ObjectInitializer& initializer)

@@ -97,7 +97,7 @@ private:
     ProgressBar buildingsEnemyProgressBar;
     Label buildingsEnemyLabel;
 
-    dune::dune_clock::time_point currentStateStartTime {};
+    dune::dune_clock::time_point currentStateStartTime{};
     CampaignStatsState currentState = State_HumanSpice;
 
     int unitsDestroyedByHuman = 0;

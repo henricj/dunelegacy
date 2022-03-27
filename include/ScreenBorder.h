@@ -322,8 +322,8 @@ public:
 private:
     SDL_Rect gameBoardRect; ///< the complete game board rectangle
 
-    int mapSizeX {}; ///< The number of tiles in x direction
-    int mapSizeY {}; ///< The number of tiles in y direction
+    int mapSizeX{}; ///< The number of tiles in x direction
+    int mapSizeY{}; ///< The number of tiles in y direction
 
     Coord topLeftCorner;     ///< the position of the top left corner in world coordinates
     Coord bottomRightCorner; ///< the position of the bottom right corner in world coordinates
@@ -333,7 +333,7 @@ private:
     Coord topLeftCornerOnScreen;     ///< the position of the top left corner in screen coordinates
     Coord bottomRightCornerOnScreen; ///< the position of the bottom right corner in screen coordinates
 
-    int numShakingCycles {}; ///< the number of cycles the screen will shake
+    int numShakingCycles{}; ///< the number of cycles the screen will shake
 };
 
 #endif // SCREENBORDER

@@ -136,7 +136,7 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
         strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo.value());
 
     auto pTimeTexture     = pFontManager->createTextureWithText(timestring, COLOR_WHITE, 12);
-    auto pUsernameTexture = pFontManager->createTextureWithText(std::string {username} + ": ", COLOR_WHITE, 12);
+    auto pUsernameTexture = pFontManager->createTextureWithText(std::string{username} + ": ", COLOR_WHITE, 12);
     auto pMessageTexture  = pFontManager->createTextureWithText(message, COLOR_WHITE, 12);
 
     chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
@@ -147,7 +147,7 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
 
 void ChatManager::addInfoMessage(std::string_view message) {
     sdl2::texture_ptr pMessageTexture =
-        pFontManager->createTextureWithText(std::string {"*  "}.append(message), COLOR_GREEN, 12);
+        pFontManager->createTextureWithText(std::string{"*  "}.append(message), COLOR_GREEN, 12);
 
     chatMessages.emplace_back(std::move(pMessageTexture), dune::dune_clock::now(), MessageType::MSGTYPE_INFO);
 

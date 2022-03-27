@@ -143,7 +143,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
     targetFriendly = stream.readBool();
     attackMode     = static_cast<ATTACKMODE>(stream.readUint32());
 
-    std::array<bool, 7> b {false, false, false, false, false, false, false};
+    std::array<bool, 7> b{false, false, false, false, false, false, false};
 
     stream.readBools(&b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6]);
 
@@ -152,7 +152,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
 }
 
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID)
-    : constants_ {object_constants}, itemID {object_constants.itemID}, objectID {objectID} {
+    : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
     graphicID  = -1;
     numImagesX = 0;
     numImagesY = 0;
@@ -315,9 +315,9 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 }
 
 bool ObjectBase::isOnScreen() const {
-    const Coord position {lround(getRealX()), lround(getRealY())};
-    const Coord size {getWidth(graphic[currentZoomlevel]) / numImagesX,
-                      getHeight(graphic[currentZoomlevel]) / numImagesY};
+    const Coord position{lround(getRealX()), lround(getRealY())};
+    const Coord size{getWidth(graphic[currentZoomlevel]) / numImagesX,
+                     getHeight(graphic[currentZoomlevel]) / numImagesY};
 
     return screenborder->isInsideScreen(position, size);
 }

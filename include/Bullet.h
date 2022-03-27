@@ -82,8 +82,8 @@ private:
     ObjectPointer target; ///< The target to hit
 
     // drawing information
-    zoomable_texture graphic {}; ///< The graphic of the bullet
-    int numFrames = 0;           ///< Number of frames of the bullet
+    zoomable_texture graphic{}; ///< The graphic of the bullet
+    int numFrames = 0;          ///< Number of frames of the bullet
 };
 
 #endif // BULLET_H

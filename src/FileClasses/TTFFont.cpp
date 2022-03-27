@@ -31,7 +31,7 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
         THROW(std::invalid_argument, "TTFFont::TTFFont(): pRWOP == nullptr!");
     }
 
-    pTTFFont = font_ptr {TTF_OpenFontRW(pRWOP.release(), 1, fontsize)};
+    pTTFFont = font_ptr{TTF_OpenFontRW(pRWOP.release(), 1, fontsize)};
     if (!pTTFFont) {
         THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: %s!", TTF_GetError());
     }
@@ -50,14 +50,14 @@ TTFFont::~TTFFont() = default;
 void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor) {
 
     if (!text.empty()) {
-        const sdl2::surface_ptr pTextSurface {
-            TTF_RenderUTF8_Solid(pTTFFont.get(), std::string {text}.c_str(), RGBA2SDL(baseColor))};
+        const sdl2::surface_ptr pTextSurface{
+            TTF_RenderUTF8_Solid(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
         if (!pTextSurface) {
             THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Solid() failed: %s!",
                   TTF_GetError());
         }
 
-        SDL_Rect dest {0, -2, pTextSurface->w, pTextSurface->h};
+        SDL_Rect dest{0, -2, pTextSurface->w, pTextSurface->h};
         SDL_BlitSurface(pTextSurface.get(), nullptr, pSurface, &dest);
     }
 }
@@ -71,7 +71,7 @@ void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, ui
 int TTFFont::getTextWidth(std::string_view text) const {
 
     int width = 0;
-    if (TTF_SizeUTF8(pTTFFont.get(), std::string {text}.c_str(), &width, nullptr) < 0) {
+    if (TTF_SizeUTF8(pTTFFont.get(), std::string{text}.c_str(), &width, nullptr) < 0) {
         THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeText() failed: %s!", TTF_GetError());
     }
 

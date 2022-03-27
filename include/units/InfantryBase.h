@@ -24,7 +24,7 @@ class InfantryBaseConstants : public GroundUnitConstants {
 public:
     constexpr explicit InfantryBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                              BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : GroundUnitConstants {itemID, num_weapons, bullet_id} {
+        : GroundUnitConstants{itemID, num_weapons, bullet_id} {
         infantry_ = true;
     }
 };
@@ -90,7 +90,7 @@ protected:
     int8_t oldTilePosition; ///< The previous tile position (0 to 4)
 
     // drawing information
-    int walkFrame {}; ///< What frame to draw
+    int walkFrame{}; ///< What frame to draw
 };
 
 template<>

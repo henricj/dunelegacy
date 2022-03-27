@@ -42,13 +42,13 @@ public:
 
 private:
     struct TileData {
-        TileData* parentKey {};
+        TileData* parentKey{};
         Coord coord;
         FixPoint g;
         FixPoint h;
         FixPoint f;
-        bool bInOpenList {};
-        bool bClosed {};
+        bool bInOpenList{};
+        bool bClosed{};
     };
 
     TileData& getMapData(const Coord& coord) noexcept { return mapData[coord.y * sizeX + coord.x]; }

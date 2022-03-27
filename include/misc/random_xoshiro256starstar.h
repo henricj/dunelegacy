@@ -95,7 +95,7 @@ public:
     static constexpr size_t seed_words = 4 * sizeof(s0_) / sizeof(unsigned int);
 
     void seed(unsigned int s) {
-        seed_seq seq {s};
+        seed_seq seq{s};
 
         seed(seq);
     }

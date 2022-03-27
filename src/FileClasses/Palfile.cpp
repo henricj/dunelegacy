@@ -65,9 +65,9 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         }
     }
 
-    const sdl2::palette_ptr sdl_palette {SDL_AllocPalette(numColors)};
+    const sdl2::palette_ptr sdl_palette{SDL_AllocPalette(numColors)};
 
     SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, numColors);
 
-    return Palette {sdl_palette.get()};
+    return Palette{sdl_palette.get()};
 }

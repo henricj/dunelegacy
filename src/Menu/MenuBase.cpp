@@ -41,7 +41,7 @@ void MenuBase::quit(int returnVal) {
 bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
     using namespace std::chrono_literals;
 
-    SDL_Event event {};
+    SDL_Event event{};
 
     while (!quiting) {
         const auto remaining = until - dune::dune_clock::now();
@@ -67,7 +67,7 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
 int MenuBase::showMenu() {
     using namespace std::chrono_literals;
 
-    SDL_Event event {};
+    SDL_Event event{};
 
     quiting = false;
 
@@ -111,7 +111,7 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
-    const SDL_Rect clipRect {getPosition().x, getPosition().y, getSize().x, getSize().y};
+    const SDL_Rect clipRect{getPosition().x, getPosition().y, getSize().x, getSize().y};
     SDL_RenderSetClipRect(renderer, &clipRect);
 
     Window::draw();

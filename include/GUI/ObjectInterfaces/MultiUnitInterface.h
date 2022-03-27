@@ -41,13 +41,13 @@
 class MultiUnitInterface final : public ObjectInterface {
 public:
     static std::unique_ptr<MultiUnitInterface> create(const GameContext& context) {
-        auto tmp        = std::unique_ptr<MultiUnitInterface> {new MultiUnitInterface {context}};
+        auto tmp        = std::unique_ptr<MultiUnitInterface>{new MultiUnitInterface{context}};
         tmp->pAllocated = true;
         return tmp;
     }
 
 protected:
-    MultiUnitInterface(const GameContext& context) : context_ {context} {
+    MultiUnitInterface(const GameContext& context) : context_{context} {
         const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
 
         MultiUnitInterface::addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));

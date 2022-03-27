@@ -81,10 +81,10 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
                                               + std::string(lodepng_error_text(error)));
             }
 
-            const lodepng_ptr pImageOut {lode_out};
+            const lodepng_ptr pImageOut{lode_out};
 
             // create new picture surface
-            pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+            pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
             if (pic == nullptr) {
                 THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
@@ -92,7 +92,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             const auto* const colors = reinterpret_cast<SDL_Color*>(lodePNGState.info_png.color.palette);
             SDL_SetPaletteColors(pic->format->palette, colors, 0, lodePNGState.info_png.color.palettesize);
 
-            const sdl2::surface_lock pic_lock {pic.get()};
+            const sdl2::surface_lock pic_lock{pic.get()};
 
             const unsigned char* RESTRICT const image_out =
                 reinterpret_cast<const unsigned char*>(pImageOut.get());                                // NOLINT
@@ -119,15 +119,15 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
                       "LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
             }
 
-            const lodepng_ptr pImageOut {lode_out};
+            const lodepng_ptr pImageOut{lode_out};
 
             // create new picture surface
-            pic = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888)};
+            pic = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, SDL_PIXELFORMAT_RGBA8888)};
             if (pic == nullptr) {
                 THROW(std::runtime_error, "LoadPNG_RW(): SDL_CreateRGBSurface has failed!");
             }
 
-            const sdl2::surface_lock pic_lock {pic.get()};
+            const sdl2::surface_lock pic_lock{pic.get()};
 
             const uint32_t* RESTRICT const image_out  = reinterpret_cast<const uint32_t*>(pImageOut.get()); // NOLINT
             unsigned char* RESTRICT const pic_surface = static_cast<unsigned char*>(pic_lock.pixels());     // NOLINT
@@ -168,7 +168,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     sdl2::surface_ptr surface_copy;
 
     if (surface->format->format != SDL_PIXELFORMAT_RGBA32) {
-        surface_copy = sdl2::surface_ptr {SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)};
+        surface_copy = sdl2::surface_ptr{SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0)};
 
         surface = surface_copy.get();
     }
@@ -180,7 +180,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     size_t pngFileSize      = 0;
 
     { // Scope
-        sdl2::surface_lock lock {surface};
+        sdl2::surface_lock lock{surface};
 
         const auto error = lodepng_encode32(&ppngFile, &pngFileSize, static_cast<const unsigned char*>(surface->pixels),
                                             width, height);
@@ -191,7 +191,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
         }
     }
 
-    const lodepng_ptr ppngFile_ptr {ppngFile};
+    const lodepng_ptr ppngFile_ptr{ppngFile};
 
     if (SDL_RWwrite(RWop, ppngFile_ptr.get(), 1, pngFileSize) != pngFileSize) {
         sdl2::log_info("%s", SDL_GetError());

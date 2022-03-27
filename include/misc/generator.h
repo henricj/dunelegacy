@@ -43,7 +43,7 @@ struct generator {
 
     using handle_type = std::experimental::coroutine_handle<promise_type>;
 
-    handle_type handle {nullptr};
+    handle_type handle{nullptr};
 
     struct iterator {
         using iterator_category = std::input_iterator_tag;

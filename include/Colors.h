@@ -60,8 +60,8 @@ constexpr auto SDL2RGB(SDL_Color sdl_color) {
 }
 
 constexpr auto RGBA2SDL(Uint32 color) {
-    return SDL_Color {static_cast<Uint8>((color & RMASK) >> RSHIFT), static_cast<Uint8>((color & GMASK) >> GSHIFT),
-                      static_cast<Uint8>((color & BMASK) >> BSHIFT), static_cast<Uint8>((color & AMASK) >> ASHIFT)};
+    return SDL_Color{static_cast<Uint8>((color & RMASK) >> RSHIFT), static_cast<Uint8>((color & GMASK) >> GSHIFT),
+                     static_cast<Uint8>((color & BMASK) >> BSHIFT), static_cast<Uint8>((color & AMASK) >> ASHIFT)};
 }
 
 // Palette color indices

@@ -86,13 +86,13 @@ public:
         ~Key() override;
 
         [[nodiscard]] std::string getKeyName() const;
-        [[nodiscard]] std::string getStringValue() const { return std::string {getStringView()}; }
+        [[nodiscard]] std::string getStringValue() const { return std::string{getStringView()}; }
         [[nodiscard]] std::string_view getStringView() const;
 
         [[nodiscard]] bool getBoolValue(bool defaultValue = false) const;
 
         template<typename T>
-        [[nodiscard]] T getValue(T defaultValue = T {}) const noexcept {
+        [[nodiscard]] T getValue(T defaultValue = T{}) const noexcept {
             auto value = getStringView();
             if (value.empty())
                 return defaultValue;
@@ -114,7 +114,7 @@ public:
             if (view.front() == '+')
                 view.remove_prefix(1);
 
-            const std::string str {view};
+            const std::string str{view};
 
             char* end;
             auto result = std::strtof(str.c_str(), &end);
@@ -135,7 +135,7 @@ public:
             if (view.front() == '+')
                 view.remove_prefix(1);
 
-            const std::string str {view};
+            const std::string str{view};
 
             char* end;
             auto result = std::strtod(str.c_str(), &end);
@@ -159,7 +159,7 @@ public:
             std::array<char, 128> buffer;
             const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
 
-            setStringValue(std::string_view {&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
+            setStringValue(std::string_view{&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
         }
 
 #ifdef NEED_FLOAT_TO_CHARS
@@ -319,8 +319,8 @@ public:
     bool saveChangesTo(SDL_RWops* file, bool bDOSLineEnding = false) const;
 
 private:
-    INIFileLine* firstLine {};
-    Section* sectionRoot {};
+    INIFileLine* firstLine{};
+    Section* sectionRoot{};
     bool bWhitespace;
 
     void flush() const;

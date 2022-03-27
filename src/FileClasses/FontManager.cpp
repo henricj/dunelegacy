@@ -49,7 +49,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, uint
     const auto width  = pFont->getTextWidth(text);
     const auto height = pFont->getTextHeight();
     sdl2::surface_ptr pic =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
     SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
@@ -85,7 +85,7 @@ sdl2::surface_ptr FontManager::createSurfaceWithMultilineText(std::string_view t
     const int height      = lineHeight * textLines.size() + lineHeight * (textLines.size() - 1) / 2;
 
     // create new picture surface
-    auto pic = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, width, height, SCREEN_BPP, SCREEN_FORMAT)};
+    auto pic = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, width, height, SCREEN_BPP, SCREEN_FORMAT)};
     if (pic == nullptr) {
         return nullptr;
     }

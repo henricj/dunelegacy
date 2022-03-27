@@ -54,7 +54,7 @@ public:
 class HSpacer final : public Widget {
 public:
     /// default constructor
-    HSpacer() : Widget(), width {} {
+    HSpacer() : Widget(), width{} {
         HSpacer::resize(0, 0);
         HSpacer::enableResizing(false, false);
     }
@@ -63,7 +63,7 @@ public:
         Constructor.
         \param width    Width of this spacer.
     */
-    explicit HSpacer(uint32_t width) : Widget(), width {width} {
+    explicit HSpacer(uint32_t width) : Widget(), width{width} {
         HSpacer::resize(width, 0);
         HSpacer::enableResizing(false, false);
     }
@@ -98,7 +98,7 @@ private:
 class VSpacer final : public Widget {
 public:
     /// default constructor
-    VSpacer() : Widget(), height {} {
+    VSpacer() : Widget(), height{} {
         VSpacer::resize(0, 0);
         VSpacer::enableResizing(false, false);
     }
@@ -107,7 +107,7 @@ public:
         Constructor.
         \param height   Height of this spacer.
     */
-    explicit VSpacer(uint32_t height) : Widget(), height {height} {
+    explicit VSpacer(uint32_t height) : Widget(), height{height} {
         VSpacer::resize(0, height);
         VSpacer::enableResizing(false, false);
     }

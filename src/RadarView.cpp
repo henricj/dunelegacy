@@ -36,15 +36,14 @@ RadarView::RadarView()
     : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME),
       radarStaticAnimation(pGFXManager->getUIGraphic(UI_RadarAnimation)) {
 
-    radarSurface = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, 128, 128, SCREEN_BPP, SCREEN_FORMAT)};
+    radarSurface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, 128, 128, SCREEN_BPP, SCREEN_FORMAT)};
     if (radarSurface == nullptr) {
         THROW(std::runtime_error, "RadarView::RadarView(): Cannot create new surface!");
     }
 
     SDL_FillRect(radarSurface.get(), nullptr, SDL_MapRGB(radarSurface->format, 100, 50, 0));
 
-    radarTexture =
-        sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128)};
+    radarTexture = sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128)};
 }
 
 RadarView::~RadarView() = default;
@@ -191,7 +190,7 @@ void RadarView::switchRadarMode(bool bOn) {
 void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
 
     // Lock radarSurface for direct access to the pixels
-    sdl2::surface_lock lock {radarSurface.get()};
+    sdl2::surface_lock lock{radarSurface.get()};
 
     auto* map = currentGameMap;
 

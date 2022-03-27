@@ -26,7 +26,7 @@
 #include <misc/exceptions.h>
 
 GFXManager::GFXManager()
-    : random_ {RandomFactory {}.create("UI")}, duneTextures {DuneTextures::create(renderer, &surfaceLoader)} { }
+    : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} { }
 
 GFXManager::~GFXManager() = default;
 
@@ -89,9 +89,9 @@ zoomable_texture GFXManager::getObjPic(unsigned int id, HOUSETYPE house) const {
         THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
 
-    return zoomable_texture {&duneTextures.get_object_picture(id, house, 0),
-                             &duneTextures.get_object_picture(id, house, 1),
-                             &duneTextures.get_object_picture(id, house, 2)};
+    return zoomable_texture{&duneTextures.get_object_picture(id, house, 0),
+                            &duneTextures.get_object_picture(id, house, 1),
+                            &duneTextures.get_object_picture(id, house, 2)};
 }
 
 const DuneTexture* GFXManager::getSmallDetailPic(unsigned int id) const {

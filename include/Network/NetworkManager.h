@@ -200,7 +200,7 @@ private:
         ENetPeer* pPeer;
 
         PeerState peerState;
-        dune::dune_clock::time_point timeout {};
+        dune::dune_clock::time_point timeout{};
 
         std::string name;
         std::list<ENetPeer*> notYetConnectedPeers;

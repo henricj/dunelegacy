@@ -307,7 +307,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
         INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch (...) {
-        pMapSurface = sdl2::surface_ptr {GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
+        pMapSurface = sdl2::surface_ptr{GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
         loadButton.setEnabled(false);
     }
     minimap.setSurface(std::move(pMapSurface));

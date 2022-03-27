@@ -35,7 +35,7 @@
 
 Map::Map(Game& game, int xSize, int ySize)
     : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr),
-      pathfinder_(this), random_ {game.randomFactory.create("Map")} {
+      pathfinder_(this), random_{game.randomFactory.create("Map")} {
 
     tiles.resize(sizeX * sizeY);
 
@@ -67,7 +67,7 @@ void Map::load(InputStream& stream) {
     auto state = stream.readUint8Vector();
     if (state.size() != decltype(random_)::state_bytes)
         THROW(std::runtime_error, "Random state size mismatch!");
-    random_.setState(gsl::span<const uint8_t, Random::state_bytes> {state});
+    random_.setState(gsl::span<const uint8_t, Random::state_bytes>{state});
 
     init_tile_location();
 }

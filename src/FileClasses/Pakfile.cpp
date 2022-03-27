@@ -206,7 +206,7 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
     pRWop->close                = Pakfile::CloseFile;
     pRWop->hidden.unknown.data1 = static_cast<void*>(pRWopData);
 
-    return sdl2::RWops_ptr {pRWop};
+    return sdl2::RWops_ptr{pRWop};
 }
 
 bool Pakfile::exists(const std::filesystem::path& filename) const {

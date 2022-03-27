@@ -33,7 +33,7 @@ sdl2::surface_ptr DuneStyle::createSurfaceWithText(std::string_view text, uint32
     }
 
     // create dummy surface
-    auto surface = sdl2::surface_ptr {
+    auto surface = sdl2::surface_ptr{
         SDL_CreateRGBSurface(0, static_cast<int>(text.length() * 10), 12, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (surface == nullptr) {
         return nullptr;
@@ -71,7 +71,7 @@ sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t height,
 
     // create surfaces
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (surface == nullptr) {
         return nullptr;
     }
@@ -135,7 +135,7 @@ sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t heig
                                                    bool activated, uint32_t textcolor, uint32_t textshadowcolor,
                                                    uint32_t backgroundcolor) {
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -197,7 +197,7 @@ sdl2::surface_ptr DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t h
                                                       bool checked, bool activated, uint32_t textcolor,
                                                       uint32_t textshadowcolor, uint32_t backgroundcolor) {
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -265,7 +265,7 @@ sdl2::surface_ptr DuneStyle::createDropDownBoxButton(uint32_t size, bool pressed
 
     // create surfaces
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, size, size, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, size, size, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -311,7 +311,7 @@ Point DuneStyle::getMinimumButtonSize(std::string_view text) {
 sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed,
                                                  bool activated, uint32_t textcolor, uint32_t textshadowcolor) {
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -367,7 +367,7 @@ sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t heigh
                                                   int fontSize, Alignment_Enum alignment, uint32_t textcolor,
                                                   uint32_t textshadowcolor) {
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -454,7 +454,7 @@ sdl2::surface_ptr DuneStyle::createScrollBarArrowButton(bool down, bool pressed,
 
     // create surfaces
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, 17, 17, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, 17, 17, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
     }
@@ -509,7 +509,7 @@ sdl2::surface_ptr DuneStyle::createListBoxEntry(uint32_t width, std::string_view
     }
 
     // create surfaces
-    sdl2::surface_ptr surface = sdl2::surface_ptr {
+    sdl2::surface_ptr surface = sdl2::surface_ptr{
         SDL_CreateRGBSurface(0, width, getListBoxEntryHeight(), SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
         return nullptr;
@@ -530,7 +530,7 @@ sdl2::surface_ptr DuneStyle::createListBoxEntry(uint32_t width, std::string_view
 
 sdl2::surface_ptr DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t height, double percent, uint32_t color) {
     sdl2::surface_ptr pSurface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!pSurface) {
         return nullptr;
     }
@@ -563,7 +563,7 @@ sdl2::surface_ptr DuneStyle::createToolTip(std::string_view text) {
     }
 
     // create surfaces
-    sdl2::surface_ptr surface = sdl2::surface_ptr {SDL_CreateRGBSurface(
+    sdl2::surface_ptr surface = sdl2::surface_ptr{SDL_CreateRGBSurface(
         0, helpTextSurface->w + 5, helpTextSurface->h + 2, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (surface == nullptr) {
         return nullptr;
@@ -588,7 +588,7 @@ sdl2::surface_ptr DuneStyle::createBackground(uint32_t width, uint32_t height) {
         }
     } else {
         // data manager not yet loaded
-        pSurface = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        pSurface = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
         if (pSurface == nullptr) {
             return nullptr;
         }
@@ -610,7 +610,7 @@ sdl2::surface_ptr DuneStyle::createBackground(uint32_t width, uint32_t height) {
 
 sdl2::surface_ptr DuneStyle::createWidgetBackground(uint32_t width, uint32_t height) {
     sdl2::surface_ptr surface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     if (!surface) {
         return nullptr;

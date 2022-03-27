@@ -28,7 +28,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr TrackedUnitConstants sonic_tank_constants {SonicTank::item_id, 1, Bullet_Sonic};
+constexpr TrackedUnitConstants sonic_tank_constants{SonicTank::item_id, 1, Bullet_Sonic};
 }
 
 SonicTank::SonicTank(uint32_t objectID, const ObjectInitializer& initializer)

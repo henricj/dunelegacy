@@ -28,7 +28,7 @@ INIMapPreviewCreator::~INIMapPreviewCreator() = default;
 sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth, uint32_t borderColor) {
     checkFeatures();
 
-    auto pMinimap = sdl2::surface_ptr {
+    auto pMinimap = sdl2::surface_ptr{
         SDL_CreateRGBSurface(0, 128 + 2 * borderWidth, 128 + 2 * borderWidth, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (pMinimap == nullptr) {
         return nullptr;

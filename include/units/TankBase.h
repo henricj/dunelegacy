@@ -24,7 +24,7 @@ class TankBaseConstants : public TrackedUnitConstants {
 public:
     constexpr explicit TankBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : TrackedUnitConstants {itemID, num_weapons, bullet_id} {
+        : TrackedUnitConstants{itemID, num_weapons, bullet_id} {
         turreted_ = true;
     }
 };
@@ -77,8 +77,8 @@ protected:
     ObjectPointer closeTarget; ///< a enemy target that can be shot at while moving
 
     // drawing information
-    zoomable_texture turretGraphic {}; ///< The turret graphic
-    int gunGraphicID = -1;             ///< The id of the turret graphic (needed if we want to reload the graphic)
+    zoomable_texture turretGraphic{}; ///< The turret graphic
+    int gunGraphicID = -1;            ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 template<>

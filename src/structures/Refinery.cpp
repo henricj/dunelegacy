@@ -34,7 +34,7 @@ namespace {
 /* how fast is spice extracted */
 constexpr auto MAXIMUMHARVESTEREXTRACTSPEED = 0.625_fix;
 
-constexpr StructureBaseConstants refinery_constants {Refinery::item_id, Coord {3, 2}};
+constexpr StructureBaseConstants refinery_constants{Refinery::item_id, Coord{3, 2}};
 } // namespace
 
 Refinery::Refinery(uint32_t objectID, const ObjectInitializer& initializer)

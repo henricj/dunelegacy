@@ -154,7 +154,7 @@ QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std
 }
 
 QuantBot::QuantBot(const GameContext& context, InputStream& stream, House* associatedHouse)
-    : Player {context, stream, associatedHouse} {
+    : Player{context, stream, associatedHouse} {
     QuantBot::init();
 
     difficulty   = static_cast<Difficulty>(stream.readUint8());

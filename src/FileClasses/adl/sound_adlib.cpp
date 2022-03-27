@@ -449,7 +449,7 @@ private:
     uint8 _soundIdTable[0x10] = {0};
 
 public:
-    std::array<Channel, 10> _channels {};
+    std::array<Channel, 10> _channels{};
 
 private:
     uint8 _vibratoAndAMDepthBits = 0;

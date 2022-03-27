@@ -105,17 +105,17 @@ std::tuple<bool, std::filesystem::path> fnkdat(int flags) {
      * there are no concurrency issues (as far as I know).
      */
     if (flags == FNKDAT_INIT) {
-        return {true, std::filesystem::path {}};
+        return {true, std::filesystem::path{}};
     }
 
     /* Uninitialize, if requested to -- probably not necessary but what
      * the hell, why not?
      */
     if (flags == FNKDAT_UNINIT) {
-        return {true, std::filesystem::path {}};
+        return {true, std::filesystem::path{}};
     }
 
-    return {false, std::filesystem::path {}};
+    return {false, std::filesystem::path{}};
 }
 
 /************************
@@ -163,14 +163,14 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
      * there are no concurrency issues (as far as I know).
      */
     if (flags == FNKDAT_INIT) {
-        return {true, std::filesystem::path {}};
+        return {true, std::filesystem::path{}};
     }
 
     /* Uninitialize, if requested to -- probably not necessary but what
      * the hell, why not?
      */
     if (flags == FNKDAT_UNINIT) {
-        return {true, std::filesystem::path {}};
+        return {true, std::filesystem::path{}};
     }
 
     /* if target is absolute then simply return it
@@ -239,7 +239,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
             command_end = wcschr(szCommandLine, L'"');
 
             if (!command_end)
-                return {false, std::filesystem::path {}};
+                return {false, std::filesystem::path{}};
 
             /* otherwise, whack everything after the first
                space character
@@ -256,7 +256,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
             assert(command_length > 0);
 
             if (command_length >= MAX_PATH - 1)
-                return {false, std::filesystem::path {}};
+                return {false, std::filesystem::path{}};
 
             output_path = std::wstring(szCommandLine, command_length);
         }
@@ -282,7 +282,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
          */
     } else {
         errno = EINVAL;
-        return {false, std::filesystem::path {}};
+        return {false, std::filesystem::path{}};
     }
 #else // _WIN32
     /************************
@@ -307,7 +307,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
                 const struct passwd* pwent = getpwuid(getuid());
 
                 if (!pwent)
-                    return {false, std::filesystem::path {}};
+                    return {false, std::filesystem::path{}};
 
                 output_path = pwent->pw_dir;
                 output_path /= ".config";
@@ -330,7 +330,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         }
         else {
             errno = EINVAL;
-            return {false, std::filesystem::path {}};
+            return {false, std::filesystem::path{}};
         }
 #endif // _WIN32
 
@@ -348,7 +348,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
         if (!parent.empty()) {
             std::error_code ec;
             if (!std::filesystem::create_directories(parent, ec) && ec)
-                return {false, std::filesystem::path {}};
+                return {false, std::filesystem::path{}};
 
             std::filesystem::permissions(parent,
                                          std::filesystem::perms::owner_all | std::filesystem::perms::group_all
@@ -356,7 +356,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
                                              | std::filesystem::perms::others_read,
                                          std::filesystem::perm_options::replace, ec);
             if (ec) {
-                return {false, std::filesystem::path {}};
+                return {false, std::filesystem::path{}};
             }
         }
     }

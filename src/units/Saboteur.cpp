@@ -30,7 +30,7 @@
 namespace {
 class SaboteurConstants : public InfantryBaseConstants {
 public:
-    constexpr SaboteurConstants() : InfantryBaseConstants {Saboteur::item_id} { canAttackStuff_ = true; }
+    constexpr SaboteurConstants() : InfantryBaseConstants{Saboteur::item_id} { canAttackStuff_ = true; }
 };
 
 constexpr SaboteurConstants saboteur_constants;
@@ -71,7 +71,7 @@ void Saboteur::checkPos(const GameContext& context) {
     if (!active)
         return;
 
-    std::array<bool, NUM_TEAMS> canBeSeen {};
+    std::array<bool, NUM_TEAMS> canBeSeen{};
     context.map.for_each(location.x - 2, location.x + 3, location.y - 2, location.y + 3, [&](const auto& tile) {
         if (const auto* const object = tile.getObject(context.objectManager)) {
             if (const auto* const owner = object->getOwner())

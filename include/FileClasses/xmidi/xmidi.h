@@ -52,15 +52,15 @@ inline constexpr auto XMIDI_CONTROLLER_NEXT_BREAK = 117;
 inline constexpr auto XMIDI_MAX_FOR_LOOP_COUNT = 128;
 
 struct midi_event {
-    int time {0};
-    unsigned char status {0};
+    int time{0};
+    unsigned char status{0};
 
     unsigned char data[2];
 
-    unsigned int len {0};
-    unsigned char* buffer {nullptr};
+    unsigned int len{0};
+    unsigned char* buffer{nullptr};
 
-    midi_event* next {nullptr};
+    midi_event* next{nullptr};
 
     midi_event() = default;
 

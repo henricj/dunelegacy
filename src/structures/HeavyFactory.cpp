@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-const BuilderBaseConstants heavy_factory_constants {HeavyFactory::item_id, Coord {3, 2}};
+const BuilderBaseConstants heavy_factory_constants{HeavyFactory::item_id, Coord{3, 2}};
 }
 
 HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectInitializer& initializer)

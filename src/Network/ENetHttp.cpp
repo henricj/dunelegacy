@@ -143,7 +143,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     const std::string doubleNewline = newline + newline;
     const std::string request       = "GET " + filepath + " HTTP/1.0" + newline + "Host: " + domain + doubleNewline;
 
-    ENetBuffer sendBuffer {};
+    ENetBuffer sendBuffer{};
     sendBuffer.data       = (void*)request.c_str();
     sendBuffer.dataLength = request.size();
 
@@ -157,7 +157,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 
     while (true) {
 
-        ENetBuffer receiveBuffer {};
+        ENetBuffer receiveBuffer{};
         receiveBuffer.data       = resultBuffer;
         receiveBuffer.dataLength = sizeof(resultBuffer);
 

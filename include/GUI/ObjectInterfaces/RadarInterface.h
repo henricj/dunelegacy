@@ -30,7 +30,7 @@
 class RadarInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RadarInterface> {new RadarInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<RadarInterface>{new RadarInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

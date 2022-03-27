@@ -33,7 +33,7 @@
 class BuilderInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<BuilderInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<BuilderInterface> {new BuilderInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<BuilderInterface>{new BuilderInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

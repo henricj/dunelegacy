@@ -145,12 +145,12 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
 
 UnitBase* House::createUnit(ItemID_enum itemID, bool byScenario) {
     return context.objectManager.createObjectFromItemId<UnitBase>(itemID,
-                                                                  ObjectInitializer {context.game, this, byScenario});
+                                                                  ObjectInitializer{context.game, this, byScenario});
 }
 
 StructureBase* House::createStructure(ItemID_enum itemID, bool byScenario) {
     return context.objectManager.createObjectFromItemId<StructureBase>(
-        itemID, ObjectInitializer {context.game, this, byScenario});
+        itemID, ObjectInitializer{context.game, this, byScenario});
 }
 
 void House::save(OutputStream& stream) const {

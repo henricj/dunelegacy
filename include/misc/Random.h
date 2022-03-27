@@ -38,7 +38,7 @@ public:
     static constexpr size_t state_bytes = generator_type::state_words * sizeof(generator_type::state_type);
 
 protected:
-    explicit Random(const generator_type& generator) : generator_ {generator} { }
+    explicit Random(const generator_type& generator) : generator_{generator} { }
 
 public:
     Random() = default;
@@ -89,7 +89,7 @@ public:
         \return a random integer on interval [min; max]
     */
     uint32_t rand(uint32_t min, uint32_t max) {
-        return lemire_uniform_uint32_distribution {max - min + 1}(generator_) + min;
+        return lemire_uniform_uint32_distribution{max - min + 1}(generator_) + min;
     }
 
     /**
@@ -102,7 +102,7 @@ public:
     int32_t rand(int32_t min, int32_t max) {
         const auto umax = static_cast<uint32_t>(max - min);
 
-        return static_cast<int32_t>(lemire_uniform_uint32_distribution {umax + 1}(generator_)) + min;
+        return static_cast<int32_t>(lemire_uniform_uint32_distribution{umax + 1}(generator_)) + min;
     }
 
     /**
@@ -123,7 +123,7 @@ public:
     */
     template<typename T, typename... Args>
     T getRandOf(const T& first, const Args&... args) {
-        std::array<T, sizeof...(Args) + 1> a {first, args...};
+        std::array<T, sizeof...(Args) + 1> a{first, args...};
 
         return a[rand(0u, a.size() - 1u)];
     }
@@ -161,7 +161,7 @@ private:
     std::vector<uint8_t> seed_;
     std::array<unsigned char, seed_size> key_;
 
-    bool initialized_ {};
+    bool initialized_{};
 };
 
 #if 0

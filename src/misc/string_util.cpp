@@ -322,7 +322,7 @@ std::string to_hex(gsl::span<const uint8_t> data) {
         }
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
-        if (ec != std::errc {}) {
+        if (ec != std::errc{}) {
             THROW(std::runtime_error, "Unable to convert to hex");
         }
         const auto length = p - std::begin(buffer);
@@ -351,7 +351,7 @@ std::string to_hex(gsl::span<const uint32_t> data) {
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
 
-        if (ec != std::errc {}) {
+        if (ec != std::errc{}) {
             THROW(std::runtime_error, "Unable to convert to hex");
         }
 
@@ -381,7 +381,7 @@ std::string to_hex(gsl::span<const uint64_t> data) {
 
         auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
 
-        if (ec != std::errc {}) {
+        if (ec != std::errc{}) {
             THROW(std::runtime_error, "Unable to convert to hex");
         }
 

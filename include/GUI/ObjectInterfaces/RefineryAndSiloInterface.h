@@ -30,7 +30,7 @@
 class RefineryAndSiloInterface final : public DefaultStructureInterface {
 public:
     static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RefineryAndSiloInterface> {new RefineryAndSiloInterface {context, objectID}};
+        auto tmp        = std::unique_ptr<RefineryAndSiloInterface>{new RefineryAndSiloInterface{context, objectID}};
         tmp->pAllocated = true;
         return tmp;
     }

@@ -54,7 +54,7 @@ private:
     bool bClearScreen  = true;
     bool bAllowQuiting = true;
     bool quiting       = false;
-    int retVal {MENU_QUIT_DEFAULT};
+    int retVal{MENU_QUIT_DEFAULT};
 };
 
 #endif // MENUBASE_H

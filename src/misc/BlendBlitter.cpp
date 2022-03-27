@@ -1,7 +1,7 @@
 #include <misc/BlendBlitter.h>
 
 BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps)
-    : src {std::move(SrcPic)}, dest {DestPic}, destRect {DestPicRect}, numSteps {numSteps}, StepsLeft(numSteps),
+    : src{std::move(SrcPic)}, dest{DestPic}, destRect{DestPicRect}, numSteps{numSteps}, StepsLeft(numSteps),
       N(static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h)), m(N) {
 
     // compute next greater 2^x value
@@ -30,8 +30,8 @@ int BlendBlitter::nextStep() {
 
     StepsLeft--;
 
-    sdl2::surface_lock lock_dest {dest};
-    sdl2::surface_lock lock_src {src.get()};
+    sdl2::surface_lock lock_dest{dest};
+    sdl2::surface_lock lock_src{src.get()};
 
     const uint64_t numPixelsPerStep = N / numSteps + 1;
     for (uint64_t i = 0; i < numPixelsPerStep; i++) {

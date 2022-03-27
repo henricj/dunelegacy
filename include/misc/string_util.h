@@ -58,7 +58,7 @@ bool splitString(std::string_view parseString, std::string& arg0, Args&... args)
         current = std::find(previous, end, ',');
 
         if (previous != current) {
-            **p = std::string {previous, static_cast<std::string::size_type>(current - previous)};
+            **p = std::string{previous, static_cast<std::string::size_type>(current - previous)};
             if (++p == strings_end)
                 return true;
         }
@@ -91,7 +91,7 @@ bool splitString(std::string_view parseString, std::string_view* arg0, Args*... 
         current = std::find(previous, end, ',');
 
         if (previous != current) {
-            **p = std::string_view {previous, static_cast<std::string::size_type>(current - previous)};
+            **p = std::string_view{previous, static_cast<std::string::size_type>(current - previous)};
             if (++p == strings_end)
                 return true;
         }
@@ -114,7 +114,7 @@ template<typename T>
 bool parseString(std::string_view str, T& t) {
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
 
-    return ec == std::errc {};
+    return ec == std::errc{};
 }
 
 inline void convertToLower(std::string& str) {
@@ -122,7 +122,7 @@ inline void convertToLower(std::string& str) {
 }
 
 inline std::string strToLower(std::string_view str) {
-    std::string result {str};
+    std::string result{str};
     convertToLower(result);
     return result;
 }
@@ -132,7 +132,7 @@ inline void convertToUpper(std::string& str) {
 }
 
 inline std::string strToUpper(std::string_view str) {
-    std::string result {str};
+    std::string result{str};
     convertToUpper(result);
     return result;
 }
@@ -144,7 +144,7 @@ inline std::string trim(std::string_view str) {
     if (firstChar == std::string::npos || lastChar == std::string::npos)
         return "";
 
-    return std::string {str.substr(firstChar, lastChar - firstChar + 1)};
+    return std::string{str.substr(firstChar, lastChar - firstChar + 1)};
 }
 
 inline bool utf8IsStartByte(unsigned char c) {

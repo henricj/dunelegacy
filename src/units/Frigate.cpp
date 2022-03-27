@@ -29,7 +29,7 @@
 #include <structures/StarPort.h>
 
 namespace {
-constexpr AirUnitConstants frigate_constants {Frigate::item_id};
+constexpr AirUnitConstants frigate_constants{Frigate::item_id};
 } // namespace
 
 Frigate::Frigate(uint32_t objectID, const ObjectInitializer& initializer)

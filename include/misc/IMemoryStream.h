@@ -53,9 +53,9 @@ public:
     float readFloat() override;
 
 private:
-    size_t currentPos {};
-    size_t bufferSize {};
-    const char* pBuffer {};
+    size_t currentPos{};
+    size_t bufferSize{};
+    const char* pBuffer{};
 };
 
 #endif // IMEMORYSTREAM_H

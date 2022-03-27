@@ -12,7 +12,7 @@
 #include <SDL2/SDL_mixer.h>
 
 sdl2::mix_chunk_ptr create_chunk() {
-    return sdl2::mix_chunk_ptr {static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk)))};
+    return sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_malloc(sizeof(Mix_Chunk)))};
 }
 
 sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2) {
@@ -25,7 +25,7 @@ sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2) {
     returnChunk->volume    = sound1->volume;
     returnChunk->alen      = sound1->alen + sound2->alen;
 
-    sdl2::sdl_ptr<uint8_t> buffer {static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
     if (buffer == nullptr) {
         return nullptr;
     }
@@ -51,7 +51,7 @@ sdl2::mix_chunk_ptr concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chun
     returnChunk->volume    = sound1->volume;
     returnChunk->alen      = sound1->alen + sound2->alen + sound3->alen;
 
-    sdl2::sdl_ptr<uint8_t> buffer {static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
     if (buffer == nullptr) {
         return nullptr;
     }
@@ -79,7 +79,7 @@ sdl2::mix_chunk_ptr concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chun
     returnChunk->volume    = sound1->volume;
     returnChunk->alen      = sound1->alen + sound2->alen + sound3->alen + sound4->alen;
 
-    sdl2::sdl_ptr<uint8_t> buffer {static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_malloc(returnChunk->alen))};
     if (buffer == nullptr) {
         return nullptr;
     }
@@ -123,7 +123,7 @@ sdl2::mix_chunk_ptr createSilenceChunk(int length) {
     returnChunk->volume    = MIX_MAX_VOLUME;
     returnChunk->alen      = length;
 
-    sdl2::sdl_ptr<uint8_t> buffer {static_cast<uint8_t*>(SDL_calloc(returnChunk->alen, 1))};
+    sdl2::sdl_ptr<uint8_t> buffer{static_cast<uint8_t*>(SDL_calloc(returnChunk->alen, 1))};
     if (buffer == nullptr) {
         return nullptr;
     }

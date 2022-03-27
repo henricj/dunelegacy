@@ -39,7 +39,7 @@ INIFile::Key::Key(std::string completeLine, int lineNumber, int keystringbegin, 
       nextKey(nullptr), prevKey(nullptr) { }
 
 INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
-    : INIFileLine(std::string {keyname} + (bWhitespace ? " = " : "=") + (bEscapeIfNeeded ? escapeValue(value) : value),
+    : INIFileLine(std::string{keyname} + (bWhitespace ? " = " : "=") + (bEscapeIfNeeded ? escapeValue(value) : value),
                   INVALID_LINE),
       keyStringBegin(0), keyStringLength(keyname.size()),
       valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1)
@@ -53,7 +53,7 @@ std::string INIFile::Key::getKeyName() const {
 }
 
 std::string_view INIFile::Key::getStringView() const {
-    return std::string_view {&completeLine[valueStringBegin], static_cast<size_t>(valueStringLength)};
+    return std::string_view{&completeLine[valueStringBegin], static_cast<size_t>(valueStringLength)};
 }
 
 bool INIFile::Key::getBoolValue(bool defaultValue) const {
@@ -125,7 +125,7 @@ INIFile::Section::Section(std::string completeLine, int lineNumber, int sections
       bWhitespace(bWhitespace) { }
 
 INIFile::Section::Section(std::string_view sectionname, bool bWhitespace)
-    : INIFileLine("[" + std::string {sectionname} + "]", INVALID_LINE), sectionStringBegin(1),
+    : INIFileLine("[" + std::string{sectionname} + "]", INVALID_LINE), sectionStringBegin(1),
       sectionStringLength(sectionname.size()), nextSection(nullptr), prevSection(nullptr), keyRoot(nullptr),
       bWhitespace(bWhitespace) { }
 
@@ -277,7 +277,7 @@ void INIFile::Section::insertKey(Key* newKey) {
 INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment) : bWhitespace(bWhitespace) {
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
     if (!firstLineComment.empty()) {
-        firstLine           = new INIFileLine("; " + std::string {firstLineComment}, 0);
+        firstLine           = new INIFileLine("; " + std::string{firstLineComment}, 0);
         auto* blankLine     = new INIFileLine("", 1);
         firstLine->nextLine = blankLine;
         blankLine->prevLine = firstLine;
@@ -353,7 +353,7 @@ const INIFile::Section& INIFile::getSection(std::string_view sectionname) const 
     const Section* curSection = getSectionInternal(sectionname);
 
     if (curSection == nullptr) {
-        throw std::out_of_range("There is no section '" + std::string {sectionname} + "' in this INI file");
+        throw std::out_of_range("There is no section '" + std::string{sectionname} + "' in this INI file");
     }
     return *curSection;
 }
@@ -706,7 +706,7 @@ INIFile::KeyIterator INIFile::begin(std::string_view section) const {
     \return the iterator
 */
 INIFile::KeyIterator INIFile::end(std::string_view section) const {
-    return KeyIterator {};
+    return KeyIterator{};
 }
 
 /// Saves the changes made in the INI-File to a file.
@@ -718,7 +718,7 @@ INIFile::KeyIterator INIFile::end(std::string_view section) const {
     \return true on success otherwise false.
 */
 bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding) const {
-    const sdl2::RWops_ptr file {SDL_RWFromFile(filename.u8string().c_str(), "wb")};
+    const sdl2::RWops_ptr file{SDL_RWFromFile(filename.u8string().c_str(), "wb")};
 
     if (!file) {
         return false;

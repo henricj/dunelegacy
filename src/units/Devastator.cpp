@@ -30,7 +30,7 @@
 #include <players/HumanPlayer.h>
 
 namespace {
-constexpr TrackedUnitConstants devastator_constants {Devastator::item_id, 2, Bullet_ShellLarge};
+constexpr TrackedUnitConstants devastator_constants{Devastator::item_id, 2, Bullet_ShellLarge};
 }
 
 Devastator::Devastator(uint32_t objectID, const ObjectInitializer& initializer)

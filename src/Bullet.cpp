@@ -282,16 +282,16 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
         // Note also that if we are partly off the screen, we will get the mask's black appearing in the
         // transparent areas of surface_copy.
-        const SDL_Rect scaled_source {static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
-                                      static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
-                                      static_cast<int>(lround(static_cast<float>(w) * scaleX)),
-                                      static_cast<int>(lround(static_cast<float>(h) * scaleY))};
+        const SDL_Rect scaled_source{static_cast<int>(lround(static_cast<float>(sx) * scaleX)),
+                                     static_cast<int>(lround(static_cast<float>(sy) * scaleY)),
+                                     static_cast<int>(lround(static_cast<float>(w) * scaleX)),
+                                     static_cast<int>(lround(static_cast<float>(h) * scaleY))};
 
-        const sdl2::surface_ptr screen_copy {
+        const sdl2::surface_ptr screen_copy{
             SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
 
         { // Scope
-            const sdl2::surface_lock lock {screen_copy.get()};
+            const sdl2::surface_lock lock{screen_copy.get()};
 
             if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
                                      lock.pitch())) {
@@ -300,7 +300,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         }
 
         // If we are close
-        const sdl2::surface_ptr shimmer_work {
+        const sdl2::surface_ptr shimmer_work{
             SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
 
         SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
@@ -311,7 +311,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         const auto blit2_ret = SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr);
 
         { // Scope
-            const sdl2::surface_lock src {shimmer_work.get()};
+            const sdl2::surface_lock src{shimmer_work.get()};
 
             const auto update_ret = SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch());
         }

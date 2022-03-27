@@ -438,7 +438,7 @@ private:
     int firstVisibleElement        = 0;    ///< the index of the first shown element in the list
     int selectedElement            = -1;   ///< the selected element
     dune::dune_clock::time_point
-        lastClickTime {}; ///< the time an element was clicked on the last time (needed for double clicking)
+        lastClickTime{}; ///< the time an element was clicked on the last time (needed for double clicking)
 };
 
 #endif // LISTBOX_H

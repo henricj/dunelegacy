@@ -105,8 +105,8 @@ private:
     bool bFastBlending          = false;
     int mapChoiceState;
     int selectedRegion = -1;
-    dune::dune_clock::time_point selectionTime {};
-    dune::dune_clock::time_point stateSwitchTime {};
+    dune::dune_clock::time_point selectionTime{};
+    dune::dune_clock::time_point stateSwitchTime{};
     MessageTicker msgticker;
 
     SDL_Rect centerAreaRect;

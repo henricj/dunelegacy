@@ -84,7 +84,7 @@ public:
 class BuilderBaseConstants : public StructureBaseConstants {
 public:
     constexpr explicit BuilderBaseConstants(ItemID_enum itemID, Coord structureSize)
-        : StructureBaseConstants {itemID, structureSize} {
+        : StructureBaseConstants{itemID, structureSize} {
         aBuilder_ = true;
     }
 };
@@ -241,14 +241,14 @@ protected:
     static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
     // structure state
-    bool upgrading {};           ///< Currently upgrading?
-    FixPoint upgradeProgress {}; ///< The current state of the upgrade progress (measured in money spent)
-    uint8_t curUpgradeLev {};    ///< Current upgrade level
+    bool upgrading{};           ///< Currently upgrading?
+    FixPoint upgradeProgress{}; ///< The current state of the upgrade progress (measured in money spent)
+    uint8_t curUpgradeLev{};    ///< Current upgrade level
 
-    bool bCurrentItemOnHold {};                       ///< Is the currently produced item on hold?
+    bool bCurrentItemOnHold{};                        ///< Is the currently produced item on hold?
     ItemID_enum currentProducedItem = ItemID_Invalid; ///< The ItemID of the currently produced item
-    FixPoint productionProgress {}; ///< The current state of the production progress (measured in money spent)
-    uint32_t deployTimer {};        ///< Timer for deploying a unit
+    FixPoint productionProgress{}; ///< The current state of the production progress (measured in money spent)
+    uint32_t deployTimer{};        ///< Timer for deploying a unit
 
     FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it
                               ///< weaker.

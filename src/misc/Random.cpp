@@ -190,7 +190,7 @@ void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
 
     std::copy(seed.begin(), seed.end(), std::back_inserter(seed_));
 
-    digestpp::kmac256 kmac {8 * key_.size()};
+    digestpp::kmac256 kmac{8 * key_.size()};
 
     kmac.set_key(master_key, sizeof master_key);
     kmac.set_customization(&master_customization[0], sizeof master_customization);
@@ -247,7 +247,7 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     std::vector<unsigned char> output;
     output.reserve(seed_size);
 
-    digestpp::kmac256 kmac {8 * seed_size};
+    digestpp::kmac256 kmac{8 * seed_size};
 
     kmac.set_key(name.data(), name.size());
     kmac.set_customization(&create_customization[0], sizeof create_customization);
@@ -275,7 +275,7 @@ Random RandomFactory::create(std::string_view name) const {
 
     const auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
 
-    digestpp::kmac128 kmac {8 * seed_bytes};
+    digestpp::kmac128 kmac{8 * seed_bytes};
 
     kmac.set_key(key_.data(), key_.size());
     kmac.set_customization(&generate_customization[0], sizeof generate_customization);
@@ -289,5 +289,5 @@ Random RandomFactory::create(std::string_view name) const {
 
     sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
-    return Random::create(gsl::span<const uint8_t, Random::state_bytes> {buffer});
+    return Random::create(gsl::span<const uint8_t, Random::state_bytes>{buffer});
 }

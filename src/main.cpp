@@ -313,7 +313,7 @@ std::filesystem::path getLogFilepath() {
 void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
     sdl2::log_info("Creating config file '%s'", configfilepath.u8string());
 
-    const auto file = sdl2::RWops_ptr {SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
+    const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
     if (!file) {
         THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
     }
@@ -1050,7 +1050,7 @@ int main(int argc, char* argv[]) {
 
         sdl2::log_info("Initializing SDL...");
 
-        SDL_handle sdl_handle {SDL_INIT_TIMER | SDL_INIT_VIDEO};
+        SDL_handle sdl_handle{SDL_INIT_TIMER | SDL_INIT_VIDEO};
 
         SDL_version compiledVersion;
         SDL_version linkedVersion;

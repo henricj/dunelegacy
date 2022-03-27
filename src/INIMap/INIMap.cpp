@@ -6,7 +6,7 @@ INIMap::INIMap(GameType gameType, const std::filesystem::path& mapname, const st
         // load from PAK-File
         inifile = std::make_unique<INIFile>(pFileManager->openFile(this->mapname).get());
     } else if (gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
-        const auto RWops = sdl2::RWops_ptr {SDL_RWFromConstMem(mapdata.c_str(), mapdata.size())};
+        const auto RWops = sdl2::RWops_ptr{SDL_RWFromConstMem(mapdata.c_str(), mapdata.size())};
 
         inifile = std::make_unique<INIFile>(RWops.get());
     } else {

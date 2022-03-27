@@ -24,7 +24,7 @@
 #include <House.h>
 
 namespace {
-constexpr BuilderBaseConstants construction_yard_constants {ConstructionYard::item_id, Coord {2, 2}};
+constexpr BuilderBaseConstants construction_yard_constants{ConstructionYard::item_id, Coord{2, 2}};
 }
 
 ConstructionYard::ConstructionYard(uint32_t objectID, const ObjectInitializer& initializer)

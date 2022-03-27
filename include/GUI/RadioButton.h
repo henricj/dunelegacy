@@ -132,7 +132,7 @@ public:
         DuneTexture tex;
         if (isChecked()) {
             if ((isActive() || bHover) && pCheckedActiveTexture) {
-                tex = DuneTexture {pCheckedActiveTexture.get()};
+                tex = DuneTexture{pCheckedActiveTexture.get()};
             } else {
                 tex = *pPressedTexture;
             }
@@ -218,7 +218,7 @@ private:
     sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the radio button is activated by keyboard
                                               ///< or by mouse hover
 
-    RadioButtonManager* pRadioButtonManager {}; ///< The Manager for managing the toggle states
+    RadioButtonManager* pRadioButtonManager{}; ///< The Manager for managing the toggle states
 };
 
 #endif // RADIOBUTTON_H

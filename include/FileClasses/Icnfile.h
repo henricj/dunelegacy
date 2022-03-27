@@ -32,7 +32,7 @@ class Icnfile {
 private:
     /// Internal structure for the MAP-File.
     struct MapfileEntry {
-        uint32_t numTiles {};
+        uint32_t numTiles{};
         std::vector<uint16_t> tileIndices;
     };
 

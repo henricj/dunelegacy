@@ -45,7 +45,7 @@ public:
     static constexpr size_t seed_words = sizeof(xorshift1024star::s_) / sizeof(unsigned int);
 
     void seed(result_type s) {
-        std::seed_seq seq {s};
+        std::seed_seq seq{s};
 
         seed(seq);
     }

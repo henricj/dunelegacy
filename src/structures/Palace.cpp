@@ -40,7 +40,7 @@ inline constexpr auto PALACE_DEATHHAND_WEAPONDAMAGE = 100;
 namespace {
 class PalaceConstants : public StructureBaseConstants {
 public:
-    constexpr PalaceConstants() : StructureBaseConstants(Palace::item_id, Coord {3, 3}) { canAttackStuff_ = true; }
+    constexpr PalaceConstants() : StructureBaseConstants(Palace::item_id, Coord{3, 3}) { canAttackStuff_ = true; }
 };
 
 constexpr PalaceConstants palace_constants;

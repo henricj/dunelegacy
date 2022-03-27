@@ -107,7 +107,7 @@ sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
     }
 
     // create new picture surface
-    auto pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0)};
+    auto pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, sizeX, sizeY, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Wsafile::getPicture(): Cannot create surface!");
     }
@@ -117,7 +117,7 @@ sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
     const unsigned char* const RESTRICT pImage = &decodedFrames[frameNumber * sizeX * sizeY];
     auto* const RESTRICT pixels                = static_cast<unsigned char*>(pic->pixels);
 
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy line by line
     for (int y = 0; y < sizeY; ++y) {
@@ -139,7 +139,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
     const int numFramesY = (numFrames + numFramesX - 1) / numFramesX;
 
     // create new picture surface
-    auto pic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, sizeX * numFramesX, sizeY * numFramesY, 8, 0, 0, 0, 0)};
+    auto pic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, sizeX * numFramesX, sizeY * numFramesY, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Wsafile::getAnimationAsPictureRow(): Cannot create surface!");
     }
@@ -148,7 +148,7 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
     char* const RESTRICT pixels = static_cast<char*>(pic->pixels);
 
-    sdl2::surface_lock lock {pic.get()};
+    sdl2::surface_lock lock{pic.get()};
 
     for (auto y = 0; y < numFramesY; y++) {
         for (auto x = 0; x < numFramesX; x++) {

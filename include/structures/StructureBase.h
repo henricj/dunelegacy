@@ -42,7 +42,7 @@ struct StructureSmoke {
 class StructureBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit StructureBaseConstants(ItemID_enum itemID, Coord structureSize)
-        : ObjectBaseConstants(itemID), structureSize {structureSize} {
+        : ObjectBaseConstants(itemID), structureSize{structureSize} {
         aStructure_ = true;
     }
 

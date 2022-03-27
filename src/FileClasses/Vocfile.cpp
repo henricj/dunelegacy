@@ -184,7 +184,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                     }
                     ret_sound.release();
-                    ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
+                    ret_sound = sdl2::sdl_ptr<uint8_t[]>{tmp_ret_sound};
 
                     if (SDL_RWread(rwop, ret_sound.get() + decsize, 1, len) != len) {
                         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read data!");
@@ -227,7 +227,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                 }
                 ret_sound.release();
-                ret_sound = sdl2::sdl_ptr<uint8_t[]> {tmp_ret_sound};
+                ret_sound = sdl2::sdl_ptr<uint8_t[]>{tmp_ret_sound};
 
                 memset(ret_sound.get() + decsize, 0x80, length);
 
@@ -410,7 +410,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     const auto ThreeQuaterSilenceLength = static_cast<int>(NUM_SAMPLES_OF_SILENCE * ConversionRatio * (3.0f / 4.0f));
     TargetData_Samples -= 2 * ThreeQuaterSilenceLength;
 
-    auto myChunk = sdl2::mix_chunk_ptr {static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
+    auto myChunk = sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
     if (myChunk == nullptr) {
         throw std::bad_alloc();
     }

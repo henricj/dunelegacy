@@ -28,7 +28,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr TankBaseConstants siege_tank_constants {SiegeTank::item_id, 2, Bullet_ShellLarge};
+constexpr TankBaseConstants siege_tank_constants{SiegeTank::item_id, 2, Bullet_ShellLarge};
 }
 
 SiegeTank::SiegeTank(uint32_t objectID, const ObjectInitializer& initializer)

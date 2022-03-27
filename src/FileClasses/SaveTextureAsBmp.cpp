@@ -29,13 +29,13 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
         return;
     }
 
-    const auto ren_tex = sdl2::texture_ptr {SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
+    const auto ren_tex = sdl2::texture_ptr{SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
     if (!ren_tex) {
         sdl2::log_info("Failed creating render texture: %s\n", SDL_GetError());
         return;
     }
 
-    RestoreRenderTarget rrt {renderer};
+    RestoreRenderTarget rrt{renderer};
 
     /*
      * Initialize our canvas, then copy texture to a target whose pixel data we
@@ -60,10 +60,10 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
 
     SDL_SetTextureBlendMode(texture, oldBlendMode);
 
-    const auto surface = sdl2::surface_ptr {SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BYTESPERPIXEL(format), format)};
+    const auto surface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BYTESPERPIXEL(format), format)};
 
     { // Scope
-        const sdl2::surface_lock lock {surface.get()};
+        const sdl2::surface_lock lock{surface.get()};
 
         if (SDL_RenderReadPixels(renderer, nullptr, format, lock.pixels(), lock.pitch())) {
             sdl2::log_info("Failed reading pixel data: %s\n", SDL_GetError());

@@ -93,7 +93,7 @@ private:
 
         sdl2::texture_ptr pTimeTexture;
         sdl2::texture_ptr pUsernameTexture;
-        const DuneTexture* pPictureTexture {};
+        const DuneTexture* pPictureTexture{};
         sdl2::texture_ptr pMessageTexture;
 
         dune::dune_clock::time_point messageTime;

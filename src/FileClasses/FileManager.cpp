@@ -127,7 +127,7 @@ sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) con
     for (const auto& searchPath : getSearchPath()) {
         auto externalFilename = searchPath / filename;
         if (getCaseInsensitiveFilename(externalFilename)) {
-            ret = sdl2::RWops_ptr {SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
+            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
             if (ret) {
                 return ret;
             }

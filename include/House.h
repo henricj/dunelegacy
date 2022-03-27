@@ -197,7 +197,7 @@ public:
     UnitType* createUnit(bool byScenario = false) {
         static_assert(std::is_base_of<UnitBase, UnitType>::value, "UnitType not derived from UnitBase");
 
-        return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer {context.game, this, byScenario});
+        return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer{context.game, this, byScenario});
     }
 
     UnitBase* createUnit(ItemID_enum itemID, bool byScenario = false);

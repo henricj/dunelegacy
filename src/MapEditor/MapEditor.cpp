@@ -1564,8 +1564,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
-            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
-                                      static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                     static_cast<int>(dest.h)};
         } else if (structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
             const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
@@ -1649,8 +1649,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
-            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
-                                      static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                     static_cast<int>(dest.h)};
         } else {
 
             int objectPic = 0;
@@ -1689,8 +1689,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             Dune_RenderCopyF(renderer, ObjectSprite, &source, &dest);
 
-            selectionDest = SDL_Rect {static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
-                                      static_cast<int>(dest.h)};
+            selectionDest = SDL_Rect{static_cast<int>(dest.x), static_cast<int>(dest.y), static_cast<int>(dest.w),
+                                     static_cast<int>(dest.h)};
         }
 
         // draw selection frame
@@ -1980,7 +1980,7 @@ void MapEditor::saveMapshot() {
     currentZoomlevel              = 0;
 
     auto mapshotFilename =
-        (lastSaveName.empty() ? std::filesystem::path {generateMapname()} : getBasename(lastSaveName, true));
+        (lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true));
 
     mapshotFilename += ".png";
 
@@ -1993,7 +1993,7 @@ void MapEditor::saveMapshot() {
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
     const auto renderTarget =
-        sdl2::texture_ptr {SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
+        sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
     if (renderTarget == nullptr) {
         sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
         currentZoomlevel = oldCurrentZoomlevel;

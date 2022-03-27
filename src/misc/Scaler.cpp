@@ -58,18 +58,18 @@ sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width
     if (src == nullptr)
         return nullptr;
 
-    sdl2::surface_ptr src_handle {freeSrcSurface ? src : nullptr};
+    sdl2::surface_ptr src_handle{freeSrcSurface ? src : nullptr};
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+    auto returnPic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    sdl2::surface_lock return_lock {returnPic.get()};
-    sdl2::surface_lock src_lock {src};
+    sdl2::surface_lock return_lock{returnPic.get()};
+    sdl2::surface_lock src_lock{src};
 
     // Now we can copy pixel by pixel
     scale(src, returnPic.get());
@@ -89,15 +89,15 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
     }
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0)};
+    auto returnPic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, src->w * 2, src->h * 2, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    sdl2::surface_lock return_lock {returnPic.get()};
-    sdl2::surface_lock src_lock {src};
+    sdl2::surface_lock return_lock{returnPic.get()};
+    sdl2::surface_lock src_lock{src};
 
     const auto* RESTRICT source = static_cast<char*>(src->pixels);
     auto* RESTRICT destination  = static_cast<char*>(returnPic->pixels);
@@ -142,15 +142,15 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
     }
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0)};
+    auto returnPic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, src->w * 3, src->h * 3, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
 
     copySurfaceAttributes(returnPic.get(), src);
 
-    sdl2::surface_lock return_lock {returnPic.get()};
-    sdl2::surface_lock src_lock {src};
+    sdl2::surface_lock return_lock{returnPic.get()};
+    sdl2::surface_lock src_lock{src};
 
     const auto* RESTRICT source = static_cast<char*>(src->pixels);
     auto* RESTRICT destination  = static_cast<char*>(returnPic->pixels);
@@ -214,7 +214,7 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
     const int srcHeight = src->h;
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 2, srcHeight * 2, 8, 0, 0, 0, 0)};
+    auto returnPic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, srcWidth * 2, srcHeight * 2, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
@@ -224,8 +224,8 @@ sdl2::surface_ptr Scaler::doubleTiledSurfaceScale2x(SDL_Surface* src, int tilesX
     const int tileWidth  = srcWidth / tilesX;
     const int tileHeight = srcHeight / tilesY;
 
-    sdl2::surface_lock return_lock {returnPic.get()};
-    sdl2::surface_lock src_lock {src};
+    sdl2::surface_lock return_lock{returnPic.get()};
+    sdl2::surface_lock src_lock{src};
 
     const auto* RESTRICT srcPixels = static_cast<uint8_t*>(src->pixels);
     auto* RESTRICT destPixels      = static_cast<uint8_t*>(returnPic->pixels);
@@ -316,7 +316,7 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
     const int srcHeight = src->h;
 
     // create new picture surface
-    auto returnPic = sdl2::surface_ptr {SDL_CreateRGBSurface(0, srcWidth * 3, srcHeight * 3, 8, 0, 0, 0, 0)};
+    auto returnPic = sdl2::surface_ptr{SDL_CreateRGBSurface(0, srcWidth * 3, srcHeight * 3, 8, 0, 0, 0, 0)};
     if (returnPic == nullptr) {
         return nullptr;
     }
@@ -326,8 +326,8 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
     const int tileWidth  = srcWidth / tilesX;
     const int tileHeight = srcHeight / tilesY;
 
-    sdl2::surface_lock return_lock {returnPic.get()};
-    sdl2::surface_lock src_lock {src};
+    sdl2::surface_lock return_lock{returnPic.get()};
+    sdl2::surface_lock src_lock{src};
 
     const auto* RESTRICT source = static_cast<uint8_t*>(src->pixels);
     auto* RESTRICT destination  = static_cast<uint8_t*>(returnPic->pixels);

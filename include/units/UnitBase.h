@@ -30,7 +30,7 @@ class UnitBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit UnitBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : ObjectBaseConstants {itemID}, bulletType_(bullet_id), numWeapons_(num_weapons) {
+        : ObjectBaseConstants{itemID}, bulletType_(bullet_id), numWeapons_(num_weapons) {
         aUnit_          = true;
         canAttackStuff_ = 0 != num_weapons;
     }
@@ -45,10 +45,10 @@ public:
 
 protected:
     // constant for all units of the same type
-    bool tracked_ {};                 ///< Does this unit have tracks?
-    bool turreted_ {};                ///< Does this unit have a turret?
-    int numWeapons_ {};               ///< How many weapons do we have?
-    int bulletType_ {Bullet_DRocket}; ///< Type of bullet to shot with
+    bool tracked_{};                 ///< Does this unit have tracks?
+    bool turreted_{};                ///< Does this unit have a turret?
+    int numWeapons_{};               ///< How many weapons do we have?
+    int bulletType_{Bullet_DRocket}; ///< Type of bullet to shot with
 };
 
 class UnitBase : public ObjectBase {

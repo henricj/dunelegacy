@@ -46,7 +46,7 @@ class Container;
 class GameContext {
 public:
     GameContext(Game& game, Map& map, ObjectManager& objectManager)
-        : game {game}, map {map}, objectManager {objectManager} { }
+        : game{game}, map{map}, objectManager{objectManager} { }
 
     Game& game;
     Map& map;
@@ -58,7 +58,7 @@ inline constexpr auto VIS_ALL = -1;
 class ObjectInitializer final {
 public:
     ObjectInitializer(Game& game, House* owner, bool byScenario)
-        : game_ {game}, owner_ {owner}, byScenario_ {byScenario} { }
+        : game_{game}, owner_{owner}, byScenario_{byScenario} { }
 
     ObjectInitializer()                         = delete;
     ObjectInitializer(const ObjectInitializer&) = delete;
@@ -80,7 +80,7 @@ private:
 
 class ObjectStreamInitializer final {
 public:
-    ObjectStreamInitializer(InputStream& inputStream) : stream_ {inputStream} { }
+    ObjectStreamInitializer(InputStream& inputStream) : stream_{inputStream} { }
 
     ObjectStreamInitializer()                               = delete;
     ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
@@ -106,21 +106,21 @@ public:
     bool isInfantry() const noexcept { return infantry_; }
     bool isAUnit() const noexcept { return aUnit_; }
 
-    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID {itemID} { }
+    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID{itemID} { }
 
     // constant for all objects of the same type
     const ItemID_enum itemID; ///< The ItemID of this object.
 
 protected:
-    bool aStructure_ {}; ///< Is this a structure?
-    bool aBuilder_ {};   ///< Is this a builder?
+    bool aStructure_{}; ///< Is this a structure?
+    bool aBuilder_{};   ///< Is this a builder?
 
-    bool aUnit_ {};       ///< Is this a unit?
-    bool aFlyingUnit_ {}; ///< Is this a flying unit?
-    bool aGroundUnit_ {}; ///< Is this a ground unit?
-    bool infantry_ {};    ///< Is this an infantry unit?
+    bool aUnit_{};       ///< Is this a unit?
+    bool aFlyingUnit_{}; ///< Is this a flying unit?
+    bool aGroundUnit_{}; ///< Is this a ground unit?
+    bool infantry_{};    ///< Is this an infantry unit?
 
-    bool canAttackStuff_ {}; ///< Can this unit/structure attack?
+    bool canAttackStuff_{}; ///< Can this unit/structure attack?
 };
 
 /*!
@@ -323,7 +323,7 @@ protected:
     // drawing information
     bool badlyDamaged; ///< Is the health below 50%?
 
-    zoomable_texture graphic {}; ///< The graphic for this object
+    zoomable_texture graphic{}; ///< The graphic for this object
     int graphicID =
         -1; ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
     int numImagesX = 0; ///< The number of images in x direction

@@ -101,7 +101,7 @@ static bool cmp_Name_CaseInsensitive_Asc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    for (auto i = decltype(a32.length()) {0}; i < a32.length() && i < b32.length(); ++i) {
+    for (auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
         const auto lb = safe_tolower(b32[i]);
 
@@ -121,7 +121,7 @@ static bool cmp_Name_CaseInsensitive_Dsc(const FileInfo& a, const FileInfo& b) {
     const auto a32 = a.name.u32string();
     const auto b32 = b.name.u32string();
 
-    for (auto i = decltype(a32.length()) {0}; i < a32.length() && i < b32.length(); ++i) {
+    for (auto i = decltype(a32.length()){0}; i < a32.length() && i < b32.length(); ++i) {
         const auto la = safe_tolower(a32[i]);
         const auto lb = safe_tolower(b32[i]);
 
@@ -296,7 +296,7 @@ bool existsFile(const std::filesystem::path& path) {
 }
 
 std::string readCompleteFile(const std::filesystem::path& filename) {
-    const auto RWopsFile = sdl2::RWops_ptr {SDL_RWFromFile(filename.u8string().c_str(), "r")};
+    const auto RWopsFile = sdl2::RWops_ptr{SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
     if (!RWopsFile) {
         return "";
@@ -354,7 +354,7 @@ std::filesystem::path getDuneLegacyDataDir() {
 #endif
 
         if (dataDir.empty() || dataDir == "." || dataDir == "./" || dataDir == ".\\") {
-            const sdl2::sdl_ptr<char> basePath {SDL_GetBasePath()};
+            const sdl2::sdl_ptr<char> basePath{SDL_GetBasePath()};
 
             if (basePath == nullptr) {
                 THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());

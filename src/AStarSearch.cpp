@@ -28,7 +28,7 @@
 #define MAX_NODES_CHECKED (128 * 128)
 
 AStarSearch::AStarSearch(Map* pMap)
-    : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord {} { //, heap_compare_(mapData) {
+    : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord{} { //, heap_compare_(mapData) {
 
     mapData.resize(sizeX * sizeY);
 
@@ -37,7 +37,7 @@ AStarSearch::AStarSearch(Map* pMap)
 
 void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
 #if 1
-    std::fill(std::begin(mapData), std::end(mapData), TileData {});
+    std::fill(std::begin(mapData), std::end(mapData), TileData{});
     std::fill(std::begin(depthCheckCount), std::end(depthCheckCount), 0);
 #else
     // Clobber PODs the evil way...
@@ -240,7 +240,7 @@ void AStarSearch::putOnOpenListIfBetter(int key, const Coord& coord, TileData* p
     // This will result in duplicate entries for the same location, but the
     // newest one will always be found first and subsequent closed ones will
     // be ignored.
-    openList.emplace_back(open_list {f, &map_data});
+    openList.emplace_back(open_list{f, &map_data});
     std::push_heap(std::begin(openList), std::end(openList));
 }
 

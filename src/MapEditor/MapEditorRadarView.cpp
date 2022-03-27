@@ -30,10 +30,10 @@
 
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor) : pMapEditor(pMapEditor) {
     radarSurface =
-        sdl2::surface_ptr {SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        sdl2::surface_ptr{SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    radarTexture = sdl2::texture_ptr {
+    radarTexture = sdl2::texture_ptr{
         SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT)};
 }
 
@@ -103,7 +103,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
     SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    sdl2::surface_lock lock {radarSurface.get()};
+    sdl2::surface_lock lock{radarSurface.get()};
 
     for (int y = 0; y < map.getSizeY(); y++) {
         for (int x = 0; x < map.getSizeX(); x++) {

@@ -53,7 +53,7 @@ class MusicPlayer {
 public:
     MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID),
-          currentMusicType(MUSIC_RANDOM), random_ {RandomFactory {}.create(name)} {
+          currentMusicType(MUSIC_RANDOM), random_{RandomFactory{}.create(name)} {
         Mix_VolumeMusic(musicVolume);
     }
 

@@ -25,7 +25,7 @@ class AirUnitConstants : public UnitBaseConstants {
 public:
     constexpr explicit AirUnitConstants(ItemID_enum itemID, int num_weapons = 0,
                                         BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : UnitBaseConstants {itemID, num_weapons, bullet_id} {
+        : UnitBaseConstants{itemID, num_weapons, bullet_id} {
         aFlyingUnit_ = true;
     }
 };
@@ -69,7 +69,7 @@ protected:
 
     FixPoint currentMaxSpeed = 2; ///< The current maximum allowed speed
 
-    zoomable_texture shadowGraphic {}; ///< The graphic for the shadow of this air unit
+    zoomable_texture shadowGraphic{}; ///< The graphic for the shadow of this air unit
 
 private:
     void initAirUnit();

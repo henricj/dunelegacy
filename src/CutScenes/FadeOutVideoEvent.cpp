@@ -27,7 +27,7 @@ FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOu
                                      bool bFadeWhite)
     : currentFrame(0), numFrames2FadeOut(numFrames2FadeOut), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
     const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-    pTexture                     = sdl2::texture_ptr {SDL_CreateTextureFromSurface(renderer, pTmp.get())};
+    pTexture                     = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }

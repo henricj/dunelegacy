@@ -102,7 +102,7 @@ private:
     uint8_t numPlayers = 0;
     uint8_t maxPlayers = 0;
 
-    dune::dune_clock::time_point lastAnnounce {};
+    dune::dune_clock::time_point lastAnnounce{};
     ENetSocket announceSocket;
 
     std::list<GameServerInfo> gameServerInfoList;

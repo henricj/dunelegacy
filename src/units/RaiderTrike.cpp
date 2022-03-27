@@ -27,7 +27,7 @@
 #include <SoundPlayer.h>
 
 namespace {
-constexpr GroundUnitConstants raider_trike_constants {RaiderTrike::item_id, 2, Bullet_ShellSmall};
+constexpr GroundUnitConstants raider_trike_constants{RaiderTrike::item_id, 2, Bullet_ShellSmall};
 }
 
 RaiderTrike::RaiderTrike(uint32_t objectID, const ObjectInitializer& initializer)
