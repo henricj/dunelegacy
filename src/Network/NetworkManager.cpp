@@ -172,7 +172,7 @@ void NetworkManager::update() {
                 } else {
                     // only one peer should be in state 'PeerState::WaitingForOtherPeersToConnect'
                     peerData->peerState            = PeerData::PeerState::WaitingForOtherPeersToConnect;
-                    peerData->timeout              = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
+                    peerData->timeout              = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
                     peerData->notYetConnectedPeers = peerList;
 
                     if (peerData->notYetConnectedPeers.empty()) {
@@ -186,7 +186,7 @@ void NetworkManager::update() {
                                      peerData->name.c_str());
                         peerList.push_back(pCurrentPeer);
                         peerData->peerState = PeerData::PeerState::Connected;
-                        peerData->timeout   = 0;
+                        peerData->timeout   = dune::dune_clock::time_point {};
                         awaitingConnectionList.remove(pCurrentPeer);
 
                         // send peer game settings
@@ -211,7 +211,7 @@ void NetworkManager::update() {
                 }
             }
 
-            if (peerData->timeout > 0 && SDL_GetTicks() > peerData->timeout) {
+            if (peerData->timeout != dune::dune_clock::time_point {} && dune::dune_clock::now() > peerData->timeout) {
                 // timeout
                 switch (peerData->peerState) {
                     case PeerData::PeerState::WaitingForName: {
@@ -254,7 +254,7 @@ void NetworkManager::update() {
                                  peer->address.port);
 
                     auto newPeerData     = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
-                    newPeerData->timeout = SDL_GetTicks() + AWAITING_CONNECTION_TIMEOUT;
+                    newPeerData->timeout = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
 
                     debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name.c_str());
                     awaitingConnectionList.push_back(peer);
@@ -278,7 +278,7 @@ void NetworkManager::update() {
                         sendPacketToHost(packetStream);
 
                         peerData->peerState = PeerData::PeerState::WaitingForOtherPeersToConnect;
-                        peerData->timeout   = 0;
+                        peerData->timeout   = dune::dune_clock::time_point {};
                     } else {
                         debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
                                      peer->address.port);
@@ -481,7 +481,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                                              peerData->name.c_str());
                                 peerList.push_back(pCurrentPeer);
                                 peerData->peerState = PeerData::PeerState::Connected;
-                                peerData->timeout   = 0;
+                                peerData->timeout   = dune::dune_clock::time_point {};
                                 awaitingConnectionList.remove(pCurrentPeer);
 
                                 // send peer game settings
@@ -509,7 +509,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                                          peerData->name.c_str());
                             peerList.push_back(pCurrentPeer);
                             peerData->peerState = PeerData::PeerState::Connected;
-                            peerData->timeout   = 0;
+                            peerData->timeout   = dune::dune_clock::time_point {};
                             awaitingConnectionList.erase(iter);
                             break;
                         }
@@ -530,7 +530,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                 peerList            = awaitingConnectionList;
                 peerData->peerState = PeerData::PeerState::Connected;
-                peerData->timeout   = 0;
+                peerData->timeout   = dune::dune_clock::time_point {};
                 awaitingConnectionList.clear();
 
                 const GameInitSettings gameInitSettings(packetStream);
@@ -616,7 +616,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 const auto timeLeft = packetStream.readUint32();
 
                 if (pOnStartGame) {
-                    pOnStartGame(timeLeft);
+                    pOnStartGame(dune::as_dune_clock_duration(timeLeft));
                 }
             } break;
 

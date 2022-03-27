@@ -20,13 +20,14 @@
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
 
-Animation::Animation() : curFrameStartTime(SDL_GetTicks()), curFrameOverride(INVALID_FRAME) { }
+Animation::Animation() : curFrameOverride(INVALID_FRAME) { }
 
 Animation::~Animation() = default;
 
 unsigned int Animation::getCurrentFrameNumber() {
-    if ((SDL_GetTicks() - curFrameStartTime) > frameDurationTime) {
-        curFrameStartTime = SDL_GetTicks();
+    const auto now = dune::dune_clock::now();
+    if (now - curFrameStartTime > frameDurationTime) {
+        curFrameStartTime = now;
 
         if (loopsLeft == -1) {
             curFrame++;

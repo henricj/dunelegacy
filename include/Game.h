@@ -28,6 +28,7 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/Random.h>
+#include <misc/dune_clock.h>
 #include <players/HumanPlayer.h>
 #include <players/Player.h>
 
@@ -49,7 +50,7 @@ class ObjectManager;
 class House;
 class Explosion;
 
-inline constexpr auto END_WAIT_TIME = 6 * 1000;
+inline constexpr auto END_WAIT_TIME = dune::as_dune_clock_duration(6 * 1000);
 
 inline constexpr auto GAME_NOTHING           = -1;
 inline constexpr auto GAME_RETURN_TO_MENU    = 0;
@@ -230,12 +231,7 @@ public:
     /**
         This method pauses the current game.
     */
-    void pauseGame() {
-        if (gameType != GameType::CustomMultiplayer) {
-            bPause        = true;
-            pauseGameTime = SDL_GetTicks();
-        }
-    }
+    void pauseGame();
 
     /**
         This method resumes the current paused game.
@@ -368,13 +364,13 @@ public:
     }
 
     /**
-        This method returns wether the game is currently paused
+        This method returns whether the game is currently paused
         \return true, if paused, false otherwise
     */
     [[nodiscard]] bool isGamePaused() const noexcept { return bPause; }
 
     /**
-        This method returns wether the game is finished
+        This method returns whether the game is finished
         \return true, if paused, false otherwise
     */
     [[nodiscard]] bool isGameFinished() const noexcept { return finished; }
@@ -535,11 +531,12 @@ private:
     void selectNextStructureOfType(const Dune::selected_set_type& itemIDs);
 
     /**
-        Returns the game speed of this game: The number of ms per game cycle.
+        Returns the game speed of this game: The wall clock time per game cycle.
         For singleplayer games this is a global setting (but can be adjusted in the in-game settings menu). For
-       multiplayer games the game speed can be set by the person creating the game. \return the current game speed
+       multiplayer games the game speed can be set by the person creating the game.
+       \return the current game speed
     */
-    [[nodiscard]] int getGameSpeed() const;
+    [[nodiscard]] dune::dune_clock::duration getGameSpeed() const;
 
     bool removeFromSelectionLists(ObjectBase* pObject);
     void removeFromQuickSelectionLists(uint32_t objectID);
@@ -547,7 +544,7 @@ private:
     void serviceNetwork(bool& bWaitForNetwork);
     void updateGame(const GameContext& context);
 
-    void doEventsUntil(const GameContext& context, int until);
+    void doEventsUntil(const GameContext& context, dune::dune_clock::time_point until);
 
 public:
     enum {
@@ -596,7 +593,8 @@ private:
     float averageRenderTime = 10.0f; ///< The weighted average of the render time
     float averageUpdateTime = 10.0f; ///< The weighted average of the update time
 
-    int lastTargetGameCycleTime {}; //< Remember the last time the target gameCycleCount was updated
+    dune::dune_clock::time_point
+        lastTargetGameCycleTime {}; //< Remember the last time the target gameCycleCount was updated
 
     uint32_t gameCycleCount = 0;
 
@@ -627,11 +625,11 @@ private:
 
     std::unique_ptr<Map> map;
 
-    bool bQuitGame = false; ///< Should the game quit after this game tick
-    bool bPause    = false; ///< Is the game currently halted
-    int pauseGameTime {};   ///< Remember when the game was paused
-    bool bMenu   = false;   ///< Is there currently a menu shown (options or mentat menu)
-    bool bReplay = false;   ///< Is this game actually a replay
+    bool bQuitGame = false;                        ///< Should the game quit after this game tick
+    bool bPause    = false;                        ///< Is the game currently halted
+    dune::dune_clock::time_point pauseGameTime {}; ///< Remember when the game was paused
+    bool bMenu   = false;                          ///< Is there currently a menu shown (options or mentat menu)
+    bool bReplay = false;                          ///< Is this game actually a replay
 
     bool bShowFPS = false; ///< Show the FPS
 
@@ -640,18 +638,19 @@ private:
     bool bCheatsEnabled = false; ///< Cheat codes are enabled?
 
     bool finished =
-        false; ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
-    bool won                   = false; ///< If the game is finished, is it won or lost
-    uint32_t finishedLevelTime = 0;     ///< The time in milliseconds when the level was finished (won or lost)
-    bool finishedLevel         = false; ///< Set, when the game is really finished and the end message was shown
+        false;        ///< Is the game finished (won or lost) and we are just waiting for the end message to be shown
+    bool won = false; ///< If the game is finished, is it won or lost
+    dune::dune_clock::time_point
+        finishedLevelTime {};   ///< The time in milliseconds when the level was finished (won or lost)
+    bool finishedLevel = false; ///< Set, when the game is really finished and the end message was shown
 
     std::unique_ptr<GameInterface> pInterface; ///< This is the whole interface (top bar and side bar)
     std::unique_ptr<InGameMenu> pInGameMenu;   ///< This is the menu that is opened by the option button
     std::unique_ptr<MentatHelp> pInGameMentat; ///< This is the mentat dialog opened by the mentat button
     std::unique_ptr<WaitingForOtherPlayers> pWaitingForOtherPlayers; ///< This is the dialog that pops up when we are
                                                                      ///< waiting for other players during network hangs
-    uint32_t startWaitingForOtherPlayersTime =
-        0; ///< The time in milliseconds when we started waiting for other players
+    dune::dune_clock::time_point
+        startWaitingForOtherPlayersTime {}; ///< The time in milliseconds when we started waiting for other players
 
     bool bSelectionChanged =
         false; ///< Has the selected list changed (and must be retransmitted to other plays in multiplayer games)

@@ -33,7 +33,7 @@ void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
         bHover   = false;
     } else if (isEnabled() && !insideOverlay) {
         bHover                 = true;
-        tooltipLastMouseMotion = SDL_GetTicks();
+        tooltipLastMouseMotion = dune::dune_clock::now();
     }
 }
 
@@ -155,10 +155,12 @@ void Button::draw(Point position) {
 }
 
 void Button::drawOverlay(Point position) {
+    using namespace std::chrono_literals;
+
     if (!isVisible() || !isEnabled() || !bHover || !tooltipTexture)
         return;
 
-    if (SDL_GetTicks() - tooltipLastMouseMotion <= 750)
+    if (dune::dune_clock::now() - tooltipLastMouseMotion <= 750ms)
         return;
 
     const auto renderRect = getRendererSize();

@@ -18,13 +18,15 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include "misc/dune_clock.h"
 #include <FileClasses/Palette.h>
 #include <misc/SDL2pp.h>
 
 #include "GUI/ProgressBar.h"
+
 #include <vector>
 
-#define INVALID_FRAME ((unsigned int)-1)
+inline constexpr auto INVALID_FRAME = ~0u;
 
 class Animation {
 public:
@@ -56,15 +58,18 @@ public:
 
     void setFrameRate(double FrameRate) noexcept {
         if (FrameRate == 0.0) {
-            frameDurationTime = 1;
+            frameDurationTime = dune::as_dune_clock_duration(1);
         } else {
-            frameDurationTime = static_cast<int>(1000.0 / FrameRate);
+            frameDurationTime = dune::as_dune_clock_duration(1000.0 / FrameRate);
         }
     }
 
-    void setFrameDurationTime(uint32_t frameDurationTime) noexcept { this->frameDurationTime = frameDurationTime; }
+    void setFrameDurationTime(uint32_t duration) noexcept {
+        frameDurationTime = dune::as_dune_clock_duration(duration);
+    }
+    void setFrameDurationTime(dune::dune_clock::duration duration) noexcept { frameDurationTime = duration; }
 
-    [[nodiscard]] uint32_t getFrameDurationTime() const noexcept { return frameDurationTime; }
+    [[nodiscard]] auto getFrameDurationTime() const noexcept { return frameDurationTime; }
 
     void addFrame(sdl2::surface_ptr newFrame, bool bDoublePic = false, bool bSetColorKey = false);
 
@@ -91,10 +96,10 @@ public:
     [[nodiscard]] unsigned int getCurrentFrameOverride() const noexcept { return curFrameOverride; }
 
 private:
-    uint32_t curFrameStartTime;
-    uint32_t frameDurationTime = 1;
-    int loopsLeft              = -1;
-    unsigned int curFrame      = 0;
+    dune::dune_clock::time_point curFrameStartTime {dune::dune_clock::now()};
+    dune::dune_clock::duration frameDurationTime {dune::as_dune_clock_duration(1)};
+    int loopsLeft         = -1;
+    unsigned int curFrame = 0;
     unsigned int curFrameOverride;
     std::vector<sdl2::surface_ptr> frames;
     std::vector<sdl2::texture_ptr> frameTextures;

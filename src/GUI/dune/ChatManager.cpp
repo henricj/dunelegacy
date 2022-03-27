@@ -29,7 +29,7 @@
 #include <ctime>
 
 namespace {
-inline constexpr auto MAX_MESSAGESHOWTIME  = 11000;
+inline constexpr auto MAX_MESSAGESHOWTIME  = dune::as_dune_clock_duration(11000);
 inline constexpr auto MAX_NUMBEROFMESSAGES = 25;
 inline constexpr auto LEFT_BORDER_WIDTH    = 70;
 } // namespace
@@ -40,7 +40,7 @@ ChatManager::~ChatManager() = default;
 
 void ChatManager::draw(Point position) {
     // delete all old messages
-    const uint32_t currentTime = SDL_GetTicks();
+    const auto currentTime = dune::dune_clock::now();
     while (!chatMessages.empty() && chatMessages.front().messageTime + MAX_MESSAGESHOWTIME < currentTime) {
         chatMessages.pop_front();
     }
@@ -140,7 +140,7 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
     auto pMessageTexture  = pFontManager->createTextureWithText(message, COLOR_WHITE, 12);
 
     chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
-                              SDL_GetTicks(), MessageType::MSGTYPE_NORMAL);
+                              dune::dune_clock::now(), MessageType::MSGTYPE_NORMAL);
 
     prune_messages();
 }
@@ -149,7 +149,7 @@ void ChatManager::addInfoMessage(std::string_view message) {
     sdl2::texture_ptr pMessageTexture =
         pFontManager->createTextureWithText(std::string {"*  "}.append(message), COLOR_GREEN, 12);
 
-    chatMessages.emplace_back(std::move(pMessageTexture), SDL_GetTicks(), MessageType::MSGTYPE_INFO);
+    chatMessages.emplace_back(std::move(pMessageTexture), dune::dune_clock::now(), MessageType::MSGTYPE_INFO);
 
     prune_messages();
 }
@@ -165,7 +165,8 @@ void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pT
     auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface(
         width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
 
-    chatMessages.emplace_back(std::move(pMessageTexture), pTexture, SDL_GetTicks(), MessageType::MSGTYPE_PICTURE);
+    chatMessages.emplace_back(std::move(pMessageTexture), pTexture, dune::dune_clock::now(),
+                              MessageType::MSGTYPE_PICTURE);
 
     prune_messages();
 }

@@ -490,7 +490,9 @@ void Game::drawScreen() {
     // draw chat message currently typed
     if (chatMode) {
         const auto pChatTexture = pFontManager->createTextureWithText(
-            "Chat: " + typingChatMessage + (((SDL_GetTicks() / 150) % 2 == 0) ? "_" : ""), COLOR_WHITE, 14);
+            "Chat: " + typingChatMessage
+                + (((dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 150) % 2 == 0) ? "_" : ""),
+            COLOR_WHITE, 14);
         const auto drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
         Dune_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
     }
@@ -1037,11 +1039,13 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
     }
 
     if (bWaitForNetwork) {
-        if (startWaitingForOtherPlayersTime == 0) {
+        if (startWaitingForOtherPlayersTime == dune::dune_clock::time_point {}) {
             // we just started waiting
-            startWaitingForOtherPlayersTime = SDL_GetTicks();
+            startWaitingForOtherPlayersTime = dune::dune_clock::now();
         } else {
-            if (SDL_GetTicks() - startWaitingForOtherPlayersTime > 1000) {
+            using namespace std::chrono_literals;
+
+            if (dune::dune_clock::now() - startWaitingForOtherPlayersTime > 1000ms) {
                 // we waited for more than one second
 
                 if (pWaitingForOtherPlayers == nullptr) {
@@ -1053,7 +1057,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
 
         SDL_Delay(10);
     } else {
-        startWaitingForOtherPlayersTime = 0;
+        startWaitingForOtherPlayersTime = dune::dune_clock::time_point {};
         pWaitingForOtherPlayers.reset();
     }
 }
@@ -1093,16 +1097,18 @@ void Game::updateGame(const GameContext& context) {
     gameCycleCount++;
 }
 
-void Game::doEventsUntil(const GameContext& context, const int until) {
+void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::time_point until) {
+    using namespace std::chrono_literals;
+
     SDL_Event event {};
 
     while (!bQuitGame && !finishedLevel) {
-        const auto remaining = until - static_cast<int>(SDL_GetTicks());
+        const auto remaining = until - dune::dune_clock::now();
 
-        if (remaining <= 0 || remaining >= 100)
+        if (remaining <= dune::dune_clock::duration::zero() || remaining >= 100ms)
             return;
 
-        if (SDL_WaitEventTimeout(&event, remaining)) {
+        if (SDL_WaitEventTimeout(&event, dune::as_milliseconds<int>(remaining))) {
             doInput(context, event);
 
             while (SDL_PollEvent(&event)) {
@@ -1113,6 +1119,8 @@ void Game::doEventsUntil(const GameContext& context, const int until) {
 }
 
 void Game::runMainLoop(const GameContext& context) {
+    using namespace std::chrono_literals;
+
     sdl2::log_info("Starting game...");
 
     // add interface
@@ -1227,7 +1235,7 @@ void Game::runMainLoop(const GameContext& context) {
     // Change music to ingame music
     musicPlayer->changeMusic(MUSIC_PEACE);
 
-    const int gameStart = static_cast<int>(SDL_GetTicks());
+    const auto gameStart = dune::dune_clock::now();
 
     int numFrames = 0;
 
@@ -1243,7 +1251,7 @@ void Game::runMainLoop(const GameContext& context) {
 
     // main game loop
     do {
-        auto now = static_cast<int>(SDL_GetTicks());
+        auto now = dune::dune_clock::now();
 
         const auto frameStart = now;
 
@@ -1311,7 +1319,7 @@ void Game::runMainLoop(const GameContext& context) {
         cmdManager.update();
 
         while (!bWaitForNetwork && !bPause) {
-            now = static_cast<int>(SDL_GetTicks());
+            now = dune::dune_clock::now();
 
             if (gameCycleCount < skipToGameCycle) {
                 targetGameCycle         = skipToGameCycle;
@@ -1320,7 +1328,7 @@ void Game::runMainLoop(const GameContext& context) {
                 auto pendingTicks = now - lastTargetGameCycleTime;
 
                 // Watch for discontinuities...
-                if (pendingTicks > 2500) {
+                if (pendingTicks > 2500ms) {
                     pendingTicks            = 2 * gameSpeed;
                     lastTargetGameCycleTime = now - pendingTicks;
                 }
@@ -1353,9 +1361,9 @@ void Game::runMainLoop(const GameContext& context) {
                 takeScreenshot();
             }
 
-            now = static_cast<int>(SDL_GetTicks());
+            now = dune::dune_clock::now();
             // Don't block the UI for more than 75ms, even if we are behind.
-            if (now - frameStart > 75)
+            if (now - frameStart > 75ms)
                 break;
         }
 
@@ -1363,18 +1371,19 @@ void Game::runMainLoop(const GameContext& context) {
             doInput(context, event);
 
         if (bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
-            const auto until = frameStart + (settings.video.frameLimit ? 16 : 5);
+            const auto until = frameStart + (settings.video.frameLimit ? 16ms : 5ms);
 
             doEventsUntil(context, until);
         }
 
         musicPlayer->musicCheck(); // if song has finished, start playing next one
 
-        now                     = static_cast<int>(SDL_GetTicks());
+        now = dune::dune_clock::now();
+
         const auto frameElapsed = now - frameStart;
 
         if (bShowFPS) {
-            averageFrameTime = 0.97f * averageFrameTime + 0.03f * frameElapsed;
+            averageFrameTime = 0.97f * averageFrameTime + 0.03f * dune::as_milliseconds<float>(frameElapsed);
         }
     } while (!bQuitGame && !finishedLevel); // not sure if we need this extra bool
 
@@ -1403,15 +1412,22 @@ void Game::runMainLoop(const GameContext& context) {
     sdl2::log_info("Game finished!");
 }
 
+void Game::pauseGame() {
+    if (gameType != GameType::CustomMultiplayer) {
+        bPause        = true;
+        pauseGameTime = dune::dune_clock::now();
+    }
+}
+
 void Game::resumeGame() {
     bMenu = false;
     if (gameType != GameType::CustomMultiplayer) {
         bPause = false;
 
         // Remove the time spent paused from the targetGameCycle update.
-        const auto now       = static_cast<int>(SDL_GetTicks());
+        const auto now       = dune::dune_clock::now();
         const auto pauseTime = now - pauseGameTime;
-        if (pauseTime > 0)
+        if (pauseTime > dune::dune_clock::duration::zero())
             lastTargetGameCycleTime += pauseTime;
         else
             lastTargetGameCycleTime = now;
@@ -1861,7 +1877,7 @@ void Game::setGameWon() {
     if (!bQuitGame && !finished) {
         won               = true;
         finished          = true;
-        finishedLevelTime = SDL_GetTicks();
+        finishedLevelTime = dune::dune_clock::now();
         soundPlayer->playVoice(Voice_enum::YourMissionIsComplete, pLocalHouse->getHouseID());
     }
 }
@@ -1870,7 +1886,7 @@ void Game::setGameLost() {
     if (!bQuitGame && !finished) {
         won               = false;
         finished          = true;
-        finishedLevelTime = SDL_GetTicks();
+        finishedLevelTime = dune::dune_clock::now();
         soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission, pLocalHouse->getHouseID());
     }
 }
@@ -2676,9 +2692,9 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
     }
 }
 
-int Game::getGameSpeed() const {
+dune::dune_clock::duration Game::getGameSpeed() const {
     if (gameType == GameType::CustomMultiplayer) {
-        return gameInitSettings.getGameOptions().gameSpeed;
+        return dune::as_dune_clock_duration(gameInitSettings.getGameOptions().gameSpeed);
     }
-    return settings.gameOptions.gameSpeed;
+    return dune::as_dune_clock_duration(settings.gameOptions.gameSpeed);
 }

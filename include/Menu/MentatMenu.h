@@ -46,7 +46,7 @@ public:
         return MenuBase::doInput(event);
     }
 
-    void showNextMentatText() { nextMentatTextSwitch = 0; }
+    void showNextMentatText() { nextMentatTextSwitch = dune::dune_clock::time_point::min(); }
 
     virtual void onMentatTextFinished() { }
 
@@ -69,11 +69,11 @@ protected:
         MentatMouthOpen4  = 4
     };
 
-    uint32_t nextSpecialAnimation;
+    dune::dune_clock::time_point nextSpecialAnimation;
 
     std::vector<std::string> mentatTexts;
-    int currentMentatTextIndex    = -1;
-    uint32_t nextMentatTextSwitch = 0;
+    int currentMentatTextIndex = -1;
+    dune::dune_clock::time_point nextMentatTextSwitch {};
     HOUSETYPE house;
 
     StaticContainer windowWidget;

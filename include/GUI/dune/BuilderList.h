@@ -161,7 +161,7 @@ private:
 
     sdl2::texture_ptr pLastTooltip;
     std::string tooltipText;
-    uint32_t lastMouseMovement = 1u << 31;
+    dune::dune_clock::time_point lastMouseMovement = dune::dune_clock::time_point::max();
     Point lastMousePos;
 };
 

@@ -48,7 +48,7 @@ public:
     void setClearScreen(bool bClearScreen) { this->bClearScreen = bClearScreen; }
 
 protected:
-    bool doEventsUntil(int until);
+    bool doEventsUntil(dune::dune_clock::time_point until);
 
 private:
     bool bClearScreen  = true;

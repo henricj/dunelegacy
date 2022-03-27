@@ -38,11 +38,25 @@ void CutScene::run() {
     SDL_Event event;
 
     while (!quiting) {
-        const int frameStart = static_cast<int>(SDL_GetTicks());
+        const auto frameStart = dune::dune_clock::now();
 
-        const int nextFrameTime = draw();
+        const auto nextFrameTime = draw();
 
-        while (SDL_PollEvent(&event)) {
+        const auto frameDone = std::chrono::milliseconds {nextFrameTime} + frameStart;
+
+        for (;;) {
+            const auto now = dune::dune_clock::now();
+
+            if (now >= frameDone)
+                break;
+
+            const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(now - frameDone).count();
+
+            if (remaining < 1 || remaining > 1000)
+                break;
+
+            if (!SDL_WaitEventTimeout(&event, static_cast<int>(remaining)))
+                continue;
 
             // check the events
             switch (event.type) {
@@ -56,13 +70,8 @@ void CutScene::run() {
                         quiting = true;
                     }
                 }
+                default: break;
             }
-        }
-
-        const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
-        const int delay     = nextFrameTime - frameTime;
-        if (delay >= 0) {
-            SDL_Delay(delay);
         }
     }
 }

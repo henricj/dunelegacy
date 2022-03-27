@@ -38,16 +38,18 @@ void MenuBase::quit(int returnVal) {
     quiting = true;
 }
 
-bool MenuBase::doEventsUntil(const int until) {
+bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
+    using namespace std::chrono_literals;
+
     SDL_Event event {};
 
     while (!quiting) {
-        const auto remaining = until - SDL_GetTicks();
+        const auto remaining = until - dune::dune_clock::now();
 
-        if (remaining <= 0 || remaining >= 32)
+        if (remaining <= dune::dune_clock::duration::zero() || remaining >= 32ms)
             return true;
 
-        if (SDL_WaitEventTimeout(&event, remaining)) {
+        if (SDL_WaitEventTimeout(&event, dune::as_milliseconds<int>(remaining))) {
             if (!doInput(event))
                 return false;
 
@@ -63,12 +65,14 @@ bool MenuBase::doEventsUntil(const int until) {
 }
 
 int MenuBase::showMenu() {
+    using namespace std::chrono_literals;
+
     SDL_Event event {};
 
     quiting = false;
 
     while (!quiting) {
-        const auto frameStart = static_cast<int>(SDL_GetTicks());
+        const auto frameStart = dune::dune_clock::now();
 
         update();
 
@@ -99,7 +103,7 @@ int MenuBase::showMenu() {
         if (!settings.video.frameLimit)
             continue;
 
-        if (!doEventsUntil(frameStart + 32))
+        if (!doEventsUntil(frameStart + 32ms))
             break;
     }
 

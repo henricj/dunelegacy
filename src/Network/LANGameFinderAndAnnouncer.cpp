@@ -109,7 +109,7 @@ LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
 
 void LANGameFinderAndAnnouncer::update() {
     if (serverPort > 0) {
-        if (SDL_GetTicks() - lastAnnounce > LANGAME_ANNOUNCER_INTERVAL) {
+        if (dune::dune_clock::now() - lastAnnounce > LANGAME_ANNOUNCER_INTERVAL) {
             announceGame();
         }
     }
@@ -145,7 +145,7 @@ void LANGameFinderAndAnnouncer::announceGame() {
     } else if (err < 0) {
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Announcing failed!");
     } else {
-        lastAnnounce = SDL_GetTicks();
+        lastAnnounce = dune::dune_clock::now();
     }
 }
 
@@ -207,7 +207,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             gameServerInfo.numPlayers         = numPlayers;
             gameServerInfo.maxPlayers         = maxPlayers;
             gameServerInfo.bPasswordProtected = false;
-            gameServerInfo.lastUpdate         = SDL_GetTicks();
+            gameServerInfo.lastUpdate         = dune::as_milliseconds(dune::dune_clock::now().time_since_epoch());
 
             bool bUpdate = false;
             for (GameServerInfo& curGameServerInfo : gameServerInfoList) {
@@ -258,11 +258,12 @@ void LANGameFinderAndAnnouncer::receivePackets() {
 }
 
 void LANGameFinderAndAnnouncer::updateServerInfoList() {
-    const uint32_t currentTime = SDL_GetTicks();
+    const auto currentTime = dune::dune_clock::now();
 
     auto iter = gameServerInfoList.begin();
     while (iter != gameServerInfoList.end()) {
-        if (iter->lastUpdate + 3 * LANGAME_ANNOUNCER_INTERVAL < currentTime) {
+        if (dune::as_dune_clock_duration(iter->lastUpdate) + 3 * LANGAME_ANNOUNCER_INTERVAL
+            < currentTime.time_since_epoch()) {
             if (pOnRemoveServer) {
                 pOnRemoveServer(*iter);
             }

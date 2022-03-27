@@ -33,6 +33,8 @@ void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
 }
 
 bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
+    using namespace std::chrono_literals;
+
     const int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
 
     if ((x >= 0) && (x < getSize().x - scrollbarWidth) && (y >= 0) && (y < getSize().y)) {
@@ -42,12 +44,12 @@ bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
             if ((index >= 0) && (index < getNumEntries())) {
                 selectedElement = index;
 
-                if (SDL_GetTicks() - lastClickTime < 200) {
+                if (dune::dune_clock::now() - lastClickTime < 200ms) {
                     if (pOnDoubleClick) {
                         pOnDoubleClick();
                     }
                 } else {
-                    lastClickTime = SDL_GetTicks();
+                    lastClickTime = dune::dune_clock::now();
                     updateList();
                     if (pOnSingleClick) {
                         pOnSingleClick();

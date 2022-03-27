@@ -27,7 +27,7 @@
 #include <string>
 
 inline constexpr auto LANGAME_ANNOUNCER_PORT               = 28746;
-inline constexpr auto LANGAME_ANNOUNCER_INTERVAL           = 3000;
+inline constexpr auto LANGAME_ANNOUNCER_INTERVAL           = dune::as_dune_clock_duration(3000);
 inline constexpr auto LANGAME_ANNOUNCER_MAGICNUMBER        = 82071105;
 inline constexpr auto LANGAME_ANNOUNCER_MAXGAMENAMESIZE    = 32;
 inline constexpr auto LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE = 32;
@@ -45,7 +45,7 @@ public:
         this->mapName    = mapName;
         this->numPlayers = numPlayers;
         this->maxPlayers = maxPlayers;
-        lastAnnounce     = 0;
+        lastAnnounce     = dune::dune_clock::now();
     }
 
     void updateAnnounce(uint8_t numPlayers) {
@@ -102,7 +102,7 @@ private:
     uint8_t numPlayers = 0;
     uint8_t maxPlayers = 0;
 
-    uint32_t lastAnnounce = 0;
+    dune::dune_clock::time_point lastAnnounce {};
     ENetSocket announceSocket;
 
     std::list<GameServerInfo> gameServerInfoList;

@@ -63,16 +63,18 @@ private:
 
     struct ChatMessage final {
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, uint32_t _messageTime, MessageType _messageType)
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                    MessageType _messageType)
             : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
         ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
-                    sdl2::texture_ptr _pMessageTexture, uint32_t _messageTime, MessageType _messageType)
+                    sdl2::texture_ptr _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                    MessageType _messageType)
             : pTimeTexture(std::move(_pTimeTexture)), pUsernameTexture(std::move(_pUsernameTexture)),
               pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, const DuneTexture* _pPictureTexture, uint32_t _messageTime,
-                    MessageType _messageType)
+        ChatMessage(sdl2::texture_ptr _pMessageTexture, const DuneTexture* _pPictureTexture,
+                    dune::dune_clock::time_point _messageTime, MessageType _messageType)
             : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)),
               messageTime(_messageTime), messageType(_messageType) { }
 
@@ -94,7 +96,7 @@ private:
         const DuneTexture* pPictureTexture {};
         sdl2::texture_ptr pMessageTexture;
 
-        uint32_t messageTime;
+        dune::dune_clock::time_point messageTime;
         MessageType messageType;
     };
 

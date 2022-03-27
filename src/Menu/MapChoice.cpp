@@ -114,6 +114,8 @@ int MapChoice::showMenu() {
 }
 
 void MapChoice::drawSpecificStuff() {
+    using namespace std::chrono_literals;
+
     SDL_UpdateTexture(mapTexture.get(), nullptr, mapSurface->pixels, mapSurface->pitch);
     Dune_RenderCopy(renderer, mapTexture.get(), nullptr, &centerAreaRect);
 
@@ -134,7 +136,7 @@ void MapChoice::drawSpecificStuff() {
                     if (curBlendBlitter->nextStep() == 0) {
                         curBlendBlitter.reset();
 
-                        stateSwitchTime = SDL_GetTicks();
+                        stateSwitchTime = dune::dune_clock::now();
                         mapChoiceState  = MAPCHOICESTATE_SHOWPLANET;
                         break;
                     }
@@ -143,7 +145,7 @@ void MapChoice::drawSpecificStuff() {
         } break;
 
         case MAPCHOICESTATE_SHOWPLANET: {
-            if (SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500U : 4000U)) {
+            if (dune::dune_clock::now() - stateSwitchTime > (bFastBlending ? 500ms : 4000ms)) {
                 mapChoiceState = MAPCHOICESTATE_BLENDPLANET;
             }
         } break;
@@ -163,7 +165,7 @@ void MapChoice::drawSpecificStuff() {
                     if (curBlendBlitter->nextStep() == 0) {
                         curBlendBlitter.reset();
 
-                        stateSwitchTime = SDL_GetTicks();
+                        stateSwitchTime = dune::dune_clock::now();
                         mapChoiceState  = MAPCHOICESTATE_SHOWMAPONLY;
                         break;
                     }
@@ -172,7 +174,7 @@ void MapChoice::drawSpecificStuff() {
         } break;
 
         case MAPCHOICESTATE_SHOWMAPONLY: {
-            if (SDL_GetTicks() - stateSwitchTime > (bFastBlending ? 500U : 4000U)) {
+            if (dune::dune_clock::now() - stateSwitchTime > (bFastBlending ? 500ms : 4000ms)) {
                 mapChoiceState = MAPCHOICESTATE_BLENDMAP;
             }
         } break;
@@ -267,18 +269,19 @@ void MapChoice::drawSpecificStuff() {
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                const int arrowFrame    = static_cast<int>(SDL_GetTicks() / 128 % 4);
-                const auto src          = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                const auto dest         = calcSpriteDrawingRectF(
-                            arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
-                            group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
+                const int arrowFrame =
+                    static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
+                const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                const auto dest = calcSpriteDrawingRectF(
+                    arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
+                    group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
         } break;
 
         case MAPCHOICESTATE_BLINKING: {
-            if ((SDL_GetTicks() - selectionTime) % 900 < 450) {
+            if (dune::as_milliseconds(dune::dune_clock::now() - selectionTime) % 900 < 450) {
                 if (const auto* const pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion, house)) {
                     pieceTexture->draw(renderer, piecePosition[selectedRegion].x + centerAreaRect.x,
                                        piecePosition[selectedRegion].y + centerAreaRect.y);
@@ -292,16 +295,17 @@ void MapChoice::drawSpecificStuff() {
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
-                const int arrowFrame    = static_cast<int>(SDL_GetTicks() / 128 % 4);
-                const auto src          = calcSpriteSourceRect(arrow, arrowFrame, 4);
-                const auto dest         = calcSpriteDrawingRectF(
-                            arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
-                            group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
+                const int arrowFrame =
+                    static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
+                const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
+                const auto dest = calcSpriteDrawingRectF(
+                    arrow, group[lastScenario].attackRegion[i].arrowPosition.x + centerAreaRect.x,
+                    group[lastScenario].attackRegion[i].arrowPosition.y + centerAreaRect.y, 4, 1);
 
                 Dune_RenderCopyF(renderer, arrow, &src, &dest);
             }
 
-            if (SDL_GetTicks() - selectionTime > 2000) {
+            if (dune::dune_clock::now() - selectionTime > 2000ms) {
                 quit();
             }
         } break;
@@ -332,7 +336,7 @@ bool MapChoice::doInput(SDL_Event& event) {
                             mapChoiceState = MAPCHOICESTATE_BLINKING;
                             selectedRegion = regionNum;
                             alreadyPlayedRegions |= 1 << selectedRegion;
-                            selectionTime = SDL_GetTicks();
+                            selectionTime = dune::dune_clock::now();
                             break;
                         }
                     }

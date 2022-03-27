@@ -84,13 +84,15 @@ void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
 
 void MapEditor::RunEditor() {
     while (!bQuitEditor) {
-        const int frameStart = static_cast<int>(SDL_GetTicks());
+        const auto frameStart = dune::dune_clock::now();
 
         processInput();
         drawScreen();
 
-        const int frameTime = static_cast<int>(SDL_GetTicks()) - frameStart;
         if (settings.video.frameLimit) {
+            const auto frameDuration = dune::dune_clock::now() - frameStart;
+            const auto frameTime     = dune::as_milliseconds(frameDuration);
+
             if (frameTime >= 0 && frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }

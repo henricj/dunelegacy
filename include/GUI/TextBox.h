@@ -177,14 +177,16 @@ public:
         const SDL_Rect dest = calcDrawingRect(pTextureWithoutCaret.get(), position.x, position.y);
 
         if (isActive()) {
-            if ((SDL_GetTicks() - lastCaretTime) < 500) {
+            using namespace std::chrono_literals;
+
+            if ((dune::dune_clock::now() - lastCaretTime) < 500ms) {
                 Dune_RenderCopy(renderer, pTextureWithCaret.get(), nullptr, &dest);
             } else {
                 Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
             }
 
-            if (SDL_GetTicks() - lastCaretTime >= 1000) {
-                lastCaretTime = SDL_GetTicks();
+            if (dune::dune_clock::now() - lastCaretTime >= 1000ms) {
+                lastCaretTime = dune::dune_clock::now();
             }
         } else {
             Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
@@ -209,7 +211,7 @@ public:
 
         if (pressed) {
             setActive();
-            lastCaretTime = SDL_GetTicks();
+            lastCaretTime = dune::dune_clock::now();
         }
         return true;
     }
@@ -309,7 +311,8 @@ private:
     std::string allowedChars;   ///< a set of allowed characters, empty string for everything allowed
     std::string forbiddenChars; ///< a set of forbidden characters, empty string for everything allowed
 
-    uint32_t lastCaretTime = SDL_GetTicks(); ///< Last time the caret changes from off to on or vise versa
+    dune::dune_clock::time_point lastCaretTime =
+        dune::dune_clock::now(); ///< Last time the caret changes from off to on or vise versa
 
     std::function<void(bool)> pOnTextChange; ///< function that is called when the text of this text box changes
     std::function<void()> pOnReturn;         ///< function that is called when return is pressed

@@ -72,7 +72,7 @@ void BuilderList::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) 
     StaticContainer::handleMouseMovement(x, y, insideOverlay);
 
     if ((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y) && !insideOverlay) {
-        lastMouseMovement = SDL_GetTicks();
+        lastMouseMovement = dune::dune_clock::now();
         lastMousePos.x    = x;
         lastMousePos.y    = y;
     } else {
@@ -344,7 +344,9 @@ void BuilderList::draw(Point position) {
 }
 
 void BuilderList::drawOverlay(Point position) {
-    if (SDL_GetTicks() - lastMouseMovement <= 800)
+    using namespace std::chrono_literals;
+
+    if (dune::dune_clock::now() - lastMouseMovement <= 800ms)
         return;
 
     // Draw tooltip

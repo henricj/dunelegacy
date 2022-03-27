@@ -51,7 +51,7 @@ inline constexpr auto NETWORKPACKET_STARTGAME       = 8;
 inline constexpr auto NETWORKPACKET_COMMANDLIST     = 9;
 inline constexpr auto NETWORKPACKET_SELECTIONLIST   = 10;
 
-inline constexpr auto AWAITING_CONNECTION_TIMEOUT = 5000;
+inline constexpr auto AWAITING_CONNECTION_TIMEOUT = dune::as_dune_clock_duration(5000);
 
 class GameInitSettings;
 
@@ -153,7 +153,9 @@ public:
         Sets the function that should be called when the game is about to start and the time (in ms) left is received
         \param  pOnStartGame    function to call on receive
     */
-    void setOnStartGame(std::function<void(unsigned int)> pOnStartGame) { this->pOnStartGame = pOnStartGame; }
+    void setOnStartGame(std::function<void(dune::dune_clock::duration)> pOnStartGame) {
+        this->pOnStartGame = pOnStartGame;
+    }
 
     /**
         Sets the function that should be called when a command list is received.
@@ -193,12 +195,12 @@ private:
             Connected
         };
 
-        PeerData(ENetPeer* pPeer, PeerState peerState) : pPeer(pPeer), peerState(peerState), timeout(0) { }
+        PeerData(ENetPeer* pPeer, PeerState peerState) : pPeer(pPeer), peerState(peerState) { }
 
         ENetPeer* pPeer;
 
         PeerState peerState;
-        uint32_t timeout;
+        dune::dune_clock::time_point timeout {};
 
         std::string name;
         std::list<ENetPeer*> notYetConnectedPeers;
@@ -224,7 +226,7 @@ private:
     std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList;
     std::function<void(const std::string&, bool, int)> pOnPeerDisconnected;
     std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback;
-    std::function<void(unsigned int)> pOnStartGame;
+    std::function<void(dune::dune_clock::duration)> pOnStartGame;
     std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList;
     std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList;
 

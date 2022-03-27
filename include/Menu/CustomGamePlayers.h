@@ -69,7 +69,7 @@ private:
     void onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum = -1);
     void onChangePlayerDropDownBoxes(bool bInteractive, int boxnum);
     void onClickPlayerDropDownBox(int boxnum);
-    void onStartGame(unsigned int timeLeft);
+    void onStartGame(dune::dune_clock::duration timeLeft);
     void addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house, bool bSelect = false);
     static void removeFromHouseDropDown(DropDownBox& houseDropDownBox, HOUSETYPE house);
 
@@ -145,7 +145,7 @@ private:
     std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
     int numHouses;
     std::vector<HOUSETYPE> boundHousesOnMap;
-    uint32_t startGameTime = 0;
+    dune::dune_clock::time_point startGameTime = dune::dune_clock::time_point::min();
     int brainEqHumanSlot =
         -1; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
     std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>

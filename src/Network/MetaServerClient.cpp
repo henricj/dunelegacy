@@ -83,7 +83,7 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
 
     enqueueMetaServerCommand(
         std::make_unique<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
-    lastAnnounceUpdate = SDL_GetTicks();
+    lastAnnounceUpdate = dune::dune_clock::now();
 }
 
 void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
@@ -91,7 +91,7 @@ void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
         this->numPlayers = numPlayers;
         enqueueMetaServerCommand(
             std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
-        lastAnnounceUpdate = SDL_GetTicks();
+        lastAnnounceUpdate = dune::dune_clock::now();
     }
 }
 
@@ -114,17 +114,17 @@ void MetaServerClient::update() {
     if (pOnGameServerInfoList) {
         // someone is waiting for the list
 
-        if (SDL_GetTicks() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
+        if (dune::dune_clock::now() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
             enqueueMetaServerCommand(std::make_unique<MetaServerList>());
-            lastServerInfoListUpdate = SDL_GetTicks();
+            lastServerInfoListUpdate = dune::dune_clock::now();
         }
     }
 
     if (serverPort != 0) {
-        if (SDL_GetTicks() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
+        if (dune::dune_clock::now() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
             enqueueMetaServerCommand(
                 std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
-            lastAnnounceUpdate = SDL_GetTicks();
+            lastAnnounceUpdate = dune::dune_clock::now();
         }
     }
 

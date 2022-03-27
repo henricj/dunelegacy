@@ -28,8 +28,8 @@
 #include <list>
 #include <string>
 
-#define SERVERLIST_UPDATE_INTERVAL (8 * 1000)
-#define GAMESERVER_UPDATE_INTERVAL (10 * 1000)
+inline constexpr auto SERVERLIST_UPDATE_INTERVAL = dune::as_dune_clock_duration(8 * 1000);
+inline constexpr auto GAMESERVER_UPDATE_INTERVAL = dune::as_dune_clock_duration(10 * 1000);
 
 class MetaServerClient {
 public:
@@ -48,7 +48,7 @@ public:
     */
     void setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)> pOnGameServerInfoList) {
         this->pOnGameServerInfoList = pOnGameServerInfoList;
-        lastServerInfoListUpdate    = 0;
+        lastServerInfoListUpdate    = dune::dune_clock::time_point {};
     }
 
     /**
@@ -113,13 +113,13 @@ private:
                                                    ///< metaServerCommandList
 
     int metaserverErrorCause = 0; ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
-    std::string metaserverError =
-        ""; ///< Set to some string in case a metaserver error occurs (only one error can be pending at once)
+    std::string metaserverError;  ///< Set to some string in case a metaserver error occurs (only one error can be
+                                  ///< pending at once)
     bool bUpdatedGameServerInfoList =
         false; ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to
                ///< false in the main thread (\see sharedDataMutex)
     std::list<GameServerInfo>
-        gameServerInfoList; ///< A list of all available game servers. Writen by the metaserver connection thread and
+        gameServerInfoList; ///< A list of all available game servers. Written by the metaserver connection thread and
                             ///< read by the main thread (\see sharedDataMutex)
 
     SDL_mutex* sharedDataMutex; ///< This mutex must be locked before any shared data structures between the main thread
@@ -129,15 +129,16 @@ private:
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName = ""; ///< The name of the game server
-    int serverPort         = 0;  ///< The port of the game server
-    std::string secret     = ""; ///< The secret used for the metaserver updates
-    std::string mapName    = ""; ///< The name of the map for which a game is currently set up
-    uint8_t numPlayers     = 0;  ///< The current number of players in the currently set up game
-    uint8_t maxPlayers     = 0;  ///< The maximum number of players in the currently set up game
+    std::string serverName; ///< The name of the game server
+    int serverPort = 0;     ///< The port of the game server
+    std::string secret;     ///< The secret used for the metaserver updates
+    std::string mapName;    ///< The name of the map for which a game is currently set up
+    uint8_t numPlayers = 0; ///< The current number of players in the currently set up game
+    uint8_t maxPlayers = 0; ///< The maximum number of players in the currently set up game
 
-    uint32_t lastAnnounceUpdate       = 0; ///< The last time the game was announced
-    uint32_t lastServerInfoListUpdate = 0; ///< The last time the server list was updated by a request to the metaserver
+    dune::dune_clock::time_point lastAnnounceUpdate {}; ///< The last time the game was announced
+    dune::dune_clock::time_point
+        lastServerInfoListUpdate {}; ///< The last time the server list was updated by a request to the metaserver
 
     std::function<void(std::list<GameServerInfo>&)>
         pOnGameServerInfoList;                                ///< Callback for updates to the game server list

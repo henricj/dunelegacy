@@ -436,7 +436,7 @@ CustomGamePlayers::~CustomGamePlayers() {
             std::function<ChangeEventList(const std::string&)>());
         pNetworkManager->setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)>());
         pNetworkManager->setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)>());
-        pNetworkManager->setOnStartGame(std::function<void(unsigned int)>());
+        pNetworkManager->setOnStartGame(std::function<void(dune::dune_clock::duration)>());
 
         if (bServer) {
             try {
@@ -447,16 +447,17 @@ CustomGamePlayers::~CustomGamePlayers() {
 }
 
 void CustomGamePlayers::update() {
-    if (startGameTime > 0) {
-        if (SDL_GetTicks() >= startGameTime) {
-            startGameTime = 0;
+    if (startGameTime > dune::dune_clock::time_point::min()) {
+        const auto now = dune::dune_clock::now();
+        if (now >= startGameTime) {
+            startGameTime = now;
 
             pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
             pNetworkManager->setGetChangeEventListForNewPlayerCallback(
                 std::function<ChangeEventList(const std::string&)>());
             pNetworkManager->setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)>());
             pNetworkManager->setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)>());
-            pNetworkManager->setOnStartGame(std::function<void(unsigned int)>());
+            pNetworkManager->setOnStartGame(std::function<void(dune::dune_clock::duration)>());
 
             if (bServer) {
                 pNetworkManager->stopServer();
@@ -467,11 +468,15 @@ void CustomGamePlayers::update() {
 
             quit(MENU_QUIT_GAME_FINISHED);
         } else {
-            static uint32_t lastSecondLeft = 0;
-            const uint32_t secondsLeft     = (startGameTime - SDL_GetTicks()) / 1000 + 1;
+            using namespace std::chrono_literals;
+
+            static dune::dune_clock::duration lastSecondLeft {};
+            const auto secondsLeft = 1s + (startGameTime - dune::dune_clock::now());
             if (lastSecondLeft != secondsLeft) {
                 lastSecondLeft = secondsLeft;
-                addInfoMessage("Starting game in " + std::to_string(secondsLeft) + "...");
+                addInfoMessage("Starting game in "
+                               + std::to_string(std::chrono::duration_cast<std::chrono::seconds>(secondsLeft).count())
+                               + "...");
             }
         }
     }
@@ -707,9 +712,13 @@ void CustomGamePlayers::onNext() {
         addAllPlayersToGameInitSettings();
 
         if (pNetworkManager != nullptr) {
-            const unsigned int timeLeft = 5000;
-            startGameTime               = SDL_GetTicks() + timeLeft;
-            pNetworkManager->sendStartGame(timeLeft);
+            using namespace std::chrono_literals;
+
+            constexpr auto timeLeft = dune::as_dune_clock_duration(5000);
+
+            startGameTime = dune::dune_clock::now() + timeLeft;
+
+            pNetworkManager->sendStartGame(dune::as_milliseconds(timeLeft));
 
             disableAllDropDownBoxes();
         } else {
@@ -1152,8 +1161,8 @@ void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool b
     }
 }
 
-void CustomGamePlayers::onStartGame(unsigned int timeLeft) {
-    startGameTime = SDL_GetTicks() + timeLeft;
+void CustomGamePlayers::onStartGame(dune::dune_clock::duration timeLeft) {
+    startGameTime = dune::dune_clock::now() + timeLeft;
     disableAllDropDownBoxes();
 }
 
@@ -1161,8 +1170,8 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
     DropDownBox& dropDownBox =
         slot % 2 == 0 ? houseInfo[slot / 2].player1DropDown : houseInfo[slot / 2].player2DropDown;
 
-    std::string oldPlayerName = "";
-    const int oldPlayerType   = dropDownBox.getSelectedEntryIntData();
+    std::string oldPlayerName;
+    const int oldPlayerType = dropDownBox.getSelectedEntryIntData();
     if (oldPlayerType == PLAYER_HUMAN) {
         oldPlayerName = dropDownBox.getSelectedEntry();
     }

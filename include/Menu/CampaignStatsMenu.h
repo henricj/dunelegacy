@@ -38,7 +38,7 @@ public:
     void drawSpecificStuff() override;
 
 private:
-    void doState(int elapsedTime);
+    void doState(dune::dune_clock::duration elapsedTime);
 
     void calculateScore(int level);
 
@@ -97,7 +97,7 @@ private:
     ProgressBar buildingsEnemyProgressBar;
     Label buildingsEnemyLabel;
 
-    int currentStateStartTime       = 0;
+    dune::dune_clock::time_point currentStateStartTime {};
     CampaignStatsState currentState = State_HumanSpice;
 
     int unitsDestroyedByHuman = 0;

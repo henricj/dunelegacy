@@ -27,7 +27,9 @@
 #include <regex>
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
-    : nextSpecialAnimation(SDL_GetTicks() + pGFXManager->random().rand(8000, 20000)), house(newHouse) {
+    : nextSpecialAnimation(dune::dune_clock::now()
+                           + dune::as_dune_clock_duration(pGFXManager->random().rand(8000, 20000))),
+      house(newHouse) {
 
     disableQuiting(true);
 
@@ -168,6 +170,8 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 MentatMenu::~MentatMenu() = default;
 
 void MentatMenu::setText(const std::string& text) {
+    using namespace std::chrono_literals;
+
     const std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
     mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx),
                                            std::sregex_token_iterator());
@@ -181,30 +185,34 @@ void MentatMenu::setText(const std::string& text) {
     textLabel.resize(620, 240);
 
     currentMentatTextIndex = 0;
-    nextMentatTextSwitch   = SDL_GetTicks() + mentatTexts[0].length() * 75 + 1000;
+    nextMentatTextSwitch =
+        dune::dune_clock::now() + dune::as_dune_clock_duration(mentatTexts[0].length()) * 75 + 1000ms;
 }
 
 void MentatMenu::update() {
+    using namespace std::chrono_literals;
+
     // speedup blink of the eye
     eyesAnim.getAnimation()->setFrameRate(eyesAnim.getAnimation()->getCurrentFrameNumber() == MentatEyesClosed ? 4.0
                                                                                                                : 0.5);
 
-    if (SDL_GetTicks() > nextMentatTextSwitch) {
+    if (dune::dune_clock::now() > nextMentatTextSwitch) {
         currentMentatTextIndex++;
 
         std::string text;
         if (currentMentatTextIndex >= static_cast<int>(mentatTexts.size())) {
             onMentatTextFinished();
-            nextMentatTextSwitch = 0xFFFFFFFF;
+            nextMentatTextSwitch = dune::dune_clock::time_point::max();
             text                 = "";
         } else {
             text = mentatTexts[currentMentatTextIndex];
             if (text.empty()) {
                 onMentatTextFinished();
-                nextMentatTextSwitch   = 0xFFFFFFFF;
+                nextMentatTextSwitch   = dune::dune_clock::time_point::max();
                 currentMentatTextIndex = mentatTexts.size();
             } else {
-                nextMentatTextSwitch = SDL_GetTicks() + text.length() * 75 + 1000;
+                nextMentatTextSwitch =
+                    dune::dune_clock::now() + dune::as_dune_clock_duration(text.length()) * 75 + 1000ms;
             }
         }
 
@@ -216,9 +224,10 @@ void MentatMenu::update() {
     }
 
     if (specialAnim.getAnimation() != nullptr && specialAnim.getAnimation()->isFinished()) {
-        if (nextSpecialAnimation < SDL_GetTicks()) {
+        if (nextSpecialAnimation < dune::dune_clock::now()) {
             specialAnim.getAnimation()->setNumLoops(1);
-            nextSpecialAnimation = SDL_GetTicks() + pGFXManager->random().rand(8000, 20000);
+            nextSpecialAnimation =
+                dune::dune_clock::now() + dune::as_dune_clock_duration(pGFXManager->random().rand(8000, 20000));
         }
     }
 
