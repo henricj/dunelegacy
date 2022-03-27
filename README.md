@@ -46,16 +46,19 @@ to request [SDL2](https://www.libsdl.org/)'s DX9 or software renderer, respectiv
 - A texture atlas (sprite-sheet) is created during startup that drastically reduces the number of texture
 switches during rendering.  Some more work needs to be done for it to not fail when faced with an older
 GPU.  To improve startup times, these texture atlases should probably be cached on disk.
-- Screen/windows managment has been changed to allow a window to be used over a Remote Desktop (RDP)
+- Screen/windows management has been changed to allow a window to be used over a Remote Desktop (RDP)
 session.  Disconnecting and reconnecting RDP should no longer cause a hang.
 
 At some point, some of these change might be incorporated into the upstream repository.
 
 ### Known Issues
 
-- The random number generator is different than the one in the official release.
-- Systems with older GPUs may need to use the software renderer (add `Renderer = software` under
-the `[Video]` section in the INI file).
+- The [`xoshiro256**`](https://prng.di.unimi.it/) random number generator is different
+from the one in the official release.  There are also more generator instances used so
+that a change to one part of the code that impacts how many times its generator is
+called will only impact other users of the same generator instance.
+- Systems with older GPUs may need to use the software renderer (add `Renderer = software`
+under the `[Video]` section in the INI file).
 - With all the rendering changes, there are now some glitches that need to be tracked down.
 
 ### Building
@@ -71,7 +74,7 @@ To build from inside Visual Studio, open the "dunelegacy" folder, go to the menu
 current configuration, then select "Build" -> "Build All".  It should be possible to open the
 repository directly by going to "File" -> "Clone Repository..." on the menu.
 
-From the command line (a bit faster, but requries more typing):
+From the command line (a bit faster, but requires more typing):
 
 First open a command prompt with access to CMake (for example, "Developer Command Prompt
 for Visual Studio 2022").  Get a copy of the code repository, along with the submodules:
@@ -101,6 +104,7 @@ ctest
 There should now be a working dunelegacy executable in `out\build\x64-avx2-Release\src`.
 
 To see the full list of CMake presets (from the top level dunelegacy directory):
+
 ```bat
 cmake --list-presets
 ```
@@ -144,9 +148,40 @@ ctest
 
 There should now be a working dunelegacy executable in `out/build/x64-Release/src`.
 
+### Other Platforms
+
+Other platforms may work if the proper
+[vcpkg triplet](https://vcpkg.readthedocs.io/en/latest/users/triplets/) is
+used.  For example, this has worked on FreeBSD 13.  Since the Linux triplet
+is hard-coded in the shell script, copy the list of packages from the
+[script](external/vcpkg/build_vcpkg.sh#L3) and build it like this:
+
+```sh
+external/vcpkg/vcpkg/bootstrap-vcpkg.sh
+external/vcpkg/vcpkg/vcpkg install --triplet x64-freebsd sdl2 sdl2-mixer sdl2-ttf fmt lodepng ms-gsl gtest soxr
+```
+
+With the vcpkg packages built, the dunelegacy executables can be built with:
+
+```sh
+mkdir -p out/build/x64-release
+cd out/build/x64-release
+cmake -G Ninja -DCMAKE_BUILD_TYPE:STRING=Release -DVCPKG_TARGET_TRIPLET:STRING=x64-freebsd -S ../../.. -B .
+cmake --build .
+ctest
+```
+
+If there are linker errors on a BSD platform, check to see if
+`/usr/local/lib` is in the link library search path (e.g., check
+the LIBRARY_PATH environment variable).
+
 ### Notes
 
 Builds for macOS have not been tested, but should be similar to the Linux instructions.
+
+Builds for Linux and other platforms with established package managers should be able
+to resolve their dependencies from those packages managers instead of vcpkg.  Some
+enhancements to the CMake files will be needed to support this.
 
 ---
 
