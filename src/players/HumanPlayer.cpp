@@ -167,7 +167,11 @@ void HumanPlayer::setGroupList(int groupListIndex, const Dune::selected_set_type
 }
 
 void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
-    if (alreadyShownTutorialHints & (1 << itemID)) {
+    // We can only store flags for the itemIDs below 32 in a 32-bit word.
+    // Fortunately, the below switch() is only looking things that do
+    // fit in alreadyShownTutorialHints.  We do a compare to avoid
+    // undefined behavior (and the resulting UBSAN warning).
+    if (itemID > 31 || alreadyShownTutorialHints & (1U << itemID)) {
         return;
     }
 
@@ -280,7 +284,7 @@ void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
         }
     }
 
-    alreadyShownTutorialHints |= (1 << itemID);
+    alreadyShownTutorialHints |= (1U << itemID);
 }
 
 bool HumanPlayer::hasConcreteOfSize(const Coord& concreteSize) const {
