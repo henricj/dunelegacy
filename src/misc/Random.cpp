@@ -7,8 +7,6 @@
 
 #include <digestpp/digestpp.hpp>
 
-const FixPoint Random::rand_scale_ = 1_fix / (0x7fff'ffff & decltype(generator_)::max());
-
 namespace {
 constexpr char master_customization[] = u8R"(
 {
