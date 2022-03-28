@@ -36,97 +36,19 @@ add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 if(DUNE_ASAN)
-    message(STATUS "Enabling ASAN")
-
-    if(DUNE_ASAN_FLAGS)
-        add_compile_definitions(${DUNE_ASAN_FLAGS})
-    endif()
-
-    if(MSVC)
-        add_compile_options(/fsanitize=address)
-    else()
-        set(asan_flags -fsanitize=address -fno-omit-frame-pointer)
-        add_compile_options(${asan_flags})
-        add_link_options(${asan_flags} -lpthread -ldl)
-    endif()
+    include(setup/asan-setup)
 endif()
 
 if(DUNE_UBSAN)
-    if(MSVC)
-        error("UBSAN is not supported")
-    else()
-        message(STATUS "Enabling UBSAN")
-        set(ubsan_flags -fsanitize=undefined -fno-omit-frame-pointer)
-        add_compile_options(${ubsan_flags})
-        add_link_options(${ubsan_flags})
-    endif()
+    include(setup/ubsan-setup)
 endif()
 
 if(WIN32)
-    add_compile_definitions(WIN32_LEAN_AND_MEAN NOMINMAX)
-    add_compile_definitions(NTDDI_VERSION=NTDDI_VISTASP2 _WIN32_WINNT=_WIN32_WINNT_VISTA)
-
-    set(DUNE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>" CACHE STRING "MSVC Runtime")
-    set_property(CACHE DUNE_MSVC_RUNTIME_LIBRARY PROPERTY STRINGS MultiThreaded MultiThreadedDLL MultiThreadedDebug MultiThreadedDLL)
-
-    set(CMAKE_MSVC_RUNTIME_LIBRARY ${DUNE_MSVC_RUNTIME_LIBRARY})
+    include(setup/win32-setup)
 endif()
 
 if(MSVC)
-    set(DUNE_MSVC_FLAGS " /diagnostics:caret /GS /Gy /Gw /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast")
-    string(APPEND DUNE_MSVC_FLAGS " /wd4267")
-
-    set(DUNE_MSVC_DEBUG_FLAGS " /ZI /Ob0 /Od /RTC1 /JMC" CACHE STRING "Debug compiler flags")
-    set(DUNE_MSVC_RELEASE_FLAGS " /Zi /O2 /Ob3 /DNDEBUG" CACHE STRING  "Release compiler flags")
-
-    set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
-    set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
-
-    if(${DUNE_TARGET_ARCHITECTURE} MATCHES "^(x86|x64)$")
-      set(DUNE_TARGET_ARCHITECTURE_EXTENSION "" CACHE STRING "Enable the avx, avx2, or avx512 exensions (avx2 implies avx, avx512 implies avx and avx2")
-      set_property(CACHE DUNE_TARGET_ARCHITECTURE_EXTENSION PROPERTY STRINGS "" avx avx2 avx512)
-
-      if("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx")
-         set(HAVE_AVX ON)
-         message(STATUS "Enabling AVX instructions")
-         string(APPEND DUNE_MSVC_FLAGS " /arch:AVX")
-      elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx2")
-         set(HAVE_AVX2 ON)
-         message(STATUS "Enabling AVX and AVX2 instructions")
-         string(APPEND DUNE_MSVC_FLAGS " /arch:AVX2")
-      elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx512")
-         set(HAVE_AVX512 ON)
-         message(STATUS "Enabling AVX, AVX2, and AVX512 instructions")
-         string(APPEND DUNE_MSVC_FLAGS " /arch:AVX512")
-      elseif (NOT "${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "")
-         message (FATAL_ERROR "Unknown architecture extensions: ${DUNE_TARGET_ARCHITECTURE_EXTENSION}")
-      else()
-         message(STATUS "Using default instructions (SSE2)")
-      endif()
-    endif()
-
-    if(${DUNE_TARGET_ARCHITECTURE} STREQUAL "x86")
-        string(APPEND CMAKE_EXE_LINKER_FLAGS " /LARGEADDRESSAWARE")
-    endif()
-
-    foreach(config ${build_list})
-        string(TOUPPER "${config}" config)
-
-        if(config MATCHES "DEBUG")
-            message(STATUS "Appending Debug build flags")
-            set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
-            set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
-            continue()
-        endif()
-
-        message(STATUS "Appending Release build flags")
-        set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
-        set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
-        string(APPEND CMAKE_EXE_LINKER_FLAGS_${config} " /OPT:REF,ICF=3")
-    endforeach()
-
-    string(APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS})
-    string(APPEND CMAKE_CXX_FLAGS ${DUNE_MSVC_FLAGS})
+    include(setup/msvc-setup)
 endif()
 
 
@@ -225,7 +147,11 @@ add_subdirectory(data)
 install(FILES README DESTINATION .)
 
 # googletest and the #define "new" used for heap debugging don't get along.
-if(NOT DUNE_CRT_HEAP_DEBUG)
+if(DUNE_CRT_HEAP_DEBUG)
+    message(STATUS "Skipping tests")
+else()
+    message(STATUS "Enabling tests")
+
     enable_testing()
 
     add_subdirectory(tests)

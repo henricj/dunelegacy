@@ -1,0 +1,8 @@
+if(MSVC)
+    error("UBSAN is not supported")
+else()
+    message(STATUS "Enabling UBSAN")
+    set(ubsan_flags -fsanitize=undefined -fno-omit-frame-pointer)
+    add_compile_options(${ubsan_flags})
+    add_link_options(${ubsan_flags})
+endif()

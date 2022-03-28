@@ -1,0 +1,56 @@
+message(STATUS "Configuring MSVC")
+
+set(DUNE_MSVC_FLAGS " /diagnostics:caret /GS /Gy /Gw /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast")
+string(APPEND DUNE_MSVC_FLAGS " /wd4267")
+
+set(DUNE_MSVC_DEBUG_FLAGS " /ZI /Ob0 /Od /RTC1 /JMC" CACHE STRING "Debug compiler flags")
+set(DUNE_MSVC_RELEASE_FLAGS " /Zi /O2 /Ob3 /DNDEBUG" CACHE STRING  "Release compiler flags")
+
+set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
+set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
+
+if(${DUNE_TARGET_ARCHITECTURE} MATCHES "^(x86|x64)$")
+    set(DUNE_TARGET_ARCHITECTURE_EXTENSION "" CACHE STRING "Enable the avx, avx2, or avx512 exensions (avx2 implies avx, avx512 implies avx and avx2")
+    set_property(CACHE DUNE_TARGET_ARCHITECTURE_EXTENSION PROPERTY STRINGS "" avx avx2 avx512)
+
+    if("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx")
+        set(HAVE_AVX ON)
+        message(STATUS "Enabling AVX instructions")
+        string(APPEND DUNE_MSVC_FLAGS " /arch:AVX")
+    elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx2")
+        set(HAVE_AVX2 ON)
+        message(STATUS "Enabling AVX and AVX2 instructions")
+        string(APPEND DUNE_MSVC_FLAGS " /arch:AVX2")
+    elseif("${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "avx512")
+        set(HAVE_AVX512 ON)
+        message(STATUS "Enabling AVX, AVX2, and AVX512 instructions")
+        string(APPEND DUNE_MSVC_FLAGS " /arch:AVX512")
+    elseif (NOT "${DUNE_TARGET_ARCHITECTURE_EXTENSION}" STREQUAL "")
+        message (FATAL_ERROR "Unknown architecture extensions: ${DUNE_TARGET_ARCHITECTURE_EXTENSION}")
+    else()
+        message(STATUS "Using default instructions (SSE2)")
+    endif()
+endif()
+
+if(${DUNE_TARGET_ARCHITECTURE} STREQUAL "x86")
+    string(APPEND CMAKE_EXE_LINKER_FLAGS " /LARGEADDRESSAWARE")
+endif()
+
+foreach(config ${build_list})
+    string(TOUPPER "${config}" config)
+
+    if(config MATCHES "DEBUG")
+        message(STATUS "Appending Debug build flags")
+        set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
+        set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_DEBUG_FLAGS}")
+        continue()
+    endif()
+
+    message(STATUS "Appending Release build flags")
+    set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
+    set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
+    string(APPEND CMAKE_EXE_LINKER_FLAGS_${config} " /OPT:REF,ICF=3")
+endforeach()
+
+string(APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS})
+string(APPEND CMAKE_CXX_FLAGS ${DUNE_MSVC_FLAGS})
