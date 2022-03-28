@@ -1,0 +1,9 @@
+add_sources(PLAYERS_SOURCES
+	AIPlayer.cpp
+	CampaignAIPlayer.cpp
+	HumanPlayer.cpp
+	Player.cpp
+	PlayerFactory.cpp
+	QuantBot.cpp
+	SmartBot.cpp
+)

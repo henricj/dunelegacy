@@ -1,0 +1,22 @@
+add_sources(STRUCTURES_SOURCES
+	Barracks.cpp
+	BuilderBase.cpp
+	ConstructionYard.cpp
+	GunTurret.cpp
+	HeavyFactory.cpp
+	HighTechFactory.cpp
+	IX.cpp
+	LightFactory.cpp
+	Palace.cpp
+	Radar.cpp
+	Refinery.cpp
+	RepairYard.cpp
+	RocketTurret.cpp
+	Silo.cpp
+	StarPort.cpp
+	StructureBase.cpp
+	TurretBase.cpp
+	Wall.cpp
+	WindTrap.cpp
+	WOR.cpp
+)

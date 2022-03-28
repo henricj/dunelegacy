@@ -1,0 +1,40 @@
+add_sources(TOP_SOURCES
+	AStarSearch.cpp
+	Bullet.cpp
+	Choam.cpp
+	Command.cpp
+	CommandManager.cpp
+	Explosion.cpp
+	Game.cpp
+	GameInitSettings.cpp
+	GameInterface.cpp
+	globals.cpp
+	House.cpp
+	Map.cpp
+	MapSeed.cpp
+	mmath.cpp
+	ObjectBase.cpp
+	ObjectData.cpp
+	ObjectManager.cpp
+	ObjectPointer.cpp
+	RadarView.cpp
+	sand.cpp
+	ScreenBorder.cpp
+	SoundPlayer.cpp
+	Tile.cpp
+)
+
+include(CutScenes/sources.cmake)
+include(FileClasses/sources.cmake)
+include(fixmath/sources.cmake)
+include(GUI/sources.cmake)
+include(INIMap/sources.cmake)
+include(MapEditor/sources.cmake)
+include(Menu/sources.cmake)
+include(misc/sources.cmake)
+include(Network/sources.cmake)
+include(players/sources.cmake)
+include(Renderer/sources.cmake)
+include(structures/sources.cmake)
+include(Trigger/sources.cmake)
+include(units/sources.cmake)

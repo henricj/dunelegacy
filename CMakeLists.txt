@@ -134,6 +134,8 @@ check_cxx_source_compiles(
     }"
     HAVE_DOUBLE_FROM_CHARS)
 
+include(AddSources)
+
 find_package(Git)
 
 include(GitVersion)

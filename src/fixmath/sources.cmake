@@ -1,0 +1,12 @@
+add_sources(FIX_MATH_SOURCES
+	fix16.c
+	fix16_exp.c
+	fix16_sqrt.c
+	fix16_str.c
+	fix16_trig.c
+	fix32.c
+	fix32_exp.c
+	fix32_sqrt.c
+	fix32_str.c
+	fix32_trig.c
+)

@@ -1,0 +1,26 @@
+add_sources(UNITS_SOURCES
+	AirUnit.cpp
+	Carryall.cpp
+	Devastator.cpp
+	Deviator.cpp
+	Frigate.cpp
+	GroundUnit.cpp
+	Harvester.cpp
+	InfantryBase.cpp
+	Launcher.cpp
+	MCV.cpp
+	Ornithopter.cpp
+	Quad.cpp
+	RaiderTrike.cpp
+	Saboteur.cpp
+	SandWorm.cpp
+	SiegeTank.cpp
+	Soldier.cpp
+	SonicTank.cpp
+	Tank.cpp
+	TankBase.cpp
+	TrackedUnit.cpp
+	Trike.cpp
+	Trooper.cpp
+	UnitBase.cpp
+)
