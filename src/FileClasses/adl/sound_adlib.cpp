@@ -1000,7 +1000,7 @@ void AdlibDriver::setupNote(uint8 rawNote, Channel& channel, bool flag) {
     channel.rawNote = rawNote;
 
     int8 note   = (rawNote & 0x0F) + channel.baseNote;
-    int8 octave = rawNote + channel.baseOctave >> 4 & 0x0F;
+    int8 octave = ((rawNote + channel.baseOctave) >> 4) & 0x0F;
 
     // There are only twelve notes. If we go outside that, we have to
     // adjust the note and octave.
@@ -1374,7 +1374,7 @@ int AdlibDriver::update_jump(uint8*& dataptr, Channel& channel, uint8 value) {
     const int16 add = READ_LE_uint16(dataptr);
     dataptr += 2;
     dataptr += add;
-    if (_syncJumpMask & 1 << &channel - _channels.data())
+    if (_syncJumpMask & (1 << (&channel - _channels.data())))
         channel.lock = true;
     return 0;
 }

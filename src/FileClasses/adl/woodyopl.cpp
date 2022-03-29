@@ -306,7 +306,7 @@ void OPLChipClass::change_decayrate(Bitu regbase, celltype* c) {
     if (decayrate) {
         const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
         c->decaymul      = (fltype)pow(FL2, f * pow(FL2, static_cast<double>(decayrate + (c->toff >> 2))));
-        const Bits steps = decayrate * 4 + c->toff >> 2;
+        const Bits steps = (decayrate * 4 + c->toff) >> 2;
         c->env_step_d    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
         c->decaymul   = 1.0;
@@ -320,7 +320,7 @@ void OPLChipClass::change_releaserate(Bitu regbase, celltype* c) {
     if (releaserate) {
         const auto f     = (fltype)(-7.4493 * decrelconst[c->toff & 3] * recipsamp);
         c->releasemul    = (fltype)pow(FL2, f * pow(FL2, static_cast<double>(releaserate + (c->toff >> 2))));
-        const Bits steps = releaserate * 4 + c->toff >> 2;
+        const Bits steps = (releaserate * 4 + c->toff) >> 2;
         c->env_step_r    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
     } else {
         c->releasemul = 1.0;
