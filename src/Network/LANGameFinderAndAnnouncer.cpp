@@ -17,6 +17,7 @@
 
 #include <Network/LANGameFinderAndAnnouncer.h>
 
+#include <misc/dune_clock.h>
 #include <misc/exceptions.h>
 
 #include <config.h>

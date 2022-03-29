@@ -1612,8 +1612,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     }
 
     // read map size
-    const short mapSizeX = stream.readUint32();
-    const short mapSizeY = stream.readUint32();
+    const short mapSizeX = static_cast<short>(stream.readUint32());
+    const short mapSizeY = static_cast<short>(stream.readUint32());
 
     // create the new map
     map            = std::make_unique<Map>(*this, mapSizeX, mapSizeY);
