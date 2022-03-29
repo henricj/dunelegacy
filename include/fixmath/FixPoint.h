@@ -23,6 +23,8 @@
 typedef FixPoint32 FixPoint;
 
 inline constexpr auto FixPt_MAX   = FixPt32_MAX;
+inline constexpr auto FixPt_MIN   = FixPt32_MIN;
+inline constexpr auto FixPt_ZERO  = FixPt32_ZERO;
 inline constexpr auto FixPt_PI    = FixPt32_PI;
 inline constexpr auto FixPt_E     = FixPt32_E;
 inline constexpr auto FixPt_SQRT2 = FixPt32_SQRT2;

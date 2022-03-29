@@ -236,6 +236,8 @@ private:
 };
 
 inline constexpr auto FixPt32_MAX{FixPoint32::FromRawValue(fix32_maximum)};
+inline constexpr auto FixPt32_MIN{FixPoint32::FromRawValue(fix32_minimum)};
+inline constexpr auto FixPt32_ZERO{FixPoint32::FromRawValue(fix32_zero)};
 inline constexpr auto FixPt32_PI{FixPoint32::FromRawValue(fix32_pi)};
 inline constexpr auto FixPt32_E{FixPoint32::FromRawValue(fix32_e)};
 inline constexpr auto FixPt32_SQRT2{FixPoint32::FromRawValue(0x000000016A09E668LL)};

@@ -32,6 +32,7 @@ static const fix32_t fix32_THREE_PI_DIV_4          = 0x000000025B2F8FE6ULL; /*!<
 
 static const fix32_t fix32_maximum = 0x7FFFFFFFFFFFFFFFULL; /*!< the maximum value of fix32_t */
 static const fix32_t fix32_minimum = 0x8000000000000000ULL; /*!< the minimum value of fix32_t */
+static const fix32_t fix32_zero    = 0x0000000000000000ULL; /*!< the zero value of fix32_t */
 static const fix32_t fix32_overflow =
     0x8000000000000000ULL; /*!< the value used to indicate overflows when FIXMATH_NO_OVERFLOW is not specified */
 
