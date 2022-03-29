@@ -1250,9 +1250,9 @@ void Game::runMainLoop(const GameContext& context) {
 
     lastTargetGameCycleTime = gameStart;
 
-    SDL_Event event;
+    auto previousFrameStart = gameStart;
 
-    const auto performanceScaleMs = 1000.0f / SDL_GetPerformanceFrequency();
+    SDL_Event event;
 
     // sdl2::log_info("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
@@ -1262,6 +1262,14 @@ void Game::runMainLoop(const GameContext& context) {
 
         const auto frameStart = now;
 
+        const auto frameElapsed = frameStart - previousFrameStart;
+
+        previousFrameStart = frameStart;
+
+        if (bShowFPS) {
+            averageFrameTime = 0.97f * averageFrameTime + 0.03f * dune::as_milliseconds<float>(frameElapsed);
+        }
+
         if (finished && !bPause) {
             // end timer for the ending message
             if (now - finishedLevelTime > END_WAIT_TIME) {
@@ -1269,7 +1277,7 @@ void Game::runMainLoop(const GameContext& context) {
             }
         }
 
-        const auto renderStart = SDL_GetPerformanceCounter();
+        const auto renderStart = dune::dune_clock::now();
 
         // clear whole screen
         SDL_SetRenderDrawColor(renderer, 100, 50, 0, 255);
@@ -1286,10 +1294,10 @@ void Game::runMainLoop(const GameContext& context) {
 
         updateFullscreen();
 
-        const auto renderElapsed = SDL_GetPerformanceCounter() - renderStart;
+        const auto renderElapsed = dune::dune_clock::now() - renderStart;
 
         if (bShowFPS) {
-            averageRenderTime = 0.97f * averageRenderTime + 0.03f * performanceScaleMs * renderElapsed;
+            averageRenderTime = 0.97f * (averageRenderTime) + 0.03f * dune::as_milliseconds<float>(renderElapsed);
         }
 
         numFrames++;
@@ -1354,14 +1362,14 @@ void Game::runMainLoop(const GameContext& context) {
             if (targetGameCycle - gameCycleCount > 250)
                 targetGameCycle = gameCycleCount;
 
-            const auto updateStart = SDL_GetPerformanceCounter();
+            const auto updateStart = dune::dune_clock::now();
 
             updateGame(context);
 
-            const auto updateElapsed = SDL_GetPerformanceCounter() - updateStart;
+            const auto updateElapsed = dune::dune_clock::now() - updateStart;
 
             if (bShowFPS) {
-                averageUpdateTime = 0.97f * averageUpdateTime + 0.03f * performanceScaleMs * updateElapsed;
+                averageUpdateTime = 0.97f * averageUpdateTime + 0.03f * dune::as_milliseconds<float>(updateElapsed);
             }
 
             if (takePeriodicScreenshots && ((gameCycleCount % (MILLI2CYCLES(10 * 1000))) == 0)) {
@@ -1377,20 +1385,22 @@ void Game::runMainLoop(const GameContext& context) {
         while (SDL_PollEvent(&event))
             doInput(context, event);
 
-        if (bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
-            const auto until = frameStart + (settings.video.frameLimit ? 16ms : 5ms);
-
-            doEventsUntil(context, until);
-        }
-
         musicPlayer->musicCheck(); // if song has finished, start playing next one
 
-        now = dune::dune_clock::now();
+        if (bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
+            const auto until = (settings.video.frameLimit ? 16ms : 5ms) + frameStart;
 
-        const auto frameElapsed = now - frameStart;
+            const auto start = dune::dune_clock::now();
 
-        if (bShowFPS) {
-            averageFrameTime = 0.97f * averageFrameTime + 0.03f * dune::as_milliseconds<float>(frameElapsed);
+            doEventsUntil(context, until);
+
+            const auto stop    = dune::dune_clock::now();
+            const auto elapsed = stop - start;
+
+            if (stop > until + 50ms) {
+                static auto count = 0;
+                ++count;
+            }
         }
     } while (!bQuitGame && !finishedLevel); // not sure if we need this extra bool
 
