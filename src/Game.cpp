@@ -34,6 +34,7 @@
 #include <misc/OFileStream.h>
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
+#include <misc/dune_timer_resolution.h>
 #include <misc/dune_wait_event.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
@@ -1125,6 +1126,7 @@ void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::tim
     }
 }
 
+
 void Game::runMainLoop(const GameContext& context) {
     using namespace std::chrono_literals;
 
@@ -1255,6 +1257,8 @@ void Game::runMainLoop(const GameContext& context) {
     SDL_Event event;
 
     // sdl2::log_info("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
+
+    dune::DuneTimerResolution timer_handle;
 
     // main game loop
     do {

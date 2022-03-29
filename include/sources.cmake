@@ -173,6 +173,7 @@ add_sources(HEADERS
 	misc/dune_clock.h
 	misc/dune_endian.h
 	misc/dune_localtime.h
+	misc/dune_timer_resolution.h
 	misc/dune_wait_event.h
 	misc/exceptions.h
 	misc/FileSystem.h
