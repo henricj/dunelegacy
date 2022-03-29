@@ -65,9 +65,7 @@ void Map::load(InputStream& stream) {
         tile.load(stream);
 
     auto state = stream.readUint8Vector();
-    if (state.size() != decltype(random_)::state_bytes)
-        THROW(std::runtime_error, "Random state size mismatch!");
-    random_.setState(gsl::span<const uint8_t, Random::state_bytes>{state});
+    random_.setState(state);
 
     init_tile_location();
 }

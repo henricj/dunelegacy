@@ -129,13 +129,13 @@ std::array<uint8_t, Random::state_bytes> Random::getState() const {
     return state;
 }
 
-void Random::setState(const gsl::span<const uint8_t, state_bytes> state) {
+void Random::setState(const gsl::span<const uint8_t> state) {
     sdl2::log_info("Setting state %s", to_hex(state));
 
     set_generator_state(generator_, state);
 }
 
-void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state) {
+void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t> state) {
     std::array<generator_type::state_type, generator_type::state_words> words;
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
@@ -146,7 +146,7 @@ void Random::set_generator_state(generator_type& generator, gsl::span<const uint
         generator_type::state_type n = 0;
         for (auto i = 0u; i < sizeof(decltype(n)); ++i) {
             if (it == state.end())
-                THROW(std::runtime_error, "Invalid state buffer");
+                break;
 
             n <<= 8;
             n |= *it++;
@@ -155,7 +155,10 @@ void Random::set_generator_state(generator_type& generator, gsl::span<const uint
         word = n;
     }
 
-    generator.set_state(words);
+    gsl::span<generator_type::state_type> state_words =
+        it != state.end() ? gsl::span{words}.subspan(0, it - state.begin()) : words;
+
+    generator.set_state(state_words);
 }
 
 void Random::get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state) {

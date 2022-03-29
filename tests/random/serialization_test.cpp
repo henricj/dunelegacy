@@ -33,27 +33,27 @@ Random create_random(int n)
 TEST(rng_serialization, one) {
     auto rng = create_random(1);
 
-    EXPECT_EQ(0xbc52e8c6, rng.rand());
-    EXPECT_EQ(0x61f88f25, rng.rand());
+    EXPECT_EQ(0x05060708, rng.rand());
+    EXPECT_EQ(0x71079d7a, rng.rand());
 
     for(auto i = 0; i < 1000; ++i)
         rng.rand();
 
-    EXPECT_EQ(0x492339af, rng.rand());
-    EXPECT_EQ(0xd8a622fb, rng.rand());
+    EXPECT_EQ(0x9d600872, rng.rand());
+    EXPECT_EQ(0xbefb0991, rng.rand());
 }
 
 TEST(rng_serialization, two) {
     auto rng = create_random(2);
 
-    EXPECT_EQ(0x52e97f61, rng.rand());
-    EXPECT_EQ(0xf88f25bc, rng.rand());
+    EXPECT_EQ(0x06070809, rng.rand());
+    EXPECT_EQ(0x079e3415, rng.rand());
 
     for(auto i = 0; i < 1000; ++i)
         rng.rand();
 
-    EXPECT_EQ(0xcd3d3b46, rng.rand());
-    EXPECT_EQ(0x3e348ece, rng.rand());
+    EXPECT_EQ(0x82c5ad72, rng.rand());
+    EXPECT_EQ(0x62e18074, rng.rand());
 }
 
 TEST(rng_serialization, copy) {

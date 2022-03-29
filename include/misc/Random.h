@@ -49,7 +49,7 @@ public:
     /// Destructor
     ~Random() = default;
 
-    static Random create(gsl::span<const uint8_t, state_bytes> state) {
+    static Random create(gsl::span<const uint8_t> state) {
         generator_type generator;
 
         set_generator_state(generator, state);
@@ -61,7 +61,7 @@ public:
         Sets the generator state to state
         \param state  the new state value
     */
-    void setState(gsl::span<const uint8_t, state_bytes> state);
+    void setState(gsl::span<const uint8_t> state);
 
     /**
         Returns the current generator state.
@@ -129,7 +129,7 @@ public:
     }
 
 private:
-    static void set_generator_state(generator_type& generator, gsl::span<const uint8_t, state_bytes> state);
+    static void set_generator_state(generator_type& generator, gsl::span<const uint8_t> state);
     static void get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state);
 
     generator_type generator_;
