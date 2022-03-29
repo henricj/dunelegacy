@@ -10,8 +10,8 @@ using namespace std;
 
 template<typename Generator>
 class uint64_to_uint32 {
-    static_assert(Generator::min() == std::numeric_limits<uint64_t>::min() &&
-                  Generator::max() == std::numeric_limits<uint64_t>::max());
+    static_assert(Generator::min() == std::numeric_limits<uint64_t>::min()
+                  && Generator::max() == std::numeric_limits<uint64_t>::max());
 
 public:
     typedef uint32_t result_type;
@@ -30,7 +30,7 @@ public:
     static constexpr result_type max() { return numeric_limits<result_type>::max(); }
 
     result_type operator()() {
-        if(have_pending_) {
+        if (have_pending_) {
             have_pending_ = false;
             return pending_;
         }
@@ -59,9 +59,9 @@ public:
     }
 
 private:
-    Generator   generator_;
+    Generator generator_;
     result_type pending_;
-    bool        have_pending_{};
+    bool have_pending_{};
 };
 
 } // namespace ExtraGenerators

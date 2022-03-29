@@ -22,7 +22,6 @@
 
 #include <string>
 
-
 /**
     Return an appropriate factor between logical and physical resolution.
     \param  physicalWidth   the physical width of the display
@@ -68,7 +67,7 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
 /**
     This function is used by SDL to write out log messages
 */
-void logOutputFunction(void *userdata, int category, SDL_LogPriority priority, const char *message);
+void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message);
 
 /**
     This function shows a list of missing pak-files in a message box.
@@ -82,4 +81,4 @@ void showMissingFilesMessageBox();
 */
 std::string getUserLanguage();
 
-#endif //MAIN_H
+#endif // MAIN_H

@@ -13,16 +13,16 @@ inline std::string string_error(int errnum) {
 #endif
 
 #if HAVE_STRERROR_S
-    if(const auto error = strerror_s(buffer.data(), buffer.size(), errnum); 0 == error)
+    if (const auto error = strerror_s(buffer.data(), buffer.size(), errnum); 0 == error)
         return buffer.data();
 #elif HAVE_STRERROR_R
-    if(const auto error = strerror_r(errnum, buffer.data(), buffer.size()); 0 == error)
+    if (const auto error = strerror_r(errnum, buffer.data(), buffer.size()); 0 == error)
         return buffer.data();
 #elif HAVE_GNU_STRERROR_R
-    if(const auto* error_string = strerror_r(errnum, buffer.data(), buffer.size()))
+    if (const auto* error_string = strerror_r(errnum, buffer.data(), buffer.size()))
         return error_string;
 #else
-    if(const auto* error_string = strerror(errnum))
+    if (const auto* error_string = strerror(errnum))
         return error_string;
 #endif
 
