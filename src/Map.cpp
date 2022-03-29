@@ -283,7 +283,6 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
 **/
 
 bool Map::isAStructureGap(const GameContext& context, int x, int y, int buildingSizeX, int buildingSizeY) const {
-
     // Spacing rules don't apply for rocket turrets
     if (buildingSizeX == 1) {
         return true;
@@ -505,12 +504,11 @@ void Map::removeObjectFromMap(uint32_t objectID) {
 }
 
 void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int realX, int realY, bool objectARGMode) {
-
     ObjectBase* lastCheckedObject  = nullptr;
     ObjectBase* lastSelectedObject = nullptr;
 
-    // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from the
-    // selected group of units
+    // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from
+    // the selected group of units
     if (!objectARGMode) {
         currentGame->unselectAll(currentGame->getSelectedList());
         currentGame->getSelectedList().clear();
@@ -590,7 +588,6 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
 }
 
 bool Map::findSpice(Coord& destination, const Coord& origin) {
-
     return search_all_by_box_edge(origin.x, origin.y, random_, [&](const Tile& t) {
         if (t.hasAGroundObject() || !t.hasSpice())
             return SearchResult::NotDone;
@@ -605,7 +602,6 @@ bool Map::findSpice(Coord& destination, const Coord& origin) {
     \param coord    the coordinate where spice was removed from
 */
 void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
-
     auto* const pCenterTile = tryGetTile(coord.x, coord.y);
 
     if (!pCenterTile || pCenterTile->getType() != Terrain_Sand)
@@ -620,7 +616,6 @@ void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
 }
 
 void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRange) {
-
     // makes map viewable in an area like as shown below
     //
     //                     *
@@ -651,7 +646,6 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
     \param  centerIsThickSpice  if set the center is filled with thick spice
 */
 void Map::createSpiceField(const GameContext& context, Coord location, int radius, bool centerIsThickSpice) {
-
     for_each_filter(
         location.x - radius, location.y - radius, location.x + radius, location.y + radius,
         [&](int x, int y) {

@@ -35,6 +35,7 @@
 #include <misc/OFileStream.h>
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
+#include <misc/dune_wait_event.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
 #include <misc/md5.h>
@@ -1108,7 +1109,12 @@ void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::tim
         if (remaining <= dune::dune_clock::duration::zero() || remaining >= 100ms)
             return;
 
-        if (SDL_WaitEventTimeout(&event, dune::as_milliseconds<int>(remaining))) {
+        const auto timeout = dune::as_milliseconds<int>(remaining);
+
+        if (timeout < 1)
+            return;
+
+        if (dune::Dune_WaitEvent(&event, timeout)) {
             doInput(context, event);
 
             while (SDL_PollEvent(&event)) {
