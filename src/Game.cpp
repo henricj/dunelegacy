@@ -28,7 +28,6 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <SoundPlayer.h>
-#include <fmt/format.h>
 #include <misc/FileSystem.h>
 #include <misc/IFileStream.h>
 #include <misc/IMemoryStream.h>
@@ -66,6 +65,8 @@
 #include <units/Harvester.h>
 #include <units/InfantryBase.h>
 #include <units/UnitBase.h>
+
+#include <fmt/format.h>
 
 #include <algorithm>
 #include <iomanip>
@@ -1585,8 +1586,8 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     std::string duneVersion = stream.readString();
 
-    // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with the
-    // settings saved in the savegame
+    // if this is a multiplayer load we need to save some information before we overwrite gameInitSettings with
+    // the settings saved in the savegame
     const bool bMultiplayerLoad = (gameInitSettings.getGameType() == GameType::LoadMultiplayer);
     const GameInitSettings::HouseInfoList oldHouseInfoList = gameInitSettings.getHouseInfoList();
 
@@ -1648,7 +1649,8 @@ bool Game::loadSaveGame(InputStream& stream) {
 
                                 auto* const pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get());
                                 if (pHumanPlayer) {
-                                    // we have actually found a human player and now assign the first unused name to it
+                                    // we have actually found a human player and now assign the first unused
+                                    // name to it
                                     unregisterPlayer(pHumanPlayer);
                                     pHumanPlayer->setPlayername(playerInfo.playerName);
                                     registerPlayer(pHumanPlayer);
@@ -2464,8 +2466,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner(), true)) {
         // then we try to move all units outside the building area
 
-        // generate a independent temporal random number generator as we are in input handling code (and outside game
-        // logic code)
+        // generate a independent temporal random number generator as we are in input handling code (and outside
+        // game logic code)
 
         auto& uiRandom = pGFXManager->random();
 

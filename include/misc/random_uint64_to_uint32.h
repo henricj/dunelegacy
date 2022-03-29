@@ -26,7 +26,7 @@ private:
 
 public:
     static inline constexpr size_t state_words = Generator::state_words + local_state_words;
-    using state_type = typename Generator::state_type;
+    using state_type                           = typename Generator::state_type;
 
     uint64_to_uint32() = default;
     explicit uint64_to_uint32(unsigned int seed) : generator_{seed} { }
