@@ -8,6 +8,8 @@ jobs:
   build:
     runs-on: windows-2022
 
+    outputs:
+      is_release: ${{ steps.export.outputs.is_release }}
     strategy:
       #fail-fast: false
       matrix:
@@ -38,6 +40,7 @@ jobs:
       #  run: choco install --yes ninja
 
       - name: Export Environment
+        id: export
         run: |
           function Export-WorkflowValue ([string]$name, [string]$value) {
             Write-Output "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -47,6 +50,11 @@ jobs:
             Export-WorkflowValue $name $value
             Return $value
           }
+          function Export-OutputValue ([string]$name, [string]$value) {
+            Write-Output "::set-output name=$name::$value"
+          }
+          $is_release = $Env:GITHUB_REF -match '^refs/tags/v\d+\.\d+\.\d+\w*-\d+\.\d+\.\d+$'
+          Export-OutputValue 'is_release' $is_release
           $platform = '${{matrix.platform}}${{matrix.name_postfix}}'
           $root = (Resolve-Path -LiteralPath $Env:GITHUB_WORKSPACE).Path
           $source = (Resolve-Path -LiteralPath (Join-Path $root -ChildPath 'source')).Path
@@ -66,6 +74,7 @@ jobs:
           Export-WorkflowValue 'PROJECT_GIT_DESCRIBE_MASTER' $git_describe_master
           Export-WorkflowValue 'PROJECT_SOURCE' $source
           $build = New-NormalizedDirectory 'PROJECT_BUILD' (Join-Path $root -ChildPath "build\Release-$platform" )
+          $build_relative_unix = "build/Release-$platform"
           Export-WorkflowValue 'PROJECT_TOOLS' (Join-Path $root -ChildPath 'tools')
           Export-WorkflowValue 'PROJECT_TOOLS_TMP' (Join-Path $root -ChildPath 'tools.tmp')
           $output_name = "dunelegacy-$platform-$git_describe"
@@ -74,6 +83,7 @@ jobs:
           $exe_zip_name =   'Setup-' + $output_name + '.zip'
           Export-WorkflowValue 'PROJECT_OUTPUT_NAME' $output_name
           Export-WorkflowValue 'PROJECT_ZIP' (Join-Path $build -ChildPath $zip_name)
+          Export-WorkflowValue 'PROJECT_ZIP_RELATIVE_UNIX' ($build_relative_unix + "/" + $zip_name)
           Export-WorkflowValue 'PROJECT_ZIP_NAME' $zip_name
           Export-WorkflowValue 'PROJECT_MSI' (Join-Path $build -ChildPath ($output_name + '.msi'))
           Export-WorkflowValue 'PROJECT_MSI_ZIP' (Join-Path $build -ChildPath $msi_zip_name)
@@ -127,34 +137,34 @@ jobs:
           name: Setup ${{env.PROJECT_OUTPUT_NAME}}
           path: ${{env.PROJECT_INSTALLER}}
 
-      - name: Prepare for release
-        if: contains(github.ref, 'modernize')
-        shell: cmd
-        run: |
-          cd "%PROJECT_SOURCE%"
-          git tag -d "%PROJECT_LATEST_TAG%"
-          git push -d origin "%PROJECT_LATEST_TAG%"
-          exit 0
-
       - name: Create Release
-        id: create_release
         if: contains(github.ref, 'modernize')
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
-          tag_name: ${{env.PROJECT_LATEST_TAG}}
-          release_name: ${{env.PROJECT_OUTPUT_NAME}}
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{env.PROJECT_LATEST_TAG}}
+          title: ${{env.PROJECT_OUTPUT_NAME}}
           draft: false
           prerelease: true
+          files: |
+            ${{env.PROJECT_ZIP_RELATIVE_UNIX}}
 
-      - name: Upload Release ZIP
-        if: contains(github.ref, 'modernize')
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    needs: build
+    if: needs.build.outputs.is_release == 'True'
+    runs-on: windows-2022
+
+    steps:
+      - name: Collect artifacts
+        uses: actions/download-artifact@v3
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{env.PROJECT_ZIP}}
-          asset_name: ${{env.PROJECT_ZIP_NAME}}
-          asset_content_type: application/zip
+          path: .
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            **/*.zip
+          draft: true
+          prerelease: false
+
