@@ -79,8 +79,6 @@ jobs:
     #- run: |
     #   make bootstrap
     #   make release
-    - name: vcpkg
-      run: external/vcpkg/build_vcpkg.sh
 
     - name: Build
       uses: ashutoshvarma/action-cmake-build@master

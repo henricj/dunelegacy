@@ -2,17 +2,7 @@ cmake_minimum_required(VERSION 3.16..3.22)
 
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
 
-if(NOT DEFINED VCPKG_TARGET_TRIPLET)
-    if(DEFINED ENV{VCPKG_DEFAULT_TRIPLET})
-        set(VCPKG_TARGET_TRIPLET "$ENV{VCPKG_DEFAULT_TRIPLET}" CACHE STRING "")
-    else()
-        set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
-    endif()
-endif()
-
-if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/external/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-endif()
+include(cmake/vcpkg-configuration.cmake)
 
 project(dunelegacy VERSION 0.96.4)
 

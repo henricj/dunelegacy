@@ -97,12 +97,6 @@ jobs:
           $vsdevcmd_path = (Resolve-Path -LiteralPath (Join-Path $vs.InstallationPath -ChildPath 'Common7/Tools/VsDevCmd.bat')).Path
           Export-WorkflowValue 'VSDEVCMD_PATH' $vsdevcmd_path
 
-      - name: vcpkg
-        shell: cmd
-        run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
-          source\external\vcpkg\build_vcpkg.bat --triplet %PROJECT_VCPKG_TRIPLET%
-
       - name: Compile
         shell: cmd
         run: |

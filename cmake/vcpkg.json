@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "dunelegacy",
+  "version": "0.96.4",
+  "dependencies": [
+    "sdl2",
+    "sdl2-mixer",
+    "sdl2-ttf",
+    "fmt",
+    "lodepng",
+    "ms-gsl",
+    "gtest",
+    "soxr"
+  ],
+  "builtin-baseline": "3048b9ab12f8fd4a3bc3edbdbc4070fc7d95c00b"
+}

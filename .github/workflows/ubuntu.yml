@@ -21,9 +21,6 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: vcpkg
-        run: external/vcpkg/build_vcpkg.sh
-
       - name: Build
         uses: ashutoshvarma/action-cmake-build@master
         with:
