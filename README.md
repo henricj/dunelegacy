@@ -69,9 +69,8 @@ Install Visual Studio 2022 including the "Desktop development with C++" workload
 to the "Individual Components" of the installer to make sure "C++ CMake tools for Windows" is
 enabled (enable clang as well to enable builds with "clang-cl").
 
-To build from inside Visual Studio, open the "dunelegacy" folder, go to the menu to select
-"Project" -> "CMake Settings for dunelegacy", and create a release configuration, set it as the
-current configuration, then select "Build" -> "Build All".  It should be possible to open the
+To build from inside Visual Studio, open the "dunelegacy" folder, select a configuration,
+then then select "Build" -> "Build All".  It should be possible to open the
 repository directly by going to "File" -> "Clone Repository..." on the menu.
 
 From the command line (a bit faster, but requires more typing):
@@ -82,12 +81,6 @@ for Visual Studio 2022").  Get a copy of the code repository, along with the sub
 ```bat
 git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
-```
-
-Build the vcpkg packages,
-
-```bat
-external\vcpkg\build_vcpkg.bat
 ```
 
 Configure CMake's build folder, compile the source, and run the tests (alas, there are far
@@ -119,12 +112,6 @@ git clone --recurse-submodules -j 8 https://github.com/henricj/dunelegacy.git
 cd dunelegacy
 ```
 
-Build the vcpkg packages,
-
-```sh
-external/vcpkg/build_vcpkg.sh
-```
-
 Configure CMake's build folder, compile the source, and run the tests (alas, there are far
 too few tests):
 
@@ -146,22 +133,13 @@ cmake --build .
 ctest
 ```
 
-There should now be a working dunelegacy executable in `out/build/x64-Release/src`.
+There should now be a working dunelegacy executable in `out/build/linux-release/src`.
 
 ### Other Platforms
 
 Other platforms may work if the proper
 [vcpkg triplet](https://vcpkg.readthedocs.io/en/latest/users/triplets/) is
-used.  For example, this has worked on FreeBSD 13.  Since the Linux triplet
-is hard-coded in the shell script, copy the list of packages from the
-[script](external/vcpkg/build_vcpkg.sh#L3) and build it like this:
-
-```sh
-external/vcpkg/vcpkg/bootstrap-vcpkg.sh
-external/vcpkg/vcpkg/vcpkg install --triplet x64-freebsd sdl2 sdl2-mixer sdl2-ttf fmt lodepng ms-gsl gtest soxr
-```
-
-With the vcpkg packages built, the dunelegacy executables can be built with:
+available.  For example, this has worked on FreeBSD 13.
 
 ```sh
 mkdir -p out/build/x64-release
