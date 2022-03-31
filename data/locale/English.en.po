@@ -2,12 +2,12 @@
 # Copyright (C) 2012 THE dunelegacy'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the dunelegacy package.
 # Richard Schaller <richard.schaller@gmx.de>, 2012.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-01 00:56+0200\n"
+"POT-Creation-Date: 2022-03-31 16:01-0700\n"
 "PO-Revision-Date: 2012-08-31 01:41+0200\n"
 "Last-Translator: Richard Schaller <richard.schaller@gmx.de>\n"
 "Language-Team: English <>\n"
@@ -17,22 +17,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: src/CutScenes/Finale.cpp:145 src/CutScenes/Intro.cpp:169
-#: src/CutScenes/Meanwhile.cpp:56 src/FileClasses/GFXManager.cpp:88
-#: src/FileClasses/GFXManager.cpp:89 src/FileClasses/GFXManager.cpp:93
-#: src/FileClasses/GFXManager.cpp:97 src/FileClasses/GFXManager.cpp:98
-#: src/FileClasses/GFXManager.cpp:105 src/FileClasses/GFXManager.cpp:106
-#: src/FileClasses/GFXManager.cpp:663 src/FileClasses/GFXManager.cpp:664
-#: src/FileClasses/PictureFactory.cpp:198
-#: src/FileClasses/PictureFactory.cpp:199 src/FileClasses/TextManager.cpp:34
-#: src/FileClasses/TextManager.cpp:35 src/FileClasses/TextManager.cpp:36
-#: src/FileClasses/TextManager.cpp:37 src/FileClasses/TextManager.cpp:41
-#: src/FileClasses/TextManager.cpp:42 src/FileClasses/TextManager.cpp:43
-#: src/main.cpp:510 src/Menu/MapChoice.cpp:429
+#. / GROUP1 / GERTXT 6: Add space after TXT
+#: src\CutScenes\Finale.cpp:96 src\CutScenes\Intro.cpp:63
+#: src\CutScenes\Meanwhile.cpp:47 src\FileClasses\PictureFactory.cpp:199
+#: src\FileClasses\PictureFactory.cpp:201 src\FileClasses\SurfaceLoader.cpp:233
+#: src\FileClasses\SurfaceLoader.cpp:234 src\FileClasses\SurfaceLoader.cpp:239
+#: src\FileClasses\SurfaceLoader.cpp:243 src\FileClasses\SurfaceLoader.cpp:244
+#: src\FileClasses\SurfaceLoader.cpp:251 src\FileClasses\SurfaceLoader.cpp:252
+#: src\FileClasses\SurfaceLoader.cpp:738 src\FileClasses\SurfaceLoader.cpp:739
+#: src\FileClasses\TextManager.cpp:69 src\Menu\MapChoice.cpp:460
+#: src\Menu\MapChoice.cpp:464 src\main.cpp:683
+#, c-format
 msgid "LanguageFileExtension"
 msgstr "ENG"
 
-#: src/FileClasses/FileManager.cpp:105
+#: src\FileClasses\FileManager.cpp:87
 msgid "LanguagePakFiles"
 msgstr "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK"
-
