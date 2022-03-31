@@ -3,9 +3,6 @@ cmake_minimum_required(VERSION 3.16)
 include(sources.cmake)
 include(../include/sources.cmake)
 
-set(EXE_SOURCES main.cpp)
-set(EXE_HEADERS ../include/main.h)
-
 set(SOURCES
 	${TOP_SOURCES}
 	${CUT_SCENES_SOURCES}

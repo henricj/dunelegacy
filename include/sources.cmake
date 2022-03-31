@@ -284,3 +284,5 @@ add_sources(HEADERS
 	units/Trooper.h
 	units/UnitBase.h
 )
+
+add_sources(EXE_HEADERS main.h)

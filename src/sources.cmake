@@ -38,3 +38,5 @@ include(Renderer/sources.cmake)
 include(structures/sources.cmake)
 include(Trigger/sources.cmake)
 include(units/sources.cmake)
+
+add_sources(EXE_SOURCES main.cpp)
