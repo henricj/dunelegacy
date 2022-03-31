@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 include(sources.cmake)
 include(../include/sources.cmake)
 
@@ -153,35 +155,5 @@ add_custom_target(
 		${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+include(locale-update)
 
-find_package(Gettext)
-
-if(FOUND_GETTEXT)
-	if(GETTEXT_XGETTEXT_EXECUTABLE)
-	else()
-		get_filename_component(GETTEXT_DIR GETTEXT_MSGFMT_EXECUTABLE DIRECTORY)
-		find_program(GETTEXT_XGETTEXT_EXECUTABLE HINT ${GETTEXT_MSGFMT_EXECUTABLE})
-	endif()
-
-	if(GETTEXT_XGETTEXT_EXECUTABLE)
-		message(STATUS "Adding regenerate_pot_filter target")
-
-		set(_potFile ${CMAKE_CURRENT_SOURCE_DIR}../data/locale/dunelegacy.pot)
-		file(TO_CMAKE_PATH ${_potFile} _potFile)
-		file(TO_NATIVE_PATH ${_potFile} _potFileNative)
-
-		set(XGETTEXT_OPTIONS "")
-		set(XGETTEXT_SORUCES ${SOURCES} ${EXE_SOURCES} ${HEADERS} ${EXE_HEADERS})
-
-		add_custom_command(OUTPUT ${_potFile}
-			COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} ${XGETTEXT_OPTIONS} -o ${_potFileNative} ${XGETTEXT_SORUCES}
-			DEPENDS ${XGETTEXT_SORUCES}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			COMMENT "Regenerate ${_potFile}"
-		)
-
-		add_custom_target(regenerate_pot_file DEPENDS ${_potFile})
-	else()
-		message(WARNING "Unable to add regenerate_pot_filter target")
-	endif()
-endif()
