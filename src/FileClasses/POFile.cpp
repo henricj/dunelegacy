@@ -17,6 +17,7 @@
 
 #include <FileClasses/POFile.h>
 
+#include <misc/BufferedReader.h>
 #include <misc/string_util.h>
 
 #include <cstdio>
@@ -66,6 +67,8 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
     int lineNum    = 0;
     bool bFinished = false;
 
+    SimpleBufferedReader<> pending{rwop};
+
     while (!bFinished) {
         lineNum++;
 
@@ -73,19 +76,16 @@ std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string
         unsigned char tmp = 0;
 
         while (true) {
-            const size_t readbytes = SDL_RWread(rwop, &tmp, 1, 1);
-            if (readbytes == 0) {
+            const auto tmp = pending.getch();
+            if (!tmp.has_value()) {
                 bFinished = true;
                 break;
             }
-            if (tmp == '\n') {
 
+            if (tmp == '\n')
                 break;
-            }
-            if (tmp != '\r') {
-
-                completeLine += tmp;
-            }
+            if (tmp != '\r')
+                completeLine += tmp.value();
         }
 
         const size_t lineStart = completeLine.find_first_not_of(" \t");
