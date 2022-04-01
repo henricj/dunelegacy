@@ -299,21 +299,20 @@ std::string readCompleteFile(const std::filesystem::path& filename) {
     const auto RWopsFile = sdl2::RWops_ptr{SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
     if (!RWopsFile) {
-        return "";
+        return {};
     }
 
     const int64_t filesize = SDL_RWsize(RWopsFile.get());
     if (filesize < 0) {
-        return "";
+        return {};
     }
 
-    const std::unique_ptr<char[]> filedata = std::make_unique<char[]>(static_cast<size_t>(filesize));
+    std::string retValue;
+    retValue.resize(filesize);
 
-    if (SDL_RWread(RWopsFile.get(), filedata.get(), static_cast<size_t>(filesize), 1) != 1) {
-        return "";
+    if (1 != SDL_RWread(RWopsFile.get(), retValue.data(), retValue.size(), 1)) {
+        return {};
     }
-
-    std::string retValue(filedata.get(), (size_t)filesize);
 
     return retValue;
 }
