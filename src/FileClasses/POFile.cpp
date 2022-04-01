@@ -58,6 +58,7 @@ std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const s
 
     std::string msgid;
     std::string msgstr;
+
     bool msgidMode  = false;
     bool msgstrMode = false;
 
@@ -66,11 +67,13 @@ std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const s
 
     SimpleBufferedReader<> pending{rwop};
 
+    std::string completeLine;
+    completeLine.reserve(128);
+
     while (!bFinished) {
         lineNum++;
 
-        std::string completeLine;
-        unsigned char tmp = 0;
+        completeLine.clear();
 
         while (true) {
             const auto tmp = pending.getch();
@@ -91,39 +94,46 @@ std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const s
             continue;
         }
 
-        if (completeLine.substr(lineStart, 5) == "msgid") {
+        const auto line = std::string_view{completeLine}.substr(lineStart);
+
+        static constexpr auto msgid_token  = "msgid"sv;
+        static constexpr auto msgstr_token = "msgstr"sv;
+
+        if (line.substr(0, msgid_token.size()) == msgid_token) {
             if (msgidMode) {
                 sdl2::log_info("%s:%d: Opening a new msgid without finishing the previous one!", filename.c_str(),
                                lineNum);
             } else if (msgstrMode) {
                 // we have finished the previous translation
-                mapping[msgid] = msgstr;
-                msgstr         = "";
+                mapping[msgid] = std::move(msgstr);
+                msgstr.clear();
 
                 msgstrMode = false;
             }
 
-            msgid = extractString(completeLine.substr(lineStart + 5), filename, lineNum);
+            msgid = extractString(std::string{line.substr(msgid_token.size())}, filename, lineNum);
 
             msgidMode = true;
-        } else if (completeLine.substr(lineStart, 6) == "msgstr") {
-            msgidMode = false;
-
-            msgstr = extractString(completeLine.substr(lineStart + 6), filename, lineNum);
-
-            msgstrMode = true;
         } else {
-            if (msgidMode) {
-                msgid += extractString(completeLine, filename, lineNum);
-            } else if (msgstrMode) {
-                msgstr += extractString(completeLine, filename, lineNum);
+            if (completeLine.substr(lineStart, msgstr_token.size()) == msgstr_token) {
+                msgidMode = false;
+
+                msgstr = extractString(std::string{line.substr(msgstr_token.size())}, filename, lineNum);
+
+                msgstrMode = true;
+            } else {
+                if (msgidMode) {
+                    msgid += extractString(completeLine, filename, lineNum);
+                } else if (msgstrMode) {
+                    msgstr += extractString(completeLine, filename, lineNum);
+                }
             }
         }
     }
 
     if (msgstrMode) {
         // we have a last translation to finish
-        mapping[msgid] = msgstr;
+        mapping[msgid] = std::move(msgstr);
     }
 
     return mapping;
