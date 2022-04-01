@@ -17,6 +17,8 @@
 
 #include <FileClasses/INIFile.h>
 
+#include <misc/BufferedReader.h>
+#include <misc/SDL2pp.h>
 #include <misc/exceptions.h>
 
 #include <algorithm>
@@ -25,7 +27,6 @@
 #include <utility>
 
 #include <cctype>
-#include <cstdio>
 
 INIFile::INIFileLine::INIFileLine(std::string completeLine, int lineNumber)
     : completeLine(std::move(completeLine)), line(lineNumber), nextLine(nullptr), prevLine(nullptr) { }
@@ -292,13 +293,11 @@ INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment) : bWhitesp
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
 */
 INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace) : bWhitespace(bWhitespace) {
-
-    SDL_RWops* file = nullptr;
+    const sdl2::RWops_ptr file{SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
     // open file
-    if ((file = SDL_RWFromFile(filename.u8string().c_str(), "r")) != nullptr) {
-        readfile(file);
-        SDL_RWclose(file);
+    if (file) {
+        readfile(file.get());
     } else {
         sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
     }
@@ -785,6 +784,8 @@ void INIFile::readfile(SDL_RWops* file) {
     Section* newSection         = nullptr;
     Key* newKey                 = nullptr;
 
+    SimpleBufferedReader buffer{file};
+
     bool readfinished = false;
 
     while (!readfinished) {
@@ -794,19 +795,15 @@ void INIFile::readfile(SDL_RWops* file) {
         unsigned char tmp = 0;
 
         while (true) {
-            const size_t readbytes = SDL_RWread(file, &tmp, 1, 1);
-            if (readbytes == 0) {
+            const auto tmp = buffer.getch();
+            if (!tmp.has_value()) {
                 readfinished = true;
                 break;
             }
-            if (tmp == '\n') {
-
+            if (tmp == '\n')
                 break;
-            }
-            if (tmp != '\r') {
-
-                completeLine += tmp;
-            }
+            if (tmp != '\r')
+                completeLine += tmp.value();
         }
 
         const auto* line  = reinterpret_cast<const unsigned char*>(completeLine.c_str());
