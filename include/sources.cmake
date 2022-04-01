@@ -168,6 +168,7 @@ add_sources(HEADERS
 	Menu/SinglePlayerMenu.h
 	Menu/SinglePlayerSkirmishMenu.h
 	misc/BlendBlitter.h
+	misc/BufferedReader.h
 	misc/DrawingRectHelper.h
 	misc/draw_util.h
 	misc/dune_clock.h
