@@ -45,7 +45,6 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     determineAvailableScreenResolutions();
 
     const auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
-    std::vector<std::string> availLanguages;
     availLanguages.reserve(languagesList.size());
 
     for (const auto& ll : languagesList)
@@ -53,7 +52,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
+    OptionsMenu::setBackground(pBackground);
     OptionsMenu::resize(getTextureSize(pBackground));
 
     OptionsMenu::setWindowWidget(&windowWidget);
