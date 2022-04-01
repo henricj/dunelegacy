@@ -611,10 +611,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     } else {
         loadedINIFile->clearSection("CHOAM");
 
-        for (auto& choamEntry : choam) {
-            ItemID_enum itemID = choamEntry.first;
-            int num            = choamEntry.second;
-
+        for (auto& [itemID, num] : choam) {
             if (num == 0) {
                 num = -1;
             }
