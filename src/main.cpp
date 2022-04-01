@@ -572,11 +572,11 @@ void log_build_info() {
 #endif
 
 #if defined(DUNE_GIT_DESCRIBE)
-#if defined(DUNE_GIT_REPO_BRANCH)
+#    if defined(DUNE_GIT_REPO_BRANCH)
     sdl2::log_info("   git " DUNE_GIT_REPO_BRANCH "/" DUNE_GIT_DESCRIBE " " DUNE_GIT_TIME);
-#else
+#    else
     sdl2::log_info("   git " DUNE_GIT_DESCRIBE " " DUNE_GIT_TIME);
-#endif
+#    endif
     sdl2::log_info("   git " DUNE_GIT_REPO_URL);
 #endif
 

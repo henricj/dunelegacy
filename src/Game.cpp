@@ -1126,7 +1126,6 @@ void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::tim
     }
 }
 
-
 void Game::runMainLoop(const GameContext& context) {
     using namespace std::chrono_literals;
 
