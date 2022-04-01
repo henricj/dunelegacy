@@ -23,8 +23,11 @@
 #include <FileClasses/xmidi/xmidi.h>
 
 #include <misc/fnkdat.h>
-#include <mmath.h>
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+
+#include <filesystem>
 #include <iostream>
 
 XMIPlayer::XMIPlayer()
@@ -299,7 +302,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
 
     currentMusicType = musicType;
 
-    if (musicOn && filename != "") {
+    if (musicOn && !filename.empty()) {
         sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::u8path(filename));
         SDLDataSource input(inputrwop.release(), 1);
 
