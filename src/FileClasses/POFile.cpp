@@ -20,25 +20,19 @@
 #include <misc/BufferedReader.h>
 #include <misc/string_util.h>
 
-#include <cstdio>
+#include <string>
+#include <string_view>
 
-static std::string unescapeString(const std::string& str) {
-    std::map<std::string, std::string> replacementMap;
-    replacementMap["\\0"]  = "\0";
-    replacementMap["\\n"]  = "\n";
-    replacementMap["\\r"]  = "\r";
-    replacementMap["\\t"]  = "\t";
-    replacementMap["\\a"]  = "\a";
-    replacementMap["\\b"]  = "\b";
-    replacementMap["\\?"]  = "\?";
-    replacementMap["\\\\"] = "\\";
-    replacementMap["\\\""] = "\"";
-    replacementMap["\\\'"] = "\'";
+namespace {
+const std::unordered_map<std::string, std::string> unescape_replacement_map = {
+    {"\\0", "\0"}, {"\\n", "\n"}, {"\\r", "\r"},  {"\\t", "\t"},  {"\\a", "\a"},
+    {"\\b", "\b"}, {"\\?", "\?"}, {"\\\\", "\\"}, {"\\\"", "\""}, {"\\\'", "\'"}};
 
-    return replaceAll(str, replacementMap);
+std::string unescapeString(const std::string& str) {
+    return replaceAll(str, unescape_replacement_map);
 }
 
-static std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
+std::string extractString(const std::string& str, const std::string& filename, int lineNum) {
     const size_t firstQuote = str.find_first_of('\"');
     const size_t lastQuote  = str.find_last_of('\"');
 
@@ -50,9 +44,12 @@ static std::string extractString(const std::string& str, const std::string& file
     return unescapeString(str.substr(firstQuote + 1, lastQuote - firstQuote - 1));
 }
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
+} // namespace
 
-    std::map<std::string, std::string> mapping;
+std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
+    using namespace std::literals;
+
+    std::unordered_map<std::string, std::string> mapping;
 
     if (rwop == nullptr) {
         sdl2::log_info("%s: Cannot find this file!", filename.c_str());

@@ -23,10 +23,10 @@
 #include "MentatTextFile.h"
 
 #include <array>
-#include <map>
 #include <memory>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <vector>
 
 inline constexpr auto MISSION_DESCRIPTION = 0;
@@ -115,10 +115,11 @@ private:
 
     std::array<std::unique_ptr<MentatTextFile>, 3> mentatStrings; ///< The MENTAT?.<EXTENSION> mentat menu texts
 
-    std::map<std::string, std::unique_ptr<IndexedTextFile>>
+    std::unordered_map<std::string, std::unique_ptr<IndexedTextFile>>
         origDuneText; ///< This map contains all the loaded original Dune II (indexed) text files
 
-    mutable std::map<std::string, std::string> localizedString; ///< The mapping between English text and localized text
+    mutable std::unordered_map<std::string, std::string>
+        localizedString; ///< The mapping between English text and localized text
 };
 
 #endif // TEXTMANAGER_H

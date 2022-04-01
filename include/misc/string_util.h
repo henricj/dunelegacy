@@ -22,8 +22,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <gsl/gsl>
@@ -108,7 +108,7 @@ bool splitString(std::string_view parseString, std::string_view* arg0, Args*... 
 */
 std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delim = ",");
 
-std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap);
+std::string replaceAll(const std::string& str, const std::unordered_map<std::string, std::string>& replacementMap);
 
 template<typename T>
 bool parseString(std::string_view str, T& t) {

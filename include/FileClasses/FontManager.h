@@ -22,9 +22,9 @@
 
 #include <misc/SDL2pp.h>
 
-#include <map>
 #include <memory>
 #include <string_view>
+#include <unordered_map>
 
 /// A class for managing fonts.
 /**
@@ -64,7 +64,7 @@ private:
 
     std::unique_ptr<Font> loadFont(unsigned int fontSize);
 
-    std::map<unsigned int, std::unique_ptr<Font>> fonts;
+    std::unordered_map<unsigned int, std::unique_ptr<Font>> fonts;
 };
 
 #endif // FONTMANAGER_H

@@ -23,8 +23,7 @@
 
 std::vector<std::string> splitStringToStringVector(const std::string& parseString, const std::string& delimRegex) {
     const std::regex rgx(delimRegex);
-    return std::vector<std::string>(std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1),
-                                    std::sregex_token_iterator());
+    return {std::sregex_token_iterator(parseString.begin(), parseString.end(), rgx, -1), std::sregex_token_iterator()};
 }
 
 /**
@@ -33,7 +32,7 @@ std::vector<std::string> splitStringToStringVector(const std::string& parseStrin
     \param  replacementMap  a map of replacements
     \return the modified strings
 */
-std::string replaceAll(const std::string& str, const std::map<std::string, std::string>& replacementMap) {
+std::string replaceAll(const std::string& str, const std::unordered_map<std::string, std::string>& replacementMap) {
 
     std::string result = str;
     size_t currentPos  = 0;

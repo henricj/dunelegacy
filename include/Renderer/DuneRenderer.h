@@ -4,6 +4,8 @@
 #include "DuneTextures.h"
 
 #if _DEBUG
+#    include <map>
+
 namespace DuneRendererImplementation {
 extern SDL_Texture* render_texture;
 extern int render_texture_changes;

@@ -577,7 +577,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
             index = std::max((int)281, index - 2);
         }
 
-        std::map<std::string, std::string> mapping;
+        std::unordered_map<std::string, std::string> mapping;
 
         for (unsigned int i = 2; i < commands.size(); i++) {
 

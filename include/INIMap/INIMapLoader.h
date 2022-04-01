@@ -55,7 +55,7 @@ private:
     Game* pGame;
     std::unique_ptr<Map> map;
 
-    std::map<std::string, HOUSETYPE> housename2house;
+    std::unordered_map<std::string, HOUSETYPE> housename2house;
 };
 
 #endif // INIMAPLOADER_H

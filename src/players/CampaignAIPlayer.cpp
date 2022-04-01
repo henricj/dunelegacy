@@ -30,7 +30,7 @@
 namespace {
 inline constexpr auto AIUPDATEINTERVAL = 50;
 
-const std::map<uint32_t, int> buildPriorityMap = {
+const std::unordered_map<uint32_t, int> buildPriorityMap = {
     {Unit_Carryall, 2},  {Unit_Ornithopter, 6}, {Unit_Infantry, 2},  {Unit_Troopers, 3}, {Unit_Soldier, 1},
     {Unit_Trooper, 2},   {Unit_Saboteur, 0},    {Unit_Launcher, 8},  {Unit_Deviator, 3}, {Unit_Tank, 7},
     {Unit_SiegeTank, 9}, {Unit_Devastator, 10}, {Unit_SonicTank, 7}, {Unit_Trike, 3},    {Unit_RaiderTrike, 4},

@@ -20,9 +20,9 @@
 
 #include <misc/SDL2pp.h>
 
-#include <map>
 #include <string>
+#include <unordered_map>
 
-std::map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename = "");
+std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename = "");
 
 #endif // POFILE_H
