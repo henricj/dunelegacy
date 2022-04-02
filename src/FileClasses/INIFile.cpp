@@ -293,9 +293,9 @@ INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment) : bWhitesp
     \param  bWhitespace   Insert whitespace between key an value when creating a new entry
 */
 INIFile::INIFile(const std::filesystem::path& filename, bool bWhitespace) : bWhitespace(bWhitespace) {
+    // open file
     const sdl2::RWops_ptr file{SDL_RWFromFile(filename.u8string().c_str(), "r")};
 
-    // open file
     if (file) {
         readfile(file.get());
     } else {
@@ -778,6 +778,8 @@ void INIFile::readfile(SDL_RWops* file) {
     Section* curSection = sectionRoot;
 
     std::string completeLine;
+    completeLine.reserve(256);
+
     int lineNum                 = 0;
     INIFileLine* curLine        = nullptr;
     INIFileLine* newINIFileLine = nullptr;
@@ -791,7 +793,7 @@ void INIFile::readfile(SDL_RWops* file) {
     while (!readfinished) {
         lineNum++;
 
-        completeLine      = "";
+        completeLine.clear();
         unsigned char tmp = 0;
 
         while (true) {
