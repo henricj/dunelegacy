@@ -1036,13 +1036,13 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
         len = source->read4high();
 
         // Skip the FORM entries
-        if (!memcmp(buf, "FORM", 4)) {
+        if (0 != memcmp(buf, "FORM", 4)) {
             source->skip(4);
             source->read(buf, 4);
             len = source->read4high();
         }
 
-        if (memcmp(buf, "EVNT", 4)) {
+        if (0 != memcmp(buf, "EVNT", 4)) {
             source->skip(len + 1 & ~1);
             continue;
         }
@@ -1072,20 +1072,22 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
 int XMIDI::ExtractTracksFromMid(DataSource* source) {
     int num          = 0;
     unsigned int len = 0;
-    char buf[32];
 
     while (source->getPos() < source->getSize() && num != info.tracks) {
+        std::array<char, 32> buf;
+
         // Read first 4 bytes of name
-        source->read(buf, 4);
+        source->read(buf.data(), 4);
         len = source->read4high();
 
-        if (memcmp(buf, "MTrk", 4)) {
+        if (0 != memcmp(buf.data(), "MTrk", 4)) {
             source->skip(len);
             continue;
         }
 
-        list            = nullptr;
-        const int begin = source->getPos();
+        list = nullptr;
+
+        const auto begin = source->getPos();
 
         // Convert it
         if (!ConvertFiletoList(source, FALSE)) {
@@ -1131,7 +1133,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
             info.tracks = 1;
 
         } // Not an XMIDI that we recognise
-        else if (memcmp(buf, "XDIR", 4)) {
+        else if (0 != memcmp(buf, "XDIR", 4)) {
             cerr << "Not a recognised XMID" << endl;
             return 0;
 
@@ -1149,7 +1151,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
                 // Add eight bytes
                 i += 8;
 
-                if (memcmp(buf, "INFO", 4)) {
+                if (0 != memcmp(buf, "INFO", 4)) {
                     // Must allign
                     source->skip(chunk_len + 1 & ~1);
                     i += chunk_len + 1 & ~1;
@@ -1178,7 +1180,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
             source->read(buf, 4);
 
             // Not an XMID
-            if (memcmp(buf, "CAT ", 4)) {
+            if (0 != memcmp(buf, "CAT ", 4)) {
                 cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )"
                      << endl;
                 return 0;
@@ -1191,7 +1193,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
             source->read(buf, 4);
 
             // Not an XMID
-            if (memcmp(buf, "XMID", 4)) {
+            if (0 != memcmp(buf, "XMID", 4)) {
                 cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)"
                      << endl;
                 return 0;
@@ -1308,7 +1310,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
         // Not an RMID
 
-        if (memcmp(buf, "RMID", 4))
+        if (0 != memcmp(buf, "RMID", 4))
 
         {
 
@@ -1331,7 +1333,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             i += 8;
 
-            if (memcmp(buf, "data", 4))
+            if (0 != memcmp(buf, "data", 4))
 
             {
 
