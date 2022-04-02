@@ -36,8 +36,6 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
         THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: %s!", TTF_GetError());
     }
 
-    TTF_SetFontHinting(pTTFFont.get(), TTF_HINTING_MONO);
-
     characterHeight = TTF_FontHeight(pTTFFont.get());
 }
 
@@ -51,11 +49,14 @@ void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, ui
 
     if (!text.empty()) {
         const sdl2::surface_ptr pTextSurface{
-            TTF_RenderUTF8_Solid(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
+            TTF_RenderUTF8_Blended(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
+
         if (!pTextSurface) {
-            THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Solid() failed: %s!",
+            THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Blended() failed: %s!",
                   TTF_GetError());
         }
+
+        SDL_SetSurfaceBlendMode(pTextSurface.get(), SDL_BLENDMODE_NONE);
 
         SDL_Rect dest{0, -2, pTextSurface->w, pTextSurface->h};
         SDL_BlitSurface(pTextSurface.get(), nullptr, pSurface, &dest);
@@ -72,7 +73,7 @@ int TTFFont::getTextWidth(std::string_view text) const {
 
     int width = 0;
     if (TTF_SizeUTF8(pTTFFont.get(), std::string{text}.c_str(), &width, nullptr) < 0) {
-        THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeText() failed: %s!", TTF_GetError());
+        THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeUTF8() failed: %s!", TTF_GetError());
     }
 
     return width;

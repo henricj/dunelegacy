@@ -607,10 +607,6 @@ void log_build_info() {
 #endif
 }
 
-namespace {
-inline constexpr auto video_default_typeface = "Philosopher-Bold.ttf";
-}
-
 void load_settings(const INIFile& myINIFile) {
     settings.general.playIntro         = myINIFile.getBoolValue("General", "Play Intro", false);
     settings.general.playerName        = myINIFile.getStringValue("General", "Player Name", "Player");
@@ -627,7 +623,7 @@ void load_settings(const INIFile& myINIFile) {
     settings.video.scaler              = myINIFile.getStringValue("Video", "Scaler", "ScaleHD");
     settings.video.rotateUnitGraphics  = myINIFile.getBoolValue("Video", "RotateUnitGraphics", false);
     settings.video.renderer            = myINIFile.getStringValue("Video", "Renderer", "default");
-    settings.video.typeface            = myINIFile.getStringValue("Video", "Typeface", video_default_typeface);
+    settings.video.typeface            = myINIFile.getStringValue("Video", "Typeface", "default");
     settings.audio.musicType           = myINIFile.getStringValue("Audio", "Music Type", "adl");
     settings.audio.playMusic           = myINIFile.getBoolValue("Audio", "Play Music", true);
     settings.audio.musicVolume         = myINIFile.getIntValue("Audio", "Music Volume", 64);
@@ -793,7 +789,11 @@ bool run_game(int argc, char* argv[]) {
         sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width,
                        rendererInfo.max_texture_height);
 
-        const auto typeface = settings.video.typeface.empty() ? video_default_typeface : settings.video.typeface;
+        static constexpr auto video_default_typeface = "Philosopher-Bold.ttf";
+
+        const auto typeface = settings.video.typeface.empty() || "default" == settings.video.typeface
+                                ? video_default_typeface
+                                : settings.video.typeface;
 
         sdl2::log_info("Loading fonts from typeface %s...", typeface);
         pFontManager = std::make_unique<FontManager>(typeface);
