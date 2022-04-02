@@ -22,6 +22,12 @@
 #include <cstdlib>
 #include <string>
 
+#if 0
+#    ifndef PAKFILE_CACHE_READS
+#        define PAKFILE_CACHE_READS 1
+#    endif
+#endif // defined(_DEBUG)
+
 /// Constructor for Pakfile
 /**
     The PAK-File to be read/write is specified by the pakfilename-parameter. If write==false the file is opened for
@@ -35,19 +41,35 @@ Pakfile::Pakfile(const std::filesystem::path& pakfilename, bool write)
 
     if (!write) {
         // Open for reading
-        if ((fPakFile = SDL_RWFromFile(filename.u8string().c_str(), "rb")) == nullptr) {
+        sdl2::RWops_ptr file{SDL_RWFromFile(filename.u8string().c_str(), "rb")};
+
+        if (file == nullptr) {
             THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
         }
 
-        try {
-            readIndex();
-        } catch (std::exception&) {
-            SDL_RWclose(fPakFile);
-            throw;
+#if defined(PAKFILE_CACHE_READS)
+        const auto size = SDL_RWsize(file.get());
+
+        read_buffer_.resize(size);
+
+        if (1 != SDL_RWread(file.get(), read_buffer_.data(), read_buffer_.size(), 1))
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot read " + pakfilename.string() + "!");
+
+        fPakFile = sdl2::RWops_ptr{SDL_RWFromConstMem(read_buffer_.data(), read_buffer_.size())};
+
+        if (!fPakFile) {
+            THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
         }
+#else
+        fPakFile = std::move(file);
+#endif // defined(PAKFILE_CACHE_READS)
+
+        readIndex();
     } else {
         // Open for writing
-        if ((fPakFile = SDL_RWFromFile(filename.u8string().c_str(), "wb")) == nullptr) {
+        fPakFile = sdl2::RWops_ptr{SDL_RWFromFile(filename.u8string().c_str(), "wb")};
+
+        if (!fPakFile) {
             THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
         }
     }
@@ -69,24 +91,16 @@ Pakfile::~Pakfile() {
 
         // write out header
         for (auto& fileEntrie : fileEntries) {
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-            Uint32 startoffset = SDL_Swap32(fileEntries[i].startOffset + headersize);
-#else
-            uint32_t startoffset = fileEntrie.startOffset + headersize;
-#endif
-            SDL_RWwrite(fPakFile, (char*)&startoffset, sizeof(uint32_t), 1);
-            SDL_RWwrite(fPakFile, fileEntrie.filename.u8string().c_str(), fileEntrie.filename.u8string().length() + 1,
-                        1);
+            uint32_t startoffset = SDL_SwapLE32(fileEntrie.startOffset + headersize);
+            SDL_RWwrite(fPakFile.get(), &startoffset, sizeof(uint32_t), 1);
+            SDL_RWwrite(fPakFile.get(), fileEntrie.filename.u8string().c_str(),
+                        fileEntrie.filename.u8string().length() + 1, 1);
         }
         uint32_t tmp = 0;
-        SDL_RWwrite(fPakFile, (char*)&tmp, sizeof(uint32_t), 1);
+        SDL_RWwrite(fPakFile.get(), &tmp, sizeof(uint32_t), 1);
 
         // write out data
-        SDL_RWwrite(fPakFile, writeOutData, numWriteOutData, 1);
-    }
-
-    if (fPakFile != nullptr) {
-        SDL_RWclose(fPakFile);
+        SDL_RWwrite(fPakFile.get(), writeOutData, numWriteOutData, 1);
     }
 
     if (writeOutData != nullptr) {
@@ -171,42 +185,58 @@ sdl2::RWops_ptr Pakfile::openFile(const std::filesystem::path& filename) {
         THROW(std::runtime_error, "Pakfile::openFile(): Writing files is not supported!");
     }
 
+    PakFileEntry* file_entry = nullptr;
+
     // find file
     int index = -1;
     for (unsigned int i = 0; i < fileEntries.size(); i++) {
         if (filename == fileEntries[i].filename) {
-            index = i;
+            index      = i;
+            file_entry = &fileEntries[i];
             break;
         }
     }
 
-    if (index == -1) {
+    if (index == -1 || file_entry == nullptr) {
         THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!",
               filename.string().c_str());
     }
 
+#if defined(PAKFILE_CACHE_READS)
+    auto* const p   = read_buffer_.data() + file_entry->startOffset;
+    const auto size = file_entry->endOffset - file_entry->startOffset + 1;
+
+    sdl2::RWops_ptr pRWop{SDL_RWFromConstMem(p, size)};
+#else  // defined(PAKFILE_CACHE_READS)
     // alloc RWop
-    SDL_RWops* pRWop = nullptr;
-    if ((pRWop = SDL_AllocRW()) == nullptr) {
+
+    sdl2::RWops_ptr pRWop{SDL_AllocRW()};
+
+    if (!pRWop)
         throw std::bad_alloc();
-    }
 
     // alloc RWopData
     auto* pRWopData = new RWopData();
 
-    pRWop->type           = PAKFILE_RWOP_TYPE;
+    pRWop->type = PAKFILE_RWOP_TYPE;
     pRWopData->curPakfile = this;
     pRWopData->fileOffset = 0;
-    pRWopData->fileIndex  = index;
+    pRWopData->fileIndex = index;
 
-    pRWop->read                 = Pakfile::ReadFile;
-    pRWop->write                = Pakfile::WriteFile;
-    pRWop->size                 = Pakfile::SizeFile;
-    pRWop->seek                 = Pakfile::SeekFile;
-    pRWop->close                = Pakfile::CloseFile;
+    pRWop->read = Pakfile::ReadFile;
+    pRWop->write = Pakfile::WriteFile;
+    pRWop->size = Pakfile::SizeFile;
+    pRWop->seek = Pakfile::SeekFile;
+    pRWop->close = Pakfile::CloseFile;
     pRWop->hidden.unknown.data1 = static_cast<void*>(pRWopData);
+#endif // defined(PAKFILE_CACHE_READS)
 
-    return sdl2::RWops_ptr{pRWop};
+    if (!pRWop) {
+        THROW(io_error, "Pakfile::openFile(): Cannot open file with name '%s' in this PAK file!",
+              filename.string().c_str());
+    }
+
+    return pRWop;
 }
 
 bool Pakfile::exists(const std::filesystem::path& filename) const {
@@ -253,11 +283,11 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
         }
     }
 
-    if (SDL_RWseek(pPakfile->fPakFile, readstartoffset, SEEK_SET) < 0) {
+    if (SDL_RWseek(pPakfile->fPakFile.get(), readstartoffset, SEEK_SET) < 0) {
         return 0;
     }
 
-    if (SDL_RWread(pPakfile->fPakFile, ptr, bytes2read, 1) != 1) {
+    if (SDL_RWread(pPakfile->fPakFile.get(), ptr, bytes2read, 1) != 1) {
         return 0;
     }
 
@@ -284,8 +314,8 @@ int64_t Pakfile::SizeFile(SDL_RWops* pRWop) {
         return -1;
     }
 
-    return static_cast<int64_t>(pPakfile->fileEntries[pRWopData->fileIndex].endOffset
-                                - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1);
+    return pPakfile->fileEntries[pRWopData->fileIndex].endOffset
+         - pPakfile->fileEntries[pRWopData->fileIndex].startOffset + 1;
 }
 
 int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
@@ -349,7 +379,7 @@ void Pakfile::readIndex() {
     while (true) {
         PakFileEntry newEntry;
 
-        if (SDL_RWread(fPakFile, (void*)&newEntry.startOffset, sizeof newEntry.startOffset, 1) != 1) {
+        if (SDL_RWread(fPakFile.get(), &newEntry.startOffset, sizeof newEntry.startOffset, 1) != 1) {
             THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
         }
 
@@ -363,7 +393,7 @@ void Pakfile::readIndex() {
 
         while (true) {
             char tmp = 0;
-            if (SDL_RWread(fPakFile, &tmp, 1, 1) != 1) {
+            if (SDL_RWread(fPakFile.get(), &tmp, 1, 1) != 1) {
                 THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWread() failed!");
             }
 
@@ -380,7 +410,7 @@ void Pakfile::readIndex() {
         fileEntries.push_back(newEntry);
     }
 
-    const int64_t filesize = SDL_RWsize(fPakFile);
+    const int64_t filesize = SDL_RWsize(fPakFile.get());
     if (filesize < 0) {
         THROW(std::runtime_error, "Pakfile::readIndex(): SDL_RWsize() failed!");
     }

@@ -76,12 +76,14 @@ private:
     void readIndex();
 
     bool write;
-    SDL_RWops* fPakFile;
+    sdl2::RWops_ptr fPakFile;
     std::filesystem::path filename;
 
     char* writeOutData;
     int numWriteOutData;
     std::vector<PakFileEntry> fileEntries;
+
+    std::vector<char> read_buffer_;
 };
 
 #endif // PAKFILE_H
