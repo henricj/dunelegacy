@@ -32,7 +32,7 @@
 */
 class FontManager {
 public:
-    FontManager();
+    FontManager(std::filesystem::path font_path);
     ~FontManager();
 
     FontManager(const FontManager&) = delete;
@@ -52,9 +52,8 @@ public:
 
 private:
     Font* getFont(unsigned int fontSize) {
-        const auto iter = fonts.find(fontSize);
 
-        if (iter != fonts.end()) {
+        if (const auto iter = fonts.find(fontSize); iter != fonts.end()) {
             return iter->second.get();
         }
 
@@ -64,6 +63,7 @@ private:
 
     std::unique_ptr<Font> loadFont(unsigned int fontSize);
 
+    std::filesystem::path font_path_;
     std::unordered_map<unsigned int, std::unique_ptr<Font>> fonts;
 };
 

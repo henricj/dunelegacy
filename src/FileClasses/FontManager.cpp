@@ -26,7 +26,7 @@
 #include <FileClasses/LoadSavePNG.h>
 #include <FileClasses/TTFFont.h>
 
-FontManager::FontManager() = default;
+FontManager::FontManager(std::filesystem::path font_path) : font_path_(std::move(font_path)) { }
 
 FontManager::~FontManager() = default;
 
@@ -113,5 +113,5 @@ sdl2::texture_ptr FontManager::createTextureWithMultilineText(std::string_view t
 }
 
 std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) {
-    return std::make_unique<TTFFont>(pFileManager->openFile("Philosopher-Bold.ttf"), fontSize);
+    return std::make_unique<TTFFont>(pFileManager->openFile(font_path_), fontSize);
 }

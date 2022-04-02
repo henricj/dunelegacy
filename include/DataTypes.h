@@ -163,6 +163,7 @@ public:
         std::string scaler;
         bool rotateUnitGraphics;
         std::string renderer;
+        std::string typeface;
     } video;
 
     class AudioClass {
