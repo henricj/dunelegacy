@@ -20,6 +20,7 @@
 
 #include <FileClasses/Vocfile.h>
 
+#include "misc/BufferedReader.h"
 #include "misc/string_error.h"
 #include <misc/SDL2pp.h>
 
@@ -48,7 +49,6 @@ inline constexpr auto VOC_CODE_EXTENDED  = 8;
 inline constexpr auto VOC_CODE_DATA_16   = 9;
 
 inline constexpr auto NUM_SAMPLES_OF_SILENCE = 160;
-} // namespace
 
 /**
  * Take a sample rate parameter as it occurs in a VOC sound header, and
@@ -60,7 +60,7 @@ inline constexpr auto NUM_SAMPLES_OF_SILENCE = 160;
  * rates, but the VOC marks them incorrectly as 11111 or 22222 kHz. This code
  * works around that and "unrounds" the sampling rates.
  */
-static uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
+uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
     if (vocSR == 0xa5 || vocSR == 0xa6) {
         return 11025;
     }
@@ -91,17 +91,24 @@ static uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
     \param  rate    The sampling rate of the voc-file
     \return A pointer to a memory block that contains the data.
 */
-static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t& rate) {
-    uint8_t description[20];
+sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t& rate) {
+    using namespace std::literals;
+
+    BufferedReader<> buffer{rwop};
+
+    static constexpr auto creative_voice_file = "Creative Voice File"sv;
+
+    std::array<uint8_t, creative_voice_file.size() + 1> description;
+
     uint16_t offset  = 0;
     uint16_t version = 0;
     uint16_t id      = 0;
 
-    if (SDL_RWread(rwop, (char*)description, 20, 1) != 1) {
+    if (!buffer.read_one(description.data(), description.size())) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
-    if (memcmp(description, "Creative Voice File", 19) != 0) {
+    if (0 != memcmp(description.data(), creative_voice_file.data(), creative_voice_file.size())) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
@@ -109,17 +116,17 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
-    if (SDL_RWread(rwop, &offset, sizeof offset, 1) != 1) {
+    if (!buffer.read_type(offset)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     offset = SDL_SwapLE16(offset);
 
-    if (SDL_RWread(rwop, &version, sizeof version, 1) != 1) {
+    if (!buffer.read_type(version)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     version = SDL_SwapLE16(version);
 
-    if (SDL_RWread(rwop, &id, sizeof id, 1) != 1) {
+    if (!buffer.read_type(id)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     id = SDL_SwapLE16(id);
@@ -138,18 +145,20 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid id in header!");
     }
 
-    sdl2::sdl_ptr<uint8_t[]> ret_sound = nullptr;
-    decsize                            = 0;
+    sdl2::sdl_ptr<uint8_t[]> ret_sound;
+
+    decsize = 0;
 
     uint8_t code = 0;
     rate         = 0;
-    while (SDL_RWread(rwop, &code, sizeof(uint8_t), 1) == 1) {
+
+    while (buffer.read_type(code)) {
         if (code == VOC_CODE_TERM) {
             return ret_sound;
         }
 
         uint8_t tmp[3];
-        if (SDL_RWread(rwop, tmp, 1, 3) != 3) {
+        if (!buffer.read_one(tmp, sizeof tmp)) {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid block length!");
         }
         size_t len = tmp[0];
@@ -159,12 +168,12 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
         switch (code) {
             case VOC_CODE_DATA: {
                 uint8_t time_constant = 0;
-                if (SDL_RWread(rwop, &time_constant, sizeof(uint8_t), 1) != 1) {
+                if (!buffer.read_type(time_constant)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
                 uint8_t packing = 0;
-                if (SDL_RWread(rwop, &packing, sizeof(uint8_t), 1) != 1) {
+                if (!buffer.read_type(packing)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read packing!");
                 }
                 len -= 2;
@@ -184,9 +193,9 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                         THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                     }
                     ret_sound.release();
-                    ret_sound = sdl2::sdl_ptr<uint8_t[]>{tmp_ret_sound};
+                    ret_sound.reset(tmp_ret_sound);
 
-                    if (SDL_RWread(rwop, ret_sound.get() + decsize, 1, len) != len) {
+                    if (!buffer.read_one(ret_sound.get() + decsize, len)) {
                         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read data!");
                     }
 
@@ -198,13 +207,13 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
 
             case VOC_CODE_SILENCE: {
                 uint16_t SilenceLength = 0;
-                if (SDL_RWread(rwop, &SilenceLength, sizeof(uint16_t), 1) != 1) {
+                if (!buffer.read_type(SilenceLength)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read silence length!");
                 }
                 SilenceLength = SDL_SwapLE16(SilenceLength);
 
                 uint8_t time_constant = 0;
-                if (SDL_RWread(rwop, &time_constant, sizeof(uint8_t), 1) != 1) {
+                if (!buffer.read_type(time_constant)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
@@ -227,7 +236,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
                     THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
                 }
                 ret_sound.release();
-                ret_sound = sdl2::sdl_ptr<uint8_t[]>{tmp_ret_sound};
+                ret_sound.reset(tmp_ret_sound);
 
                 memset(ret_sound.get() + decsize, 0x80, length);
 
@@ -248,7 +257,7 @@ static sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, u
     return ret_sound;
 }
 
-inline uint8_t Float2Uint8(float x) {
+uint8_t Float2Uint8(float x) {
     int val = lround(x * 127.0f + 128.0f);
     if (val < 0) {
         val = 0;
@@ -259,7 +268,7 @@ inline uint8_t Float2Uint8(float x) {
     return static_cast<uint8_t>(val);
 }
 
-inline int8_t Float2Sint8(float x) {
+int8_t Float2Sint8(float x) {
     int val = lround(x * 127.0f);
     if (val < -128) {
         val = -128;
@@ -270,7 +279,7 @@ inline int8_t Float2Sint8(float x) {
     return static_cast<int8_t>(val);
 }
 
-inline uint16_t Float2Uint16(float x) {
+uint16_t Float2Uint16(float x) {
     int val = lround(x * 32767.0f + 32768.0f);
     if (val < 0) {
         val = 0;
@@ -281,7 +290,7 @@ inline uint16_t Float2Uint16(float x) {
     return static_cast<uint16_t>(val);
 }
 
-inline int16_t Float2Sint16(float x) {
+int16_t Float2Sint16(float x) {
     int val = lround(x * 32767.0f);
     if (val < -32768) {
         val = -32768;
@@ -291,6 +300,8 @@ inline int16_t Float2Sint16(float x) {
 
     return static_cast<int16_t>(val);
 }
+
+} // namespace
 
 sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
