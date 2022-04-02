@@ -50,7 +50,7 @@ public:
 
     template<typename TValue>
     bool read_type(TValue& value) {
-        return read_one(&value, sizeof TValue);
+        return read_one(&value, sizeof(TValue));
     }
 
 private:
