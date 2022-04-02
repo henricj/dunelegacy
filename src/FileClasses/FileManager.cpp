@@ -121,23 +121,25 @@ std::vector<std::filesystem::path> FileManager::getMissingFiles() {
 }
 
 sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) const {
-    sdl2::RWops_ptr ret;
 
-    // try loading external file
-    for (const auto& searchPath : getSearchPath()) {
-        auto externalFilename = searchPath / filename;
-        if (getCaseInsensitiveFilename(externalFilename)) {
-            ret = sdl2::RWops_ptr{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")};
-            if (ret) {
-                return ret;
+    if (filename.is_absolute()) {
+        if (sdl2::RWops_ptr ret{SDL_RWFromFile(filename.u8string().c_str(), "rb")})
+            return ret;
+    } else {
+        // try loading external file
+        for (const auto& searchPath : getSearchPath()) {
+            auto externalFilename = searchPath / filename;
+            if (getCaseInsensitiveFilename(externalFilename)) {
+                if (sdl2::RWops_ptr ret{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")})
+                    return ret;
             }
         }
-    }
 
-    // now try loading from pak file
-    for (const auto& pPakFile : pakFiles) {
-        if (pPakFile->exists(filename)) {
-            return pPakFile->openFile(filename);
+        // now try loading from pak file
+        for (const auto& pPakFile : pakFiles) {
+            if (pPakFile->exists(filename)) {
+                return pPakFile->openFile(filename);
+            }
         }
     }
 
