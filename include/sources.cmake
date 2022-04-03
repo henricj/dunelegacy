@@ -286,4 +286,4 @@ add_sources(HEADERS
 	units/UnitBase.h
 )
 
-add_sources(EXE_HEADERS main.h)
+add_sources(EXE_HEADERS main.h logging.h)

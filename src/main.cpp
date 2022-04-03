@@ -48,13 +48,9 @@
 
 #include <CutScenes/Intro.h>
 
-#include <dune_version.h>
+#include "logging.h"
 
 #include <SDL2/SDL_ttf.h>
-
-#include <enet/enet.h>
-#include <fmt/core.h>
-#include <lodepng.h>
 
 #include <fcntl.h>
 #include <future>
@@ -67,15 +63,6 @@
 #        define WIN32_LEAN_AND_MEAN
 #    endif
 #    include <Windows.h>
-
-#    include <cstdio>
-#    include <io.h>
-#    ifndef STDOUT_FILENO
-#        define STDOUT_FILENO 1
-#    endif
-#    ifndef STDERR_FILENO
-#        define STDERR_FILENO 2
-#    endif
 
 #    ifdef DUNE_CRT_HEAP_DEBUG
 #        include <crtdbg.h>
@@ -299,17 +286,6 @@ std::filesystem::path getConfigFilepath() {
     return tmp;
 }
 
-std::filesystem::path getLogFilepath() {
-    // determine path to config file
-    auto [ok, tmp] = fnkdat(LOGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
-
-    if (!ok) {
-        THROW(std::runtime_error, "fnkdat() failed!");
-    }
-
-    return tmp;
-}
-
 void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
     sdl2::log_info("Creating config file '%s'", configfilepath.u8string());
 
@@ -398,25 +374,6 @@ void createDefaultConfigFile(const std::filesystem::path& configfilepath, const 
     }
 }
 
-void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message) {
-
-    static constexpr std::string_view priorityStrings[] = {"<UNK> ",   "VERBOSE ", "DEBUG   ", "INFO    ",
-                                                           "WARN    ", "ERROR   ", "CRITICAL"};
-
-    static constexpr auto priorityStringsSize = static_cast<int>(std::size(priorityStrings));
-
-    const auto n = static_cast<int>(priority);
-
-    const auto priority_name = n >= 0 && n < priorityStringsSize ? priorityStrings[n] : priorityStrings[0];
-
-    const auto output = fmt::format("{}:   {}\n", priority_name, message);
-#ifdef _WIN32
-    OutputDebugStringA(output.c_str());
-#endif
-    fmt::fprintf(stderr, output);
-    fflush(stderr);
-}
-
 void showMissingFilesMessageBox() {
     SDL_ShowCursor(SDL_ENABLE);
 
@@ -479,132 +436,6 @@ std::string getUserLanguage() {
         return "";
     }
     return strToLower(std::string(pLang, 2));
-}
-
-#if defined(__clang_version__)
-void log_clang() {
-    sdl2::log_info("   Compiler: clang " __clang_version__);
-}
-#elif defined(__GNUC_PATCHLEVEL__)
-void log_gcc() {
-#    ifdef __MINGW32__
-    sdl2::log_info("   Compiler: MinGW %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-#    else
-    sdl2::log_info("   Compiler: GCC %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
-#    endif
-}
-#elif defined(_MSC_VER)
-void log_msvc() {
-#    if defined(_MSC_FULL_VER)
-    sdl2::log_info("   Compiler: MSVC %d.%d.%d.%d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000, _MSC_BUILD);
-
-    sdl2::log_info("   MSVC runtime: "
-#        if defined(_MT)
-                   "MT "
-#        endif
-#        if defined(_DLL)
-                   "DLL"
-#        else
-                   "Static"
-#        endif
-    );
-#    endif // _MSC_FULL_VER
-
-    sdl2::log_info("   Instruction set: "
-#    if defined(_M_IX86)
-                   "x86"
-#    elif defined(_M_X64)
-                   "x64"
-#    elif defined(_M_ARM64)
-                   "ARM64"
-#    elif defined(_M_ARM)
-                   "ARM"
-#    else
-                   "Unknown"
-#    endif
-                   "/"
-#    if defined(__AVX512F__)
-                   "AVX512"
-#    elif defined(__AVX2__)
-                   "AVX2"
-#    elif defined(__AVX__)
-                   "AVX"
-#    elif defined(_M_IX86_FP)
-#        if _M_IX86_FP == 0
-                   "x87 FPU"
-#        elif _M_IX86_FP == 1
-                   "SSE"
-#        elif _M_IX86_FP == 2
-                   "SSE2"
-#        else
-                   "Unknown"
-#        endif
-#    else
-                   "Default"
-#    endif
-    );
-
-#    if defined(_CONTROL_FLOW_GUARD)
-    sdl2::log_info("   Control flow guard");
-#    endif
-}
-#endif
-
-#if defined(NTDDI_VERSION)
-void log_windows_sdk() {
-#    ifdef DUNE_WINDOWS_SDK_VERSION
-    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " (%d.%d.%d.%d)", OSVER(WDK_NTDDI_VERSION) >> 24,
-                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
-#    else
-    sdl2::log_info("   Windows SDK %d.%d.%d.%d", OSVER(WDK_NTDDI_VERSION) >> 24,
-                   0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
-#    endif
-    sdl2::log_info("   Minimum Windows %d.%d.%d.%d", OSVER(NTDDI_VERSION) >> 24, 0xff & (OSVER(NTDDI_VERSION) >> 16),
-                   SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
-}
-#endif // defined(NTDDI_VERSION)
-
-void log_build_info() {
-    sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
-
-#if defined(DEBUG)
-    sdl2::log_info("   *** DEBUG build " __DATE__ " " __TIME__);
-#endif
-
-#if defined(DUNE_GIT_DESCRIBE)
-#    if defined(DUNE_GIT_REPO_BRANCH)
-    sdl2::log_info("   git " DUNE_GIT_REPO_BRANCH "/" DUNE_GIT_DESCRIBE " " DUNE_GIT_TIME);
-#    else
-    sdl2::log_info("   git " DUNE_GIT_DESCRIBE " " DUNE_GIT_TIME);
-#    endif
-    sdl2::log_info("   git " DUNE_GIT_REPO_URL);
-#endif
-
-#if defined(__SANITIZE_ADDRESS__)
-    sdl2::log_info("   *** Address Sanitizer enabled");
-#endif
-
-#if defined(__clang_version__)
-    log_clang();
-#elif defined(__GNUC_PATCHLEVEL__)
-    log_gcc();
-#elif defined(_MSC_VER)
-    log_msvc();
-#endif // _MSC_VER
-
-#if defined(NTDDI_VERSION)
-    log_windows_sdk();
-#endif
-
-#if defined(FMT_VERSION)
-    sdl2::log_info("fmt %d.%d.%d", FMT_VERSION / 10000, (FMT_VERSION / 100) % 100, FMT_VERSION % 100);
-#endif
-
-    sdl2::log_info("lodepng %s", LODEPNG_VERSION_STRING);
-
-#if defined(ENET_VERSION_MAJOR) && defined(ENET_VERSION_MINOR) && defined(ENET_VERSION_PATCH)
-    sdl2::log_info("enet %d.%d.%d", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
-#endif
 }
 
 void load_settings(const INIFile& myINIFile) {
@@ -940,9 +771,7 @@ struct TTF_handle final {
 int main(int argc, char* argv[]) {
     DuneHeapDebug heap_debug;
 
-    SDL_LogSetOutputFunction(logOutputFunction, nullptr);
-    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_WARN);
-    SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
+    dune::logging_initialize();
 
     SDL_SetHint(SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
 
@@ -974,74 +803,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        if (!bShowDebugLog) {
-            // get utf8-encoded log file path
-            auto logfilePath = getLogFilepath();
-
-#ifdef _WIN32
-
-            FILE* discard = nullptr;
-            if (freopen_s(&discard, R"(\\.\NUL)", "r", stdin))
-                THROW(io_error, "Initializing stdin failed!");
-            if (freopen_s(&discard, R"(\\.\NUL)", "a", stdout))
-                THROW(io_error, "Initializing stdout failed!");
-            if (freopen_s(&discard, R"(\\.\NUL)", "a", stderr))
-                THROW(io_error, "Initializing stderr failed!");
-
-            const auto fn_out = _fileno(stdout);
-            const auto fn_err = _fileno(stderr);
-
-            const auto wLogFilePath = logfilePath.wstring();
-
-            const auto log_handle =
-                CreateFileW(wLogFilePath.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_ALWAYS,
-                            FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, nullptr);
-
-            if (log_handle == INVALID_HANDLE_VALUE) {
-                // use stdout in this error case as stderr is not yet ready
-                THROW(io_error, "Opening logfile '%s' as stdout failed!", logfilePath.string().c_str());
-            }
-
-            if (!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))
-                THROW(io_error, "Initializing output handle failed!");
-            if (!SetStdHandle(STD_ERROR_HANDLE, log_handle))
-                THROW(io_error, "Initializing error handle failed!");
-
-            const auto log_fd = _open_osfhandle(reinterpret_cast<intptr_t>(log_handle), _O_TEXT);
-
-            if (_dup2(log_fd, fn_out))
-                THROW(io_error, "Redirecting output failed!");
-            if (_dup2(log_fd, fn_err))
-                THROW(io_error, "Redirecting error failed!");
-
-            // No buffering
-            setvbuf(stdout, nullptr, _IONBF, 0);
-            setvbuf(stderr, nullptr, _IONBF, 0);
-
-#else
-
-            char* pLogfilePath = (char*)logfilePath.c_str();
-
-            int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            if (d < 0) {
-                THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
-            }
-            // Hint: fileno(stdout) != STDOUT_FILENO on Win32
-            if (dup2(d, fileno(stdout)) < 0) {
-                THROW(io_error, "Redirecting stdout failed!");
-            }
-
-            // Hint: fileno(stderr) != STDERR_FILENO on Win32
-            if (dup2(d, fileno(stderr)) < 0) {
-                THROW(io_error, "Redirecting stderr failed!");
-            }
-
-#endif
-        }
-
-        sdl2::log_info("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
-
-        log_build_info();
+        dune::logging_configure(!bShowDebugLog);
 
         // First check for missing files
         auto missingFiles = FileManager::getMissingFiles();
@@ -1088,6 +850,8 @@ int main(int argc, char* argv[]) {
         if (!ok2) {
             THROW(std::runtime_error, "Cannot uninitialize fnkdat!");
         }
+
+        dune::logging_complete();
 
         return okay ? EXIT_SUCCESS : EXIT_FAILURE;
     } catch (const std::exception& e) {
