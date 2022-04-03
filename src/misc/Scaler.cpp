@@ -19,34 +19,34 @@
 
 #include <algorithm>
 
-DoubleSurfaceFunction* Scaler::defaultDoubleSurface           = Scaler::doubleSurfaceScale2x;
-DoubleTiledSurfaceFunction* Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
+DoubleSurfaceFunction* Scaler::defaultDoubleSurface           = doubleSurfaceScale2x;
+DoubleTiledSurfaceFunction* Scaler::defaultDoubleTiledSurface = doubleTiledSurfaceScale2x;
 
-DoubleSurfaceFunction* Scaler::defaultTripleSurface           = Scaler::tripleSurfaceScale3x;
-DoubleTiledSurfaceFunction* Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
+DoubleSurfaceFunction* Scaler::defaultTripleSurface           = tripleSurfaceScale3x;
+DoubleTiledSurfaceFunction* Scaler::defaultTripleTiledSurface = tripleTiledSurfaceScale3x;
 
-void Scaler::setDefaultScaler(Scaler::ScalerType scaler) {
+void Scaler::setDefaultScaler(ScalerType scaler) {
     switch (scaler) {
-        case Scaler::ScaleHD: {
-            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceScale2x;
-            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
-            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceScale3x;
-            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
+        case ScaleHD: {
+            defaultDoubleSurface = doubleSurfaceScale2x;
+            defaultDoubleTiledSurface = doubleTiledSurfaceScale2x;
+            defaultTripleSurface = tripleSurfaceScale3x;
+            defaultTripleTiledSurface = tripleTiledSurfaceScale3x;
         } break;
 
-        case Scaler::Scale2x:
+        case Scale2x:
         default: {
-            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceScale2x;
-            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceScale2x;
-            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceScale3x;
-            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceScale3x;
+            defaultDoubleSurface = doubleSurfaceScale2x;
+            defaultDoubleTiledSurface = doubleTiledSurfaceScale2x;
+            defaultTripleSurface = tripleSurfaceScale3x;
+            defaultTripleTiledSurface = tripleTiledSurfaceScale3x;
         } break;
 
-        case Scaler::ScaleNN: {
-            Scaler::defaultDoubleSurface      = Scaler::doubleSurfaceNN;
-            Scaler::defaultDoubleTiledSurface = Scaler::doubleTiledSurfaceNN;
-            Scaler::defaultTripleSurface      = Scaler::tripleSurfaceNN;
-            Scaler::defaultTripleTiledSurface = Scaler::tripleTiledSurfaceNN;
+        case ScaleNN: {
+            defaultDoubleSurface = doubleSurfaceNN;
+            defaultDoubleTiledSurface = doubleTiledSurfaceNN;
+            defaultTripleSurface = tripleSurfaceNN;
+            defaultTripleTiledSurface = tripleTiledSurfaceNN;
         } break;
     }
 }

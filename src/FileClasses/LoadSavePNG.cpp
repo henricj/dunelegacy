@@ -95,7 +95,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             const sdl2::surface_lock pic_lock{pic.get()};
 
             const unsigned char* RESTRICT const image_out =
-                reinterpret_cast<const unsigned char*>(pImageOut.get());                                // NOLINT
+                pImageOut.get();                                // NOLINT
             unsigned char* RESTRICT const pic_surface = static_cast<unsigned char*>(pic_lock.pixels()); // NOLINT
 
             // Now we can copy pixel by pixel

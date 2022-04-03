@@ -34,7 +34,7 @@ public:
     DigitsCounter() { Widget::enableResizing(false, false); }
 
     /// destructor
-    ~DigitsCounter() override { }
+    ~DigitsCounter() override = default;
 
     /**
         Get the current count of this digits counter

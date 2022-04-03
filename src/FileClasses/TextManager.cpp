@@ -574,7 +574,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 
             // Dune II 1.0 has 2 titles less
 
-            index = std::max((int)281, index - 2);
+            index = std::max(281, index - 2);
         }
 
         std::unordered_map<std::string, std::string> mapping;

@@ -2204,7 +2204,7 @@ std::vector<int> SoundAdlibPC::getSubsongs() {
 
 bool SoundAdlibPC::init() {
     _driver->callback(2);
-    _driver->callback(16, static_cast<int>(4));
+    _driver->callback(16, 4);
     return true;
 }
 
@@ -2274,17 +2274,17 @@ void SoundAdlibPC::play(uint8 track) {
 
     if (_sfxPlayingSound != -1) {
         // Restore the sounds's normal values.
-        _driver->callback(10, _sfxPlayingSound, static_cast<int>(1), static_cast<int>(_sfxPriority));
-        _driver->callback(10, _sfxPlayingSound, static_cast<int>(3), static_cast<int>(_sfxFourthByteOfSong));
+        _driver->callback(10, _sfxPlayingSound, 1, _sfxPriority);
+        _driver->callback(10, _sfxPlayingSound, 3, _sfxFourthByteOfSong);
         _sfxPlayingSound = -1;
     }
 
-    const int chan = _driver->callback(9, soundId, static_cast<int>(0));
+    const int chan = _driver->callback(9, soundId, 0);
 
     if (chan >= 0 && chan != 9) {
         _sfxPlayingSound     = soundId;
-        _sfxPriority         = _driver->callback(9, soundId, static_cast<int>(1));
-        _sfxFourthByteOfSong = _driver->callback(9, soundId, static_cast<int>(3));
+        _sfxPriority         = _driver->callback(9, soundId, 1);
+        _sfxFourthByteOfSong = _driver->callback(9, soundId, 3);
 
         // In the cases I've seen, the mysterious fourth byte has been
         // the parameter for the update_setExtraLevel3() callback.
@@ -2299,9 +2299,9 @@ void SoundAdlibPC::play(uint8 track) {
 
         int newVal = (-_sfxFourthByteOfSong + 63) * 0xFF >> 8 & 0xFF;
         newVal     = -newVal + 63;
-        _driver->callback(10, soundId, static_cast<int>(3), newVal);
+        _driver->callback(10, soundId, 3, newVal);
         newVal = _sfxPriority * 0xFF >> 8 & 0xFF;
-        _driver->callback(10, soundId, static_cast<int>(1), newVal);
+        _driver->callback(10, soundId, 1, newVal);
     }
 
     _driver->callback(6, soundId);
@@ -2336,7 +2336,7 @@ void SoundAdlibPC::internalLoadFile(SDL_RWops* rwop) {
         return;
     }
 
-    _driver->callback(8, static_cast<int>(-1));
+    _driver->callback(8, -1);
     _soundDataPtr = nullptr;
 
     uint8* p = file_data;
@@ -2405,7 +2405,7 @@ Mix_Chunk* SoundAdlibPC::getSubsong(int Num) {
 
     myChunk->volume    = 128;
     myChunk->allocated = 1;
-    myChunk->abuf      = (uint8_t*)buf;
+    myChunk->abuf      = buf;
     myChunk->alen      = bufSize;
     return myChunk;
 }

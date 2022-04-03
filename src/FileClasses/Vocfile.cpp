@@ -451,7 +451,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
     switch (TargetFormat) {
         case AUDIO_U8: {
-            auto* TargetData = reinterpret_cast<uint8_t*>(myChunk->abuf);
+            auto* TargetData = myChunk->abuf;
             for (uint32_t i = 0; i < TargetData_Samples * channels; i += channels) {
                 const auto v = Float2Uint8(TargetDataFloat[i / channels + ThreeQuaterSilenceLength]);
                 for (auto j = 0; j < channels; j++) {
