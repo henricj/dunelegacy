@@ -612,7 +612,7 @@ constexpr SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, const SDL
     \param  valign      the vertical alignment of pTexture (default is VAlign::Center)
     \return the rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
-constexpr SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Center,
+inline SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Center,
                                           VAlign valign = VAlign::Center) {
     return calcAlignedDrawingRect(pTexture, getRendererSize(), halign, valign);
 }
