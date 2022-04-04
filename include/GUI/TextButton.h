@@ -26,14 +26,10 @@
 /// A class for a text button
 class TextButton final : public Button {
     using parent = Button;
-public:
-    /// Default contructor
-    TextButton() {
-        textcolor       = COLOR_DEFAULT;
-        textshadowcolor = COLOR_DEFAULT;
 
-        Widget::enableResizing(true, true);
-    }
+public:
+    /// Default constructor
+    TextButton();
 
     TextButton(const TextButton&) = delete;
     TextButton(TextButton&&)      = default;
@@ -104,8 +100,8 @@ protected:
     void updateTextures() override;
 
 private:
-    uint32_t textcolor;
-    uint32_t textshadowcolor;
+    uint32_t textcolor       = COLOR_DEFAULT;
+    uint32_t textshadowcolor = COLOR_DEFAULT;
 
     std::string text; ///< Text of this button
 };

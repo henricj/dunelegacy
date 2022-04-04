@@ -1,5 +1,9 @@
 #include <GUI/TextButton.h>
 
+TextButton::TextButton() {
+    parent::enableResizing(true, true);
+}
+
 TextButton::~TextButton() = default;
 
 void TextButton::updateTextures() {

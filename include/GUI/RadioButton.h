@@ -192,15 +192,14 @@ protected:
         if (!pUnpressedTexture) {
             invalidateTextures();
 
-            setSurfaces(GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, false,
-                                                                         textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, true, false,
-                                                                         textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createRadioButtonSurface(getSize().x, getSize().y, text, false, true,
-                                                                         textcolor, textshadowcolor));
+            auto& gui = GUIStyle::getInstance();
+            setSurfaces(
+                gui.createRadioButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
+                gui.createRadioButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
+                gui.createRadioButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
 
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createRadioButtonSurface(
-                getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
+            pCheckedActiveTexture = convertSurfaceToTexture(
+                gui.createRadioButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
         }
     }
 
