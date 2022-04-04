@@ -84,7 +84,6 @@ void CommandManager::update() {
         }
 
         commandList.commandList.emplace_back(i, std::move(commands));
-        commands.clear();
     }
 
     pNetworkManager->sendCommandList(commandList);
