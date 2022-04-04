@@ -23,6 +23,20 @@ GUIStyle::GUIStyle() = default;
 
 GUIStyle::~GUIStyle() = default;
 
+void GUIStyle::setZoom(float zoom) {
+    if (zoom < 0.01f || zoom > 100)
+        THROW(std::invalid_argument, "GUIStyle scale out of range %f", zoom);
+
+    zoom_ = zoom;
+}
+
+void GUIStyle::setDisplayDpi(float ratio) {
+    if (ratio < 0.01f || ratio > 100)
+        THROW(std::invalid_argument, "GUIStyle scale out of range %f", ratio);
+
+    dpi_ratio_ = ratio;
+}
+
 sdl2::surface_ptr GUIStyle::createEmptySurface(uint32_t width, uint32_t height, bool transparent) {
     sdl2::surface_ptr pSurface =
         sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};

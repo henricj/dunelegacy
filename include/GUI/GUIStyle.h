@@ -60,6 +60,40 @@ public:
     }
 
     /**
+        Returns the current UI drawing zoom.
+        \return the zoom (nominally 1.0f)
+    */
+    float getZoom() const noexcept { return zoom_; }
+
+    /**
+        Set the current UI drawing zoom.
+        \param zoom The drawing zoom (nominally 1.0f)
+    */
+    virtual void setZoom(float zoom);
+
+    /**
+     * Set the display DPI as a fraction of the nominal DPI.
+     * Microsoft uses 96dpi and Apple 72dpi, so the scale is
+     * represented as a ratio of the actual with respect to the
+     * nominal.  For example, a Windows DPI of 144 would set
+     * scale to 144 / 96 = 1.5.
+     * \param ratio The current display's scale
+     */
+    virtual void setDisplayDpi(float ratio);
+
+    /**
+        Returns the current display DPI ratio.
+        \return the display DPI ratio (nominally 1.0f)
+    */
+    float getDisplayDpi() const noexcept { return dpi_ratio_; }
+
+    /**
+        Returns the overall UI scaling factor.
+        \return the UI scaling factor (nominally 1.0f)
+    */
+    float getScale() const noexcept { return dpi_ratio_ * zoom_; }
+
+    /**
         Returns the minimum size of a label with this text
         \param  text    The text for the label
         \param  fontSize  The size of the font to use
@@ -284,6 +318,8 @@ public:
 
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;
+    float zoom_      = 1.f;
+    float dpi_ratio_ = 1.f;
 };
 
 #endif // GUISTYLE_H
