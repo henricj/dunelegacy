@@ -112,6 +112,16 @@ sdl2::texture_ptr FontManager::createTextureWithMultilineText(std::string_view t
     return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontSize, bCentered));
 }
 
+Font* FontManager::getFont(uint32_t fontSize) {
+
+    auto& font = fonts[fontSize];
+
+    if (!font)
+        font = loadFont(fontSize);
+
+    return font.get();
+}
+
 std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) {
     return std::make_unique<TTFFont>(pFileManager->openFile(font_path_), fontSize);
 }

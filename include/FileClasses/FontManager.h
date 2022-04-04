@@ -51,15 +51,7 @@ public:
                                                      bool bCentered = false);
 
 private:
-    Font* getFont(unsigned int fontSize) {
-
-        if (const auto iter = fonts.find(fontSize); iter != fonts.end()) {
-            return iter->second.get();
-        }
-
-        fonts[fontSize] = loadFont(fontSize);
-        return fonts[fontSize].get();
-    }
+    Font* getFont(uint32_t fontSize);
 
     std::unique_ptr<Font> loadFont(unsigned int fontSize);
 
