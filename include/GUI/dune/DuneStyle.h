@@ -23,7 +23,7 @@
 class DuneStyle final : public GUIStyle {
 public:
     /// default constructor
-    DuneStyle() : GUIStyle() { }
+    DuneStyle() = default;
 
     /// destructor
     ~DuneStyle() override = default;

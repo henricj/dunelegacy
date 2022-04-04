@@ -217,7 +217,7 @@ private:
     Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
     std::string text;                           ///< the text of this label
-    sdl2::texture_ptr pTexture = nullptr;       ///< the texture of this label
+    sdl2::texture_ptr pTexture;                 ///< the texture of this label
     Alignment_Enum alignment =
         static_cast<Alignment_Enum>(Alignment_Left | Alignment_VCenter); ///< the alignment of this label
 };
