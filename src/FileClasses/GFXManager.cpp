@@ -137,8 +137,7 @@ const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
 
 const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!",
-              id);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
     }
 
     const auto& texture = duneTextures.get_ui_graphic(id, house);

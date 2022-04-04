@@ -286,7 +286,7 @@ file_time_duration convert_to_file_time_duration(FILETIME& time) {
 
 template<typename TDuration>
 std::string format_duration(TDuration d) {
-    
+
     const auto hours = std::chrono::duration_cast<std::chrono::hours>(d);
     d -= hours;
 

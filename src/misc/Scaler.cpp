@@ -28,24 +28,24 @@ DoubleTiledSurfaceFunction* Scaler::defaultTripleTiledSurface = tripleTiledSurfa
 void Scaler::setDefaultScaler(ScalerType scaler) {
     switch (scaler) {
         case ScaleHD: {
-            defaultDoubleSurface = doubleSurfaceScale2x;
+            defaultDoubleSurface      = doubleSurfaceScale2x;
             defaultDoubleTiledSurface = doubleTiledSurfaceScale2x;
-            defaultTripleSurface = tripleSurfaceScale3x;
+            defaultTripleSurface      = tripleSurfaceScale3x;
             defaultTripleTiledSurface = tripleTiledSurfaceScale3x;
         } break;
 
         case Scale2x:
         default: {
-            defaultDoubleSurface = doubleSurfaceScale2x;
+            defaultDoubleSurface      = doubleSurfaceScale2x;
             defaultDoubleTiledSurface = doubleTiledSurfaceScale2x;
-            defaultTripleSurface = tripleSurfaceScale3x;
+            defaultTripleSurface      = tripleSurfaceScale3x;
             defaultTripleTiledSurface = tripleTiledSurfaceScale3x;
         } break;
 
         case ScaleNN: {
-            defaultDoubleSurface = doubleSurfaceNN;
+            defaultDoubleSurface      = doubleSurfaceNN;
             defaultDoubleTiledSurface = doubleTiledSurfaceNN;
-            defaultTripleSurface = tripleSurfaceNN;
+            defaultTripleSurface      = tripleSurfaceNN;
             defaultTripleTiledSurface = tripleTiledSurfaceNN;
         } break;
     }

@@ -81,8 +81,7 @@ sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int i
 
 void SFXManager::loadEnglishVoice() {
     lngVoice.clear();
-    lngVoice.resize(static_cast<int>(Voice_enum::NUM_VOICE)
-                    * static_cast<int>(HOUSETYPE::NUM_HOUSES));
+    lngVoice.resize(static_cast<int>(Voice_enum::NUM_VOICE) * static_cast<int>(HOUSETYPE::NUM_HOUSES));
 
     // now we can load
     for (auto house = 0; house < static_cast<int>(HOUSETYPE::NUM_HOUSES); house++) {
@@ -124,8 +123,7 @@ void SFXManager::loadEnglishVoice() {
             auto Unit            = getChunkFromFile(HouseString + "UNIT.VOC");
             auto Deployed        = getChunkFromFile(HouseString + "DEPLOY.VOC");
             auto Launched        = getChunkFromFile(HouseString + "LAUNCH.VOC");
-            lngVoice[static_cast<int>(Voice_enum::HarvesterDeployed)
-                         * static_cast<int>(HOUSETYPE::NUM_HOUSES)
+            lngVoice[static_cast<int>(Voice_enum::HarvesterDeployed) * static_cast<int>(HOUSETYPE::NUM_HOUSES)
                      + VoiceNum] = concat3Chunks(HouseNameChunk.get(), Harvester.get(), Deployed.get());
             lngVoice[static_cast<int>(Voice_enum::UnitDeployed) * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
                 concat3Chunks(HouseNameChunk.get(), Unit.get(), Deployed.get());
