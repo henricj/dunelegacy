@@ -19,6 +19,7 @@
 
 #include <Network/NetworkManager.h>
 
+#include "misc/dune_wait_event.h"
 #include <FileClasses/LoadSavePNG.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
@@ -49,7 +50,7 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
         if (remaining <= dune::dune_clock::duration::zero() || remaining >= 32ms)
             return true;
 
-        if (SDL_WaitEventTimeout(&event, dune::as_milliseconds<int>(remaining))) {
+        if (dune::Dune_WaitEvent(&event, dune::as_milliseconds<int>(remaining))) {
             if (!doInput(event))
                 return false;
 
