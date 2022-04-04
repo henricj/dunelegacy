@@ -56,7 +56,7 @@ public:
 
     /**
         This method resized the button to width and height. This method should only
-        called if the new size is a valid size for this button (See getMinumumSize).
+        called if the new size is a valid size for this button (See getMinimumSize).
         \param  width   the new width of this button
         \param  height  the new height of this button
     */

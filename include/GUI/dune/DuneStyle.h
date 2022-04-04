@@ -32,7 +32,7 @@ public:
         Returns the minimum size of a label with this text
         \param  text    The text for the label
         \param  fontSize  The size of the font to use
-        \return the mimimum size of this label
+        \return the minimum size of this label
     */
     Point getMinimumLabelSize(std::string_view text, int fontSize) override;
 
@@ -56,7 +56,7 @@ public:
     /**
         Returns the minimum size of a checkbox with this text
         \param  text    The text for the checkbox
-        \return the mimimum size of this checkbox
+        \return the minimum size of this checkbox
     */
     Point getMinimumCheckboxSize(std::string_view text) override;
 
@@ -80,7 +80,7 @@ public:
     /**
         Returns the minimum size of a radio button with this text
         \param  text    The text for the radio button
-        \return the mimimum size of this radio button
+        \return the minimum size of this radio button
     */
     Point getMinimumRadioButtonSize(std::string_view text) override;
 
@@ -113,9 +113,9 @@ public:
                                               Uint32 color = COLOR_DEFAULT) override;
 
     /**
-        Returns the minumum size of a button with this text
+        Returns the minimum size of a button with this text
         \param  text    The text for the button
-        \return the mimimum size of this button
+        \return the minimum size of this button
     */
     Point getMinimumButtonSize(std::string_view text) override;
 
@@ -135,9 +135,9 @@ public:
                                           Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
     /**
-        Returns the minumum size of a text box
+        Returns the minimum size of a text box
         \param  fontSize  The size of the font to use
-        \return the mimimum size of a text box
+        \return the minimum size of a text box
     */
     Point getMinimumTextBoxSize(int fontSize) override;
 
@@ -159,8 +159,8 @@ public:
                                            Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
     /**
-        Returns the minumum size of a scroll bar arrow button.
-        \return the mimimum size of a scroll bar arrow
+        Returns the minimum size of a scroll bar arrow button.
+        \return the minimum size of a scroll bar arrow
     */
     Point getMinimumScrollBarArrowButtonSize() override;
 
@@ -176,8 +176,8 @@ public:
                                                  Uint32 color = COLOR_DEFAULT) override;
 
     /**
-        Returns the minumum height of a list box entry.
-        \return the mimimum height of a list box entry
+        Returns the minimum height of a list box entry.
+        \return the minimum height of a list box entry
     */
     uint32_t getListBoxEntryHeight() override;
 

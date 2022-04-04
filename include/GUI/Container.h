@@ -354,14 +354,14 @@ public:
 
     /**
         This method resizes the container. This method should only
-        called if the new size is a valid size for this container (See getMinumumSize).
+        called if the new size is a valid size for this container (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
     void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
-        called if the new size is a valid size for this container (See getMinumumSize).
+        called if the new size is a valid size for this container (See getMinimumSize).
         \param  width   the new width of this container
         \param  height  the new height of this container
     */

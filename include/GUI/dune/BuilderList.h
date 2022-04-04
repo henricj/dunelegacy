@@ -92,7 +92,7 @@ public:
 
     /**
         This method resizes the builder list. This method should only
-        called if the new size is a valid size for this builder list (See getMinumumSize).
+        called if the new size is a valid size for this builder list (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
     void resize(Point newSize) override { resize(newSize.x, newSize.y); }
@@ -100,7 +100,7 @@ public:
     /**
         This method resizes the builder list to width and height. This method should only be
         called if the new size is a valid size for this builder list (See resizingXAllowed,
-        resizingYAllowed, getMinumumSize).
+        resizingYAllowed, getMinimumSize).
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */

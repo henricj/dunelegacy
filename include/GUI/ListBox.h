@@ -82,13 +82,13 @@ public:
 
     /**
         This method resizes the list box. This method should only
-        called if the new size is a valid size for this list box (See getMinumumSize).
+        called if the new size is a valid size for this list box (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
     void resize(Point newSize) override { resize(newSize.x, newSize.y); }
     /**
         This method resizes the list box to width and height. This method should only
-        called if the new size is a valid size for this list box (See getMinumumSize).
+        called if the new size is a valid size for this list box (See getMinimumSize).
         \param  width   the new width of this scroll bar
         \param  height  the new height of this scroll bar
     */

@@ -90,14 +90,14 @@ public:
 
     /**
         This method resized the progress bar. This method should only
-        called if the new size is a valid size for this progress bar (See getMinumumSize).
+        called if the new size is a valid size for this progress bar (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
     void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the progress bar to width and height. This method should only
-        called if the new size is a valid size for this progress bar (See getMinumumSize).
+        called if the new size is a valid size for this progress bar (See getMinimumSize).
         \param  width   the new width of this progress bar
         \param  height  the new height of this progress bar
     */

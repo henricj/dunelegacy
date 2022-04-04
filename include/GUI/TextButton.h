@@ -71,14 +71,14 @@ public:
 
     /**
         This method resizes the button. This method should only
-        called if the new size is a valid size for this button (See getMinumumSize).
+        called if the new size is a valid size for this button (See getMinimumSize).
         \param  newSize the new size of this progress bar
     */
     void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the button to width and height. This method should only
-        called if the new size is a valid size for this button (See getMinumumSize).
+        called if the new size is a valid size for this button (See getMinimumSize).
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
