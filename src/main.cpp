@@ -252,10 +252,12 @@ void updateFullscreen() {
 
     pendingFullscreen = false;
 
-    if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+    auto window_flags = SDL_GetWindowFlags(window);
+
+    if (window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         // switch to windowed mode
         sdl2::log_info("Switching to windowed mode.");
-        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+        SDL_SetWindowFullscreen(window, window_flags & ~SDL_WINDOW_FULLSCREEN_DESKTOP);
 
         SDL_SetWindowSize(window, settings.video.physicalWidth, settings.video.physicalHeight);
         SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
@@ -265,7 +267,7 @@ void updateFullscreen() {
         SDL_DisplayMode displayMode;
         SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(window), &displayMode);
 
-        SDL_SetWindowFullscreen(window, (SDL_GetWindowFlags(window) ^ SDL_WINDOW_FULLSCREEN_DESKTOP));
+        SDL_SetWindowFullscreen(window, window_flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
         SDL_SetWindowSize(window, displayMode.w, displayMode.h);
         SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
