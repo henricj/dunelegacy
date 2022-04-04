@@ -306,7 +306,7 @@ public:
         \param  FontNum     the font
         \return the height of the font
     */
-    virtual unsigned int getTextHeight(unsigned int FontNum) = 0;
+    virtual unsigned int getTextHeight(unsigned int FontNum) const = 0;
 
     /**
         Get the width of the text with the font specified by fontnum
@@ -314,7 +314,7 @@ public:
         \param  FontNum     the font
         \return the width of the text
     */
-    virtual unsigned int getTextWidth(std::string_view text, unsigned int FontNum) = 0;
+    virtual unsigned int getTextWidth(std::string_view text, unsigned int FontNum) const = 0;
 
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;

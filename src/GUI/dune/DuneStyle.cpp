@@ -44,7 +44,7 @@ sdl2::surface_ptr DuneStyle::createSurfaceWithText(std::string_view text, uint32
     return surface;
 }
 
-unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
+unsigned int DuneStyle::getTextHeight(unsigned int FontNum) const {
     if (pFontManager) {
         return pFontManager->getTextHeight(FontNum);
     }
@@ -52,7 +52,7 @@ unsigned int DuneStyle::getTextHeight(unsigned int FontNum) {
     return 12;
 }
 
-unsigned int DuneStyle::getTextWidth(std::string_view text, unsigned int FontNum) {
+unsigned int DuneStyle::getTextWidth(std::string_view text, unsigned int FontNum) const {
     if (pFontManager) {
         return pFontManager->getTextWidth(text, FontNum);
     }

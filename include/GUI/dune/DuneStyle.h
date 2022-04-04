@@ -232,7 +232,7 @@ public:
         \param  FontNum     the font
         \return the height of the font
     */
-    unsigned int getTextHeight(unsigned int FontNum) override;
+    unsigned int getTextHeight(unsigned int FontNum) const override;
 
     /**
         Get the weidth of the text with the font specified by fontnum
@@ -240,7 +240,7 @@ public:
         \param  FontNum     the font
         \return the width of the text
     */
-    unsigned int getTextWidth(std::string_view text, unsigned int FontNum) override;
+    unsigned int getTextWidth(std::string_view text, unsigned int FontNum) const override;
 
 public:
     static constexpr Uint32 defaultForegroundColor = COLOR_RGB(125, 0, 0);
@@ -262,7 +262,7 @@ private:
     */
     sdl2::surface_ptr createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize);
 
-    uint32_t brightenUp(uint32_t color) {
+    constexpr uint32_t brightenUp(uint32_t color) const {
         Uint32 r       = (color & RMASK) >> RSHIFT;
         Uint32 g       = (color & GMASK) >> GSHIFT;
         Uint32 b       = (color & BMASK) >> BSHIFT;
