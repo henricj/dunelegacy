@@ -71,9 +71,10 @@ void CommandManager::update() {
         return;
 
     CommandList commandList;
-    std::vector<Command> commands;
     for (uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
          i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
+
+        std::vector<Command> commands;
 
         if (i < timeslot.size()) {
             for (auto& command : timeslot[i]) {
@@ -84,7 +85,6 @@ void CommandManager::update() {
         }
 
         commandList.commandList.emplace_back(i, std::move(commands));
-        commands.clear();
     }
 
     pNetworkManager->sendCommandList(commandList);
