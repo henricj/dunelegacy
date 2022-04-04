@@ -42,11 +42,11 @@ inline constexpr auto BSHIFT = 16u;
 inline constexpr auto ASHIFT = 24u;
 #endif
 
-inline constexpr auto COLOR_RGBA(Uint32 r, Uint32 g, Uint32 b, Uint32 a) {
-    return (r & 0xFF) << RSHIFT | (g & 0xFF) << GSHIFT | (b & 0xFF) << BSHIFT | (a & 0xFF) << ASHIFT;
+constexpr auto COLOR_RGBA(Uint32 r, Uint32 g, Uint32 b, Uint32 a) {
+    return (r & 0xFFU) << RSHIFT | (g & 0xFFU) << GSHIFT | (b & 0xFFU) << BSHIFT | (a & 0xFFU) << ASHIFT;
 }
 
-inline constexpr auto COLOR_RGB(Uint32 r, Uint32 g, Uint32 b) {
+constexpr auto COLOR_RGB(Uint32 r, Uint32 g, Uint32 b) {
     return COLOR_RGBA(r, g, b, 255);
 }
 
