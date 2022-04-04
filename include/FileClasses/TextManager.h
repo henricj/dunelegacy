@@ -58,7 +58,7 @@ public:
         \param  house       the house to get the text from (only HOUSE_ATREIDES, HOUSE_ORDOS and HOUSE_HARKONNEN)
         \return the briefing text
     */
-    std::string getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const;
+    std::string getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house);
 
     /**
         This method returns all mentat entries for a specific house and up to the specified tech level.
@@ -73,7 +73,7 @@ public:
         \param  unlocalizedString   the string in English
         \return the localized version of unlocalizedString
     */
-    const std::string& getLocalized(const std::string& unlocalizedString) const {
+    const std::string& getLocalized(const std::string& unlocalizedString) {
         const std::string& localizedStringRaw = getLocalizedRaw(unlocalizedString);
 
         if (!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
@@ -106,7 +106,7 @@ private:
         \param  unprocessedString   the original string containing the @ at the start
         \return the processed string with data read from FILENAME.EXT
     */
-    const std::string& postProcessString(const std::string& unprocessedString) const;
+    const std::string& postProcessString(const std::string& unprocessedString);
 
     /**
         Add a original Dune 2 text file
@@ -118,7 +118,7 @@ private:
     std::unordered_map<std::string, std::unique_ptr<IndexedTextFile>>
         origDuneText; ///< This map contains all the loaded original Dune II (indexed) text files
 
-    mutable std::unordered_map<std::string, std::string>
+    std::unordered_map<std::string, std::string>
         localizedString; ///< The mapping between English text and localized text
 };
 

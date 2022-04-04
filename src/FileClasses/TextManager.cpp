@@ -83,7 +83,7 @@ void TextManager::loadData() {
         std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
 }
 
-std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) const {
+std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) {
     // clang-format off
     switch(house) {
         case HOUSETYPE::HOUSE_HARKONNEN: {
@@ -550,7 +550,7 @@ std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSET
     return mentatEntries;
 }
 
-const std::string& TextManager::postProcessString(const std::string& unprocessedString) const {
+const std::string& TextManager::postProcessString(const std::string& unprocessedString) {
     size_t commentStart = unprocessedString.find_first_of('#');
     if (commentStart == std::string::npos) {
         commentStart = unprocessedString.size();
@@ -586,9 +586,11 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
             mapping[parts[0]] = parts[1];
         }
 
-        localizedString[unprocessedString] = replaceAll(pIndexedTextFile->getString(index), mapping);
+        auto& localized = localizedString[unprocessedString];
 
-        return localizedString[unprocessedString];
+        localized = replaceAll(pIndexedTextFile->getString(index), mapping);
+
+        return localized;
     }
     return unprocessedString;
 }
