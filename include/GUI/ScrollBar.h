@@ -26,6 +26,8 @@
 
 /// A class for a scroll bar
 class ScrollBar final : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
     ScrollBar();
@@ -197,7 +199,7 @@ protected:
         This method should first check whether a renewal of the textures is necessary.
     */
     void updateTextures() override {
-        Widget::updateTextures();
+        parent::updateTextures();
 
         if (!pBackground) {
             pBackground =

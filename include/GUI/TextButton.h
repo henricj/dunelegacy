@@ -25,6 +25,7 @@
 
 /// A class for a text button
 class TextButton final : public Button {
+    using parent = Button;
 public:
     /// Default contructor
     TextButton() {

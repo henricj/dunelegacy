@@ -3,7 +3,7 @@
 TextButton::~TextButton() = default;
 
 void TextButton::updateTextures() {
-    Button::updateTextures();
+    parent::updateTextures();
 
     if (!pUnpressedTexture) {
         invalidateTextures();

@@ -29,6 +29,8 @@
 
 /// a class for a text label
 class Label : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
     Label() { Label::enableResizing(true, true); }

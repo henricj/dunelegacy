@@ -26,6 +26,8 @@
 
 /// A class for a multiline text view widget
 class TextView final : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
     TextView();

@@ -32,6 +32,8 @@
 
 /// A class for a progress bar widget
 class ProgressBar : public WidgetWithBackground {
+    using parent = WidgetWithBackground;
+
 public:
     /// default constructor
     ProgressBar() {
@@ -102,7 +104,7 @@ public:
         \param  height  the new height of this progress bar
     */
     void resize(uint32_t width, uint32_t height) override {
-        WidgetWithBackground::resize(width, height);
+        parent::resize(width, height);
 
         invalidateTextures();
     }
@@ -164,6 +166,8 @@ protected:
 };
 
 class TextProgressBar : public ProgressBar {
+    using parent = ProgressBar;
+
 public:
     TextProgressBar() = default;
 
@@ -243,6 +247,8 @@ protected:
 };
 
 class PictureProgressBar : public ProgressBar {
+    using parent = ProgressBar;
+
 public:
     PictureProgressBar() { Widget::enableResizing(false, false); }
 

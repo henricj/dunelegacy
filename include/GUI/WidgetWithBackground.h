@@ -23,6 +23,8 @@
 #include <misc/SDL2pp.h>
 
 class WidgetWithBackground : public Widget {
+    using parent = Widget;
+
 public:
     WidgetWithBackground()                            = default;
     WidgetWithBackground(const WidgetWithBackground&) = delete;

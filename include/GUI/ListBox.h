@@ -30,6 +30,8 @@ class DropDownBox;
 
 /// A class for a list box widget
 class ListBox final : public Widget {
+    using parent = Widget;
+
 public:
     friend class DropDownBox;
 

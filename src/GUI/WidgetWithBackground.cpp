@@ -36,7 +36,7 @@ void WidgetWithBackground::setBackground(const DuneTexture* pBackground) {
 }
 
 void WidgetWithBackground::resize(uint32_t width, uint32_t height) {
-    Widget::resize(width, height);
+    parent::resize(width, height);
 
     if (bSelfGeneratedBackground) {
         localDuneTexture_ = DuneTexture{};
@@ -68,7 +68,7 @@ void WidgetWithBackground::invalidateTextures() {
     localDuneTexture_ = DuneTexture{};
     localTexture_.reset();
 
-    Widget::invalidateTextures();
+    parent::invalidateTextures();
 }
 
 sdl2::surface_ptr WidgetWithBackground::createBackground() {

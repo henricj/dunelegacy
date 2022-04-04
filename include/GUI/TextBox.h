@@ -26,6 +26,8 @@
 
 /// A class for a text box
 class TextBox final : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
     TextBox() {

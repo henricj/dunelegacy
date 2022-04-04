@@ -29,6 +29,8 @@
 */
 template<class WidgetData>
 class Container : public Widget {
+    using parent = Widget;
+
 protected:
     typedef RobustList<WidgetData> WidgetList;
 
@@ -365,7 +367,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(uint32_t width, uint32_t height) override { Widget::resize(width, height); }
+    void resize(uint32_t width, uint32_t height) override { parent::resize(width, height); }
 
     /**
         Returns the position of widget relative to the top left corner of this container
@@ -389,7 +391,7 @@ public:
             activateFirstActivatableWidget();
         }
 
-        Widget::setActive();
+        parent::setActive();
     }
 
     /**
@@ -401,7 +403,7 @@ public:
             pActiveChildWidget = nullptr;
         }
 
-        Widget::setInactive();
+        parent::setInactive();
     }
 
     /**
@@ -450,7 +452,7 @@ protected:
                 pActiveChildWidget = nullptr;
             }
         }
-        Widget::setActive(bActive);
+        parent::setActive(bActive);
     }
 
     /**
@@ -473,7 +475,7 @@ protected:
                 pActiveChildWidget = childWidget;
 
                 // activate this container and upper containers
-                Widget::setActive();
+                parent::setActive();
             }
         } else {
             if (childWidget != pActiveChildWidget) {

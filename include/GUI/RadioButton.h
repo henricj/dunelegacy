@@ -27,6 +27,8 @@
 
 /// A class for a radio button implemented as a toggle button
 class RadioButton final : public Button {
+    using parent = Button;
+
 public:
     /// Default constructor
     RadioButton() {
@@ -185,7 +187,7 @@ protected:
         This method should first check whether a renewal of the textures is necessary.
     */
     void updateTextures() override {
-        Button::updateTextures();
+        parent::updateTextures();
 
         if (!pUnpressedTexture) {
             invalidateTextures();
@@ -206,9 +208,9 @@ protected:
         This method frees all textures that are used by this radio button
     */
     void invalidateTextures() override {
-        Button::invalidateTextures();
-
         pCheckedActiveTexture.reset();
+
+        parent::invalidateTextures();
     }
 
 private:

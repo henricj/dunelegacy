@@ -25,6 +25,8 @@
 
 /// A class for a checkbox implemented as a toggle button
 class Checkbox final : public Button {
+    using parent = Button;
+
 public:
     /// Default constructor
     Checkbox() {

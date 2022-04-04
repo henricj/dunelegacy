@@ -28,7 +28,8 @@
 
 /// A abstract base class for all buttons
 class Button : public Widget {
-public:
+    using parent = Widget;
+
 protected:
     /// Default constructor
     Button();
