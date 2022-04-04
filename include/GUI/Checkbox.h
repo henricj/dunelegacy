@@ -29,13 +29,10 @@ class Checkbox final : public Button {
 
 public:
     /// Default constructor
-    Checkbox() {
-        Checkbox::enableResizing(true, false);
-        setToggleButton(true);
-    }
+    Checkbox();
 
     /// destructor
-    ~Checkbox() override { Checkbox::invalidateTextures(); }
+    ~Checkbox() override;
 
     /**
         This method sets a new text for this checkbox and resizes it
@@ -80,34 +77,7 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override {
-        if (!isVisible()) {
-            return;
-        }
-
-        updateTextures();
-
-        DuneTexture tex;
-        if (isChecked()) {
-            if ((isActive() || bHover) && pCheckedActiveTexture) {
-                tex = DuneTexture{pCheckedActiveTexture.get()};
-            } else {
-                tex = *pPressedTexture;
-            }
-        } else {
-            if ((isActive() || bHover) && pActiveTexture) {
-                tex = *pActiveTexture;
-            } else {
-                tex = *pUnpressedTexture;
-            }
-        }
-
-        if (!tex) {
-            return;
-        }
-
-        tex.draw(renderer, position.x, position.y);
-    }
+    void draw(Point position) override;
 
     /**
         This method resizes the checkbox. This method should only
@@ -122,10 +92,7 @@ public:
         \param  width   the new width of this checkbox
         \param  height  the new height of this checkbox
     */
-    void resize(uint32_t width, uint32_t height) override {
-        invalidateTextures();
-        Widget::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         Returns the minimum size of this button. The button should not
@@ -140,32 +107,12 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override {
-        Button::updateTextures();
-
-        if (!pUnpressedTexture) {
-            invalidateTextures();
-
-            setSurfaces(GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, false,
-                                                                      textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, true, false,
-                                                                      textcolor, textshadowcolor),
-                        GUIStyle::getInstance().createCheckboxSurface(getSize().x, getSize().y, text, false, true,
-                                                                      textcolor, textshadowcolor));
-
-            pCheckedActiveTexture = convertSurfaceToTexture(GUIStyle::getInstance().createCheckboxSurface(
-                getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
-        }
-    }
+    void updateTextures() override;
 
     /**
         This method frees all textures that are used by this checkbox
     */
-    void invalidateTextures() override {
-        Button::invalidateTextures();
-
-        pCheckedActiveTexture.reset();
-    }
+    void invalidateTextures() override;
 
 private:
     uint32_t textcolor{COLOR_DEFAULT};       ///< Text color

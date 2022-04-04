@@ -30,13 +30,10 @@ class TextBox final : public Widget {
 
 public:
     /// default constructor
-    TextBox() {
-        Widget::enableResizing(true, false);
-        resize(getMinimumSize().x, getMinimumSize().y);
-    }
+    TextBox();
 
     /// destructor
-    ~TextBox() override { invalidateTextures(); }
+    ~TextBox() override;
 
     /**
         Returns true.
@@ -150,50 +147,13 @@ public:
         This method updates all surfaces for this text box. This method will be called
         if this text box is resized or the text changes.
     */
-    void updateTextures() override {
-        if (pTextureWithoutCaret == nullptr || pTextureWithCaret == nullptr) {
-            invalidateTextures();
-
-            pTextureWithoutCaret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
-                getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
-            pTextureWithCaret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
-                   getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
-        }
-    }
+    void updateTextures() override;
 
     /**
         Draws this text box to screen.
         \param  Position    Position to draw the text box to
     */
-    void draw(Point position) override {
-        if (!isVisible()) {
-            return;
-        }
-
-        updateTextures();
-
-        if ((pTextureWithoutCaret == nullptr) || (pTextureWithCaret == nullptr)) {
-            return;
-        }
-
-        const SDL_Rect dest = calcDrawingRect(pTextureWithoutCaret.get(), position.x, position.y);
-
-        if (isActive()) {
-            using namespace std::chrono_literals;
-
-            if ((dune::dune_clock::now() - lastCaretTime) < 500ms) {
-                Dune_RenderCopy(renderer, pTextureWithCaret.get(), nullptr, &dest);
-            } else {
-                Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
-            }
-
-            if (dune::dune_clock::now() - lastCaretTime >= 1000ms) {
-                lastCaretTime = dune::dune_clock::now();
-            }
-        } else {
-            Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
-        }
-    }
+    void draw(Point position) override;
 
     /**
         Handles a left mouse click.
@@ -202,83 +162,21 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the text box
     */
-    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override {
-        if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
-            return false;
-        }
-
-        if ((!isEnabled()) || (!isVisible())) {
-            return true;
-        }
-
-        if (pressed) {
-            setActive();
-            lastCaretTime = dune::dune_clock::now();
-        }
-        return true;
-    }
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles a key stroke.
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the text box, false = key stroke was not processed by the text box
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override {
-        if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
-            return true;
-        }
-
-        if (key.keysym.sym == SDLK_TAB) {
-            setInactive();
-            return true;
-        }
-
-        if (key.keysym.sym == SDLK_BACKSPACE) {
-            if (!text.empty()) {
-                text = utf8Substr(text, 0, utf8Length(text) - 1);
-                if (pOnTextChange) {
-                    pOnTextChange(true);
-                }
-            }
-        } else if (key.keysym.sym == SDLK_RETURN) {
-            if (pOnReturn) {
-                pOnReturn();
-            }
-        }
-
-        invalidateTextures();
-
-        return true;
-    }
+    bool handleKeyPress(SDL_KeyboardEvent& key) override;
 
     /**
         Handles a text input event.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    bool handleTextInput(SDL_TextInputEvent& textInput) override {
-        if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
-            return true;
-        }
-
-        const std::string newText = textInput.text;
-
-        bool bChanged = false;
-        for (const char c : newText) {
-            if (((maxTextLength < 0) || (static_cast<int>(utf8Length(text)) < maxTextLength))
-                && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
-                && (forbiddenChars.find(c) == std::string::npos)) {
-                text += c;
-                bChanged = true;
-            }
-        }
-
-        if (bChanged && pOnTextChange) {
-            pOnTextChange(true);
-        }
-
-        return true;
-    }
+    bool handleTextInput(SDL_TextInputEvent& textInput) override;
 
 protected:
     /**

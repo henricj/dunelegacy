@@ -1,11 +1,15 @@
 add_sources(GUI_SOURCES
 	Button.cpp
+	Checkbox.cpp
 	DropDownBox.cpp
 	GUIStyle.cpp
+	Label.cpp
 	ListBox.cpp
 	PictureLabel.cpp
+	ProgressBar.cpp
 	RadioButtonManager.cpp
 	ScrollBar.cpp
+	TextBox.cpp
 	TextButton.cpp
 	TextView.cpp
 	Widget.cpp

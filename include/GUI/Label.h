@@ -20,11 +20,9 @@
 
 #include "GUIStyle.h"
 #include "Widget.h"
-#include <misc/SDL2pp.h>
-#include <misc/draw_util.h>
-#include <misc/string_util.h>
 
-#include <algorithm>
+#include <misc/SDL2pp.h>
+
 #include <string>
 
 /// a class for a text label
@@ -33,10 +31,10 @@ class Label : public Widget {
 
 public:
     /// default constructor
-    Label() { Label::enableResizing(true, true); }
+    Label();
 
     /// destructor
-    ~Label() override = default;
+    ~Label() override;
 
     /**
         Sets a font size for this label. Default font size of a label is 14
@@ -115,60 +113,20 @@ public:
         \param  width   the new width of this label
         \param  height  the new height of this label
     */
-    void resize(uint32_t width, uint32_t height) override {
-        invalidateTextures();
-        Widget::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         Returns the minimum size of this label. The label should not
         resized to a size smaller than this.
         \return the minimum size of this label
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        Point p(0, 0);
-
-        // split text into single lines at every '\n'
-        size_t startpos = 0;
-        size_t nextpos  = 0;
-        std::vector<std::string> hardLines;
-        do {
-            nextpos = text.find('\n', startpos);
-            if (nextpos == std::string::npos) {
-                hardLines.emplace_back(text, startpos, text.length() - startpos);
-            } else {
-                hardLines.emplace_back(text, startpos, nextpos - startpos);
-                startpos = nextpos + 1;
-            }
-        } while (nextpos != std::string::npos);
-
-        for (const std::string& hardLine : hardLines) {
-            Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontSize);
-            p.x                = std::max(p.x, minLabelSize.x);
-            p.y += minLabelSize.y;
-        }
-        return p;
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
     /**
         Draws this label to screen.
         \param  position    Position to draw the label to
     */
-    void draw(Point position) override {
-        if ((!isEnabled()) || (!isVisible())) {
-            return;
-        }
-
-        updateTextures();
-
-        if (pTexture == nullptr) {
-            return;
-        }
-
-        const SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2,
-                                              position.y + getSize().y / 2, HAlign::Center, VAlign::Center);
-        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
-    }
+    void draw(Point position) override;
 
     /**
         This static method creates a dynamic label object with Text as the label text.
@@ -181,13 +139,7 @@ public:
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
     static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT,
-                         Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) {
-        auto* label = new Label();
-        label->setText(text);
-        label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
-        label->pAllocated = true;
-        return label;
-    }
+                         Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
 
 protected:
     /**
@@ -195,23 +147,12 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override {
-        Widget::updateTextures();
-
-        if (!pTexture) {
-            const auto textLines = greedyWordWrap(text, getSize().x, [font = fontSize](std::string_view tmp) {
-                return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
-            });
-
-            pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(
-                getSize().x, getSize().y, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
-        }
-    }
+    void updateTextures() override;
 
     /**
         This method frees all textures that are used by this label
     */
-    void invalidateTextures() override { pTexture.reset(); }
+    void invalidateTextures() override;
 
 private:
     int fontSize           = 14;                ///< the size of the font to use

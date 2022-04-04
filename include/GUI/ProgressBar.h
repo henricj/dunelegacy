@@ -36,16 +36,10 @@ class ProgressBar : public WidgetWithBackground {
 
 public:
     /// default constructor
-    ProgressBar() {
-        percent     = 0.0;
-        color       = COLOR_DEFAULT;
-        bDrawShadow = false;
-        pForeground = nullptr;
-        ProgressBar::enableResizing(true, true);
-    }
+    ProgressBar();
 
     /// destructor
-    ~ProgressBar() override { ProgressBar::invalidateTextures(); }
+    ~ProgressBar() override;
 
     ProgressBar(const ProgressBar&) = delete;
     ProgressBar(ProgressBar&&)      = delete;
@@ -113,26 +107,7 @@ public:
         Draws this progress bar to screen
         \param  position    Position to draw the progress bar to
     */
-    void draw(Point position) override {
-        if (isVisible() == false) {
-            return;
-        }
-
-        updateTextures();
-
-        WidgetWithBackground::draw(position);
-
-        if (pForeground) {
-            const auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
-            if (bDrawShadow) {
-                const SDL_Rect dest2 = {position.x + 2, position.y + 2,
-                                        static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
-                renderFillRect(renderer, &dest2, COLOR_BLACK);
-            }
-
-            Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
-        }
-    }
+    void draw(Point position) override;
 
 protected:
     /**
@@ -140,38 +115,27 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override {
-        WidgetWithBackground::updateTextures();
-
-        if (!pForeground) {
-            pForeground = convertSurfaceToTexture(
-                GUIStyle::getInstance().createProgressBarOverlay(getSize().x, getSize().y, percent, color));
-        }
-    }
+    void updateTextures() override;
 
     /**
         This method frees all textures that are used by this progress bar
     */
-    void invalidateTextures() override {
-        pForeground.reset();
+    void invalidateTextures() override;
 
-        WidgetWithBackground::invalidateTextures();
-    }
+    sdl2::texture_ptr pForeground = nullptr;
 
-    sdl2::texture_ptr pForeground;
-
-    double percent;   ///< Percent from 0.0 to 100.0
-    uint32_t color;   ///< The color of the progress overlay
-    bool bDrawShadow; ///< Draw shadow under the foreground surface
+    double percent{};               ///< Percent from 0.0 to 100.0
+    uint32_t color = COLOR_DEFAULT; ///< The color of the progress overlay
+    bool bDrawShadow{};             ///< Draw shadow under the foreground surface
 };
 
 class TextProgressBar : public ProgressBar {
     using parent = ProgressBar;
 
 public:
-    TextProgressBar() = default;
+    TextProgressBar();
 
-    ~TextProgressBar() override = default;
+    ~TextProgressBar() override;
 
     TextProgressBar(const TextProgressBar&) = delete;
     TextProgressBar(TextProgressBar&&)      = delete;
@@ -182,12 +146,7 @@ public:
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual void setText(const std::string& text) {
-        if (this->text != text) {
-            this->text = text;
-            resizeAll();
-        }
-    }
+    virtual void setText(const std::string& text);
 
     /**
         Get the text of this progress bar.
@@ -224,21 +183,7 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override {
-        ProgressBar::updateTextures();
-
-        if (!getBackground()) {
-            setBackground(
-                GUIStyle::getInstance()
-                    .createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor)
-                    .get());
-        }
-    }
-
-    /**
-        This method frees all textures that are used by this progress bar
-    */
-    void invalidateTextures() override { ProgressBar::invalidateTextures(); }
+    void updateTextures() override;
 
     std::string text; ///< Text of this progress bar
 
@@ -250,9 +195,9 @@ class PictureProgressBar : public ProgressBar {
     using parent = ProgressBar;
 
 public:
-    PictureProgressBar() { Widget::enableResizing(false, false); }
+    PictureProgressBar();
 
-    ~PictureProgressBar() override = default;
+    ~PictureProgressBar() override;
 
     PictureProgressBar(const PictureProgressBar&) = delete;
     PictureProgressBar(PictureProgressBar&&)      = delete;
@@ -291,13 +236,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        if (const auto* const background = getBackground()) {
-            return getTextureSize(background);
-        }
-
-        return Point(4, 4);
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 };
 
 #endif // PROGRESSBAR_H
