@@ -428,6 +428,14 @@ public:
     */
     [[nodiscard]] bool isContainer() const override { return true; }
 
+    /**
+        This method frees all textures that are used by contained widgets
+    */
+    void invalidateTextures() override {
+        for (auto& wd : containedWidgets)
+            wd.pWidget->invalidateTextures();
+    }
+
 protected:
     /**
         This method is called by other containers to enable this container or disable this container explicitly.
