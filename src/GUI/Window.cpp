@@ -20,9 +20,7 @@
 #include <globals.h>
 #include <misc/draw_util.h>
 
-Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
-    : closeChildWindowCounter(0), pChildWindow(nullptr), pChildWindowAlreadyClosed(false), pWindowWidget(nullptr),
-      position(x, y) {
+Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position(x, y) {
 
     Window::resize(w, h);
 }

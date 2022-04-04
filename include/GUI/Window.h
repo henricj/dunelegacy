@@ -226,12 +226,12 @@ public:
 protected:
     bool processChildWindowOpenCloses();
 
-    int closeChildWindowCounter;            ///< Close the child window after processing all input?
-    Window* pChildWindow;                   ///< The current child window
-    bool pChildWindowAlreadyClosed;         /// Is the child window already closed?
+    int closeChildWindowCounter{};          ///< Close the child window after processing all input?
+    Window* pChildWindow{};                 ///< The current child window
+    bool pChildWindowAlreadyClosed{};       /// Is the child window already closed?
     std::queue<Window*> queuedChildWindows; ///< We cannot close child windows while they are processed. Queue any newly
                                             ///< opened windows here until we close the current child window
-    Widget* pWindowWidget;                  ///< The current window widget
+    Widget* pWindowWidget = nullptr;        ///< The current window widget
     Point position;                         ///< The left top corner of this window
 };
 
