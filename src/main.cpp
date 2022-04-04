@@ -127,7 +127,7 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
 }
 
 void setVideoMode(int displayIndex) {
-    int videoFlags = 0;
+    int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
 
     if (settings.video.fullscreen) {
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -192,6 +192,8 @@ void setVideoMode(int displayIndex) {
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
 
 #if defined(_WIN32)
+    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+
     // Prefer DX11 on Windows
     if (settings.video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
@@ -577,6 +579,36 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
     return bFirstGamestart;
 }
 
+void update_display_scale(SDL_Window* sdl_window) {
+
+    static constexpr auto default_dpi =
+#if defined(__APPLE__)
+        72.0f;
+#elif defined(USER_DEFAULT_SCREEN_DPI)
+        static_cast<float>(USER_DEFAULT_SCREEN_DPI); // Windows
+#else
+        96.0f; // This is true for Windows, but what about others?
+#endif
+
+    auto& gui = GUIStyle::getInstance();
+
+    const auto displayIndex = SDL_GetWindowDisplayIndex(sdl_window);
+    float dpi;
+    if (0 != SDL_GetDisplayDPI(displayIndex, nullptr, &dpi, nullptr)) {
+        dpi = 1;
+    }
+
+    gui.setDisplayDpi(dpi / default_dpi);
+
+    auto* sdl_renderer = SDL_GetRenderer(sdl_window);
+
+    float scaleX;
+    float scaleY;
+    SDL_RenderGetScale(sdl_renderer, &scaleX, &scaleY);
+
+    gui.setZoom(scaleX);
+}
+
 bool run_game(int argc, char* argv[]) {
     bool bExitGame       = false;
     bool bFirstInit      = true;
@@ -631,6 +663,10 @@ bool run_game(int argc, char* argv[]) {
         sdl2::log_info("Loading fonts from typeface %s...", typeface);
         pFontManager = std::make_unique<FontManager>(typeface);
 
+        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
+
+        update_display_scale(window);
+
         sdl2::log_info("Loading graphics and sounds...");
 
 #ifdef HAS_ASYNC
@@ -666,8 +702,6 @@ bool run_game(int argc, char* argv[]) {
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
         }
 #endif
-
-        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
 
         if (bFirstInit) {
             sdl2::log_info("Starting sound player...");
