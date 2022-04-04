@@ -15,8 +15,9 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <GUI/Container.h>
 #include <GUI/Widget.h>
+
+Widget::Widget() = default;
 
 Widget::~Widget() {
     pAllocated = false;

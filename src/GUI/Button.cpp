@@ -21,10 +21,7 @@
 
 #include <SoundPlayer.h>
 
-Button::Button()
-    : pUnpressedTexture(nullptr), pPressedTexture(nullptr), pActiveTexture(nullptr), bPressed(false), bHover(false),
-      bToggleButton(false), bToggleState(false) { }
-
+Button::Button()  = default;
 Button::~Button() = default;
 
 void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {

@@ -123,10 +123,12 @@ public:
 
     friend class Window;
 
+protected:
     /** The default constructor.
      */
-    Widget() = default;
+    Widget();
 
+public:
     /** Destructor
         Removes this widget from its parent.
     */

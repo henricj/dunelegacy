@@ -29,9 +29,11 @@
 /// A abstract base class for all buttons
 class Button : public Widget {
 public:
+protected:
     /// Default constructor
     Button();
 
+public:
     /// destructor
     ~Button() override;
 
@@ -170,10 +172,10 @@ protected:
     virtual void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                              const DuneTexture* pActiveTexture = nullptr);
 
-    const DuneTexture* pUnpressedTexture; ///< Texture that is normally shown
-    const DuneTexture* pPressedTexture;   ///< Texture that is shown when the button is pressed
+    const DuneTexture* pUnpressedTexture{}; ///< Texture that is normally shown
+    const DuneTexture* pPressedTexture{};   ///< Texture that is shown when the button is pressed
     const DuneTexture*
-        pActiveTexture; ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+        pActiveTexture{}; ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
     /**
         This method frees all textures that are used by this button
@@ -185,10 +187,10 @@ protected:
     dune::dune_clock::time_point tooltipLastMouseMotion{}; ///< the last time the mouse was moved
 
     std::function<void()> pOnClick; ///< function that is called when this button is clicked
-    bool bPressed;                  ///< true = currently pressed, false = currently unpressed
-    bool bHover;                    ///< true = currently mouse hover, false = currently no mouse hover
-    bool bToggleButton;             ///< true = toggle button, false = normal button
-    bool bToggleState;              ///< true = currently toggled, false = currently not toggled
+    bool bPressed      = false;     ///< true = currently pressed, false = currently unpressed
+    bool bHover        = false;     ///< true = currently mouse hover, false = currently no mouse hover
+    bool bToggleButton = false;     ///< true = toggle button, false = normal button
+    bool bToggleState  = false;     ///< true = currently toggled, false = currently not toggled
 
 private:
     sdl2::texture_ptr localUnpressed_;
