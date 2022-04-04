@@ -436,6 +436,8 @@ public:
     void invalidateTextures() override {
         for (auto& wd : containedWidgets)
             wd.pWidget->invalidateTextures();
+
+        parent::invalidateTextures();
     }
 
 protected:

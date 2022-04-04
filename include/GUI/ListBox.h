@@ -402,6 +402,8 @@ protected:
     void invalidateTextures() override {
         pBackground.reset();
         pForeground.reset();
+
+        parent::invalidateTextures();
     }
 
 private:

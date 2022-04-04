@@ -102,6 +102,8 @@ void TextView::resize(uint32_t width, uint32_t height) {
 }
 
 void TextView::updateTextures() {
+    parent::updateTextures();
+
     if (pBackground == nullptr) {
         pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
     }
@@ -118,4 +120,11 @@ void TextView::updateTextures() {
         pForeground           = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(
                       getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
     }
+}
+
+void TextView::invalidateTextures() {
+    pBackground.reset();
+    pForeground.reset();
+
+    parent::invalidateTextures();
 }

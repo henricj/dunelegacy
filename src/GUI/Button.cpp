@@ -190,6 +190,8 @@ void Button::invalidateTextures() {
     localUnpressed_.reset();
     localPressed_.reset();
     localActive_.reset();
+
+    parent::invalidateTextures();
 }
 
 void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface,

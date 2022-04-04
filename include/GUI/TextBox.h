@@ -199,6 +199,8 @@ protected:
     void invalidateTextures() override {
         pTextureWithoutCaret.reset();
         pTextureWithCaret.reset();
+
+        parent::invalidateTextures();
     }
 
 private:

@@ -203,10 +203,7 @@ protected:
     /**
         This method frees all textures that are used by this text view
     */
-    void invalidateTextures() override {
-        pBackground.reset();
-        pForeground.reset();
-    }
+    void invalidateTextures() override;
 
 private:
     int fontSize           = 14;                ///< the size of the font to use

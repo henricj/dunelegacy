@@ -210,7 +210,11 @@ protected:
     /**
         This method frees all textures that are used by this scrollbar
     */
-    void invalidateTextures() override { pBackground.reset(); }
+    void invalidateTextures() override {
+        pBackground.reset();
+
+        parent::invalidateTextures();
+    }
 
 private:
     void updateSliderButton();
