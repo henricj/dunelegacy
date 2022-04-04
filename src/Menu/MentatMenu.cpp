@@ -203,7 +203,6 @@ void MentatMenu::update() {
         if (currentMentatTextIndex >= static_cast<int>(mentatTexts.size())) {
             onMentatTextFinished();
             nextMentatTextSwitch = dune::dune_clock::time_point::max();
-            text                 = "";
         } else {
             text = mentatTexts[currentMentatTextIndex];
             if (text.empty()) {
