@@ -818,7 +818,7 @@ int main(int argc, char* argv[]) {
         }
 
         // we do not use rand() but maybe some library does; thus we shall initialize it
-        auto seed = static_cast<unsigned>(std::random_device()()) ^ static_cast<unsigned>(time(nullptr));
+        const auto seed = static_cast<unsigned>(std::random_device()()) ^ static_cast<unsigned>(time(nullptr));
         srand(seed);
 
         sdl2::log_info("Initializing SDL...");
