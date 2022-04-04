@@ -390,7 +390,7 @@ sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t heigh
     SDL_Rect cursorPos;
 
     // create text in this text box
-    if (text.size() != 0) {
+    if (!text.empty()) {
         const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, fontSize);
         const auto textSurface2 = createSurfaceWithText(text, textcolor, fontSize);
         SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
