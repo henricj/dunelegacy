@@ -516,7 +516,7 @@ constexpr SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, const SDL_Rect&
     \param  valign      the vertical alignment of pSurface (default is VAlign::Center)
     \return the rectangle for drawing pSurface at the specified position when passed to SDL_BlitSurface
 */
-constexpr SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HAlign::Center,
+inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HAlign::Center,
                                           VAlign valign = VAlign::Center) {
     return calcAlignedDrawingRect(pSurface, getRendererSize(), halign, valign);
 }
