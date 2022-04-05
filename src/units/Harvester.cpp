@@ -264,9 +264,10 @@ void Harvester::destroy(const GameContext& context) {
                 for (int j = -circleRadius; j <= circleRadius; j++) {
                     if (currentGameMap->tileExists(xpos + i, ypos + j)
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius)) {
-                        auto* pTile = currentGameMap->getTile(xpos + i, ypos + j);
-                        if ((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()))) {
-                            availableSandPos++;
+                        if (const auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
+                            if (pTile->isSand() || pTile->isSpice()) {
+                                availableSandPos++;
+                            }
                         }
                     }
                 }
@@ -277,9 +278,10 @@ void Harvester::destroy(const GameContext& context) {
                 for (int j = -circleRadius; j <= circleRadius; j++) {
                     if (currentGameMap->tileExists(xpos + i, ypos + j)
                         && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius)) {
-                        Tile* pTile = currentGameMap->getTile(xpos + i, ypos + j);
-                        if ((pTile != nullptr) & ((pTile->isSand()) || (pTile->isSpice()))) {
-                            pTile->setSpice(pTile->getSpice() + spiceSpreaded / availableSandPos);
+                        if (auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
+                            if (pTile->isSand() || pTile->isSpice()) {
+                                pTile->setSpice(pTile->getSpice() + spiceSpreaded / availableSandPos);
+                            }
                         }
                     }
                 }
