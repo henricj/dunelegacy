@@ -383,12 +383,34 @@ void logging_initialize() {
     SDL_LogSetPriority(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_VERBOSE);
 }
 
+#ifdef _WIN32
+inline constexpr auto local_win32_WM_DPICHANGED       = 0x02E0;
+inline constexpr auto local_win32_WM_GETDPISCALEDSIZE = 0x02E4;
+
+extern "C" void windows_message_hook(void* userdata, void* h_wnd, unsigned message, Uint64 w_param, Sint64 l_param) {
+    static std::unordered_map<unsigned, uint32_t> message_counts;
+
+    ++message_counts[message];
+
+    switch (message) {
+        case local_win32_WM_DPICHANGED: {
+            sdl2::log_info("DPI change detected");
+        } break;
+        case local_win32_WM_GETDPISCALEDSIZE: {
+            sdl2::log_info("DPI Get DPI scale detected");
+        }
+    }
+}
+#endif // _WIN32
+
 void logging_configure(bool capture_output) {
     if (capture_output) {
         // get utf8-encoded log file path
         const auto logfilePath = getLogFilepath();
 
 #ifdef _WIN32
+
+        SDL_SetWindowsMessageHook(windows_message_hook, nullptr);
 
         FILE* discard = nullptr;
         if (freopen_s(&discard, R"(\\.\NUL)", "r", stdin))

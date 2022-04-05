@@ -51,6 +51,7 @@
 
 #include "logging.h"
 
+#include <SDL2/SDL_syswm.h>
 #include <SDL2/SDL_ttf.h>
 
 #include <fcntl.h>
@@ -63,6 +64,7 @@
 #    ifndef WIN32_LEAN_AND_MEAN
 #        define WIN32_LEAN_AND_MEAN
 #    endif
+#    include <WinUser.h>
 #    include <Windows.h>
 
 #    ifdef DUNE_CRT_HEAP_DEBUG
@@ -105,6 +107,63 @@ inline std::string demangleSymbol(const char* symbolname) {
 }
 #endif
 
+#if _WIN32
+#    ifndef DPI_AWARENESS
+enum DPI_Awareness {
+    DPI_Awareness_Invalid           = -1,
+    DPI_Awareness_Unaware           = 0,
+    DPI_Awareness_System_Aware      = 1,
+    DPI_Awareness_Per_Monitor_Aware = 2
+};
+#    endif
+
+using GetProcessDPIAwarenessFunc              = HRESULT(WINAPI*)(HANDLE, DPI_Awareness*);
+using GetWindowDPIAwarenessContextFunc        = DPI_AWARENESS_CONTEXT(WINAPI*)(HWND);
+using GetWindowDPIAwarenessContextFunc        = DPI_AWARENESS_CONTEXT(WINAPI*)(HWND);
+using GetThreadDPIAwarenessContextFunc        = DPI_AWARENESS_CONTEXT(WINAPI*)();
+using GetAwarenessFromDpiAwarenessContextFunc = DPI_Awareness(WINAPI*)(DPI_AWARENESS_CONTEXT);
+
+auto resolve_from_user32(const char* name) -> void* {
+    auto user32_module = GetModuleHandleA("user32.dll");
+
+    if (!user32_module)
+        return nullptr;
+
+    return reinterpret_cast<void*>(GetProcAddress(user32_module, name));
+};
+
+// const auto getProcessDPIAwareness =
+//     (GetProcessDPIAwarenessFunc)GetProcAddress(shcoreModule, "GetProcessDpiAwareness");
+const auto getWindowDPIAwarenessContext_ =
+    reinterpret_cast<GetWindowDPIAwarenessContextFunc>(resolve_from_user32("GetWindowDpiAwarenessContext"));
+const auto getThreadDPIAwarenessContext_ =
+    reinterpret_cast<GetThreadDPIAwarenessContextFunc>(resolve_from_user32("GetThreadDpiAwarenessContext"));
+const auto getAwarenessFromDPIAwarenessContext_ = reinterpret_cast<GetAwarenessFromDpiAwarenessContextFunc>(
+    resolve_from_user32("GetAwarenessFromDpiAwarenessContext"));
+
+int window_dpi_awareness(HWND hWnd) {
+    if (!getWindowDPIAwarenessContext_ || !getAwarenessFromDPIAwarenessContext_)
+        return DPI_Awareness_Invalid;
+
+    const auto context = getWindowDPIAwarenessContext_(hWnd);
+    if (NULL == context)
+        return DPI_Awareness::DPI_Awareness_Invalid;
+
+    return getAwarenessFromDPIAwarenessContext_(context);
+}
+
+int thread_dpi_awareness() {
+    if (!getThreadDPIAwarenessContext_ || !getAwarenessFromDPIAwarenessContext_)
+        return DPI_Awareness_Invalid;
+
+    const auto context = getThreadDPIAwarenessContext_();
+    if (NULL == context)
+        return DPI_Awareness::DPI_Awareness_Invalid;
+
+    return getAwarenessFromDPIAwarenessContext_(context);
+}
+#endif // _WIN32
+
 namespace {
 int currentDisplayIndex = SCREEN_DEFAULT_DISPLAYINDEX;
 }
@@ -132,7 +191,8 @@ void setVideoMode(int displayIndex) {
 
     if (settings.video.fullscreen) {
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    }
+    } else
+        videoFlags |= SDL_WINDOW_RESIZABLE;
 
     const SDL_DisplayMode targetDisplayMode = {0, settings.video.physicalWidth, settings.video.physicalHeight, 0,
                                                nullptr};
@@ -174,6 +234,74 @@ void setVideoMode(int displayIndex) {
     window = SDL_CreateWindow("Dune Legacy", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
                               SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), settings.video.physicalWidth,
                               settings.video.physicalHeight, videoFlags);
+
+    {
+        SDL_SysWMinfo wmInfo{};
+        SDL_VERSION(&wmInfo.version)
+
+        const auto sdl_highdpi = 0 != (SDL_GetWindowFlags(window) & SDL_WINDOW_ALLOW_HIGHDPI);
+        sdl2::log_info("Window flag: SDL_WINDOW_ALLOW_HIGHDPI=%d", sdl_highdpi);
+
+        if (SDL_GetWindowWMInfo(window, &wmInfo)) {
+            const HWND hWnd = wmInfo.info.win.window;
+
+            sdl2::log_info("DPI aware thread=%d window=%d", thread_dpi_awareness(), window_dpi_awareness(hWnd));
+
+            const auto is_root = hWnd == GetAncestor(hWnd, GA_ROOT);
+
+            sdl2::log_info("Window root: %d", is_root);
+
+            if constexpr (false) {
+                MSG msg{};
+
+                for (;;) {
+
+                    const auto ret = GetMessage(&msg, hWnd, 0, 0);
+
+                    if (0 == ret)
+                        THROW(std::invalid_argument, "I don't want to argue anymore.");
+
+                    if (ret == -1)
+                        THROW(std::runtime_error, "GetMessage is unhappy.");
+
+                    static std::unordered_map<unsigned, uint32_t> message_counts;
+                    ++message_counts[msg.message];
+
+                    if (msg.message == 0x02e0) {
+                        static auto count = 0;
+                        ++count;
+                    }
+
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                }
+            }
+
+        } else {
+            const auto error_string = std::string{SDL_GetError()};
+
+            sdl2::log_info("SDL_GetWindowWMInfo() failed: %s", error_string);
+        }
+
+        auto* win2 = SDL_CreateWindow("", 0, 0, 0, 0, SDL_WINDOW_HIDDEN);
+
+        if (win2) {
+            const auto sdl_highdpi2 = 0 != (SDL_GetWindowFlags(win2) & SDL_WINDOW_ALLOW_HIGHDPI);
+            sdl2::log_info("Win2 flag: SDL_WINDOW_ALLOW_HIGHDPI=%d", sdl_highdpi);
+
+            if (SDL_GetWindowWMInfo(win2, &wmInfo)) {
+                const HWND hWnd = wmInfo.info.win.window;
+
+                sdl2::log_info("DPI aware thread=%d window=%d", thread_dpi_awareness(), window_dpi_awareness(hWnd));
+            } else {
+                const auto error_string = std::string{SDL_GetError()};
+
+                sdl2::log_info("The second SDL_GetWindowWMInfo() failed: %s", error_string);
+            }
+
+            SDL_DestroyWindow(win2);
+        }
+    }
 
     sdl2::log_info("Available renderers:");
 
@@ -267,12 +395,12 @@ void updateFullscreen() {
     } else {
         // switch to fullscreen mode
         sdl2::log_info("Switching to fullscreen mode.");
-        SDL_DisplayMode displayMode;
-        SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(window), &displayMode);
+        // SDL_DisplayMode displayMode;
+        // SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(window), &displayMode);
 
         SDL_SetWindowFullscreen(window, window_flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
-        SDL_SetWindowSize(window, displayMode.w, displayMode.h);
+        // SDL_SetWindowSize(window, displayMode.w, displayMode.h);
         SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
     }
 
@@ -788,11 +916,23 @@ struct DuneHeapDebug { };
 #endif
 
 struct SDL_handle final {
+
     SDL_handle(Uint32 flags) {
+#if defined(_WIN32)
+        sdl2::log_info("DPI aware %d", thread_dpi_awareness());
+
+        // static constexpr auto style = CS_BYTEALIGNCLIENT | CS_OWNDC;
+        // SDL_RegisterApp("Dune Legacy", style, GetModuleHandle(NULL));
+#endif
+
         if (SDL_Init(flags) < 0)
             THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
+
+        sdl2::log_info("After SDL_Init: DPI aware %d", thread_dpi_awareness());
     }
     ~SDL_handle() { SDL_Quit(); }
+
+private:
 };
 
 struct TTF_handle final {

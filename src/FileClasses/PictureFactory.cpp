@@ -516,13 +516,13 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
 
     const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
-    sdl2::surface_ptr VersionText{pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
+    { // Scope
+        sdl2::surface_ptr VersionText{pFontManager->createSurfaceWithText(VERSION, PALCOLOR_BLACK, 14)};
 
-    SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
-                                     HAlign::Center, VAlign::Center);
-    SDL_BlitSurface(VersionText.get(), nullptr, Version.get(), &dest4);
-
-    VersionText.reset();
+        SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2,
+                                         getHeight(Version.get()) / 2 + 2, HAlign::Center, VAlign::Center);
+        SDL_BlitSurface(VersionText.get(), nullptr, Version.get(), &dest4);
+    }
 
     drawFrame(Version.get(), SimpleFrame);
 

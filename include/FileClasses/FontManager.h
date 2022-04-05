@@ -18,13 +18,13 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
-#include "Font.h"
-
 #include <misc/SDL2pp.h>
 
 #include <memory>
 #include <string_view>
 #include <unordered_map>
+
+class TTFFont;
 
 /// A class for managing fonts.
 /**
@@ -51,12 +51,12 @@ public:
                                                      bool bCentered = false);
 
 private:
-    Font* getFont(uint32_t fontSize);
+    TTFFont* getFont(uint32_t fontSize);
 
-    std::unique_ptr<Font> loadFont(unsigned int fontSize);
+    std::unique_ptr<TTFFont> loadFont(unsigned int fontSize) const;
 
     std::filesystem::path font_path_;
-    std::unordered_map<unsigned int, std::unique_ptr<Font>> fonts;
+    std::unordered_map<uint32_t, std::unique_ptr<TTFFont>> fonts;
 };
 
 #endif // FONTMANAGER_H

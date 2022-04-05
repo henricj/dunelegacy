@@ -68,6 +68,8 @@ add_library(dune ${SOURCES} ${HEADERS})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC git_version ${LIBS})
 
+target_compile_definitions(dune PUBLIC SDL_DYNAMIC_API=0)
+
 if(DUNE_CRT_HEAP_DEBUG)
 	target_compile_definitions(dune PUBLIC DUNE_CRT_HEAP_DEBUG)
 	if(WIN32)

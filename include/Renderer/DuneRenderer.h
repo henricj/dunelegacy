@@ -159,6 +159,8 @@ inline void Dune_RenderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, const
     SDL_RenderCopyF(renderer, texture, srcrect, dstrect);
 }
 
+inline void Dune_RenderScaled(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y);
+
 inline void Dune_RenderPresent(SDL_Renderer* renderer) {
 #if _DEBUG
     using namespace DuneRendererImplementation;

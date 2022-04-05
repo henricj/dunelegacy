@@ -14,8 +14,8 @@ void TextButton::updateTextures() {
 
         auto& gui = GUIStyle::getInstance();
 
-        setSurfaces(gui.createButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                    gui.createButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor),
-                    gui.createButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
+        setSurfaces(gui.createButtonText(getSize().x, getSize().y, text, false, textcolor, textshadowcolor),
+                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor),
+                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor));
     }
 }

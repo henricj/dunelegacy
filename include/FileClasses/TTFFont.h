@@ -36,6 +36,10 @@ public:
     TTFFont(sdl2::RWops_ptr pRWOP, int fontsize);
     ~TTFFont() override;
 
+    [[nodiscard]] sdl2::surface_ptr create_text_surface(std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) const;
+    [[nodiscard]] sdl2::surface_ptr create_multiline_text_surface(std::string_view text, uint32_t wrapLength,
+                                                                  uint32_t baseColor = 0xFFFFFFFFu) const;
+
     void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) override;
 
     [[nodiscard]] int getTextWidth(std::string_view text) const override;

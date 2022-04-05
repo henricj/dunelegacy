@@ -31,6 +31,8 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
         THROW(std::invalid_argument, "TTFFont::TTFFont(): pRWOP == nullptr!");
     }
 
+    const auto size = SDL_RWsize(pRWOP.get());
+
     pTTFFont = font_ptr{TTF_OpenFontRW(pRWOP.release(), 1, fontsize)};
     if (!pTTFFont) {
         THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: %s!", TTF_GetError());
@@ -45,18 +47,63 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
 */
 TTFFont::~TTFFont() = default;
 
+sdl2::surface_ptr TTFFont::create_text_surface(std::string_view text, uint32_t baseColor) const {
+    if (text.empty())
+        return {};
+
+    sdl2::surface_ptr surface{TTF_RenderUTF8_Blended(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
+
+    //    SDL_BlendMode blend_mode;
+    // SDL_GetSurfaceBlendMode(surface.get(), &blend_mode);
+
+    // if (blend_mode == SDL_BLENDMODE_BLEND) {
+    //     static auto count_blend = 0;
+    //     ++count_blend;
+    // } else if (blend_mode == SDL_BLENDMODE_NONE) {
+    //     static auto count_none = 0;
+    //     ++count_none;
+    // }
+
+    // SDL_SetSurfaceBlendMode(surface.get(), SDL_BLENDMODE_BLEND);
+
+    return surface;
+}
+
+sdl2::surface_ptr TTFFont::create_multiline_text_surface(std::string_view text, uint32_t wrapLength,
+                                                         uint32_t baseColor) const {
+    if (text.empty())
+        return {};
+
+    sdl2::surface_ptr surface{
+        TTF_RenderUTF8_Blended_Wrapped(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor), wrapLength)};
+
+    SDL_SetSurfaceBlendMode(surface.get(), SDL_BLENDMODE_BLEND);
+
+    return surface;
+}
+
 void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor) {
 
     if (!text.empty()) {
-        const sdl2::surface_ptr pTextSurface{
-            TTF_RenderUTF8_Blended(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
+        const sdl2::surface_ptr pTextSurface{create_text_surface(text, baseColor)};
 
         if (!pTextSurface) {
             THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Blended() failed: %s!",
                   TTF_GetError());
         }
 
-        SDL_SetSurfaceBlendMode(pTextSurface.get(), SDL_BLENDMODE_NONE);
+        // SDL_BlendMode blend_mode;
+        // SDL_GetSurfaceBlendMode(pTextSurface.get(), &blend_mode);
+
+        // if (blend_mode == SDL_BLENDMODE_BLEND) {
+        //     static auto count_blend = 0;
+        //     ++count_blend;
+        // } else if (blend_mode == SDL_BLENDMODE_NONE) {
+        //     static auto count_none = 0;
+        //     ++count_none;
+        // }
+
+        // SDL_SetSurfaceBlendMode(pTextSurface.get(), SDL_BLENDMODE_BLEND);
 
         SDL_Rect dest{0, -2, pTextSurface->w, pTextSurface->h};
         SDL_BlitSurface(pTextSurface.get(), nullptr, pSurface, &dest);

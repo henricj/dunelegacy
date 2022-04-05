@@ -43,20 +43,48 @@ int FontManager::getTextHeight(unsigned int fontSize) {
     return getFont(fontSize)->getTextHeight();
 }
 
+namespace {
+float get_display_scale(SDL_Window* sdl_window) {
+
+    static constexpr auto default_dpi =
+#if defined(__APPLE__)
+        72.0f;
+#else
+        96.0f; // This is true for Windows, but what about others?
+#endif
+
+    const auto displayIndex = SDL_GetWindowDisplayIndex(sdl_window);
+    float dpi;
+    if (0 != SDL_GetDisplayDPI(displayIndex, nullptr, &dpi, nullptr)) {
+        dpi = 1;
+    }
+
+    auto* sdl_renderer = SDL_GetRenderer(sdl_window);
+
+    float scaleX;
+    float scaleY;
+    SDL_RenderGetScale(sdl_renderer, &scaleX, &scaleY);
+
+    return scaleY * dpi / default_dpi;
+}
+} // namespace
+
 sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
-    auto* const pFont = getFont(fontSize);
+    const auto* const pFont = getFont(fontSize);
 
-    const auto width  = pFont->getTextWidth(text);
-    const auto height = pFont->getTextHeight();
-    sdl2::surface_ptr pic =
-        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    return pFont->create_text_surface(text, color);
 
-    SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
-    SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
+    // const auto width  = pFont->getTextWidth(text);
+    // const auto height = pFont->getTextHeight();
+    // sdl2::surface_ptr pic =
+    //     sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
-    pFont->drawTextOnSurface(pic.get(), text, color);
+    ////SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
+    ////SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
 
-    return pic;
+    // pFont->drawTextOnSurface(pic.get(), text, color);
+
+    // return pic;
 }
 
 sdl2::texture_ptr FontManager::createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
@@ -112,7 +140,7 @@ sdl2::texture_ptr FontManager::createTextureWithMultilineText(std::string_view t
     return convertSurfaceToTexture(createSurfaceWithMultilineText(text, color, fontSize, bCentered));
 }
 
-Font* FontManager::getFont(uint32_t fontSize) {
+TTFFont* FontManager::getFont(uint32_t fontSize) {
 
     auto& font = fonts[fontSize];
 
@@ -122,6 +150,6 @@ Font* FontManager::getFont(uint32_t fontSize) {
     return font.get();
 }
 
-std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) {
+std::unique_ptr<TTFFont> FontManager::loadFont(unsigned int fontSize) const {
     return std::make_unique<TTFFont>(pFileManager->openFile(font_path_), fontSize);
 }

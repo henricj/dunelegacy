@@ -199,6 +199,13 @@ public:
                                                   bool activated, Uint32 textcolor = COLOR_DEFAULT,
                                                   Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
+    virtual sdl2::surface_ptr createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
+                                               Uint32 textcolor       = COLOR_DEFAULT,
+                                               Uint32 textshadowcolor = COLOR_DEFAULT) const = 0;
+
+    virtual void RenderButton(SDL_Renderer* renderer, const SDL_FRect& dest, SDL_Texture* content,
+                              bool pressed) const = 0;
+
     /**
         Returns the minimum size of a text box
         \param  fontSize  The size of the font to use
