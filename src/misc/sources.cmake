@@ -3,7 +3,7 @@ add_sources(MISC_SOURCES
 	draw_util.cpp
 	dune_localtime.cpp
 	dune_timer_resolution.cpp
-	dune_wait_event.cpp
+	dune_events.cpp
 	FileSystem.cpp
 	fnkdat.cpp
 	IFileStream.cpp

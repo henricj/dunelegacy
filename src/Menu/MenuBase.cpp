@@ -19,7 +19,7 @@
 
 #include <Network/NetworkManager.h>
 
-#include "misc/dune_wait_event.h"
+#include "misc/dune_events.h"
 #include <FileClasses/LoadSavePNG.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
