@@ -15,15 +15,17 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "misc/dune_localtime.h"
-
 #include <GUI/dune/ChatManager.h>
 
+#include "misc/DrawingRectHelper.h"
+#include "misc/dune_clock.h"
+#include "misc/dune_localtime.h"
 #include <FileClasses/FontManager.h>
 #include <GUI/dune/DuneStyle.h>
-#include <globals.h>
 #include <misc/draw_util.h>
 #include <misc/string_util.h>
+
+#include <globals.h>
 
 #include <algorithm>
 #include <ctime>

@@ -18,9 +18,12 @@
 #ifndef CHATMANAGER_H
 #define CHATMANAGER_H
 
-#include <GUI/Widget.h>
+#include "misc/DrawingRectHelper.h"
+#include "misc/dune_clock.h"
 #include <misc/SDL2pp.h>
 
+#include <GUI/Widget.h>
+#
 #include <deque>
 #include <memory>
 #include <string>

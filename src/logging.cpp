@@ -7,12 +7,15 @@
 #include "dune_version.h"
 
 #include "misc/SDL2pp.h"
+#include "misc/fnkdat.cpp"
 
 #include <SDL2/SDL.h>
 
 #include <fmt/core.h>
 
 #include <filesystem>
+#include <optional>
+#include <unordered_map>
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
