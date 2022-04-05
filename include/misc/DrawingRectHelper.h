@@ -517,7 +517,7 @@ constexpr SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, const SDL_Rect&
     \return the rectangle for drawing pSurface at the specified position when passed to SDL_BlitSurface
 */
 inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HAlign::Center,
-                                          VAlign valign = VAlign::Center) {
+                                       VAlign valign = VAlign::Center) {
     return calcAlignedDrawingRect(pSurface, getRendererSize(), halign, valign);
 }
 
@@ -613,7 +613,7 @@ constexpr SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, const SDL
     \return the rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
 */
 inline SDL_Rect calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Center,
-                                          VAlign valign = VAlign::Center) {
+                                       VAlign valign = VAlign::Center) {
     return calcAlignedDrawingRect(pTexture, getRendererSize(), halign, valign);
 }
 
