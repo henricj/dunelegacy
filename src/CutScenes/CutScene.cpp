@@ -17,7 +17,7 @@
 
 #include <CutScenes/CutScene.h>
 
-#include "misc/dune_wait_event.h"
+#include "misc/dune_events.h"
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Palfile.h>
 #include <FileClasses/music/MusicPlayer.h>
