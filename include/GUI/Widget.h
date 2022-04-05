@@ -41,25 +41,25 @@ public:
         \param p the point to add
         \return the sum of both points
     */
-    Point operator+(const Point& p) const { return Point(x + p.x, y + p.y); }
+    Point operator+(const Point& p) const { return {x + p.x, y + p.y}; }
 
     /** operator for subtracting two points.
         \param p the point to add
         \return this point minus p
     */
-    Point operator-(const Point& p) const { return Point(x - p.x, y - p.y); }
+    Point operator-(const Point& p) const { return {x - p.x, y - p.y}; }
 
     /** operator for multiplying every both coordinates with an integer value.
         \param c the scalar to multiply with
         \return this point times c
     */
-    Point operator*(int32_t c) const { return Point(x * c, y * c); }
+    Point operator*(int32_t c) const { return {x * c, y * c}; }
 
     /** operator for dividing every both coordinates by an integer value.
         \param c the scalar to devide by
         \return this point divided by c
     */
-    Point operator/(int32_t c) const { return Point(x / c, y / c); }
+    Point operator/(int32_t c) const { return {x / c, y / c}; }
 
     /** operator for comparing two Points.
         \param op the other operator
@@ -80,7 +80,7 @@ public:
     \return the size of pSurface
 */
 inline Point getSurfaceSize(SDL_Surface* pSurface) {
-    return Point(pSurface->w, pSurface->h);
+    return {pSurface->w, pSurface->h};
 }
 
 /**
@@ -223,7 +223,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    [[nodiscard]] virtual Point getMinimumSize() const { return Point(0, 0); }
+    [[nodiscard]] virtual Point getMinimumSize() const { return {0, 0}; }
 
     /**
         Returns whether this widget is allowed to be resized in X direction.

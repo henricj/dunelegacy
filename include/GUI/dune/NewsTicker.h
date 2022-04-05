@@ -48,7 +48,7 @@ public:
         if (pBackground != nullptr) {
             return getTextureSize(pBackground);
         }
-        return Point(0, 0);
+        return {0, 0};
     }
 
 private:

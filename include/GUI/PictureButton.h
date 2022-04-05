@@ -75,7 +75,7 @@ public:
             return getTextureSize(pUnpressedTexture);
         }
 
-        return Point(0, 0);
+        return {0, 0};
     }
 };
 

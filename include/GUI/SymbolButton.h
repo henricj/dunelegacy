@@ -74,7 +74,7 @@ public:
         if (pSymbolSurface) {
             return Point((int32_t)pSymbolSurface->w + 5, (int32_t)pSymbolSurface->h + 5);
         }
-        return Point(0, 0);
+        return {0, 0};
     }
 
 protected:

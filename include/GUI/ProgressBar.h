@@ -172,7 +172,7 @@ public:
     */
     [[nodiscard]] Point getMinimumSize() const override {
         if (text.empty()) {
-            return Point(4, 4);
+            return {4, 4};
         }
         return GUIStyle::getInstance().getMinimumButtonSize(text);
     }

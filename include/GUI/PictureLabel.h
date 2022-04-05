@@ -71,7 +71,7 @@ public:
             return getTextureSize(pTexture);
         }
 
-        return Point(0, 0);
+        return {0, 0};
     }
 
     /**
