@@ -531,7 +531,7 @@ inline SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, HAlign halign = HA
 */
 constexpr SDL_Rect calcAlignedDrawingRect(SDL_Surface* pSurface, SDL_Surface* pBaseSurface,
                                           HAlign halign = HAlign::Center, VAlign valign = VAlign::Center) {
-    const SDL_Rect rect = {0, 0, pBaseSurface->w, pBaseSurface->h};
+    const SDL_Rect rect{0, 0, pBaseSurface->w, pBaseSurface->h};
     return calcAlignedDrawingRect(pSurface, rect, halign, valign);
 }
 

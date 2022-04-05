@@ -99,9 +99,9 @@ public:
     virtual void setCurrentPosition(const SDL_Rect& rect) { setCurrentPosition(rect.x, rect.y, rect.w, rect.h); }
 
     /**
-        Handles the input recieved from SDL. Everytime a sdl event occures this method should
+        Handles the input received from SDL. Every time a sdl event occurs this method should
         be called.
-        \param  event   SDL_Event that occures.
+        \param  event   SDL_Event that occurs.
     */
     virtual void handleInput(SDL_Event& event);
 

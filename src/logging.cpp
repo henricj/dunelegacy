@@ -383,7 +383,7 @@ void logging_initialize() {
 void logging_configure(bool capture_output) {
     if (capture_output) {
         // get utf8-encoded log file path
-        auto logfilePath = getLogFilepath();
+        const auto logfilePath = getLogFilepath();
 
 #ifdef _WIN32
 
