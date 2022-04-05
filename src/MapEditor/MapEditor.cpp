@@ -1704,20 +1704,21 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const Coord& position = unit.position;
 
-        constexpr Coord tankTurretOffset[] = {Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0),
-                                              Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0)};
+        static constexpr Coord tankTurretOffset[] = {Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0),
+                                                     Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0)};
 
-        constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
-                                                   Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
+        static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
+                                                          Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
 
-        constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                   Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+        static constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                          Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-        constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                  Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+        static constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
+                                                         Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
 
-        constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),  Coord(4, -12),
-                                                    Coord(-8, -16), Coord(0, -12),  Coord(-4, -12), Coord(0, -12)};
+        static constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),
+                                                           Coord(4, -12),  Coord(-8, -16), Coord(0, -12),
+                                                           Coord(-4, -12), Coord(0, -12)};
 
         int objectPicBase      = 0;
         int framesX            = static_cast<int>(ANGLETYPE::NUM_ANGLES);
