@@ -97,7 +97,7 @@ void ChatManager::draw(Point position) {
             auto infoDest =
                 calcDrawingRect(chatMessage.pMessageTexture.get(), position.x + LEFT_BORDER_WIDTH - 20, messageDest.y);
 
-            int maxHeight;
+            int maxHeight{};
 
             // MSGTYPE_PICTURE
             if (chatMessage.pUsernameTexture) {
