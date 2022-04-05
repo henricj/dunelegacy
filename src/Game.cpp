@@ -34,8 +34,8 @@
 #include <misc/OFileStream.h>
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
+#include <misc/dune_events.h>
 #include <misc/dune_timer_resolution.h>
-#include <misc/dune_wait_event.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
 #include <misc/md5.h>

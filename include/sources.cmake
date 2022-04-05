@@ -173,9 +173,9 @@ add_sources(HEADERS
 	misc/draw_util.h
 	misc/dune_clock.h
 	misc/dune_endian.h
+	misc/dune_events.h
 	misc/dune_localtime.h
 	misc/dune_timer_resolution.h
-	misc/dune_wait_event.h
 	misc/exceptions.h
 	misc/FileSystem.h
 	misc/fnkdat.h

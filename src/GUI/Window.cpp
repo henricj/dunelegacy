@@ -15,16 +15,10 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "misc/dune_events.h"
 #include <GUI/GUIStyle.h>
 #include <GUI/Window.h>
 #include <globals.h>
-#include <misc/draw_util.h>
-
-#include <SDL2/SDL_syswm.h>
-
-namespace {
-inline constexpr auto local_win32_WM_DPICHANGED = 0x02E0;
-}
 
 Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position(x, y) {
 
@@ -161,27 +155,6 @@ void Window::handleInput(SDL_Event& event) {
         case SDL_RENDER_DEVICE_RESET: {
             invalidateTextures();
         } break;
-
-#if defined(_WIN32)
-        case SDL_SYSWMEVENT: {
-            switch (event.syswm.type) {
-                case local_win32_WM_DPICHANGED: {
-                    const auto dpi   = HIWORD(event.syswm.msg->msg.win.wParam);
-                    const auto scale = static_cast<float>(dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-
-                    GUIStyle::getInstance().setDisplayDpi(scale);
-
-                    invalidateTextures();
-
-                    const RECT* const prcNewWindow = reinterpret_cast<RECT*>(event.syswm.msg->msg.win.lParam);
-                    SDL_SetWindowPosition(window, prcNewWindow->left, prcNewWindow->top);
-                    SDL_SetWindowSize(window, prcNewWindow->right - prcNewWindow->left,
-                                      prcNewWindow->bottom - prcNewWindow->top);
-
-                } break;
-            }
-        } break;
-#endif // defined(_WIN32)
     }
 }
 

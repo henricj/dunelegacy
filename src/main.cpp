@@ -37,6 +37,7 @@
 
 #include <Menu/MainMenu.h>
 
+#include "misc/dune_events.h"
 #include <misc/FileSystem.h>
 #include <misc/SDL2pp.h>
 #include <misc/Scaler.h>
@@ -878,6 +879,9 @@ int main(int argc, char* argv[]) {
                        pTTFLinkedVersion->patch);
         sdl2::log_info("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor,
                        TTFCompiledVersion.patch);
+
+        // Look out for windows DPI messages.
+        dune::DuneEventWatcher event_watcher;
 
         const auto okay = run_game(argc, argv);
 
