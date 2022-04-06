@@ -11,6 +11,5 @@
     "ms-gsl",
     "gtest",
     "soxr"
-  ],
-  "builtin-baseline": "3048b9ab12f8fd4a3bc3edbdbc4070fc7d95c00b"
+  ]
 }
