@@ -49,9 +49,9 @@ public:
     */
     virtual void setOwningTexture(DuneTexture texture) {
         localTexture_.reset(texture.texture_);
-        privateDuneTexture_ = std::move(texture);
+        duneTexture_ = std::move(texture);
 
-        setTexture(&privateDuneTexture_);
+        setTexture(&duneTexture_);
     }
 
     /**
@@ -68,9 +68,9 @@ public:
     void draw(Point position) override;
 
 private:
-    const DuneTexture* pTexture{}; ///< The texture that is shown
+    Point size_{};
     sdl2::texture_ptr localTexture_;
-    DuneTexture privateDuneTexture_;
+    DuneTexture duneTexture_; ///< The texture that is shown
 };
 
 #endif // PICTURELABEL_H

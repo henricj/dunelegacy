@@ -17,47 +17,48 @@
 
 #include <GUI/PictureLabel.h>
 
-PictureLabel::PictureLabel() { }
+PictureLabel::PictureLabel()  = default;
 PictureLabel::~PictureLabel() = default;
 
 void PictureLabel::setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
     localTexture_.reset(); // Free the old one before we try to create another.
     localTexture_ = convertSurfaceToTexture(pSurface.get());
 
-    privateDuneTexture_ = DuneTexture{localTexture_.get()};
+    duneTexture_ = DuneTexture{localTexture_.get()};
 
-    setTexture(&privateDuneTexture_);
+    size_ = Point(duneTexture_.source_rect().w, duneTexture_.source_rect().h);
+
+    resize(size_);
 }
 
 void PictureLabel::setTexture(const DuneTexture* pTexture) {
-    this->pTexture = pTexture;
+    assert(pTexture != &duneTexture_);
 
-    if (this->pTexture) {
-        resize(getTextureSize(this->pTexture));
+    duneTexture_ = *pTexture;
+
+    localTexture_.reset();
+
+    if (duneTexture_.texture_) {
+        size_ = Point(duneTexture_.source_rect().w, duneTexture_.source_rect().h);
     } else {
-        resize(0, 0);
+        size_ = Point{};
     }
 
-    if (this->pTexture->texture_ != localTexture_.get())
-        localTexture_.reset();
+    resize(size_);
 }
 
 Point PictureLabel::getMinimumSize() const {
-    if (pTexture) {
-        return getTextureSize(pTexture);
-    }
-
-    return {0, 0};
+    return size_;
 }
 
 void PictureLabel::draw(Point position) {
-    if (isVisible() == false) {
+    if (isVisible() == false)
         return;
-    }
 
-    if (!pTexture) {
+    if (!duneTexture_.texture_)
         return;
-    }
 
-    pTexture->draw(renderer, position.x, position.y);
+    const SDL_Rect dest{position.x, position.y, size_.x, size_.y};
+
+    Dune_RenderCopy(renderer, &duneTexture_, nullptr, &dest);
 }
