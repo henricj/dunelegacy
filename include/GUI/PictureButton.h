@@ -23,12 +23,14 @@
 
 /// A class for a picture button
 class PictureButton final : public Button {
+    using parent = Button;
+
 public:
     /// Default constructor
-    PictureButton() { PictureButton::enableResizing(false, false); }
+    PictureButton();
 
     /// destructor
-    ~PictureButton() override = default;
+    ~PictureButton() override;
 
     /**
         This method is used for setting the different surfaces for this button.
@@ -37,16 +39,7 @@ public:
         \param  pActiveSurface          This surface is shown when the button is activated by keyboard or by mouse hover
     */
     void setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface = nullptr,
-                     sdl2::surface_ptr pActiveSurface = nullptr) override {
-
-        Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
-
-        if (this->pUnpressedTexture) {
-            resize(getTextureSize(pUnpressedTexture));
-        } else {
-            resize(0, 0);
-        }
-    }
+                     sdl2::surface_ptr pActiveSurface = nullptr) override;
 
     /**
         This method is used for setting the different textures for this button.
@@ -55,28 +48,14 @@ public:
         \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
     */
     void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture = nullptr,
-                     const DuneTexture* pActiveTexture = nullptr) override {
-        Button::setTextures(pUnpressedTexture, pPressedTexture, pActiveTexture);
-
-        if (pUnpressedTexture) {
-            resize(getTextureSize(pUnpressedTexture));
-        } else {
-            resize(0, 0);
-        }
-    }
+                     const DuneTexture* pActiveTexture = nullptr) override;
 
     /**
         Returns the minimum size of this button. The button should not
         be resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        if (pUnpressedTexture) {
-            return getTextureSize(pUnpressedTexture);
-        }
-
-        return {0, 0};
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 };
 
 #endif // PICTUREBUTTON_H

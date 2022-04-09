@@ -5,6 +5,7 @@ add_sources(GUI_SOURCES
 	GUIStyle.cpp
 	Label.cpp
 	ListBox.cpp
+	PictureButton.cpp
 	PictureLabel.cpp
 	ProgressBar.cpp
 	RadioButtonManager.cpp
