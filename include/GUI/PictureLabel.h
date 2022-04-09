@@ -29,36 +29,29 @@ public:
     PictureLabel();
 
     /// destructor
-    ~PictureLabel() override = default;
+    ~PictureLabel() override;
 
     /**
         This method sets the surface for this picture label.
         \param  pSurface    This surface is shown
     */
-    virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
-        localTexture_.reset(); // Free the old one before we try to create another.
-        localTexture_ = convertSurfaceToTexture(pSurface.get());
-
-        privateDuneTexture_ = DuneTexture{localTexture_.get()};
-
-        setTexture(&privateDuneTexture_);
-    }
+    virtual void setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface);
 
     /**
         This method sets the texture for this picture label.
         \param  pTexture        This texture is shown
     */
-    virtual void setTexture(const DuneTexture* pTexture) {
-        this->pTexture = pTexture;
+    virtual void setTexture(const DuneTexture* pTexture);
 
-        if (this->pTexture) {
-            resize(getTextureSize(this->pTexture));
-        } else {
-            resize(0, 0);
-        }
+    /**
+        This method sets the texture for this picture label.
+        \param  texture        This texture is shown
+    */
+    virtual void setOwningTexture(DuneTexture texture) {
+        localTexture_.reset(texture.texture_);
+        privateDuneTexture_ = std::move(texture);
 
-        if (this->pTexture->texture_ != localTexture_.get())
-            localTexture_.reset();
+        setTexture(&privateDuneTexture_);
     }
 
     /**
@@ -66,29 +59,13 @@ public:
         be resized to a size smaller than this.
         \return the minimum size of this picture label
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        if (pTexture) {
-            return getTextureSize(pTexture);
-        }
-
-        return {0, 0};
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override {
-        if (isVisible() == false) {
-            return;
-        }
-
-        if (!pTexture) {
-            return;
-        }
-
-        pTexture->draw(renderer, position.x, position.y);
-    }
+    void draw(Point position) override;
 
 private:
     const DuneTexture* pTexture{}; ///< The texture that is shown
