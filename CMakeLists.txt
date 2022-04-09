@@ -41,7 +41,7 @@ if(MSVC)
     include(setup/msvc-setup)
 endif()
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     include(setup/clang-gcc-setup)
 endif()
 
@@ -129,7 +129,7 @@ check_cxx_source_compiles(
 
 
 if(DUNE_TARGET_ARCHITECTURE)
-    if (DUNE_TARGET_ARCHITECTURE STREQUAL "x64")
+    if (DUNE_TARGET_ARCHITECTURE STREQUAL "x64" OR DUNE_TARGET_ARCHITECTURE STREQUAL "x86_64")
         check_cxx_source_compiles(
             "#if !defined(__x86_64__) && !defined(_M_X64)
             #error \"Invalid architecture\"
