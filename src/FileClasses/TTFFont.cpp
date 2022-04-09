@@ -45,22 +45,13 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
 */
 TTFFont::~TTFFont() = default;
 
-void TTFFont::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t baseColor) {
+sdl2::surface_ptr TTFFont::createTextSurface(std::string_view text, uint32_t baseColor) const {
+    if (text.empty())
+        return {};
 
-    if (!text.empty()) {
-        const sdl2::surface_ptr pTextSurface{
-            TTF_RenderUTF8_Blended(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
+    sdl2::surface_ptr surface{TTF_RenderUTF8_Blended(pTTFFont.get(), std::string{text}.c_str(), RGBA2SDL(baseColor))};
 
-        if (!pTextSurface) {
-            THROW(std::invalid_argument, "TTFFont::drawTextOnSurface(): TTF_RenderUTF8_Blended() failed: %s!",
-                  TTF_GetError());
-        }
-
-        SDL_SetSurfaceBlendMode(pTextSurface.get(), SDL_BLENDMODE_NONE);
-
-        SDL_Rect dest{0, -2, pTextSurface->w, pTextSurface->h};
-        SDL_BlitSurface(pTextSurface.get(), nullptr, pSurface, &dest);
-    }
+    return surface;
 }
 
 /// Returns the number of pixels a text needs

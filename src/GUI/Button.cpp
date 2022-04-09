@@ -144,11 +144,13 @@ void Button::draw(Point position) {
         }
     }
 
-    if (!tex) {
-        return;
-    }
+    const auto& gui = GUIStyle::getInstance();
 
-    tex->draw(renderer, position.x, position.y);
+    const auto& hw = getSize();
+    const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(hw.x),
+                         static_cast<float>(hw.y)};
+
+    gui.RenderButton(renderer, dest, tex, bPressed);
 }
 
 void Button::drawOverlay(Point position) {
