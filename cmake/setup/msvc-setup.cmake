@@ -4,7 +4,7 @@ set(DUNE_MSVC_FLAGS " /diagnostics:caret /GA /GS /utf-8 /volatile:iso /permissiv
 string(APPEND DUNE_MSVC_FLAGS " /wd4267")
 
 set(DUNE_MSVC_DEBUG_FLAGS " /ZI /Ob0 /Od /RTC1 /RTCs /JMC" CACHE STRING "Debug compiler flags")
-set(DUNE_MSVC_RELEASE_FLAGS " /Qpar /Qpar-report:1 /EHs /GF /Gy /Gw /Zi /O2 /Ob3 /Oi /DNDEBUG" CACHE STRING  "Release compiler flags")
+set(DUNE_MSVC_RELEASE_FLAGS " /EHsc /GF /Gy /Gw /Zi /O2 /Ob3 /Oi /DNDEBUG" CACHE STRING "Release compiler flags")
 
 set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
 set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
