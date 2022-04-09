@@ -781,9 +781,10 @@ int main(int argc, char* argv[]) {
     try {
 
         // init fnkdat
-        auto [ok, tmp] = fnkdat(FNKDAT_INIT);
-        if (!ok) {
-            THROW(std::runtime_error, "Cannot initialize fnkdat!");
+        { // Scope
+            auto [ok, tmp] = fnkdat(FNKDAT_INIT);
+            if (!ok)
+                THROW(std::runtime_error, "Cannot initialize fnkdat!");
         }
 
         bool bShowDebugLog = false;
