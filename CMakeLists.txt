@@ -41,6 +41,9 @@ if(MSVC)
     include(setup/msvc-setup)
 endif()
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GCC")
+    include(setup/clang-gcc-setup)
+endif()
 
 include(CheckSymbolExists)
 include(CheckCXXSourceCompiles)

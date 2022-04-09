@@ -198,6 +198,14 @@
       }
     },
     {
+      "name": "windows-clang-x64-native-release",
+      "inherits": "windows-clang-x64-release",
+      "displayName": "Windows Clang x64/Native Release",
+      "cacheVariables": {
+        "DUNE_TARGET_ARCHITECTURE_EXTENSION": "native"
+      }
+    },
+    {
       "name": "windows-clang-x64-asan-debug",
       "displayName": "Windows Clang x64 ASAN Debug",
       "cacheVariables": {
