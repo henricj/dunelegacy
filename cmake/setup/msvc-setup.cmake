@@ -1,10 +1,10 @@
 message(STATUS "Configuring MSVC")
 
-set(DUNE_MSVC_FLAGS " /diagnostics:caret /GS /Gy /Gw /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast")
+set(DUNE_MSVC_FLAGS " /diagnostics:caret /GA /GS /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast")
 string(APPEND DUNE_MSVC_FLAGS " /wd4267")
 
-set(DUNE_MSVC_DEBUG_FLAGS " /ZI /Ob0 /Od /RTC1 /JMC" CACHE STRING "Debug compiler flags")
-set(DUNE_MSVC_RELEASE_FLAGS " /Zi /O2 /Ob3 /DNDEBUG" CACHE STRING  "Release compiler flags")
+set(DUNE_MSVC_DEBUG_FLAGS " /ZI /Ob0 /Od /RTC1 /RTCs /JMC" CACHE STRING "Debug compiler flags")
+set(DUNE_MSVC_RELEASE_FLAGS " /Qpar /Qpar-report:1 /EHs /GF /Gy /Gw /Zi /O2 /Ob3 /Oi /DNDEBUG" CACHE STRING  "Release compiler flags")
 
 set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
 set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
@@ -49,7 +49,7 @@ foreach(config ${build_list})
     message(STATUS "Appending Release build flags")
     set(CMAKE_C_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
     set(CMAKE_CXX_FLAGS_${config} "${DUNE_MSVC_RELEASE_FLAGS}")
-    string(APPEND CMAKE_EXE_LINKER_FLAGS_${config} " /OPT:REF,ICF=3")
+    string(APPEND CMAKE_EXE_LINKER_FLAGS_${config} " /LTCG /OPT:REF,ICF=3")
 endforeach()
 
 string(APPEND CMAKE_C_FLAGS ${DUNE_MSVC_FLAGS})
