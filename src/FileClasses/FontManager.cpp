@@ -30,11 +30,6 @@ FontManager::FontManager(std::filesystem::path font_path) : font_path_(std::move
 
 FontManager::~FontManager() = default;
 
-void FontManager::drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color,
-                                    unsigned int fontSize) {
-    return getFont(fontSize)->drawTextOnSurface(pSurface, text, color);
-}
-
 int FontManager::getTextWidth(std::string_view text, unsigned int fontSize) {
     return getFont(fontSize)->getTextWidth(text);
 }
@@ -44,19 +39,9 @@ int FontManager::getTextHeight(unsigned int fontSize) {
 }
 
 sdl2::surface_ptr FontManager::createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
-    auto* const pFont = getFont(fontSize);
+    const auto* const pFont = getFont(fontSize);
 
-    const auto width  = pFont->getTextWidth(text);
-    const auto height = pFont->getTextHeight();
-    sdl2::surface_ptr pic =
-        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
-
-    SDL_SetSurfaceBlendMode(pic.get(), SDL_BLENDMODE_BLEND);
-    SDL_FillRect(pic.get(), nullptr, SDL_MapRGBA(pic->format, 0, 0, 0, 0));
-
-    pFont->drawTextOnSurface(pic.get(), text, color);
-
-    return pic;
+    return pFont->createTextSurface(text, color);
 }
 
 sdl2::texture_ptr FontManager::createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize) {
@@ -122,6 +107,6 @@ Font* FontManager::getFont(uint32_t fontSize) {
     return font.get();
 }
 
-std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) {
+std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) const {
     return std::make_unique<TTFFont>(pFileManager->openFile(font_path_), fontSize);
 }

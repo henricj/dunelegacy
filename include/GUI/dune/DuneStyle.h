@@ -134,6 +134,13 @@ public:
     createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
                         Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
+    sdl2::surface_ptr
+    createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
+                     Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const override;
+
+    void RenderButton(SDL_Renderer* renderer, const SDL_FRect& dest, const DuneTexture* content,
+                      bool pressed) const override;
+
     /**
         Returns the minimum size of a text box
         \param  fontSize  The size of the font to use
@@ -274,6 +281,8 @@ private:
 
         return COLOR_RGBA(r, g, b, a);
     }
+
+    uint32_t scaledFontSize(uint32_t font_size) const;
 };
 
 #endif // DUNESTYLEBASE_H
