@@ -124,6 +124,39 @@ check_cxx_source_compiles(
     }"
     HAVE_DOUBLE_FROM_CHARS)
 
+
+if(DUNE_TARGET_ARCHITECTURE)
+    if (DUNE_TARGET_ARCHITECTURE STREQUAL "x64")
+        check_cxx_source_compiles(
+            "#if !defined(__x86_64__) && !defined(_M_X64)
+            #error \"Invalid architecture\"
+            #endif
+            int main(int argc, const char* argv[]) { }
+            "
+            DUNE_TARGET_MATCHES)
+    elseif(DUNE_TARGET_ARCHITECTURE STREQUAL "x86")
+        check_cxx_source_compiles(
+            "#if !defined(__i386__) && !defined(_M_IX86)
+            #error \"Invalid architecture\"
+            #endif
+            int main(int argc, const char* argv[]) { }
+            "
+            DUNE_TARGET_MATCHES)
+    elseif(DUNE_TARGET_ARCHITECTURE STREQUAL "arm64")
+        check_cxx_source_compiles(
+            "#if !defined(__aarch64__) && !defined(_M_ARM64)
+            #error \"Invalid architecture\"
+            #endif
+            int main(int argc, const char* argv[]) { }
+            "
+            DUNE_TARGET_MATCHES)
+    endif()
+    if(DUNE_TARGET_MATCHES)
+    else()
+        message(FATAL_ERROR "Target architecture \"${DUNE_TARGET_ARCHITECTURE}\" doesn't match the compiler output.")
+    endif()
+endif()
+
 include(AddSources)
 
 find_package(Git)
