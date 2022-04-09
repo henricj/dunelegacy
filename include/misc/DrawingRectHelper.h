@@ -205,7 +205,7 @@ constexpr SDL_FRect calcSpriteDrawingRectF(SDL_Surface* pSurface, float x, float
     assert(numCols > 0);
     assert(numRows > 0);
 
-    SDL_FRect rect{x, y, pSurface->w / numCols, pSurface->h / numRows};
+    SDL_FRect rect{x, y, static_cast<float>(pSurface->w / numCols), static_cast<float>(pSurface->h / numRows)};
 
     switch (halign) {
         case HAlign::Left: /*nothing*/ break;
