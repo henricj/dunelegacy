@@ -506,8 +506,8 @@ std::string TextManager::getBriefingText(unsigned int mission, unsigned int text
     // clang-format on
 }
 
-std::vector<MentatTextFile::MentatEntry> TextManager::getAllMentatEntries(HOUSETYPE house,
-                                                                          unsigned int techLevel) const {
+std::vector<MentatTextFile::MentatEntry>
+TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const {
     std::vector<MentatTextFile::MentatEntry> mentatEntries;
 
     switch (house) {

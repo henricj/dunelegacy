@@ -64,10 +64,10 @@ Point DuneStyle::getMinimumLabelSize(std::string_view text, int fontSize) {
     return {static_cast<int>(getTextWidth(text, fontSize)) + 12, static_cast<int>(getTextHeight(fontSize)) + 4};
 }
 
-sdl2::surface_ptr DuneStyle::createLabelSurface(uint32_t width, uint32_t height,
-                                                const std::vector<std::string>& textLines, int fontSize,
-                                                Alignment_Enum alignment, uint32_t textcolor, uint32_t textshadowcolor,
-                                                uint32_t backgroundcolor) {
+sdl2::surface_ptr
+DuneStyle::createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize,
+                              Alignment_Enum alignment, uint32_t textcolor, uint32_t textshadowcolor,
+                              uint32_t backgroundcolor) {
 
     // create surfaces
     sdl2::surface_ptr surface =
@@ -131,9 +131,9 @@ Point DuneStyle::getMinimumCheckboxSize(std::string_view text) {
     return {static_cast<int>(getTextWidth(text, 14)) + 20 + 17, static_cast<int>(getTextHeight(14)) + 8};
 }
 
-sdl2::surface_ptr DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked,
-                                                   bool activated, uint32_t textcolor, uint32_t textshadowcolor,
-                                                   uint32_t backgroundcolor) {
+sdl2::surface_ptr
+DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
+                                 uint32_t textcolor, uint32_t textshadowcolor, uint32_t backgroundcolor) {
     sdl2::surface_ptr surface =
         sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {
@@ -363,9 +363,9 @@ Point DuneStyle::getMinimumTextBoxSize(int fontSize) {
     return {10, static_cast<int>(getTextHeight(fontSize)) + 6};
 }
 
-sdl2::surface_ptr DuneStyle::createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret,
-                                                  int fontSize, Alignment_Enum alignment, uint32_t textcolor,
-                                                  uint32_t textshadowcolor) {
+sdl2::surface_ptr
+DuneStyle::createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool carret, int fontSize,
+                                Alignment_Enum alignment, uint32_t textcolor, uint32_t textshadowcolor) {
     sdl2::surface_ptr surface =
         sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface) {

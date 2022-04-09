@@ -204,8 +204,8 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len = std::strin
    shall specify the width in pixels of its parameter. \return the returned vector contains the complete text, split
    into multiple lines.
 */
-std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth,
-                                        std::function<int(std::string_view)> pGetTextWidth);
+std::vector<std::string>
+greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::string_view)> pGetTextWidth);
 
 std::string convertCP850ToUTF8(std::string_view text);
 

@@ -102,8 +102,8 @@ public:
     Mix_Chunk* getSound(Sound_enum id) const;
 
 private:
-    [[nodiscard]] sdl2::mix_chunk_ptr loadMixFromADL(const std::string& adlFile, int index,
-                                                     int volume = MIX_MAX_VOLUME / 2) const;
+    [[nodiscard]] sdl2::mix_chunk_ptr
+    loadMixFromADL(const std::string& adlFile, int index, int volume = MIX_MAX_VOLUME / 2) const;
 
     void loadSounds();
 

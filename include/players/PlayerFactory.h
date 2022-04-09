@@ -40,8 +40,8 @@ public:
 
         [[nodiscard]] const std::string& getName() const { return name; }
 
-        std::unique_ptr<Player> create(const GameContext& context, House* associatedHouse,
-                                       const std::string& playername) const {
+        std::unique_ptr<Player>
+        create(const GameContext& context, House* associatedHouse, const std::string& playername) const {
             auto pPlayer =
                 pCreate(context, associatedHouse, playername, create_random(context, associatedHouse, playername));
             pPlayer->setPlayerclass(playerclass);

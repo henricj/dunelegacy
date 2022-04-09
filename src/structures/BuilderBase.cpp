@@ -277,8 +277,7 @@ void BuilderBase::doBuildRandom(const GameContext& context) {
         return;
 
     const auto item2Produce =
-        std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
-            ->itemID;
+        std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))->itemID;
     doProduceItem(item2Produce);
 }
 

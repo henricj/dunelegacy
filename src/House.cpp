@@ -591,8 +591,8 @@ void House::freeHarvester(int xPos, int yPos) {
     carryall->setTarget(refinery);
 }
 
-StructureBase* House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario,
-                                     bool bForcePlacing) {
+StructureBase*
+House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos, bool byScenario, bool bForcePlacing) {
     const auto& [game, map, objectManager] = context;
 
     auto* const tile = map.tryGetTile(xPos, yPos);

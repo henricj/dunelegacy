@@ -54,9 +54,9 @@ enum FileListOrder {
     \param  bIgnoreCase true = extension comparison is case insensitive
     \return a list of all the files with the specified extension
 */
-std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory,
-                                                    const std::string& extension, bool bIgnoreCase = false,
-                                                    FileListOrder fileListOrder = FileListOrder_Unsorted);
+std::vector<std::filesystem::path>
+getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool bIgnoreCase = false,
+                 FileListOrder fileListOrder = FileListOrder_Unsorted);
 
 /**
     This function finds all the files in the specified directory with the specified

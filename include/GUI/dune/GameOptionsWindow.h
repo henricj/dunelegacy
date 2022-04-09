@@ -68,8 +68,7 @@ private:
     Checkbox concreteRequiredCheckbox;            ///< If not checked we can build without penalties on the bare rock
     Checkbox structuresDegradeOnConcreteCheckbox; ///< If checked, structures will degrade on power shortage even when
                                                   ///< build on concrete
-    Checkbox
-        fogOfWarCheckbox; ///< If checked explored terrain will become foggy when no unit or structure is next to it
+    Checkbox fogOfWarCheckbox; ///< If checked explored terrain will become foggy when no unit or structure is next to it
     Checkbox startWithExploredMapCheckbox;   ///< If checked the complete map is unhidden at the beginning of the game
     Checkbox instantBuildCheckbox;           ///< If checked the building of structures and units does not take any time
     Checkbox onlyOnePalaceCheckbox;          ///< If checked only one palace can be build per house

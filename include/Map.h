@@ -272,8 +272,8 @@ public:
 
 protected:
     template<typename Offsets, typename Predicate>
-    SearchResult search_random_offsets(int x, int y, Offsets&& offsets, Random& generator,
-                                       Predicate&& predicate) const {
+    SearchResult
+    search_random_offsets(int x, int y, Offsets&& offsets, Random& generator, Predicate&& predicate) const {
 
         const auto size = offsets.size();
         auto found      = false;
@@ -305,8 +305,8 @@ protected:
     }
 
     template<typename Predicate>
-    SearchResult search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator,
-                                 Predicate&& predicate) const {
+    SearchResult
+    search_box_edge(int x, int y, int depth, BoxOffsets* offsets, Random& generator, Predicate&& predicate) const {
 
         if (0 == depth) {
             const auto* const tile = tryGetTile(x, y);
@@ -359,8 +359,8 @@ protected:
 
 public:
     template<typename Predicate>
-    bool search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator,
-                                Predicate&& predicate) const {
+    bool
+    search_all_by_box_edge(int x, int y, const Coord& buildingSize, Random& generator, Predicate&& predicate) const {
 
         if (buildingSize == Coord{2, 2})
             return search_all_by_box_edge_2x2(x, y, generator, predicate);

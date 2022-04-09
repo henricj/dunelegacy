@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 
-static void SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char* text, size_t maxlen, SDL_PRINTF_FORMAT_STRING const char* fmt,
-                            ...) {
+static void
+SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char* text, size_t maxlen, SDL_PRINTF_FORMAT_STRING const char* fmt, ...) {
     const size_t length = SDL_strlen(text);
     va_list ap;
 

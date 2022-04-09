@@ -137,10 +137,10 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text,
-                                                    bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT,
-                                                    Uint32 textshadowcolor = COLOR_DEFAULT,
-                                                    Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
+    virtual sdl2::surface_ptr
+    createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
+                          Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+                          Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
     /**
         Returns the minimum size of a radio button with this text
@@ -161,10 +161,10 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text,
-                                                       bool checked, bool activated, Uint32 textcolor = COLOR_DEFAULT,
-                                                       Uint32 textshadowcolor = COLOR_DEFAULT,
-                                                       Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
+    virtual sdl2::surface_ptr
+    createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
+                             Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+                             Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
 
     /**
         Creates the surface for a drop down box
@@ -174,8 +174,8 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createDropDownBoxButton(uint32_t size, bool pressed, bool activated,
-                                                      Uint32 color = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createDropDownBoxButton(uint32_t size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
 
     /**
         Returns the minimum size of a button with this text
@@ -195,9 +195,9 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed,
-                                                  bool activated, Uint32 textcolor = COLOR_DEFAULT,
-                                                  Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
+                        Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
     /**
         Returns the minimum size of a text box
@@ -218,10 +218,10 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret,
-                                                   int fontSize, Alignment_Enum alignment = Alignment_Left,
-                                                   Uint32 textcolor       = COLOR_DEFAULT,
-                                                   Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize,
+                         Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT,
+                         Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
     /**
         Returns the minimum size of a scroll bar arrow button.
@@ -237,8 +237,8 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createScrollBarArrowButton(bool down, bool pressed, bool activated,
-                                                         Uint32 color = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) = 0;
 
     /**
         Returns the minimum height of a list box entry.
@@ -254,8 +254,8 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createListBoxEntry(uint32_t width, std::string_view text, bool selected,
-                                                 Uint32 color = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createListBoxEntry(uint32_t width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) = 0;
 
     /**
         Creates the overlay surface for a progress bar widget. This surface is then drawn
@@ -266,8 +266,8 @@ public:
         \param  color       the color of the overlay (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr createProgressBarOverlay(uint32_t width, uint32_t height, double percent,
-                                                       Uint32 color = COLOR_DEFAULT) = 0;
+    virtual sdl2::surface_ptr
+    createProgressBarOverlay(uint32_t width, uint32_t height, double percent, Uint32 color = COLOR_DEFAULT) = 0;
 
     /**
         Creates a tool tip surface.

@@ -863,8 +863,8 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
     return newAnimation;
 }
 
-std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation,
-                                                                 SDL_Surface* heraldSard) {
+std::unique_ptr<Animation>
+PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
     const sdl2::surface_ptr maskSurface{
         Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
@@ -911,8 +911,8 @@ std::unique_ptr<Animation> PictureFactory::createSardaukarPlanet(Animation* ordo
     return newAnimation;
 }
 
-std::unique_ptr<Animation> PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation,
-                                                                 SDL_Surface* heraldMerc) {
+std::unique_ptr<Animation>
+PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Surface* heraldMerc) {
 
     auto newAnimation = std::make_unique<Animation>();
 

@@ -141,8 +141,8 @@ private:
         \param  button2Text     Text of button 2
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
-    void init(const std::string& text, const std::string& button1Text, const std::string& button2Text,
-              int defaultFocus) {
+    void
+    init(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus) {
         setWindowWidget(&vbox);
         vbox.addWidget(VSpacer::create(6));
         vbox.addWidget(&textLabel);

@@ -279,10 +279,10 @@ public:
         owner = no;
     }
 
-    static std::unique_ptr<ObjectBase> createObject(ItemID_enum itemID, uint32_t objectID,
-                                                    const ObjectInitializer& initializer);
-    static std::unique_ptr<ObjectBase> loadObject(ItemID_enum itemID, uint32_t objectID,
-                                                  const ObjectStreamInitializer& initializer);
+    static std::unique_ptr<ObjectBase>
+    createObject(ItemID_enum itemID, uint32_t objectID, const ObjectInitializer& initializer);
+    static std::unique_ptr<ObjectBase>
+    loadObject(ItemID_enum itemID, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 protected:
     bool targetInWeaponRange() const;

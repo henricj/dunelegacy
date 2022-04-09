@@ -137,10 +137,10 @@ void SFXManager::loadEnglishVoice() {
 
         { // Scope
           // "Vehicle repaired"
-            auto Vehicle         = getChunkFromFile(HouseString + "VEHICLE.VOC");
-            auto Repaired        = getChunkFromFile(HouseString + "REPAIR.VOC");
-            lngVoice[static_cast<int>(Voice_enum::VehicleRepaired) * static_cast<int>(HOUSETYPE::NUM_HOUSES)
-                     + VoiceNum] = concat2Chunks(Vehicle.get(), Repaired.get());
+            auto Vehicle  = getChunkFromFile(HouseString + "VEHICLE.VOC");
+            auto Repaired = getChunkFromFile(HouseString + "REPAIR.VOC");
+            lngVoice[static_cast<int>(Voice_enum::VehicleRepaired) * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(Vehicle.get(), Repaired.get());
         }
 
         { // Scope
@@ -164,10 +164,10 @@ void SFXManager::loadEnglishVoice() {
             auto RadarChunk            = getChunkFromFile(HouseString + "RADAR.VOC");
             auto RadarActivatedChunk   = getChunkFromFile(HouseString + "ON.VOC");
             auto RadarDeactivatedChunk = getChunkFromFile(HouseString + "OFF.VOC");
-            lngVoice[static_cast<int>(Voice_enum::RadarActivated) * static_cast<int>(HOUSETYPE::NUM_HOUSES)
-                     + VoiceNum]       = concat2Chunks(RadarChunk.get(), RadarActivatedChunk.get());
+            lngVoice[static_cast<int>(Voice_enum::RadarActivated) * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(RadarChunk.get(), RadarActivatedChunk.get());
             lngVoice[static_cast<int>(Voice_enum::RadarDeactivated) * static_cast<int>(HOUSETYPE::NUM_HOUSES)
-                     + VoiceNum]       = concat2Chunks(RadarChunk.get(), RadarDeactivatedChunk.get());
+                     + VoiceNum] = concat2Chunks(RadarChunk.get(), RadarDeactivatedChunk.get());
         }
 
         { // Scope
@@ -180,10 +180,10 @@ void SFXManager::loadEnglishVoice() {
 
         { // Scope
           // "Warning Wormsign"
-            auto WarningChunk    = getChunkFromFile(HouseString + "WARNING.VOC");
-            auto WormSignChunk   = getChunkFromFile(HouseString + "WORMY.VOC");
-            lngVoice[static_cast<int>(Voice_enum::WarningWormSign) * static_cast<int>(HOUSETYPE::NUM_HOUSES)
-                     + VoiceNum] = concat2Chunks(WarningChunk.get(), WormSignChunk.get());
+            auto WarningChunk  = getChunkFromFile(HouseString + "WARNING.VOC");
+            auto WormSignChunk = getChunkFromFile(HouseString + "WORMY.VOC");
+            lngVoice[static_cast<int>(Voice_enum::WarningWormSign) * static_cast<int>(HOUSETYPE::NUM_HOUSES) + VoiceNum] =
+                concat2Chunks(WarningChunk.get(), WormSignChunk.get());
         }
 
         // "Our base is under attack"

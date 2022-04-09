@@ -39,9 +39,9 @@
 #    include <sys/stat.h>
 #endif
 
-std::vector<std::filesystem::path> getFileNamesList(const std::filesystem::path& directory,
-                                                    const std::string& extension, bool IgnoreCase,
-                                                    FileListOrder fileListOrder) {
+std::vector<std::filesystem::path>
+getFileNamesList(const std::filesystem::path& directory, const std::string& extension, bool IgnoreCase,
+                 FileListOrder fileListOrder) {
     const auto files = getFileList(directory, extension, IgnoreCase, fileListOrder);
 
     std::vector<std::filesystem::path> fileNames;

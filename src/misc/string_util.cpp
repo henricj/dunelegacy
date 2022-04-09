@@ -134,8 +134,8 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     return result;
 }
 
-std::vector<std::string> greedyWordWrap(std::string_view text, int linewidth,
-                                        std::function<int(std::string_view)> pGetTextWidth) {
+std::vector<std::string>
+greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::string_view)> pGetTextWidth) {
     // split text into single lines at every '\n'
     size_t startpos = 0;
     size_t nextpos  = 0;

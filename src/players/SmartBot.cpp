@@ -570,8 +570,7 @@ void SmartBot::build(const GameContext& context) {
                         buildQueue[Structure_Refinery]++;
                     } else if (pBuilder->isAvailableToBuild(Structure_Refinery)
                                && ((focusEconomy()
-                                    || (getHouse()->getNumItems(Structure_Refinery) + buildQueue[Structure_Refinery])
-                                               * 3
+                                    || (getHouse()->getNumItems(Structure_Refinery) + buildQueue[Structure_Refinery]) * 3
                                            < getHouse()->getNumItems(Unit_Harvester)
                                     || getHouse()->getNumItems(Structure_Refinery) + buildQueue[Structure_Refinery]
                                            < getHouse()->getNumItems(Structure_HeavyFactory)

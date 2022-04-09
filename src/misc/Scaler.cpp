@@ -53,8 +53,8 @@ void Scaler::setDefaultScaler(ScalerType scaler) {
 
 namespace {
 template<typename Scale>
-sdl2::surface_ptr scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle,
-                                Scale&& scale) {
+sdl2::surface_ptr
+scale_surface(SDL_Surface* src, bool freeSrcSurface, int width, int height, bool allow_rle, Scale&& scale) {
     if (src == nullptr)
         return nullptr;
 

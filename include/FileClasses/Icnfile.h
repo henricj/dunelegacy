@@ -44,8 +44,8 @@ public:
 
     [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t indexOfFile) const;
     sdl2::surface_ptr getPictureArray(uint32_t mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
-    [[nodiscard]] sdl2::surface_ptr getPictureRow(uint32_t startIndex, uint32_t endIndex,
-                                                  uint32_t maxRowLength = 0) const;
+    [[nodiscard]] sdl2::surface_ptr
+    getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength = 0) const;
     sdl2::surface_ptr getPictureRow2(unsigned int numTiles, ...) const;
 
     /// Returns the number of tiles

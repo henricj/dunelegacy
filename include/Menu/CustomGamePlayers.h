@@ -77,8 +77,8 @@ private:
 
     void checkPlayerBoxes();
     void addAllPlayersToGameInitSettings();
-    static bool addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player,
-                                     const std::string& playername);
+    static bool
+    addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHouseInfo, int player, const std::string& playername);
 
     void onNext();
     void onCancel();

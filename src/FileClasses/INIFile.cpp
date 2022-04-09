@@ -536,8 +536,8 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
     \param  defaultValue    default value for defaultValue is ""
     \return The read value or default
 */
-std::string INIFile::getStringValue(std::string_view section, std::string_view key,
-                                    const std::string& defaultValue) const {
+std::string
+INIFile::getStringValue(std::string_view section, std::string_view key, const std::string& defaultValue) const {
     const Key* curKey = getKey(section, key);
     if (curKey == nullptr) {
         return defaultValue;

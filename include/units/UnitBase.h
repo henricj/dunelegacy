@@ -283,8 +283,8 @@ protected:
     virtual void engageTarget(const GameContext& context);
     virtual void move(const GameContext& context);
 
-    virtual void bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX,
-                                     FixPoint toDistanceY);
+    virtual void
+    bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY);
 
     virtual void navigate(const GameContext& context);
 

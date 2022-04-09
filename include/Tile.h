@@ -491,9 +491,8 @@ private:
     std::vector<uint32_t> assignedUndergroundUnitList;         ///< all underground units on this tile
     std::vector<uint32_t> assignedNonInfantryGroundObjectList; ///< all structures/vehicles on this tile
 
-    std::array<uint32_t, NUM_TEAMS>
-        lastAccess{};                       ///< contains for every team when this tile was seen last by this house
-    std::array<bool, NUM_TEAMS> explored{}; ///< contains for every team if this tile is explored
+    std::array<uint32_t, NUM_TEAMS> lastAccess{}; ///< contains for every team when this tile was seen last by this house
+    std::array<bool, NUM_TEAMS> explored{};       ///< contains for every team if this tile is explored
 
     void update_impl();
 

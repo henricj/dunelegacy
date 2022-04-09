@@ -586,13 +586,13 @@ auto objectFactory(ItemID_enum itemID, Args&&... args) {
 
 } // anonymous namespace
 
-std::unique_ptr<ObjectBase> ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID,
-                                                     const ObjectInitializer& initializer) {
+std::unique_ptr<ObjectBase>
+ObjectBase::createObject(ItemID_enum itemID, uint32_t objectID, const ObjectInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 
-std::unique_ptr<ObjectBase> ObjectBase::loadObject(ItemID_enum itemID, uint32_t objectID,
-                                                   const ObjectStreamInitializer& initializer) {
+std::unique_ptr<ObjectBase>
+ObjectBase::loadObject(ItemID_enum itemID, uint32_t objectID, const ObjectStreamInitializer& initializer) {
     return objectFactory(itemID, objectID, initializer);
 }
 
