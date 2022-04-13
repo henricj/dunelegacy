@@ -85,7 +85,7 @@ public:
         return *this;
     }
 
-    unique_or_nonowning_ptr(const unique_or_nonowning_ptr&) = delete;
+    unique_or_nonowning_ptr(const unique_or_nonowning_ptr&)            = delete;
     unique_or_nonowning_ptr& operator=(const unique_or_nonowning_ptr&) = delete;
 
     typename std::add_lvalue_reference<T>::type operator*() const { return ptr.get(); }

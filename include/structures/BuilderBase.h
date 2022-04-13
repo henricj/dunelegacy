@@ -99,10 +99,10 @@ public:
 
     ~BuilderBase() override = 0;
 
-    BuilderBase(const BuilderBase&) = delete;
-    BuilderBase(BuilderBase&&)      = delete;
+    BuilderBase(const BuilderBase&)            = delete;
+    BuilderBase(BuilderBase&&)                 = delete;
     BuilderBase& operator=(const BuilderBase&) = delete;
-    BuilderBase& operator=(BuilderBase&&) = delete;
+    BuilderBase& operator=(BuilderBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

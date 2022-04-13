@@ -31,10 +31,10 @@ public:
     /// Default constructor
     TextButton();
 
-    TextButton(const TextButton&) = delete;
-    TextButton(TextButton&&)      = default;
+    TextButton(const TextButton&)            = delete;
+    TextButton(TextButton&&)                 = default;
     TextButton& operator=(const TextButton&) = delete;
-    TextButton& operator=(TextButton&&) = default;
+    TextButton& operator=(TextButton&&)      = default;
 
     /// destructor
     ~TextButton() override;

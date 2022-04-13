@@ -34,10 +34,10 @@ public:
     */
     CutSceneSoundTrigger(int frameNumber, Mix_Chunk* sound) : CutSceneTrigger(frameNumber), sound(sound) { }
 
-    CutSceneSoundTrigger(const CutSceneSoundTrigger&) = delete;
-    CutSceneSoundTrigger(CutSceneSoundTrigger&&)      = delete;
+    CutSceneSoundTrigger(const CutSceneSoundTrigger&)            = delete;
+    CutSceneSoundTrigger(CutSceneSoundTrigger&&)                 = delete;
     CutSceneSoundTrigger& operator=(const CutSceneSoundTrigger&) = delete;
-    CutSceneSoundTrigger& operator=(CutSceneSoundTrigger&&) = delete;
+    CutSceneSoundTrigger& operator=(CutSceneSoundTrigger&&)      = delete;
 
     /// destructor
     ~CutSceneSoundTrigger() override = default;

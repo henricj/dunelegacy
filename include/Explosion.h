@@ -29,10 +29,10 @@ public:
     explicit Explosion(InputStream& stream);
     ~Explosion();
 
-    Explosion(const Explosion&) = delete;
-    Explosion(Explosion&&)      = delete;
+    Explosion(const Explosion&)            = delete;
+    Explosion(Explosion&&)                 = delete;
     Explosion& operator=(const Explosion&) = delete;
-    Explosion& operator=(Explosion&&) = delete;
+    Explosion& operator=(Explosion&&)      = delete;
 
     void save(OutputStream& stream) const;
 

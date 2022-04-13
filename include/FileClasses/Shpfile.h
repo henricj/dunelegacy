@@ -45,10 +45,10 @@ private:
 
 public:
     explicit Shpfile(SDL_RWops* rwop);
-    Shpfile(const Shpfile& o) = delete;
-    Shpfile(Shpfile&&)        = delete;
+    Shpfile(const Shpfile& o)          = delete;
+    Shpfile(Shpfile&&)                 = delete;
     Shpfile& operator=(const Shpfile&) = delete;
-    Shpfile& operator=(Shpfile&&) = delete;
+    Shpfile& operator=(Shpfile&&)      = delete;
     virtual ~Shpfile();
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);

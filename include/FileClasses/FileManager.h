@@ -43,7 +43,7 @@ public:
     ~FileManager();
 
     FileManager& operator=(const FileManager& fileManager) = delete;
-    FileManager& operator=(FileManager&& fileManager) = delete;
+    FileManager& operator=(FileManager&& fileManager)      = delete;
 
     static const std::vector<std::filesystem::path>& getSearchPath();
     static std::vector<std::filesystem::path> getNeededFiles();

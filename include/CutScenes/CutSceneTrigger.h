@@ -30,10 +30,10 @@ public:
     */
     explicit CutSceneTrigger(int frameNumber);
 
-    CutSceneTrigger(const CutSceneTrigger&) = delete;
-    CutSceneTrigger(CutSceneTrigger&&)      = delete;
+    CutSceneTrigger(const CutSceneTrigger&)            = delete;
+    CutSceneTrigger(CutSceneTrigger&&)                 = delete;
     CutSceneTrigger& operator=(const CutSceneTrigger&) = delete;
-    CutSceneTrigger& operator=(CutSceneTrigger&&) = delete;
+    CutSceneTrigger& operator=(CutSceneTrigger&&)      = delete;
 
     /// destructor
     virtual ~CutSceneTrigger();

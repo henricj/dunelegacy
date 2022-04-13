@@ -108,10 +108,10 @@ public:
     explicit AdlibDriver(int rate);
     ~AdlibDriver();
 
-    AdlibDriver(const AdlibDriver&) = delete;
-    AdlibDriver(AdlibDriver&&)      = delete;
+    AdlibDriver(const AdlibDriver&)            = delete;
+    AdlibDriver(AdlibDriver&&)                 = delete;
     AdlibDriver& operator=(const AdlibDriver&) = delete;
-    AdlibDriver& operator=(AdlibDriver&&) = delete;
+    AdlibDriver& operator=(AdlibDriver&&)      = delete;
 
     int callback(int opcode, ...);
     void callback();

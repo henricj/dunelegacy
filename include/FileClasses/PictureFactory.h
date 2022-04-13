@@ -29,10 +29,10 @@ public:
     PictureFactory();
     ~PictureFactory();
 
-    PictureFactory(const PictureFactory&) = delete;
-    PictureFactory(PictureFactory&&)      = delete;
+    PictureFactory(const PictureFactory&)            = delete;
+    PictureFactory(PictureFactory&&)                 = delete;
     PictureFactory& operator=(const PictureFactory&) = delete;
-    PictureFactory& operator=(PictureFactory&&) = delete;
+    PictureFactory& operator=(PictureFactory&&)      = delete;
 
     [[nodiscard]] sdl2::surface_ptr createTopBar() const;
     [[nodiscard]] sdl2::surface_ptr createSideBar(bool bEditor) const;

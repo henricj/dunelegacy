@@ -35,7 +35,7 @@ public:
     constexpr FixPoint32(FixPoint32&& inValue) noexcept = default;
 
     FixPoint32& operator=(const FixPoint32& rhs) noexcept = default;
-    FixPoint32& operator=(FixPoint32&& other) noexcept = default;
+    FixPoint32& operator=(FixPoint32&& other) noexcept    = default;
 
     ~FixPoint32() = default;
 

@@ -63,7 +63,7 @@ public:
     ~NetworkManager();
 
     NetworkManager& operator=(const NetworkManager&) = delete;
-    NetworkManager& operator=(NetworkManager&&) = delete;
+    NetworkManager& operator=(NetworkManager&&)      = delete;
 
     [[nodiscard]] bool isServer() const noexcept { return bIsServer; }
 

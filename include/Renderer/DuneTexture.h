@@ -57,7 +57,7 @@ struct DuneTexture final {
     ~DuneTexture() = default;
 
     DuneTexture& operator=(const DuneTexture&) = default;
-    DuneTexture& operator=(DuneTexture&&) = default;
+    DuneTexture& operator=(DuneTexture&&)      = default;
 
     operator bool() const noexcept { return nullptr != texture_; }
 

@@ -32,10 +32,10 @@ public:
     /// default constructor
     ScrollBar();
 
-    ScrollBar(const ScrollBar&) = delete;
-    ScrollBar(ScrollBar&&)      = delete;
+    ScrollBar(const ScrollBar&)            = delete;
+    ScrollBar(ScrollBar&&)                 = delete;
     ScrollBar& operator=(const ScrollBar&) = delete;
-    ScrollBar& operator=(ScrollBar&&) = delete;
+    ScrollBar& operator=(ScrollBar&&)      = delete;
 
     /// destructor
     ~ScrollBar() override;

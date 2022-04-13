@@ -75,7 +75,9 @@ void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer
         context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
         structureList.remove(this);
         owner->decrementStructures(itemID, location);
-    } catch (std::exception& e) { sdl2::log_info("StructureBase::cleanup(): %s", e.what()); }
+    } catch (std::exception& e) {
+        sdl2::log_info("StructureBase::cleanup(): %s", e.what());
+    }
 
     parent::cleanup(context, humanPlayer);
 }
@@ -372,11 +374,11 @@ void StructureBase::destroy(const GameContext& context) {
     static const int DestroyedStructureTilesWall[] = {DestroyedStructure_Wall};
     static const int DestroyedStructureTiles1x1[]  = {Destroyed1x1Structure};
     static const int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
-                                                     Destroyed2x2Structure_BottomLeft,
-                                                     Destroyed2x2Structure_BottomRight};
+                                                      Destroyed2x2Structure_BottomLeft,
+                                                      Destroyed2x2Structure_BottomRight};
     static const int DestroyedStructureTiles3x2[]  = {
-        Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
-        Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
+         Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
+         Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
     static const int DestroyedStructureTiles3x3[] = {
         Destroyed3x3Structure_TopLeft,    Destroyed3x3Structure_TopCenter,    Destroyed3x3Structure_TopRight,
         Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,

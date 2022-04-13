@@ -33,7 +33,7 @@ public:
     ~WidgetWithBackground() override;
 
     WidgetWithBackground& operator=(const WidgetWithBackground&) = delete;
-    WidgetWithBackground& operator=(WidgetWithBackground&&) = default;
+    WidgetWithBackground& operator=(WidgetWithBackground&&)      = default;
 
     /**
         This method sets a transparent background for this widget.

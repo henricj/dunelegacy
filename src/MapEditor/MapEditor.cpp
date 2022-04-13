@@ -1534,7 +1534,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             // draw map[x][y]
             SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize,
-                               (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
+                                      (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
             SDL_FRect drawLocation = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
                                       static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
@@ -1556,8 +1556,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                zoomedTilesize, zoomedTilesize};
             SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                              static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                              static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
+                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
@@ -1572,8 +1572,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                     SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                        zoomedTilesize, zoomedTilesize};
                     SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
-                                      static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
-                                      static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+                                       static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
+                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
                     Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
                 }
@@ -1641,8 +1641,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             SDL_Rect source = {maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
             SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                              static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                              static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
+                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
@@ -1681,8 +1681,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             SDL_Rect source = {frameSize.x * (structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x,
                                frameSize.y};
             SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                              static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                              static_cast<float>(frameSize.x), static_cast<float>(frameSize.y)};
+                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
+                               static_cast<float>(frameSize.x), static_cast<float>(frameSize.y)};
 
             Dune_RenderCopyF(renderer, ObjectSprite, &source, &dest);
 

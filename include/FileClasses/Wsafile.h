@@ -32,10 +32,10 @@ public:
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2);
     Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3);
     Wsafile(int num, ...);
-    Wsafile(const Wsafile& wsafile) = delete;
-    Wsafile(Wsafile&& wsafile)      = delete;
+    Wsafile(const Wsafile& wsafile)            = delete;
+    Wsafile(Wsafile&& wsafile)                 = delete;
     Wsafile& operator=(const Wsafile& wsafile) = delete;
-    Wsafile& operator=(Wsafile&& wsafile) = delete;
+    Wsafile& operator=(Wsafile&& wsafile)      = delete;
     ~Wsafile();
 
     [[nodiscard]] sdl2::surface_ptr getPicture(uint32_t FrameNumber) const;

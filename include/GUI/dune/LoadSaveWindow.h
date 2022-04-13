@@ -37,10 +37,10 @@ public:
                    Uint32 color = COLOR_DEFAULT);
     ~LoadSaveWindow() override;
 
-    LoadSaveWindow(const LoadSaveWindow&) = delete;
-    LoadSaveWindow(LoadSaveWindow&&)      = delete;
+    LoadSaveWindow(const LoadSaveWindow&)            = delete;
+    LoadSaveWindow(LoadSaveWindow&&)                 = delete;
     LoadSaveWindow& operator=(const LoadSaveWindow&) = delete;
-    LoadSaveWindow& operator=(LoadSaveWindow&&) = delete;
+    LoadSaveWindow& operator=(LoadSaveWindow&&)      = delete;
 
     void updateEntries();
     std::filesystem::path getFilename() const noexcept { return filename; }

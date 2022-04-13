@@ -504,7 +504,9 @@ void House::lose(bool bSilent) const {
         try {
             context.game.addToNewsTicker(
                 fmt::sprintf(_("House '%s' has been defeated."), getHouseNameByNumber(getHouseID())));
-        } catch (std::exception& e) { sdl2::log_info("House::lose(): %s", e.what()); }
+        } catch (std::exception& e) {
+            sdl2::log_info("House::lose(): %s", e.what());
+        }
     }
 
     if ((getTeamID() == pLocalHouse->getTeamID())

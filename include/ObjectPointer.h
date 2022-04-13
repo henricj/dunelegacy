@@ -33,10 +33,10 @@ public:
     ObjectPointer(const ObjectBase* newObject) { pointTo(newObject); }
     ~ObjectPointer() = default;
 
-    ObjectPointer(const ObjectPointer&) = default;
-    ObjectPointer(ObjectPointer&&)      = default;
+    ObjectPointer(const ObjectPointer&)            = default;
+    ObjectPointer(ObjectPointer&&)                 = default;
     ObjectPointer& operator=(const ObjectPointer&) = default;
-    ObjectPointer& operator=(ObjectPointer&&) = default;
+    ObjectPointer& operator=(ObjectPointer&&)      = default;
 
     void pointTo(uint32_t newItemID) { objectID = newItemID; }
     void pointTo(const ObjectBase* newObject);

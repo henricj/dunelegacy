@@ -39,10 +39,10 @@ public:
 
     ~TrackedUnit() override = 0;
 
-    TrackedUnit(const TrackedUnit&) = delete;
-    TrackedUnit(TrackedUnit&&)      = delete;
+    TrackedUnit(const TrackedUnit&)            = delete;
+    TrackedUnit(TrackedUnit&&)                 = delete;
     TrackedUnit& operator=(const TrackedUnit&) = delete;
-    TrackedUnit& operator=(TrackedUnit&&) = delete;
+    TrackedUnit& operator=(TrackedUnit&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

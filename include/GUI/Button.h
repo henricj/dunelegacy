@@ -38,10 +38,10 @@ public:
     /// destructor
     ~Button() override;
 
-    Button(const Button&) = delete;
-    Button(Button&&)      = default;
+    Button(const Button&)            = delete;
+    Button(Button&&)                 = default;
     Button& operator=(const Button&) = delete;
-    Button& operator=(Button&&) = default;
+    Button& operator=(Button&&)      = default;
 
     /**
         Returns that this button can be set active.

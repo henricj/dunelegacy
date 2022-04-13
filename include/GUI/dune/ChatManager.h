@@ -41,10 +41,10 @@ public:
     */
     ChatManager();
 
-    ChatManager(const ChatManager&) = delete;
-    ChatManager(ChatManager&&)      = delete;
+    ChatManager(const ChatManager&)            = delete;
+    ChatManager(ChatManager&&)                 = delete;
     ChatManager& operator=(const ChatManager&) = delete;
-    ChatManager& operator=(ChatManager&&) = delete;
+    ChatManager& operator=(ChatManager&&)      = delete;
 
     /// destructor
     ~ChatManager() override;
@@ -81,10 +81,10 @@ private:
             : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)),
               messageTime(_messageTime), messageType(_messageType) { }
 
-        ChatMessage(const ChatMessage&) = delete;
-        ChatMessage(ChatMessage&&)      = default;
+        ChatMessage(const ChatMessage&)            = delete;
+        ChatMessage(ChatMessage&&)                 = default;
         ChatMessage& operator=(const ChatMessage&) = delete;
-        ChatMessage& operator=(ChatMessage&&) = default;
+        ChatMessage& operator=(ChatMessage&&)      = default;
 
         auto getUsernamePictureWidth() const {
             return pUsernameTexture ? getWidth(pUsernameTexture.get()) : getWidth(pPictureTexture);

@@ -33,10 +33,10 @@ public:
     IndexedTextFile(SDL_RWops* rwop, bool bDecode = false);
     ~IndexedTextFile();
 
-    IndexedTextFile(const IndexedTextFile&) = delete;
-    IndexedTextFile(IndexedTextFile&&)      = delete;
+    IndexedTextFile(const IndexedTextFile&)            = delete;
+    IndexedTextFile(IndexedTextFile&&)                 = delete;
     IndexedTextFile& operator=(const IndexedTextFile&) = delete;
-    IndexedTextFile& operator=(IndexedTextFile&&) = delete;
+    IndexedTextFile& operator=(IndexedTextFile&&)      = delete;
 
     /// This method returns nth string in the text file.
     /**

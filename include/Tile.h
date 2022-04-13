@@ -204,10 +204,10 @@ public:
     Tile();
     ~Tile();
 
-    Tile(const Tile&) = default;
-    Tile(Tile&&)      = default;
+    Tile(const Tile&)            = default;
+    Tile(Tile&&)                 = default;
     Tile& operator=(const Tile&) = default;
-    Tile& operator=(Tile&&) = default;
+    Tile& operator=(Tile&&)      = default;
 
     void load(InputStream& stream);
     void save(OutputStream& stream, uint32_t gameCycleCount) const;

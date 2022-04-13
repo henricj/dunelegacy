@@ -1430,7 +1430,9 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
 std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename) const {
     try {
         return std::make_unique<Shpfile>(pFileManager->openFile(filename).get());
-    } catch (std::exception& e) { THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what()); }
+    } catch (std::exception& e) {
+        THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
+    }
 }
 
 std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename) const {

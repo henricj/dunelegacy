@@ -39,10 +39,10 @@ public:
     GFXManager();
     ~GFXManager();
 
-    GFXManager(const GFXManager&) = delete;
-    GFXManager(GFXManager&&)      = default;
+    GFXManager(const GFXManager&)            = delete;
+    GFXManager(GFXManager&&)                 = default;
     GFXManager& operator=(const GFXManager&) = delete;
-    GFXManager& operator=(GFXManager&&) = default;
+    GFXManager& operator=(GFXManager&&)      = default;
 
     [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) const;
 

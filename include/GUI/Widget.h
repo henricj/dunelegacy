@@ -134,10 +134,10 @@ public:
     */
     virtual ~Widget() = 0;
 
-    Widget(const Widget&) = delete;
-    Widget(Widget&&)      = default;
+    Widget(const Widget&)            = delete;
+    Widget(Widget&&)                 = default;
     Widget& operator=(const Widget&) = delete;
-    Widget& operator=(Widget&&) = default;
+    Widget& operator=(Widget&&)      = default;
 
     /**
         Sets the parent of this widget.

@@ -39,10 +39,10 @@ public:
 
     ~TankBase() override = 0;
 
-    TankBase(const TankBase&) = delete;
-    TankBase(TankBase&&)      = delete;
+    TankBase(const TankBase&)            = delete;
+    TankBase(TankBase&&)                 = delete;
     TankBase& operator=(const TankBase&) = delete;
-    TankBase& operator=(TankBase&&) = delete;
+    TankBase& operator=(TankBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

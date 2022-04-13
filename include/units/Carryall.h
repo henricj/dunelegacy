@@ -31,10 +31,10 @@ public:
     Carryall(uint32_t objectID, const ObjectStreamInitializer& initializer);
     ~Carryall() override;
 
-    Carryall(const Carryall&) = delete;
-    Carryall(Carryall&&)      = delete;
+    Carryall(const Carryall&)            = delete;
+    Carryall(Carryall&&)                 = delete;
     Carryall& operator=(const Carryall&) = delete;
-    Carryall& operator=(Carryall&&) = delete;
+    Carryall& operator=(Carryall&&)      = delete;
 
     void checkPos(const GameContext& context) override;
 

@@ -654,7 +654,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
     } catch (InputStream::eof&) {
         sdl2::log_info("NetworkManager: Received packet is too small");
-    } catch (std::exception& e) { sdl2::log_info("NetworkManager: %s", e.what()); }
+    } catch (std::exception& e) {
+        sdl2::log_info("NetworkManager: %s", e.what());
+    }
 }
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {

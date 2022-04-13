@@ -64,7 +64,7 @@ class SoundAdlibPC {
 public:
     explicit SoundAdlibPC(SDL_RWops* rwop);
     SoundAdlibPC(SDL_RWops* rwop, int freq);
-    SoundAdlibPC(const SoundAdlibPC& soundAdlibPC) = delete;
+    SoundAdlibPC(const SoundAdlibPC& soundAdlibPC)            = delete;
     SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
 

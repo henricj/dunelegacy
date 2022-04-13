@@ -49,10 +49,10 @@ public:
 
     ~TurretBase() override;
 
-    TurretBase(const TurretBase&) = delete;
-    TurretBase(TurretBase&&)      = delete;
+    TurretBase(const TurretBase&)            = delete;
+    TurretBase(TurretBase&&)                 = delete;
     TurretBase& operator=(const TurretBase&) = delete;
-    TurretBase& operator=(TurretBase&&) = delete;
+    TurretBase& operator=(TurretBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

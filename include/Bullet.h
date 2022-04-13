@@ -35,10 +35,10 @@ public:
     void init();
     ~Bullet();
 
-    Bullet(const Bullet&) = delete;
-    Bullet(Bullet&&)      = delete;
+    Bullet(const Bullet&)            = delete;
+    Bullet(Bullet&&)                 = delete;
     Bullet& operator=(const Bullet&) = delete;
-    Bullet& operator=(Bullet&&) = delete;
+    Bullet& operator=(Bullet&&)      = delete;
 
     void save(OutputStream& stream) const;
 

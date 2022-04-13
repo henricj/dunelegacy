@@ -68,7 +68,7 @@ public:
     ~CommandList() = default;
 
     CommandList& operator=(const CommandList&) = delete;
-    CommandList& operator=(CommandList&&) = delete;
+    CommandList& operator=(CommandList&&)      = delete;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(static_cast<uint32_t>(commandList.size()));

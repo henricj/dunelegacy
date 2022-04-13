@@ -123,10 +123,10 @@ public:
         return tmp;
     }
 
-    BuilderList(const BuilderList&) = delete;
-    BuilderList(BuilderList&&)      = delete;
+    BuilderList(const BuilderList&)            = delete;
+    BuilderList(BuilderList&&)                 = delete;
     BuilderList& operator=(const BuilderList&) = delete;
-    BuilderList& operator=(BuilderList&&) = delete;
+    BuilderList& operator=(BuilderList&&)      = delete;
 
 private:
     explicit BuilderList(uint32_t builderObjectID);

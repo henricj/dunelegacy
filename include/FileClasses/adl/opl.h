@@ -30,10 +30,10 @@ public:
 
         = default;
 
-    Copl(const Copl&) = delete;
-    Copl(Copl&&)      = delete;
+    Copl(const Copl&)            = delete;
+    Copl(Copl&&)                 = delete;
     Copl& operator=(const Copl&) = delete;
-    Copl& operator=(Copl&&) = delete;
+    Copl& operator=(Copl&&)      = delete;
 
     virtual ~Copl() = default;
 

@@ -31,10 +31,10 @@ public:
     AStarSearch(Map* pMap);
     ~AStarSearch();
 
-    AStarSearch(const AStarSearch&) = delete;
-    AStarSearch(AStarSearch&&)      = delete;
+    AStarSearch(const AStarSearch&)            = delete;
+    AStarSearch(AStarSearch&&)                 = delete;
     AStarSearch& operator=(const AStarSearch&) = delete;
-    AStarSearch& operator=(AStarSearch&&) = delete;
+    AStarSearch& operator=(AStarSearch&&)      = delete;
 
     void Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination);
 

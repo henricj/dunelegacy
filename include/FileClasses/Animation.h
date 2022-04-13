@@ -33,10 +33,10 @@ public:
     Animation();
     ~Animation();
 
-    Animation(const Animation&) = delete;
-    Animation(Animation&&)      = delete;
+    Animation(const Animation&)            = delete;
+    Animation(Animation&&)                 = delete;
     Animation& operator=(const Animation&) = delete;
-    Animation& operator=(Animation&&) = delete;
+    Animation& operator=(Animation&&)      = delete;
 
     unsigned int getCurrentFrameNumber();
 

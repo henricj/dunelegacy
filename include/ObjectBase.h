@@ -60,11 +60,11 @@ public:
     ObjectInitializer(Game& game, House* owner, bool byScenario)
         : game_{game}, owner_{owner}, byScenario_{byScenario} { }
 
-    ObjectInitializer()                         = delete;
-    ObjectInitializer(const ObjectInitializer&) = delete;
-    ObjectInitializer(ObjectInitializer&&)      = delete;
+    ObjectInitializer()                                    = delete;
+    ObjectInitializer(const ObjectInitializer&)            = delete;
+    ObjectInitializer(ObjectInitializer&&)                 = delete;
     ObjectInitializer& operator=(const ObjectInitializer&) = delete;
-    ObjectInitializer& operator=(ObjectInitializer&&) = delete;
+    ObjectInitializer& operator=(ObjectInitializer&&)      = delete;
 
     ~ObjectInitializer() = default;
 
@@ -82,11 +82,11 @@ class ObjectStreamInitializer final {
 public:
     ObjectStreamInitializer(InputStream& inputStream) : stream_{inputStream} { }
 
-    ObjectStreamInitializer()                               = delete;
-    ObjectStreamInitializer(const ObjectStreamInitializer&) = delete;
-    ObjectStreamInitializer(ObjectStreamInitializer&&)      = delete;
+    ObjectStreamInitializer()                                          = delete;
+    ObjectStreamInitializer(const ObjectStreamInitializer&)            = delete;
+    ObjectStreamInitializer(ObjectStreamInitializer&&)                 = delete;
     ObjectStreamInitializer& operator=(const ObjectStreamInitializer&) = delete;
-    ObjectStreamInitializer& operator=(ObjectStreamInitializer&&) = delete;
+    ObjectStreamInitializer& operator=(ObjectStreamInitializer&&)      = delete;
 
     ~ObjectStreamInitializer() = default;
 
@@ -139,10 +139,10 @@ public:
 
     virtual ~ObjectBase() = 0;
 
-    ObjectBase(const ObjectBase&) = delete;
-    ObjectBase(ObjectBase&&)      = delete;
+    ObjectBase(const ObjectBase&)            = delete;
+    ObjectBase(ObjectBase&&)                 = delete;
     ObjectBase& operator=(const ObjectBase&) = delete;
-    ObjectBase& operator=(ObjectBase&&) = delete;
+    ObjectBase& operator=(ObjectBase&&)      = delete;
 
     virtual void save(OutputStream& stream) const;
 

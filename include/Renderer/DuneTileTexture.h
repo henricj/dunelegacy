@@ -14,7 +14,7 @@ public:
     ~DuneTileTexture() = default;
 
     DuneTileTexture& operator=(const DuneTileTexture&) = default;
-    DuneTileTexture& operator=(DuneTileTexture&&) = default;
+    DuneTileTexture& operator=(DuneTileTexture&&)      = default;
 
     operator bool() const noexcept { return nullptr != texture_; }
 

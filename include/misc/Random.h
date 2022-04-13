@@ -43,7 +43,7 @@ protected:
 public:
     Random() = default;
 
-    explicit Random(const Random& random) = default;
+    explicit Random(const Random& random)   = default;
     Random& operator=(const Random& random) = default;
 
     /// Destructor

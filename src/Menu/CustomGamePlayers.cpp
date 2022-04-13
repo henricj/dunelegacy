@@ -441,7 +441,9 @@ CustomGamePlayers::~CustomGamePlayers() {
         if (bServer) {
             try {
                 pNetworkManager->stopServer();
-            } catch (std::exception& e) { sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): %s", e.what()); }
+            } catch (std::exception& e) {
+                sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): %s", e.what());
+            }
         }
     }
 }

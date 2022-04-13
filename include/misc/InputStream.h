@@ -162,7 +162,7 @@ public:
         ~exception() noexcept override = default;
 
         exception& operator=(const exception&) = default;
-        exception& operator=(exception&&) = default;
+        exception& operator=(exception&&)      = default;
     };
 
     class eof : public InputStream::exception {
@@ -173,7 +173,7 @@ public:
         ~eof() noexcept override = default;
 
         eof& operator=(const eof&) = default;
-        eof& operator=(eof&&) = default;
+        eof& operator=(eof&&)      = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 
@@ -189,7 +189,7 @@ public:
         ~error() noexcept override = default;
 
         error& operator=(const error&) = default;
-        error& operator=(error&&) = default;
+        error& operator=(error&&)      = default;
 
         [[nodiscard]] const char* what() const noexcept override { return str.c_str(); }
 

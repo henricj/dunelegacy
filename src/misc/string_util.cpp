@@ -258,7 +258,7 @@ std::string convertCP850ToUTF8(std::string_view text) {
 
 std::string decodeString(std::string_view text) {
     static constexpr char decodeTable1[16]    = {' ', 'e', 't', 'a', 'i', 'n', 'o', 's',
-                                              'r', 'l', 'h', 'c', 'd', 'u', 'p', 'm'};
+                                                 'r', 'l', 'h', 'c', 'd', 'u', 'p', 'm'};
     static constexpr char decodeTable2[16][9] = {
         {'t', 'a', 's', 'i', 'o', ' ', 'w', 'b'}, {' ', 'r', 'n', 's', 'd', 'a', 'l', 'm'},
         {'h', ' ', 'i', 'e', 'o', 'r', 'a', 's'}, {'n', 'r', 't', 'l', 'c', ' ', 's', 'y'},

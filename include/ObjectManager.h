@@ -39,10 +39,10 @@ public:
     */
     ObjectManager();
 
-    ObjectManager(const ObjectManager&) = delete;
-    ObjectManager(ObjectManager&&)      = delete;
+    ObjectManager(const ObjectManager&)            = delete;
+    ObjectManager(ObjectManager&&)                 = delete;
     ObjectManager& operator=(const ObjectManager&) = delete;
-    ObjectManager& operator=(ObjectManager&&) = delete;
+    ObjectManager& operator=(ObjectManager&&)      = delete;
 
     /**
         Default destructor

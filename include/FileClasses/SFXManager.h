@@ -93,10 +93,10 @@ public:
     SFXManager();
     ~SFXManager();
 
-    SFXManager(const SFXManager&) = delete;
-    SFXManager(SFXManager&&)      = delete;
+    SFXManager(const SFXManager&)            = delete;
+    SFXManager(SFXManager&&)                 = delete;
     SFXManager& operator=(const SFXManager&) = delete;
-    SFXManager& operator=(SFXManager&&) = delete;
+    SFXManager& operator=(SFXManager&&)      = delete;
 
     Mix_Chunk* getVoice(Voice_enum id, HOUSETYPE house) const;
     Mix_Chunk* getSound(Sound_enum id) const;

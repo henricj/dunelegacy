@@ -38,7 +38,7 @@ public:
     virtual ~MetaServerCommand() = 0;
 
     MetaServerCommand& operator=(const MetaServerCommand&) = delete;
-    MetaServerCommand& operator=(MetaServerCommand&&) = delete;
+    MetaServerCommand& operator=(MetaServerCommand&&)      = delete;
 
     virtual bool operator==(const MetaServerCommand& metaServerCommand) const { return type == metaServerCommand.type; }
 

@@ -79,7 +79,7 @@ public:
     ~ChangeEventList() = default;
 
     ChangeEventList& operator=(const ChangeEventList&) = default;
-    ChangeEventList& operator=(ChangeEventList&&) = default;
+    ChangeEventList& operator=(ChangeEventList&&)      = default;
 
     void save(OutputStream& stream) const {
         stream.writeUint32(changeEventList.size());

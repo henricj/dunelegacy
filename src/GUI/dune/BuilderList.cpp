@@ -237,7 +237,7 @@ void BuilderList::draw(Point position) {
 
                     if (const auto* const pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete)) {
                         const SDL_Rect srcConcrete   = {0, 0, 1 + getStructureSize(buildItem.itemID).x * 6,
-                                                      1 + getStructureSize(buildItem.itemID).y * 6};
+                                                        1 + getStructureSize(buildItem.itemID).y * 6};
                         const SDL_FRect destConcrete = {static_cast<float>(dest.x + 2), static_cast<float>(dest.y + 2),
                                                         static_cast<float>(srcConcrete.w),
                                                         static_cast<float>(srcConcrete.h)};

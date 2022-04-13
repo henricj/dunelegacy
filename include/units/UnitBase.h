@@ -59,10 +59,10 @@ protected:
 public:
     ~UnitBase() override = 0;
 
-    UnitBase(const UnitBase&) = delete;
-    UnitBase(UnitBase&&)      = delete;
+    UnitBase(const UnitBase&)            = delete;
+    UnitBase(UnitBase&&)                 = delete;
     UnitBase& operator=(const UnitBase&) = delete;
-    UnitBase& operator=(UnitBase&&) = delete;
+    UnitBase& operator=(UnitBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

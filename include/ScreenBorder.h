@@ -51,10 +51,10 @@ public:
     */
     ~ScreenBorder() = default;
 
-    ScreenBorder(const ScreenBorder&) = delete;
-    ScreenBorder(ScreenBorder&&)      = delete;
+    ScreenBorder(const ScreenBorder&)            = delete;
+    ScreenBorder(ScreenBorder&&)                 = delete;
     ScreenBorder& operator=(const ScreenBorder&) = delete;
-    ScreenBorder& operator=(ScreenBorder&&) = delete;
+    ScreenBorder& operator=(ScreenBorder&&)      = delete;
 
     /**
         Loads the current position on the map from a stream

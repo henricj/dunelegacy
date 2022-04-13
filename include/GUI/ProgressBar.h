@@ -41,10 +41,10 @@ public:
     /// destructor
     ~ProgressBar() override;
 
-    ProgressBar(const ProgressBar&) = delete;
-    ProgressBar(ProgressBar&&)      = delete;
+    ProgressBar(const ProgressBar&)            = delete;
+    ProgressBar(ProgressBar&&)                 = delete;
     ProgressBar& operator=(const ProgressBar&) = delete;
-    ProgressBar& operator=(ProgressBar&&) = delete;
+    ProgressBar& operator=(ProgressBar&&)      = delete;
 
     /**
         Sets the progress of this progress bar.
@@ -137,10 +137,10 @@ public:
 
     ~TextProgressBar() override;
 
-    TextProgressBar(const TextProgressBar&) = delete;
-    TextProgressBar(TextProgressBar&&)      = delete;
+    TextProgressBar(const TextProgressBar&)            = delete;
+    TextProgressBar(TextProgressBar&&)                 = delete;
     TextProgressBar& operator=(const TextProgressBar&) = delete;
-    TextProgressBar& operator=(TextProgressBar&&) = delete;
+    TextProgressBar& operator=(TextProgressBar&&)      = delete;
     /**
         This method sets a new text for this progress bar and resizes it
         to fit this text.
@@ -199,10 +199,10 @@ public:
 
     ~PictureProgressBar() override;
 
-    PictureProgressBar(const PictureProgressBar&) = delete;
-    PictureProgressBar(PictureProgressBar&&)      = delete;
+    PictureProgressBar(const PictureProgressBar&)            = delete;
+    PictureProgressBar(PictureProgressBar&&)                 = delete;
     PictureProgressBar& operator=(const PictureProgressBar&) = delete;
-    PictureProgressBar& operator=(PictureProgressBar&&) = delete;
+    PictureProgressBar& operator=(PictureProgressBar&&)      = delete;
 
     void setTexture(const DuneTexture* pBackground) {
         setBackground(pBackground);

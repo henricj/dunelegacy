@@ -76,7 +76,7 @@ public:
     ~Game();
 
     Game& operator=(const Game&) = delete;
-    Game& operator=(Game&&) = delete;
+    Game& operator=(Game&&)      = delete;
 
     /**
         Initializes a game with the specified settings

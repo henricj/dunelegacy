@@ -147,9 +147,15 @@ public:
         }
 #endif
 
-        [[nodiscard]] int getIntValue(int defaultValue = 0) const noexcept { return getValue(defaultValue); }
-        [[nodiscard]] float getFloatValue(float defaultValue = 0.0f) const noexcept { return getValue(defaultValue); }
-        [[nodiscard]] double getDoubleValue(double defaultValue = 0.0) const noexcept { return getValue(defaultValue); }
+        [[nodiscard]] int getIntValue(int defaultValue = 0) const noexcept {
+            return getValue(defaultValue);
+        }
+        [[nodiscard]] float getFloatValue(float defaultValue = 0.0f) const noexcept {
+            return getValue(defaultValue);
+        }
+        [[nodiscard]] double getDoubleValue(double defaultValue = 0.0) const noexcept {
+            return getValue(defaultValue);
+        }
 
         void setStringValue(std::string_view newValue, bool bEscapeIfNeeded = true);
         void setBoolValue(bool newValue);
@@ -178,8 +184,12 @@ public:
         }
 #endif
 
-        void setIntValue(int newValue) { setValue(newValue); }
-        void setDoubleValue(double newValue) { setValue(newValue); }
+        void setIntValue(int newValue) {
+            setValue(newValue);
+        }
+        void setDoubleValue(double newValue) {
+            setValue(newValue);
+        }
 
         friend class INIFile;
         friend class KeyIterator;

@@ -50,10 +50,10 @@ public:
     explicit MentatTextFile(SDL_RWops* rwop);
     ~MentatTextFile();
 
-    MentatTextFile(const MentatTextFile&) = delete;
-    MentatTextFile(MentatTextFile&&)      = delete;
+    MentatTextFile(const MentatTextFile&)            = delete;
+    MentatTextFile(MentatTextFile&&)                 = delete;
     MentatTextFile& operator=(const MentatTextFile&) = delete;
-    MentatTextFile& operator=(MentatTextFile&&) = delete;
+    MentatTextFile& operator=(MentatTextFile&&)      = delete;
 
     /// This method returns the nth entry in this text file.
     /**

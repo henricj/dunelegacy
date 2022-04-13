@@ -70,10 +70,10 @@ protected:
 public:
     ~StructureBase() override = 0;
 
-    StructureBase(const StructureBase&) = delete;
-    StructureBase(StructureBase&&)      = delete;
+    StructureBase(const StructureBase&)            = delete;
+    StructureBase(StructureBase&&)                 = delete;
     StructureBase& operator=(const StructureBase&) = delete;
-    StructureBase& operator=(StructureBase&&) = delete;
+    StructureBase& operator=(StructureBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

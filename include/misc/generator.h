@@ -100,8 +100,8 @@ struct generator {
 
     generator(promise_type& promise) : handle(handle_type::from_promise(promise)) { }
 
-    generator()                 = default;
-    generator(generator const&) = delete;
+    generator()                            = default;
+    generator(generator const&)            = delete;
     generator& operator=(generator const&) = delete;
 
     generator(generator&& other) : handle(other.handle) { other.handle = nullptr; }

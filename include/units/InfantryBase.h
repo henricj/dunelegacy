@@ -39,10 +39,10 @@ public:
 
     ~InfantryBase() override = 0;
 
-    InfantryBase(const InfantryBase&) = delete;
-    InfantryBase(InfantryBase&&)      = delete;
+    InfantryBase(const InfantryBase&)            = delete;
+    InfantryBase(InfantryBase&&)                 = delete;
     InfantryBase& operator=(const InfantryBase&) = delete;
-    InfantryBase& operator=(InfantryBase&&) = delete;
+    InfantryBase& operator=(InfantryBase&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

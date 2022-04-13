@@ -33,10 +33,10 @@ public:
     /// Default constructor
     Intro();
 
-    Intro(const Intro&) = delete;
-    Intro(Intro&&)      = delete;
+    Intro(const Intro&)            = delete;
+    Intro(Intro&&)                 = delete;
     Intro& operator=(const Intro&) = delete;
-    Intro& operator=(Intro&&) = delete;
+    Intro& operator=(Intro&&)      = delete;
 
     /// destructor
     ~Intro() override;

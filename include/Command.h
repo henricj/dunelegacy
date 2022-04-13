@@ -91,7 +91,7 @@ public:
     Command(Command&&)      = default;
 
     Command& operator=(const Command&) = default;
-    Command& operator=(Command&&) = default;
+    Command& operator=(Command&&)      = default;
 
     /// destructor
     ~Command();

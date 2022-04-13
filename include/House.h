@@ -43,10 +43,10 @@ public:
     House(const GameContext& context, InputStream& stream);
     virtual ~House();
 
-    House(const House&) = delete;
-    House(House&&)      = delete;
+    House(const House&)            = delete;
+    House(House&&)                 = delete;
     House& operator=(const House&) = delete;
-    House& operator=(House&&) = delete;
+    House& operator=(House&&)      = delete;
 
     virtual void save(OutputStream& stream) const;
 

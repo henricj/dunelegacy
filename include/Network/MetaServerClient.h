@@ -40,7 +40,7 @@ public:
     MetaServerClient(MetaServerClient&&)      = delete;
 
     MetaServerClient& operator=(const MetaServerClient&) = delete;
-    MetaServerClient& operator=(MetaServerClient&&) = delete;
+    MetaServerClient& operator=(MetaServerClient&&)      = delete;
 
     /**
         Sets the function that shall be called if there is an update to the server list

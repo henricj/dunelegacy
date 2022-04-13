@@ -39,10 +39,10 @@ public:
 
     ~GroundUnit() override = 0;
 
-    GroundUnit(const GroundUnit&) = delete;
-    GroundUnit(GroundUnit&&)      = delete;
+    GroundUnit(const GroundUnit&)            = delete;
+    GroundUnit(GroundUnit&&)                 = delete;
     GroundUnit& operator=(const GroundUnit&) = delete;
-    GroundUnit& operator=(GroundUnit&&) = delete;
+    GroundUnit& operator=(GroundUnit&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

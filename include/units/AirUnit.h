@@ -40,10 +40,10 @@ public:
 
     ~AirUnit() override = 0;
 
-    AirUnit(const AirUnit&) = delete;
-    AirUnit(AirUnit&&)      = delete;
+    AirUnit(const AirUnit&)            = delete;
+    AirUnit(AirUnit&&)                 = delete;
     AirUnit& operator=(const AirUnit&) = delete;
-    AirUnit& operator=(AirUnit&&) = delete;
+    AirUnit& operator=(AirUnit&&)      = delete;
 
     void save(OutputStream& stream) const override;
 

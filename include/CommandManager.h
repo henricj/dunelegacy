@@ -40,10 +40,10 @@ public:
     */
     CommandManager();
 
-    CommandManager(CommandManager&&)      = delete;
-    CommandManager(const CommandManager&) = delete;
+    CommandManager(CommandManager&&)                 = delete;
+    CommandManager(const CommandManager&)            = delete;
     CommandManager& operator=(const CommandManager&) = delete;
-    CommandManager& operator=(CommandManager&&) = delete;
+    CommandManager& operator=(CommandManager&&)      = delete;
 
     /// destructor
     ~CommandManager();

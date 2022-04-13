@@ -63,10 +63,10 @@ public:
     [[nodiscard]] constexpr void* pixels() const noexcept { return pixels_; }
     [[nodiscard]] constexpr int pitch() const noexcept { return pitch_; }
 
-    texture_lock(const texture_lock&) = delete;
-    texture_lock(texture_lock&&)      = delete;
+    texture_lock(const texture_lock&)            = delete;
+    texture_lock(texture_lock&&)                 = delete;
     texture_lock& operator=(const texture_lock&) = delete;
-    texture_lock& operator=(texture_lock&&) = delete;
+    texture_lock& operator=(texture_lock&&)      = delete;
 };
 
 class surface_lock final {
@@ -96,10 +96,10 @@ public:
     [[nodiscard]] constexpr void* pixels() const noexcept { return pixels_; }
     [[nodiscard]] constexpr int pitch() const noexcept { return pitch_; }
 
-    surface_lock(const surface_lock&) = delete;
-    surface_lock(surface_lock&&)      = delete;
+    surface_lock(const surface_lock&)            = delete;
+    surface_lock(surface_lock&&)                 = delete;
     surface_lock& operator=(const surface_lock&) = delete;
-    surface_lock& operator=(surface_lock&&) = delete;
+    surface_lock& operator=(surface_lock&&)      = delete;
 };
 
 class surface_try_lock final {
@@ -127,10 +127,10 @@ public:
 
     [[nodiscard]] void* pixels() const { return pixels_; }
 
-    surface_try_lock(const surface_try_lock&) = delete;
-    surface_try_lock(surface_try_lock&&)      = delete;
+    surface_try_lock(const surface_try_lock&)            = delete;
+    surface_try_lock(surface_try_lock&&)                 = delete;
     surface_try_lock& operator=(const surface_try_lock&) = delete;
-    surface_try_lock& operator=(surface_try_lock&&) = delete;
+    surface_try_lock& operator=(surface_try_lock&&)      = delete;
 };
 
 namespace implementation {

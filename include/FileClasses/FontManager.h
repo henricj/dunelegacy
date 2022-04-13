@@ -35,10 +35,10 @@ public:
     FontManager(std::filesystem::path font_path);
     ~FontManager();
 
-    FontManager(const FontManager&) = delete;
-    FontManager(FontManager&&)      = delete;
+    FontManager(const FontManager&)            = delete;
+    FontManager(FontManager&&)                 = delete;
     FontManager& operator=(const FontManager&) = delete;
-    FontManager& operator=(FontManager&&) = delete;
+    FontManager& operator=(FontManager&&)      = delete;
 
     void drawTextOnSurface(SDL_Surface* pSurface, std::string_view text, uint32_t color, unsigned int fontSize);
     int getTextWidth(std::string_view text, unsigned int fontSize);

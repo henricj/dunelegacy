@@ -36,7 +36,7 @@ public:
     ~Map();
 
     Map& operator=(const Map&) = delete;
-    Map& operator=(Map&&) = delete;
+    Map& operator=(Map&&)      = delete;
 
     void load(InputStream& stream);
     void save(OutputStream& stream, uint32_t gameCycleCount) const;
