@@ -36,6 +36,8 @@ public:
 
     int showMenu() override;
 
+    void resize(uint32_t width, uint32_t height) override;
+
 private:
     static void onSinglePlayer();
     static void onMultiPlayer();

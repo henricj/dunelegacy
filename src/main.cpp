@@ -130,9 +130,10 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
 void setVideoMode(int displayIndex) {
     int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
 
-    if (settings.video.fullscreen) {
+    if (settings.video.fullscreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    }
+    else
+        videoFlags |= SDL_WINDOW_RESIZABLE;
 
     const SDL_DisplayMode targetDisplayMode{0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
 

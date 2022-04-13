@@ -34,7 +34,7 @@ MainMenu::MainMenu() {
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
     setBackground(pBackground);
-    MainMenu::resize(getTextureSize(pBackground));
+    MenuBase::resize(getTextureSize(pBackground));
 
     MainMenu::setWindowWidget(&windowWidget);
 
@@ -101,10 +101,20 @@ MainMenu::MainMenu() {
 
 MainMenu::~MainMenu() = default;
 
+
+
 int MainMenu::showMenu() {
     musicPlayer->changeMusic(MUSIC_MENU);
 
     return MenuBase::showMenu();
+}
+
+void MainMenu::resize(uint32_t width, uint32_t height) {
+    MenuBase::resize(width, height);
+
+    //const auto size = planetPicture.getSize();
+    //auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
+    //dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
 }
 
 void MainMenu::onSinglePlayer() {

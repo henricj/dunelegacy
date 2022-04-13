@@ -148,6 +148,20 @@ void Window::handleInput(SDL_Event& event) {
 
         case SDL_WINDOWEVENT: {
             switch (event.window.event) {
+                case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                    const auto& gui  = GUIStyle::getInstance();
+                    const auto scale = gui.getScale();
+
+                    const auto width  = static_cast<int>(std::round(static_cast<float>(event.window.data1) / scale));
+                    const auto height = static_cast<int>(std::round(static_cast<float>(event.window.data2) / scale));
+
+                    SDL_RenderSetLogicalSize(renderer, width, height);
+
+                    const auto actual = getRendererSize();
+
+                    resize(actual.w, actual.h);
+                } break;
+
                 case SDL_WINDOWEVENT_DISPLAY_CHANGED: {
                     invalidateTextures();
                 } break;
