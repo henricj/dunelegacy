@@ -50,7 +50,7 @@ void CutScene::run() {
             if (now >= frameDone)
                 break;
 
-            const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(now - frameDone).count();
+            const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(frameDone - now).count();
 
             if (remaining < 1 || remaining > 1000)
                 break;
