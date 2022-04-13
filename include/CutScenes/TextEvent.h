@@ -37,11 +37,13 @@ public:
         \param  color           the color of the text
         \param  startFrame      the first frame relative to the current Scene start where the text should be shown
         \param  lengthInFrames  the number of frames the text shall be shown (if fading in/out is selected, the
-       neccessary time for fading is included here) \param  bFadeIn         true = fade in the text (see TEXT_FADE_TIME
-       for the number of frames it takes), false = simply show the text (default is true) \param  bFadeOut        true =
-       fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text simply disapears (default
-       is true) \param  bCenterVertical true = center the text vertically on the screen, false = draw the text near the
-       bottom of the screen (default is false)
+                                necessary time for fading is included here)
+        \param  bFadeIn         true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes),
+                                false = simply show the text (default is true)
+        \param  bFadeOut        true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes),
+                                false = text simply disappears (default is true)
+        \param  bCenterVertical true = center the text vertically on the screen,
+                                false = draw the text near the bottom of the screen (default is false)
     */
     TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn = true,
               bool bFadeOut = true, bool bCenterVertical = false);
@@ -58,12 +60,12 @@ public:
 private:
     std::string text;   ///< the text to show
     int startFrame;     ///< the first frame relative to the current Scene start where the text should be shown
-    int lengthInFrames; ///< the number of frames the text shall be shown (if fading in/out is selected, the neccessary
+    int lengthInFrames; ///< the number of frames the text shall be shown (if fading in/out is selected, the necessary
                         ///< time for fading is included here)
     bool bFadeIn;  ///< true = fade in the text (see TEXT_FADE_TIME for the number of frames it takes), false = simply
                    ///< show the text
     bool bFadeOut; ///< true = fade out the text (see TEXT_FADE_TIME for the number of frames it takes), false = text
-                   ///< simply disapears
+                   ///< simply disappears
     bool bCenterVertical; ///< true = center the text vertically on the screen, false = draw the text near the bottom of
                           ///< the screen
     sdl2::texture_ptr pTexture; ///< a texture containing the rendered text
