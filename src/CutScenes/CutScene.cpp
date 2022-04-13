@@ -26,6 +26,8 @@
 #include <globals.h>
 #include <sand.h>
 
+#include "misc/dune_timer_resolution.h"
+
 CutScene::CutScene() : quiting(false) { }
 
 CutScene::~CutScene() {
@@ -37,6 +39,8 @@ CutScene::~CutScene() {
 
 void CutScene::run() {
     SDL_Event event;
+
+    dune::DuneTimerResolution timer_handle;
 
     while (!quiting) {
         const auto frameStart = dune::dune_clock::now();
