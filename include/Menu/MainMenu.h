@@ -37,11 +37,11 @@ public:
     int showMenu() override;
 
 private:
-    void onSinglePlayer() const;
-    void onMultiPlayer() const;
-    void onMapEditor() const;
+    static void onSinglePlayer();
+    static void onMultiPlayer();
+    static void onMapEditor();
     void onOptions();
-    void onAbout() const;
+    static void onAbout();
     void onQuit();
 
     StaticContainer windowWidget;

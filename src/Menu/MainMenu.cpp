@@ -63,21 +63,21 @@ MainMenu::MainMenu() {
                            Point(160, 111));
 
     singlePlayerButton.setText(_("SINGLE PLAYER"));
-    singlePlayerButton.setOnClick([this] { onSinglePlayer(); });
+    singlePlayerButton.setOnClick([] { onSinglePlayer(); });
     MenuButtons.addWidget(&singlePlayerButton);
     singlePlayerButton.setActive();
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     multiPlayerButton.setText(_("MULTIPLAYER"));
-    multiPlayerButton.setOnClick([this] { onMultiPlayer(); });
+    multiPlayerButton.setOnClick([] { onMultiPlayer(); });
     MenuButtons.addWidget(&multiPlayerButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     //    MenuButtons.addWidget(VSpacer::create(16));
     mapEditorButton.setText(_("MAP EDITOR"));
-    mapEditorButton.setOnClick([this] { onMapEditor(); });
+    mapEditorButton.setOnClick([] { onMapEditor(); });
     MenuButtons.addWidget(&mapEditorButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
@@ -89,7 +89,7 @@ MainMenu::MainMenu() {
     MenuButtons.addWidget(VSpacer::create(3));
 
     aboutButton.setText(_("ABOUT"));
-    aboutButton.setOnClick([this] { onAbout(); });
+    aboutButton.setOnClick([] { onAbout(); });
     MenuButtons.addWidget(&aboutButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
@@ -107,17 +107,17 @@ int MainMenu::showMenu() {
     return MenuBase::showMenu();
 }
 
-void MainMenu::onSinglePlayer() const {
+void MainMenu::onSinglePlayer() {
     SinglePlayerMenu singlePlayerMenu;
     singlePlayerMenu.showMenu();
 }
 
-void MainMenu::onMultiPlayer() const {
+void MainMenu::onMultiPlayer() {
     MultiPlayerMenu multiPlayerMenu;
     multiPlayerMenu.showMenu();
 }
 
-void MainMenu::onMapEditor() const {
+void MainMenu::onMapEditor() {
     MapEditor mapEditor;
     mapEditor.RunEditor();
 }
@@ -131,7 +131,7 @@ void MainMenu::onOptions() {
     }
 }
 
-void MainMenu::onAbout() const {
+void MainMenu::onAbout() {
     AboutMenu myAbout;
     myAbout.showMenu();
 }
