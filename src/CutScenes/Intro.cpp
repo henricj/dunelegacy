@@ -81,7 +81,7 @@ Intro::Intro() {
     blowup1 = getChunkFromFile("BLOWUP1.VOC");
     blowup2 = getChunkFromFile("BLOWUP2.VOC");
 
-    const bool bEnableVoice = (settings.general.language == "en");
+    const bool bEnableVoice = settings.general.language == "en";
     if (bEnableVoice) {
         // Load english voice
         for (int i = 0; i < Voice_NUM_ENTRIES; i++) {

@@ -48,5 +48,5 @@ int WSAVideoEvent::draw() {
 }
 
 bool WSAVideoEvent::isFinished() {
-    return (currentFrame >= pWsafile->getNumFrames());
+    return currentFrame >= pWsafile->getNumFrames();
 }

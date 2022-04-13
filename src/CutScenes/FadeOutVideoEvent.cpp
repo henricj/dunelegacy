@@ -38,7 +38,7 @@ int FadeOutVideoEvent::draw() {
     const SDL_Rect dest =
         calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    const int alpha = std::max(0, 255 - (255 * currentFrame) / numFrames2FadeOut);
+    const int alpha = std::max(0, 255 - 255 * currentFrame / numFrames2FadeOut);
     if (bFadeWhite) {
         // fade to white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -53,5 +53,5 @@ int FadeOutVideoEvent::draw() {
 }
 
 bool FadeOutVideoEvent::isFinished() {
-    return (currentFrame >= numFrames2FadeOut);
+    return currentFrame >= numFrames2FadeOut;
 }

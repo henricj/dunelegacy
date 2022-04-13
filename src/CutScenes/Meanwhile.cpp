@@ -153,11 +153,11 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
             addTextEvent(std::make_unique<TextEvent>(
                 dune_text.getString(textBaseIndex + MeanwhileText_No_more_explanations), sardaukarColor, 3,
-                (house == HOUSETYPE::HOUSE_ORDOS) ? 21 : 11, false, false, false));
+                house == HOUSETYPE::HOUSE_ORDOS ? 21 : 11, false, false, false));
             addTextEvent(
                 std::make_unique<TextEvent>(dune_text.getString(textBaseIndex + MeanwhileText_Only_together_will_we),
-                                            sardaukarColor, (house == HOUSETYPE::HOUSE_ORDOS) ? 28 : 18,
-                                            (house == HOUSETYPE::HOUSE_ORDOS) ? 39 : 49, false, true, false));
+                                            sardaukarColor, house == HOUSETYPE::HOUSE_ORDOS ? 28 : 18,
+                                            house == HOUSETYPE::HOUSE_ORDOS ? 39 : 49, false, true, false));
         }
     }
 }

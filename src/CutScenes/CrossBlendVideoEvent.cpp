@@ -58,5 +58,5 @@ int CrossBlendVideoEvent::draw() {
 }
 
 bool CrossBlendVideoEvent::isFinished() {
-    return (pBlendBlitter == nullptr);
+    return pBlendBlitter == nullptr;
 }

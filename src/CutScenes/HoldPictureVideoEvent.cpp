@@ -47,5 +47,5 @@ int HoldPictureVideoEvent::draw() {
 }
 
 bool HoldPictureVideoEvent::isFinished() {
-    return (currentFrame >= numFrames2Hold);
+    return currentFrame >= numFrames2Hold;
 }

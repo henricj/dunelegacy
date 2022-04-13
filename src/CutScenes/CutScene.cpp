@@ -61,9 +61,9 @@ void CutScene::run() {
 
             // check the events
             switch (event.type) {
-                case (SDL_KEYDOWN): // Look for a keypress
+                case SDL_KEYDOWN: // Look for a keypress
                 {
-                    if ((event.key.keysym.sym == SDLK_SPACE) || (event.key.keysym.sym == SDLK_ESCAPE)) {
+                    if (event.key.keysym.sym == SDLK_SPACE || event.key.keysym.sym == SDLK_ESCAPE) {
                         // Fixes some flickering
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
