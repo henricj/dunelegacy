@@ -17,6 +17,7 @@
 
 #include <CutScenes/CutScene.h>
 
+#include "misc/dune_wait_event.h"
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Palfile.h>
 #include <FileClasses/music/MusicPlayer.h>
@@ -55,7 +56,7 @@ void CutScene::run() {
             if (remaining < 1 || remaining > 1000)
                 break;
 
-            if (!SDL_WaitEventTimeout(&event, static_cast<int>(remaining)))
+            if (!dune::Dune_WaitEvent(&event, static_cast<uint32_t>(remaining)))
                 continue;
 
             // check the events
