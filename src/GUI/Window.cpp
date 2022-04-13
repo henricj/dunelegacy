@@ -122,6 +122,7 @@ void Window::handleInput(SDL_Event& event) {
                 case SDL_BUTTON_RIGHT: {
                     handleMouseRight(event.button.x, event.button.y, true);
                 } break;
+                default: break;
             }
         } break;
 
@@ -140,6 +141,8 @@ void Window::handleInput(SDL_Event& event) {
                 case SDL_BUTTON_RIGHT: {
                     handleMouseRight(event.button.x, event.button.y, false);
                 } break;
+
+                default: break;
             }
         } break;
 
@@ -148,6 +151,8 @@ void Window::handleInput(SDL_Event& event) {
                 case SDL_WINDOWEVENT_DISPLAY_CHANGED: {
                     invalidateTextures();
                 } break;
+
+                default: break;
             }
         } break;
 
@@ -155,6 +160,8 @@ void Window::handleInput(SDL_Event& event) {
         case SDL_RENDER_DEVICE_RESET: {
             invalidateTextures();
         } break;
+
+        default: break;
     }
 }
 
