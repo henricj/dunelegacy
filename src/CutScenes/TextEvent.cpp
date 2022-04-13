@@ -24,9 +24,13 @@ TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, in
     : text(text), startFrame(startFrame), lengthInFrames(lengthInFrames), bFadeIn(bFadeIn), bFadeOut(bFadeOut),
       bCenterVertical(bCenterVertical) {
 
-    pTexture = pFontManager->createTextureWithMultilineText(text, color, 28, true);
+    const auto& gui = GUIStyle::getInstance();
 
-    SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
+    const auto font_size = static_cast<int>(std::round(gui.getScale() * 28));
+
+    text_height_ = pFontManager->getTextHeight(font_size);
+
+    pTexture = pFontManager->createTextureWithMultilineText(text, color, font_size, true);
 }
 
 TextEvent::~TextEvent() = default;
@@ -45,11 +49,27 @@ void TextEvent::draw(int currentFrameNumber) const {
         alpha = static_cast<uint8_t>((startFrame + lengthInFrames - currentFrameNumber) * 255 / TEXT_FADE_TIME);
     }
 
-    SDL_Rect dest = calcAlignedDrawingRect(pTexture.get(), HAlign::Center, VAlign::Center);
-    if (!bCenterVertical) {
-        dest.y = getRendererHeight() / 2 + 480 / 2 - 5 * pFontManager->getTextHeight(28) / 2;
-    }
+    const auto& gui = GUIStyle::getInstance();
+
+    const auto scale = 1.f / gui.getZoom();
+
+    const auto render_size = getRendererSize();
+    const auto render_w    = static_cast<float>(render_size.w);
+    const auto render_h    = static_cast<float>(render_size.h);
+
+    int w, h;
+    if (0 != SDL_QueryTexture(pTexture.get(), nullptr, nullptr, &w, &h))
+        return;
+
+    const auto scaled_w = static_cast<float>(w) * scale;
+    const auto scaled_h = static_cast<float>(h) * scale;
+
+    const auto scaled_text_height = static_cast<float>(text_height_) * scale;
+
+    const auto dest_y = bCenterVertical ? (render_h - scaled_h) / 2 : (render_h + 480.f - 5.f * scaled_text_height) / 2;
+
+    const SDL_FRect dest{(render_w - scaled_w) / 2, dest_y, scaled_w, scaled_h};
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
-    Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+    Dune_RenderCopyF(renderer, pTexture.get(), nullptr, &dest);
 }

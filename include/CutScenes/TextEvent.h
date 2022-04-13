@@ -69,6 +69,7 @@ private:
     bool bCenterVertical; ///< true = center the text vertically on the screen, false = draw the text near the bottom of
                           ///< the screen
     sdl2::texture_ptr pTexture; ///< a texture containing the rendered text
+    int text_height_;
 };
 
 #endif // TEXTEVENT_H
