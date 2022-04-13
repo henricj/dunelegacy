@@ -21,6 +21,8 @@
 #include <GUI/Window.h>
 #include <misc/SDL2pp.h>
 
+#include <SDL2/SDL_events.h>
+
 #define MENU_QUIT_DEFAULT (-1)
 
 class MenuBase : public Window {
