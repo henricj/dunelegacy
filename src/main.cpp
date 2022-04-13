@@ -133,8 +133,8 @@ void setVideoMode(int displayIndex) {
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     }
 
-    const SDL_DisplayMode targetDisplayMode = {0, settings.video.physicalWidth, settings.video.physicalHeight, 0,
-                                               nullptr};
+    const SDL_DisplayMode targetDisplayMode{0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
+
     SDL_DisplayMode closestDisplayMode;
 
     if (settings.video.fullscreen) {
