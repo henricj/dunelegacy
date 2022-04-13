@@ -240,6 +240,7 @@ bool CampaignStatsMenu::doInput(SDL_Event& event) {
 void CampaignStatsMenu::drawSpecificStuff() {
     doState(dune::dune_clock::now() - currentStateStartTime);
 }
+
 void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
     switch (currentState) {
         case State_HumanSpice: {
