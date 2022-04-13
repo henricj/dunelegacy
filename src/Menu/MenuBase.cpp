@@ -150,6 +150,7 @@ bool MenuBase::doInput(SDL_Event& event) {
                     } else {
                         break; // do not fall through
                     }
+                    [[fallthrough]];
                 } // fall through
 
                 case SDLK_PRINTSCREEN:
