@@ -76,7 +76,7 @@ Intro::Intro() {
     }
 
     glass   = getChunkFromFile("GLASS.VOC");
-    missle  = getChunkFromFile("MISSLE8.VOC");
+    missile = getChunkFromFile("MISSLE8.VOC");
     blaster = getChunkFromFile("BLASTER.VOC");
     blowup1 = getChunkFromFile("BLOWUP1.VOC");
     blowup2 = getChunkFromFile("BLOWUP2.VOC");
@@ -270,10 +270,10 @@ Intro::Intro() {
     addVideoEvent(std::make_unique<WSAVideoEvent>(pOrdos.get()));
     addTextEvent(std::make_unique<TextEvent>(intro_text.getString(IntroText_The_insidious_Ordos), color, -2, 47, true,
                                              true, false));
-    addTrigger(std::make_unique<CutSceneSoundTrigger>(3, missle.get()));
-    addTrigger(std::make_unique<CutSceneSoundTrigger>(8, missle.get()));
-    addTrigger(std::make_unique<CutSceneSoundTrigger>(28, missle.get()));
-    addTrigger(std::make_unique<CutSceneSoundTrigger>(38, missle.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(3, missile.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(8, missile.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(28, missile.get()));
+    addTrigger(std::make_unique<CutSceneSoundTrigger>(38, missile.get()));
     if (bEnableVoice)
         addTrigger(std::make_unique<CutSceneSoundTrigger>(12, voice[Voice_The_insidious].get()));
     if (bEnableVoice)

@@ -149,7 +149,7 @@ private:
     sdl2::mix_chunk_ptr harvester;       ///< SFX: harvester stopping
     sdl2::mix_chunk_ptr gunshot;         ///< SFX: a gunshot
     sdl2::mix_chunk_ptr glass;           ///< SFX: broken glass, destroyed by atreides ornithopters
-    sdl2::mix_chunk_ptr missle;          ///< SFX: missle launched
+    sdl2::mix_chunk_ptr missile;         ///< SFX: missile launched
     sdl2::mix_chunk_ptr blaster;         ///< SFX: trooper hit
     sdl2::mix_chunk_ptr blowup1;         ///< SFX: explosion
     sdl2::mix_chunk_ptr blowup2;         ///< SFX: explosion
