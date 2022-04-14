@@ -470,6 +470,10 @@ sdl2::surface_ptr PictureFactory::createBackground() const {
     return copySurface(background.get());
 }
 
+sdl2::surface_ptr PictureFactory::createBackgroundTile() const {
+    return copySurface(backgroundTile.get());
+}
+
 sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) const {
     const auto PatternNormal    = getSubPicture(fame_pic, 0, 1, 63, 67);
     const auto PatternHFlipped  = flipHSurface(getSubPicture(fame_pic, 0, 1, 63, 67).get());
@@ -501,43 +505,27 @@ sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) co
 }
 
 sdl2::surface_ptr PictureFactory::createBackground(const int width, const int height) const {
-    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
-    if (surface == nullptr) {
-        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new background Picture!");
-    }
-    palette.applyToSurface(surface.get());
-
-    const auto pattern = backgroundTile.get();
-
-    const auto w = pattern->w;
-    const auto h = pattern->h;
-
-    SDL_Rect dest{0, 0, w, h};
-
-    for (dest.y = 0; dest.y < height; dest.y += h) {
-        for (dest.x = 0; dest.x < width; dest.x += w) {
-            SDL_Rect tmpDest = dest;
-            SDL_BlitSurface(pattern, nullptr, surface.get(), &tmpDest);
-        }
-    }
-
-    return surface;
+    return createTiledSurface(backgroundTile.get(), width, height);
 }
 
 sdl2::surface_ptr PictureFactory::createMainBackground() const {
     auto Pic = copySurface(background.get());
+    drawMainBackground(Pic.get());
+    return Pic;
+}
 
-    SDL_Rect dest0 = {3, 3, getWidth(Pic.get()) - 3, getHeight(Pic.get()) - 3};
-    drawFrame(Pic.get(), DecorationFrame2, &dest0);
+void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
+    SDL_Rect dest0 = {3, 3, getWidth(surface) - 3, getHeight(surface) - 3};
+    drawFrame(surface, DecorationFrame2, &dest0);
 
     SDL_Rect dest1 = calcDrawingRect(harkonnenLogo.get(), 11, 11);
-    SDL_BlitSurface(harkonnenLogo.get(), nullptr, Pic.get(), &dest1);
+    SDL_BlitSurface(harkonnenLogo.get(), nullptr, surface, &dest1);
 
-    SDL_Rect dest2 = calcDrawingRect(atreidesLogo.get(), getWidth(Pic.get()) - 11, 11, HAlign::Right, VAlign::Top);
-    SDL_BlitSurface(atreidesLogo.get(), nullptr, Pic.get(), &dest2);
+    SDL_Rect dest2 = calcDrawingRect(atreidesLogo.get(), getWidth(surface) - 11, 11, HAlign::Right, VAlign::Top);
+    SDL_BlitSurface(atreidesLogo.get(), nullptr, surface, &dest2);
 
-    SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(), 11, getHeight(Pic.get()) - 11, HAlign::Left, VAlign::Bottom);
-    SDL_BlitSurface(ordosLogo.get(), nullptr, Pic.get(), &dest3);
+    SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(), 11, getHeight(surface) - 11, HAlign::Left, VAlign::Bottom);
+    SDL_BlitSurface(ordosLogo.get(), nullptr, surface, &dest3);
 
     const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
@@ -551,11 +539,9 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
 
     drawFrame(Version.get(), SimpleFrame);
 
-    SDL_Rect dest5 = calcDrawingRect(Version.get(), getWidth(Pic.get()) - 11, getHeight(Pic.get()) - 11, HAlign::Right,
-                                     VAlign::Bottom);
-    SDL_BlitSurface(Version.get(), nullptr, Pic.get(), &dest5);
-
-    return Pic;
+    SDL_Rect dest5 =
+        calcDrawingRect(Version.get(), getWidth(surface) - 11, getHeight(surface) - 11, HAlign::Right, VAlign::Bottom);
+    SDL_BlitSurface(Version.get(), nullptr, surface, &dest5);
 }
 
 sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) const {

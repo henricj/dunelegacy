@@ -40,8 +40,10 @@ public:
     [[nodiscard]] static sdl2::surface_ptr createPlacingGrid(int size, int color);
     void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest = nullptr) const;
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
+    [[nodiscard]] sdl2::surface_ptr createBackgroundTile() const;
     [[nodiscard]] sdl2::surface_ptr createBackground(int width, int height) const;
     [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
+    void drawMainBackground(SDL_Surface* surface) const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
     [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType, int width, int height, bool UseBackground);
     [[nodiscard]] sdl2::surface_ptr createMenu(int x, int y) const;

@@ -19,6 +19,7 @@
 #define MAINMENU_H
 
 #include "MenuBase.h"
+
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>
@@ -36,7 +37,8 @@ public:
 
     int showMenu() override;
 
-    void resize(uint32_t width, uint32_t height) override;
+protected:
+    void draw_background(Point position) override;
 
 private:
     static void onSinglePlayer();

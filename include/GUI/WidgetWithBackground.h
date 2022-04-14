@@ -53,12 +53,18 @@ public:
     void resize(uint32_t width, uint32_t height) override;
 
     /**
-        Draws this progress bar to screen
+        Draws this widget to screen
         \param  position    Position to draw the progress bar to
     */
     void draw(Point position) override;
 
 protected:
+    /**
+        Draw the background.
+        \param  position    Position to draw the background
+     */
+    virtual void draw_background(Point position);
+
     /**
         This method frees all textures that are used by this widget
     */
@@ -68,6 +74,7 @@ protected:
     [[nodiscard]] const DuneTexture* getBackground();
 
     void setBackground(SDL_Surface* surface);
+    void setBackground(SDL_Texture* texture);
 
     virtual sdl2::surface_ptr createBackground();
 

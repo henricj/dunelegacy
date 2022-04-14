@@ -162,6 +162,27 @@ const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE hou
     return texture ? &texture : nullptr;
 }
 
+SDL_Texture* GFXManager::getMainBackground(SDL_Renderer* renderer, int width, int height) {
+    if (mainBackground_) {
+        int w, h;
+        if (0 != SDL_QueryTexture(mainBackground_.get(), nullptr, nullptr, &w, &h))
+            return nullptr;
+
+        if (w == width && h == height)
+            return mainBackground_.get();
+
+        mainBackground_.reset();
+    }
+
+    { // Scope
+        const auto surface = surfaceLoader.createMainBackgroundSurface(width, height);
+
+        mainBackground_.reset(SDL_CreateTextureFromSurface(renderer, surface.get()));
+    }
+
+    return mainBackground_.get();
+}
+
 SDL_Texture* GFXManager::getTempStreamingTexture(SDL_Renderer* renderer, int width, int height) {
     for (const auto& texture : streamingTextureCache_) {
         int w, h;

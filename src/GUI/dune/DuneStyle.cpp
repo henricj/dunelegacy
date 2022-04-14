@@ -762,7 +762,7 @@ sdl2::surface_ptr DuneStyle::createToolTip(std::string_view text) {
 sdl2::surface_ptr DuneStyle::createBackground(uint32_t width, uint32_t height) {
     sdl2::surface_ptr pSurface;
     if (pGFXManager) {
-        pSurface = getSubPicture(pGFXManager->getBackgroundSurface(), 0, 0, width, height);
+        pSurface = pGFXManager->createBackgroundSurface(width, height);
         if (!pSurface) {
             return nullptr;
         }

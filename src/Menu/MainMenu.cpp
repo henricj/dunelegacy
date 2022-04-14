@@ -101,20 +101,22 @@ MainMenu::MainMenu() {
 
 MainMenu::~MainMenu() = default;
 
-
-
 int MainMenu::showMenu() {
     musicPlayer->changeMusic(MUSIC_MENU);
 
     return MenuBase::showMenu();
 }
 
-void MainMenu::resize(uint32_t width, uint32_t height) {
-    MenuBase::resize(width, height);
+void MainMenu::draw_background(Point position) {
+    const auto size = getSize();
 
-    //const auto size = planetPicture.getSize();
-    //auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
-    //dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
+    auto* background = getBackground();
+
+    if (!background || background->source_.w != size.x || background->source_.h != size.y) {
+        setBackground(pGFXManager->getMainBackground(renderer, size.x, size.y));
+    }
+
+    MenuBase::draw_background(position);
 }
 
 void MainMenu::onSinglePlayer() {
