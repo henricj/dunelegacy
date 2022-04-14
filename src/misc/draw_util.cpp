@@ -592,3 +592,24 @@ sdl2::surface_ptr cloneSurface(SDL_Surface* surface, const SDL_Rect* srcrect) {
 
     return copy;
 }
+
+sdl2::surface_ptr createTiledSurface(SDL_Surface* tile, int width, int height) {
+    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, width, height, SCREEN_BPP, SCREEN_FORMAT)};
+
+    if (surface == nullptr)
+        THROW(std::runtime_error, "createTiledSurface: Cannot create new tiled surface!");
+
+    const auto w = tile->w;
+    const auto h = tile->h;
+
+    SDL_Rect dest{0, 0, w, h};
+
+    for (dest.y = 0; dest.y < height; dest.y += h) {
+        for (dest.x = 0; dest.x < width; dest.x += w) {
+            SDL_Rect tmpDest = dest;
+            SDL_BlitSurface(tile, nullptr, surface.get(), &tmpDest);
+        }
+    }
+
+    return surface;
+}
