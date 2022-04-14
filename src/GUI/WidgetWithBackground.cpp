@@ -45,7 +45,7 @@ void WidgetWithBackground::resize(uint32_t width, uint32_t height) {
     }
 }
 
-void WidgetWithBackground::draw(Point position) {
+void WidgetWithBackground::draw_background(Point position) {
     const auto* background = getBackground();
     if (!background)
         return;
@@ -60,6 +60,10 @@ void WidgetWithBackground::draw(Point position) {
         dst.y += (size.y - dst.h) / 2;
 
     background->draw(renderer, dst.x, dst.y);
+}
+
+void WidgetWithBackground::draw(Point position) {
+    draw_background(position);
 }
 
 void WidgetWithBackground::invalidateTextures() {
@@ -98,6 +102,18 @@ void WidgetWithBackground::setBackground(SDL_Surface* surface) {
     } else {
         localDuneTexture_ = DuneTexture{};
         localTexture_.reset();
+        pBackground = nullptr;
+    }
+}
+
+void WidgetWithBackground::setBackground(SDL_Texture* texture) {
+    localTexture_.reset();
+
+    if (texture) {
+        localDuneTexture_ = DuneTexture{texture};
+        pBackground = &localDuneTexture_;
+    } else {
+        localDuneTexture_ = DuneTexture{};
         pBackground = nullptr;
     }
 }
