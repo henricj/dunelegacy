@@ -40,6 +40,7 @@ public:
     [[nodiscard]] static sdl2::surface_ptr createPlacingGrid(int size, int color);
     void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest = nullptr) const;
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
+    [[nodiscard]] sdl2::surface_ptr createBackground(int width, int height) const;
     [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
     [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType, int width, int height, bool UseBackground);
@@ -73,6 +74,8 @@ public:
     typedef enum { SimpleFrame, DecorationFrame1, DecorationFrame2, NUM_DECORATIONFRAMES } DecorationFrame;
 
 private:
+    [[nodiscard]] sdl2::surface_ptr createBackgroundTile(SDL_Surface* fame_pic) const;
+
     struct DecorationBorderType {
         sdl2::surface_ptr ball;
         sdl2::surface_ptr hspacer;
@@ -104,6 +107,8 @@ private:
 
     sdl2::surface_ptr builderListUpperCap;
     sdl2::surface_ptr builderListLowerCap;
+
+    sdl2::surface_ptr backgroundTile;
 };
 
 #endif // PICTUREFACTORY_H
