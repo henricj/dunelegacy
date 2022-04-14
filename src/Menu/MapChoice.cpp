@@ -74,8 +74,8 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
             // first time we're on the map choice screen
 
             // create black rectangle
-            mapSurface          = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
-            const SDL_Rect dest = {16, 48, 608, 240};
+            mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
+            constexpr SDL_Rect dest{16, 48, 608, 240};
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
             mapTexture = sdl2::texture_ptr{
                 SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
@@ -111,6 +111,25 @@ int MapChoice::showMenu() {
     musicPlayer->changeMusic(MUSIC_MAPCHOICE);
 
     return MenuBase::showMenu();
+}
+
+int MapChoice::getSelectedMission() const {
+    int regionIndex = 0;
+    for (regionIndex = 0; regionIndex < 4; regionIndex++) {
+        if (group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
+            break;
+        }
+    }
+
+    int newMission = 0;
+    if (lastScenario <= 7) {
+        newMission = (lastScenario - 1) * 3 + 2 + regionIndex;
+    } else if (lastScenario == 8) {
+        newMission = (lastScenario - 1) * 3 - 1 + 2 + regionIndex;
+    } else {
+        THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
+    }
+    return newMission;
 }
 
 void MapChoice::drawSpecificStuff() {
@@ -325,7 +344,8 @@ bool MapChoice::doInput(SDL_Event& event) {
                 auto* const clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
                 uint8_t regionNum = 0;
-                { // Scope
+                {
+                    // Scope
                     sdl2::surface_lock lock{clickmap};
 
                     regionNum = static_cast<uint8_t*>(clickmap->pixels)[y * clickmap->pitch + x];
@@ -407,13 +427,19 @@ void MapChoice::loadINI() {
         for_each_housetype([&](const auto h) {
             std::string key;
             // clang-format off
-            switch(h) {
-                case HOUSETYPE::HOUSE_HARKONNEN:   key = "HAR"; break;
-                case HOUSETYPE::HOUSE_ATREIDES:    key = "ATR"; break;
-                case HOUSETYPE::HOUSE_ORDOS:       key = "ORD"; break;
-                case HOUSETYPE::HOUSE_FREMEN:      key = "FRE"; break;
-                case HOUSETYPE::HOUSE_SARDAUKAR:   key = "SAR"; break;
-                case HOUSETYPE::HOUSE_MERCENARY:   key = "MER"; break;
+            switch (h) {
+                case HOUSETYPE::HOUSE_HARKONNEN: key = "HAR";
+                    break;
+                case HOUSETYPE::HOUSE_ATREIDES: key = "ATR";
+                    break;
+                case HOUSETYPE::HOUSE_ORDOS: key = "ORD";
+                    break;
+                case HOUSETYPE::HOUSE_FREMEN: key = "FRE";
+                    break;
+                case HOUSETYPE::HOUSE_SARDAUKAR: key = "SAR";
+                    break;
+                case HOUSETYPE::HOUSE_MERCENARY: key = "MER";
+                    break;
             }
             // clang-format on
 

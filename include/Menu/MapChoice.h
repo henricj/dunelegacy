@@ -43,24 +43,7 @@ public:
 
     int showMenu() override;
 
-    [[nodiscard]] int getSelectedMission() const {
-        int regionIndex = 0;
-        for (regionIndex = 0; regionIndex < 4; regionIndex++) {
-            if (group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
-                break;
-            }
-        }
-
-        int newMission = 0;
-        if (lastScenario <= 7) {
-            newMission = (lastScenario - 1) * 3 + 2 + regionIndex;
-        } else if (lastScenario == 8) {
-            newMission = (lastScenario - 1) * 3 - 1 + 2 + regionIndex;
-        } else {
-            THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
-        }
-        return newMission;
-    }
+    [[nodiscard]] int getSelectedMission() const;
 
     [[nodiscard]] uint32_t getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
