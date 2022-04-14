@@ -52,38 +52,9 @@ PictureFactory::PictureFactory() {
 
     creditsBorder = getSubPicture(ScreenPic.get(), 257, 2, 63, 13);
 
-    // background
-    background = sdl2::surface_ptr{SDL_CreateRGBSurface(0, settings.video.width, settings.video.height, 8, 0, 0, 0, 0)};
-    if (background == nullptr) {
-        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
-    }
-    palette.applyToSurface(background.get());
+    backgroundTile = createBackgroundTile(FamePic.get());
 
-    auto PatternNormal    = getSubPicture(FamePic.get(), 0, 1, 63, 67);
-    auto PatternHFlipped  = flipHSurface(getSubPicture(FamePic.get(), 0, 1, 63, 67).get());
-    auto PatternVFlipped  = flipVSurface(getSubPicture(FamePic.get(), 0, 1, 63, 67).get());
-    auto PatternHVFlipped = flipHSurface(flipVSurface(getSubPicture(FamePic.get(), 0, 1, 63, 67).get()).get());
-
-    SDL_Rect dest;
-    dest.w = 63;
-    dest.h = 67;
-    for (dest.y = 0; dest.y < settings.video.height; dest.y += 67) {
-        for (dest.x = 0; dest.x < settings.video.width; dest.x += 63) {
-            if (dest.x % (63 * 2) == 0 && dest.y % (67 * 2) == 0) {
-                SDL_Rect tmpDest = dest;
-                SDL_BlitSurface(PatternNormal.get(), nullptr, background.get(), &tmpDest);
-            } else if (dest.x % (63 * 2) != 0 && dest.y % (67 * 2) == 0) {
-                SDL_Rect tmpDest = dest;
-                SDL_BlitSurface(PatternHFlipped.get(), nullptr, background.get(), &tmpDest);
-            } else if (dest.x % (63 * 2) == 0 && dest.y % (67 * 2) != 0) {
-                SDL_Rect tmpDest = dest;
-                SDL_BlitSurface(PatternVFlipped.get(), nullptr, background.get(), &tmpDest);
-            } else /*if((dest.x % (63*2) != 0) && (dest.y % (67*2) != 0))*/ {
-                SDL_Rect tmpDest = dest;
-                SDL_BlitSurface(PatternHVFlipped.get(), nullptr, background.get(), &tmpDest);
-            }
-        }
-    }
+    background = createBackground(settings.video.width, settings.video.height);
 
     // decoration border
     decorationBorder.ball    = getSubPicture(ScreenPic.get(), 241, 124, 12, 11);
@@ -497,6 +468,60 @@ sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType, int w
 
 sdl2::surface_ptr PictureFactory::createBackground() const {
     return copySurface(background.get());
+}
+
+sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) const {
+    const auto PatternNormal    = getSubPicture(fame_pic, 0, 1, 63, 67);
+    const auto PatternHFlipped  = flipHSurface(getSubPicture(fame_pic, 0, 1, 63, 67).get());
+    const auto PatternVFlipped  = flipVSurface(getSubPicture(fame_pic, 0, 1, 63, 67).get());
+    const auto PatternHVFlipped = flipHSurface(flipVSurface(getSubPicture(fame_pic, 0, 1, 63, 67).get()).get());
+
+    const auto width  = 2 * PatternNormal->w;
+    const auto height = 2 * PatternNormal->h;
+
+    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+    if (surface == nullptr) {
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new background Picture!");
+    }
+    palette.applyToSurface(surface.get());
+
+    SDL_Rect dest_normal{0, 0, PatternNormal->w, PatternNormal->w};
+    SDL_BlitSurface(PatternNormal.get(), nullptr, surface.get(), &dest_normal);
+
+    SDL_Rect dest_flipH{PatternNormal->w, 0, PatternHFlipped->w, PatternHFlipped->w};
+    SDL_BlitSurface(PatternHFlipped.get(), nullptr, surface.get(), &dest_flipH);
+
+    SDL_Rect dest_flipV{0, PatternNormal->h, PatternVFlipped->w, PatternVFlipped->w};
+    SDL_BlitSurface(PatternVFlipped.get(), nullptr, surface.get(), &dest_flipV);
+
+    SDL_Rect dest_flipHV{PatternNormal->w, PatternNormal->h, PatternHVFlipped->w, PatternHVFlipped->w};
+    SDL_BlitSurface(PatternHVFlipped.get(), nullptr, surface.get(), &dest_flipHV);
+
+    return surface;
+}
+
+sdl2::surface_ptr PictureFactory::createBackground(const int width, const int height) const {
+    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 8, 0, 0, 0, 0)};
+    if (surface == nullptr) {
+        THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new background Picture!");
+    }
+    palette.applyToSurface(surface.get());
+
+    const auto pattern = backgroundTile.get();
+
+    const auto w = pattern->w;
+    const auto h = pattern->h;
+
+    SDL_Rect dest{0, 0, w, h};
+
+    for (dest.y = 0; dest.y < height; dest.y += h) {
+        for (dest.x = 0; dest.x < width; dest.x += w) {
+            SDL_Rect tmpDest = dest;
+            SDL_BlitSurface(pattern, nullptr, surface.get(), &tmpDest);
+        }
+    }
+
+    return surface;
 }
 
 sdl2::surface_ptr PictureFactory::createMainBackground() const {
