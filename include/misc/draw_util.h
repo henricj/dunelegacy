@@ -154,6 +154,13 @@ sdl2::surface_ptr createSurface(SDL_Surface* model, int width = 0, int height = 
 */
 sdl2::surface_ptr cloneSurface(SDL_Surface* source, const SDL_Rect* srcrect);
 
+/**
+    This function create a new surface filled with the repeated pattern with the same format and other attributes as the
+   pattern surface. \param  tile       The tile pattern surface \param  width      The width of the new surface. \param
+   height     The height of the new surface. \return The new surface
+*/
+sdl2::surface_ptr createTiledSurface(SDL_Surface* tile, int width, int height);
+
 bool drawSurface(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, SDL_Rect* dstrect,
                  SDL_BlendMode blendMode = SDL_BlendMode::SDL_BLENDMODE_NONE);
 
