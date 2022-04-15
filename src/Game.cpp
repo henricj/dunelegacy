@@ -264,7 +264,7 @@ void Game::drawScreen() {
 
     const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
     SDL_Rect tile_rect        = {screenborder->world2screenX(0), screenborder->world2screenY(0),
-                                 zoomedTileSize * map->getSizeX(), zoomedTileSize * map->getSizeY()};
+                          zoomedTileSize * map->getSizeX(), zoomedTileSize * map->getSizeY()};
     SDL_Rect on_screen_rect;
     SDL_IntersectRect(&screenborder->getGameBoard(), &tile_rect, &on_screen_rect);
 
@@ -1687,7 +1687,13 @@ bool Game::loadSaveGame(InputStream& stream) {
         // it is stored in the savegame, so set it up
         const auto localPlayerID = stream.readUint8();
         pLocalPlayer             = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
-        pLocalHouse              = house[static_cast<int>(pLocalPlayer->getHouse()->getHouseID())].get();
+        if (!pLocalPlayer) {
+            sdl2::log_info("Game::loadSaveGame(): No invalid playerID (%d)!", localPlayerID);
+
+            return false;
+        }
+
+        pLocalHouse = house[static_cast<int>(pLocalPlayer->getHouse()->getHouseID())].get();
     }
 
     debug          = stream.readBool();
