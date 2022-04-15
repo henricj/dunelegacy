@@ -426,55 +426,59 @@ void CampaignStatsMenu::calculateScore(int level) {
     structuresDestroyedByHuman = 0;
     structuresDestroyedByAI    = 0;
 
-    spiceHarvestedByHuman = 0.0f;
-    spiceHarvestedByAI    = 0.0f;
+    auto spice_harvested_by_human = 0.0_fix;
+    auto spice_harvested_by_ai    = 0.0_fix;
 
     totalTime = currentGame->getGameTime() / 1000;
 
     totalScore = level * 45;
 
-    float totalHumanCredits = 0.0f;
+    auto totalHumanCredits = 0.0_fix;
+
     currentGame->for_each_house([&](auto& house) {
         if (house.isAI() == true) {
             unitsDestroyedByAI += house.getNumDestroyedUnits();
             structuresDestroyedByAI += house.getNumDestroyedStructures();
-            spiceHarvestedByAI += house.getHarvestedSpice().toFloat();
+            spice_harvested_by_ai += house.getHarvestedSpice();
 
             totalScore -= house.getDestroyedValue();
         } else {
             unitsDestroyedByHuman += house.getNumDestroyedUnits();
             structuresDestroyedByHuman += house.getNumDestroyedStructures();
-            spiceHarvestedByHuman += house.getHarvestedSpice().toFloat();
+            spice_harvested_by_human += house.getHarvestedSpice();
 
-            totalHumanCredits += house.getCredits();
+            totalHumanCredits += house.getStoredCredits() + house.getStartingCredits();
 
             totalScore += house.getDestroyedValue();
         }
     });
 
-    totalScore += static_cast<int>(totalHumanCredits) / 100;
+    totalScore += (totalHumanCredits / 100).lround();
 
-    for (const StructureBase* pStructure : structureList) {
+    for (const auto* pStructure : structureList) {
         if (!pStructure->getOwner()->isAI()) {
-            totalScore += currentGame->objectData
-                              .data[pStructure->getItemID()][static_cast<int>(pStructure->getOriginalHouseID())]
-                              .price
-                        / 100;
+            const auto item_id  = pStructure->getItemID();
+            const auto house_id = static_cast<int>(pStructure->getOriginalHouseID());
+
+            totalScore += currentGame->objectData.data[item_id][house_id].price / 100;
         }
     }
 
     totalScore -= totalTime / 60 + 1;
 
-    for (const UnitBase* pUnit : unitList) {
-        if (pUnit->getItemID() == Unit_Harvester) {
-            const auto* pHarvester = static_cast<const Harvester*>(pUnit);
-            if (pHarvester->getOwner()->isAI()) {
-                spiceHarvestedByAI += pHarvester->getAmountOfSpice().toFloat();
-            } else {
-                spiceHarvestedByHuman += pHarvester->getAmountOfSpice().toFloat();
-            }
+    for (const auto* pUnit : unitList) {
+        if (const auto* pHarvester = dune_cast<const Harvester>(pUnit)) {
+            const auto spice = pHarvester->getAmountOfSpice();
+
+            if (pHarvester->getOwner()->isAI())
+                spice_harvested_by_ai += spice;
+            else
+                spice_harvested_by_human += spice;
         }
     }
+
+    spiceHarvestedByAI = spice_harvested_by_ai.toFloat();
+    spiceHarvestedByHuman = spice_harvested_by_human.toFloat();
 
     if (currentGame->areCheatsEnabled()) {
         rank = "Cheater";
