@@ -445,7 +445,7 @@ protected:
         This method is called by other containers to enable this container or disable this container explicitly.
         It is the responsibility of the calling container to take care that there is only one active
         widget.
-        \param  bActive true = activate this widget, false = deactiviate this widget
+        \param  bActive true = activate this widget, false = deactivate this widget
     */
     void setActive(bool bActive) override {
         if (pActiveChildWidget != nullptr) {
