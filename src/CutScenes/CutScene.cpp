@@ -28,7 +28,7 @@
 
 #include "misc/dune_timer_resolution.h"
 
-CutScene::CutScene() : quiting(false) { }
+CutScene::CutScene() : quitting(false) { }
 
 CutScene::~CutScene() {
     // Fixes some flickering
@@ -42,7 +42,7 @@ void CutScene::run() {
 
     dune::DuneTimerResolution timer_handle;
 
-    while (!quiting) {
+    while (!quitting) {
         const auto frameStart = dune::dune_clock::now();
 
         const auto nextFrameTime = draw();
@@ -72,7 +72,7 @@ void CutScene::run() {
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         Dune_RenderPresent(renderer);
-                        quiting = true;
+                        quitting = true;
                     }
                 }
                 default: break;

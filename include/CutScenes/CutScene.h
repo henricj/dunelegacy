@@ -26,10 +26,10 @@
 
 /// A base class for running Dune 2 Cutscenes.
 /**
-    This class runs a Dune 2 Cutscene. The cutscene is composed of video elements with aditional audio and text
+    This class runs a Dune 2 Cutscene. The cutscene is composed of video elements with additional audio and text
    elements. The video is managed by subclasses of VideoEvent. The list if VideoEvents determines the length of the
    video. TextEvents and CutSceneTriggers (CutSceneMusicTrigger or CutSceneSoundTrigger) can be linked in at specific
-   framenumbers. The whole video is split up in scenes to make it easier to debug the exact timings of TextEvents and
+   frame numbers. The whole video is split up in scenes to make it easier to debug the exact timings of TextEvents and
    CutSceneTriggers. The timings for both are given relative to the start of the last scene.
 */
 class CutScene {
@@ -49,7 +49,7 @@ public:
     /**
         Quit this cutscene before the next scene draw.
     */
-    void quit() noexcept { quiting = true; }
+    void quit() noexcept { quitting = true; }
 
     /**
         This method starts a new scene.
@@ -76,9 +76,10 @@ public:
 
 protected:
     /**
-        This method draws the current frame. The drawing is deligated to Scene::draw() of the first scene in the scenes
+       This method draws the current frame. The drawing is delegated to Scene::draw() of the first scene in the scenes
        queue. If the first scene is finished it is dropped from the queue and the next scene is used. If the scenes
-       queue is empty the whole cutscene is finished. \return the milliseconds until the next frame shall be drawn.
+       queue is empty the whole cutscene is finished.
+       \return the milliseconds until the next frame shall be drawn.
     */
     int draw();
 
@@ -88,7 +89,7 @@ protected:
 
 private:
     std::queue<std::unique_ptr<Scene>> scenes; ///< List of all scenes
-    bool quiting;                              ///< Quit the cutscene?
+    bool quitting;                             ///< Quit the cutscene?
 };
 
 #endif // CUTSCENE_H
