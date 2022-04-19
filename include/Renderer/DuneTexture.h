@@ -36,7 +36,7 @@ struct DuneTextureRect final {
 
 struct DuneTexture final {
     SDL_Texture* texture_{};
-    DuneTextureRect source_;
+    DuneTextureRect source_{};
 
     DuneTexture()                   = default;
     DuneTexture(const DuneTexture&) = default;
