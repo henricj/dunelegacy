@@ -37,6 +37,11 @@ public:
     /// Default constructor
     CutScene();
 
+    CutScene(const CutScene&)                  = delete;
+    CutScene(CutScene&&)                       = delete;
+    const CutScene& operator=(const CutScene&) = delete;
+    CutScene& operator=(CutScene&&)            = delete;
+
     /// Destructor
     virtual ~CutScene();
 

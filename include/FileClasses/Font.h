@@ -23,8 +23,10 @@
 struct SDL_Surface;
 
 class Font {
+protected:
+    Font() = default;
+
 public:
-    Font()          = default;
     virtual ~Font() = default;
 
     Font(const Font&)            = delete;
