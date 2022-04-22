@@ -23,7 +23,7 @@
 #include <data.h>
 
 #include <algorithm>
-#include <list>
+#include <deque>
 #include <memory>
 
 class BuildItem final {
@@ -95,7 +95,9 @@ protected:
     BuilderBase(const BuilderBaseConstants& constants, uint32_t objectID, const ObjectStreamInitializer& initializer);
 
 public:
-    using parent = StructureBase;
+    using parent                = StructureBase;
+    using build_list_type       = std::vector<BuildItem>;
+    using production_queue_type = std::deque<ProductionQueueItem>;
 
     ~BuilderBase() override = 0;
 
@@ -197,7 +199,7 @@ public:
     bool isWaitingToPlace() const;
     bool isUnitLimitReached(ItemID_enum itemID) const;
     FixPoint getProductionProgress() const noexcept { return productionProgress; }
-    const std::list<BuildItem>& getBuildList() const noexcept { return buildList; }
+    const auto& getBuildList() const noexcept { return buildList; }
 
     virtual bool isAvailableToBuild(ItemID_enum itemID) const { return (getBuildItem(itemID) != nullptr); }
 
@@ -212,10 +214,9 @@ protected:
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
-                            ItemID_enum itemID, int price = -1);
+    virtual void insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price = -1);
 
-    void removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter, ItemID_enum itemID);
+    void removeItem(build_list_type::iterator& iter, ItemID_enum item_id);
 
     BuildItem* getBuildItem(ItemID_enum itemID) {
         for (auto& buildItem : buildList) {
@@ -237,6 +238,8 @@ protected:
 
     void produceNextAvailableItem();
 
+    auto& getBuildList() noexcept { return buildList; }
+
 protected:
     static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
@@ -253,12 +256,12 @@ protected:
     FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it
                               ///< weaker.
 
-    std::list<ProductionQueueItem> currentProductionQueue; ///< This list is the production queue (It contains the item
-                                                           ///< IDs of the units/structures to produce)
-    std::list<BuildItem> buildList; ///< This list contains all the things that can be produced by this builder
-
+    production_queue_type currentProductionQueue; ///< This list is the production queue (It contains the item
+                                                  ///< IDs of the units/structures to produce)
 private:
     void init();
+
+    build_list_type buildList; ///< This list contains all the things that can be produced by this builder
 };
 
 template<>

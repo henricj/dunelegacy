@@ -47,11 +47,11 @@ BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObje
     upButton.setOnClick([this] { onUp(); });
 
     StaticContainer::addWidget(&downButton,
-                               Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)),
+                               Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, ARROWBTN_HEIGHT + BUILDERBTN_SPACING),
                                downButton.getSize());
     downButton.setOnClick([this] { onDown(); });
 
-    StaticContainer::addWidget(&orderButton, Point(0, (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) + BUILDERBTN_SPACING),
+    StaticContainer::addWidget(&orderButton, Point(0, ARROWBTN_HEIGHT + BUILDERBTN_SPACING + BUILDERBTN_SPACING),
                                Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
     orderButton.setOnClick([this] { onOrder(); });
     orderButton.setText(_("Order"));
@@ -71,7 +71,7 @@ BuilderList::~BuilderList() = default;
 void BuilderList::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     StaticContainer::handleMouseMovement(x, y, insideOverlay);
 
-    if ((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y) && !insideOverlay) {
+    if (x >= 0 && x < getSize().x && y >= 0 && y < getSize().y && !insideOverlay) {
         lastMouseMovement = dune::dune_clock::now();
         lastMousePos.x    = x;
         lastMousePos.y    = y;
@@ -90,7 +90,7 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     }
 
     auto* const pStarport = dune_cast<StarPort>(pBuilder);
-    if (pStarport && (!pStarport->okToOrder())) {
+    if (pStarport && !pStarport->okToOrder()) {
         return false;
     }
 
@@ -100,16 +100,16 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         if (mouseLeftButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
-            if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
-                && (pBuilder->isWaitingToPlace())) {
+            if (getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())
+                && pBuilder->isWaitingToPlace()) {
                 soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 if (currentGame->currentCursorMode == Game::CursorMode_Placing) {
                     currentGame->currentCursorMode = Game::CursorMode_Normal;
                 } else {
                     currentGame->currentCursorMode = Game::CursorMode_Placing;
                 }
-            } else if ((getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
-                       && (pBuilder->isOnHold())) {
+            } else if (getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())
+                       && pBuilder->isOnHold()) {
                 soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(false);
             } else {
@@ -136,7 +136,7 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
     }
 
     auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
-    if (pStarport && (!pStarport->okToOrder())) {
+    if (pStarport && !pStarport->okToOrder()) {
         return false;
     }
 
@@ -146,8 +146,8 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
         if (mouseRightButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
-            if ((getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem()))
-                && (!pBuilder->isOnHold())) {
+            if (getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem())
+                && !pBuilder->isOnHold()) {
                 soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 pBuilder->handleSetOnHoldClick(true);
             } else {
@@ -166,7 +166,7 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
 }
 
 bool BuilderList::handleMouseWheel(int32_t x, int32_t y, bool up) {
-    if ((x >= 0) && (x < getSize().x) && (y >= 0) && (y < getSize().y)) {
+    if (x >= 0 && x < getSize().x && y >= 0 && y < getSize().y) {
         if (up) {
             onUp();
         } else {
@@ -187,7 +187,7 @@ void BuilderList::draw(Point position) {
                                   - BUILDERBTN_SPACING - ORDERBTN_HEIGHT};
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
-    auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
+    const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
     if (pBuilder != nullptr) {
         auto* const pStarport = dune_cast<StarPort>(pBuilder);
 
@@ -221,7 +221,7 @@ void BuilderList::draw(Point position) {
         int i = 0;
         for (const auto& buildItem : pBuilder->getBuildList()) {
 
-            if ((i >= currentListPos) && (i < currentListPos + getNumButtons(getSize().y))) {
+            if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
                 const auto* pTexture = resolveItemPicture(buildItem.itemID);
 
                 const auto dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x,
@@ -352,7 +352,7 @@ void BuilderList::drawOverlay(Point position) {
     // Draw tooltip
     const auto btn = getButton(lastMousePos.x, lastMousePos.y);
     if (btn != -1) {
-        auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
+        const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
         if (!pBuilder) {
             return;
         }
@@ -396,15 +396,16 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
         return;
 
     // move list to show currently produced item
-    if (auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
+    if (const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         const auto& buildList = pBuilder->getBuildList();
-        const auto currentProducedItemIter =
-            std::find_if(buildList.begin(), buildList.end(), [pBuilder](const BuildItem& buildItem) {
-                return (buildItem.itemID == pBuilder->getCurrentProducedItem());
-            });
+
+        const auto currentProducedItemIter = std::ranges::find_if(buildList, [pBuilder](const BuildItem& buildItem) {
+            return buildItem.itemID == pBuilder->getCurrentProducedItem();
+        });
 
         if (currentProducedItemIter != buildList.end()) {
-            const int shiftFromTopPos       = 1;
+            constexpr static auto shiftFromTopPos = 1;
+
             const auto biggestLegalPosition = static_cast<int>(buildList.size()) - getNumButtons(getSize().y);
             const auto currentProducedItemPos =
                 static_cast<int>(std::distance(buildList.begin(), currentProducedItemIter));
@@ -432,9 +433,9 @@ void BuilderList::onUp() {
 }
 
 void BuilderList::onDown() {
-    auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
+    const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
 
-    if (pBuilder && (currentListPos < static_cast<int>(pBuilder->getBuildList().size()) - getNumButtons(getSize().y))) {
+    if (pBuilder && currentListPos < static_cast<int>(pBuilder->getBuildList().size()) - getNumButtons(getSize().y)) {
         currentListPos++;
     }
 }
@@ -462,11 +463,11 @@ Point BuilderList::getButtonPosition(int BtnNumber) {
 int BuilderList::getButton(int x, int y) const {
     if (const auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         for (int i = 0; i < static_cast<int>(pBuilder->getBuildList().size()); i++) {
-            if ((i >= currentListPos) && (i < currentListPos + getNumButtons(getSize().y))) {
-                if ((x >= getButtonPosition(i - currentListPos).x)
-                    && (x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH)
-                    && (y >= getButtonPosition(i - currentListPos).y)
-                    && (y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT)) {
+            if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
+                if (x >= getButtonPosition(i - currentListPos).x
+                    && x < getButtonPosition(i - currentListPos).x + BUILDERBTN_WIDTH
+                    && y >= getButtonPosition(i - currentListPos).y
+                    && y < getButtonPosition(i - currentListPos).y + BUILDERBTN_HEIGHT) {
 
                     return i;
                 }
@@ -480,7 +481,7 @@ int BuilderList::getButton(int x, int y) const {
 ItemID_enum BuilderList::getItemIDFromIndex(int i) const {
 
     if (i >= 0) {
-        auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
+        const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
 
         if (pBuilder != nullptr) {
             const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);

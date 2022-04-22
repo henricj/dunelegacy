@@ -82,6 +82,8 @@ void StarPort::save(OutputStream& stream) const {
 }
 
 void StarPort::doBuildRandom(const GameContext& context) {
+    auto& buildList = getBuildList();
+
     if (!buildList.empty()) {
         auto item2Produce = ItemID_Invalid;
 
@@ -105,7 +107,7 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
         return;
     }
 
-    for (const auto& buildItem : buildList) {
+    for (const auto& buildItem : getBuildList()) {
         if (buildItem.itemID == itemID) {
             if ((owner->getCredits() < static_cast<int>(buildItem.price))) {
                 soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
@@ -131,7 +133,7 @@ void StarPort::handleCancelOrderClick() {
 void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
-    for (auto& buildItem : buildList) {
+    for (auto& buildItem : getBuildList()) {
         if (buildItem.itemID != itemID)
             continue;
 
@@ -160,7 +162,7 @@ void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
 void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
     auto& choam = owner->getChoam();
 
-    for (auto& buildItem : buildList) {
+    for (auto& buildItem : getBuildList()) {
         if (buildItem.itemID != itemID)
             continue;
 
@@ -219,6 +221,8 @@ void StarPort::doCancelOrder() {
 }
 
 void StarPort::updateBuildList() {
+    auto& buildList = getBuildList();
+
     auto iter = buildList.begin();
 
     const auto& choam = owner->getChoam();
@@ -228,9 +232,9 @@ void StarPort::updateBuildList() {
         const auto& objData = currentGame->objectData.data[itemOrder[i]][static_cast<int>(originalHouseID)];
 
         if (objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
-            insertItem(buildList, iter, itemOrder[i], choam.getPrice(itemOrder[i]));
+            insertItem(iter, itemOrder[i], choam.getPrice(itemOrder[i]));
         } else {
-            removeItem(buildList, iter, itemOrder[i]);
+            removeItem(iter, itemOrder[i]);
         }
     }
 }
@@ -241,30 +245,32 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
             // make a frigate with all the cargo
-            auto* const frigate = static_cast<Frigate*>(owner->createUnit(Unit_Frigate));
-            const auto pos      = context.map.findClosestEdgePoint(getLocation() + Coord(1, 1), Coord(1, 1));
-            frigate->deploy(context, pos);
-            frigate->setTarget(this);
-            const auto closestPoint = getClosestPoint(frigate->getLocation());
-            frigate->setDestination(closestPoint);
+            if (auto* const frigate = dune_cast<Frigate>(owner->createUnit(Unit_Frigate))) {
+                const auto pos = context.map.findClosestEdgePoint(getLocation() + Coord(1, 1), Coord(1, 1));
+                frigate->deploy(context, pos);
+                frigate->setTarget(this);
+                const auto closestPoint = getClosestPoint(frigate->getLocation());
+                frigate->setDestination(closestPoint);
 
-            if (pos.x == 0)
-                frigate->setAngle(ANGLETYPE::RIGHT);
-            else if (pos.x == currentGameMap->getSizeX() - 1)
-                frigate->setAngle(ANGLETYPE::LEFT);
-            else if (pos.y == 0)
-                frigate->setAngle(ANGLETYPE::DOWN);
-            else if (pos.y == currentGameMap->getSizeY() - 1)
-                frigate->setAngle(ANGLETYPE::UP);
+                if (pos.x == 0)
+                    frigate->setAngle(ANGLETYPE::RIGHT);
+                else if (pos.x == currentGameMap->getSizeX() - 1)
+                    frigate->setAngle(ANGLETYPE::LEFT);
+                else if (pos.y == 0)
+                    frigate->setAngle(ANGLETYPE::DOWN);
+                else if (pos.y == currentGameMap->getSizeY() - 1)
+                    frigate->setAngle(ANGLETYPE::UP);
 
-            deployTimer = MILLI2CYCLES(2000);
+                deployTimer = MILLI2CYCLES(2000);
 
-            currentProducedItem = ItemID_Invalid;
+                currentProducedItem = ItemID_Invalid;
 
-            if (getOwner() == pLocalHouse) {
-                soundPlayer->playVoice(Voice_enum::FrigateHasArrived, getOwner()->getHouseID());
-                context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
-            }
+                if (getOwner() == pLocalHouse) {
+                    soundPlayer->playVoice(Voice_enum::FrigateHasArrived, getOwner()->getHouseID());
+                    context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
+                }
+            } else
+                sdl2::log_warn("Unable to create Frigate!");
         }
     } else if (deploying) {
         deployTimer--;
@@ -323,10 +329,11 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                     }
                 }
 
-                const auto currentProducedBuildItem =
-                    std::find_if(buildList.begin(), buildList.end(), [&](BuildItem& buildItem) {
-                        return (buildItem.itemID == currentProductionQueue.front().itemID);
-                    });
+                auto& buildList = getBuildList();
+
+                const auto currentProducedBuildItem = std::ranges::find_if(buildList, [&](BuildItem& buildItem) {
+                    return (buildItem.itemID == currentProductionQueue.front().itemID);
+                });
                 if (currentProducedBuildItem != buildList.end()) {
                     currentProducedBuildItem->num--;
                 }
