@@ -38,13 +38,15 @@
 
 #include <string>
 
-const char* const Intro::VoiceFileNames[Voice_NUM_ENTRIES] = {
-    "BLDING.VOC",  "DYNASTY.VOC",  "PLANET.VOC",   "KNOWN.VOC",  "SANDLAND.VOC", "HOME.VOC",     "SPICE.VOC",
-    "MELANGE.VOC", "SPICE2.VOC",   "CONTROLS.VOC", "EMPIRE.VOC", "WHOEVER.VOC",  "CONTROL2.VOC", "CONTROL3.VOC",
-    "KING.VOC",    "PROPOSED.VOC", "EACHHOME.VOC", "EHOUSE.VOC", "EPRODUCE.VOC", "EMOST.VOC",    "ECONTROL.VOC",
-    "ENOSET.VOC",  "ETERRIT.VOC",  "EANDNO.VOC",   "ERULES.VOC", "VAST.VOC",     "ARRIVED.VOC",  "ANDNOW.VOC",
-    "3HOUSES.VOC", "CONTROL4.VOC", "OFDUNE.VOC",   "NOBLE.VOC",  "INSID.VOC",    "ORD.VOC",      "EVIL.VOC",
-    "HARK.VOC",    "HOUSE2.VOC",   "PREVAIL.VOC",  "YOUR.VOC",   "BATTLE.VOC",   "BEGINS.VOC",   "NOW.VOC"};
+namespace {
+constexpr auto VoiceFileNames = std::to_array(
+    {"BLDING.VOC",  "DYNASTY.VOC",  "PLANET.VOC",   "KNOWN.VOC",  "SANDLAND.VOC", "HOME.VOC",     "SPICE.VOC",
+     "MELANGE.VOC", "SPICE2.VOC",   "CONTROLS.VOC", "EMPIRE.VOC", "WHOEVER.VOC",  "CONTROL2.VOC", "CONTROL3.VOC",
+     "KING.VOC",    "PROPOSED.VOC", "EACHHOME.VOC", "EHOUSE.VOC", "EPRODUCE.VOC", "EMOST.VOC",    "ECONTROL.VOC",
+     "ENOSET.VOC",  "ETERRIT.VOC",  "EANDNO.VOC",   "ERULES.VOC", "VAST.VOC",     "ARRIVED.VOC",  "ANDNOW.VOC",
+     "3HOUSES.VOC", "CONTROL4.VOC", "OFDUNE.VOC",   "NOBLE.VOC",  "INSID.VOC",    "ORD.VOC",      "EVIL.VOC",
+     "HARK.VOC",    "HOUSE2.VOC",   "PREVAIL.VOC",  "YOUR.VOC",   "BATTLE.VOC",   "BEGINS.VOC",   "NOW.VOC"});
+}
 
 Intro::Intro() {
 
@@ -84,7 +86,9 @@ Intro::Intro() {
     const bool bEnableVoice = settings.general.language == "en";
     if (bEnableVoice) {
         // Load english voice
-        for (int i = 0; i < Voice_NUM_ENTRIES; i++) {
+        static_assert(VoiceFileNames.size() == std::tuple_size_v<decltype(voice)>);
+
+        for (auto i = decltype(voice)::size_type{}; i < voice.size(); ++i) {
             voice[i] = getChunkFromFile(VoiceFileNames[i]);
         }
     } else {

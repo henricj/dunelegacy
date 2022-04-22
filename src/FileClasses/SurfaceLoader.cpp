@@ -56,86 +56,88 @@
         (i + 3) | TILE_FLIPH
 
 namespace {
-const std::array<std::string, NUM_OBJPICS> ObjPicNames = {{"Tank_Base",
-                                                           "Tank_Gun",
-                                                           "Siegetank_Base",
-                                                           "Siegetank_Gun",
-                                                           "Devastator_Base",
-                                                           "Devastator_Gun",
-                                                           "Sonictank_Gun",
-                                                           "Launcher_Gun",
-                                                           "Quad",
-                                                           "Trike",
-                                                           "Harvester",
-                                                           "Harvester_Sand",
-                                                           "MCV",
-                                                           "Carryall",
-                                                           "CarryallShadow",
-                                                           "Frigate",
-                                                           "FrigateShadow",
-                                                           "Ornithopter",
-                                                           "OrnithopterShadow",
-                                                           "Trooper",
-                                                           "Troopers",
-                                                           "Soldier",
-                                                           "Infantry",
-                                                           "Saboteur",
-                                                           "Sandworm",
-                                                           "ConstructionYard",
-                                                           "Windtrap",
-                                                           "Refinery",
-                                                           "Barracks",
-                                                           "WOR",
-                                                           "Radar",
-                                                           "LightFactory",
-                                                           "Silo",
-                                                           "HeavyFactory",
-                                                           "HighTechFactory",
-                                                           "IX",
-                                                           "Palace",
-                                                           "RepairYard",
-                                                           "Starport",
-                                                           "GunTurret",
-                                                           "RocketTurret",
-                                                           "Wall",
-                                                           "Bullet_SmallRocket",
-                                                           "Bullet_MediumRocket",
-                                                           "Bullet_LargeRocket",
-                                                           "Bullet_Small",
-                                                           "Bullet_Medium",
-                                                           "Bullet_Large",
-                                                           "Bullet_Sonic",
-                                                           "Bullet_SonicTemp",
-                                                           "Hit_Gas",
-                                                           "Hit_ShellSmall",
-                                                           "Hit_ShellMedium",
-                                                           "Hit_ShellLarge",
-                                                           "ExplosionSmall",
-                                                           "ExplosionMedium1",
-                                                           "ExplosionMedium2",
-                                                           "ExplosionLarge1",
-                                                           "ExplosionLarge2",
-                                                           "ExplosionSmallUnit",
-                                                           "ExplosionFlames",
-                                                           "ExplosionSpiceBloom",
-                                                           "DeadInfantry",
-                                                           "DeadAirUnit",
-                                                           "Smoke",
-                                                           "SandwormShimmerMask",
-                                                           "SandwormShimmerTemp",
-                                                           "Terrain",
-                                                           "DestroyedStructure",
-                                                           "RockDamage",
-                                                           "SandDamage",
-                                                           "Terrain_Hidden",
-                                                           "Terrain_HiddenFog",
-                                                           "Terrain_Tracks",
-                                                           "Star"}};
+constexpr auto ObjPicNames = std::to_array<std::string_view>({"Tank_Base",
+                                                              "Tank_Gun",
+                                                              "Siegetank_Base",
+                                                              "Siegetank_Gun",
+                                                              "Devastator_Base",
+                                                              "Devastator_Gun",
+                                                              "Sonictank_Gun",
+                                                              "Launcher_Gun",
+                                                              "Quad",
+                                                              "Trike",
+                                                              "Harvester",
+                                                              "Harvester_Sand",
+                                                              "MCV",
+                                                              "Carryall",
+                                                              "CarryallShadow",
+                                                              "Frigate",
+                                                              "FrigateShadow",
+                                                              "Ornithopter",
+                                                              "OrnithopterShadow",
+                                                              "Trooper",
+                                                              "Troopers",
+                                                              "Soldier",
+                                                              "Infantry",
+                                                              "Saboteur",
+                                                              "Sandworm",
+                                                              "ConstructionYard",
+                                                              "Windtrap",
+                                                              "Refinery",
+                                                              "Barracks",
+                                                              "WOR",
+                                                              "Radar",
+                                                              "LightFactory",
+                                                              "Silo",
+                                                              "HeavyFactory",
+                                                              "HighTechFactory",
+                                                              "IX",
+                                                              "Palace",
+                                                              "RepairYard",
+                                                              "Starport",
+                                                              "GunTurret",
+                                                              "RocketTurret",
+                                                              "Wall",
+                                                              "Bullet_SmallRocket",
+                                                              "Bullet_MediumRocket",
+                                                              "Bullet_LargeRocket",
+                                                              "Bullet_Small",
+                                                              "Bullet_Medium",
+                                                              "Bullet_Large",
+                                                              "Bullet_Sonic",
+                                                              "Bullet_SonicTemp",
+                                                              "Hit_Gas",
+                                                              "Hit_ShellSmall",
+                                                              "Hit_ShellMedium",
+                                                              "Hit_ShellLarge",
+                                                              "ExplosionSmall",
+                                                              "ExplosionMedium1",
+                                                              "ExplosionMedium2",
+                                                              "ExplosionLarge1",
+                                                              "ExplosionLarge2",
+                                                              "ExplosionSmallUnit",
+                                                              "ExplosionFlames",
+                                                              "ExplosionSpiceBloom",
+                                                              "DeadInfantry",
+                                                              "DeadAirUnit",
+                                                              "Smoke",
+                                                              "SandwormShimmerMask",
+                                                              "SandwormShimmerTemp",
+                                                              "Terrain",
+                                                              "DestroyedStructure",
+                                                              "RockDamage",
+                                                              "SandDamage",
+                                                              "Terrain_Hidden",
+                                                              "Terrain_HiddenFog",
+                                                              "Terrain_Tracks",
+                                                              "Star"});
+
+static_assert(std::tuple_size_v<decltype(ObjPicNames)> == NUM_OBJPICS);
 
 /**
     Number of columns and rows each obj pic has
 */
-constexpr Coord objPicTiles[]{
+constexpr auto objPicTiles = std::to_array<Coord>({
     {8, 1},                                     // ObjPic_Tank_Base
     {8, 1},                                     // ObjPic_Tank_Gun
     {8, 1},                                     // ObjPic_Siegetank_Base
@@ -211,7 +213,10 @@ constexpr Coord objPicTiles[]{
     {16, 1},                                    // ObjPic_Terrain_HiddenFog
     {8, 1},                                     // ObjPic_Terrain_Tracks
     {1, 1},                                     // ObjPic_Star
-};
+});
+
+static_assert(std::tuple_size_v<decltype(objPicTiles)> == NUM_OBJPICS);
+
 } // namespace
 
 SurfaceLoader::SurfaceLoader() {
@@ -1573,7 +1578,10 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
 
 sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) const {
     sdl2::surface_ptr pSurface;
-    const std::string filename = "Mask_2x_" + ObjPicNames.at(id) + ".png";
+
+    const auto& name    = ObjPicNames.at(id);
+    const auto filename = fmt::format("Mask_2x_{}.png", name);
+
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
@@ -1590,7 +1598,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
-            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", ObjPicNames.at(id).c_str());
+            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 1!", name);
             pSurface = sdl2::surface_ptr{
                 Scaler::defaultDoubleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
@@ -1602,7 +1610,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     if (pSurface->w > 2048 || pSurface->h > 2048) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 1 is %dx%d; may exceed hardware limits on "
                        "older GPUs!",
-                       ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+                       name, pSurface->w, pSurface->h);
     }
 
     return pSurface;
@@ -1610,7 +1618,10 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
 
 sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) const {
     sdl2::surface_ptr pSurface;
-    const std::string filename = "Mask_3x_" + ObjPicNames.at(id) + ".png";
+
+    const auto& name = ObjPicNames.at(id);
+
+    const auto filename = fmt::format("Mask_3x_{}.png", name);
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
@@ -1627,7 +1638,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
             pOverlay->format->palette->colors[PALCOLOR_BLACK].g = 0;
             pSurface->format->palette->colors[PALCOLOR_BLACK].g = 0;
         } else {
-            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", ObjPicNames.at(id).c_str());
+            sdl2::log_info("Warning: No HD sprite sheet for '%s' in zoom level 2!", name);
             pSurface = sdl2::surface_ptr{
                 Scaler::defaultTripleTiledSurface(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
         }
@@ -1639,7 +1650,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
     if (pSurface->w > 2048 || pSurface->h > 2048) {
         sdl2::log_info("Warning: Size of sprite sheet for '%s' in zoom level 2 is %dx%d; may exceed hardware limits on "
                        "older GPUs!",
-                       ObjPicNames.at(id).c_str(), pSurface->w, pSurface->h);
+                       name, pSurface->w, pSurface->h);
     }
 
     return pSurface;

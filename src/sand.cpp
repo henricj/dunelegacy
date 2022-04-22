@@ -430,11 +430,11 @@ HOUSETYPE getHouseByName(std::string_view name) {
     \return the name of the house (e.g. "Atreides").
 */
 std::string getHouseNameByNumber(HOUSETYPE house) {
-    if (const auto idx = static_cast<int>(house); idx >= 0 && house < HOUSETYPE::NUM_HOUSES) {
-        static const char* const houseName[static_cast<int>(HOUSETYPE::NUM_HOUSES)]{
-            "Harkonnen", "Atreides", "Ordos", "Fremen", "Sardaukar", "Mercenary"};
+    static constexpr auto houseName =
+        std::to_array({"Harkonnen", "Atreides", "Ordos", "Fremen", "Sardaukar", "Mercenary"});
+
+    if (const auto idx = static_cast<decltype(houseName)::size_type>(house); idx < houseName.size())
         return houseName[idx];
-    }
 
     THROW(std::invalid_argument, "Invalid house number %d!", static_cast<int>(house));
 }

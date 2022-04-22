@@ -69,7 +69,7 @@ private:
     */
     std::vector<std::filesystem::path> getMusicFileNames(const std::filesystem::path& dir);
 
-    std::vector<std::filesystem::path> musicFileList[MUSIC_NUM_MUSIC_TYPES];
+    std::array<std::vector<std::filesystem::path>, MUSIC_NUM_MUSIC_TYPES> musicFileList;
 
     Mix_Music* music;
 };
