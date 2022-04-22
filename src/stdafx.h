@@ -23,8 +23,6 @@
 
 #ifdef __cplusplus
 
-#    include <globals.h>
-
 #    include <FileClasses/FileManager.h>
 #    include <FileClasses/FontManager.h>
 #    include <FileClasses/GFXManager.h>
