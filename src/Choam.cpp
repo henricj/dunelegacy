@@ -9,10 +9,10 @@
 #include <algorithm>
 
 // change starport prices every minute
-#define CHOAM_CHANGE_PRICETIME (MILLI2CYCLES(60 * 1000))
+constexpr auto CHOAM_CHANGE_PRICETIME = MILLI2CYCLES(60 * 1000);
 
 // change amount of available units every 30s
-#define CHOAM_CHANGE_AMOUNT (MILLI2CYCLES(30 * 1000))
+constexpr auto CHOAM_CHANGE_AMOUNT = MILLI2CYCLES(30 * 1000);
 
 Choam::Choam(House* pHouse) : house(pHouse) { }
 
