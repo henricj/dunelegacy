@@ -1,6 +1,8 @@
 #ifndef GFXCONSTANTS_H
 #define GFXCONSTANTS_H
 
+#include "Definitions.h"
+
 inline constexpr auto NUM_TERRAIN_TILES_X             = 11;
 inline constexpr auto NUM_TERRAIN_TILES_Y             = 8;
 inline constexpr auto NUM_MAPCHOICEPIECES             = 28;

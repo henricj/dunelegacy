@@ -5,6 +5,7 @@
 
 #include <FileClasses/GFXConstants.h>
 
+#include "DataTypes.h"
 #include "DuneTexture.h"
 
 class SurfaceLoader;
