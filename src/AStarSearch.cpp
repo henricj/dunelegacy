@@ -25,7 +25,7 @@
 
 #include <cstdlib>
 
-#define MAX_NODES_CHECKED (128 * 128)
+inline constexpr auto MAX_NODES_CHECKED = 128 * 128;
 
 AStarSearch::AStarSearch(Map* pMap)
     : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord{} { //, heap_compare_(mapData) {

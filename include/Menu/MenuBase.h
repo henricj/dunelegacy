@@ -23,7 +23,7 @@
 
 #include <SDL2/SDL_events.h>
 
-#define MENU_QUIT_DEFAULT (-1)
+inline constexpr auto MENU_QUIT_DEFAULT = -1;
 
 class MenuBase : public Window {
 protected:
