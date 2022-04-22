@@ -37,24 +37,29 @@
 
 Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
+    const auto house_idx = static_cast<int>(house);
+
     if (house != HOUSETYPE::HOUSE_HARKONNEN && house != HOUSETYPE::HOUSE_ATREIDES && house != HOUSETYPE::HOUSE_ORDOS) {
-        THROW(std::invalid_argument, "Invalid house number %d!", static_cast<int>(house));
+        THROW(std::invalid_argument, "Invalid house number %d!", house_idx);
     }
+
+    if (house_idx < 0 || house_idx >= 3)
+        THROW(std::invalid_argument, "Invalid house number %d!", house_idx);
 
     pMeanwhile = create_wsafile("MEANWHIL.WSA");
     pImperator = create_wsafile("EFINALA.WSA");
 
     const IndexedTextFile dune_text{pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get()};
 
-    int textBaseIndex = MeanwhileText_Base + ((static_cast<int>(house) + 2) % 3) * MeanwhileText_NumTextsPerHouse;
+    auto textBaseIndex = MeanwhileText_Base + ((house_idx + 2) % 3) * MeanwhileText_NumTextsPerHouse;
 
     if (dune_text.getNumStrings() == 335) {
         // Dune II 1.0 has 2 ranks less
         textBaseIndex -= 2;
     }
 
-    const auto houseOfVisitor = (static_cast<int>(house) + 2) % 3;
-    const auto color          = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 1]);
+    const auto houseOfVisitor = (house_idx + 2) % 3;
+    const auto color          = SDL2RGB(palette[houseToPaletteIndex[house_idx] + 1]);
     const auto sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
     const auto visitorColor   = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor] + 1]);
 
@@ -72,8 +77,8 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
         startNewScene();
 
-        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-            pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 75));
+        addVideoEvent(
+            std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house_idx]).get(), 75));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex + MeanwhileText_You_of_all_people),
                                                  sardaukarColor, 0, 45, true, true, false));
         addTextEvent(
@@ -89,10 +94,9 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
                                                  sardaukarColor, 3, 100, false, false, false));
 
         startNewScene();
-        addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-            pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 75));
-        addVideoEvent(std::make_unique<FadeOutVideoEvent>(
-            pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 20));
+        addVideoEvent(
+            std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house_idx]).get(), 75));
+        addVideoEvent(std::make_unique<FadeOutVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house_idx]).get(), 20));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex + MeanwhileText_I_did_not_let),
                                                  visitorColor, 0, 35, true, false, false));
         addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex + MeanwhileText_I_will_not_allow),
@@ -113,8 +117,8 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
         if (house == HOUSETYPE::HOUSE_ATREIDES) {
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-                pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 130));
+            addVideoEvent(
+                std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house_idx]).get(), 130));
             addTextEvent(std::make_unique<TextEvent>(dune_text.getString(textBaseIndex + MeanwhileText_Fools),
                                                      sardaukarColor, 0, 45, true, false, false));
             addTextEvent(
@@ -136,8 +140,8 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
         } else {
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-                pMeanwhile->getPicture(meanwhileFrame[static_cast<int>(house)]).get(), 80));
+            addVideoEvent(
+                std::make_unique<HoldPictureVideoEvent>(pMeanwhile->getPicture(meanwhileFrame[house_idx]).get(), 80));
             addTextEvent(std::make_unique<TextEvent>(
                 dune_text.getString(textBaseIndex + MeanwhileText_The_Ordos_were_not_supposed), sardaukarColor, 0, 45,
                 true, true, false));
