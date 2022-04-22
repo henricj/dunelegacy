@@ -103,7 +103,7 @@ public:
         FixPoint turnspeed;       ///< how fast can this unit turn around?
         int32_t buildtime;        ///< how much time does the production of this structure/unit take?
         int32_t infspawnprop; ///< what is the probability (in percent) that a infantry soldier is spawn on destruction?
-        int builder;          ///< In which building can this item be built
+        ItemID_enum builder;  ///< In which building can this item be built
         std::bitset<Structure_LastID + 1>
             prerequisiteStructuresSet; ///< What buildings are prerequisite for building this item
         int8_t
@@ -124,8 +124,8 @@ private:
                                char houseChar, FixPoint defaultValue = 0);
     std::string loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
                                 char houseChar, const std::string& defaultValue = "");
-    int loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar,
-                   int defaultValue = ItemID_Invalid);
+    ItemID_enum loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
+                           char houseChar, ItemID_enum defaultValue = ItemID_Invalid);
     std::bitset<Structure_LastID + 1>
     loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key,
                                   char houseChar,

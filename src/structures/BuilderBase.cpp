@@ -143,10 +143,12 @@ std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameCo
     return DefaultObjectInterface::create(context, objectID);
 }
 
-void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
-                             ItemID_enum itemID, int price) {
-    if (iter != buildItemList.end()) {
-        if (iter->itemID == itemID) {
+void BuilderBase::insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price) {
+
+    auto& buildItemList = getBuildList();
+
+    if (iter != std::end(buildItemList)) {
+        if (iter->itemID == item_id) {
             if (price != -1) {
                 iter->price = price;
             }
@@ -156,23 +158,24 @@ void BuilderBase::insertItem(std::list<BuildItem>& buildItemList, std::list<Buil
     }
 
     if (price == -1) {
-        price = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].price;
+        price = currentGame->objectData.data[item_id][static_cast<int>(originalHouseID)].price;
     }
 
-    buildItemList.insert(iter, BuildItem(itemID, price));
+    iter = buildItemList.emplace(iter, item_id, price);
+
+    ++iter;
 }
 
-void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<BuildItem>::iterator& iter,
-                             ItemID_enum itemID) {
-    if (iter == buildItemList.end() || iter->itemID != itemID)
+void BuilderBase::removeItem(build_list_type::iterator& iter, ItemID_enum item_id) {
+    auto& buildItemList = getBuildList();
+
+    if (iter == std::end(buildItemList) || iter->itemID != item_id)
         return;
 
-    const auto iter2 = iter;
-    ++iter;
-    buildItemList.erase(iter2);
+    iter = buildItemList.erase(iter);
 
     // is this item currently produced?
-    if (currentProducedItem == itemID) {
+    if (currentProducedItem == item_id) {
         owner->returnCredits(productionProgress);
         productionProgress  = 0;
         currentProducedItem = ItemID_Invalid;
@@ -289,8 +292,7 @@ int BuilderBase::getMaxUpgradeLevel() const {
     for (int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
         const auto& objData = currentGame->objectData.data[i][static_cast<int>(originalHouseID)];
 
-        if (objData.enabled && (objData.builder == static_cast<int>(itemID))
-            && (objData.techLevel <= currentGame->techLevel)) {
+        if (objData.enabled && (objData.builder == itemID) && (objData.techLevel <= currentGame->techLevel)) {
             upgradeLevel = std::max(upgradeLevel, static_cast<int>(objData.upgradeLevel));
         }
     }
@@ -307,10 +309,10 @@ void BuilderBase::updateBuildList() {
 
         const auto& objData = currentGame->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
 
-        if (!objData.enabled || (objData.builder != static_cast<int>(itemID)) || (objData.upgradeLevel > curUpgradeLev)
+        if (!objData.enabled || (objData.builder != itemID) || (objData.upgradeLevel > curUpgradeLev)
             || (objData.techLevel > currentGame->techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
-            removeItem(buildList, iter, itemID2Add);
+            removeItem(iter, itemID2Add);
         } else {
 
             // check if prerequisites are met
@@ -324,9 +326,9 @@ void BuilderBase::updateBuildList() {
             }
 
             if (bPrerequisitesMet) {
-                insertItem(buildList, iter, itemID2Add);
+                insertItem(iter, itemID2Add);
             } else {
-                removeItem(buildList, iter, itemID2Add);
+                removeItem(iter, itemID2Add);
             }
         }
     }

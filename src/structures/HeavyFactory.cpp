@@ -59,6 +59,8 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
         return;
     }
 
+    auto& buildList = getBuildList();
+
     if (!buildList.empty()) {
         auto item2Produce = ItemID_Invalid;
 

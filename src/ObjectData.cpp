@@ -194,7 +194,7 @@ void ObjectData::save(OutputStream& stream) const {
             stream.writeFixPoint(h.turnspeed);
             stream.writeSint32(h.buildtime);
             stream.writeSint32(h.infspawnprop);
-            stream.writeSint32(h.builder);
+            stream.writeSint32(static_cast<int>(h.builder));
             stream.writeUint32(static_cast<uint32_t>(h.prerequisiteStructuresSet.to_ulong()));
             stream.writeSint8(h.techLevel);
             stream.writeSint8(h.upgradeLevel);
@@ -218,7 +218,7 @@ void ObjectData::load(InputStream& stream) {
             h.turnspeed                 = stream.readFixPoint();
             h.buildtime                 = stream.readSint32();
             h.infspawnprop              = stream.readSint32();
-            h.builder                   = stream.readSint32();
+            h.builder                   = static_cast<ItemID_enum>(stream.readSint32());
             h.prerequisiteStructuresSet = std::bitset<Structure_LastID + 1>((unsigned long)stream.readUint32());
             h.techLevel                 = stream.readSint8();
             h.upgradeLevel              = stream.readSint8();
@@ -262,8 +262,8 @@ std::string ObjectData::loadStringValue(const INIFile& objectDataFile, const std
     return objectDataFile.getStringValue(section, key, defaultValue);
 }
 
-int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                           char houseChar, int defaultValue) {
+ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
+                                   char houseChar, ItemID_enum defaultValue) {
     const std::string strItem{trim(loadStringValue(objectDataFile, section, key, houseChar, ""))};
 
     if (strItem == "") {
