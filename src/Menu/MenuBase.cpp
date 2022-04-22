@@ -36,8 +36,8 @@ MenuBase::MenuBase() : Window(0, 0, 0, 0) { }
 MenuBase::~MenuBase() = default;
 
 void MenuBase::quit(int returnVal) {
-    retVal  = returnVal;
-    quiting = true;
+    retVal   = returnVal;
+    quitting = true;
 }
 
 bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
@@ -45,7 +45,7 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
 
     SDL_Event event{};
 
-    while (!quiting) {
+    while (!quitting) {
         const auto remaining = until - dune::dune_clock::now();
 
         if (remaining <= dune::dune_clock::duration::zero() || remaining >= 32ms)
@@ -71,9 +71,9 @@ int MenuBase::showMenu() {
 
     SDL_Event event{};
 
-    quiting = false;
+    quitting = false;
 
-    while (!quiting) {
+    while (!quitting) {
         const auto frameStart = dune::dune_clock::now();
 
         update();
@@ -82,7 +82,7 @@ int MenuBase::showMenu() {
             pNetworkManager->update();
         }
 
-        if (quiting) {
+        if (quitting) {
             return retVal;
         }
 
@@ -134,7 +134,7 @@ bool MenuBase::doInput(SDL_Event& event) {
             switch (event.key.keysym.sym) {
 
                 case SDLK_ESCAPE: {
-                    if (pChildWindow == nullptr && bAllowQuiting) {
+                    if (pChildWindow == nullptr && bAllowQuitting) {
                         quit();
                     }
                 } break;
@@ -180,7 +180,7 @@ bool MenuBase::doInput(SDL_Event& event) {
         } break;
 
         case SDL_QUIT: {
-            if (pChildWindow == nullptr && bAllowQuiting) {
+            if (pChildWindow == nullptr && bAllowQuitting) {
                 quit();
             }
         } break;
@@ -191,7 +191,7 @@ bool MenuBase::doInput(SDL_Event& event) {
 
     handleInput(event);
 
-    return !quiting;
+    return !quitting;
 }
 
 TopMenuBase::TopMenuBase() {

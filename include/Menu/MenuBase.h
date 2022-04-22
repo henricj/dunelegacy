@@ -39,8 +39,8 @@ public:
 
     virtual int showMenu();
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
-    virtual bool isQuiting() { return quiting; }
-    void disableQuiting(bool disable) { bAllowQuiting = !disable; }
+    virtual bool isQuitting() { return quitting; }
+    void disableQuitting(bool disable) { bAllowQuitting = !disable; }
 
     virtual void update() { }
 
@@ -55,9 +55,9 @@ protected:
     bool doEventsUntil(dune::dune_clock::time_point until);
 
 private:
-    bool bClearScreen  = true;
-    bool bAllowQuiting = true;
-    bool quiting       = false;
+    bool bClearScreen   = true;
+    bool bAllowQuitting = true;
+    bool quitting       = false;
     int retVal{MENU_QUIT_DEFAULT};
 };
 

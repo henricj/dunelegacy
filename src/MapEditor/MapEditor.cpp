@@ -1075,7 +1075,7 @@ void MapEditor::processInput() {
                 case SDL_KEYUP: {
                     switch (event.key.keysym.sym) {
                         case SDLK_ESCAPE: {
-                            // quiting
+                            // quitting
                             pInterface->onQuit();
                         } break;
 
