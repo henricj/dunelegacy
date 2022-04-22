@@ -200,6 +200,12 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     return 0;
 }
 
+int SavePNG(SDL_Surface* surface, const std::filesystem::path& file) {
+    const sdl2::RWops_ptr sdl_r_wops{SDL_RWFromFile(file.u8string().c_str(), "wb")};
+
+    return SavePNG_RW(surface, sdl_r_wops.get());
+}
+
 std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
     const auto timeinfo0 = dune::dune_localtime();
 
