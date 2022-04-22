@@ -188,7 +188,7 @@ void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
     seed_.clear();
     seed_.reserve(seed.size());
 
-    std::copy(seed.begin(), seed.end(), std::back_inserter(seed_));
+    std::ranges::copy(seed, std::back_inserter(seed_));
 
     digestpp::kmac256 kmac{8 * key_.size()};
 
@@ -208,7 +208,7 @@ std::vector<uint8_t> RandomFactory::getSeed() const {
 
     std::vector<uint8_t> seed;
     seed.reserve(seed_.size());
-    std::copy(seed_.begin(), seed_.end(), std::back_inserter(seed));
+    std::ranges::copy(seed_, std::back_inserter(seed));
 
     sdl2::log_info("Getting RandomFactory seed %s", to_hex(seed));
 
@@ -255,7 +255,7 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     kmac.absorb(buffer.begin(), buffer.end());
 
     for (auto i = 0; i < 5; ++i) {
-        std::generate(buffer.begin(), buffer.end(), [&] { return rd(); });
+        std::ranges::generate(buffer, [&] { return rd(); });
         kmac.absorb(buffer.begin(), buffer.end());
         kmac.absorb(&seed_stir[0], sizeof seed_stir);
     }

@@ -344,11 +344,9 @@ bool StructureBase::update(const GameContext& context) {
     const auto game_cycle_count = context.game.getGameCycleCount();
 
     // check smoke
-    smoke.erase(std::remove_if(std::begin(smoke), std::end(smoke),
-                               [game_cycle_count](const StructureSmoke& s) {
-                                   return game_cycle_count - s.startGameCycle >= MILLI2CYCLES(8 * 1000);
-                               }),
-                std::end(smoke));
+    std::erase_if(smoke, [game_cycle_count](const StructureSmoke& s) {
+        return game_cycle_count - s.startGameCycle >= MILLI2CYCLES(8 * 1000);
+    });
 
     // update animations
     animationCounter++;

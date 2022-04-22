@@ -183,15 +183,13 @@ public:
     std::vector<Structure>& getStructureList() { return structures; }
 
     [[nodiscard]] Structure* getStructure(int structureID) {
-        const auto it =
-            std::find_if(structures.begin(), structures.end(), [=](const auto& s) { return s.id == structureID; });
+        const auto it = std::ranges::find_if(structures, [=](const auto& s) { return s.id == structureID; });
 
         return it == structures.end() ? nullptr : &(*it);
     }
 
     [[nodiscard]] const Structure* getStructure(int structureID) const {
-        const auto it =
-            std::find_if(structures.begin(), structures.end(), [=](const auto& s) { return s.id == structureID; });
+        const auto it = std::ranges::find_if(structures, [=](const auto& s) { return s.id == structureID; });
 
         return it == structures.end() ? nullptr : &(*it);
     }

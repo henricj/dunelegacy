@@ -35,9 +35,10 @@
 
 #include <players/PlayerFactory.h>
 
-#include <fmt/printf.h>
 #include <misc/FileSystem.h>
 #include <misc/Scaler.h>
+
+#include <fmt/printf.h>
 
 #include <algorithm>
 
@@ -397,7 +398,7 @@ void OptionsMenu::saveConfiguration2File() {
 
 void OptionsMenu::addResolution(const Coord& screenRes) {
     if (screenRes.x >= SCREEN_MIN_WIDTH && screenRes.y >= SCREEN_MIN_HEIGHT) {
-        if (std::find(availScreenRes.begin(), availScreenRes.end(), screenRes) == availScreenRes.end()) {
+        if (std::ranges::find(availScreenRes, screenRes) == availScreenRes.end()) {
             // not yet in the list (might happen if e.g. multiple refresh rates are reported)
             availScreenRes.push_back(screenRes);
         }
@@ -455,8 +456,8 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         // example, when running in an RDP session on Windows.
 
         auto appendRes = [&](int x, int y) {
-            const auto can_fit = std::any_of(availScreenRes.begin(), availScreenRes.end(),
-                                             [&](const auto& screenRes) { return screenRes.x > x && screenRes.y > y; });
+            const auto can_fit = std::ranges::any_of(
+                availScreenRes, [&](const auto& screenRes) { return screenRes.x > x && screenRes.y > y; });
 
             if (can_fit)
                 addResolution(Coord{x, y});

@@ -136,7 +136,7 @@ bool parseString(std::string_view text, TValue& value) {
 }
 
 inline void convertToLower(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(), tolower);
+    std::ranges::transform(str, str.begin(), tolower);
 }
 
 inline std::string strToLower(std::string_view str) {
@@ -146,7 +146,7 @@ inline std::string strToLower(std::string_view str) {
 }
 
 inline void convertToUpper(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(), toupper);
+    std::ranges::transform(str, str.begin(), toupper);
 }
 
 inline std::string strToUpper(std::string_view str) {

@@ -131,13 +131,10 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
     std::vector<Dune::object_id_type> affectedGroundAndUndergroundUnits;
 
     for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2, [&](Tile& t) {
-        std::copy(std::begin(t.getAirUnitList()), std::end(t.getAirUnitList()), std::back_inserter(affectedAirUnits));
-        std::copy(std::begin(t.getInfantryList()), std::end(t.getInfantryList()),
-                  std::back_inserter(affectedGroundAndUndergroundUnits));
-        std::copy(std::begin(t.getUndergroundUnitList()), std::end(t.getUndergroundUnitList()),
-                  std::back_inserter(affectedGroundAndUndergroundUnits));
-        std::copy(std::begin(t.getNonInfantryGroundObjectList()), std::end(t.getNonInfantryGroundObjectList()),
-                  std::back_inserter(affectedGroundAndUndergroundUnits));
+        std::ranges::copy(t.getAirUnitList(), std::back_inserter(affectedAirUnits));
+        std::ranges::copy(t.getInfantryList(), std::back_inserter(affectedGroundAndUndergroundUnits));
+        std::ranges::copy(t.getUndergroundUnitList(), std::back_inserter(affectedGroundAndUndergroundUnits));
+        std::ranges::copy(t.getNonInfantryGroundObjectList(), std::back_inserter(affectedGroundAndUndergroundUnits));
     });
 
     if (bulletID == Bullet_Sandworm) {

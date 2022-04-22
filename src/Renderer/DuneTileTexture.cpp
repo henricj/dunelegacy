@@ -25,6 +25,5 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, gs
 #endif
 
     source_.reserve(tiles.size());
-    std::transform(tiles.begin(), tiles.end(), std::back_inserter(source_),
-                   [](const auto& tile) { return DuneTextureRect{tile}; });
+    std::ranges::transform(tiles, std::back_inserter(source_), [](const auto& tile) { return DuneTextureRect{tile}; });
 }

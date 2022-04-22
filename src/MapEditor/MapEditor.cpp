@@ -70,7 +70,7 @@ MapEditor::~MapEditor() {
 
 std::string MapEditor::generateMapname() {
     const auto numPlayers =
-        std::count_if(players.begin(), players.end(), [](const MapEditor::Player& player) { return player.bActive; });
+        std::ranges::count_if(players, [](const MapEditor::Player& player) { return player.bActive; });
 
     return std::to_string(numPlayers) + "P - " + std::to_string(map.getSizeX()) + "x" + std::to_string(map.getSizeY())
          + " - " + _("New Map");
@@ -1107,7 +1107,7 @@ void MapEditor::processInput() {
 
                                 pInterface->deselectAll();
                             } else if (selectedMapItemCoord.isValid()) {
-                                auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord);
+                                auto iter = std::ranges::find(specialBlooms, selectedMapItemCoord);
 
                                 if (iter != specialBlooms.end()) {
                                     clearRedoOperations();
@@ -1117,7 +1117,7 @@ void MapEditor::processInput() {
 
                                     selectedMapItemCoord.invalidate();
                                 } else {
-                                    iter = std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord);
+                                    iter = std::ranges::find(spiceBlooms, selectedMapItemCoord);
 
                                     if (iter != spiceBlooms.end()) {
                                         clearRedoOperations();
@@ -1127,7 +1127,7 @@ void MapEditor::processInput() {
 
                                         selectedMapItemCoord.invalidate();
                                     } else {
-                                        iter = std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord);
+                                        iter = std::ranges::find(spiceFields, selectedMapItemCoord);
 
                                         if (iter != spiceFields.end()) {
                                             clearRedoOperations();
@@ -1282,12 +1282,10 @@ void MapEditor::processInput() {
                                             pInterface->deselectAll();
 
                                             // find map items (spice bloom, special bloom or spice field)
-                                            if ((std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(xpos, ypos))
-                                                 != spiceBlooms.end())
-                                                || (std::find(specialBlooms.begin(), specialBlooms.end(),
-                                                              Coord(xpos, ypos))
+                                            if ((std::ranges::find(spiceBlooms, Coord(xpos, ypos)) != spiceBlooms.end())
+                                                || (std::ranges::find(specialBlooms, Coord(xpos, ypos))
                                                     != specialBlooms.end())
-                                                || (std::find(spiceFields.begin(), spiceFields.end(), Coord(xpos, ypos))
+                                                || (std::ranges::find(spiceFields, Coord(xpos, ypos))
                                                     != spiceFields.end())) {
                                                 selectedMapItemCoord = Coord(xpos, ypos);
                                             }
@@ -1402,21 +1400,21 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
     TERRAINTYPE terrainType = map(x, y);
 
     if (map(x, y) == Terrain_Sand) {
-        if (std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y)) != spiceFields.end()) {
+        if (std::ranges::find(spiceFields, Coord(x, y)) != spiceFields.end()) {
             terrainType = Terrain_ThickSpice;
-        } else if (std::find_if(spiceFields.begin(), spiceFields.end(),
-                                [center = Coord(x, y)](const auto& coord) { return distanceFrom(center, coord) < 5; })
+        } else if (std::ranges::find_if(spiceFields, [center = Coord(x, y)](
+                                                         const auto& coord) { return distanceFrom(center, coord) < 5; })
                    != spiceFields.end()) {
             terrainType = Terrain_Spice;
         }
     }
 
     // check for classic map items (spice blooms, special blooms)
-    if (std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y)) != spiceBlooms.end()) {
+    if (std::ranges::find(spiceBlooms, Coord(x, y)) != spiceBlooms.end()) {
         terrainType = Terrain_SpiceBloom;
     }
 
-    if (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y)) != specialBlooms.end()) {
+    if (std::ranges::find(specialBlooms, Coord(x, y)) != specialBlooms.end()) {
         terrainType = Terrain_SpecialBloom;
     }
 
@@ -1691,9 +1689,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         }
 
         // draw selection frame
-        if (!bCompleteMap
-            && (std::find(selectedStructures.begin(), selectedStructures.end(), structure.id)
-                != selectedStructures.end())) {
+        if (!bCompleteMap && (std::ranges::find(selectedStructures, structure.id) != selectedStructures.end())) {
             // now draw the selection box thing, with parts at all corners of structure
 
             DuneDrawSelectionBox(renderer, selectionDest);
@@ -1927,7 +1923,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         std::vector<int> selectedUnits = getMirrorUnits(selectedUnitID);
 
         for (const Unit& unit : units) {
-            if (std::find(selectedUnits.begin(), selectedUnits.end(), unit.id) != selectedUnits.end()) {
+            if (std::ranges::find(selectedUnits, unit.id) != selectedUnits.end()) {
                 const Coord& position = unit.position;
 
                 const DuneTexture* selectionBox = nullptr;
@@ -1951,9 +1947,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
     // draw selection rect for map items (spice bloom, special bloom or spice field)
     if (!bCompleteMap && selectedMapItemCoord.isValid()
-        && ((std::find(spiceBlooms.begin(), spiceBlooms.end(), selectedMapItemCoord) != spiceBlooms.end())
-            || (std::find(specialBlooms.begin(), specialBlooms.end(), selectedMapItemCoord) != specialBlooms.end())
-            || (std::find(spiceFields.begin(), spiceFields.end(), selectedMapItemCoord) != spiceFields.end()))) {
+        && ((std::ranges::find(spiceBlooms, selectedMapItemCoord) != spiceBlooms.end())
+            || (std::ranges::find(specialBlooms, selectedMapItemCoord) != specialBlooms.end())
+            || (std::ranges::find(spiceFields, selectedMapItemCoord) != spiceFields.end()))) {
 
         const DuneTexture* selectionBox = nullptr;
 

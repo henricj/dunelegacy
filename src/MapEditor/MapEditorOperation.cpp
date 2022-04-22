@@ -24,7 +24,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perf
 
     std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
 
-    if (std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y)) != spiceBlooms.end()) {
+    if (std::ranges::find(spiceBlooms, Coord(x, y)) != spiceBlooms.end()) {
         return std::make_unique<MapEditorNoOperation>();
     }
     spiceBlooms.emplace_back(x, y);
@@ -35,7 +35,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceBloomOperation::p
 
     std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
 
-    const auto iter = std::find(spiceBlooms.begin(), spiceBlooms.end(), Coord(x, y));
+    const auto iter = std::ranges::find(spiceBlooms, Coord(x, y));
 
     if (iter != spiceBlooms.end()) {
         spiceBlooms.erase(iter);
@@ -48,7 +48,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpecialBloomOperation::pe
 
     std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
 
-    if (std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y)) != specialBlooms.end()) {
+    if (std::ranges::find(specialBlooms, Coord(x, y)) != specialBlooms.end()) {
         return std::make_unique<MapEditorNoOperation>();
     }
     specialBlooms.emplace_back(x, y);
@@ -59,7 +59,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpecialBloomOperation:
 
     std::vector<Coord>& specialBlooms = pMapEditor->getSpecialBlooms();
 
-    const auto iter = std::find(specialBlooms.begin(), specialBlooms.end(), Coord(x, y));
+    const auto iter = std::ranges::find(specialBlooms, Coord(x, y));
 
     if (iter != specialBlooms.end()) {
         specialBlooms.erase(iter);
@@ -72,7 +72,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceFieldOperation::perf
 
     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
-    if (std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y)) != spiceFields.end()) {
+    if (std::ranges::find(spiceFields, Coord(x, y)) != spiceFields.end()) {
         return std::make_unique<MapEditorNoOperation>();
     }
     spiceFields.emplace_back(x, y);
@@ -83,7 +83,7 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainRemoveSpiceFieldOperation::p
 
     std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
-    const auto iter = std::find(spiceFields.begin(), spiceFields.end(), Coord(x, y));
+    const auto iter = std::ranges::find(spiceFields, Coord(x, y));
 
     if (iter != spiceFields.end()) {
         spiceFields.erase(iter);
