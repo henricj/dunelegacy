@@ -107,9 +107,9 @@ void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
 }
 
 void InfantryBase::blitToScreen() {
-    const SDL_Rect dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
-                                                screenborder->world2screenY(realY), numImagesX, numImagesY,
-                                                HAlign::Center, VAlign::Center);
+    const auto dest = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
+                                            screenborder->world2screenY(realY), numImagesX, numImagesY, HAlign::Center,
+                                            VAlign::Center);
 
     auto temp = drawnAngle;
     if (temp == ANGLETYPE::UP) {

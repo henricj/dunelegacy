@@ -147,8 +147,8 @@ void Sandworm::blitToScreen() {
                 continue;
             }
 
-            SDL_Rect dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x),
-                                            screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
+            auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x),
+                                        screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
 
             // switch to texture 'shimmerTex' for rendering
             SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
@@ -178,10 +178,10 @@ void Sandworm::blitToScreen() {
     }
 
     if (drawnFrame != INVALID) {
-        const SDL_Rect dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
-                                                      screenborder->world2screenY(realY), numImagesX, numImagesY,
-                                                      HAlign::Center, VAlign::Center);
-        const SDL_Rect source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
+        const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
+                                                  screenborder->world2screenY(realY), numImagesX, numImagesY,
+                                                  HAlign::Center, VAlign::Center);
+        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
         Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }

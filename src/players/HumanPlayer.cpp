@@ -175,108 +175,110 @@ void HumanPlayer::triggerStructureTutorialHint(ItemID_enum itemID) {
         return;
     }
 
+    const auto* const gfx = pGFXManager.get();
+
     ChatManager& chatManager = currentGame->getGameInterface().getChatManager();
     switch (itemID) {
 
         case Structure_Slab1: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|2#Concrete: Build your buildings on a stable foundation."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Slab1));
+                                       gfx->getTinyPicture(TinyPicture_Slab1));
         } break;
 
         case Structure_Palace: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|3#Palace: This is your palace."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Palace));
+                                       gfx->getTinyPicture(TinyPicture_Palace));
         } break;
 
         case Structure_LightFactory: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|4#Light Factory: In the Light Factory small vehicles are produced."),
-                pGFXManager->getTinyPicture(TinyPicture_LightFactory));
+                gfx->getTinyPicture(TinyPicture_LightFactory));
         } break;
 
         case Structure_HeavyFactory: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|5#Heavy Factory: In the Heavy Factory tracked vehicles are produced."),
-                pGFXManager->getTinyPicture(TinyPicture_HeavyFactory));
+                gfx->getTinyPicture(TinyPicture_HeavyFactory));
         } break;
 
         case Structure_HighTechFactory: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|6#High-Tech Factory: In the High-Tech Factory flying units are produced."),
-                pGFXManager->getTinyPicture(TinyPicture_HighTechFactory));
+                gfx->getTinyPicture(TinyPicture_HighTechFactory));
         } break;
 
         case Structure_IX: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|7#House IX: The science labs of House IX strengthens the technology of your house."),
-                pGFXManager->getTinyPicture(TinyPicture_IX));
+                gfx->getTinyPicture(TinyPicture_IX));
         } break;
 
         case Structure_WOR: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|8#WOR: In this facility heavily armed troppers are trained."),
-                                       pGFXManager->getTinyPicture(TinyPicture_WOR));
+                                       gfx->getTinyPicture(TinyPicture_WOR));
         } break;
 
         case Structure_ConstructionYard: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|9#Construction Yard: All structures are produced by the Construction Yard."),
-                pGFXManager->getTinyPicture(TinyPicture_ConstructionYard));
+                gfx->getTinyPicture(TinyPicture_ConstructionYard));
         } break;
 
         case Structure_WindTrap: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|10#Windtrap: Windtraps a supplying your base with energy. "
                                          "Without energy your buildings are decaying over time."),
-                                       pGFXManager->getTinyPicture(TinyPicture_WindTrap));
+                                       gfx->getTinyPicture(TinyPicture_WindTrap));
         } break;
 
         case Structure_Barracks: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|11#Barracks: In this facility light armed infantry is trained."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Barracks));
+                                       gfx->getTinyPicture(TinyPicture_Barracks));
         } break;
 
         case Structure_StarPort: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|12#Starport: Ordering and receiving shipments from C.H.O.A.M is "
                                          "the task of the Starport."),
-                                       pGFXManager->getTinyPicture(TinyPicture_StarPort));
+                                       gfx->getTinyPicture(TinyPicture_StarPort));
         } break;
 
         case Structure_Refinery: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|13#Refinery: In the Refinery Spice is converted into credits."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Refinery));
+                                       gfx->getTinyPicture(TinyPicture_Refinery));
         } break;
 
         case Structure_RepairYard: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|14#Repair Yard: Damanged units can be repaired in the Repair Yard."),
-                pGFXManager->getTinyPicture(TinyPicture_RepairYard));
+                gfx->getTinyPicture(TinyPicture_RepairYard));
         } break;
 
         case Structure_Wall: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|15#Wall: Walls help to defend your base."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Wall));
+                                       gfx->getTinyPicture(TinyPicture_Wall));
         } break;
 
         case Structure_GunTurret: {
             chatManager.addHintMessage(
                 _("@MESSAGE.ENG|16#Gun Turret: This turret type provides short range defense for your base."),
-                pGFXManager->getTinyPicture(TinyPicture_GunTurret));
+                gfx->getTinyPicture(TinyPicture_GunTurret));
         } break;
 
         case Structure_RocketTurret: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|17#Rocket Turret: This turret type provides short and medium "
                                          "range defense for your base."),
-                                       pGFXManager->getTinyPicture(TinyPicture_RocketTurret));
+                                       gfx->getTinyPicture(TinyPicture_RocketTurret));
         } break;
 
         case Structure_Silo: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|18#Spice Silo: This building stores refined spice."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Silo));
+                                       gfx->getTinyPicture(TinyPicture_Silo));
         } break;
 
         case Structure_Radar: {
             chatManager.addHintMessage(_("@MESSAGE.ENG|19#Outpost: The Outpost allows the usage of a radar and "
                                          "supports commanding distant vehicles."),
-                                       pGFXManager->getTinyPicture(TinyPicture_Radar));
+                                       gfx->getTinyPicture(TinyPicture_Radar));
         } break;
 
         default: {

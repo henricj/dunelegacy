@@ -110,7 +110,7 @@ void Harvester::blitToScreen() {
         const auto* const pSandGraphic =
             pGFXManager->getZoomedObjPic(ObjPic_Harvester_Sand, getOwner()->getHouseID(), currentZoomlevel);
 
-        int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / HARVESTERDELAY) % (2 * LASTSANDFRAME);
+        int frame = (currentGame->getGameCycleCount() + getObjectID() * 10) / HARVESTERDELAY % (2 * LASTSANDFRAME);
         if (frame > LASTSANDFRAME) {
             frame -= LASTSANDFRAME;
         }
@@ -149,7 +149,7 @@ void Harvester::checkPos(const GameContext& context) {
         if (const auto* const pRefinery = dune_cast<Refinery>(target.getObjPointer())) {
             auto* pObject = map.getGroundObject(context, location.x, location.y);
 
-            if (justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target.getObjectID())) {
+            if (justStoppedMoving && pObject != nullptr && pObject->getObjectID() == target.getObjectID()) {
                 if (pRefinery->isFree()) {
                     awaitingPickup = false;
                     setReturned(context);
@@ -205,7 +205,7 @@ void Harvester::checkPos(const GameContext& context) {
     }
 
     if (harvestingMode && !hasBookedCarrier() && destination.isValid()
-        && (blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE)) {
+        && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
         requestCarryall(context);
 
         return;
@@ -236,7 +236,7 @@ void Harvester::deploy(const GameContext& context, const Coord& newLocation) {
         parent::deploy(context, newLocation);
         if (spice == 0) {
             Coord newDestination;
-            if ((attackMode != STOP) && context.map.findSpice(newDestination, guardPoint)) {
+            if (attackMode != STOP && context.map.findSpice(newDestination, guardPoint)) {
                 harvestingMode = true;
                 setDestination(newDestination);
                 setGuardPoint(newDestination);
@@ -263,7 +263,7 @@ void Harvester::destroy(const GameContext& context) {
             for (int i = -circleRadius; i <= circleRadius; i++) {
                 for (int j = -circleRadius; j <= circleRadius; j++) {
                     if (currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius)) {
+                        && distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius) {
                         if (const auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
                             if (pTile->isSand() || pTile->isSpice()) {
                                 availableSandPos++;
@@ -277,7 +277,7 @@ void Harvester::destroy(const GameContext& context) {
             for (int i = -circleRadius; i <= circleRadius; i++) {
                 for (int j = -circleRadius; j <= circleRadius; j++) {
                     if (currentGameMap->tileExists(xpos + i, ypos + j)
-                        && (distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius)) {
+                        && distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius) {
                         if (auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
                             if (pTile->isSand() || pTile->isSpice()) {
                                 pTile->setSpice(pTile->getSpice() + spiceSpreaded / availableSandPos);
@@ -324,7 +324,7 @@ void Harvester::drawSelectionBox() {
 
     renderFillRectF(renderer, &dest, getHealthColor());
 
-    if ((getOwner() == pLocalHouse) && (spice > 0)) {
+    if (getOwner() == pLocalHouse && spice > 0) {
         dest.y -= static_cast<float>(currentZoomlevel + 1);
         dest.w = static_cast<float>(lround(((spice) / HARVESTERMAXSPICE) * (getWidth(selectionBox) - 3)));
         renderFillRectF(renderer, &dest, COLOR_ORANGE);
@@ -334,9 +334,9 @@ void Harvester::drawSelectionBox() {
 void Harvester::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 
-    auto* const damager = context.objectManager.getObject(damagerID);
+    const auto* const damager = context.objectManager.getObject(damagerID);
 
-    if (!target && !forced && damager && canAttack(damager) && (attackMode != STOP)) {
+    if (!target && !forced && damager && canAttack(damager) && attackMode != STOP) {
         setTarget(damager);
     }
 }
@@ -358,7 +358,7 @@ void Harvester::doReturn() {
 }
 
 void Harvester::setAmountOfSpice(FixPoint newSpice) {
-    if ((newSpice >= 0) && (newSpice <= HARVESTERMAXSPICE)) {
+    if (newSpice >= 0 && newSpice <= HARVESTERMAXSPICE) {
         spice = newSpice;
     }
 }
@@ -366,13 +366,13 @@ void Harvester::setAmountOfSpice(FixPoint newSpice) {
 void Harvester::setDestination(int newX, int newY) {
     parent::setDestination(newX, newY);
 
-    harvestingMode = (attackMode != STOP)
+    harvestingMode = attackMode != STOP
                   && (currentGameMap->tileExists(newX, newY) && currentGameMap->getTile(newX, newY)->hasSpice());
 }
 
 void Harvester::setTarget(const ObjectBase* newTarget) {
-    if (returningToRefinery && target && (target.getObjPointer() != nullptr)
-        && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+    if (returningToRefinery && target && target.getObjPointer() != nullptr
+        && target.getObjPointer()->getItemID() == Structure_Refinery) {
         static_cast<Refinery*>(target.getObjPointer())->unBook();
         returningToRefinery = false;
     }
@@ -444,25 +444,25 @@ void Harvester::move(const GameContext& context) {
 }
 
 bool Harvester::isHarvesting() const {
-    return harvestingMode && (spice < HARVESTERMAXSPICE) && (blockDistance(location, destination) <= FixPt_SQRT2)
+    return harvestingMode && spice < HARVESTERMAXSPICE && blockDistance(location, destination) <= FixPt_SQRT2
         && currentGameMap->tileExists(location) && currentGameMap->getTile(location)->hasSpice();
 }
 
 bool Harvester::canAttack(const ObjectBase* object) const {
-    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID())
-            && object->isVisible(getOwner()->getTeamID()));
+    return object != nullptr && object->isInfantry() && object->getOwner()->getTeamID() != owner->getTeamID()
+        && object->isVisible(getOwner()->getTeamID());
 }
 
 FixPoint Harvester::extractSpice(FixPoint extractionSpeed) {
     const FixPoint oldSpice = spice;
 
-    if ((spice - extractionSpeed) >= 0) {
+    if (spice - extractionSpeed >= 0) {
         spice -= extractionSpeed;
     } else {
         spice = 0;
     }
 
-    return (oldSpice - spice);
+    return oldSpice - spice;
 }
 
 void Harvester::setSpeeds(const GameContext& context) {

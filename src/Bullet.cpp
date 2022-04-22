@@ -353,7 +353,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
 bool Bullet::update(const GameContext& context) {
     if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
 
-        ObjectBase* pTarget = target.getObjPointer();
+        const auto* pTarget = target.getObjPointer();
         if (pTarget && pTarget->isAFlyingUnit()) {
             destination = pTarget->getCenterPoint();
         }

@@ -88,7 +88,7 @@ public:
 
     void writeUint8(uint8_t x) override {
         ensureBufferSize(currentPos + sizeof(uint8_t));
-        *(uint8_t*)(packet->data + currentPos) = x;
+        packet->data[currentPos] = x;
         currentPos += sizeof(uint8_t);
     }
 

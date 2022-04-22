@@ -25,6 +25,8 @@
 #include <GUI/Window.h>
 
 class InGameSettingsMenu final : public Window {
+    using parent = Window;
+
 public:
     InGameSettingsMenu();
     ~InGameSettingsMenu() override;

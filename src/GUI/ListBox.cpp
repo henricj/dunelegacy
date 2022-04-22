@@ -37,11 +37,11 @@ bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
 
     const int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
 
-    if ((x >= 0) && (x < getSize().x - scrollbarWidth) && (y >= 0) && (y < getSize().y)) {
+    if (x >= 0 && x < getSize().x - scrollbarWidth && y >= 0 && y < getSize().y) {
 
         if (pressed) {
-            const int index = ((y - 1) / GUIStyle::getInstance().getListBoxEntryHeight()) + firstVisibleElement;
-            if ((index >= 0) && (index < getNumEntries())) {
+            const int index = (y - 1) / GUIStyle::getInstance().getListBoxEntryHeight() + firstVisibleElement;
+            if (index >= 0 && index < getNumEntries()) {
                 selectedElement = index;
 
                 if (dune::dune_clock::now() - lastClickTime < 200ms) {
@@ -133,7 +133,7 @@ void ListBox::resize(uint32_t width, uint32_t height) {
 void ListBox::setActive() {
     Widget::setActive();
 
-    if ((selectedElement == -1) && (getNumEntries() > 0)) {
+    if (selectedElement == -1 && getNumEntries() > 0) {
         selectedElement = 0;
         updateList();
         if (pOnSelectionChange) {
@@ -143,15 +143,17 @@ void ListBox::setActive() {
 }
 
 void ListBox::setSelectedItem(int index, bool bInteractive) {
-    const bool bChanged = (index != selectedElement);
+    const bool bChanged = index != selectedElement;
 
     if (index <= -1) {
         selectedElement = -1;
         updateList();
-    } else if ((index >= 0) && (index < getNumEntries())) {
+    } else if (index >= 0 && index < getNumEntries()) {
         selectedElement = index;
 
-        const int numVisibleElements = ((getSize().y - 2) / GUIStyle::getInstance().getListBoxEntryHeight()) + 1;
+        const auto& gui = GUIStyle::getInstance();
+
+        const int numVisibleElements = (getSize().y - 2) / static_cast<int>(gui.getListBoxEntryHeight()) + 1;
 
         if (selectedElement >= firstVisibleElement + numVisibleElements - 1) {
             firstVisibleElement = selectedElement - (numVisibleElements - 1) + 1;
@@ -217,7 +219,9 @@ void ListBox::updateList() {
         surfaceHeight = 0;
     }
 
-    const int numVisibleElements = surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight();
+    const auto& gui = GUIStyle::getInstance();
+
+    const auto numVisibleElements = surfaceHeight / static_cast<int>(gui.getListBoxEntryHeight());
 
     scrollbar.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
     scrollbar.setBigStepSize(std::max(1, numVisibleElements - 1));

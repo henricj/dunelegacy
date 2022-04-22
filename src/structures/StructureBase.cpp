@@ -367,17 +367,17 @@ bool StructureBase::update(const GameContext& context) {
 }
 
 void StructureBase::destroy(const GameContext& context) {
-    const int* pDestroyedStructureTiles            = nullptr;
-    int DestroyedStructureTilesSizeY               = 0;
-    static const int DestroyedStructureTilesWall[] = {DestroyedStructure_Wall};
-    static const int DestroyedStructureTiles1x1[]  = {Destroyed1x1Structure};
-    static const int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
-                                                      Destroyed2x2Structure_BottomLeft,
-                                                      Destroyed2x2Structure_BottomRight};
-    static const int DestroyedStructureTiles3x2[]  = {
+    const int* pDestroyedStructureTiles                = nullptr;
+    int DestroyedStructureTilesSizeY                   = 0;
+    static constexpr int DestroyedStructureTilesWall[] = {DestroyedStructure_Wall};
+    static constexpr int DestroyedStructureTiles1x1[]  = {Destroyed1x1Structure};
+    static constexpr int DestroyedStructureTiles2x2[]  = {Destroyed2x2Structure_TopLeft, Destroyed2x2Structure_TopRight,
+                                                          Destroyed2x2Structure_BottomLeft,
+                                                          Destroyed2x2Structure_BottomRight};
+    static constexpr int DestroyedStructureTiles3x2[]  = {
          Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
          Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
-    static const int DestroyedStructureTiles3x3[] = {
+    static constexpr int DestroyedStructureTiles3x3[] = {
         Destroyed3x3Structure_TopLeft,    Destroyed3x3Structure_TopCenter,    Destroyed3x3Structure_TopRight,
         Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
         Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};

@@ -19,11 +19,12 @@
 
 #include <Network/NetworkManager.h>
 
+#include "FileClasses/LoadSavePNG.h"
+#include "GUI/GUIStyle.h"
+#include "misc/DrawingRectHelper.h"
+#include "misc/draw_util.h"
+#include "misc/dune_clock.h"
 #include "misc/dune_events.h"
-#include <FileClasses/LoadSavePNG.h>
-#include <misc/FileSystem.h>
-#include <misc/draw_util.h>
-#include <misc/string_util.h>
 
 #include <globals.h>
 
