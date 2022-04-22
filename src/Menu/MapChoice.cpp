@@ -33,7 +33,7 @@
 
 MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldAlreadyPlayedRegions)
     : house(newHouse), lastScenario((lastMission + 1) / 3 + 1), alreadyPlayedRegions(oldAlreadyPlayedRegions) {
-    disableQuiting(true);
+    disableQuitting(true);
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);

@@ -31,7 +31,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
                            + dune::as_dune_clock_duration(pGFXManager->random().rand(8000, 20000))),
       house(newHouse) {
 
-    disableQuiting(true);
+    disableQuitting(true);
 
     // set up window
     const DuneTexture* pBackground = nullptr;
