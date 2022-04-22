@@ -303,12 +303,12 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-        sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::u8path(filename));
+        sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::path(filename));
         SDLDataSource input(inputrwop.release(), 1);
 
         auto tmpFilename = getTmpFileName();
 
-        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string().c_str(), "wb");
+        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string(), "wb");
         if (outputrwop == nullptr) {
             std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
             return;
@@ -327,13 +327,13 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
             music = nullptr;
         }
 
-        music = Mix_LoadMUS(tmpFilename.u8string().c_str());
+        music = Mix_LoadMUS(reinterpret_cast<const char*>(tmpFilename.u8string().c_str()));
         if (music != nullptr) {
             if (Mix_PlayMusic(music, -1) == -1) {
                 sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
             } else {
                 Mix_VolumeMusic(musicVolume);
-                sdl2::log_info("Now playing %s!", tmpFilename.u8string());
+                sdl2::log_info("Now playing %s!", reinterpret_cast<const char*>(tmpFilename.u8string().c_str()));
             }
         } else {
             sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());

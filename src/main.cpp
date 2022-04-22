@@ -293,7 +293,7 @@ std::filesystem::path getConfigFilepath() {
 }
 
 void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
-    sdl2::log_info("Creating config file '%s'", configfilepath.u8string());
+    sdl2::log_info("Creating config file '%s'", reinterpret_cast<const char*>(configfilepath.u8string().c_str()));
 
     const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
     if (!file) {
@@ -387,14 +387,18 @@ void showMissingFilesMessageBox() {
         "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
     for (const auto& missingFile : FileManager::getMissingFiles()) {
-        instruction += " " + missingFile.u8string() + "\n";
-        sdl2::log_error("missing required %s", missingFile.u8string());
+        instruction += " ";
+        instruction += reinterpret_cast<const char*>(missingFile.u8string().c_str());
+        instruction += "\n";
+        sdl2::log_error("missing required %s", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
     for (const auto& searchPath : FileManager::getSearchPath()) {
-        instruction += " " + searchPath.u8string() + "\n";
-        sdl2::log_info("search path %s", searchPath.u8string());
+        instruction += " ";
+        instruction += reinterpret_cast<const char*>(searchPath.u8string().c_str());
+        instruction += "\n";
+        sdl2::log_info("search path %s", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
@@ -520,7 +524,8 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         auto setBackToEnglishWarning =
             fmt::sprintf("The following files are missing for language \"%s\":\n", _("LanguageFileExtension"));
         for (const auto& filename : missingFiles) {
-            setBackToEnglishWarning += filename.u8string() + "\n";
+            setBackToEnglishWarning += reinterpret_cast<const char*>(filename.u8string().c_str());
+            setBackToEnglishWarning += "\n";
         }
         setBackToEnglishWarning += "\nLanguage is changed to English!";
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy", setBackToEnglishWarning.c_str(), nullptr);
@@ -531,7 +536,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         myINIFile.setStringValue("General", "Language", settings.general.language);
         if (!myINIFile.saveChangesTo(config_filepath)) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                            config_filepath.u8string().c_str());
+                            reinterpret_cast<const char*>(config_filepath.u8string().c_str()));
         }
 
         // reinit text manager
@@ -572,7 +577,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
 
         if (!myINIFile.saveChangesTo(getConfigFilepath())) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                            getConfigFilepath().u8string().c_str());
+                            reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
         }
     }
 

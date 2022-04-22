@@ -240,7 +240,7 @@ void LoadMapWindow::onMapTypeChange(int buttonID) {
 
     for (const auto& filename :
          getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
-        mapList.addEntry(filename.stem().u8string());
+        mapList.addEntry(reinterpret_cast<const char*>(filename.stem().u8string().c_str()));
     }
 
     if (mapList.getNumEntries() > 0) {

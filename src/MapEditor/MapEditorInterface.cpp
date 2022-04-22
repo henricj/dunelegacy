@@ -894,7 +894,7 @@ void MapEditorInterface::onSave() {
 
     openWindow(LoadSaveWindow::create(true, _("Save Map"), mapDirectories, directoryTitles,
                                       pMapEditor->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex,
-                                      mapname.u8string(), color));
+                                      reinterpret_cast<const char*>(mapname.u8string().c_str()), color));
 }
 
 void MapEditorInterface::onLoad() {

@@ -106,13 +106,14 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
             music = nullptr;
         }
 
-        music = Mix_LoadMUS(filename.u8string().c_str());
+        music = Mix_LoadMUS(reinterpret_cast<const char*>(filename.u8string().c_str()));
         if (music != nullptr) {
-            sdl2::log_info("Now playing %s!", filename.u8string());
+            sdl2::log_info("Now playing %s!", reinterpret_cast<const char*>(filename.u8string().c_str()));
             Mix_PlayMusic(music, -1);
             Mix_VolumeMusic(musicVolume);
         } else {
-            sdl2::log_info("Unable to play %s: %s!", filename.u8string(), Mix_GetError());
+            sdl2::log_info("Unable to play %s: %s!", reinterpret_cast<const char*>(filename.u8string().c_str()),
+                           Mix_GetError());
         }
     }
 }

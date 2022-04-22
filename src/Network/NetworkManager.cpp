@@ -67,15 +67,15 @@ NetworkManager::~NetworkManager() {
 
 void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
                                  GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
+    const std::string map_name{reinterpret_cast<const char*>(pGameInitSettings->getFilename().u8string().c_str())};
+
     if (bLANServer) {
         if (pLANGameFinderAndAnnouncer != nullptr) {
-            pLANGameFinderAndAnnouncer->startAnnounce(
-                serverName, host->address.port, pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
+            pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, map_name, numPlayers, maxPlayers);
         }
     } else {
         if (pMetaServerClient != nullptr) {
-            pMetaServerClient->startAnnounce(serverName, host->address.port,
-                                             pGameInitSettings->getFilename().u8string(), numPlayers, maxPlayers);
+            pMetaServerClient->startAnnounce(serverName, host->address.port, map_name, numPlayers, maxPlayers);
         }
     }
 

@@ -829,7 +829,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     //    auto path = std::filesystem::path{"c:/temp/"} / fmt::format("texture_{}.bmp", count++);
     //    path      = path.lexically_normal().make_preferred();
 
-    //    SaveTextureAsBmp(renderer, texture.get(), path.u8string().c_str());
+    //    SaveTextureAsBmp(renderer, texture.get(), reinterpret_cast<const char *>(path.u8string().c_str()));
     //}
 
     return DuneTextures{std::move(textures),

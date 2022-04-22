@@ -236,9 +236,9 @@ std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
         const auto saved_ok = 0 == SavePNG(pCurrentScreen.get(), path);
 
         if (saved_ok)
-            sdl2::log_info("Saving screenshot to %s", path.u8string());
+            sdl2::log_info("Saving screenshot to %s", reinterpret_cast<const char*>(path.u8string().c_str()));
         else
-            sdl2::log_warn("Saving screenshot to %s failed", path.u8string());
+            sdl2::log_warn("Saving screenshot to %s failed", reinterpret_cast<const char*>(path.u8string().c_str()));
 
         return {saved_ok, path};
     }

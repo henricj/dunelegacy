@@ -20,7 +20,7 @@
 
 #include <SDL2/SDL_mixer.h>
 #include <misc/SDL2pp.h>
-#include <string>
+#include <string_view>
 
 namespace sdl2 {
 typedef implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk> mix_chunk_ptr;
@@ -32,7 +32,7 @@ sdl2::mix_chunk_ptr concat3Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chun
 sdl2::mix_chunk_ptr concat4Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2, Mix_Chunk* sound3, Mix_Chunk* sound4);
 sdl2::mix_chunk_ptr createEmptyChunk();
 sdl2::mix_chunk_ptr createSilenceChunk(int length);
-sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename);
-sdl2::mix_chunk_ptr getChunkFromFile(const std::string& filename, const std::string& alternativeFilename);
+sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename);
+sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename, std::string_view alternativeFilename);
 
 #endif // SOUND_UTIL_H

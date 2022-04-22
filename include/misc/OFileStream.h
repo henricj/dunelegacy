@@ -19,8 +19,9 @@
 #define OFILESTREAM_H
 
 #include "OutputStream.h"
+
 #include <filesystem>
-#include <string>
+#include <string_view>
 
 class OFileStream final : public OutputStream {
 public:
@@ -34,7 +35,7 @@ public:
 
     // write operations
 
-    void writeString(const std::string& str) override;
+    void writeString(std::string_view str) override;
 
     void writeUint8(uint8_t x) override;
     void writeUint16(uint16_t x) override;

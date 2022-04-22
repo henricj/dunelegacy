@@ -75,13 +75,13 @@ public:
 
     // write operations
 
-    void writeString(const std::string& str) override {
+    void writeString(std::string_view str) override {
         ensureBufferSize(currentPos + str.length() + sizeof(uint32_t));
 
         writeUint32(str.length());
 
         if (!str.empty()) {
-            memcpy(packet->data + currentPos, str.c_str(), str.length());
+            memcpy(packet->data + currentPos, str.data(), str.length());
             currentPos += str.length();
         }
     }

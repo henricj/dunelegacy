@@ -253,7 +253,7 @@ void CustomGameMenu::onMapTypeChange(int buttonID) {
 
     for (const auto& file :
          getFileNamesList(currentMapDirectory, "ini", true, FileListOrder_Name_CaseInsensitive_Asc)) {
-        auto name = file.u8string();
+        std::string name{reinterpret_cast<const char*>(file.u8string().c_str())};
         if (name.size() > 4)
             name = name.substr(0, name.size() - 4);
         mapList.addEntry(name);
