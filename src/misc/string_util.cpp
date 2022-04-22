@@ -232,10 +232,12 @@ greedyWordWrap(std::string_view text, float linewidth, std::function<float(std::
 
                 warppos = lastwarp;
                 while (true) {
-                    auto tmp = hardLine.substr(lastwarp, warppos - lastwarp);
-                    if (pGetTextWidth(tmp) > linewidth) {
-                        // this line would be too big => in oldwarppos is the last correct warp pos
-                        break;
+                    if (warppos > lastwarp) {
+                        const auto tmp = hardLine.substr(lastwarp, warppos - lastwarp);
+                        if (pGetTextWidth(tmp) > linewidth) {
+                            // this line would be too big => in oldwarppos is the last correct warp pos
+                            break;
+                        }
                     }
                     oldwarppos = warppos;
 
@@ -250,7 +252,8 @@ greedyWordWrap(std::string_view text, float linewidth, std::function<float(std::
                 }
 
                 if (warppos != lastwarp) {
-                    textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
+                    if (oldwarppos > lastwarp)
+                        textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                     lastwarp = oldwarppos;
                 } else {
                     // linewidth is too small for the next character => create a dummy entry
@@ -259,7 +262,8 @@ greedyWordWrap(std::string_view text, float linewidth, std::function<float(std::
                     oldwarppos++;
                 }
             } else {
-                textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
+                if (oldwarppos > lastwarp)
+                    textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                 lastwarp = oldwarppos;
             }
         }
