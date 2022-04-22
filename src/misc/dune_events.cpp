@@ -1,13 +1,34 @@
+/*
+ *  This file is part of Dune Legacy.
+ *
+ *  Dune Legacy is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Dune Legacy is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "misc/dune_events.h"
 
 #include "globals.h"
 
+#include "GUI/GUIStyle.h"
+
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
 
 #if defined(_WIN32)
-#    include <WinUser.h>
 #    include <Windows.h>
+
+#    include <WinUser.h>
+
+#    include <SDL2/SDL_syswm.h>
 #endif
 
 namespace dune {
@@ -78,7 +99,7 @@ DuneEventWatcher::~DuneEventWatcher() {
     SDL_DelEventWatch(dune_watch_events, nullptr);
 }
 
-#else defined(_WIN32)
+#else  // defined(_WIN32)
 DuneEventWatcher::DuneEventWatcher() = default;
 DuneEventWatcher::~DuneEventWatcher() = default;
 #endif // defined(_WIN32)
