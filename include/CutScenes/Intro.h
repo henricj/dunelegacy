@@ -128,9 +128,7 @@ private:
     };
     /// \endcond
 
-    static const char* const VoiceFileNames[Voice_NUM_ENTRIES]; ///< List of all the voice files
-
-    sdl2::mix_chunk_ptr voice[Voice_NUM_ENTRIES]; ///< All the loaded voices
+    std::array<sdl2::mix_chunk_ptr, Voice_NUM_ENTRIES> voice; ///< All the loaded voices
 
     std::unique_ptr<Wsafile> pDuneText;      ///< 1. video sequence showing the dune text
     std::unique_ptr<Wsafile> pPlanet;        ///< 2. video sequence showing the planet

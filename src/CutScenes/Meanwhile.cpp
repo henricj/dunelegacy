@@ -60,7 +60,7 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
     if (firstMeanwhile) {
         // Meanwhile after level 4
-        static constexpr int meanwhileFrame[] = {1, 2, 0};
+        static constexpr auto meanwhileFrame = std::to_array({1, 2, 0});
 
         startNewScene();
 
@@ -100,7 +100,7 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
 
     } else {
         // Meanwhile after level 8
-        static const int meanwhileFrame[] = {3, 5, 4};
+        static constexpr auto meanwhileFrame = std::to_array({3, 5, 4});
 
         startNewScene();
 

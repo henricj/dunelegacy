@@ -30,11 +30,17 @@ DirectoryPlayer::DirectoryPlayer()
     // determine path to config file
     auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 
-    static const char* const musicDirectoryNames[MUSIC_NUM_MUSIC_TYPES] = {
+    static constexpr auto musicDirectoryNames =
+        // clang-format off
+        std::to_array({
         "/music/attack/",    "/music/peace/",     "/music/intro/",   "/music/menu/",      "/music/briefingH/",
         "/music/briefingA/", "/music/briefingO/", "/music/winH/",    "/music/winA/",      "/music/winO/",
         "/music/loseH/",     "/music/loseA/",     "/music/loseO/",   "/music/gamestats/", "/music/mapchoice/",
-        "/music/meanwhile/", "/music/finaleH/",   "/music/finaleA/", "/music/finaleO/"};
+        "/music/meanwhile/", "/music/finaleH/",   "/music/finaleA/", "/music/finaleO/"});
+    // clang-format on
+
+    static_assert(std::tuple_size_v<decltype(musicDirectoryNames)> == MUSIC_NUM_MUSIC_TYPES);
+    static_assert(std::tuple_size_v<decltype(musicFileList)> == MUSIC_NUM_MUSIC_TYPES);
 
     for (int i = 0; i < MUSIC_NUM_MUSIC_TYPES; i++) {
         const char* dirName = musicDirectoryNames[i] + 1; // skip '/' at the beginning
