@@ -77,7 +77,7 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, double angle) c
 
 DuneTextureOwned::DuneTextureOwned(sdl2::texture_ptr texture, float width, float height)
     : texture_{std::move(texture)}, width_{width}, height_{height} {
-    if (!texture)
+    if (!texture_)
         return;
 
     if (width_ > 0.f && height_ > 0.f)
