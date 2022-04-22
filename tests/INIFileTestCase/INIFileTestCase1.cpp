@@ -12,7 +12,7 @@ void INIFileTestCase1::SetUp() {
     path = std::filesystem::canonical(path, ec);
     ASSERT_FALSE(ec);
 
-    pINIFile = std::make_unique<INIFile>(path.u8string().c_str());
+    pINIFile = std::make_unique<INIFile>(reinterpret_cast<const char *>(path.u8string().c_str()));
 
     // Make sure we loaded soemthing...
     ASSERT_NE(pINIFile->begin(), pINIFile->end());

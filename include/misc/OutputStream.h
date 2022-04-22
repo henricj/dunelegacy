@@ -25,6 +25,7 @@
 #include <exception>
 #include <list>
 #include <string>
+#include <string_view>
 
 class OutputStream {
 public:
@@ -38,7 +39,7 @@ public:
 
     // write operations
 
-    virtual void writeString(const std::string& str) = 0;
+    virtual void writeString(std::string_view str) = 0;
 
     virtual void writeUint8(uint8_t x)   = 0;
     virtual void writeUint16(uint16_t x) = 0;

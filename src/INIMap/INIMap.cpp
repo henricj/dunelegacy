@@ -1,7 +1,7 @@
 #include "INIMap/INIMap.h"
 
 INIMap::INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata)
-    : mapname(mapname.u8string()) {
+    : mapname(reinterpret_cast<const char*>(mapname.u8string().c_str())) {
     if (gameType == GameType::Campaign || gameType == GameType::Skirmish) {
         // load from PAK-File
         inifile = std::make_unique<INIFile>(pFileManager->openFile(this->mapname).get());

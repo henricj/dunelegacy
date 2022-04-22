@@ -1745,7 +1745,8 @@ bool Game::saveGame(const std::filesystem::path& filename) {
 
     if (!fs.open(filename)) {
         sdl2::log_info("Game::saveGame(): %s", dune::string_error(errno));
-        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"") + filename.u8string() + "\".");
+        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"")
+                                     + reinterpret_cast<const char*>(filename.u8string().c_str()) + "\".");
         return false;
     }
 
@@ -2147,7 +2148,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                    getConfigFilepath().u8string().c_str());
+                                    reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
@@ -2162,7 +2163,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                    getConfigFilepath().u8string().c_str());
+                                    reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
                 currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
@@ -2659,7 +2660,7 @@ void Game::saveScreenshot() {
     auto [ok, path] = SaveScreenshot();
 
     if (ok && path.has_value()) {
-        const auto filename = path.value().filename().u8string();
+        const std::string filename{reinterpret_cast<const char*>(path.value().filename().u8string().c_str())};
         currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + filename + "'");
     }
 }

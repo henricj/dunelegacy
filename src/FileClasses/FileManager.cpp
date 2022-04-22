@@ -45,12 +45,14 @@ FileManager::FileManager() {
             auto filepath = sp / filename;
             if (getCaseInsensitiveFilename(filepath)) {
                 try {
-                    sdl2::log_info("%s  %s", md5FromFilename(filepath).c_str(), filepath.u8string().c_str());
+                    sdl2::log_info("%s  %s", md5FromFilename(filepath).c_str(),
+                                   reinterpret_cast<const char*>(filepath.u8string().c_str()));
                     pakFiles.push_back(std::make_unique<Pakfile>(filepath));
                 } catch (std::exception& e) {
                     pakFiles.clear();
 
-                    THROW(io_error, "Error while opening '%s': %s!", filepath.u8string().c_str(), e.what());
+                    THROW(io_error, "Error while opening '%s': %s!",
+                          reinterpret_cast<const char*>(filepath.u8string().c_str()), e.what());
                 }
 
                 // break out of searchPath-loop because we have opened the file in one directory
@@ -169,7 +171,7 @@ bool FileManager::exists(const std::filesystem::path& filename) const {
 std::string FileManager::md5FromFilename(const std::filesystem::path& filename) {
     unsigned char md5sum[16];
 
-    if (md5_file(filename.u8string().c_str(), md5sum) != 0) {
+    if (md5_file(reinterpret_cast<const char*>(filename.u8string().c_str()), md5sum) != 0) {
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
     }
     std::stringstream stream;

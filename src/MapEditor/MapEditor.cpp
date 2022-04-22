@@ -705,7 +705,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
     if (!loadedINIFile->saveChangesTo(filepath, getMapVersion() < 2)) {
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                        filepath.u8string().c_str());
+                        reinterpret_cast<const char*>(filepath.u8string().c_str()));
     }
 
     lastSaveName          = filepath;
@@ -2008,7 +2008,7 @@ void MapEditor::saveMapshot() {
     drawMap(&tmpScreenborder, true);
 
     const sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
-    SavePNG(pMapshotSurface.get(), mapshotFilename.u8string().c_str());
+    SavePNG(pMapshotSurface.get(), reinterpret_cast<const char*>(mapshotFilename.u8string().c_str()));
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
 

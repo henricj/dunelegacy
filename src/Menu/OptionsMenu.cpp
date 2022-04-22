@@ -49,7 +49,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     availLanguages.reserve(languagesList.size());
 
     for (const auto& ll : languagesList)
-        availLanguages.emplace_back(ll.u8string());
+        availLanguages.emplace_back(reinterpret_cast<const char*>(ll.u8string().c_str()));
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
@@ -392,7 +392,7 @@ void OptionsMenu::saveConfiguration2File() {
 
     if (!myINIFile.saveChangesTo(getConfigFilepath())) {
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                        getConfigFilepath().u8string().c_str());
+                        reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
     }
 }
 

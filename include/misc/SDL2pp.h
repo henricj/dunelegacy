@@ -18,13 +18,16 @@
 #ifndef SDL2PP_H
 #define SDL2PP_H
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_rwops.h>
-#include <cassert>
-#include <memory>
 #include <misc/exceptions.h>
 #include <misc/unique_or_nonowning_ptr.h>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_rwops.h>
+
+#include <cassert>
+#include <memory>
 
 namespace sdl2 {
 class texture_lock final {
@@ -221,5 +224,15 @@ void log_error(std::string_view format, Args&&... args) {
 }
 
 } // namespace sdl2
+
+// Work-around C++20's half-baked UTF-8.
+
+inline SDL_RWops* SDL_RWFromFile(const char8_t* file, const char* mode) {
+    return SDL_RWFromFile(reinterpret_cast<const char*>(file), mode);
+}
+
+inline SDL_RWops* SDL_RWFromFile(const std::u8string& file, const char* mode) {
+    return SDL_RWFromFile(file.c_str(), mode);
+}
 
 #endif // SDL2PP_H

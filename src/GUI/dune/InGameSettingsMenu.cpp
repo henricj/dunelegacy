@@ -155,7 +155,7 @@ void InGameSettingsMenu::onOK() {
     myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
     if (!myINIFile.saveChangesTo(getConfigFilepath())) {
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                        getConfigFilepath().u8string().c_str());
+                        reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
     }
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());

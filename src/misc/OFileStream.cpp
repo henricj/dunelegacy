@@ -61,11 +61,11 @@ void OFileStream::flush() {
     }
 }
 
-void OFileStream::writeString(const std::string& str) {
+void OFileStream::writeString(std::string_view str) {
     writeUint32(str.length());
 
     if (!str.empty()) {
-        if (fwrite(str.c_str(), str.length(), 1, fp) != 1) {
+        if (fwrite(str.data(), str.length(), 1, fp) != 1) {
             THROW(OutputStream::error, "OFileStream::writeString(): An I/O-Error occurred!");
         }
     }

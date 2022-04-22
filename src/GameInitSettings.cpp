@@ -107,7 +107,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint8(static_cast<int8_t>(gameType));
     stream.writeSint8(static_cast<int8_t>(houseID));
 
-    stream.writeString(filename.u8string());
+    stream.writeString(reinterpret_cast<const char*>(filename.u8string().c_str()));
     stream.writeString(filedata);
 
     stream.writeUint8(mission);

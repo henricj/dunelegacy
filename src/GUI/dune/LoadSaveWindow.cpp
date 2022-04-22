@@ -70,7 +70,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
             button.setText(title);
             button.setTextColor(color);
             button.setToggleButton(true);
-            button.setOnClick([=, i = static_cast<int>(directoryButtons.size() - 1)] { onDirectoryChange(i); });
+            button.setOnClick([this, i = static_cast<int>(directoryButtons.size() - 1)] { onDirectoryChange(i); });
 
             directoryHBox.addWidget(&button);
         }
@@ -136,7 +136,8 @@ void LoadSaveWindow::updateEntries() {
     int preselectedFileIndex = -1;
     for (const auto& fileName :
          getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
-        const auto entryName = fileName.stem().u8string();
+        const std::string entryName{reinterpret_cast<const char*>(fileName.stem().u8string().c_str())};
+
         fileList.addEntry(entryName);
 
         if (entryName == preselectedFile) {

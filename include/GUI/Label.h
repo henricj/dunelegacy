@@ -85,9 +85,9 @@ public:
     /**
         This method sets a new text for this label and resizes this label
         to fit this text.
-        \param  Text The new text for this button
+        \param  text The new text for this button
     */
-    virtual void setText(const std::string& text) {
+    virtual void setText(std::string_view text) {
         if (text != this->text) {
             this->text = text;
             resizeAll();
