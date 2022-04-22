@@ -123,9 +123,9 @@ void CommandManager::addCommand(const Command& cmd, uint32_t CycleNumber) {
     }
 
     timeslot[CycleNumber].push_back(cmd);
-    std::stable_sort(
-        timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(),
-        [](const Command& cmd1, const Command& cmd2) { return (cmd1.getPlayerID() < cmd2.getPlayerID()); });
+    std::ranges::stable_sort(timeslot[CycleNumber], [](const Command& cmd1, const Command& cmd2) {
+        return (cmd1.getPlayerID() < cmd2.getPlayerID());
+    });
 
     if (pStream != nullptr) {
         pStream->writeUint32(CycleNumber);
@@ -147,9 +147,9 @@ void CommandManager::addCommand(Command&& cmd, uint32_t CycleNumber) {
     }
 
     timeslot[CycleNumber].push_back(std::move(cmd));
-    std::stable_sort(
-        timeslot[CycleNumber].begin(), timeslot[CycleNumber].end(),
-        [](const Command& cmd1, const Command& cmd2) { return (cmd1.getPlayerID() < cmd2.getPlayerID()); });
+    std::ranges::stable_sort(timeslot[CycleNumber], [](const Command& cmd1, const Command& cmd2) {
+        return (cmd1.getPlayerID() < cmd2.getPlayerID());
+    });
 }
 
 void CommandManager::executeCommands(const GameContext& context, uint32_t CycleNumber) const {

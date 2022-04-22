@@ -20,12 +20,12 @@
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
 
+#include <SDL2/SDL_filesystem.h>
+
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
 #include <filesystem>
-
-#include <SDL2/SDL_filesystem.h>
 
 #ifdef _WIN32
 #    ifndef WIN32_LEAN_AND_MEAN
@@ -72,7 +72,7 @@ char32_t safe_tolower(char32_t c) {
 }
 
 void safe_tolower_inplace(std::u32string& s32) {
-    std::transform(s32.begin(), s32.end(), s32.begin(), [](char32_t c) { return safe_tolower(c); });
+    std::ranges::transform(s32, s32.begin(), [](char32_t c) { return safe_tolower(c); });
 }
 
 // Work around standard brain damage
@@ -208,35 +208,35 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
     switch (fileListOrder) {
         case FileListOrder_Name_Asc: {
-            std::sort(files.begin(), files.end(), cmp_Name_Asc);
+            std::ranges::sort(files, cmp_Name_Asc);
         } break;
 
         case FileListOrder_Name_CaseInsensitive_Asc: {
-            std::sort(files.begin(), files.end(), cmp_Name_CaseInsensitive_Asc);
+            std::ranges::sort(files, cmp_Name_CaseInsensitive_Asc);
         } break;
 
         case FileListOrder_Name_Dsc: {
-            std::sort(files.begin(), files.end(), cmp_Name_Dsc);
+            std::ranges::sort(files, cmp_Name_Dsc);
         } break;
 
         case FileListOrder_Name_CaseInsensitive_Dsc: {
-            std::sort(files.begin(), files.end(), cmp_Name_CaseInsensitive_Dsc);
+            std::ranges::sort(files, cmp_Name_CaseInsensitive_Dsc);
         } break;
 
         case FileListOrder_Size_Asc: {
-            std::sort(files.begin(), files.end(), cmp_Size_Asc);
+            std::ranges::sort(files, cmp_Size_Asc);
         } break;
 
         case FileListOrder_Size_Dsc: {
-            std::sort(files.begin(), files.end(), cmp_Size_Dsc);
+            std::ranges::sort(files, cmp_Size_Dsc);
         } break;
 
         case FileListOrder_ModifyDate_Asc: {
-            std::sort(files.begin(), files.end(), cmp_ModifyDate_Asc);
+            std::ranges::sort(files, cmp_ModifyDate_Asc);
         } break;
 
         case FileListOrder_ModifyDate_Dsc: {
-            std::sort(files.begin(), files.end(), cmp_ModifyDate_Dsc);
+            std::ranges::sort(files, cmp_ModifyDate_Dsc);
         } break;
 
         case FileListOrder_Unsorted:
@@ -274,9 +274,9 @@ bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
             if (wanted_u8.length() != filename_u8.length())
                 continue;
 
-            const auto match =
-                std::equal(wanted_u8.begin(), wanted_u8.end(), filename_u8.begin(), filename_u8.end(),
-                           [](const auto a, const auto b) { return a == b || std::toupper(a) == std::toupper(b); });
+            const auto match = std::ranges::equal(wanted_u8, filename_u8, [](const auto a, const auto b) {
+                return a == b || std::toupper(a) == std::toupper(b);
+            });
 
             if (!match)
                 continue;

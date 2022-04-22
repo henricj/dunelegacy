@@ -271,8 +271,7 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
     while (oldListIter != InternetGameList.end()) {
         GameServerInfo& gameServerInfo = *oldListIter;
 
-        if (std::find(gameServerInfoList.begin(), gameServerInfoList.end(), gameServerInfo)
-            == gameServerInfoList.end()) {
+        if (std::ranges::find(gameServerInfoList, gameServerInfo) == gameServerInfoList.end()) {
             // not found => remove
             gameList.removeEntry(index);
             oldListIter = InternetGameList.erase(oldListIter);

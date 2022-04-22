@@ -403,8 +403,8 @@ public:
     void unregisterPlayer(Player* player) {
         playerID2Player.erase(player->getPlayerID());
 
-        const auto iter = std::find_if(playerName2Player.begin(), playerName2Player.end(),
-                                       [=](decltype(playerName2Player)::reference kv) { return kv.second == player; });
+        const auto iter = std::ranges::find_if(
+            playerName2Player, [=](decltype(playerName2Player)::reference kv) { return kv.second == player; });
 
         if (iter != playerName2Player.end())
             playerName2Player.erase(iter);

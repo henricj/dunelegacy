@@ -207,7 +207,7 @@ void Carryall::pre_deployUnits(const GameContext& context) {
 }
 
 void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
-    const auto iter = std::find(pickedUpUnitList.cbegin(), pickedUpUnitList.cend(), unitID);
+    const auto iter = std::ranges::find(std::as_const(pickedUpUnitList), unitID);
 
     if (pickedUpUnitList.cend() == iter)
         return;

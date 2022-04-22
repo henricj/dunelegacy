@@ -64,7 +64,7 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
     }
 
     // convert string to lower case
-    std::transform(value.begin(), value.end(), value.begin(), static_cast<int (*)(int)>(std::tolower));
+    std::ranges::transform(value, value.begin(), static_cast<int (*)(int)>(std::tolower));
 
     if (value == "true" || value == "enabled" || value == "on" || value == "1") {
         return true;
@@ -109,7 +109,7 @@ bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
     if (value.empty())
         return true;
 
-    return std::any_of(value.begin(), value.end(), [](char c) { return !isNormalChar(c); });
+    return std::ranges::any_of(value, [](char c) { return !isNormalChar(c); });
 }
 
 std::string INIFile::Key::escapeValue(std::string value) {
@@ -1129,6 +1129,5 @@ bool INIFile::upper_compare(std::string_view s1, std::string_view s2) {
     if (s1.size() != s2.size())
         return false;
 
-    return std::equal(std::begin(s1), std::end(s1), std::begin(s2), std::end(s2),
-                      [](auto a, auto b) { return std::toupper(a) == std::toupper(b); });
+    return std::ranges::equal(s1, s2, [](auto a, auto b) { return std::toupper(a) == std::toupper(b); });
 }

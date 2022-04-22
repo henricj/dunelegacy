@@ -334,8 +334,7 @@ void NetworkManager::update() {
                              disconnectCause);
 
                 if (peerData != nullptr) {
-                    if (std::find(awaitingConnectionList.begin(), awaitingConnectionList.end(), peer)
-                        != awaitingConnectionList.end()) {
+                    if (std::ranges::find(awaitingConnectionList, peer) != awaitingConnectionList.end()) {
                         if (peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                             packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
@@ -349,7 +348,7 @@ void NetworkManager::update() {
                         awaitingConnectionList.remove(peer);
                     }
 
-                    if (std::find(peerList.begin(), peerList.end(), peer) != peerList.end()) {
+                    if (std::ranges::find(peerList, peer) != peerList.end()) {
                         debugNetwork("Removing '%s' from peer list\n", peerData->name.c_str());
                         peerList.remove(peer);
 

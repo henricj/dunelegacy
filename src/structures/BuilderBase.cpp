@@ -179,16 +179,7 @@ void BuilderBase::removeItem(std::list<BuildItem>& buildItemList, std::list<Buil
     }
 
     // remove from production list
-    auto iter3 = currentProductionQueue.begin();
-    while (iter3 != currentProductionQueue.end()) {
-        if (iter3->itemID == itemID) {
-            const auto iter4 = iter3;
-            ++iter3;
-            currentProductionQueue.erase(iter4);
-        } else {
-            ++iter3;
-        }
-    }
+    std::erase_if(currentProductionQueue, [item_id](auto& it) { return it.itemID == item_id; });
 
     produceNextAvailableItem();
 }
@@ -462,7 +453,7 @@ bool BuilderBase::update(const GameContext& context) {
 void BuilderBase::removeBuiltItemFromProductionQueue() {
     productionProgress = 0;
 
-    const auto currentBuildItemIter = std::find_if(buildList.begin(), buildList.end(), [&](BuildItem& buildItem) {
+    const auto currentBuildItemIter = std::ranges::find_if(buildList, [&](BuildItem& buildItem) {
         return ((buildItem.itemID == currentProducedItem) && (buildItem.num > 0));
     });
 

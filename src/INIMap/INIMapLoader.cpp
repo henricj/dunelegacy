@@ -512,7 +512,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
     }
 
     std::array<bool, static_cast<int>(HOUSETYPE::NUM_HOUSES)> nextSpecialUnitIsSonicTank;
-    std::fill(nextSpecialUnitIsSonicTank.begin(), nextSpecialUnitIsSonicTank.end(), true);
+    std::ranges::fill(nextSpecialUnitIsSonicTank, true);
 
     for (const INIFile::Key& key : inifile->getSection("UNITS")) {
         if (key.getKeyName().find("ID") == 0) {

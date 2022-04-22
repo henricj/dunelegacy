@@ -36,23 +36,15 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
 
     const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
-    if (mission == 0) {
-        auto iter = mentatEntries.begin();
-        while (iter != mentatEntries.end()) {
-            if (iter->numMenuEntry == 0) {
-                iter = mentatEntries.erase(iter);
-            } else {
-                ++iter;
-            }
-        }
-    }
+    if (mission == 0)
+        std::erase_if(mentatEntries, [](auto& e) { return e.numMenuEntry == 0; });
 
     setClearScreen(false);
 
     backgroundLabel.setTextColor(COLOR_DEFAULT, COLOR_DEFAULT, COLOR_THICKSPICE);
     windowWidget.addWidget(&backgroundLabel, Point(256, 96), Point(368, 224));
 
-    for (const MentatTextFile::MentatEntry& mentatEntry : mentatEntries) {
+    for (const auto& mentatEntry : mentatEntries) {
         if (mentatEntry.menuLevel == 0) {
             mentatTopicsList.addEntry("     " + mentatEntry.title + " :");
         } else {

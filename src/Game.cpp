@@ -233,13 +233,9 @@ void Game::processObjects() {
     if (selection_changed)
         selectionChanged();
 
-    bulletList.erase(
-        std::remove_if(std::begin(bulletList), std::end(bulletList), [&](auto& b) { return b->update(context); }),
-        std::end(bulletList));
+    std::erase_if(bulletList, [&](auto& b) { return b->update(context); });
 
-    explosionList.erase(
-        std::remove_if(std::begin(explosionList), std::end(explosionList), [](auto& e) { return e->update(); }),
-        std::end(explosionList));
+    std::erase_if(explosionList, [](auto& e) { return e->update(); });
 }
 
 void Game::drawScreen() {
@@ -1078,7 +1074,7 @@ void Game::updateGame(const GameContext& context) {
     }
 #endif
 
-    std::for_each(house.begin(), house.end(), [](auto& h) {
+    std::ranges::for_each(house, [](auto& h) {
         if (h)
             h->update();
     });
@@ -1155,7 +1151,7 @@ void Game::runMainLoop(const GameContext& context) {
     bShowTime = winFlags & WINLOSEFLAGS_TIMEOUT;
 
     // Check if a player has lost
-    std::for_each(house.begin(), house.end(), [](auto& h) {
+    std::ranges::for_each(house, [](auto& h) {
         if (h && !h->isAlive())
             h->lose(true);
     });

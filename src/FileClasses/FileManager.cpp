@@ -93,7 +93,7 @@ std::vector<std::filesystem::path> FileManager::getNeededFiles() {
     std::vector<std::string> additionalPakFiles = splitStringToStringVector(LanguagePakFiles);
     fileList.insert(std::end(fileList), std::begin(additionalPakFiles), std::end(additionalPakFiles));
 
-    std::sort(fileList.begin(), fileList.end());
+    std::ranges::sort(fileList);
 
     return fileList;
 }

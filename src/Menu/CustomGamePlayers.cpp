@@ -919,7 +919,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
         std::string teamName = strToUpper(
             pMap->getStringValue(getHouseNameByNumber(houseType), "Brain", "Team " + std::to_string(currentIndex + 1)));
 
-        const auto it = std::find(teamNames.begin(), teamNames.end(), teamName);
+        const auto it = std::ranges::find(teamNames, teamName);
         if (it == teamNames.end()) {
             teamNames.push_back(teamName);
             slotToTeam[currentIndex] = currentTeam;
@@ -937,7 +937,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
             std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p + 1), "Brain",
                                                                    "Team " + std::to_string(currentIndex + p + 1)));
 
-            const auto it = std::find(teamNames.begin(), teamNames.end(), teamName);
+            const auto it = std::ranges::find(teamNames, teamName);
             if (it == teamNames.end()) {
                 teamNames.push_back(teamName);
                 slotToTeam[currentIndex] = currentTeam;
@@ -1365,7 +1365,7 @@ void CustomGamePlayers::removeFromHouseDropDown(DropDownBox& houseDropDownBox, H
 }
 
 bool CustomGamePlayers::isBoundedHouseOnMap(HOUSETYPE houseID) {
-    return std::find(boundHousesOnMap.begin(), boundHousesOnMap.end(), houseID) != boundHousesOnMap.end();
+    return std::ranges::find(boundHousesOnMap, houseID) != boundHousesOnMap.end();
 }
 
 void CustomGamePlayers::disableAllDropDownBoxes() {

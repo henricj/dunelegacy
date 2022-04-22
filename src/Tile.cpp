@@ -521,14 +521,12 @@ void Tile::blitSelectionRects(Game* game, int xPos, int yPos) const {
 }
 
 void Tile::update_impl() {
-    deadUnits.erase(std::remove_if(std::begin(deadUnits), std::end(deadUnits),
-                                   [](DEADUNITTYPE& dut) {
-                                       if (0 == dut.timer)
-                                           return true;
-                                       --dut.timer;
-                                       return false;
-                                   }),
-                    std::end(deadUnits));
+    std::erase_if(deadUnits, [](DEADUNITTYPE& dut) {
+        if (0 == dut.timer)
+            return true;
+        --dut.timer;
+        return false;
+    });
 }
 
 void Tile::clearTerrain() {
@@ -643,8 +641,7 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
                 }
             }
 
-            std::for_each(std::begin(pending_destroy), std::end(pending_destroy),
-                          [&](ObjectBase* obj) { obj->destroy(context); });
+            std::ranges::for_each(pending_destroy, [&](ObjectBase* obj) { obj->destroy(context); });
         }
     }
 
@@ -795,11 +792,10 @@ ObjectBase* Tile::getObjectAt(const ObjectManager& objectManager, int x, int y) 
 ObjectBase* Tile::getObjectWithID(const ObjectManager& objectManager, uint32_t objectID) const {
     const auto predicate = [=](uint32_t n) { return n == objectID; };
 
-    if (std::any_of(assignedInfantryList.begin(), assignedInfantryList.end(), predicate)
-        || std::any_of(assignedNonInfantryGroundObjectList.begin(), assignedNonInfantryGroundObjectList.end(),
-                       predicate)
-        || std::any_of(assignedUndergroundUnitList.begin(), assignedUndergroundUnitList.end(), predicate)
-        || std::any_of(assignedAirUnitList.begin(), assignedAirUnitList.end(), predicate)) {
+    if (std::ranges::any_of(assignedInfantryList, predicate)
+        || std::ranges::any_of(assignedNonInfantryGroundObjectList, predicate)
+        || std::ranges::any_of(assignedUndergroundUnitList, predicate)
+        || std::ranges::any_of(assignedAirUnitList, predicate)) {
         return objectManager.getObject(objectID);
     }
 

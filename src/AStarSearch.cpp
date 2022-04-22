@@ -37,8 +37,8 @@ AStarSearch::AStarSearch(Map* pMap)
 
 void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destination) {
 #if 1
-    std::fill(std::begin(mapData), std::end(mapData), TileData{});
-    std::fill(std::begin(depthCheckCount), std::end(depthCheckCount), 0);
+    std::ranges::fill(mapData, TileData{});
+    std::ranges::fill(depthCheckCount, 0);
 #else
     // Clobber PODs the evil way...
     memset(&mapData[0], 0, sizeof(mapData[0]) * mapData.size());
