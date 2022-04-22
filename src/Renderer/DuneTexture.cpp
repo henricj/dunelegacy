@@ -17,6 +17,8 @@
 
 #include <Renderer/DuneTexture.h>
 
+#include "Renderer/DuneRenderer.h"
+
 DuneTexture::DuneTexture(SDL_Texture* texture, const SDL_Rect& rect)
     : texture_{texture}, source_{rect}, width_{static_cast<float>(rect.w)}, height_{static_cast<float>(rect.h)} { }
 
@@ -33,6 +35,14 @@ DuneTexture::DuneTexture(SDL_Texture* texture)
 
     width_  = static_cast<float>(w);
     height_ = static_cast<float>(h);
+}
+
+void DuneTexture::reset() {
+    texture_ = nullptr;
+    source_  = DuneTextureRect{};
+
+    width_  = 0;
+    height_ = 0;
 }
 
 void DuneTexture::draw(SDL_Renderer* renderer, float x, float y) const noexcept {
@@ -91,6 +101,22 @@ DuneTextureOwned::DuneTextureOwned(sdl2::texture_ptr texture, float width, float
 }
 
 DuneTextureOwned::~DuneTextureOwned() = default;
+
+DuneTexture DuneTextureOwned::as_dune_texture() const {
+    DuneTexture texture{texture_.get()};
+
+    texture.width_  = width_;
+    texture.height_ = height_;
+
+    return texture;
+}
+
+void DuneTextureOwned::reset() {
+    texture_.reset();
+
+    width_  = 0.f;
+    height_ = 0.f;
+}
 
 void DuneTextureOwned::draw(SDL_Renderer* renderer, float x, float y) const noexcept {
     const SDL_FRect dst{x, y, width_, height_};

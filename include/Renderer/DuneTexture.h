@@ -18,6 +18,10 @@
 #ifndef DUNETEXTURE_H
 #define DUNETEXTURE_H
 
+#include "misc/SDL2pp.h"
+
+struct SDL_Renderer;
+
 struct DuneTextureRect final {
     short x{};
     short y{};
@@ -84,6 +88,8 @@ struct DuneTexture final {
 
     [[nodiscard]] SDL_Rect source_rect() const noexcept { return source_.as_sdl(); }
 
+    void reset();
+
     void draw(SDL_Renderer* renderer, float x, float y) const noexcept;
     void draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect& source) const noexcept;
     void draw(SDL_Renderer* renderer, float x, float y, double angle) const noexcept;
@@ -105,10 +111,14 @@ struct DuneTextureOwned final {
     DuneTextureOwned& operator=(const DuneTextureOwned&) = delete;
     DuneTextureOwned& operator=(DuneTextureOwned&&)      = default;
 
-    operator bool() const noexcept { return nullptr != texture_; }
+    DuneTexture as_dune_texture() const;
+
+    operator bool() const noexcept { return texture_.operator bool(); }
 
     [[nodiscard]] auto get() const noexcept { return texture_.get(); }
     [[nodiscard]] auto operator->() const noexcept { return texture_.operator->(); }
+
+    void reset();
 
     void draw(SDL_Renderer* renderer, float x, float y) const noexcept;
 
