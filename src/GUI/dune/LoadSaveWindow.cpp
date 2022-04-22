@@ -123,7 +123,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
         saveName.setActive();
     }
 
-    this->preselectedFile = "";
+    this->preselectedFile.clear();
 }
 
 LoadSaveWindow::~LoadSaveWindow() {

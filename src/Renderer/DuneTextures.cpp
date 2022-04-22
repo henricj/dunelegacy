@@ -640,9 +640,7 @@ public:
 class GeneratedPicturesPacker final : public PackerBase<DuneTextures::generated_type, uint32_t> {
 public:
     void initialize(SurfaceLoader* surfaceLoader) {
-        auto palaceReady = PalaceInterface::createSurface(surfaceLoader, GeneratedPicture::PalaceReadyText);
-
-        if (palaceReady)
+        if (auto palaceReady = PalaceInterface::createSurface(surfaceLoader, GeneratedPicture::PalaceReadyText))
             generated_.at(static_cast<int>(GeneratedPicture::PalaceReadyText)) = std::move(palaceReady);
 
         for (auto id = 0u; id < textures_.size(); ++id) {

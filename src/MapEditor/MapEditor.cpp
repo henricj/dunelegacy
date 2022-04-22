@@ -1344,31 +1344,33 @@ void MapEditor::drawCursor() {
         return;
     }
 
+    const auto* const gfx = pGFXManager.get();
+
     const DuneTexture* pCursor = nullptr;
     SDL_Rect dest              = {0, 0, 0, 0};
     if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if (scrollLeftMode && !scrollRightMode) {
-            pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
+            pCursor = gfx->getUIGraphic(UI_CursorLeft);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Left, VAlign::Top);
         } else if (scrollRightMode && !scrollLeftMode) {
-            pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
+            pCursor = gfx->getUIGraphic(UI_CursorRight);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Center, VAlign::Top);
         }
 
         if (pCursor == nullptr) {
             if (scrollUpMode && !scrollDownMode) {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
+                pCursor = gfx->getUIGraphic(UI_CursorUp);
                 dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Top);
             } else if (scrollDownMode && !scrollUpMode) {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorDown);
+                pCursor = gfx->getUIGraphic(UI_CursorDown);
                 dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                pCursor = gfx->getUIGraphic(UI_CursorNormal);
                 dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
     } else {
-        pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+        pCursor = gfx->getUIGraphic(UI_CursorNormal);
         dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
 
         if ((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone)
@@ -1376,15 +1378,11 @@ void MapEditor::drawCursor() {
 
             const DuneTexture* pMirrorIcon = nullptr;
             switch (currentMirrorMode) {
-                case MirrorModeHorizontal:
-                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon);
-                    break;
-                case MirrorModeVertical:
-                    pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorVerticalIcon);
-                    break;
-                case MirrorModeBoth: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorBothIcon); break;
-                case MirrorModePoint: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorPointIcon); break;
-                default: pMirrorIcon = pGFXManager->getUIGraphic(UI_MapEditor_MirrorNoneIcon); break;
+                case MirrorModeHorizontal: pMirrorIcon = gfx->getUIGraphic(UI_MapEditor_MirrorHorizontalIcon); break;
+                case MirrorModeVertical: pMirrorIcon = gfx->getUIGraphic(UI_MapEditor_MirrorVerticalIcon); break;
+                case MirrorModeBoth: pMirrorIcon = gfx->getUIGraphic(UI_MapEditor_MirrorBothIcon); break;
+                case MirrorModePoint: pMirrorIcon = gfx->getUIGraphic(UI_MapEditor_MirrorPointIcon); break;
+                default: pMirrorIcon = gfx->getUIGraphic(UI_MapEditor_MirrorNoneIcon); break;
             }
 
             if (pMirrorIcon)

@@ -275,7 +275,7 @@ void updateFullscreen() {
 
     pendingFullscreen = false;
 
-    auto window_flags = SDL_GetWindowFlags(window);
+    const auto window_flags = SDL_GetWindowFlags(window);
 
     if (window_flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         // switch to windowed mode

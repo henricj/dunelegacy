@@ -266,7 +266,7 @@ ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, const std::str
                                    char houseChar, ItemID_enum defaultValue) {
     const std::string strItem{trim(loadStringValue(objectDataFile, section, key, houseChar, ""))};
 
-    if (strItem == "") {
+    if (strItem.empty()) {
         return defaultValue;
     }
     if (strToLower(strItem) == "invalid") {

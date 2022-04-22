@@ -729,7 +729,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     }
 
     // clear everything in the middle
-    const SDL_Rect clearRect = {8, 24, 304, 119};
+    static constexpr SDL_Rect clearRect = {8, 24, 304, 119};
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
     pMapChoiceScreen = Scaler::defaultDoubleSurface(

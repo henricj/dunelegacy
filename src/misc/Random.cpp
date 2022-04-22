@@ -271,12 +271,10 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 }
 
 Random RandomFactory::create(std::string_view name) const {
-    using state_type = Random::generator_type::state_type;
-
     if (!initialized_)
         THROW(std::runtime_error, "RandomFactor::create(): not initialized");
 
-    const auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
+    static constexpr auto seed_bytes = Random::generator_type::state_words * sizeof(Random::generator_type::state_type);
 
     digestpp::kmac128 kmac{8 * seed_bytes};
 

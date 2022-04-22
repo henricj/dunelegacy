@@ -56,8 +56,8 @@ XMIPlayer::~XMIPlayer() {
 }
 
 void XMIPlayer::changeMusic(MUSICTYPE musicType) {
-    int musicNum         = -1;
-    std::string filename = "";
+    int musicNum = -1;
+    std::string filename;
 
     if (currentMusicType == musicType && Mix_PlayingMusic()) {
         return;

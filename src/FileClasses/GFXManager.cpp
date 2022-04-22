@@ -25,6 +25,8 @@
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
+#include <SDL2/SDL.h>
+
 GFXManager::GFXManager()
     : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} { }
 

@@ -508,7 +508,7 @@ sdl2::surface_ptr createShadowSurface(SDL_Surface* source) {
         }
     }
 
-    const SDL_Color transparent = {0, 0, 0, 128};
+    static constexpr SDL_Color transparent = {0, 0, 0, 128};
     SDL_SetPaletteColors(retPic->format->palette, &transparent, PALCOLOR_BLACK, 1);
 
     return retPic;

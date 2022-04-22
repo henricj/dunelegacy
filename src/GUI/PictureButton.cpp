@@ -24,7 +24,7 @@ PictureButton::~PictureButton() = default;
 void PictureButton::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr pPressedSurface,
                                 sdl2::surface_ptr pActiveSurface) {
 
-    Button::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
+    parent::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
 
     if (this->pUnpressedTexture) {
         resize(getTextureSize(pUnpressedTexture));
@@ -35,7 +35,7 @@ void PictureButton::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surfa
 
 void PictureButton::setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                                 const DuneTexture* pActiveTexture) {
-    Button::setTextures(pUnpressedTexture, pPressedTexture, pActiveTexture);
+    parent::setTextures(pUnpressedTexture, pPressedTexture, pActiveTexture);
 
     if (pUnpressedTexture) {
         resize(getTextureSize(pUnpressedTexture));

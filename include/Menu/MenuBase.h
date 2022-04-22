@@ -26,8 +26,10 @@
 #define MENU_QUIT_DEFAULT (-1)
 
 class MenuBase : public Window {
-public:
+protected:
     MenuBase();
+
+public:
     ~MenuBase() override;
 
     MenuBase(const MenuBase&)            = delete;

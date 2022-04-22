@@ -42,14 +42,14 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     // set up pictures in the background
     const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
-    SDL_Rect dest1 = calcAlignedDrawingRect(pDuneLegacy);
-    dest1.y        = dest1.y + getHeight(pDuneLegacy) / 2 + 28;
+    auto dest1 = calcAlignedDrawingRect(pDuneLegacy);
+    dest1.y    = dest1.y + getHeight(pDuneLegacy) / 2 + 28;
     windowWidget.addWidget(&duneLegacy, dest1);
 
     const auto* const pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
-    SDL_Rect dest2 = calcAlignedDrawingRect(pMenuButtonBorder);
-    dest2.y        = dest2.y + getHeight(pMenuButtonBorder) / 2 + 59;
+    auto dest2 = calcAlignedDrawingRect(pMenuButtonBorder);
+    dest2.y    = dest2.y + getHeight(pMenuButtonBorder) / 2 + 59;
     windowWidget.addWidget(&buttonBorder, dest2);
 
     // set up menu buttons

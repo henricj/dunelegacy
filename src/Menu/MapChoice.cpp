@@ -223,8 +223,8 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDING: {
             if (curBlendBlitter == nullptr) {
-                const auto int_house  = static_cast<int>(house);
-                const auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
+                const auto int_house             = static_cast<int>(house);
+                static constexpr auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
 
                 const auto blitThreshold = [&] {
                     return group[lastScenario]

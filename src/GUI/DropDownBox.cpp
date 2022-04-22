@@ -201,9 +201,8 @@ bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void DropDownBox::draw(Point position) {
-    if (!isVisible()) {
+    if (!isVisible())
         return;
-    }
 
     updateBackground();
 

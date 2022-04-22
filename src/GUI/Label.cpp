@@ -92,7 +92,7 @@ void Label::updateTextures() {
     auto& gui = GUIStyle::getInstance();
 
     const auto textLines = greedyWordWrap(text, getSize().x, [&gui, font = fontSize](std::string_view tmp) {
-        return gui.getMinimumLabelSize(tmp, font).x - 4;
+        return gui.getMinimumLabelSize(tmp, font).x - 4.f;
     });
 
     pTexture = gui.createLabel(renderer, getSize().x, getSize().y, textLines, fontSize, alignment, textcolor,

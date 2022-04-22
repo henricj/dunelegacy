@@ -570,8 +570,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
     // first of all update mouse
     if (event.type == SDL_MOUSEMOTION) {
         const SDL_MouseMotionEvent* mouse = &event.motion;
-        drawnMouseX                       = std::max(0, std::min(mouse->x, settings.video.width - 1));
-        drawnMouseY                       = std::max(0, std::min(mouse->y, settings.video.height - 1));
+
+        drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width - 1));
+        drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height - 1));
     }
 
     if (pInGameMenu != nullptr) {
@@ -819,7 +820,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
             } break;
 
-            case (SDL_QUIT): {
+            case SDL_QUIT: {
                 bQuitGame = true;
             } break;
 
@@ -864,26 +865,28 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         return;
     }
 
+    const auto* const gfx = pGFXManager.get();
+
     const DuneTexture* pCursor = nullptr;
-    SDL_Rect dest              = {0, 0, 0, 0};
+    SDL_FRect dest{};
     if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if (scrollLeftMode && !scrollRightMode) {
-            pCursor = pGFXManager->getUIGraphic(UI_CursorLeft);
+            pCursor = gfx->getUIGraphic(UI_CursorLeft);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Left, VAlign::Top);
         } else if (scrollRightMode && !scrollLeftMode) {
-            pCursor = pGFXManager->getUIGraphic(UI_CursorRight);
+            pCursor = gfx->getUIGraphic(UI_CursorRight);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Center, VAlign::Top);
         }
 
         if (pCursor == nullptr) {
             if (scrollUpMode && !scrollDownMode) {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorUp);
+                pCursor = gfx->getUIGraphic(UI_CursorUp);
                 dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Top);
             } else if (scrollDownMode && !scrollUpMode) {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorDown);
+                pCursor = gfx->getUIGraphic(UI_CursorDown);
                 dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
-                pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                pCursor = gfx->getUIGraphic(UI_CursorNormal);
                 dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
@@ -892,23 +895,23 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr)
             || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
-            pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+            pCursor = gfx->getUIGraphic(UI_CursorNormal);
             dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
         } else {
 
             switch (currentCursorMode) {
                 case CursorMode_Normal:
                 case CursorMode_Placing: {
-                    pCursor = pGFXManager->getUIGraphic(UI_CursorNormal);
+                    pCursor = gfx->getUIGraphic(UI_CursorNormal);
                     dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
                 } break;
 
                 case CursorMode_Move: {
                     switch (currentZoomlevel) {
-                        case 0: pCursor = pGFXManager->getUIGraphic(UI_CursorMove_Zoomlevel0); break;
-                        case 1: pCursor = pGFXManager->getUIGraphic(UI_CursorMove_Zoomlevel1); break;
+                        case 0: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel0); break;
+                        case 1: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel1); break;
                         case 2:
-                        default: pCursor = pGFXManager->getUIGraphic(UI_CursorMove_Zoomlevel2); break;
+                        default: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel2); break;
                     }
 
                     dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
@@ -916,10 +919,10 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                 case CursorMode_Attack: {
                     switch (currentZoomlevel) {
-                        case 0: pCursor = pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel0); break;
-                        case 1: pCursor = pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel1); break;
+                        case 0: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel0); break;
+                        case 1: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel1); break;
                         case 2:
-                        default: pCursor = pGFXManager->getUIGraphic(UI_CursorAttack_Zoomlevel2); break;
+                        default: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel2); break;
                     }
 
                     dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
@@ -927,10 +930,10 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                 case CursorMode_Capture: {
                     switch (currentZoomlevel) {
-                        case 0: pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel0); break;
-                        case 1: pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel1); break;
+                        case 0: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel0); break;
+                        case 1: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel1); break;
                         case 2:
-                        default: pCursor = pGFXManager->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
+                        default: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
                     }
 
                     dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
@@ -967,10 +970,10 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                 case CursorMode_CarryallDrop: {
                     switch (currentZoomlevel) {
-                        case 0: pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0); break;
-                        case 1: pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel1); break;
+                        case 0: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0); break;
+                        case 1: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel1); break;
                         case 2:
-                        default: pCursor = pGFXManager->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel2); break;
+                        default: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel2); break;
                     }
 
                     dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
@@ -2670,10 +2673,10 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
     bool bSelectNext = true;
 
     if (selectedList.size() == 1) {
-        auto* const pObject = getObjectManager().getObject(*selectedList.begin());
-        if ((pObject != nullptr) && (itemIDs.count(pObject->getItemID()) == 1)) {
-            bSelectNext = false;
-        }
+        if (const auto* const pObject = getObjectManager().getObject(*selectedList.begin()))
+            if (itemIDs.count(pObject->getItemID()) == 1) {
+                bSelectNext = false;
+            }
     }
 
     StructureBase* pStructure2Select = nullptr;

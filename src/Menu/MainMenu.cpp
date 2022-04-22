@@ -118,7 +118,7 @@ MainMenu::~MainMenu() = default;
 int MainMenu::showMenu() {
     musicPlayer->changeMusic(MUSIC_MENU);
 
-    return MenuBase::showMenu();
+    return parent::showMenu();
 }
 
 void MainMenu::draw_background(Point position) {
