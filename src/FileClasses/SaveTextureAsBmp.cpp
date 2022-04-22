@@ -1,8 +1,27 @@
-#include "misc/SDL2pp.h"
-#include <SDL2/SDL.h>
-#include <misc/sdl_support.h>
+/*
+ *  This file is part of Dune Legacy.
+ *
+ *  Dune Legacy is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Dune Legacy is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include "FileClasses/SaveTextureAsBmp.h"
+
+#include "FileClasses/LoadSavePNG.h"
+#include "misc/SDL2pp.h"
+#include "misc/sdl_support.h"
+
+#include <SDL2/SDL.h>
 
 namespace {
 class RestoreRenderTarget final {
@@ -15,7 +34,7 @@ public:
 };
 } // namespace
 
-void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
+sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* src) {
     // From https://stackoverflow.com/a/48176678 and https://stackoverflow.com/a/51238719
 
     uint32_t format = SDL_PIXELFORMAT_RGBA32;
@@ -26,13 +45,18 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
     /* Get information about texture we want to save */
     if (SDL_QueryTexture(texture, &format, nullptr, &w, &h)) {
         sdl2::log_info("Failed querying texture: %s\n", SDL_GetError());
-        return;
+        return {};
+    }
+
+    if (src) {
+        w = src->w;
+        h = src->h;
     }
 
     const auto ren_tex = sdl2::texture_ptr{SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
     if (!ren_tex) {
         sdl2::log_info("Failed creating render texture: %s\n", SDL_GetError());
-        return;
+        return {};
     }
 
     RestoreRenderTarget rrt{renderer};
@@ -43,7 +67,7 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
      */
     if (SDL_SetRenderTarget(renderer, ren_tex.get())) {
         sdl2::log_info("Failed setting render target: %s\n", SDL_GetError());
-        return;
+        return {};
     }
 
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
@@ -53,23 +77,32 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
     SDL_GetTextureBlendMode(texture, &oldBlendMode);
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
 
-    if (SDL_RenderCopy(renderer, texture, nullptr, nullptr)) {
+    if (SDL_RenderCopy(renderer, texture, src, nullptr)) {
         sdl2::log_info("Failed copying texture data: %s\n", SDL_GetError());
-        return;
+        return {};
     }
 
     SDL_SetTextureBlendMode(texture, oldBlendMode);
 
-    const auto surface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BYTESPERPIXEL(format), format)};
+    auto surface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BYTESPERPIXEL(format), format)};
 
     { // Scope
         const sdl2::surface_lock lock{surface.get()};
 
         if (SDL_RenderReadPixels(renderer, nullptr, format, lock.pixels(), lock.pitch())) {
             sdl2::log_info("Failed reading pixel data: %s\n", SDL_GetError());
-            return;
+            return {};
         }
     }
+
+    return surface;
+}
+
+void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
+    const auto surface = CreateSurfaceFromTexture(renderer, texture, nullptr);
+
+    if (!surface)
+        return;
 
     /* Save result to an image */
     if (SDL_SaveBMP(surface.get(), filename)) {
@@ -78,4 +111,19 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
     }
 
     sdl2::log_info("Saved texture as BMP to \"%s\"\n", filename);
+}
+
+void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
+    const auto surface = CreateSurfaceFromTexture(renderer, texture, nullptr);
+
+    if (!surface)
+        return;
+
+    /* Save result to an image */
+    if (SavePNG(surface.get(), filename)) {
+        sdl2::log_info("Failed saving image: %s\n", SDL_GetError());
+        return;
+    }
+
+    sdl2::log_info("Saved texture as PNG to \"%s\"\n", filename);
 }
