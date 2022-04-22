@@ -76,6 +76,7 @@ add_sources(HEADERS
 	GameInterface.h
 	globals.h
 	GUI/Button.h
+	GUI/CenteringBox.h
 	GUI/Checkbox.h
 	GUI/ClickMap.h
 	GUI/Container.h
