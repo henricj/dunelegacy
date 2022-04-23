@@ -138,7 +138,7 @@ bool TextBox::handleTextInput(SDL_TextInputEvent& textInput) {
     return true;
 }
 
-void TextBox::setText(const std::string& text, bool bInteractive) {
+void TextBox::setText(std::string_view text, bool bInteractive) {
     const bool bChanged = (text != this->text);
     this->text          = text;
     invalidateTextures();

@@ -43,13 +43,13 @@ public:
         This method sets a new text for this text box.
         \param  Text The new text for this text box
     */
-    virtual void setText(const std::string& text) { setText(text, false); }
+    virtual void setText(std::string_view text) { setText(text, false); }
 
     /**
         Get the text of this text box.
         \return the text of this text box
     */
-    [[nodiscard]] const std::string& getText() const { return text; }
+    [[nodiscard]] std::string_view getText() const { return text; }
 
     /**
         Sets a font size for this text box. Default font size of a text box is 14
@@ -178,7 +178,7 @@ protected:
         \param  text            The new text for this text box
         \param  bInteractive    Was this text change initiated by the user?
     */
-    virtual void setText(const std::string& text, bool bInteractive);
+    virtual void setText(std::string_view text, bool bInteractive);
 
     /**
         This method frees all textures that are used by this text box

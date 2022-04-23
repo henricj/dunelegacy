@@ -795,7 +795,7 @@ void CustomGamePlayers::onCancel() {
 }
 
 void CustomGamePlayers::onSendChatMessage() {
-    const std::string message = chatTextBox.getText();
+    const std::string message{chatTextBox.getText()};
     addChatMessage(settings.general.playerName, message);
     chatTextBox.setText("");
 
