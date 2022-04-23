@@ -264,7 +264,7 @@ std::string ObjectData::loadStringValue(const INIFile& objectDataFile, const std
 
 int ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
                            char houseChar, int defaultValue) {
-    const std::string strItem = trim(loadStringValue(objectDataFile, section, key, houseChar, ""));
+    const std::string strItem{trim(loadStringValue(objectDataFile, section, key, houseChar, ""))};
 
     if (strItem == "") {
         return defaultValue;
@@ -296,16 +296,14 @@ ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const s
 
     if (strList == "") {
         return defaultValue;
-    }
-    if (trim(strToLower(strList)) == "invalid") {
 
+    if (trim(strToLower(strList)) == "invalid")
         return resultSet;
-    }
 
     const std::vector<std::string> strItemList = splitStringToStringVector(strList);
 
     for (const std::string& strItem : strItemList) {
-        std::string strItem2 = trim(strItem);
+        std::string strItem2{trim(strItem)};
 
         const ItemID_enum itemID = getItemIDByName(strItem2);
         if (itemID == ItemID_Invalid || !isStructure(itemID)) {

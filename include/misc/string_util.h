@@ -110,6 +110,13 @@ std::vector<std::string> splitStringToStringVector(const std::string& parseStrin
 
 std::string replaceAll(const std::string& str, const std::unordered_map<std::string, std::string>& replacementMap);
 
+/**
+    Remove leading and trailing spaces and tabs.
+    \param str  the string to trim
+    \return the trimmed string
+ */
+std::string_view trim(std::string_view str);
+
 template<typename T>
 bool parseString(std::string_view str, T& t) {
     auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
@@ -137,16 +144,6 @@ inline std::string strToUpper(std::string_view str) {
     return result;
 }
 
-inline std::string trim(std::string_view str) {
-    const size_t firstChar = str.find_first_not_of(" \t");
-    const size_t lastChar  = str.find_last_not_of(" \t");
-
-    if (firstChar == std::string::npos || lastChar == std::string::npos)
-        return "";
-
-    return std::string{str.substr(firstChar, lastChar - firstChar + 1)};
-}
-
 inline bool utf8IsStartByte(unsigned char c) {
     return (c & 0x80u) == 0u || (c & 0xC0u) == 0xC0u;
 }
@@ -156,35 +153,7 @@ inline bool utf8IsStartByte(unsigned char c) {
     \param  str an utf-8 string
     \return the number of code points
 */
-inline size_t utf8Length(std::string_view str) {
-    size_t resultLen = 0;
-
-    auto iter = str.cbegin();
-    while (iter != str.cend()) {
-        unsigned char c = static_cast<unsigned char>(*iter);
-
-        if ((c & 0x80) == 0) {
-            // 1 byte: 0xxxxxxx
-            iter += 1;
-        } else if ((c & 0xE0) == 0xC0) {
-            // 2 byte: 110xxxxx 10xxxxxx
-            iter += 2;
-        } else if ((c & 0xF0) == 0xE0) {
-            // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
-            iter += 3;
-        } else if ((c & 0xF8) == 0xF0) {
-            // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            iter += 4;
-        } else {
-            // invalid => skip
-            iter += 1;
-        }
-
-        resultLen += 1u;
-    }
-
-    return resultLen;
-}
+size_t utf8Length(std::string_view str);
 
 /**
     Returns a substring of the specified string with len characters (=code points). If len goes past the end of

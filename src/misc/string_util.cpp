@@ -70,6 +70,46 @@ std::string replaceAll(const std::string& str, const std::unordered_map<std::str
     return result;
 }
 
+std::string_view trim(std::string_view str) {
+    const auto firstChar = str.find_first_not_of(" \t");
+    const auto lastChar  = str.find_last_not_of(" \t");
+
+    if (firstChar == std::string::npos || lastChar == std::string::npos)
+        return {};
+
+    return str.substr(firstChar, lastChar - firstChar + 1);
+}
+
+size_t utf8Length(std::string_view str) {
+    size_t resultLen = 0;
+
+    auto iter = str.cbegin();
+    while (iter != str.cend()) {
+        const auto c = static_cast<unsigned char>(*iter);
+
+        if ((c & 0x80) == 0) {
+            // 1 byte: 0xxxxxxx
+            iter += 1;
+        } else if ((c & 0xE0) == 0xC0) {
+            // 2 byte: 110xxxxx 10xxxxxx
+            iter += 2;
+        } else if ((c & 0xF0) == 0xE0) {
+            // 3 byte: 1110xxxx 10xxxxxx 10xxxxxx
+            iter += 3;
+        } else if ((c & 0xF8) == 0xF0) {
+            // 4 byte: 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            iter += 4;
+        } else {
+            // invalid => skip
+            iter += 1;
+        }
+
+        resultLen += 1u;
+    }
+
+    return resultLen;
+}
+
 std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
     std::string result;
     const size_t estimatedLength = len == std::string::npos ? str.length() - pos : len;
