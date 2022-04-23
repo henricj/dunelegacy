@@ -21,10 +21,7 @@
 
 #include <algorithm>
 
-DropDownBox::DropDownBox()
-    : bShowListBox(false), bListBoxAbove(false), bAutocloseListBoxOnSelectionChange(true), bOnClickEnabled(true),
-      pBackground(nullptr), pForeground(nullptr), pActiveForeground(nullptr), numVisibleEntries(7), color(),
-      bHover(false) {
+DropDownBox::DropDownBox() {
     DropDownBox::enableResizing(true, false);
 
     updateButtonSurface();
