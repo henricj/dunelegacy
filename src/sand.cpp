@@ -47,24 +47,10 @@ void drawCursor() {
         return;
     }
 
-    const auto* const tex = pGFXManager->getUIGraphic(cursorFrame);
+    auto* hardware_cursor = pGFXManager->getCursor(cursorFrame);
 
-    auto dest = calcDrawingRect(tex, drawnMouseX, drawnMouseY);
-
-    // reposition image so pointing on right spot
-
-    if (cursorFrame == UI_CursorRight) {
-        dest.x -= dest.w / 2;
-    } else if (cursorFrame == UI_CursorDown) {
-        dest.y -= dest.h / 2;
-    }
-
-    if ((cursorFrame == UI_CursorAttack_Zoomlevel0) || (cursorFrame == UI_CursorMove_Zoomlevel0)) {
-        dest.x -= dest.w / 2;
-        dest.y -= dest.h / 2;
-    }
-
-    tex->draw(renderer, dest.x, dest.y);
+    if (hardware_cursor != SDL_GetCursor())
+        SDL_SetCursor(hardware_cursor);
 }
 
 /**

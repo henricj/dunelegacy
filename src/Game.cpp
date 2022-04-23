@@ -881,27 +881,22 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
     const auto* const gfx = pGFXManager.get();
 
-    const DuneTexture* pCursor = nullptr;
+    SDL_Cursor* hardware_cursor = nullptr;
+    const DuneTexture* pCursor  = nullptr;
     SDL_FRect dest{};
+
     if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if (scrollLeftMode && !scrollRightMode) {
-            pCursor = gfx->getUIGraphic(UI_CursorLeft);
-            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Left, VAlign::Top);
+            hardware_cursor = gfx->getCursor(UI_CursorLeft);
         } else if (scrollRightMode && !scrollLeftMode) {
-            pCursor = gfx->getUIGraphic(UI_CursorRight);
-            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Center, VAlign::Top);
-        }
-
-        if (pCursor == nullptr) {
+            hardware_cursor = gfx->getCursor(UI_CursorRight);
+        } else {
             if (scrollUpMode && !scrollDownMode) {
-                pCursor = gfx->getUIGraphic(UI_CursorUp);
-                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Top);
+                hardware_cursor = gfx->getCursor(UI_CursorUp);
             } else if (scrollDownMode && !scrollUpMode) {
-                pCursor = gfx->getUIGraphic(UI_CursorDown);
-                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Center);
+                hardware_cursor = gfx->getCursor(UI_CursorDown);
             } else {
-                pCursor = gfx->getUIGraphic(UI_CursorNormal);
-                dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+                hardware_cursor = gfx->getCursor(UI_CursorNormal);
             }
         }
     } else {
@@ -909,37 +904,35 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr)
             || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
-            pCursor = gfx->getUIGraphic(UI_CursorNormal);
-            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+            hardware_cursor = gfx->getCursor(UI_CursorNormal);
         } else {
 
             switch (currentCursorMode) {
                 case CursorMode_Normal:
                 case CursorMode_Placing: {
-                    pCursor = gfx->getUIGraphic(UI_CursorNormal);
-                    dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+                    hardware_cursor = gfx->getCursor(UI_CursorNormal);
                 } break;
 
                 case CursorMode_Move: {
-                    switch (currentZoomlevel) {
-                        case 0: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel0); break;
-                        case 1: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel1); break;
-                        case 2:
-                        default: pCursor = gfx->getUIGraphic(UI_CursorMove_Zoomlevel2); break;
-                    }
+                    const auto scale = GUIStyle::getInstance().getActualScale();
 
-                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
+                    if (scale >= 2)
+                        hardware_cursor = gfx->getCursor(UI_CursorMove_Zoomlevel2);
+                    else if (scale > 1)
+                        hardware_cursor = gfx->getCursor(UI_CursorMove_Zoomlevel1);
+                    else
+                        hardware_cursor = gfx->getCursor(UI_CursorMove_Zoomlevel0);
                 } break;
 
                 case CursorMode_Attack: {
-                    switch (currentZoomlevel) {
-                        case 0: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel0); break;
-                        case 1: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel1); break;
-                        case 2:
-                        default: pCursor = gfx->getUIGraphic(UI_CursorAttack_Zoomlevel2); break;
-                    }
+                    const auto scale = GUIStyle::getInstance().getActualScale();
 
-                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Center);
+                    if (scale >= 2)
+                        hardware_cursor = gfx->getCursor(UI_CursorAttack_Zoomlevel2);
+                    else if (scale > 1)
+                        hardware_cursor = gfx->getCursor(UI_CursorAttack_Zoomlevel1);
+                    else
+                        hardware_cursor = gfx->getCursor(UI_CursorAttack_Zoomlevel0);
                 } break;
 
                 case CursorMode_Capture: {
@@ -971,11 +964,11 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 
                         if (pTile->isExploredByTeam(this, pLocalHouse->getTeamID())) {
 
-                            auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
-
-                            if ((pStructure != nullptr) && (pStructure->canBeCaptured())
-                                && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
-                                dest.y += static_cast<int>(getGameCycleCount() / 10) % 5;
+                            if (const auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager)) {
+                                if (pStructure->canBeCaptured()
+                                    && pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID()) {
+                                    dest.y += static_cast<int>(getGameCycleCount() / 10) % 5;
+                                }
                             }
                         }
                     }
@@ -983,14 +976,14 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                 } break;
 
                 case CursorMode_CarryallDrop: {
-                    switch (currentZoomlevel) {
-                        case 0: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel0); break;
-                        case 1: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel1); break;
-                        case 2:
-                        default: pCursor = gfx->getUIGraphic(UI_CursorCarryallDrop_Zoomlevel2); break;
-                    }
+                    const auto scale = GUIStyle::getInstance().getActualScale();
 
-                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
+                    if (scale >= 2)
+                        hardware_cursor = gfx->getCursor(UI_CursorCarryallDrop_Zoomlevel2);
+                    else if (scale > 1)
+                        hardware_cursor = gfx->getCursor(UI_CursorCarryallDrop_Zoomlevel1);
+                    else
+                        hardware_cursor = gfx->getCursor(UI_CursorCarryallDrop_Zoomlevel0);
                 } break;
 
                 default: {
@@ -1000,8 +993,19 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
         }
     }
 
-    if (pCursor)
+    if (pCursor) {
+        SDL_ShowCursor(SDL_DISABLE);
+
         pCursor->draw(renderer, dest.x, dest.y);
+    } else {
+        if (!hardware_cursor)
+            hardware_cursor = gfx->getDefaultCursor();
+
+        if (hardware_cursor != SDL_GetCursor())
+            SDL_SetCursor(hardware_cursor);
+
+        SDL_ShowCursor(SDL_ENABLE);
+    }
 }
 
 void Game::setupView(const GameContext& context) const {
