@@ -29,66 +29,63 @@ TextBox::~TextBox() {
 void TextBox::updateTextures() {
     parent::updateTextures();
 
-    if (pTextureWithoutCaret == nullptr || pTextureWithCaret == nullptr) {
+    if (!pTextureWithoutCaret || !pTextureWithCaret) {
         invalidateTextures();
 
-        pTextureWithoutCaret = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
-            getSize().x, getSize().y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor));
-        pTextureWithCaret    = convertSurfaceToTexture(GUIStyle::getInstance().createTextBoxSurface(
-               getSize().x, getSize().y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor));
+        const auto& gui = GUIStyle::getInstance();
+
+        const auto size = getSize();
+
+        pTextureWithoutCaret =
+            gui.createTextBoxSurface(size.x, size.y, text, false, fontSize, Alignment_Left, textcolor, textshadowcolor)
+                .createTexture(renderer);
+        pTextureWithCaret =
+            gui.createTextBoxSurface(size.x, size.y, text, true, fontSize, Alignment_Left, textcolor, textshadowcolor)
+                .createTexture(renderer);
     }
 }
 
 void TextBox::draw(Point position) {
-    if (!isVisible()) {
+    if (!isVisible())
         return;
-    }
 
     updateTextures();
 
-    if ((pTextureWithoutCaret == nullptr) || (pTextureWithCaret == nullptr)) {
+    if (!pTextureWithoutCaret || !pTextureWithCaret)
         return;
-    }
-
-    const SDL_Rect dest = calcDrawingRect(pTextureWithoutCaret.get(), position.x, position.y);
 
     if (isActive()) {
         using namespace std::chrono_literals;
 
-        if ((dune::dune_clock::now() - lastCaretTime) < 500ms) {
-            Dune_RenderCopy(renderer, pTextureWithCaret.get(), nullptr, &dest);
-        } else {
-            Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
-        }
+        if (dune::dune_clock::now() - lastCaretTime < 500ms)
+            pTextureWithCaret.draw(renderer, position.x, position.y);
+        else
+            pTextureWithoutCaret.draw(renderer, position.x, position.y);
 
-        if (dune::dune_clock::now() - lastCaretTime >= 1000ms) {
+        if (dune::dune_clock::now() - lastCaretTime >= 1000ms)
             lastCaretTime = dune::dune_clock::now();
-        }
-    } else {
-        Dune_RenderCopy(renderer, pTextureWithoutCaret.get(), nullptr, &dest);
-    }
+    } else
+        pTextureWithoutCaret.draw(renderer, position.x, position.y);
 }
 
 bool TextBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
+    if (x < 0 || x >= getSize().x || y < 0 || y >= getSize().y)
         return false;
-    }
 
-    if ((!isEnabled()) || (!isVisible())) {
+    if (!isEnabled() || !isVisible())
         return true;
-    }
 
     if (pressed) {
         setActive();
         lastCaretTime = dune::dune_clock::now();
     }
+
     return true;
 }
 
 bool TextBox::handleKeyPress(SDL_KeyboardEvent& key) {
-    if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
+    if (!isVisible() || !isEnabled() || !isActive())
         return true;
-    }
 
     if (key.keysym.sym == SDLK_TAB) {
         setInactive();
@@ -114,25 +111,23 @@ bool TextBox::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 bool TextBox::handleTextInput(SDL_TextInputEvent& textInput) {
-    if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
+    if (!isVisible() || !isEnabled() || !isActive())
         return true;
-    }
 
     const std::string newText = textInput.text;
 
     bool bChanged = false;
     for (const char c : newText) {
-        if (((maxTextLength < 0) || (static_cast<int>(utf8Length(text)) < maxTextLength))
+        if ((maxTextLength < 0 || static_cast<int>(utf8Length(text)) < maxTextLength)
             && (allowedChars.empty() || allowedChars.find(c) != std::string::npos)
-            && (forbiddenChars.find(c) == std::string::npos)) {
+            && forbiddenChars.find(c) == std::string::npos) {
             text += c;
             bChanged = true;
         }
     }
 
-    if (bChanged && pOnTextChange) {
+    if (bChanged && pOnTextChange)
         pOnTextChange(true);
-    }
 
     return true;
 }

@@ -192,14 +192,20 @@ protected:
         if (!pUnpressedTexture) {
             invalidateTextures();
 
-            auto& gui = GUIStyle::getInstance();
-            setSurfaces(
-                gui.createRadioButtonSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                gui.createRadioButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
-                gui.createRadioButtonSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
+            const auto& gui = GUIStyle::getInstance();
 
-            pCheckedActiveTexture = convertSurfaceToTexture(
-                gui.createRadioButtonSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
+            const auto size = getSize();
+
+            setTextures(gui.createRadioButtonSurface(size.x, size.y, text, false, false, textcolor, textshadowcolor)
+                            .createTexture(renderer),
+                        gui.createRadioButtonSurface(size.x, size.y, text, true, false, textcolor, textshadowcolor)
+                            .createTexture(renderer),
+                        gui.createRadioButtonSurface(size.x, size.y, text, false, true, textcolor, textshadowcolor)
+                            .createTexture(renderer));
+
+            pCheckedActiveTexture =
+                gui.createRadioButtonSurface(size.x, size.y, text, true, true, textcolor, textshadowcolor)
+                    .createTexture(renderer);
         }
     }
 
@@ -216,7 +222,7 @@ private:
     uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
     uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
     std::string text;                         ///< Text of this radio button
-    sdl2::texture_ptr pCheckedActiveTexture;  ///< Texture that is shown when the radio button is activated by keyboard
+    DuneTextureOwned pCheckedActiveTexture;   ///< Texture that is shown when the radio button is activated by keyboard
                                               ///< or by mouse hover
 
     RadioButtonManager* pRadioButtonManager{}; ///< The Manager for managing the toggle states

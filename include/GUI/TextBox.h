@@ -219,8 +219,8 @@ private:
     std::function<void(bool)> pOnTextChange; ///< function that is called when the text of this text box changes
     std::function<void()> pOnReturn;         ///< function that is called when return is pressed
 
-    sdl2::texture_ptr pTextureWithoutCaret; ///< Texture with caret off
-    sdl2::texture_ptr pTextureWithCaret;    ///< Texture with caret on
+    DuneTextureOwned pTextureWithoutCaret; ///< Texture with caret off
+    DuneTextureOwned pTextureWithCaret;    ///< Texture with caret on
 };
 
 #endif // TEXTBOX_H

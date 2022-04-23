@@ -36,7 +36,7 @@ void Checkbox::draw(Point position) {
     DuneTexture tex;
     if (isChecked()) {
         if ((isActive() || bHover) && pCheckedActiveTexture) {
-            tex = DuneTexture{pCheckedActiveTexture.get()};
+            tex = pCheckedActiveTexture.as_dune_texture();
         } else {
             tex = *pPressedTexture;
         }
@@ -48,9 +48,8 @@ void Checkbox::draw(Point position) {
         }
     }
 
-    if (!tex) {
+    if (!tex)
         return;
-    }
 
     tex.draw(renderer, position.x, position.y);
 }
@@ -66,14 +65,19 @@ void Checkbox::updateTextures() {
     if (!pUnpressedTexture) {
         invalidateTextures();
 
-        auto& gui = GUIStyle::getInstance();
+        const auto& gui = GUIStyle::getInstance();
 
-        setSurfaces(gui.createCheckboxSurface(getSize().x, getSize().y, text, false, false, textcolor, textshadowcolor),
-                    gui.createCheckboxSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor),
-                    gui.createCheckboxSurface(getSize().x, getSize().y, text, false, true, textcolor, textshadowcolor));
+        const auto size = getSize();
 
-        pCheckedActiveTexture = convertSurfaceToTexture(
-            gui.createCheckboxSurface(getSize().x, getSize().y, text, true, true, textcolor, textshadowcolor));
+        setTextures(gui.createCheckboxSurface(size.x, size.y, text, false, false, textcolor, textshadowcolor)
+                        .createTexture(renderer),
+                    gui.createCheckboxSurface(size.x, size.y, text, true, false, textcolor, textshadowcolor)
+                        .createTexture(renderer),
+                    gui.createCheckboxSurface(size.x, size.y, text, false, true, textcolor, textshadowcolor)
+                        .createTexture(renderer));
+
+        pCheckedActiveTexture = gui.createCheckboxSurface(size.x, size.y, text, true, true, textcolor, textshadowcolor)
+                                    .createTexture(renderer);
     }
 }
 

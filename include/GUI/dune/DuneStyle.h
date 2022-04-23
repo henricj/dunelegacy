@@ -90,7 +90,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr
+    DuneSurfaceOwned
     createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                           Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
                           Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
@@ -114,7 +114,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr
+    DuneSurfaceOwned
     createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                              Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
                              Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
@@ -178,7 +178,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr
+    DuneSurfaceOwned
     createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize,
                          Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT,
                          Uint32 textshadowcolor = COLOR_DEFAULT) const override;

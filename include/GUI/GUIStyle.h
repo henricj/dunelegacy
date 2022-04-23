@@ -171,7 +171,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    virtual sdl2::surface_ptr
+    virtual DuneSurfaceOwned
     createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                           Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
                           Uint32 backgroundcolor = COLOR_TRANSPARENT) const = 0;
@@ -195,7 +195,7 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    virtual sdl2::surface_ptr
+    virtual DuneSurfaceOwned
     createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                              Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
                              Uint32 backgroundcolor = COLOR_TRANSPARENT) const = 0;
@@ -259,7 +259,7 @@ public:
         \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    virtual sdl2::surface_ptr
+    virtual DuneSurfaceOwned
     createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize,
                          Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT,
                          Uint32 textshadowcolor = COLOR_DEFAULT) const = 0;
@@ -374,6 +374,11 @@ public:
 
     */
     std::pair<int, int> getPhysicalSize(int width, int height) const;
+
+protected:
+    int scale_to_physical_integer(int logical) const {
+        return static_cast<int>(std::round(logical * getActualScale()));
+    }
 
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;
