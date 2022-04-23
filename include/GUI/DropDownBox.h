@@ -358,8 +358,8 @@ public:
         add it to a container. If the container gets destroyed also this dropdown box will be freed.
         \return The new created dropdown box (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static DropDownBox* create() {
-        auto* dropDownBox       = new DropDownBox();
+    static std::unique_ptr<DropDownBox> create() {
+        auto dropDownBox        = std::make_unique<DropDownBox>();
         dropDownBox->pAllocated = true;
         return dropDownBox;
     }
