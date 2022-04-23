@@ -398,11 +398,11 @@ private:
 
     void onOpenListBoxButton() { bShowListBox = !bShowListBox; }
 
-    bool bShowListBox;
-    bool bListBoxAbove;
-    bool bAutocloseListBoxOnSelectionChange; ///< This is a small hack to allow the list box to be open while selection
-                                             ///< with up/down keys
-    bool bOnClickEnabled;                    ///< Is the onClick event enabled for this widget?
+    bool bShowListBox                       = false;
+    bool bListBoxAbove                      = false;
+    bool bAutocloseListBoxOnSelectionChange = true; ///< This is a small hack to allow the list box to be open while
+                                                    ///< selection with up/down keys
+    bool bOnClickEnabled = true; ///< Is the onClick event enabled for this widget?
 
     DuneTextureOwned pBackground;
     DuneTextureOwned pForeground;
@@ -414,10 +414,10 @@ private:
     std::function<void(bool)> pOnSelectionChange; ///< this function is called when the selection changes
     std::function<void()> pOnClick;               ///< function that is called when this drop down box is clicked
 
-    int numVisibleEntries; ///< the number of entries visible when the list is opened (default=7)
+    int numVisibleEntries = 7; ///< the number of entries visible when the list is opened (default=7)
 
-    uint32_t color; ///< the color
-    bool bHover;    ///< true = currenlty mouse hover, false = currently no mouse hover
+    uint32_t color{COLOR_DEFAULT}; ///< the color
+    bool bHover = false;           ///< true = currently mouse hover, false = currently no mouse hover
 };
 
 #endif // DROPDOWNBOX_H
