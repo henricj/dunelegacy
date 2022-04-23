@@ -117,11 +117,21 @@ std::string replaceAll(const std::string& str, const std::unordered_map<std::str
  */
 std::string_view trim(std::string_view str);
 
-template<typename T>
-bool parseString(std::string_view str, T& t) {
-    auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), t);
+/**
+    Parse a string into a value of the given type.
+    \param text     The string to parse
+    \param value    The output value (unmodified on failure)
+    \return true if the string was parsed and the value argument set
+ */
+template<typename TValue>
+bool parseString(std::string_view text, TValue& value) {
+    text = trim(text);
 
-    return ec == std::errc{};
+    auto last = text.data() + text.size();
+
+    auto [ptr, ec] = std::from_chars(text.data(), last, value);
+
+    return ec == std::errc{} && ptr == last;
 }
 
 inline void convertToLower(std::string& str) {
