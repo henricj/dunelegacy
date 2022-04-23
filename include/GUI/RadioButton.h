@@ -31,37 +31,14 @@ class RadioButton final : public Button {
 
 public:
     /// Default constructor
-    RadioButton() {
-        Widget::enableResizing(true, false);
-        setToggleButton(true);
-    }
+    RadioButton();
 
     /// destructor
-    ~RadioButton() override {
-        RadioButton::invalidateTextures();
+    ~RadioButton() override;
 
-        unregisterFromRadioButtonManager();
-    }
+    void registerRadioButtonManager(RadioButtonManager* pNewRadioButtonManager);
 
-    void registerRadioButtonManager(RadioButtonManager* pNewRadioButtonManager) {
-        if (pNewRadioButtonManager != pRadioButtonManager) {
-            unregisterFromRadioButtonManager();
-            pRadioButtonManager = pNewRadioButtonManager;
-            if (!pRadioButtonManager->isRegistered(this)) {
-                pRadioButtonManager->registerRadioButton(this);
-            }
-        }
-    }
-
-    void unregisterFromRadioButtonManager() {
-        if (pRadioButtonManager != nullptr) {
-            RadioButtonManager* pOldRadioButtonManager = pRadioButtonManager;
-            pRadioButtonManager                        = nullptr;
-            if (pOldRadioButtonManager->isRegistered(this)) {
-                pOldRadioButtonManager->unregisterRadioButton(this);
-            }
-        }
-    }
+    void unregisterFromRadioButtonManager();
 
     /**
         This method sets a new text for this radio button and resizes it
@@ -84,11 +61,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
-        invalidateTextures();
-    }
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         This method sets the current toggle state. On radio buttons this is only
@@ -96,17 +69,7 @@ public:
         but cannot deselect it
         \param bToggleState true = toggled, false = untoggled
     */
-    void setToggleState(bool bToggleState) override {
-        if (!bToggleState) {
-            return;
-        }
-
-        if (bToggleState != getToggleState()) {
-            if (pRadioButtonManager != nullptr) {
-                pRadioButtonManager->setChecked(this);
-            }
-        }
-    }
+    void setToggleState(bool bToggleState) override;
 
     /**
         This method sets this radio button to checked or unchecked. It does the same as setToggleState().
@@ -124,34 +87,7 @@ public:
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
-    void draw(Point position) override {
-        if (!isVisible()) {
-            return;
-        }
-
-        updateTextures();
-
-        DuneTexture tex;
-        if (isChecked()) {
-            if ((isActive() || bHover) && pCheckedActiveTexture) {
-                tex = DuneTexture{pCheckedActiveTexture.get()};
-            } else {
-                tex = *pPressedTexture;
-            }
-        } else {
-            if ((isActive() || bHover) && pActiveTexture) {
-                tex = *pActiveTexture;
-            } else {
-                tex = *pUnpressedTexture;
-            }
-        }
-
-        if (!tex) {
-            return;
-        }
-
-        tex.draw(renderer, position.x, position.y);
-    }
+    void draw(Point position) override;
 
     /**
         This method resizes the radio button. This method should only
@@ -166,10 +102,7 @@ public:
         \param  width   the new width of this radio button
         \param  height  the new height of this radio button
     */
-    void resize(uint32_t width, uint32_t height) override {
-        invalidateTextures();
-        Widget::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     /**
         Returns the minimum size of this button. The button should not
@@ -186,37 +119,12 @@ protected:
         should be overwritten by subclasses if they like to defer texture creation as long as possible.
         This method should first check whether a renewal of the textures is necessary.
     */
-    void updateTextures() override {
-        parent::updateTextures();
-
-        if (!pUnpressedTexture) {
-            invalidateTextures();
-
-            const auto& gui = GUIStyle::getInstance();
-
-            const auto size = getSize();
-
-            setTextures(gui.createRadioButtonSurface(size.x, size.y, text, false, false, textcolor, textshadowcolor)
-                            .createTexture(renderer),
-                        gui.createRadioButtonSurface(size.x, size.y, text, true, false, textcolor, textshadowcolor)
-                            .createTexture(renderer),
-                        gui.createRadioButtonSurface(size.x, size.y, text, false, true, textcolor, textshadowcolor)
-                            .createTexture(renderer));
-
-            pCheckedActiveTexture =
-                gui.createRadioButtonSurface(size.x, size.y, text, true, true, textcolor, textshadowcolor)
-                    .createTexture(renderer);
-        }
-    }
+    void updateTextures() override;
 
     /**
         This method frees all textures that are used by this radio button
     */
-    void invalidateTextures() override {
-        pCheckedActiveTexture.reset();
-
-        parent::invalidateTextures();
-    }
+    void invalidateTextures() override;
 
 private:
     uint32_t textcolor       = COLOR_DEFAULT; ///< Text color

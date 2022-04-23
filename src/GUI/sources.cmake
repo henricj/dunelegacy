@@ -8,6 +8,7 @@ add_sources(GUI_SOURCES
 	PictureButton.cpp
 	PictureLabel.cpp
 	ProgressBar.cpp
+	RadioButton.cpp
 	RadioButtonManager.cpp
 	ScrollBar.cpp
 	TextBox.cpp

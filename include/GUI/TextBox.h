@@ -20,8 +20,6 @@
 
 #include "Widget.h"
 #include <misc/SDL2pp.h>
-#include <misc/draw_util.h>
-#include <misc/string_util.h>
 #include <string>
 
 /// A class for a text box
@@ -73,11 +71,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
-        invalidateTextures();
-    }
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         Sets the maximum length of the typed text
@@ -184,24 +178,12 @@ protected:
         \param  text            The new text for this text box
         \param  bInteractive    Was this text change initiated by the user?
     */
-    virtual void setText(const std::string& text, bool bInteractive) {
-        const bool bChanged = (text != this->text);
-        this->text          = text;
-        invalidateTextures();
-        if (bChanged && pOnTextChange) {
-            pOnTextChange(bInteractive);
-        }
-    }
+    virtual void setText(const std::string& text, bool bInteractive);
 
     /**
         This method frees all textures that are used by this text box
     */
-    void invalidateTextures() override {
-        pTextureWithoutCaret.reset();
-        pTextureWithCaret.reset();
-
-        parent::invalidateTextures();
-    }
+    void invalidateTextures() override;
 
 private:
     int fontSize             = 14;            ///< the size of the font to use

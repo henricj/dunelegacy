@@ -26,6 +26,12 @@ Checkbox::~Checkbox() {
     Checkbox::invalidateTextures();
 }
 
+void Checkbox::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
+    this->textcolor       = textcolor;
+    this->textshadowcolor = textshadowcolor;
+    invalidateTextures();
+}
+
 void Checkbox::draw(Point position) {
     if (!isVisible()) {
         return;
