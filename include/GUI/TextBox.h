@@ -139,7 +139,7 @@ public:
         \param  height  the new height of this text box
     */
     void resize(uint32_t width, uint32_t height) override {
-        Widget::resize(width, height);
+        parent::resize(width, height);
         invalidateTextures();
     }
 
