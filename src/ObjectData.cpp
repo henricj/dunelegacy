@@ -127,7 +127,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
     for (INIFile::Section& section : objectDataFile) {
         const std::string& sectionName = section.getSectionName();
 
-        if (sectionName == "" || sectionName == "default structure" || sectionName == "default unit") {
+        if (sectionName.empty() || sectionName == "default structure" || sectionName == "default unit") {
             continue;
         }
 
@@ -294,7 +294,7 @@ ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const s
 
     const std::string strList = loadStringValue(objectDataFile, section, key, houseChar, "");
 
-    if (strList == "") {
+    if (strList.empty())
         return defaultValue;
 
     if (trim(strToLower(strList)) == "invalid")
