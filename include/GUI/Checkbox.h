@@ -118,7 +118,7 @@ private:
     uint32_t textcolor{COLOR_DEFAULT};       ///< Text color
     uint32_t textshadowcolor{COLOR_DEFAULT}; ///< Text shadow color
     std::string text;                        ///< Text of this checkbox
-    sdl2::texture_ptr
+    DuneTextureOwned
         pCheckedActiveTexture; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 
