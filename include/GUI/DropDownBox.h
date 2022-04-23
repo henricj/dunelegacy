@@ -177,7 +177,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void insertEntry(int index, const std::string& text, void* data) {
+    void insertEntry(int index, std::string_view text, void* data) {
         listBox.insertEntry(index, text, data);
         resizeListBox();
     }
