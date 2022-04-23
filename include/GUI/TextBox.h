@@ -151,7 +151,7 @@ public:
 
     /**
         Draws this text box to screen.
-        \param  Position    Position to draw the text box to
+        \param  position    Position to draw the text box to
     */
     void draw(Point position) override;
 
