@@ -57,6 +57,9 @@ public:
     [[nodiscard]] const DuneTexture* getMapChoicePiece(unsigned int num, HOUSETYPE house) const;
     [[nodiscard]] const DuneTexture* getGeneratedPicture(GeneratedPicture id) const;
 
+    [[nodiscard]] SDL_Cursor* getCursor(unsigned int id) const;
+    [[nodiscard]] SDL_Cursor* getDefaultCursor() const { return default_cursor_.get(); }
+
     SDL_Surface* getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
         return surfaceLoader.getZoomedObjSurface(id, house, z);
     }
@@ -92,6 +95,8 @@ private:
 
     [[nodiscard]] sdl2::texture_ptr extractSmallDetailPicTex(const std::string& filename) const;
 
+    void initialize_cursors();
+
     SurfaceLoader surfaceLoader;
     DuneTextures duneTextures;
 
@@ -105,6 +110,9 @@ private:
     std::array<std::array<sdl2::texture_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_UIGRAPHICS> uiGraphicTex;
     std::array<std::array<sdl2::texture_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES>
         mapChoicePiecesTex;
+
+    sdl2::cursor_ptr default_cursor_;
+    std::unordered_map<unsigned int, sdl2::cursor_ptr> cursors_;
 
     std::vector<sdl2::texture_ptr> streamingTextureCache_;
 

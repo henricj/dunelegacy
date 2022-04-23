@@ -180,6 +180,7 @@ using palette_ptr      = implementation::unique_ptr_deleter<SDL_Palette, SDL_Fre
 using pixel_format_ptr = implementation::unique_ptr_deleter<SDL_PixelFormat, SDL_FreeFormat>;
 using renderer_ptr     = implementation::unique_ptr_deleter<SDL_Renderer, SDL_DestroyRenderer>;
 using RWops_ptr        = std::unique_ptr<SDL_RWops, implementation::RWops_deleter>;
+using cursor_ptr       = implementation::unique_ptr_deleter<SDL_Cursor, SDL_FreeCursor>;
 
 using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk>;
 

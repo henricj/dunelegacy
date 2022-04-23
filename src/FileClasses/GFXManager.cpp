@@ -17,8 +17,6 @@
 
 #include <FileClasses/GFXManager.h>
 
-#include <globals.h>
-
 #include <FileClasses/SurfaceLoader.h>
 #include <Renderer/DuneTextures.h>
 
@@ -28,7 +26,9 @@
 #include <SDL2/SDL.h>
 
 GFXManager::GFXManager()
-    : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} { }
+    : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} {
+    initialize_cursors();
+}
 
 GFXManager::~GFXManager() = default;
 
@@ -137,6 +137,16 @@ const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
     return texture ? &texture : nullptr;
 }
 
+SDL_Cursor* GFXManager::getCursor(unsigned id) const {
+    const auto it = cursors_.find(id);
+    if (it == cursors_.end()) {
+        sdl2::log_info("Unable to get cursor %u", id);
+        return nullptr;
+    }
+
+    return it->second.get();
+}
+
 const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
         THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
@@ -198,4 +208,63 @@ sdl2::texture_ptr GFXManager::extractSmallDetailPicTex(const std::string& filena
     const auto pSurface = surfaceLoader.extractSmallDetailPic(filename);
 
     return convertSurfaceToTexture(pSurface.get());
+}
+
+namespace {
+struct cursor_definition {
+    unsigned int id_;
+    HAlign h_align_;
+    VAlign v_align_;
+};
+
+} // namespace
+void GFXManager::initialize_cursors() {
+    static constexpr auto cursor_ids = std::to_array<cursor_definition>({
+        {UI_CursorNormal, HAlign::Left, VAlign::Top},
+        {UI_CursorUp, HAlign::Left, VAlign::Top},
+        {UI_CursorRight, HAlign::Center, VAlign::Top},
+        {UI_CursorDown, HAlign::Left, VAlign::Center},
+        {UI_CursorLeft, HAlign::Left, VAlign::Top},
+        {UI_CursorMove_Zoomlevel0, HAlign::Center, VAlign::Center},
+        {UI_CursorMove_Zoomlevel1, HAlign::Center, VAlign::Center},
+        {UI_CursorMove_Zoomlevel2, HAlign::Center, VAlign::Center},
+        {UI_CursorAttack_Zoomlevel0, HAlign::Center, VAlign::Center},
+        {UI_CursorAttack_Zoomlevel1, HAlign::Center, VAlign::Center},
+        {UI_CursorAttack_Zoomlevel2, HAlign::Center, VAlign::Center},
+        {UI_CursorCapture_Zoomlevel0, HAlign::Center, VAlign::Bottom},
+        {UI_CursorCapture_Zoomlevel1, HAlign::Center, VAlign::Bottom},
+        {UI_CursorCapture_Zoomlevel2, HAlign::Center, VAlign::Bottom},
+        {UI_CursorCarryallDrop_Zoomlevel0, HAlign::Center, VAlign::Bottom},
+        {UI_CursorCarryallDrop_Zoomlevel1, HAlign::Center, VAlign::Bottom},
+        {UI_CursorCarryallDrop_Zoomlevel2, HAlign::Center, VAlign::Bottom},
+    });
+
+    default_cursor_.reset(SDL_CreateSystemCursor(SDL_SystemCursor::SDL_SYSTEM_CURSOR_ARROW));
+
+    for (const auto& cd : cursor_ids) {
+        auto* const surface = getUIGraphicSurface(cd.id_);
+
+        if (!surface)
+            continue;
+
+        const auto x = [w = surface->w, align = cd.h_align_]() {
+            switch (align) {
+                default:
+                case HAlign::Left: return 0;
+                case HAlign::Center: return w / 2;
+                case HAlign::Right: return w - 1;
+            }
+        }();
+
+        const auto y = [h = surface->h, align = cd.v_align_]() {
+            switch (align) {
+                default:
+                case VAlign::Top: return 0;
+                case VAlign::Center: return h / 2;
+                case VAlign::Bottom: return h - 1;
+            }
+        }();
+
+        cursors_[cd.id_].reset(SDL_CreateColorCursor(surface, x, y));
+    }
 }
