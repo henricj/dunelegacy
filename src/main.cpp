@@ -755,6 +755,9 @@ bool run_game(int argc, char* argv[]) {
 
         sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
 
+        if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
+            SDL_SetCursor(cursor);
+
 #ifdef HAS_ASYNC
         try {
             auto sfxResult = sfxManagerFut.get();
