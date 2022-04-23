@@ -277,7 +277,7 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
 }
 
 void OptionsMenu::onOptionsOK() {
-    const std::string playername = nameTextBox.getText();
+    const std::string playername{nameTextBox.getText()};
     if (playername.empty()) {
         openWindow(MsgBox::create(_("Please enter a Player Name.")));
         return;
@@ -290,7 +290,7 @@ void OptionsMenu::onOptionsOK() {
         return;
     }
 
-    const std::string metaserver = metaServerTextBox.getText();
+    const std::string metaserver{metaServerTextBox.getText()};
     if (metaserver.empty()) {
         openWindow(MsgBox::create(_("Please enter a MetaServer.")));
         return;

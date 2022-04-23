@@ -142,8 +142,12 @@ void MultiPlayerMenu::onCreateInternetGame() {
 }
 
 void MultiPlayerMenu::onConnect() {
-    const std::string hostname = connectHostTextBox.getText();
-    const int port             = atol(connectPortTextBox.getText().c_str());
+    const std::string hostname{connectHostTextBox.getText()};
+
+    int port;
+    const auto port_text = connectPortTextBox.getText();
+    if (!parseString(port_text, port))
+        THROW(std::invalid_argument, "NetworkManager: Invalid port '%s'!", port_text);
 
     pNetworkManager->setOnReceiveGameInfo(
         [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });

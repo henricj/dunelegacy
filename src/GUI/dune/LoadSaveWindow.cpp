@@ -228,7 +228,7 @@ void LoadSaveWindow::onOK() {
         const auto savename = saveName.getText();
 
         if (!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
-            filename = directories[currentDirectoryIndex] / (saveName.getText() + "." + extension);
+            filename = directories[currentDirectoryIndex] / fmt::format("{}.{}", saveName.getText(), extension);
 
             auto* const pParentWindow = dynamic_cast<Window*>(getParent());
             if (pParentWindow != nullptr) {

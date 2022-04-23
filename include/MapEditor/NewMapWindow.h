@@ -51,8 +51,8 @@ public:
 
     int getMapSeed() const { return mapSeed; }
 
-    std::string getAuthor() const { return authorTextBox.getText(); }
-    std::string getLicense() const { return licenseTextBox.getText(); }
+    std::string getAuthor() const { return std::string{authorTextBox.getText()}; }
+    std::string getLicense() const { return std::string{licenseTextBox.getText()}; }
 
     const auto& getLoadMapFilepath() const { return loadMapFilepath; }
     const auto& getLoadMapname() const { return loadMapname; }
