@@ -270,7 +270,10 @@ void OptionsMenu::onChangeOption(bool bInteractive) {
 
     bChanged |= settings.gameOptions != currentGameOptions;
 
-    bChanged |= settings.network.serverPort != atoi(portTextBox.getText().c_str());
+    int port;
+    if (parseString(portTextBox.getText(), port))
+        bChanged |= settings.network.serverPort != port;
+
     bChanged |= settings.network.metaServer != metaServerTextBox.getText();
 
     acceptButton.setVisible(bChanged);
