@@ -26,6 +26,12 @@ TextBox::~TextBox() {
     invalidateTextures();
 }
 
+void TextBox::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
+    this->textcolor       = textcolor;
+    this->textshadowcolor = textshadowcolor;
+    invalidateTextures();
+}
+
 void TextBox::updateTextures() {
     parent::updateTextures();
 
@@ -130,4 +136,20 @@ bool TextBox::handleTextInput(SDL_TextInputEvent& textInput) {
         pOnTextChange(true);
 
     return true;
+}
+
+void TextBox::setText(const std::string& text, bool bInteractive) {
+    const bool bChanged = (text != this->text);
+    this->text          = text;
+    invalidateTextures();
+    if (bChanged && pOnTextChange) {
+        pOnTextChange(bInteractive);
+    }
+}
+
+void TextBox::invalidateTextures() {
+    pTextureWithoutCaret.reset();
+    pTextureWithCaret.reset();
+
+    parent::invalidateTextures();
 }
