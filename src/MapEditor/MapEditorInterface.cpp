@@ -790,9 +790,7 @@ void MapEditorInterface::onObjectSelected() {
         changeHouseDropDown(pStructure->house);
     }
 
-    MapEditor::Unit* pUnit = pMapEditor->getSelectedUnit();
-
-    if (pUnit != nullptr) {
+    if (const auto* pUnit = pMapEditor->getSelectedUnit()) {
         windowWidget.addWidget(&unitDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
@@ -804,8 +802,7 @@ void MapEditorInterface::onObjectSelected() {
 }
 
 void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
-    auto* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow);
-    if (pNewMapWindow != nullptr) {
+    if (const auto* pNewMapWindow = dynamic_cast<NewMapWindow*>(pChildWindow)) {
         const auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
@@ -821,8 +818,7 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
-    if (pLoadMapWindow != nullptr) {
+    if (const auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow)) {
         const auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
@@ -830,12 +826,12 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         }
     }
 
-    auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-    if (pLoadSaveWindow != nullptr && pLoadSaveWindow->getFilename() != "") {
+    const auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
+    if (pLoadSaveWindow != nullptr && !pLoadSaveWindow->getFilename().empty()) {
         pMapEditor->saveMap(pLoadSaveWindow->getFilename());
     }
 
-    auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+    const auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if (pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
         pMapEditor->onQuit();
     }
