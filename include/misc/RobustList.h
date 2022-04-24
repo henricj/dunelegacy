@@ -44,7 +44,7 @@ public:
     /**
         Default constructor. Does not register at the list.
     */
-    RobustListIterator<T>() {
+    RobustListIterator() {
         current          = nullptr;
         pList            = nullptr;
         AdvancingAllowed = true;
@@ -53,7 +53,7 @@ public:
     /**
         Copy constructor.
     */
-    RobustListIterator<T>(const RobustListIterator<T>& x) {
+    RobustListIterator(const RobustListIterator<T>& x) {
         current          = nullptr;
         pList            = nullptr;
         AdvancingAllowed = true;
@@ -65,7 +65,7 @@ public:
         \param  start   Start element to point at.
         \param  List    this is the list of start element
     */
-    RobustListIterator<T>(RobustListNode<T>* start, const RobustList<T>* List) {
+    RobustListIterator(RobustListNode<T>* start, const RobustList<T>* List) {
         current          = start;
         pList            = List;
         AdvancingAllowed = true;
@@ -75,7 +75,7 @@ public:
     /**
         destructor
     */
-    ~RobustListIterator<T>() { unregisterFromList(); }
+    ~RobustListIterator() { unregisterFromList(); }
 
     /**
         This operator returns the element the iterator is currently pointing to
@@ -236,7 +236,7 @@ public:
     /**
         Default constructor. Does not register at the list.
     */
-    RobustListConstIterator<T>() {
+    RobustListConstIterator() {
         current          = nullptr;
         pList            = nullptr;
         AdvancingAllowed = true;
@@ -245,7 +245,7 @@ public:
     /**
         Copy constructor.
     */
-    RobustListConstIterator<T>(const RobustListConstIterator<T>& x) {
+    RobustListConstIterator(const RobustListConstIterator& x) {
         current          = nullptr;
         pList            = nullptr;
         AdvancingAllowed = true;
@@ -255,7 +255,7 @@ public:
     /**
         Copy constructor.
     */
-    RobustListConstIterator<T>(const RobustListIterator<T>& x) {
+    RobustListConstIterator(const RobustListIterator<T>& x) {
         current          = x.current;
         pList            = x.pList;
         AdvancingAllowed = x.AdvancingAllowed;
@@ -267,7 +267,7 @@ public:
         \param  start   Start element to point at.
         \param  List    this is the list of start element
     */
-    RobustListConstIterator<T>(const RobustListNode<T>* start, const RobustList<T>* List) {
+    RobustListConstIterator(const RobustListNode<T>* start, const RobustList<T>* List) {
         current          = start;
         pList            = List;
         AdvancingAllowed = true;
@@ -277,7 +277,7 @@ public:
     /**
         destructor
     */
-    ~RobustListConstIterator<T>() { unregisterFromList(); }
+    ~RobustListConstIterator() { unregisterFromList(); }
 
     /**
         This operator returns the element the iterator is currently pointing to
@@ -298,7 +298,7 @@ public:
         If the flag is not set this method advances the iterator.
         \return A reference to this iterator
     */
-    RobustListConstIterator<T>& operator++() {
+    RobustListConstIterator& operator++() {
         if (current->next != nullptr) {
             if (AdvancingAllowed == true) {
                 current = current->next;
@@ -329,7 +329,7 @@ public:
         This operator goes backwards one element in the list.
         \return A reference to this iterator
     */
-    RobustListConstIterator<T>& operator--() {
+    RobustListConstIterator& operator--() {
         if (current->prev != pList->head) {
             current          = current->prev;
             AdvancingAllowed = true;
@@ -352,7 +352,7 @@ public:
         \param  x   the other iterator
         \return true if both iterators point to the same element, false otherwise
     */
-    bool operator==(const RobustListConstIterator<T>& x) const {
+    bool operator==(const RobustListConstIterator& x) const {
         if ((pList == nullptr) && (x.pList == nullptr)) {
             return true;
         }
@@ -370,14 +370,14 @@ public:
         \param  x   the other iterator
         \return false if both iterators point to the same element, true otherwise
     */
-    bool operator!=(const RobustListConstIterator<T>& x) const { return !(operator==(x)); }
+    bool operator!=(const RobustListConstIterator& x) const { return !(operator==(x)); }
 
     /**
         This operator copys the iterator x to this iterat.
         \param  x   the other iterator
         \return A reference to this iterator
     */
-    RobustListConstIterator<T>& operator=(const RobustListConstIterator<T>& x) {
+    RobustListConstIterator& operator=(const RobustListConstIterator& x) {
         if (this == &x) {
             return *this;
         }
