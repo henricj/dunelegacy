@@ -82,11 +82,11 @@ private:
         ChatMessage& operator=(ChatMessage&&)      = default;
 
         auto getUsernamePictureWidth() const {
-            return pUsernameTexture ? getWidth(pUsernameTexture.get()) : getWidth(pPictureTexture);
+            return pUsernameTexture ? pUsernameTexture.width_ : getWidth(pPictureTexture);
         }
 
         auto getUsernamePictureHeight() const {
-            return pUsernameTexture ? getHeight(pUsernameTexture.get()) : getHeight(pPictureTexture);
+            return pUsernameTexture ? pUsernameTexture.height_ : getHeight(pPictureTexture);
         }
 
         DuneTextureOwned pTimeTexture;

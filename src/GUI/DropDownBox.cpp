@@ -17,6 +17,8 @@
 
 #include <GUI/DropDownBox.h>
 
+#include "misc/DrawingRectHelper.h"
+
 #include <algorithm>
 
 DropDownBox::DropDownBox()
@@ -206,20 +208,16 @@ void DropDownBox::draw(Point position) {
 
     updateBackground();
 
-    if (pBackground != nullptr) {
-        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
-    }
+    if (pBackground)
+        pBackground.draw(renderer, position.x, position.y);
 
     updateForeground();
 
-    if (pForeground != nullptr && pActiveForeground != nullptr) {
-        if (((bHover) && pOnClick) || isActive()) {
-            const SDL_Rect dest = calcDrawingRect(pActiveForeground.get(), position.x + 2, position.y + 2);
-            Dune_RenderCopy(renderer, pActiveForeground.get(), nullptr, &dest);
+    if (pForeground && pActiveForeground) {
+        if ((bHover && pOnClick) || isActive()) {
+            pActiveForeground.draw(renderer, position.x + 2, position.y + 2);
         } else {
-            const SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 2);
-            Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
+            pForeground.draw(renderer, position.x + 2, position.y + 2);
         }
     }
 
@@ -272,9 +270,11 @@ void DropDownBox::onSelectionChange(bool bInteractive) {
 }
 
 void DropDownBox::updateButtonSurface() {
-    openListBoxButton.setSurfaces(GUIStyle::getInstance().createDropDownBoxButton(17, false, false, color),
-                                  GUIStyle::getInstance().createDropDownBoxButton(17, true, true, color),
-                                  GUIStyle::getInstance().createDropDownBoxButton(17, false, true, color));
+    const auto& gui = GUIStyle::getInstance();
+
+    openListBoxButton.setTextures(gui.createDropDownBoxButton(17, false, false, color).createTexture(renderer),
+                                  gui.createDropDownBoxButton(17, true, true, color).createTexture(renderer),
+                                  gui.createDropDownBoxButton(17, false, true, color).createTexture(renderer));
 }
 
 void DropDownBox::invalidateForeground() {
@@ -283,14 +283,19 @@ void DropDownBox::invalidateForeground() {
 }
 
 void DropDownBox::updateForeground() {
-    if (!pForeground && !pActiveForeground) {
-        if (listBox.getSelectedIndex() >= 0) {
-            pForeground       = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(
-                      getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), false, color));
-            pActiveForeground = convertSurfaceToTexture(GUIStyle::getInstance().createListBoxEntry(
-                getSize().x - 17, listBox.getEntry(listBox.getSelectedIndex()), true, color));
-        }
-    }
+    if (pForeground || pActiveForeground)
+        return;
+
+    if (listBox.getSelectedIndex() < 0)
+        return;
+
+    const auto& gui = GUIStyle::getInstance();
+
+    const auto width = getSize().x - 17;
+    const auto text  = listBox.getEntry(listBox.getSelectedIndex());
+
+    pForeground       = gui.createListBoxEntry(width, text, false, color).createTexture(renderer);
+    pActiveForeground = gui.createListBoxEntry(width, text, true, color).createTexture(renderer);
 }
 
 void DropDownBox::invalidateBackground() {
@@ -299,6 +304,6 @@ void DropDownBox::invalidateBackground() {
 
 void DropDownBox::updateBackground() {
     if (!pBackground) {
-        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
+        pBackground = GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
     }
 }

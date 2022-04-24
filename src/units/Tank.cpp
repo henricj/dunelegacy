@@ -65,7 +65,7 @@ void Tank::blitToScreen() {
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
     const auto* pTurretGraphic = turretGraphic[currentZoomlevel];
     const auto source2         = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
@@ -73,7 +73,7 @@ void Tank::blitToScreen() {
     const auto dest2           = calcSpriteDrawingRect(pTurretGraphic, x, y, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
                                                        HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
     if (isBadlyDamaged()) {
         drawSmoke(x, y);

@@ -201,10 +201,12 @@ protected:
     void updateTextures() override {
         parent::updateTextures();
 
-        if (!pBackground) {
-            pBackground =
-                convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
-        }
+        if (pBackground)
+            return;
+
+        const auto& gui = GUIStyle::getInstance();
+
+        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
     }
 
     /**
@@ -225,7 +227,7 @@ private:
 
     void onArrow2() { setCurrentValue(currentValue + 1); }
 
-    sdl2::texture_ptr pBackground;
+    DuneTextureOwned pBackground;
     PictureButton arrow1;
     PictureButton arrow2;
     TextButton sliderButton;

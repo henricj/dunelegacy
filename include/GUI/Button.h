@@ -68,11 +68,11 @@ public:
     void setTooltipText(const std::string& text) {
         tooltipText = text;
 
-        if (tooltipTexture != nullptr)
-            tooltipTexture.reset();
+        if (tooltipTexture)
+            tooltipTexture = DuneTextureOwned{};
 
         if (!tooltipText.empty()) {
-            tooltipTexture = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(tooltipText));
+            tooltipTexture = GUIStyle::getInstance().createToolTip(renderer, tooltipText);
         }
     }
 
@@ -193,7 +193,7 @@ protected:
     void invalidateTextures() override;
 
     std::string tooltipText;                               ///< the tooltip text
-    sdl2::texture_ptr tooltipTexture;                      ///< the tooltip texture
+    DuneTextureOwned tooltipTexture;                       ///< the tooltip texture
     dune::dune_clock::time_point tooltipLastMouseMotion{}; ///< the last time the mouse was moved
 
     std::function<void()> pOnClick; ///< function that is called when this button is clicked

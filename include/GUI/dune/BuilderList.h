@@ -159,7 +159,7 @@ private:
     DuneTextureOwned pOnHoldTextTexture;
     DuneTextureOwned pUnitLimitReachedTextTexture;
 
-    sdl2::texture_ptr pLastTooltip;
+    DuneTextureOwned pLastTooltip;
     std::string tooltipText;
     dune::dune_clock::time_point lastMouseMovement = dune::dune_clock::time_point::max();
     Point lastMousePos;

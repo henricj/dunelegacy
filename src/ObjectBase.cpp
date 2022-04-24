@@ -316,8 +316,8 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 
 bool ObjectBase::isOnScreen() const {
     const Coord position{lround(getRealX()), lround(getRealY())};
-    const Coord size{getWidth(graphic[currentZoomlevel]) / numImagesX,
-                     getHeight(graphic[currentZoomlevel]) / numImagesY};
+    const Coord size{static_cast<int>(std::ceil(getWidth(graphic[currentZoomlevel]) / numImagesX)),
+                     static_cast<int>(std::ceil(getHeight(graphic[currentZoomlevel]) / numImagesY))};
 
     return screenborder->isInsideScreen(position, size);
 }

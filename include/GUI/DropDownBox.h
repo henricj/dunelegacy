@@ -404,9 +404,9 @@ private:
                                              ///< with up/down keys
     bool bOnClickEnabled;                    ///< Is the onClick event enabled for this widget?
 
-    sdl2::texture_ptr pBackground;
-    sdl2::texture_ptr pForeground;
-    sdl2::texture_ptr pActiveForeground; ///< Ís shown while the mouse cursor is over this drop down box
+    DuneTextureOwned pBackground;
+    DuneTextureOwned pForeground;
+    DuneTextureOwned pActiveForeground; ///< Ís shown while the mouse cursor is over this drop down box
 
     PictureButton openListBoxButton;
     ListBox listBox;

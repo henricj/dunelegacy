@@ -122,7 +122,7 @@ void RadarView::draw(Point position) {
             const auto dest = calcSpriteDrawingRect(
                 radarStaticAnimation, radarPosition.x, radarPosition.y, NUM_STATIC_ANIMATIONS_PER_ROW,
                 (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            Dune_RenderCopy(renderer, radarStaticAnimation, &source, &dest);
+            Dune_RenderCopyF(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
 }

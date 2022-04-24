@@ -320,13 +320,13 @@ void Harvester::drawSelectionBox() {
     dest.x += 1;
     dest.y -= static_cast<float>(currentZoomlevel + 1);
     dest.h = static_cast<float>(currentZoomlevel + 1);
-    dest.w = static_cast<float>(lround((getHealth() / getMaxHealth()) * (getWidth(selectionBox) - 3)));
+    dest.w = (getHealth() / getMaxHealth()).toFloat() * (getWidth(selectionBox) - 3);
 
     renderFillRectF(renderer, &dest, getHealthColor());
 
     if (getOwner() == pLocalHouse && spice > 0) {
         dest.y -= static_cast<float>(currentZoomlevel + 1);
-        dest.w = static_cast<float>(lround(((spice) / HARVESTERMAXSPICE) * (getWidth(selectionBox) - 3)));
+        dest.w = (spice / HARVESTERMAXSPICE).toFloat() * (getWidth(selectionBox) - 3);
         renderFillRectF(renderer, &dest, COLOR_ORANGE);
     }
 }
@@ -379,8 +379,8 @@ void Harvester::setTarget(const ObjectBase* newTarget) {
 
     parent::setTarget(newTarget);
 
-    if (target && (target.getObjPointer() != nullptr) && (target.getObjPointer()->getOwner() == getOwner())
-        && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
+    if (target && target.getObjPointer() != nullptr && target.getObjPointer()->getOwner() == getOwner()
+        && target.getObjPointer()->getItemID() == Structure_Refinery) {
         static_cast<Refinery*>(target.getObjPointer())->book();
         returningToRefinery = true;
     }

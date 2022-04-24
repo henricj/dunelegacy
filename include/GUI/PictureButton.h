@@ -51,6 +51,15 @@ public:
                      const DuneTexture* pActiveTexture = nullptr) override;
 
     /**
+        This method is used for setting the different textures for this button.
+        \param  pUnpressedTexture       This texture is normally shown
+        \param  pPressedTexture         This texture is shown when the button is pressed
+        \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
+    */
+    void setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture = {},
+                     DuneTextureOwned pActiveTexture = {}) override;
+
+    /**
         Returns the minimum size of this button. The button should not
         be resized to a size smaller than this.
         \return the minimum size of this button

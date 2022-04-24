@@ -67,6 +67,8 @@
 #include <units/InfantryBase.h>
 #include <units/UnitBase.h>
 
+#include <SDL2/SDL_render.h>
+
 #include <fmt/format.h>
 
 #include <algorithm>
@@ -80,8 +82,8 @@ Game::Game() : localPlayerName(settings.general.playerName) {
     structureList.clear(); // all the structures
     bulletList.clear();
 
-    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    sideBarPos = as_rect(calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top));
+    topBarPos  = as_rect(calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top));
 
     // set to true for now
     debug = false;
@@ -545,8 +547,9 @@ void Game::drawScreen() {
 
         const auto size = getRendererSize();
 
-        const auto x = (sideBarPos.x + pFinishMessageTexture.width_) / 2;
-        const auto y = topBarPos.h + (getRendererHeight() - topBarPos.h - pFinishMessageTexture.height_) / 2;
+        const auto x = (static_cast<float>(sideBarPos.x) - pFinishMessageTexture.width_) / 2;
+        const auto y = static_cast<float>(topBarPos.h)
+                     + (static_cast<float>(getRendererHeight() - topBarPos.h) - pFinishMessageTexture.height_) / 2;
 
         pFinishMessageTexture.draw(renderer, x, y);
     }
@@ -820,6 +823,17 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
             } break;
 
+            case SDL_WINDOWEVENT: {
+                switch (event.window.event) {
+                    case SDL_WINDOWEVENT_SIZE_CHANGED: {
+                        auto& gui = GUIStyle::getInstance();
+
+                        gui.setLogicalSize(renderer, event.window.data1, event.window.data2);
+                    } break;
+
+                    default: break;
+                }
+            } break;
             case SDL_QUIT: {
                 bQuitGame = true;
             } break;

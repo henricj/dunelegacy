@@ -90,10 +90,14 @@ inline void renderFillRectF(SDL_Renderer* renderer, const SDL_FRect* rect, uint3
     SDL_RenderFillRectF(renderer, rect);
 }
 
-inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
-    const SDL_FRect rect = {static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2 - x1 + 1),
-                            static_cast<float>(y2 - y1 + 1)};
+inline void renderFillRectF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2, uint32_t color) {
+    const SDL_FRect rect = {x1, y1, (x2 - x1 + 1), (y2 - y1 + 1)};
     renderFillRectF(renderer, &rect, color);
+}
+
+inline void renderFillRect(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
+    renderFillRectF(renderer, static_cast<float>(x1), static_cast<float>(y1), static_cast<float>(x2),
+                    static_cast<float>(y2), color);
 }
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer);

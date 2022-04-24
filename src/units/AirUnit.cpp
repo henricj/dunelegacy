@@ -84,48 +84,50 @@ void AirUnit::blitToScreen() {
         const auto rotationAngleDeg = -angle.toDouble() * 360.0 / 8.0;
 
         if (shadow != nullptr) {
-            const int x = screenborder->world2screenX(realX + 4);
-            const int y = screenborder->world2screenY(realY + 12);
+            const auto x = screenborder->world2screenX(realX + 4);
+            const auto y = screenborder->world2screenY(realY + 12);
 
-            const SDL_Rect source =
+            const auto source =
                 calcSpriteSourceRect(shadow, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-            const SDL_Rect dest =
+            const auto dest =
                 calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            Dune_RenderCopyEx(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+            Dune_RenderCopyExF(renderer, shadow, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
         }
 
-        const int x = screenborder->world2screenX(realX);
-        const int y = screenborder->world2screenY(realY);
+        { // Scope
+            const auto x = screenborder->world2screenX(realX);
+            const auto y = screenborder->world2screenY(realY);
 
-        const SDL_Rect source =
-            calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX, drawnFrame, numImagesY);
-        const SDL_Rect dest =
-            calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+            const auto source = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(ANGLETYPE::RIGHT), numImagesX,
+                                                     drawnFrame, numImagesY);
+            const auto dest =
+                calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-        Dune_RenderCopyEx(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+            Dune_RenderCopyExF(renderer, pUnitGraphic, &source, &dest, rotationAngleDeg, nullptr, SDL_FLIP_NONE);
+        }
     } else {
         if (shadow != nullptr) {
-            const int x = screenborder->world2screenX(realX + 4);
-            const int y = screenborder->world2screenY(realY + 12);
+            const auto x = screenborder->world2screenX(realX + 4);
+            const auto y = screenborder->world2screenY(realY + 12);
 
-            const SDL_Rect source =
+            const auto source =
                 calcSpriteSourceRect(shadow, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-            const SDL_Rect dest =
+            const auto dest =
                 calcSpriteDrawingRect(shadow, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-            Dune_RenderCopy(renderer, shadow, &source, &dest);
+            Dune_RenderCopyF(renderer, shadow, &source, &dest);
         }
 
-        const int x = screenborder->world2screenX(realX);
-        const int y = screenborder->world2screenY(realY);
+        const auto x = screenborder->world2screenX(realX);
+        const auto y = screenborder->world2screenY(realY);
 
-        const SDL_Rect source =
+        const auto source =
             calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-        const SDL_Rect dest =
-            calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        const auto dest = calcSpriteDrawingRect(pUnitGraphic, static_cast<float>(x), static_cast<float>(y), numImagesX,
+                                                numImagesY, HAlign::Center, VAlign::Center);
 
-        Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+        Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
     }
 }
 

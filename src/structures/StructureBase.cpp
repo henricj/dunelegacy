@@ -135,11 +135,13 @@ void StructureBase::blitToScreen() {
     const auto indexX = index % numImagesX;
     const auto indexY = index / numImagesX;
 
-    const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(lround(realX)),
-                                              screenborder->world2screenY(lround(realY)), numImagesX, numImagesY);
-    const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], indexX, numImagesX, indexY, numImagesY);
+    const auto* const texture = graphic[currentZoomlevel];
 
-    Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(lround(realX)),
+                                              screenborder->world2screenY(lround(realY)), numImagesX, numImagesY);
+    const auto source = calcSpriteSourceRect(texture, indexX, numImagesX, indexY, numImagesY);
+
+    Dune_RenderCopyF(renderer, texture, &source, &dest);
 
     if (!fogged) {
         const auto* const pSmokeTex =
@@ -157,7 +159,7 @@ void StructureBase::blitToScreen() {
             }
 
             smokeSource.x = smokeFrame * smokeSource.w;
-            Dune_RenderCopy(renderer, pSmokeTex, &smokeSource, &smokeDest);
+            Dune_RenderCopyF(renderer, pSmokeTex, &smokeSource, &smokeDest);
         }
     }
 }
@@ -217,8 +219,8 @@ void StructureBase::drawGatheringPointLine() {
                               screenborder->world2screenY(indicatorPosition.y), 3, 1, HAlign::Center, VAlign::Center);
 
     // Render twice
-    Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
-    Dune_RenderCopy(renderer, pUIIndicator, &source, &drawLocation);
+    Dune_RenderCopyF(renderer, pUIIndicator, &source, &drawLocation);
+    Dune_RenderCopyF(renderer, pUIIndicator, &source, &drawLocation);
 }
 
 /**

@@ -21,6 +21,11 @@
 
 #include <SoundPlayer.h>
 
+#include "misc/DrawingRectHelper.h"
+#include "misc/dune_clock.h"
+
+#include <chrono>
+
 Button::Button()  = default;
 Button::~Button() = default;
 
@@ -163,18 +168,21 @@ void Button::drawOverlay(Point position) {
         return;
 
     const auto renderRect = getRendererSize();
-    auto dest = calcDrawingRectF(tooltipTexture.get(), drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
-    if (dest.x + dest.w >= renderRect.w) {
+    const auto render_w   = static_cast<float>(renderRect.w);
+    const auto render_h   = static_cast<float>(renderRect.h);
+
+    auto dest = calcDrawingRect(tooltipTexture, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    if (dest.x + dest.w >= render_w) {
         // do not draw tooltip outside screen
-        dest.x = renderRect.w - dest.w;
+        dest.x = render_w - dest.w;
     }
 
     if (dest.y < 0) {
         // do not draw tooltip outside screen
         dest.y = 0;
-    } else if (dest.y + dest.h >= renderRect.h) {
+    } else if (dest.y + dest.h >= render_h) {
         // do not draw tooltip outside screen
-        dest.y = renderRect.h - dest.h;
+        dest.y = render_h - dest.h;
     }
 
     Dune_RenderCopyF(renderer, tooltipTexture.get(), nullptr, &dest);

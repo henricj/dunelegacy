@@ -77,7 +77,7 @@ void Devastator::blitToScreen() {
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
     constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),  Coord(4, -12),
                                                 Coord(-8, -16), Coord(0, -12),  Coord(-4, -12), Coord(0, -12)};
@@ -89,7 +89,7 @@ void Devastator::blitToScreen() {
                         screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
                         HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
     if (isBadlyDamaged()) {
         drawSmoke(x1, y1);

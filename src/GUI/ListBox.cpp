@@ -17,6 +17,11 @@
 
 #include <GUI/ListBox.h>
 
+#include "misc/DrawingRectHelper.h"
+#include "misc/dune_clock.h"
+
+#include <chrono>
+
 ListBox::ListBox() : color(COLOR_DEFAULT) {
     ListBox::enableResizing(true, true);
 
@@ -106,13 +111,11 @@ void ListBox::draw(Point position) {
 
     updateTextures();
 
-    if (pBackground != nullptr) {
-        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
-    }
+    if (pBackground)
+        pBackground.draw(renderer, position.x, position.y);
 
-    const SDL_Rect dest = calcDrawingRect(pForeground.get(), position.x + 2, position.y + 1);
-    Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
+    if (pForeground)
+        pForeground.draw(renderer, position.x + 2, position.y + 1);
 
     Point ScrollBarPos = position;
     ScrollBarPos.x += getSize().x - scrollbar.getSize().x;
@@ -178,36 +181,57 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
 void ListBox::updateTextures() {
     Widget::updateTextures();
 
-    if (!pBackground) {
-        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
-    }
+    const auto& gui = GUIStyle::getInstance();
+
+    if (!pBackground)
+        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
 
     if (!pForeground) {
+        const auto scale = gui.getActualScale();
+
         // create surfaces
-        int surfaceHeight = getSize().y - 2;
-        if (surfaceHeight < 0) {
-            surfaceHeight = 0;
-        }
+        const auto surfaceHeight = getSize().y - 2;
 
-        sdl2::surface_ptr pForegroundSurface =
-            sdl2::surface_ptr{GUIStyle::getInstance().createEmptySurface(getSize().x - 4, surfaceHeight, true)};
+        if (surfaceHeight <= 0)
+            return;
 
-        const int numVisibleElements =
-            static_cast<int>(surfaceHeight / GUIStyle::getInstance().getListBoxEntryHeight());
+        const auto surfaceWidth = getSize().x - 4;
+
+        if (surfaceWidth <= 0)
+            return;
+
+        const auto scaled_height = static_cast<int>(std::ceil(static_cast<float>(surfaceHeight) * scale));
+        const auto scaled_width  = static_cast<int>(std::ceil(static_cast<float>(surfaceWidth) * scale));
+
+        sdl2::surface_ptr pForegroundSurface{gui.createEmptySurface(scaled_width, scaled_height, true)};
+
+        const auto entry_height        = gui.getListBoxEntryHeight();
+        const auto scaled_entry_height = static_cast<int>(std::ceil(static_cast<float>(entry_height) * scale));
+
+        const auto numVisibleElements = surfaceHeight / static_cast<int>(entry_height);
         for (int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;
 
-            sdl2::surface_ptr pSurface = sdl2::surface_ptr{GUIStyle::getInstance().createListBoxEntry(
-                getSize().x - 4, getEntry(i), bHighlightSelectedElement && (i == selectedElement), color)};
+            auto pSurface = gui.createListBoxEntry(scaled_width, getEntry(i),
+                                                   bHighlightSelectedElement && i == selectedElement, color);
 
-            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0,
-                                            (i - firstVisibleElement)
-                                                * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight()));
+            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement) * scaled_entry_height);
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
         }
-        pForeground = convertSurfaceToTexture(std::move(pForegroundSurface));
+
+        auto texture = convertSurfaceToTexture(std::move(pForegroundSurface));
+
+        pForeground =
+            DuneTextureOwned{std::move(texture), static_cast<float>(surfaceWidth), static_cast<float>(surfaceHeight)};
     }
+}
+
+void ListBox::invalidateTextures() {
+    pBackground.reset();
+    pForeground.reset();
+
+    parent::invalidateTextures();
 }
 
 void ListBox::updateList() {

@@ -35,7 +35,7 @@ public:
         \param  fontSize  The size of the font to use
         \return the minimum size of this label
     */
-    Point getMinimumLabelSize(std::string_view text, int fontSize) override;
+    Point getMinimumLabelSize(std::string_view text, int fontSize) const override;
 
     /**
         Creates the surface for a label with TextLines as content.
@@ -76,7 +76,7 @@ public:
         \param  text    The text for the checkbox
         \return the minimum size of this checkbox
     */
-    Point getMinimumCheckboxSize(std::string_view text) override;
+    Point getMinimumCheckboxSize(std::string_view text) const override;
 
     /**
         Creates the surface for a checkbox with text as content.
@@ -93,14 +93,14 @@ public:
     sdl2::surface_ptr
     createCheckboxSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                           Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
-                          Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+                          Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
 
     /**
         Returns the minimum size of a radio button with this text
         \param  text    The text for the radio button
         \return the minimum size of this radio button
     */
-    Point getMinimumRadioButtonSize(std::string_view text) override;
+    Point getMinimumRadioButtonSize(std::string_view text) const override;
 
     /**
         Creates the surface for a radio button with text as content.
@@ -117,7 +117,7 @@ public:
     sdl2::surface_ptr
     createRadioButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool checked, bool activated,
                              Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
-                             Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+                             Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
 
     /**
         Creates the surface for a drop down box
@@ -127,15 +127,15 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr
-    createDropDownBoxButton(uint32_t size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
+    DuneSurfaceOwned
+    createDropDownBoxButton(int size, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) const override;
 
     /**
         Returns the minimum size of a button with this text
         \param  text    The text for the button
         \return the minimum size of this button
     */
-    Point getMinimumButtonSize(std::string_view text) override;
+    Point getMinimumButtonSize(std::string_view text) const override;
 
     /**
         Creates the surface for a button with text as content.
@@ -150,7 +150,7 @@ public:
     */
     sdl2::surface_ptr
     createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
-                        Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
+                        Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const override;
 
     DuneTextureOwned
     createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
@@ -164,7 +164,7 @@ public:
         \param  fontSize  The size of the font to use
         \return the minimum size of a text box
     */
-    Point getMinimumTextBoxSize(int fontSize) override;
+    Point getMinimumTextBoxSize(int fontSize) const override;
 
     /**
         Creates the surface for a text box with text as content.
@@ -181,13 +181,13 @@ public:
     sdl2::surface_ptr
     createTextBoxSurface(uint32_t width, uint32_t height, std::string_view text, bool caret, int fontSize,
                          Alignment_Enum alignment = Alignment_Left, Uint32 textcolor = COLOR_DEFAULT,
-                         Uint32 textshadowcolor = COLOR_DEFAULT) override;
+                         Uint32 textshadowcolor = COLOR_DEFAULT) const override;
 
     /**
         Returns the minimum size of a scroll bar arrow button.
         \return the minimum size of a scroll bar arrow
     */
-    Point getMinimumScrollBarArrowButtonSize() override;
+    Point getMinimumScrollBarArrowButtonSize() const override;
 
     /**
         Creates the surface for a scroll bar arrow button.
@@ -198,13 +198,13 @@ public:
         \return the new surface
     */
     sdl2::surface_ptr
-    createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) override;
+    createScrollBarArrowButton(bool down, bool pressed, bool activated, Uint32 color = COLOR_DEFAULT) const override;
 
     /**
         Returns the minimum height of a list box entry.
         \return the minimum height of a list box entry
     */
-    uint32_t getListBoxEntryHeight() override;
+    int getListBoxEntryHeight() const override;
 
     /**
         Creates the surface for a list box entry with text as content.
@@ -214,8 +214,8 @@ public:
         \param  color       the color of the text (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr
-    createListBoxEntry(uint32_t width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) override;
+    DuneSurfaceOwned
+    createListBoxEntry(int width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) const override;
 
     /**
         Creates the overlay surface for a progress bar widget. This surface is then drawn
@@ -226,15 +226,16 @@ public:
         \param  color       the color of the overlay (COLOR_DEFAULT = default color for this style)
         \return the new surface
     */
-    sdl2::surface_ptr
-    createProgressBarOverlay(uint32_t width, uint32_t height, double percent, Uint32 color = COLOR_DEFAULT) override;
+    sdl2::surface_ptr createProgressBarOverlay(uint32_t width, uint32_t height, double percent,
+                                               Uint32 color = COLOR_DEFAULT) const override;
 
     /**
         Creates a tool tip surface.
+        \param  renderer    the renderer for the texture
         \param  text        the tool tip text
         \return the new surface
     */
-    sdl2::surface_ptr createToolTip(std::string_view text) override;
+    DuneTextureOwned createToolTip(SDL_Renderer* renderer, std::string_view text) const override;
 
     /**
         Creates a simple background for e.g. a window
@@ -257,7 +258,7 @@ public:
         \param  height      the height of the surface
         \return the new surface
     */
-    sdl2::surface_ptr createWidgetBackground(uint32_t width, uint32_t height) override;
+    DuneSurfaceOwned createWidgetBackground(int width, int height) const override;
 
     /**
         Get the height of the font specified by fontnum
@@ -324,6 +325,7 @@ private:
     }
 
     uint32_t scaledFontSize(uint32_t font_size) const;
+    int getPhysicalTextHeight(unsigned FontNum) const;
 
     FontManager* fontManager_{};
     DuneTextureOwned backgroundTile_;

@@ -164,25 +164,18 @@ const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE hou
     return texture ? &texture : nullptr;
 }
 
-SDL_Texture* GFXManager::getMainBackground(SDL_Renderer* renderer, int width, int height) {
-    if (mainBackground_) {
-        int w, h;
-        if (0 != SDL_QueryTexture(mainBackground_.get(), nullptr, nullptr, &w, &h))
-            return nullptr;
+DuneTextureOwned GFXManager::createMainBackground(SDL_Renderer* renderer, int width, int height) const {
+    // Scope
+    const auto& scale = GUIStyle::getInstance().getActualScale();
 
-        if (w == width && h == height)
-            return mainBackground_.get();
+    const auto scaled_width  = static_cast<int>(std::ceil(static_cast<float>(width) * scale));
+    const auto scaled_height = static_cast<int>(std::ceil(static_cast<float>(height) * scale));
 
-        mainBackground_.reset();
-    }
+    const auto surface = surfaceLoader.createMainBackgroundSurface(scaled_width, scaled_height);
 
-    { // Scope
-        const auto surface = surfaceLoader.createMainBackgroundSurface(width, height);
+    sdl2::texture_ptr texture{SDL_CreateTextureFromSurface(renderer, surface.get())};
 
-        mainBackground_.reset(SDL_CreateTextureFromSurface(renderer, surface.get()));
-    }
-
-    return mainBackground_.get();
+    return DuneTextureOwned{std::move(texture), static_cast<float>(width), static_cast<float>(height)};
 }
 
 SDL_Texture* GFXManager::getTempStreamingTexture(SDL_Renderer* renderer, int width, int height) {

@@ -71,7 +71,7 @@ public:
         return surfaceLoader.getMapChoicePieceSurface(num, house);
     }
 
-    SDL_Texture* getMainBackground(SDL_Renderer* renderer, int width, int height);
+    DuneTextureOwned createMainBackground(SDL_Renderer* renderer, int width, int height) const;
 
     sdl2::surface_ptr createBackgroundTile() const { return surfaceLoader.createBackgroundTileSurface(); }
 
@@ -108,7 +108,7 @@ private:
 
     std::vector<sdl2::texture_ptr> streamingTextureCache_;
 
-    sdl2::texture_ptr mainBackground_;
+    DuneTextureOwned mainBackground_;
 };
 
 #endif // GFXMANAGER_H

@@ -22,6 +22,10 @@
 
 #include <misc/SDL2pp.h>
 
+#include "Renderer/DuneSurface.h"
+
+struct SDL_Texture;
+
 class WidgetWithBackground : public Widget {
     using parent = Widget;
 
@@ -42,6 +46,7 @@ public:
     virtual void setTransparentBackground(bool bTransparent);
 
     void setBackground(const DuneTexture* pBackground);
+    void setBackground(DuneTextureOwned background);
 
     /**
         This method resizes the widget to width and height. This method should only be
@@ -74,9 +79,8 @@ protected:
     [[nodiscard]] const DuneTexture* getBackground();
 
     void setBackground(SDL_Surface* surface);
-    void setBackground(SDL_Texture* texture);
 
-    virtual sdl2::surface_ptr createBackground();
+    virtual DuneSurfaceOwned createBackground();
 
 private:
     const DuneTexture* pBackground{}; ///< background texture

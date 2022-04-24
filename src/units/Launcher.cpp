@@ -65,7 +65,7 @@ void Launcher::blitToScreen() {
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
     static constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
                                                      Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
@@ -77,7 +77,7 @@ void Launcher::blitToScreen() {
                         screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
                         HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
     if (isBadlyDamaged()) {
         drawSmoke(x1, y1);
