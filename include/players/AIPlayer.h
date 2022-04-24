@@ -51,6 +51,8 @@ private:
     void build();
     void attack();
 
+    void handle_sandworm(const UnitBase* sandworm);
+
     [[nodiscard]] bool isAllowedToArm() const;
 
     [[nodiscard]] int getMaxHarvester() const;
