@@ -75,8 +75,9 @@ void NewsTicker::draw(Point position) {
 
         // draw text
         if (currentMessage != messages.front()) {
-            currentMessage         = messages.front();
-            pCurrentMessageTexture = pFontManager->createTextureWithText(currentMessage, COLOR_BLACK, 12);
+            currentMessage = messages.front();
+            pCurrentMessageTexture.reset(SDL_CreateTextureFromSurface(
+                renderer, pFontManager->getFont(12)->createTextSurface(currentMessage, COLOR_BLACK).get()));
         }
 
         if (pCurrentMessageTexture != nullptr) {

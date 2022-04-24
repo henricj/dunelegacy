@@ -1,3 +1,20 @@
+/*
+ *  This file is part of Dune Legacy.
+ *
+ *  Dune Legacy is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Dune Legacy is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef DUNETEXTURE_H
 #define DUNETEXTURE_H
 
@@ -30,6 +47,16 @@ struct DuneTextureRect final {
         return DuneTextureRect(rect);
     }
 
+    static DuneTextureRect create(SDL_Texture* texture) {
+        if (!texture) {
+            return {};
+        }
+
+        int w, h;
+        SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
+        return create(0, 0, w, h);
+    }
+
     DuneTextureRect& operator=(const DuneTextureRect&) = default;
     DuneTextureRect& operator=(const SDL_Rect& rect) { return operator=(DuneTextureRect{rect}); }
 };
@@ -37,22 +64,16 @@ struct DuneTextureRect final {
 struct DuneTexture final {
     SDL_Texture* texture_{};
     DuneTextureRect source_{};
+    float width_{};
+    float height_{};
 
     DuneTexture()                   = default;
     DuneTexture(const DuneTexture&) = default;
     DuneTexture(DuneTexture&&)      = default;
 
-    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect) : texture_{texture}, source_{rect} { }
+    DuneTexture(SDL_Texture* texture, const SDL_Rect& rect);
 
-    explicit DuneTexture(SDL_Texture* texture) : texture_{texture} {
-        if (!texture) {
-            return;
-        }
-
-        int w, h;
-        SDL_QueryTexture(texture_, nullptr, nullptr, &w, &h);
-        source_ = DuneTextureRect::create(0, 0, w, h);
-    }
+    explicit DuneTexture(SDL_Texture* texture);
 
     ~DuneTexture() = default;
 
@@ -63,9 +84,37 @@ struct DuneTexture final {
 
     [[nodiscard]] SDL_Rect source_rect() const noexcept { return source_.as_sdl(); }
 
-    void draw(SDL_Renderer* renderer, int x, int y) const noexcept;
-    void draw(SDL_Renderer* renderer, int x, int y, const SDL_Rect& source) const noexcept;
-    void draw(SDL_Renderer* renderer, int x, int y, double angle) const noexcept;
+    void draw(SDL_Renderer* renderer, float x, float y) const noexcept;
+    void draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect& source) const noexcept;
+    void draw(SDL_Renderer* renderer, float x, float y, double angle) const noexcept;
+};
+
+struct DuneTextureOwned final {
+    sdl2::texture_ptr texture_;
+    float width_{};
+    float height_{};
+
+    DuneTextureOwned()                        = default;
+    DuneTextureOwned(const DuneTextureOwned&) = delete;
+    DuneTextureOwned(DuneTextureOwned&&)      = default;
+
+    explicit DuneTextureOwned(sdl2::texture_ptr texture, float width = 0.f, float height = 0.f);
+
+    ~DuneTextureOwned();
+
+    DuneTextureOwned& operator=(const DuneTextureOwned&) = delete;
+    DuneTextureOwned& operator=(DuneTextureOwned&&)      = default;
+
+    operator bool() const noexcept { return nullptr != texture_; }
+
+    [[nodiscard]] auto get() const noexcept { return texture_.get(); }
+    [[nodiscard]] auto operator->() const noexcept { return texture_.operator->(); }
+
+    void draw(SDL_Renderer* renderer, float x, float y) const noexcept;
+
+    void draw(SDL_Renderer* renderer, int x, int y) const noexcept {
+        draw(renderer, static_cast<float>(x), static_cast<float>(y));
+    }
 };
 
 #endif // DUNETEXTURE_H

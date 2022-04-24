@@ -311,10 +311,9 @@ void OptionsMenu::onOptionsOK() {
     const int selectedResolution  = resolutionDropDownBox.getSelectedEntryIntData();
     settings.video.physicalWidth  = selectedResolution >= 0 ? availScreenRes[selectedResolution].x : 0;
     settings.video.physicalHeight = selectedResolution >= 0 ? availScreenRes[selectedResolution].y : 0;
-    const int factor =
-        getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
-    settings.video.width              = settings.video.physicalWidth / factor;
-    settings.video.height             = settings.video.physicalHeight / factor;
+
+    settings.video.width              = settings.video.physicalWidth;
+    settings.video.height             = settings.video.physicalHeight;;
     settings.video.preferredZoomLevel = zoomlevelDropDownBox.getSelectedEntryIntData();
     settings.video.scaler             = scalerDropDownBox.getSelectedEntry();
     settings.video.fullscreen         = fullScreenCheckbox.isChecked();

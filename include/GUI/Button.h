@@ -173,6 +173,15 @@ protected:
     virtual void setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                              const DuneTexture* pActiveTexture = nullptr);
 
+    /**
+        This method is used for setting the different textures for this button.
+        \param  pUnpressedTexture       This texture is normally shown
+        \param  pPressedTexture         This texture is shown when the button is pressed
+        \param  pActiveTexture          This texture is shown when the button is activated by keyboard or by mouse hover
+    */
+    virtual void setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture,
+                             DuneTextureOwned pActiveTexture = {});
+
     const DuneTexture* pUnpressedTexture{}; ///< Texture that is normally shown
     const DuneTexture* pPressedTexture{};   ///< Texture that is shown when the button is pressed
     const DuneTexture*

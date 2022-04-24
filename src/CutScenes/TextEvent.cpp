@@ -16,7 +16,9 @@
  */
 
 #include <CutScenes/TextEvent.h>
-#include <FileClasses/FontManager.h>
+
+#include <GUI/GUIStyle.h>
+
 #include <globals.h>
 
 TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, int lengthInFrames, bool bFadeIn,
@@ -26,19 +28,18 @@ TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, in
 
     const auto& gui = GUIStyle::getInstance();
 
-    const auto font_size = static_cast<int>(std::round(gui.getScale() * 28));
+    constexpr static auto font_size = 28;
 
-    text_height_ = pFontManager->getTextHeight(font_size);
+    text_height_ = gui.getTextHeight(font_size);
 
-    pTexture = pFontManager->createTextureWithMultilineText(text, color, font_size, true);
+    pTexture = gui.createMultilineText(renderer, text, color, font_size, true);
 }
 
 TextEvent::~TextEvent() = default;
 
 void TextEvent::draw(int currentFrameNumber) const {
-    if (currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames) {
+    if (currentFrameNumber < startFrame || currentFrameNumber > startFrame + lengthInFrames)
         return;
-    }
 
     uint8_t alpha = 255;
     if (!bFadeIn && currentFrameNumber == startFrame) {
@@ -49,27 +50,16 @@ void TextEvent::draw(int currentFrameNumber) const {
         alpha = static_cast<uint8_t>((startFrame + lengthInFrames - currentFrameNumber) * 255 / TEXT_FADE_TIME);
     }
 
-    const auto& gui = GUIStyle::getInstance();
-
-    const auto scale = 1.f / gui.getZoom();
-
     const auto render_size = getRendererSize();
-    const auto render_w    = static_cast<float>(render_size.w);
-    const auto render_h    = static_cast<float>(render_size.h);
 
-    int w, h;
-    if (0 != SDL_QueryTexture(pTexture.get(), nullptr, nullptr, &w, &h))
-        return;
+    const auto render_w = static_cast<float>(render_size.w);
+    const auto render_h = static_cast<float>(render_size.h);
 
-    const auto scaled_w = static_cast<float>(w) * scale;
-    const auto scaled_h = static_cast<float>(h) * scale;
-
-    const auto scaled_text_height = static_cast<float>(text_height_) * scale;
-
-    const auto dest_y = bCenterVertical ? (render_h - scaled_h) / 2 : (render_h + 480.f - 5.f * scaled_text_height) / 2;
-
-    const SDL_FRect dest{(render_w - scaled_w) / 2, dest_y, scaled_w, scaled_h};
+    const auto dest_x = (render_w - pTexture.width_) / 2;
+    const auto dest_y =
+        bCenterVertical ? (render_h - pTexture.height_) / 2 : (render_h + 480.f - 5.f * text_height_) / 2;
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
-    Dune_RenderCopyF(renderer, pTexture.get(), nullptr, &dest);
+
+    pTexture.draw(renderer, dest_x, dest_y);
 }

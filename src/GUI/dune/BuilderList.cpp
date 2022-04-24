@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
@@ -56,12 +57,13 @@ BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObje
     orderButton.setOnClick([this] { onOrder(); });
     orderButton.setText(_("Order"));
 
-    pSoldOutTextTexture      = pFontManager->createTextureWithMultilineText(_("SOLD OUT"), COLOR_WHITE, 12, true);
-    pAlreadyBuiltTextTexture = pFontManager->createTextureWithMultilineText(_("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
-    pPlaceItTextTexture      = pFontManager->createTextureWithMultilineText(_("PLACE IT"), COLOR_WHITE, 12, true);
-    pOnHoldTextTexture       = pFontManager->createTextureWithMultilineText(_("ON HOLD"), COLOR_WHITE, 12, true);
-    pUnitLimitReachedTextTexture =
-        pFontManager->createTextureWithMultilineText(_("UNIT LIMIT\nREACHED"), COLOR_WHITE, 12, true);
+    const auto& gui = GUIStyle::getInstance();
+
+    pSoldOutTextTexture          = gui.createMultilineText(renderer, _("SOLD OUT"), COLOR_WHITE, 12, true);
+    pAlreadyBuiltTextTexture     = gui.createMultilineText(renderer, _("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
+    pPlaceItTextTexture          = gui.createMultilineText(renderer, _("PLACE IT"), COLOR_WHITE, 12, true);
+    pOnHoldTextTexture           = gui.createMultilineText(renderer, _("ON HOLD"), COLOR_WHITE, 12, true);
+    pUnitLimitReachedTextTexture = gui.createMultilineText(renderer, _("UNIT LIMIT\nREACHED"), COLOR_WHITE, 12, true);
 
     resize(BuilderList::getMinimumSize().x, BuilderList::getMinimumSize().y);
 }
@@ -245,12 +247,15 @@ void BuilderList::draw(Point position) {
                     }
                 }
 
+                const auto& gui = GUIStyle::getInstance();
+
                 // draw price
-                const auto pPriceTexture =
-                    pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
-                const auto drawLocation = calcDrawingRect(
-                    pPriceTexture.get(), dest.x + 2, dest.y + BUILDERBTN_HEIGHT - getHeight(pPriceTexture.get()) + 3);
-                Dune_RenderCopy(renderer, pPriceTexture.get(), nullptr, &drawLocation);
+                {
+                    const auto pPriceTexture =
+                        gui.createText(renderer, fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
+
+                    pPriceTexture.draw(renderer, dest.x + 2.f, dest.y + BUILDERBTN_HEIGHT - pPriceTexture.height_ + 3);
+                }
 
                 if (pStarport != nullptr) {
                     const auto bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
@@ -309,12 +314,13 @@ void BuilderList::draw(Point position) {
 
                 if (buildItem.num > 0) {
                     // draw number of this in build list
-                    sdl2::texture_ptr pNumberTexture =
-                        pFontManager->createTextureWithText(fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
-                    SDL_Rect drawLocationNumber =
-                        calcDrawingRect(pNumberTexture.get(), dest.x + BUILDERBTN_WIDTH - 3,
-                                        dest.y + BUILDERBTN_HEIGHT + 2, HAlign::Right, VAlign::Bottom);
-                    Dune_RenderCopy(renderer, pNumberTexture.get(), nullptr, &drawLocationNumber);
+                    const auto pNumberTexture =
+                        gui.createText(renderer, fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
+
+                    const auto size = getRendererSize();
+
+                    pNumberTexture.draw(renderer, size.w - (dest.x + BUILDERBTN_WIDTH - 3),
+                                        size.h - (dest.y + BUILDERBTN_HEIGHT + 2));
                 }
             }
 

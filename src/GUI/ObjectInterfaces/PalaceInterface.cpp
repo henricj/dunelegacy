@@ -1,5 +1,6 @@
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 
+#include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/TextManager.h>
 
@@ -14,7 +15,9 @@ std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& cont
 sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, GeneratedPicture id) {
     auto* const deathHandSurface = surfaceLoader->getSmallDetailSurface(Picture_DeathHand);
 
-    const sdl2::surface_ptr pText{pFontManager->createSurfaceWithText(_("READY"), COLOR_WHITE, 12)};
+    const auto& gui = GUIStyle::getInstance();
+
+    const sdl2::surface_ptr pText{pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};
 
     sdl2::surface_ptr pReady{SDL_CreateRGBSurface(0, getWidth(deathHandSurface), getHeight(deathHandSurface),
                                                   SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};

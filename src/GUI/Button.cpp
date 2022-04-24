@@ -211,7 +211,36 @@ void Button::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surface_ptr 
 
 void Button::setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture* pPressedTexture,
                          const DuneTexture* pActiveTexture) {
+    if (!pUnpressedTexture || localUnpressed_.get() != pUnpressedTexture->texture_)
+        localUnpressed_.reset();
+    if (!pPressedTexture || localPressed_.get() != pPressedTexture->texture_)
+        localPressed_.reset();
+    if (!pActiveTexture || localActive_.get() != pActiveTexture->texture_)
+        localActive_.reset();
+
     this->pUnpressedTexture = pUnpressedTexture;
     this->pPressedTexture   = pPressedTexture;
     this->pActiveTexture    = pActiveTexture;
+}
+
+void Button::setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture,
+                         DuneTextureOwned pActiveTexture) {
+
+    localUnpressed_ = std::move(pUnpressedTexture.texture_);
+    localPressed_   = std::move(pPressedTexture.texture_);
+    localActive_    = std::move(pActiveTexture.texture_);
+
+    localDuneUnpressed_         = DuneTexture{localUnpressed_.get()};
+    localDuneUnpressed_.width_  = pUnpressedTexture.width_;
+    localDuneUnpressed_.height_ = pUnpressedTexture.height_;
+
+    localDunePressed_         = DuneTexture{localPressed_.get()};
+    localDunePressed_.width_  = pPressedTexture.width_;
+    localDunePressed_.height_ = pPressedTexture.height_;
+
+    localDuneActive_         = DuneTexture{localActive_.get()};
+    localDuneActive_.width_  = pActiveTexture.width_;
+    localDuneActive_.height_ = pActiveTexture.height_;
+
+    setTextures(&localDuneUnpressed_, &localDunePressed_, localActive_ ? &localDuneActive_ : nullptr);
 }

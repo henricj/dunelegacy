@@ -20,6 +20,8 @@
 
 #include "MenuBase.h"
 
+#include "GUI/CenteringBox.h"
+#include "GUI/HBox.h"
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>
@@ -48,7 +50,9 @@ private:
     static void onAbout();
     void onQuit();
 
-    StaticContainer windowWidget;
+    HBox windowWidget;
+    VBox planetMenuWidget;
+    CenteringBox menuWidget;
     VBox MenuButtons;
 
     TextButton singlePlayerButton;

@@ -18,6 +18,8 @@
 #ifndef FONTMANAGER_H
 #define FONTMANAGER_H
 
+#include "FileClasses/Font.h"
+
 #include <misc/SDL2pp.h>
 
 #include <memory>
@@ -40,20 +42,9 @@ public:
     FontManager& operator=(const FontManager&) = delete;
     FontManager& operator=(FontManager&&)      = delete;
 
-    int getTextWidth(std::string_view text, unsigned int fontSize);
-    int getTextHeight(unsigned int fontSize);
-
-    sdl2::texture_ptr createTextureWithText(std::string_view text, uint32_t color, unsigned int fontSize);
-    sdl2::texture_ptr createTextureWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize,
-                                                     bool bCentered = false);
-
-    sdl2::surface_ptr createSurfaceWithText(std::string_view, uint32_t color, unsigned int fontSize);
-    sdl2::surface_ptr createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontSize,
-                                                     bool bCentered = false);
-
-private:
     Font* getFont(uint32_t fontSize);
 
+private:
     std::unique_ptr<Font> loadFont(unsigned int fontSize) const;
 
     std::filesystem::path font_path_;

@@ -38,29 +38,43 @@ MainMenu::MainMenu() {
 
     MainMenu::setWindowWidget(&windowWidget);
 
+    windowWidget.addWidget(HSpacer::create(16));
+    windowWidget.addWidget(&planetMenuWidget, 20.0);
+    windowWidget.addWidget(HSpacer::create(16));
+
+    planetMenuWidget.addWidget(VSpacer::create(16), 10.0);
+
     // set up pictures in the background
     // set up pictures in the background
     const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
-    auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
-    dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
-    windowWidget.addWidget(&planetPicture, dest1);
+    // auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
+    // dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
+    planetMenuWidget.addWidget(&planetPicture, pPlanetBackground->source_rect().h);
+
+    planetMenuWidget.addWidget(VSpacer::create(10), 10);
 
     const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
-    auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
-    dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
-    windowWidget.addWidget(&duneLegacy, dest2);
+    // auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
+    // dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
+    planetMenuWidget.addWidget(&duneLegacy, pDuneLegacy->source_rect().h);
+
+    planetMenuWidget.addWidget(VSpacer::create(10), 18);
 
     const auto* const pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
-    auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
-    dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
-    windowWidget.addWidget(&buttonBorder, dest3);
+    // auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
+    // dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
+    menuWidget.setBorderWidget(&buttonBorder);
+
+    menuWidget.setWidget(&MenuButtons);
+
+    planetMenuWidget.addWidget(&menuWidget);
+
+    planetMenuWidget.addWidget(VSpacer::create(16), 30.0);
 
     // set up menu buttons
-    windowWidget.addWidget(&MenuButtons, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 64),
-                           Point(160, 111));
 
     singlePlayerButton.setText(_("SINGLE PLAYER"));
     singlePlayerButton.setOnClick([] { onSinglePlayer(); });

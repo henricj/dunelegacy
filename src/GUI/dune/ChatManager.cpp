@@ -137,9 +137,11 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
     if (const auto timeinfo = dune::dune_localtime(); timeinfo.has_value())
         strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo.value());
 
-    auto pTimeTexture     = pFontManager->createTextureWithText(timestring, COLOR_WHITE, 12);
-    auto pUsernameTexture = pFontManager->createTextureWithText(std::string{username} + ": ", COLOR_WHITE, 12);
-    auto pMessageTexture  = pFontManager->createTextureWithText(message, COLOR_WHITE, 12);
+    const auto& gui = GUIStyle::getInstance();
+
+    auto pTimeTexture     = gui.createText(renderer, timestring, COLOR_WHITE, 12);
+    auto pUsernameTexture = gui.createText(renderer, std::string{username} + ": ", COLOR_WHITE, 12);
+    auto pMessageTexture  = gui.createText(renderer, message, COLOR_WHITE, 12);
 
     chatMessages.emplace_back(std::move(pTimeTexture), std::move(pUsernameTexture), std::move(pMessageTexture),
                               dune::dune_clock::now(), MessageType::MSGTYPE_NORMAL);
@@ -148,8 +150,9 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
 }
 
 void ChatManager::addInfoMessage(std::string_view message) {
-    sdl2::texture_ptr pMessageTexture =
-        pFontManager->createTextureWithText(std::string{"*  "}.append(message), COLOR_GREEN, 12);
+    const auto& gui = GUIStyle::getInstance();
+
+    auto pMessageTexture = gui.createText(renderer, std::string{"*  "}.append(message), COLOR_GREEN, 12);
 
     chatMessages.emplace_back(std::move(pMessageTexture), dune::dune_clock::now(), MessageType::MSGTYPE_INFO);
 
@@ -159,13 +162,15 @@ void ChatManager::addInfoMessage(std::string_view message) {
 void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pTexture) {
     const auto width = settings.video.width - SIDEBARWIDTH - LEFT_BORDER_WIDTH - 20;
 
-    const auto lines = greedyWordWrap(
-        message, width, [](std::string_view tmp) { return DuneStyle::getInstance().getTextWidth(tmp, 12); });
+    const auto& gui = GUIStyle::getInstance();
 
-    const auto height = static_cast<uint32_t>(lines.size()) * DuneStyle::getInstance().getTextHeight(12) + 4u;
+    const auto lines =
+        greedyWordWrap(message, width, [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });
 
-    auto pMessageTexture = convertSurfaceToTexture(DuneStyle::getInstance().createLabelSurface(
-        width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT));
+    const auto height = static_cast<int>(std::ceil(static_cast<float>(lines.size()) * gui.getTextHeight(12) + 4));
+
+    auto pMessageTexture =
+        gui.createLabel(renderer, width, height, lines, 12, Alignment_Left, COLOR_WHITE, COLOR_TRANSPARENT);
 
     chatMessages.emplace_back(std::move(pMessageTexture), pTexture, dune::dune_clock::now(),
                               MessageType::MSGTYPE_PICTURE);
@@ -179,3 +184,18 @@ void ChatManager::prune_messages() {
         chatMessages.pop_front();
     }
 }
+
+ChatManager::ChatMessage::ChatMessage(DuneTextureOwned _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                                      MessageType _messageType)
+    : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
+
+ChatManager::ChatMessage::ChatMessage(DuneTextureOwned _pTimeTexture, DuneTextureOwned _pUsernameTexture,
+                                      DuneTextureOwned _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                                      MessageType _messageType)
+    : pTimeTexture(std::move(_pTimeTexture)), pUsernameTexture(std::move(_pUsernameTexture)),
+      pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
+
+ChatManager::ChatMessage::ChatMessage(DuneTextureOwned _pMessageTexture, const DuneTexture* _pPictureTexture,
+                                      dune::dune_clock::time_point _messageTime, MessageType _messageType)
+    : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime),
+      messageType(_messageType) { }

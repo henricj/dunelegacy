@@ -486,35 +486,35 @@ void Game::drawScreen() {
     pInterface->draw(Point(0, 0));
     pInterface->drawOverlay(Point(0, 0));
 
+    const auto& gui = GUIStyle::getInstance();
+
     // draw chat message currently typed
     if (chatMode) {
-        const auto pChatTexture = pFontManager->createTextureWithText(
+        const auto pChatTexture = gui.createText(
+            renderer,
             "Chat: " + typingChatMessage
                 + (((dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 150) % 2 == 0) ? "_" : ""),
             COLOR_WHITE, 14);
-        const auto drawLocation = calcDrawingRect(pChatTexture.get(), 20, getRendererHeight() - 40);
-        Dune_RenderCopy(renderer, pChatTexture.get(), nullptr, &drawLocation);
+
+        pChatTexture.draw(renderer, 20, getRendererHeight() - 40);
     }
 
     if (bShowFPS) {
         const auto str = fmt::sprintf("fps: %4.1f\nrenderer: %4.1fms\nupdate: %4.1fms", 1000.0f / averageFrameTime,
                                       averageRenderTime, averageUpdateTime);
 
-        const auto pTexture = pFontManager->createTextureWithMultilineText(str, COLOR_WHITE, 14);
+        const auto pTexture = gui.createMultilineText(renderer, str, COLOR_WHITE, 14);
 
-        const auto drawLocation = calcDrawingRect(pTexture.get(), static_cast<int>(sideBarPos.x - 14 * 8), 60);
-
-        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
+        pTexture.draw(renderer, sideBarPos.x - 14 * 8, 60);
     }
 
     if (bShowTime) {
         const int seconds  = static_cast<int>(getGameTime()) / 1000;
         const auto strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
 
-        const auto pTimeTexture = pFontManager->createTextureWithText(strTime, COLOR_WHITE, 14);
-        auto drawLocation       = calcAlignedDrawingRect(pTimeTexture.get(), HAlign::Left, VAlign::Bottom);
-        drawLocation.y++;
-        Dune_RenderCopy(renderer, pTimeTexture.get(), nullptr, &drawLocation);
+        const auto pTimeTexture = gui.createText(renderer, strTime, COLOR_WHITE, 14);
+
+        pTimeTexture.draw(renderer, 0.f, getRendererHeight() - pTimeTexture.height_);
     }
 
     if (bPause) {
@@ -527,11 +527,9 @@ void Game::drawScreen() {
         SDL_RenderFillRects(renderer, rects.data(), rects.size());
     } else if (gameCycleCount < skipToGameCycle) {
         // Cache this texture...
-        const auto pTexture = pFontManager->createTextureWithText(">>", COLOR_RGBA(0, 242, 0, 128), 48);
-        auto drawLocation   = calcAlignedDrawingRect(pTexture.get(), HAlign::Left, VAlign::Bottom);
-        drawLocation.x += 10;
-        drawLocation.y -= 12;
-        Dune_RenderCopy(renderer, pTexture.get(), nullptr, &drawLocation);
+        const auto pTexture = gui.createText(renderer, ">>", COLOR_RGBA(0, 242, 0, 128), 48);
+
+        pTexture.draw(renderer, 10.f, getRendererHeight() - pTexture.height_ - 12);
     }
 
     if (finished) {
@@ -543,11 +541,14 @@ void Game::drawScreen() {
             message = _("You Have Failed Your Mission.");
         }
 
-        const auto pFinishMessageTexture = pFontManager->createTextureWithText(message, COLOR_WHITE, 28);
-        const auto drawLocation =
-            calcDrawingRect(pFinishMessageTexture.get(), sideBarPos.x / 2,
-                            topBarPos.h + (getRendererHeight() - topBarPos.h) / 2, HAlign::Center, VAlign::Center);
-        Dune_RenderCopy(renderer, pFinishMessageTexture.get(), nullptr, &drawLocation);
+        const auto pFinishMessageTexture = gui.createText(renderer, message, COLOR_WHITE, 28);
+
+        const auto size = getRendererSize();
+
+        const auto x = (sideBarPos.x + pFinishMessageTexture.width_) / 2;
+        const auto y = topBarPos.h + (getRendererHeight() - topBarPos.h - pFinishMessageTexture.height_) / 2;
+
+        pFinishMessageTexture.draw(renderer, x, y);
     }
 
     if (pWaitingForOtherPlayers != nullptr) {
