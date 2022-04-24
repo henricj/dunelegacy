@@ -370,7 +370,7 @@ public:
             if (id == ObjPic_Bullet_SonicTemp || id == ObjPic_SandwormShimmerTemp)
                 continue;
 
-            const auto harkonnen_only = harkonnen_only_.end() != harkonnen_only_.find(id);
+            const auto harkonnen_only = harkonnen_only_.contains(id);
 
             for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
                 SDL_Surface* harkonnen = nullptr;
@@ -735,7 +735,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         auto combined_ui_graphic = [&](const auto& identifier, SDL_Surface* surface) {
             const auto& [id, h] = identifier;
 
-            if (force_combine_ui_graphic.find(id) != force_combine_ui_graphic.end())
+            if (force_combine_ui_graphic.contains(id))
                 return true;
 
             return surface->w < 350 && surface->h < 350;

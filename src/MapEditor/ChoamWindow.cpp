@@ -78,13 +78,13 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         choamRows[i].Checkbox_Unit1.setText(resolveItemName(unit1));
         choamRows[i].Checkbox_Unit1.setTextColor(color);
         choamRows[i].Checkbox_Unit1.setOnClick([this, unit1] { onUnitCheckbox(unit1); });
-        choamRows[i].Checkbox_Unit1.setChecked(choam.count(unit1) > 0);
+        choamRows[i].Checkbox_Unit1.setChecked(choam.contains(unit1));
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit1, 180);
 
         choamRows[i].TextBox_Unit1.setColor(house, color);
         choamRows[i].TextBox_Unit1.setMinMax(0, 1000);
-        choamRows[i].TextBox_Unit1.setValue((choam.count(unit1) > 0) ? choam[unit1] : 0);
-        choamRows[i].TextBox_Unit1.setVisible(choam.count(unit1) > 0);
+        choamRows[i].TextBox_Unit1.setValue(choam.contains(unit1) ? choam[unit1] : 0);
+        choamRows[i].TextBox_Unit1.setVisible(choam.contains(unit1));
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].TextBox_Unit1, 65);
 
         choamRows[i].HBox_Unit.addWidget(Spacer::create(), 20.0);
@@ -93,13 +93,13 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
             choamRows[i].Checkbox_Unit2.setText(resolveItemName(unit2));
             choamRows[i].Checkbox_Unit2.setTextColor(color);
             choamRows[i].Checkbox_Unit2.setOnClick([this, unit2] { onUnitCheckbox(unit2); });
-            choamRows[i].Checkbox_Unit2.setChecked(choam.count(unit2) > 0);
+            choamRows[i].Checkbox_Unit2.setChecked(choam.contains(unit2));
             choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit2, 180);
 
             choamRows[i].TextBox_Unit2.setColor(house, color);
             choamRows[i].TextBox_Unit2.setMinMax(0, 1000);
-            choamRows[i].TextBox_Unit2.setValue((choam.count(unit2) > 0) ? choam[unit2] : 0);
-            choamRows[i].TextBox_Unit2.setVisible(choam.count(unit2) > 0);
+            choamRows[i].TextBox_Unit2.setValue(choam.contains(unit2) ? choam[unit2] : 0);
+            choamRows[i].TextBox_Unit2.setVisible(choam.contains(unit2));
             choamRows[i].HBox_Unit.addWidget(&choamRows[i].TextBox_Unit2, 65);
         }
 
@@ -144,7 +144,7 @@ void ChoamWindow::onOK() {
 
     pMapEditor->startOperation();
 
-    for (unsigned int i = 0; i < sizeof(choamUnits) / sizeof(choamUnits[0]); i++) {
+    for (unsigned int i = 0; i < sizeof choamUnits / sizeof choamUnits[0]; i++) {
         const int rowNum         = i / 2;
         const ItemID_enum itemID = choamUnits[i];
 
@@ -153,7 +153,7 @@ void ChoamWindow::onOK() {
             bool bChecked = false;
             int amount    = 0;
 
-            if ((i % 2) == 0) {
+            if (i % 2 == 0) {
                 bChecked = choamRows[rowNum].Checkbox_Unit1.isChecked();
                 amount   = choamRows[rowNum].TextBox_Unit1.getValue();
             } else {
@@ -180,11 +180,11 @@ void ChoamWindow::onOK() {
 }
 
 void ChoamWindow::onUnitCheckbox(ItemID_enum itemID) {
-    for (unsigned int i = 0; i < sizeof(choamUnits) / sizeof(choamUnits[0]); i++) {
+    for (unsigned int i = 0; i < sizeof choamUnits / sizeof choamUnits[0]; i++) {
         if (choamUnits[i] == itemID) {
             const int rowNum = i / 2;
 
-            if ((i % 2) == 0) {
+            if (i % 2 == 0) {
                 choamRows[rowNum].TextBox_Unit1.setVisible(choamRows[rowNum].Checkbox_Unit1.isChecked());
             } else {
                 choamRows[rowNum].TextBox_Unit2.setVisible(choamRows[rowNum].Checkbox_Unit2.isChecked());
