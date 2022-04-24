@@ -50,10 +50,12 @@ public:
     }
 
     void unBook() {
-        bookings--;
-        if (bookings == 0) {
-            stopAnimate();
-        }
+        if (bookings) {
+            bookings--;
+            if (bookings == 0)
+                stopAnimate();
+        } else
+            sdl2::log_error("Unable to unbook a refinery with no bookings!");
     }
 
     bool isFree() const noexcept { return !extractingSpice; }
