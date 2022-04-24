@@ -57,6 +57,7 @@ public:
     void doRequestCarryallDrop(const GameContext& context, int x, int y);
     bool requestCarryall(const GameContext& context);
     void setPickedUp(const GameContext& context, UnitBase* newCarrier) override;
+    bool isPickedUp() const { return pickedUp; }
 
     /**
         This method is called when the user clicks on the repair button for this unit
