@@ -89,7 +89,7 @@ protected:
 template<>
 inline GroundUnit* dune_cast(ObjectBase* base) {
     if (base && base->isAGroundUnit())
-        return static_cast<GroundUnit*>(base);
+        return static_cast<GroundUnit*>(base); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
     return nullptr;
 }
@@ -97,7 +97,7 @@ inline GroundUnit* dune_cast(ObjectBase* base) {
 template<>
 inline const GroundUnit* dune_cast(const ObjectBase* base) {
     if (base && base->isAGroundUnit())
-        return static_cast<const GroundUnit*>(base);
+        return static_cast<const GroundUnit*>(base); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
     return nullptr;
 }

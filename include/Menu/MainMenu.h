@@ -20,8 +20,6 @@
 
 #include "MenuBase.h"
 
-#include "GUI/CenteringBox.h"
-#include "GUI/HBox.h"
 #include "Renderer/DuneTexture.h"
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>

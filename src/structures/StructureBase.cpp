@@ -320,10 +320,10 @@ bool StructureBase::update(const GameContext& context) {
         if (owner->getCredits() >= 5) {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
-            const auto fraction = (2 * 256) / getMaxHealth();
-            const FixPoint repairprice =
-                FixPoint(fraction * context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price)
-                / 256;
+            const auto fraction     = (2 * 256) / getMaxHealth();
+            const auto object_price = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price;
+
+            const auto repairprice = FixPoint(fraction * object_price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of
             // that
@@ -422,7 +422,7 @@ void StructureBase::destroy(const GameContext& context) {
     if (itemID != Structure_Wall) {
         for (int j = 0; j < getStructureSizeY(); j++) {
             for (int i = 0; i < getStructureSizeX(); i++) {
-                auto* pTile = map.getTile(location.x + i, location.y + j);
+                auto* const pTile = map.getTile(location.x + i, location.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY * j + i]);
 
                 Coord position((location.x + i) * TILESIZE + TILESIZE / 2, (location.y + j) * TILESIZE + TILESIZE / 2);
