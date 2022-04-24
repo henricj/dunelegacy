@@ -149,17 +149,18 @@ void Window::handleInput(SDL_Event& event) {
         case SDL_WINDOWEVENT: {
             switch (event.window.event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
-                    const auto& gui  = GUIStyle::getInstance();
-                    const auto scale = gui.getScale();
+                    auto& gui = GUIStyle::getInstance();
 
-                    const auto width  = static_cast<int>(std::round(static_cast<float>(event.window.data1) / scale));
-                    const auto height = static_cast<int>(std::round(static_cast<float>(event.window.data2) / scale));
-
-                    SDL_RenderSetLogicalSize(renderer, width, height);
+                    gui.setLogicalSize(renderer, event.window.data1, event.window.data2);
 
                     const auto actual = getRendererSize();
 
                     resize(actual.w, actual.h);
+
+                    const auto size = getMinimumSize();
+
+                    if (size.x > 0 && size.y > 0)
+                        SDL_SetWindowMinimumSize(window, size.x, size.y);
                 } break;
 
                 case SDL_WINDOWEVENT_DISPLAY_CHANGED: {
