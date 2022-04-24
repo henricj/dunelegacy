@@ -230,6 +230,7 @@ add_sources(HEADERS
 	RadarViewBase.h
 	Renderer/DuneRenderer.h
 	Renderer/DuneRotateTexture.h
+	Renderer/DuneSurface.h
 	Renderer/DuneTexture.h
 	Renderer/DuneTextures.h
 	Renderer/DuneTileTexture.h
