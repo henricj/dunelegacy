@@ -50,9 +50,7 @@ private:
     static void onAbout();
     void onQuit();
 
-    HBox windowWidget;
-    VBox planetMenuWidget;
-    CenteringBox menuWidget;
+    StaticContainer windowWidget;
     VBox MenuButtons;
 
     TextButton singlePlayerButton;
