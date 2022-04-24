@@ -164,6 +164,10 @@ bool GroundUnit::requestCarryall(const GameContext& context) {
 
             if (!carryall->isBooked()) {
                 carryall->setTarget(this);
+
+                if (!isAwaitingPickup()) // For some reason, the carryall didn't book us.
+                    return false;
+
                 carryall->clearPath();
                 bookCarrier(carryall);
 
@@ -197,11 +201,16 @@ void GroundUnit::bookCarrier(UnitBase* newCarrier) {
     }
 }
 
-bool GroundUnit::hasBookedCarrier() const {
-    if (bookedCarrier == NONE_ID) {
+bool GroundUnit::hasBookedCarrier() {
+    if (bookedCarrier == NONE_ID)
         return false;
-    }
-    return (currentGame->getObjectManager().getObject(bookedCarrier) != nullptr);
+
+    if (nullptr != getCarrier())
+        return true;
+
+    bookCarrier(nullptr);
+
+    return false;
 }
 
 const UnitBase* GroundUnit::getCarrier() const {

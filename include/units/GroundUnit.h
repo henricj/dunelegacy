@@ -67,7 +67,7 @@ public:
 
     void setAwaitingPickup(bool status) { awaitingPickup = status; }
     bool isAwaitingPickup() const noexcept { return awaitingPickup; }
-    bool hasBookedCarrier() const;
+    bool hasBookedCarrier();
     const UnitBase* getCarrier() const;
 
     /**
