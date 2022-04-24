@@ -946,9 +946,11 @@ void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTar
 
     setTarget(pTargetObject);
     // hack to make it possible to attack own repair yard
-    if (goingToRepairYard && target && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        static_cast<RepairYard*>(target.getObjPointer())->unBook();
-        goingToRepairYard = false;
+    if (goingToRepairYard && target) {
+        if (auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer())) {
+            repair_yard->unBook();
+            goingToRepairYard = false;
+        }
     }
 
     setForced(bForced);
@@ -1113,22 +1115,25 @@ void UnitBase::setAngle(ANGLETYPE newAngle) {
 }
 
 void UnitBase::setGettingRepaired() {
-    if (target.getObjPointer() != nullptr && (target.getObjPointer()->getItemID() == Structure_RepairYard)) {
-        currentGameMap->removeObjectFromMap(getObjectID());
+    auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer());
 
-        static_cast<RepairYard*>(target.getObjPointer())->assignUnit(this);
+    if (!repair_yard)
+        return;
 
-        respondable = false;
-        setActive(false);
-        setVisible(VIS_ALL, false);
-        goingToRepairYard = false;
-        badlyDamaged      = false;
+    currentGameMap->removeObjectFromMap(getObjectID());
 
-        setTarget(nullptr);
-        // setLocation(INVALID_POS, INVALID_POS);
-        setDestination(location);
-        nextSpotAngle = ANGLETYPE::DOWN;
-    }
+    repair_yard->assignUnit(this);
+
+    respondable = false;
+    setActive(false);
+    setVisible(VIS_ALL, false);
+    goingToRepairYard = false;
+    badlyDamaged      = false;
+
+    setTarget(nullptr);
+    // setLocation(INVALID_POS, INVALID_POS);
+    setDestination(location);
+    nextSpotAngle = ANGLETYPE::DOWN;
 }
 
 void UnitBase::setGuardPoint(int newX, int newY) {
@@ -1173,14 +1178,14 @@ void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
     context.map.removeObjectFromMap(getObjectID());
 
     if (goingToRepairYard) {
-        static_cast<RepairYard*>(target.getObjPointer())->unBook();
+        if (auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer()))
+            repair_yard->unBook();
     }
 
-    if (getItemID() == Unit_Harvester) {
-        const auto* harvester = static_cast<Harvester*>(this);
-        if (harvester->isReturning() && target && (target.getObjPointer() != nullptr)
-            && (target.getObjPointer()->getItemID() == Structure_Refinery)) {
-            static_cast<Refinery*>(target.getObjPointer())->unBook();
+    if (const auto* const harvester = dune_cast<Harvester>(this)) {
+        if (harvester->isReturning()) {
+            if (auto* const refinery = dune_cast<Refinery>(target.getObjPointer()))
+                refinery->unBook();
         }
     }
 
