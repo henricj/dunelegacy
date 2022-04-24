@@ -1,6 +1,11 @@
 #include <Renderer/DuneTileTexture.h>
 
-DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, gsl::span<const SDL_Rect> tiles)
+#include <SDL2/SDL_render.h>
+
+#include <span>
+#include <stdexcept>
+
+DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, std::span<const SDL_Rect> tiles)
     : texture_{texture} {
     if (rows < 1)
         THROW(std::invalid_argument, "The rows argument is out of range (%d)", rows);

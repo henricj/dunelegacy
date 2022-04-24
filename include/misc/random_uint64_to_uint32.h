@@ -51,7 +51,7 @@ public:
         return static_cast<result_type>(result);
     }
 
-    void set_state(gsl::span<const state_type> s) {
+    void set_state(std::span<const state_type> s) {
         if (s.size() < Generator::state_words)
             throw std::invalid_argument{"Generator state is too short"};
 
@@ -78,7 +78,7 @@ public:
         }
     }
 
-    void get_state(gsl::span<state_type, state_words> s) const noexcept {
+    void get_state(std::span<state_type, state_words> s) const noexcept {
         generator_.get_state(s.template subspan<local_state_words, Generator::state_words>());
 
         if constexpr (2 == local_state_words) {

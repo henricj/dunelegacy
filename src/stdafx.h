@@ -71,6 +71,7 @@
 #    include <cstdarg>
 #    include <cstdint>
 #    include <cstdio>
+#    include <cstdint>
 #    include <cstdlib>
 #    include <cstring>
 #    include <ctime>
@@ -89,7 +90,10 @@
 #    include <optional>
 #    include <queue>
 #    include <random>
+#    include <ranges>
 #    include <set>
+#    include <span>
+#    include <stdexcept>
 #    include <string>
 #    include <tuple>
 #    include <typeinfo>
@@ -97,11 +101,6 @@
 #    include <unordered_set>
 #    include <utility>
 #    include <vector>
-
-#    include <cinttypes>
-#    include <cstdio>
-#    include <cstdlib>
-#    include <cstring>
 
 #    include <gsl/gsl>
 

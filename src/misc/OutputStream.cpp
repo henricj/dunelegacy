@@ -33,7 +33,7 @@ void OutputStream::writeBools(bool val1, bool val2, bool val3, bool val4, bool v
     writeUint8(val);
 }
 
-void OutputStream::writeUint8Vector(gsl::span<const uint8_t> dataVector) {
+void OutputStream::writeUint8Vector(std::span<const uint8_t> dataVector) {
     writeUint32(static_cast<uint32_t>(dataVector.size()));
     for (const auto data : dataVector) {
         writeUint8(data);
@@ -47,7 +47,7 @@ void OutputStream::writeUint32List(const std::list<uint32_t>& dataList) {
     }
 }
 
-void OutputStream::writeUint32Vector(gsl::span<const uint32_t> dataVector) {
+void OutputStream::writeUint32Vector(std::span<const uint32_t> dataVector) {
     writeUint32(static_cast<uint32_t>(dataVector.size()));
     for (const auto data : dataVector) {
         writeUint32(data);

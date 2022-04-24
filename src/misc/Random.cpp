@@ -7,6 +7,7 @@
 #include <array>
 #include <atomic>
 #include <chrono>
+#include <span>
 #include <stdexcept>
 
 namespace {
@@ -132,14 +133,14 @@ std::array<uint8_t, Random::state_bytes> Random::getState() const {
     return state;
 }
 
-void Random::setState(const gsl::span<const uint8_t> state) {
+void Random::setState(const std::span<const uint8_t> state) {
     sdl2::log_info("Setting state %s", to_hex(state));
 
     set_generator_state(generator_, state);
 }
 
-void Random::set_generator_state(generator_type& generator, gsl::span<const uint8_t> state) {
-    std::array<generator_type::state_type, generator_type::state_words> words;
+void Random::set_generator_state(generator_type& generator, std::span<const uint8_t> state) {
+    std::array<generator_type::state_type, generator_type::state_words> words{};
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
 
@@ -158,14 +159,14 @@ void Random::set_generator_state(generator_type& generator, gsl::span<const uint
         word = n;
     }
 
-    gsl::span<generator_type::state_type> state_words =
-        it != state.end() ? gsl::span{words}.subspan(0, it - state.begin()) : words;
+    const std::span<generator_type::state_type> state_words =
+        it != state.end() ? std::span{words}.subspan(0, it - state.begin()) : words;
 
     generator.set_state(state_words);
 }
 
-void Random::get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state) {
-    std::array<generator_type::state_type, generator_type::state_words> words;
+void Random::get_generator_state(const generator_type& generator, std::span<uint8_t, state_bytes> state) {
+    std::array<generator_type::state_type, generator_type::state_words> words{};
 
     static_assert(sizeof(generator_type::state_type) == sizeof(uint64_t));
 
@@ -185,7 +186,7 @@ void Random::get_generator_state(const generator_type& generator, gsl::span<uint
     }
 }
 
-void RandomFactory::setSeed(gsl::span<const uint8_t> seed) {
+void RandomFactory::setSeed(std::span<const uint8_t> seed) {
     sdl2::log_info("Setting RandomFactory seed to %s", to_hex(seed));
 
     seed_.clear();
@@ -290,5 +291,5 @@ Random RandomFactory::create(std::string_view name) const {
 
     sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
 
-    return Random::create(gsl::span<const uint8_t, Random::state_bytes>{buffer});
+    return Random::create(std::span<const uint8_t, Random::state_bytes>{buffer});
 }
