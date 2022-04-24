@@ -51,11 +51,6 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     for (const auto& ll : languagesList)
         availLanguages.emplace_back(reinterpret_cast<const char*>(ll.u8string().c_str()));
 
-    // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    OptionsMenu::setBackground(pBackground);
-    OptionsMenu::resize(getTextureSize(pBackground));
-
     OptionsMenu::setWindowWidget(&windowWidget);
 
     windowWidget.addWidget(&mainVBox, Point(50, 50), Point(getSize().x - 100, getSize().y - 100));

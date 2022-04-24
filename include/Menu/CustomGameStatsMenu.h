@@ -28,7 +28,9 @@
 
 #include <DataTypes.h>
 
-class CustomGameStatsMenu final : public MenuBase {
+class CustomGameStatsMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     CustomGameStatsMenu();
     ~CustomGameStatsMenu() override;

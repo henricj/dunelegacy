@@ -33,7 +33,7 @@
 
 #define MENU_QUIT_REINITIALIZE (1)
 
-class OptionsMenu final : public MenuBase {
+class OptionsMenu final : public TopMenuBase {
 public:
     OptionsMenu();
     ~OptionsMenu() override;

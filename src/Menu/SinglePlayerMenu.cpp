@@ -39,9 +39,6 @@
 
 SinglePlayerMenu::SinglePlayerMenu() {
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
-    SinglePlayerMenu::resize(getTextureSize(pBackground));
 
     SinglePlayerMenu::setWindowWidget(&windowWidget);
 

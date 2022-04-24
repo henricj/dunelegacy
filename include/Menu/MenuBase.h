@@ -19,7 +19,6 @@
 #define MENUBASE_H
 
 #include <GUI/Window.h>
-#include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_events.h>
 

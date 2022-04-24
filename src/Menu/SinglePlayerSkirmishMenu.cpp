@@ -33,9 +33,6 @@ static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> hous
 
 SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     // set up window
-    const auto* pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
-    SinglePlayerSkirmishMenu::resize(getTextureSize(pBackground));
 
     SinglePlayerSkirmishMenu::setWindowWidget(&windowWidget);
 

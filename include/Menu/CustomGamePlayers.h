@@ -44,7 +44,9 @@ inline constexpr auto MENU_QUIT_GAME_FINISHED = -2;
 
 class INIFile;
 
-class CustomGamePlayers final : public MenuBase {
+class CustomGamePlayers final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
     ~CustomGamePlayers() override;

@@ -50,9 +50,6 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     : gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer) {
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
-    CustomGamePlayers::resize(getTextureSize(pBackground));
 
     CustomGamePlayers::setWindowWidget(&windowWidget);
 
