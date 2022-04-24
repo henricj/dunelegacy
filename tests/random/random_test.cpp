@@ -111,7 +111,7 @@ TEST(Random, range) {
         flags[offset] = true;
     }
 
-    const auto all_true = std::all_of(std::begin(flags), std::end(flags), [](auto f) { return f; });
+    const auto all_true = std::ranges::all_of(flags, [](auto f) { return f; });
 
     EXPECT_TRUE(all_true);
 }

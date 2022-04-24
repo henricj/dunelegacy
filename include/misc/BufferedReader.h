@@ -37,7 +37,7 @@ public:
 
         const auto copy_size = count * size;
 
-        std::copy(pending_.data(), pending_.data() + copy_size, output.data());
+        std::copy_n(pending_.data(), copy_size, output.data());
 
         pending_ = pending_.subspan(copy_size);
 
@@ -139,7 +139,7 @@ public:
 
         const auto copy_size = count;
 
-        std::copy(pending_.data(), pending_.data() + copy_size, output.data());
+        std::copy_n(pending_.data(), copy_size, output.data());
 
         pending_ = pending_.subspan(copy_size);
 
