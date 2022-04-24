@@ -342,7 +342,7 @@ bool Sandworm::update(const GameContext& context) {
                     if (drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
                         if (target) {
-                            auto* object = target.getObjPointer();
+                            const auto* object = target.getObjPointer();
 
                             if (object) {
                                 const bool wasAlive =

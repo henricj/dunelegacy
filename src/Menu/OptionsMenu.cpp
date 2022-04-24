@@ -310,8 +310,9 @@ void OptionsMenu::onOptionsOK() {
     settings.video.physicalWidth  = selectedResolution >= 0 ? availScreenRes[selectedResolution].x : 0;
     settings.video.physicalHeight = selectedResolution >= 0 ? availScreenRes[selectedResolution].y : 0;
 
-    settings.video.width              = settings.video.physicalWidth;
-    settings.video.height             = settings.video.physicalHeight;;
+    settings.video.width  = settings.video.physicalWidth;
+    settings.video.height = settings.video.physicalHeight;
+    ;
     settings.video.preferredZoomLevel = zoomlevelDropDownBox.getSelectedEntryIntData();
     settings.video.scaler             = scalerDropDownBox.getSelectedEntry();
     settings.video.fullscreen         = fullScreenCheckbox.isChecked();
@@ -476,7 +477,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
 }
 
 void OptionsMenu::onChildWindowClose(Window* pChildWindow) {
-    auto* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
+    const auto* pGameOptionsWindow = dynamic_cast<GameOptionsWindow*>(pChildWindow);
     if (pGameOptionsWindow != nullptr) {
         currentGameOptions = pGameOptionsWindow->getGameOptions();
 

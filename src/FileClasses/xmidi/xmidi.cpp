@@ -405,7 +405,7 @@ int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
 
 void XMIDI::DeleteEventList(midi_event* mlist) {
     const midi_event* event = nullptr;
-    midi_event* next        = nullptr;
+    const midi_event* next  = nullptr;
 
     next  = mlist;
     event = mlist;
@@ -535,11 +535,11 @@ void XMIDI::MovePatchVolAndPan(int channel) {
         return;
     }
 
-    midi_event* patch = nullptr;
-    midi_event* vol   = nullptr;
-    midi_event* pan   = nullptr;
-    midi_event* bank  = nullptr;
-    midi_event* temp  = nullptr;
+    midi_event* patch      = nullptr;
+    midi_event* vol        = nullptr;
+    midi_event* pan        = nullptr;
+    midi_event* bank       = nullptr;
+    const midi_event* temp = nullptr;
 
     for (current = list; current;) {
         if (!patch && current->status >> 4 == 0xC && (current->status & 0xF) == channel) {
@@ -930,7 +930,7 @@ int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
 // buf can be NULL
 unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
     int time                  = 0;
-    midi_event* event         = nullptr;
+    const midi_event* event   = nullptr;
     unsigned int delta        = 0;
     unsigned char last_status = 0;
     unsigned int i            = 8;

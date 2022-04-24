@@ -260,7 +260,7 @@ int Tile::assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int
         std::array<bool, NUM_INFANTRY_PER_TILE> used{};
 
         for (const auto objectID : assignedInfantryList) {
-            auto* const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
+            const auto* const pInfantry = dynamic_cast<InfantryBase*>(objectManager.getObject(objectID));
             if (pInfantry == nullptr) {
                 continue;
             }
@@ -479,8 +479,8 @@ void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
 }
 
 void Tile::blitAirUnits(Game* game, int xPos, int yPos) {
-    auto* const player_house = pLocalHouse;
-    const auto is_fogged     = isFoggedByTeam(game, player_house->getTeamID());
+    const auto* const player_house = pLocalHouse;
+    const auto is_fogged           = isFoggedByTeam(game, player_house->getTeamID());
 
     for (const auto objectID : assignedAirUnitList) {
         auto* pAirUnit = game->getObjectManager().getObject<AirUnit>(objectID);
@@ -933,7 +933,7 @@ bool Tile::hasAStructure(const ObjectManager& objectManager) const {
         return false;
     }
 
-    auto* const pObject = objectManager.getObject(assignedNonInfantryGroundObjectList.front());
+    const auto* const pObject = objectManager.getObject(assignedNonInfantryGroundObjectList.front());
     return ((pObject != nullptr) && pObject->isAStructure());
 }
 
@@ -989,7 +989,7 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
         return fogColor;
     }
 
-    auto* const pObject = getObject(game->getObjectManager());
+    const auto* const pObject = getObject(game->getObjectManager());
     if (pObject != nullptr) {
         uint32_t color = 0;
 

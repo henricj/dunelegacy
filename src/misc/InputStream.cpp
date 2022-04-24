@@ -25,7 +25,7 @@ int64_t InputStream::readSint64() {
 
 void InputStream::readBools(bool* pVal1, bool* pVal2, bool* pVal3, bool* pVal4, bool* pVal5, bool* pVal6, bool* pVal7,
                             bool* pVal8) {
-    uint8_t val = readUint8();
+    const uint8_t val = readUint8();
 
     if (pVal1 != nullptr)
         *pVal1 = (val & 0x01) != 0;

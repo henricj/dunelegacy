@@ -213,8 +213,8 @@ fix32_t fix32_div(fix32_t a, fix32_t b) {
         remainder <<= shift;
         bit_pos -= shift;
 
-        uint64_t div = remainder / divider;
-        remainder    = remainder % divider;
+        const uint64_t div = remainder / divider;
+        remainder          = remainder % divider;
         quotient += div << bit_pos;
 
 #ifndef FIXMATH_NO_OVERFLOW

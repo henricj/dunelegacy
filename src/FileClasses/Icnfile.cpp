@@ -344,9 +344,9 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
                                              + (tile_x + n * tilesX) * SIZE_X;
                 for (int y = 0; y < SIZE_Y; y++) {
                     for (int x = 0; x < SIZE_X; x += 2) {
-                        unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
-                        dest[x]             = palettestart[pixel >> 4];
-                        dest[x + 1]         = palettestart[pixel & 0x0F];
+                        const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
+                        dest[x]                   = palettestart[pixel >> 4];
+                        dest[x + 1]               = palettestart[pixel & 0x0F];
                     }
                     dest += pic->pitch;
                 }
@@ -407,7 +407,7 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
                 static_cast<unsigned char*>(pic->pixels) + row * SIZE_Y * pic->pitch + col * SIZE_X;
             for (int y = 0; y < SIZE_Y; ++y) {
                 for (int x = 0; x < SIZE_X; x += 2) {
-                    unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
+                    const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
 
                     dest[x]     = palettestart[pixel >> 4];
                     dest[x + 1] = palettestart[pixel & 0x0F];
@@ -466,9 +466,9 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
         unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + i * SIZE_X;
         for (int y = 0; y < SIZE_Y; y++) {
             for (int x = 0; x < SIZE_X; x += 2) {
-                unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
-                dest[x]             = palettestart[pixel >> 4];
-                dest[x + 1]         = palettestart[pixel & 0x0F];
+                const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
+                dest[x]                   = palettestart[pixel >> 4];
+                dest[x + 1]               = palettestart[pixel & 0x0F];
             }
             dest += pic->pitch;
         }

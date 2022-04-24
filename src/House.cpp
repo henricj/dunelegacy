@@ -515,7 +515,7 @@ void House::lose(bool bSilent) const {
         bool finished = true;
 
         for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-            auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
+            const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
             if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
@@ -538,7 +538,7 @@ void House::lose(bool bSilent) const {
         auto finished = true;
 
         for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
-            auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
+            const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
             if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0
                 && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
                 finished = false;
@@ -560,12 +560,12 @@ void House::lose(bool bSilent) const {
 }
 
 void House::freeHarvester(int xPos, int yPos) {
-    auto* const tile = context.map.tryGetTile(xPos, yPos);
+    const auto* const tile = context.map.tryGetTile(xPos, yPos);
 
     if (!tile)
         return;
 
-    auto* const refinery = tile->getGroundObject<Refinery>(context.objectManager);
+    const auto* const refinery = tile->getGroundObject<Refinery>(context.objectManager);
     if (!refinery)
         return;
 
@@ -752,7 +752,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
 
 UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenario) {
 
-    auto* pTile = context.map.tryGetTile(xPos, yPos);
+    const auto* pTile = context.map.tryGetTile(xPos, yPos);
     if (!pTile)
         return nullptr;
 
@@ -835,8 +835,8 @@ void House::decrementHarvesters() {
 
         if (numItem[Structure_Refinery]) {
             Coord closestPos;
-            FixPoint closestDistance        = FixPt_MAX;
-            StructureBase* pClosestRefinery = nullptr;
+            FixPoint closestDistance              = FixPt_MAX;
+            const StructureBase* pClosestRefinery = nullptr;
 
             for (StructureBase* pStructure : structureList) {
                 if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this)

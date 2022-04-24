@@ -442,10 +442,10 @@ bool Bullet::update(const GameContext& context) {
     }
 
     if (explodesAtGroundObjects) {
-        auto* tile = map.tryGetTile(location.x, location.y);
+        const auto* tile = map.tryGetTile(location.x, location.y);
 
         if (tile && tile->hasANonInfantryGroundObject()) {
-            auto* structure = tile->getNonInfantryGroundObject(context.objectManager);
+            const auto* structure = tile->getNonInfantryGroundObject(context.objectManager);
 
             if (structure && structure->isAStructure()
                 && ((bulletID != Bullet_ShellTurret) || (structure->getOwner() != owner))) {

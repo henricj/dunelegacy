@@ -323,7 +323,7 @@ INIFile::INIFile(SDL_RWops* RWopsFile, bool bWhitespace) : bWhitespace(bWhitespa
    purpose.
 */
 INIFile::~INIFile() {
-    INIFileLine* curLine = firstLine;
+    const INIFileLine* curLine = firstLine;
     while (curLine != nullptr) {
         const INIFileLine* tmp = curLine;
         curLine                = curLine->nextLine;
@@ -366,7 +366,7 @@ const INIFile::Section& INIFile::getSection(std::string_view sectionname) const 
 bool INIFile::removeSection(std::string_view sectionname) {
     clearSection(sectionname, false);
 
-    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    const auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
     if (curSection == nullptr) {
         return false;
     }
@@ -491,7 +491,7 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
         return false;
     }
 
-    INIFile::Key* key = curSection->getKey(keyname);
+    const INIFile::Key* key = curSection->getKey(keyname);
     if (key == nullptr) {
         return false;
     }
@@ -734,7 +734,7 @@ bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLine
     \return true on success otherwise false.
 */
 bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
-    INIFileLine* curLine = firstLine;
+    const INIFileLine* curLine = firstLine;
 
     bool error = false;
     while (curLine != nullptr) {
@@ -764,7 +764,7 @@ bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
 // private methods
 
 void INIFile::flush() const {
-    INIFileLine* curLine = firstLine;
+    const INIFileLine* curLine = firstLine;
 
     while (curLine != nullptr) {
         std::cout << curLine->completeLine << std::endl;
@@ -959,7 +959,7 @@ void INIFile::insertSection(Section* newSection) {
 
 const INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname) const {
 
-    for (Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
+    for (const Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
         const auto cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
 
         if (upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))

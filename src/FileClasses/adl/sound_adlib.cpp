@@ -1060,7 +1060,7 @@ void AdlibDriver::setupInstrument(uint8 regOffset, uint8* dataptr, Channel& chan
     writeOPL(0x20 + regOffset, *dataptr++);
     writeOPL(0x23 + regOffset, *dataptr++);
 
-    uint8 temp = *dataptr++;
+    const uint8 temp = *dataptr++;
 
     // Feedback / Algorithm
 
@@ -1108,10 +1108,10 @@ void AdlibDriver::noteOn(Channel& channel) {
     channel.regBx |= 0x20;
     writeOPL(0xB0 + _curChannel, channel.regBx);
 
-    const int8 shift = 9 - channel.unk33;
-    uint16 temp      = channel.regAx | channel.regBx << 8;
-    channel.unk37    = (temp & 0x3FF) >> shift & 0xFF;
-    channel.unk38    = channel.unk36;
+    const int8 shift  = 9 - channel.unk33;
+    const uint16 temp = channel.regAx | channel.regBx << 8;
+    channel.unk37     = (temp & 0x3FF) >> shift & 0xFF;
+    channel.unk38     = channel.unk36;
 }
 
 void AdlibDriver::adjustVolume(Channel& channel) {

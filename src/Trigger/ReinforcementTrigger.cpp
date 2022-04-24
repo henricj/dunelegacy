@@ -109,7 +109,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                     newCoord += Coord(0, game.randomGen.rand(-r, r));
                 }
 
-                auto* const tile = map.tryGetTile(newCoord.x, newCoord.y);
+                const auto* const tile = map.tryGetTile(newCoord.x, newCoord.y);
 
                 if (tile && (!tile->hasAGroundObject()) && ((*it != Unit_Sandworm) || (tile->isSand()))) {
                     auto* pUnit2Drop = dropHouse->createUnit(*it);
@@ -211,7 +211,7 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
 
                 dropCoord += Coord(lround(r * FixPoint::sin(angle)), lround(-r * FixPoint::cos(angle)));
 
-                if (auto* tile = map.tryGetTile(dropCoord.x, dropCoord.y); tile && tile->hasAGroundObject()) {
+                if (const auto* tile = map.tryGetTile(dropCoord.x, dropCoord.y); tile && tile->hasAGroundObject()) {
                     // found the an empty drop location => drop here
 
                     auto* carryall = dropHouse->createUnit<Carryall>();

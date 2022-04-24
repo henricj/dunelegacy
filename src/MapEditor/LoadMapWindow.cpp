@@ -174,7 +174,7 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
-    auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+    const auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if (pQstBox != nullptr) {
         if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             const int index = mapList.getSelectedIndex();

@@ -104,7 +104,6 @@ int MainMenu::showMenu() {
     return parent::showMenu();
 }
 
-
 void MainMenu::onSinglePlayer() {
     SinglePlayerMenu singlePlayerMenu;
     singlePlayerMenu.showMenu();

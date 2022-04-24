@@ -141,7 +141,7 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
             }
         }
     } else {
-        auto* const object = pTile->getGroundObject(currentGame->getObjectManager());
+        const auto* const object = pTile->getGroundObject(currentGame->getObjectManager());
 
         if ((object != nullptr) && (object->getObjectID() == target.getObjectID()) && object->isAStructure()
             && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) {
@@ -179,7 +179,7 @@ void InfantryBase::checkPos(const GameContext& context) {
         }
     }
 
-    auto* const object = target.getObjPointer();
+    const auto* const object = target.getObjPointer();
 
     if (!object || !object->isAStructure())
         return;
@@ -340,7 +340,7 @@ void InfantryBase::destroy(const GameContext& context) {
     if (pTile && isVisible()) {
 
         if (pTile->hasANonInfantryGroundObject()) {
-            if (auto* object = pTile->getNonInfantryGroundObject(objectManager); object && object->isAUnit()) {
+            if (const auto* object = pTile->getNonInfantryGroundObject(objectManager); object && object->isAUnit()) {
                 // squashed
                 pTile->assignDeadUnit(game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1
                                                                 : DeadUnit_Infantry_Squashed2,

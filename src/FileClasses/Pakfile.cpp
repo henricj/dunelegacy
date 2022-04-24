@@ -96,7 +96,7 @@ Pakfile::~Pakfile() {
             SDL_RWwrite(fPakFile.get(), fileEntrie.filename.u8string().c_str(),
                         fileEntrie.filename.u8string().length() + 1, 1);
         }
-        uint32_t tmp = 0;
+        const uint32_t tmp = 0;
         SDL_RWwrite(fPakFile.get(), &tmp, sizeof(uint32_t), 1);
 
         // write out data
@@ -257,8 +257,8 @@ size_t Pakfile::ReadFile(SDL_RWops* pRWop, void* ptr, size_t size, size_t n) {
 
     int bytes2read = size * n;
 
-    auto* pRWopData   = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
-    Pakfile* pPakfile = pRWopData->curPakfile;
+    auto* pRWopData         = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const Pakfile* pPakfile = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return 0;
     }
@@ -304,8 +304,8 @@ int64_t Pakfile::SizeFile(SDL_RWops* pRWop) {
         return -1;
     }
 
-    const auto* pRWopData = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
-    Pakfile* pPakfile     = pRWopData->curPakfile;
+    const auto* pRWopData   = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const Pakfile* pPakfile = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return -1;
     }
@@ -323,8 +323,8 @@ int64_t Pakfile::SeekFile(SDL_RWops* pRWop, int64_t offset, int whence) {
         return -1;
     }
 
-    auto* pRWopData   = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
-    Pakfile* pPakfile = pRWopData->curPakfile;
+    auto* pRWopData         = static_cast<RWopData*>(pRWop->hidden.unknown.data1);
+    const Pakfile* pPakfile = pRWopData->curPakfile;
     if (pPakfile == nullptr) {
         return -1;
     }

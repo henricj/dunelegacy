@@ -266,7 +266,7 @@ void GroundUnit::doRepair(const GameContext& context) noexcept {
     // find a repair yard to return to
 
     FixPoint closestLeastBookedRepairYardDistance = 1000000;
-    RepairYard* pBestRepairYard                   = nullptr;
+    const RepairYard* pBestRepairYard             = nullptr;
 
     for (auto* pStructure : structureList) {
         auto* const pRepairYard = dune_cast<RepairYard>(pStructure);

@@ -36,7 +36,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
-    auto& mapInfo = pMapEditor->getMapInfo();
+    const auto& mapInfo = pMapEditor->getMapInfo();
 
     // set up window
     const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);

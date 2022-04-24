@@ -253,7 +253,7 @@ void NewMapWindow::onCreate() {
 }
 
 void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
-    auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
+    const auto* pLoadMapWindow = dynamic_cast<LoadMapWindow*>(pChildWindow);
     if (pLoadMapWindow != nullptr) {
         loadMapFilepath     = pLoadMapWindow->getLoadMapFilepath();
         loadMapname         = pLoadMapWindow->getLoadMapname();

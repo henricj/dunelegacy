@@ -91,7 +91,7 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         return false;
     }
 
-    auto* const pStarport = dune_cast<StarPort>(pBuilder);
+    const auto* const pStarport = dune_cast<StarPort>(pBuilder);
     if (pStarport && !pStarport->okToOrder()) {
         return false;
     }
@@ -137,7 +137,7 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
         return false;
     }
 
-    auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
+    const auto* pStarport = dynamic_cast<StarPort*>(pBuilder);
     if (pStarport && !pStarport->okToOrder()) {
         return false;
     }
