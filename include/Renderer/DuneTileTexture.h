@@ -9,7 +9,7 @@ public:
     DuneTileTexture(const DuneTileTexture&) = default;
     DuneTileTexture(DuneTileTexture&&)      = default;
 
-    DuneTileTexture(SDL_Texture* texture, int rows, int columns, gsl::span<const SDL_Rect> tiles);
+    DuneTileTexture(SDL_Texture* texture, int rows, int columns, std::span<const SDL_Rect> tiles);
 
     ~DuneTileTexture() = default;
 

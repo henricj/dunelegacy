@@ -97,7 +97,7 @@ public:
         Writes out a complete vector of Uint8
         \param  dataVector the vector to write
     */
-    void writeUint8Vector(gsl::span<const uint8_t> dataVector);
+    void writeUint8Vector(std::span<const uint8_t> dataVector);
 
     /**
         Writes out a complete list of Uint32
@@ -109,14 +109,14 @@ public:
         Writes out a complete vector of Uint32
         \param  dataVector the vector to write
     */
-    void writeUint32Vector(gsl::span<const uint32_t> dataVector);
+    void writeUint32Vector(std::span<const uint32_t> dataVector);
 
     /**
         Writes out a complete vector of Uint32
         \param  dataVector the vector to write
     */
     template<typename T>
-    void writeUint32Vector(gsl::span<const T> dataVector) {
+    void writeUint32Vector(std::span<const T> dataVector) {
         writeUint32(static_cast<uint32_t>(dataVector.size()));
         for (const auto data : dataVector) {
             writeUint32(static_cast<uint32_t>(data));

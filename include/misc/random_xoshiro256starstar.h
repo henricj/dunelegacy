@@ -3,8 +3,8 @@
 #pragma once
 
 #include <array>
-#include <gsl/gsl>
 #include <random>
+#include <span>
 
 namespace ExtraGenerators {
 using namespace std;
@@ -78,14 +78,14 @@ public:
     static constexpr size_t state_words = 4;
     typedef uint64_t state_type;
 
-    void set_state(gsl::span<const state_type, state_words> s) noexcept {
+    void set_state(std::span<const state_type, state_words> s) noexcept {
         s0_ = s[0];
         s1_ = s[1];
         s2_ = s[2];
         s3_ = s[3];
     }
 
-    void get_state(gsl::span<state_type, state_words> s) const noexcept {
+    void get_state(std::span<state_type, state_words> s) const noexcept {
         s[0] = s0_;
         s[1] = s1_;
         s[2] = s2_;

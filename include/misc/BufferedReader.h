@@ -3,12 +3,10 @@
 
 #include <SDL2/SDL.h>
 
-#include <gsl/gsl>
-
 #include <algorithm>
 #include <array>
-#include <memory>
 #include <optional>
+#include <span>
 
 template<int BufferSize = 4096>
 class BufferedReader final {
@@ -31,7 +29,7 @@ public:
         if (pending_.size() < size)
             return complete_partial_read(data, size);
 
-        auto output = gsl::span{static_cast<char*>(data), size * maxnum};
+        auto output = std::span{static_cast<char*>(data), size * maxnum};
 
         // Complete as much as we can.
         const auto count = std::min(pending_.size(), output.size()) / size;
@@ -60,7 +58,7 @@ private:
 
             memmove(buffer_.data(), pending_.data(), pending_size);
 
-            pending_ = gsl::span{buffer_.data(), pending_size};
+            pending_ = std::span{buffer_.data(), pending_size};
         }
 
         if (pending_.size() < buffer_.size()) {
@@ -77,7 +75,7 @@ private:
                 return false;
             }
 
-            pending_ = gsl::span{buffer_.data(), pending_size + actual_read};
+            pending_ = std::span{buffer_.data(), pending_size + actual_read};
         }
 
         return true;
@@ -85,10 +83,10 @@ private:
 
     size_t complete_partial_read(void* data, size_t size) {
         auto partial = 0;
-        auto output  = gsl::span{static_cast<char*>(data), size};
+        auto output  = std::span{static_cast<char*>(data), size};
 
         if (!pending_.empty()) {
-            std::copy(std::begin(pending_), std::end(pending_), output.begin());
+            std::ranges::copy(pending_, output.begin());
             output  = output.subspan(pending_.size());
             partial = pending_.size();
         }
@@ -105,14 +103,14 @@ private:
         }
 
         output   = output.subspan(read_length);
-        pending_ = gsl::span<char>{};
+        pending_ = std::span<char>{};
 
         return 1;
     }
 
     SDL_RWops* rwop_;
     bool eof_{};
-    gsl::span<char> pending_;
+    std::span<char> pending_;
     std::array<char, BufferSize> buffer_;
 };
 
@@ -133,7 +131,7 @@ public:
                 return 0;
         }
 
-        auto output = gsl::span{static_cast<char*>(data), maxnum};
+        auto output = std::span{static_cast<char*>(data), maxnum};
 
         // Complete as much as we can.
         const auto count = std::min(pending_.size(), output.size());
@@ -176,14 +174,14 @@ private:
             return false;
         }
 
-        pending_ = gsl::span{buffer_.data(), actual_read};
+        pending_ = std::span{buffer_.data(), actual_read};
 
         return true;
     }
 
     SDL_RWops* rwop_;
     bool eof_{};
-    gsl::span<char> pending_;
+    std::span<char> pending_;
     std::array<char, BufferSize> buffer_;
 };
 

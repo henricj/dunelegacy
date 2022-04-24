@@ -24,9 +24,8 @@
 #include "misc/random_uint64_to_uint32.h"
 #include "misc/random_xoshiro256starstar.h"
 
-#include <gsl/gsl>
-
 #include <array>
+#include <span>
 #include <vector>
 
 class RandomFactory;
@@ -49,7 +48,7 @@ public:
     /// Destructor
     ~Random() = default;
 
-    static Random create(gsl::span<const uint8_t> state) {
+    static Random create(std::span<const uint8_t> state) {
         generator_type generator;
 
         set_generator_state(generator, state);
@@ -61,7 +60,7 @@ public:
         Sets the generator state to state
         \param state  the new state value
     */
-    void setState(gsl::span<const uint8_t> state);
+    void setState(std::span<const uint8_t> state);
 
     /**
         Returns the current generator state.
@@ -129,8 +128,8 @@ public:
     }
 
 private:
-    static void set_generator_state(generator_type& generator, gsl::span<const uint8_t> state);
-    static void get_generator_state(const generator_type& generator, gsl::span<uint8_t, state_bytes> state);
+    static void set_generator_state(generator_type& generator, std::span<const uint8_t> state);
+    static void get_generator_state(const generator_type& generator, std::span<uint8_t, state_bytes> state);
 
     generator_type generator_;
 
@@ -147,9 +146,9 @@ public:
         setSeed(seed);
     }
 
-    RandomFactory(gsl::span<uint8_t> seed) { setSeed(seed); }
+    RandomFactory(std::span<uint8_t> seed) { setSeed(seed); }
 
-    void setSeed(gsl::span<const uint8_t> seed);
+    void setSeed(std::span<const uint8_t> seed);
     [[nodiscard]] std::vector<uint8_t> getSeed() const;
 
     [[nodiscard]] Random create(std::string_view name) const;
