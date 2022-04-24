@@ -57,12 +57,12 @@ public:
         \return a rwop to read the content of the specified file. Use SDL_RWclose() to close the file after usage.
 
     */
-    [[nodiscard]] sdl2::RWops_ptr openFile(const std::filesystem::path& filename) const;
+    [[nodiscard]] sdl2::RWops_ptr openFile(std::filesystem::path filename) const;
 
-    [[nodiscard]] bool exists(const std::filesystem::path& filename) const;
+    [[nodiscard]] bool exists(std::filesystem::path filename) const;
 
 private:
-    static std::string md5FromFilename(const std::filesystem::path& filename);
+    static std::string md5FromFilename(std::filesystem::path filename);
 
     std::vector<std::unique_ptr<Pakfile>> pakFiles;
 };

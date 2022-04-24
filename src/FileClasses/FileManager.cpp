@@ -120,17 +120,16 @@ std::vector<std::filesystem::path> FileManager::getMissingFiles() {
     return MissingFiles;
 }
 
-sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) const {
-
+sdl2::RWops_ptr FileManager::openFile(std::filesystem::path filename) const {
     if (filename.is_absolute()) {
-        if (sdl2::RWops_ptr ret{SDL_RWFromFile(filename.u8string().c_str(), "rb")})
+        if (sdl2::RWops_ptr ret{SDL_RWFromFile(filename.make_preferred().u8string(), "rb")})
             return ret;
     } else {
         // try loading external file
         for (const auto& searchPath : getSearchPath()) {
             auto externalFilename = searchPath / filename;
             if (getCaseInsensitiveFilename(externalFilename)) {
-                if (sdl2::RWops_ptr ret{SDL_RWFromFile(externalFilename.u8string().c_str(), "rb")})
+                if (sdl2::RWops_ptr ret{SDL_RWFromFile(externalFilename.make_preferred().u8string().c_str(), "rb")})
                     return ret;
             }
         }
@@ -146,7 +145,7 @@ sdl2::RWops_ptr FileManager::openFile(const std::filesystem::path& filename) con
     THROW(io_error, "Cannot find '%s'!", filename.string());
 }
 
-bool FileManager::exists(const std::filesystem::path& filename) const {
+bool FileManager::exists(std::filesystem::path filename) const {
 
     // try finding external file
     for (const auto& searchPath : getSearchPath()) {
@@ -166,10 +165,10 @@ bool FileManager::exists(const std::filesystem::path& filename) const {
     return false;
 }
 
-std::string FileManager::md5FromFilename(const std::filesystem::path& filename) {
+std::string FileManager::md5FromFilename(std::filesystem::path filename) {
     std::array<unsigned char, 16> md5sum{};
 
-    if (md5_file(reinterpret_cast<const char*>(filename.u8string().c_str()), md5sum) != 0) {
+    if (md5_file(reinterpret_cast<const char*>(filename.make_preferred().u8string().c_str()), md5sum.data()) != 0)
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
     }
 

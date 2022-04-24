@@ -27,7 +27,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop);
 
 int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop);
 
-int SavePNG(SDL_Surface* surface, const std::filesystem::path& file);
+int SavePNG(SDL_Surface* surface, std::filesystem::path file);
 
 std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot();
 
