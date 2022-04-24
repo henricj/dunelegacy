@@ -138,8 +138,9 @@ public:
        \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static Label* create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT,
-                         Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT);
+    static std::unique_ptr<Label>
+    create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+           Uint32 backgroundcolor = COLOR_TRANSPARENT);
 
 protected:
     /**

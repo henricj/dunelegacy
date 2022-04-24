@@ -30,11 +30,11 @@ MultiPlayerMenu::MultiPlayerMenu() {
     mainVBox.addWidget(&captionLabel, 24);
     mainVBox.addWidget(VSpacer::create(24));
 
-    connectHBox.addWidget(Label::create("Host:"), 50);
+    connectHBox.addWidget(Label::create("Host:").release(), 50);
     connectHostTextBox.setText("localhost");
     connectHBox.addWidget(&connectHostTextBox);
     connectHBox.addWidget(HSpacer::create(20));
-    connectHBox.addWidget(Label::create("Port:"), 50);
+    connectHBox.addWidget(Label::create("Port:").release(), 50);
     connectPortTextBox.setText(std::to_string(DEFAULT_PORT));
     connectHBox.addWidget(&connectPortTextBox, 90);
     connectHBox.addWidget(HSpacer::create(20));

@@ -63,7 +63,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(Spacer::create(), 0.2);
 
     NameHBox.addWidget(Spacer::create(), 0.5);
-    NameHBox.addWidget(Label::create(_("Player Name")), 190);
+    NameHBox.addWidget(Label::create(_("Player Name")).release(), 190);
     nameTextBox.setMaximumTextLength(MAX_PLAYERNAMELENGTH);
     nameTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     NameHBox.addWidget(&nameTextBox, 290);
@@ -76,7 +76,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
 
     gameOptionsHBox.addWidget(Spacer::create(), 0.5);
 
-    gameOptionsHBox.addWidget(Label::create(_("Default Game Options")), 190);
+    gameOptionsHBox.addWidget(Label::create(_("Default Game Options")).release(), 190);
     gameOptionsButton.setText(_("Change..."));
     gameOptionsButton.setOnClick([this] { onGameOptions(); });
     gameOptionsHBox.addWidget(&gameOptionsButton, 130);
@@ -90,7 +90,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(Spacer::create(), 0.2);
 
     languageHBox.addWidget(Spacer::create(), 0.5);
-    languageHBox.addWidget(Label::create(_("Language")), 190);
+    languageHBox.addWidget(Label::create(_("Language")).release(), 190);
 
     for (auto i = decltype(availLanguages.size()){0}; i < availLanguages.size(); i++) {
         languageDropDownBox.addEntry(availLanguages[i].substr(0, availLanguages[i].size() - 6), i);
@@ -109,7 +109,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(VSpacer::create(1));
 
     generalHBox.addWidget(Spacer::create(), 0.5);
-    generalHBox.addWidget(Label::create(_("Campaign AI")), 190);
+    generalHBox.addWidget(Label::create(_("Campaign AI")).release(), 190);
     for (unsigned int i = 1; i < PlayerFactory::getList().size(); i++) {
         aiDropDownBox.addEntry(PlayerFactory::getByIndex(i)->getName(), i);
     }
@@ -128,7 +128,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(Spacer::create(), 0.2);
 
     resolutionHBox.addWidget(Spacer::create(), 0.5);
-    resolutionHBox.addWidget(Label::create(_("Video Resolution")), 190);
+    resolutionHBox.addWidget(Label::create(_("Video Resolution")).release(), 190);
 
     int i = 0;
     for (const Coord& coord : availScreenRes) {
@@ -198,7 +198,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(Spacer::create(), 0.2);
 
     networkPortHBox.addWidget(Spacer::create(), 0.5);
-    networkPortHBox.addWidget(Label::create(_("Port")), 190);
+    networkPortHBox.addWidget(Label::create(_("Port")).release(), 190);
     portTextBox.setMaximumTextLength(5);
     portTextBox.setAllowedChars("0123456789");
     portTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
@@ -211,7 +211,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     mainVBox.addWidget(VSpacer::create(5));
 
     networkMetaServerHBox.addWidget(Spacer::create(), 0.5);
-    networkMetaServerHBox.addWidget(Label::create(_("MetaServer")), 190);
+    networkMetaServerHBox.addWidget(Label::create(_("MetaServer")).release(), 190);
     metaServerTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     networkMetaServerHBox.addWidget(&metaServerTextBox, 290);
     metaServerTextBox.setText(settings.network.metaServer);
