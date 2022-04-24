@@ -58,8 +58,8 @@ public:
 
     bool isFree() const noexcept { return !extractingSpice; }
     int getNumBookings() const noexcept { return bookings; } // number of units goings there
-    const Harvester* getHarvester() const { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
-    Harvester* getHarvester() { return reinterpret_cast<Harvester*>(harvester.getObjPointer()); }
+    const Harvester* getHarvester() const { return dune_cast<Harvester>(harvester.getObjPointer()); }
+    Harvester* getHarvester() { return dune_cast<Harvester>(harvester.getObjPointer()); }
 
 protected:
     /**
