@@ -727,21 +727,35 @@ void AIPlayer::attack() {
     attackTimer = getRandomGen().rand(10000, 20000);
 }
 
+void AIPlayer::handle_sandworm(const UnitBase* sandworm) {
+    auto& map = getMap();
+
+    for (const auto* const unit : getUnitList()) {
+        if (unit->getOwner() != getHouse())
+            continue;
+
+        const auto* const harvester = dune_cast<const Harvester>(unit);
+        if (!harvester)
+            continue;
+
+        if (harvester->isPickedUp())
+            continue;
+
+        if (map.tileExists(harvester->getLocation()) && !map.getTile(harvester->getLocation())->isRock()
+            && blockDistance(sandworm->getLocation(), harvester->getLocation()) <= 5) {
+
+            if (!harvester->isReturning())
+                doReturn(harvester);
+
+            scrambleUnitsAndDefend(sandworm);
+        }
+    }
+}
+
 void AIPlayer::checkAllUnits() {
     for (const auto* pUnit : getUnitList()) {
-        if (pUnit->getItemID() == Unit_Sandworm) {
-            for (const auto* pUnit2 : getUnitList()) {
-                if (pUnit2->getOwner() == getHouse() && pUnit2->getItemID() == Unit_Harvester) {
-                    const auto* pHarvester = static_cast<const Harvester*>(pUnit2);
-                    if (getMap().tileExists(pHarvester->getLocation())
-                        && !getMap().getTile(pHarvester->getLocation())->isRock()
-                        && blockDistance(pUnit->getLocation(), pHarvester->getLocation()) <= 5) {
-                        doReturn(pHarvester);
-                        scrambleUnitsAndDefend(pUnit);
-                    }
-                }
-            }
-        }
+        if (pUnit->getItemID() == Unit_Sandworm)
+            handle_sandworm(pUnit);
 
         if (pUnit->getOwner() != getHouse()) {
             continue;
