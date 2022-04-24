@@ -22,12 +22,15 @@
 
 #include "GUI/CenteringBox.h"
 #include "GUI/HBox.h"
+#include "Renderer/DuneTexture.h"
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 
-class MainMenu final : public MenuBase {
+class MainMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     MainMenu();
     ~MainMenu() override;
@@ -38,9 +41,6 @@ public:
     MainMenu& operator=(MainMenu&&)      = delete;
 
     int showMenu() override;
-
-protected:
-    void draw_background(Point position) override;
 
 private:
     static void onSinglePlayer();
@@ -65,6 +65,9 @@ private:
     PictureLabel planetPicture;
     PictureLabel duneLegacy;
     PictureLabel buttonBorder;
+
+    DuneTextureOwned mainBackgroundOwned;
+    DuneTexture mainBackground;
 };
 
 #endif // MAINMENU_H

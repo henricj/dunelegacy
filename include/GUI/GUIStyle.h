@@ -321,7 +321,14 @@ public:
         \param  height      the height of the surface
         \return the new surface
     */
-    virtual sdl2::surface_ptr createBackground(uint32_t width, uint32_t height) = 0;
+    virtual DuneSurfaceOwned createBackground(int width, int height) const = 0;
+
+    /**
+        Draw a simple background for e.g. a window
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    virtual void drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) = 0;
 
     /**
         Creates a simple background for widgets

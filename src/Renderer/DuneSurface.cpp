@@ -17,9 +17,11 @@
 
 #include "Renderer/DuneSurface.h"
 
+#include "Renderer/DuneTexture.h"
+
 DuneSurfaceOwned::DuneSurfaceOwned(sdl2::surface_ptr surface, float width, float height)
     : surface_{std::move(surface)}, width_{width}, height_{height} {
-    if (!surface)
+    if (!surface_)
         return;
 
     if (width_ > 0.f && height_ > 0.f)
@@ -31,6 +33,14 @@ DuneSurfaceOwned::DuneSurfaceOwned(sdl2::surface_ptr surface, float width, float
 
 DuneSurfaceOwned::~DuneSurfaceOwned() = default;
 
-sdl2::texture_ptr DuneSurfaceOwned::createTexture(SDL_Renderer* renderer) const {
-    return sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, surface_.get())};
+DuneTextureOwned DuneSurfaceOwned::createTexture(SDL_Renderer* renderer) const {
+    if (!surface_)
+        return {};
+
+    auto texture = DuneTextureOwned{sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, surface_.get())}};
+
+    texture.width_  = width_;
+    texture.height_ = height_;
+
+    return texture;
 }

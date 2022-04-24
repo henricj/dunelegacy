@@ -67,6 +67,8 @@ public:
 
     [[discard]] sdl2::surface_ptr createBackgroundSurface(int width, int height) const;
 
+    [[discard]] sdl2::surface_ptr createBackgroundTileSurface() const;
+
 private:
     [[nodiscard]] std::unique_ptr<Animation> loadAnimationFromWsa(const std::string& filename) const;
 

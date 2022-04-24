@@ -32,9 +32,6 @@
 
 MainMenu::MainMenu() {
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
-    MenuBase::resize(getTextureSize(pBackground));
 
     MainMenu::setWindowWidget(&windowWidget);
 
@@ -121,17 +118,6 @@ int MainMenu::showMenu() {
     return parent::showMenu();
 }
 
-void MainMenu::draw_background(Point position) {
-    const auto size = getSize();
-
-    auto* background = getBackground();
-
-    if (!background || background->source_.w != size.x || background->source_.h != size.y) {
-        setBackground(pGFXManager->getMainBackground(renderer, size.x, size.y));
-    }
-
-    MenuBase::draw_background(position);
-}
 
 void MainMenu::onSinglePlayer() {
     SinglePlayerMenu singlePlayerMenu;

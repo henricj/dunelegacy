@@ -193,3 +193,25 @@ bool MenuBase::doInput(SDL_Event& event) {
 
     return !quiting;
 }
+
+TopMenuBase::TopMenuBase() {
+    // We are a top level window
+    const auto size = getRendererSize();
+
+    TopMenuBase::resize(size.w, size.h);
+}
+
+TopMenuBase::~TopMenuBase() = default;
+
+void TopMenuBase::draw_background(Point position) {
+    MenuBase::draw_background(position);
+
+    auto& gui = GUIStyle::getInstance();
+
+    const auto& size = getSize();
+
+    const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
+                                static_cast<float>(size.x), static_cast<float>(size.y)};
+
+    gui.drawBackground(renderer, dest);
+}
