@@ -32,7 +32,9 @@
 
 #include <filesystem>
 
-class CustomGameMenu final : public MenuBase {
+class CustomGameMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     CustomGameMenu(bool multiplayer, bool LANServer = true);
     ~CustomGameMenu() override;

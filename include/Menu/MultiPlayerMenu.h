@@ -20,7 +20,9 @@
 
 #include <list>
 
-class MultiPlayerMenu final : public MenuBase {
+class MultiPlayerMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     MultiPlayerMenu();
     ~MultiPlayerMenu() override;

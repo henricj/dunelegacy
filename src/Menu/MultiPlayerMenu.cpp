@@ -17,9 +17,6 @@
 
 MultiPlayerMenu::MultiPlayerMenu() {
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MenuBackground);
-    setBackground(pBackground);
-    MultiPlayerMenu::resize(getTextureSize(pBackground));
 
     MultiPlayerMenu::setWindowWidget(&windowWidget);
 
