@@ -111,9 +111,9 @@ void WidgetWithBackground::setBackground(SDL_Texture* texture) {
 
     if (texture) {
         localDuneTexture_ = DuneTexture{texture};
-        pBackground = &localDuneTexture_;
+        pBackground       = &localDuneTexture_;
     } else {
         localDuneTexture_ = DuneTexture{};
-        pBackground = nullptr;
+        pBackground       = nullptr;
     }
 }

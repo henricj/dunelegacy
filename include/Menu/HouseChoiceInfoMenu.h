@@ -23,9 +23,11 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/dune/AnimationLabel.h>
 
-#define MENU_QUIT_HOUSECHOICE_YES (1)
+inline constexpr auto MENU_QUIT_HOUSECHOICE_YES = 1;
 
 class HouseChoiceInfoMenu final : public MentatMenu {
+    using parent = MentatMenu;
+
 public:
     HouseChoiceInfoMenu(HOUSETYPE newHouse);
     ~HouseChoiceInfoMenu() override;

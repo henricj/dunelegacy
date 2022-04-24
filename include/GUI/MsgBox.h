@@ -31,7 +31,7 @@
 #include <algorithm>
 
 /// A simple class for a message box
-class MsgBox : public Window {
+class MsgBox final : public Window {
 public:
     /**
         This method sets a new text for this message box.

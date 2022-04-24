@@ -178,9 +178,10 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len = std::strin
 
 /**
     This function splits a text into multiple lines such that each line is no longer than linewidth pixels. The function
-   pGetTextWidth is used to determine how width a given text will be in pixels. \param  text            the text to
-   split; any hard line breaks '\n' are also considered \param  linewidth       the maximum width of a line in pixel
-    \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value
+   pGetTextWidth is used to determine how width a given text will be in pixels.
+   \param  text            the text to split; any hard line breaks '\n' are also considered
+   \param  linewidth       the maximum width of a line in pixel
+   \param  pGetTextWidth   this function is used to determine the width in pixels of a given string. Its return value
    shall specify the width in pixels of its parameter. \return the returned vector contains the complete text, split
    into multiple lines.
 */

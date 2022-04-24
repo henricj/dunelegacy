@@ -88,9 +88,9 @@ extern SettingsClass settings; ///< the settings read from the settings file
 extern bool debug; ///< is set for debugging purposes
 
 // constants
-inline static constexpr auto houseToPaletteIndex = std::to_array({
-    PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES,  PALCOLOR_ORDOS,
-    PALCOLOR_FREMEN,    PALCOLOR_SARDAUKAR, PALCOLOR_MERCENARY});           ///< the base colors for the different houses
+inline static constexpr auto houseToPaletteIndex =
+    std::to_array({PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR,
+                   PALCOLOR_MERCENARY}); ///< the base colors for the different houses
 
 static_assert(std::tuple_size_v<decltype(houseToPaletteIndex)> == static_cast<int>(HOUSETYPE::NUM_HOUSES));
 

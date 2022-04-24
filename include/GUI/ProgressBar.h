@@ -129,7 +129,7 @@ protected:
     bool bDrawShadow{};             ///< Draw shadow under the foreground surface
 };
 
-class TextProgressBar : public ProgressBar {
+class TextProgressBar final : public ProgressBar {
     using parent = ProgressBar;
 
 public:
@@ -191,7 +191,7 @@ protected:
     Uint32 textshadowcolor = COLOR_DEFAULT;
 };
 
-class PictureProgressBar : public ProgressBar {
+class PictureProgressBar final : public ProgressBar {
     using parent = ProgressBar;
 
 public:

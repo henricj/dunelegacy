@@ -40,9 +40,11 @@ public:
 
 /// A container class of explicit placed widgets
 class StaticContainer : public Container<StaticContainer_WidgetData> {
+    using parent = Container<StaticContainer_WidgetData>;
+
 public:
     /// default constructor
-    StaticContainer() : Container<StaticContainer_WidgetData>() { }
+    StaticContainer() = default;
 
     /// default destructor
     ~StaticContainer() override = default;
@@ -104,7 +106,7 @@ public:
         for (const StaticContainer_WidgetData& widgetData : containedWidgets) {
             widgetData.pWidget->resize(widgetData.size.x, widgetData.size.y);
         }
-        Container<StaticContainer_WidgetData>::resize(width, height);
+        parent::resize(width, height);
     }
 
 protected:

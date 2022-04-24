@@ -26,7 +26,7 @@
 #include <string>
 
 /// a class for a text label
-class Label : public Widget {
+class Label final : public Widget {
     using parent = Widget;
 
 public:
