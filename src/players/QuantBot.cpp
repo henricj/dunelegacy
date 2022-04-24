@@ -1743,7 +1743,10 @@ void QuantBot::checkAllUnits() {
                         if (pUnit->getTarget() != nullptr) {
                             if (blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 6
                                 && pUnit->getTarget()->getItemID() != Unit_Ornithopter) {
-                                doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+
+                                const auto* const ground_unit = dune_cast<GroundUnit>(pUnit);
+                                if (!ground_unit || !ground_unit->isPickedUp())
+                                    doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true);
                             }
                         }
                     } else if (pUnit->getAttackMode() != HUNT && !pUnit->hasATarget() && !pUnit->wasForced()) {
