@@ -96,7 +96,7 @@ void GroundUnit::checkPos(const GameContext& context) {
 
             clearPath();
         } else {
-            auto* const pObject = pTile->getGroundObject(context.objectManager);
+            const auto* const pObject = pTile->getGroundObject(context.objectManager);
 
             if (justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target.getObjectID())) {
                 if (const auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {

@@ -30,18 +30,18 @@ class UnitBaseConstants : public ObjectBaseConstants {
 public:
     constexpr explicit UnitBaseConstants(ItemID_enum itemID, int num_weapons = 0,
                                          BulletID_enum bullet_id = BulletID_enum::Bullet_Rocket)
-        : ObjectBaseConstants{itemID}, bulletType_(bullet_id), numWeapons_(num_weapons) {
+        : ObjectBaseConstants{itemID}, numWeapons_(num_weapons), bulletType_(bullet_id) {
         aUnit_          = true;
         canAttackStuff_ = 0 != num_weapons;
     }
 
-    bool isTracked() const noexcept { return tracked_; }
+    [[nodiscard]] bool isTracked() const noexcept { return tracked_; }
 
-    bool isTurreted() const noexcept { return turreted_; }
+    [[nodiscard]] bool isTurreted() const noexcept { return turreted_; }
 
-    int numWeapons() const noexcept { return numWeapons_; }
+    [[nodiscard]] int numWeapons() const noexcept { return numWeapons_; }
 
-    int bulletType() const noexcept { return bulletType_; }
+    [[nodiscard]] int bulletType() const noexcept { return bulletType_; }
 
 protected:
     // constant for all units of the same type
@@ -222,7 +222,7 @@ public:
     bool update(const GameContext& context) override;
 
     bool canPass(int xPos, int yPos) const {
-        auto* const pTile = currentGameMap->tryGetTile(xPos, yPos);
+        const auto* const pTile = currentGameMap->tryGetTile(xPos, yPos);
 
         return pTile ? canPassTile(pTile) : false;
     }
@@ -350,13 +350,13 @@ private:
 template<>
 inline UnitBase* dune_cast(ObjectBase* base) {
     if (base && base->isAUnit())
-        return static_cast<UnitBase*>(base);
+        return static_cast<UnitBase*>(base); // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
     return nullptr;
 }
 
 template<>
-inline const UnitBase* dune_cast(const ObjectBase* base) {
+inline const UnitBase* dune_cast(const ObjectBase* base) { // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
     if (base && base->isAUnit())
         return static_cast<const UnitBase*>(base);
 
