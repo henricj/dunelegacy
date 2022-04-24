@@ -205,8 +205,13 @@ bool GroundUnit::hasBookedCarrier() {
     if (bookedCarrier == NONE_ID)
         return false;
 
-    if (nullptr != getCarrier())
-        return true;
+    if (const auto* const carrier = getCarrier()) {
+        if (carrier->getTarget() == this)
+            return true;
+
+        sdl2::log_error("A ground unit's carrier has another target!");
+    } else
+        sdl2::log_error("A ground unit has lost its booked carrier!");
 
     bookCarrier(nullptr);
 
