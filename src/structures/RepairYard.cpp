@@ -139,51 +139,48 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
         }
     }
 
-    if (repairingAUnit == true) {
-        auto* pRepairUnit = dune_cast<GroundUnit>(repairUnit.getUnitPointer());
+    if (repairingAUnit != true)
+        return;
 
-        if (nullptr == pRepairUnit)
-            return;
+    auto* pRepairUnit = dune_cast<GroundUnit>(repairUnit.getUnitPointer());
 
-        if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
-            if (owner->takeCredits(UNIT_REPAIRCOST) > 0) {
-                pRepairUnit->addHealth();
-            }
+    if (nullptr == pRepairUnit)
+        return;
 
-            /*
-                Will turn this code into an option that's only on when manual carryall is enabled.
-                While this is fixing the original code, it can cause imbalances in combat as tanks
-                can be kept at the frontline letting an initial successful attack snowball
-            */
-        } else if (!pRepairUnit->isAwaitingPickup()
-                   && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE
-                   && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops) {
-            // find carryall
-            Carryall* pCarryall = nullptr;
-            if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
-                for (UnitBase* pUnit : unitList) {
-                    if ((pUnit->getOwner() == owner) && (pUnit->getItemID() == Unit_Carryall)) {
-                        auto* pTmpCarryall = static_cast<Carryall*>(pUnit);
-                        if (!pTmpCarryall->isBooked()) {
-                            pCarryall = pTmpCarryall;
-                        }
-                    }
+    if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
+        if (owner->takeCredits(UNIT_REPAIRCOST) > 0)
+            pRepairUnit->addHealth();
+
+        /*
+            Will turn this code into an option that's only on when manual carryall is enabled.
+            While this is fixing the original code, it can cause imbalances in combat as tanks
+            can be kept at the frontline letting an initial successful attack snowball
+        */
+    } else if (!pRepairUnit->isAwaitingPickup()
+               && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE
+               && context.game.getGameInitSettings().getGameOptions().manualCarryallDrops) {
+        // find carryall
+        Carryall* pCarryall = nullptr;
+        if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
+            for (auto* pUnit : unitList) {
+                if (pUnit->getOwner() != owner)
+                    continue;
+
+                if (auto* const pTmpCarryall = dune_cast<Carryall>(pUnit)) {
+                    if (!pTmpCarryall->isBooked())
+                        pCarryall = pTmpCarryall;
                 }
             }
-
-            if (pCarryall != nullptr) {
-                pCarryall->setTarget(this);
-                pCarryall->clearPath();
-                static_cast<GroundUnit*>(pRepairUnit)->bookCarrier(pCarryall);
-                pRepairUnit->setTarget(nullptr);
-                pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
-            } else {
-                deployRepairUnit(context);
-            }
-        } else if (!pRepairUnit->hasBookedCarrier()) {
-            deployRepairUnit(context);
-        } else {
-            deployRepairUnit(context);
         }
-    }
+
+        if (pCarryall != nullptr) {
+            pCarryall->setTarget(this);
+            pCarryall->clearPath();
+            pRepairUnit->bookCarrier(pCarryall);
+            pRepairUnit->setTarget(nullptr);
+            pRepairUnit->setDestination(pRepairUnit->getGuardPoint());
+        } else
+            deployRepairUnit(context);
+    } else
+        deployRepairUnit(context);
 }
