@@ -176,6 +176,11 @@ void setVideoMode(int displayIndex) {
                               SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), settings.video.physicalWidth,
                               settings.video.physicalHeight, videoFlags);
 
+    if (!window)
+        THROW(sdl_error, "Unable to create window: %s!", SDL_GetError());
+
+    SDL_SetWindowMinimumSize(window, GUIStyle::MINIMUM_WIDTH, GUIStyle::MINIMUM_HEIGHT);
+
     sdl2::log_info("Available renderers:");
 
     { // Scope
@@ -204,14 +209,15 @@ void setVideoMode(int displayIndex) {
 #    endif
 #endif
 
-    { // Scope
-        const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER);
-
-        if (render_driver_hint)
-            sdl2::log_info("   requested render driver: %s", render_driver_hint);
-    }
+    // Scope
+    if (const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER))
+        sdl2::log_info("   requested render driver: %s", render_driver_hint);
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+
+    if (!renderer)
+        THROW(sdl_error, "Unable to create renderer: %s!", SDL_GetError());
+
     { // Scope
         SDL_RendererInfo info;
         if (0 == SDL_GetRendererInfo(renderer, &info)) {

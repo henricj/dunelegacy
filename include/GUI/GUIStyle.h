@@ -41,6 +41,9 @@ enum Alignment_Enum {
 
 class GUIStyle {
 public:
+    inline static constexpr auto MINIMUM_WIDTH  = 640;
+    inline static constexpr auto MINIMUM_HEIGHT = 480;
+
     /// default constructor
     GUIStyle();
 
