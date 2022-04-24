@@ -30,9 +30,7 @@
 
 #include <algorithm>
 #include <filesystem>
-#include <iomanip>
 #include <mutex>
-#include <sstream>
 
 FileManager::FileManager() {
     sdl2::log_info("FileManager is loading PAK-Files...");
@@ -169,15 +167,11 @@ bool FileManager::exists(const std::filesystem::path& filename) const {
 }
 
 std::string FileManager::md5FromFilename(const std::filesystem::path& filename) {
-    unsigned char md5sum[16];
+    std::array<unsigned char, 16> md5sum{};
 
     if (md5_file(reinterpret_cast<const char*>(filename.u8string().c_str()), md5sum) != 0) {
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
     }
-    std::stringstream stream;
-    stream << std::setfill('0') << std::hex;
-    for (const int i : md5sum) {
-        stream << std::setw(2) << i;
-    }
-    return stream.str();
+
+    return to_hex(md5sum);
 }
