@@ -44,6 +44,17 @@ void PictureButton::setTextures(const DuneTexture* pUnpressedTexture, const Dune
     }
 }
 
+void PictureButton::setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture,
+                                DuneTextureOwned pActiveTexture) {
+
+    const auto width  = pUnpressedTexture ? static_cast<int>(std::ceil(pUnpressedTexture.width_)) : 0;
+    const auto height = pUnpressedTexture ? static_cast<int>(std::ceil(pUnpressedTexture.height_)) : 0;
+
+    parent::setTextures(std::move(pUnpressedTexture), std::move(pPressedTexture), std::move(pActiveTexture));
+
+    resize(width, height);
+}
+
 Point PictureButton::getMinimumSize() const {
     if (pUnpressedTexture) {
         return getTextureSize(pUnpressedTexture);

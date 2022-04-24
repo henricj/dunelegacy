@@ -399,12 +399,7 @@ protected:
     /**
         This method frees all textures that are used by this list box
     */
-    void invalidateTextures() override {
-        pBackground.reset();
-        pForeground.reset();
-
-        parent::invalidateTextures();
-    }
+    void invalidateTextures() override;
 
 private:
     void updateList();
@@ -428,8 +423,8 @@ private:
     };
 
     std::vector<ListEntry> entries;
-    sdl2::texture_ptr pBackground;
-    sdl2::texture_ptr pForeground;
+    DuneTextureOwned pBackground;
+    DuneTextureOwned pForeground;
     ScrollBar scrollbar;
 
     std::function<void(bool)> pOnSelectionChange; ///< this function is called when the selection changes

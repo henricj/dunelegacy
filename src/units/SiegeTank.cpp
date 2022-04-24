@@ -66,7 +66,7 @@ void SiegeTank::blitToScreen() {
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source1, &dest1);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
     static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
                                                       Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
@@ -80,7 +80,7 @@ void SiegeTank::blitToScreen() {
                         screenborder->world2screenY(realY + siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)].y),
                         static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pTurretGraphic, &source2, &dest2);
+    Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
     if (isBadlyDamaged()) {
         drawSmoke(x1, y1);

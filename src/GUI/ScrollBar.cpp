@@ -111,10 +111,8 @@ void ScrollBar::draw(Point position) {
 
     updateTextures();
 
-    if (pBackground != nullptr) {
-        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
-    }
+    if (pBackground)
+        pBackground.draw(renderer, position.x, position.y);
 
     arrow1.draw(position);
     auto p = position;

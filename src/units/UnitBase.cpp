@@ -253,7 +253,7 @@ void UnitBase::blitToScreen() {
         calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopy(renderer, pUnitGraphic, &source, &dest);
+    Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
 
     if (isBadlyDamaged()) {
         drawSmoke(x, y);
@@ -380,14 +380,14 @@ void UnitBase::drawSelectionBox() {
     const auto screenY = screenborder->world2screenY(realY);
 
     const auto dest = calcDrawingRect(selectionBox, screenX, screenY, HAlign::Center, VAlign::Center);
-    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 
     const auto width = getWidth(selectionBox);
     const auto x     = screenX - width / 2;
     const auto y     = screenY - getHeight(selectionBox) / 2;
 
-    const auto healthWidth = (lround((getHealth() / getMaxHealth()) * (width - 3)));
-    renderFillRect(renderer, x + 1, y - currentZoomlevel - 1, x + 1 + healthWidth, y - 1, getHealthColor());
+    const auto healthWidth = (((getHealth() / getMaxHealth()).toFloat() * (width - 3)));
+    renderFillRectF(renderer, x + 1, y - currentZoomlevel - 1, x + 1 + healthWidth, y - 1, getHealthColor());
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
@@ -402,7 +402,7 @@ void UnitBase::drawOtherPlayerSelectionBox() {
 
     const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX),
                                       screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
-    Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+    Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 }
 
 void UnitBase::releaseTarget() {
@@ -1490,7 +1490,7 @@ void UnitBase::drawSmoke(int x, int y) const {
     const auto dest   = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
     const auto source = calcSpriteSourceRect(pSmokeTex, frame, 3);
 
-    Dune_RenderCopy(renderer, pSmokeTex, &source, &dest);
+    Dune_RenderCopyF(renderer, pSmokeTex, &source, &dest);
 }
 
 void UnitBase::playAttackSound() { }

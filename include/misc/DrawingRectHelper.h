@@ -82,7 +82,7 @@ inline auto getHeight(SDL_Texture* pTexture) {
     \return the width of pTexture
 */
 constexpr auto getWidth(const DuneTexture* pTexture) noexcept {
-    return pTexture->source_.w;
+    return pTexture->width_;
 }
 
 /**
@@ -91,7 +91,7 @@ constexpr auto getWidth(const DuneTexture* pTexture) noexcept {
     \return the height of pTexture
 */
 constexpr auto getHeight(const DuneTexture* pTexture) noexcept {
-    return pTexture->source_.h;
+    return pTexture->height_;
 }
 
 /**
@@ -327,7 +327,7 @@ constexpr auto calcSpriteDrawingRect(const DuneTexture* pTexture, float x, float
     assert(numCols > 0);
     assert(numRows > 0);
 
-    SDL_Rect rect = {x, y, pTexture->source_.w, pTexture->source_.h};
+    SDL_FRect rect = {x, y, pTexture->width_, pTexture->height_};
 
     rect.w /= numCols;
     rect.h /= numRows;
@@ -365,15 +365,15 @@ constexpr auto calcSpriteDrawingRectF(const DuneTexture* pTexture, float x, floa
     assert(numCols > 0);
     assert(numRows > 0);
 
-    auto w = pTexture->source_.w;
-    auto h = pTexture->source_.h;
+    auto w = pTexture->width_;
+    auto h = pTexture->height_;
 
     if (numCols > 1)
         w /= numCols;
     if (numRows > 1)
         h /= numRows;
 
-    SDL_FRect rect{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
+    SDL_FRect rect{x, y, w, h};
 
     switch (halign) {
         case HAlign::Left: /*nothing*/ break;
@@ -475,6 +475,36 @@ constexpr auto calcDrawingRect(const DuneTexture* pTexture, float x, float y, HA
    coordinate in pTexture is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the bottom right corner
    of pTexture is drawn at position (x,y)
    \param  texture     the texture to calculate the rect for
+   \param  x           the x-coordinate
+   \param  y           the y-coordinate
+   \param  halign      the horizontal alignment of pTexture (default is HAlign::Left)
+   \param  valign      the vertical alignment of pTexture (default is VAlign::Top)
+   \return the rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
+*/
+constexpr auto calcDrawingRect(const DuneTextureOwned& texture, float x, float y, HAlign halign = HAlign::Left,
+                               VAlign valign = VAlign::Top) {
+    SDL_FRect rect{x, y, texture.width_, texture.height_};
+
+    switch (halign) {
+        case HAlign::Left: /*nothing*/ break;
+        case HAlign::Center: rect.x -= rect.w / 2; break;
+        case HAlign::Right: rect.x -= rect.w - 1; break;
+    }
+
+    switch (valign) {
+        case VAlign::Top: /*nothing*/ break;
+        case VAlign::Center: rect.y -= rect.h / 2; break;
+        case VAlign::Bottom: rect.y -= rect.h - 1; break;
+    }
+
+    return rect;
+}
+
+/**
+    Calculates the drawing rectangle for drawing pTexture at (x,y). The parameters halign and valign determine which
+   coordinate in pTexture is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the bottom right corner
+   of pTexture is drawn at position (x,y)
+   \param  pTexture    the texture to calculate the rect for
    \param  x           the x-coordinate
    \param  y           the y-coordinate
    \param  halign      the horizontal alignment of pTexture (default is HAlign::Left)
@@ -632,8 +662,8 @@ calcAlignedDrawingRect(SDL_Texture* pTexture, HAlign halign = HAlign::Center, VA
 */
 constexpr auto calcAlignedDrawingRect(const DuneTexture* pTexture, const SDL_Rect& rect, HAlign halign = HAlign::Center,
                                       VAlign valign = VAlign::Center) {
-    int x = 0;
-    int y = 0;
+    auto x = 0.f;
+    auto y = 0.f;
 
     switch (halign) {
         case HAlign::Left: x = 0; break;
@@ -662,6 +692,11 @@ constexpr auto calcAlignedDrawingRect(const DuneTexture* pTexture, const SDL_Rec
 inline auto
 calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Center, VAlign valign = VAlign::Center) {
     return calcAlignedDrawingRect(pTexture, getRendererSize(), halign, valign);
+}
+
+inline auto as_rect(const SDL_FRect& rect) {
+    return SDL_Rect{static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::ceil(rect.y)),
+                    static_cast<int>(std::ceil(rect.w)), static_cast<int>(std::ceil(rect.h))};
 }
 
 #endif // DRAWINGRECTHELPER_H

@@ -27,7 +27,6 @@
 
 #include <structures/Wall.h>
 
-#include <fmt/printf.h>
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
 
@@ -39,6 +38,10 @@
 
 #include <config.h>
 
+#include <SDL2/SDL_render.h>
+
+#include <fmt/printf.h>
+
 #include <algorithm>
 #include <typeinfo>
 
@@ -47,10 +50,12 @@ MapEditor::MapEditor() {
 
     currentZoomlevel = settings.video.preferredZoomLevel;
 
-    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    const auto* const gfx = pGFXManager.get();
+
+    sideBarPos = as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top));
+    topBarPos  = as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top));
     bottomBarPos =
-        calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom);
+        as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom));
 
     SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h};
 
@@ -1347,7 +1352,8 @@ void MapEditor::drawCursor() {
     const auto* const gfx = pGFXManager.get();
 
     const DuneTexture* pCursor = nullptr;
-    SDL_Rect dest              = {0, 0, 0, 0};
+    SDL_FRect dest{};
+
     if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if (scrollLeftMode && !scrollRightMode) {
             pCursor = gfx->getUIGraphic(UI_CursorLeft);
@@ -1902,7 +1908,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 }
                 auto drawLocation = calcDrawingRect(image, pScreenborder->world2screenX(position.x * TILESIZE),
                                                     pScreenborder->world2screenY(position.y * TILESIZE));
-                Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
+                Dune_RenderCopyF(renderer, image, nullptr, &drawLocation);
             }
         } else if (currentEditorMode.mode == EditorMode::EditorMode_TacticalPos) {
             // draw tactical pos rectangle (the starting screen)
@@ -1933,12 +1939,12 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                     default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
                 }
 
-                SDL_Rect dest = calcDrawingRect(selectionBox,
-                                                pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
-                                                pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)),
-                                                HAlign::Center, VAlign::Center);
+                auto dest = calcDrawingRect(selectionBox,
+                                            pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
+                                            pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)),
+                                            HAlign::Center, VAlign::Center);
 
-                Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+                Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
             }
         }
     }
@@ -1958,12 +1964,12 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
         }
 
-        SDL_Rect dest = calcDrawingRect(
-            selectionBox, pScreenborder->world2screenX((selectedMapItemCoord.x * TILESIZE) + (TILESIZE / 2)),
-            pScreenborder->world2screenY((selectedMapItemCoord.y * TILESIZE) + (TILESIZE / 2)), HAlign::Center,
-            VAlign::Center);
+        auto dest = calcDrawingRect(selectionBox,
+                                    pScreenborder->world2screenX((selectedMapItemCoord.x * TILESIZE) + (TILESIZE / 2)),
+                                    pScreenborder->world2screenY((selectedMapItemCoord.y * TILESIZE) + (TILESIZE / 2)),
+                                    HAlign::Center, VAlign::Center);
 
-        Dune_RenderCopy(renderer, selectionBox, nullptr, &dest);
+        Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
     }
 }
 

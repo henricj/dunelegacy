@@ -342,11 +342,11 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
 
         // now blend shimmerTex to screen (= make use of alpha values in mask)
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-        Dune_RenderCopy(renderer, shimmerTex, nullptr, &dest);
+        Dune_RenderCopyF(renderer, shimmerTex, nullptr, &dest);
     } else {
         const auto source =
             calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle : 0, numFrames);
-        Dune_RenderCopy(renderer, graphic[currentZoomlevel], &source, &dest);
+        Dune_RenderCopyF(renderer, graphic[currentZoomlevel], &source, &dest);
     }
 }
 

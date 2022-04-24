@@ -172,7 +172,7 @@ void GameInterface::draw(Point position) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
         auto dest   = calcSpriteDrawingRect(
               digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i) * 10, 135, 10);
-        Dune_RenderCopy(renderer, digitsTex, &source, &dest);
+        Dune_RenderCopyF(renderer, digitsTex, &source, &dest);
     }
 }
 

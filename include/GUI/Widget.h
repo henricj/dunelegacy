@@ -104,8 +104,8 @@ inline Point getTextureSize(SDL_Texture* pTexture) {
 inline Point getTextureSize(const DuneTexture* pTexture) {
     Point p;
     if (pTexture != nullptr) {
-        p.x = pTexture->source_.w;
-        p.y = pTexture->source_.h;
+        p.x = static_cast<int>(std::ceil(pTexture->width_));
+        p.y = static_cast<int>(std::ceil(pTexture->height_));
     }
     return p;
 }

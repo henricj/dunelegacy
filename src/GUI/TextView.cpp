@@ -57,20 +57,27 @@ void TextView::draw(Point position) {
 
     updateTextures();
 
-    if (pBackground != nullptr) {
-        const SDL_Rect dest = calcDrawingRect(pBackground.get(), position.x, position.y);
-        Dune_RenderCopy(renderer, pBackground.get(), nullptr, &dest);
-    }
+    if (pBackground)
+        pBackground.draw(renderer, position.x, position.y);
 
-    if (pForeground != nullptr) {
-        const int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+    if (pForeground) {
+        const auto& gui = GUIStyle::getInstance();
 
-        const SDL_Rect src = {0, scrollbar.getCurrentValue() * lineHeight, getWidth(pForeground.get()),
-                              std::min(getHeight(pForeground.get()), getSize().y - 2)};
+        const auto lineHeight = gui.getTextHeight(fontSize) + 2.f;
 
-        const SDL_Rect dest = {position.x + 2, position.y + 1, getWidth(pForeground.get()),
-                               std::min(getHeight(pForeground.get()), getSize().y - 2)};
-        Dune_RenderCopy(renderer, pForeground.get(), &src, &dest);
+        const auto src_y = static_cast<int>(std::round(static_cast<float>(scrollbar.getCurrentValue()) * lineHeight));
+
+        const auto height =
+            std::min(getHeight(pForeground.get()),
+                     static_cast<int>(std::round(static_cast<int>(getSize().y) - 2 * gui.getActualScale())));
+
+        const SDL_Rect src{0, src_y, getWidth(pForeground.get()), height};
+
+        const SDL_FRect dest = {static_cast<float>(position.x) + 2.f, static_cast<float>(position.y) + 1.f,
+                                pForeground.width_,
+                                std::min(pForeground.height_, static_cast<float>(getSize().y) - 2.f)};
+
+        Dune_RenderCopyF(renderer, pForeground.get(), &src, &dest);
     }
 
     Point scrollBarPos = position;
@@ -86,15 +93,17 @@ void TextView::resize(uint32_t width, uint32_t height) {
 
     scrollbar.resize(scrollbar.getMinimumSize().x, height);
 
-    int fontSize = this->fontSize;
+    auto& gui = GUIStyle::getInstance();
+
     const std::vector<std::string> textLines =
-        greedyWordWrap(text, getSize().x - scrollbar.getSize().x - 4, [fontSize](std::string_view tmp) {
-            return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
-        });
+        greedyWordWrap(text, static_cast<float>(getSize().x - scrollbar.getSize().x - 4),
+                       [&gui, font = fontSize](std::string_view tmp) {
+                           return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
+                       });
 
-    const int lineHeight = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
+    const auto lineHeight = gui.getTextHeight(fontSize) + 2.f;
 
-    const int numVisibleLines = height / lineHeight;
+    const auto numVisibleLines = static_cast<int>(std::floor(static_cast<int>(height) / lineHeight));
     scrollbar.setRange(0, std::max(0, static_cast<int>(textLines.size()) - numVisibleLines));
     scrollbar.setBigStepSize(std::max(1, numVisibleLines - 1));
 
@@ -104,21 +113,22 @@ void TextView::resize(uint32_t width, uint32_t height) {
 void TextView::updateTextures() {
     parent::updateTextures();
 
-    if (pBackground == nullptr) {
-        pBackground = convertSurfaceToTexture(GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y));
-    }
+    const auto& gui = GUIStyle::getInstance();
 
-    if (pForeground == nullptr) {
-        int fontSize = this->fontSize;
-        const std::vector<std::string> textLines =
-            greedyWordWrap(text, getSize().x - scrollbar.getSize().x - 4, [fontSize](std::string_view tmp) {
-                return GUIStyle::getInstance().getMinimumLabelSize(tmp, fontSize).x - 4;
-            });
+    if (!pBackground)
+        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
 
-        const int lineHeight  = GUIStyle::getInstance().getTextHeight(fontSize) + 2;
-        const int labelHeight = lineHeight * textLines.size() + 2;
-        pForeground           = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(
-                      getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
+    if (!pForeground) {
+        const auto textLines = greedyWordWrap(text, static_cast<float>(getSize().x - scrollbar.getSize().x - 4),
+                                              [&gui, font = fontSize](std::string_view tmp) {
+                                                  return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
+                                              });
+
+        const auto lineHeight  = gui.getTextHeight(fontSize) + 2.f;
+        const auto labelHeight = static_cast<int>(std::ceil(lineHeight * static_cast<float>(textLines.size()) + 2.f));
+
+        pForeground = gui.createLabel(renderer, getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor,
+                                      textshadowcolor, backgroundcolor);
     }
 }
 

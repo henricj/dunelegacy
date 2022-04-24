@@ -41,7 +41,8 @@ public:
     TTFFont& operator=(const TTFFont&) = delete;
     TTFFont& operator=(TTFFont&&)      = delete;
 
-    [[nodiscard]] sdl2::surface_ptr createTextSurface(std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) const;
+    [[nodiscard]] sdl2::surface_ptr
+    createTextSurface(std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) const override;
 
     [[nodiscard]] int getTextWidth(std::string_view text) const override;
 

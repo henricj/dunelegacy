@@ -226,8 +226,10 @@ void BuilderList::draw(Point position) {
             if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
                 const auto* pTexture = resolveItemPicture(buildItem.itemID);
 
-                const auto dest = calcDrawingRect(pTexture, position.x + getButtonPosition(i - currentListPos).x,
-                                                  position.y + getButtonPosition(i - currentListPos).y);
+                const auto dest_x = position.x + getButtonPosition(i - currentListPos).x;
+                const auto dest_y = position.y + getButtonPosition(i - currentListPos).y;
+
+                const auto dest = calcDrawingRectF(pTexture, dest_x, dest_y);
 
                 if (pTexture != nullptr) {
                     pTexture->draw(renderer, dest.x, dest.y);
@@ -254,11 +256,11 @@ void BuilderList::draw(Point position) {
                     const auto pPriceTexture =
                         gui.createText(renderer, fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
 
-                    pPriceTexture.draw(renderer, dest.x + 2.f, dest.y + BUILDERBTN_HEIGHT - pPriceTexture.height_ + 3);
+                    pPriceTexture.draw(renderer, dest.x + 2.f, dest.y + BUILDERBTN_HEIGHT - pPriceTexture.height_ - 3);
                 }
 
                 if (pStarport != nullptr) {
-                    const auto bSoldOut = (pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0);
+                    const auto bSoldOut = pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0;
 
                     if (!pStarport->okToOrder() || bSoldOut) {
                         SDL_FRect progressBar = {static_cast<float>(dest.x), static_cast<float>(dest.y),
@@ -268,59 +270,65 @@ void BuilderList::draw(Point position) {
                     }
 
                     if (bSoldOut) {
-                        SDL_Rect drawLocationSoldOut =
-                            calcDrawingRect(pSoldOutTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
-                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                        Dune_RenderCopy(renderer, pSoldOutTextTexture.get(), nullptr, &drawLocationSoldOut);
+                        const auto x = static_cast<float>(dest.x) + (BUILDERBTN_WIDTH - pSoldOutTextTexture.width_) / 2;
+                        const auto y =
+                            static_cast<float>(dest.y) + (BUILDERBTN_HEIGHT - pSoldOutTextTexture.height_) / 2;
+
+                        pSoldOutTextTexture.draw(renderer, x, y);
                     }
 
                 } else if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
                            && buildItem.itemID == Structure_Palace
                            && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
 
-                    SDL_Rect progressBar = {dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT};
-                    renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
+                    SDL_FRect progressBar = {dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT};
+                    renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
-                    SDL_Rect drawLocationAlreadyBuilt =
-                        calcDrawingRect(pAlreadyBuiltTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
+                    auto drawLocationAlreadyBuilt =
+                        calcDrawingRect(pAlreadyBuiltTextTexture, dest.x + BUILDERBTN_WIDTH / 2,
                                         dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                    Dune_RenderCopy(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
+                    Dune_RenderCopyF(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
                 } else if (buildItem.itemID == pBuilder->getCurrentProducedItem()) {
-                    FixPoint progress = pBuilder->getProductionProgress();
-                    FixPoint price    = buildItem.price;
-                    int max_x         = lround((progress / price) * BUILDERBTN_WIDTH);
+                    const auto progress = pBuilder->getProductionProgress();
+                    const auto price    = buildItem.price;
 
-                    SDL_Rect progressBar = {dest.x, dest.y, max_x, BUILDERBTN_HEIGHT};
-                    renderFillRect(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
+                    auto max_x = (progress / price * BUILDERBTN_WIDTH).toFloat();
+
+                    SDL_FRect progressBar{dest.x, dest.y, max_x, BUILDERBTN_HEIGHT};
+                    renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);
 
                     if (pBuilder->isWaitingToPlace()) {
-                        SDL_Rect drawLocationWaitingToPlace =
-                            calcDrawingRect(pPlaceItTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
-                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                        Dune_RenderCopy(renderer, pPlaceItTextTexture.get(), nullptr, &drawLocationWaitingToPlace);
+                        const auto x = static_cast<float>(dest.x) + (BUILDERBTN_WIDTH - pPlaceItTextTexture.width_) / 2;
+                        const auto y =
+                            static_cast<float>(dest.y) + (BUILDERBTN_HEIGHT - pPlaceItTextTexture.height_) / 2;
+
+                        pPlaceItTextTexture.draw(renderer, x, y);
                     } else if (pBuilder->isOnHold()) {
-                        SDL_Rect drawLocationOnHold =
-                            calcDrawingRect(pOnHoldTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
-                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                        Dune_RenderCopy(renderer, pOnHoldTextTexture.get(), nullptr, &drawLocationOnHold);
+                        const auto x = static_cast<float>(dest.x) + (BUILDERBTN_WIDTH - pOnHoldTextTexture.width_) / 2;
+                        const auto y =
+                            static_cast<float>(dest.y) + (BUILDERBTN_HEIGHT - pOnHoldTextTexture.height_) / 2;
+
+                        pOnHoldTextTexture.draw(renderer, x, y);
                     } else if (pBuilder->isUnitLimitReached(buildItem.itemID)) {
-                        SDL_Rect drawLocationUnitLimitReached =
-                            calcDrawingRect(pUnitLimitReachedTextTexture.get(), dest.x + BUILDERBTN_WIDTH / 2,
-                                            dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
-                        Dune_RenderCopy(renderer, pUnitLimitReachedTextTexture.get(), nullptr,
-                                        &drawLocationUnitLimitReached);
+                        const auto x =
+                            static_cast<float>(dest.x) + (BUILDERBTN_WIDTH - pUnitLimitReachedTextTexture.width_) / 2;
+                        const auto y =
+                            static_cast<float>(dest.y) + (BUILDERBTN_HEIGHT - pUnitLimitReachedTextTexture.height_) / 2;
+
+                        pUnitLimitReachedTextTexture.draw(renderer, x, y);
                     }
                 }
 
                 if (buildItem.num > 0) {
                     // draw number of this in build list
-                    const auto pNumberTexture =
-                        gui.createText(renderer, fmt::sprintf("%d", buildItem.num), COLOR_RED, 12);
+                    const auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num), COLOR_RED, 12);
 
                     const auto size = getRendererSize();
 
-                    pNumberTexture.draw(renderer, size.w - (dest.x + BUILDERBTN_WIDTH - 3),
-                                        size.h - (dest.y + BUILDERBTN_HEIGHT + 2));
+                    const auto x = dest.x + BUILDERBTN_WIDTH - 3 - pNumberTexture.width_;
+                    const auto y = dest.y + BUILDERBTN_HEIGHT - 2 - pNumberTexture.height_;
+
+                    pNumberTexture.draw(renderer, x, y);
                 }
             }
 
@@ -375,13 +383,13 @@ void BuilderList::drawOverlay(Point position) {
             pLastTooltip.reset();
         }
 
-        if (pLastTooltip == nullptr) {
-            pLastTooltip = convertSurfaceToTexture(GUIStyle::getInstance().createToolTip(text));
+        if (!pLastTooltip) {
+            pLastTooltip = GUIStyle::getInstance().createToolTip(renderer, text);
             tooltipText  = text;
         }
 
-        const auto dest = calcDrawingRectF(pLastTooltip.get(), position.x + getButtonPosition(btn).x - 6,
-                                           position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
+        const auto dest = calcDrawingRect(pLastTooltip, position.x + getButtonPosition(btn).x - 6,
+                                          position.y + lastMousePos.y, HAlign::Right, VAlign::Center);
         Dune_RenderCopyF(renderer, pLastTooltip.get(), nullptr, &dest);
     }
 }

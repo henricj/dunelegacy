@@ -101,6 +101,14 @@ public:
     virtual void setCurrentPosition(const SDL_Rect& rect) { setCurrentPosition(rect.x, rect.y, rect.w, rect.h); }
 
     /**
+        Sets the current window position and size.
+        \param  rect    position of this window
+    */
+    virtual void setCurrentPosition(const SDL_FRect& rect) {
+        setCurrentPosition(std::ceil(rect.x), std::ceil(rect.y), std::ceil(rect.w), std::ceil(rect.h));
+    }
+
+    /**
         Handles the input received from SDL. Every time a sdl event occurs this method should
         be called.
         \param  event   SDL_Event that occurs.

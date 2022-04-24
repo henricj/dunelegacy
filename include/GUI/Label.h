@@ -25,6 +25,7 @@
 #include <misc/SDL2pp.h>
 
 #include <string>
+#include <string_view>
 
 /// a class for a text label
 class Label final : public Widget {

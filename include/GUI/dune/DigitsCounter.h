@@ -65,10 +65,10 @@ public:
             const auto digits = static_cast<int>(ptr - std::begin(creditsBuffer));
 
             for (auto i = digits - 1; i >= 0; i--) {
-                auto source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
-                auto dest2 =
+                const auto source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
+                const auto dest2 =
                     calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i) * 10, position.y + 16, 10);
-                Dune_RenderCopy(renderer, digitsTex, &source, &dest2);
+                Dune_RenderCopyF(renderer, digitsTex, &source, &dest2);
             }
         }
     }

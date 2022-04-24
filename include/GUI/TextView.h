@@ -215,8 +215,8 @@ private:
     Alignment_Enum alignment =
         static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top); ///< the alignment of this label
 
-    sdl2::texture_ptr pBackground = nullptr;
-    sdl2::texture_ptr pForeground = nullptr;
+    DuneTextureOwned pBackground;
+    DuneTextureOwned pForeground;
     ScrollBar scrollbar;
 
     bool bAutohideScrollbar = true; ///< hide the scrollbar if not needed (default = true)
