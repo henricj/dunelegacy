@@ -337,48 +337,76 @@ DuneSurfaceOwned DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t he
 }
 
 DuneSurfaceOwned DuneStyle::createDropDownBoxButton(int size, bool pressed, bool activated, uint32_t color) const {
-    if (color == COLOR_DEFAULT) {
+    if (color == COLOR_DEFAULT)
         color = defaultForegroundColor;
-    }
 
-    const auto [scaled_width, scaled_height] = getPhysicalSize(size, size);
+    const auto scaled_size = scale_to_physical_integer(size);
 
     // create surfaces
     sdl2::surface_ptr surface{
-        SDL_CreateRGBSurface(0, scaled_width, scaled_height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+        SDL_CreateRGBSurface(0, scaled_size, scaled_size, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface)
         return {};
+
+    const auto one = std::max(1, scale_to_physical_integer(1));
 
     // create button background
     if (!pressed) {
         // normal mode
         SDL_FillRect(surface.get(), nullptr, buttonBackgroundColor);
-        drawRect(surface.get(), 0, 0, surface->w - 1, surface->h - 1, buttonBorderColor);
-        drawHLine(surface.get(), 1, 1, surface->w - 2, buttonEdgeTopLeftColor);
-        drawVLine(surface.get(), 1, 1, surface->h - 2, buttonEdgeTopLeftColor);
-        drawHLine(surface.get(), 1, surface->h - 2, surface->w - 2, buttonEdgeBottomRightColor);
-        drawVLine(surface.get(), surface->w - 2, 1, surface->h - 2, buttonEdgeBottomRightColor);
+        for (auto i = 0; i < one; ++i) {
+            drawRect(surface.get(), i, i, surface->w - 1 - i, surface->h - 1 - i, buttonBorderColor);
+            drawHLine(surface.get(), one + i, one + i, surface->w - one - 1 - i, buttonEdgeTopLeftColor);
+            drawVLine(surface.get(), one + i, one + i, surface->h - one - 1 - i, buttonEdgeTopLeftColor);
+            drawHLine(surface.get(), one + i, surface->h - one - 1 - i, surface->w - one - 1 - i,
+                      buttonEdgeBottomRightColor);
+            drawVLine(surface.get(), surface->w - one - 1 - i, one, surface->h - one - 1 - i,
+                      buttonEdgeBottomRightColor);
+        }
     } else {
         // pressed button mode
         SDL_FillRect(surface.get(), nullptr, pressedButtonBackgroundColor);
-        drawRect(surface.get(), 0, 0, surface->w - 1, surface->h - 1, buttonBorderColor);
-        drawRect(surface.get(), 1, 1, surface->w - 2, surface->h - 2, buttonEdgeBottomRightColor);
+        for (auto i = 0; i < one; ++i) {
+            drawRect(surface.get(), i, i, surface->w - 1 - i, surface->h - 1 - i, buttonBorderColor);
+            drawRect(surface.get(), one + i, one + i, surface->w - one - 1 - i, surface->h - one - 1 - i,
+                     buttonEdgeBottomRightColor);
+        }
     }
 
     const auto col = (pressed || activated) ? brightenUp(color) : color;
 
-    int x1 = 3;
-    int x2 = size - 3 - 1;
-    int y  = size / 3 - 1;
+    int x1 = scale_to_physical_integer(2) + one;
+    int x2 = scaled_size - x1 - one;
+    int y  = scaled_size / 3 - one;
+
+    // Nudge x1 a bit if we have an odd width, otherwise the triangle will be missing its lower point.
+    if ((x2 - x1) & 1)
+        ++x1;
 
     // draw separated hline
-    drawHLine(surface.get(), x1, y, x2, col);
-    y += 2;
+    {
+        const SDL_Rect hline{x1, y, x2 - x1 + 1, one};
+
+        SDL_FillRect(surface.get(), &hline, col);
+    }
+
+    y += scale_to_physical_integer(2);
+
+    const auto sdl_color  = RGBA2SDL(col);
+    const auto half_color = COLOR_RGBA(sdl_color.r, sdl_color.g, sdl_color.b, sdl_color.a / 2);
+
+    const auto y0 = y;
 
     // down arrow
     for (; x1 <= x2; ++x1, --x2, ++y) {
         drawHLine(surface.get(), x1, y, x2, col);
+        if (y != y0 && x1 != x2) {
+            putPixel(surface.get(), x1 - 1, y, half_color);
+            putPixel(surface.get(), x2 + 1, y, half_color);
+        }
     }
+
+    assert(2 == x1 - x2); // Make sure the triangle had a point at the bottom.
 
     return DuneSurfaceOwned{std::move(surface), size, size};
 }
@@ -763,7 +791,8 @@ DuneSurfaceOwned DuneStyle::createListBoxEntry(int width, std::string_view text,
     const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
 
     // create surfaces
-    sdl2::surface_ptr surface{SDL_CreateRGBSurface(0, width, scaled_height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr surface{
+        SDL_CreateRGBSurface(0, scaled_width, scaled_height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (!surface)
         return {};
 
@@ -771,7 +800,7 @@ DuneSurfaceOwned DuneStyle::createListBoxEntry(int width, std::string_view text,
 
     const auto textSurface = createSurfaceWithText(text, color, 12);
 
-    auto textRect = calcDrawingRect(textSurface.get(), 3, surface->h / 2 + 2, HAlign::Left, VAlign::Center);
+    SDL_Rect textRect{3, 2 + (surface->h - textSurface->h) / 2, textSurface->w, textSurface->h};
 
     SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
 
