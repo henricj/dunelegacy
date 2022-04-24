@@ -295,7 +295,9 @@ std::filesystem::path getConfigFilepath() {
     return tmp;
 }
 
-void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language) {
+void createDefaultConfigFile(std::filesystem::path configfilepath, const std::string& language) {
+    configfilepath.make_preferred();
+
     sdl2::log_info("Creating config file '%s'", reinterpret_cast<const char*>(configfilepath.u8string().c_str()));
 
     const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};

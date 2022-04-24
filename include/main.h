@@ -62,7 +62,7 @@ std::filesystem::path getLogFilepath();
     \param configfilepath the path to the config file
     \param language the language to use as default (e.g. en, de, fr)
 */
-void createDefaultConfigFile(const std::filesystem::path& configfilepath, const std::string& language);
+void createDefaultConfigFile(std::filesystem::path configfilepath, const std::string& language);
 
 /**
     This function is used by SDL to write out log messages
