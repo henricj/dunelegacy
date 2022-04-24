@@ -690,6 +690,47 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
     }
 }
 
+void UnitBase::navigate_fallback(const GameContext& context) {
+    if (const auto* const targetPtr = target.getObjPointer()) {
+        if (targetFriendly && targetPtr->getItemID() != Structure_RepairYard
+            && (targetPtr->getItemID() != Structure_Refinery || getItemID() != Unit_Harvester)) {
+            setTarget(nullptr);
+        }
+    }
+
+    const auto* const house = getOwner();
+
+    /// This method will transport units if they get stuck inside a base
+    /// This often happens after an AI get nuked and has a hole in their base
+    if (house->hasCarryalls()) {
+        if (auto* const unit = dune_cast<GroundUnit>(this)) {
+            const auto& game = context.game;
+            auto& options    = game.getGameInitSettings().getGameOptions();
+
+            if ((options.manualCarryallDrops || house->isAI())
+                && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
+
+                unit->requestCarryall(context);
+                return;
+            }
+        }
+    }
+
+    if (house->isAI()) {
+        if (auto* const harvester = dune_cast<Harvester>(this)) {
+            if (!harvester->isReturning() && blockDistance(location, destination) >= 2) {
+                // try getting back to a refinery
+                harvester->doReturn();
+
+                return;
+            }
+        }
+    }
+
+    ObjectBase::setDestination(location); // can't get any closer, give up
+    forced = false;
+}
+
 void UnitBase::navigate(const GameContext& context) {
 
     const auto& game = context.game;
@@ -707,30 +748,10 @@ void UnitBase::navigate(const GameContext& context) {
             if (pathList.empty() && recalculatePathTimer == 0) {
                 recalculatePathTimer = 100;
 
-                if (!SearchPathWithAStar() && ++noCloserPointCount >= 3
-                    && location != oldLocation) { // try searching for a path a number of times then give up
+                // try searching for a path a number of times then give up
+                if (!SearchPathWithAStar() && ++noCloserPointCount >= 3 && location != oldLocation) {
 
-                    if (auto* const targetPtr = target.getObjPointer();
-                        targetPtr != nullptr && targetFriendly && targetPtr->getItemID() != Structure_RepairYard
-                        && (targetPtr->getItemID() != Structure_Refinery || getItemID() != Unit_Harvester)) {
-                        setTarget(nullptr);
-                    }
-
-                    /// This method will transport units if they get stuck inside a base
-                    /// This often happens after an AI get nuked and has a hole in their base
-                    if (getOwner()->hasCarryalls() && this->isAGroundUnit()
-                        && (game.getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
-                        && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
-                        static_cast<GroundUnit*>(this)->requestCarryall(context);
-                    } else if (getOwner()->isAI() && getItemID() == Unit_Harvester
-                               && !static_cast<Harvester*>(this)->isReturning()
-                               && blockDistance(location, destination) >= 2) {
-                        // try getting back to a refinery
-                        static_cast<Harvester*>(this)->doReturn();
-                    } else {
-                        setDestination(location); // can't get any closer, give up
-                        forced = false;
-                    }
+                    navigate_fallback(context);
                 }
             }
 
