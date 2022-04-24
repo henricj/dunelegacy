@@ -232,67 +232,61 @@ void Harvester::checkPos(const GameContext& context) {
 }
 
 void Harvester::deploy(const GameContext& context, const Coord& newLocation) {
-    if (currentGameMap->tileExists(newLocation)) {
-        parent::deploy(context, newLocation);
-        if (spice == 0) {
-            Coord newDestination;
-            if (attackMode != STOP && context.map.findSpice(newDestination, guardPoint)) {
-                harvestingMode = true;
-                setDestination(newDestination);
-                setGuardPoint(newDestination);
+    if (!currentGameMap->tileExists(newLocation))
+        return;
 
-            } else {
-                harvestingMode = false;
-            }
-        }
-    }
+    parent::deploy(context, newLocation);
+
+    if (spice != 0)
+        return;
+
+    Coord newDestination;
+    if (attackMode != STOP && context.map.findSpice(newDestination, guardPoint)) {
+        harvestingMode = true;
+        setDestination(newDestination);
+        setGuardPoint(newDestination);
+    } else
+        harvestingMode = false;
 }
 
 void Harvester::destroy(const GameContext& context) {
-    if (currentGameMap->tileExists(location) && isVisible()) {
+    if (isVisible()) {
+        auto& game = context.game;
+        auto& map  = context.map;
+
         const int xpos = location.x;
         const int ypos = location.y;
 
-        if (currentGameMap->tileExists(xpos, ypos)) {
-            const auto spiceSpreaded = spice * 0.75_fix;
-            auto availableSandPos    = 0;
+        if (map.tileExists(xpos, ypos)) {
+            const auto spiceSpread = spice * 0.75_fix;
+            auto availableSandPos  = 0;
 
             const auto circleRadius = lround(spice / 210);
 
             /* how many regions have sand */
-            for (int i = -circleRadius; i <= circleRadius; i++) {
-                for (int j = -circleRadius; j <= circleRadius; j++) {
-                    if (currentGameMap->tileExists(xpos + i, ypos + j)
-                        && distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius) {
-                        if (const auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
-                            if (pTile->isSand() || pTile->isSpice()) {
-                                availableSandPos++;
-                            }
-                        }
-                    }
-                }
-            }
+            map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
+                         [xpos, ypos, circleRadius, &availableSandPos](auto& tile) {
+                             if (distanceFrom({xpos, ypos}, tile.location) + 0.0005_fix > circleRadius)
+                                 return;
+
+                             if (tile.isSand() || tile.isSpice())
+                                 availableSandPos++;
+                         });
 
             /* now we can spread spice */
-            for (int i = -circleRadius; i <= circleRadius; i++) {
-                for (int j = -circleRadius; j <= circleRadius; j++) {
-                    if (currentGameMap->tileExists(xpos + i, ypos + j)
-                        && distanceFrom(xpos, ypos, xpos + i, ypos + j) + 0.0005_fix <= circleRadius) {
-                        if (auto* pTile = currentGameMap->getTile(xpos + i, ypos + j)) {
-                            if (pTile->isSand() || pTile->isSpice()) {
-                                pTile->setSpice(pTile->getSpice() + spiceSpreaded / availableSandPos);
-                            }
-                        }
-                    }
-                }
-            }
+            map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
+                         [xpos, ypos, circleRadius, availableSandPos, spiceSpread](auto& tile) {
+                             if (distanceFrom({xpos, ypos}, tile.location) + 0.0005_fix > circleRadius)
+                                 return;
+
+                             if (tile.isSand() || tile.isSpice())
+                                 tile.setSpice(tile.getSpice() + spiceSpread / availableSandPos);
+                         });
         }
 
-        setTarget(nullptr);
-
         Coord realPos(lround(realX), lround(realY));
-        uint32_t explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
-        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
+        uint32_t explosionID = game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
+        game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID())) {
             screenborder->shakeScreen(18);
