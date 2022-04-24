@@ -345,6 +345,8 @@ protected:
 
 private:
     void init();
+
+    void navigate_fallback(const GameContext& context);
 };
 
 template<>
