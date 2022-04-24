@@ -86,3 +86,7 @@ sdl2::surface_ptr GUIStyle::createEmptySurface(uint32_t width, uint32_t height, 
 
     return pSurface;
 }
+
+std::pair<int, int> GUIStyle::getPhysicalSize(int width, int height) const {
+    return scale_xy(getActualScale(), width, height);
+}
