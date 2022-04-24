@@ -84,8 +84,7 @@ Refinery::~Refinery() = default;
 
 void Refinery::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     if (extractingSpice && harvester) {
-        auto* pHarvester = harvester.getUnitPointer();
-        if (pHarvester)
+        if (auto* pHarvester = harvester.getUnitPointer())
             pHarvester->destroy(context);
         harvester.pointTo(NONE_ID);
     }
@@ -102,7 +101,7 @@ void Refinery::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> Refinery::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if (pLocalHouse == owner || debug) {
         return RefineryAndSiloInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -123,9 +122,8 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
     extractingSpice = false;
 
     if (firstRun) {
-        if (getOwner() == pLocalHouse) {
+        if (getOwner() == pLocalHouse)
             soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
-        }
     }
 
     firstRun = false;
@@ -148,11 +146,10 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
     } else
         sdl2::log_error("A refinery is trying to deploy a non-existent harvester!");
 
-    if (bookings == 0) {
+    if (bookings == 0)
         stopAnimate();
-    } else {
+    else
         startAnimate();
-    }
 }
 
 void Refinery::startAnimate() {
