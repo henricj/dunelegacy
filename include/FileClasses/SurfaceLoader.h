@@ -88,8 +88,6 @@ private:
     std::array<sdl2::surface_ptr, NUM_SMALLDETAILPICS> smallDetailPic;
     std::array<sdl2::surface_ptr, NUM_TINYPICTURE> tinyPicture;
 
-    sdl2::surface_ptr pBackgroundTile;
-
     // 32-bit surfaces
     sdl2::surface_ptr pBackgroundSurface;
 

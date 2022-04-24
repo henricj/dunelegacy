@@ -58,19 +58,20 @@ Point Label::getMinimumSize() const {
 }
 
 void Label::draw(Point position) {
-    if ((!isEnabled()) || (!isVisible())) {
+    if (!isEnabled() || !isVisible())
         return;
-    }
 
     updateTextures();
 
-    if (pTexture == nullptr) {
+    if (!pTexture)
         return;
-    }
 
-    const SDL_Rect dest = calcDrawingRect(pTexture.get(), position.x + getSize().x / 2, position.y + getSize().y / 2,
-                                          HAlign::Center, VAlign::Center);
-    Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
+    const auto size = getSize();
+
+    const auto x = position.x + (size.x - pTexture.width_) / 2;
+    const auto y = position.y + (size.y - pTexture.height_) / 2;
+
+    pTexture.draw(renderer, x, y);
 }
 
 std::unique_ptr<Label>
@@ -85,18 +86,21 @@ Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor,
 void Label::updateTextures() {
     parent::updateTextures();
 
-    if (!pTexture) {
-        const auto textLines = greedyWordWrap(text, getSize().x, [font = fontSize](std::string_view tmp) {
-            return GUIStyle::getInstance().getMinimumLabelSize(tmp, font).x - 4;
-        });
+    if (pTexture)
+        return;
 
-        pTexture = convertSurfaceToTexture(GUIStyle::getInstance().createLabelSurface(
-            getSize().x, getSize().y, textLines, fontSize, alignment, textcolor, textshadowcolor, backgroundcolor));
-    }
+    auto& gui = GUIStyle::getInstance();
+
+    const auto textLines = greedyWordWrap(text, getSize().x, [&gui, font = fontSize](std::string_view tmp) {
+        return gui.getMinimumLabelSize(tmp, font).x - 4;
+    });
+
+    pTexture = gui.createLabel(renderer, getSize().x, getSize().y, textLines, fontSize, alignment, textcolor,
+                               textshadowcolor, backgroundcolor);
 }
 
 void Label::invalidateTextures() {
-    pTexture.reset();
+    pTexture = DuneTextureOwned();
 
     parent::invalidateTextures();
 }

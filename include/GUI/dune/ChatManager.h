@@ -66,20 +66,15 @@ private:
 
     struct ChatMessage final {
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, dune::dune_clock::time_point _messageTime,
-                    MessageType _messageType)
-            : pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
+        ChatMessage(DuneTextureOwned _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                    MessageType _messageType);
 
-        ChatMessage(sdl2::texture_ptr _pTimeTexture, sdl2::texture_ptr _pUsernameTexture,
-                    sdl2::texture_ptr _pMessageTexture, dune::dune_clock::time_point _messageTime,
-                    MessageType _messageType)
-            : pTimeTexture(std::move(_pTimeTexture)), pUsernameTexture(std::move(_pUsernameTexture)),
-              pMessageTexture(std::move(_pMessageTexture)), messageTime(_messageTime), messageType(_messageType) { }
+        ChatMessage(DuneTextureOwned _pTimeTexture, DuneTextureOwned _pUsernameTexture,
+                    DuneTextureOwned _pMessageTexture, dune::dune_clock::time_point _messageTime,
+                    MessageType _messageType);
 
-        ChatMessage(sdl2::texture_ptr _pMessageTexture, const DuneTexture* _pPictureTexture,
-                    dune::dune_clock::time_point _messageTime, MessageType _messageType)
-            : pPictureTexture(_pPictureTexture), pMessageTexture(std::move(_pMessageTexture)),
-              messageTime(_messageTime), messageType(_messageType) { }
+        ChatMessage(DuneTextureOwned _pMessageTexture, const DuneTexture* _pPictureTexture,
+                    dune::dune_clock::time_point _messageTime, MessageType _messageType);
 
         ChatMessage(const ChatMessage&)            = delete;
         ChatMessage(ChatMessage&&)                 = default;
@@ -94,10 +89,10 @@ private:
             return pUsernameTexture ? getHeight(pUsernameTexture.get()) : getHeight(pPictureTexture);
         }
 
-        sdl2::texture_ptr pTimeTexture;
-        sdl2::texture_ptr pUsernameTexture;
+        DuneTextureOwned pTimeTexture;
+        DuneTextureOwned pUsernameTexture;
         const DuneTexture* pPictureTexture{};
-        sdl2::texture_ptr pMessageTexture;
+        DuneTextureOwned pMessageTexture;
 
         dune::dune_clock::time_point messageTime;
         MessageType messageType;

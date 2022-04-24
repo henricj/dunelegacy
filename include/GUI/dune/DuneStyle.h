@@ -18,15 +18,16 @@
 #ifndef DUNESTYLE_H
 #define DUNESTYLE_H
 
+#include "Renderer/DuneSurface.h"
 #include <GUI/GUIStyle.h>
 
 class DuneStyle final : public GUIStyle {
 public:
     /// default constructor
-    DuneStyle() = default;
+    explicit DuneStyle(FontManager* fontManager);
 
     /// destructor
-    ~DuneStyle() override = default;
+    ~DuneStyle() override;
 
     /**
         Returns the minimum size of a label with this text
@@ -48,10 +49,27 @@ public:
         \param  backgroundcolor the background color (default is transparent)
         \return the new surface
     */
-    sdl2::surface_ptr
-    createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize,
-                       Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT,
-                       Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) override;
+    sdl2::surface_ptr createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines,
+                                         int fontSize, Alignment_Enum alignment = Alignment_HCenter,
+                                         Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+                                         Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
+
+    /**
+        Creates the surface for a label with TextLines as content.
+        \param  width           the width of the label
+        \param  height          the height of the label
+        \param  textLines       a vector of text lines for this label
+        \param  fontSize        the size of the font to use
+        \param  alignment       the alignment for this label
+        \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
+        \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
+        \param  backgroundcolor the background color (default is transparent)
+        \return the new surface
+    */
+    [[nodiscard]] DuneTextureOwned
+    createLabel(SDL_Renderer* renderer, uint32_t width, uint32_t height, const std::vector<std::string>& textLines,
+                int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT,
+                Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) const override;
 
     /**
         Returns the minimum size of a checkbox with this text
@@ -134,7 +152,7 @@ public:
     createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
                         Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) override;
 
-    sdl2::surface_ptr
+    DuneTextureOwned
     createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
                      Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const override;
 
@@ -239,15 +257,21 @@ public:
         \param  FontNum     the font
         \return the height of the font
     */
-    unsigned int getTextHeight(unsigned int FontNum) const override;
+    float getTextHeight(unsigned int FontNum) const override;
 
     /**
-        Get the weidth of the text with the font specified by fontnum
+        Get the width of the text with the font specified by fontnum
         \param  text        the text to get the width from
         \param  FontNum     the font
         \return the width of the text
     */
-    unsigned int getTextWidth(std::string_view text, unsigned int FontNum) const override;
+    float getTextWidth(std::string_view text, unsigned int FontNum) const override;
+
+    [[nodiscard]] DuneTextureOwned
+    createText(SDL_Renderer* renderer, std::string_view text, uint32_t color, unsigned fontSize) const override;
+
+    [[nodiscard]] DuneTextureOwned createMultilineText(SDL_Renderer* renderer, std::string_view text, uint32_t color,
+                                                       unsigned fontSize, bool bCentered) const override;
 
 public:
     static constexpr Uint32 defaultForegroundColor = COLOR_RGB(125, 0, 0);
@@ -267,7 +291,17 @@ private:
         \param  fontsize    the size of the text
         \return the new created surface (the caller of this method is responsible of freeing it)
     */
-    sdl2::surface_ptr createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize);
+    DuneSurfaceOwned createSurfaceWithText(std::string_view text, uint32_t color, unsigned int fontsize) const;
+
+    /**
+        Creates a surface with multi-line text on it
+        \param  text        text to draw
+        \param  color       the color of the text
+        \param  fontsize    the size of the text
+        \return the new created surface (the caller of this method is responsible of freeing it)
+    */
+    DuneSurfaceOwned
+    createSurfaceWithMultilineText(std::string_view text, uint32_t color, unsigned int fontsize, bool bCentered) const;
 
     constexpr uint32_t brightenUp(uint32_t color) const {
         Uint32 r       = (color & RMASK) >> RSHIFT;
@@ -283,6 +317,8 @@ private:
     }
 
     uint32_t scaledFontSize(uint32_t font_size) const;
+
+    FontManager* fontManager_{};
 };
 
 #endif // DUNESTYLEBASE_H

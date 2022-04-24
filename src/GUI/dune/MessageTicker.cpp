@@ -34,7 +34,8 @@ MessageTicker::MessageTicker() : timer(-MESSAGETIME) {
 MessageTicker::~MessageTicker() = default;
 
 void MessageTicker::addMessage(const std::string& msg) {
-    messageTextures.emplace(pFontManager->createTextureWithText(msg, COLOR_BLACK, 14));
+    messageTextures.emplace(
+        SDL_CreateTextureFromSurface(renderer, pFontManager->getFont(14)->createTextSurface(msg, COLOR_BLACK).get()));
 }
 
 void MessageTicker::draw(Point position) {

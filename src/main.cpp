@@ -725,7 +725,7 @@ bool run_game(int argc, char* argv[]) {
         sdl2::log_info("Loading fonts from typeface %s...", typeface);
         pFontManager = std::make_unique<FontManager>(typeface);
 
-        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
+        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>(pFontManager.get()));
 
         update_display_scale(window);
 

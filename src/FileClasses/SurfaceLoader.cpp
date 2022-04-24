@@ -684,7 +684,8 @@ SurfaceLoader::SurfaceLoader() {
 
     uiGraphic[UI_PlanetBackground][harkIdx] = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
     picFactory_.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), PictureFactory::SimpleFrame);
-    uiGraphic[UI_MenuButtonBorder][harkIdx] = picFactory_.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
+    uiGraphic[UI_MenuButtonBorder][harkIdx] =
+        picFactory_.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
 
     picFactory_.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
 
@@ -1165,8 +1166,6 @@ SurfaceLoader::SurfaceLoader() {
         SDL_SetColorKey(mapChoicePieces[i][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     }
 
-    pBackgroundTile = picFactory_.createBackgroundTile();
-
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
     pBackgroundSurface = convertSurfaceToDisplayFormat(picFactory_.createBackground().get());
 
@@ -1494,7 +1493,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 }
 
 sdl2::surface_ptr SurfaceLoader::createBackgroundSurface(int width, int height) const {
-    return createTiledSurface(pBackgroundTile.get(), width, height);
+    return picFactory_.createBackground(width, height);
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {

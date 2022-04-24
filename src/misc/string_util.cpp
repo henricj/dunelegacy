@@ -175,24 +175,25 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
 }
 
 std::vector<std::string>
-greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::string_view)> pGetTextWidth) {
+greedyWordWrap(std::string_view text, float linewidth, std::function<float(std::string_view)> pGetTextWidth) {
     // split text into single lines at every '\n'
-    size_t startpos = 0;
-    size_t nextpos  = 0;
-    std::vector<std::string> hardLines;
-    do {
-        nextpos = text.find("\n", startpos);
-        if (nextpos == std::string::npos) {
-            hardLines.emplace_back(text.substr(startpos, text.length() - startpos));
-        } else {
-            hardLines.emplace_back(text.substr(startpos, nextpos - startpos));
-            startpos = nextpos + 1;
+    std::vector<std::string_view> hardLines;
+
+    for (auto pos = decltype(text)::size_type{};;) {
+        const auto next = text.find('\n', pos);
+
+        if (next == std::string::npos) {
+            hardLines.emplace_back(text.substr(pos, text.length() - pos));
+            break;
         }
-    } while (nextpos != std::string::npos);
+
+        hardLines.emplace_back(text.substr(pos, next - pos));
+        pos = next + 1;
+    }
 
     std::vector<std::string> textLines;
-    for (const std::string& hardLine : hardLines) {
-        if (hardLine == "") {
+    for (const auto& hardLine : hardLines) {
+        if (hardLine.empty()) {
             textLines.emplace_back(" ");
             continue;
         }
@@ -204,8 +205,8 @@ greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::stri
 
         while (!bEndOfLine) {
             while (true) {
-                warppos = hardLine.find(" ", oldwarppos);
-                std::string tmp;
+                warppos = hardLine.find(' ', oldwarppos);
+                std::string_view tmp;
                 if (warppos == std::string::npos) {
                     tmp        = hardLine.substr(lastwarp, hardLine.length() - lastwarp);
                     warppos    = hardLine.length();
@@ -231,7 +232,7 @@ greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::stri
 
                 warppos = lastwarp;
                 while (true) {
-                    std::string tmp = hardLine.substr(lastwarp, warppos - lastwarp);
+                    auto tmp = hardLine.substr(lastwarp, warppos - lastwarp);
                     if (pGetTextWidth(tmp) > linewidth) {
                         // this line would be too big => in oldwarppos is the last correct warp pos
                         break;
@@ -249,7 +250,7 @@ greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::stri
                 }
 
                 if (warppos != lastwarp) {
-                    textLines.push_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
+                    textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                     lastwarp = oldwarppos;
                 } else {
                     // linewidth is too small for the next character => create a dummy entry
@@ -258,7 +259,7 @@ greedyWordWrap(std::string_view text, int linewidth, std::function<int(std::stri
                     oldwarppos++;
                 }
             } else {
-                textLines.push_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
+                textLines.emplace_back(hardLine.substr(lastwarp, oldwarppos - lastwarp));
                 lastwarp = oldwarppos;
             }
         }

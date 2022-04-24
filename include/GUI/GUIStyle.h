@@ -131,7 +131,24 @@ public:
     virtual sdl2::surface_ptr
     createLabelSurface(uint32_t width, uint32_t height, const std::vector<std::string>& textLines, int fontSize,
                        Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT,
-                       Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) = 0;
+                       Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) const = 0;
+
+    /**
+        Creates the texture for a label with TextLines as content.
+        \param  width           the width of the label
+        \param  height          the height of the label
+        \param  textLines       a vector of text lines for this label
+        \param  fontSize        the size of the font to use
+        \param  alignment       the alignment for this label
+        \param  textcolor       the color of the text (COLOR_DEFAULT = default color for this style)
+        \param  textshadowcolor the color of the shadow under the text (COLOR_DEFAULT = default color for this style)
+        \param  backgroundcolor the background color (default is transparent)
+        \return the new surface
+    */
+    virtual DuneTextureOwned
+    createLabel(SDL_Renderer* renderer, uint32_t width, uint32_t height, const std::vector<std::string>& textLines,
+                int fontSize, Alignment_Enum alignment = Alignment_HCenter, Uint32 textcolor = COLOR_DEFAULT,
+                Uint32 textshadowcolor = COLOR_DEFAULT, Uint32 backgroundcolor = COLOR_TRANSPARENT) const = 0;
 
     /**
         Returns the minimum size of a checkbox with this text
@@ -214,7 +231,7 @@ public:
     createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
                         Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) = 0;
 
-    virtual sdl2::surface_ptr
+    virtual DuneTextureOwned
     createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
                      Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const = 0;
 
@@ -328,7 +345,7 @@ public:
         \param  FontNum     the font
         \return the height of the font
     */
-    virtual unsigned int getTextHeight(unsigned int FontNum) const = 0;
+    virtual float getTextHeight(unsigned int FontNum) const = 0;
 
     /**
         Get the width of the text with the font specified by fontnum
@@ -336,7 +353,13 @@ public:
         \param  FontNum     the font
         \return the width of the text
     */
-    virtual unsigned int getTextWidth(std::string_view text, unsigned int FontNum) const = 0;
+    virtual float getTextWidth(std::string_view text, unsigned int FontNum) const = 0;
+
+    virtual DuneTextureOwned
+    createText(SDL_Renderer* renderer, std::string_view text, uint32_t color, unsigned int fontSize) const = 0;
+
+    virtual DuneTextureOwned createMultilineText(SDL_Renderer* renderer, std::string_view text, uint32_t color,
+                                                 unsigned int fontSize, bool bCentered = false) const = 0;
 
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;

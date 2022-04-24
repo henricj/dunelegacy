@@ -153,11 +153,11 @@ private:
     int mouseLeftButton  = -1;
     int mouseRightButton = -1;
 
-    sdl2::texture_ptr pSoldOutTextTexture;
-    sdl2::texture_ptr pAlreadyBuiltTextTexture;
-    sdl2::texture_ptr pPlaceItTextTexture;
-    sdl2::texture_ptr pOnHoldTextTexture;
-    sdl2::texture_ptr pUnitLimitReachedTextTexture;
+    DuneTextureOwned pSoldOutTextTexture;
+    DuneTextureOwned pAlreadyBuiltTextTexture;
+    DuneTextureOwned pPlaceItTextTexture;
+    DuneTextureOwned pOnHoldTextTexture;
+    DuneTextureOwned pUnitLimitReachedTextTexture;
 
     sdl2::texture_ptr pLastTooltip;
     std::string tooltipText;

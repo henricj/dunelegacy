@@ -23,6 +23,7 @@
 
 #include <FileClasses/Cpsfile.h>
 #include <FileClasses/FileManager.h>
+#include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/LoadSavePNG.h>
 #include <FileClasses/TextManager.h>
@@ -529,7 +530,7 @@ void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
 
     const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
-    sdl2::surface_ptr VersionText{pFontManager->createSurfaceWithText(std::string(VERSION), PALCOLOR_BLACK, 14)};
+    sdl2::surface_ptr VersionText{pFontManager->getFont(14)->createTextSurface(VERSION, PALCOLOR_BLACK)};
 
     SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
                                      HAlign::Center, VAlign::Center);

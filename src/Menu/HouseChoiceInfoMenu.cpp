@@ -31,14 +31,16 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
 
     Animation* anim = nullptr;
 
+    auto* const gfx = pGFXManager.get();
+
     // clang-format off
     switch(house) {
-        case HOUSETYPE::HOUSE_HARKONNEN:    anim = pGFXManager->getAnimation(Anim_HarkonnenPlanet); break;
-        case HOUSETYPE::HOUSE_ATREIDES:     anim = pGFXManager->getAnimation(Anim_AtreidesPlanet);  break;
-        case HOUSETYPE::HOUSE_ORDOS:        anim = pGFXManager->getAnimation(Anim_OrdosPlanet);     break;
-        case HOUSETYPE::HOUSE_FREMEN:       anim = pGFXManager->getAnimation(Anim_FremenPlanet);    break;
-        case HOUSETYPE::HOUSE_SARDAUKAR:    anim = pGFXManager->getAnimation(Anim_SardaukarPlanet); break;
-        case HOUSETYPE::HOUSE_MERCENARY:    anim = pGFXManager->getAnimation(Anim_MercenaryPlanet); break;
+        case HOUSETYPE::HOUSE_HARKONNEN:    anim = gfx->getAnimation(Anim_HarkonnenPlanet); break;
+        case HOUSETYPE::HOUSE_ATREIDES:     anim = gfx->getAnimation(Anim_AtreidesPlanet);  break;
+        case HOUSETYPE::HOUSE_ORDOS:        anim = gfx->getAnimation(Anim_OrdosPlanet);     break;
+        case HOUSETYPE::HOUSE_FREMEN:       anim = gfx->getAnimation(Anim_FremenPlanet);    break;
+        case HOUSETYPE::HOUSE_SARDAUKAR:    anim = gfx->getAnimation(Anim_SardaukarPlanet); break;
+        case HOUSETYPE::HOUSE_MERCENARY:    anim = gfx->getAnimation(Anim_MercenaryPlanet); break;
         default: {
             THROW(std::invalid_argument, "HouseChoiceInfoMenu::HouseChoiceInfoMenu(): Invalid house id '%d'.", static_cast<int>(newHouse));
         }
@@ -48,18 +50,20 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     planetAnimation.setAnimation(anim);
     windowWidget.addWidget(&planetAnimation, Point(256, 96), planetAnimation.getMinimumSize());
 
-    const auto* const pQuestionTexture = pGFXManager->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
+    const auto* const pQuestionTexture = gfx->getUIGraphic(UI_MentatHouseChoiceInfoQuestion, newHouse);
     questionLabel.setTexture(pQuestionTexture);
     windowWidget.addWidget(&questionLabel, Point(0, 0), getTextureSize(pQuestionTexture));
     questionLabel.setVisible(false);
 
     // init textbox but skip first line (this line contains "House ???")
-    std::string desc    = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
-    const int linebreak = desc.find("\n", 0) + 1;
-    setText(desc.substr(linebreak, desc.length() - linebreak));
+    auto desc            = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
+    const auto linebreak = desc.find('\n');
+    if (linebreak != decltype(desc)::npos)
+        desc = desc.substr(linebreak + 1);
+    setText(desc);
 
-    const auto* const pMentatYes        = pGFXManager->getUIGraphic(UI_MentatYes);
-    const auto* const pMentatYesPressed = pGFXManager->getUIGraphic(UI_MentatYes_Pressed);
+    const auto* const pMentatYes        = gfx->getUIGraphic(UI_MentatYes);
+    const auto* const pMentatYesPressed = gfx->getUIGraphic(UI_MentatYes_Pressed);
 
     yesButton.setTextures(pMentatYes, pMentatYesPressed);
     yesButton.setEnabled(false);
@@ -67,8 +71,8 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     yesButton.setOnClick([this] { onYes(); });
     windowWidget.addWidget(&yesButton, Point(370, 340), getTextureSize(pMentatYes));
 
-    const auto* const pMentatNo        = pGFXManager->getUIGraphic(UI_MentatNo);
-    const auto* const pMentatNoPressed = pGFXManager->getUIGraphic(UI_MentatNo_Pressed);
+    const auto* const pMentatNo        = gfx->getUIGraphic(UI_MentatNo);
+    const auto* const pMentatNoPressed = gfx->getUIGraphic(UI_MentatNo_Pressed);
 
     noButton.setTextures(pMentatNo, pMentatNoPressed);
     noButton.setEnabled(false);

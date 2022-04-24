@@ -14,7 +14,7 @@ void TextButton::updateTextures() {
 
         const auto& gui = GUIStyle::getInstance();
 
-        setSurfaces(gui.createButtonText(getSize().x, getSize().y, text, false, textcolor, textshadowcolor),
+        setTextures(gui.createButtonText(getSize().x, getSize().y, text, false, textcolor, textshadowcolor),
                     gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor),
                     gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor));
     }
