@@ -368,6 +368,11 @@ public:
     virtual DuneTextureOwned createMultilineText(SDL_Renderer* renderer, std::string_view text, uint32_t color,
                                                  unsigned int fontSize, bool bCentered = false) const = 0;
 
+    /**
+
+    */
+    std::pair<int, int> getPhysicalSize(int width, int height) const;
+
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;
     float zoom_         = 1.f;
