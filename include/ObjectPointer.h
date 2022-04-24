@@ -49,7 +49,7 @@ public:
     void save(OutputStream& stream) const;
     void load(InputStream& stream);
 
-    operator bool() const { return (objectID != NONE_ID); }
+    operator bool() const { return objectID != NONE_ID; }
 
 private:
     mutable uint32_t objectID;

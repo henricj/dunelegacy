@@ -39,7 +39,7 @@
 #include <units/Harvester.h>
 
 inline constexpr auto SMOKEDELAY    = 30;
-inline constexpr auto UNITIDLETIMER = (GAMESPEED_DEFAULT * 315); // about every 5s
+inline constexpr auto UNITIDLETIMER = GAMESPEED_DEFAULT * 315; // about every 5s
 
 UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : ObjectBase(constants, objectID, initializer), targetAngle(ANGLETYPE::INVALID_ANGLE), nextSpotAngle(drawnAngle) {
@@ -220,7 +220,7 @@ bool UnitBase::attack(const GameContext& context) {
         }
     }
 
-    if ((numWeapons() == 2) && (secondaryWeaponTimer == 0) && (!isBadlyDamaged())) {
+    if (numWeapons() == 2 && secondaryWeaponTimer == 0 && !isBadlyDamaged()) {
         bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType,
                                                       currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
@@ -261,7 +261,7 @@ void UnitBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner && isRespondable()) || (debug)) {
+    if (pLocalHouse == owner && isRespondable() || debug) {
         return UnitInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -295,7 +295,7 @@ void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
             }
         }
 
-        if (isAGroundUnit() && (getItemID() != Unit_Sandworm)) {
+        if (isAGroundUnit() && getItemID() != Unit_Sandworm) {
             if (map.getTile(location)->isSpiceBloom()) {
                 setHealth(0);
                 setVisible(VIS_ALL, false);
@@ -386,7 +386,7 @@ void UnitBase::drawSelectionBox() {
     const auto x     = screenX - width / 2;
     const auto y     = screenY - getHeight(selectionBox) / 2;
 
-    const auto healthWidth = (((getHealth() / getMaxHealth()).toFloat() * (width - 3)));
+    const auto healthWidth = (getHealth() / getMaxHealth()).toFloat() * (width - 3);
     renderFillRectF(renderer, x + 1, y - currentZoomlevel - 1, x + 1 + healthWidth, y - 1, getHealthColor());
 }
 
@@ -418,13 +418,13 @@ void UnitBase::releaseTarget() {
 
 void UnitBase::engageTarget(const GameContext& context) {
 
-    if (target && (target.getObjPointer() == nullptr)) {
+    if (target && target.getObjPointer() == nullptr) {
         // the target does not exist anymore
         releaseTarget();
         return;
     }
 
-    if (target && (!target.getObjPointer()->isActive())) {
+    if (target && !target.getObjPointer()->isActive()) {
         // the target changed its state to inactive
         releaseTarget();
         return;
@@ -533,7 +533,7 @@ void UnitBase::engageTarget(const GameContext& context) {
 void UnitBase::move(const GameContext& context) {
 
     if (moving && !justStoppedMoving) {
-        if ((!isBadlyDamaged()) || isAFlyingUnit()) {
+        if (!isBadlyDamaged() || isAFlyingUnit()) {
             realX += xSpeed;
             realY += ySpeed;
         } else {
@@ -554,7 +554,7 @@ void UnitBase::move(const GameContext& context) {
             toDistanceX   = FixPoint::abs(nextSpot.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
             toDistanceY   = FixPoint::abs(nextSpot.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
 
-            if ((fromDistanceX >= TILESIZE / 2) || (fromDistanceY >= TILESIZE / 2)) {
+            if (fromDistanceX >= TILESIZE / 2 || fromDistanceY >= TILESIZE / 2) {
                 // let something else go in
                 unassignFromMap(location);
                 oldLocation = location;
@@ -573,9 +573,9 @@ void UnitBase::move(const GameContext& context) {
             toDistanceX   = FixPoint::abs(location.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
             toDistanceY   = FixPoint::abs(location.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
 
-            if ((fromDistanceX >= TILESIZE) || (fromDistanceY >= TILESIZE)) {
+            if (fromDistanceX >= TILESIZE || fromDistanceY >= TILESIZE) {
 
-                if (forced && (location == destination) && !target) {
+                if (forced && location == destination && !target) {
                     setForced(false);
                     if (getAttackMode() == CARRYALLREQUESTED) {
                         doSetAttackMode(context, GUARD);
@@ -606,9 +606,9 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
                                    FixPoint toDistanceY) {
 
     if (hasBumpyMovementOnRock()
-        && ((currentGameMap->getTile(location)->getType() == Terrain_Rock)
-            || (currentGameMap->getTile(location)->getType() == Terrain_Mountain)
-            || (currentGameMap->getTile(location)->getType() == Terrain_ThickSpice))) {
+        && (currentGameMap->getTile(location)->getType() == Terrain_Rock
+            || currentGameMap->getTile(location)->getType() == Terrain_Mountain
+            || currentGameMap->getTile(location)->getType() == Terrain_ThickSpice)) {
         // bumping effect
 
         const FixPoint epsilon     = 0.005_fix;
@@ -616,74 +616,74 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
         const FixPoint absXSpeed   = FixPoint::abs(xSpeed);
         const FixPoint absYSpeed   = FixPoint::abs(ySpeed);
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - absXSpeed) < absXSpeed / 2) {
             realY -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - absYSpeed) < absYSpeed / 2) {
             realX += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 4 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 4 * absXSpeed) < absXSpeed / 2) {
             realY += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 4 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 4 * absYSpeed) < absYSpeed / 2) {
             realX -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 10 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 10 * absXSpeed) < absXSpeed / 2) {
             realY -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 20 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 20 * absYSpeed) < absYSpeed / 2) {
             realX += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(fromDistanceX - 14 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 14 * absXSpeed) < absXSpeed / 2) {
             realY += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(fromDistanceY - 14 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 14 * absYSpeed) < absYSpeed / 2) {
             realX -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - absXSpeed) < absXSpeed / 2) {
             realY -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - absYSpeed) < absYSpeed / 2) {
             realX += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 4 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 4 * absXSpeed) < absXSpeed / 2) {
             realY += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 4 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 4 * absYSpeed) < absYSpeed / 2) {
             realX -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 10 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 10 * absXSpeed) < absXSpeed / 2) {
             realY -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 10 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 10 * absYSpeed) < absYSpeed / 2) {
             realX += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
-        if ((FixPoint::abs(xSpeed) >= epsilon) && (FixPoint::abs(toDistanceX - 14 * absXSpeed) < absXSpeed / 2)) {
+        if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 14 * absXSpeed) < absXSpeed / 2) {
             realY += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
-        if ((FixPoint::abs(ySpeed) >= epsilon) && (FixPoint::abs(toDistanceY - 14 * absYSpeed) < absYSpeed / 2)) {
+        if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 14 * absYSpeed) < absYSpeed / 2) {
             realX -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
@@ -704,15 +704,15 @@ void UnitBase::navigate(const GameContext& context) {
     if (location != destination) {
         if (!nextSpotFound) {
 
-            if (pathList.empty() && (recalculatePathTimer == 0)) {
+            if (pathList.empty() && recalculatePathTimer == 0) {
                 recalculatePathTimer = 100;
 
-                if (!SearchPathWithAStar() && (++noCloserPointCount >= 3)
-                    && (location != oldLocation)) { // try searching for a path a number of times then give up
+                if (!SearchPathWithAStar() && ++noCloserPointCount >= 3
+                    && location != oldLocation) { // try searching for a path a number of times then give up
 
                     if (auto* const targetPtr = target.getObjPointer();
-                        targetPtr != nullptr && targetFriendly && (targetPtr->getItemID() != Structure_RepairYard)
-                        && ((targetPtr->getItemID() != Structure_Refinery) || (getItemID() != Unit_Harvester))) {
+                        targetPtr != nullptr && targetFriendly && targetPtr->getItemID() != Structure_RepairYard
+                        && (targetPtr->getItemID() != Structure_Refinery || getItemID() != Unit_Harvester)) {
                         setTarget(nullptr);
                     }
 
@@ -722,7 +722,7 @@ void UnitBase::navigate(const GameContext& context) {
                         && (game.getGameInitSettings().getGameOptions().manualCarryallDrops || getOwner()->isAI())
                         && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
                         static_cast<GroundUnit*>(this)->requestCarryall(context);
-                    } else if (getOwner()->isAI() && (getItemID() == Unit_Harvester)
+                    } else if (getOwner()->isAI() && getItemID() == Unit_Harvester
                                && !static_cast<Harvester*>(this)->isReturning()
                                && blockDistance(location, destination) >= 2) {
                         // try getting back to a refinery
@@ -761,7 +761,7 @@ void UnitBase::navigate(const GameContext& context) {
             }
         }
     } else if (!target && attackPos.isInvalid()) {
-        if (((game.getGameCycleCount() + getObjectID() * 1337) % MILLI2CYCLES(UNITIDLETIMER)) == 0) {
+        if ((game.getGameCycleCount() + getObjectID() * 1337) % MILLI2CYCLES(UNITIDLETIMER) == 0) {
             idleAction(context);
         }
     }
@@ -769,7 +769,7 @@ void UnitBase::navigate(const GameContext& context) {
 
 void UnitBase::idleAction(const GameContext& context) {
     // not moving and not wanting to go anywhere, do some random turning
-    if (isAGroundUnit() && (getItemID() != Unit_Harvester) && (getAttackMode() == GUARD)) {
+    if (isAGroundUnit() && getItemID() != Unit_Harvester && getAttackMode() == GUARD) {
         // we might turn this cycle with 20% chance
         if (context.game.randomGen.rand(0, 4) == 0) {
             // choose a random one of the eight possible angles
@@ -866,7 +866,7 @@ void UnitBase::doMove2Pos(const GameContext& context, int xPos, int yPos, bool b
     }
 
     if (context.map.tileExists(xPos, yPos)) {
-        if ((xPos != destination.x) || (yPos != destination.y)) {
+        if (xPos != destination.x || yPos != destination.y) {
             clearPath();
             findTargetTimer = 0;
         }
@@ -936,13 +936,11 @@ void UnitBase::doAttackPos(const GameContext& context, int xPos, int yPos, bool 
 }
 
 void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced) {
-    if (pTargetObject->getObjectID() == getObjectID() || (!canAttack() && getItemID() != Unit_Harvester)) {
+    if (pTargetObject->getObjectID() == getObjectID() || !canAttack() && getItemID() != Unit_Harvester)
         return;
-    }
 
-    if (attackMode == CAPTURE) {
+    if (attackMode == CAPTURE)
         doSetAttackMode(context, GUARD);
-    }
 
     setDestination(INVALID_POS, INVALID_POS);
 
@@ -960,19 +958,17 @@ void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTar
 }
 
 void UnitBase::doAttackObject(const GameContext& context, uint32_t TargetObjectID, bool bForced) {
-    ObjectBase* pObject = context.objectManager.getObject(TargetObjectID);
+    const auto* pObject = context.objectManager.getObject(TargetObjectID);
 
-    if (pObject == nullptr) {
+    if (pObject == nullptr)
         return;
-    }
 
     doAttackObject(context, pObject, bForced);
 }
 
 void UnitBase::doSetAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
-    if ((newAttackMode >= 0) && (newAttackMode < ATTACKMODE_MAX)) {
+    if (newAttackMode >= 0 && newAttackMode < ATTACKMODE_MAX)
         attackMode = newAttackMode;
-    }
 
     if (attackMode == GUARD || attackMode == STOP) {
         if (moving && !justStoppedMoving) {
@@ -985,18 +981,16 @@ void UnitBase::doSetAttackMode(const GameContext& context, ATTACKMODE newAttackM
 
 void UnitBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     // shorten deviation time
-    if (deviationTimer > 0) {
+    if (deviationTimer > 0)
         deviationTimer = std::max(0, deviationTimer - MILLI2CYCLES(damage * 20 * 1000));
-    }
 
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 
-    auto* pDamager = context.objectManager.getObject(damagerID);
+    const auto* pDamager = context.objectManager.getObject(damagerID);
 
     if (pDamager != nullptr) {
 
         if (attackMode == HUNT && !forced) {
-            const auto* pDamager = context.objectManager.getObject(damagerID);
             if (canAttack(pDamager)) {
                 if (!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
                     // no target or target not on weapon range => switch target
@@ -1023,7 +1017,7 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
     int checkRange = 0;
     switch (attackMode) {
         case GUARD: {
-            checkRange = (getItemID() == Unit_Sandworm) ? getViewRange() : getWeaponRange();
+            checkRange = getItemID() == Unit_Sandworm ? getViewRange() : getWeaponRange();
         } break;
 
         case AREAGUARD: {
@@ -1055,8 +1049,8 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
         }
     }
 
-    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), pObject->getCenterPoint())
-            <= checkRange * TILESIZE);
+    return blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), pObject->getCenterPoint())
+        <= checkRange * TILESIZE;
 }
 
 bool UnitBase::isInAttackRange(const ObjectBase* object) const {
@@ -1096,18 +1090,17 @@ bool UnitBase::isInAttackRange(const ObjectBase* object) const {
         checkRange = getViewRange() + 1;
     }
 
-    return (blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), object->getCenterPoint())
-            <= checkRange * TILESIZE);
+    return blockDistance(guardPoint * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2), object->getCenterPoint())
+        <= checkRange * TILESIZE;
 }
 
 bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
-    if (object == nullptr) {
+    if (object == nullptr)
         return false;
-    }
 
     const Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
 
-    return (blockDistance(location, targetLocation) <= getWeaponRange());
+    return blockDistance(location, targetLocation) <= getWeaponRange();
 }
 
 void UnitBase::setAngle(ANGLETYPE newAngle) {
@@ -1139,11 +1132,11 @@ void UnitBase::setGettingRepaired() {
 }
 
 void UnitBase::setGuardPoint(int newX, int newY) {
-    if (currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
+    if (currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
         guardPoint.x = newX;
         guardPoint.y = newY;
 
-        if ((getItemID() == Unit_Harvester) && guardPoint.isValid()) {
+        if (getItemID() == Unit_Harvester && guardPoint.isValid()) {
             if (currentGameMap->getTile(newX, newY)->hasSpice()) {
                 if (attackMode == STOP) {
                     attackMode = GUARD;
@@ -1159,7 +1152,7 @@ void UnitBase::setGuardPoint(int newX, int newY) {
 
 void UnitBase::setLocation(const GameContext& context, int xPos, int yPos) {
 
-    if ((xPos == INVALID_POS) && (yPos == INVALID_POS)) {
+    if (xPos == INVALID_POS && yPos == INVALID_POS) {
         parent::setLocation(context, xPos, yPos);
     } else if (currentGameMap->tileExists(xPos, yPos)) {
         parent::setLocation(context, xPos, yPos);
@@ -1246,11 +1239,11 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 
     parent::setTarget(newTarget);
 
-    auto* const currentTarget = dune_cast<RepairYard>(target.getObjPointer());
-
-    if (currentTarget != nullptr && (currentTarget->getOwner() == getOwner())) {
-        currentTarget->book();
-        goingToRepairYard = true;
+    if (auto* const currentTarget = dune_cast<RepairYard>(target.getObjPointer())) {
+        if (currentTarget->getOwner() == getOwner()) {
+            currentTarget->book();
+            goingToRepairYard = true;
+        }
     }
 }
 
@@ -1402,15 +1395,15 @@ void UnitBase::updateVisibleUnits(const GameContext& context) {
         return;
     }
 
-    auto* pTile = context.map.tryGetTile(location.x, location.y);
+    const auto* pTile = context.map.tryGetTile(location.x, location.y);
     if (!pTile)
         return;
 
     const auto& game = context.game;
 
     game.for_each_house([&](auto& house) {
-        if (pTile->isExploredByHouse(house.getHouseID()) && (house.getTeamID() != getOwner()->getTeamID())
-            && (&house != getOwner())) {
+        if (pTile->isExploredByHouse(house.getHouseID()) && house.getTeamID() != getOwner()->getTeamID()
+            && &house != getOwner()) {
             house.informDirectContactWithEnemy();
             getOwner()->informDirectContactWithEnemy();
         }
@@ -1439,12 +1432,12 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
     if (ground_object_result.second == target.getObjectID()) {
         auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if ((pObject != nullptr) && (pObject->getObjectID() == target.getObjectID()) && targetFriendly
-            && pObject->isAStructure() && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+        if (pObject != nullptr && pObject->getObjectID() == target.getObjectID() && targetFriendly
+            && pObject->isAStructure() && pObject->getOwner()->getTeamID() == owner->getTeamID()
             && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
-            return (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)
-                    && static_cast<const RepairYard*>(pObject)->isFree());
+            return goingToRepairYard && pObject->getItemID() == Structure_RepairYard
+                && static_cast<const RepairYard*>(pObject)->isFree();
         }
     }
     return false;
@@ -1480,7 +1473,7 @@ bool UnitBase::SearchPathWithAStar() {
 }
 
 void UnitBase::drawSmoke(int x, int y) const {
-    int frame = ((currentGame->getGameCycleCount() + (getObjectID() * 10)) / SMOKEDELAY) % (2 * 2);
+    int frame = (currentGame->getGameCycleCount() + getObjectID() * 10) / SMOKEDELAY % (2 * 2);
     if (frame == 3) {
         frame = 1;
     }

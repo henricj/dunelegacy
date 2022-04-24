@@ -308,9 +308,8 @@ void Carryall::destroy(const GameContext& context) {
 void Carryall::releaseTarget() {
     setTarget(nullptr);
 
-    if (!hasCargo()) {
+    if (!hasCargo())
         setDestination(guardPoint);
-    }
 }
 
 void Carryall::engageTarget(const GameContext& context) {
@@ -392,8 +391,7 @@ void Carryall::pickupTarget(const GameContext& context) {
     currentMaxSpeed = 0;
     setSpeeds(context);
 
-    auto* pTarget = target.getObjPointer();
-
+    auto* const pTarget = target.getObjPointer();
     if (!pTarget)
         return;
 
@@ -413,7 +411,7 @@ void Carryall::pickupTarget(const GameContext& context) {
                 pGroundUnitTarget->doRepair(context);
             }
 
-            auto* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
+            const auto* newTarget = pGroundUnitTarget->hasATarget() ? pGroundUnitTarget->getTarget() : nullptr;
 
             pickedUpUnitList.push_back(target.getObjectID());
             pGroundUnitTarget->setPickedUp(context, this);
@@ -454,13 +452,12 @@ void Carryall::pickupTarget(const GameContext& context) {
 }
 
 void Carryall::setTarget(const ObjectBase* newTarget) {
-    auto* pTarget = target.getObjPointer();
-
-    if (pTarget) {
+    if (auto* const pTarget = target.getObjPointer()) {
         if (targetFriendly) {
-            auto* groundUnit = dune_cast<GroundUnit>(pTarget);
-            if (groundUnit && groundUnit->getCarrier() == this)
-                groundUnit->bookCarrier(nullptr);
+            if (auto* groundUnit = dune_cast<GroundUnit>(pTarget)) {
+                if (groundUnit->getCarrier() == this)
+                    groundUnit->bookCarrier(nullptr);
+            }
         }
 
         if (auto* refinery = dune_cast<Refinery>(pTarget))
@@ -469,7 +466,7 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
 
     parent::setTarget(newTarget);
 
-    pTarget = target.getObjPointer();
+    auto* const pTarget = target.getObjPointer();
     if (!pTarget)
         return;
 
@@ -483,9 +480,8 @@ void Carryall::setTarget(const ObjectBase* newTarget) {
 }
 
 void Carryall::targeting(const GameContext& context) {
-    if (target) {
+    if (target)
         engageTarget(context);
-    }
 }
 
 void Carryall::turn(const GameContext& context) {

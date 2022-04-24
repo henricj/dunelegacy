@@ -402,7 +402,7 @@ private:
     bool bListBoxAbove                      = false;
     bool bAutocloseListBoxOnSelectionChange = true; ///< This is a small hack to allow the list box to be open while
                                                     ///< selection with up/down keys
-    bool bOnClickEnabled = true; ///< Is the onClick event enabled for this widget?
+    bool bOnClickEnabled = true;                    ///< Is the onClick event enabled for this widget?
 
     DuneTextureOwned pBackground;
     DuneTextureOwned pForeground;

@@ -249,21 +249,21 @@ std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameCon
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
-    if (currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
+    if (currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
         destination.x = newX;
         destination.y = newY;
     }
 }
 
 void ObjectBase::setHealth(FixPoint newHealth) {
-    if ((newHealth >= 0) && (newHealth <= getMaxHealth())) {
+    if (newHealth >= 0 && newHealth <= getMaxHealth()) {
         health       = newHealth;
         badlyDamaged = health < BADLYDAMAGEDRATIO * getMaxHealth();
     }
 }
 
 void ObjectBase::setLocation(const GameContext& context, int xPos, int yPos) {
-    if ((xPos == INVALID_POS) && (yPos == INVALID_POS)) {
+    if (xPos == INVALID_POS && yPos == INVALID_POS) {
         location.invalidate();
     } else if (context.map.tileExists(xPos, yPos)) {
         location.x = xPos;
@@ -282,20 +282,20 @@ void ObjectBase::setVisible(int teamID, bool status) {
         } else {
             visible.reset();
         }
-    } else if ((teamID >= 0) && (teamID < NUM_TEAMS)) {
+    } else if (teamID >= 0 && teamID < NUM_TEAMS) {
         visible[teamID] = status;
     }
 }
 
 void ObjectBase::setTarget(const ObjectBase* newTarget) {
-    target.pointTo(const_cast<ObjectBase*>(newTarget));
+    target.pointTo(newTarget);
 
     auto friendly = false;
 
     if (target) {
         if (const auto* targetPtr = target.getObjPointer()) {
-            friendly = (targetPtr->getOwner()->getTeamID() == owner->getTeamID()) && (getItemID() != Unit_Sandworm)
-                    && (targetPtr->getItemID() != Unit_Sandworm);
+            friendly = targetPtr->getOwner()->getTeamID() == owner->getTeamID() && getItemID() != Unit_Sandworm
+                    && targetPtr->getItemID() != Unit_Sandworm;
         }
     }
 
@@ -309,9 +309,9 @@ void ObjectBase::unassignFromMap(const Coord& location) const {
 }
 
 bool ObjectBase::canAttack(const ObjectBase* object) const {
-    return canAttack() && (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit())
-        && (((object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()))
-            || (object->getItemID() == Unit_Sandworm));
+    return canAttack() && object != nullptr && (object->isAStructure() || !object->isAFlyingUnit())
+        && (object->getOwner()->getTeamID() != owner->getTeamID() && object->isVisible(getOwner()->getTeamID())
+            || object->getItemID() == Unit_Sandworm);
 }
 
 bool ObjectBase::isOnScreen() const {
@@ -326,7 +326,7 @@ bool ObjectBase::isVisible(int teamID) const {
     if (visible.all())
         return true;
 
-    if ((teamID >= 0) && (teamID < NUM_TEAMS)) {
+    if (teamID >= 0 && teamID < NUM_TEAMS) {
         return visible[teamID];
     }
     return false;
@@ -488,7 +488,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                     if (!pNewTarget)
                         continue;
 
-                    if (((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall)
+                    if ((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall
                          || pClosestTarget == nullptr)
                         && canAttack(pNewTarget)) {
                         if (targetDistance < closestTargetDistance) {
