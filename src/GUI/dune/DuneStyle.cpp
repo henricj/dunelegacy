@@ -227,10 +227,10 @@ DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_vi
         drawRect(surface.get(), box_x1 + i, box_y1 + i, box_x2 - i, box_y2 - i, textcolor);
 
     if (checked) {
-        int x1 = box_x1 + 2;
-        int y1 = box_y1 + 2;
-        int x2 = box_x2 - 2;
-        int y2 = box_y2 - 2;
+        int x1       = box_x1 + 2;
+        int y1       = box_y1 + 2;
+        int x2       = box_x2 - 2;
+        const int y2 = box_y2 - 2;
 
         while (y1 < y2 + 1) {
             // North-West to South-East

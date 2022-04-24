@@ -119,7 +119,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
 
     size_t currentPos = 0;
     while (iter != str.cend() && currentPos != pos) {
-        auto c = static_cast<unsigned char>(*iter);
+        const auto c = static_cast<unsigned char>(*iter);
 
         if ((c & 0x80) == 0) {
             // 1 byte: 0xxxxxxx
@@ -142,7 +142,7 @@ std::string utf8Substr(std::string_view str, size_t pos, size_t len) {
 
     size_t resultLen = 0;
     while (iter != str.cend() && resultLen != len) {
-        auto c = static_cast<unsigned char>(*iter);
+        const auto c = static_cast<unsigned char>(*iter);
 
         size_t numBytes = 0;
         if ((c & 0x80) == 0) {
@@ -318,7 +318,7 @@ std::string decodeString(std::string_view text) {
     out.reserve(text.length());
 
     for (unsigned int i = 0; i < text.length(); i++) {
-        unsigned char databyte = text[i];
+        const unsigned char databyte = text[i];
 
         if (databyte & 0x80) {
             const unsigned char index1 = databyte >> 3u & 0xFu;
@@ -358,7 +358,7 @@ std::string to_hex_string(std::span<uint8_t> data) {
     result.reserve(data.size() * 2);
 
     static constexpr auto lookup = std::to_array("0123456789abcdef");
-    for (auto b : data) {
+    for (const auto b : data) {
         result.push_back(lookup[b >> 4]);
         result.push_back(lookup[b & 0x0f]);
     }
@@ -403,7 +403,7 @@ std::string to_hex(std::span<const uint8_t> data, int group) {
     s.reserve(capacity);
 
     auto n = group + 1;
-    for (auto b : data) {
+    for (const auto b : data) {
         if (group && 0 == --n) {
             n = group;
             s.push_back('-');

@@ -147,7 +147,7 @@ void Harvester::checkPos(const GameContext& context) {
     auto& map = context.map;
     if (returningToRefinery) {
         if (const auto* const pRefinery = dune_cast<Refinery>(target.getObjPointer())) {
-            auto* pObject = map.getGroundObject(context, location.x, location.y);
+            const auto* pObject = map.getGroundObject(context, location.x, location.y);
 
             if (justStoppedMoving && pObject != nullptr && pObject->getObjectID() == target.getObjectID()) {
                 if (pRefinery->isFree()) {

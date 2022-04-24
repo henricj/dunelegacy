@@ -75,7 +75,7 @@ void TextProgressBar::updateTextures() {
     parent::updateTextures();
 
     if (!getBackground()) {
-        auto& gui = GUIStyle::getInstance();
+        const auto& gui = GUIStyle::getInstance();
 
         setBackground(
             gui.createButtonSurface(getSize().x, getSize().y, text, true, false, textcolor, textshadowcolor).get());

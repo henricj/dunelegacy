@@ -467,8 +467,8 @@ const ObjectBase* ObjectBase::findTarget() const {
         checkRange = getViewRange();
     }
 
-    ObjectBase* pClosestTarget = nullptr;
-    auto closestTargetDistance = FixPt_MAX;
+    const ObjectBase* pClosestTarget = nullptr;
+    auto closestTargetDistance       = FixPt_MAX;
 
     Coord coord;
     const auto startY = std::max(0, location.y - checkRange);

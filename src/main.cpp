@@ -166,8 +166,8 @@ void setVideoMode(int displayIndex) {
         } else {
             settings.video.physicalWidth  = closestDisplayMode.w;
             settings.video.physicalHeight = closestDisplayMode.h;
-            settings.video.width  = settings.video.physicalWidth;
-            settings.video.height = settings.video.physicalHeight;
+            settings.video.width          = settings.video.physicalWidth;
+            settings.video.height         = settings.video.physicalHeight;
         }
     } else {
         SDL_DisplayMode displayMode;
@@ -237,8 +237,10 @@ void setVideoMode(int displayIndex) {
         if (0 == SDL_GetRendererInfo(renderer, &info)) {
             sdl2::SDL_LogRenderer(&info);
 
-            auto* const end    = info.texture_formats + info.num_texture_formats;
-            auto* const sf_ptr = std::find(info.texture_formats, end, SCREEN_FORMAT);
+            const auto* const begin = info.texture_formats;
+            const auto* const end   = info.texture_formats + info.num_texture_formats;
+
+            const auto* const sf_ptr = std::find(begin, end, SCREEN_FORMAT);
 
             if (sf_ptr == end)
                 sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the renderer's texture_formats");
@@ -570,10 +572,12 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         const auto factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
         GUIStyle::getInstance().setZoom(factor);
 
-        settings.video.physicalWidth      = displayMode.w;
-        settings.video.physicalHeight     = displayMode.h;
-        settings.video.width              = displayMode.w;;
-        settings.video.height             = displayMode.h;;
+        settings.video.physicalWidth  = displayMode.w;
+        settings.video.physicalHeight = displayMode.h;
+        settings.video.width          = displayMode.w;
+        ;
+        settings.video.height = displayMode.h;
+        ;
         settings.video.preferredZoomLevel = 1;
 
         myINIFile.setIntValue("Video", "Width", settings.video.width);
@@ -915,7 +919,7 @@ int main(int argc, char* argv[]) {
         dune::logging_configure(!bShowDebugLog);
 
         // First check for missing files
-        auto missingFiles = FileManager::getMissingFiles();
+        const auto missingFiles = FileManager::getMissingFiles();
 
         if (!missingFiles.empty()) {
             // create data directory inside config directory
@@ -967,9 +971,9 @@ int main(int argc, char* argv[]) {
 
         return okay ? EXIT_SUCCESS : EXIT_FAILURE;
     } catch (const std::exception& e) {
-        std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name())
-                            + std::string("\' was thrown:\n\n") + e.what()
-                            + std::string("\n\nDune Legacy will now be terminated!");
+        const std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name())
+                                  + std::string("\' was thrown:\n\n") + e.what()
+                                  + std::string("\n\nDune Legacy will now be terminated!");
         sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message.c_str());
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 

@@ -53,7 +53,7 @@ bool PalaceInterface::update() {
         return false;
     }
 
-    auto* pPalace = dune_cast<Palace>(pObject);
+    const auto* pPalace = dune_cast<Palace>(pObject);
     if (pPalace != nullptr) {
         int picID = 0;
 

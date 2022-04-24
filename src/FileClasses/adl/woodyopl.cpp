@@ -148,7 +148,7 @@ void processcell_off(celltype* /*ctc*/, fltype /*modulator*/, fltype /*vib*/, fl
 // output level is sustained, mode changes only when cell is turned off (->release)
 // or when the keep-sustained bit is turned off (->sustain_nokeep)
 void processcell_sustain(celltype* ctc, fltype modulator, fltype vib, fltype trem) {
-    Bitu i = static_cast<Bitu>(ctc->t + modulator);
+    const Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += ctc->tinc * vib; // advance waveform time
     ctc->lastval = ctc->val;
 
@@ -175,7 +175,7 @@ void processcell_release(celltype* ctc, fltype modulator, fltype vib, fltype tre
         ctc->step_amp = 0.0;
     }
 
-    Bitu i = static_cast<Bitu>(ctc->t + modulator);
+    const Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += ctc->tinc * vib; // advance waveform time
     ctc->lastval = ctc->val;
 
@@ -213,7 +213,7 @@ void processcell_decay(celltype* ctc, fltype modulator, fltype vib, fltype trem)
         }
     }
 
-    Bitu i = static_cast<Bitu>(ctc->t + modulator);
+    const Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += ctc->tinc * vib; // advance waveform time
     ctc->lastval = ctc->val;
 
@@ -241,7 +241,7 @@ void processcell_attack(celltype* ctc, fltype modulator, fltype vib, fltype trem
         ctc->step_amp = 1.0;
     }
 
-    Bitu i = static_cast<Bitu>(ctc->t + modulator);
+    const Bitu i = static_cast<Bitu>(ctc->t + modulator);
     ctc->t += ctc->tinc * vib; // advance waveform time
     ctc->lastval = ctc->val;
 
@@ -282,9 +282,9 @@ void OPLChipClass::change_attackrate(Bitu regbase, celltype* c) {
         c->a2 = (fltype)(-17.57 * f);
         c->a3 = (fltype)(7.42 * f);
 
-        Bits step_skip   = attackrate * 4 + c->toff;
-        const Bits steps = step_skip >> 2;
-        c->env_step_a    = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
+        const Bits step_skip = attackrate * 4 + c->toff;
+        const Bits steps     = step_skip >> 2;
+        c->env_step_a        = (1 << (steps <= 12 ? 12 - steps : 0)) - 1;
 
         const Bits step_num            = step_skip <= 48 ? 4 - (step_skip & 3) : 0;
         static Bit8u step_skip_mask[5] = {0xff, 0xfe, 0xee, 0xba, 0xaa};
@@ -562,8 +562,8 @@ void OPLChipClass::adlib_write(Bitu idx, Bit8u val, Bitu second_set) {
     second_set = 0; // second_set is 0 anyways, but this fixes some warnings
 
     idx += second_set; // add 0x100 for second register set
-    Bit8u old_val = adlibreg[idx];
-    adlibreg[idx] = val;
+    const Bit8u old_val = adlibreg[idx];
+    adlibreg[idx]       = val;
 
     switch (idx & 0xf0) {
         case ARC_CONTROL:
@@ -897,7 +897,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     for (i = 0; i < endsamples; i++) {
                         cfuncs[cptr[9].cf_sel](&cptr[9], 0.0, vibval1[i], tremval1[i]);
 
-                        fltype chanval = cptr[9].val * 2;
+                        const fltype chanval = cptr[9].val * 2;
                         CHANVAL_OUT
                     }
                 }
@@ -933,7 +933,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                                                tremval1[i]);
                         cfuncs[cptr[9].cf_sel](&cptr[9], cptr[0].val * MODFACTOR, vibval2[i], tremval2[i]);
 
-                        fltype chanval = cptr[9].val * 2;
+                        const fltype chanval = cptr[9].val * 2;
                         CHANVAL_OUT
                     }
                 }
@@ -1064,7 +1064,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     // carrier2
                     cfuncs[cptr[9].cf_sel](&cptr[9], 0.0, vibval2[i], tremval2[i]);
 
-                    fltype chanval = cptr[9].val + cptr[0].val;
+                    const fltype chanval = cptr[9].val + cptr[0].val;
                     CHANVAL_OUT
                 }
             } else {
@@ -1100,7 +1100,7 @@ void OPLChipClass::adlib_getsample(Bit16s* sndptr, Bits numsamples) {
                     // carrier
                     cfuncs[cptr[9].cf_sel](&cptr[9], cptr[0].val * MODFACTOR, vibval2[i], tremval2[i]);
 
-                    fltype chanval = cptr[9].val;
+                    const fltype chanval = cptr[9].val;
                     CHANVAL_OUT
                 }
             }

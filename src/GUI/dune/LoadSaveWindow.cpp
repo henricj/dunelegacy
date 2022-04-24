@@ -189,7 +189,7 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
-    auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
+    const auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if (pQstBox == nullptr || pQstBox->getPressedButtonID() != QSTBOX_BUTTON1)
         return;
 

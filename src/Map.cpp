@@ -231,7 +231,8 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
             if (pTile
                 && ((bulletID == Bullet_Rocket) || (bulletID == Bullet_TurretRocket) || (bulletID == Bullet_SmallRocket)
                     || (bulletID == Bullet_LargeRocket))) {
-                if (auto* object = pTile->getGroundObject(context.objectManager); !object || !object->isAStructure()) {
+                if (const auto* object = pTile->getGroundObject(context.objectManager);
+                    !object || !object->isAStructure()) {
                     const auto type = pTile->getType();
 
                     if (((type == TERRAINTYPE::Terrain_Rock)
@@ -513,7 +514,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
     }
 
     if ((x1 == x2) && (y1 == y2)) {
-        auto* const tile_center = tryGetTile(x1, y1);
+        const auto* const tile_center = tryGetTile(x1, y1);
 
         if (!tile_center)
             return;
@@ -599,7 +600,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) {
     \param coord    the coordinate where spice was removed from
 */
 void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
-    auto* const pCenterTile = tryGetTile(coord.x, coord.y);
+    const auto* const pCenterTile = tryGetTile(coord.x, coord.y);
 
     if (!pCenterTile || pCenterTile->getType() != Terrain_Sand)
         return;

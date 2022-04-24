@@ -71,9 +71,9 @@ void CSurroundopl::write(int reg, int val) {
     a->write(reg, val);
 
     // Transpose the other channel to produce the harmonic effect
-    int iChannel  = -1;
-    int iRegister = reg; // temp
-    int iValue    = val; // temp
+    int iChannel        = -1;
+    const int iRegister = reg; // temp
+    int iValue          = val; // temp
     if (iRegister >> 4 == 0xA || iRegister >> 4 == 0xB)
         iChannel = iRegister & 0x0F;
 
@@ -169,7 +169,7 @@ void CSurroundopl::write(int reg, int val) {
             iValue = iNewFNum & 0xFF;
 
             // See if we need to update the block number, which is stored in a different register
-            uint8_t iNewB0Value =
+            const uint8_t iNewB0Value =
                 this->iFMReg[this->currChip][0xB0 + iChannel] & ~0x1F | iNewBlock << 2 | iNewFNum >> 8 & 0x03;
             if (iNewB0Value & 0x20 && // but only update if there's a note currently playing (otherwise we can just wait
                 this->iTweakedFMReg[this->currChip][0xB0 + iChannel]

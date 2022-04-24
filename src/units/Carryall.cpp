@@ -83,8 +83,8 @@ void Carryall::save(OutputStream& stream) const {
 bool Carryall::update(const GameContext& context) {
     const auto& maxSpeed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 
-    FixPoint dist       = -1;
-    auto* const pTarget = target.getObjPointer();
+    FixPoint dist             = -1;
+    const auto* const pTarget = target.getObjPointer();
     if (pTarget != nullptr && pTarget->isAUnit()) {
         dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || hasCargo()) {
@@ -145,8 +145,8 @@ void Carryall::checkPos(const GameContext& context) {
             // drop up to 3 infantry units at once or one other unit
             auto droppedUnits = 0;
             do {
-                const auto unitID = pickedUpUnitList.front();
-                auto* const pUnit = objectManager.getObject<UnitBase>(unitID);
+                const auto unitID       = pickedUpUnitList.front();
+                const auto* const pUnit = objectManager.getObject<UnitBase>(unitID);
 
                 if (pUnit == nullptr) {
                     return;
@@ -331,7 +331,7 @@ void Carryall::engageTarget(const GameContext& context) {
         return;
     }
 
-    if (auto* groundUnit = dune_cast<GroundUnit>(object); groundUnit && !groundUnit->isAwaitingPickup()) {
+    if (const auto* groundUnit = dune_cast<GroundUnit>(object); groundUnit && !groundUnit->isAwaitingPickup()) {
         // the target changed its state to not awaiting pickup anymore
         releaseTarget();
         return;

@@ -333,8 +333,8 @@ fix16_t fix16_div(fix16_t a, fix16_t b) {
         remainder <<= shift;
         bit_pos -= shift;
 
-        uint32_t div = remainder / divider;
-        remainder    = remainder % divider;
+        const uint32_t div = remainder / divider;
+        remainder          = remainder % divider;
         quotient += div << bit_pos;
 
 #    ifndef FIXMATH_NO_OVERFLOW

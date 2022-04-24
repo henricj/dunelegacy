@@ -231,7 +231,7 @@ const std::unordered_map<DWORD, std::string> processor_types = {{PROCESSOR_ARCHI
                                                                 {PROCESSOR_ARCHITECTURE_INTEL, "x86"}};
 
 std::string_view get_processor_type(DWORD processor_type) {
-    if (auto it = processor_types.find(processor_type); it != processor_types.end())
+    if (const auto it = processor_types.find(processor_type); it != processor_types.end())
         return it->second;
 
     return "unknown";

@@ -98,7 +98,7 @@ void SonicTank::destroy(const GameContext& context) {
 }
 
 void SonicTank::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
-    auto* const damager = context.objectManager.getObject(damagerID);
+    const auto* const damager = context.objectManager.getObject(damagerID);
 
     if (!damager || (damager->getItemID() != Unit_SonicTank))
         parent::handleDamage(context, damage, damagerID, damagerOwner);

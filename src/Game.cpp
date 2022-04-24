@@ -782,7 +782,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                                        screenborder->screen2worldY(finalMouseY), SDL_GetModState() & KMOD_SHIFT);
 
                     if (selectedList.size() == 1) {
-                        auto* pHarvester = objectManager.getObject<Harvester>(*selectedList.begin());
+                        const auto* pHarvester = objectManager.getObject<Harvester>(*selectedList.begin());
                         if (pHarvester != nullptr && pHarvester->getOwner() == pLocalHouse) {
 
                             auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
@@ -1048,7 +1048,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
 
     // test if we need to wait for data to arrive
     for (const auto& playername : pNetworkManager->getConnectedPeers()) {
-        auto* const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
+        const auto* const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
         if (pPlayer != nullptr) {
             if (pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                 // sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount,
@@ -2426,7 +2426,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 }
 
 bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) {
-    BuilderBase* pBuilder = nullptr;
+    const BuilderBase* pBuilder = nullptr;
 
     if (selectedList.size() == 1) {
         pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
@@ -2545,7 +2545,7 @@ bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos
         if (!pObject)
             continue;
 
-        auto* const pOwner = pObject->getOwner();
+        const auto* const pOwner = pObject->getOwner();
         if (pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
             pResponder = dune_cast<UnitBase>(pObject);
             if (pResponder)
@@ -2623,13 +2623,13 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& cont
 }
 
 bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPos, int yPos) {
-    auto* const pTile = map->tryGetTile(xPos, yPos);
+    const auto* const pTile = map->tryGetTile(xPos, yPos);
 
     if (pTile == nullptr) {
         return false;
     }
 
-    auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
+    const auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
     if ((pStructure != nullptr) && (pStructure->canBeCaptured())
         && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;

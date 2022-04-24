@@ -807,7 +807,7 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
 
     auto& game = context.game;
 
-    auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
+    const auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
 
     if (tempTarget) {
         // attack unit/structure or move to structure
@@ -834,7 +834,7 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
     if (map.tileExists(xPos, yPos)) {
         auto& game = context.game;
 
-        auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
+        const auto* const tempTarget = map.tryGetObject(context, xPos, yPos);
         if (tempTarget) {
             // attack unit/structure or move to structure
 
@@ -928,7 +928,7 @@ void UnitBase::doMove2Object(const GameContext& context, const ObjectBase* pTarg
 }
 
 void UnitBase::doMove2Object(const GameContext& context, uint32_t targetObjectID) {
-    ObjectBase* pObject = context.objectManager.getObject(targetObjectID);
+    const ObjectBase* pObject = context.objectManager.getObject(targetObjectID);
 
     if (pObject == nullptr) {
         return;
@@ -1456,7 +1456,7 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
         return true;
 
     if (ground_object_result.second == target.getObjectID()) {
-        auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        const auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
 
         if (pObject != nullptr && pObject->getObjectID() == target.getObjectID() && targetFriendly
             && pObject->isAStructure() && pObject->getOwner()->getTeamID() == owner->getTeamID()
@@ -1473,7 +1473,7 @@ bool UnitBase::SearchPathWithAStar() {
     Coord destinationCoord;
 
     if (target) {
-        auto* const obj_pointer = target.getObjPointer();
+        const auto* const obj_pointer = target.getObjPointer();
 
         if (obj_pointer != nullptr) {
             if (itemID == Unit_Carryall && obj_pointer->getItemID() == Structure_Refinery) {

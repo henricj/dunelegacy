@@ -24,7 +24,7 @@ static char* itoa_loop(char* buf, uint64_t scale, uint64_t value, bool skip) {
 }
 
 void fix32_to_str(fix32_t value, char* buf, int decimals) {
-    uint64_t uvalue = (value >= 0) ? value : -value;
+    const uint64_t uvalue = (value >= 0) ? value : -value;
     if (value < 0)
         *buf++ = '-';
 

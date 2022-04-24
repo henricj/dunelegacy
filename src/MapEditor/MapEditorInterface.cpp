@@ -779,7 +779,7 @@ void MapEditorInterface::onObjectSelected() {
     windowWidget.removeChildWidget(&structureDetailsHBox);
     windowWidget.removeChildWidget(&unitDetailsHBox);
 
-    MapEditor::Structure* pStructure = pMapEditor->getSelectedStructure();
+    const MapEditor::Structure* pStructure = pMapEditor->getSelectedStructure();
 
     if (pStructure != nullptr) {
         windowWidget.addWidget(&structureDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
