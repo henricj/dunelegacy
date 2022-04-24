@@ -27,7 +27,7 @@ protected:
     Font() = default;
 
 public:
-    virtual ~Font() = default;
+    virtual ~Font();
 
     Font(const Font&)            = delete;
     Font(Font&&)                 = delete;
@@ -36,6 +36,9 @@ public:
 
     [[nodiscard]] virtual sdl2::surface_ptr
     createTextSurface(std::string_view text, uint32_t baseColor = 0xFFFFFFFFu) const = 0;
+
+    [[nodiscard]] virtual sdl2::surface_ptr
+    createMultilineTextSurface(std::string_view text, uint32_t color, bool bCentered) const;
 
     /// Returns the number of pixels a text needs
     /**

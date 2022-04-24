@@ -3,6 +3,7 @@ add_sources(FILE_CLASSES_SOURCES
 	Cpsfile.cpp
 	Decode.cpp
 	FileManager.cpp
+	Font.cpp
 	FontManager.cpp
 	GFXManager.cpp
 	Icnfile.cpp
