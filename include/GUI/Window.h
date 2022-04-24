@@ -26,6 +26,8 @@
 
 /// A class representing a window
 class Window : public WidgetWithBackground {
+    using parent = WidgetWithBackground;
+
 public:
     /**
         Constructor for creating a window

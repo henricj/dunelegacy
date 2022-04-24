@@ -89,7 +89,7 @@ void HouseChoiceInfoMenu::onMentatTextFinished() {
 }
 
 void HouseChoiceInfoMenu::drawSpecificStuff() {
-    MentatMenu::drawSpecificStuff();
+    parent::drawSpecificStuff();
 }
 
 void HouseChoiceInfoMenu::onYes() {

@@ -142,7 +142,7 @@ int BriefingMenu::showMenu() {
         } break;
     }
 
-    return MentatMenu::showMenu();
+    return parent::showMenu();
 }
 
 void BriefingMenu::onRepeat() {

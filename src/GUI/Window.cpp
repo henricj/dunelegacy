@@ -278,7 +278,7 @@ void Window::drawOverlay(Point position) {
 }
 
 void Window::resize(uint32_t width, uint32_t height) {
-    WidgetWithBackground::resize(width, height);
+    parent::resize(width, height);
     if (pWindowWidget != nullptr) {
         pWindowWidget->resize(width, height);
     }

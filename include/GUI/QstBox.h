@@ -33,7 +33,7 @@
 #define QSTBOX_BUTTON2        (2)
 
 /// A simple class for a question box
-class QstBox : public Window {
+class QstBox final : public Window {
 public:
     /**
         This method sets a new text for this question box.

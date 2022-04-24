@@ -28,9 +28,19 @@
 #include <string>
 
 class MentatMenu : public MenuBase {
-public:
+    using parent = MenuBase;
+
+protected:
     MentatMenu(HOUSETYPE newHouse);
+
+public:
     ~MentatMenu() override;
+
+    MentatMenu()                             = delete;
+    MentatMenu(const MentatMenu&)            = delete;
+    MentatMenu(MentatMenu&&)                 = delete;
+    MentatMenu& operator=(const MentatMenu&) = delete;
+    MentatMenu& operator=(MentatMenu&&)      = delete;
 
     void setText(const std::string& text);
 
@@ -43,16 +53,16 @@ public:
             showNextMentatText();
         }
 
-        return MenuBase::doInput(event);
+        return parent::doInput(event);
     }
 
+protected:
     void showNextMentatText() { nextMentatTextSwitch = dune::dune_clock::time_point::min(); }
 
     virtual void onMentatTextFinished() { }
 
     static int getMissionSpecificAnim(int missionnumber);
 
-protected:
     enum MentatEyes {
         MentatEyesNormal = 0,
         MentatEyesLeft   = 1,

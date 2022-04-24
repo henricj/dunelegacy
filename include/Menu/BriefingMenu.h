@@ -27,6 +27,8 @@ inline constexpr auto DEBRIEFING_WIN  = 1;
 inline constexpr auto DEBRIEFING_LOST = 2;
 
 class BriefingMenu final : public MentatMenu {
+    using parent = MentatMenu;
+
 public:
     BriefingMenu(HOUSETYPE newHouse, int mission, int type);
     ~BriefingMenu() override;

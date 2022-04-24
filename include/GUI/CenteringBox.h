@@ -18,8 +18,8 @@
 #ifndef CENTERINGBOX_H
 #define CENTERINGBOX_H
 
-#include "Widget.h"
 #include "Container.h"
+#include "Widget.h"
 
 class CenteringContainer_WidgetData {
 public:
