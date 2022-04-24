@@ -353,90 +353,73 @@ std::string decodeString(std::string_view text) {
     return out;
 }
 
-std::string to_hex(gsl::span<const uint8_t> data) {
+std::string to_hex_string(std::span<uint8_t> data) {
+    std::string result;
+    result.reserve(data.size() * 2);
+
+    static constexpr auto lookup = std::to_array("0123456789abcdef");
+    for (auto b : data) {
+        result.push_back(lookup[b >> 4]);
+        result.push_back(lookup[b & 0x0f]);
+    }
+
+    return result;
+}
+
+namespace {
+constexpr auto hex_lookup = std::to_array("0123456789abcdef");
+
+template<std::unsigned_integral TValue>
+std::string to_hex_impl(std::span<const TValue> data) {
     std::string s;
-    s.reserve(data.size() * 2 + 1);
+    s.reserve(data.size() * (1 + sizeof(TValue)));
 
-    auto count = -1;
-    char buffer[2];
-    for (const auto n : data) {
-        if (++count > 7) {
-            count = 0;
-            s.append(1, '-');
-        }
+    auto first = true;
+    for (auto n : data) {
+        if (first)
+            first = false;
+        else
+            s.push_back('-');
 
-        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
-        if (ec != std::errc{}) {
-            THROW(std::runtime_error, "Unable to convert to hex");
-        }
-        const auto length = p - std::begin(buffer);
-        if (length > 1)
-            s.append(buffer, 2);
-        else {
-            s.append(1, '0');
-            s.append(std::begin(buffer), 1);
+        for (auto i = 0u; i < sizeof n; ++i) {
+            static constexpr auto bit_offset = 8U * sizeof(n) - 4U;
+            static constexpr auto mask       = 0xfU;
+
+            const auto nibble = (n >> bit_offset) & mask;
+
+            s.push_back(hex_lookup[nibble]);
         }
     }
 
     return s;
 }
 
-std::string to_hex(gsl::span<const uint32_t> data) {
+} // namespace
+
+std::string to_hex(std::span<const uint8_t> data, int group) {
+    const auto capacity = 2 * data.size() + (group ? data.size() / group : 0);
+
     std::string s;
-    s.reserve(data.size() * 9 + 1);
+    s.reserve(capacity);
 
-    auto first = true;
-    char buffer[8];
-    for (const auto n : data) {
-        if (first) {
-            first = false;
-        } else
-            s.append(1, '-');
-
-        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
-
-        if (ec != std::errc{}) {
-            THROW(std::runtime_error, "Unable to convert to hex");
+    auto n = group + 1;
+    for (auto b : data) {
+        if (group && 0 == --n) {
+            n = group;
+            s.push_back('-');
         }
 
-        const auto length = p - std::begin(buffer);
-        if (length > 7)
-            s.append(buffer, 8);
-        else {
-            s.append(8 - length, '0');
-            s.append(std::begin(buffer), length);
-        }
+        s.push_back(hex_lookup[b >> 4]);
+        s.push_back(hex_lookup[b & 0x0f]);
     }
 
     return s;
 }
 
-std::string to_hex(gsl::span<const uint64_t> data) {
-    std::string s;
-    s.reserve(data.size() * 17 + 1);
+std::string to_hex(std::span<const uint32_t> data) {
+    return to_hex_impl(data);
+}
 
-    auto first = true;
-    char buffer[16];
-    for (const auto n : data) {
-        if (first) {
-            first = false;
-        } else
-            s.append(1, '-');
-
-        auto [p, ec] = std::to_chars(std::begin(buffer), std::end(buffer), n, 16);
-
-        if (ec != std::errc{}) {
-            THROW(std::runtime_error, "Unable to convert to hex");
-        }
-
-        const auto length = p - std::begin(buffer);
-        if (length > 15)
-            s.append(buffer, 16);
-        else {
-            s.append(16 - length, '0');
-            s.append(std::begin(buffer), length);
-        }
-    }
-
-    return s;
+std::string to_hex(std::span<const uint64_t> data) {
+    return to_hex_impl(data);
 }

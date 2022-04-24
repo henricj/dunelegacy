@@ -199,8 +199,8 @@ std::string convertCP850ToUTF8(std::string_view text);
 */
 std::string decodeString(std::string_view text);
 
-std::string to_hex(gsl::span<const uint8_t> data);
-std::string to_hex(gsl::span<const uint32_t> data);
-std::string to_hex(gsl::span<const uint64_t> data);
+std::string to_hex(std::span<const uint8_t> data, int group = 8);
+std::string to_hex(std::span<const uint32_t> data);
+std::string to_hex(std::span<const uint64_t> data);
 
 #endif // STRING_UTIL_H

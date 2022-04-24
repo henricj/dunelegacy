@@ -170,7 +170,6 @@ std::string FileManager::md5FromFilename(std::filesystem::path filename) {
 
     if (md5_file(reinterpret_cast<const char*>(filename.make_preferred().u8string().c_str()), md5sum.data()) != 0)
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
-    }
 
-    return to_hex(md5sum);
+    return to_hex(md5sum, 0);
 }
