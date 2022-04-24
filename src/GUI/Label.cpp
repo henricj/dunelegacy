@@ -73,8 +73,9 @@ void Label::draw(Point position) {
     Dune_RenderCopy(renderer, pTexture.get(), nullptr, &dest);
 }
 
-Label* Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
-    auto* label = new Label();
+std::unique_ptr<Label>
+Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+    auto label = std::make_unique<Label>();
     label->setText(text);
     label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
     label->pAllocated = true;

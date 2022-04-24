@@ -117,13 +117,13 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Size") + ":"));
+    mapPropertyNamesVBox.addWidget(Label::create(_("Size") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertySize);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Players") + ":"));
+    mapPropertyNamesVBox.addWidget(Label::create(_("Players") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertyPlayers);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Author") + ":"));
+    mapPropertyNamesVBox.addWidget(Label::create(_("Author") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
-    mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":"));
+    mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
     rightVBox.addWidget(Spacer::create());
 
