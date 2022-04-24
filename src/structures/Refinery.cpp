@@ -130,15 +130,23 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
 
     firstRun = false;
 
-    auto* pHarvester = static_cast<Harvester*>(harvester.getObjPointer());
-    if ((pCarryall != nullptr) && pHarvester->getGuardPoint().isValid()) {
-        pCarryall->giveCargo(context, pHarvester);
-        pCarryall->setTarget(nullptr);
-        pCarryall->setDestination(pHarvester->getGuardPoint());
-    } else {
-        const Coord deployPos = currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
-        pHarvester->deploy(context, deployPos);
-    }
+    if (auto* const pHarvester = getHarvester()) {
+        if (pCarryall != nullptr && pHarvester->getGuardPoint().isValid()) {
+            pCarryall->giveCargo(context, pHarvester);
+            pCarryall->setTarget(nullptr);
+            pCarryall->setDestination(pHarvester->getGuardPoint());
+        } else {
+            const auto deployPos =
+                currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
+
+            if (deployPos.isInvalid()) {
+                sdl2::log_error("Unable to locate deployment location for harvester!");
+                pHarvester->setHealth(0_fix); // TODO: Just blow it up?
+            } else
+                pHarvester->deploy(context, deployPos);
+        }
+    } else
+        sdl2::log_error("A refinery is trying to deploy a non-existent harvester!");
 
     if (bookings == 0) {
         stopAnimate();
