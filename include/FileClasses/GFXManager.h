@@ -73,6 +73,8 @@ public:
 
     SDL_Texture* getMainBackground(SDL_Renderer* renderer, int width, int height);
 
+    sdl2::surface_ptr createBackgroundTile() const { return surfaceLoader.createBackgroundTileSurface(); }
+
     Animation* getAnimation(unsigned int id) { return surfaceLoader.getAnimation(id); }
 
     [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return surfaceLoader.getBackgroundSurface(); }

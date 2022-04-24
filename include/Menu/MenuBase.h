@@ -61,4 +61,15 @@ private:
     int retVal{MENU_QUIT_DEFAULT};
 };
 
+class TopMenuBase : public MenuBase {
+protected:
+    TopMenuBase();
+
+public:
+    ~TopMenuBase() override;
+
+protected:
+    void draw_background(Point position) override;
+};
+
 #endif // MENUBASE_H

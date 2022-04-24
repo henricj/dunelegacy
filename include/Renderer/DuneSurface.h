@@ -31,7 +31,9 @@ struct DuneSurfaceOwned final {
     DuneSurfaceOwned(const DuneSurfaceOwned&) = delete;
     DuneSurfaceOwned(DuneSurfaceOwned&&)      = default;
 
-    explicit DuneSurfaceOwned(sdl2::surface_ptr texture, float width = 0.f, float height = 0.f);
+    explicit DuneSurfaceOwned(sdl2::surface_ptr surface, float width = 0.f, float height = 0.f);
+    DuneSurfaceOwned(sdl2::surface_ptr surface, int width, int height)
+        : DuneSurfaceOwned(std::move(surface), static_cast<float>(width), static_cast<float>(height)) { }
 
     ~DuneSurfaceOwned();
 
@@ -43,7 +45,7 @@ struct DuneSurfaceOwned final {
     [[nodiscard]] auto get() const noexcept { return surface_.get(); }
     [[nodiscard]] auto operator->() const noexcept { return surface_.operator->(); }
 
-    sdl2::texture_ptr createTexture(SDL_Renderer* renderer) const;
+    DuneTextureOwned createTexture(SDL_Renderer* renderer) const;
 };
 
 #endif // DUNESURFACE_H

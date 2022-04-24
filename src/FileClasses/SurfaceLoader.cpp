@@ -1496,6 +1496,10 @@ sdl2::surface_ptr SurfaceLoader::createBackgroundSurface(int width, int height) 
     return picFactory_.createBackground(width, height);
 }
 
+sdl2::surface_ptr SurfaceLoader::createBackgroundTileSurface() const {
+    return picFactory_.createBackgroundTile();
+}
+
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {
     const auto file    = pFileManager->openFile(filename);
     const auto wsafile = std::make_unique<Wsafile>(file.get());
@@ -1621,6 +1625,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
     const auto& name = ObjPicNames.at(id);
 
     const auto filename = fmt::format("Mask_3x_{}.png", name);
+
     if (settings.video.scaler == "ScaleHD") {
         if (pFileManager->exists(filename)) {
             pSurface = sdl2::surface_ptr{

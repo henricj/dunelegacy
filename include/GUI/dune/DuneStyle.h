@@ -242,7 +242,14 @@ public:
         \param  height      the height of the surface
         \return the new surface
     */
-    sdl2::surface_ptr createBackground(uint32_t width, uint32_t height) override;
+    DuneSurfaceOwned createBackground(int width, int height) const override;
+
+    /**
+        Draw a simple background for e.g. a window
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    void drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) override;
 
     /**
         Creates a simple background for widgets
@@ -319,6 +326,7 @@ private:
     uint32_t scaledFontSize(uint32_t font_size) const;
 
     FontManager* fontManager_{};
+    DuneTextureOwned backgroundTile_;
 };
 
 #endif // DUNESTYLEBASE_H
