@@ -77,7 +77,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
         choamRows[i].Checkbox_Unit1.setText(resolveItemName(unit1));
         choamRows[i].Checkbox_Unit1.setTextColor(color);
-        choamRows[i].Checkbox_Unit1.setOnClick([=] { onUnitCheckbox(unit1); });
+        choamRows[i].Checkbox_Unit1.setOnClick([this, unit1] { onUnitCheckbox(unit1); });
         choamRows[i].Checkbox_Unit1.setChecked(choam.count(unit1) > 0);
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit1, 180);
 
@@ -92,7 +92,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         if (unit2 != ItemID_Invalid) {
             choamRows[i].Checkbox_Unit2.setText(resolveItemName(unit2));
             choamRows[i].Checkbox_Unit2.setTextColor(color);
-            choamRows[i].Checkbox_Unit2.setOnClick([=] { onUnitCheckbox(unit2); });
+            choamRows[i].Checkbox_Unit2.setOnClick([this, unit2] { onUnitCheckbox(unit2); });
             choamRows[i].Checkbox_Unit2.setChecked(choam.count(unit2) > 0);
             choamRows[i].HBox_Unit.addWidget(&choamRows[i].Checkbox_Unit2, 180);
 
