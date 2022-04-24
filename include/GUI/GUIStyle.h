@@ -97,6 +97,18 @@ public:
     float getScale() const noexcept { return dpi_ratio_ * zoom_; }
 
     /**
+       Returns the actual UI scaling factor, taking into account constraints like
+       the window size.
+        \return the UI scaling factor (nominally 1.0f)
+     */
+    float getActualScale() const noexcept { return actual_scale_; }
+
+    /**
+        Compute the logical size of the output from the physical size.
+     */
+    virtual void setLogicalSize(SDL_Renderer* renderer, int physical_width, int physical_height);
+
+    /**
         Returns the minimum size of a label with this text
         \param  text    The text for the label
         \param  fontSize  The size of the font to use
@@ -328,8 +340,9 @@ public:
 
 private:
     static std::unique_ptr<GUIStyle> currentGUIStyle;
-    float zoom_      = 1.f;
-    float dpi_ratio_ = 1.f;
+    float zoom_         = 1.f;
+    float dpi_ratio_    = 1.f;
+    float actual_scale_ = 1.f;
 };
 
 #endif // GUISTYLE_H
