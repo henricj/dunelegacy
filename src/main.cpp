@@ -65,6 +65,10 @@
 #    endif
 #    include <Windows.h>
 
+#    include <ShellScalingApi.h>
+
+#    include <SDL_syswm.h>
+
 #    ifdef DUNE_CRT_HEAP_DEBUG
 #        include <crtdbg.h>
 #    endif
@@ -127,6 +131,19 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
     return 1;
 }
 
+float getLogicalToPhysicalScale(int physicalWidth, int physicalHeight) {
+    auto& gui = GUIStyle::getInstance();
+
+    if (physicalWidth >= 1280 * 3 && physicalHeight >= 720 * 3) {
+        return 3;
+    }
+    if (physicalWidth >= 640 * 2 && physicalHeight >= 480 * 2) {
+
+        return 2;
+    }
+    return 1;
+}
+
 void setVideoMode(int displayIndex) {
     int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
 
@@ -149,10 +166,8 @@ void setVideoMode(int displayIndex) {
         } else {
             settings.video.physicalWidth  = closestDisplayMode.w;
             settings.video.physicalHeight = closestDisplayMode.h;
-            const auto factor =
-                getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
-            settings.video.width  = settings.video.physicalWidth / factor;
-            settings.video.height = settings.video.physicalHeight / factor;
+            settings.video.width  = settings.video.physicalWidth;
+            settings.video.height = settings.video.physicalHeight;
         }
     } else {
         SDL_DisplayMode displayMode;
@@ -163,10 +178,8 @@ void setVideoMode(int displayIndex) {
             settings.video.physicalHeight = displayMode.h;
         }
 
-        const auto factor =
-            getLogicalToPhysicalResolutionFactor(settings.video.physicalWidth, settings.video.physicalHeight);
-        settings.video.width  = settings.video.physicalWidth / factor;
-        settings.video.height = settings.video.physicalHeight / factor;
+        settings.video.width  = settings.video.physicalWidth;
+        settings.video.height = settings.video.physicalHeight;
     }
 
     sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", settings.video.physicalWidth,
@@ -234,7 +247,7 @@ void setVideoMode(int displayIndex) {
             sdl2::log_error(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: %s", error);
         }
     }
-    SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
+
     screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width,
                                       settings.video.height);
 
@@ -268,27 +281,12 @@ void updateFullscreen() {
         // switch to windowed mode
         sdl2::log_info("Switching to windowed mode.");
         SDL_SetWindowFullscreen(window, window_flags & ~SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-        SDL_SetWindowSize(window, settings.video.physicalWidth, settings.video.physicalHeight);
-        SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
     } else {
         // switch to fullscreen mode
         sdl2::log_info("Switching to fullscreen mode.");
-        SDL_DisplayMode displayMode;
-        SDL_GetDesktopDisplayMode(SDL_GetWindowDisplayIndex(window), &displayMode);
 
         SDL_SetWindowFullscreen(window, window_flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-        SDL_SetWindowSize(window, displayMode.w, displayMode.h);
-        SDL_RenderSetLogicalSize(renderer, settings.video.width, settings.video.height);
     }
-
-    // we just need to flush all events; otherwise we might get them twice
-    SDL_PumpEvents();
-    SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
-
-    // wait a bit to avoid immediately switching back
-    SDL_Delay(100);
 }
 
 std::filesystem::path getConfigFilepath() {
@@ -568,11 +566,13 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         SDL_DisplayMode displayMode;
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
-        const auto factor                 = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
+        const auto factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
+        GUIStyle::getInstance().setZoom(factor);
+
         settings.video.physicalWidth      = displayMode.w;
         settings.video.physicalHeight     = displayMode.h;
-        settings.video.width              = displayMode.w / factor;
-        settings.video.height             = displayMode.h / factor;
+        settings.video.width              = displayMode.w;;
+        settings.video.height             = displayMode.h;;
         settings.video.preferredZoomLevel = 1;
 
         myINIFile.setIntValue("Video", "Width", settings.video.width);
@@ -592,16 +592,65 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
     return bFirstGamestart;
 }
 
-void update_display_scale(SDL_Window* sdl_window) {
+namespace {
 
-    static constexpr auto default_dpi =
+inline constexpr auto default_dpi =
 #if defined(__APPLE__)
-        72.0f;
+    72.0f;
 #elif defined(USER_DEFAULT_SCREEN_DPI)
-        static_cast<float>(USER_DEFAULT_SCREEN_DPI); // Windows
+    static_cast<float>(USER_DEFAULT_SCREEN_DPI); // Windows
 #else
-        96.0f; // This is true for Windows, but what about others?
+    96.0f; // This is true for Windows, but what about others?
 #endif
+
+#if defined(_WIN32)
+float physical_dpi(SDL_Window* sdl_window) {
+    using fn_ptr =
+        HRESULT(__cdecl*)(_In_ HMONITOR hmonitor, _In_ MONITOR_DPI_TYPE dpiType, _Out_ UINT * dpiX, _Out_ UINT * dpiY);
+
+    static auto shcore = LoadLibraryA("Shcore.dll");
+
+    static auto get_dpi_for_monitor =
+        nullptr == shcore ? nullptr : reinterpret_cast<fn_ptr>(GetProcAddress(shcore, "GetDpiForMonitor"));
+
+    if (!shcore)
+        return default_dpi;
+
+    SDL_SysWMinfo wmInfo{};
+    SDL_VERSION(&wmInfo.version)
+    SDL_GetWindowWMInfo(window, &wmInfo);
+
+    const auto hwnd = wmInfo.info.win.window;
+
+    if (nullptr == hwnd)
+        return default_dpi;
+
+    const auto monitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+
+    if (nullptr == monitor)
+        return default_dpi;
+
+    UINT dpiX;
+    UINT dpiY;
+    const auto hresult = get_dpi_for_monitor(monitor, MONITOR_DPI_TYPE::MDT_RAW_DPI, &dpiX, &dpiY);
+
+    if (FAILED(hresult))
+        return default_dpi;
+
+    return static_cast<float>(std::max(dpiX, dpiY));
+}
+#else
+auto physical_dpi(SDL_Window*) {
+    return default_dpi;
+}
+#endif
+
+} // namespace
+void update_display_scale(SDL_Window* sdl_window) {
+    // A 14" 640x480 display had a DPI of about 57 (e.g., the IBM 8514 Color Monitor)
+    static constexpr auto dune_dpi = 57.f;
+
+    const auto actual_dpi = physical_dpi(sdl_window);
 
     auto& gui = GUIStyle::getInstance();
 
@@ -611,7 +660,7 @@ void update_display_scale(SDL_Window* sdl_window) {
         dpi = 1;
     }
 
-    gui.setDisplayDpi(dpi / default_dpi);
+    gui.setDisplayDpi((dpi * actual_dpi) / (default_dpi * dune_dpi));
 
     auto* sdl_renderer = SDL_GetRenderer(sdl_window);
 
@@ -679,6 +728,12 @@ bool run_game(int argc, char* argv[]) {
         GUIStyle::setGUIStyle(std::make_unique<DuneStyle>());
 
         update_display_scale(window);
+
+        { // Scope
+            int w, h;
+            SDL_GetRendererOutputSize(renderer, &w, &h);
+            GUIStyle::getInstance().setLogicalSize(renderer, w, h);
+        }
 
         sdl2::log_info("Loading graphics and sounds...");
 
