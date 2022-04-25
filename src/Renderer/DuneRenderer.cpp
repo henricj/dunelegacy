@@ -3,7 +3,7 @@
 void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, uint32_t color) {
     setRenderDrawColor(renderer, color);
 
-    std::array<SDL_FPoint, 3> points;
+    std::array<SDL_FPoint, 3> points{};
 
     constexpr auto to_pt = [](int u, int v) { return SDL_FPoint{static_cast<float>(u), static_cast<float>(v)}; };
 
