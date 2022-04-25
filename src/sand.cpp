@@ -59,7 +59,7 @@ void drawCursor() {
     \return the surface corresponding. This surface should not be freed or modified. nullptr on error.
 */
 const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
-    int newPicID = 0;
+    SmallDetailPics_Enum newPicID{};
 
     // clang-format off
     switch(itemID) {

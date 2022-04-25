@@ -153,7 +153,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
 
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID)
     : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
-    graphicID  = -1;
+    graphicID  = static_cast<ObjPic_enum>(-1);
     numImagesX = 0;
     numImagesY = 0;
 }

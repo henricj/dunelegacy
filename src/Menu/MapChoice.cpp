@@ -226,11 +226,9 @@ void MapChoice::drawSpecificStuff() {
                 const auto int_house             = static_cast<int>(house);
                 static constexpr auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
 
-                const auto blitThreshold = [&] {
-                    return group[lastScenario]
-                        .newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses]
-                        .size();
-                };
+                const auto region = (static_cast<int>(curHouse2Blit) + int_house) % num_houses;
+
+                const auto blitThreshold = [&] { return group[lastScenario].newRegion[region].size(); };
 
                 while (curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit >= blitThreshold()) {
                     curRegion2Blit = 0;
@@ -240,10 +238,9 @@ void MapChoice::drawSpecificStuff() {
                 if (curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
                     // there is still some region to blend in
                     const auto pieceNum =
-                        group[lastScenario]
-                            .newRegion[(static_cast<int>(curHouse2Blit) + int_house) % num_houses][curRegion2Blit];
-                    auto pPieceSurface = convertSurfaceToDisplayFormat(pGFXManager->getMapChoicePieceSurface(
-                        pieceNum, static_cast<HOUSETYPE>((static_cast<int>(curHouse2Blit) + int_house) % num_houses)));
+                        static_cast<UIGraphics_Enum>(group[lastScenario].newRegion[region][curRegion2Blit]);
+                    auto* surface = pGFXManager->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
+                    auto pPieceSurface = convertSurfaceToDisplayFormat(surface);
                     auto dest =
                         calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                     curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pPieceSurface), mapSurface.get(), dest);
@@ -287,7 +284,8 @@ void MapChoice::drawSpecificStuff() {
                 }
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
-                const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                const auto* const arrow =
+                    pGFXManager->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
                 const int arrowFrame =
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128U % 4U);
                 assert(arrowFrame >= 0 && arrowFrame < 4);
@@ -314,7 +312,8 @@ void MapChoice::drawSpecificStuff() {
                 }
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
-                const auto* const arrow = pGFXManager->getUIGraphic(UI_MapChoiceArrow_None + arrowNum, house);
+                const auto* const arrow =
+                    pGFXManager->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
                 const int arrowFrame =
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
@@ -355,7 +354,7 @@ bool MapChoice::doInput(SDL_Event& event) {
                     for (int i = 0; i < 4; i++) {
                         if (group[lastScenario].attackRegion[i].regionNum == regionNum) {
                             mapChoiceState = MAPCHOICESTATE_BLINKING;
-                            selectedRegion = regionNum;
+                            selectedRegion = static_cast<UIGraphics_Enum>(regionNum);
                             alreadyPlayedRegions |= 1 << selectedRegion;
                             selectionTime = dune::dune_clock::now();
                             break;
@@ -384,7 +383,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
         const auto& g = group[s];
 
         for_each_housetype([&](const auto h) {
-            for (int pieceNum : g.newRegion[static_cast<int>(h)]) {
+            for (auto pieceNum : g.newRegion[static_cast<int>(h)]) {
                 SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum, h);
                 SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                 SDL_BlitSurface(pieceSurface, nullptr, mapSurface.get(), &dest);
@@ -458,7 +457,7 @@ void MapChoice::loadINI() {
             std::string strKey = "REG" + std::to_string(a + 1);
 
             std::string tmp = RegionINI.getStringValue(strSection, strKey);
-            if (tmp == "") {
+            if (tmp.empty()) {
                 group[i].attackRegion[a].regionNum       = 0;
                 group[i].attackRegion[a].arrowNum        = 0;
                 group[i].attackRegion[a].arrowPosition.x = 0;

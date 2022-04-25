@@ -50,14 +50,14 @@ class StructureBase;
 class Bullet;
 
 // SDL stuff
-extern SDL_Window* window;         ///< the window
-extern SDL_Renderer* renderer;     ///< the renderer
-extern SDL_Texture* screenTexture; ///< the texture
-extern Palette palette;            ///< the palette for the screen
-extern int drawnMouseX;            ///< the current mouse position (x coordinate)
-extern int drawnMouseY;            ///< the current mouse position (y coordinate)
-extern int cursorFrame;            ///< the current mouse cursor
-extern int currentZoomlevel;       ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+extern SDL_Window* window;          ///< the window
+extern SDL_Renderer* renderer;      ///< the renderer
+extern SDL_Texture* screenTexture;  ///< the texture
+extern Palette palette;             ///< the palette for the screen
+extern int drawnMouseX;             ///< the current mouse position (x coordinate)
+extern int drawnMouseY;             ///< the current mouse position (y coordinate)
+extern UIGraphics_Enum cursorFrame; ///< the current mouse cursor
+extern int currentZoomlevel;        ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
 extern std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice

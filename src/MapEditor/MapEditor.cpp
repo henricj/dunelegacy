@@ -1558,9 +1558,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                zoomedTilesize, zoomedTilesize};
-            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+            SDL_FRect dest  = {(pScreenborder->world2screenX(position.x * TILESIZE)),
+                               (pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(zoomedTilesize),
+                               static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
 
@@ -1574,9 +1574,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 for (int x = position.x; x < position.x + 2; x++) {
                     SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                        zoomedTilesize, zoomedTilesize};
-                    SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
-                                       static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
-                                       static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+                    SDL_FRect dest  = {(pScreenborder->world2screenX(x * TILESIZE)),
+                                       (pScreenborder->world2screenY(y * TILESIZE)), static_cast<float>(zoomedTilesize),
+                                       static_cast<float>(zoomedTilesize)};
 
                     Dune_RenderCopyF(renderer, terrainSprite, &source, &dest);
                 }
@@ -1643,9 +1643,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             const auto* const WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
 
             SDL_Rect source = {maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
-            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+            SDL_FRect dest  = {(pScreenborder->world2screenX(position.x * TILESIZE)),
+                               (pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(zoomedTilesize),
+                               static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
@@ -1653,7 +1653,8 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                      static_cast<int>(dest.h)};
         } else {
 
-            int objectPic = 0;
+            ObjPic_enum objectPic{};
+
             // clang-format off
             switch(structure.itemID) {
                 case Structure_Barracks:            objectPic = ObjPic_Barracks;            break;
@@ -1673,7 +1674,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                 case Structure_Wall:                objectPic = ObjPic_Wall;                break;
                 case Structure_WindTrap:            objectPic = ObjPic_Windtrap;            break;
                 case Structure_WOR:                 objectPic = ObjPic_WOR;                 break;
-                default:                            objectPic = 0;                          break;
+                default:                            objectPic = {};                         break;
             }
             // clang-format on
 
@@ -1683,9 +1684,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
             SDL_Rect source = {frameSize.x * (structure.itemID == Structure_WindTrap ? 9 : 2), 0, frameSize.x,
                                frameSize.y};
-            SDL_FRect dest  = {static_cast<float>(pScreenborder->world2screenX(position.x * TILESIZE)),
-                               static_cast<float>(pScreenborder->world2screenY(position.y * TILESIZE)),
-                               static_cast<float>(frameSize.x), static_cast<float>(frameSize.y)};
+            SDL_FRect dest  = {(pScreenborder->world2screenX(position.x * TILESIZE)),
+                               (pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(frameSize.x),
+                               static_cast<float>(frameSize.y)};
 
             Dune_RenderCopyF(renderer, ObjectSprite, &source, &dest);
 
@@ -1721,11 +1722,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                                            Coord(4, -12),  Coord(-8, -16), Coord(0, -12),
                                                            Coord(-4, -12), Coord(0, -12)};
 
-        int objectPicBase      = 0;
-        int framesX            = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-        int framesY            = 1;
-        int objectPicGun       = -1;
-        const Coord* gunOffset = nullptr;
+        ObjPic_enum objectPicBase{};
+        int framesX              = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        int framesY              = 1;
+        ObjPic_enum objectPicGun = static_cast<ObjPic_enum>(-1);
+        const Coord* gunOffset   = nullptr;
 
         // clang-format off
         switch(unit.itemID) {
@@ -1744,7 +1745,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             case Unit_SiegeTank:        objectPicBase = ObjPic_Siegetank_Base;  objectPicGun = ObjPic_Siegetank_Gun;    gunOffset = siegeTankTurretOffset;      break;
             case Unit_SonicTank:        objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Sonictank_Gun;    gunOffset = sonicTankTurretOffset;      break;
             case Unit_Tank:             objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Tank_Gun;         gunOffset = tankTurretOffset;           break;
-            case Unit_Trike:            objectPicBase = ObjPic_Trike;                                                                                           break;
+            case Unit_Trike:
             case Unit_RaiderTrike:      objectPicBase = ObjPic_Trike;                                                                                           break;
             case Unit_Trooper:          objectPicBase = ObjPic_Trooper;         framesX = 4;    framesY = 3;                                                    break;
             case Unit_Special:          objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = devastatorTurretOffset;     break;
@@ -2014,7 +2015,7 @@ void MapEditor::saveMapshot() {
     drawMap(&tmpScreenborder, true);
 
     const sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
-    SavePNG(pMapshotSurface.get(), reinterpret_cast<const char*>(mapshotFilename.u8string().c_str()));
+    SavePNG(pMapshotSurface.get(), mapshotFilename.u8string().c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
 

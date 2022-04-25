@@ -56,7 +56,7 @@ private:
 
 private:
     struct TGroup {
-        std::array<std::vector<int>, static_cast<int>(HOUSETYPE::NUM_HOUSES)> newRegion;
+        std::array<std::vector<UIGraphics_Enum>, static_cast<int>(HOUSETYPE::NUM_HOUSES)> newRegion;
 
         struct TAttackRegion {
             int regionNum;
@@ -87,7 +87,7 @@ private:
     unsigned int curRegion2Blit = 0;
     bool bFastBlending          = false;
     int mapChoiceState;
-    int selectedRegion = -1;
+    UIGraphics_Enum selectedRegion = static_cast<UIGraphics_Enum>(-1);
     dune::dune_clock::time_point selectionTime{};
     dune::dune_clock::time_point stateSwitchTime{};
     MessageTicker msgticker;

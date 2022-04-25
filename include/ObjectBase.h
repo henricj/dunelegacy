@@ -324,8 +324,8 @@ protected:
     bool badlyDamaged; ///< Is the health below 50%?
 
     zoomable_texture graphic{}; ///< The graphic for this object
-    int graphicID =
-        -1; ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
+    ObjPic_enum graphicID = ObjPic_enum(
+        -1); ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
     int numImagesX = 0; ///< The number of images in x direction
     int numImagesY = 0; ///< The number of images in y direction
 
