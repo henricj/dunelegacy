@@ -98,7 +98,7 @@ void Ornithopter::destroy(const GameContext& context) {
     // place wreck
     if (currentGameMap->tileExists(location)) {
         auto* pTile = currentGameMap->getTile(location);
-        pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), Coord(lround(realX), lround(realY)));
+        pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
     }
 
     parent::destroy(context);

@@ -344,7 +344,7 @@ void InfantryBase::destroy(const GameContext& context) {
                 // squashed
                 pTile->assignDeadUnit(game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1
                                                                 : DeadUnit_Infantry_Squashed2,
-                                      owner->getHouseID(), Coord(lround(realX), lround(realY)));
+                                      owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
 
                 if (isVisible(getOwner()->getTeamID())) {
                     soundPlayer->playSoundAt(Sound_enum::Sound_Squashed, location);
@@ -355,7 +355,7 @@ void InfantryBase::destroy(const GameContext& context) {
 
         } else if (getItemID() != Unit_Saboteur) {
             // "normal" dead
-            pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), Coord(lround(realX), lround(realY)));
+            pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
 
             if (isVisible(getOwner()->getTeamID())) {
                 const auto sound_id = pGFXManager->random().getRandOf(

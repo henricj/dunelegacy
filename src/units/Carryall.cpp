@@ -298,7 +298,7 @@ void Carryall::destroy(const GameContext& context) {
     // place wreck
     if (isVisible()) {
         if (auto* const pTile = context.map.tryGetTile(location.x, location.y)) {
-            pTile->assignDeadUnit(DeadUnit_Carryall, owner->getHouseID(), Coord(lround(realX), lround(realY)));
+            pTile->assignDeadUnit(DeadUnit_Carryall, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
         }
     }
 
