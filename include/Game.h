@@ -570,6 +570,8 @@ public:
     GameState gameState = GameState::Start;
 
 private:
+    void resize();
+
     bool chatMode = false;         ///< chat mode on?
     std::string typingChatMessage; ///< currently typed chat message
 

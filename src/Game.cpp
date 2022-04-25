@@ -82,18 +82,12 @@ Game::Game() : localPlayerName(settings.general.playerName) {
     structureList.clear(); // all the structures
     bulletList.clear();
 
-    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    musicPlayer->changeMusic(MUSIC_PEACE);
 
     // set to true for now
     debug = false;
 
-    powerIndicatorPos.h = spiceIndicatorPos.h = settings.video.height - 146 - 2;
-
-    musicPlayer->changeMusic(MUSIC_PEACE);
-    //////////////////////////////////////////////////////////////////////////
-    const SDL_FRect gameBoardRect{0, topBarPos.h, sideBarPos.x, static_cast<float>(getRendererHeight()) - topBarPos.h};
-    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
+    resize();
 }
 
 /**
@@ -119,6 +113,23 @@ Game::~Game() {
     map.reset();
 
     screenborder.reset();
+}
+
+void Game::resize() {
+    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+
+    const auto renderer_height = static_cast<float>(getRendererHeight());
+
+    powerIndicatorPos.h = spiceIndicatorPos.h = renderer_height - 146 - 2;
+
+    //////////////////////////////////////////////////////////////////////////
+    const SDL_FRect gameBoardRect{0, topBarPos.h, sideBarPos.x, renderer_height - topBarPos.h};
+
+    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
+
+    if (map)
+        screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 }
 
 void Game::initGame(const GameInitSettings& newGameInitSettings) {
@@ -812,6 +823,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         auto& gui = GUIStyle::getInstance();
 
                         gui.setLogicalSize(renderer, event.window.data1, event.window.data2);
+
+                        resize();
                     } break;
 
                     default: break;
