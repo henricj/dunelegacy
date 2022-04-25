@@ -408,7 +408,7 @@ void Tile::blitDeadUnits(Game* game) {
                 source.x = 5 * zoomed_tile;
             } break;
 
-            case DeadUnit_Carrall: {
+            case DeadUnit_Carryall: {
                 pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
                 if (deadUnit.onSand) {
                     source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
