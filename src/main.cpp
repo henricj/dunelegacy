@@ -194,6 +194,13 @@ void setVideoMode(int displayIndex) {
 
     SDL_SetWindowMinimumSize(window, GUIStyle::MINIMUM_WIDTH, GUIStyle::MINIMUM_HEIGHT);
 
+    { // Scope
+        const auto screen_format = SDL_GetWindowPixelFormat(window);
+
+        if (screen_format != SCREEN_FORMAT)
+            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the window's format");
+    }
+
     sdl2::log_info("Available renderers:");
 
     { // Scope
