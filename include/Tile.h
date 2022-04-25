@@ -41,7 +41,7 @@ enum deadUnitEnum {
     DeadUnit_Infantry           = 1,
     DeadUnit_Infantry_Squashed1 = 2,
     DeadUnit_Infantry_Squashed2 = 3,
-    DeadUnit_Carrall            = 4,
+    DeadUnit_Carryall           = 4,
     DeadUnit_Ornithopter        = 5
 };
 
