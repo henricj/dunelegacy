@@ -57,7 +57,8 @@ MapEditor::MapEditor() {
     bottomBarPos =
         as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_MapEditor_BottomBar), HAlign::Left, VAlign::Bottom));
 
-    SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h - bottomBarPos.h};
+    SDL_FRect gameBoardRect{0, static_cast<float>(topBarPos.h), static_cast<float>(sideBarPos.x),
+                            static_cast<float>(getRendererHeight() - topBarPos.h - bottomBarPos.h)};
 
     screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
@@ -1426,7 +1427,7 @@ TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
 }
 
 void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
-    int zoomedTilesize = world2zoomedWorld(TILESIZE);
+    const auto zoomedTilesize = world2zoomedWorld(TILESIZE);
 
     Coord TopLeftTile     = pScreenborder->getTopLeftTile();
     Coord BottomRightTile = pScreenborder->getBottomRightTile();
@@ -1537,9 +1538,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             // draw map[x][y]
             SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize,
                                       (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
-            SDL_FRect drawLocation = {static_cast<float>(pScreenborder->world2screenX(x * TILESIZE)),
-                                      static_cast<float>(pScreenborder->world2screenY(y * TILESIZE)),
-                                      static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+            SDL_FRect drawLocation = {(pScreenborder->world2screenX(x * TILESIZE)),
+                                      (pScreenborder->world2screenY(y * TILESIZE)), static_cast<float>(zoomedTilesize),
+                                      static_cast<float>(zoomedTilesize)};
             Dune_RenderCopyF(renderer, terrainSprite, &source, &drawLocation);
         }
     }
@@ -1885,10 +1886,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                             }
                         }
 
-                        SDL_Rect drawLocation = {pScreenborder->world2screenX(x * TILESIZE),
-                                                 pScreenborder->world2screenY(y * TILESIZE), zoomedTilesize,
-                                                 zoomedTilesize};
-                        Dune_RenderCopy(renderer, image, nullptr, &drawLocation);
+                        SDL_FRect drawLocation{pScreenborder->world2screenX(x * TILESIZE),
+                                               pScreenborder->world2screenY(y * TILESIZE),
+                                               static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+                        Dune_RenderCopyF(renderer, image, nullptr, &drawLocation);
                     }
                 }
             }
@@ -1914,10 +1915,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             // draw tactical pos rectangle (the starting screen)
             if (mapInfo.tacticalPos.isValid()) {
 
-                SDL_Rect dest = {pScreenborder->world2screenX(xPos * TILESIZE),
-                                 pScreenborder->world2screenY(yPos * TILESIZE), world2zoomedWorld(15 * TILESIZE),
-                                 world2zoomedWorld(10 * TILESIZE)};
-                renderDrawRect(renderer, &dest, COLOR_WHITE);
+                SDL_FRect dest = {pScreenborder->world2screenX(xPos * TILESIZE),
+                                  pScreenborder->world2screenY(yPos * TILESIZE),
+                                  static_cast<float>(world2zoomedWorld(15 * TILESIZE)),
+                                  static_cast<float>(world2zoomedWorld(10 * TILESIZE))};
+                renderDrawRectF(renderer, &dest, COLOR_WHITE);
             }
         }
     }
@@ -1978,14 +1980,14 @@ void MapEditor::saveMapshot() {
     currentZoomlevel              = 0;
 
     auto mapshotFilename =
-        (lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true));
+        lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true);
 
     mapshotFilename += ".png";
 
     const auto sizeX = world2zoomedWorld(map.getSizeX() * TILESIZE);
     const auto sizeY = world2zoomedWorld(map.getSizeY() * TILESIZE);
 
-    const SDL_Rect board = {0, 0, sizeX, sizeY};
+    const SDL_FRect board{0, 0, static_cast<float>(sizeX), static_cast<float>(sizeY)};
 
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());

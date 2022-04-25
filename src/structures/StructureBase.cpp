@@ -137,8 +137,8 @@ void StructureBase::blitToScreen() {
 
     const auto* const texture = graphic[currentZoomlevel];
 
-    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(lround(realX)),
-                                              screenborder->world2screenY(lround(realY)), numImagesX, numImagesY);
+    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(realX),
+                                              screenborder->world2screenY(realY.toFloat()), numImagesX, numImagesY);
     const auto source = calcSpriteSourceRect(texture, indexX, numImagesX, indexY, numImagesY);
 
     Dune_RenderCopyF(renderer, texture, &source, &dest);

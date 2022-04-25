@@ -305,7 +305,7 @@ protected:
 
     bool SearchPathWithAStar();
 
-    void drawSmoke(int x, int y) const;
+    void drawSmoke(float x, float y) const;
 
     // unit state/properties
     Coord guardPoint; ///< The guard point where to return to after the micro-AI hunted some nearby enemy unit

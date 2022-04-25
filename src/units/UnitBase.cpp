@@ -1495,14 +1495,14 @@ bool UnitBase::SearchPathWithAStar() {
         nextSpotFound = false;
         return false;
     }
+
     return true;
 }
 
-void UnitBase::drawSmoke(int x, int y) const {
-    int frame = (currentGame->getGameCycleCount() + getObjectID() * 10) / SMOKEDELAY % (2 * 2);
-    if (frame == 3) {
+void UnitBase::drawSmoke(float x, float y) const {
+    auto frame = static_cast<int>(currentGame->getGameCycleCount() + getObjectID() * 10) / SMOKEDELAY % (2 * 2);
+    if (frame == 3)
         frame = 1;
-    }
 
     const auto* const pSmokeTex =
         pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);

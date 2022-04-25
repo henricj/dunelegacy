@@ -23,13 +23,14 @@
 
 // Libraries
 #include <array>
+#include <cmath>
+#include <limits>
 #include <string>
+#include <unordered_set>
 
 struct DuneTexture;
 
-typedef std::array<const DuneTexture*, NUM_ZOOMLEVEL> zoomable_texture;
-
-#include <unordered_set>
+using zoomable_texture = std::array<const DuneTexture*, NUM_ZOOMLEVEL>;
 
 class Coord final {
 public:
@@ -37,7 +38,7 @@ public:
 
     constexpr Coord(int x, int y) noexcept : x(x), y(y) { }
 
-    constexpr bool operator==(const Coord& c) const noexcept { return (x == c.x && y == c.y); }
+    constexpr bool operator==(const Coord& c) const noexcept { return x == c.x && y == c.y; }
 
     constexpr bool operator!=(const Coord& c) const noexcept { return !operator==(c); }
 
@@ -94,9 +95,9 @@ public:
         y = INVALID_POS;
     }
 
-    [[nodiscard]] constexpr bool isValid() const noexcept { return ((x != INVALID_POS) && (y != INVALID_POS)); }
+    [[nodiscard]] constexpr bool isValid() const noexcept { return x != INVALID_POS && y != INVALID_POS; }
 
-    [[nodiscard]] constexpr bool isInvalid() const noexcept { return ((x == INVALID_POS) || (y == INVALID_POS)); }
+    [[nodiscard]] constexpr bool isInvalid() const noexcept { return x == INVALID_POS || y == INVALID_POS; }
 
     static constexpr Coord Invalid() noexcept { return Coord(INVALID_POS, INVALID_POS); }
 
@@ -105,6 +106,86 @@ public:
 public:
     int x;
     int y;
+};
+
+class CoordF final {
+public:
+    static inline constexpr auto INVALID_POSF = std::numeric_limits<float>::quiet_NaN();
+
+    constexpr CoordF() noexcept : x{}, y() { }
+
+    constexpr CoordF(float x, float y) noexcept : x(x), y(y) { }
+
+    constexpr CoordF(int x, int y) noexcept : x(static_cast<float>(x)), y(static_cast<float>(y)) { }
+
+    constexpr bool operator==(const CoordF& c) const noexcept { return x == c.x && y == c.y; }
+
+    constexpr bool operator!=(const CoordF& c) const noexcept { return !operator==(c); }
+
+    constexpr CoordF& operator+=(const CoordF& c) noexcept {
+        x += c.x;
+        y += c.y;
+        return *this;
+    }
+
+    constexpr CoordF operator+(const CoordF& c) const noexcept {
+        CoordF ret = *this;
+        ret += c;
+        return ret;
+    }
+
+    constexpr CoordF& operator-=(const CoordF& c) noexcept {
+        x -= c.x;
+        y -= c.y;
+        return *this;
+    }
+
+    constexpr CoordF operator-(const CoordF& c) const noexcept {
+        CoordF ret = *this;
+        ret -= c;
+        return ret;
+    }
+
+    constexpr CoordF& operator*=(float c) noexcept {
+        x *= c;
+        y *= c;
+        return *this;
+    }
+
+    constexpr CoordF operator*(float c) const noexcept {
+        auto ret = *this;
+        ret *= c;
+        return ret;
+    }
+
+    constexpr CoordF& operator/=(float c) {
+        x /= c;
+        y /= c;
+        return *this;
+    }
+
+    constexpr CoordF operator/(float c) const {
+        auto ret = *this;
+        ret /= c;
+        return ret;
+    }
+
+    void invalidate() noexcept {
+        x = INVALID_POS;
+        y = INVALID_POS;
+    }
+
+    [[nodiscard]] bool isValid() const noexcept { return !isInvalid(); }
+
+    [[nodiscard]] bool isInvalid() const noexcept { return std::isnan(x) || std::isnan(y); }
+
+    static constexpr CoordF Invalid() noexcept { return {INVALID_POSF, INVALID_POSF}; }
+
+    explicit operator bool() const noexcept { return isValid(); }
+
+public:
+    float x;
+    float y;
 };
 
 typedef enum : int8_t {
@@ -196,14 +277,13 @@ public:
               maximumNumberOfUnitsOverride(-1) { }
 
         bool operator==(const GameOptionsClass& goc) const noexcept {
-            return (gameSpeed == goc.gameSpeed) && (concreteRequired == goc.concreteRequired)
-                && (structuresDegradeOnConcrete == goc.structuresDegradeOnConcrete) && (fogOfWar == goc.fogOfWar)
-                && (startWithExploredMap == goc.startWithExploredMap) && (instantBuild == goc.instantBuild)
-                && (onlyOnePalace == goc.onlyOnePalace) && (rocketTurretsNeedPower == goc.rocketTurretsNeedPower)
-                && (sandwormsRespawn == goc.sandwormsRespawn)
-                && (killedSandwormsDropSpice == goc.killedSandwormsDropSpice)
-                && (manualCarryallDrops == goc.manualCarryallDrops)
-                && (maximumNumberOfUnitsOverride == goc.maximumNumberOfUnitsOverride);
+            return gameSpeed == goc.gameSpeed && concreteRequired == goc.concreteRequired
+                && structuresDegradeOnConcrete == goc.structuresDegradeOnConcrete && fogOfWar == goc.fogOfWar
+                && startWithExploredMap == goc.startWithExploredMap && instantBuild == goc.instantBuild
+                && onlyOnePalace == goc.onlyOnePalace && rocketTurretsNeedPower == goc.rocketTurretsNeedPower
+                && sandwormsRespawn == goc.sandwormsRespawn && killedSandwormsDropSpice == goc.killedSandwormsDropSpice
+                && manualCarryallDrops == goc.manualCarryallDrops
+                && maximumNumberOfUnitsOverride == goc.maximumNumberOfUnitsOverride;
         }
 
         bool operator!=(const GameOptionsClass& goc) const { return !this->operator==(goc); }
