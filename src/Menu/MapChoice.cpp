@@ -447,7 +447,12 @@ void MapChoice::loadINI() {
                 const std::vector<std::string> strRegions = splitStringToStringVector(strValue);
 
                 for (auto& strRegion : strRegions) {
-                    group[i].newRegion[static_cast<int>(h)].push_back(atol(strRegion.c_str()));
+                    int value;
+                    if (!parseString(strRegion, value))
+                        THROW(std::runtime_error, "File '%s' contains invalid region value '%s' for section [%s]!",
+                              filename, strRegion, strSection);
+
+                    group[i].newRegion[static_cast<int>(h)].push_back(static_cast<UIGraphics_Enum>(value));
                 }
             }
         });
