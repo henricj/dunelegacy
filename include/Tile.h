@@ -213,16 +213,7 @@ public:
     void save(OutputStream& stream, uint32_t gameCycleCount) const;
 
     void assignAirUnit(uint32_t newObjectID);
-    void assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position) {
-        DEADUNITTYPE newDeadUnit;
-        newDeadUnit.type    = type;
-        newDeadUnit.house   = house;
-        newDeadUnit.onSand  = isSand() || isDunes();
-        newDeadUnit.realPos = position;
-        newDeadUnit.timer   = 2000;
-
-        deadUnits.push_back(newDeadUnit);
-    }
+    void assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position);
 
     void assignNonInfantryGroundObject(uint32_t newObjectID);
     int assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);
@@ -230,59 +221,44 @@ public:
 
     /**
         This method draws the terrain of this tile
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
+        \param game     the game
     */
-    void blitGround(Game* game, int xPos, int yPos);
+    void blitGround(Game* game);
 
     /**
         This method draws the structures.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitStructures(Game* game, int xPos, int yPos) const;
+    void blitStructures(Game* game) const;
 
     /**
         This method draws the underground units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitUndergroundUnits(Game* game, int xPos, int yPos) const;
+    void blitUndergroundUnits(Game* game) const;
 
     /**
         This method draws the dead units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitDeadUnits(Game* game, int xPos, int yPos);
+    void blitDeadUnits(Game* game);
 
     /**
         This method draws the infantry units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitInfantry(Game* game, int xPos, int yPos);
+    void blitInfantry(Game* game);
 
     /**
         This method draws the ground units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitNonInfantryGroundUnits(Game* game, int xPos, int yPos);
+    void blitNonInfantryGroundUnits(Game* game);
 
     /**
         This method draws the air units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitAirUnits(Game* game, int xPos, int yPos);
+    void blitAirUnits(Game* game);
 
     /**
         This method draws the infantry units of this tile.
-        \param xPos the x position of the left top corner of this tile on the screen
-        \param yPos the y position of the left top corner of this tile on the screen
     */
-    void blitSelectionRects(Game* game, int xPos, int yPos) const;
+    void blitSelectionRects(Game* game) const;
 
     void update() {
         if (deadUnits.empty())
@@ -470,16 +446,16 @@ public:
 private:
     TERRAINTYPE type; ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
-    uint32_t fogColor; ///< remember last color (radar)
+    uint32_t fogColor{COLOR_BLACK}; ///< remember last color (radar)
 
-    HOUSETYPE owner;     ///< house ID of the owner of this tile
-    uint32_t sandRegion; ///< used by sandworms to check if can get to a unit
+    HOUSETYPE owner{HOUSETYPE::HOUSE_INVALID}; ///< house ID of the owner of this tile
+    uint32_t sandRegion{NONE_ID};              ///< used by sandworms to check if can get to a unit
 
-    FixPoint spice; ///< how much spice on this particular tile is left
+    FixPoint spice{0}; ///< how much spice on this particular tile is left
 
     zoomable_texture sprite{}; ///< the graphic to draw
 
-    int32_t destroyedStructureTile; ///< the tile drawn for a destroyed structure
+    int32_t destroyedStructureTile{DestroyedStructure_None}; ///< the tile drawn for a destroyed structure
     mutable TERRAINTILETYPE terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
     std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)>
         tracksCreationTime{};            ///< Contains the game cycle the tracks on sand appeared

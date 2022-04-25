@@ -42,28 +42,7 @@ inline constexpr auto FOGTIME = MILLI2CYCLES(10 * 1000);
 
 Tile::Tile() : type(Terrain_Sand) {
 
-    for (auto i = 0; i < NUM_TEAMS; i++) {
-        explored[i]   = false;
-        lastAccess[i] = 0;
-    }
-
-    fogColor = COLOR_BLACK;
-
-    owner      = HOUSETYPE::HOUSE_INVALID;
-    sandRegion = NONE_ID;
-
-    spice = 0;
-
     sprite = pGFXManager->getObjPic(ObjPic_Terrain);
-
-    for (auto& time : tracksCreationTime) {
-        time = 0;
-    }
-
-    location.x = 0;
-    location.y = 0;
-
-    destroyedStructureTile = DestroyedStructure_None;
 }
 
 Tile::~Tile() = default;
@@ -73,7 +52,7 @@ void Tile::load(InputStream& stream) {
 
     stream.readBools(&explored[0], &explored[1], &explored[2], &explored[3], &explored[4], &explored[5], &explored[6]);
 
-    bool bLastAccess[NUM_TEAMS];
+    std::array<bool, NUM_TEAMS> bLastAccess{};
     stream.readBools(&bLastAccess[0], &bLastAccess[1], &bLastAccess[2], &bLastAccess[3], &bLastAccess[4],
                      &bLastAccess[5], &bLastAccess[6]);
 
@@ -138,7 +117,7 @@ void Tile::load(InputStream& stream) {
 
     destroyedStructureTile = stream.readSint32();
 
-    bool bTrackCounter[static_cast<int>(ANGLETYPE::NUM_ANGLES)];
+    bool bTrackCounter[static_cast<int>(ANGLETYPE::NUM_ANGLES)]{};
     stream.readBools(&bTrackCounter[0], &bTrackCounter[1], &bTrackCounter[2], &bTrackCounter[3], &bTrackCounter[4],
                      &bTrackCounter[5], &bTrackCounter[6], &bTrackCounter[7]);
 
@@ -249,6 +228,17 @@ void Tile::assignAirUnit(uint32_t newObjectID) {
     assignedAirUnitList.push_back(newObjectID);
 }
 
+void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position) {
+    DEADUNITTYPE newDeadUnit;
+    newDeadUnit.type    = type;
+    newDeadUnit.house   = house;
+    newDeadUnit.onSand  = isSand() || isDunes();
+    newDeadUnit.realPos = position;
+    newDeadUnit.timer   = 2000;
+
+    deadUnits.push_back(newDeadUnit);
+}
+
 void Tile::assignNonInfantryGroundObject(uint32_t newObjectID) {
     assignedNonInfantryGroundObjectList.push_back(newObjectID);
 }
@@ -289,7 +279,7 @@ void Tile::assignUndergroundUnit(uint32_t newObjectID) {
     assignedUndergroundUnitList.push_back(newObjectID);
 }
 
-void Tile::blitGround(Game* game, int xPos, int yPos) {
+void Tile::blitGround(Game* game) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject(game->getObjectManager())->isAStructure())
         return;
 
@@ -297,19 +287,22 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
     const auto indexX          = tileIndex % NUM_TERRAIN_TILES_X;
     const auto indexY          = tileIndex / NUM_TERRAIN_TILES_X;
     const auto zoomed_tilesize = world2zoomedWorld(TILESIZE);
-    SDL_Rect source            = {indexX * zoomed_tilesize, indexY * zoomed_tilesize, zoomed_tilesize, zoomed_tilesize};
-    const SDL_Rect drawLocation = {xPos, yPos, zoomed_tilesize, zoomed_tilesize};
+    SDL_Rect source{indexX * zoomed_tilesize, indexY * zoomed_tilesize, zoomed_tilesize, zoomed_tilesize};
+
+    const SDL_FRect pos{screenborder->world2screenX(getLocation().x * TILESIZE),
+                        screenborder->world2screenY(getLocation().y * TILESIZE), static_cast<float>(zoomed_tilesize),
+                        static_cast<float>(zoomed_tilesize)};
 
     // draw terrain
     if (destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
-        Dune_RenderCopy(renderer, sprite[currentZoomlevel], &source, &drawLocation);
+        Dune_RenderCopyF(renderer, sprite[currentZoomlevel], &source, &pos);
     }
 
     if (destroyedStructureTile != DestroyedStructure_None) {
         const auto* const pDestroyedStructureTex =
             pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
         const SDL_Rect source2 = {destroyedStructureTile * zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize};
-        Dune_RenderCopy(renderer, pDestroyedStructureTex, &source2, &drawLocation);
+        Dune_RenderCopyF(renderer, pDestroyedStructureTex, &source2, &pos);
     }
 
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
@@ -328,29 +321,29 @@ void Tile::blitGround(Game* game, int xPos, int yPos) {
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
             source.x = ((10 - i) % 8) * zoomed_tilesize;
             SDL_SetTextureAlphaMod(pTracks->texture_, std::min(255, 256 * (TRACKSTIME - tracktime) / TRACKSTIME));
-            Dune_RenderCopy(renderer, pTracks, &source, &drawLocation);
+            Dune_RenderCopyF(renderer, pTracks, &source, &pos);
             SDL_SetTextureAlphaMod(pTracks->texture_, 255);
         }
     }
 
     // damage
     for (const auto& damageItem : damage) {
-        source.x      = damageItem.tile * zoomed_tilesize;
-        SDL_Rect dest = {screenborder->world2screenX(damageItem.realPos.x) - zoomed_tilesize / 2,
-                         screenborder->world2screenY(damageItem.realPos.y) - zoomed_tilesize / 2, zoomed_tilesize,
-                         zoomed_tilesize};
+        source.x = damageItem.tile * zoomed_tilesize;
+        SDL_FRect dest{screenborder->world2screenX(damageItem.realPos.x) - static_cast<float>(zoomed_tilesize) / 2.f,
+                       screenborder->world2screenY(damageItem.realPos.y) - static_cast<float>(zoomed_tilesize) / 2.f,
+                       static_cast<float>(zoomed_tilesize), static_cast<float>(zoomed_tilesize)};
 
         if (damageItem.damageType == Tile::TerrainDamage_enum::Terrain_RockDamage) {
-            Dune_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel), &source,
-                            &dest);
+            auto* const texture = pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel);
+            Dune_RenderCopyF(renderer, texture, &source, &dest);
         } else {
-            Dune_RenderCopy(renderer, pGFXManager->getZoomedObjPic(ObjPic_SandDamage, currentZoomlevel), &source,
-                            &drawLocation);
+            auto* const texture = pGFXManager->getZoomedObjPic(ObjPic_SandDamage, currentZoomlevel);
+            Dune_RenderCopyF(renderer, texture, &source, &pos);
         }
     }
 }
 
-void Tile::blitStructures(Game* game, int xPos, int yPos) const {
+void Tile::blitStructures(Game* game) const {
     if (!hasANonInfantryGroundObject())
         return;
 
@@ -377,7 +370,7 @@ void Tile::blitStructures(Game* game, int xPos, int yPos) const {
                   });
 }
 
-void Tile::blitUndergroundUnits(Game* game, int xPos, int yPos) const {
+void Tile::blitUndergroundUnits(Game* game) const {
     if (!hasAnUndergroundUnit() || isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
@@ -390,14 +383,14 @@ void Tile::blitUndergroundUnits(Game* game, int xPos, int yPos) const {
     }
 }
 
-void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
+void Tile::blitDeadUnits(Game* game) {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
 
     for (const auto& deadUnit : deadUnits) {
-        SDL_Rect source             = {0, 0, zoomed_tile, zoomed_tile};
+        SDL_Rect source{0, 0, zoomed_tile, zoomed_tile};
         const DuneTexture* pTexture = nullptr;
         switch (deadUnit.type) {
             case DeadUnit_Infantry: {
@@ -437,15 +430,16 @@ void Tile::blitDeadUnits(Game* game, int xPos, int yPos) {
         }
 
         if (pTexture != nullptr) {
-            SDL_Rect dest = {screenborder->world2screenX(deadUnit.realPos.x) - zoomed_tile / 2,
-                             screenborder->world2screenY(deadUnit.realPos.y) - zoomed_tile / 2, zoomed_tile,
-                             zoomed_tile};
-            Dune_RenderCopy(renderer, pTexture, &source, &dest);
+            SDL_FRect dest{screenborder->world2screenX(deadUnit.realPos.x) - static_cast<float>(zoomed_tile) / 2.f,
+                           screenborder->world2screenY(deadUnit.realPos.y) - static_cast<float>(zoomed_tile) / 2.f,
+                           static_cast<float>(zoomed_tile), static_cast<float>(zoomed_tile)};
+
+            Dune_RenderCopyF(renderer, pTexture, &source, &dest);
         }
     }
 }
 
-void Tile::blitInfantry(Game* game, int xPos, int yPos) {
+void Tile::blitInfantry(Game* game) {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
@@ -463,7 +457,7 @@ void Tile::blitInfantry(Game* game, int xPos, int yPos) {
     }
 }
 
-void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
+void Tile::blitNonInfantryGroundUnits(Game* game) {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
@@ -478,7 +472,7 @@ void Tile::blitNonInfantryGroundUnits(Game* game, int xPos, int yPos) {
     }
 }
 
-void Tile::blitAirUnits(Game* game, int xPos, int yPos) {
+void Tile::blitAirUnits(Game* game) {
     const auto* const player_house = pLocalHouse;
     const auto is_fogged           = isFoggedByTeam(game, player_house->getTeamID());
 
@@ -498,24 +492,24 @@ void Tile::blitAirUnits(Game* game, int xPos, int yPos) {
     }
 }
 
-void Tile::blitSelectionRects(Game* game, int xPos, int yPos) const {
+void Tile::blitSelectionRects(Game* game) const {
     if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
         return;
 
+    const auto& object_manager = game->getObjectManager();
+
     forEachUnit([&](uint32_t objectID) {
-        auto* pObject = game->getObjectManager().getObject(objectID);
-        if (pObject == nullptr) {
+        auto* pObject = object_manager.getObject(objectID);
+        if (pObject == nullptr)
             return;
-        }
+
         // possibly draw selection rectangle multiple times, e.g. for structures
         if (pObject->isVisible(pLocalHouse->getTeamID())) {
-            if (pObject->isSelected()) {
+            if (pObject->isSelected())
                 pObject->drawSelectionBox();
-            }
 
-            if (pObject->isSelectedByOtherPlayer()) {
+            if (pObject->isSelectedByOtherPlayer())
                 pObject->drawOtherPlayerSelectionBox();
-            }
         }
     });
 }

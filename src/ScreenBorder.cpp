@@ -17,9 +17,38 @@
 
 #include <ScreenBorder.h>
 
+#include <misc/InputStream.h>
+#include <misc/OutputStream.h>
+
 #include <globals.h>
 
 #include <algorithm>
+
+ScreenBorder::ScreenBorder(const SDL_FRect& gameBoardRect) : gameBoardRect(gameBoardRect) {
+
+    bottomRightCorner.x         = gameBoardRect.w;
+    bottomRightCorner.y         = gameBoardRect.h;
+    topLeftCornerOnScreen.x     = gameBoardRect.x;
+    topLeftCornerOnScreen.y     = gameBoardRect.y;
+    bottomRightCornerOnScreen.x = gameBoardRect.x + gameBoardRect.w;
+    bottomRightCornerOnScreen.y = gameBoardRect.y + gameBoardRect.h;
+}
+
+ScreenBorder::~ScreenBorder() = default;
+
+void ScreenBorder::load(InputStream& stream) {
+    Coord center;
+    center.x = stream.readSint16();
+    center.y = stream.readSint16();
+
+    setNewScreenCenter(center);
+}
+
+void ScreenBorder::save(OutputStream& stream) const {
+    const auto center = getCurrentCenter();
+    stream.writeSint16(center.x);
+    stream.writeSint16(center.y);
+}
 
 void ScreenBorder::setNewScreenCenter(const Coord& newPosition) {
     const Coord currentBorderSize = bottomRightCorner - topLeftCorner;
@@ -133,4 +162,23 @@ void ScreenBorder::adjustScreenBorderToMapsize(int newMapSizeX, int newMapSizeY)
         bottomRightCornerOnScreen.y =
             zoomedWorld2world(gameBoardRect.y) + (zoomedWorld2world(gameBoardRect.h) - worldSizeY) / 2 + worldSizeY;
     }
+}
+
+void ScreenBorder::shakeScreen(int numShakingCycles) {
+    this->numShakingCycles += numShakingCycles;
+    if (this->numShakingCycles > 2 * numShakingCycles) {
+        this->numShakingCycles = 2 * numShakingCycles;
+    }
+}
+
+void ScreenBorder::update(Random& uiRandom) {
+    if (numShakingCycles <= 0)
+        return;
+
+    const auto offsetMax = std::min(TILESIZE - 1, numShakingCycles);
+
+    shakingOffset.x = uiRandom.rand(-offsetMax / 2, offsetMax / 2);
+    shakingOffset.y = uiRandom.rand(-offsetMax / 2, offsetMax / 2);
+
+    numShakingCycles--;
 }

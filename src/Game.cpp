@@ -82,8 +82,8 @@ Game::Game() : localPlayerName(settings.general.playerName) {
     structureList.clear(); // all the structures
     bulletList.clear();
 
-    sideBarPos = as_rect(calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top));
-    topBarPos  = as_rect(calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top));
+    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
     // set to true for now
     debug = false;
@@ -92,8 +92,8 @@ Game::Game() : localPlayerName(settings.general.playerName) {
 
     musicPlayer->changeMusic(MUSIC_PEACE);
     //////////////////////////////////////////////////////////////////////////
-    const SDL_Rect gameBoardRect = {0, topBarPos.h, sideBarPos.x, getRendererHeight() - topBarPos.h};
-    screenborder                 = std::make_unique<ScreenBorder>(gameBoardRect);
+    const SDL_FRect gameBoardRect{0, topBarPos.h, sideBarPos.x, static_cast<float>(getRendererHeight()) - topBarPos.h};
+    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 }
 
 /**
@@ -261,49 +261,35 @@ void Game::drawScreen() {
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     const auto zoomedTileSize = world2zoomedWorld(TILESIZE);
-    SDL_Rect tile_rect        = {screenborder->world2screenX(0), screenborder->world2screenY(0),
-                                 zoomedTileSize * map->getSizeX(), zoomedTileSize * map->getSizeY()};
+    const SDL_Rect tile_rect{static_cast<int>((std::ceil(screenborder->world2screenX(0)))),
+                             static_cast<int>(std::ceil(screenborder->world2screenY(0))),
+                             zoomedTileSize * map->getSizeX(), zoomedTileSize * map->getSizeY()};
+    auto& board_rect = screenborder->getGameBoard();
+    const SDL_Rect game_board_rect{static_cast<int>(std::ceil(board_rect.x)), static_cast<int>(std::ceil(board_rect.y)),
+                                   static_cast<int>(std::floor(board_rect.w)),
+                                   static_cast<int>(std::floor(board_rect.h))};
     SDL_Rect on_screen_rect;
-    SDL_IntersectRect(&screenborder->getGameBoard(), &tile_rect, &on_screen_rect);
+    SDL_IntersectRect(&game_board_rect, &tile_rect, &on_screen_rect);
 
     SDL_RenderSetClipRect(renderer, &on_screen_rect);
 
     /* draw ground */
-
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitGround(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitGround(this); });
 
     /* draw structures */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitStructures(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                         screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitStructures(this); });
 
     /* draw underground units */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitUndergroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                               screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitUndergroundUnits(this); });
 
     /* draw dead objects */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitDeadUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                        screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitDeadUnits(this); });
 
     /* draw infantry */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitInfantry(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                       screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitInfantry(this); });
 
     /* draw non-infantry ground units */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitNonInfantryGroundUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                     screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitNonInfantryGroundUnits(this); });
 
     /* draw bullets */
     for (const auto& pBullet : bulletList) {
@@ -316,10 +302,7 @@ void Game::drawScreen() {
     }
 
     /* draw air units */
-    map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        t.blitAirUnits(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                       screenborder->world2screenY(t.getLocation().y * TILESIZE));
-    });
+    map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitAirUnits(this); });
 
     // draw the gathering point line if a structure is selected
     if (selectedList.size() == 1) {
@@ -332,8 +315,7 @@ void Game::drawScreen() {
     /* draw selection rectangles */
     map->for_each(x1, y1, x2, y2, [&](Tile& t) {
         if (debug || t.isExploredByTeam(this, pLocalHouse->getTeamID())) {
-            t.blitSelectionRects(this, screenborder->world2screenX(t.getLocation().x * TILESIZE),
-                                 screenborder->world2screenY(t.getLocation().y * TILESIZE));
+            t.blitSelectionRects(this);
         }
     });
 
@@ -351,18 +333,18 @@ void Game::drawScreen() {
 
             const auto* const pTile = &t;
 
-            const auto& border = screenborder;
             const auto team_id = pLocalHouse->getTeamID();
 
-            const SDL_Rect drawLocation = {border->world2screenX(x * TILESIZE), border->world2screenY(y * TILESIZE),
-                                           zoomedTileSize, zoomedTileSize};
+            const SDL_FRect drawLocation{screenborder->world2screenX(x * TILESIZE),
+                                         screenborder->world2screenY(y * TILESIZE), static_cast<float>(zoomedTileSize),
+                                         static_cast<float>(zoomedTileSize)};
 
             if (pTile->isExploredByTeam(this, team_id)) {
                 const auto hideTile = t.getHideTile(this, team_id);
 
                 if (hideTile != 0) {
-                    const SDL_Rect source = {hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
-                    Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                    const SDL_Rect source{hideTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
+                    Dune_RenderCopyF(renderer, hiddenTexZoomed, &source, &drawLocation);
                 }
 
                 if (fogOfWar) {
@@ -370,14 +352,14 @@ void Game::drawScreen() {
                         pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
 
                     if (fogTile != 0) {
-                        const SDL_Rect source = {fogTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
-                        Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                        const SDL_Rect source{fogTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
+                        Dune_RenderCopyF(renderer, hiddenTexZoomed, &source, &drawLocation);
                     }
                 }
             } else {
                 if (!debug) {
-                    const SDL_Rect source = {zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
-                    Dune_RenderCopy(renderer, hiddenTexZoomed, &source, &drawLocation);
+                    const SDL_Rect source{zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
+                    Dune_RenderCopyF(renderer, hiddenTexZoomed, &source, &drawLocation);
                 }
             }
         });
@@ -485,10 +467,12 @@ void Game::drawScreen() {
     }
 
     ///////////draw game bar
-    pInterface->draw(Point(0, 0));
-    pInterface->drawOverlay(Point(0, 0));
+    pInterface->draw({});
+    pInterface->drawOverlay({});
 
     const auto& gui = GUIStyle::getInstance();
+
+    const auto renderer_height = static_cast<float>(getRendererHeight());
 
     // draw chat message currently typed
     if (chatMode) {
@@ -498,7 +482,7 @@ void Game::drawScreen() {
                 + (((dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 150) % 2 == 0) ? "_" : ""),
             COLOR_WHITE, 14);
 
-        pChatTexture.draw(renderer, 20, getRendererHeight() - 40);
+        pChatTexture.draw(renderer, 20.f, renderer_height - 40.f);
     }
 
     if (bShowFPS) {
@@ -507,7 +491,7 @@ void Game::drawScreen() {
 
         const auto pTexture = gui.createMultilineText(renderer, str, COLOR_WHITE, 14);
 
-        pTexture.draw(renderer, sideBarPos.x - 14 * 8, 60);
+        pTexture.draw(renderer, sideBarPos.x - 14.f * 8.f, 60.f);
     }
 
     if (bShowTime) {
@@ -516,22 +500,21 @@ void Game::drawScreen() {
 
         const auto pTimeTexture = gui.createText(renderer, strTime, COLOR_WHITE, 14);
 
-        pTimeTexture.draw(renderer, 0.f, getRendererHeight() - pTimeTexture.height_);
+        pTimeTexture.draw(renderer, 0.f, renderer_height - pTimeTexture.height_);
     }
 
     if (bPause) {
-        auto height = getRendererHeight();
-
         SDL_SetRenderDrawColor(renderer, 0, 242, 0, 128);
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        const std::array<SDL_Rect, 2> rects{{{10, height - 20 - 36, 12, 36}, {10 + 12 + 8, height - 20 - 36, 12, 36}}};
+        const auto rects = std::to_array<SDL_FRect>(
+            {{10, renderer_height - 20 - 36, 12, 36}, {10 + 12 + 8, renderer_height - 20 - 36, 12, 36}});
 
-        SDL_RenderFillRects(renderer, rects.data(), rects.size());
+        SDL_RenderFillRectsF(renderer, rects.data(), rects.size());
     } else if (gameCycleCount < skipToGameCycle) {
         // Cache this texture...
         const auto pTexture = gui.createText(renderer, ">>", COLOR_RGBA(0, 242, 0, 128), 48);
 
-        pTexture.draw(renderer, 10.f, getRendererHeight() - pTexture.height_ - 12);
+        pTexture.draw(renderer, 10.f, renderer_height - pTexture.height_ - 12);
     }
 
     if (finished) {
@@ -549,7 +532,7 @@ void Game::drawScreen() {
 
         const auto x = (static_cast<float>(sideBarPos.x) - pFinishMessageTexture.width_) / 2;
         const auto y = static_cast<float>(topBarPos.h)
-                     + (static_cast<float>(getRendererHeight() - topBarPos.h) - pFinishMessageTexture.height_) / 2;
+                     + (static_cast<float>(renderer_height - topBarPos.h) - pFinishMessageTexture.height_) / 2;
 
         pFinishMessageTexture.draw(renderer, x, y);
     }

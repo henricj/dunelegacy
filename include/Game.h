@@ -603,10 +603,10 @@ private:
     bool takePeriodicScreenshots = false; ///< take a screenshot every 10 seconds
     bool pendingScreenshot       = false;
 
-    SDL_Rect powerIndicatorPos = {14, 146, 4, 0}; ///< position of the power indicator in the right game bar
-    SDL_Rect spiceIndicatorPos = {20, 146, 4, 0}; ///< position of the spice indicator in the right game bar
-    SDL_Rect topBarPos         = {0, 0, 0, 0};    ///< position of the top game bar
-    SDL_Rect sideBarPos        = {0, 0, 0, 0};    ///< position of the right side bar
+    SDL_FRect powerIndicatorPos = {14, 146, 4, 0}; ///< position of the power indicator in the right game bar
+    SDL_FRect spiceIndicatorPos = {20, 146, 4, 0}; ///< position of the spice indicator in the right game bar
+    SDL_FRect topBarPos         = {0, 0, 0, 0};    ///< position of the top game bar
+    SDL_FRect sideBarPos        = {0, 0, 0, 0};    ///< position of the right side bar
 
     ////////////////////
 
