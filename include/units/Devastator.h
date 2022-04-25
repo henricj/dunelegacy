@@ -55,7 +55,7 @@ private:
 
     // drawing information
     zoomable_texture turretGraphic{}; ///< The graphic of the turret
-    int gunGraphicID;                 ///< The id of the turret graphic (needed if we want to reload the graphic)
+    ObjPic_enum gunGraphicID;         ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 #endif // DEVASTATOR_H

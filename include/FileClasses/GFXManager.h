@@ -44,33 +44,34 @@ public:
     GFXManager& operator=(const GFXManager&) = delete;
     GFXManager& operator=(GFXManager&&)      = delete;
 
-    [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) const;
+    [[nodiscard]] const DuneTexture* getZoomedObjPic(ObjPic_enum id, HOUSETYPE house, unsigned int z) const;
 
-    [[nodiscard]] const DuneTexture* getZoomedObjPic(unsigned int id, unsigned int z) const {
+    [[nodiscard]] const DuneTexture* getZoomedObjPic(ObjPic_enum id, unsigned int z) const {
         return getZoomedObjPic(id, HOUSETYPE::HOUSE_HARKONNEN, z);
     }
-    zoomable_texture getObjPic(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
+    zoomable_texture getObjPic(ObjPic_enum id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
 
-    [[nodiscard]] const DuneTexture* getSmallDetailPic(unsigned int id) const;
-    [[nodiscard]] const DuneTexture* getTinyPicture(unsigned int id) const;
-    [[nodiscard]] const DuneTexture* getUIGraphic(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
-    [[nodiscard]] const DuneTexture* getMapChoicePiece(unsigned int num, HOUSETYPE house) const;
+    [[nodiscard]] const DuneTexture* getSmallDetailPic(SmallDetailPics_Enum id) const;
+    [[nodiscard]] const DuneTexture* getTinyPicture(TinyPicture_Enum id) const;
+    [[nodiscard]] const DuneTexture*
+    getUIGraphic(UIGraphics_Enum id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) const;
+    [[nodiscard]] const DuneTexture* getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE house) const;
     [[nodiscard]] const DuneTexture* getGeneratedPicture(GeneratedPicture id) const;
 
-    [[nodiscard]] SDL_Cursor* getCursor(unsigned int id) const;
+    [[nodiscard]] SDL_Cursor* getCursor(UIGraphics_Enum id) const;
     [[nodiscard]] SDL_Cursor* getDefaultCursor() const { return default_cursor_.get(); }
 
-    SDL_Surface* getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
+    SDL_Surface* getZoomedObjSurface(ObjPic_enum id, HOUSETYPE house, unsigned int z) {
         return surfaceLoader.getZoomedObjSurface(id, house, z);
     }
-    SDL_Surface* getZoomedObjSurface(unsigned int id, unsigned int z) {
+    SDL_Surface* getZoomedObjSurface(ObjPic_enum id, unsigned int z) {
         return surfaceLoader.getZoomedObjSurface(id, z);
     }
 
-    SDL_Surface* getUIGraphicSurface(unsigned int id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) {
+    SDL_Surface* getUIGraphicSurface(UIGraphics_Enum id, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN) {
         return surfaceLoader.getUIGraphicSurface(id, house);
     }
-    SDL_Surface* getMapChoicePieceSurface(unsigned int num, HOUSETYPE house) {
+    SDL_Surface* getMapChoicePieceSurface(UIGraphics_Enum num, HOUSETYPE house) {
         return surfaceLoader.getMapChoicePieceSurface(num, house);
     }
 
@@ -112,7 +113,7 @@ private:
         mapChoicePiecesTex;
 
     sdl2::cursor_ptr default_cursor_;
-    std::unordered_map<unsigned int, sdl2::cursor_ptr> cursors_;
+    std::unordered_map<UIGraphics_Enum, sdl2::cursor_ptr> cursors_;
 
     std::vector<sdl2::texture_ptr> streamingTextureCache_;
 

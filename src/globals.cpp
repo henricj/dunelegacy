@@ -29,14 +29,14 @@
 #include <globals.h>
 
 // SDL stuff
-SDL_Window* window;         ///< the window
-SDL_Renderer* renderer;     ///< the renderer
-SDL_Texture* screenTexture; ///< the texture
-Palette palette;            ///< the palette for the screen
-int drawnMouseX;            ///< the current mouse position (x coordinate)
-int drawnMouseY;            ///< the current mouse position (y coordinate)
-int cursorFrame;            ///< the current mouse cursor
-int currentZoomlevel;       ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+SDL_Window* window;          ///< the window
+SDL_Renderer* renderer;      ///< the renderer
+SDL_Texture* screenTexture;  ///< the texture
+Palette palette;             ///< the palette for the screen
+int drawnMouseX;             ///< the current mouse position (x coordinate)
+int drawnMouseY;             ///< the current mouse position (y coordinate)
+UIGraphics_Enum cursorFrame; ///< the current mouse cursor
+int currentZoomlevel;        ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
 std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice

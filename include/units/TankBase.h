@@ -78,7 +78,8 @@ protected:
 
     // drawing information
     zoomable_texture turretGraphic{}; ///< The turret graphic
-    int gunGraphicID = -1;            ///< The id of the turret graphic (needed if we want to reload the graphic)
+    ObjPic_enum gunGraphicID =
+        ObjPic_enum(-1); ///< The id of the turret graphic (needed if we want to reload the graphic)
 };
 
 template<>

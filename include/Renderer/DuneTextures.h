@@ -23,7 +23,7 @@ public:
     [[nodiscard]] const DuneTexture& get_small_object(unsigned int id) const { return small_details_.at(id); }
     [[nodiscard]] const DuneTexture& get_tiny_picture(unsigned int id) const { return tiny_pictures_.at(id); }
 
-    [[nodiscard]] const DuneTexture& get_ui_graphic(unsigned int id, HOUSETYPE house) const {
+    [[nodiscard]] const DuneTexture& get_ui_graphic(UIGraphics_Enum id, HOUSETYPE house) const {
         return ui_graphics_.at(static_cast<int>(house)).at(id);
     }
 

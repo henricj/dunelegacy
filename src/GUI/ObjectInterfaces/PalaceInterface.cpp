@@ -55,7 +55,7 @@ bool PalaceInterface::update() {
 
     const auto* pPalace = dune_cast<Palace>(pObject);
     if (pPalace != nullptr) {
-        int picID = 0;
+        SmallDetailPics_Enum picID{};
 
         switch (pPalace->getOwner()->getHouseID()) {
             case HOUSETYPE::HOUSE_HARKONNEN:

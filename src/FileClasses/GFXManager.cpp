@@ -32,7 +32,7 @@ GFXManager::GFXManager()
 
 GFXManager::~GFXManager() = default;
 
-const DuneTexture* GFXManager::getZoomedObjPic(unsigned int id, HOUSETYPE house, unsigned int z) const {
+const DuneTexture* GFXManager::getZoomedObjPic(ObjPic_enum id, HOUSETYPE house, unsigned int z) const {
     return &duneTextures.get_object_picture(id, house, z);
 #if 0
     auto* surface = surfaceLoader.getZoomedObjSurface(id, house, z);
@@ -86,7 +86,7 @@ const DuneTexture* GFXManager::getZoomedObjPic(unsigned int id, HOUSETYPE house,
 #endif     // 0
 }
 
-zoomable_texture GFXManager::getObjPic(unsigned int id, HOUSETYPE house) const {
+zoomable_texture GFXManager::getObjPic(ObjPic_enum id, HOUSETYPE house) const {
     if (id >= NUM_OBJPICS) {
         THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
@@ -96,7 +96,7 @@ zoomable_texture GFXManager::getObjPic(unsigned int id, HOUSETYPE house) const {
                             &duneTextures.get_object_picture(id, house, 2)};
 }
 
-const DuneTexture* GFXManager::getSmallDetailPic(unsigned int id) const {
+const DuneTexture* GFXManager::getSmallDetailPic(SmallDetailPics_Enum id) const {
     if (id >= NUM_SMALLDETAILPICS) {
         return nullptr;
     }
@@ -109,7 +109,7 @@ const DuneTexture* GFXManager::getSmallDetailPic(unsigned int id) const {
     return texture ? &texture : nullptr;
 }
 
-const DuneTexture* GFXManager::getTinyPicture(unsigned int id) const {
+const DuneTexture* GFXManager::getTinyPicture(TinyPicture_Enum id) const {
     if (id >= NUM_TINYPICTURE) {
         return nullptr;
     }
@@ -137,7 +137,7 @@ const DuneTexture* GFXManager::getGeneratedPicture(GeneratedPicture id) const {
     return texture ? &texture : nullptr;
 }
 
-SDL_Cursor* GFXManager::getCursor(unsigned id) const {
+SDL_Cursor* GFXManager::getCursor(UIGraphics_Enum id) const {
     const auto it = cursors_.find(id);
     if (it == cursors_.end()) {
         sdl2::log_info("Unable to get cursor %u", id);
@@ -147,7 +147,7 @@ SDL_Cursor* GFXManager::getCursor(unsigned id) const {
     return it->second.get();
 }
 
-const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) const {
+const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
         THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
     }
@@ -160,7 +160,7 @@ const DuneTexture* GFXManager::getUIGraphic(unsigned int id, HOUSETYPE house) co
     return texture ? &texture : nullptr;
 }
 
-const DuneTexture* GFXManager::getMapChoicePiece(unsigned int num, HOUSETYPE house) const {
+const DuneTexture* GFXManager::getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE house) const {
     if (num >= NUM_MAPCHOICEPIECES) {
         THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!",
               num);
@@ -212,7 +212,7 @@ sdl2::texture_ptr GFXManager::extractSmallDetailPicTex(const std::string& filena
 
 namespace {
 struct cursor_definition {
-    unsigned int id_;
+    UIGraphics_Enum id_;
     HAlign h_align_;
     VAlign v_align_;
 };
