@@ -228,7 +228,7 @@ void Tile::assignAirUnit(uint32_t newObjectID) {
     assignedAirUnitList.push_back(newObjectID);
 }
 
-void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position) {
+void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position) {
     DEADUNITTYPE newDeadUnit;
     newDeadUnit.type    = type;
     newDeadUnit.house   = house;

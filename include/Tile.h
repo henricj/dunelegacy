@@ -46,7 +46,7 @@ enum deadUnitEnum {
 };
 
 struct DEADUNITTYPE {
-    Coord realPos;
+    CoordF realPos;
     int16_t timer;
     uint8_t type;
     HOUSETYPE house;
@@ -213,7 +213,7 @@ public:
     void save(OutputStream& stream, uint32_t gameCycleCount) const;
 
     void assignAirUnit(uint32_t newObjectID);
-    void assignDeadUnit(uint8_t type, HOUSETYPE house, const Coord& position);
+    void assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position);
 
     void assignNonInfantryGroundObject(uint32_t newObjectID);
     int assignInfantry(ObjectManager& objectManager, uint32_t newObjectID, int8_t currentPosition = INVALID_POS);
