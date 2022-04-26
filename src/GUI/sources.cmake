@@ -2,6 +2,7 @@ add_sources(GUI_SOURCES
 	Button.cpp
 	Checkbox.cpp
 	DropDownBox.cpp
+	HBox.cpp
 	GUIStyle.cpp
 	Label.cpp
 	ListBox.cpp
@@ -11,9 +12,11 @@ add_sources(GUI_SOURCES
 	RadioButton.cpp
 	RadioButtonManager.cpp
 	ScrollBar.cpp
+	StaticContainer.cpp
 	TextBox.cpp
 	TextButton.cpp
 	TextView.cpp
+	VBox.cpp
 	Widget.cpp
 	WidgetWithBackground.cpp
 	Window.cpp

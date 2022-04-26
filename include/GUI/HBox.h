@@ -39,36 +39,24 @@ class HBox : public Container<HBox_WidgetData> {
 
 public:
     /// default constructor
-    HBox() : Container<HBox_WidgetData>() { }
+    HBox();
 
     /// destructor
-    ~HBox() override { }
+    ~HBox() override;
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param fixedWidth   a fixed width for this widget (must be greater than the minimum size)
     */
-    virtual void addWidget(Widget* newWidget, int32_t fixedWidth) {
-        if (newWidget != nullptr) {
-            containedWidgets.push_back(HBox_WidgetData(newWidget, fixedWidth));
-            newWidget->setParent(this);
-            Widget::resizeAll();
-        }
-    }
+    virtual void addWidget(Widget* newWidget, int32_t fixedWidth);
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param weight       The weight for this widget (default=1.0)
     */
-    virtual void addWidget(Widget* newWidget, double weight = 1.0) {
-        if (newWidget != nullptr) {
-            containedWidgets.push_back(HBox_WidgetData(newWidget, weight));
-            newWidget->setParent(this);
-            Widget::resizeAll();
-        }
-    }
+    virtual void addWidget(Widget* newWidget, double weight = 1.0);
 
     /**
         Returns the minimum size of this container. The container should not
@@ -76,18 +64,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this container
     */
-    Point getMinimumSize() const override {
-        Point p(0, 0);
-        for (const HBox_WidgetData& widgetData : containedWidgets) {
-            if (widgetData.fixedWidth > 0) {
-                p.x += widgetData.fixedWidth;
-            } else {
-                p.x += widgetData.pWidget->getMinimumSize().x;
-            }
-            p.y = std::max(p.y, widgetData.pWidget->getMinimumSize().y);
-        }
-        return p;
-    }
+    Point getMinimumSize() const override;
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -96,77 +73,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(uint32_t width, uint32_t height) override {
-        int32_t availableWidth = width;
-
-        int numRemainingWidgets = containedWidgets.size();
-
-        // Find objects that are not allowed to be resized or have a fixed width
-        // also find the sum of all weights
-        double weightSum = 0.0;
-        for (const HBox_WidgetData& widgetData : containedWidgets) {
-            if (widgetData.pWidget->resizingXAllowed() == false) {
-                availableWidth = availableWidth - widgetData.pWidget->getSize().x;
-                numRemainingWidgets--;
-            } else if (widgetData.fixedWidth > 0) {
-                availableWidth = availableWidth - widgetData.fixedWidth;
-                numRemainingWidgets--;
-            } else {
-                weightSum += widgetData.weight;
-            }
-        }
-
-        // Under the resizeable widgets find all objects that are oversized (minimum size > availableWidth*weight)
-        // also calculate the weight sum of all the resizeable widgets that are not oversized
-        int32_t neededOversizeWidth  = 0;
-        double notOversizedWeightSum = 0.0;
-        for (const HBox_WidgetData& widgetData : containedWidgets) {
-            if (widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
-                if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
-                    > availableWidth * (widgetData.weight / weightSum)) {
-                    neededOversizeWidth += widgetData.pWidget->getMinimumSize().x;
-                } else {
-                    notOversizedWeightSum += widgetData.weight;
-                }
-            }
-        }
-
-        const int32_t totalAvailableWidth = availableWidth;
-        for (const HBox_WidgetData& widgetData : containedWidgets) {
-            int32_t widgetHeight;
-            if (widgetData.pWidget->resizingYAllowed() == true) {
-                widgetHeight = height;
-            } else {
-                widgetHeight = widgetData.pWidget->getMinimumSize().y;
-            }
-
-            if (widgetData.pWidget->resizingXAllowed() == true) {
-                int32_t widgetWidth = 0;
-
-                if (widgetData.fixedWidth <= 0) {
-                    if (numRemainingWidgets <= 1) {
-                        widgetWidth = availableWidth;
-                    } else if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
-                               > totalAvailableWidth * (widgetData.weight / weightSum)) {
-                        widgetWidth = widgetData.pWidget->getMinimumSize().x;
-                    } else {
-                        widgetWidth = static_cast<int32_t>((totalAvailableWidth - neededOversizeWidth)
-                                                           * (widgetData.weight / notOversizedWeightSum));
-                    }
-                    availableWidth -= widgetWidth;
-                    numRemainingWidgets--;
-                } else {
-                    widgetWidth = widgetData.fixedWidth;
-                }
-
-                widgetData.pWidget->resize(widgetWidth, widgetHeight);
-            } else {
-                widgetData.pWidget->resize(widgetData.pWidget->getSize().x, widgetHeight);
-            }
-        }
-
-        Container<HBox_WidgetData>::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     using parent::resize;
 
@@ -176,11 +83,7 @@ public:
         add it to a container. If the container gets destroyed also this HBox will be freed.
         \return The new created HBox (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static HBox* create() {
-        HBox* hbox       = new HBox();
-        hbox->pAllocated = true;
-        return hbox;
-    }
+    static HBox* create();
 
 protected:
     /**
@@ -189,19 +92,7 @@ protected:
         \param widgetData   the widget data to get the position from.
         \return The position of the left upper corner
     */
-    Point getPosition(const HBox_WidgetData& widgetData) const override {
-        Point p(0, 0);
-        for (const HBox_WidgetData& tmpWidgetData : containedWidgets) {
-            if (widgetData.pWidget == tmpWidgetData.pWidget) {
-                p.y = (getSize().y - tmpWidgetData.pWidget->getSize().y) / 2;
-                return p;
-            }
-            p.x = p.x + tmpWidgetData.pWidget->getSize().x;
-        }
-
-        // should not happen
-        return {0, 0};
-    }
+    Point getPosition(const HBox_WidgetData& widgetData) const override;
 };
 
 #endif // HBOX_H
