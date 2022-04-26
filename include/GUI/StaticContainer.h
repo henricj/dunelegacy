@@ -22,18 +22,21 @@
 
 class StaticContainer_WidgetData {
 public:
-    StaticContainer_WidgetData() : pWidget(nullptr), position(0, 0), size(0, 0) { }
+    StaticContainer_WidgetData() = default;
+
+    StaticContainer_WidgetData(const StaticContainer_WidgetData&)            = default;
+    StaticContainer_WidgetData(StaticContainer_WidgetData&&)                 = default;
+    StaticContainer_WidgetData& operator=(const StaticContainer_WidgetData&) = default;
+    StaticContainer_WidgetData& operator=(StaticContainer_WidgetData&&)      = default;
 
     StaticContainer_WidgetData(Widget* pWidget, Point position, Point size)
         : pWidget(pWidget), position(position), size(size) { }
 
-    Widget* pWidget;
-    Point position;
-    Point size;
+    Widget* pWidget = nullptr;
+    Point position{0, 0};
+    Point size{0, 0};
 
-    bool operator==(const StaticContainer_WidgetData& op) const {
-        return (pWidget == op.pWidget) && (position == op.position) && (size == op.size);
-    }
+    bool operator==(const StaticContainer_WidgetData& op) const = default;
 };
 
 /// A container class of explicit placed widgets

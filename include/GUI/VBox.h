@@ -20,18 +20,21 @@
 
 #include "Container.h"
 
-#include <algorithm>
-
 class VBox_WidgetData {
 public:
-    VBox_WidgetData() : pWidget(nullptr), fixedHeight(0), weight(0.0) { }
+    VBox_WidgetData() = default;
     VBox_WidgetData(Widget* _pWidget, int32_t _fixedHeight)
         : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
     VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
 
-    Widget* pWidget;
-    int32_t fixedHeight;
-    double weight;
+    VBox_WidgetData(const VBox_WidgetData&)            = default;
+    VBox_WidgetData(VBox_WidgetData&&)                 = default;
+    VBox_WidgetData& operator=(const VBox_WidgetData&) = default;
+    VBox_WidgetData& operator=(VBox_WidgetData&&)      = default;
+
+    Widget* pWidget     = nullptr;
+    int32_t fixedHeight = 0;
+    double weight       = 0.0;
 };
 
 /// A container class for vertical aligned widgets.
