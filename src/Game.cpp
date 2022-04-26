@@ -449,9 +449,9 @@ void Game::drawScreen() {
 
     ///////////draw game selection rectangle
     if (selectionMode) {
+        auto finalMouseX = static_cast<float>(drawnMouseX);
+        auto finalMouseY = static_cast<float>(drawnMouseY);
 
-        int finalMouseX = drawnMouseX;
-        int finalMouseY = drawnMouseY;
         if (finalMouseX >= sideBarPos.x) {
             // this keeps the box on the map, and not over game bar
             finalMouseX = sideBarPos.x - 1;
@@ -461,9 +461,11 @@ void Game::drawScreen() {
             finalMouseY = topBarPos.x + topBarPos.h;
         }
 
+        const auto screen_x = screenborder->world2screenX(selectionRect.x);
+        const auto screen_y = screenborder->world2screenY(selectionRect.y);
+
         // draw the mouse selection rectangle
-        renderDrawRect(renderer, screenborder->world2screenX(selectionRect.x),
-                       screenborder->world2screenY(selectionRect.y), finalMouseX, finalMouseY, COLOR_WHITE);
+        renderDrawRectF(renderer, screen_x, screen_y, finalMouseX, finalMouseY, COLOR_WHITE);
     }
 
     ///////////draw action indicator
