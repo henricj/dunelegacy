@@ -72,6 +72,8 @@ public:
         if (iter == objectMap.end())
             return nullptr;
 
+        assert(objectID == iter->second->getObjectID());
+
         return iter->second.get();
     }
 
