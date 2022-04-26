@@ -193,16 +193,9 @@ public:
     /**
         That the current window widget. This is typically a container that hold all the widgets in this window.
         The window itself can contain only one widget.
-        \param  pWindowWidget   The only widget that this window contains
+        \param  widget   The only widget that this window contains
     */
-    virtual void setWindowWidget(Widget* pWindowWidget) {
-        this->pWindowWidget = pWindowWidget;
-        if (this->pWindowWidget != nullptr) {
-            this->pWindowWidget->setParent(this);
-            this->pWindowWidget->resize(getSize().x, getSize().y);
-            this->pWindowWidget->setActive();
-        }
-    }
+    virtual void setWindowWidget(Widget* widget);
 
     /**
         Returns the current window widget.
@@ -224,10 +217,7 @@ public:
         requests to resizes its surrounding container. But windows do not resize if
         it's content changes.
     */
-    void resizeAll() override {
-        // Windows do not get bigger if content changes
-        resize(getSize().x, getSize().y);
-    }
+    void resizeAll() override;
 
 protected:
     bool processChildWindowOpenCloses();
