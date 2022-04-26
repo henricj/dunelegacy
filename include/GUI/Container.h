@@ -35,13 +35,13 @@ class Container : public Widget {
 protected:
     using WidgetList = std::vector<WidgetData>;
 
-public:
     /// default constructor
     Container() : Widget() {
         pActiveChildWidget = nullptr;
         Container::enableResizing(true, true);
     }
 
+public:
     /// destructor
     ~Container() override { clearWidgetList(); }
 
