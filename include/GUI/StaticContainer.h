@@ -44,10 +44,10 @@ class StaticContainer : public Container<StaticContainer_WidgetData> {
 
 public:
     /// default constructor
-    StaticContainer() = default;
+    StaticContainer();
 
     /// default destructor
-    ~StaticContainer() override = default;
+    ~StaticContainer() override;
 
     /**
         This method adds a new widget to this container.
@@ -55,32 +55,21 @@ public:
         \param position     Position of the new Widget
         \param size         Size of the new widget
     */
-    virtual void addWidget(Widget* newWidget, Point position, Point size) {
-        if (newWidget != nullptr) {
-            containedWidgets.push_back(StaticContainer_WidgetData(newWidget, position, size));
-            newWidget->resize(size.x, size.y);
-            newWidget->setParent(this);
-            Widget::resizeAll();
-        }
-    }
+    virtual void addWidget(Widget* newWidget, Point position, Point size);
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param rect         Position and size of the new Widget
     */
-    virtual void addWidget(Widget* newWidget, const SDL_Rect& rect) {
-        addWidget(newWidget, Point(rect.x, rect.y), Point(rect.w, rect.h));
-    }
+    virtual void addWidget(Widget* newWidget, const SDL_Rect& rect);
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param rect         Position and size of the new Widget
     */
-    virtual void addWidget(Widget* newWidget, const SDL_FRect& rect) {
-        addWidget(newWidget, Point(std::ceil(rect.x), std::ceil(rect.y)), Point(std::ceil(rect.w), std::ceil(rect.h)));
-    }
+    virtual void addWidget(Widget* newWidget, const SDL_FRect& rect);
 
     /**
         Returns the minimum size of this container. The container should not
@@ -88,14 +77,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this container
     */
-    Point getMinimumSize() const override {
-        Point p(0, 0);
-        for (const StaticContainer_WidgetData& widgetData : containedWidgets) {
-            p.x = std::max(p.x, widgetData.position.x + widgetData.size.x);
-            p.y = std::max(p.y, widgetData.position.y + widgetData.size.y);
-        }
-        return p;
-    }
+    Point getMinimumSize() const override;
 
     /**
         This method resized the container to width and height. This method should only be
@@ -104,12 +86,7 @@ public:
         \param  width   the new width of this container
         \param  height  the new height of this container
     */
-    void resize(uint32_t width, uint32_t height) override {
-        for (const StaticContainer_WidgetData& widgetData : containedWidgets) {
-            widgetData.pWidget->resize(widgetData.size.x, widgetData.size.y);
-        }
-        parent::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     using parent::resize;
 
@@ -122,14 +99,7 @@ protected:
     */
     Point getPosition(const StaticContainer_WidgetData& widgetData) const override { return widgetData.position; }
 
-    void setWidgetGeometry(Widget* pWidget, Point position, Point size) {
-        StaticContainer_WidgetData* pWidgetData = getWidgetDataFromWidget(pWidget);
-        if (pWidgetData != nullptr) {
-            pWidgetData->position = position;
-            pWidgetData->size     = size;
-            pWidget->resize(size.x, size.y);
-        }
-    }
+    void setWidgetGeometry(Widget* pWidget, Point position, Point size);
 };
 
 #endif // STATICCONTAINER_H
