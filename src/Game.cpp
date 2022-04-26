@@ -119,7 +119,9 @@ void Game::resize() {
     sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
-    const auto renderer_height = static_cast<float>(getRendererHeight());
+    const auto renderer_size   = getRendererSize();
+    const auto renderer_width  = static_cast<float>(renderer_size.w);
+    const auto renderer_height = static_cast<float>(renderer_size.h);
 
     powerIndicatorPos.h = spiceIndicatorPos.h = renderer_height - 146 - 2;
 
@@ -130,6 +132,9 @@ void Game::resize() {
 
     if (map)
         screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
+
+    if (pInterface)
+        pInterface->resize(renderer_width, renderer_height);
 }
 
 void Game::initGame(const GameInitSettings& newGameInitSettings) {
