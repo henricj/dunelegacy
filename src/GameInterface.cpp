@@ -124,16 +124,13 @@ void GameInterface::draw(Point position) {
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < powerIndicatorPos.w - 1; xCount++) {
             if (((yCount / 2) % 3) != 0) {
-                SDL_Point point;
-                point.x = xCount + powerIndicatorPos.x;
-                point.y = powerIndicatorPos.y + powerIndicatorPos.h - yCount;
-
-                render_points_.emplace_back(point);
+                render_points_.emplace_back(xCount + powerIndicatorPos.x,
+                                            powerIndicatorPos.y + powerIndicatorPos.h - yCount);
             }
         }
     }
     if (!render_points_.empty())
-        SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
+        SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
 
     // draw spice level indicator
     if (pLocalHouse->getCapacity() == 0) {
@@ -150,23 +147,22 @@ void GameInterface::draw(Point position) {
     render_points_.clear();
     for (yCount = 0; yCount < yCount2; yCount++) {
         for (xCount = 1; xCount < spiceIndicatorPos.w - 1; xCount++) {
-            if (((yCount / 2) % 3) != 0) {
-                SDL_Point point;
-                point.x = xCount + spiceIndicatorPos.x;
-                point.y = spiceIndicatorPos.y + spiceIndicatorPos.h - yCount;
+            if (yCount / 2 % 3 == 0)
+                continue;
 
-                render_points_.emplace_back(point);
-            }
+            render_points_.emplace_back(xCount + spiceIndicatorPos.x,
+                                        spiceIndicatorPos.y + spiceIndicatorPos.h - yCount);
         }
     }
     if (!render_points_.empty())
-        SDL_RenderDrawPoints(renderer, &render_points_[0], render_points_.size());
+        SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
 
     // draw credits
     const auto credits       = pLocalHouse->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
-    const auto NumDigits     = CreditsBuffer.length();
-    auto* const digitsTex    = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    const auto NumDigits     = static_cast<int>(CreditsBuffer.length());
+
+    auto* const digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for (int i = NumDigits - 1; i >= 0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
