@@ -36,6 +36,8 @@ class ObjectInterface;
 
 /// This class represents the in-game interface.
 class GameInterface final : public Window {
+    using parent = Window;
+
 public:
     /// default constructor
     GameInterface(const GameContext& context);

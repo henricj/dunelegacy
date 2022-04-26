@@ -32,11 +32,11 @@
 #include <misc/draw_util.h>
 
 GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
-    Window::setTransparentBackground(true);
+    GameInterface::setTransparentBackground(true);
 
-    Window::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
+    GameInterface::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
 
-    Window::setWindowWidget(&windowWidget);
+    GameInterface::setWindowWidget(&windowWidget);
 
     // top bar
     const auto* const pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
@@ -85,7 +85,7 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
 GameInterface::~GameInterface() = default;
 
 void GameInterface::draw(Point position) {
-    Window::draw(position);
+    parent::draw(position);
 
     // draw Power Indicator and Spice indicator
 
