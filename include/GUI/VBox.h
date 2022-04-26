@@ -36,6 +36,8 @@ public:
 
 /// A container class for vertical aligned widgets.
 class VBox final : public Container<VBox_WidgetData> {
+    using parent = Container<VBox_WidgetData>;
+
 public:
     /// default constructor
     VBox() : Container<VBox_WidgetData>() { }
@@ -87,13 +89,6 @@ public:
         }
         return p;
     }
-
-    /**
-        This method resizes the container. This method should only
-        called if the new size is a valid size for this container (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -173,6 +168,8 @@ public:
 
         Container<VBox_WidgetData>::resize(width, height);
     }
+
+    using parent::resize;
 
     /**
         This static method creates a dynamic VBox object.

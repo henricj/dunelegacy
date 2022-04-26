@@ -245,7 +245,7 @@ public:
         resizingYAllowed, getMinimumSize).
         \param  newSize the new size of this widget
     */
-    virtual void resize(Point newSize) { resize(newSize.x, newSize.y); }
+    void resize(Point newSize) { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the widget to width and height. This method should only be

@@ -76,19 +76,14 @@ public:
     void draw(Point position) override;
 
     /**
-        This method resizes the checkbox. This method should only
-        called if the new size is a valid size for this progress bar (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the checkbox to width and height. This method should only
         called if the new size is a valid size for this checkbox (See getMinimumSize).
         \param  width   the new width of this checkbox
         \param  height  the new height of this checkbox
     */
     void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
 
     /**
         Returns the minimum size of this button. The button should not

@@ -211,17 +211,13 @@ public:
     virtual Widget* getWindowWidget() { return pWindowWidget; }
 
     /**
-        This method resizes the window.
-        \param  newSize the new size of this widget
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the window to width and height.
         \param  width   the new width of this widget
         \param  height  the new height of this widget
     */
     void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
 
     /**
         This method is typically called by the child widget when the child widget

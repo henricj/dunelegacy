@@ -35,6 +35,8 @@ public:
 
 /// A container class for horizontal aligned widgets.
 class HBox : public Container<HBox_WidgetData> {
+    using parent = Container<HBox_WidgetData>;
+
 public:
     /// default constructor
     HBox() : Container<HBox_WidgetData>() { }
@@ -86,13 +88,6 @@ public:
         }
         return p;
     }
-
-    /**
-        This method resizes the container. This method should only
-        called if the new size is a valid size for this container (See getMinumumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
 
     /**
         This method resizes the container to width and height. This method should only be
@@ -172,6 +167,8 @@ public:
 
         Container<HBox_WidgetData>::resize(width, height);
     }
+
+    using parent::resize;
 
     /**
         This static method creates a dynamic HBox object.

@@ -34,6 +34,8 @@
 
 /// A simple class for a question box
 class QstBox final : public Window {
+    using parent = Window;
+
 public:
     /**
         This method sets a new text for this question box.
@@ -62,13 +64,6 @@ public:
     }
 
     /**
-        This method resizes the question box. This method should only
-        called if the new size is a valid size for this question box (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the question box to width and height. This method should only be
         called if the new size is a valid size for this question box (See resizingXAllowed,
         resizingYAllowed, getMinimumSize).
@@ -80,6 +75,8 @@ public:
         position.x = (getRendererWidth() - getSize().x) / 2;
         position.y = (getRendererHeight() - getSize().y) / 2;
     }
+
+    using parent::resize;
 
     /**
         This method is called by the window widget if it requests a resizing of
