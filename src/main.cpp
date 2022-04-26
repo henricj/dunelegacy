@@ -197,8 +197,8 @@ void setVideoMode(int displayIndex) {
     { // Scope
         const auto screen_format = SDL_GetWindowPixelFormat(window);
 
-        if (screen_format != SCREEN_FORMAT)
-            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "The SCREEN_FORMAT is not in the window's format");
+        sdl2::log_info("The window is using pixel format %s and the default format is %s",
+                       SDL_GetPixelFormatName(screen_format), SDL_GetPixelFormatName(SCREEN_FORMAT));
     }
 
     sdl2::log_info("Available renderers:");
