@@ -19,7 +19,8 @@
 #define CONTAINER_H
 
 #include "Widget.h"
-#include <misc/RobustList.h>
+
+#include <vector>
 
 /// The abstract base class for container widgets
 /**
@@ -32,7 +33,7 @@ class Container : public Widget {
     using parent = Widget;
 
 protected:
-    typedef RobustList<WidgetData> WidgetList;
+    using WidgetList = std::vector<WidgetData>;
 
 public:
     /// default constructor
@@ -42,12 +43,7 @@ public:
     }
 
     /// destructor
-    ~Container() override {
-        while (containedWidgets.begin() != containedWidgets.end()) {
-            Widget* curWidget = containedWidgets.front().pWidget;
-            curWidget->destroy();
-        }
-    }
+    ~Container() override { clearWidgetList(); }
 
     /**
         This method removes a widget from this container. Everything
@@ -55,15 +51,19 @@ public:
         \param pChildWidget Widget to remove
     */
     void removeChildWidget(Widget* pChildWidget) override {
-        for (auto iter = containedWidgets.begin(); iter != containedWidgets.end(); ++iter) {
-            if (iter->pWidget == pChildWidget) {
-                setActiveChildWidget(false, pChildWidget);
-                containedWidgets.erase(iter);
-                pChildWidget->setParent(nullptr);
-                pChildWidget->destroy();
-                break;
-            }
-        }
+        auto it = std::ranges::find_if(containedWidgets,
+                                       [pChildWidget](const auto& wd) { return wd.pWidget == pChildWidget; });
+
+        if (it == std::end(containedWidgets))
+            return;
+
+        setActiveChildWidget(false, pChildWidget);
+
+        containedWidgets.erase(it);
+
+        pChildWidget->setParent(nullptr);
+        pChildWidget->destroy();
+
         resizeAll();
     }
 
@@ -71,11 +71,7 @@ public:
         This method will remove all contained widgets in this container. Everything
         will be resized afterwards.
     */
-    virtual void removeAllChildWidgets() {
-        while (containedWidgets.empty() == false) {
-            removeChildWidget(containedWidgets.begin()->pWidget);
-        }
-    }
+    virtual void removeAllChildWidgets() { clearWidgetList(); }
 
     /**
         Handles a mouse movement.
@@ -84,7 +80,7 @@ public:
         \param  insideOverlay   true, if (x,y) is inside an overlay and this container may be behind it, false otherwise
     */
     void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override {
-        for (const WidgetData& widgetData : containedWidgets) {
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             widgetData.pWidget->handleMouseMovement(x - pos.x, y - pos.y, insideOverlay);
         }
@@ -98,15 +94,16 @@ public:
         \return true = click was processed by the container, false = click was not processed by the container
     */
     bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bWidgetFound = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
         }
+
         return bWidgetFound;
     }
 
@@ -118,15 +115,16 @@ public:
         \return true = click was processed by the container, false = click was not processed by the container
     */
     bool handleMouseRight(int32_t x, int32_t y, bool pressed) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bWidgetFound = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseRight(x - pos.x, y - pos.y, pressed);
         }
+
         return bWidgetFound;
     }
 
@@ -139,27 +137,27 @@ public:
        processed by the widget
     */
     bool handleMouseWheel(int32_t x, int32_t y, bool up) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bProcessed = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
 
             int childX = x - pos.x;
             int childY = y - pos.y;
 
-            if ((childX >= 0) && (childX < widgetData.pWidget->getSize().x) && (childY >= 0)
-                && (childY < widgetData.pWidget->getSize().y)) {
-                bProcessed = widgetData.pWidget->handleMouseWheel(childX, childY, up);
-                if (bProcessed) {
-                    break;
-                }
-            }
+            auto* widget = widgetData.pWidget;
+
+            if (childX < 0 || childX >= widget->getSize().x || childY < 0 || childY >= widget->getSize().y)
+                continue;
+
+            bProcessed = widget->handleMouseWheel(childX, childY, up);
+            if (bProcessed)
+                return true;
         }
 
-        if ((bProcessed == false) && (pActiveChildWidget != nullptr)) {
+        if (pActiveChildWidget != nullptr) {
             const Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
             return pActiveChildWidget->handleMouseWheel(x - pos.x, y - pos.y, up);
         }
@@ -173,17 +171,17 @@ public:
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
     bool handleKeyPress(SDL_KeyboardEvent& key) override {
-        if ((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+        if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
-        }
 
-        if (pActiveChildWidget != nullptr) {
+        if (pActiveChildWidget != nullptr)
             return pActiveChildWidget->handleKeyPress(key);
-        }
+
         if (key.keysym.sym == SDLK_TAB) {
             activateFirstActivatableWidget();
             return true;
         }
+
         return false;
     }
 
@@ -193,13 +191,12 @@ public:
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
     bool handleTextInput(SDL_TextInputEvent& textInput) override {
-        if ((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+        if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
-        }
 
-        if (pActiveChildWidget != nullptr) {
+        if (pActiveChildWidget != nullptr)
             return pActiveChildWidget->handleTextInput(textInput);
-        }
+
         return false;
     }
 
@@ -211,7 +208,8 @@ public:
     */
     bool handleMouseMovementOverlay(int32_t x, int32_t y) override {
         bool insideOverlay = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             insideOverlay |= widgetData.pWidget->handleMouseMovementOverlay(x - pos.x, y - pos.y);
         }
@@ -227,15 +225,15 @@ public:
         \return true = click was processed by the container, false = click was not processed by the container
     */
     bool handleMouseLeftOverlay(int32_t x, int32_t y, bool pressed) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bWidgetFound = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseLeftOverlay(x - pos.x, y - pos.y, pressed);
         }
+
         return bWidgetFound;
     }
 
@@ -247,15 +245,16 @@ public:
         \return true = click was processed by the container, false = click was not processed by the container
     */
     bool handleMouseRightOverlay(int32_t x, int32_t y, bool pressed) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bWidgetFound = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
             bWidgetFound |= widgetData.pWidget->handleMouseRightOverlay(x - pos.x, y - pos.y, pressed);
         }
+
         return bWidgetFound;
     }
 
@@ -268,24 +267,23 @@ public:
        processed by the widget
     */
     bool handleMouseWheelOverlay(int32_t x, int32_t y, bool up) override {
-        if ((isEnabled() == false) || (isVisible() == false)) {
+        if (isEnabled() == false || isVisible() == false)
             return false;
-        }
 
         bool bProcessed = false;
-        for (const WidgetData& widgetData : containedWidgets) {
+
+        for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
 
-            int childX = x - pos.x;
-            int childY = y - pos.y;
+            const auto childX = x - pos.x;
+            const auto childY = y - pos.y;
 
             bProcessed = widgetData.pWidget->handleMouseWheelOverlay(childX, childY, up);
-            if (bProcessed) {
+            if (bProcessed)
                 break;
-            }
         }
 
-        if ((bProcessed == false) && (pActiveChildWidget != nullptr)) {
+        if (bProcessed == false && pActiveChildWidget != nullptr) {
             const Point pos = getPosition(*getWidgetDataFromWidget(pActiveChildWidget));
             return pActiveChildWidget->handleMouseWheelOverlay(x - pos.x, y - pos.y, up);
         }
@@ -299,13 +297,12 @@ public:
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
     bool handleKeyPressOverlay(SDL_KeyboardEvent& key) override {
-        if ((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+        if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
-        }
 
-        if (pActiveChildWidget != nullptr) {
+        if (pActiveChildWidget != nullptr)
             return pActiveChildWidget->handleKeyPressOverlay(key);
-        }
+
         return false;
     }
 
@@ -315,13 +312,12 @@ public:
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
     bool handleTextInputOverlay(SDL_TextInputEvent& textInput) override {
-        if ((isEnabled() == false) || (isVisible() == false) || (isActive() == false)) {
+        if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
-        }
 
-        if (pActiveChildWidget != nullptr) {
+        if (pActiveChildWidget != nullptr)
             return pActiveChildWidget->handleTextInputOverlay(textInput);
-        }
+
         return false;
     }
 
@@ -330,11 +326,10 @@ public:
         \param  position    Position to draw the container to
     */
     void draw(Point position) override {
-        if (isVisible() == false) {
+        if (isVisible() == false)
             return;
-        }
 
-        for (const WidgetData& widgetData : containedWidgets) {
+        for (const auto& widgetData : containedWidgets) {
             widgetData.pWidget->draw(position + getPosition(widgetData));
         }
     }
@@ -345,13 +340,11 @@ public:
         \param  position    Position to draw the container to
     */
     void drawOverlay(Point position) override {
-        if (isVisible() == false) {
+        if (isVisible() == false)
             return;
-        }
 
-        for (const WidgetData& widgetData : containedWidgets) {
+        for (const auto& widgetData : containedWidgets)
             widgetData.pWidget->drawOverlay(position + getPosition(widgetData));
-        }
     }
 
     /**
@@ -360,10 +353,10 @@ public:
         \return The position of the left upper corner of widget or (-1,-1) if widget cannot be found in this container
     */
     virtual Point getWidgetPosition(const Widget* widget) {
-        WidgetData* widgetData = getWidgetDataFromWidget(widget);
-        if (widgetData == nullptr) {
-            return Point(-1, -1);
-        }
+        auto* widgetData = getWidgetDataFromWidget(widget);
+        if (widgetData == nullptr)
+            return {-1, -1};
+
         return getPosition(*widgetData);
     }
 
@@ -372,9 +365,8 @@ public:
         currently widget is set to inactive.
     */
     void setActive() override {
-        if (pActiveChildWidget == nullptr) {
+        if (pActiveChildWidget == nullptr)
             activateFirstActivatableWidget();
-        }
 
         parent::setActive();
     }
@@ -396,14 +388,12 @@ public:
         \return true = activatable, false = not activatable
     */
     [[nodiscard]] bool isActivatable() const override {
-        if (isEnabled() == false) {
+        if (isEnabled() == false)
             return false;
-        }
 
-        for (const WidgetData& widgetData : containedWidgets) {
-            if (widgetData.pWidget->isActivatable() == true) {
+        for (const auto& widgetData : containedWidgets) {
+            if (widgetData.pWidget->isActivatable())
                 return true;
-            }
         }
 
         return false;
@@ -435,10 +425,10 @@ protected:
     void setActive(bool bActive) override {
         if (pActiveChildWidget != nullptr) {
             pActiveChildWidget->setActive(bActive);
-            if (bActive == false) {
+            if (bActive == false)
                 pActiveChildWidget = nullptr;
-            }
         }
+
         parent::setActive(bActive);
     }
 
@@ -449,13 +439,12 @@ protected:
         \param  childWidget the widget to activate/deactivate
     */
     void setActiveChildWidget(bool active, Widget* childWidget) override {
-        if (childWidget == nullptr) {
+        if (childWidget == nullptr)
             return;
-        }
 
         if (active == true) {
             // deactivate current active widget
-            if ((pActiveChildWidget != nullptr) && (pActiveChildWidget != childWidget)) {
+            if (pActiveChildWidget != nullptr && pActiveChildWidget != childWidget) {
                 pActiveChildWidget->setActive(false);
                 pActiveChildWidget = childWidget;
             } else {
@@ -465,35 +454,36 @@ protected:
                 parent::setActive();
             }
         } else {
-            if (childWidget != pActiveChildWidget) {
+            if (childWidget != pActiveChildWidget)
                 return;
-            }
 
             // deactivate current active widget
-            if (pActiveChildWidget != nullptr) {
+            if (pActiveChildWidget != nullptr)
                 pActiveChildWidget->setActive(false);
-            }
 
             // find childWidget in the widget list
-            typename WidgetList::const_iterator iter = containedWidgets.begin();
-            while ((iter != containedWidgets.end()) && (iter->pWidget != childWidget)) {
+            auto iter =
+                std::ranges::find_if(containedWidgets, [childWidget](auto& wd) { return wd.pWidget == childWidget; });
+
+            if (iter != std::end(containedWidgets)) {
                 ++iter;
-            }
 
-            ++iter;
+                for (; iter != containedWidgets.end(); ++iter) {
+                    auto* const widget = iter->pWidget;
+                    assert(widget);
 
-            while (iter != containedWidgets.end()) {
-                if (iter->pWidget->isActivatable() == true) {
+                    if (!widget->isActivatable())
+                        continue;
+
                     // activate next widget
-                    pActiveChildWidget = iter->pWidget;
+                    pActiveChildWidget = widget;
                     pActiveChildWidget->setActive();
                     return;
                 }
-                ++iter;
             }
 
             // we are at the end of the list
-            if ((getParent() != nullptr) && getParent()->isContainer()) {
+            if (getParent() != nullptr && getParent()->isContainer()) {
                 pActiveChildWidget = nullptr;
                 setInactive();
             } else {
@@ -507,13 +497,17 @@ protected:
         This method activates the first activatable widget in this container.
     */
     void activateFirstActivatableWidget() {
-        for (const WidgetData& widgetData : containedWidgets) {
-            if (widgetData.pWidget->isActivatable() == true) {
-                // activate next widget
-                pActiveChildWidget = widgetData.pWidget;
-                pActiveChildWidget->setActive();
-                return;
-            }
+        for (const auto& widgetData : containedWidgets) {
+            auto* widget = widgetData.pWidget;
+            assert(widget);
+
+            if (widget->isActivatable() != true)
+                continue;
+
+            // activate next widget
+            pActiveChildWidget = widget;
+            pActiveChildWidget->setActive();
+            return;
         }
         pActiveChildWidget = nullptr;
     }
@@ -532,13 +526,21 @@ protected:
         \return a pointer to the WidgetData, nullptr if not found
     */
     WidgetData* getWidgetDataFromWidget(const Widget* pWidget) {
-        for (WidgetData& widgetData : containedWidgets) {
-            if (widgetData.pWidget == pWidget) {
-                return &widgetData;
-            }
-        }
+        auto it = std::ranges::find_if(containedWidgets, [pWidget](const auto& wd) { return wd.pWidget == pWidget; });
 
-        return nullptr;
+        if (it == std::end(containedWidgets))
+            return nullptr;
+
+        return &*it;
+    }
+
+    void clearWidgetList() {
+        WidgetList widgets;
+
+        containedWidgets.swap(widgets);
+
+        for (auto& wd : widgets)
+            wd.pWidget->destroy();
     }
 
     WidgetList containedWidgets; ///< List of widgets
