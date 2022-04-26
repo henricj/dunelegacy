@@ -20,17 +20,20 @@
 
 #include "Container.h"
 
-#include <algorithm>
-
 class HBox_WidgetData {
 public:
-    HBox_WidgetData() : pWidget(nullptr), fixedWidth(0), weight(0.0) { }
+    HBox_WidgetData() = default;
     HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
     HBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedWidth(-1), weight(_weight) { }
 
-    Widget* pWidget;
-    int32_t fixedWidth;
-    double weight;
+    HBox_WidgetData(const HBox_WidgetData&)            = default;
+    HBox_WidgetData(HBox_WidgetData&&)                 = default;
+    HBox_WidgetData& operator=(const HBox_WidgetData&) = default;
+    HBox_WidgetData& operator=(HBox_WidgetData&&)      = default;
+
+    Widget* pWidget    = nullptr;
+    int32_t fixedWidth = 0;
+    double weight      = 0.0;
 };
 
 /// A container class for horizontal aligned widgets.
