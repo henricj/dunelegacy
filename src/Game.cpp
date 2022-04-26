@@ -390,16 +390,16 @@ void Game::drawScreen() {
             const int yPos = screenborder->screen2MapY(drawnMouseY);
 
             if (selectedList.size() == 1) {
-                auto* pBuilder = dynamic_cast<BuilderBase*>(objectManager.getObject(*selectedList.begin()));
-                if (pBuilder) {
+                if (auto* pBuilder = dune_cast<BuilderBase>(objectManager.getObject(*selectedList.begin()))) {
                     const auto placeItem = pBuilder->getCurrentProducedItem();
-                    Coord structuresize  = getStructureSize(placeItem);
+                    Coord structureSize  = getStructureSize(placeItem);
 
                     bool withinRange = false;
-                    for (int i = xPos; i < (xPos + structuresize.x); i++) {
-                        for (int j = yPos; j < (yPos + structuresize.y); j++) {
+                    for (int i = xPos; i < (xPos + structureSize.x); i++) {
+                        for (int j = yPos; j < (yPos + structureSize.y); j++) {
                             if (map->isWithinBuildRange(i, j, pBuilder->getOwner())) {
                                 withinRange = true; // find out if the structure is close enough to other buildings
+                                break;
                             }
                         }
                     }
@@ -425,23 +425,22 @@ void Game::drawScreen() {
                         } break;
                     }
 
-                    for (int i = xPos; i < (xPos + structuresize.x); i++) {
-                        for (int j = yPos; j < (yPos + structuresize.y); j++) {
-                            const DuneTexture* image = nullptr;
+                    const auto is_slab = placeItem == Structure_Slab1 || placeItem == Structure_Slab4;
 
-                            if (!withinRange || !map->tileExists(i, j) || !map->getTile(i, j)->isRock()
-                                || map->getTile(i, j)->isMountain() || map->getTile(i, j)->hasAGroundObject()
-                                || (((placeItem == Structure_Slab1) || (placeItem == Structure_Slab4))
-                                    && map->getTile(i, j)->isConcrete())) {
-                                image = invalidPlace;
-                            } else {
-                                image = validPlace;
-                            }
+                    map->for_each(xPos, yPos, xPos + structureSize.x, yPos + structureSize.y,
+                                  [this, withinRange, invalidPlace, validPlace, is_slab](auto& t) {
+                                      const DuneTexture* image = nullptr;
 
-                            image->draw(renderer, screenborder->world2screenX(i * TILESIZE),
-                                        screenborder->world2screenY(j * TILESIZE));
-                        }
-                    }
+                                      if (!withinRange || !t.isRock() || t.isMountain() || t.hasAGroundObject()
+                                          || (is_slab && t.isConcrete())) {
+                                          image = invalidPlace;
+                                      } else {
+                                          image = validPlace;
+                                      }
+
+                                      image->draw(renderer, screenborder->world2screenX(t.getLocation().x * TILESIZE),
+                                                  screenborder->world2screenY(t.getLocation().y * TILESIZE));
+                                  });
                 }
             }
         }
@@ -543,9 +542,8 @@ void Game::drawScreen() {
 
         const auto size = getRendererSize();
 
-        const auto x = (static_cast<float>(sideBarPos.x) - pFinishMessageTexture.width_) / 2;
-        const auto y = static_cast<float>(topBarPos.h)
-                     + (static_cast<float>(renderer_height - topBarPos.h) - pFinishMessageTexture.height_) / 2;
+        const auto x = (sideBarPos.x - pFinishMessageTexture.width_) / 2;
+        const auto y = topBarPos.h + (renderer_height - topBarPos.h - pFinishMessageTexture.height_) / 2;
 
         pFinishMessageTexture.draw(renderer, x, y);
     }
