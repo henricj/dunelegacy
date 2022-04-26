@@ -258,7 +258,7 @@ bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
 
 void Window::draw(Point position) {
     if (isVisible()) {
-        WidgetWithBackground::draw(getPosition());
+        parent::draw(getPosition());
 
         if (pWindowWidget != nullptr) {
             pWindowWidget->draw(Point(position.x + getPosition().x, position.y + getPosition().y));
@@ -278,9 +278,25 @@ void Window::drawOverlay(Point position) {
     }
 }
 
+void Window::setWindowWidget(Widget* widget) {
+    this->pWindowWidget = widget;
+
+    if (widget == nullptr)
+        return;
+
+    widget->setParent(this);
+    widget->resize(getSize().x, getSize().y);
+    widget->setActive();
+}
+
 void Window::resize(uint32_t width, uint32_t height) {
     parent::resize(width, height);
     if (pWindowWidget != nullptr) {
         pWindowWidget->resize(width, height);
     }
+}
+
+void Window::resizeAll() {
+    // Windows do not get bigger if content changes
+    resize(getSize().x, getSize().y);
 }
