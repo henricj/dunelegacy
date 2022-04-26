@@ -67,13 +67,6 @@ public:
     }
 
     /**
-        This method resizes the button. This method should only
-        called if the new size is a valid size for this button (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the button to width and height. This method should only
         called if the new size is a valid size for this button (See getMinimumSize).
         \param  width   the new width of this button
@@ -81,8 +74,10 @@ public:
     */
     void resize(uint32_t width, uint32_t height) override {
         invalidateTextures();
-        Button::resize(width, height);
+        parent::resize(width, height);
     }
+
+    using parent::resize;
 
     /**
         Returns the minimum size of this button. The button should not

@@ -355,21 +355,6 @@ public:
     }
 
     /**
-        This method resizes the container. This method should only
-        called if the new size is a valid size for this container (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
-        This method resizes the container to width and height. This method should only be
-        called if the new size is a valid size for this container (See getMinimumSize).
-        \param  width   the new width of this container
-        \param  height  the new height of this container
-    */
-    void resize(uint32_t width, uint32_t height) override { parent::resize(width, height); }
-
-    /**
         Returns the position of widget relative to the top left corner of this container
         \param widgetData   the widget data to get the position from.
         \return The position of the left upper corner of widget or (-1,-1) if widget cannot be found in this container

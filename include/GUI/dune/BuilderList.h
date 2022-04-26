@@ -33,6 +33,8 @@ inline constexpr auto ORDERBTN_HEIGHT    = 16;
 inline constexpr auto WIDGET_WIDTH = BUILDERBTN_SPACING + BUILDERBTN_WIDTH + BUILDERBTN_SPACING;
 
 class BuilderList final : public StaticContainer {
+    using parent = StaticContainer;
+
 public:
     /**
         Handles a mouse movement.
@@ -91,13 +93,6 @@ public:
     void drawOverlay(Point position) override;
 
     /**
-        This method resizes the builder list. This method should only
-        called if the new size is a valid size for this builder list (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the builder list to width and height. This method should only be
         called if the new size is a valid size for this builder list (See resizingXAllowed,
         resizingYAllowed, getMinimumSize).
@@ -105,6 +100,8 @@ public:
         \param  height  the new height of this widget
     */
     void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
 
     /**
         Returns the minimum size of this widget. The widget should not

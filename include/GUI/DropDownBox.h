@@ -28,6 +28,8 @@
 
 /// A class for a dropdown box widget
 class DropDownBox final : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
     DropDownBox();
@@ -111,19 +113,14 @@ public:
     void drawOverlay(Point position) override;
 
     /**
-        This method resizes the dropdownbox. This method should only
-        called if the new size is a valid size for this dropdownbox (See getMinumumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the dropdownbox to width and height. This method should only
         called if the new size is a valid size for this dropdownbox (See getMinumumSize).
         \param  width   the new width of this scroll bar
         \param  height  the new height of this scroll bar
     */
     void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
 
     /**
         Returns the minimum size of this scroll bar. The scroll bar should not

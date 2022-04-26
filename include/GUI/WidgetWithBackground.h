@@ -57,6 +57,8 @@ public:
     */
     void resize(uint32_t width, uint32_t height) override;
 
+    using parent::resize;
+
     /**
         Draws this widget to screen
         \param  position    Position to draw the progress bar to

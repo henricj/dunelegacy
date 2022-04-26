@@ -85,13 +85,6 @@ public:
     void setDrawShadow(bool bDrawShadow) { this->bDrawShadow = bDrawShadow; }
 
     /**
-        This method resized the progress bar. This method should only
-        called if the new size is a valid size for this progress bar (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the progress bar to width and height. This method should only
         called if the new size is a valid size for this progress bar (See getMinimumSize).
         \param  width   the new width of this progress bar
@@ -102,6 +95,8 @@ public:
 
         invalidateTextures();
     }
+
+    using parent::resize;
 
     /**
         Draws this progress bar to screen
@@ -215,21 +210,6 @@ public:
 
         resizeAll();
     }
-
-    /**
-        This method resized the progress bar. This method should only
-        called if the new size is a valid size for this progress bar (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
-        This method resized the progress bar to width and height. This method should only
-        called if the new size is a valid size for this progress bar (See getMinimumSize).
-        \param  width   the new width of this progress bar
-        \param  height  the new height of this progress bar
-    */
-    void resize(uint32_t width, uint32_t height) override { ProgressBar::resize(width, height); }
 
     /**
         Returns the minimum size of this progress bar. The progress bar should not

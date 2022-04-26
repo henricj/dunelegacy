@@ -32,6 +32,8 @@
 
 /// A simple class for a message box
 class MsgBox final : public Window {
+    using parent = Window;
+
 public:
     /**
         This method sets a new text for this message box.
@@ -59,13 +61,6 @@ public:
     }
 
     /**
-        This method resizes the message box. This method should only
-        called if the new size is a valid size for this message box (See getMinimumSize).
-        \param  newSize the new size of this progress bar
-    */
-    void resize(Point newSize) override { resize(newSize.x, newSize.y); }
-
-    /**
         This method resizes the message box to width and height. This method should only be
         called if the new size is a valid size for this message box (See resizingXAllowed,
         resizingYAllowed, getMinimumSize).
@@ -73,10 +68,12 @@ public:
         \param  height  the new height of this message box
     */
     void resize(uint32_t width, uint32_t height) override {
-        Window::resize(width, height);
+        parent::resize(width, height);
         position.x = (getRendererWidth() - getSize().x) / 2;
         position.y = (getRendererHeight() - getSize().y) / 2;
     }
+
+    using parent::resize;
 
     /**
         This method is called by the window widget if it requests a resizing of
