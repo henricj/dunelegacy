@@ -39,3 +39,35 @@ void Widget::setInactive() {
         parent->setActiveChildWidget(false, this);
     }
 }
+
+void Widget::resizeAll() {
+    if (parent != nullptr) {
+        parent->resizeAll();
+    } else {
+        resize(std::max(getMinimumSize().x, getSize().x), std::max(getMinimumSize().y, getSize().y));
+    }
+}
+
+void Widget::destroy() {
+    if (pAllocated == true) {
+        pAllocated = false;
+        delete this;
+    } else {
+        if (parent != nullptr) {
+            parent->removeChildWidget(this);
+        }
+    }
+}
+
+void Widget::setActive(bool bActive) {
+    const auto oldActive = active;
+    active               = bActive;
+
+    if (oldActive != bActive) {
+        if (active && pOnGainFocus) {
+            pOnGainFocus();
+        } else if (!active && pOnLostFocus) {
+            pOnLostFocus();
+        }
+    }
+}

@@ -262,13 +262,7 @@ public:
     /**
         This method resizes the widget and its parent (the surrounding container).
     */
-    virtual void resizeAll() {
-        if (parent != nullptr) {
-            parent->resizeAll();
-        } else {
-            resize(std::max(getMinimumSize().x, getSize().x), std::max(getMinimumSize().y, getSize().y));
-        }
-    }
+    virtual void resizeAll();
 
     /**
         Handles a mouse movement.
@@ -399,16 +393,7 @@ public:
         the widget was created via a named constructor (static create method) then this
         method automatically frees the memory of this object.
     */
-    virtual void destroy() {
-        if (pAllocated == true) {
-            pAllocated = false;
-            delete this;
-        } else {
-            if (parent != nullptr) {
-                parent->removeChildWidget(this);
-            }
-        }
-    }
+    virtual void destroy();
 
     /**
         Sets the function that should be called when this widget gains focus.
@@ -429,18 +414,7 @@ protected:
         widget.
         \param  bActive true = activate this widget, false = deactivate this widget
     */
-    virtual void setActive(bool bActive) {
-        const auto oldActive = active;
-        active               = bActive;
-
-        if (oldActive != bActive) {
-            if (active && pOnGainFocus) {
-                pOnGainFocus();
-            } else if (!active && pOnLostFocus) {
-                pOnLostFocus();
-            }
-        }
-    }
+    virtual void setActive(bool bActive);
 
     /**
         This method enables or disables resizing of a widget. By default resizing in both directions is not allowed
