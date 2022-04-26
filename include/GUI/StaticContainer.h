@@ -20,8 +20,6 @@
 
 #include "Container.h"
 
-#include <algorithm>
-
 class StaticContainer_WidgetData {
 public:
     StaticContainer_WidgetData() : pWidget(nullptr), position(0, 0), size(0, 0) { }
