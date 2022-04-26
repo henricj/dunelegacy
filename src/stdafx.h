@@ -13,7 +13,7 @@
 #    endif
 
 #    if DUNE_CRT_HEAP_DEBUG
-#        define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#        define DEBUG_CLIENTBLOCK new (_CLIENT_BLOCK, __FILE__, __LINE__)
 #        include <crtdbg.h>
 #        define new DEBUG_CLIENTBLOCK
 #    endif
@@ -71,6 +71,7 @@
 #    include <cinttypes>
 #    include <cmath>
 #    include <cstdarg>
+#    include <cstdint>
 #    include <cstdio>
 #    include <cstdlib>
 #    include <cstring>
@@ -123,10 +124,9 @@
 #include <sys/types.h>
 
 #ifdef _WIN32
-#    include <io.h>
 #    include <Windows.h>
+#    include <io.h>
 #    include <winsock2.h>
 #endif // _WIN32
-
 
 #endif // STDAFX_H
