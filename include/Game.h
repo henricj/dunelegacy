@@ -316,6 +316,11 @@ public:
     [[nodiscard]] const Dune::selected_set_type& getSelectedList() const noexcept { return selectedList; }
 
     /**
+        Unselect all objects in the selected list, clears the selected list, and sends a selected changed notification.
+    */
+    void clearSelectedList();
+
+    /**
         Marks that the selection changed (and must be retransmitted to other players in multiplayer games)
     */
     void selectionChanged() {

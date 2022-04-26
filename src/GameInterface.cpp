@@ -178,21 +178,35 @@ void GameInterface::draw(Point position) {
 
 void GameInterface::updateObjectInterface() {
     const auto& selected = currentGame->getSelectedList();
-    const auto size      = selected.size();
-    if (size == 1) {
-        auto* pObject          = currentGame->getObjectManager().getObject(*(selected.begin()));
-        const auto newObjectID = pObject->getObjectID();
 
-        if (newObjectID != objectID) {
+    if (selected.empty()) {
+        removeOldContainer();
+        return;
+    }
+
+    const auto size = selected.size();
+
+    const auto renderer_width = getRendererWidth();
+
+    if (size == 1) {
+        const auto selected_object_id = *selected.begin();
+
+        auto* pObject = currentGame->getObjectManager().getObject(selected_object_id);
+        if (!pObject) {
+            sdl2::log_error("The selected object %d cannot be found!", selected_object_id);
+            currentGame->clearSelectedList();
+            return;
+        }
+
+        if (selected_object_id != objectID) {
             removeOldContainer();
 
             pObjectContainer = pObject->getInterfaceContainer(context_);
 
             if (pObjectContainer != nullptr) {
-                objectID = newObjectID;
+                objectID = selected_object_id;
 
-                windowWidget.addWidget(pObjectContainer.get(),
-                                       Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
+                windowWidget.addWidget(pObjectContainer.get(), Point(renderer_width - sideBar.getSize().x + 24, 146),
                                        Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
             }
 
@@ -201,32 +215,30 @@ void GameInterface::updateObjectInterface() {
                 removeOldContainer();
             }
         }
-    } else if (size > 1) {
 
-        if ((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
-            // either there was nothing selected before or exactly one unit
+        return;
+    }
 
-            if (pObjectContainer != nullptr) {
-                removeOldContainer();
-            }
+    if ((pObjectContainer == nullptr) || (objectID != NONE_ID)) {
+        // either there was nothing selected before or exactly one unit
 
-            pObjectContainer = MultiUnitInterface::create(context_);
-
-            windowWidget.addWidget(pObjectContainer.get(), Point(getRendererWidth() - sideBar.getSize().x + 24, 146),
-                                   Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
-        } else {
-            if (!pObjectContainer->update()) {
-                removeOldContainer();
-            }
-        }
-    } else {
         removeOldContainer();
+
+        pObjectContainer = MultiUnitInterface::create(context_);
+
+        windowWidget.addWidget(pObjectContainer.get(), Point(renderer_width - sideBar.getSize().x + 24, 146),
+                               Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
+    } else {
+        if (!pObjectContainer->update()) {
+            removeOldContainer();
+        }
     }
 }
 
 void GameInterface::removeOldContainer() {
-    if (pObjectContainer != nullptr) {
-        pObjectContainer.reset();
-        objectID = NONE_ID;
-    }
+    if (pObjectContainer == nullptr)
+        return;
+
+    pObjectContainer.reset();
+    objectID = NONE_ID;
 }

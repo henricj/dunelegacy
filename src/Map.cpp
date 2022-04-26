@@ -508,9 +508,7 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
     // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from
     // the selected group of units
     if (!objectARGMode) {
-        currentGame->unselectAll(currentGame->getSelectedList());
-        currentGame->getSelectedList().clear();
-        currentGame->selectionChanged();
+        currentGame->clearSelectedList();
     }
 
     if ((x1 == x2) && (y1 == y2)) {

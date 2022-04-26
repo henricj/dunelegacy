@@ -236,8 +236,7 @@ public:
     void setLocation(const GameContext& context, const Coord& location) {
         setLocation(context, location.x, location.y);
     }
-    bool hasATarget() const noexcept { return (target); }
-    bool hasObjectID(uint32_t id) const noexcept { return (objectID == id); }
+    bool hasATarget() const noexcept { return target; }
     bool isActive() const noexcept { return active; }
     bool isRespondable() const noexcept { return respondable; }
     bool isByScenario() const noexcept { return byScenario; }

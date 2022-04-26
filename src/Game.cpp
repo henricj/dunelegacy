@@ -1863,13 +1863,15 @@ void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
 
 void Game::selectAll(const Dune::selected_set_type& aList) const {
     for (const auto objectID : aList) {
-        objectManager.getObject(objectID)->setSelected(true);
+        if (auto* object = objectManager.getObject(objectID))
+            object->setSelected(true);
     }
 }
 
 void Game::unselectAll(const Dune::selected_set_type& aList) const {
     for (const auto objectID : aList) {
-        objectManager.getObject(objectID)->setSelected(false);
+        if (auto* object = objectManager.getObject(objectID))
+            object->setSelected(false);
     }
 }
 
@@ -2067,6 +2069,12 @@ void Game::removeFromQuickSelectionLists(uint32_t objectID) {
     }
 }
 
+void Game::clearSelectedList() {
+    unselectAll(selectedList);
+    selectedList.clear();
+    selectionChanged();
+}
+
 void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     switch (keyboardEvent.keysym.sym) {
 
@@ -2095,7 +2103,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             }
 
             selectedList.clear();
-            currentGame->selectionChanged();
+            selectionChanged();
             currentCursorMode = CursorMode_Normal;
         } break;
 
@@ -2135,9 +2143,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     // we add the items from this list to the list of selected items
                 } else {
                     // we replace the list of the selected items with the items from this list
-                    unselectAll(selectedList);
-                    selectedList.clear();
-                    currentGame->selectionChanged();
+                    clearSelectedList();
                 }
 
                 // now we add the selected items
@@ -2146,7 +2152,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     if (pObject->getOwner() == pLocalHouse) {
                         pObject->setSelected(true);
                         selectedList.insert(pObject->getObjectID());
-                        currentGame->selectionChanged();
+                        selectionChanged();
                     }
                 }
 
@@ -2725,7 +2731,7 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 
         pStructure2Select->setSelected(true);
         selectedList.insert(pStructure2Select->getObjectID());
-        currentGame->selectionChanged();
+        selectionChanged();
 
         // we center around the newly selected construction yard
         screenborder->setNewScreenCenter(pStructure2Select->getLocation() * TILESIZE);
