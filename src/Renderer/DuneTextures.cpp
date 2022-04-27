@@ -54,16 +54,15 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
         return {false, rectpack2D::rect_wh{}};
     }
 
-    sdl2::log_info(fmt::format("Packed in {}x{}", result_size.w, result_size.h).c_str());
+    sdl2::log_info("Packed in %dx%d", result_size.w, result_size.h);
 
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
     sdl2::log_info(fmt::format("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
-                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h))
-                       .c_str());
+                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h)));
 
     // for(const auto& r : rectangles) {
-    //    sdl2::log_info(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y).c_str());
+    //    sdl2::log_info(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y));
     //}
 
 #if _DEBUG

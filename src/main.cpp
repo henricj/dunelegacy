@@ -265,7 +265,7 @@ void setVideoMode(int displayIndex) {
     int screen_access      = 0;
     if (0 == SDL_QueryTexture(screenTexture, &screen_format, &screen_access, nullptr, nullptr)) {
         if (screen_format != SCREEN_FORMAT)
-            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", std::to_string(screen_format).c_str());
+            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", SDL_GetPixelFormatName(screen_format));
     }
 }
 
@@ -401,17 +401,13 @@ void showMissingFilesMessageBox() {
         "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
     for (const auto& missingFile : FileManager::getMissingFiles()) {
-        instruction += " ";
-        instruction += reinterpret_cast<const char*>(missingFile.u8string().c_str());
-        instruction += "\n";
+        instruction += fmt::sprintf(" %s\n", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
         sdl2::log_error("missing required %s", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
     for (const auto& searchPath : FileManager::getSearchPath()) {
-        instruction += " ";
-        instruction += reinterpret_cast<const char*>(searchPath.u8string().c_str());
-        instruction += "\n";
+        instruction += fmt::sprintf(" %s\n", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
         sdl2::log_info("search path %s", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
     }
 
@@ -766,7 +762,7 @@ bool run_game(int argc, char* argv[]) {
         pGFXManager        = std::make_unique<GFXManager>();
         const auto elapsed = std::chrono::steady_clock::now() - start;
 
-        sdl2::log_info("GFXManager time: %s", std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
+        sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
 
         if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
             SDL_SetCursor(cursor);
@@ -775,8 +771,7 @@ bool run_game(int argc, char* argv[]) {
         try {
             auto sfxResult = sfxManagerFut.get();
             pSFXManager    = std::move(sfxResult.first);
-            sdl2::log_info("SFXManager time: %s",
-                           std::to_string(std::chrono::duration<double>(sfxResult.second).count()).c_str());
+            sdl2::log_info("SFXManager time: %f", std::chrono::duration<double>(sfxResult.second).count());
         } catch (const std::exception& e) {
             pSFXManager        = nullptr;
             const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
@@ -978,10 +973,10 @@ int main(int argc, char* argv[]) {
 
         return okay ? EXIT_SUCCESS : EXIT_FAILURE;
     } catch (const std::exception& e) {
-        const std::string message = std::string("An unhandled exception of type \'") + demangleSymbol(typeid(e).name())
-                                  + std::string("\' was thrown:\n\n") + e.what()
-                                  + std::string("\n\nDune Legacy will now be terminated!");
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message.c_str());
+        const auto message = fmt::format("An unhandled exception of type \'{}\' was thrown:\n\n"
+                                         "{}\n\nDune Legacy will now be terminated!",
+                                         demangleSymbol(typeid(e).name()), e.what());
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message);
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
         return EXIT_FAILURE;

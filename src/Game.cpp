@@ -148,7 +148,7 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
         } break;
 
         case GameType::LoadMultiplayer: {
-            IMemoryStream memStream(gameInitSettings.getFiledata().c_str(), gameInitSettings.getFiledata().size());
+            IMemoryStream memStream(gameInitSettings.getFiledata().data(), gameInitSettings.getFiledata().size());
 
             if (!loadSaveGame(memStream)) {
                 THROW(std::runtime_error, "Loading save game failed!");
@@ -1053,7 +1053,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
         if (pPlayer != nullptr) {
             if (pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
                 // sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount,
-                // pPlayer->getPlayername().c_str(), pPlayer->nextExpectedCommandsCycle);
+                // pPlayer->getPlayername(), pPlayer->nextExpectedCommandsCycle);
                 bWaitForNetwork = true;
                 break;
             }
@@ -1191,9 +1191,8 @@ void Game::runMainLoop(const GameContext& context) {
         if (!isOpen) {
             const std::error_code replay_error{errno, std::generic_category()};
 
-            sdl2::log_error(
-                SDL_LOG_CATEGORY_APPLICATION,
-                fmt::format("Unable to open the default replay file: {}  Retrying...", replay_error.message()).c_str());
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the default replay file: %s  Retrying...",
+                            replay_error.message());
 
             auto& uiRandom = pGFXManager->random();
 
@@ -1208,11 +1207,9 @@ void Game::runMainLoop(const GameContext& context) {
 
                 const std::error_code replay2_error{errno, std::generic_category()};
 
-                sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION,
-                                fmt::format("Unable to open the replay file {}: {}",
-                                            std::filesystem::path{replayname2}.filename().string(),
-                                            replay2_error.message())
-                                    .c_str());
+                sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay file %s: %s",
+                                reinterpret_cast<const char*>(replayname2.filename().u8string().c_str()),
+                                replay2_error.message());
             }
         }
 
