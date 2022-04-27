@@ -34,52 +34,58 @@
 GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
     GameInterface::setTransparentBackground(true);
 
-    GameInterface::setCurrentPosition(0, 0, getRendererWidth(), getRendererHeight());
+    const auto width  = getRendererWidth();
+    const auto height = getRendererHeight();
+
+    GameInterface::setCurrentPosition(0, 0, width, height);
 
     GameInterface::setWindowWidget(&windowWidget);
 
+    const auto* const gfx = pGFXManager.get();
+
     // top bar
-    const auto* const pTopBarTex = pGFXManager->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
+    const auto* const pTopBarTex = gfx->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
     topBar.setTexture(pTopBarTex);
-    windowWidget.addWidget(&topBar, Point(0, 0), Point(getWidth(pTopBarTex), getHeight(pTopBarTex) - 12));
+    windowWidget.addWidget(
+        &topBar, {},
+        {static_cast<int>(std::ceil(getWidth(pTopBarTex))), static_cast<int>(std::ceil(getHeight(pTopBarTex))) - 12});
 
     // side bar
-    const auto* const pSideBarTex = pGFXManager->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
+    const auto* const pSideBarTex = gfx->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
     sideBar.setTexture(pSideBarTex);
     const auto dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
     windowWidget.addWidget(&sideBar, dest);
 
     // add buttons
-    windowWidget.addWidget(&topBarHBox, Point(5, 5),
-                           Point(getRendererWidth() - sideBar.getSize().x, topBar.getSize().y - 10));
+    windowWidget.addWidget(&topBarHBox, {5, 5}, {width - sideBar.getSize().x, topBar.getSize().y - 10});
 
     topBarHBox.addWidget(&newsticker);
 
     topBarHBox.addWidget(Spacer::create());
 
-    optionsButton.setTextures(pGFXManager->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
-                              pGFXManager->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
+    optionsButton.setTextures(gfx->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
+                              gfx->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
     optionsButton.setOnClick([] { currentGame->onOptions(); });
     topBarHBox.addWidget(&optionsButton);
 
     topBarHBox.addWidget(Spacer::create());
 
-    mentatButton.setTextures(pGFXManager->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
-                             pGFXManager->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
+    mentatButton.setTextures(gfx->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
+                             gfx->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
     mentatButton.setOnClick([] { currentGame->onMentat(); });
     topBarHBox.addWidget(&mentatButton);
 
     topBarHBox.addWidget(Spacer::create());
 
     // add radar
-    windowWidget.addWidget(&radarView, Point(getRendererWidth() - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0),
+    windowWidget.addWidget(&radarView, {width - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0},
                            radarView.getMinimumSize());
     radarView.setOnRadarClick([&](Coord worldPosition, bool bRightMouseButton, bool bDrag) {
         return context_.game.onRadarClick(context_, worldPosition, bRightMouseButton, bDrag);
     });
 
     // add chat manager
-    windowWidget.addWidget(&chatManager, Point(20, 60), Point(getRendererWidth() - sideBar.getSize().x, 360));
+    windowWidget.addWidget(&chatManager, {20, 60}, {width - sideBar.getSize().x, 360});
 }
 
 GameInterface::~GameInterface() = default;
@@ -202,8 +208,8 @@ void GameInterface::updateObjectInterface() {
             if (pObjectContainer != nullptr) {
                 objectID = selected_object_id;
 
-                windowWidget.addWidget(pObjectContainer.get(), Point(renderer_width - sideBar.getSize().x + 24, 146),
-                                       Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
+                windowWidget.addWidget(pObjectContainer.get(), {renderer_width - sideBar.getSize().x + 24, 146},
+                                       {sideBar.getSize().x - 25, getRendererHeight() - 148});
             }
 
         } else {
@@ -222,8 +228,8 @@ void GameInterface::updateObjectInterface() {
 
         pObjectContainer = MultiUnitInterface::create(context_);
 
-        windowWidget.addWidget(pObjectContainer.get(), Point(renderer_width - sideBar.getSize().x + 24, 146),
-                               Point(sideBar.getSize().x - 25, getRendererHeight() - 148));
+        windowWidget.addWidget(pObjectContainer.get(), {renderer_width - sideBar.getSize().x + 24, 146},
+                               {sideBar.getSize().x - 25, getRendererHeight() - 148});
     } else {
         if (!pObjectContainer->update()) {
             removeOldContainer();
