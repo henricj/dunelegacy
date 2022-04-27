@@ -57,12 +57,14 @@ public:
         if (it == std::end(containedWidgets))
             return;
 
-        setActiveChildWidget(false, pChildWidget);
+        auto* widget = it->pWidget;
+
+        setActiveChildWidget(false, widget);
 
         containedWidgets.erase(it);
 
-        pChildWidget->setParent(nullptr);
-        pChildWidget->destroy();
+        widget->setParent(nullptr);
+        widget->destroy();
 
         resizeAll();
     }
@@ -349,7 +351,7 @@ public:
 
     /**
         Returns the position of widget relative to the top left corner of this container
-        \param widgetData   the widget data to get the position from.
+        \param widget   the widget data to get the position from.
         \return The position of the left upper corner of widget or (-1,-1) if widget cannot be found in this container
     */
     virtual Point getWidgetPosition(const Widget* widget) {
@@ -409,7 +411,7 @@ public:
         This method frees all textures that are used by contained widgets
     */
     void invalidateTextures() override {
-        for (auto& wd : containedWidgets)
+        for (const auto& wd : containedWidgets)
             wd.pWidget->invalidateTextures();
 
         parent::invalidateTextures();
@@ -543,8 +545,8 @@ protected:
             wd.pWidget->destroy();
     }
 
-    WidgetList containedWidgets; ///< List of widgets
-    Widget* pActiveChildWidget;  ///< currently active widget
+    WidgetList containedWidgets;  ///< List of widgets
+    Widget* pActiveChildWidget{}; ///< currently active widget
 };
 
 #endif // CONTAINER_H

@@ -25,22 +25,24 @@ void VBox::addWidget(Widget* newWidget, int32_t fixedHeight) {
     if (newWidget == nullptr)
         return;
 
-    containedWidgets.push_back(VBox_WidgetData(newWidget, fixedHeight));
+    containedWidgets.emplace_back(newWidget, fixedHeight);
     newWidget->setParent(this);
     resizeAll();
 }
 
 void VBox::addWidget(Widget* newWidget, double weight) {
     if (newWidget != nullptr) {
-        containedWidgets.push_back(VBox_WidgetData(newWidget, weight));
+        containedWidgets.emplace_back(newWidget, weight);
         newWidget->setParent(this);
-        Widget::resizeAll();
+
+        resizeAll();
     }
 }
 
 Point VBox::getMinimumSize() const {
     Point p(0, 0);
-    for (const VBox_WidgetData& widgetData : containedWidgets) {
+
+    for (const auto& widgetData : containedWidgets) {
         p.x = std::max(p.x, widgetData.pWidget->getMinimumSize().x);
         if (widgetData.fixedHeight > 0) {
             p.y += widgetData.fixedHeight;
@@ -52,14 +54,14 @@ Point VBox::getMinimumSize() const {
 }
 
 void VBox::resize(uint32_t width, uint32_t height) {
-    int32_t availableHeight = height;
+    auto availableHeight = static_cast<int>(height);
 
-    int numRemainingWidgets = containedWidgets.size();
+    auto numRemainingWidgets = static_cast<int>(containedWidgets.size());
 
     // Find objects that are not allowed to be resized or have a fixed width
     // also find the sum of all weights
-    double weightSum = 0.0;
-    for (const VBox_WidgetData& widgetData : containedWidgets) {
+    auto weightSum = 0.0;
+    for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingYAllowed() == false) {
             availableHeight = availableHeight - widgetData.pWidget->getSize().y;
             numRemainingWidgets--;
@@ -73,40 +75,42 @@ void VBox::resize(uint32_t width, uint32_t height) {
 
     // Under the resizeable widgets find all objects that are oversized (minimum size > AvailableHeight*weight)
     // also calculate the weight sum of all the resizeable widgets that are not oversized
-    int32_t neededOversizeHeight = 0;
-    double notOversizedWeightSum = 0.0;
-    for (const VBox_WidgetData& widgetData : containedWidgets) {
-        if (widgetData.pWidget->resizingYAllowed() == true && widgetData.fixedHeight <= 0) {
-            if (static_cast<double>(widgetData.pWidget->getMinimumSize().y)
-                > availableHeight * (widgetData.weight / weightSum)) {
-                neededOversizeHeight += widgetData.pWidget->getMinimumSize().y;
-            } else {
-                notOversizedWeightSum += widgetData.weight;
-            }
+    auto neededOversizeHeight  = 0;
+    auto notOversizedWeightSum = 0.0;
+    for (const auto& widgetData : containedWidgets) {
+        if (widgetData.pWidget->resizingYAllowed() != true || widgetData.fixedHeight > 0)
+            continue;
+
+        if (static_cast<double>(widgetData.pWidget->getMinimumSize().y)
+            > availableHeight * (widgetData.weight / weightSum)) {
+            neededOversizeHeight += widgetData.pWidget->getMinimumSize().y;
+        } else {
+            notOversizedWeightSum += widgetData.weight;
         }
     }
 
-    const int32_t totalAvailableHeight = availableHeight;
-    for (const VBox_WidgetData& widgetData : containedWidgets) {
-        int32_t widgetWidth;
-        if (widgetData.pWidget->resizingXAllowed() == true) {
-            widgetWidth = width;
-        } else {
-            widgetWidth = widgetData.pWidget->getMinimumSize().x;
-        }
+    const auto totalAvailableHeight = availableHeight;
+    for (const auto& widgetData : containedWidgets) {
+        auto* const widget = widgetData.pWidget;
 
-        if (widgetData.pWidget->resizingYAllowed() == true) {
-            int32_t WidgetHeight = 0;
+        assert(widget);
+
+        const auto widgetWidth = widget->resizingXAllowed() ? width : widget->getMinimumSize().x;
+
+        if (widget->resizingYAllowed() == true) {
+            auto WidgetHeight = 0;
 
             if (widgetData.fixedHeight <= 0) {
                 if (numRemainingWidgets <= 1) {
                     WidgetHeight = availableHeight;
-                } else if (static_cast<double>(widgetData.pWidget->getMinimumSize().y)
+                } else if (static_cast<double>(widget->getMinimumSize().y)
                            > totalAvailableHeight * (widgetData.weight / weightSum)) {
-                    WidgetHeight = widgetData.pWidget->getMinimumSize().y;
+                    WidgetHeight = widget->getMinimumSize().y;
                 } else {
-                    WidgetHeight = static_cast<int32_t>((totalAvailableHeight - neededOversizeHeight)
-                                                        * (widgetData.weight / notOversizedWeightSum));
+                    const auto new_height =
+                        (totalAvailableHeight - neededOversizeHeight) * (widgetData.weight / notOversizedWeightSum);
+
+                    WidgetHeight = static_cast<int32_t>(std::round(new_height));
                 }
                 availableHeight -= WidgetHeight;
                 numRemainingWidgets--;
@@ -114,13 +118,13 @@ void VBox::resize(uint32_t width, uint32_t height) {
                 WidgetHeight = widgetData.fixedHeight;
             }
 
-            widgetData.pWidget->resize(widgetWidth, WidgetHeight);
+            widget->resize(widgetWidth, WidgetHeight);
         } else {
-            widgetData.pWidget->resize(widgetWidth, widgetData.pWidget->getSize().y);
+            widget->resize(widgetWidth, widget->getSize().y);
         }
     }
 
-    Container<VBox_WidgetData>::resize(width, height);
+    parent::resize(width, height);
 }
 
 VBox* VBox::create() {
@@ -132,10 +136,11 @@ VBox* VBox::create() {
 
 Point VBox::getPosition(const VBox_WidgetData& widgetData) const {
     Point p(0, 0);
-    for (const VBox_WidgetData& tmpWidgetData : containedWidgets) {
-        if (widgetData.pWidget == tmpWidgetData.pWidget) {
+
+    for (const auto& tmpWidgetData : containedWidgets) {
+        if (widgetData.pWidget == tmpWidgetData.pWidget)
             return p;
-        }
+
         p.y = p.y + tmpWidgetData.pWidget->getSize().y;
     }
 
