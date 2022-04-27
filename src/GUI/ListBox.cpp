@@ -29,9 +29,7 @@ ListBox::ListBox() : color(COLOR_DEFAULT) {
     resize(ListBox::getMinimumSize().x, ListBox::getMinimumSize().y);
 }
 
-ListBox::~ListBox() {
-    ListBox::invalidateTextures();
-}
+ListBox::~ListBox() = default;
 
 void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x, y, insideOverlay);
@@ -79,7 +77,7 @@ bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
 }
 
 bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
-    Widget::handleKeyPress(key);
+    parent::handleKeyPress(key);
     if (isActive()) {
         switch (key.keysym.sym) {
             case SDLK_UP: {
@@ -126,7 +124,7 @@ void ListBox::draw(Point position) {
 }
 
 void ListBox::resize(uint32_t width, uint32_t height) {
-    Widget::resize(width, height);
+    parent::resize(width, height);
 
     scrollbar.resize(scrollbar.getMinimumSize().x, height);
 
@@ -134,7 +132,7 @@ void ListBox::resize(uint32_t width, uint32_t height) {
 }
 
 void ListBox::setActive() {
-    Widget::setActive();
+    parent::setActive();
 
     if (selectedElement == -1 && getNumEntries() > 0) {
         selectedElement = 0;
@@ -156,7 +154,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
 
         const auto& gui = GUIStyle::getInstance();
 
-        const int numVisibleElements = (getSize().y - 2) / static_cast<int>(gui.getListBoxEntryHeight()) + 1;
+        const int numVisibleElements = (getSize().y - 2) / gui.getListBoxEntryHeight() + 1;
 
         if (selectedElement >= firstVisibleElement + numVisibleElements - 1) {
             firstVisibleElement = selectedElement - (numVisibleElements - 1) + 1;
@@ -179,7 +177,7 @@ void ListBox::setSelectedItem(int index, bool bInteractive) {
 }
 
 void ListBox::updateTextures() {
-    Widget::updateTextures();
+    parent::updateTextures();
 
     const auto& gui = GUIStyle::getInstance();
 
@@ -245,7 +243,7 @@ void ListBox::updateList() {
 
     const auto& gui = GUIStyle::getInstance();
 
-    const auto numVisibleElements = surfaceHeight / static_cast<int>(gui.getListBoxEntryHeight());
+    const auto numVisibleElements = surfaceHeight / gui.getListBoxEntryHeight();
 
     scrollbar.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
     scrollbar.setBigStepSize(std::max(1, numVisibleElements - 1));

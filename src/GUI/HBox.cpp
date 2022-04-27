@@ -25,7 +25,7 @@ void HBox::addWidget(Widget* newWidget, int32_t fixedWidth) {
     if (newWidget == nullptr)
         return;
 
-    containedWidgets.push_back(HBox_WidgetData(newWidget, fixedWidth));
+    containedWidgets.emplace_back(newWidget, fixedWidth);
     newWidget->setParent(this);
     resizeAll();
 }
@@ -33,14 +33,15 @@ void HBox::addWidget(Widget* newWidget, int32_t fixedWidth) {
 void HBox::addWidget(Widget* newWidget, double weight) {
     if (newWidget == nullptr)
         return;
-    containedWidgets.push_back(HBox_WidgetData(newWidget, weight));
+    containedWidgets.emplace_back(newWidget, weight);
     newWidget->setParent(this);
     resizeAll();
 }
 
 Point HBox::getMinimumSize() const {
     Point p(0, 0);
-    for (const HBox_WidgetData& widgetData : containedWidgets) {
+
+    for (const auto& widgetData : containedWidgets) {
         if (widgetData.fixedWidth > 0) {
             p.x += widgetData.fixedWidth;
         } else {
@@ -59,7 +60,7 @@ void HBox::resize(uint32_t width, uint32_t height) {
     // Find objects that are not allowed to be resized or have a fixed width
     // also find the sum of all weights
     double weightSum = 0.0;
-    for (const HBox_WidgetData& widgetData : containedWidgets) {
+    for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingXAllowed() == false) {
             availableWidth = availableWidth - widgetData.pWidget->getSize().x;
             numRemainingWidgets--;
@@ -75,7 +76,7 @@ void HBox::resize(uint32_t width, uint32_t height) {
     // also calculate the weight sum of all the resizeable widgets that are not oversized
     int32_t neededOversizeWidth  = 0;
     double notOversizedWeightSum = 0.0;
-    for (const HBox_WidgetData& widgetData : containedWidgets) {
+    for (const auto& widgetData : containedWidgets) {
         if (widgetData.pWidget->resizingXAllowed() == true && widgetData.fixedWidth <= 0) {
             if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
                 > availableWidth * (widgetData.weight / weightSum)) {
@@ -87,26 +88,25 @@ void HBox::resize(uint32_t width, uint32_t height) {
     }
 
     const int32_t totalAvailableWidth = availableWidth;
-    for (const HBox_WidgetData& widgetData : containedWidgets) {
-        int32_t widgetHeight;
-        if (widgetData.pWidget->resizingYAllowed() == true) {
-            widgetHeight = height;
-        } else {
-            widgetHeight = widgetData.pWidget->getMinimumSize().y;
-        }
+    for (const auto& widgetData : containedWidgets) {
+        auto* const widget = widgetData.pWidget;
 
-        if (widgetData.pWidget->resizingXAllowed() == true) {
-            int32_t widgetWidth = 0;
+        const auto widgetHeight = widget->resizingYAllowed() ? height : widget->getMinimumSize().y;
+
+        if (widget->resizingXAllowed() == true) {
+            auto widgetWidth = 0;
 
             if (widgetData.fixedWidth <= 0) {
                 if (numRemainingWidgets <= 1) {
                     widgetWidth = availableWidth;
-                } else if (static_cast<double>(widgetData.pWidget->getMinimumSize().x)
+                } else if (static_cast<double>(widget->getMinimumSize().x)
                            > totalAvailableWidth * (widgetData.weight / weightSum)) {
-                    widgetWidth = widgetData.pWidget->getMinimumSize().x;
+                    widgetWidth = widget->getMinimumSize().x;
                 } else {
-                    widgetWidth = static_cast<int32_t>((totalAvailableWidth - neededOversizeWidth)
-                                                       * (widgetData.weight / notOversizedWeightSum));
+                    const auto new_width =
+                        (totalAvailableWidth - neededOversizeWidth) * (widgetData.weight / notOversizedWeightSum);
+
+                    widgetWidth = static_cast<int32_t>(std::round(new_width));
                 }
                 availableWidth -= widgetWidth;
                 numRemainingWidgets--;
@@ -114,13 +114,13 @@ void HBox::resize(uint32_t width, uint32_t height) {
                 widgetWidth = widgetData.fixedWidth;
             }
 
-            widgetData.pWidget->resize(widgetWidth, widgetHeight);
+            widget->resize(widgetWidth, widgetHeight);
         } else {
-            widgetData.pWidget->resize(widgetData.pWidget->getSize().x, widgetHeight);
+            widget->resize(widget->getSize().x, widgetHeight);
         }
     }
 
-    Container<HBox_WidgetData>::resize(width, height);
+    parent::resize(width, height);
 }
 
 HBox* HBox::create() {
@@ -131,7 +131,7 @@ HBox* HBox::create() {
 
 Point HBox::getPosition(const HBox_WidgetData& widgetData) const {
     Point p(0, 0);
-    for (const HBox_WidgetData& tmpWidgetData : containedWidgets) {
+    for (const auto& tmpWidgetData : containedWidgets) {
         if (widgetData.pWidget == tmpWidgetData.pWidget) {
             p.y = (getSize().y - tmpWidgetData.pWidget->getSize().y) / 2;
             return p;

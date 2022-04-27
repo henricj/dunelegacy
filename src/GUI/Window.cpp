@@ -291,12 +291,15 @@ void Window::setWindowWidget(Widget* widget) {
 
 void Window::resize(uint32_t width, uint32_t height) {
     parent::resize(width, height);
-    if (pWindowWidget != nullptr) {
+
+    if (pWindowWidget != nullptr)
         pWindowWidget->resize(width, height);
-    }
 }
 
 void Window::resizeAll() {
     // Windows do not get bigger if content changes
-    resize(getSize().x, getSize().y);
+
+    const auto size = getSize();
+
+    resize(size.x, size.y);
 }

@@ -25,7 +25,7 @@ void StaticContainer::addWidget(Widget* newWidget, Point position, Point size) {
     if (newWidget == nullptr)
         return;
 
-    containedWidgets.push_back(StaticContainer_WidgetData(newWidget, position, size));
+    containedWidgets.emplace_back(newWidget, position, size);
     newWidget->resize(size.x, size.y);
     newWidget->setParent(this);
 
