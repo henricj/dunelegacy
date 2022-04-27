@@ -63,14 +63,14 @@ public:
         \param newWidget    Widget to add
         \param rect         Position and size of the new Widget
     */
-    virtual void addWidget(Widget* newWidget, const SDL_Rect& rect);
+    void addWidget(Widget* newWidget, const SDL_Rect& rect);
 
     /**
         This method adds a new widget to this container.
         \param newWidget    Widget to add
         \param rect         Position and size of the new Widget
     */
-    virtual void addWidget(Widget* newWidget, const SDL_FRect& rect);
+    void addWidget(Widget* newWidget, const SDL_FRect& rect);
 
     /**
         Returns the minimum size of this container. The container should not
