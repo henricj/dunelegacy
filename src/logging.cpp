@@ -47,7 +47,7 @@ constexpr auto scale_GiB = 1.0 / (1024 * 1024 * 1024);
 
 #if defined(__clang_version__)
 void log_clang() {
-    sdl2::log_info("   Compiler: clang " __clang_version__);
+    sdl2::log_info("   Compiler: Clang " __clang_version__);
 }
 #elif defined(__GNUC_PATCHLEVEL__)
 void log_gcc() {
@@ -144,8 +144,28 @@ void log_build_info() {
     sdl2::log_info("   git " DUNE_GIT_REPO_URL);
 #endif
 
-#if defined(__SANITIZE_ADDRESS__)
-    sdl2::log_info("   *** Address Sanitizer enabled");
+#if !defined(HAS_ASAN)
+#    if defined(__has_feature)
+#        if __has_feature(address_sanitizer)
+#            define HAS_ASAN 1
+#        endif
+#    endif
+#endif
+
+#if !defined(HAS_ASAN)
+#    if defined(__SANITIZE_ADDRESS__)
+#        define HAS_ASAN 1
+#    endif
+#endif
+
+#if defined(HAS_ASAN)
+    sdl2::log_info("   *** Address Sanitizer (ASan) enabled");
+#endif
+
+#if defined(__has_feature)
+#    if __has_feature(undefined_behavior_sanitizer)
+    sdl2::log_info("   *** Undefined Behavior Sanitizer (UBSan) enabled");
+#    endif
 #endif
 
 #if defined(__clang_version__)
