@@ -629,9 +629,11 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                         continue;
                     }
 
+#if defined(DEBUG)
                     sdl2::log_info(fmt::format("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
                                                newUnit->getObjectID(), itemID, newUnit->getLocation().x,
                                                newUnit->getLocation().y, pos, PosStr, keyView));
+#endif // defined(DEBUG)
 
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
                     newUnit->doSetAttackMode(context, attackmode);
