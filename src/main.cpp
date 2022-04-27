@@ -679,6 +679,20 @@ void update_display_scale(SDL_Window* sdl_window) {
     gui.setZoom(scaleX);
 }
 
+namespace {
+
+template<typename TPtr>
+class GlobalCleanup final {
+public:
+    GlobalCleanup(std::unique_ptr<TPtr>& pointer) : pointer_{pointer} { }
+    ~GlobalCleanup() { pointer_.reset(); }
+
+private:
+    std::unique_ptr<TPtr>& pointer_;
+};
+
+} // namespace
+
 bool run_game(int argc, char* argv[]) {
     bool bExitGame       = false;
     bool bFirstInit      = true;
@@ -710,9 +724,11 @@ bool run_game(int argc, char* argv[]) {
             }
         }
 
+        GlobalCleanup file_cleanup{pFileManager};
         pFileManager = std::make_unique<FileManager>();
 
         // now we can finish loading texts
+        GlobalCleanup text_cleanup{pTextManager};
         pTextManager->loadData();
 
         palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
@@ -731,6 +747,7 @@ bool run_game(int argc, char* argv[]) {
                                 : settings.video.typeface;
 
         sdl2::log_info("Loading fonts from typeface %s...", typeface);
+        GlobalCleanup font_cleanup{pFontManager};
         pFontManager = std::make_unique<FontManager>(typeface);
 
         GUIStyle::setGUIStyle(std::make_unique<DuneStyle>(pFontManager.get()));
@@ -745,6 +762,7 @@ bool run_game(int argc, char* argv[]) {
 
         sdl2::log_info("Loading graphics and sounds...");
 
+        GlobalCleanup sfx_cleanup{pSFXManager};
 #ifdef HAS_ASYNC
         // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
         auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
@@ -758,6 +776,7 @@ bool run_game(int argc, char* argv[]) {
         pSFXManager = std::make_unique<SFXManager>();
 #endif
 
+        GlobalCleanup gfx_cleanup{pGFXManager};
         const auto start   = std::chrono::steady_clock::now();
         pGFXManager        = std::make_unique<GFXManager>();
         const auto elapsed = std::chrono::steady_clock::now() - start;
@@ -812,6 +831,9 @@ bool run_game(int argc, char* argv[]) {
         sdl2::log_info("Starting main menu...");
 
         { // Scope
+            GlobalCleanup game_cleanup{currentGame};
+            GlobalCleanup border_cleanup{screenborder};
+
             if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
                 bExitGame = true;
             }
@@ -831,12 +853,6 @@ bool run_game(int argc, char* argv[]) {
             // save the current display index for later reuse
             currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
         }
-
-        pTextManager.reset();
-        pSFXManager.reset();
-        pGFXManager.reset();
-        pFontManager.reset();
-        pFileManager.reset();
 
         SDL_DestroyTexture(screenTexture);
         SDL_DestroyRenderer(renderer);
@@ -891,6 +907,8 @@ int main(int argc, char* argv[]) {
 
     // global try/catch around everything
     try {
+        GlobalCleanup sound_cleanup{soundPlayer};
+        GlobalCleanup music_cleanup{musicPlayer};
 
         // init fnkdat
         { // Scope
