@@ -773,7 +773,7 @@ UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenar
     if (!newUnit)
         return nullptr;
 
-    const Coord pos = Coord(xPos, yPos);
+    const Coord pos{xPos, yPos};
     if (newUnit->canPass(xPos, yPos)) {
         newUnit->deploy(context, pos);
     } else {

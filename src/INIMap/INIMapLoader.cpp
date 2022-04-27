@@ -620,28 +620,25 @@ void INIMapLoader::loadUnits(const GameContext& context) {
 
             if (auto* house = getOrCreateHouse(context, houseID)) {
                 for (auto i = 0; i < Num2Place; i++) {
-                    auto* newUnit =
-                        house->placeUnit(static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
+                    auto* const newUnit = house->placeUnit(itemID, getXPos(pos), getYPos(pos), true);
                     if (newUnit == nullptr) {
-                        logWarning(
-                            key.getLineNumber(),
+                        auto warning =
                             fmt::format("Invalid or occupied position for '{}': '{}' ({}x{}/{}) after parsing {}!",
-                                        UnitStr, PosStr, getXPos(pos), getYPos(pos), PosStr, keyView));
+                                        UnitStr, PosStr, getXPos(pos), getYPos(pos), PosStr, keyView);
+                        logWarning(key.getLineNumber(), warning);
                         continue;
                     }
 
                     sdl2::log_info(fmt::format("Placed unit {} of type {} at {}x{} ({}/{}) after parsing {}",
                                                newUnit->getObjectID(), itemID, newUnit->getLocation().x,
-                                               newUnit->getLocation().y, pos, PosStr, keyView)
-                                       .c_str());
+                                               newUnit->getLocation().y, pos, PosStr, keyView));
 
                     newUnit->setHealth((newUnit->getMaxHealth() * percentHealth));
                     newUnit->doSetAttackMode(context, attackmode);
                     newUnit->setAngle(angle);
 
-                    if (auto* pTankBase = dune_cast<TankBase>(newUnit)) {
+                    if (auto* pTankBase = dune_cast<TankBase>(newUnit))
                         pTankBase->setTurretAngle(angle);
-                    }
                 }
             } else {
                 logWarning(key.getLineNumber(),
@@ -665,6 +662,8 @@ void INIMapLoader::loadStructures(const GameContext& context) {
         std::string tmpkey = key.getKeyName();
         std::string tmp    = key.getStringValue();
 
+        auto& object_data = pGame->objectData;
+
         if (tmpkey.compare(0, 3, "GEN") == 0) {
             // Gen Object/Structure
             std::string PosStr = tmpkey.substr(3, tmpkey.size() - 3);
@@ -687,15 +686,13 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                 continue;
             }
 
-            if (BuildingStr == "Concrete"
-                && pGame->objectData.data[Structure_Slab1][static_cast<int>(houseID)].enabled) {
+            if (BuildingStr == "Concrete" && object_data.data[Structure_Slab1][static_cast<int>(houseID)].enabled) {
                 getOrCreateHouse(context, houseID)
                     ->placeStructure(NONE_ID, Structure_Slab1, getXPos(pos), getYPos(pos), true);
-            } else if (BuildingStr == "Wall"
-                       && pGame->objectData.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
-                if (getOrCreateHouse(context, houseID)
-                        ->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true)
-                    == nullptr) {
+            } else if (BuildingStr == "Wall" && object_data.data[Structure_Wall][static_cast<int>(houseID)].enabled) {
+                auto* structure = getOrCreateHouse(context, houseID)
+                                      ->placeStructure(NONE_ID, Structure_Wall, getXPos(pos), getYPos(pos), true);
+                if (structure == nullptr) {
                     logWarning(key.getLineNumber(),
                                fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
                 }
@@ -738,10 +735,9 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                 continue;
             }
 
-            if (itemID != 0 && pGame->objectData.data[itemID][static_cast<int>(houseID)].enabled) {
-                ObjectBase* newStructure =
-                    getOrCreateHouse(context, houseID)
-                        ->placeStructure(NONE_ID, static_cast<ItemID_enum>(itemID), getXPos(pos), getYPos(pos), true);
+            if (itemID != 0 && object_data.data[itemID][static_cast<int>(houseID)].enabled) {
+                auto* const newStructure = getOrCreateHouse(context, houseID)
+                                               ->placeStructure(NONE_ID, itemID, getXPos(pos), getYPos(pos), true);
                 if (newStructure == nullptr) {
                     logWarning(key.getLineNumber(),
                                fmt::format("Invalid or occupied position for '{}': '{}'!", BuildingStr, PosStr));
