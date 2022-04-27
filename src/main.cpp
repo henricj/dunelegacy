@@ -940,7 +940,7 @@ int main(int argc, char* argv[]) {
 
         SDL_handle sdl_handle{SDL_INIT_TIMER | SDL_INIT_VIDEO};
 
-        SDL_version compiledVersion;
+        SDL_version compiledVersion{};
         SDL_version linkedVersion;
         SDL_VERSION(&compiledVersion)
         SDL_GetVersion(&linkedVersion);
@@ -950,7 +950,7 @@ int main(int argc, char* argv[]) {
 
         TTF_handle ttf_handle;
 
-        SDL_version TTFCompiledVersion;
+        SDL_version TTFCompiledVersion{};
         SDL_TTF_VERSION(&TTFCompiledVersion);
         const SDL_version* pTTFLinkedVersion = TTF_Linked_Version();
         sdl2::log_info("SDL2_ttf runtime v%d.%d.%d", pTTFLinkedVersion->major, pTTFLinkedVersion->minor,
