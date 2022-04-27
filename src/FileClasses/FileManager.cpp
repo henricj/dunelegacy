@@ -43,7 +43,7 @@ FileManager::FileManager() {
             auto filepath = sp / filename;
             if (getCaseInsensitiveFilename(filepath)) {
                 try {
-                    sdl2::log_info("%s  %s", md5FromFilename(filepath).c_str(),
+                    sdl2::log_info("%s  %s", md5FromFilename(filepath),
                                    reinterpret_cast<const char*>(filepath.u8string().c_str()));
                     pakFiles.push_back(std::make_unique<Pakfile>(filepath));
                 } catch (std::exception& e) {
@@ -59,7 +59,7 @@ FileManager::FileManager() {
         }
     }
 
-    sdl2::log_info("%s", "");
+    sdl2::log_info("");
 }
 
 FileManager::~FileManager() = default;

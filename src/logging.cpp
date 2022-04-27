@@ -428,7 +428,8 @@ void logging_configure(bool capture_output) {
 
         if (log_handle == INVALID_HANDLE_VALUE) {
             // use stdout in this error case as stderr is not yet ready
-            THROW(io_error, "Opening logfile '%s' as stdout failed!", logfilePath.string().c_str());
+            THROW(io_error, "Opening logfile '%s' as stdout failed!",
+                  reinterpret_cast<const char*>(logfilePath.u8string().c_str()));
         }
 
         if (!SetStdHandle(STD_OUTPUT_HANDLE, log_handle))

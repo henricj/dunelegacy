@@ -134,7 +134,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         const auto itemID = getItemIDByName(sectionName);
 
         if (itemID == ItemID_Invalid) {
-            sdl2::log_info("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName.c_str());
+            sdl2::log_info("ObjectData::ObjectData(): '%s' is no valid unit/structure name!", sectionName);
             continue;
         }
 
@@ -279,7 +279,7 @@ ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, const std::str
     if (itemID == ItemID_Invalid) {
         sdl2::log_info(
             "Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure/unit name!",
-            section.c_str(), key.c_str(), strItem.c_str());
+            section, key, strItem);
         return defaultValue;
     }
 
