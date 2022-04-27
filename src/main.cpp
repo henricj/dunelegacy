@@ -217,7 +217,7 @@ void setVideoMode(int displayIndex) {
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
 
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+    // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
 
 #if defined(_WIN32)
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
