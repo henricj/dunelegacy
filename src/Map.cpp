@@ -399,15 +399,15 @@ Coord Map::getMapPos(ANGLETYPE angle, const Coord& source) {
     // clang-format off
     switch (angle)
     {
-        case ANGLETYPE::RIGHT:      return Coord(source.x + 1 , source.y    );
-        case ANGLETYPE::RIGHTUP:    return Coord(source.x + 1 , source.y - 1);
-        case ANGLETYPE::UP:         return Coord(source.x     , source.y - 1);
-        case ANGLETYPE::LEFTUP:     return Coord(source.x - 1 , source.y - 1);
-        case ANGLETYPE::LEFT:       return Coord(source.x - 1 , source.y    );
-        case ANGLETYPE::LEFTDOWN:   return Coord(source.x - 1 , source.y + 1);
-        case ANGLETYPE::DOWN:       return Coord(source.x     , source.y + 1);
-        case ANGLETYPE::RIGHTDOWN:  return Coord(source.x + 1 , source.y + 1);
-        default:                    return Coord(source.x     , source.y    );
+        case ANGLETYPE::RIGHT:      return {source.x + 1 , source.y};
+        case ANGLETYPE::RIGHTUP:    return {source.x + 1 , source.y - 1};
+        case ANGLETYPE::UP:         return {source.x     , source.y - 1};
+        case ANGLETYPE::LEFTUP:     return {source.x - 1 , source.y - 1};
+        case ANGLETYPE::LEFT:       return {source.x - 1 , source.y};
+        case ANGLETYPE::LEFTDOWN:   return {source.x - 1 , source.y + 1};
+        case ANGLETYPE::DOWN:       return {source.x     , source.y + 1};
+        case ANGLETYPE::RIGHTDOWN:  return {source.x + 1 , source.y + 1};
+        default:                    return {source.x     , source.y};
     }
     // clang-format on
 }

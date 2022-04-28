@@ -344,7 +344,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
 
     mapPropertyPlayers.setText(std::to_string(numPlayers));
 
-    std::string authors = inimap.getStringValue("BASIC", "Author", "-");
+    auto authors = inimap.getStringValue("BASIC", "Author", "-");
     if (authors.size() > 11) {
         authors = authors.substr(0, 9) + "...";
     }
