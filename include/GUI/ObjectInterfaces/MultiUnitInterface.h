@@ -20,8 +20,6 @@
 
 #include "ObjectInterface.h"
 
-#include <globals.h>
-
 #include <GUI/HBox.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/VBox.h>
@@ -30,19 +28,13 @@
 #include <GUI/TextButton.h>
 
 class MultiUnitInterface final : public ObjectInterface {
+    using parent = ObjectInterface;
+
 public:
     static std::unique_ptr<MultiUnitInterface> create(const GameContext& context);
 
 protected:
-    MultiUnitInterface(const GameContext& context);
-
-    static void onMove() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Move; }
-
-    static void onAttack() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Attack; }
-
-    static void onCapture() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Capture; }
-
-    static void onCarryallDrop() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_CarryallDrop; }
+    explicit MultiUnitInterface(const GameContext& context);
 
     void onReturn();
 
@@ -52,19 +44,7 @@ protected:
 
     void onDestruct() const;
 
-    void onGuard(const GameContext& context) { setAttackMode(context, GUARD); }
-
-    void onAreaGuard(const GameContext& context) { setAttackMode(context, AREAGUARD); }
-
-    void onStop(const GameContext& context) { setAttackMode(context, STOP); }
-
-    void onAmbush(const GameContext& context) { setAttackMode(context, AMBUSH); }
-
-    void onHunt(const GameContext& context) { setAttackMode(context, HUNT); }
-
-    void onRetreat(const GameContext& context) { setAttackMode(context, RETREAT); }
-
-    void setAttackMode(const GameContext& context, ATTACKMODE newAttackMode);
+    void setAttackMode(ATTACKMODE newAttackMode);
 
     /**
         This method updates the object interface.

@@ -27,7 +27,7 @@
 #include <units/UnitBase.h>
 
 std::unique_ptr<MultiUnitInterface> MultiUnitInterface::create(const GameContext& context) {
-    auto tmp        = std::unique_ptr<MultiUnitInterface>{new MultiUnitInterface{context}};
+    std::unique_ptr<MultiUnitInterface> tmp{new MultiUnitInterface{context}};
     tmp->pAllocated = true;
     return tmp;
 }
@@ -55,7 +55,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     moveButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
     moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
     moveButton.setToggleButton(true);
-    moveButton.setOnClick([] { onMove(); });
+    moveButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_Move; });
     actionHBox.addWidget(&moveButton);
 
     actionHBox.addWidget(HSpacer::create(2));
@@ -63,7 +63,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     attackButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
     attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
     attackButton.setToggleButton(true);
-    attackButton.setOnClick([] { onAttack(); });
+    attackButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_Attack; });
     actionHBox.addWidget(&attackButton);
 
     actionHBox.addWidget(HSpacer::create(2));
@@ -71,7 +71,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     carryallDropButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
     carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
     carryallDropButton.setToggleButton(true);
-    carryallDropButton.setOnClick([] { onCarryallDrop(); });
+    carryallDropButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_CarryallDrop; });
     actionHBox.addWidget(&carryallDropButton);
 
     actionHBox.addWidget(HSpacer::create(2));
@@ -79,7 +79,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     captureButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
     captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
     captureButton.setToggleButton(true);
-    captureButton.setOnClick([] { onCapture(); });
+    captureButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_Capture; });
     actionHBox.addWidget(&captureButton);
 
     buttonVBox.addWidget(&actionHBox, 26);
@@ -120,7 +120,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     guardButton.setTextColor(color);
     guardButton.setTooltipText(_("Unit will not move from location"));
     guardButton.setToggleButton(true);
-    guardButton.setOnClick([this] { onGuard(context_); });
+    guardButton.setOnClick([this] { setAttackMode(GUARD); });
     buttonVBox.addWidget(&guardButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -129,7 +129,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     areaGuardButton.setTextColor(color);
     areaGuardButton.setTooltipText(_("Unit will engage any unit within guard range"));
     areaGuardButton.setToggleButton(true);
-    areaGuardButton.setOnClick([this] { onAreaGuard(context_); });
+    areaGuardButton.setOnClick([this] { setAttackMode(AREAGUARD); });
     buttonVBox.addWidget(&areaGuardButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -138,7 +138,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     stopButton.setTextColor(color);
     stopButton.setTooltipText(_("Unit will not move, nor attack"));
     stopButton.setToggleButton(true);
-    stopButton.setOnClick([this] { onStop(context_); });
+    stopButton.setOnClick([this] { setAttackMode(STOP); });
     buttonVBox.addWidget(&stopButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -147,7 +147,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     ambushButton.setTextColor(color);
     ambushButton.setTooltipText(_("Unit will not move until enemy unit spotted"));
     ambushButton.setToggleButton(true);
-    ambushButton.setOnClick([this] { onAmbush(context_); });
+    ambushButton.setOnClick([this] { setAttackMode(AMBUSH); });
     buttonVBox.addWidget(&ambushButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -156,7 +156,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     huntButton.setTextColor(color);
     huntButton.setTooltipText(_("Unit will immediately start to engage an enemy unit"));
     huntButton.setToggleButton(true);
-    huntButton.setOnClick([this] { onHunt(context_); });
+    huntButton.setOnClick([this] { setAttackMode(HUNT); });
     buttonVBox.addWidget(&huntButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -165,7 +165,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     retreatButton.setTextColor(color);
     retreatButton.setTooltipText(_("Unit will retreat back to base"));
     retreatButton.setToggleButton(true);
-    retreatButton.setOnClick([this] { onRetreat(context_); });
+    retreatButton.setOnClick([this] { setAttackMode(RETREAT); });
     buttonVBox.addWidget(&retreatButton, 26);
 
     buttonVBox.addWidget(VSpacer::create(6));
@@ -179,61 +179,70 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
 }
 
 void MultiUnitInterface::onReturn() {
-    auto* const game = dune::globals::currentGame.get();
+    const auto& [game, map, object_manager] = context_;
 
-    for (const uint32_t selectedUnitID : game->getSelectedList()) {
-        auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+    for (const auto selectedUnitID : game.getSelectedList()) {
+        auto* const pHarvester = object_manager.getObject<Harvester>(selectedUnitID);
 
-        if (auto* const pHarvester = dune_cast<Harvester>(pObject))
-            pHarvester->handleReturnClick(context_);
+        if (nullptr == pHarvester)
+            continue;
+
+        pHarvester->handleReturnClick(context_);
     }
 }
 
 void MultiUnitInterface::OnSendToRepair() {
-    auto* const game = dune::globals::currentGame.get();
+    const auto& [game, map, object_manager] = context_;
 
-    for (const uint32_t selectedUnitID : game->getSelectedList()) {
-        auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+    for (const auto selectedUnitID : game.getSelectedList()) {
+        auto* const pGroundUnit = object_manager.getObject<GroundUnit>(selectedUnitID);
 
-        if (auto* const pGroundUnit = dune_cast<GroundUnit>(pObject)) {
-            if (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())
-                pGroundUnit->handleSendToRepairClick();
-        }
+        if (nullptr == pGroundUnit)
+            continue;
+
+        if (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())
+            pGroundUnit->handleSendToRepairClick();
     }
 }
 
 void MultiUnitInterface::onDeploy() {
-    auto* const game = dune::globals::currentGame.get();
+    const auto& [game, map, object_manager] = context_;
 
-    for (const uint32_t selectedUnitID : game->getSelectedList()) {
-        auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
-        if (MCV* pMCV = dune_cast<MCV>(pObject)) {
-            pMCV->handleDeployClick();
-        }
+    for (const auto selectedUnitID : game.getSelectedList()) {
+        auto* const pMCV = object_manager.getObject<MCV>(selectedUnitID);
+
+        if (nullptr == pMCV)
+            continue;
+
+        pMCV->handleDeployClick();
     }
 }
 
 void MultiUnitInterface::onDestruct() const {
-    auto* const game = dune::globals::currentGame.get();
+    const auto& [game, map, object_manager] = context_;
 
-    for (const auto selectedUnitID : game->getSelectedList()) {
-        auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+    for (const auto selectedUnitID : game.getSelectedList()) {
+        auto* const pDevastator = object_manager.getObject<Devastator>(selectedUnitID);
 
-        if (auto* const pDevastator = dune_cast<Devastator>(pObject))
-            pDevastator->handleStartDevastateClick();
+        if (nullptr == pDevastator)
+            continue;
+
+        pDevastator->handleStartDevastateClick();
     }
 }
 
-void MultiUnitInterface::setAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
-    auto& [game, map, objectManager] = context;
+void MultiUnitInterface::setAttackMode(ATTACKMODE newAttackMode) {
+    auto& [game, map, objectManager] = context_;
 
     UnitBase* pLastUnit = nullptr;
     for (const auto selectedUnitID : game.getSelectedList()) {
         auto* const pUnit = objectManager.getObject<UnitBase>(selectedUnitID);
-        if (pUnit != nullptr) {
-            pLastUnit = pUnit;
-            pUnit->handleSetAttackModeClick(context, newAttackMode);
-        }
+
+        if (pUnit == nullptr)
+            continue;
+
+        pLastUnit = pUnit;
+        pUnit->handleSetAttackModeClick(context_, newAttackMode);
     }
 
     if (pLastUnit != nullptr) {
@@ -244,15 +253,14 @@ void MultiUnitInterface::setAttackMode(const GameContext& context, ATTACKMODE ne
 }
 
 bool MultiUnitInterface::update() {
-    auto* const game = dune::globals::currentGame.get();
+    const auto& [game, map, object_manager] = context_;
 
-    if (game->getSelectedList().empty()) {
+    if (game.getSelectedList().empty())
         return false;
-    }
 
-    moveButton.setToggleState(game->currentCursorMode == Game::CursorMode_Move);
-    attackButton.setToggleState(game->currentCursorMode == Game::CursorMode_Attack);
-    captureButton.setToggleState(game->currentCursorMode == Game::CursorMode_Capture);
+    moveButton.setToggleState(game.currentCursorMode == Game::CursorMode_Move);
+    attackButton.setToggleState(game.currentCursorMode == Game::CursorMode_Attack);
+    captureButton.setToggleState(game.currentCursorMode == Game::CursorMode_Capture);
 
     bool bGuard     = true;
     bool bAreaGuard = true;
@@ -269,51 +277,49 @@ bool MultiUnitInterface::update() {
     bool bShowRepair       = false;
     bool bShowCarryallDrop = false;
 
-    for (const auto selectedUnitID : game->getSelectedList()) {
-        auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+    for (const auto selectedUnitID : game.getSelectedList()) {
+        const auto* const pUnit = object_manager.getObject<UnitBase>(selectedUnitID);
 
-        if (const auto* const pUnit = dune_cast<UnitBase>(pObject)) {
-            const ATTACKMODE attackMode = pUnit->getAttackMode();
-            bGuard                      = bGuard && (attackMode == GUARD);
-            bAreaGuard                  = bAreaGuard && (attackMode == AREAGUARD);
-            bStop                       = bStop && (attackMode == STOP);
-            bAmbush                     = bAmbush && (attackMode == AMBUSH);
-            bHunt                       = bHunt && (attackMode == HUNT);
-            bRetreat                    = bRetreat && (attackMode == RETREAT);
+        if (nullptr == pUnit)
+            continue;
 
-            if (pUnit->canAttack()) {
-                bShowAttack = true;
-            }
+        const ATTACKMODE attackMode = pUnit->getAttackMode();
+        bGuard                      = bGuard && (attackMode == GUARD);
+        bAreaGuard                  = bAreaGuard && (attackMode == AREAGUARD);
+        bStop                       = bStop && (attackMode == STOP);
+        bAmbush                     = bAmbush && (attackMode == AMBUSH);
+        bHunt                       = bHunt && (attackMode == HUNT);
+        bRetreat                    = bRetreat && (attackMode == RETREAT);
 
-            if (pUnit->getOwner()->hasCarryalls()) {
-                bShowCarryallDrop = true;
-            }
+        if (pUnit->canAttack())
+            bShowAttack = true;
 
-            if (pUnit->getHealth() < pUnit->getMaxHealth()) {
-                bShowRepair = true;
-            }
+        if (pUnit->getOwner()->hasCarryalls())
+            bShowCarryallDrop = true;
 
-            switch (pUnit->getItemID()) {
-                case Unit_Soldier:
-                case Unit_Trooper: {
-                    bShowCapture = true;
-                } break;
+        if (pUnit->getHealth() < pUnit->getMaxHealth())
+            bShowRepair = true;
 
-                case Unit_Harvester: {
-                    bShowReturn = true;
-                } break;
+        switch (pUnit->getItemID()) {
+            case Unit_Soldier:
+            case Unit_Trooper: {
+                bShowCapture = true;
+            } break;
 
-                case Unit_MCV: {
-                    bShowDeploy = true;
-                } break;
+            case Unit_Harvester: {
+                bShowReturn = true;
+            } break;
 
-                case Unit_Devastator: {
-                    bShowDevastate = true;
-                } break;
+            case Unit_MCV: {
+                bShowDeploy = true;
+            } break;
 
-                default: {
-                } break;
-            }
+            case Unit_Devastator: {
+                bShowDevastate = true;
+            } break;
+
+            default: {
+            } break;
         }
     }
 
@@ -323,8 +329,7 @@ bool MultiUnitInterface::update() {
     deployButton.setVisible(bShowDeploy);
     destructButton.setVisible(bShowDevastate);
     sendToRepairButton.setVisible(bShowRepair);
-    carryallDropButton.setVisible(bShowCarryallDrop
-                                  && game->getGameInitSettings().getGameOptions().manualCarryallDrops);
+    carryallDropButton.setVisible(bShowCarryallDrop && game.getGameInitSettings().getGameOptions().manualCarryallDrops);
 
     guardButton.setToggleState(bGuard);
     areaGuardButton.setToggleState(bAreaGuard);

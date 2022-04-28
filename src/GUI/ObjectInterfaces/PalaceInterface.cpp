@@ -7,15 +7,13 @@
 #include <structures/Palace.h>
 
 std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<PalaceInterface>{new PalaceInterface{context, objectID}};
+    std::unique_ptr<PalaceInterface> tmp{new PalaceInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
 
 sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, GeneratedPicture id) {
     auto* const deathHandSurface = surfaceLoader->getSmallDetailSurface(Picture_DeathHand);
-
-    const auto& gui = GUIStyle::getInstance();
 
     const auto pText{dune::globals::pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};
 
@@ -50,13 +48,11 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
 }
 
 bool PalaceInterface::update() {
-    auto* const pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    auto* const pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
-    const auto* pPalace = dune_cast<Palace>(pObject);
-    if (pPalace != nullptr) {
+    if (const auto* pPalace = dune_cast<Palace>(pObject)) {
         SmallDetailPics_Enum picID{};
 
         switch (pPalace->getOwner()->getHouseID()) {
@@ -91,13 +87,13 @@ bool PalaceInterface::update() {
 
 void PalaceInterface::onSpecial(const GameContext& context) const {
     auto* pPalace = context.objectManager.getObject<Palace>(objectID);
+    if (pPalace == nullptr)
+        return;
 
-    if (pPalace != nullptr) {
-        if ((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
-            || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
-            dune::globals::currentGame->currentCursorMode = Game::CursorMode_Attack;
-        } else {
-            pPalace->handleSpecialClick(context);
-        }
+    if ((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
+        || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
+        context_.game.currentCursorMode = Game::CursorMode_Attack;
+    } else {
+        pPalace->handleSpecialClick(context);
     }
 }

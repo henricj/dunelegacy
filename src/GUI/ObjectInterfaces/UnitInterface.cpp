@@ -19,6 +19,7 @@
 
 #include "GUI/Spacer.h"
 
+#include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
 #include <units/Devastator.h>
@@ -27,7 +28,7 @@
 #include <units/UnitBase.h>
 
 std::unique_ptr<UnitInterface> UnitInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<UnitInterface>{new UnitInterface{context, objectID}};
+    std::unique_ptr<UnitInterface> tmp{new UnitInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
@@ -173,28 +174,28 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
 }
 
 void UnitInterface::OnSendToRepair() {
-    auto* const pGroundUnit = dune::globals::currentGame->getObjectManager().getObject<GroundUnit>(objectID);
+    auto* const pGroundUnit = context_.objectManager.getObject<GroundUnit>(objectID);
     if ((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
         pGroundUnit->handleSendToRepairClick();
     }
 }
 
 void UnitInterface::onReturn() {
-    auto* const pHarvester = dune::globals::currentGame->getObjectManager().getObject<Harvester>(objectID);
+    auto* const pHarvester = context_.objectManager.getObject<Harvester>(objectID);
     if (pHarvester != nullptr) {
         pHarvester->handleReturnClick(context_);
     }
 }
 
 void UnitInterface::onDeploy() {
-    auto* const pMCV = dune::globals::currentGame->getObjectManager().getObject<MCV>(objectID);
+    auto* const pMCV = context_.objectManager.getObject<MCV>(objectID);
     if (pMCV != nullptr) {
         pMCV->handleDeployClick();
     }
 }
 
 void UnitInterface::onDestruct() {
-    auto* const pDevastator = dune::globals::currentGame->getObjectManager().getObject<Devastator>(objectID);
+    auto* const pDevastator = context_.objectManager.getObject<Devastator>(objectID);
     if (pDevastator != nullptr) {
         pDevastator->handleStartDevastateClick();
     }
@@ -212,23 +213,22 @@ void UnitInterface::setAttackMode(ATTACKMODE newAttackMode) {
 }
 
 bool UnitInterface::update() {
-    auto* const game = dune::globals::currentGame.get();
-
-    auto* pObject = game->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    auto* pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
-    moveButton.setToggleState(game->currentCursorMode == Game::CursorMode_Move);
-    attackButton.setToggleState(game->currentCursorMode == Game::CursorMode_Attack);
+    const auto& game = context_.game;
+
+    moveButton.setToggleState(game.currentCursorMode == Game::CursorMode_Move);
+    attackButton.setToggleState(game.currentCursorMode == Game::CursorMode_Attack);
     attackButton.setVisible(pObject->canAttack());
-    captureButton.setToggleState(game->currentCursorMode == Game::CursorMode_Capture);
-    carryallDropButton.setToggleState(game->currentCursorMode == Game::CursorMode_CarryallDrop);
-    carryallDropButton.setVisible(game->getGameInitSettings().getGameOptions().manualCarryallDrops
+    captureButton.setToggleState(game.currentCursorMode == Game::CursorMode_Capture);
+    carryallDropButton.setToggleState(game.currentCursorMode == Game::CursorMode_CarryallDrop);
+    carryallDropButton.setVisible(game.getGameInitSettings().getGameOptions().manualCarryallDrops
                                   && pObject->getOwner()->hasCarryalls());
     sendToRepairButton.setVisible(pObject->getHealth() < pObject->getMaxHealth());
 
-    if (auto* pUnit = dune_cast<UnitBase>(pObject)) {
+    if (const auto* pUnit = dune_cast<UnitBase>(pObject)) {
         const auto AttackMode = pUnit->getAttackMode();
 
         guardButton.setToggleState(AttackMode == GUARD);

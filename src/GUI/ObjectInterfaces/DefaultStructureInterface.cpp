@@ -25,14 +25,14 @@
 #include <structures/StructureBase.h>
 
 std::unique_ptr<DefaultStructureInterface> DefaultStructureInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<DefaultStructureInterface>{new DefaultStructureInterface{context, objectID}};
+    std::unique_ptr<DefaultStructureInterface> tmp{new DefaultStructureInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
 
 DefaultStructureInterface::DefaultStructureInterface(const GameContext& context, int objectID)
     : DefaultObjectInterface(context, objectID) {
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     const auto* const pUIRepair        = gfx->getUIGraphic(UI_Repair);
     const auto* const pUIRepairPressed = gfx->getUIGraphic(UI_Repair_Pressed);
@@ -47,22 +47,22 @@ DefaultStructureInterface::DefaultStructureInterface(const GameContext& context,
 }
 
 void DefaultStructureInterface::OnRepair() {
-    auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
-    if (pStructure != nullptr) {
+    if (auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID)) {
         pStructure->handleRepairClick();
     }
 }
 
 bool DefaultStructureInterface::update() {
-    auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID);
+    const auto* const pStructure = context_.objectManager.getObject<StructureBase>(objectID);
 
-    if (pStructure != nullptr) {
-        if (pStructure->getHealth() >= pStructure->getMaxHealth()) {
-            repairButton.setVisible(false);
-        } else {
-            repairButton.setVisible(true);
-            repairButton.setToggleState(pStructure->isRepairing());
-        }
+    if (nullptr == pStructure)
+        return false;
+
+    if (pStructure->getHealth() >= pStructure->getMaxHealth()) {
+        repairButton.setVisible(false);
+    } else {
+        repairButton.setVisible(true);
+        repairButton.setToggleState(pStructure->isRepairing());
     }
 
     return true;

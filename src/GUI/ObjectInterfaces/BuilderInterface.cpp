@@ -24,8 +24,10 @@
 #include <structures/BuilderBase.h>
 #include <structures/StarPort.h>
 
+#include <type_traits>
+
 std::unique_ptr<BuilderInterface> BuilderInterface::create(const GameContext& context, int objectID) {
-    auto tmp = std::unique_ptr<BuilderInterface>{new BuilderInterface{context, objectID}};
+    std::unique_ptr<BuilderInterface> tmp{new BuilderInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
@@ -44,82 +46,76 @@ BuilderInterface::BuilderInterface(const GameContext& context, int objectID)
     upgradeProgressBar.setText(_("Upgrade"));
     upgradeProgressBar.setTextColor(color);
     upgradeProgressBar.setVisible(false);
-    topBox.addWidget(&upgradeButton, Point(18, 2), Point(83, 18));
-    topBox.addWidget(&upgradeProgressBar, Point(18, 2), Point(83, 18));
+    topBox.addWidget(&upgradeButton, {18, 2}, {83, 18});
+    topBox.addWidget(&upgradeProgressBar, {18, 2}, {83, 18});
 
     mainHBox.addWidget(Spacer::create());
 
-    ObjectBase* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    auto* pBuilder      = dynamic_cast<BuilderBase*>(pObject);
-    if (pBuilder) {
+    if (auto* const pBuilder = context_.objectManager.getObject<BuilderBase>(objectID)) {
         pBuilderList = BuilderList::create(pBuilder->getObjectID());
         mainHBox.addWidget(pBuilderList);
-    } else {
-        pBuilderList = nullptr;
+
+        static_assert(std::is_convertible_v<StarPort*, BuilderBase*>);
+
+        if (dune_cast<StarPort>(pBuilder)) {
+            starportTimerLabel.setTextFontSize(28);
+            starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
+            starportTimerLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
+            const auto position =
+                topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture) + Point(0, 4);
+            topBox.addWidget(&starportTimerLabel, position, objPicture.getSize());
+        }
     }
 
     mainHBox.addWidget(Spacer::create());
-
-    auto* pStarport = dynamic_cast<StarPort*>(pObject);
-    if (pStarport != nullptr) {
-        starportTimerLabel.setTextFontSize(28);
-        starportTimerLabel.setTextColor(COLOR_WHITE, COLOR_TRANSPARENT);
-        starportTimerLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
-        topBox.addWidget(&starportTimerLabel,
-                         topBox.getWidgetPosition(&topBoxHBox) + topBoxHBox.getWidgetPosition(&objPicture)
-                             + Point(0, 4),
-                         objPicture.getSize());
-    }
 }
 
 void BuilderInterface::onUpgrade() const {
-    auto* const pObject  = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    auto* const pBuilder = dynamic_cast<BuilderBase*>(pObject);
-    if (pBuilder != nullptr && !pBuilder->isUpgrading()) {
+    auto* const pBuilder = context_.objectManager.getObject<BuilderBase>(objectID);
+
+    if (!pBuilder)
+        return;
+
+    if (!pBuilder->isUpgrading()) {
         pBuilder->handleUpgradeClick();
     }
 }
 
 bool BuilderInterface::update() {
-    auto* const pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    auto* const pBuilder = context_.objectManager.getObject<BuilderBase>(objectID);
+    if (pBuilder == nullptr)
         return false;
+
+    if (const auto* const pStarport = dune_cast<StarPort>(pBuilder)) {
+        const auto arrivalTimer = pStarport->getArrivalTimer();
+        if (arrivalTimer > 0) {
+            const auto seconds = ((arrivalTimer * 10) / (MILLI2CYCLES(30 * 1000))) + 1;
+            starportTimerLabel.setText(std::to_string(seconds));
+        } else {
+            starportTimerLabel.setText("");
+        }
     }
 
-    auto* const pBuilder = dynamic_cast<BuilderBase*>(pObject);
-    if (pBuilder != nullptr) {
-        auto* const pStarport = dynamic_cast<StarPort*>(pBuilder);
-        if (pStarport != nullptr) {
-            const auto arrivalTimer = pStarport->getArrivalTimer();
-            if (arrivalTimer > 0) {
-                const int seconds = ((arrivalTimer * 10) / (MILLI2CYCLES(30 * 1000))) + 1;
-                starportTimerLabel.setText(std::to_string(seconds));
-            } else {
-                starportTimerLabel.setText("");
-            }
-        }
+    upgradeProgressBar.setVisible(pBuilder->isUpgrading());
+    upgradeButton.setVisible(!pBuilder->isUpgrading());
+    upgradeButton.setEnabled(!pBuilder->isUpgrading());
 
-        upgradeProgressBar.setVisible(pBuilder->isUpgrading());
-        upgradeButton.setVisible(!pBuilder->isUpgrading());
-        upgradeButton.setEnabled(!pBuilder->isUpgrading());
+    if (pBuilder->isUpgrading()) {
+        upgradeProgressBar.setProgress(
+            ((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toDouble());
+    }
 
-        if (pBuilder->isUpgrading()) {
-            upgradeProgressBar.setProgress(
-                ((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toDouble());
-        }
-
-        if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {
-            repairButton.setVisible(false);
-            if (pBuilder->isAllowedToUpgrade()) {
-                upgradeButton.setVisible(true);
-            } else {
-                upgradeButton.setVisible(false);
-            }
+    if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {
+        repairButton.setVisible(false);
+        if (pBuilder->isAllowedToUpgrade()) {
+            upgradeButton.setVisible(true);
         } else {
-            repairButton.setVisible(true);
             upgradeButton.setVisible(false);
-            repairButton.setToggleState(pBuilder->isRepairing());
         }
+    } else {
+        repairButton.setVisible(true);
+        upgradeButton.setVisible(false);
+        repairButton.setToggleState(pBuilder->isRepairing());
     }
 
     return true;

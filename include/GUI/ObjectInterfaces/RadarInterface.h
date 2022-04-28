@@ -24,6 +24,8 @@
 #include <GUI/VBox.h>
 
 class RadarInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID);
 

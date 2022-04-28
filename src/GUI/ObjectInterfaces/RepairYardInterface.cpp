@@ -24,7 +24,7 @@
 #include <structures/RepairYard.h>
 
 std::unique_ptr<RepairYardInterface> RepairYardInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<RepairYardInterface>{new RepairYardInterface{context, objectID}};
+    std::unique_ptr<RepairYardInterface> tmp{new RepairYardInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
@@ -37,14 +37,11 @@ RepairYardInterface::RepairYardInterface(const GameContext& context, int objectI
 }
 
 bool RepairYardInterface::update() {
-    auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    auto* pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
-    auto* const pRepairYard = dune_cast<RepairYard>(pObject);
-    if (pRepairYard != nullptr) {
-
+    if (auto* const pRepairYard = dune_cast<RepairYard>(pObject)) {
         if (const auto* pUnit = pRepairYard->getRepairUnit()) {
             repairUnitProgressBar.setVisible(true);
             repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));

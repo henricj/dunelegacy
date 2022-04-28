@@ -28,6 +28,8 @@
 #include <ObjectBase.h>
 
 class DefaultObjectInterface : public ObjectInterface {
+    using parent = ObjectInterface;
+
 public:
     static std::unique_ptr<DefaultObjectInterface> create(const GameContext& context, int objectID);
 

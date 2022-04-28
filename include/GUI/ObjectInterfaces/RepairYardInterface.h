@@ -23,6 +23,8 @@
 #include <GUI/ProgressBar.h>
 
 class RepairYardInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<RepairYardInterface> create(const GameContext& context, int objectID);
 

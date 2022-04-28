@@ -24,6 +24,8 @@
 #include <GUI/VBox.h>
 
 class RefineryAndSiloInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID);
 
