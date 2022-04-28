@@ -380,6 +380,7 @@ enum UIGraphics_Enum {
     UI_MapEditor_Pen1x1,
     UI_MapEditor_Pen3x3,
     UI_MapEditor_Pen5x5,
+    UI_Background_Tile,
     NUM_UIGRAPHICS
 };
 

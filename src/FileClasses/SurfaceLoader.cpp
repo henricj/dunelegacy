@@ -1110,6 +1110,8 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_Pen5x5][harkIdx] = LoadPNG_RW(file_manager->openFile("MapEditorPen5x5.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][harkIdx].get(), SDL_TRUE, 0);
 
+    uiGraphic[UI_Background_Tile][harkIdx] = picFactory_.createBackgroundTile();
+
     // load animations
     animation[Anim_HarkonnenEyes] = menshph->getAnimation(0, 4, true, true);
     animation[Anim_HarkonnenEyes]->setFrameRate(0.3);
