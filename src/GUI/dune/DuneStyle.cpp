@@ -915,6 +915,25 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     }
 }
 
+void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
+    drawBackground(renderer, rect);
+
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    auto* harkonnen = gfx->getUIGraphic(UI_Background_Logo, HOUSETYPE::HOUSE_HARKONNEN);
+    auto* atreides  = gfx->getUIGraphic(UI_Background_Logo, HOUSETYPE::HOUSE_ATREIDES);
+    auto* ordos     = gfx->getUIGraphic(UI_Background_Logo, HOUSETYPE::HOUSE_ORDOS);
+
+    if (harkonnen)
+        harkonnen->draw(renderer, 11, 11);
+
+    if (atreides)
+        atreides->draw(renderer, rect.w - 11 - atreides->width_, 11);
+
+    if (ordos)
+        ordos->draw(renderer, 11, rect.h - 11 - ordos->height_);
+}
+
 DuneSurfaceOwned DuneStyle::createWidgetBackground(int width, int height) const {
     const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
 
