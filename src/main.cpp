@@ -808,7 +808,7 @@ bool run_game(int argc, char* argv[]) {
             });
 #else
             // g++ does not provide std::launch::async on all platforms
-            pSFXManager = std::make_unique<SFXManager>();
+            dune::globals::pSFXManager = std::make_unique<SFXManager>();
 #endif
 
             GlobalCleanup gfx_cleanup{dune::globals::pGFXManager};
