@@ -42,23 +42,25 @@
 
 Finale::Finale(HOUSETYPE house) {
 
+    auto* const file_manager = dune::globals::pFileManager.get();
+    ;
     switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN: {
-            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALA.WSA").get());
-            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("HFINALB.WSA").get(),
-                                                 pFileManager->openFile("HFINALC.WSA").get());
+            pPalace1 = std::make_unique<Wsafile>(file_manager->openFile("HFINALA.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(file_manager->openFile("HFINALB.WSA").get(),
+                                                 file_manager->openFile("HFINALC.WSA").get());
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES: {
-            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALA.WSA").get());
-            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("AFINALB.WSA").get());
+            pPalace1 = std::make_unique<Wsafile>(file_manager->openFile("AFINALA.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(file_manager->openFile("AFINALB.WSA").get());
         } break;
 
         case HOUSETYPE::HOUSE_ORDOS: {
-            pPalace1 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALA.WSA").get(),
-                                                 pFileManager->openFile("OFINALB.WSA").get(),
-                                                 pFileManager->openFile("OFINALC.WSA").get());
-            pPalace2 = std::make_unique<Wsafile>(pFileManager->openFile("OFINALD.WSA").get());
+            pPalace1 = std::make_unique<Wsafile>(file_manager->openFile("OFINALA.WSA").get(),
+                                                 file_manager->openFile("OFINALB.WSA").get(),
+                                                 file_manager->openFile("OFINALC.WSA").get());
+            pPalace2 = std::make_unique<Wsafile>(file_manager->openFile("OFINALD.WSA").get());
         } break;
 
         default: {
@@ -67,16 +69,16 @@ Finale::Finale(HOUSETYPE house) {
     }
 
     if (house == HOUSETYPE::HOUSE_HARKONNEN || house == HOUSETYPE::HOUSE_ATREIDES || house == HOUSETYPE::HOUSE_ORDOS) {
-        pImperator        = std::make_unique<Wsafile>(pFileManager->openFile("EFINALA.WSA").get());
-        pImperatorShocked = std::make_unique<Wsafile>(pFileManager->openFile("EFINALB.WSA").get());
+        pImperator        = std::make_unique<Wsafile>(file_manager->openFile("EFINALA.WSA").get());
+        pImperatorShocked = std::make_unique<Wsafile>(file_manager->openFile("EFINALB.WSA").get());
     }
 
-    const auto pPlanetDuneNormalSurface = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
+    const auto pPlanetDuneNormalSurface = LoadCPS_RW(file_manager->openFile("BIGPLAN.CPS").get());
     if (pPlanetDuneNormalSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open BIGPLAN.CPS!");
     }
 
-    auto pPlanetDuneInHouseColorSurface = LoadCPS_RW(pFileManager->openFile("MAPPLAN.CPS").get());
+    auto pPlanetDuneInHouseColorSurface = LoadCPS_RW(file_manager->openFile("MAPPLAN.CPS").get());
     if (pPlanetDuneInHouseColorSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
@@ -93,7 +95,9 @@ Finale::Finale(HOUSETYPE house) {
     }
 
     const auto pIntroText =
-        std::make_unique<IndexedTextFile>(pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get());
+        std::make_unique<IndexedTextFile>(file_manager->openFile("INTRO." + _("LanguageFileExtension")).get());
+
+    const auto& palette = dune::globals::palette;
 
     const Uint32 color          = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 1]);
     const Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);

@@ -35,19 +35,21 @@
 Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* newRealDestination, uint32_t bulletID,
                int damage, bool air, const ObjectBase* pTarget)
     : bulletID(bulletID), damage(damage), shooterID(shooterID),
-      owner(currentGame->getObjectManager().getObject(shooterID)->getOwner()), destination(*newRealDestination),
-      airAttack(air) {
+      owner(dune::globals::currentGame->getObjectManager().getObject(shooterID)->getOwner()),
+      destination(*newRealDestination), airAttack(air) {
 
     target.pointTo(pTarget);
 
     Bullet::init();
+
+    auto* const game = dune::globals::currentGame.get();
 
     if (bulletID == Bullet_Sonic) {
         const auto diffX = destination.x - newRealLocation->x;
         auto diffY       = destination.y - newRealLocation->y;
 
         const int weaponrange =
-            currentGame->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
+            game->objectData.data[Unit_SonicTank][static_cast<int>(owner->getHouseID())].weaponrange;
 
         if ((diffX == 0) && (diffY == 0)) {
             diffY = weaponrange * TILESIZE;
@@ -60,8 +62,8 @@ Bullet::Bullet(uint32_t shooterID, const Coord* newRealLocation, const Coord* ne
     } else if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket) {
         const auto distance = distanceFrom(*newRealLocation, *newRealDestination);
 
-        const auto randAngle = 2 * FixPt_PI * currentGame->randomGen.randFixPoint();
-        const auto radius    = currentGame->randomGen.rand(0, lround(TILESIZE / 2 + (distance / TILESIZE)));
+        const auto randAngle = 2 * FixPt_PI * game->randomGen.randFixPoint();
+        const auto radius    = game->randomGen.rand(0, lround(TILESIZE / 2 + (distance / TILESIZE)));
 
         destination.x += lround(FixPoint::cos(randAngle) * radius);
         destination.y -= lround(FixPoint::sin(randAngle) * radius);
@@ -91,10 +93,12 @@ Bullet::Bullet(InputStream& stream) {
 
     shooterID  = stream.readUint32();
     uint32_t x = stream.readUint32();
+
+    auto* const game = dune::globals::currentGame.get();
     if (x < static_cast<uint32_t>(HOUSETYPE::NUM_HOUSES)) {
-        owner = currentGame->getHouse(static_cast<HOUSETYPE>(x));
+        owner = game->getHouse(static_cast<HOUSETYPE>(x));
     } else {
-        owner = currentGame->getHouse(static_cast<HOUSETYPE>(0));
+        owner = game->getHouse(static_cast<HOUSETYPE>(0));
     }
 
     source.x      = stream.readSint32();
@@ -122,13 +126,15 @@ void Bullet::init() {
 
     const auto houseID = owner->getHouseID();
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     switch (bulletID) {
         case Bullet_DRocket: {
             damageRadius    = TILESIZE / 2;
             speed           = 20;
             detonationTimer = 19;
             numFrames       = 16;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            graphic         = gfx->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_LargeRocket: {
@@ -136,7 +142,7 @@ void Bullet::init() {
             speed           = 20;
             detonationTimer = -1;
             numFrames       = 16;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_LargeRocket, houseID);
+            graphic         = gfx->getObjPic(ObjPic_Bullet_LargeRocket, houseID);
         } break;
 
         case Bullet_Rocket: {
@@ -144,7 +150,7 @@ void Bullet::init() {
             speed           = 17.5_fix;
             detonationTimer = 22;
             numFrames       = 16;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            graphic         = gfx->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_TurretRocket: {
@@ -152,7 +158,7 @@ void Bullet::init() {
             speed           = 20;
             detonationTimer = -1;
             numFrames       = 16;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
+            graphic         = gfx->getObjPic(ObjPic_Bullet_MediumRocket, houseID);
         } break;
 
         case Bullet_ShellSmall: {
@@ -161,7 +167,7 @@ void Bullet::init() {
             speed                   = 20;
             detonationTimer         = -1;
             numFrames               = 1;
-            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Small, houseID);
+            graphic                 = gfx->getObjPic(ObjPic_Bullet_Small, houseID);
         } break;
 
         case Bullet_ShellMedium: {
@@ -170,7 +176,7 @@ void Bullet::init() {
             speed                   = 20;
             detonationTimer         = -1;
             numFrames               = 1;
-            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
+            graphic                 = gfx->getObjPic(ObjPic_Bullet_Medium, houseID);
         } break;
 
         case Bullet_ShellLarge: {
@@ -179,7 +185,7 @@ void Bullet::init() {
             speed                   = 20;
             detonationTimer         = -1;
             numFrames               = 1;
-            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Large, houseID);
+            graphic                 = gfx->getObjPic(ObjPic_Bullet_Large, houseID);
         } break;
 
         case Bullet_ShellTurret: {
@@ -188,7 +194,7 @@ void Bullet::init() {
             speed                   = 20;
             detonationTimer         = -1;
             numFrames               = 1;
-            graphic                 = pGFXManager->getObjPic(ObjPic_Bullet_Medium, houseID);
+            graphic                 = gfx->getObjPic(ObjPic_Bullet_Medium, houseID);
         } break;
 
         case Bullet_SmallRocket: {
@@ -196,7 +202,7 @@ void Bullet::init() {
             speed           = 20;
             detonationTimer = 7;
             numFrames       = 16;
-            graphic         = pGFXManager->getObjPic(ObjPic_Bullet_SmallRocket, houseID);
+            graphic         = gfx->getObjPic(ObjPic_Bullet_SmallRocket, houseID);
         } break;
 
         case Bullet_Sonic: {
@@ -204,7 +210,7 @@ void Bullet::init() {
             speed           = 6; // For Sonic bullets this is only half the actual speed; see Bullet::update()
             numFrames       = 1;
             detonationTimer = 45;
-            graphic = pGFXManager->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN); // no color remapping
+            graphic         = gfx->getObjPic(ObjPic_Bullet_Sonic, HOUSETYPE::HOUSE_HARKONNEN); // no color remapping
         } break;
 
         case Bullet_Sandworm: {
@@ -248,23 +254,28 @@ void Bullet::save(OutputStream& stream) const {
 }
 
 void Bullet::blitToScreen(uint32_t cycleCount) const {
-    const auto imageW = getWidth(graphic[currentZoomlevel]) / numFrames;
-    const auto imageH = getHeight(graphic[currentZoomlevel]);
+    const auto zoom          = dune::globals::currentZoomlevel;
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+
+    const auto imageW = getWidth(graphic[zoom]) / numFrames;
+    const auto imageH = getHeight(graphic[zoom]);
 
     if (!screenborder->isInsideScreen(Coord(lround(realX), lround(realY)), Coord(imageW, imageH))) {
         return;
     }
 
     const auto dest =
-        calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
-                              screenborder->world2screenY(realY), numFrames, 1, HAlign::Center, VAlign::Center);
+        calcSpriteDrawingRect(graphic[zoom], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
+                              numFrames, 1, HAlign::Center, VAlign::Center);
 
     if (bulletID == Bullet_Sonic) {
         static constexpr uint8_t shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
-        auto* const shimmerMaskSurface = pGFXManager->getZoomedObjSurface(ObjPic_Bullet_Sonic, currentZoomlevel);
-        auto* const shimmerTex =
-            pGFXManager->getTempStreamingTexture(renderer, shimmerMaskSurface->w, shimmerMaskSurface->h);
+        auto* const gfx = dune::globals::pGFXManager.get();
+
+        auto* const shimmerMaskSurface = gfx->getZoomedObjSurface(ObjPic_Bullet_Sonic, zoom);
+        auto* const shimmerTex = gfx->getTempStreamingTexture(renderer, shimmerMaskSurface->w, shimmerMaskSurface->h);
 
         auto [sx, sy, sw, sh] = dest;
 
@@ -344,13 +355,14 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
         Dune_RenderCopyF(renderer, shimmerTex, nullptr, &dest);
     } else {
-        const auto source =
-            calcSpriteSourceRect(graphic[currentZoomlevel], (numFrames > 1) ? drawnAngle : 0, numFrames);
-        Dune_RenderCopyF(renderer, graphic[currentZoomlevel], &source, &dest);
+        const auto source = calcSpriteSourceRect(graphic[zoom], (numFrames > 1) ? drawnAngle : 0, numFrames);
+        Dune_RenderCopyF(renderer, graphic[zoom], &source, &dest);
     }
 }
 
 bool Bullet::update(const GameContext& context) {
+    auto& map = context.map;
+
     if (bulletID == Bullet_Rocket || bulletID == Bullet_DRocket || bulletID == Bullet_TurretRocket) {
 
         const auto* pTarget = target.getObjPointer();
@@ -397,8 +409,8 @@ bool Bullet::update(const GameContext& context) {
     location.x = floor(realX / TILESIZE);
     location.y = floor(realY / TILESIZE);
 
-    if ((location.x < -5) || (location.x >= currentGameMap->getSizeX() + 5) || (location.y < -5)
-        || (location.y >= currentGameMap->getSizeY() + 5)) {
+    if ((location.x < -5) || (location.x >= map.getSizeX() + 5) || (location.y < -5)
+        || (location.y >= map.getSizeY() + 5)) {
         // it's off the map => delete it
         return true;
     }
@@ -408,8 +420,6 @@ bool Bullet::update(const GameContext& context) {
     if (detonationTimer > 0) {
         detonationTimer--;
     }
-
-    auto& map = context.map;
 
     if (bulletID == Bullet_Sonic) {
 
@@ -486,12 +496,12 @@ void Bullet::destroy(const GameContext& context) const {
     switch (bulletID) {
         case Bullet_DRocket: {
             map.damage(context, shooterID, owner, position, bulletID, damage, damageRadius, airAttack);
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionGas, position);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionGas, position);
             game.addExplosion(Explosion_Gas, position, houseID);
         } break;
 
         case Bullet_LargeRocket: {
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, position);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, position);
 
             for (auto i = 0; i < 5; i++) {
                 for (auto j = 0; j < 5; j++) {
@@ -503,7 +513,7 @@ void Bullet::destroy(const GameContext& context) const {
 
                         uint32_t explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
                         game.addExplosion(explosionID, position, houseID);
-                        screenborder->shakeScreen(22);
+                        dune::globals::screenborder->shakeScreen(22);
                     }
                 }
             }

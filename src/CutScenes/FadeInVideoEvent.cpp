@@ -26,7 +26,7 @@
 FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bCenterVertical, bool bFadeWhite)
     : currentFrame(0), numFrames2FadeIn(numFrames2FadeIn), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
     const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-    pTexture                     = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, pTmp.get())};
+    pTexture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }
@@ -34,6 +34,8 @@ FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, 
 FadeInVideoEvent::~FadeInVideoEvent() = default;
 
 int FadeInVideoEvent::draw() {
+    auto* const renderer = dune::globals::renderer.get();
+
     const SDL_Rect dest =
         calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 

@@ -60,6 +60,8 @@ void WidgetWithBackground::draw_background(Point position) {
     if (!background)
         return;
 
+    auto* const renderer = dune::globals::renderer.get();
+
     SDL_FRect dst{static_cast<float>(position.x), static_cast<float>(position.y), background->width_,
                   background->height_};
 

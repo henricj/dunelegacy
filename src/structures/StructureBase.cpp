@@ -65,7 +65,7 @@ void StructureBase::init() {
     lastVisibleFrame = firstAnimFrame = lastAnimFrame = curAnimFrame = 2;
     animationCounter                                                 = 0;
 
-    structureList.push_back(this);
+    dune::globals::structureList.push_back(this);
 }
 
 StructureBase::~StructureBase() = default;
@@ -73,7 +73,7 @@ StructureBase::~StructureBase() = default;
 void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     try {
         context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
-        structureList.remove(this);
+        dune::globals::structureList.remove(this);
         owner->decrementStructures(itemID, location);
     } catch (std::exception& e) {
         sdl2::log_info("StructureBase::cleanup(): %s", e.what());
@@ -98,7 +98,7 @@ void StructureBase::save(OutputStream& stream) const {
 }
 
 void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
-    auto* map = currentGameMap;
+    auto* map = &context.map;
 
     auto bFoundNonConcreteTile = false;
 
@@ -131,11 +131,15 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
 }
 
 void StructureBase::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const auto index  = fogged ? lastVisibleFrame : curAnimFrame;
     const auto indexX = index % numImagesX;
     const auto indexY = index / numImagesX;
 
-    const auto* const texture = graphic[currentZoomlevel];
+    const auto* const texture = graphic[zoom];
 
     const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(realX),
                                               screenborder->world2screenY(realY.toFloat()), numImagesX, numImagesY);
@@ -145,13 +149,13 @@ void StructureBase::blitToScreen() {
 
     if (!fogged) {
         const auto* const pSmokeTex =
-            pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+            dune::globals::pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), zoom);
         auto smokeSource = calcSpriteSourceRect(pSmokeTex, 0, 3);
         for (const auto& structureSmoke : smoke) {
             const auto smokeDest = calcSpriteDrawingRect(
                 pSmokeTex, screenborder->world2screenX(structureSmoke.realPos.x),
                 screenborder->world2screenY(structureSmoke.realPos.y), 3, 1, HAlign::Center, VAlign::Bottom);
-            const auto cycleDiff = currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
+            const auto cycleDiff = dune::globals::currentGame->getGameCycleCount() - structureSmoke.startGameCycle;
 
             auto smokeFrame = static_cast<int>((cycleDiff / 25) % 4);
             if (smokeFrame == 3) {
@@ -165,36 +169,46 @@ void StructureBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> StructureBase::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return DefaultStructureInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
 }
 
 void StructureBase::drawSelectionBox() {
-    SDL_Rect dest;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
+
+    auto* const texture = graphic[zoom];
+
+    SDL_FRect dest{};
     dest.x = screenborder->world2screenX(realX);
     dest.y = screenborder->world2screenY(realY);
-    dest.w = getWidth(graphic[currentZoomlevel]) / numImagesX;
-    dest.h = getHeight(graphic[currentZoomlevel]) / numImagesY;
+    dest.w = getWidth(texture) / static_cast<float>(numImagesX);
+    dest.h = getHeight(texture) / static_cast<float>(numImagesY);
 
     // now draw the selection box thing, with parts at all corners of structure
     DuneDrawSelectionBox(renderer, dest);
 
     // health bar
-    const SDL_FRect healthRect{static_cast<float>(dest.x), static_cast<float>(dest.y - currentZoomlevel - 2),
-                               static_cast<float>(lround((getHealth() / getMaxHealth())
-                                                         * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1))),
-                               static_cast<float>(currentZoomlevel + 1)};
+    const SDL_FRect healthRect{
+        dest.x, dest.y - static_cast<float>(zoom) - 2,
+        ((getHealth() / getMaxHealth()) * (world2zoomedWorld(TILESIZE) * getStructureSizeX() - 1)).toFloat(),
+        static_cast<float>(zoom + 1)};
     renderFillRectF(renderer, &healthRect, getHealthColor());
 }
 
 void StructureBase::drawOtherPlayerSelectionBox() {
-    SDL_Rect dest;
-    dest.x = screenborder->world2screenX(realX) + (currentZoomlevel + 1);
-    dest.y = screenborder->world2screenY(realY) + (currentZoomlevel + 1);
-    dest.w = getWidth(graphic[currentZoomlevel]) / numImagesX - 2 * (currentZoomlevel + 1);
-    dest.h = getHeight(graphic[currentZoomlevel]) / numImagesY - 2 * (currentZoomlevel + 1);
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
+
+    SDL_FRect dest{};
+    dest.x = screenborder->world2screenX(realX) + static_cast<float>(zoom + 1);
+    dest.y = screenborder->world2screenY(realY) + static_cast<float>(zoom + 1);
+    dest.w = getWidth(graphic[zoom]) / static_cast<float>(numImagesX) - static_cast<float>(2 * (zoom + 1));
+    dest.h = getHeight(graphic[zoom]) / static_cast<float>(numImagesY) - static_cast<float>(2 * (zoom + 1));
 
     // now draw the selection box thing, with parts at all corners of structure
     DuneDrawSelectionBox(renderer, dest, COLOR_LIGHTBLUE);
@@ -202,17 +216,20 @@ void StructureBase::drawOtherPlayerSelectionBox() {
 
 void StructureBase::drawGatheringPointLine() {
     if (!isABuilder() || getItemID() == Structure_ConstructionYard || !destination.isValid()
-        || getOwner() != pLocalHouse)
+        || getOwner() != dune::globals::pLocalHouse)
         return;
+
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
 
     const auto indicatorPosition = destination * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
     const auto structurePosition = getCenterPoint();
 
-    renderDrawLine(renderer, screenborder->world2screenX(structurePosition.x),
-                   screenborder->world2screenY(structurePosition.y), screenborder->world2screenX(indicatorPosition.x),
-                   screenborder->world2screenY(indicatorPosition.y), COLOR_HALF_TRANSPARENT);
+    renderDrawLineF(renderer, screenborder->world2screenX(structurePosition.x),
+                    screenborder->world2screenY(structurePosition.y), screenborder->world2screenX(indicatorPosition.x),
+                    screenborder->world2screenY(indicatorPosition.y), COLOR_HALF_TRANSPARENT);
 
-    const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+    const auto* const pUIIndicator = dune::globals::pGFXManager->getUIGraphic(UI_Indicator);
     const auto source              = calcSpriteSourceRect(pUIIndicator, 0, 3);
     const auto drawLocation =
         calcSpriteDrawingRect(pUIIndicator, screenborder->world2screenX(indicatorPosition.x),
@@ -228,8 +245,7 @@ void StructureBase::drawGatheringPointLine() {
     \return the center point in world coordinates
 */
 Coord StructureBase::getCenterPoint() const {
-    return Coord(lround(realX + getStructureSizeX() * TILESIZE / 2),
-                 lround(realY + getStructureSizeY() * TILESIZE / 2));
+    return {lround(realX + getStructureSizeX() * TILESIZE / 2), lround(realY + getStructureSizeY() * TILESIZE / 2)};
 }
 
 Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
@@ -237,21 +253,24 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
+    auto* const game         = dune::globals::currentGame.get();
+    auto* const local_player = dune::globals::pLocalPlayer;
+
     if ((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y)
         || (yPos >= (location.y + getStructureSizeY()))) {
-        currentGame->getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                                                            static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
+        game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
+                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                     static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     } else {
-        currentGame->getCommandManager().addCommand(
-            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
-                    static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
+        game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
+                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                     static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
     }
 }
 
 void StructureBase::handleRepairClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_REPAIR, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_REPAIR, objectID));
 }
 
 void StructureBase::doSetDeployPosition(int xPos, int yPos) {
@@ -265,7 +284,7 @@ void StructureBase::doRepair(const GameContext& context) {
 }
 
 void StructureBase::setDestination(int newX, int newY) {
-    if (currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
+    if (dune::globals::currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
         destination.x = newX;
         destination.y = newY;
     }
@@ -440,8 +459,8 @@ void StructureBase::destroy(const GameContext& context) {
 
     objectManager.removeObject(getObjectID());
 
-    if (isVisible(pLocalHouse->getTeamID()))
-        soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location);
+    if (isVisible(dune::globals::pLocalHouse->getTeamID()))
+        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location);
 }
 
 Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {

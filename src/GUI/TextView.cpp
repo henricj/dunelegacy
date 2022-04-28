@@ -57,6 +57,8 @@ void TextView::draw(Point position) {
 
     updateTextures();
 
+    auto* const renderer = dune::globals::renderer.get();
+
     if (pBackground)
         pBackground.draw(renderer, position.x, position.y);
 
@@ -114,6 +116,8 @@ void TextView::updateTextures() {
     parent::updateTextures();
 
     const auto& gui = GUIStyle::getInstance();
+
+    auto* const renderer = dune::globals::renderer.get();
 
     if (!pBackground)
         pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);

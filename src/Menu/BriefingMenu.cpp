@@ -28,16 +28,18 @@
 BriefingMenu::BriefingMenu(HOUSETYPE newHouse, int mission, int type)
     : MentatMenu(newHouse), mission(mission), type(type) {
 
-    const auto* const pMentatProceed        = pGFXManager->getUIGraphic(UI_MentatProceed);
-    const auto* const pMentatProceedPressed = pGFXManager->getUIGraphic(UI_MentatProceed_Pressed);
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    const auto* const pMentatProceed        = gfx->getUIGraphic(UI_MentatProceed);
+    const auto* const pMentatProceedPressed = gfx->getUIGraphic(UI_MentatProceed_Pressed);
     proceedButton.setTextures(pMentatProceed, pMentatProceedPressed);
     proceedButton.setEnabled(false);
     proceedButton.setVisible(false);
     proceedButton.setOnClick([&] { onProceed(); });
     windowWidget.addWidget(&proceedButton, Point(350, 340), getTextureSize(pMentatProceed));
 
-    const auto* const pMentatRepeat        = pGFXManager->getUIGraphic(UI_MentatRepeat);
-    const auto* const pMentatRepeatPressed = pGFXManager->getUIGraphic(UI_MentatRepeat_Pressed);
+    const auto* const pMentatRepeat        = gfx->getUIGraphic(UI_MentatRepeat);
+    const auto* const pMentatRepeatPressed = gfx->getUIGraphic(UI_MentatRepeat_Pressed);
     repeatButton.setTextures(pMentatRepeat, pMentatRepeatPressed);
     repeatButton.setEnabled(false);
     repeatButton.setVisible(false);
@@ -53,19 +55,21 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse, int mission, int type)
 
     Animation* anim = nullptr;
 
+    auto* const text_manager = dune::globals::pTextManager.get();
+
     switch (type) {
         case DEBRIEFING_WIN: {
-            anim = pGFXManager->getAnimation(pGFXManager->random().randBool() ? Anim_Win1 : Anim_Win2);
-            text = pTextManager->getBriefingText(mission_number, MISSION_WIN, house);
+            anim = gfx->getAnimation(gfx->random().randBool() ? Anim_Win1 : Anim_Win2);
+            text = text_manager->getBriefingText(mission_number, MISSION_WIN, house);
         } break;
         case DEBRIEFING_LOST: {
-            anim = pGFXManager->getAnimation(pGFXManager->random().randBool() ? Anim_Lose1 : Anim_Lose2);
-            text = pTextManager->getBriefingText(mission_number, MISSION_LOSE, house);
+            anim = gfx->getAnimation(gfx->random().randBool() ? Anim_Lose1 : Anim_Lose2);
+            text = text_manager->getBriefingText(mission_number, MISSION_LOSE, house);
         } break;
         default:
         case BRIEFING: {
-            anim = pGFXManager->getAnimation(getMissionSpecificAnim(mission_number));
-            text = pTextManager->getBriefingText(mission_number, MISSION_DESCRIPTION, house);
+            anim = gfx->getAnimation(getMissionSpecificAnim(mission_number));
+            text = text_manager->getBriefingText(mission_number, MISSION_DESCRIPTION, house);
         } break;
     }
     setText(text);
@@ -83,6 +87,8 @@ void BriefingMenu::onMentatTextFinished() {
 }
 
 int BriefingMenu::showMenu() {
+    using dune::globals::musicPlayer;
+
     switch (type) {
         case DEBRIEFING_WIN: {
             switch (house) {

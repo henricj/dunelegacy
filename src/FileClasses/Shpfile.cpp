@@ -133,7 +133,7 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
         THROW(std::runtime_error, "Shpfile::getPicture(): Cannot create surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     const unsigned char* RESTRICT const in = ImageOut.get();
@@ -216,7 +216,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
         THROW(std::runtime_error, "Shpfile::getPictureArray(): Cannot create Surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     for (auto j = 0u; j < tilesY; j++) {

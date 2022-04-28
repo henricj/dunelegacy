@@ -72,7 +72,7 @@ public:
             tooltipTexture = DuneTextureOwned{};
 
         if (!tooltipText.empty()) {
-            tooltipTexture = GUIStyle::getInstance().createToolTip(renderer, tooltipText);
+            tooltipTexture = GUIStyle::getInstance().createToolTip(dune::globals::renderer.get(), tooltipText);
         }
     }
 

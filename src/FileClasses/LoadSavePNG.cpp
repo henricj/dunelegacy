@@ -232,7 +232,7 @@ std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
     }
 
     { // Scope
-        const sdl2::surface_ptr pCurrentScreen = renderReadSurface(renderer);
+        const sdl2::surface_ptr pCurrentScreen = renderReadSurface(dune::globals::renderer.get());
 
         if (!pCurrentScreen) {
             sdl2::log_warn("Saving screenshot failed: unable to copy screen");

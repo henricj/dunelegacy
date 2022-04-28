@@ -569,7 +569,7 @@ void DuneStyle::RenderButton(SDL_Renderer* renderer, const SDL_FRect& dest, cons
         content->draw(renderer, content_x, content_y);
 }
 
-DuneTextureOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
+DuneSurfaceOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
                                              uint32_t textcolor, uint32_t textshadowcolor) const {
     // create text on this button
     int fontsize = 0;
@@ -584,7 +584,7 @@ DuneTextureOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, st
     if (textshadowcolor == COLOR_DEFAULT)
         textshadowcolor = defaultShadowColor;
 
-    if (text.empty() || !pFontManager)
+    if (text.empty())
         return {};
 
     const auto scale = getActualScale();
@@ -601,7 +601,7 @@ DuneTextureOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, st
     const auto actual_width  = std::max(shadow_surface->w + dx, text_surface->w);
     const auto actual_height = std::max(shadow_surface->h + dy, text_surface->h);
 
-    const sdl2::surface_ptr surface{
+    sdl2::surface_ptr surface{
         SDL_CreateRGBSurface(0, actual_width, actual_height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     if (!surface)
@@ -629,11 +629,9 @@ DuneTextureOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, st
         SDL_BlitSurface(text_surface.get(), nullptr, surface.get(), &dest);
     }
 
-    sdl2::texture_ptr texture{SDL_CreateTextureFromSurface(renderer, surface.get())};
-
     const auto inverse_scale = 1.f / scale;
 
-    return DuneTextureOwned{std::move(texture), static_cast<float>(actual_width) * inverse_scale,
+    return DuneSurfaceOwned{std::move(surface), static_cast<float>(actual_width) * inverse_scale,
                             static_cast<float>(actual_height) * inverse_scale};
 }
 
@@ -865,7 +863,7 @@ DuneSurfaceOwned DuneStyle::createBackground(int width, int height) const {
     const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
 
     sdl2::surface_ptr pSurface;
-    if (const auto* gfx = pGFXManager.get()) {
+    if (const auto* gfx = dune::globals::pGFXManager.get()) {
         pSurface = gfx->createBackgroundSurface(scaled_width, scaled_height);
         if (!pSurface) {
             return {};
@@ -898,7 +896,7 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
         THROW(std::invalid_argument, "Attempting to draw an empty background!");
 
     if (!backgroundTile_) {
-        const auto surface = pGFXManager->createBackgroundTile();
+        const auto surface = dune::globals::pGFXManager->createBackgroundTile();
 
         // SavePNG(surface.get(), "c:\\temp\\tile.png");
 

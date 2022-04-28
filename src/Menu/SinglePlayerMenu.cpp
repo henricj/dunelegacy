@@ -42,20 +42,22 @@ SinglePlayerMenu::SinglePlayerMenu() {
 
     SinglePlayerMenu::setWindowWidget(&windowWidget);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     // set up pictures in the background
-    const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
+    const auto* const pPlanetBackground = gfx->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
     auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
     dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
     windowWidget.addWidget(&planetPicture, dest1);
 
-    const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
+    const auto* const pDuneLegacy = gfx->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
     auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
     dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
     windowWidget.addWidget(&duneLegacy, dest2);
 
-    const auto* pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
+    const auto* pMenuButtonBorder = gfx->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
     auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
     dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
@@ -110,17 +112,16 @@ void SinglePlayerMenu::onCampaign() {
         return;
     }
 
-    GameInitSettings init(static_cast<HOUSETYPE>(player), settings.gameOptions);
+    GameInitSettings init(static_cast<HOUSETYPE>(player), dune::globals::settings.gameOptions);
 
     for_each_housetype([&](const auto houseID) {
         if (houseID == static_cast<HOUSETYPE>(player)) {
             GameInitSettings::HouseInfo humanHouseInfo(static_cast<HOUSETYPE>(player), 1);
-            humanHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(settings.general.playerName, HUMANPLAYERCLASS));
+            humanHouseInfo.addPlayerInfo({dune::globals::settings.general.playerName, HUMANPLAYERCLASS});
             init.addHouseInfo(humanHouseInfo);
         } else {
             GameInitSettings::HouseInfo aiHouseInfo(houseID, 2);
-            aiHouseInfo.addPlayerInfo(
-                GameInitSettings::PlayerInfo(getHouseNameByNumber(houseID), settings.ai.campaignAI));
+            aiHouseInfo.addPlayerInfo({getHouseNameByNumber(houseID), dune::globals::settings.ai.campaignAI});
             init.addHouseInfo(aiHouseInfo);
         }
     });

@@ -101,7 +101,7 @@ UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const 
 void UnitBase::init() {
     drawnFrame = 0;
 
-    unitList.push_back(this);
+    dune::globals::unitList.push_back(this);
 }
 
 UnitBase::~UnitBase() = default;
@@ -114,7 +114,7 @@ void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
 
         game.getHouse(originalHouseID)->decrementUnits(itemID);
 
-        unitList.remove(this);
+        dune::globals::unitList.remove(this);
     } catch (std::exception& e) {
         sdl2::log_info("UnitBase::cleanup(): %s", e.what());
     }
@@ -198,8 +198,8 @@ bool UnitBase::attack(const GameContext& context) {
     }
 
     if (primaryWeaponTimer == 0) {
-        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType,
-                                                      currentWeaponDamage, bAirBullet, pObject));
+        dune::globals::bulletList.push_back(std::make_unique<Bullet>(
+            objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
             context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
         }
@@ -221,8 +221,8 @@ bool UnitBase::attack(const GameContext& context) {
     }
 
     if (numWeapons() == 2 && secondaryWeaponTimer == 0 && !isBadlyDamaged()) {
-        bulletList.push_back(std::make_unique<Bullet>(objectID, &centerPoint, &targetCenterPoint, currentBulletType,
-                                                      currentWeaponDamage, bAirBullet, pObject));
+        dune::globals::bulletList.push_back(std::make_unique<Bullet>(
+            objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
             context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
         }
@@ -245,15 +245,17 @@ bool UnitBase::attack(const GameContext& context) {
 }
 
 void UnitBase::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const pUnitGraphic = graphic[dune::globals::currentZoomlevel];
     const auto source =
         calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
     const auto dest = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
-    Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
+    Dune_RenderCopyF(dune::globals::renderer.get(), pUnitGraphic, &source, &dest);
 
     if (isBadlyDamaged()) {
         drawSmoke(x, y);
@@ -261,7 +263,7 @@ void UnitBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
-    if (pLocalHouse == owner && isRespondable() || debug) {
+    if (dune::globals::pLocalHouse == owner && isRespondable() || dune::globals::debug) {
         return UnitInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -305,8 +307,8 @@ void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
             }
         }
 
-        if (pLocalHouse == getOwner()) {
-            pLocalPlayer->onUnitDeployed(this);
+        if (dune::globals::pLocalHouse == getOwner()) {
+            dune::globals::pLocalPlayer->onUnitDeployed(this);
         }
     }
 }
@@ -327,8 +329,8 @@ void UnitBase::destroy(const GameContext& context) {
 
             if (owner->getHouseID() != originalHouseID) {
                 // deviation is inherited
-                pNewUnit->owner          = owner;
-                pNewUnit->graphic        = pGFXManager->getObjPic(pNewUnit->graphicID, owner->getHouseID());
+                pNewUnit->owner   = owner;
+                pNewUnit->graphic = dune::globals::pGFXManager->getObjPic(pNewUnit->graphicID, owner->getHouseID());
                 pNewUnit->deviationTimer = deviationTimer;
             }
         }
@@ -349,7 +351,8 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
         doSetAttackMode(context, GUARD);
         owner = newOwner;
 
-        graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+        graphic = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+
         deviationTimer = DEVIATIONTIME;
     }
 
@@ -366,14 +369,18 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
 }
 
 void UnitBase::drawSelectionBox() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+    auto* const gfx          = dune::globals::pGFXManager.get();
 
     const DuneTexture* selectionBox = nullptr;
 
-    switch (currentZoomlevel) {
-        case 0: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
-        case 1: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
+    switch (zoom) {
+        case 0: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
+        case 1: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
         case 2:
-        default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
+        default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
     }
 
     const auto screenX = screenborder->world2screenX(realX);
@@ -387,17 +394,22 @@ void UnitBase::drawSelectionBox() {
     const auto y     = screenY - getHeight(selectionBox) / 2;
 
     const auto healthWidth = (getHealth() / getMaxHealth()).toFloat() * (width - 3);
-    renderFillRectF(renderer, x + 1, y - currentZoomlevel - 1, x + 1 + healthWidth, y - 1, getHealthColor());
+    renderFillRectF(renderer, x + 1, y - zoom - 1, x + 1 + healthWidth, y - 1, getHealthColor());
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const DuneTexture* selectionBox = nullptr;
 
-    switch (currentZoomlevel) {
-        case 0: selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0); break;
-        case 1: selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel1); break;
+    auto* const gfx = dune::globals::pGFXManager.get();
+    switch (zoom) {
+        case 0: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0); break;
+        case 1: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel1); break;
         case 2:
-        default: selectionBox = pGFXManager->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2); break;
+        default: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2); break;
     }
 
     const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX),
@@ -605,10 +617,11 @@ void UnitBase::move(const GameContext& context) {
 void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX,
                                    FixPoint toDistanceY) {
 
+    auto* const map = dune::globals::currentGameMap;
+
     if (hasBumpyMovementOnRock()
-        && (currentGameMap->getTile(location)->getType() == Terrain_Rock
-            || currentGameMap->getTile(location)->getType() == Terrain_Mountain
-            || currentGameMap->getTile(location)->getType() == Terrain_ThickSpice)) {
+        && (map->getTile(location)->getType() == Terrain_Rock || map->getTile(location)->getType() == Terrain_Mountain
+            || map->getTile(location)->getType() == Terrain_ThickSpice)) {
         // bumping effect
 
         const FixPoint epsilon     = 0.005_fix;
@@ -816,12 +829,12 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
         game.getCommandManager().addCommand(
-            Command{pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
+            Command{dune::globals::pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
     } else {
         // move this unit
-        game.getCommandManager().addCommand(Command{pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
-                                                    static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos),
-                                                    static_cast<uint32_t>(true)});
+        game.getCommandManager().addCommand(Command{dune::globals::pLocalPlayer->getPlayerID(),
+                                                    CMDTYPE::CMD_UNIT_MOVE2POS, objectID, static_cast<uint32_t>(xPos),
+                                                    static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)});
     }
 }
 
@@ -838,13 +851,14 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
         if (tempTarget) {
             // attack unit/structure or move to structure
 
-            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKOBJECT,
-                                                        objectID, tempTarget->getObjectID()));
+            game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                        CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID,
+                                                        tempTarget->getObjectID()));
         } else {
             // attack pos
-            game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS,
-                                                        objectID, static_cast<uint32_t>(xPos),
-                                                        static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
+            game.getCommandManager().addCommand(
+                Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS, objectID,
+                        static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
         }
     }
 }
@@ -855,15 +869,16 @@ void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
 
     if (context.map.tileExists(xPos, yPos)) {
         // move to pos
-        context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS,
-                                                            objectID, static_cast<uint32_t>(xPos),
-                                                            static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
+        context.game.getCommandManager().addCommand(
+            Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
+                    static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
     }
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
-    context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SETMODE,
-                                                        objectID, static_cast<uint32_t>(newAttackMode)));
+    context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                        CMDTYPE::CMD_UNIT_SETMODE, objectID,
+                                                        static_cast<uint32_t>(newAttackMode)));
 }
 
 /**
@@ -875,7 +890,7 @@ void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xP
         return;
 
     if (context.map.tileExists(xPos, yPos)) {
-        context.game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(),
+        context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
                                                             CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID,
                                                             static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     }
@@ -1141,7 +1156,7 @@ void UnitBase::setGettingRepaired() {
     if (!repair_yard)
         return;
 
-    currentGameMap->removeObjectFromMap(getObjectID());
+    dune::globals::currentGameMap->removeObjectFromMap(getObjectID());
 
     repair_yard->assignUnit(this);
 
@@ -1158,12 +1173,12 @@ void UnitBase::setGettingRepaired() {
 }
 
 void UnitBase::setGuardPoint(int newX, int newY) {
-    if (currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
+    if (dune::globals::currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
         guardPoint.x = newX;
         guardPoint.y = newY;
 
         if (getItemID() == Unit_Harvester && guardPoint.isValid()) {
-            if (currentGameMap->getTile(newX, newY)->hasSpice()) {
+            if (dune::globals::currentGameMap->getTile(newX, newY)->hasSpice()) {
                 if (attackMode == STOP) {
                     attackMode = GUARD;
                 }
@@ -1180,7 +1195,7 @@ void UnitBase::setLocation(const GameContext& context, int xPos, int yPos) {
 
     if (xPos == INVALID_POS && yPos == INVALID_POS) {
         parent::setLocation(context, xPos, yPos);
-    } else if (currentGameMap->tileExists(xPos, yPos)) {
+    } else if (dune::globals::currentGameMap->tileExists(xPos, yPos)) {
         parent::setLocation(context, xPos, yPos);
         realX += TILESIZE / 2;
         realY += TILESIZE / 2;
@@ -1378,7 +1393,7 @@ void UnitBase::quitDeviation(const GameContext& context) {
         setGuardPoint(location);
         setDestination(location);
         owner          = context.game.getHouse(originalHouseID);
-        graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+        graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
         deviationTimer = INVALID;
     }
 }
@@ -1456,7 +1471,8 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
         return true;
 
     if (ground_object_result.second == target.getObjectID()) {
-        const auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        const auto* const pObject =
+            dune::globals::currentGame->getObjectManager().getObject(ground_object_result.second);
 
         if (pObject != nullptr && pObject->getObjectID() == target.getObjectID() && targetFriendly
             && pObject->isAStructure() && pObject->getOwner()->getTeamID() == owner->getTeamID()
@@ -1489,7 +1505,7 @@ bool UnitBase::SearchPathWithAStar() {
         destinationCoord = destination;
     }
 
-    currentGameMap->find_path(this, location, destinationCoord, pathList);
+    dune::globals::currentGameMap->find_path(this, location, destinationCoord, pathList);
 
     if (pathList.empty()) {
         nextSpotFound = false;
@@ -1500,16 +1516,18 @@ bool UnitBase::SearchPathWithAStar() {
 }
 
 void UnitBase::drawSmoke(float x, float y) const {
-    auto frame = static_cast<int>(currentGame->getGameCycleCount() + getObjectID() * 10) / SMOKEDELAY % (2 * 2);
+    auto frame =
+        static_cast<int>(dune::globals::currentGame->getGameCycleCount() + getObjectID() * 10) / SMOKEDELAY % (2 * 2);
     if (frame == 3)
         frame = 1;
 
-    const auto* const pSmokeTex =
-        pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(), currentZoomlevel);
+    const auto* const pSmokeTex = dune::globals::pGFXManager->getZoomedObjPic(ObjPic_Smoke, getOwner()->getHouseID(),
+                                                                              dune::globals::currentZoomlevel);
+
     const auto dest   = calcSpriteDrawingRect(pSmokeTex, x, y, 3, 1, HAlign::Center, VAlign::Bottom);
     const auto source = calcSpriteSourceRect(pSmokeTex, frame, 3);
 
-    Dune_RenderCopyF(renderer, pSmokeTex, &source, &dest);
+    Dune_RenderCopyF(dune::globals::renderer.get(), pSmokeTex, &source, &dest);
 }
 
 void UnitBase::playAttackSound() { }

@@ -36,7 +36,7 @@ RocketTurret::RocketTurret(uint32_t objectID, const ObjectInitializer& initializ
     : TurretBase(gun_turret_constants, objectID, initializer) {
     RocketTurret::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    RocketTurret::setHealth(getMaxHealth());
 }
 
 RocketTurret::RocketTurret(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -51,7 +51,7 @@ void RocketTurret::init() {
     attackSound = Sound_enum::Sound_Rocket;
 
     graphicID    = ObjPic_RocketTurret;
-    graphic      = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic      = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX   = 10;
     numImagesY   = 1;
     curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle)) % 8) + 2;
@@ -95,7 +95,7 @@ void RocketTurret::attack(const GameContext& context) {
                            false, pObject);
 
             map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
             weaponTimer = turret_data.weaponreloadtime;
         }
     } else {
@@ -105,7 +105,7 @@ void RocketTurret::attack(const GameContext& context) {
                        pObject->isAFlyingUnit(), nullptr);
 
         map.viewMap(static_cast<HOUSETYPE>(pObject->getOwner()->getTeamID()), location, 2);
-        soundPlayer->playSoundAt(attackSound, location);
+        dune::globals::soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }
 }

@@ -42,7 +42,7 @@ void IX::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_IX;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 4;
     numImagesY     = 1;
     firstAnimFrame = 2;

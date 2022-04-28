@@ -199,7 +199,8 @@ protected:
         if (pBackground)
             return;
 
-        const auto& gui = GUIStyle::getInstance();
+        const auto& gui      = GUIStyle::getInstance();
+        auto* const renderer = dune::globals::renderer.get();
 
         pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
     }

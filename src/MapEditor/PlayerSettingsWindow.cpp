@@ -33,10 +33,10 @@
 PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = dune::globals::pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     PlayerSettingsWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -61,8 +61,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         const auto& playerInfo = players[i];
 
-        const Uint32 currentColor =
-            SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
+        const auto currentColor =
+            SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
 
         centralVBox.addWidget(VSpacer::create(15));
 

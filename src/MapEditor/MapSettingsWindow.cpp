@@ -34,12 +34,12 @@
 MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     const auto& mapInfo = pMapEditor->getMapInfo();
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = dune::globals::pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     MapSettingsWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

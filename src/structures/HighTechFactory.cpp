@@ -43,7 +43,7 @@ void HighTechFactory::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_HighTechFactory;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 8;
     numImagesY     = 1;
     firstAnimFrame = 2;

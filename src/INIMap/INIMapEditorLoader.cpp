@@ -263,7 +263,7 @@ void INIMapEditorLoader::loadMap() {
         }
     }
 
-    screenborder->adjustScreenBorderToMapsize(pMapEditor->map.getSizeX(), pMapEditor->map.getSizeY());
+    dune::globals::screenborder->adjustScreenBorderToMapsize(pMapEditor->map.getSizeX(), pMapEditor->map.getSizeY());
 }
 
 /**

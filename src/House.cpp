@@ -69,8 +69,9 @@ House::~House() = default;
 
 House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int maxUnits, uint8_t teamID, int quota)
     : House(context) {
-    houseID      = ((static_cast<int>(newHouse) >= 0) && (newHouse < HOUSETYPE::NUM_HOUSES)) ? newHouse
-                                                                                             : static_cast<HOUSETYPE>(0);
+    const auto is_valid_house = static_cast<int>(newHouse) >= 0 && newHouse < HOUSETYPE::NUM_HOUSES;
+
+    houseID      = is_valid_house ? newHouse : static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
     storedCredits   = 0;
@@ -218,7 +219,7 @@ void House::addCredits(FixPoint newCredits, bool wasRefined) {
     }
 
     storedCredits += newCredits;
-    if (this == pLocalHouse) {
+    if (this == dune::globals::pLocalHouse) {
         if (((context.game.winFlags & WINLOSEFLAGS_QUOTA) != 0) && (quota != 0)) {
             if (storedCredits >= quota) {
                 win();
@@ -291,7 +292,7 @@ void House::printStat() const {
 }
 
 void House::updateBuildLists() {
-    for (auto* pStructure : structureList) {
+    for (auto* pStructure : dune::globals::structureList) {
         auto* builder = dune_cast<BuilderBase>(pStructure);
         if (!builder || builder->getOwner() != this)
             continue;
@@ -306,9 +307,9 @@ void House::update() {
 
     const auto credits = getCredits();
     if (oldCredits != credits) {
-        if ((this == pLocalHouse) && (credits > 0)) {
-            soundPlayer->playSound(credits > oldCredits ? Sound_enum::Sound_CreditsTick
-                                                        : Sound_enum::Sound_CreditsTickDown);
+        if ((this == dune::globals::pLocalHouse) && (credits > 0)) {
+            dune::globals::soundPlayer->playSound(credits > oldCredits ? Sound_enum::Sound_CreditsTick
+                                                                       : Sound_enum::Sound_CreditsTickDown);
         }
         oldCredits = credits;
     }
@@ -319,7 +320,7 @@ void House::update() {
             storedCredits = 0;
         }
 
-        if (this == pLocalHouse) {
+        if (this == dune::globals::pLocalHouse) {
             context.game.addToNewsTicker(_("@DUNE.ENG|145#As insufficient spice storage is available, spice is lost."));
         }
     }
@@ -492,7 +493,7 @@ void House::informHasDamaged(ItemID_enum itemID, uint32_t damage) {
 }
 
 void House::win() {
-    if (getTeamID() == pLocalHouse->getTeamID()) {
+    if (getTeamID() == dune::globals::pLocalHouse->getTeamID()) {
         context.game.setGameWon();
     } else {
         context.game.setGameLost();
@@ -509,14 +510,15 @@ void House::lose(bool bSilent) const {
         }
     }
 
-    if ((getTeamID() == pLocalHouse->getTeamID())
+    if ((getTeamID() == dune::globals::pLocalHouse->getTeamID())
         && ((context.game.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS) != 0)) {
 
         bool finished = true;
 
         for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
             const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
-            if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() == pLocalHouse->getTeamID()) {
+            if (pHouse != nullptr && pHouse->isAlive()
+                && pHouse->getTeamID() == dune::globals::pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
@@ -540,7 +542,7 @@ void House::lose(bool bSilent) const {
         for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
             const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
             if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0
-                && pHouse->getTeamID() != pLocalHouse->getTeamID()) {
+                && pHouse->getTeamID() != dune::globals::pLocalHouse->getTeamID()) {
                 finished = false;
                 break;
             }
@@ -605,7 +607,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
 
     if (game.getGameInitSettings().getGameOptions().onlyOnePalace && pBuilder != nullptr && itemID == Structure_Palace
         && getNumItems(Structure_Palace) > 0) {
-        if (this == pLocalHouse && pBuilder->isSelected()) {
+        if (this == dune::globals::pLocalHouse && pBuilder->isSelected()) {
             game.currentCursorMode = Game::CursorMode_Normal;
         }
         return nullptr;
@@ -624,12 +626,12 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
             if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if (this == pLocalHouse) {
+                if (this == dune::globals::pLocalHouse) {
                     if (pBuilder->isSelected()) {
                         context.game.currentCursorMode = Game::CursorMode_Normal;
                     }
 
-                    pLocalPlayer->onPlaceStructure(nullptr);
+                    dune::globals::pLocalPlayer->onPlaceStructure(nullptr);
                 }
             }
 
@@ -652,12 +654,12 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
             if (pBuilder != nullptr) {
                 pBuilder->unSetWaitingToPlace();
 
-                if (this == pLocalHouse) {
+                if (this == dune::globals::pLocalHouse) {
                     if (pBuilder->isSelected()) {
                         context.game.currentCursorMode = Game::CursorMode_Normal;
                     }
 
-                    pLocalPlayer->onPlaceStructure(nullptr);
+                    dune::globals::pLocalPlayer->onPlaceStructure(nullptr);
                 }
             }
 
@@ -714,7 +716,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
 
                 if (itemID == Structure_Palace) {
                     // cancel all other palaces
-                    for (auto* pStructure : structureList) {
+                    for (auto* pStructure : dune::globals::structureList) {
                         if (pStructure->getOwner() != this)
                             continue;
 
@@ -725,11 +727,11 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
                     }
                 }
 
-                if (this == pLocalHouse) {
+                if (this == dune::globals::pLocalHouse) {
                     if (pBuilder->isSelected()) {
                         game.currentCursorMode = Game::CursorMode_Normal;
                     }
-                    pLocalPlayer->onPlaceStructure(newStructure);
+                    dune::globals::pLocalPlayer->onPlaceStructure(newStructure);
                 }
 
                 // only if we were constructed by construction yard
@@ -792,7 +794,7 @@ UnitBase* House::placeUnit(ItemID_enum itemID, int xPos, int yPos, bool byScenar
 Coord House::getCenterOfMainBase() const {
     Coord center;
     int numStructures = 0;
-    for (const StructureBase* pStructure : structureList) {
+    for (const StructureBase* pStructure : dune::globals::structureList) {
         if (pStructure->getOwner() == this) {
             center += pStructure->getLocation();
             numStructures++;
@@ -812,7 +814,7 @@ Coord House::getCenterOfMainBase() const {
 Coord House::getStrongestUnitPosition() const {
     Coord strongestUnitPosition = Coord::Invalid();
     int32_t strongestUnitCost   = 0;
-    for (const UnitBase* pUnit : unitList) {
+    for (const UnitBase* pUnit : dune::globals::unitList) {
         if (pUnit->getOwner() == this) {
             const int32_t currentCost =
                 context.game.objectData.data[pUnit->getItemID()][static_cast<int>(houseID)].price;
@@ -838,7 +840,7 @@ void House::decrementHarvesters() {
             FixPoint closestDistance              = FixPt_MAX;
             const StructureBase* pClosestRefinery = nullptr;
 
-            for (StructureBase* pStructure : structureList) {
+            for (auto* pStructure : dune::globals::structureList) {
                 if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this)
                     && (pStructure->getHealth() > 0)) {
                     Coord pos = pStructure->getLocation();

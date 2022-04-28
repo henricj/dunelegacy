@@ -134,7 +134,7 @@ sdl2::mix_chunk_ptr createSilenceChunk(int length) {
 }
 
 sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename) {
-    auto returnChunk = LoadVOC_RW(pFileManager->openFile(filename).get());
+    auto returnChunk = LoadVOC_RW(dune::globals::pFileManager->openFile(filename).get());
     if (returnChunk == nullptr) {
         THROW(io_error, "Cannot load '%s'!", filename);
     }
@@ -143,10 +143,12 @@ sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename) {
 }
 
 sdl2::mix_chunk_ptr getChunkFromFile(std::string_view filename, std::string_view alternativeFilename) {
-    if (pFileManager->exists(filename)) {
+    const auto* const file_manager = dune::globals::pFileManager.get();
+
+    if (file_manager->exists(filename)) {
         return getChunkFromFile(filename);
     }
-    if (pFileManager->exists(alternativeFilename)) {
+    if (file_manager->exists(alternativeFilename)) {
 
         return getChunkFromFile(alternativeFilename);
     }

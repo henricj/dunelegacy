@@ -505,10 +505,12 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
     ObjectBase* lastCheckedObject  = nullptr;
     ObjectBase* lastSelectedObject = nullptr;
 
+    auto* const game = dune::globals::currentGame.get();
+
     // if selection rectangle is checking only one tile and has shift selected we want to add/ remove that unit from
     // the selected group of units
     if (!objectARGMode) {
-        currentGame->clearSelectedList();
+        game->clearSelectedList();
     }
 
     if ((x1 == x2) && (y1 == y2)) {
@@ -517,20 +519,22 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
         if (!tile_center)
             return;
 
-        if (tile_center->isExploredByTeam(currentGame.get(), pHouse->getTeamID()) || debug) {
-            lastCheckedObject = tile_center->getObjectAt(currentGame->getObjectManager(), realX, realY);
+        if (tile_center->isExploredByTeam(game, pHouse->getTeamID()) || dune::globals::debug) {
+            lastCheckedObject = tile_center->getObjectAt(game->getObjectManager(), realX, realY);
         } else {
             lastCheckedObject = nullptr;
         }
 
         if ((lastCheckedObject != nullptr) && (lastCheckedObject->getOwner() == pHouse)) {
             if ((lastCheckedObject == lastSinglySelectedObject) && (!lastCheckedObject->isAStructure())) {
+                auto* const screenborder = dune::globals::screenborder.get();
+
                 for (auto i = screenborder->getTopLeftTile().x; i <= screenborder->getBottomRightTile().x; i++) {
                     for (auto j = screenborder->getTopLeftTile().y; j <= screenborder->getBottomRightTile().y; j++) {
                         auto* const tile = tryGetTile(i, j);
 
                         if (tile && tile->hasAnObject()) {
-                            tile->selectAllPlayersUnitsOfType(currentGame.get(), pHouse->getHouseID(),
+                            tile->selectAllPlayersUnitsOfType(game, pHouse->getHouseID(),
                                                               lastSinglySelectedObject->getItemID(), &lastCheckedObject,
                                                               &lastSelectedObject);
                         }
@@ -541,16 +545,16 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             } else if (!lastCheckedObject->isSelected()) {
 
                 lastCheckedObject->setSelected(true);
-                currentGame->getSelectedList().insert(lastCheckedObject->getObjectID());
-                currentGame->selectionChanged();
+                game->getSelectedList().insert(lastCheckedObject->getObjectID());
+                game->selectionChanged();
                 lastSelectedObject       = lastCheckedObject;
                 lastSinglySelectedObject = lastSelectedObject;
 
             } else if (objectARGMode) {
                 // holding down shift, unselect this unit
                 lastCheckedObject->setSelected(false);
-                currentGame->getSelectedList().erase(lastCheckedObject->getObjectID());
-                currentGame->selectionChanged();
+                game->getSelectedList().erase(lastCheckedObject->getObjectID());
+                game->selectionChanged();
             }
 
         } else {
@@ -563,21 +567,20 @@ void Map::selectObjects(const House* pHouse, int x1, int y1, int x2, int y2, int
             for (auto j = std::min(y1, y2); j <= std::max(y1, y2); j++) {
                 auto* const tile = tryGetTile(i, j);
 
-                if (tile && tile->hasAnObject() && tile->isExploredByTeam(currentGame.get(), pHouse->getTeamID())
-                    && !tile->isFoggedByTeam(currentGame.get(), pHouse->getTeamID())) {
-                    tile->selectAllPlayersUnits(currentGame.get(), pHouse->getHouseID(), &lastCheckedObject,
-                                                &lastSelectedObject);
+                if (tile && tile->hasAnObject() && tile->isExploredByTeam(game, pHouse->getTeamID())
+                    && !tile->isFoggedByTeam(game, pHouse->getTeamID())) {
+                    tile->selectAllPlayersUnits(game, pHouse->getHouseID(), &lastCheckedObject, &lastSelectedObject);
                 }
             }
         }
     }
 
     // select an enemy unit if none of your units found
-    if (currentGame->getSelectedList().empty() && (lastCheckedObject != nullptr) && !lastCheckedObject->isSelected()) {
+    if (game->getSelectedList().empty() && (lastCheckedObject != nullptr) && !lastCheckedObject->isSelected()) {
         lastCheckedObject->setSelected(true);
         lastSelectedObject = lastCheckedObject;
-        currentGame->getSelectedList().insert(lastCheckedObject->getObjectID());
-        currentGame->selectionChanged();
+        game->getSelectedList().insert(lastCheckedObject->getObjectID());
+        game->selectionChanged();
     } else if (lastSelectedObject != nullptr) {
         lastSelectedObject->playSelectSound(); // we only want one unit responding
     }
@@ -622,7 +625,7 @@ void Map::viewMap(HOUSETYPE houseID, const Coord& location, const int maxViewRan
     //                   *****
     //                     *
 
-    const auto cycle_count = currentGame->getGameCycleCount();
+    const auto cycle_count = dune::globals::currentGame->getGameCycleCount();
 
     for_each_filter(
         location.x - maxViewRange, location.y - maxViewRange, location.x + maxViewRange + 1,

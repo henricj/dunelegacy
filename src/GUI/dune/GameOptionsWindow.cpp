@@ -25,6 +25,8 @@
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
     : Window(50, 50, 626, 340), gameOptions(initialGameOptions) {
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     GameOptionsWindow::setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
 
@@ -123,7 +125,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(&onlyOnePalaceCheckbox);
     vboxRight.addWidget(VSpacer::create(6));
 
-    gameSpeedMinus.setTextures(pGFXManager->getUIGraphic(UI_Minus), pGFXManager->getUIGraphic(UI_Minus_Pressed));
+    gameSpeedMinus.setTextures(gfx->getUIGraphic(UI_Minus), gfx->getUIGraphic(UI_Minus_Pressed));
     gameSpeedMinus.setOnClick([this] { onGameSpeedMinus(); });
     gameSpeedHBox.addWidget(HSpacer::create(4));
     gameSpeedHBox.addWidget(&gameSpeedMinus);
@@ -133,7 +135,7 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     gameSpeedHBox.addWidget(&gameSpeedBar);
     currentGameSpeed = gameOptions.gameSpeed;
     updateGameSpeedBar();
-    gameSpeedPlus.setTextures(pGFXManager->getUIGraphic(UI_Plus), pGFXManager->getUIGraphic(UI_Plus_Pressed));
+    gameSpeedPlus.setTextures(gfx->getUIGraphic(UI_Plus), gfx->getUIGraphic(UI_Plus_Pressed));
     gameSpeedPlus.setOnClick([this] { onGameSpeedPlus(); });
     gameSpeedHBox.addWidget(HSpacer::create(2));
     gameSpeedHBox.addWidget(&gameSpeedPlus);

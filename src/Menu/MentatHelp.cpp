@@ -32,9 +32,9 @@
 
 MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
 
-    mentatEntries = pTextManager->getAllMentatEntries(newHouse, techLevel);
+    mentatEntries = dune::globals::pTextManager->getAllMentatEntries(newHouse, techLevel);
 
-    const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
+    const auto color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
     if (mission == 0)
         std::erase_if(mentatEntries, [](auto& e) { return e.numMenuEntry == 0; });
@@ -65,8 +65,10 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     windowWidget.addWidget(&itemDescriptionLabel, Point(256 + 4, 96 + 4), Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-    const auto* const pMentatExit        = pGFXManager->getUIGraphic(UI_MentatExit);
-    const auto* const pMentatExitPressed = pGFXManager->getUIGraphic(UI_MentatExit_Pressed);
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    const auto* const pMentatExit        = gfx->getUIGraphic(UI_MentatExit);
+    const auto* const pMentatExitPressed = gfx->getUIGraphic(UI_MentatExit_Pressed);
     exitButton.setTextures(pMentatExit, pMentatExitPressed);
 
     exitButton.setOnClick([&] { onExit(); });
@@ -77,6 +79,8 @@ MentatHelp::~MentatHelp() = default;
 
 void MentatHelp::drawSpecificStuff() {
     MentatMenu::drawSpecificStuff();
+
+    auto* const renderer = dune::globals::renderer.get();
 
     const int x1 = getPosition().x;
     const int x2 = getPosition().x + getSize().x - 1;
@@ -124,7 +128,7 @@ void MentatHelp::onMentatTextFinished() {
 
 void MentatHelp::onExit() {
     if (mentatTopicsList.isVisible()) {
-        currentGame->resumeGame();
+        dune::globals::currentGame->resumeGame();
         quit();
     } else {
         onMentatTextFinished();
@@ -150,6 +154,8 @@ void MentatHelp::onListBoxClick() {
 
     const int missionnumber = (mission + 1) / 3 + 1;
 
+    using dune::globals::pTextManager;
+
     if (mentatEntry.filename == "0") {
         animID = getMissionSpecificAnim(missionnumber);
         text   = pTextManager->getBriefingText(missionnumber, MISSION_DESCRIPTION, house);
@@ -162,7 +168,7 @@ void MentatHelp::onListBoxClick() {
         name   = mentatEntry.name;
     }
 
-    animation.setAnimation(pGFXManager->getAnimation(animID));
+    animation.setAnimation(dune::globals::pGFXManager->getAnimation(animID));
     setText(text);
     itemDescriptionLabel.setText(name);
 

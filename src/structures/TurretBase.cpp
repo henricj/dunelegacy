@@ -117,8 +117,9 @@ void TurretBase::handleActionCommand(const GameContext& context, int xPos, int y
 
     if (const auto* tile = map.tryGetTile(xPos, yPos)) {
         const ObjectBase* tempTarget = tile->getObject(objectManager);
-        game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_TURRET_ATTACKOBJECT,
-                                                    objectID, tempTarget->getObjectID()));
+        game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                    CMDTYPE::CMD_TURRET_ATTACKOBJECT, objectID,
+                                                    tempTarget->getObjectID()));
     }
 }
 
@@ -168,7 +169,7 @@ void TurretBase::attack(const GameContext& context) {
                        pObject->isAFlyingUnit(), pObject);
 
         map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
-        soundPlayer->playSoundAt(attackSound, location);
+        dune::globals::soundPlayer->playSoundAt(attackSound, location);
         weaponTimer = getWeaponReloadTime();
     }
 }

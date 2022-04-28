@@ -62,7 +62,9 @@ SmartBot::SmartBot(const GameContext& context, InputStream& stream, House* assoc
 }
 
 void SmartBot::init() {
-    harvesterLimit = (currentGameMap->getSizeX() * currentGameMap->getSizeY()) / 512;
+    const auto& map = context_.map;
+
+    harvesterLimit = (map.getSizeX() * map.getSizeY()) / 512;
 }
 
 SmartBot::~SmartBot() = default;
@@ -267,10 +269,12 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_StarPort:
                 case Structure_WOR: {
                     // place near sand
+                    const auto& map = context_.map;
+
                     FixPoint nearestSand = 10000000;
-                    for (int y = 0; y < currentGameMap->getSizeY(); y++) {
-                        for (int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if (!currentGameMap->getTile(x, y)->isRock()) {
+                    for (int y = 0; y < map.getSizeY(); y++) {
+                        for (int x = 0; x < map.getSizeX(); x++) {
+                            if (!map.getTile(x, y)->isRock()) {
                                 FixPoint tmp = blockDistance(pos, Coord(x, y));
                                 if (tmp < nearestSand) {
                                     nearestSand = tmp;

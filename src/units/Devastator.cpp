@@ -37,7 +37,7 @@ Devastator::Devastator(uint32_t objectID, const ObjectInitializer& initializer)
     : TrackedUnit(devastator_constants, objectID, initializer) {
     Devastator::init();
 
-    ObjectBase::setHealth(getMaxHealth());
+    Devastator::setHealth(getMaxHealth());
 }
 
 Devastator::Devastator(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -53,10 +53,12 @@ void Devastator::init() {
     assert(itemID == Unit_Devastator);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Devastator_Base;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     gunGraphicID  = ObjPic_Devastator_Gun;
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
+    turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -70,24 +72,29 @@ void Devastator::save(OutputStream& stream) const {
 }
 
 void Devastator::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const int x1 = screenborder->world2screenX(realX);
     const int y1 = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const pUnitGraphic = graphic[zoom];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),  Coord(4, -12),
-                                                Coord(-8, -16), Coord(0, -12),  Coord(-4, -12), Coord(0, -12)};
+    constexpr auto devastatorTurretOffset =
+        std::to_array<Coord>({{8, -16}, {-4, -12}, {0, -16}, {4, -12}, {-8, -16}, {0, -12}, {-4, -12}, {0, -12}});
 
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest2                 = calcSpriteDrawingRect(
-                        pTurretGraphic, screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
-                        screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-                        HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[zoom];
+
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest2   = calcSpriteDrawingRect(
+          pTurretGraphic, screenborder->world2screenX(realX + devastatorTurretOffset[static_cast<int>(drawnAngle)].x),
+          screenborder->world2screenY(realY + devastatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+          HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
@@ -97,8 +104,8 @@ void Devastator::blitToScreen() {
 }
 
 void Devastator::handleStartDevastateClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_DEVASTATOR_STARTDEVASTATE, objectID));
 }
 
 void Devastator::doStartDevastate() {
@@ -120,8 +127,8 @@ void Devastator::destroy(const GameContext& context) {
         }
 
         if (isVisible(getOwner()->getTeamID())) {
-            screenborder->shakeScreen(18);
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+            dune::globals::screenborder->shakeScreen(18);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
         }
     }
 
@@ -140,5 +147,5 @@ bool Devastator::update(const GameContext& context) {
 }
 
 void Devastator::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
 }

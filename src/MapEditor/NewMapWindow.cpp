@@ -41,10 +41,12 @@
 NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+
+    auto* const gfx = dune::globals::pGFXManager.get();
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = gfx->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     NewMapWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -124,7 +126,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     rngSeedLabel.setTextColor(color);
     rngHBox.addWidget(&rngSeedLabel);
     rngSeedTextBox.setMinMax(0, 32767);
-    rngSeedTextBox.setValue(pGFXManager->random().rand(0, 32767));
+    rngSeedTextBox.setValue(gfx->random().rand(0, 32767));
     rngSeedTextBox.setColor(house, color);
     rngSeedTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rngSeedTextBox, 80);

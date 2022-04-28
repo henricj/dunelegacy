@@ -75,17 +75,16 @@
 #include <iomanip>
 #include <sstream>
 
-Game::Game() : localPlayerName(settings.general.playerName) {
-    currentZoomlevel = settings.video.preferredZoomLevel;
+Game::Game() : localPlayerName(dune::globals::settings.general.playerName) {
+    dune::globals::currentZoomlevel = dune::globals::settings.video.preferredZoomLevel;
 
-    unitList.clear();      // holds all the units
-    structureList.clear(); // all the structures
-    bulletList.clear();
+    dune::globals::unitList.clear();      // holds all the units
+    dune::globals::structureList.clear(); // all the structures
+    dune::globals::bulletList.clear();
 
-    musicPlayer->changeMusic(MUSIC_PEACE);
+    dune::globals::musicPlayer->changeMusic(MUSIC_PEACE);
 
-    // set to true for now
-    debug = false;
+    dune::globals::debug = false;
 
     resize();
 }
@@ -94,30 +93,32 @@ Game::Game() : localPlayerName(settings.general.playerName) {
     The destructor frees up all the used memory.
 */
 Game::~Game() {
-    if (pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage([](const auto&, const auto&) {});
-        pNetworkManager->setOnReceiveCommandList([](const auto&, const auto&) {});
-        pNetworkManager->setOnReceiveSelectionList([](const auto&, const auto&, auto) {});
-        pNetworkManager->setOnPeerDisconnected([](const auto&, auto, auto) {});
+    if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
+        network_manager->setOnReceiveChatMessage({});
+        network_manager->setOnReceiveCommandList({});
+        network_manager->setOnReceiveSelectionList({});
+        network_manager->setOnPeerDisconnected({});
     }
 
-    structureList.clear();
+    dune::globals::structureList.clear();
 
-    unitList.clear();
+    dune::globals::unitList.clear();
 
-    bulletList.clear();
+    dune::globals::bulletList.clear();
 
     explosionList.clear();
 
-    currentGameMap = nullptr;
+    dune::globals::currentGameMap = nullptr;
     map.reset();
 
-    screenborder.reset();
+    dune::globals::screenborder.reset();
 }
 
 void Game::resize() {
-    sideBarPos = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
-    topBarPos  = calcAlignedDrawingRect(pGFXManager->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    sideBarPos = calcAlignedDrawingRect(gfx->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
+    topBarPos  = calcAlignedDrawingRect(gfx->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
 
     const auto renderer_size   = getRendererSize();
     const auto renderer_width  = static_cast<float>(renderer_size.w);
@@ -128,10 +129,10 @@ void Game::resize() {
     //////////////////////////////////////////////////////////////////////////
     const SDL_FRect gameBoardRect{0, topBarPos.h, sideBarPos.x, renderer_height - topBarPos.h};
 
-    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
+    dune::globals::screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
     if (map)
-        screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
+        dune::globals::screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 
     if (pInterface)
         pInterface->resize(renderer_width, renderer_height);
@@ -172,8 +173,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
 
             INIMapLoader loader{this, gameInitSettings.getFilename(), gameInitSettings.getFiledata()};
 
-            map            = loader.load();
-            currentGameMap = map.get();
+            map                           = loader.load();
+            dune::globals::currentGameMap = map.get();
 
             if (!bReplay && gameInitSettings.getGameType() != GameType::CustomGame
                 && gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
@@ -213,9 +214,9 @@ void Game::processObjects() {
     // update all tiles
     map->for_all([](Tile& t) { t.update(); });
 
-    const GameContext context{*this, *currentGameMap, objectManager};
+    const GameContext context{*this, *dune::globals::currentGameMap, objectManager};
 
-    for (auto* pStructure : structureList) {
+    for (auto* pStructure : dune::globals::structureList) {
         pStructure->update(context);
     }
 
@@ -223,7 +224,7 @@ void Game::processObjects() {
         currentCursorMode = CursorMode_Normal;
     }
 
-    for (auto* pUnit : unitList) {
+    for (auto* pUnit : dune::globals::unitList) {
         pUnit->update(context);
     }
 
@@ -240,7 +241,7 @@ void Game::processObjects() {
     });
 
     objectManager.consume_pending_deletes([&](auto& object) {
-        object->cleanup(context, pLocalPlayer);
+        object->cleanup(context, dune::globals::pLocalPlayer);
 
         if (removeFromSelectionLists(object.get()))
             selection_changed = true;
@@ -251,12 +252,15 @@ void Game::processObjects() {
     if (selection_changed)
         selectionChanged();
 
-    std::erase_if(bulletList, [&](auto& b) { return b->update(context); });
+    std::erase_if(dune::globals::bulletList, [&](auto& b) { return b->update(context); });
 
     std::erase_if(explosionList, [](auto& e) { return e->update(); });
 }
 
 void Game::drawScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+
     const auto top_left     = screenborder->getTopLeftTile();
     const auto bottom_right = screenborder->getBottomRightTile();
 
@@ -308,7 +312,7 @@ void Game::drawScreen() {
     map->for_each(x1, y1, x2, y2, [&](Tile& t) { t.blitNonInfantryGroundUnits(this); });
 
     /* draw bullets */
-    for (const auto& pBullet : bulletList) {
+    for (const auto& pBullet : dune::globals::bulletList) {
         pBullet->blitToScreen(gameCycleCount);
     }
 
@@ -330,16 +334,20 @@ void Game::drawScreen() {
 
     /* draw selection rectangles */
     map->for_each(x1, y1, x2, y2, [&](Tile& t) {
-        if (debug || t.isExploredByTeam(this, pLocalHouse->getTeamID())) {
+        if (dune::globals::debug || t.isExploredByTeam(this, dune::globals::pLocalHouse->getTeamID())) {
             t.blitSelectionRects(this);
         }
     });
 
     //////////////////////////////draw unexplored/shade
 
-    if (!debug) {
-        auto* const hiddenTexZoomed    = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Hidden, currentZoomlevel);
-        auto* const hiddenFogTexZoomed = pGFXManager->getZoomedObjPic(ObjPic_Terrain_HiddenFog, currentZoomlevel);
+    const auto zoom = dune::globals::currentZoomlevel;
+
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    if (!dune::globals::debug) {
+        auto* const hiddenTexZoomed    = gfx->getZoomedObjPic(ObjPic_Terrain_Hidden, zoom);
+        auto* const hiddenFogTexZoomed = gfx->getZoomedObjPic(ObjPic_Terrain_HiddenFog, zoom);
 
         const auto fogOfWar = gameInitSettings.getGameOptions().fogOfWar;
 
@@ -349,7 +357,7 @@ void Game::drawScreen() {
 
             const auto* const pTile = &t;
 
-            const auto team_id = pLocalHouse->getTeamID();
+            const auto team_id = dune::globals::pLocalHouse->getTeamID();
 
             const SDL_FRect drawLocation{screenborder->world2screenX(x * TILESIZE),
                                          screenborder->world2screenY(y * TILESIZE), static_cast<float>(zoomedTileSize),
@@ -373,7 +381,7 @@ void Game::drawScreen() {
                     }
                 }
             } else {
-                if (!debug) {
+                if (!dune::globals::debug) {
                     const SDL_Rect source{zoomedTileSize * 15, 0, zoomedTileSize, zoomedTileSize};
                     Dune_RenderCopyF(renderer, hiddenTexZoomed, &source, &drawLocation);
                 }
@@ -388,11 +396,11 @@ void Game::drawScreen() {
     if (currentCursorMode == CursorMode_Placing) {
         // if user has selected to place a structure
 
-        if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+        if (screenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
             // if mouse is not over game bar
 
-            const int xPos = screenborder->screen2MapX(drawnMouseX);
-            const int yPos = screenborder->screen2MapY(drawnMouseY);
+            const int xPos = screenborder->screen2MapX(dune::globals::drawnMouseX);
+            const int yPos = screenborder->screen2MapY(dune::globals::drawnMouseY);
 
             if (selectedList.size() == 1) {
                 if (auto* pBuilder = dune_cast<BuilderBase>(objectManager.getObject(*selectedList.begin()))) {
@@ -412,28 +420,30 @@ void Game::drawScreen() {
                     const DuneTexture* validPlace   = nullptr;
                     const DuneTexture* invalidPlace = nullptr;
 
-                    switch (currentZoomlevel) {
+                    switch (zoom) {
                         case 0: {
-                            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
-                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
+                            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel0);
+                            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
                         } break;
 
                         case 1: {
-                            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
-                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
+                            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel1);
+                            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
                         } break;
 
                         case 2:
                         default: {
-                            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
-                            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
+                            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel2);
+                            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
                         } break;
                     }
 
                     const auto is_slab = placeItem == Structure_Slab1 || placeItem == Structure_Slab4;
 
                     map->for_each(xPos, yPos, xPos + structureSize.x, yPos + structureSize.y,
-                                  [this, withinRange, invalidPlace, validPlace, is_slab](auto& t) {
+                                  [this, withinRange, invalidPlace, validPlace, is_slab,
+                                   renderer     = dune::globals::renderer.get(),
+                                   screenborder = dune::globals::screenborder.get()](auto& t) {
                                       const DuneTexture* image = nullptr;
 
                                       if (!withinRange || !t.isRock() || t.isMountain() || t.hasAGroundObject()
@@ -453,8 +463,8 @@ void Game::drawScreen() {
 
     ///////////draw game selection rectangle
     if (selectionMode) {
-        auto finalMouseX = static_cast<float>(drawnMouseX);
-        auto finalMouseY = static_cast<float>(drawnMouseY);
+        auto finalMouseX = static_cast<float>(dune::globals::drawnMouseX);
+        auto finalMouseY = static_cast<float>(dune::globals::drawnMouseY);
 
         if (finalMouseX >= sideBarPos.x) {
             // this keeps the box on the map, and not over game bar
@@ -475,7 +485,7 @@ void Game::drawScreen() {
     ///////////draw action indicator
 
     if ((indicatorFrame != NONE_ID) && (screenborder->isInsideScreen(indicatorPosition, Coord(TILESIZE, TILESIZE)))) {
-        const auto* const pUIIndicator = pGFXManager->getUIGraphic(UI_Indicator);
+        const auto* const pUIIndicator = gfx->getUIGraphic(UI_Indicator);
         auto source                    = calcSpriteSourceRect(pUIIndicator, indicatorFrame, 3);
         auto drawLocation = calcSpriteDrawingRectF(pUIIndicator, screenborder->world2screenX(indicatorPosition.x),
                                                    screenborder->world2screenY(indicatorPosition.y), 3, 1,
@@ -569,12 +579,16 @@ void Game::drawScreen() {
 void Game::doInput(const GameContext& context, SDL_Event& event) {
     // check for a key press
 
+    auto* const screenborder = dune::globals::screenborder.get();
+
     // first of all update mouse
     if (event.type == SDL_MOUSEMOTION) {
         const SDL_MouseMotionEvent* mouse = &event.motion;
 
-        drawnMouseX = std::max(0, std::min(mouse->x, settings.video.width - 1));
-        drawnMouseY = std::max(0, std::min(mouse->y, settings.video.height - 1));
+        const auto& video = dune::globals::settings.video;
+
+        dune::globals::drawnMouseX = std::max(0, std::min(mouse->x, video.width - 1));
+        dune::globals::drawnMouseY = std::max(0, std::min(mouse->y, video.height - 1));
     }
 
     if (pInGameMenu != nullptr) {
@@ -620,7 +634,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
             case SDL_MOUSEWHEEL: {
                 if (event.wheel.y != 0) {
-                    pInterface->handleMouseWheel(drawnMouseX, drawnMouseY, (event.wheel.y > 0));
+                    pInterface->handleMouseWheel(dune::globals::drawnMouseX, dune::globals::drawnMouseY,
+                                                 (event.wheel.y > 0));
                 }
             } break;
 
@@ -714,7 +729,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             // cancel special cursor mode
                             currentCursorMode = CursorMode_Normal;
                         } else if ((!selectedList.empty()
-                                    && (((objectManager.getObject(*selectedList.begin()))->getOwner() == pLocalHouse))
+                                    && (((objectManager.getObject(*selectedList.begin()))->getOwner()
+                                         == dune::globals::pLocalHouse))
                                     && (((objectManager.getObject(*selectedList.begin()))->isRespondable())))) {
                             // if user has a controllable unit selected
 
@@ -776,13 +792,13 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                     const int rectStartX = selectionRect.x / TILESIZE;
                     const int rectStartY = selectionRect.y / TILESIZE;
 
-                    map->selectObjects(pLocalHouse, rectStartX, rectStartY, rectFinishX, rectFinishY,
+                    map->selectObjects(dune::globals::pLocalHouse, rectStartX, rectStartY, rectFinishX, rectFinishY,
                                        screenborder->screen2worldX(finalMouseX),
                                        screenborder->screen2worldY(finalMouseY), SDL_GetModState() & KMOD_SHIFT);
 
                     if (selectedList.size() == 1) {
                         const auto* pHarvester = objectManager.getObject<Harvester>(*selectedList.begin());
-                        if (pHarvester != nullptr && pHarvester->getOwner() == pLocalHouse) {
+                        if (pHarvester != nullptr && pHarvester->getOwner() == dune::globals::pLocalHouse) {
 
                             auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
 
@@ -827,7 +843,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                     case SDL_WINDOWEVENT_SIZE_CHANGED: {
                         auto& gui = GUIStyle::getInstance();
 
-                        gui.setLogicalSize(renderer, event.window.data1, event.window.data2);
+                        gui.setLogicalSize(dune::globals::renderer.get(), event.window.data1, event.window.data2);
 
                         resize();
                     } break;
@@ -844,13 +860,15 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
     }
 
     if ((pInGameMenu == nullptr) && (pInGameMentat == nullptr) && (pWaitingForOtherPlayers == nullptr)
-        && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
+        && (SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_INPUT_FOCUS)) {
 
         const auto* keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode       = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-        scrollLeftMode       = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode      = (drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
-        scrollUpMode         = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+        scrollDownMode =
+            (dune::globals::drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode = (dune::globals::drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode =
+            (dune::globals::drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode = (dune::globals::drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if (scrollLeftMode && scrollRightMode) {
             // do nothing
@@ -876,11 +894,11 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 }
 
 void Game::drawCursor(const SDL_Rect& map_rect) const {
-    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if (!(SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
-    const auto* const gfx = pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     SDL_Cursor* hardware_cursor = nullptr;
     const DuneTexture* pCursor  = nullptr;
@@ -901,9 +919,10 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
             }
         }
     } else {
-        const SDL_Point mouse_point{drawnMouseX, drawnMouseY};
+        const SDL_Point mouse_point{dune::globals::drawnMouseX, dune::globals::drawnMouseY};
         if ((pInGameMenu != nullptr) || (pInGameMentat != nullptr) || (pWaitingForOtherPlayers != nullptr)
-            || ((!SDL_PointInRect(&mouse_point, &map_rect)) && (!isOnRadarView(drawnMouseX, drawnMouseY)))) {
+            || ((!SDL_PointInRect(&mouse_point, &map_rect))
+                && (!isOnRadarView(dune::globals::drawnMouseX, dune::globals::drawnMouseY)))) {
             // Menu mode or Mentat Menu or Waiting for other players or outside of game screen but not inside minimap
             hardware_cursor = gfx->getCursor(UI_CursorNormal);
         } else {
@@ -937,24 +956,28 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                 } break;
 
                 case CursorMode_Capture: {
-                    switch (currentZoomlevel) {
+                    switch (dune::globals::currentZoomlevel) {
                         case 0: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel0); break;
                         case 1: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel1); break;
                         case 2:
                         default: pCursor = gfx->getUIGraphic(UI_CursorCapture_Zoomlevel2); break;
                     }
 
-                    dest = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Center, VAlign::Bottom);
+                    dest = calcDrawingRect(pCursor, dune::globals::drawnMouseX, dune::globals::drawnMouseY,
+                                           HAlign::Center, VAlign::Bottom);
 
                     int xPos = INVALID_POS;
                     int yPos = INVALID_POS;
 
-                    if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
-                        xPos = screenborder->screen2MapX(drawnMouseX);
-                        yPos = screenborder->screen2MapY(drawnMouseY);
-                    } else if (isOnRadarView(drawnMouseX, drawnMouseY)) {
+                    auto* const screenborder = dune::globals::screenborder.get();
+
+                    if (screenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
+                        xPos = screenborder->screen2MapX(dune::globals::drawnMouseX);
+                        yPos = screenborder->screen2MapY(dune::globals::drawnMouseY);
+                    } else if (isOnRadarView(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
                         const auto position = pInterface->getRadarView().getWorldCoords(
-                            drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH), drawnMouseY - sideBarPos.y);
+                            dune::globals::drawnMouseX - (sideBarPos.x + SIDEBAR_COLUMN_WIDTH),
+                            dune::globals::drawnMouseY - sideBarPos.y);
 
                         xPos = position.x / TILESIZE;
                         yPos = position.y / TILESIZE;
@@ -963,11 +986,12 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                     if ((xPos != INVALID_POS) && (yPos != INVALID_POS)) {
                         const auto* const pTile = map->getTile(xPos, yPos);
 
-                        if (pTile->isExploredByTeam(this, pLocalHouse->getTeamID())) {
+                        const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
+                        if (pTile->isExploredByTeam(this, team_id)) {
 
                             if (const auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager)) {
-                                if (pStructure->canBeCaptured()
-                                    && pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID()) {
+                                if (pStructure->canBeCaptured() && pStructure->getOwner()->getTeamID() != team_id) {
                                     dest.y += static_cast<int>(getGameCycleCount() / 10) % 5;
                                 }
                             }
@@ -997,7 +1021,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
     if (pCursor) {
         SDL_ShowCursor(SDL_DISABLE);
 
-        pCursor->draw(renderer, dest.x, dest.y);
+        pCursor->draw(dune::globals::renderer.get(), dest.x, dest.y);
     } else {
         if (!hardware_cursor)
             hardware_cursor = gfx->getDefaultCursor();
@@ -1010,23 +1034,24 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
 }
 
 void Game::setupView(const GameContext& context) const {
+    // setup start location/view
+
     int i     = 0;
     int j     = 0;
     int count = 0;
 
-    // setup start location/view
-    i = j = count = 0;
+    const auto* const house = dune::globals::pLocalHouse;
 
-    for (const auto* pUnit : unitList) {
-        if ((pUnit->getOwner() == pLocalHouse) && (pUnit->getItemID() != Unit_Sandworm)) {
+    for (const auto* pUnit : dune::globals::unitList) {
+        if ((pUnit->getOwner() == house) && (pUnit->getItemID() != Unit_Sandworm)) {
             i += pUnit->getX();
             j += pUnit->getY();
             count++;
         }
     }
 
-    for (const auto* pStructure : structureList) {
-        if (pStructure->getOwner() == pLocalHouse) {
+    for (const auto* pStructure : dune::globals::structureList) {
+        if (pStructure->getOwner() == house) {
             i += pStructure->getX();
             j += pStructure->getY();
             count++;
@@ -1041,14 +1066,16 @@ void Game::setupView(const GameContext& context) const {
         j = j * TILESIZE / count;
     }
 
-    screenborder->setNewScreenCenter(Coord(i, j));
+    dune::globals::screenborder->setNewScreenCenter(Coord(i, j));
 }
 
 void Game::serviceNetwork(bool& bWaitForNetwork) {
-    pNetworkManager->update();
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+
+    network_manager->update();
 
     // test if we need to wait for data to arrive
-    for (const auto& playername : pNetworkManager->getConnectedPeers()) {
+    for (const auto& playername : network_manager->getConnectedPeers()) {
         const auto* const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
         if (pPlayer != nullptr) {
             if (pPlayer->nextExpectedCommandsCycle <= gameCycleCount) {
@@ -1102,7 +1129,7 @@ void Game::updateGame(const GameContext& context) {
             h->update();
     });
 
-    screenborder->update(pGFXManager->random());
+    dune::globals::screenborder->update(dune::globals::pGFXManager->random());
 
     triggerManager.trigger(context, gameCycleCount);
 
@@ -1153,10 +1180,13 @@ void Game::runMainLoop(const GameContext& context) {
     // add interface
     if (pInterface == nullptr) {
         pInterface = std::make_unique<GameInterface>(context);
+
+        const auto has_radar_on = dune::globals::pLocalHouse->hasRadarOn();
+
         if (gameState == GameState::Loading) {
             // when loading a save game we set radar directly
-            pInterface->getRadarView().setRadarMode(pLocalHouse->hasRadarOn());
-        } else if (pLocalHouse->hasRadarOn()) {
+            pInterface->getRadarView().setRadarMode(has_radar_on);
+        } else if (has_radar_on) {
             // when starting a new game we switch the radar on with an animation if appropriate
             pInterface->getRadarView().switchRadarMode(true);
         }
@@ -1194,7 +1224,7 @@ void Game::runMainLoop(const GameContext& context) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the default replay file: %s  Retrying...",
                             replay_error.message());
 
-            auto& uiRandom = pGFXManager->random();
+            auto& uiRandom = dune::globals::pGFXManager->random();
 
             for (auto i = 0; i < 10; ++i) {
                 const auto [ok2, replayname2] =
@@ -1232,32 +1262,33 @@ void Game::runMainLoop(const GameContext& context) {
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
 
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(),
-                                     _("Unable to open the replay log file.").c_str(), window);
+                                     _("Unable to open the replay log file.").c_str(), dune::globals::window.get());
 
             quitGame();
         }
     }
 
-    if (pNetworkManager != nullptr) {
-        pNetworkManager->setOnReceiveChatMessage(
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+    if (network_manager) {
+        network_manager->setOnReceiveChatMessage(
             [cm = &pInterface->getChatManager()](const auto& username, const auto& message) {
                 cm->addChatMessage(username, message);
             });
-        pNetworkManager->setOnReceiveCommandList([cm = &cmdManager](const auto& playername, const auto& commands) {
+        network_manager->setOnReceiveCommandList([cm = &cmdManager](const auto& playername, const auto& commands) {
             cm->addCommandList(playername, commands);
         });
-        pNetworkManager->setOnReceiveSelectionList(
+        network_manager->setOnReceiveSelectionList(
             [this](const auto& name, const auto& newSelectionList, auto groupListIndex) {
                 this->onReceiveSelectionList(name, newSelectionList, groupListIndex);
             });
-        pNetworkManager->setOnPeerDisconnected(
+        network_manager->setOnPeerDisconnected(
             [this](const auto& name, auto bHost, auto cause) { onPeerDisconnected(name, bHost, cause); });
 
-        cmdManager.setNetworkCycleBuffer(MILLI2CYCLES(pNetworkManager->getMaxPeerRoundTripTime()) + 5);
+        cmdManager.setNetworkCycleBuffer(MILLI2CYCLES(network_manager->getMaxPeerRoundTripTime()) + 5);
     }
 
     // Change music to ingame music
-    musicPlayer->changeMusic(MUSIC_PEACE);
+    dune::globals::musicPlayer->changeMusic(MUSIC_PEACE);
 
     const auto gameStart = dune::dune_clock::now();
 
@@ -1274,6 +1305,8 @@ void Game::runMainLoop(const GameContext& context) {
     // sdl2::log_info("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     dune::DuneTimerResolution timer_handle;
+
+    auto* const renderer = dune::globals::renderer.get();
 
     // main game loop
     do {
@@ -1325,7 +1358,7 @@ void Game::runMainLoop(const GameContext& context) {
 
         bool bWaitForNetwork = false;
 
-        if (pNetworkManager != nullptr) {
+        if (network_manager != nullptr) {
             serviceNetwork(bWaitForNetwork);
         }
 
@@ -1334,9 +1367,9 @@ void Game::runMainLoop(const GameContext& context) {
 
         pInterface->updateObjectInterface();
 
-        if (pNetworkManager != nullptr) {
+        if (network_manager != nullptr) {
             if (bSelectionChanged) {
-                pNetworkManager->sendSelectedList(selectedList);
+                network_manager->sendSelectedList(selectedList);
 
                 bSelectionChanged = false;
             }
@@ -1404,10 +1437,10 @@ void Game::runMainLoop(const GameContext& context) {
         while (SDL_PollEvent(&event))
             doInput(context, event);
 
-        musicPlayer->musicCheck(); // if song has finished, start playing next one
+        dune::globals::musicPlayer->musicCheck(); // if song has finished, start playing next one
 
         if (bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
-            const auto until = (settings.video.frameLimit ? 16ms : 5ms) + frameStart;
+            const auto until = (dune::globals::settings.video.frameLimit ? 16ms : 5ms) + frameStart;
 
             const auto start = dune::dune_clock::now();
 
@@ -1440,8 +1473,8 @@ void Game::runMainLoop(const GameContext& context) {
         cmdManager.save(replystream);
     }
 
-    if (pNetworkManager != nullptr) {
-        pNetworkManager->disconnect();
+    if (network_manager != nullptr) {
+        network_manager->disconnect();
     }
 
     gameState = GameState::Deinitialize;
@@ -1475,15 +1508,17 @@ void Game::onOptions() {
         // don't show menu
         quitGame();
     } else {
-        const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
-        pInGameMenu      = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
-        bMenu            = true;
+        const auto color = SDL2RGB(
+            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
+        pInGameMenu = std::make_unique<InGameMenu>((gameType == GameType::CustomMultiplayer), color);
+        bMenu       = true;
         pauseGame();
     }
 }
 
 void Game::onMentat() {
-    pInGameMentat = std::make_unique<MentatHelp>(pLocalHouse->getHouseID(), techLevel, gameInitSettings.getMission());
+    pInGameMentat = std::make_unique<MentatHelp>(dune::globals::pLocalHouse->getHouseID(), techLevel,
+                                                 gameInitSettings.getMission());
     bMenu         = true;
     pauseGame();
 }
@@ -1511,14 +1546,14 @@ GameInitSettings Game::getNextGameInitSettings() {
                 alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }
 
-            const uint32_t alreadyShownTutorialHints =
-                won ? pLocalPlayer->getAlreadyShownTutorialHints() : gameInitSettings.getAlreadyShownTutorialHints();
+            const uint32_t alreadyShownTutorialHints = won ? dune::globals::pLocalPlayer->getAlreadyShownTutorialHints()
+                                                           : gameInitSettings.getAlreadyShownTutorialHints();
             return GameInitSettings(gameInitSettings, nextMission, alreadyPlayedRegions, alreadyShownTutorialHints);
         }
 
         default: {
             sdl2::log_info("Game::getNextGameInitClass(): Wrong gameType for next Game.");
-            return GameInitSettings();
+            return {};
         }
     }
 }
@@ -1635,8 +1670,8 @@ bool Game::loadSaveGame(InputStream& stream) {
     const short mapSizeY = static_cast<short>(stream.readUint32());
 
     // create the new map
-    map            = std::make_unique<Map>(*this, mapSizeX, mapSizeY);
-    currentGameMap = map.get();
+    map                           = std::make_unique<Map>(*this, mapSizeX, mapSizeY);
+    dune::globals::currentGameMap = map.get();
 
     const GameContext context{*this, *map, this->getObjectManager()};
 
@@ -1685,8 +1720,8 @@ bool Game::loadSaveGame(InputStream& stream) {
                                     registerPlayer(pHumanPlayer);
 
                                     if (playerInfo.playerName == getLocalPlayerName()) {
-                                        pLocalHouse  = house[i].get();
-                                        pLocalPlayer = pHumanPlayer;
+                                        dune::globals::pLocalHouse  = house[i].get();
+                                        dune::globals::pLocalPlayer = pHumanPlayer;
                                     }
 
                                     ++playerIter;
@@ -1701,19 +1736,20 @@ bool Game::loadSaveGame(InputStream& stream) {
         }
     } else {
         // it is stored in the savegame, so set it up
-        const auto localPlayerID = stream.readUint8();
-        pLocalPlayer             = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
-        if (!pLocalPlayer) {
+        const auto localPlayerID    = stream.readUint8();
+        dune::globals::pLocalPlayer = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
+        if (!dune::globals::pLocalPlayer) {
             sdl2::log_info("Game::loadSaveGame(): No invalid playerID (%d)!", localPlayerID);
 
             return false;
         }
 
-        pLocalHouse = house[static_cast<int>(pLocalPlayer->getHouse()->getHouseID())].get();
+        dune::globals::pLocalHouse =
+            house[static_cast<int>(dune::globals::pLocalPlayer->getHouse()->getHouseID())].get();
     }
 
-    debug          = stream.readBool();
-    bCheatsEnabled = stream.readBool();
+    dune::globals::debug = stream.readBool();
+    bCheatsEnabled       = stream.readBool();
 
     winFlags  = stream.readUint32();
     loseFlags = stream.readUint32();
@@ -1724,7 +1760,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     objectManager.load(stream);
 
     const auto numBullets = stream.readUint32();
-    bulletList.reserve(numBullets);
+    dune::globals::bulletList.reserve(numBullets);
     for (auto i = 0u; i < numBullets; i++) {
         map->add_bullet(stream);
     }
@@ -1735,10 +1771,12 @@ bool Game::loadSaveGame(InputStream& stream) {
         addExplosion(stream);
     }
 
+    auto* const screenborder = dune::globals::screenborder.get();
+
     if (bMultiplayerLoad) {
         screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 
-        screenborder->setNewScreenCenter(pLocalHouse->getCenterOfMainBase() * TILESIZE);
+        screenborder->setNewScreenCenter(dune::globals::pLocalHouse->getCenterOfMainBase() * TILESIZE);
 
     } else {
         // load selection list
@@ -1765,8 +1803,9 @@ bool Game::saveGame(const std::filesystem::path& filename) {
 
     if (!fs.open(filename)) {
         sdl2::log_info("Game::saveGame(): %s", dune::string_error(errno));
-        currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"")
-                                     + reinterpret_cast<const char*>(filename.u8string().c_str()) + "\".");
+        dune::globals::currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"")
+                                                    + reinterpret_cast<const char*>(filename.u8string().c_str())
+                                                    + "\".");
         return false;
     }
 
@@ -1810,10 +1849,10 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     }
 
     if (gameInitSettings.getGameType() != GameType::CustomMultiplayer) {
-        fs.writeUint8(pLocalPlayer->getPlayerID());
+        fs.writeUint8(dune::globals::pLocalPlayer->getPlayerID());
     }
 
-    fs.writeBool(debug);
+    fs.writeBool(dune::globals::debug);
     fs.writeBool(bCheatsEnabled);
 
     fs.writeUint32(winFlags);
@@ -1824,8 +1863,8 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     // save the structures and units
     objectManager.save(fs);
 
-    fs.writeUint32(bulletList.size());
-    for (const auto& pBullet : bulletList) {
+    fs.writeUint32(dune::globals::bulletList.size());
+    for (const auto& pBullet : dune::globals::bulletList) {
         pBullet->save(fs);
     }
 
@@ -1841,7 +1880,7 @@ bool Game::saveGame(const std::filesystem::path& filename) {
         fs.writeUint32Set(selectedList);
 
         // write the screenborder info
-        screenborder->save(fs);
+        dune::globals::screenborder->save(fs);
     }
 
     // save triggers
@@ -1888,7 +1927,7 @@ void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_
     if (groupListIndex == -1) {
         // the other player controlling the same house has selected some units
 
-        if (pHumanPlayer->getHouse() != pLocalHouse) {
+        if (pHumanPlayer->getHouse() != dune::globals::pLocalHouse) {
             return;
         }
 
@@ -1922,7 +1961,8 @@ void Game::setGameWon() {
         won               = true;
         finished          = true;
         finishedLevelTime = dune::dune_clock::now();
-        soundPlayer->playVoice(Voice_enum::YourMissionIsComplete, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::YourMissionIsComplete,
+                                              dune::globals::pLocalHouse->getHouseID());
     }
 }
 
@@ -1931,7 +1971,8 @@ void Game::setGameLost() {
         won               = false;
         finished          = true;
         finishedLevelTime = dune::dune_clock::now();
-        soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission,
+                                              dune::globals::pLocalHouse->getHouseID());
     }
 }
 
@@ -1946,7 +1987,7 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
         return false;
     }
     if (bDrag) {
-        screenborder->setNewScreenCenter(worldPosition);
+        dune::globals::screenborder->setNewScreenCenter(worldPosition);
         return true;
     }
     switch (currentCursorMode) {
@@ -1973,7 +2014,7 @@ bool Game::onRadarClick(const GameContext& context, Coord worldPosition, bool bR
 
         case CursorMode_Normal:
         default: {
-            screenborder->setNewScreenCenter(worldPosition);
+            dune::globals::screenborder->setNewScreenCenter(worldPosition);
             return true;
         }
     }
@@ -2011,27 +2052,27 @@ void Game::handleChatInput(const GameContext& context, SDL_KeyboardEvent& keyboa
                     setGameWon();
                 }
             } else if ((bCheatsEnabled) && (md5string == "0x1A12BE3DBE54C5A504CAA6EE9782C1C8")) {
-                if (debug) {
+                if (dune::globals::debug) {
                     pInterface->getChatManager().addInfoMessage("You are already in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("Debug mode enabled");
-                    debug = true;
+                    dune::globals::debug = true;
                 }
             } else if ((bCheatsEnabled) && (md5string == "0x54F68155FC64A5BC66DCD50C1E925C0B")) {
-                if (!debug) {
+                if (!dune::globals::debug) {
                     pInterface->getChatManager().addInfoMessage("You are not in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("Debug mode disabled");
-                    debug = false;
+                    dune::globals::debug = false;
                 }
             } else if ((bCheatsEnabled) && (md5string == "0xCEF1D26CE4B145DE985503CA35232ED8")) {
                 if (gameType != GameType::CustomMultiplayer) {
                     pInterface->getChatManager().addInfoMessage("You got some credits");
-                    pLocalHouse->returnCredits(10000);
+                    dune::globals::pLocalHouse->returnCredits(10000);
                 }
             } else {
-                if (pNetworkManager != nullptr) {
-                    pNetworkManager->sendChatMessage(typingChatMessage);
+                if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
+                    network_manager->sendChatMessage(typingChatMessage);
                 }
                 pInterface->getChatManager().addChatMessage(getLocalPlayerName(), typingChatMessage);
             }
@@ -2066,8 +2107,10 @@ bool Game::removeFromSelectionLists(ObjectBase* pObject) {
 }
 
 void Game::removeFromQuickSelectionLists(uint32_t objectID) {
+    auto* const local_player = dune::globals::pLocalPlayer;
+
     for (int i = 0; i < NUMSELECTEDLISTS; i++) {
-        pLocalPlayer->getGroupList(i).erase(objectID);
+        local_player->getGroupList(i).erase(objectID);
     }
 }
 
@@ -2078,6 +2121,8 @@ void Game::clearSelectedList() {
 }
 
 void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
+    auto* const screenborder = dune::globals::screenborder.get();
+
     switch (keyboardEvent.keysym.sym) {
 
         case SDLK_0: {
@@ -2121,12 +2166,14 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             // for SDLK_1 to SDLK_9 select group with that number, if ctrl create group from selected obj
             const auto selectListIndex = keyboardEvent.keysym.sym - SDLK_1;
 
+            auto* const local_player = dune::globals::pLocalPlayer;
+
             if (SDL_GetModState() & KMOD_CTRL) {
-                pLocalPlayer->setGroupList(selectListIndex, selectedList);
+                local_player->setGroupList(selectListIndex, selectedList);
 
                 pInterface->updateObjectInterface();
             } else {
-                auto& groupList = pLocalPlayer->getGroupList(selectListIndex);
+                const auto& groupList = local_player->getGroupList(selectListIndex);
 
                 // find out if we are choosing a group with all items already selected
                 bool bEverythingWasSelected = (selectedList.size() == groupList.size());
@@ -2151,7 +2198,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 // now we add the selected items
                 for (auto objectID : groupList) {
                     auto* pObject = objectManager.getObject(objectID);
-                    if (pObject->getOwner() == pLocalHouse) {
+                    if (pObject->getOwner() == dune::globals::pLocalHouse) {
                         pObject->setSelected(true);
                         selectedList.insert(pObject->getObjectID());
                         selectionChanged();
@@ -2160,7 +2207,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
                 if (bEverythingWasSelected && (!groupList.empty())) {
                     // we center around the newly selected units/structures
-                    screenborder->setNewScreenCenter(averagePosition * TILESIZE);
+                    dune::globals::screenborder->setNewScreenCenter(averagePosition * TILESIZE);
                 }
             }
             currentCursorMode = CursorMode_Normal;
@@ -2169,14 +2216,17 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_KP_MINUS:
         case SDLK_MINUS: {
             if (gameType != GameType::CustomMultiplayer) {
-                settings.gameOptions.gameSpeed = std::min(settings.gameOptions.gameSpeed + 1, GAMESPEED_MAX);
+                const auto& settings = dune::globals::settings;
+
+                dune::globals::settings.gameOptions.gameSpeed =
+                    std::min(settings.gameOptions.gameSpeed + 1, GAMESPEED_MAX);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                     reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
-                currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2184,14 +2234,17 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_PLUS:
         case SDLK_EQUALS: {
             if (gameType != GameType::CustomMultiplayer) {
-                settings.gameOptions.gameSpeed = std::max(settings.gameOptions.gameSpeed - 1, GAMESPEED_MIN);
+                const auto& settings = dune::globals::settings;
+
+                dune::globals::settings.gameOptions.gameSpeed =
+                    std::max(settings.gameOptions.gameSpeed - 1, GAMESPEED_MIN);
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                     reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
-                currentGame->addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2200,8 +2253,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if (currentCursorMode != CursorMode_Capture) {
                 for (uint32_t objectID : selectedList) {
                     ObjectBase* pObject = objectManager.getObject(objectID);
-                    if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()
-                        && pObject->canAttack() && pObject->isInfantry()) {
+                    if (pObject->isAUnit() && (pObject->getOwner() == dune::globals::pLocalHouse)
+                        && pObject->isRespondable() && pObject->canAttack() && pObject->isInfantry()) {
                         currentCursorMode = CursorMode_Capture;
                         break;
                     }
@@ -2212,18 +2265,24 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         case SDLK_a: {
             // set object to attack
             if (currentCursorMode != CursorMode_Attack) {
-                for (uint32_t objectID : selectedList) {
-                    ObjectBase* pObject = objectManager.getObject(objectID);
-                    House* pOwner       = pObject->getOwner();
-                    if (pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()
-                        && pObject->canAttack()) {
+                const auto* house = dune::globals::pLocalHouse;
+
+                for (auto objectID : selectedList) {
+                    auto* pObject = objectManager.getObject(objectID);
+                    auto* pOwner  = pObject->getOwner();
+
+                    if (pObject->isAUnit() && pOwner == house && pObject->isRespondable() && pObject->canAttack()) {
                         currentCursorMode = CursorMode_Attack;
                         break;
                     }
-                    if ((pObject->getItemID() == Structure_Palace)
-                        && ((pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
-                            || (pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR))) {
-                        if (static_cast<Palace*>(pObject)->isSpecialWeaponReady()) {
+
+                    auto* const palace = dune_cast<Palace>(pObject);
+                    if (palace == nullptr)
+                        continue;
+
+                    if (pOwner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN
+                        || pOwner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
+                        if (palace->isSpecialWeaponReady()) {
                             currentCursorMode = CursorMode_Attack;
                             break;
                         }
@@ -2241,22 +2300,22 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         } break;
 
         case SDLK_F1: {
-            const auto oldCenterCoord = screenborder->getCurrentCenter();
-            currentZoomlevel          = 0;
+            const auto oldCenterCoord       = screenborder->getCurrentCenter();
+            dune::globals::currentZoomlevel = 0;
             screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
         case SDLK_F2: {
-            const auto oldCenterCoord = screenborder->getCurrentCenter();
-            currentZoomlevel          = 1;
+            const auto oldCenterCoord       = screenborder->getCurrentCenter();
+            dune::globals::currentZoomlevel = 1;
             screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
 
         case SDLK_F3: {
-            const auto oldCenterCoord = screenborder->getCurrentCenter();
-            currentZoomlevel          = 2;
+            const auto oldCenterCoord       = screenborder->getCurrentCenter();
+            dune::globals::currentZoomlevel = 2;
             screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
             screenborder->setNewScreenCenter(oldCenterCoord);
         } break;
@@ -2283,11 +2342,11 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
         } break;
 
         case SDLK_F10: {
-            soundPlayer->toggleSound();
+            dune::globals::soundPlayer->toggleSound();
         } break;
 
         case SDLK_F11: {
-            musicPlayer->toggleSound();
+            dune::globals::musicPlayer->toggleSound();
         } break;
 
         case SDLK_F12: {
@@ -2299,7 +2358,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             if (currentCursorMode != CursorMode_Move) {
                 for (const auto objectID : selectedList) {
                     auto* const pObject = objectManager.getObject(objectID);
-                    if (pObject->isAUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+                    if (pObject->isAUnit() && (pObject->getOwner() == dune::globals::pLocalHouse)
+                        && pObject->isRespondable()) {
                         currentCursorMode = CursorMode_Move;
                         break;
                     }
@@ -2410,7 +2470,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_TAB: {
             if (SDL_GetModState() & KMOD_ALT) {
-                SDL_MinimizeWindow(window);
+                SDL_MinimizeWindow(dune::globals::window.get());
             }
         } break;
 
@@ -2440,11 +2500,14 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         return false;
     }
 
+    auto* const currentGame = dune::globals::currentGame.get();
+    using dune::globals::soundPlayer;
+
     const auto placeItem = pBuilder->getCurrentProducedItem();
     if (placeItem == ItemID_Invalid) {
         // We lost a race with another team member
         currentGame->addToNewsTicker(_("There is no item to place."));
-        soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
+        dune::globals::soundPlayer->playSound(Sound_enum::Sound_InvalidAction); // can't place noise
         currentCursorMode = CursorMode_Normal;
         return true;
     }
@@ -2455,8 +2518,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         if ((map->isWithinBuildRange(xPos, yPos, pBuilder->getOwner()))
             && (map->okayToPlaceStructure(xPos, yPos, 1, 1, false, pBuilder->getOwner()))
             && (!map->getTile(xPos, yPos)->isConcrete())) {
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
-                                                   pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                   CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
             soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2480,8 +2543,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
                 || (!map->getTile(xPos, yPos + 1)->isConcrete())
                 || (!map->getTile(xPos + 1, yPos + 1)->isConcrete()))) {
 
-            getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
-                                                   pBuilder->getObjectID(), xPos, yPos));
+            getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
+                                                   CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
             // the user has tried to place and has been successful
             soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
             currentCursorMode = CursorMode_Normal;
@@ -2493,8 +2556,8 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         return false;
     }
     if (map->okayToPlaceStructure(xPos, yPos, structuresize.x, structuresize.y, false, pBuilder->getOwner())) {
-        getCommandManager().addCommand(
-            Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE, pBuilder->getObjectID(), xPos, yPos));
+        getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PLACE_STRUCTURE,
+                                               pBuilder->getObjectID(), xPos, yPos));
         // the user has tried to place and has been successful
         soundPlayer->playSound(Sound_enum::Sound_PlaceStructure);
         currentCursorMode = CursorMode_Normal;
@@ -2511,7 +2574,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         // generate a independent temporal random number generator as we are in input handling code (and outside
         // game logic code)
 
-        auto& uiRandom = pGFXManager->random();
+        auto& uiRandom = dune::globals::pGFXManager->random();
 
         for (int y = yPos; y < yPos + structuresize.y; y++) {
             for (int x = xPos; x < xPos + structuresize.x; x++) {
@@ -2550,7 +2613,7 @@ bool Game::handleSelectedObjectsAttackClick(const GameContext& context, int xPos
             continue;
 
         const auto* const pOwner = pObject->getOwner();
-        if (pObject->isAUnit() && (pOwner == pLocalHouse) && pObject->isRespondable()) {
+        if (pObject->isAUnit() && (pOwner == dune::globals::pLocalHouse) && pObject->isRespondable()) {
             pResponder = dune_cast<UnitBase>(pObject);
             if (pResponder)
                 pResponder->handleAttackClick(context, xPos, yPos);
@@ -2579,7 +2642,7 @@ bool Game::handleSelectedObjectsMoveClick(const GameContext& context, int xPos, 
 
     for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject<UnitBase>(objectID);
-        if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+        if (pObject && (pObject->getOwner() == dune::globals::pLocalHouse) && pObject->isRespondable()) {
             pResponder = pObject;
             pResponder->handleMoveClick(context, xPos, yPos);
         }
@@ -2611,7 +2674,8 @@ bool Game::handleSelectedObjectsRequestCarryallDropClick(const GameContext& cont
 
     for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject<UnitBase>(objectID);
-        if (pObject && pObject->isAGroundUnit() && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+        if (pObject && pObject->isAGroundUnit() && (pObject->getOwner() == dune::globals::pLocalHouse)
+            && pObject->isRespondable()) {
             pResponder = pObject;
             pResponder->handleRequestCarryallDropClick(context, xPos, yPos);
         }
@@ -2635,12 +2699,12 @@ bool Game::handleSelectedObjectsCaptureClick(const GameContext& context, int xPo
 
     const auto* const pStructure = pTile->getGroundObject<StructureBase>(objectManager);
     if ((pStructure != nullptr) && (pStructure->canBeCaptured())
-        && (pStructure->getOwner()->getTeamID() != pLocalHouse->getTeamID())) {
+        && (pStructure->getOwner()->getTeamID() != dune::globals::pLocalHouse->getTeamID())) {
         InfantryBase* pResponder = nullptr;
 
         for (const auto objectID : selectedList) {
             auto* const pObject = objectManager.getObject<InfantryBase>(objectID);
-            if (pObject && (pObject->getOwner() == pLocalHouse) && pObject->isRespondable()) {
+            if (pObject && (pObject->getOwner() == dune::globals::pLocalHouse) && pObject->isRespondable()) {
                 pResponder = pObject;
                 pResponder->handleCaptureClick(context, xPos, yPos);
             }
@@ -2663,7 +2727,7 @@ bool Game::handleSelectedObjectsActionClick(const GameContext& context, int xPos
     ObjectBase* pResponder = nullptr;
     for (const auto objectID : selectedList) {
         auto* const pObject = objectManager.getObject(objectID);
-        if (pObject && pObject->getOwner() == pLocalHouse && pObject->isRespondable()) {
+        if (pObject && pObject->getOwner() == dune::globals::pLocalHouse && pObject->isRespondable()) {
             pObject->handleActionClick(context, xPos, yPos);
 
             // if this object obey the command
@@ -2687,7 +2751,7 @@ void Game::saveScreenshot() {
 
     if (ok && path.has_value()) {
         const std::string filename{reinterpret_cast<const char*>(path.value().filename().u8string().c_str())};
-        currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + filename + "'");
+        dune::globals::currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + filename + "'");
     }
 }
 
@@ -2703,9 +2767,10 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 
     StructureBase* pStructure2Select = nullptr;
 
-    for (auto* const pStructure : structureList) {
+    for (auto* const pStructure : dune::globals::structureList) {
         if (bSelectNext) {
-            if ((itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse)) {
+            if ((itemIDs.count(pStructure->getItemID()) == 1)
+                && (pStructure->getOwner() == dune::globals::pLocalHouse)) {
                 pStructure2Select = pStructure;
                 break;
             }
@@ -2718,8 +2783,8 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
 
     if (pStructure2Select == nullptr) {
         // start over at the beginning
-        for (auto* pStructure : structureList) {
-            if ((itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == pLocalHouse)
+        for (auto* pStructure : dune::globals::structureList) {
+            if ((itemIDs.count(pStructure->getItemID()) == 1) && (pStructure->getOwner() == dune::globals::pLocalHouse)
                 && !pStructure->isSelected()) {
                 pStructure2Select = pStructure;
                 break;
@@ -2736,7 +2801,7 @@ void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
         selectionChanged();
 
         // we center around the newly selected construction yard
-        screenborder->setNewScreenCenter(pStructure2Select->getLocation() * TILESIZE);
+        dune::globals::screenborder->setNewScreenCenter(pStructure2Select->getLocation() * TILESIZE);
     }
 }
 
@@ -2744,5 +2809,5 @@ dune::dune_clock::duration Game::getGameSpeed() const {
     if (gameType == GameType::CustomMultiplayer) {
         return dune::as_dune_clock_duration(gameInitSettings.getGameOptions().gameSpeed);
     }
-    return dune::as_dune_clock_duration(settings.gameOptions.gameSpeed);
+    return dune::as_dune_clock_duration(dune::globals::settings.gameOptions.gameSpeed);
 }

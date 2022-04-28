@@ -4,7 +4,7 @@ INIMap::INIMap(GameType gameType, const std::filesystem::path& mapname, const st
     : mapname(reinterpret_cast<const char*>(mapname.u8string().c_str())) {
     if (gameType == GameType::Campaign || gameType == GameType::Skirmish) {
         // load from PAK-File
-        inifile = std::make_unique<INIFile>(pFileManager->openFile(this->mapname).get());
+        inifile = std::make_unique<INIFile>(dune::globals::pFileManager->openFile(this->mapname).get());
     } else if (gameType == GameType::CustomGame || gameType == GameType::CustomMultiplayer) {
         const auto RWops = sdl2::RWops_ptr{SDL_RWFromConstMem(mapdata.c_str(), mapdata.size())};
 

@@ -34,7 +34,7 @@ void ObjectManager::save(OutputStream& stream) const {
     stream.writeUint32(objectMap.size());
     for (const auto& objectEntry : objectMap) {
         stream.writeUint32(objectEntry.second->getObjectID());
-        currentGame->saveObject(stream, objectEntry.second.get());
+        dune::globals::currentGame->saveObject(stream, objectEntry.second.get());
     }
 }
 

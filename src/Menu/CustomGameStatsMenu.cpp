@@ -38,13 +38,15 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
 
     CustomGameStatsMenu::setWindowWidget(&windowWidget);
 
-    const Uint32 localHouseColor =
-        SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+    const Uint32 localHouseColor = SDL2RGB(
+        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
-    captionLabel.setText(reinterpret_cast<const char*>(
-        getBasename(currentGame->getGameInitSettings().getFilename(), true).u8string().c_str()));
+    auto* const game = dune::globals::currentGame.get();
+
+    captionLabel.setText(
+        reinterpret_cast<const char*>(getBasename(game->getGameInitSettings().getFilename(), true).u8string().c_str()));
     captionLabel.setTextColor(localHouseColor);
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
@@ -82,15 +84,15 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     int maxDestroyedValue   = 0;
     float maxSpiceHarvested = 0.0;
 
-    currentGame->for_each_house([&](auto& house) {
+    game->for_each_house([&](auto& house) {
         maxBuiltValue     = std::max(maxBuiltValue, house.getBuiltValue());
         maxDestroyedValue = std::max(maxDestroyedValue, house.getDestroyedValue());
         maxSpiceHarvested = std::max(maxSpiceHarvested, house.getHarvestedSpice().toFloat());
     });
 
-    for_each_stat(currentGame.get(), [&](const auto i, auto& house, auto& curHouseStat) {
-        Uint32 textcolor     = SDL2RGB(palette[houseToPaletteIndex[i] + 3]);
-        Uint32 progresscolor = SDL2RGB(palette[houseToPaletteIndex[i] + 1]);
+    for_each_stat(game, [&](const auto i, auto& house, auto& curHouseStat) {
+        const auto textcolor     = SDL2RGB(dune::globals::palette[houseToPaletteIndex[i] + 3]);
+        const auto progresscolor = SDL2RGB(dune::globals::palette[houseToPaletteIndex[i] + 1]);
 
         curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)));
         curHouseStat.houseName.setTextColor(textcolor);
@@ -160,7 +162,7 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     mainVBox.addWidget(VSpacer::create(14), 0.0);
 
     buttonHBox.addWidget(HSpacer::create(70));
-    const int totalTime = currentGame->getGameTime() / 1000;
+    const int totalTime = game->getGameTime() / 1000;
     timeLabel.setText(fmt::sprintf(_("@DUNE.ENG|22#Time: %d:%02d"), totalTime / 3600, totalTime % 3600 / 60));
     timeLabel.setTextColor(localHouseColor);
     buttonHBox.addWidget(&timeLabel, 0.2);

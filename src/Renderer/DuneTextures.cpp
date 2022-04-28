@@ -323,7 +323,8 @@ public:
 
         // SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
-        auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
+        auto texture =
+            sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), atlas_surface.get())};
 
         if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
             sdl2::log_warn("Unable to set texture atlas blend mode");

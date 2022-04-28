@@ -47,13 +47,14 @@ inline constexpr auto WAITTIME        = dune::as_dune_clock_duration(1000);
 CampaignStatsMenu::CampaignStatsMenu(int level) {
     calculateScore(level);
 
-    const Uint32 colorYou   = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 1]);
-    const Uint32 colorEnemy = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
+    const Uint32 colorYou = SDL2RGB(
+        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 1]);
+    const Uint32 colorEnemy = SDL2RGB(dune::globals::palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window
-    const auto* pBackground = pGFXManager->getUIGraphic(UI_GameStatsBackground);
+    const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_GameStatsBackground);
     setBackground(pBackground);
-    CampaignStatsMenu::resize(getTextureSize(pBackground));
+    resize(getTextureSize(pBackground));
 
     CampaignStatsMenu::setWindowWidget(&windowWidget);
 
@@ -215,7 +216,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
 CampaignStatsMenu::~CampaignStatsMenu() = default;
 
 int CampaignStatsMenu::showMenu() {
-    musicPlayer->changeMusic(MUSIC_GAMESTAT);
+    dune::globals::musicPlayer->changeMusic(MUSIC_GAMESTAT);
 
     currentStateStartTime = dune::dune_clock::now();
     currentState          = State_HumanSpice;
@@ -242,6 +243,8 @@ void CampaignStatsMenu::drawSpecificStuff() {
 }
 
 void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
+    using dune::globals::soundPlayer;
+
     switch (currentState) {
         case State_HumanSpice: {
             const float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
@@ -430,13 +433,15 @@ void CampaignStatsMenu::calculateScore(int level) {
     auto spice_harvested_by_human = 0.0_fix;
     auto spice_harvested_by_ai    = 0.0_fix;
 
-    totalTime = currentGame->getGameTime() / 1000;
+    auto* const game = dune::globals::currentGame.get();
+
+    totalTime = game->getGameTime() / 1000;
 
     totalScore = level * 45;
 
     auto totalHumanCredits = 0.0_fix;
 
-    currentGame->for_each_house([&](auto& house) {
+    game->for_each_house([&](auto& house) {
         if (house.isAI() == true) {
             unitsDestroyedByAI += house.getNumDestroyedUnits();
             structuresDestroyedByAI += house.getNumDestroyedStructures();
@@ -456,18 +461,18 @@ void CampaignStatsMenu::calculateScore(int level) {
 
     totalScore += (totalHumanCredits / 100).lround();
 
-    for (const auto* pStructure : structureList) {
+    for (const auto* pStructure : dune::globals::structureList) {
         if (!pStructure->getOwner()->isAI()) {
             const auto item_id  = pStructure->getItemID();
             const auto house_id = static_cast<int>(pStructure->getOriginalHouseID());
 
-            totalScore += currentGame->objectData.data[item_id][house_id].price / 100;
+            totalScore += game->objectData.data[item_id][house_id].price / 100;
         }
     }
 
     totalScore -= totalTime / 60 + 1;
 
-    for (const auto* pUnit : unitList) {
+    for (const auto* pUnit : dune::globals::unitList) {
         if (const auto* pHarvester = dune_cast<const Harvester>(pUnit)) {
             const auto spice = pHarvester->getAmountOfSpice();
 
@@ -481,7 +486,7 @@ void CampaignStatsMenu::calculateScore(int level) {
     spiceHarvestedByAI    = spice_harvested_by_ai.toFloat();
     spiceHarvestedByHuman = spice_harvested_by_human.toFloat();
 
-    if (currentGame->areCheatsEnabled()) {
+    if (game->areCheatsEnabled()) {
         rank = "Cheater";
     } else {
 

@@ -205,6 +205,8 @@ void DropDownBox::draw(Point position) {
 
     updateBackground();
 
+    auto* const renderer = dune::globals::renderer.get();
+
     if (pBackground)
         pBackground.draw(renderer, position.x, position.y);
 
@@ -269,6 +271,8 @@ void DropDownBox::onSelectionChange(bool bInteractive) {
 void DropDownBox::updateButtonSurface() {
     const auto& gui = GUIStyle::getInstance();
 
+    auto* const renderer = dune::globals::renderer.get();
+
     openListBoxButton.setTextures(gui.createDropDownBoxButton(17, false, false, color).createTexture(renderer),
                                   gui.createDropDownBoxButton(17, true, true, color).createTexture(renderer),
                                   gui.createDropDownBoxButton(17, false, true, color).createTexture(renderer));
@@ -291,6 +295,8 @@ void DropDownBox::updateForeground() {
     const auto width = getSize().x - 17;
     const auto text  = listBox.getEntry(listBox.getSelectedIndex());
 
+    auto* const renderer = dune::globals::renderer.get();
+
     pForeground       = gui.createListBoxEntry(width, text, false, color).createTexture(renderer);
     pActiveForeground = gui.createListBoxEntry(width, text, true, color).createTexture(renderer);
 }
@@ -300,7 +306,10 @@ void DropDownBox::invalidateBackground() {
 }
 
 void DropDownBox::updateBackground() {
-    if (!pBackground) {
-        pBackground = GUIStyle::getInstance().createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
-    }
+    if (pBackground)
+        return;
+
+    pBackground = GUIStyle::getInstance()
+                      .createWidgetBackground(getSize().x, getSize().y)
+                      .createTexture(dune::globals::renderer.get());
 }

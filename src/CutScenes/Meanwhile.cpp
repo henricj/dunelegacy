@@ -49,7 +49,7 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
     pMeanwhile = create_wsafile("MEANWHIL.WSA");
     pImperator = create_wsafile("EFINALA.WSA");
 
-    const IndexedTextFile dune_text{pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get()};
+    const IndexedTextFile dune_text{dune::globals::pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get()};
 
     auto textBaseIndex = MeanwhileText_Base + ((house_idx + 2) % 3) * MeanwhileText_NumTextsPerHouse;
 
@@ -57,6 +57,8 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
         // Dune II 1.0 has 2 ranks less
         textBaseIndex -= 2;
     }
+
+    const auto& palette = dune::globals::palette;
 
     const auto houseOfVisitor = (house_idx + 2) % 3;
     const auto color          = SDL2RGB(palette[houseToPaletteIndex[house_idx] + 1]);

@@ -195,6 +195,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     bool thisPlayerPlaced = false;
 
+    const auto& playername = dune::globals::settings.general.playerName;
+
     for (int i = 0; i < houseInfo.size(); i++) {
         auto& curHouseInfo = houseInfo[i];
 
@@ -253,7 +255,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.houseInfoVBox.addWidget(&curHouseInfo.houseHBox);
 
         // add 1. player
-        curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
+        curHouseInfo.player1ArrowLabel.setTexture(
+            dune::globals::pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1ArrowLabel);
         curHouseInfo.player1Label.setText(_("Player") + (gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
         curHouseInfo.player1Label.setTextFontSize(12);
@@ -269,7 +272,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                     GameInitSettings::PlayerInfo playerInfo = gisHouseInfo.playerInfoList.front();
                     if (playerInfo.playerClass == HUMANPLAYERCLASS) {
                         if (!thisPlayerPlaced) {
-                            curHouseInfo.player1DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
+                            curHouseInfo.player1DropDown.addEntry(playername, PLAYER_HUMAN);
                             curHouseInfo.player1DropDown.setSelectedItem(0);
                             thisPlayerPlaced = true;
                         } else {
@@ -292,7 +295,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
             }
 
         } else if (bServer && !thisPlayerPlaced) {
-            curHouseInfo.player1DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
+            curHouseInfo.player1DropDown.addEntry(playername, PLAYER_HUMAN);
             curHouseInfo.player1DropDown.setSelectedItem(0);
             curHouseInfo.player1DropDown.setEnabled(bServer);
             thisPlayerPlaced = true;
@@ -327,7 +330,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                     GameInitSettings::PlayerInfo playerInfo = *++gisHouseInfo.playerInfoList.begin();
                     if (playerInfo.playerClass == HUMANPLAYERCLASS) {
                         if (!thisPlayerPlaced) {
-                            curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
+                            curHouseInfo.player2DropDown.addEntry(playername, PLAYER_HUMAN);
                             curHouseInfo.player2DropDown.setSelectedItem(0);
                             thisPlayerPlaced = true;
                         } else {
@@ -349,7 +352,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
                 }
             }
         } else if (bServer && !thisPlayerPlaced) {
-            curHouseInfo.player2DropDown.addEntry(settings.general.playerName, PLAYER_HUMAN);
+            curHouseInfo.player2DropDown.addEntry(playername, PLAYER_HUMAN);
             curHouseInfo.player2DropDown.setSelectedItem(0);
             curHouseInfo.player2DropDown.setEnabled(bServer);
             thisPlayerPlaced = true;
@@ -391,92 +394,94 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         DropDownBox& dropDownBox1 = houseInfo[brainEqHumanSlot].player1DropDown;
         DropDownBox& dropDownBox2 = houseInfo[brainEqHumanSlot].player2DropDown;
 
-        if (dropDownBox1.getSelectedEntry() != settings.general.playerName
-            && dropDownBox2.getSelectedEntry() != settings.general.playerName) {
+        if (dropDownBox1.getSelectedEntry() != playername && dropDownBox2.getSelectedEntry() != playername) {
             if (dropDownBox1.getSelectedEntryIntData() == PLAYER_OPEN) {
-                setPlayer2Slot(settings.general.playerName, brainEqHumanSlot * 2);
+                setPlayer2Slot(playername, brainEqHumanSlot * 2);
             } else if (dropDownBox2.getSelectedEntryIntData() == PLAYER_OPEN
                        && gameInitSettings.isMultiplePlayersPerHouse()) {
-                setPlayer2Slot(settings.general.playerName, brainEqHumanSlot * 2 + 1);
+                setPlayer2Slot(playername, brainEqHumanSlot * 2 + 1);
             }
         }
     }
 
-    if (pNetworkManager != nullptr) {
+    if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
         if (bServer) {
-            pNetworkManager->startServer(bLANServer, gameInitSettings.getServername(), settings.general.playerName,
-                                         &gameInitSettings, 1,
+            network_manager->startServer(bLANServer, gameInitSettings.getServername(), playername, &gameInitSettings, 1,
                                          gameInitSettings.isMultiplePlayersPerHouse() ? numHouses * 2 : numHouses);
         }
 
-        pNetworkManager->setOnPeerDisconnected(
+        network_manager->setOnPeerDisconnected(
             [this](const auto& playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
-        pNetworkManager->setOnReceiveChangeEventList([this](const auto& events) { onReceiveChangeEventList(events); });
-        pNetworkManager->setOnReceiveChatMessage(
+        network_manager->setOnReceiveChangeEventList([this](const auto& events) { onReceiveChangeEventList(events); });
+        network_manager->setOnReceiveChatMessage(
             [this](const auto& name, const auto& message) { onReceiveChatMessage(name, message); });
 
         if (bServer) {
-            pNetworkManager->setGetChangeEventListForNewPlayerCallback(
+            network_manager->setGetChangeEventListForNewPlayerCallback(
                 [this](const auto& newPlayerName) { return getChangeEventListForNewPlayer(newPlayerName); });
         } else {
-            pNetworkManager->setOnStartGame([this](auto timeleft) { onStartGame(timeleft); });
+            network_manager->setOnStartGame([this](auto timeleft) { onStartGame(timeleft); });
         }
     }
 }
 
 CustomGamePlayers::~CustomGamePlayers() {
-    if (pNetworkManager != nullptr) {
-        pNetworkManager->disconnect();
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+    if (network_manager == nullptr)
+        return;
 
-        pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
-        pNetworkManager->setGetChangeEventListForNewPlayerCallback(
-            std::function<ChangeEventList(const std::string&)>());
-        pNetworkManager->setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)>());
-        pNetworkManager->setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)>());
-        pNetworkManager->setOnStartGame(std::function<void(dune::dune_clock::duration)>());
+    network_manager->disconnect();
 
-        if (bServer) {
-            try {
-                pNetworkManager->stopServer();
-            } catch (std::exception& e) {
-                sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): %s", e.what());
-            }
+    network_manager->setOnPeerDisconnected({});
+    network_manager->setGetChangeEventListForNewPlayerCallback({});
+    network_manager->setOnReceiveChangeEventList({});
+    network_manager->setOnReceiveChatMessage({});
+    network_manager->setOnStartGame({});
+
+    if (bServer) {
+        try {
+            network_manager->stopServer();
+        } catch (std::exception& e) {
+            sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): %s", e.what());
         }
     }
 }
 
 void CustomGamePlayers::update() {
-    if (startGameTime > dune::dune_clock::time_point::min()) {
-        const auto now = dune::dune_clock::now();
-        if (now >= startGameTime) {
-            startGameTime = now;
+    if (startGameTime <= dune::dune_clock::time_point::min())
+        return;
 
-            pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
-            pNetworkManager->setGetChangeEventListForNewPlayerCallback(
-                std::function<ChangeEventList(const std::string&)>());
-            pNetworkManager->setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)>());
-            pNetworkManager->setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)>());
-            pNetworkManager->setOnStartGame(std::function<void(dune::dune_clock::duration)>());
+    const auto now = dune::dune_clock::now();
+    if (now >= startGameTime) {
+        startGameTime = now;
 
-            if (bServer) {
-                pNetworkManager->stopServer();
-            }
+        auto* const network_manager = dune::globals::pNetworkManager.get();
 
-            addAllPlayersToGameInitSettings();
-            startMultiPlayerGame(gameInitSettings);
+        network_manager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
+        network_manager->setGetChangeEventListForNewPlayerCallback(
+            std::function<ChangeEventList(const std::string&)>());
+        network_manager->setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)>());
+        network_manager->setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)>());
+        network_manager->setOnStartGame(std::function<void(dune::dune_clock::duration)>());
 
-            quit(MENU_QUIT_GAME_FINISHED);
-        } else {
-            using namespace std::chrono_literals;
+        if (bServer) {
+            network_manager->stopServer();
+        }
 
-            static dune::dune_clock::duration lastSecondLeft{};
-            const auto secondsLeft = 1s + (startGameTime - dune::dune_clock::now());
-            if (lastSecondLeft != secondsLeft) {
-                lastSecondLeft = secondsLeft;
-                addInfoMessage("Starting game in "
-                               + std::to_string(std::chrono::duration_cast<std::chrono::seconds>(secondsLeft).count())
-                               + "...");
-            }
+        addAllPlayersToGameInitSettings();
+        startMultiPlayerGame(gameInitSettings);
+
+        quit(MENU_QUIT_GAME_FINISHED);
+    } else {
+        using namespace std::chrono_literals;
+
+        static dune::dune_clock::duration lastSecondLeft{};
+        const auto secondsLeft = 1s + (startGameTime - dune::dune_clock::now());
+        if (lastSecondLeft != secondsLeft) {
+            lastSecondLeft = secondsLeft;
+            addInfoMessage("Starting game in "
+                           + std::to_string(std::chrono::duration_cast<std::chrono::seconds>(secondsLeft).count())
+                           + "...");
         }
     }
 }
@@ -549,10 +554,11 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
         }
     }
 
-    if (pNetworkManager != nullptr && bServer) {
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+    if (network_manager != nullptr && bServer) {
         const ChangeEventList changeEventList2 = getChangeEventList();
 
-        pNetworkManager->sendChangeEventList(changeEventList2);
+        network_manager->sendChangeEventList(changeEventList2);
     }
 }
 
@@ -653,7 +659,7 @@ ChangeEventList CustomGamePlayers::getChangeEventListForNewPlayer(const std::str
         ChangeEventList changeEventList2;
         changeEventList2.changeEventList.push_back(changeEvent);
 
-        pNetworkManager->sendChangeEventList(changeEventList2);
+        dune::globals::pNetworkManager->sendChangeEventList(changeEventList2);
     }
 
     return changeEventList;
@@ -710,14 +716,14 @@ void CustomGamePlayers::onNext() {
 
         addAllPlayersToGameInitSettings();
 
-        if (pNetworkManager != nullptr) {
+        if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
             using namespace std::chrono_literals;
 
             constexpr auto timeLeft = dune::as_dune_clock_duration(5000);
 
             startGameTime = dune::dune_clock::now() + timeLeft;
 
-            pNetworkManager->sendStartGame(dune::as_milliseconds(timeLeft));
+            network_manager->sendStartGame(dune::as_milliseconds(timeLeft));
 
             disableAllDropDownBoxes();
         } else {
@@ -783,7 +789,7 @@ bool CustomGamePlayers::addPlayerToHouseInfo(GameInitSettings::HouseInfo& newHou
         } break;
     }
 
-    newHouseInfo.addPlayerInfo(GameInitSettings::PlayerInfo(playerName, playerClass));
+    newHouseInfo.addPlayerInfo({playerName, playerClass});
     return true;
 }
 
@@ -793,10 +799,10 @@ void CustomGamePlayers::onCancel() {
 
 void CustomGamePlayers::onSendChatMessage() {
     const std::string message{chatTextBox.getText()};
-    addChatMessage(settings.general.playerName, message);
+    addChatMessage(dune::globals::settings.general.playerName, message);
     chatTextBox.setText("");
 
-    pNetworkManager->sendChatMessage(message);
+    dune::globals::pNetworkManager->sendChatMessage(message);
 }
 
 void CustomGamePlayers::addInfoMessage(const std::string& message) {
@@ -951,14 +957,16 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
 }
 
 void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int houseInfoNum) {
-    if (bInteractive && houseInfoNum >= 0 && pNetworkManager != nullptr) {
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+
+    if (bInteractive && houseInfoNum >= 0 && network_manager != nullptr) {
         int selectedHouseID = houseInfo[houseInfoNum].houseDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
         changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeHouse, houseInfoNum,
                                                      selectedHouseID);
 
-        pNetworkManager->sendChangeEventList(changeEventList);
+        network_manager->sendChangeEventList(changeEventList);
     }
 
     const int numBoundHouses = boundHousesOnMap.size();
@@ -985,7 +993,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
             const Uint32 color = house == HOUSETYPE::HOUSE_INVALID
                                    ? COLOR_RGB(20, 20, 40)
-                                   : SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+                                   : SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
             curHouseInfo.houseDropDown.setColor(color);
             curHouseInfo.teamDropDown.setColor(color);
@@ -994,10 +1002,12 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             curHouseInfo.player2Label.setTextColor(color);
             curHouseInfo.player2DropDown.setColor(color);
 
+            auto* const gfx = dune::globals::pGFXManager.get();
+
             if (house == HOUSETYPE::HOUSE_INVALID) {
-                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
+                curHouseInfo.player1ArrowLabel.setTexture(gfx->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
             } else {
-                curHouseInfo.player1ArrowLabel.setTexture(pGFXManager->getUIGraphic(UI_CustomGamePlayersArrow, house));
+                curHouseInfo.player1ArrowLabel.setTexture(gfx->getUIGraphic(UI_CustomGamePlayersArrow, house));
             }
         }
 
@@ -1060,19 +1070,23 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
 void CustomGamePlayers::onChangeTeamDropDownBoxes(bool bInteractive, int houseInfoNum) {
 
-    if (bInteractive && houseInfoNum >= 0 && pNetworkManager != nullptr) {
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+
+    if (bInteractive && houseInfoNum >= 0 && network_manager != nullptr) {
         int selectedTeam = houseInfo[houseInfoNum].teamDropDown.getSelectedEntryIntData();
 
         ChangeEventList changeEventList;
         changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeTeam, houseInfoNum,
                                                      selectedTeam);
 
-        pNetworkManager->sendChangeEventList(changeEventList);
+        network_manager->sendChangeEventList(changeEventList);
     }
 }
 
 void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnum) {
-    if (bInteractive && boxnum >= 0 && pNetworkManager != nullptr) {
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+
+    if (bInteractive && boxnum >= 0 && network_manager != nullptr) {
         const DropDownBox& dropDownBox =
             boxnum % 2 == 0 ? houseInfo[boxnum / 2].player1DropDown : houseInfo[boxnum / 2].player2DropDown;
 
@@ -1082,7 +1096,7 @@ void CustomGamePlayers::onChangePlayerDropDownBoxes(bool bInteractive, int boxnu
         changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, boxnum,
                                                      selectedPlayer);
 
-        pNetworkManager->sendChangeEventList(changeEventList);
+        network_manager->sendChangeEventList(changeEventList);
     }
 
     checkPlayerBoxes();
@@ -1096,13 +1110,16 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
         return;
     }
 
-    setPlayer2Slot(settings.general.playerName, boxnum);
+    const auto playername = dune::globals::settings.general.playerName;
 
-    if (boxnum >= 0 && pNetworkManager != nullptr) {
+    setPlayer2Slot(playername, boxnum);
+
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+    if (boxnum >= 0 && network_manager != nullptr) {
         ChangeEventList changeEventList;
-        changeEventList.changeEventList.emplace_back(boxnum, settings.general.playerName);
+        changeEventList.changeEventList.emplace_back(boxnum, std::move(playername));
 
-        pNetworkManager->sendChangeEventList(changeEventList);
+        network_manager->sendChangeEventList(changeEventList);
     }
 }
 
@@ -1136,13 +1153,13 @@ void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool b
             for (int i = 0; i < numHouses; i++) {
                 bool bIsThisPlayer = false;
                 if (houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player1DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (houseInfo[i].player1DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
                         bIsThisPlayer = true;
                     }
                 }
 
                 if (houseInfo[i].player2DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player2DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (houseInfo[i].player2DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
                         bIsThisPlayer = true;
                     }
                 }
@@ -1217,14 +1234,16 @@ void CustomGamePlayers::setPlayer2Slot(const std::string& playername, int slot) 
             bool bIsThisPlayer = false;
 
             if (gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
+                const auto& player_name = dune::globals::settings.general.playerName;
+
                 if (houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player1DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (houseInfo[i].player1DropDown.getSelectedEntry() == player_name) {
                         bIsThisPlayer = true;
                     }
                 }
 
                 if (houseInfo[i].player2DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player2DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (houseInfo[i].player2DropDown.getSelectedEntry() == player_name) {
                         bIsThisPlayer = true;
                     }
                 }
@@ -1267,14 +1286,16 @@ void CustomGamePlayers::checkPlayerBoxes() {
 
             bool bEnableDropDown2 = bServer;
             if (!bServer) {
+                const auto& player_name = dune::globals::settings.general.playerName;
+
                 if (player1 == PLAYER_HUMAN) {
-                    if (curHouseInfo.player1DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (curHouseInfo.player1DropDown.getSelectedEntry() == player_name) {
                         bEnableDropDown2 = true;
                     }
                 }
 
                 if (player2 == PLAYER_HUMAN) {
-                    if (curHouseInfo.player2DropDown.getSelectedEntry() == settings.general.playerName) {
+                    if (curHouseInfo.player2DropDown.getSelectedEntry() == player_name) {
                         bEnableDropDown2 = true;
                     }
                 }
@@ -1290,10 +1311,9 @@ void CustomGamePlayers::checkPlayerBoxes() {
         }
     }
 
-    if (pNetworkManager != nullptr) {
-        if (bServer) {
-            pNetworkManager->updateServer(numPlayers);
-        }
+    if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
+        if (bServer)
+            network_manager->updateServer(numPlayers);
     }
 }
 

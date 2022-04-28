@@ -45,7 +45,7 @@ void WindTrap::init() {
     owner->incrementStructures(itemID);
 
     graphicID  = ObjPic_Windtrap;
-    graphic    = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
     numImagesY = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
     firstAnimFrame = 2;
@@ -55,7 +55,7 @@ void WindTrap::init() {
 WindTrap::~WindTrap() = default;
 
 std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return WindTrapInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -84,7 +84,7 @@ void WindTrap::setHealth(FixPoint newHealth) {
 
 int WindTrap::getProducedPower() const {
     const int windTrapProducedPower =
-        abs(currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
+        abs(dune::globals::currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
 
     const FixPoint ratio = getHealth() / getMaxHealth();
     return lround(ratio * windTrapProducedPower);

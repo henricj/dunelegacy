@@ -38,10 +38,12 @@ void TimeoutTrigger::trigger(const GameContext& context) {
     if ((game.loseFlags & WINLOSEFLAGS_TIMEOUT) != 0) {
         // player has won
         game.setGameWon();
-        soundPlayer->playVoice(Voice_enum::YourMissionIsComplete, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::YourMissionIsComplete,
+                                              dune::globals::pLocalHouse->getHouseID());
     } else {
         // ai has won
         game.setGameLost();
-        soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::YouHaveFailedYourMission,
+                                              dune::globals::pLocalHouse->getHouseID());
     }
 }

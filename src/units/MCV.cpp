@@ -51,7 +51,7 @@ void MCV::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_MCV;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -60,8 +60,8 @@ void MCV::init() {
 MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
 }
 
 bool MCV::doDeploy() {
@@ -80,14 +80,15 @@ bool MCV::doDeploy() {
             setVisible(VIS_ALL, false);
 
             // destroy MCV but with base class method since we want no explosion
-            GroundUnit::destroy(GameContext{*currentGame.get(), *currentGameMap, currentGame->getObjectManager()});
+            parent::destroy({*dune::globals::currentGame.get(), *dune::globals::currentGameMap,
+                             dune::globals::currentGame->getObjectManager()});
 
             return true;
         }
     }
 
-    if (getOwner() == pLocalHouse) {
-        currentGame->addToNewsTicker(_("You cannot deploy here."));
+    if (getOwner() == dune::globals::pLocalHouse) {
+        dune::globals::currentGame->addToNewsTicker(_("You cannot deploy here."));
     }
 
     return false;
@@ -99,24 +100,26 @@ bool MCV::canAttack(const ObjectBase* object) const {
 }
 
 void MCV::destroy(const GameContext& context) {
-    if (currentGameMap->tileExists(location) && isVisible()) {
+    if (dune::globals::currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
     GroundUnit::destroy(context);
 }
 
 bool MCV::canDeploy(int x, int y) {
+    auto* const map = dune::globals::currentGameMap;
+
     for (int i = 0; i < getStructureSize(Structure_ConstructionYard).x; i++) {
         for (int j = 0; j < getStructureSize(Structure_ConstructionYard).y; j++) {
-            if (!currentGameMap->tileExists(x + i, y + j)) {
+            const Tile* pTile = map->tryGetTile(x + i, y + j);
+            if (!pTile)
                 return false;
-            }
-            const Tile* pTile = currentGameMap->getTile(x + i, y + j);
+
             if (!pTile->isBlocked() || ((i == 0) && (j == 0))) {
                 // tile is not blocked or we're checking the tile with the MCV on
                 if (!pTile->isRock()) {

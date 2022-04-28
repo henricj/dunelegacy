@@ -76,13 +76,15 @@ void TextManager::loadData() {
     addOrigDuneText("DUNE." + ext);
     addOrigDuneText("MESSAGE." + ext);
 
+    auto* const file_manager = dune::globals::pFileManager.get();
+
     // load all mentat texts
     mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATH." + ext).get());
+        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATH." + ext).get());
     mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATA." + ext).get());
+        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATA." + ext).get());
     mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        std::make_unique<MentatTextFile>(pFileManager->openFile("MENTATO." + ext).get());
+        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATO." + ext).get());
 }
 
 std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) {
@@ -598,5 +600,5 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
 }
 
 void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
-    origDuneText[filename] = std::make_unique<IndexedTextFile>(pFileManager->openFile(filename).get(), bDecode);
+    origDuneText[filename] = std::make_unique<IndexedTextFile>(dune::globals::pFileManager->openFile(filename).get(), bDecode);
 }

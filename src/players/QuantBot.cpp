@@ -133,7 +133,7 @@ QuantBot::QuantBot(const GameContext& context, House* associatedHouse, const std
     if (gameMode == GameMode::Campaign) {
         // Wait a while if it is a campaign game
 
-        switch (currentGame->techLevel) {
+        switch (context_.game.techLevel) {
             case 6: {
                 attackTimer = MILLI2CYCLES(540000);
             } break;
@@ -221,6 +221,8 @@ void QuantBot::save(OutputStream& stream) const {
 }
 
 void QuantBot::update() {
+    auto& game = context_.game;
+
     if (getGameCycleCount() == 0) {
         // The game just started and we gather some
         // Count the items once initially
@@ -232,7 +234,7 @@ void QuantBot::update() {
         }
 
         if ((initialItemCount[Structure_RepairYard] == 0) && gameMode == GameMode::Campaign
-            && currentGame->techLevel > 4) {
+            && context_.game.techLevel > 4) {
             initialItemCount[Structure_RepairYard] = 1;
             if (initialItemCount[Structure_Radar] == 0) {
                 initialItemCount[Structure_Radar] = 1;
@@ -252,9 +254,11 @@ void QuantBot::update() {
                 // Used for campaign mode.
                 initialMilitaryValue +=
                     initialItemCount[i]
-                    * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
+                    * context_.game.objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
             }
         }
+
+        const auto map_tiles = context_.map.getSizeX() * context_.map.getSizeY();
 
         switch (gameMode) {
             case GameMode::Campaign: {
@@ -262,7 +266,7 @@ void QuantBot::update() {
                 switch (difficulty) {
                     case Difficulty::Easy: {
                         harvesterLimit = initialItemCount[Structure_Refinery];
-                        if (currentGame->techLevel == 8) {
+                        if (context_.game.techLevel == 8) {
                             militaryValueLimit = 4000;
 
                         } else {
@@ -275,7 +279,7 @@ void QuantBot::update() {
                     case Difficulty::Medium: {
                         harvesterLimit     = 2 * initialItemCount[Structure_Refinery];
                         militaryValueLimit = lround(initialMilitaryValue * 1.2_fix);
-                        if (militaryValueLimit < 4000 && currentGame->techLevel == 8) {
+                        if (militaryValueLimit < 4000 && game.techLevel == 8) {
                             militaryValueLimit = 4000;
                         }
 
@@ -283,7 +287,7 @@ void QuantBot::update() {
                     } break;
 
                     case Difficulty::Hard: {
-                        if (currentGame->techLevel == 8) {
+                        if (game.techLevel == 8) {
                             harvesterLimit                       = 3;
                             initialItemCount[Structure_Refinery] = 2;
                             militaryValueLimit                   = 5000;
@@ -296,7 +300,7 @@ void QuantBot::update() {
                     } break;
 
                     case Difficulty::Brutal: {
-                        harvesterLimit     = (currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512);
+                        harvesterLimit     = (map_tiles / 512);
                         militaryValueLimit = 25000;
 
                         logDebug("Brutal Campaign  ");
@@ -315,7 +319,7 @@ void QuantBot::update() {
             case GameMode::Custom: {
                 // add a unit ratio based on map size
                 double ratio      = 0.0;
-                const int mapsize = currentGameMap->getSizeX() * currentGameMap->getSizeY();
+                const int mapsize = map_tiles;
                 if (mapsize <= 1024) {
                     ratio = 0.20;
                 } else if (mapsize <= 2048) {
@@ -366,9 +370,8 @@ void QuantBot::update() {
                 }
 
                 // what is this useful for?
-                if ((currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512) < harvesterLimit
-                    && difficulty != Difficulty::Brutal) {
-                    harvesterLimit = currentGameMap->getSizeX() * currentGameMap->getSizeY() / 512;
+                if ((map_tiles / 512) < harvesterLimit && difficulty != Difficulty::Brutal) {
+                    harvesterLimit = map_tiles / 512;
                 }
 
             } break;
@@ -385,7 +388,7 @@ void QuantBot::update() {
     for (uint32_t i = Unit_FirstID; i <= Unit_LastID; i++) {
         if (i != Unit_Carryall && i != Unit_Harvester) {
             militaryValue += getHouse()->getNumItems(static_cast<ItemID_enum>(i))
-                           * currentGame->objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
+                           * game.objectData.data[i][static_cast<int>(getHouse()->getHouseID())].price;
         }
     }
     // logDebug("Military Value %d  Initial Military Value %d", militaryValue, initialMilitaryValue);
@@ -424,9 +427,9 @@ void QuantBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) 
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(ItemID_enum itemID) {
     if (itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer +=
-            MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30
-                         / (static_cast<uint8_t>(difficulty) + 1));
+        attackTimer += MILLI2CYCLES(
+            dune::globals::currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 30
+            / (static_cast<uint8_t>(difficulty) + 1));
         // logDebug("loss ");
     }
 }
@@ -434,8 +437,8 @@ void QuantBot::onDecrementUnits(ItemID_enum itemID) {
 /// When we get kills we should re-attack sooner...
 void QuantBot::onIncrementUnitKills(ItemID_enum itemID) {
     if (itemID != Unit_Trooper && itemID != Unit_Infantry) {
-        attackTimer -=
-            MILLI2CYCLES(currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
+        attackTimer -= MILLI2CYCLES(
+            dune::globals::currentGame->objectData.data[itemID][static_cast<int>(getHouse()->getHouseID())].price * 15);
         // logDebug("kill ");
     }
 }
@@ -449,7 +452,8 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerI
     // If the human has attacked us then its time to start fighting back... unless its an attack on a special unit
     // Don't trigger with fremen or saboteur
     const bool bPossiblyOwnFremen = (pObject->getOwner()->getHouseID() == HOUSETYPE::HOUSE_ATREIDES)
-                                 && (pObject->getItemID() == Unit_Trooper) && (currentGame->techLevel > 7);
+                                 && (pObject->getItemID() == Unit_Trooper)
+                                 && (dune::globals::currentGame->techLevel > 7);
     if (gameMode == GameMode::Campaign && !pDamager->getOwner()->isAI() && !campaignAIAttackFlag && !bPossiblyOwnFremen
         && (pObject->getItemID() != Unit_Saboteur)) {
         campaignAIAttackFlag = true;
@@ -505,15 +509,15 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerI
             doSetAttackMode(pGroundUnit, AREAGUARD);
             doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
 
-        } else if ((currentGame->techLevel > 3) && (pGroundUnit->getItemID() == Unit_Quad) && !pDamager->isInfantry()
-                   && (pDamager->getItemID() != Unit_RaiderTrike) && (pDamager->getItemID() != Unit_Trike)
-                   && (pDamager->getItemID() != Unit_Quad)) {
+        } else if ((dune::globals::currentGame->techLevel > 3) && (pGroundUnit->getItemID() == Unit_Quad)
+                   && !pDamager->isInfantry() && (pDamager->getItemID() != Unit_RaiderTrike)
+                   && (pDamager->getItemID() != Unit_Trike) && (pDamager->getItemID() != Unit_Quad)) {
             // We want out quads as raiders
             // Quads flee from every unit except trikes, infantry and other quads (but only if quads are not our main
             // vehicle for that techlevel)
             doSetAttackMode(pGroundUnit, AREAGUARD);
             doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
-        } else if ((currentGame->techLevel > 3)
+        } else if ((dune::globals::currentGame->techLevel > 3)
                    && ((pGroundUnit->getItemID() == Unit_RaiderTrike) || (pGroundUnit->getItemID() == Unit_Trike))
                    && !pDamager->isInfantry() && (pDamager->getItemID() != Unit_RaiderTrike)
                    && (pDamager->getItemID() != Unit_Trike)) {
@@ -704,7 +708,7 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
 
 void QuantBot::build(int militaryValue) {
     const auto houseID = getHouse()->getHouseID();
-    auto& data         = currentGame->objectData.data;
+    auto& data         = context_.game.objectData.data;
 
     int itemCount[Num_ItemID];
     for (int i = ItemID_FirstID; i <= ItemID_LastID; i++) {
@@ -915,7 +919,7 @@ void QuantBot::build(int militaryValue) {
                         auto enemyHouseID           = HOUSETYPE::HOUSE_INVALID;
                         int enemyHouseBuildingCount = 0;
 
-                        currentGame->for_each_house([&](const auto& house) {
+                        context_.game.for_each_house([&](const auto& house) {
                             if (house.getTeamID() != getHouse()->getTeamID()
                                 && house.getNumStructures() > enemyHouseBuildingCount) {
                                 enemyHouseBuildingCount = house.getNumStructures();
@@ -1339,7 +1343,7 @@ void QuantBot::build(int militaryValue) {
                                 }
                                 // If we need more refinerys for our harvesters or we don't have a heavy factory
                                 else if (((money > 2000 && itemCount[Structure_Refinery] * 3.5_fix < harvesterLimit)
-                                          || (currentGame->techLevel < 4 && itemCount[Unit_Harvester] < harvesterLimit
+                                          || (context_.game.techLevel < 4 && itemCount[Unit_Harvester] < harvesterLimit
                                               && money > 1000))
                                          && pBuilder->isAvailableToBuild(Structure_Refinery)) {
                                     itemID = Structure_Refinery;
@@ -1591,7 +1595,7 @@ Coord QuantBot::findSquadCenter(HOUSETYPE houseID) {
             && pCurrentUnit->getItemID() != Unit_MCV
 
             // Stop freeman making tanks roll forward
-            && !(currentGame->techLevel > 6 && pCurrentUnit->getItemID() == Unit_Trooper)
+            && !(context_.game.techLevel > 6 && pCurrentUnit->getItemID() == Unit_Trooper)
             && pCurrentUnit->getItemID() != Unit_Saboteur && pCurrentUnit->getItemID() != Unit_Sandworm
 
             // Don't let troops moving to rally point contribute

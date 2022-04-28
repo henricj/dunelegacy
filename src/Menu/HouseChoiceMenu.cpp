@@ -39,7 +39,9 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
     HouseChoiceMenu::setWindowWidget(&windowWidget);
 
-    selectYourHouseLabel.setTexture(pGFXManager->getUIGraphic(UI_SelectYourHouseLarge));
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    selectYourHouseLabel.setTexture(gfx->getUIGraphic(UI_SelectYourHouseLarge));
     windowWidget.addWidget(&selectYourHouseLabel, Point(0, 0), Point(100, 640));
 
     // set up buttons
@@ -52,15 +54,15 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
     house3Button.setOnClick([&] { onHouseButton(2); });
     windowWidget.addWidget(&house3Button, Point(430, 108), Point(168, 182));
 
-    const auto* const pArrowLeft          = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftLarge);
-    const auto* const pArrowLeftHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
+    const auto* const pArrowLeft          = gfx->getUIGraphic(UI_Herald_ArrowLeftLarge);
+    const auto* const pArrowLeftHighlight = gfx->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
     houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick([&] { onHouseLeft(); });
     houseLeftButton.setVisible(false);
     windowWidget.addWidget(&houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
 
-    const auto* const pArrowRight          = pGFXManager->getUIGraphic(UI_Herald_ArrowRightLarge);
-    const auto* const pArrowRightHighlight = pGFXManager->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
+    const auto* const pArrowRight          = gfx->getUIGraphic(UI_Herald_ArrowRightLarge);
+    const auto* const pArrowRightHighlight = gfx->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
     houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
     houseRightButton.setOnClick([&] { onHouseRight(); });
     windowWidget.addWidget(&houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
@@ -71,6 +73,8 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 HouseChoiceMenu::~HouseChoiceMenu() = default;
 
 void HouseChoiceMenu::onHouseButton(int button) {
+    using dune::globals::soundPlayer;
+
     const auto selectedHouse = houseOrder[currentHouseChoiceScrollPos + button];
 
     // clang-format off
@@ -87,17 +91,16 @@ void HouseChoiceMenu::onHouseButton(int button) {
 }
 
 void HouseChoiceMenu::updateHouseChoice() {
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     // House1 button
-    house1Button.setTextures(
-        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 0]));
+    house1Button.setTextures(gfx->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 0]));
 
     // House2 button
-    house2Button.setTextures(
-        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 1]));
+    house2Button.setTextures(gfx->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 1]));
 
     // House3 button
-    house3Button.setTextures(
-        pGFXManager->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 2]));
+    house3Button.setTextures(gfx->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 2]));
 }
 
 void HouseChoiceMenu::onHouseLeft() {

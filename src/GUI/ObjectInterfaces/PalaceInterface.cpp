@@ -17,7 +17,7 @@ sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, G
 
     const auto& gui = GUIStyle::getInstance();
 
-    const sdl2::surface_ptr pText{pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};
+    const auto pText{dune::globals::pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};
 
     sdl2::surface_ptr pReady{SDL_CreateRGBSurface(0, getWidth(deathHandSurface), getHeight(deathHandSurface),
                                                   SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
@@ -33,14 +33,16 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     mainHBox.addWidget(&weaponBox);
 
-    const auto* const pTexture = pGFXManager->getSmallDetailPic(Picture_DeathHand);
+    auto* const gfx = dune::globals::pGFXManager.get();
+
+    const auto* const pTexture = gfx->getSmallDetailPic(Picture_DeathHand);
     weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2, 5),
                         getTextureSize(pTexture));
 
     weaponBox.addWidget(&weaponSelectButton, Point((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2, 5),
                         getTextureSize(pTexture));
 
-    const auto* const ready = pGFXManager->getGeneratedPicture(GeneratedPicture::PalaceReadyText);
+    const auto* const ready = gfx->getGeneratedPicture(GeneratedPicture::PalaceReadyText);
     weaponSelectButton.setTextures(ready);
     weaponSelectButton.setVisible(false);
 
@@ -48,7 +50,7 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
 }
 
 bool PalaceInterface::update() {
-    auto* const pObject = currentGame->getObjectManager().getObject(objectID);
+    auto* const pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
     if (pObject == nullptr) {
         return false;
     }
@@ -78,7 +80,7 @@ bool PalaceInterface::update() {
             } break;
         }
 
-        weaponProgressBar.setTexture(pGFXManager->getSmallDetailPic(picID));
+        weaponProgressBar.setTexture(dune::globals::pGFXManager->getSmallDetailPic(picID));
         weaponProgressBar.setProgress(pPalace->getPercentComplete());
 
         weaponSelectButton.setVisible(pPalace->isSpecialWeaponReady());
@@ -93,7 +95,7 @@ void PalaceInterface::onSpecial(const GameContext& context) const {
     if (pPalace != nullptr) {
         if ((pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_HARKONNEN)
             || (pPalace->getOriginalHouseID() == HOUSETYPE::HOUSE_SARDAUKAR)) {
-            currentGame->currentCursorMode = Game::CursorMode_Attack;
+            dune::globals::currentGame->currentCursorMode = Game::CursorMode_Attack;
         } else {
             pPalace->handleSpecialClick(context);
         }

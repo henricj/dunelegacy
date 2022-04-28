@@ -107,9 +107,11 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
+    auto* const game = dune::globals::currentGame.get();
+
     auto& stream    = initializer.stream();
     originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
-    owner           = currentGame->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
+    owner           = game->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 
     health       = stream.readFixPoint();
     badlyDamaged = stream.readBool();
@@ -130,7 +132,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
     respondable = stream.readBool();
     byScenario  = stream.readBool();
 
-    if (currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
+    if (game->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         selected              = stream.readBool();
         selectedByOtherPlayer = stream.readBool();
     } else {
@@ -189,7 +191,7 @@ void ObjectBase::save(OutputStream& stream) const {
     stream.writeBool(respondable);
     stream.writeBool(byScenario);
 
-    if (currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
+    if (dune::globals::currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
         stream.writeBool(selected);
         stream.writeBool(selectedByOtherPlayer);
     }
@@ -207,7 +209,7 @@ void ObjectBase::save(OutputStream& stream) const {
     \return the center point in world coordinates
 */
 Coord ObjectBase::getCenterPoint() const {
-    return Coord(lround(realX), lround(realY));
+    return {lround(realX), lround(realY)};
 }
 
 Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const {
@@ -215,7 +217,7 @@ Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 int ObjectBase::getMaxHealth() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
+    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
 }
 
 void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
@@ -235,8 +237,8 @@ void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t d
         }
     }
 
-    if (getOwner() == pLocalHouse) {
-        musicPlayer->changeMusic(MUSIC_ATTACK);
+    if (getOwner() == dune::globals::pLocalHouse) {
+        dune::globals::musicPlayer->changeMusic(MUSIC_ATTACK);
     }
 
     getOwner()->noteDamageLocation(this, damage, damagerID);
@@ -249,7 +251,7 @@ std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameCon
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
-    if (currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
+    if (dune::globals::currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
         destination.x = newX;
         destination.y = newY;
     }
@@ -303,8 +305,10 @@ void ObjectBase::setTarget(const ObjectBase* newTarget) {
 }
 
 void ObjectBase::unassignFromMap(const Coord& location) const {
-    if (currentGameMap->tileExists(location)) {
-        currentGameMap->getTile(location)->unassignObject(getObjectID());
+    auto* const map = dune::globals::currentGameMap;
+
+    if (map->tileExists(location)) {
+        map->getTile(location)->unassignObject(getObjectID());
     }
 }
 
@@ -316,10 +320,13 @@ bool ObjectBase::canAttack(const ObjectBase* object) const {
 
 bool ObjectBase::isOnScreen() const {
     const Coord position{lround(getRealX()), lround(getRealY())};
-    const Coord size{static_cast<int>(std::ceil(getWidth(graphic[currentZoomlevel]) / numImagesX)),
-                     static_cast<int>(std::ceil(getHeight(graphic[currentZoomlevel]) / numImagesY))};
 
-    return screenborder->isInsideScreen(position, size);
+    auto* const texture = graphic[dune::globals::currentZoomlevel];
+
+    const Coord size{static_cast<int>(std::ceil(getWidth(texture) / numImagesX)),
+                     static_cast<int>(std::ceil(getHeight(texture) / numImagesY))};
+
+    return dune::globals::screenborder->isInsideScreen(position, size);
 }
 
 bool ObjectBase::isVisible(int teamID) const {
@@ -356,7 +363,7 @@ Coord ObjectBase::getClosestPoint(const Coord& point) const {
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
     const StructureBase* pClosestStructure = nullptr;
     auto closestDistance                   = FixPt_MAX;
-    for (const StructureBase* pStructure : structureList) {
+    for (const StructureBase* pStructure : dune::globals::structureList) {
         if (canAttack(pStructure)) {
             const auto closestPoint = pStructure->getClosestPoint(getLocation());
             auto structureDistance  = blockDistance(getLocation(), closestPoint);
@@ -378,7 +385,7 @@ const StructureBase* ObjectBase::findClosestTargetStructure() const {
 const UnitBase* ObjectBase::findClosestTargetUnit() const {
     const UnitBase* pClosestUnit = nullptr;
     auto closestDistance         = FixPt_MAX;
-    for (const UnitBase* pUnit : unitList) {
+    for (const UnitBase* pUnit : dune::globals::unitList) {
         if (canAttack(pUnit)) {
             const auto closestPoint = pUnit->getClosestPoint(getLocation());
             const auto unitDistance = blockDistance(getLocation(), closestPoint);
@@ -396,7 +403,7 @@ const UnitBase* ObjectBase::findClosestTargetUnit() const {
 const ObjectBase* ObjectBase::findClosestTarget() const {
     const ObjectBase* pClosestObject = nullptr;
     FixPoint closestDistance         = FixPt_MAX;
-    for (const StructureBase* pStructure : structureList) {
+    for (const StructureBase* pStructure : dune::globals::structureList) {
         if (canAttack(pStructure)) {
             const auto closestPoint = pStructure->getClosestPoint(getLocation());
             auto structureDistance  = blockDistance(getLocation(), closestPoint);
@@ -412,7 +419,7 @@ const ObjectBase* ObjectBase::findClosestTarget() const {
         }
     }
 
-    for (const UnitBase* pUnit : unitList) {
+    for (const UnitBase* pUnit : dune::globals::unitList) {
         if (canAttack(pUnit)) {
             const auto closestPoint = pUnit->getClosestPoint(getLocation());
             const auto unitDistance = blockDistance(getLocation(), closestPoint);
@@ -470,21 +477,26 @@ const ObjectBase* ObjectBase::findTarget() const {
     const ObjectBase* pClosestTarget = nullptr;
     auto closestTargetDistance       = FixPt_MAX;
 
+    auto* const map = dune::globals::currentGameMap;
+
     Coord coord;
     const auto startY = std::max(0, location.y - checkRange);
-    const auto endY   = std::min(currentGameMap->getSizeY() - 1, location.y + checkRange);
+    const auto endY   = std::min(map->getSizeY() - 1, location.y + checkRange);
     for (coord.y = startY; coord.y <= endY; coord.y++) {
         const auto startX = std::max(0, location.x - checkRange);
-        const auto endX   = std::min(currentGameMap->getSizeX() - 1, location.x + checkRange);
+        const auto endX   = std::min(map->getSizeX() - 1, location.x + checkRange);
         for (coord.x = startX; coord.x <= endX; coord.x++) {
 
             const auto targetDistance = blockDistance(location, coord);
             if (targetDistance <= checkRange) {
-                const Tile* pTile = currentGameMap->getTile(coord);
-                if (pTile->isExploredByTeam(currentGame.get(), getOwner()->getTeamID())
-                    && !pTile->isFoggedByTeam(currentGame.get(), getOwner()->getTeamID()) && pTile->hasAnObject()) {
+                auto* const game = dune::globals::currentGame.get();
 
-                    auto* const pNewTarget = pTile->getObject(currentGame->getObjectManager());
+                const Tile* pTile = map->getTile(coord);
+
+                if (pTile->isExploredByTeam(game, getOwner()->getTeamID())
+                    && !pTile->isFoggedByTeam(game, getOwner()->getTeamID()) && pTile->hasAnObject()) {
+
+                    auto* const pNewTarget = pTile->getObject(game->getObjectManager());
                     if (!pNewTarget)
                         continue;
 
@@ -505,7 +517,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 }
 
 int ObjectBase::getViewRange() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].viewrange;
+    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].viewrange;
 }
 
 int ObjectBase::getAreaGuardRange() const {
@@ -513,15 +525,15 @@ int ObjectBase::getAreaGuardRange() const {
 }
 
 int ObjectBase::getWeaponRange() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
 }
 
 int ObjectBase::getWeaponReloadTime() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponreloadtime;
+    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponreloadtime;
 }
 
 int ObjectBase::getInfSpawnProp() const {
-    return currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
+    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
 }
 
 namespace {
@@ -600,5 +612,5 @@ bool ObjectBase::targetInWeaponRange() const {
     const auto coord = target.getObjPointer()->getClosestPoint(location);
     const auto dist  = blockDistance(location, coord);
 
-    return dist <= currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+    return dist <= dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
 }

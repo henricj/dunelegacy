@@ -35,21 +35,23 @@ MainMenu::MainMenu() {
 
     MainMenu::setWindowWidget(&windowWidget);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     // set up pictures in the background
     // set up pictures in the background
-    const auto* const pPlanetBackground = pGFXManager->getUIGraphic(UI_PlanetBackground);
+    const auto* const pPlanetBackground = gfx->getUIGraphic(UI_PlanetBackground);
     planetPicture.setTexture(pPlanetBackground);
     auto dest1 = calcAlignedDrawingRect(pPlanetBackground);
     dest1.y    = dest1.y - getHeight(pPlanetBackground) / 2 + 10;
     windowWidget.addWidget(&planetPicture, dest1);
 
-    const auto* const pDuneLegacy = pGFXManager->getUIGraphic(UI_DuneLegacy);
+    const auto* const pDuneLegacy = gfx->getUIGraphic(UI_DuneLegacy);
     duneLegacy.setTexture(pDuneLegacy);
     auto dest2 = calcAlignedDrawingRect(pDuneLegacy);
     dest2.y    = dest2.y + getHeight(pDuneLegacy) / 2 + 28;
     windowWidget.addWidget(&duneLegacy, dest2);
 
-    const auto* const pMenuButtonBorder = pGFXManager->getUIGraphic(UI_MenuButtonBorder);
+    const auto* const pMenuButtonBorder = gfx->getUIGraphic(UI_MenuButtonBorder);
     buttonBorder.setTexture(pMenuButtonBorder);
     auto dest3 = calcAlignedDrawingRect(pMenuButtonBorder);
     dest3.y    = dest3.y + getHeight(pMenuButtonBorder) / 2 + 59;
@@ -99,7 +101,7 @@ MainMenu::MainMenu() {
 MainMenu::~MainMenu() = default;
 
 int MainMenu::showMenu() {
-    musicPlayer->changeMusic(MUSIC_MENU);
+    dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 
     return parent::showMenu();
 }

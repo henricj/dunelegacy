@@ -18,8 +18,10 @@
 #include <mmath.h>
 
 int world2zoomedWorld(int x) {
+    const auto zoom = dune::globals::currentZoomlevel;
+
     if (x < 0) {
-        switch (currentZoomlevel) {
+        switch (zoom) {
             case 0: return (x - 3) / 4;
             case 1: return (x - 1) / 2;
             case 2: return ((x - 1) * 3) / 4;
@@ -28,7 +30,7 @@ int world2zoomedWorld(int x) {
         }
     }
 
-    switch (currentZoomlevel) {
+    switch (zoom) {
         case 0: return x / 4;
         case 1: return x / 2;
         case 2: return (x * 3) / 4;
@@ -38,7 +40,7 @@ int world2zoomedWorld(int x) {
 }
 
 int world2zoomedWorld(float x) {
-    switch (currentZoomlevel) {
+    switch (dune::globals::currentZoomlevel) {
         case 0: return lround(x * 0.25f);
         case 1: return lround(x * 0.5f);
         case 2: return lround(x * 0.75f);
@@ -48,11 +50,11 @@ int world2zoomedWorld(float x) {
 }
 
 Coord world2zoomedWorld(const Coord& coord) {
-    return Coord(world2zoomedWorld(coord.x), world2zoomedWorld(coord.y));
+    return {world2zoomedWorld(coord.x), world2zoomedWorld(coord.y)};
 }
 
 int zoomedWorld2world(int x) {
-    switch (currentZoomlevel) {
+    switch (dune::globals::currentZoomlevel) {
         case 0: return x * 4;
         case 1: return x * 2;
         case 2: return (x * 4) / 3;
@@ -62,5 +64,5 @@ int zoomedWorld2world(int x) {
 }
 
 Coord zoomedWorld2world(const Coord& coord) {
-    return Coord(zoomedWorld2world(coord.x), zoomedWorld2world(coord.y));
+    return {zoomedWorld2world(coord.x), zoomedWorld2world(coord.y)};
 }

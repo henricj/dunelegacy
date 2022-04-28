@@ -12,10 +12,14 @@ void TextButton::updateTextures() {
     if (!pUnpressedTexture) {
         invalidateTextures();
 
-        const auto& gui = GUIStyle::getInstance();
+        const auto& gui      = GUIStyle::getInstance();
+        auto* const renderer = dune::globals::renderer.get();
 
-        setTextures(gui.createButtonText(getSize().x, getSize().y, text, false, textcolor, textshadowcolor),
-                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor),
-                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor));
+        setTextures(gui.createButtonText(getSize().x, getSize().y, text, false, textcolor, textshadowcolor)
+                        .createTexture(renderer),
+                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor)
+                        .createTexture(renderer),
+                    gui.createButtonText(getSize().x, getSize().y, text, true, textcolor, textshadowcolor)
+                        .createTexture(renderer));
     }
 }

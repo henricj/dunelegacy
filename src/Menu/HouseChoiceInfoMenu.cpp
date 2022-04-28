@@ -31,7 +31,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
 
     Animation* anim = nullptr;
 
-    auto* const gfx = pGFXManager.get();
+    auto* const gfx = dune::globals::pGFXManager.get();
 
     // clang-format off
     switch(house) {
@@ -56,7 +56,8 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
     questionLabel.setVisible(false);
 
     // init textbox but skip first line (this line contains "House ???")
-    auto desc            = pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
+    auto desc = dune::globals::pTextManager->getBriefingText(0, MISSION_DESCRIPTION, house);
+
     const auto linebreak = desc.find('\n');
     if (linebreak != decltype(desc)::npos)
         desc = desc.substr(linebreak + 1);

@@ -45,7 +45,7 @@ void Silo::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_Silo;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 4;
     numImagesY     = 1;
     firstAnimFrame = 2;
@@ -55,7 +55,7 @@ void Silo::init() {
 Silo::~Silo() = default;
 
 std::unique_ptr<ObjectInterface> Silo::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return RefineryAndSiloInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);

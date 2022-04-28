@@ -71,7 +71,7 @@ public:
             }
         }
 
-        void addPlayerInfo(const PlayerInfo& newPlayerInfo) { playerInfoList.push_back(newPlayerInfo); }
+        void addPlayerInfo(PlayerInfo&& newPlayerInfo) { playerInfoList.emplace_back(std::move(newPlayerInfo)); }
 
         typedef std::vector<PlayerInfo> PlayerInfoList;
 

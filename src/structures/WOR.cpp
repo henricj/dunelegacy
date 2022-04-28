@@ -41,7 +41,7 @@ void WOR::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_WOR;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 4;
     numImagesY     = 1;
     firstAnimFrame = 2;

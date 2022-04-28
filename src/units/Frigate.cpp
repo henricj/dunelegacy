@@ -56,9 +56,11 @@ void Frigate::init() {
     assert(itemID == Unit_Frigate);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Frigate;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    shadowGraphic = pGFXManager->getObjPic(ObjPic_FrigateShadow, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    shadowGraphic = gfx->getObjPic(ObjPic_FrigateShadow, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -91,7 +93,7 @@ void Frigate::checkPos(const GameContext& context) {
             setTarget(nullptr);
             setDestination(guardPoint);
             droppedOffCargo = true;
-            soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
         }
     }
 }
@@ -135,9 +137,11 @@ bool Frigate::update(const GameContext& context) {
 
     // check if this frigate has to be removed because it has just brought all units to the Starport
     if (active) {
+        auto* const map = dune::globals::currentGameMap;
+
         if (droppedOffCargo
-            && ((getRealX() < -TILESIZE) || (getRealX() > (currentGameMap->getSizeX() + 1) * TILESIZE)
-                || (getRealY() < -TILESIZE) || (getRealY() > (currentGameMap->getSizeY() + 1) * TILESIZE))) {
+            && ((getRealX() < -TILESIZE) || (getRealX() > (map->getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE)
+                || (getRealY() > (map->getSizeY() + 1) * TILESIZE))) {
 
             setVisible(VIS_ALL, false);
             destroy(context);
@@ -154,9 +158,11 @@ void Frigate::deploy(const GameContext& context, const Coord& newLocation) {
 }
 
 void Frigate::turn(const GameContext& context) {
+    const auto& map = context.map;
+
     if (active && droppedOffCargo
-        && ((getRealX() < TILESIZE / 2) || (getRealX() > currentGameMap->getSizeX() * TILESIZE - TILESIZE / 2)
-            || (getRealY() < TILESIZE / 2) || (getRealY() > currentGameMap->getSizeY() * TILESIZE - TILESIZE / 2))) {
+        && ((getRealX() < TILESIZE / 2) || (getRealX() > map.getSizeX() * TILESIZE - TILESIZE / 2)
+            || (getRealY() < TILESIZE / 2) || (getRealY() > map.getSizeY() * TILESIZE - TILESIZE / 2))) {
         // already partially outside the map => do not turn
         return;
     }

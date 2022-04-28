@@ -43,11 +43,11 @@
     the two global variables drawnMouseX and drawnMouseY.
 */
 void drawCursor() {
-    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if (!(SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_MOUSE_FOCUS)) {
         return;
     }
 
-    auto* hardware_cursor = pGFXManager->getCursor(cursorFrame);
+    auto* hardware_cursor = dune::globals::pGFXManager->getCursor(dune::globals::cursorFrame);
 
     if (hardware_cursor != SDL_GetCursor())
         SDL_SetCursor(hardware_cursor);
@@ -122,7 +122,7 @@ const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
     }
     // clang-format on
 
-    return pGFXManager->getSmallDetailPic(newPicID);
+    return dune::globals::pGFXManager->getSmallDetailPic(newPicID);
 }
 
 /**
@@ -594,9 +594,11 @@ std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
 */
 FixPoint getDeviateWeakness(HOUSETYPE house) {
 
+    auto* const game = dune::globals::currentGame.get();
+
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // so that Ordos is playable for Humans
-    if (currentGame->gameType == GameType::CustomGame || currentGame->gameType == GameType::CustomMultiplayer) {
+    if (game->gameType == GameType::CustomGame || game->gameType == GameType::CustomMultiplayer) {
         return 1.00_fix;
     }
 
@@ -620,19 +622,21 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
 void startReplay(const std::filesystem::path& filename) {
     sdl2::log_info("Initializing replay...");
 
-    auto cleanup = gsl::finally([&] { currentGame.reset(); });
+    auto cleanup = gsl::finally([&] { dune::globals::currentGame.reset(); });
 
-    currentGame = std::make_unique<Game>();
+    dune::globals::currentGame = std::make_unique<Game>();
 
-    currentGame->initReplay(filename);
+    auto* const game = dune::globals::currentGame.get();
 
-    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
-    currentGame->runMainLoop(context);
+    dune::globals::currentGame->initReplay(filename);
 
-    currentGame.reset();
+    const GameContext context{*game, *game->getMap(), game->getObjectManager()};
+    game->runMainLoop(context);
+
+    dune::globals::currentGame.reset();
 
     // Change music to menu music
-    musicPlayer->changeMusic(MUSIC_MENU);
+    dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 }
 
 /**
@@ -643,27 +647,30 @@ void startReplay(const std::filesystem::path& filename) {
 void startSinglePlayerGame(const GameInitSettings& init) {
     auto currentGameInitInfo = init;
 
-    auto cleanup = gsl::finally([&] { currentGame.reset(); });
+    auto cleanup = gsl::finally([&] { dune::globals::currentGame.reset(); });
 
     while (true) {
         // Make sure to delete the old game (if any) before creating a new one since
         // its destructor has global side effects.  If we let std::unique_ptr<> handle
         // this responsibility, then the new Game instance will be constructed before the
         // assignment to currentGame causes the old one to be deleted.
-        currentGame.reset();
+        dune::globals::currentGame.reset();
 
         sdl2::log_info("Initializing game...");
 
-        currentGame = std::make_unique<Game>();
-        currentGame->initGame(currentGameInitInfo);
+        dune::globals::currentGame = std::make_unique<Game>();
+
+        auto* const game = dune::globals::currentGame.get();
+
+        game->initGame(currentGameInitInfo);
 
         // get init settings from game as it might have changed (through loading the game)
-        currentGameInitInfo = currentGame->getGameInitSettings();
+        currentGameInitInfo = game->getGameInitSettings();
 
-        GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
+        GameContext context{*game, *game->getMap(), game->getObjectManager()};
         context.game.runMainLoop(context);
 
-        sdl2::log_info("Game completed after %.1f seconds", currentGame->getGameTime() * (1.0 / 1000));
+        sdl2::log_info("Game completed after %.1f seconds", game->getGameTime() * (1.0 / 1000));
 
         bool bGetNext = true;
         while (bGetNext) {
@@ -722,14 +729,14 @@ void startSinglePlayerGame(const GameInitSettings& init) {
 
                 case GAME_LOAD:
                 case GAME_NEXTMISSION: {
-                    currentGameInitInfo = currentGame->getNextGameInitSettings();
+                    currentGameInitInfo = game->getNextGameInitSettings();
                     bGetNext            = false;
                 } break;
 
                 case GAME_RETURN_TO_MENU:
                 default: {
                     // Change music to menu music
-                    musicPlayer->changeMusic(MUSIC_MENU);
+                    dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 
                     return;
                 }
@@ -746,19 +753,21 @@ void startMultiPlayerGame(const GameInitSettings& init) {
     auto currentGameInitInfo = init;
 
     sdl2::log_info("Initializing game...");
-    currentGame = std::make_unique<Game>();
+    dune::globals::currentGame = std::make_unique<Game>();
 
-    auto cleanup = gsl::finally([&] { currentGame.reset(); });
+    auto cleanup = gsl::finally([&] { dune::globals::currentGame.reset(); });
 
-    currentGame->initGame(currentGameInitInfo);
+    auto* const game = dune::globals::currentGame.get();
+
+    game->initGame(currentGameInitInfo);
 
     // get init settings from game as it might have changed (through loading the game)
-    currentGameInitInfo = currentGame->getGameInitSettings();
+    currentGameInitInfo = game->getGameInitSettings();
 
-    const GameContext context{*currentGame, *currentGame->getMap(), currentGame->getObjectManager()};
-    currentGame->runMainLoop(context);
+    const GameContext context{*game, *game->getMap(), game->getObjectManager()};
+    game->runMainLoop(context);
 
-    if (currentGame->whatNext() == GAME_CUSTOM_GAME_STATS) {
+    if (game->whatNext() == GAME_CUSTOM_GAME_STATS) {
         sdl2::log_info("Game statistics...");
         CustomGameStatsMenu stats;
         stats.showMenu();

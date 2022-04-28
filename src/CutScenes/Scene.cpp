@@ -49,6 +49,8 @@ void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
 int Scene::draw() {
     auto nextFrameTime = 0;
 
+    auto* const renderer = dune::globals::renderer.get();
+
     // 1.: Clear the whole screen
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);

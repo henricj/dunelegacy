@@ -63,7 +63,8 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         return true;
 
     if (ground_object_result.second == target.getObjectID()) {
-        const auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        const auto* const pObject =
+            dune::globals::currentGame->getObjectManager().getObject(ground_object_result.second);
 
         if ((pObject != nullptr) && targetFriendly && pObject->isAStructure()
             && (pObject->getOwner()->getTeamID() == owner->getTeamID())
@@ -86,7 +87,8 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
         // The tile does not have a non-infantry ground object, therefore the ground object ID must
         // be for an infantry unit.  We have complicated this function since profiling puts it in
         // the hotpath...
-        const auto* const pObject = currentGame->getObjectManager().getObject(ground_object_result.second);
+        const auto* const pObject =
+            dune::globals::currentGame->getObjectManager().getObject(ground_object_result.second);
         if (pObject && pObject->getOwner()->getTeamID() != getOwner()->getTeamID()) {
             // possibly squashing this unit
             return true;

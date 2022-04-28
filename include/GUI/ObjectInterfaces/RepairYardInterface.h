@@ -47,16 +47,15 @@ protected:
         \return true = everything ok, false = the object container should be removed
     */
     bool update() override {
-        auto* pObject = currentGame->getObjectManager().getObject(objectID);
+        auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return false;
         }
 
         auto* const pRepairYard = dune_cast<RepairYard>(pObject);
         if (pRepairYard != nullptr) {
-            auto* pUnit = pRepairYard->getRepairUnit();
 
-            if (pUnit != nullptr) {
+            if (const auto* pUnit = pRepairYard->getRepairUnit()) {
                 repairUnitProgressBar.setVisible(true);
                 repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));
                 repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toDouble());

@@ -24,8 +24,9 @@
 WSAVideoEvent::WSAVideoEvent(Wsafile* pWsafile, bool bCenterVertical)
     : currentFrame(0), pWsafile(pWsafile), bCenterVertical(bCenterVertical) {
 
-    pStreamingTexture = sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
-                                                            2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
+    pStreamingTexture =
+        sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
+                                            2 * pWsafile->getWidth(), 2 * pWsafile->getHeight())};
 }
 
 WSAVideoEvent::~WSAVideoEvent() = default;
@@ -39,7 +40,7 @@ int WSAVideoEvent::draw() {
     const SDL_Rect dest =
         calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    Dune_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(dune::globals::renderer.get(), pStreamingTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

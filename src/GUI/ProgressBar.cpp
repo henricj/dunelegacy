@@ -34,16 +34,19 @@ void ProgressBar::draw(Point position) {
 
     parent::draw(position);
 
-    if (pForeground) {
-        const auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
-        if (bDrawShadow) {
-            const SDL_Rect dest2 = {position.x + 2, position.y + 2,
-                                    static_cast<int>(lround(percent * (dest.w / 100.0))), dest.h};
-            renderFillRect(renderer, &dest2, COLOR_BLACK);
-        }
+    if (!pForeground)
+        return;
 
-        Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
+    auto* const renderer = dune::globals::renderer.get();
+
+    const auto dest = calcDrawingRect(pForeground.get(), position.x, position.y);
+    if (bDrawShadow) {
+        const SDL_Rect dest2 = {position.x + 2, position.y + 2, static_cast<int>(lround(percent * (dest.w / 100.0))),
+                                dest.h};
+        renderFillRect(renderer, &dest2, COLOR_BLACK);
     }
+
+    Dune_RenderCopy(renderer, pForeground.get(), nullptr, &dest);
 }
 
 void ProgressBar::updateTextures() {

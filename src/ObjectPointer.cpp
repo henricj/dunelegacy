@@ -26,11 +26,13 @@
 #include "units/UnitBase.h"
 
 ObjectBase* ObjectPointer::getObjPointer() const {
-    if (objectID == NONE_ID || !currentGame) {
+    auto* const game = dune::globals::currentGame.get();
+
+    if (objectID == NONE_ID || !game) {
         return nullptr;
     }
 
-    auto* ObjPointer = currentGame->getObjectManager().getObject(objectID);
+    auto* ObjPointer = game->getObjectManager().getObject(objectID);
     if (ObjPointer == nullptr) {
         objectID = NONE_ID;
     }

@@ -52,7 +52,7 @@ void Wall::init() {
     owner->incrementStructures(itemID);
 
     graphicID  = ObjPic_Wall;
-    graphic    = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX = 25;
     numImagesY = 3;
 }

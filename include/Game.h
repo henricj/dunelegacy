@@ -178,7 +178,7 @@ public:
         return nullptr;
     }
 
-    Map* getMap() { return map ? map.get() : currentGameMap; }
+    Map* getMap() { return map ? map.get() : dune::globals::currentGameMap; }
 
     /**
         The current game is finished and the local house has won
@@ -328,7 +328,7 @@ public:
         if (pInterface) {
             pInterface->updateObjectInterface();
         }
-        pLocalPlayer->onSelectionChanged(selectedList);
+        dune::globals::pLocalPlayer->onSelectionChanged(selectedList);
     }
 
     void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList,

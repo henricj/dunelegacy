@@ -41,6 +41,8 @@ ChatManager::ChatManager() = default;
 ChatManager::~ChatManager() = default;
 
 void ChatManager::draw(Point position) {
+    auto* const renderer = dune::globals::renderer.get();
+
     // delete all old messages
     const auto currentTime = dune::dune_clock::now();
     while (!chatMessages.empty() && chatMessages.front().messageTime + MAX_MESSAGESHOWTIME < currentTime) {
@@ -135,7 +137,8 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
     if (const auto timeinfo = dune::dune_localtime(); timeinfo.has_value())
         strftime(timestring, std::size(timestring), "(%H:%M:%S)", &timeinfo.value());
 
-    const auto& gui = GUIStyle::getInstance();
+    const auto& gui      = GUIStyle::getInstance();
+    auto* const renderer = dune::globals::renderer.get();
 
     auto pTimeTexture     = gui.createText(renderer, timestring, COLOR_WHITE, 12);
     auto pUsernameTexture = gui.createText(renderer, std::string{username} + ": ", COLOR_WHITE, 12);
@@ -148,7 +151,8 @@ void ChatManager::addChatMessage(std::string_view username, std::string_view mes
 }
 
 void ChatManager::addInfoMessage(std::string_view message) {
-    const auto& gui = GUIStyle::getInstance();
+    const auto& gui      = GUIStyle::getInstance();
+    auto* const renderer = dune::globals::renderer.get();
 
     auto pMessageTexture = gui.createText(renderer, std::string{"*  "}.append(message), COLOR_GREEN, 12);
 
@@ -160,7 +164,8 @@ void ChatManager::addInfoMessage(std::string_view message) {
 void ChatManager::addHintMessage(std::string_view message, const DuneTexture* pTexture) {
     const auto width = getRendererWidth() - SIDEBARWIDTH - LEFT_BORDER_WIDTH - 20;
 
-    const auto& gui = GUIStyle::getInstance();
+    const auto& gui      = GUIStyle::getInstance();
+    auto* const renderer = dune::globals::renderer.get();
 
     const auto lines =
         greedyWordWrap(message, width, [&gui](std::string_view tmp) { return gui.getTextWidth(tmp, 12); });

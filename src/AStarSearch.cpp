@@ -49,10 +49,11 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
     const auto* const destinationTile = pMap->getTile(destination);
 
-    const FixPoint rotationSpeed =
-        1_fix
-        / (currentGame->objectData.data[pUnit->getItemID()][static_cast<int>(pUnit->getOriginalHouseID())].turnspeed
-           * TILESIZE);
+    const auto& object_data = dune::globals::currentGame->objectData;
+    const auto& item_data   = object_data.data[pUnit->getItemID()];
+    const auto turnspeed    = item_data[static_cast<int>(pUnit->getOriginalHouseID())].turnspeed;
+
+    const FixPoint rotationSpeed = 1_fix / (turnspeed * TILESIZE);
 
     const auto heuristic   = blockDistance(start, destination);
     auto smallestHeuristic = FixPt_MAX;

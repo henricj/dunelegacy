@@ -36,17 +36,19 @@
 #include <memory>
 
 PictureFactory::PictureFactory() {
-    auto ScreenPic = LoadCPS_RW(pFileManager->openFile("SCREEN.CPS").get());
+    auto* const file_manager = dune::globals::pFileManager.get();
+
+    auto ScreenPic = LoadCPS_RW(file_manager->openFile("SCREEN.CPS").get());
     if (ScreenPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
-    auto FamePic = LoadCPS_RW(pFileManager->openFile("FAME.CPS").get());
+    auto FamePic = LoadCPS_RW(file_manager->openFile("FAME.CPS").get());
     if (FamePic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
-    auto ChoamPic = LoadCPS_RW(pFileManager->openFile("CHOAM.CPS").get());
+    auto ChoamPic = LoadCPS_RW(file_manager->openFile("CHOAM.CPS").get());
     if (ChoamPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
@@ -55,7 +57,9 @@ PictureFactory::PictureFactory() {
 
     backgroundTile = createBackgroundTile(FamePic.get());
 
-    background = createBackground(settings.video.width, settings.video.height);
+    const auto& video = dune::globals::settings.video;
+
+    background = createBackground(video.width, video.height);
 
     // decoration border
     decorationBorder.ball    = getSubPicture(ScreenPic.get(), 241, 124, 12, 11);
@@ -168,12 +172,12 @@ PictureFactory::PictureFactory() {
 
     messageBoxBorder = getSubPicture(ScreenPic.get(), 0, 17, 320, 22);
 
-    if (pFileManager->exists("MISC." + _("LanguageFileExtension"))) {
+    if (file_manager->exists("MISC." + _("LanguageFileExtension"))) {
         mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(
-            LoadCPS_RW(pFileManager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
+            LoadCPS_RW(file_manager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
     } else {
         mentatHouseChoiceQuestionSurface =
-            Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MISC.CPS").get()).get());
+            Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MISC.CPS").get()).get());
     }
 
     // create builder list upper cap
@@ -181,7 +185,7 @@ PictureFactory::PictureFactory() {
     if (builderListUpperCap == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
-    palette.applyToSurface(builderListUpperCap.get());
+    dune::globals::palette.applyToSurface(builderListUpperCap.get());
     SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
@@ -208,7 +212,7 @@ PictureFactory::PictureFactory() {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
 
-    palette.applyToSurface(builderListLowerCap.get());
+    dune::globals::palette.applyToSurface(builderListLowerCap.get());
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
@@ -234,7 +238,8 @@ PictureFactory::PictureFactory() {
 PictureFactory::~PictureFactory() = default;
 
 sdl2::surface_ptr PictureFactory::createTopBar() const {
-    auto topBar          = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
+    auto topBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
+
     const SDL_Rect dest1 = {0, 31, getWidth(topBar.get()), 12};
     SDL_FillRect(topBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
@@ -255,7 +260,8 @@ sdl2::surface_ptr PictureFactory::createTopBar() const {
 }
 
 sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
-    auto sideBar         = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, settings.video.height);
+    auto sideBar = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, dune::globals::settings.video.height);
+
     const SDL_Rect dest1 = {0, 0, 13, getHeight(sideBar.get())};
     SDL_FillRect(sideBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
@@ -335,7 +341,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
 }
 
 sdl2::surface_ptr PictureFactory::createBottomBar() const {
-    auto BottomBar       = getSubPicture(background.get(), 0, 0, settings.video.width - SIDEBARWIDTH, 32 + 12);
+    auto BottomBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
     const SDL_Rect dest1 = {0, 0, getWidth(BottomBar.get()), 13};
     SDL_FillRect(BottomBar.get(), &dest1, PALCOLOR_TRANSPARENT);
 
@@ -361,7 +367,7 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
         THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
     }
 
-    palette.applyToSurface(placingGrid.get());
+    dune::globals::palette.applyToSurface(placingGrid.get());
     sdl2::surface_lock lock{placingGrid.get()};
 
     for (auto y = 0; y < size; y++) {
@@ -458,7 +464,7 @@ sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType, int w
         if (Pic == nullptr) {
             THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
         }
-        palette.applyToSurface(Pic.get());
+        dune::globals::palette.applyToSurface(Pic.get());
         SDL_SetColorKey(Pic.get(), SDL_TRUE, 0);
     }
 
@@ -488,7 +494,7 @@ sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) co
     if (surface == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new background Picture!");
     }
-    palette.applyToSurface(surface.get());
+    dune::globals::palette.applyToSurface(surface.get());
 
     SDL_Rect dest_normal{0, 0, PatternNormal->w, PatternNormal->w};
     SDL_BlitSurface(PatternNormal.get(), nullptr, surface.get(), &dest_normal);
@@ -530,7 +536,7 @@ void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
 
     const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
-    sdl2::surface_ptr VersionText{pFontManager->getFont(14)->createTextSurface(VERSION, PALCOLOR_BLACK)};
+    sdl2::surface_ptr VersionText{dune::globals::pFontManager->getFont(14)->createTextSurface(VERSION, PALCOLOR_BLACK)};
 
     SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
                                      HAlign::Center, VAlign::Center);
@@ -615,7 +621,7 @@ sdl2::surface_ptr PictureFactory::createMenu(SDL_Surface* CaptionPic, int y) con
 }
 
 sdl2::surface_ptr PictureFactory::createOptionsMenu() {
-    auto tmp = LoadPNG_RW(pFileManager->openFile("UI_OptionsMenu.png").get());
+    auto tmp = LoadPNG_RW(dune::globals::pFileManager->openFile("UI_OptionsMenu.png").get());
     if (tmp == nullptr) {
         THROW(std::runtime_error, "Cannot load 'UI_OptionsMenu.png'!");
     }
@@ -680,7 +686,7 @@ sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice
 }
 
 sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
-    sdl2::surface_ptr pMapChoiceScreen{LoadCPS_RW(pFileManager->openFile("MAPMACH.CPS").get())};
+    sdl2::surface_ptr pMapChoiceScreen{LoadCPS_RW(dune::globals::pFileManager->openFile("MAPMACH.CPS").get())};
     if (pMapChoiceScreen == nullptr) {
         THROW(std::runtime_error, "Cannot load 'MAPMACH.CPS'!");
     }
@@ -712,13 +718,15 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
         } break;
     }
 
-    if (settings.general.language == "de") {
+    const auto& language = dune::globals::settings.general.language;
+
+    if (language == "de") {
         auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 120, 303, 23);
         tmp      = copySurface(
                  tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_Rect dest = {8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
-    } else if (settings.general.language == "fr") {
+    } else if (language == "fr") {
         auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 96, 303, 23);
         tmp      = copySurface(
                  tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
@@ -756,14 +764,16 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(HOUSETYPE Hous
 
     sdl2::surface_ptr pQuestionPart2 = nullptr;
 
+    auto* const file_manager = dune::globals::pFileManager.get();
+
     // clang-format off
     switch(House) {
         case HOUSETYPE::HOUSE_HARKONNEN:   pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 48, 208, 48);   break;
         case HOUSETYPE::HOUSE_ATREIDES:    pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 96, 208, 48);   break;
         case HOUSETYPE::HOUSE_ORDOS:       pQuestionPart2 = getSubPicture(mentatHouseChoiceQuestionSurface.get(),0, 144, 208, 48);  break;
-        case HOUSETYPE::HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Fremen.png").get()).get());      break;
-        case HOUSETYPE::HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Sardaukar.png").get()).get());   break;
-        case HOUSETYPE::HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("Mercenary.png").get()).get());   break;
+        case HOUSETYPE::HOUSE_FREMEN:      pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(file_manager->openFile("Fremen.png").get()).get());      break;
+        case HOUSETYPE::HOUSE_SARDAUKAR:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(file_manager->openFile("Sardaukar.png").get()).get());   break;
+        case HOUSETYPE::HOUSE_MERCENARY:   pQuestionPart2 = Scaler::defaultDoubleSurface(LoadPNG_RW(file_manager->openFile("Mercenary.png").get()).get());   break;
         default:    break;
     }
     // clang-format on
@@ -796,11 +806,13 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     replaceColor(pBlueReplaced.get(), 170, 194);
     replaceColor(pBlueReplaced.get(), 173, 195);
 
-    auto pTmp1     = scaleSurface(Wsafile(pFileManager->openFile("WORM.WSA").get()).getPicture(0).get(), 0.5);
+    auto* const file_manager = dune::globals::pFileManager.get();
+
+    auto pTmp1     = scaleSurface(Wsafile(file_manager->openFile("WORM.WSA").get()).getPicture(0).get(), 0.5);
     auto pSandworm = getSubPicture(pTmp1.get(), 40 - 18, 6 - 12, 83, 91);
     pTmp1.reset();
 
-    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldFreMask.png").get());
+    auto pMask = LoadPNG_RW(file_manager->openFile("HeraldFreMask.png").get());
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pBlueReplaced.get(), nullptr);
@@ -823,7 +835,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 
     auto pFrameAndCurtain = combinePictures(pGreenReplaced.get(), pCurtain.get(), 7, 7);
 
-    const auto pMask = sdl2::surface_ptr{LoadPNG_RW(pFileManager->openFile("HeraldSardMask.png").get())};
+    const auto pMask = sdl2::surface_ptr{LoadPNG_RW(dune::globals::pFileManager->openFile("HeraldSardMask.png").get())};
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -842,10 +854,12 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 
     const auto pFrameAndCurtain = combinePictures(pRedReplaced.get(), pCurtain.get(), 7, 7);
 
-    auto pSoldier = Wsafile(pFileManager->openFile("INFANTRY.WSA").get()).getPicture(0);
+    auto* const file_manager = dune::globals::pFileManager.get();
+
+    auto pSoldier = Wsafile(file_manager->openFile("INFANTRY.WSA").get()).getPicture(0);
     pSoldier      = getSubPicture(pSoldier.get(), 49, 17, 83, 91);
 
-    auto pMask = LoadPNG_RW(pFileManager->openFile("HeraldMercMask.png").get());
+    auto pMask = LoadPNG_RW(file_manager->openFile("HeraldMercMask.png").get());
     SDL_SetColorKey(pMask.get(), SDL_TRUE, 0);
 
     SDL_BlitSurface(pMask.get(), nullptr, pFrameAndCurtain.get(), nullptr);
@@ -861,7 +875,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heraldFre) {
     auto newAnimation = std::make_unique<Animation>();
 
-    auto newFrame = sdl2::surface_ptr{LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get())};
+    auto newFrame = sdl2::surface_ptr{LoadCPS_RW(dune::globals::pFileManager->openFile("BIGPLAN.CPS").get())};
     newFrame      = getSubPicture(newFrame.get(), -68, -34, 368, 224);
 
     const SDL_Rect src = {0, 0, getWidth(heraldFre) - 2, 126};
@@ -879,7 +893,7 @@ std::unique_ptr<Animation>
 PictureFactory::createSardaukarPlanet(Animation* ordosPlanetAnimation, SDL_Surface* heraldSard) {
 
     const sdl2::surface_ptr maskSurface{
-        Scaler::defaultDoubleSurface(LoadPNG_RW(pFileManager->openFile("PlanetMask.png").get()).get())};
+        Scaler::defaultDoubleSurface(LoadPNG_RW(dune::globals::pFileManager->openFile("PlanetMask.png").get()).get())};
     SDL_SetColorKey(maskSurface.get(), SDL_TRUE, 0);
 
     auto newAnimation = std::make_unique<Animation>();

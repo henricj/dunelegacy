@@ -47,7 +47,7 @@ void Quad::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Quad;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -56,17 +56,17 @@ void Quad::init() {
 Quad::~Quad() = default;
 
 void Quad::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location);
 }
 
 void Quad::destroy(const GameContext& context) {
-    if (currentGameMap->tileExists(location) && isVisible()) {
+    if (dune::globals::currentGameMap->tileExists(location) && isVisible()) {
         Coord realPos(lround(realX), lround(realY));
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
-    GroundUnit::destroy(context);
+    parent::destroy(context);
 }

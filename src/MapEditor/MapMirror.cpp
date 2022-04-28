@@ -31,7 +31,7 @@ std::unique_ptr<MapMirror> MapMirror::createMapMirror(MirrorMode mirrorMode, int
         case MirrorModeVertical:    return std::make_unique<MapMirrorVertical>(mapsizeX, mapsizeY);
         case MirrorModeBoth:        return std::make_unique<MapMirrorBoth>(mapsizeX, mapsizeY);
         case MirrorModePoint:       return std::make_unique<MapMirrorPoint>(mapsizeX, mapsizeY);
-        default:                    return std::unique_ptr<MapMirror>();
+        default:                    return {};
     }
     // clang-format off
 }
@@ -59,7 +59,7 @@ MapMirrorHorizontal::MapMirrorHorizontal(int mapsizeX, int mapsizeY)
 Coord MapMirrorHorizontal::getCoord(Coord originalCoord, int i, Coord objectSize) const {
     switch(i%2) {
         case 0:     return originalCoord;
-        case 1:     return Coord(mapsizeX - originalCoord.x - objectSize.x, originalCoord.y);
+        case 1:     return {mapsizeX - originalCoord.x - objectSize.x, originalCoord.y};
         default:    return originalCoord;
     }
 }
@@ -81,7 +81,7 @@ MapMirrorVertical::MapMirrorVertical(int mapsizeX, int mapsizeY)
 Coord MapMirrorVertical::getCoord(Coord originalCoord, int i, Coord objectSize) const {
     switch(i%2) {
         case 0:     return originalCoord;
-        case 1:     return Coord(originalCoord.x, mapsizeY - originalCoord.y - objectSize.y);
+        case 1:     return {originalCoord.x, mapsizeY - originalCoord.y - objectSize.y};
         default:    return originalCoord;
     }
 }
@@ -103,9 +103,9 @@ MapMirrorBoth::MapMirrorBoth(int mapsizeX, int mapsizeY)
 Coord MapMirrorBoth::getCoord(Coord originalCoord, int i, Coord objectSize) const {
     switch(i%4) {
         case 0:     return originalCoord;
-        case 1:     return Coord(mapsizeX - originalCoord.x - objectSize.x, originalCoord.y);
-        case 2:     return Coord(mapsizeX - originalCoord.x - objectSize.x, mapsizeY - originalCoord.y - objectSize.y);
-        case 3:     return Coord(originalCoord.x, mapsizeY - originalCoord.y - objectSize.y);
+        case 1:     return {mapsizeX - originalCoord.x - objectSize.x, originalCoord.y};
+        case 2:     return {mapsizeX - originalCoord.x - objectSize.x, mapsizeY - originalCoord.y - objectSize.y};
+        case 3:     return {originalCoord.x, mapsizeY - originalCoord.y - objectSize.y};
         default:    return originalCoord;
     }
 }
@@ -129,7 +129,7 @@ MapMirrorPoint::MapMirrorPoint(int mapsizeX, int mapsizeY)
 Coord MapMirrorPoint::getCoord(Coord originalCoord, int i, Coord objectSize) const {
     switch(i%2) {
         case 0:     return originalCoord;
-        case 1:     return Coord(mapsizeX - originalCoord.x - objectSize.x, mapsizeY - originalCoord.y - objectSize.y);
+        case 1:     return {mapsizeX - originalCoord.x - objectSize.x, mapsizeY - originalCoord.y - objectSize.y};
         default:    return originalCoord;
     }
 }

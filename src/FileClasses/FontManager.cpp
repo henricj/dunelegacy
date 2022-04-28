@@ -71,5 +71,5 @@ Font* FontManager::getFont(uint32_t fontSize) {
 }
 
 std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) const {
-    return std::make_unique<TTFFont>(pFileManager->openFile(font_path_), fontSize);
+    return std::make_unique<TTFFont>(dune::globals::pFileManager->openFile(font_path_), fontSize);
 }

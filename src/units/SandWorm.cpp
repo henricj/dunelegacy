@@ -81,7 +81,7 @@ void Sandworm::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Sandworm;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = 1;
     numImagesY = 9;
@@ -116,7 +116,7 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
 bool Sandworm::attack(const GameContext& context) {
     if (primaryWeaponTimer == 0) {
         if (target) {
-            soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
             drawnFrame         = 0;
             attackFrameTimer   = SANDWORM_ATTACKFRAMETIME;
             primaryWeaponTimer = getWeaponReloadTime();
@@ -135,12 +135,17 @@ void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
 void Sandworm::blitToScreen() {
     static constexpr int shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
+    using dune::globals::currentZoomlevel;
+    auto* const renderer     = dune::globals::renderer.get();
+    auto* const screenborder = dune::globals::screenborder.get();
+
     if (shimmerOffsetIndex >= 0) {
         // render sandworm's shimmer
 
-        const auto* shimmerMaskTex = pGFXManager->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
-        auto* shimmerTex =
-            pGFXManager->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
+        auto* const gfx = dune::globals::pGFXManager.get();
+
+        const auto* shimmerMaskTex = gfx->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
+        auto* shimmerTex = gfx->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
 
         for (int i = 0; i < SANDWORM_SEGMENTS; i++) {
             if (lastLocs[i].isInvalid()) {
@@ -161,12 +166,14 @@ void Sandworm::blitToScreen() {
             Dune_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
             SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_BLEND);
 
+            auto* const screen_texture = dune::globals::screenTexture.get();
+
             // now copy r,g,b colors from screen but don't change alpha values in mask
-            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_ADD);
+            SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_ADD);
             auto source = as_rect(dest);
             source.x += shimmerOffset[(shimmerOffsetIndex + i) % 8] * 2;
-            Dune_RenderCopyF(renderer, screenTexture, &source, nullptr);
-            SDL_SetTextureBlendMode(screenTexture, SDL_BLENDMODE_NONE);
+            Dune_RenderCopyF(renderer, screen_texture, &source, nullptr);
+            SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_NONE);
 
             // switch back to old rendering target (from texture 'shimmerTex')
             SDL_SetRenderTarget(renderer, oldRenderTarget);
@@ -193,8 +200,9 @@ void Sandworm::checkPos(const GameContext& context) {
 
         const auto* const infantry = context.map.tryGetInfantry(context, location.x, location.y);
 
-        if (infantry && infantry->getOwner() == pLocalHouse) {
-            soundPlayer->playVoice(Voice_enum::SomethingUnderTheSand, infantry->getOwner()->getHouseID());
+        if (infantry && infantry->getOwner() == dune::globals::pLocalHouse) {
+            dune::globals::soundPlayer->playVoice(Voice_enum::SomethingUnderTheSand,
+                                                  infantry->getOwner()->getHouseID());
         }
     }
 }
@@ -240,7 +248,7 @@ void Sandworm::engageTarget(const GameContext& context) {
 }
 
 void Sandworm::setLocation(const GameContext& context, int xPos, int yPos) {
-    if (currentGameMap->tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
+    if (context.map.tileExists(xPos, yPos) || ((xPos == INVALID_POS) && (yPos == INVALID_POS))) {
         parent::setLocation(context, xPos, yPos);
     }
 }
@@ -285,17 +293,20 @@ bool Sandworm::sleepOrDie(const GameContext& context) {
 void Sandworm::setTarget(const ObjectBase* newTarget) {
     parent::setTarget(newTarget);
 
-    if ((newTarget != nullptr) && (newTarget->getOwner() == pLocalHouse)
-        && ((warningWormSignPlayedFlags & (1 << static_cast<int>(pLocalHouse->getHouseID()))) == 0)) {
-        soundPlayer->playVoice(Voice_enum::WarningWormSign, pLocalHouse->getHouseID());
-        warningWormSignPlayedFlags |= (1 << static_cast<int>(pLocalHouse->getHouseID()));
-    }
+    auto* const house = dune::globals::pLocalHouse;
+
+    if (newTarget == nullptr || newTarget->getOwner() != house
+        || (warningWormSignPlayedFlags & 1 << static_cast<int>(house->getHouseID())) != 0)
+        return;
+
+    dune::globals::soundPlayer->playVoice(Voice_enum::WarningWormSign, house->getHouseID());
+    warningWormSignPlayedFlags |= (1 << static_cast<int>(house->getHouseID()));
 }
 
 void Sandworm::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
-    if (damage > 0) {
+    if (damage > 0)
         attackMode = HUNT;
-    }
+
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
 
@@ -370,8 +381,8 @@ bool Sandworm::update(const GameContext& context) {
                 // awaken the worm!
 
                 for (int tries = 0; tries < 1000; tries++) {
-                    const int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                    const int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                    const int x = game.randomGen.rand(0, context.map.getSizeX() - 1);
+                    const int y = game.randomGen.rand(0, context.map.getSizeY() - 1);
 
                     if (canPass(x, y)) {
                         deploy(context, map.getTile(x, y)->getLocation());
@@ -396,7 +407,7 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     if (!object || !object->isAGroundUnit() || object->getItemID() == Unit_Sandworm)
         return false;
 
-    auto* map = currentGameMap;
+    auto* map = dune::globals::currentGameMap;
 
     if (!map->tileExists(object->getLocation()))
         return false;
@@ -411,30 +422,29 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
 
 bool Sandworm::canPassTile(const Tile* pTile) const {
     return !pTile->isRock()
-        && (!pTile->hasAnUndergroundUnit() || (pTile->getUndergroundUnit(currentGame->getObjectManager()) == this));
+        && (!pTile->hasAnUndergroundUnit()
+            || (pTile->getUndergroundUnit(dune::globals::currentGame->getObjectManager()) == this));
 }
 
 const ObjectBase* Sandworm::findTarget() const {
-    if (isEating()) {
+    if (isEating())
         return nullptr;
-    }
-
-    const ObjectBase* closestTarget = nullptr;
 
     if ((attackMode == HUNT) || (attackMode == AREAGUARD)) {
-        auto closestDistance = FixPt_MAX;
+        const ObjectBase* closestTarget = nullptr;
+        auto closestDistance            = FixPt_MAX;
 
-        for (const auto* pUnit : unitList) {
+        for (const auto* pUnit : dune::globals::unitList) {
             if (canAttack(pUnit) && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
                 closestTarget   = pUnit;
                 closestDistance = blockDistance(location, pUnit->getLocation());
             }
         }
-    } else {
-        closestTarget = ObjectBase::findTarget();
+
+        return closestTarget;
     }
 
-    return closestTarget;
+    return ObjectBase::findTarget();
 }
 
 ANGLETYPE Sandworm::getCurrentAttackAngle() const {
@@ -443,5 +453,5 @@ ANGLETYPE Sandworm::getCurrentAttackAngle() const {
 }
 
 void Sandworm::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
 }

@@ -37,8 +37,10 @@ public:
 
 protected:
     DefaultStructureInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
-        const auto* const pUIRepair        = pGFXManager->getUIGraphic(UI_Repair);
-        const auto* const pUIRepairPressed = pGFXManager->getUIGraphic(UI_Repair_Pressed);
+        auto* const gfx = dune::globals::pGFXManager.get();
+
+        const auto* const pUIRepair        = gfx->getUIGraphic(UI_Repair);
+        const auto* const pUIRepairPressed = gfx->getUIGraphic(UI_Repair_Pressed);
 
         repairButton.setTextures(pUIRepair, pUIRepairPressed);
         repairButton.setToggleButton(true);

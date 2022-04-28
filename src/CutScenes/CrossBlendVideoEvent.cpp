@@ -26,7 +26,7 @@ CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surfa
         convertSurfaceToDisplayFormat(Scaler::defaultDoubleTiledSurface(pStartSurface, 1, 1).get());
 
     pStreamingTexture =
-        sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
+        sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING,
                                             pBlendBlitterTargetSurface->w, pBlendBlitterTargetSurface->h)};
 
     const SDL_Rect dest = {0, 0, getWidth(pBlendBlitterTargetSurface.get()),
@@ -50,7 +50,7 @@ int CrossBlendVideoEvent::draw() {
     const auto dest =
         calcAlignedDrawingRect(pStreamingTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    Dune_RenderCopy(renderer, pStreamingTexture.get(), nullptr, &dest);
+    Dune_RenderCopy(dune::globals::renderer.get(), pStreamingTexture.get(), nullptr, &dest);
 
     currentFrame++;
 

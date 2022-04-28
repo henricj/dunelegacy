@@ -34,7 +34,7 @@
 
 RadarView::RadarView()
     : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME),
-      radarStaticAnimation(pGFXManager->getUIGraphic(UI_RadarAnimation)) {
+      radarStaticAnimation(dune::globals::pGFXManager->getUIGraphic(UI_RadarAnimation)) {
 
     radarSurface = sdl2::surface_ptr{SDL_CreateRGBSurfaceWithFormat(0, 128, 128, SCREEN_BPP, SCREEN_FORMAT)};
     if (radarSurface == nullptr) {
@@ -43,28 +43,34 @@ RadarView::RadarView()
 
     SDL_FillRect(radarSurface.get(), nullptr, SDL_MapRGB(radarSurface->format, 100, 50, 0));
 
-    radarTexture = sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128)};
+    radarTexture = sdl2::texture_ptr{
+        SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, 128, 128)};
 }
 
 RadarView::~RadarView() = default;
 
 int RadarView::getMapSizeX() const {
-    return currentGameMap->getSizeX();
+    return dune::globals::currentGameMap->getSizeX();
 }
 
 int RadarView::getMapSizeY() const {
-    return currentGameMap->getSizeY();
+    return dune::globals::currentGameMap->getSizeY();
 }
 
 void RadarView::draw(Point position) {
     const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
                                     RADARWIDTH, RADARHEIGHT};
 
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+
     switch (currentRadarMode) {
         case RadarMode::RadarOff:
         case RadarMode::RadarOn: {
-            const auto mapSizeX = currentGameMap->getSizeX();
-            const auto mapSizeY = currentGameMap->getSizeY();
+            auto* const map = dune::globals::currentGameMap;
+
+            const auto mapSizeX = map->getSizeX();
+            const auto mapSizeY = map->getSizeY();
 
             int scale   = 1;
             int offsetX = 0;
@@ -128,7 +134,7 @@ void RadarView::draw(Point position) {
 }
 
 void RadarView::update() {
-    if (pLocalHouse->hasRadarOn()) {
+    if (dune::globals::pLocalHouse->hasRadarOn()) {
         if (currentRadarMode != RadarMode::RadarOn && currentRadarMode != RadarMode::AnimationRadarOn
             && currentRadarMode != RadarMode::AnimationRadarOff) {
             switchRadarMode(true);
@@ -176,13 +182,17 @@ void RadarView::update() {
 }
 
 void RadarView::switchRadarMode(bool bOn) {
+    using dune::globals::soundPlayer;
+
     soundPlayer->playSound(Sound_enum::Sound_RadarNoise);
 
+    const auto house_id = dune::globals::pLocalHouse->getHouseID();
+
     if (bOn) {
-        soundPlayer->playVoice(Voice_enum::RadarActivated, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::RadarActivated, house_id);
         currentRadarMode = RadarMode::AnimationRadarOn;
     } else {
-        soundPlayer->playVoice(Voice_enum::RadarDeactivated, pLocalHouse->getHouseID());
+        soundPlayer->playVoice(Voice_enum::RadarDeactivated, house_id);
         currentRadarMode = RadarMode::AnimationRadarOff;
     }
 }
@@ -192,13 +202,13 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
     // Lock radarSurface for direct access to the pixels
     sdl2::surface_lock lock{radarSurface.get()};
 
-    auto* map = currentGameMap;
+    auto* map = dune::globals::currentGameMap;
 
     const auto radar_on =
         ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
 
     map->for_all([&](Tile& t) {
-        auto color = t.getRadarColor(currentGame.get(), pLocalHouse, radar_on);
+        auto color = t.getRadarColor(dune::globals::currentGame.get(), dune::globals::pLocalHouse, radar_on);
         color      = MapRGBA(radarSurface->format, color);
 
         uint8_t* const RESTRICT out =

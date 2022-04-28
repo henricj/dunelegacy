@@ -47,10 +47,12 @@ void SiegeTank::init() {
     assert(itemID == Unit_SiegeTank);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Siegetank_Base;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     gunGraphicID  = ObjPic_Siegetank_Gun;
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
+    turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -59,26 +61,33 @@ void SiegeTank::init() {
 SiegeTank::~SiegeTank() = default;
 
 void SiegeTank::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto zoom = dune::globals::currentZoomlevel;
+
+    const auto* const pUnitGraphic = graphic[zoom];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
-                                                      Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
+    static constexpr auto siegeTankTurretOffset =
+        std::to_array<Coord>({{8, -12}, {0, -20}, {0, -20}, {-4, -20}, {-8, -12}, {-8, -4}, {-4, -12}, {8, -4}});
 
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
-                                                            static_cast<int>(ANGLETYPE::NUM_ANGLES));
-    const auto dest2                 = calcSpriteDrawingRect(
-                        pTurretGraphic,
-                        screenborder->world2screenX(realX + siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)].x),
-                        screenborder->world2screenY(realY + siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)].y),
-                        static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[zoom];
+
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
+                                              static_cast<int>(ANGLETYPE::NUM_ANGLES));
+
+    const auto offset = siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)];
+
+    const auto dest2 = calcSpriteDrawingRect(
+        pTurretGraphic, screenborder->world2screenX(realX + offset.x), screenborder->world2screenY(realY + offset.y),
+        static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
@@ -94,8 +103,8 @@ void SiegeTank::destroy(const GameContext& context) {
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID())) {
-            screenborder->shakeScreen(18);
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+            dune::globals::screenborder->shakeScreen(18);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
         }
     }
 
@@ -103,5 +112,5 @@ void SiegeTank::destroy(const GameContext& context) {
 }
 
 void SiegeTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
 }

@@ -33,8 +33,9 @@ MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor) : pMapEditor(pMapE
         sdl2::surface_ptr{SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     SDL_FillRect(radarSurface.get(), nullptr, COLOR_BLACK);
 
-    radarTexture = sdl2::texture_ptr{
-        SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT)};
+    auto* const renderer = dune::globals::renderer.get();
+    radarTexture.reset(
+        SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, RADARWIDTH, RADARHEIGHT));
 }
 
 MapEditorRadarView::~MapEditorRadarView() = default;
@@ -51,7 +52,9 @@ void MapEditorRadarView::draw(Point position) {
     const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
                                     RADARWIDTH, RADARHEIGHT};
 
-    const MapData& map = pMapEditor->getMap();
+    const MapData& map       = pMapEditor->getMap();
+    auto* const renderer     = dune::globals::renderer.get();
+    auto* const screenborder = dune::globals::screenborder.get();
 
     int scale   = 1;
     int offsetX = 0;
@@ -66,7 +69,7 @@ void MapEditorRadarView::draw(Point position) {
     Dune_RenderCopy(renderer, radarTexture.get(), radarPosition.x, radarPosition.y);
 
     // draw viewport rect on radar
-    SDL_Rect radarRect;
+    SDL_Rect radarRect{};
     radarRect.x = (screenborder->getLeft() * map.getSizeX() * scale) / (map.getSizeX() * TILESIZE) + offsetX;
     radarRect.y = (screenborder->getTop() * map.getSizeY() * scale) / (map.getSizeY() * TILESIZE) + offsetY;
     radarRect.w =
@@ -148,8 +151,8 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             const auto pitch   = radarSurface->pitch;
 
             for (int j = 0; j < scale; j++) {
-                uint32_t* RESTRICT p = reinterpret_cast<uint32_t*>(radar_pixels + (offsetY + scale * y + j) * pitch)
-                                     + (offsetX + scale * x);
+                auto* RESTRICT p = reinterpret_cast<uint32_t*>(radar_pixels + (offsetY + scale * y + j) * pitch)
+                                 + (offsetX + scale * x);
 
                 for (int i = 0; i < scale; i++, p++) {
                     // Do not use putPixel here to avoid overhead
@@ -160,33 +163,37 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
     }
 
     for (const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
+        const auto color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(unit.house)]]);
 
         if (unit.position.x >= 0 && unit.position.x < map.getSizeX() && unit.position.y >= 0
             && unit.position.y < map.getSizeY()) {
 
+            const auto x0 = offsetX + scale * unit.position.x;
+            const auto y0 = offsetY + scale * unit.position.y;
+
             for (int i = 0; i < scale; i++) {
                 for (int j = 0; j < scale; j++) {
-                    putPixel(radarSurface.get(), offsetX + scale * unit.position.x + i,
-                             offsetY + scale * unit.position.y + j,
-                             SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(unit.house)]]));
+                    putPixel(radarSurface.get(), x0 + i, y0 + j, color);
                 }
             }
         }
     }
 
-    for (const MapEditor::Structure& structure : pMapEditor->getStructureList()) {
-        const Coord structureSize = getStructureSize(structure.itemID);
+    for (const auto& structure : pMapEditor->getStructureList()) {
+        const auto structureSize = getStructureSize(structure.itemID);
+        const auto color = SDL2RGB(dune::globals ::palette[houseToPaletteIndex[static_cast<int>(structure.house)]]);
 
         for (int y = 0; y < structureSize.y; y++) {
+            const auto y0 = offsetY + scale * (structure.position.y + y);
+
             for (int x = 0; x < structureSize.x; x++) {
 
                 if (x >= 0 && x < map.getSizeX() && y >= 0 && y < map.getSizeY()) {
+                    const auto x0 = offsetX + scale * (structure.position.x + x);
 
                     for (int i = 0; i < scale; i++) {
                         for (int j = 0; j < scale; j++) {
-                            putPixel(radarSurface.get(), offsetX + scale * (structure.position.x + x) + i,
-                                     offsetY + scale * (structure.position.y + y) + j,
-                                     SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(structure.house)]]));
+                            putPixel(radarSurface.get(), x0 + i, y0 + j, color);
                         }
                     }
                 }

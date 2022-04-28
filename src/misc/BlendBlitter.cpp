@@ -14,7 +14,7 @@ BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_R
     m |= m >> 32;
     m++;
 
-    auto& random = pGFXManager->random();
+    auto& random = dune::globals::pGFXManager->random();
 
     c = random.rand(0, static_cast<int>(m / 2 - 1)) * 2 + 1; // c is any odd number from [0;m]
     a = random.rand(0, static_cast<int>(m / 4 - 1)) * 4 + 1;

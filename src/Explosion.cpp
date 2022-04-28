@@ -50,64 +50,66 @@ Explosion::Explosion(InputStream& stream) {
 Explosion::~Explosion() = default;
 
 void Explosion::init() {
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     switch (explosionID) {
         case Explosion_Small: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSmall);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionSmall);
             numFrames = 5;
         } break;
 
         case Explosion_Medium1: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionMedium1);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionMedium1);
             numFrames = 5;
         } break;
 
         case Explosion_Medium2: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionMedium2);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionMedium2);
             numFrames = 5;
         } break;
 
         case Explosion_Large1: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionLarge1);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionLarge1);
             numFrames = 5;
         } break;
 
         case Explosion_Large2: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionLarge2);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionLarge2);
             numFrames = 5;
         } break;
 
         case Explosion_Gas: {
-            graphic   = pGFXManager->getObjPic(ObjPic_Hit_Gas, house);
+            graphic   = gfx->getObjPic(ObjPic_Hit_Gas, house);
             numFrames = 5;
         } break;
 
         case Explosion_ShellSmall: {
-            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellSmall);
+            graphic   = gfx->getObjPic(ObjPic_Hit_ShellSmall);
             numFrames = 1;
         } break;
 
         case Explosion_ShellMedium: {
-            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellMedium);
+            graphic   = gfx->getObjPic(ObjPic_Hit_ShellMedium);
             numFrames = 1;
         } break;
 
         case Explosion_ShellLarge: {
-            graphic   = pGFXManager->getObjPic(ObjPic_Hit_ShellLarge);
+            graphic   = gfx->getObjPic(ObjPic_Hit_ShellLarge);
             numFrames = 1;
         } break;
 
         case Explosion_SmallUnit: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSmallUnit);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionSmallUnit);
             numFrames = 2;
         } break;
 
         case Explosion_Flames: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionFlames);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionFlames);
             numFrames = 21;
         } break;
 
         case Explosion_SpiceBloom: {
-            graphic   = pGFXManager->getObjPic(ObjPic_ExplosionSpiceBloom);
+            graphic   = gfx->getObjPic(ObjPic_ExplosionSpiceBloom);
             numFrames = 3;
         } break;
 
@@ -127,15 +129,18 @@ void Explosion::save(OutputStream& stream) const {
 }
 
 void Explosion::blitToScreen() const {
-    const uint16_t width  = getWidth(graphic[currentZoomlevel]) / numFrames;
-    const uint16_t height = getHeight(graphic[currentZoomlevel]);
+    const auto zoom          = dune::globals::currentZoomlevel;
+    auto* const screenborder = dune::globals::screenborder.get();
+
+    const uint16_t width  = getWidth(graphic[zoom]) / numFrames;
+    const uint16_t height = getHeight(graphic[zoom]);
 
     if (screenborder->isInsideScreen(position, Coord(width, height))) {
-        const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(position.x),
+        const auto dest   = calcSpriteDrawingRect(graphic[zoom], screenborder->world2screenX(position.x),
                                                   screenborder->world2screenY(position.y), numFrames, 1, HAlign::Center,
                                                   VAlign::Center);
-        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], currentFrame, numFrames);
-        Dune_RenderCopyF(renderer, graphic[currentZoomlevel], &source, &dest);
+        const auto source = calcSpriteSourceRect(graphic[zoom], currentFrame, numFrames);
+        Dune_RenderCopyF(dune::globals::renderer.get(), graphic[zoom], &source, &dest);
     }
 }
 

@@ -44,7 +44,7 @@ void HeavyFactory::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_HeavyFactory;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 8;
     numImagesY     = 1;
     firstAnimFrame = 2;
