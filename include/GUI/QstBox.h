@@ -28,9 +28,9 @@
 #include "Window.h"
 #include <misc/SDL2pp.h>
 
-#define QSTBOX_BUTTON_INVALID (-1)
-#define QSTBOX_BUTTON1        (1)
-#define QSTBOX_BUTTON2        (2)
+inline constexpr auto QSTBOX_BUTTON_INVALID = -1;
+inline constexpr auto QSTBOX_BUTTON1        = 1;
+inline constexpr auto QSTBOX_BUTTON2        = 2;
 
 /// A simple class for a question box
 class QstBox final : public Window {
