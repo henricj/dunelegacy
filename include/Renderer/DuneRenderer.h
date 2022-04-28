@@ -3,6 +3,8 @@
 
 #include "DuneTextures.h"
 
+#include <initializer_list>
+
 #if _DEBUG
 #    include <map>
 
@@ -177,10 +179,22 @@ inline void Dune_RenderPresent(SDL_Renderer* renderer) {
     SDL_RenderPresent(renderer);
 }
 
-void DuneDrawSelectionBox(SDL_Renderer* renderer, int x, int y, int w, int h, Uint32 color = COLOR_WHITE);
+void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, float h, Uint32 color = COLOR_WHITE);
 
 inline void DuneDrawSelectionBox(SDL_Renderer* renderer, const SDL_Rect& rect, Uint32 color = COLOR_WHITE) {
     DuneDrawSelectionBox(renderer, rect.x, rect.y, rect.w, rect.h, color);
+}
+
+inline void DuneDrawSelectionBox(SDL_Renderer* renderer, const SDL_FRect& rect, Uint32 color = COLOR_WHITE) {
+    DuneDrawSelectionBox(renderer, rect.x, rect.y, rect.w, rect.h, color);
+}
+
+inline int DuneDrawLines(SDL_Renderer* renderer, std::span<SDL_FPoint> points) {
+    return SDL_RenderDrawLinesF(renderer, points.data(), points.size());
+}
+
+inline int DuneDrawLines(SDL_Renderer* renderer, std::initializer_list<const SDL_FPoint> points) {
+    return SDL_RenderDrawLinesF(renderer, std::data(points), points.size());
 }
 
 #endif // DUNERENDERER_H
