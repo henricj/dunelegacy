@@ -328,7 +328,6 @@ private:
     int getPhysicalTextHeight(unsigned FontNum) const;
 
     FontManager* fontManager_{};
-    DuneTextureOwned backgroundTile_;
 };
 
 #endif // DUNESTYLEBASE_H

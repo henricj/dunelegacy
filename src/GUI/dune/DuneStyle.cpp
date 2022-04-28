@@ -895,32 +895,22 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     if (rect.w <= 0 || rect.h <= 0)
         THROW(std::invalid_argument, "Attempting to draw an empty background!");
 
-    if (!backgroundTile_) {
-        const auto surface = dune::globals::pGFXManager->createBackgroundTile();
-
-        // SavePNG(surface.get(), "c:\\temp\\tile.png");
-
-        auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, surface.get())};
-
-        SDL_SetTextureBlendMode(texture.get(), SDL_BLENDMODE_NONE);
-
-        backgroundTile_ = DuneTextureOwned{std::move(texture)};
-    }
+    auto* tile = dune::globals::pGFXManager->getUIGraphic(UI_Background_Tile);
 
     const auto scale = 1.f / getActualScale();
 
-    const auto tile_width  = backgroundTile_.width_ * scale;
-    const auto tile_height = backgroundTile_.height_ * scale;
+    const auto tile_width  = tile->width_ * scale;
+    const auto tile_height = tile->height_ * scale;
 
     SDL_FRect dest{rect.x, rect.y, tile_width, tile_height};
 
-    SDL_SetRenderDrawColor(renderer, 200, 50, 100, 255);
+    const auto src = tile->source_.as_sdl();
 
     for (auto y = rect.y; y <= rect.y + rect.h; y += tile_height) {
         dest.y = y;
         for (auto x = rect.x; x <= rect.x + rect.w; x += tile_width) {
             dest.x = x;
-            SDL_RenderCopyF(renderer, backgroundTile_.get(), nullptr, &dest);
+            SDL_RenderCopyF(renderer, tile->texture_, &src, &dest);
         }
     }
 }
