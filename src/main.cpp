@@ -148,6 +148,7 @@ void setVideoMode(int displayIndex) {
     dune::globals::screenTexture.reset();
     dune::globals::renderer.reset();
     dune::globals::window.reset();
+
     int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
 
     auto& video = dune::globals::settings.video;
@@ -707,6 +708,14 @@ private:
     std::unique_ptr<TPtr>& pointer_;
 };
 
+struct DisplayCleanup final {
+    ~DisplayCleanup() {
+        dune::globals::screenTexture.reset();
+        dune::globals::renderer.reset();
+        dune::globals::window.reset();
+    }
+};
+
 } // namespace
 
 bool run_game(int argc, char* argv[]) {
@@ -719,6 +728,7 @@ bool run_game(int argc, char* argv[]) {
 
     do {
         { // Scope
+            DisplayCleanup display_cleanup;
             GlobalCleanup text_cleanup{dune::globals::pTextManager};
 
             if (configure_game(argc, argv, bFirstInit))
