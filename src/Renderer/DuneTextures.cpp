@@ -94,8 +94,8 @@ bool compare_surfaces(SDL_Surface* a, SDL_Surface* b) {
     const sdl2::surface_lock lock_a{a};
     const sdl2::surface_lock lock_b{b};
 
-    const auto* pa = static_cast<const char*>(lock_a.pixels());
-    const auto* pb = static_cast<const char*>(lock_b.pixels());
+    const auto* RESTRICT pa = static_cast<const char*>(lock_a.pixels());
+    const auto* RESTRICT pb = static_cast<const char*>(lock_b.pixels());
 
     if (lock_a.pitch() != lock_b.pitch())
         return false;
