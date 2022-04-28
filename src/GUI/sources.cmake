@@ -30,5 +30,6 @@ add_sources(GUI_SOURCES
 	dune/MessageTicker.cpp
 	dune/NewsTicker.cpp
 	dune/WaitingForOtherPlayers.cpp
-	ObjectInterfaces/PalaceInterface.cpp
 )
+
+include(GUI/ObjectInterfaces/sources.cmake)

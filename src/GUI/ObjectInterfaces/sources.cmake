@@ -1,0 +1,12 @@
+add_sources(GUI_SOURCES
+	BuilderInterface.cpp
+	DefaultObjectInterface.cpp
+	DefaultStructureInterface.cpp
+	MultiUnitInterface.cpp
+	PalaceInterface.cpp
+	RadarInterface.cpp
+	RefineryAndSiloInterface.cpp
+	RepairYardInterface.cpp
+	UnitInterface.cpp
+	WindTrapInterface.cpp
+)

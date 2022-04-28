@@ -20,55 +20,22 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/TextManager.h>
-
-#include <House.h>
-
 #include <GUI/Label.h>
 #include <GUI/VBox.h>
 
 class RefineryAndSiloInterface final : public DefaultStructureInterface {
 public:
-    static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RefineryAndSiloInterface>{new RefineryAndSiloInterface{context, objectID}};
-        tmp->pAllocated = true;
-        return tmp;
-    }
+    static std::unique_ptr<RefineryAndSiloInterface> create(const GameContext& context, int objectID);
 
 protected:
-    RefineryAndSiloInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const Uint32 color = SDL2RGB(
-            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
-
-        mainHBox.addWidget(&textVBox);
-
-        capacityLabel.setTextFontSize(12);
-        capacityLabel.setTextColor(color);
-        textVBox.addWidget(&capacityLabel, 0.005);
-        storedCreditsLabel.setTextFontSize(12);
-        storedCreditsLabel.setTextColor(color);
-        textVBox.addWidget(&storedCreditsLabel, 0.005);
-        textVBox.addWidget(Spacer::create(), 0.99);
-    }
+    RefineryAndSiloInterface(const GameContext& context, int objectID);
 
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override {
-        auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-        if (pObject == nullptr) {
-            return false;
-        }
-
-        const House* pOwner = pObject->getOwner();
-
-        capacityLabel.setText(" " + _("Capacity") + ": " + std::to_string(pOwner->getCapacity()));
-        storedCreditsLabel.setText(" " + _("Stored") + ": " + std::to_string(lround(pOwner->getStoredCredits())));
-
-        return DefaultStructureInterface::update();
-    }
+    bool update() override;
 
 private:
     VBox textVBox;
