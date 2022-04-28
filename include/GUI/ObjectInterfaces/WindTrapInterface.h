@@ -20,55 +20,22 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/TextManager.h>
-
-#include <House.h>
-
 #include <GUI/Label.h>
 #include <GUI/VBox.h>
 
 class WindTrapInterface final : public DefaultStructureInterface {
 public:
-    static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<WindTrapInterface>{new WindTrapInterface{context, objectID}};
-        tmp->pAllocated = true;
-        return tmp;
-    }
+    static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID);
 
 protected:
-    WindTrapInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const Uint32 color = SDL2RGB(
-            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
-
-        mainHBox.addWidget(&textVBox);
-
-        requiredEnergyLabel.setTextFontSize(12);
-        requiredEnergyLabel.setTextColor(color);
-        textVBox.addWidget(&requiredEnergyLabel, 0.005);
-        producedEnergyLabel.setTextFontSize(12);
-        producedEnergyLabel.setTextColor(color);
-        textVBox.addWidget(&producedEnergyLabel, 0.005);
-        textVBox.addWidget(Spacer::create(), 0.99);
-    }
+    WindTrapInterface(const GameContext& context, int objectID);
 
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override {
-        auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-        if (pObject == nullptr) {
-            return false;
-        }
-
-        const House* pOwner = pObject->getOwner();
-
-        requiredEnergyLabel.setText(" " + _("Required") + ": " + std::to_string(pOwner->getPowerRequirement()));
-        producedEnergyLabel.setText(" " + _("Produced") + ": " + std::to_string(pOwner->getProducedPower()));
-
-        return DefaultStructureInterface::update();
-    }
+    bool update() override;
 
 private:
     VBox textVBox;

@@ -20,55 +20,22 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/TextManager.h>
-
-#include <House.h>
-
 #include <GUI/Label.h>
 #include <GUI/VBox.h>
 
 class RadarInterface final : public DefaultStructureInterface {
 public:
-    static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID) {
-        auto tmp        = std::unique_ptr<RadarInterface>{new RadarInterface{context, objectID}};
-        tmp->pAllocated = true;
-        return tmp;
-    }
+    static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID);
 
 protected:
-    RadarInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const Uint32 color = SDL2RGB(
-            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
-
-        mainHBox.addWidget(&textVBox);
-
-        friendlyUnitsLabel.setTextFontSize(12);
-        friendlyUnitsLabel.setTextColor(color);
-        textVBox.addWidget(&friendlyUnitsLabel, 0.005);
-        enemyUnitsLabel.setTextFontSize(12);
-        enemyUnitsLabel.setTextColor(color);
-        textVBox.addWidget(&enemyUnitsLabel, 0.005);
-        textVBox.addWidget(Spacer::create(), 0.99);
-    }
+    RadarInterface(const GameContext& context, int objectID);
 
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.
         \return true = everything ok, false = the object container should be removed
     */
-    bool update() override {
-        ObjectBase* pObject = context_.objectManager.getObject(objectID);
-        if (pObject == nullptr) {
-            return false;
-        }
-
-        const auto* pOwner = pObject->getOwner();
-
-        friendlyUnitsLabel.setText(" " + _("Friend") + ": " + std::to_string(pOwner->getNumVisibleFriendlyUnits()));
-        enemyUnitsLabel.setText(" " + _("Enemy") + ": " + std::to_string(pOwner->getNumVisibleEnemyUnits()));
-
-        return DefaultStructureInterface::update();
-    }
+    bool update() override;
 
 private:
     VBox textVBox;
