@@ -194,26 +194,26 @@ Coord getStructureSize(ItemID_enum itemID) {
 
     // clang-format off
     switch(itemID) {
-        case Structure_Barracks:            return Coord(2,2);
-        case Structure_ConstructionYard:    return Coord(2,2);
-        case Structure_GunTurret:           return Coord(1,1);
-        case Structure_HeavyFactory:        return Coord(3,2);
-        case Structure_HighTechFactory:     return Coord(3,2);
-        case Structure_IX:                  return Coord(2,2);
-        case Structure_LightFactory:        return Coord(2,2);
-        case Structure_Palace:              return Coord(3,3);
-        case Structure_Radar:               return Coord(2,2);
-        case Structure_Refinery:            return Coord(3,2);
-        case Structure_RepairYard:          return Coord(3,2);
-        case Structure_RocketTurret:        return Coord(1,1);
-        case Structure_Silo:                return Coord(2,2);
-        case Structure_StarPort:            return Coord(3,3);
-        case Structure_Slab1:               return Coord(1,1);
-        case Structure_Slab4:               return Coord(2,2);
-        case Structure_Wall:                return Coord(1,1);
-        case Structure_WindTrap:            return Coord(2,2);
-        case Structure_WOR:                 return Coord(2,2);
-        default:                            return Coord(0,0);
+        case Structure_Barracks:            return {2,2};
+        case Structure_ConstructionYard:    return {2,2};
+        case Structure_GunTurret:           return {1,1};
+        case Structure_HeavyFactory:        return {3,2};
+        case Structure_HighTechFactory:     return {3,2};
+        case Structure_IX:                  return {2,2};
+        case Structure_LightFactory:        return {2,2};
+        case Structure_Palace:              return {3,3};
+        case Structure_Radar:               return {2,2};
+        case Structure_Refinery:            return {3,2};
+        case Structure_RepairYard:          return {3,2};
+        case Structure_RocketTurret:        return {1,1};
+        case Structure_Silo:                return {2,2};
+        case Structure_StarPort:            return {3,3};
+        case Structure_Slab1:               return {1,1};
+        case Structure_Slab4:               return {2,2};
+        case Structure_Wall:                return {1,1};
+        case Structure_WindTrap:            return {2,2};
+        case Structure_WOR:                 return {2,2};
+        default:                            return {0,0};
     }
     // clang-format on
 }
