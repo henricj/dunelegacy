@@ -26,7 +26,8 @@
 #include <SDL2/SDL.h>
 
 GFXManager::GFXManager()
-    : random_{RandomFactory{}.create("UI")}, duneTextures{DuneTextures::create(renderer, &surfaceLoader)} {
+    : random_{RandomFactory{}.create("UI")}, duneTextures{
+                                                 DuneTextures::create(dune::globals::renderer.get(), &surfaceLoader)} {
     initialize_cursors();
 }
 

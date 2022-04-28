@@ -62,7 +62,8 @@ Intro::Intro() {
     pHarkonnen     = create_wsafile("INTRO8A.WSA", "INTRO8B.WSA", "INTRO8C.WSA");
     pDestroyedTank = create_wsafile("INTRO5.WSA");
 
-    const IndexedTextFile intro_text{pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
+    const IndexedTextFile intro_text{
+        dune::globals::pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
 
     wind            = getChunkFromFile("WIND2BP.VOC");
     carryallLanding = getChunkFromFile("CLANK.VOC");
@@ -83,7 +84,7 @@ Intro::Intro() {
     blowup1 = getChunkFromFile("BLOWUP1.VOC");
     blowup2 = getChunkFromFile("BLOWUP2.VOC");
 
-    const bool bEnableVoice = settings.general.language == "en";
+    const bool bEnableVoice = dune::globals::settings.general.language == "en";
     if (bEnableVoice) {
         // Load english voice
         static_assert(VoiceFileNames.size() == std::tuple_size_v<decltype(voice)>);
@@ -96,6 +97,8 @@ Intro::Intro() {
             i = nullptr;
         }
     }
+
+    const auto& palette = dune::globals::palette;
 
     Uint32 color          = SDL2RGB(palette[PALCOLOR_HARKONNEN + 1]);
     Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);

@@ -34,8 +34,9 @@ MessageTicker::MessageTicker() : timer(-MESSAGETIME) {
 MessageTicker::~MessageTicker() = default;
 
 void MessageTicker::addMessage(const std::string& msg) {
-    messageTextures.emplace(
-        SDL_CreateTextureFromSurface(renderer, pFontManager->getFont(14)->createTextSurface(msg, COLOR_BLACK).get()));
+    const auto surface = dune::globals::pFontManager->getFont(14)->createTextSurface(msg, COLOR_BLACK);
+
+    messageTextures.emplace(SDL_CreateTextureFromSurface(dune::globals::renderer.get(), surface.get()));
 }
 
 void MessageTicker::draw(Point position) {
@@ -75,5 +76,7 @@ void MessageTicker::draw(Point position) {
 
     textLocation.w = cut.w = getWidth(tex);
     textLocation.h = cut.h = getHeight(tex) - cut.y;
+
+    auto* const renderer = dune::globals::renderer.get();
     Dune_RenderCopy(renderer, tex, &cut, &textLocation);
 }

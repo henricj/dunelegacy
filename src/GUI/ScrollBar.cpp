@@ -112,7 +112,7 @@ void ScrollBar::draw(Point position) {
     updateTextures();
 
     if (pBackground)
-        pBackground.draw(renderer, position.x, position.y);
+        pBackground.draw(dune::globals::renderer.get(), position.x, position.y);
 
     arrow1.draw(position);
     auto p = position;

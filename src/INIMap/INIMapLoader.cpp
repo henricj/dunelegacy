@@ -45,8 +45,8 @@ std::unique_ptr<Map> INIMapLoader::load() {
     loadMap();
 
     // TODO: Facepalm.  globals...
-    currentGameMap = map.get();
-    auto cleanup   = gsl::finally([] { currentGameMap = nullptr; });
+    dune::globals::currentGameMap = map.get();
+    auto cleanup                  = gsl::finally([] { dune::globals::currentGameMap = nullptr; });
 
     const GameContext context{*pGame, *map, pGame->getObjectManager()};
 
@@ -341,7 +341,7 @@ void INIMapLoader::loadMap() {
         map->createSandRegions();
     }
 
-    screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
+    dune::globals::screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 }
 
 /**
@@ -465,8 +465,8 @@ void INIMapLoader::loadHouses(const GameContext& context) {
             if (((pGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer)
                  && (dynamic_cast<HumanPlayer*>(pPlayer.get()) != nullptr))
                 || (playerInfo.playerName == pGame->getLocalPlayerName())) {
-                pLocalHouse  = pNewHouse;
-                pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
+                dune::globals::pLocalHouse  = pNewHouse;
+                dune::globals::pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
 
             pNewHouse->addPlayer(std::move(pPlayer));
@@ -921,7 +921,7 @@ void INIMapLoader::loadView(const GameContext& context) {
                        "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
             context.game.setupView(context);
         } else {
-            screenborder->setNewScreenCenter(tacticalPos * TILESIZE);
+            dune::globals::screenborder->setNewScreenCenter(tacticalPos * TILESIZE);
         }
     } else {
         context.game.setupView(context);
@@ -972,8 +972,8 @@ House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE hous
             auto pPlayer = pPlayerData->create(context, pNewHouse.get(), playerInfo.playerName);
 
             if (playerInfo.playerName == pGame->getLocalPlayerName()) {
-                pLocalHouse  = pNewHouse.get();
-                pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
+                dune::globals::pLocalHouse  = pNewHouse.get();
+                dune::globals::pLocalPlayer = dynamic_cast<HumanPlayer*>(pPlayer.get());
             }
 
             pNewHouse->addPlayer(std::move(pPlayer));

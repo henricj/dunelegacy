@@ -62,9 +62,11 @@ void Carryall::init() {
     assert(itemID == Unit_Carryall);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Carryall;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    shadowGraphic = pGFXManager->getObjPic(ObjPic_CarryallShadow, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    shadowGraphic = gfx->getObjPic(ObjPic_CarryallShadow, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 2;
@@ -200,7 +202,7 @@ void Carryall::checkPos(const GameContext& context) {
 }
 
 void Carryall::pre_deployUnits(const GameContext& context) {
-    soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
 
     currentMaxSpeed = 0;
     setSpeeds(context);

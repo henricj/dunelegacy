@@ -105,8 +105,9 @@ MultiPlayerMenu::MultiPlayerMenu() {
 
     // Start Network Manager
     sdl2::log_info("Starting network...");
-    pNetworkManager = std::make_unique<NetworkManager>(settings.network.serverPort, settings.network.metaServer);
-    LANGameFinderAndAnnouncer* pLANGFAA = pNetworkManager->getLANGameFinderAndAnnouncer();
+    const auto& network            = dune::globals::settings.network;
+    dune::globals::pNetworkManager = std::make_unique<NetworkManager>(network.serverPort, network.metaServer);
+    LANGameFinderAndAnnouncer* const pLANGFAA = dune::globals::pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
     pLANGFAA->setOnUpdateServer([this](auto interactive) { onUpdateLANServer(interactive); });
     pLANGFAA->setOnRemoveServer([this](auto interactive) { onRemoveLANServer(interactive); });
@@ -117,7 +118,7 @@ MultiPlayerMenu::MultiPlayerMenu() {
 
 MultiPlayerMenu::~MultiPlayerMenu() {
     sdl2::log_info("Stopping network...");
-    pNetworkManager.reset();
+    dune::globals::pNetworkManager.reset();
 }
 
 /**
@@ -146,19 +147,23 @@ void MultiPlayerMenu::onConnect() {
     if (!parseString(port_text, port))
         THROW(std::invalid_argument, "NetworkManager: Invalid port '%s'!", port_text);
 
-    pNetworkManager->setOnReceiveGameInfo(
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+
+    network_manager->setOnReceiveGameInfo(
         [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });
-    pNetworkManager->setOnPeerDisconnected(
+    network_manager->setOnPeerDisconnected(
         [this](auto playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
-    pNetworkManager->connect(hostname, port, settings.general.playerName);
+    network_manager->connect(hostname, port, dune::globals::settings.general.playerName);
 
     openWindow(MsgBox::create(_("Connecting...")));
 }
 
 void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if (bHost) {
-        pNetworkManager->setOnReceiveGameInfo(std::function<void(const GameInitSettings&, const ChangeEventList&)>());
-        pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
+        auto* const network_manager = dune::globals::pNetworkManager.get();
+
+        network_manager->setOnReceiveGameInfo(std::function<void(const GameInitSettings&, const ChangeEventList&)>());
+        network_manager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
         closeChildWindow();
 
         showDisconnectMessageBox(cause);
@@ -170,11 +175,13 @@ void MultiPlayerMenu::onJoin() {
     if (selectedEntry >= 0) {
         const auto* pGameServerInfo = static_cast<GameServerInfo*>(gameList.getEntryPtrData(selectedEntry));
 
-        pNetworkManager->setOnReceiveGameInfo(
+        auto* const network_manager = dune::globals::pNetworkManager.get();
+
+        network_manager->setOnReceiveGameInfo(
             [this](const auto& settings, const auto& events) { onReceiveGameInfo(settings, events); });
-        pNetworkManager->setOnPeerDisconnected(
+        network_manager->setOnPeerDisconnected(
             [this](auto playername, auto host, auto cause) { onPeerDisconnected(playername, host, cause); });
-        pNetworkManager->connect(pGameServerInfo->serverAddress, settings.general.playerName);
+        network_manager->connect(pGameServerInfo->serverAddress, dune::globals::settings.general.playerName);
 
         openWindow(MsgBox::create(_("Connecting...")));
     }
@@ -187,7 +194,7 @@ void MultiPlayerMenu::onQuit() {
 }
 
 void MultiPlayerMenu::onGameTypeChange(int buttonID) {
-    MetaServerClient* pMetaServerClient = pNetworkManager->getMetaServerClient();
+    MetaServerClient* pMetaServerClient = dune::globals::pNetworkManager->getMetaServerClient();
     if (buttonID == 0 && internetGamesButton.getToggleState()) {
         // LAN Games
 
@@ -346,7 +353,7 @@ void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings
                                         const ChangeEventList& changeEventList) {
     closeChildWindow();
 
-    pNetworkManager->setOnPeerDisconnected(std::function<void(const std::string&, bool, int)>());
+    dune::globals::pNetworkManager->setOnPeerDisconnected({});
 
     auto pCustomGamePlayers = std::make_unique<CustomGamePlayers>(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);

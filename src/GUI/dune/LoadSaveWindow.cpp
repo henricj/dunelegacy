@@ -41,7 +41,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
       preselectedFile(preselectedFile), color(color) {
 
     // set up window
-    const auto* pBackground = pGFXManager->getUIGraphic(UI_LoadSaveWindow);
+    const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_LoadSaveWindow);
     setBackground(pBackground);
 
     Window::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));

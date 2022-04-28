@@ -25,6 +25,8 @@
 inline constexpr auto MENU_QUIT_DEFAULT = -1;
 
 class MenuBase : public Window {
+    using parent = Window;
+
 protected:
     MenuBase();
 

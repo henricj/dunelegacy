@@ -55,7 +55,7 @@ public:
 
         if (isVisible()) {
             const SDL_Rect dest = calcDrawingRect(tex, position.x, position.y);
-            Dune_RenderCopy(renderer, tex, nullptr, &dest);
+            Dune_RenderCopy(dune::globals::renderer.get(), tex, nullptr, &dest);
         }
     }
 

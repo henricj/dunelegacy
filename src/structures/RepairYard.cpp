@@ -57,7 +57,7 @@ void RepairYard::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_RepairYard;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 10;
     numImagesY     = 1;
     firstAnimFrame = 2;
@@ -69,8 +69,7 @@ RepairYard::~RepairYard() = default;
 void RepairYard::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
     if (repairingAUnit) {
         unBook();
-        auto* const unit = repairUnit.getUnitPointer();
-        if (unit)
+        if (auto* const unit = repairUnit.getUnitPointer())
             unit->destroy(context);
     }
 
@@ -86,7 +85,7 @@ void RepairYard::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> RepairYard::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return RepairYardInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -119,8 +118,8 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
 
     repairUnit.pointTo(NONE_ID);
 
-    if (getOwner() == pLocalHouse) {
-        soundPlayer->playVoice(Voice_enum::VehicleRepaired, getOwner()->getHouseID());
+    if (getOwner() == dune::globals::pLocalHouse) {
+        dune::globals::soundPlayer->playVoice(Voice_enum::VehicleRepaired, getOwner()->getHouseID());
     }
 }
 
@@ -162,7 +161,7 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
         // find carryall
         Carryall* pCarryall = nullptr;
         if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
-            for (auto* pUnit : unitList) {
+            for (auto* pUnit : dune::globals::unitList) {
                 if (pUnit->getOwner() != owner)
                     continue;
 

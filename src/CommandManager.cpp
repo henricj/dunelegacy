@@ -31,18 +31,18 @@ CommandManager::CommandManager() = default;
 CommandManager::~CommandManager() = default;
 
 void CommandManager::addCommand(const Command& cmd) {
-    auto CycleNumber = currentGame->getGameCycleCount();
+    auto CycleNumber = dune::globals::currentGame->getGameCycleCount();
 
-    if (pNetworkManager != nullptr) {
+    if (dune::globals::pNetworkManager != nullptr) {
         CycleNumber += networkCycleBuffer;
     }
     addCommand(cmd, CycleNumber);
 }
 
 void CommandManager::addCommand(Command&& cmd) {
-    auto CycleNumber = currentGame->getGameCycleCount();
+    auto CycleNumber = dune::globals::currentGame->getGameCycleCount();
 
-    if (pNetworkManager != nullptr) {
+    if (dune::globals::pNetworkManager != nullptr) {
         CycleNumber += networkCycleBuffer;
     }
     addCommand(std::move(cmd), CycleNumber);
@@ -67,18 +67,22 @@ void CommandManager::load(InputStream& stream) {
 }
 
 void CommandManager::update() {
-    if (pNetworkManager == nullptr)
+    auto* const network_manager = dune::globals::pNetworkManager.get();
+    auto* const game            = dune::globals::currentGame.get();
+
+    if (network_manager == nullptr)
         return;
 
     CommandList commandList;
-    for (uint32_t i = std::max(static_cast<int>(currentGame->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
-         i < currentGame->getGameCycleCount() + networkCycleBuffer; i++) {
+
+    for (uint32_t i = std::max(static_cast<int>(game->getGameCycleCount()) - MILLI2CYCLES(2500), 0);
+         i < game->getGameCycleCount() + networkCycleBuffer; i++) {
 
         std::vector<Command> commands;
 
         if (i < timeslot.size()) {
             for (auto& command : timeslot[i]) {
-                if (command.getPlayerID() == pLocalPlayer->getPlayerID()) {
+                if (command.getPlayerID() == dune::globals::pLocalPlayer->getPlayerID()) {
                     commands.push_back(command);
                 }
             }
@@ -87,11 +91,11 @@ void CommandManager::update() {
         commandList.commandList.emplace_back(i, std::move(commands));
     }
 
-    pNetworkManager->sendCommandList(commandList);
+    network_manager->sendCommandList(commandList);
 }
 
 void CommandManager::addCommandList(const std::string& playername, const CommandList& commandList) {
-    auto* const pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername));
+    auto* const pPlayer = dynamic_cast<HumanPlayer*>(dune::globals::currentGame->getPlayerByName(playername));
     if (pPlayer == nullptr) {
         return;
     }

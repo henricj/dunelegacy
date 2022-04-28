@@ -52,14 +52,16 @@ void Ornithopter::init() {
     assert(itemID == Unit_Ornithopter);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Ornithopter;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    shadowGraphic = pGFXManager->getObjPic(ObjPic_OrnithopterShadow, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    shadowGraphic = gfx->getObjPic(ObjPic_OrnithopterShadow, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 3;
 
-    currentMaxSpeed = currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    currentMaxSpeed = dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
 }
 
 Ornithopter::~Ornithopter() = default;
@@ -96,16 +98,16 @@ bool Ornithopter::canAttack(const ObjectBase* object) const {
 
 void Ornithopter::destroy(const GameContext& context) {
     // place wreck
-    if (currentGameMap->tileExists(location)) {
-        auto* pTile = currentGameMap->getTile(location);
+    auto& map = context.map;
+
+    if (auto* pTile = map.tryGetTile(location.x, location.y))
         pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
-    }
 
     parent::destroy(context);
 }
 
 void Ornithopter::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
 }
 
 bool Ornithopter::canPassTile(const Tile* pTile) const {
@@ -115,7 +117,7 @@ bool Ornithopter::canPassTile(const Tile* pTile) const {
 FixPoint Ornithopter::getDestinationAngle() const {
     FixPoint angle;
 
-    if (timeLastShot > 0 && (currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
+    if (timeLastShot > 0 && (dune::globals::currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
         // we already shot at target and now want to fly in the opposite direction
         angle = destinationAngleRad(destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2,
                                     realX, realY);

@@ -43,7 +43,7 @@ void ConstructionYard::init() {
     owner->incrementStructures(itemID);
 
     graphicID  = ObjPic_ConstructionYard;
-    graphic    = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX = 4;
     numImagesY = 1;
 

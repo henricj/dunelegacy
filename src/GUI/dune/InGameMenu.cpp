@@ -33,7 +33,7 @@
 
 InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMultiplayer(bMultiplayer), color(color) {
     // set up window
-    const auto* pBackground = pGFXManager->getUIGraphic(UI_GameMenu);
+    const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_GameMenu);
     setBackground(pBackground);
 
     InGameMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -100,7 +100,7 @@ InGameMenu::~InGameMenu() = default;
 bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
     switch (key.keysym.sym) {
         case SDLK_ESCAPE: {
-            currentGame->resumeGame();
+            dune::globals::currentGame->resumeGame();
         } break;
 
         case SDLK_RETURN:
@@ -111,7 +111,7 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 
         case SDLK_TAB:
             if (SDL_GetModState() & KMOD_ALT) {
-                SDL_MinimizeWindow(window);
+                SDL_MinimizeWindow(dune::globals::window.get());
             }
             break;
 
@@ -122,8 +122,9 @@ bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void InGameMenu::onChildWindowClose(Window* pChildWindow) {
-    const auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
-    if (pLoadSaveWindow != nullptr) {
+    auto* const game = dune::globals::currentGame.get();
+
+    if (const auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow)) {
         auto FileName    = pLoadSaveWindow->getFilename();
         const bool bSave = pLoadSaveWindow->isSaveWindow();
 
@@ -131,45 +132,42 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
             if (!bSave) {
                 // load window
                 try {
-                    currentGame->setNextGameInitSettings(GameInitSettings(std::move(FileName)));
+                    game->setNextGameInitSettings(GameInitSettings(std::move(FileName)));
                 } catch (std::exception& e) {
                     // most probably the savegame file is not valid or from a different dune legacy version
                     openWindow(MsgBox::create(e.what()));
                 }
 
-                currentGame->resumeGame();
-                currentGame->quitGame();
+                game->resumeGame();
+                game->quitGame();
 
             } else {
                 // save window
-                currentGame->saveGame(FileName);
+                game->saveGame(FileName);
 
-                currentGame->resumeGame();
+                game->resumeGame();
             }
         }
-    } else {
-        auto* const pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-        if (pQstBox != nullptr) {
-            if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
-                if (pQstBox->getText() == _("Do you really want to quit this game?")) {
-                    // quit
-                    currentGame->quitGame();
-                } else {
-                    // restart
-                    // set new current init settings as init info for next game
-                    currentGame->setNextGameInitSettings(currentGame->getGameInitSettings());
+    } else if (auto* const pQstBox = dynamic_cast<QstBox*>(pChildWindow)) {
+        if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
+            if (pQstBox->getText() == _("Do you really want to quit this game?")) {
+                // quit
+                game->quitGame();
+            } else {
+                // restart
+                // set new current init settings as init info for next game
+                game->setNextGameInitSettings(game->getGameInitSettings());
 
-                    // quit current game
-                    currentGame->resumeGame();
-                    currentGame->quitGame();
-                }
+                // quit current game
+                game->resumeGame();
+                game->quitGame();
             }
         }
     }
 }
 
 void InGameMenu::onResume() {
-    currentGame->resumeGame();
+    dune::globals::currentGame->resumeGame();
 }
 
 void InGameMenu::onSettings() {

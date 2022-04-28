@@ -48,9 +48,9 @@
 MapEditor::MapEditor() {
     selectedMapItemCoord.invalidate();
 
-    currentZoomlevel = settings.video.preferredZoomLevel;
+    dune::globals::currentZoomlevel = dune::globals::settings.video.preferredZoomLevel;
 
-    const auto* const gfx = pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     sideBarPos = as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top));
     topBarPos  = as_rect(calcAlignedDrawingRect(gfx->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top));
@@ -60,7 +60,7 @@ MapEditor::MapEditor() {
     SDL_FRect gameBoardRect{0, static_cast<float>(topBarPos.h), static_cast<float>(sideBarPos.x),
                             static_cast<float>(getRendererHeight() - topBarPos.h - bottomBarPos.h)};
 
-    screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
+    dune::globals::screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
     setMap(MapData(128, 128, Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);
@@ -71,7 +71,7 @@ MapEditor::MapEditor() {
 }
 
 MapEditor::~MapEditor() {
-    screenborder.reset();
+    dune::globals::screenborder.reset();
 }
 
 std::string MapEditor::generateMapname() {
@@ -95,7 +95,7 @@ void MapEditor::RunEditor() {
         processInput();
         drawScreen();
 
-        if (settings.video.frameLimit) {
+        if (dune::globals::settings.video.frameLimit) {
             const auto frameDuration = dune::dune_clock::now() - frameStart;
             const auto frameTime     = dune::as_milliseconds(frameDuration);
 
@@ -110,7 +110,7 @@ void MapEditor::setMap(const MapData& mapdata, const MapInfo& newMapInfo) {
     map     = mapdata;
     mapInfo = newMapInfo;
 
-    screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
+    dune::globals::screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
     // reset tools
     selectedUnitID      = INVALID;
@@ -977,12 +977,14 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
 }
 
 void MapEditor::drawScreen() {
+    auto* const renderer = dune::globals::renderer.get();
+
     // clear whole screen
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // the actuall map
-    drawMap(screenborder.get(), false);
+    // the actual map
+    drawMap(dune::globals::screenborder.get(), false);
 
     pInterface->draw(Point(0, 0));
     pInterface->drawOverlay(Point(0, 0));
@@ -996,13 +998,18 @@ void MapEditor::drawScreen() {
 void MapEditor::processInput() {
     SDL_Event event;
 
+    auto* const screenborder = dune::globals::screenborder.get();
+
     while (SDL_PollEvent(&event)) {
 
         // first of all update mouse
         if (event.type == SDL_MOUSEMOTION) {
-            const SDL_MouseMotionEvent* mouse = &event.motion;
-            drawnMouseX                       = std::max(0, std::min(mouse->x, settings.video.width - 1));
-            drawnMouseY                       = std::max(0, std::min(mouse->y, settings.video.height - 1));
+            const auto& mouse = event.motion;
+
+            const auto& video = dune::globals::settings.video;
+
+            dune::globals::drawnMouseX = std::max(0, std::min(mouse.x, video.width - 1));
+            dune::globals::drawnMouseY = std::max(0, std::min(mouse.y, video.height - 1));
         }
 
         if (pInterface->hasChildWindow()) {
@@ -1020,27 +1027,27 @@ void MapEditor::processInput() {
 
                         case SDLK_TAB: {
                             if (SDL_GetModState() & KMOD_ALT) {
-                                SDL_MinimizeWindow(window);
+                                SDL_MinimizeWindow(dune::globals::window.get());
                             }
                         } break;
 
                         case SDLK_F1: {
-                            Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel     = 0;
+                            Coord oldCenterCoord            = screenborder->getCurrentCenter();
+                            dune::globals::currentZoomlevel = 0;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
 
                         case SDLK_F2: {
-                            Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel     = 1;
+                            Coord oldCenterCoord            = screenborder->getCurrentCenter();
+                            dune::globals::currentZoomlevel = 1;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
 
                         case SDLK_F3: {
-                            Coord oldCenterCoord = screenborder->getCurrentCenter();
-                            currentZoomlevel     = 2;
+                            Coord oldCenterCoord            = screenborder->getCurrentCenter();
+                            dune::globals::currentZoomlevel = 2;
                             screenborder->adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
                             screenborder->setNewScreenCenter(oldCenterCoord);
                         } break;
@@ -1154,14 +1161,15 @@ void MapEditor::processInput() {
                 } break;
 
                 case SDL_MOUSEMOTION: {
-                    pInterface->handleMouseMovement(drawnMouseX, drawnMouseY);
+                    pInterface->handleMouseMovement(dune::globals::drawnMouseX, dune::globals::drawnMouseY);
 
                     if (bLeftMousePressed) {
-                        if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+                        if (screenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX,
+                                                                 dune::globals::drawnMouseY)) {
                             // if mouse is not over side bar
 
-                            const int xpos = screenborder->screen2MapX(drawnMouseX);
-                            const int ypos = screenborder->screen2MapY(drawnMouseY);
+                            const int xpos = screenborder->screen2MapX(dune::globals::drawnMouseX);
+                            const int ypos = screenborder->screen2MapY(dune::globals::drawnMouseY);
 
                             if ((xpos != lastTerrainEditPosX) || (ypos != lastTerrainEditPosY)) {
                                 performMapEdit(xpos, ypos, true);
@@ -1172,10 +1180,11 @@ void MapEditor::processInput() {
 
                 case SDL_MOUSEWHEEL: {
                     if (event.wheel.y != 0) {
-                        if (screenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+                        if (screenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX,
+                                                                 dune::globals::drawnMouseY)) {
                             // if mouse is not over side bar
-                            const int xpos = screenborder->screen2MapX(drawnMouseX);
-                            const int ypos = screenborder->screen2MapY(drawnMouseY);
+                            const int xpos = screenborder->screen2MapX(dune::globals::drawnMouseX);
+                            const int ypos = screenborder->screen2MapY(dune::globals::drawnMouseY);
 
                             for (const Unit& unit : units) {
                                 const Coord position = unit.position;
@@ -1190,7 +1199,8 @@ void MapEditor::processInput() {
                             }
                         }
 
-                        pInterface->handleMouseWheel(drawnMouseX, drawnMouseY, (event.wheel.y > 0));
+                        pInterface->handleMouseWheel(dune::globals::drawnMouseX, dune::globals::drawnMouseY,
+                                                     (event.wheel.y > 0));
                     }
                 } break;
 
@@ -1314,12 +1324,14 @@ void MapEditor::processInput() {
         }
     }
 
-    if ((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(window) & SDL_WINDOW_INPUT_FOCUS)) {
+    if ((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_INPUT_FOCUS)) {
         const uint8_t* keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode  = (drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-        scrollLeftMode  = (drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode = (drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
-        scrollUpMode    = (drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+        scrollDownMode =
+            (dune::globals::drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
+        scrollLeftMode = (dune::globals::drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
+        scrollRightMode =
+            (dune::globals::drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
+        scrollUpMode = (dune::globals::drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
 
         if (scrollLeftMode && scrollRightMode) {
             // do nothing
@@ -1346,11 +1358,12 @@ void MapEditor::processInput() {
 
 void MapEditor::drawCursor() {
 
-    if (!(SDL_GetWindowFlags(window) & SDL_WINDOW_MOUSE_FOCUS)) {
+    if (!(SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_MOUSE_FOCUS))
         return;
-    }
 
-    const auto* const gfx = pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
+    using dune::globals::drawnMouseX;
+    using dune::globals::drawnMouseY;
 
     const DuneTexture* pCursor = nullptr;
     SDL_FRect dest{};
@@ -1358,30 +1371,31 @@ void MapEditor::drawCursor() {
     if (scrollLeftMode || scrollRightMode || scrollUpMode || scrollDownMode) {
         if (scrollLeftMode && !scrollRightMode) {
             pCursor = gfx->getUIGraphic(UI_CursorLeft);
-            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Left, VAlign::Top);
+            dest    = calcDrawingRect(pCursor, drawnMouseX, dune::globals::drawnMouseY - 5, HAlign::Left, VAlign::Top);
         } else if (scrollRightMode && !scrollLeftMode) {
             pCursor = gfx->getUIGraphic(UI_CursorRight);
-            dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY - 5, HAlign::Center, VAlign::Top);
+            dest = calcDrawingRect(pCursor, drawnMouseX, dune::globals::drawnMouseY - 5, HAlign::Center, VAlign::Top);
         }
 
         if (pCursor == nullptr) {
             if (scrollUpMode && !scrollDownMode) {
                 pCursor = gfx->getUIGraphic(UI_CursorUp);
-                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Top);
+                dest = calcDrawingRect(pCursor, drawnMouseX - 5, dune::globals::drawnMouseY, HAlign::Left, VAlign::Top);
             } else if (scrollDownMode && !scrollUpMode) {
                 pCursor = gfx->getUIGraphic(UI_CursorDown);
-                dest    = calcDrawingRect(pCursor, drawnMouseX - 5, drawnMouseY, HAlign::Left, VAlign::Center);
+                dest =
+                    calcDrawingRect(pCursor, drawnMouseX - 5, dune::globals::drawnMouseY, HAlign::Left, VAlign::Center);
             } else {
                 pCursor = gfx->getUIGraphic(UI_CursorNormal);
-                dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+                dest    = calcDrawingRect(pCursor, drawnMouseX, dune::globals::drawnMouseY, HAlign::Left, VAlign::Top);
             }
         }
     } else {
         pCursor = gfx->getUIGraphic(UI_CursorNormal);
-        dest    = calcDrawingRect(pCursor, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Top);
+        dest    = calcDrawingRect(pCursor, drawnMouseX, dune::globals::drawnMouseY, HAlign::Left, VAlign::Top);
 
-        if ((drawnMouseX < sideBarPos.x) && (drawnMouseY > topBarPos.h) && (currentMirrorMode != MirrorModeNone)
-            && (!pInterface->hasChildWindow())) {
+        if ((drawnMouseX < sideBarPos.x) && (dune::globals::drawnMouseY > topBarPos.h)
+            && (currentMirrorMode != MirrorModeNone) && (!pInterface->hasChildWindow())) {
 
             const DuneTexture* pMirrorIcon = nullptr;
             switch (currentMirrorMode) {
@@ -1393,23 +1407,23 @@ void MapEditor::drawCursor() {
             }
 
             if (pMirrorIcon)
-                pMirrorIcon->draw(renderer, drawnMouseX + 5, drawnMouseY + 5);
+                pMirrorIcon->draw(dune::globals::renderer.get(), drawnMouseX + 5, dune::globals::drawnMouseY + 5);
         }
     }
 
     if (pCursor)
-        pCursor->draw(renderer, dest.x, dest.y);
+        pCursor->draw(dune::globals::renderer.get(), dest.x, dest.y);
 }
 
 TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
     TERRAINTYPE terrainType = map(x, y);
 
     if (map(x, y) == Terrain_Sand) {
-        if (std::ranges::find(spiceFields, Coord(x, y)) != spiceFields.end()) {
+        if (std::ranges::find(spiceFields, Coord{x, y}) != spiceFields.end()) {
             terrainType = Terrain_ThickSpice;
-        } else if (std::ranges::find_if(spiceFields, [center = Coord(x, y)](
-                                                         const auto& coord) { return distanceFrom(center, coord) < 5; })
-                   != spiceFields.end()) {
+        } else if (std::ranges::any_of(spiceFields, [center = Coord(x, y)](const auto& coord) {
+                       return distanceFrom(center, coord) < 5;
+                   })) {
             terrainType = Terrain_Spice;
         }
     }
@@ -1438,8 +1452,10 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     BottomRightTile.x = std::min(map.getSizeX() - 1, BottomRightTile.x + 1);
     BottomRightTile.y = std::min(map.getSizeY() - 1, BottomRightTile.y + 1);
 
+    const auto zoom = dune::globals::currentZoomlevel;
+
     // Load Terrain Surface
-    const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+    const auto* const terrainSprite = dune::globals::pGFXManager->getZoomedObjPic(ObjPic_Terrain, zoom);
 
     /* draw ground */
     for (int y = TopLeftTile.y; y <= BottomRightTile.y; y++) {
@@ -1536,25 +1552,28 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
 
             // draw map[x][y]
-            SDL_Rect source        = {(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize,
-                                      (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
-            SDL_FRect drawLocation = {(pScreenborder->world2screenX(x * TILESIZE)),
-                                      (pScreenborder->world2screenY(y * TILESIZE)), static_cast<float>(zoomedTilesize),
-                                      static_cast<float>(zoomedTilesize)};
-            Dune_RenderCopyF(renderer, terrainSprite, &source, &drawLocation);
+            const SDL_Rect source{(tile % NUM_TERRAIN_TILES_X) * zoomedTilesize,
+                                  (tile / NUM_TERRAIN_TILES_X) * zoomedTilesize, zoomedTilesize, zoomedTilesize};
+            const SDL_FRect drawLocation{(pScreenborder->world2screenX(x * TILESIZE)),
+                                         (pScreenborder->world2screenY(y * TILESIZE)),
+                                         static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
+            Dune_RenderCopyF(dune::globals::renderer.get(), terrainSprite, &source, &drawLocation);
         }
     }
 
     std::vector<int> selectedStructures = getMirrorStructures(selectedStructureID);
 
-    for (const Structure& structure : structures) {
+    auto* const gfx      = dune::globals::pGFXManager.get();
+    auto* const renderer = dune::globals::renderer.get();
+
+    for (const auto& structure : structures) {
 
         Coord position = structure.position;
 
         SDL_Rect selectionDest;
         if (structure.itemID == Structure_Slab1) {
             // Load Terrain sprite
-            const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const auto* const terrainSprite = gfx->getZoomedObjPic(ObjPic_Terrain, zoom);
 
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                zoomedTilesize, zoomedTilesize};
@@ -1568,7 +1587,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                      static_cast<int>(dest.h)};
         } else if (structure.itemID == Structure_Slab4) {
             // Load Terrain Surface
-            const auto* const terrainSprite = pGFXManager->getZoomedObjPic(ObjPic_Terrain, currentZoomlevel);
+            const auto* const terrainSprite = gfx->getZoomedObjPic(ObjPic_Terrain, zoom);
 
             for (int y = position.y; y < position.y + 2; y++) {
                 for (int x = position.x; x < position.x + 2; x++) {
@@ -1640,12 +1659,12 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
 
             // Load Wall texture
-            const auto* const WallSprite = pGFXManager->getZoomedObjPic(ObjPic_Wall, currentZoomlevel);
+            const auto* const WallSprite = gfx->getZoomedObjPic(ObjPic_Wall, zoom);
 
-            SDL_Rect source = {maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
-            SDL_FRect dest  = {(pScreenborder->world2screenX(position.x * TILESIZE)),
-                               (pScreenborder->world2screenY(position.y * TILESIZE)), static_cast<float>(zoomedTilesize),
-                               static_cast<float>(zoomedTilesize)};
+            const SDL_Rect source{maketile * zoomedTilesize, 0, zoomedTilesize, zoomedTilesize};
+            const SDL_FRect dest{(pScreenborder->world2screenX(position.x * TILESIZE)),
+                                 (pScreenborder->world2screenY(position.y * TILESIZE)),
+                                 static_cast<float>(zoomedTilesize), static_cast<float>(zoomedTilesize)};
 
             Dune_RenderCopyF(renderer, WallSprite, &source, &dest);
 
@@ -1678,7 +1697,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             }
             // clang-format on
 
-            const auto* ObjectSprite = pGFXManager->getZoomedObjPic(objectPic, structure.house, currentZoomlevel);
+            const auto* ObjectSprite = gfx->getZoomedObjPic(objectPic, structure.house, zoom);
 
             Coord frameSize = world2zoomedWorld(getStructureSize(structure.itemID) * TILESIZE);
 
@@ -1706,63 +1725,66 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const Coord& position = unit.position;
 
-        static constexpr Coord tankTurretOffset[] = {Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0),
-                                                     Coord(0, 0), Coord(0, 0), Coord(0, 0), Coord(0, 0)};
+        static constexpr auto tankTurretOffset =
+            std::to_array<Coord>({{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}});
 
-        static constexpr Coord siegeTankTurretOffset[] = {Coord(8, -12),  Coord(0, -20), Coord(0, -20),  Coord(-4, -20),
-                                                          Coord(-8, -12), Coord(-8, -4), Coord(-4, -12), Coord(8, -4)};
+        static constexpr auto siegeTankTurretOffset =
+            std::to_array<Coord>({{8, -12}, {0, -20}, {0, -20}, {-4, -20}, {-8, -12}, {-8, -4}, {-4, -12}, {8, -4}});
 
-        static constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                          Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+        static constexpr auto sonicTankTurretOffset =
+            std::to_array<Coord>({{0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}});
 
-        static constexpr Coord launcherTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                         Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+        static constexpr auto launcherTurretOffset =
+            std::to_array<Coord>({{0, -12}, {0, -8}, {0, -8}, {0, -8}, {0, -12}, {0, -8}, {0, -8}, {0, -8}});
 
-        static constexpr Coord devastatorTurretOffset[] = {Coord(8, -16),  Coord(-4, -12), Coord(0, -16),
-                                                           Coord(4, -12),  Coord(-8, -16), Coord(0, -12),
-                                                           Coord(-4, -12), Coord(0, -12)};
+        static constexpr auto devastatorTurretOffset =
+            std::to_array<Coord>({{8, -16}, {-4, -12}, {0, -16}, {4, -12}, {-8, -16}, {0, -12}, {-4, -12}, {0, -12}});
 
         ObjPic_enum objectPicBase{};
-        int framesX              = static_cast<int>(ANGLETYPE::NUM_ANGLES);
-        int framesY              = 1;
-        ObjPic_enum objectPicGun = static_cast<ObjPic_enum>(-1);
-        const Coord* gunOffset   = nullptr;
+        auto framesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        auto framesY = 1;
+
+        auto objectPicGun     = static_cast<ObjPic_enum>(-1);
+        const auto* gunOffset = static_cast<decltype(tankTurretOffset)*>(nullptr);
 
         // clang-format off
         switch(unit.itemID) {
             case Unit_Carryall:         objectPicBase = ObjPic_Carryall;        framesY = 2;                                                                    break;
-            case Unit_Devastator:       objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = devastatorTurretOffset;     break;
-            case Unit_Deviator:         objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Launcher_Gun;     gunOffset = launcherTurretOffset;       break;
+            case Unit_Devastator:       objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = &devastatorTurretOffset;     break;
+            case Unit_Deviator:         objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Launcher_Gun;     gunOffset = &launcherTurretOffset;       break;
             case Unit_Frigate:          objectPicBase = ObjPic_Frigate;                                                                                         break;
             case Unit_Harvester:        objectPicBase = ObjPic_Harvester;                                                                                       break;
             case Unit_Soldier:          objectPicBase = ObjPic_Soldier;         framesX = 4;    framesY = 3;                                                    break;
-            case Unit_Launcher:         objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Launcher_Gun;     gunOffset = launcherTurretOffset;       break;
+            case Unit_Launcher:         objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Launcher_Gun;     gunOffset = &launcherTurretOffset;       break;
             case Unit_MCV:              objectPicBase = ObjPic_MCV;                                                                                             break;
             case Unit_Ornithopter:      objectPicBase = ObjPic_Ornithopter;     framesY = 3;                                                                    break;
             case Unit_Quad:             objectPicBase = ObjPic_Quad;                                                                                            break;
             case Unit_Saboteur:         objectPicBase = ObjPic_Saboteur;        framesX = 4;    framesY = 3;                                                    break;
             case Unit_Sandworm:         objectPicBase = ObjPic_Sandworm;        framesX = 1;    framesY = 9;                                                    break;
-            case Unit_SiegeTank:        objectPicBase = ObjPic_Siegetank_Base;  objectPicGun = ObjPic_Siegetank_Gun;    gunOffset = siegeTankTurretOffset;      break;
-            case Unit_SonicTank:        objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Sonictank_Gun;    gunOffset = sonicTankTurretOffset;      break;
-            case Unit_Tank:             objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Tank_Gun;         gunOffset = tankTurretOffset;           break;
+            case Unit_SiegeTank:        objectPicBase = ObjPic_Siegetank_Base;  objectPicGun = ObjPic_Siegetank_Gun;    gunOffset = &siegeTankTurretOffset;      break;
+            case Unit_SonicTank:        objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Sonictank_Gun;    gunOffset = &sonicTankTurretOffset;      break;
+            case Unit_Tank:             objectPicBase = ObjPic_Tank_Base;       objectPicGun = ObjPic_Tank_Gun;         gunOffset = &tankTurretOffset;           break;
             case Unit_Trike:
             case Unit_RaiderTrike:      objectPicBase = ObjPic_Trike;                                                                                           break;
             case Unit_Trooper:          objectPicBase = ObjPic_Trooper;         framesX = 4;    framesY = 3;                                                    break;
-            case Unit_Special:          objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = devastatorTurretOffset;     break;
+            case Unit_Special:          objectPicBase = ObjPic_Devastator_Base; objectPicGun = ObjPic_Devastator_Gun;   gunOffset = &devastatorTurretOffset;     break;
             case Unit_Infantry:         objectPicBase = ObjPic_Infantry;         framesX = 4;    framesY = 4;                                                   break;
             case Unit_Troopers:         objectPicBase = ObjPic_Troopers;         framesX = 4;    framesY = 4;                                                   break;
         }
         // clang-format on
 
-        const auto* const pObjectSprite = pGFXManager->getZoomedObjPic(objectPicBase, unit.house, currentZoomlevel);
+        const auto* const pObjectSprite = gfx->getZoomedObjPic(objectPicBase, unit.house, zoom);
 
-        int angle = static_cast<int>(unit.angle) / (static_cast<int>(ANGLETYPE::NUM_ANGLES) / framesX);
+        const auto angle_int = static_cast<int>(unit.angle);
+        int angle            = angle_int / (static_cast<int>(ANGLETYPE::NUM_ANGLES) / framesX);
 
         int frame = (unit.itemID == Unit_Sandworm) ? 5 : 0;
 
-        auto source             = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
-        int frameSizeX          = source.w;
-        int frameSizeY          = source.h;
+        auto source = calcSpriteSourceRect(pObjectSprite, angle, framesX, frame, framesY);
+
+        int frameSizeX = source.w;
+        int frameSizeY = source.h;
+
         const auto drawLocation = calcSpriteDrawingRectF(
             pObjectSprite, pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2)),
             pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2)), framesX, framesY, HAlign::Center,
@@ -1771,12 +1793,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         Dune_RenderCopyF(renderer, pObjectSprite, &source, &drawLocation);
 
         if (objectPicGun >= 0) {
-            const auto* const pGunSprite = pGFXManager->getZoomedObjPic(objectPicGun, unit.house, currentZoomlevel);
+            const auto* const pGunSprite = gfx->getZoomedObjPic(objectPicGun, unit.house, zoom);
 
-            auto source2 =
-                calcSpriteSourceRect(pGunSprite, static_cast<int>(unit.angle), static_cast<int>(ANGLETYPE::NUM_ANGLES));
+            auto source2 = calcSpriteSourceRect(pGunSprite, angle_int, static_cast<int>(ANGLETYPE::NUM_ANGLES));
 
-            const auto& gun = gunOffset[static_cast<int>(unit.angle)];
+            const auto& gun = (*gunOffset)[angle_int];
             const auto sx   = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
             const auto sy   = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
 
@@ -1787,7 +1808,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         }
 
         if (unit.itemID == Unit_RaiderTrike || unit.itemID == Unit_Deviator || unit.itemID == Unit_Special) {
-            const auto* const pStarSprite = pGFXManager->getZoomedObjPic(ObjPic_Star, currentZoomlevel);
+            const auto* const pStarSprite = gfx->getZoomedObjPic(ObjPic_Star, zoom);
 
             auto drawLocation2 = calcDrawingRect(
                 pStarSprite,
@@ -1815,32 +1836,32 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
     const DuneTexture* invalidPlace = nullptr;
     const DuneTexture* greyPlace    = nullptr;
 
-    switch (currentZoomlevel) {
+    switch (zoom) {
         case 0: {
-            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel0);
-            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
-            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel0);
+            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel0);
+            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel0);
+            greyPlace    = gfx->getUIGraphic(UI_GreyPlace_Zoomlevel0);
         } break;
 
         case 1: {
-            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel1);
-            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
-            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel1);
+            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel1);
+            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel1);
+            greyPlace    = gfx->getUIGraphic(UI_GreyPlace_Zoomlevel1);
         } break;
 
         case 2:
         default: {
-            validPlace   = pGFXManager->getUIGraphic(UI_ValidPlace_Zoomlevel2);
-            invalidPlace = pGFXManager->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
-            greyPlace    = pGFXManager->getUIGraphic(UI_GreyPlace_Zoomlevel2);
+            validPlace   = gfx->getUIGraphic(UI_ValidPlace_Zoomlevel2);
+            invalidPlace = gfx->getUIGraphic(UI_InvalidPlace_Zoomlevel2);
+            greyPlace    = gfx->getUIGraphic(UI_GreyPlace_Zoomlevel2);
         } break;
     }
 
     if (!bCompleteMap && !pInterface->hasChildWindow()
-        && pScreenborder->isScreenCoordInsideMap(drawnMouseX, drawnMouseY)) {
+        && pScreenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
 
-        int xPos = pScreenborder->screen2MapX(drawnMouseX);
-        int yPos = pScreenborder->screen2MapY(drawnMouseY);
+        int xPos = pScreenborder->screen2MapX(dune::globals::drawnMouseX);
+        int yPos = pScreenborder->screen2MapY(dune::globals::drawnMouseY);
 
         if (currentEditorMode.mode == EditorMode::EditorMode_Terrain) {
 
@@ -1935,11 +1956,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
                 const DuneTexture* selectionBox = nullptr;
 
-                switch (currentZoomlevel) {
-                    case 0: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
-                    case 1: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
+                switch (dune::globals::currentZoomlevel) {
+                    case 0: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
+                    case 1: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
                     case 2:
-                    default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
+                    default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
                 }
 
                 auto dest = calcDrawingRect(selectionBox,
@@ -1960,11 +1981,11 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 
         const DuneTexture* selectionBox = nullptr;
 
-        switch (currentZoomlevel) {
-            case 0: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
-            case 1: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
+        switch (zoom) {
+            case 0: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;
+            case 1: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel1); break;
             case 2:
-            default: selectionBox = pGFXManager->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
+            default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
         }
 
         auto dest = calcDrawingRect(selectionBox,
@@ -1977,8 +1998,9 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
 }
 
 void MapEditor::saveMapshot() {
-    const int oldCurrentZoomlevel = currentZoomlevel;
-    currentZoomlevel              = 0;
+    const int oldCurrentZoomlevel = dune::globals::currentZoomlevel;
+
+    dune::globals::currentZoomlevel = 0;
 
     auto mapshotFilename =
         lastSaveName.empty() ? std::filesystem::path{generateMapname()} : getBasename(lastSaveName, true);
@@ -1993,19 +2015,21 @@ void MapEditor::saveMapshot() {
     ScreenBorder tmpScreenborder(board);
     tmpScreenborder.adjustScreenBorderToMapsize(map.getSizeX(), map.getSizeY());
 
+    auto* const renderer = dune::globals::renderer.get();
+
     const auto renderTarget =
         sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
     if (renderTarget == nullptr) {
         sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
-        currentZoomlevel = oldCurrentZoomlevel;
+        dune::globals::currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
-    SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
+    auto* const oldRenderTarget = SDL_GetRenderTarget(renderer);
     if (SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
         sdl2::log_info("SDL_SetRenderTarget() failed: %s", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
-        currentZoomlevel = oldCurrentZoomlevel;
+        dune::globals::currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
@@ -2014,10 +2038,10 @@ void MapEditor::saveMapshot() {
 
     drawMap(&tmpScreenborder, true);
 
-    const sdl2::surface_ptr pMapshotSurface = renderReadSurface(renderer);
+    const auto pMapshotSurface = renderReadSurface(renderer);
     SavePNG(pMapshotSurface.get(), mapshotFilename.u8string().c_str());
 
     SDL_SetRenderTarget(renderer, oldRenderTarget);
 
-    currentZoomlevel = oldCurrentZoomlevel;
+    dune::globals::currentZoomlevel = oldCurrentZoomlevel;
 }

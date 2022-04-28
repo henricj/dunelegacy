@@ -38,7 +38,7 @@
 LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) {
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = dune::globals::pGFXManager->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     LoadMapWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -175,25 +175,29 @@ bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
 
 void LoadMapWindow::onChildWindowClose(Window* pChildWindow) {
     const auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
-    if (pQstBox != nullptr) {
-        if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
-            const int index = mapList.getSelectedIndex();
-            if (index >= 0) {
-                const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
+    if (pQstBox == nullptr)
+        return;
 
-                std::error_code ec;
-                if (std::filesystem::remove(file2delete, ec)) {
-                    // remove was successful => delete from list
-                    mapList.removeEntry(index);
-                    if (mapList.getNumEntries() > 0) {
-                        if (index >= mapList.getNumEntries()) {
-                            mapList.setSelectedItem(mapList.getNumEntries() - 1);
-                        } else {
-                            mapList.setSelectedItem(index);
-                        }
-                    }
-                }
-            }
+    if (pQstBox->getPressedButtonID() != QSTBOX_BUTTON1)
+        return;
+
+    const int index = mapList.getSelectedIndex();
+    if (index < 0)
+        return;
+
+    const auto file2delete = currentMapDirectory / (mapList.getSelectedEntry() + ".ini");
+
+    std::error_code ec;
+    if (!std::filesystem::remove(file2delete, ec))
+        return;
+
+    // remove was successful => delete from list
+    mapList.removeEntry(index);
+    if (mapList.getNumEntries() > 0) {
+        if (index >= mapList.getNumEntries()) {
+            mapList.setSelectedItem(mapList.getNumEntries() - 1);
+        } else {
+            mapList.setSelectedItem(index);
         }
     }
 }
@@ -307,7 +311,7 @@ void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
         INIMapPreviewCreator mapPreviewCreator(&inimap);
         pMapSurface = mapPreviewCreator.createMinimapImageOfMap(1, DuneStyle::buttonBorderColor);
     } catch (...) {
-        pMapSurface = sdl2::surface_ptr{GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false)};
+        pMapSurface = GUIStyle::getInstance().createButtonSurface(130, 130, "Error", true, false);
         loadButton.setEnabled(false);
     }
     minimap.setSurface(std::move(pMapSurface));

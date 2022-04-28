@@ -47,10 +47,12 @@ void Deviator::init() {
     assert(itemID == Unit_Deviator);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Tank_Base;
     gunGraphicID  = ObjPic_Launcher_Gun;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -59,24 +61,31 @@ void Deviator::init() {
 Deviator::~Deviator() = default;
 
 void Deviator::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
-    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto zoom = dune::globals::currentZoomlevel;
+
+    const auto* const pUnitGraphic = graphic[zoom];
+
+    const auto source1 = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest1   = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    static constexpr Coord deviatorTurretOffset[] = {Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                     Coord(0, -12), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+    static constexpr auto deviatorTurretOffset =
+        std::to_array<Coord>({{0, -12}, {0, -8}, {0, -8}, {0, -8}, {0, -12}, {0, -8}, {0, -8}, {0, -8}});
 
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest2                 = calcSpriteDrawingRect(
-                        pTurretGraphic, screenborder->world2screenX(realX + deviatorTurretOffset[static_cast<int>(drawnAngle)].x),
-                        screenborder->world2screenY(realY + deviatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-                        HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[zoom];
+
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest2   = calcSpriteDrawingRect(
+          pTurretGraphic, screenborder->world2screenX(realX + deviatorTurretOffset[static_cast<int>(drawnAngle)].x),
+          screenborder->world2screenY(realY + deviatorTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+          HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
@@ -92,7 +101,7 @@ void Deviator::destroy(const GameContext& context) {
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     parent::destroy(context);
@@ -104,5 +113,5 @@ bool Deviator::canAttack(const ObjectBase* object) const {
 }
 
 void Deviator::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
 }

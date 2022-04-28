@@ -42,7 +42,9 @@
 
 #include <algorithm>
 
-OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
+OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOptions) {
+    const auto& settings = dune::globals::settings;
+
     determineAvailableScreenResolutions();
 
     const auto languagesList = getFileNamesList(getDuneLegacyDataDir() / "locale", "po", true, FileListOrder_Name_Asc);
@@ -63,6 +65,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
     nameTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     NameHBox.addWidget(&nameTextBox, 290);
     NameHBox.addWidget(Spacer::create(), 0.5);
+
     nameTextBox.setText(settings.general.playerName);
 
     mainVBox.addWidget(&NameHBox, 0.01);
@@ -238,6 +241,8 @@ OptionsMenu::OptionsMenu() : currentGameOptions(settings.gameOptions) {
 OptionsMenu::~OptionsMenu() = default;
 
 void OptionsMenu::onChangeOption(bool bInteractive) {
+    const auto& settings = dune::globals::settings;
+
     bool bChanged = false;
 
     bChanged |= settings.general.playerName != nameTextBox.getText();
@@ -294,6 +299,8 @@ void OptionsMenu::onOptionsOK() {
         return;
     }
 
+    auto& settings = dune::globals::settings;
+
     settings.general.playerName        = playername;
     const auto selectedLanguage        = languageDropDownBox.getSelectedEntryIntData();
     const std::string languageFilename = selectedLanguage < 0 || selectedLanguage >= availLanguages.size()
@@ -327,9 +334,11 @@ void OptionsMenu::onOptionsOK() {
 
     saveConfiguration2File();
 
+    using dune::globals::musicPlayer;
+
     // sound is not reinitialized when restarting
     // => music and sound player do not reload settings
-    soundPlayer->setSound(settings.audio.playSFX);
+    dune::globals::soundPlayer->setSound(settings.audio.playSFX);
     if (musicPlayer->isMusicOn() != settings.audio.playMusic) {
         musicPlayer->setMusic(settings.audio.playMusic);
         musicPlayer->changeMusic(MUSIC_INTRO);
@@ -348,6 +357,8 @@ void OptionsMenu::onGameOptions() {
 
 void OptionsMenu::saveConfiguration2File() {
     INIFile myINIFile(getConfigFilepath());
+
+    const auto& settings = dune::globals::settings;
 
     myINIFile.setBoolValue("General", "Play Intro", settings.general.playIntro);
     myINIFile.setBoolValue("General", "Show Tutorial Hints", settings.general.showTutorialHints);
@@ -410,7 +421,7 @@ void OptionsMenu::determineAvailableScreenResolutions() {
     // full screen.
 
     SDL_DisplayMode displayMode;
-    const int displayIndex    = SDL_GetWindowDisplayIndex(window);
+    const int displayIndex    = SDL_GetWindowDisplayIndex(dune::globals::window.get());
     const int numDisplayModes = SDL_GetNumDisplayModes(displayIndex);
     for (int i = numDisplayModes - 1; i >= 0; i--) {
         if (SDL_GetDisplayMode(displayIndex, i, &displayMode) == 0) {
@@ -449,8 +460,8 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         availScreenRes.emplace_back(2560, 1600); // WQXGA (16:10)
         availScreenRes.emplace_back(3840, 2160); // 2160p (16:9)
     } else {
-        // We append a few more resolutions in case we only have on
-        // screen resolution but still want to run in a window.  Fo
+        // We append a few more resolutions in case we only have one
+        // screen resolution but still want to run in a window.  For
         // example, when running in an RDP session on Windows.
 
         auto appendRes = [&](int x, int y) {
@@ -471,9 +482,9 @@ void OptionsMenu::determineAvailableScreenResolutions() {
         appendRes(1920, 1200);
     }
 
-    const Coord currentRes(settings.video.physicalWidth, settings.video.physicalHeight);
+    const auto& video = dune::globals::settings.video;
 
-    addResolution(currentRes);
+    addResolution({video.physicalWidth, video.physicalHeight});
 }
 
 void OptionsMenu::onChildWindowClose(Window* pChildWindow) {

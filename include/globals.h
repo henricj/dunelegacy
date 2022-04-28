@@ -27,7 +27,7 @@
 
 #include <memory>
 
-#define _(msgid) pTextManager->getLocalized(msgid)
+#define _(msgid) dune::globals::pTextManager->getLocalized(msgid)
 
 // forward declarations
 class SoundPlayer;
@@ -49,15 +49,16 @@ class UnitBase;
 class StructureBase;
 class Bullet;
 
+namespace dune::globals {
 // SDL stuff
-extern SDL_Window* window;          ///< the window
-extern SDL_Renderer* renderer;      ///< the renderer
-extern SDL_Texture* screenTexture;  ///< the texture
-extern Palette palette;             ///< the palette for the screen
-extern int drawnMouseX;             ///< the current mouse position (x coordinate)
-extern int drawnMouseY;             ///< the current mouse position (y coordinate)
-extern UIGraphics_Enum cursorFrame; ///< the current mouse cursor
-extern int currentZoomlevel;        ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+extern sdl2::window_ptr window;         ///< the window
+extern sdl2::renderer_ptr renderer;     ///< the renderer
+extern sdl2::texture_ptr screenTexture; ///< the texture
+extern Palette palette;                 ///< the palette for the screen
+extern int drawnMouseX;                 ///< the current mouse position (x coordinate)
+extern int drawnMouseY;                 ///< the current mouse position (y coordinate)
+extern UIGraphics_Enum cursorFrame;     ///< the current mouse cursor
+extern int currentZoomlevel;            ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
 extern std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
@@ -86,6 +87,8 @@ extern std::vector<std::unique_ptr<Bullet>> bulletList; ///< the list of all bul
 extern SettingsClass settings; ///< the settings read from the settings file
 
 extern bool debug; ///< is set for debugging purposes
+
+} // namespace dune::globals
 
 // constants
 inline static constexpr auto houseToPaletteIndex =

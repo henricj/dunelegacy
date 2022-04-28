@@ -52,7 +52,7 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         // button pressed
         bPressed = true;
         if (!bToggleButton) {
-            soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
+            dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
         }
     } else {
         // button released
@@ -62,7 +62,7 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
                 const bool oldState = getToggleState();
                 setToggleState(!bToggleState);
                 if (getToggleState() != oldState) {
-                    soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
+                    dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 }
             }
 
@@ -89,10 +89,10 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
             const bool oldState = getToggleState();
             setToggleState(!bToggleState);
             if (getToggleState() != oldState) {
-                soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
+                dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
             }
         } else {
-            soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
+            dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
         }
 
         if (pOnClick) {
@@ -101,7 +101,7 @@ bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
     }
 
     if ((!bToggleButton) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
-        soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
+        dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
 
         if (pOnClick) {
             pOnClick();
@@ -155,7 +155,7 @@ void Button::draw(Point position) {
     const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(hw.x),
                          static_cast<float>(hw.y)};
 
-    gui.RenderButton(renderer, dest, tex, bPressed);
+    gui.RenderButton(dune::globals::renderer.get(), dest, tex, bPressed);
 }
 
 void Button::drawOverlay(Point position) {
@@ -171,7 +171,8 @@ void Button::drawOverlay(Point position) {
     const auto render_w   = static_cast<float>(renderRect.w);
     const auto render_h   = static_cast<float>(renderRect.h);
 
-    auto dest = calcDrawingRect(tooltipTexture, drawnMouseX, drawnMouseY, HAlign::Left, VAlign::Bottom);
+    auto dest = calcDrawingRect(tooltipTexture, dune::globals::drawnMouseX, dune::globals::drawnMouseY, HAlign::Left,
+                                VAlign::Bottom);
     if (dest.x + dest.w >= render_w) {
         // do not draw tooltip outside screen
         dest.x = render_w - dest.w;
@@ -185,7 +186,7 @@ void Button::drawOverlay(Point position) {
         dest.y = render_h - dest.h;
     }
 
-    Dune_RenderCopyF(renderer, tooltipTexture.get(), nullptr, &dest);
+    Dune_RenderCopyF(dune::globals::renderer.get(), tooltipTexture.get(), nullptr, &dest);
 }
 
 void Button::invalidateTextures() {

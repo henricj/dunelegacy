@@ -335,11 +335,11 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 const auto house = getHouseByName(HouseStr);
                 Uint32 color     = COLOR_WHITE;
                 if (house != HOUSETYPE::HOUSE_INVALID) {
-                    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
+                    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
                     if (HouseStr.length() == 7 && HouseStr.substr(0, 6) == "player") {
-                        int playernum = HouseStr.at(6) - '0';
+                        const auto playernum = HouseStr.at(6) - '0';
 
                         if (playernum >= 1 && playernum <= 6) {
                             int val = 32 * (playernum - 1) + 32;
@@ -377,7 +377,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                 const auto house = getHouseByName(HouseStr);
                 Uint32 color     = COLOR_WHITE;
                 if (house != HOUSETYPE::HOUSE_INVALID) {
-                    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)]]);
+                    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)]]);
                 } else {
                     convertToLower(HouseStr);
                     if (HouseStr.length() == 7 && HouseStr.substr(0, 6) == "player") {

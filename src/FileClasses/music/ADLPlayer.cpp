@@ -25,7 +25,8 @@
 #include <mmath.h>
 
 ADLPlayer::ADLPlayer()
-    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "ADLPlayer"), pSoundAdlibPC(nullptr) { }
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "ADLPlayer"),
+      pSoundAdlibPC(nullptr) { }
 
 ADLPlayer::~ADLPlayer() {
     setMusic(false);
@@ -283,7 +284,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
         Mix_HookMusic(nullptr, nullptr);
         delete pSoundAdlibPC;
 
-        sdl2::RWops_ptr rwop = pFileManager->openFile(filename);
+        sdl2::RWops_ptr rwop = dune::globals::pFileManager->openFile(filename);
 
         pSoundAdlibPC = new SoundAdlibPC(rwop.get());
         pSoundAdlibPC->setVolume(musicVolume);

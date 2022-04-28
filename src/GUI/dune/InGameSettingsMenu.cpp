@@ -31,11 +31,11 @@
 #include <GUI/Spacer.h>
 
 InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
-    HOUSETYPE houseID   = pLocalHouse->getHouseID();
-    const Uint32 color1 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
-    const Uint32 color2 = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
+    HOUSETYPE houseID   = dune::globals::pLocalHouse->getHouseID();
+    const Uint32 color1 = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
+    const Uint32 color2 = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
 
-    const auto* const gfx = pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     // set up window
     const auto* pBackground = gfx->getUIGraphic(UI_OptionsMenu, houseID);
@@ -98,10 +98,12 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
 InGameSettingsMenu::~InGameSettingsMenu() = default;
 
 void InGameSettingsMenu::init() {
+    const auto& settings = dune::globals::settings;
+
     newGamespeed = settings.gameOptions.gameSpeed;
     gameSpeedBar.setProgress(100.0 - ((newGamespeed - GAMESPEED_MIN) * 100.0) / (GAMESPEED_MAX - GAMESPEED_MIN));
 
-    previousVolume = volume = soundPlayer->getSfxVolume();
+    previousVolume = volume = dune::globals::soundPlayer->getSfxVolume();
     volumeBar.setProgress((100.0 * volume) / MIX_MAX_VOLUME);
 
     scrollSpeed = settings.general.scrollSpeed;
@@ -118,7 +120,7 @@ bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 
         case SDLK_TAB:
             if (SDL_GetModState() & KMOD_ALT) {
-                SDL_MinimizeWindow(window);
+                SDL_MinimizeWindow(dune::globals::window.get());
             }
             break;
 
@@ -129,8 +131,8 @@ bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void InGameSettingsMenu::onCancel() {
-    soundPlayer->setSfxVolume(previousVolume);
-    musicPlayer->setMusicVolume(previousVolume);
+    dune::globals::soundPlayer->setSfxVolume(previousVolume);
+    dune::globals::musicPlayer->setMusicVolume(previousVolume);
 
     auto* pParentWindow = dynamic_cast<Window*>(getParent());
     if (pParentWindow != nullptr) {
@@ -139,9 +141,11 @@ void InGameSettingsMenu::onCancel() {
 }
 
 void InGameSettingsMenu::onOK() {
+    auto& settings = dune::globals::settings;
+
     settings.general.scrollSpeed   = scrollSpeed;
-    settings.audio.sfxVolume       = soundPlayer->getSfxVolume();
-    settings.audio.musicVolume     = musicPlayer->getMusicVolume();
+    settings.audio.sfxVolume       = dune::globals::soundPlayer->getSfxVolume();
+    settings.audio.musicVolume     = dune::globals::musicPlayer->getMusicVolume();
     settings.gameOptions.gameSpeed = newGamespeed;
 
     INIFile myINIFile(getConfigFilepath());
@@ -178,8 +182,8 @@ void InGameSettingsMenu::onVolumePlus() {
     if (volume <= MIX_MAX_VOLUME - 4) {
         volume += 4;
         volumeBar.setProgress((100 * volume) / MIX_MAX_VOLUME);
-        soundPlayer->setSfxVolume(volume);
-        musicPlayer->setMusicVolume(volume);
+        dune::globals::soundPlayer->setSfxVolume(volume);
+        dune::globals::musicPlayer->setMusicVolume(volume);
     }
 }
 
@@ -187,8 +191,8 @@ void InGameSettingsMenu::onVolumeMinus() {
     if (volume >= 4) {
         volume -= 4;
         volumeBar.setProgress((100 * volume) / MIX_MAX_VOLUME);
-        soundPlayer->setSfxVolume(volume);
-        musicPlayer->setMusicVolume(volume);
+        dune::globals::soundPlayer->setSfxVolume(volume);
+        dune::globals::musicPlayer->setMusicVolume(volume);
     }
 }
 

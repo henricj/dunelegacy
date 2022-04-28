@@ -41,17 +41,19 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
 
     GameInterface::setWindowWidget(&windowWidget);
 
-    const auto* const gfx = pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
+
+    const auto house_id = dune::globals::pLocalHouse->getHouseID();
 
     // top bar
-    const auto* const pTopBarTex = gfx->getUIGraphic(UI_TopBar, pLocalHouse->getHouseID());
+    const auto* const pTopBarTex = gfx->getUIGraphic(UI_TopBar, house_id);
     topBar.setTexture(pTopBarTex);
     windowWidget.addWidget(
         &topBar, {},
         {static_cast<int>(std::ceil(getWidth(pTopBarTex))), static_cast<int>(std::ceil(getHeight(pTopBarTex))) - 12});
 
     // side bar
-    const auto* const pSideBarTex = gfx->getUIGraphic(UI_SideBar, pLocalHouse->getHouseID());
+    const auto* const pSideBarTex = gfx->getUIGraphic(UI_SideBar, house_id);
     sideBar.setTexture(pSideBarTex);
     const auto dest = calcAlignedDrawingRect(pSideBarTex, HAlign::Right, VAlign::Top);
     windowWidget.addWidget(&sideBar, dest);
@@ -63,16 +65,14 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
 
     topBarHBox.addWidget(Spacer::create());
 
-    optionsButton.setTextures(gfx->getUIGraphic(UI_Options, pLocalHouse->getHouseID()),
-                              gfx->getUIGraphic(UI_Options_Pressed, pLocalHouse->getHouseID()));
-    optionsButton.setOnClick([] { currentGame->onOptions(); });
+    optionsButton.setTextures(gfx->getUIGraphic(UI_Options, house_id), gfx->getUIGraphic(UI_Options_Pressed, house_id));
+    optionsButton.setOnClick([] { dune::globals::currentGame->onOptions(); });
     topBarHBox.addWidget(&optionsButton);
 
     topBarHBox.addWidget(Spacer::create());
 
-    mentatButton.setTextures(gfx->getUIGraphic(UI_Mentat, pLocalHouse->getHouseID()),
-                             gfx->getUIGraphic(UI_Mentat_Pressed, pLocalHouse->getHouseID()));
-    mentatButton.setOnClick([] { currentGame->onMentat(); });
+    mentatButton.setTextures(gfx->getUIGraphic(UI_Mentat, house_id), gfx->getUIGraphic(UI_Mentat_Pressed, house_id));
+    mentatButton.setOnClick([] { dune::globals::currentGame->onMentat(); });
     topBarHBox.addWidget(&mentatButton);
 
     topBarHBox.addWidget(Spacer::create());
@@ -93,6 +93,8 @@ GameInterface::~GameInterface() = default;
 void GameInterface::draw(Point position) {
     parent::draw(position);
 
+    auto* const renderer = dune::globals::renderer.get();
+
     // draw Power Indicator and Spice indicator
 
     const SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4,
@@ -108,16 +110,18 @@ void GameInterface::draw(Point position) {
     int yCount  = 0;
     int yCount2 = 0;
 
+    const auto* const local_house = dune::globals::pLocalHouse;
+
     // draw power level indicator
-    if (pLocalHouse->getPowerRequirement() == 0) {
-        if (pLocalHouse->getProducedPower() > 0) {
+    if (local_house->getPowerRequirement() == 0) {
+        if (local_house->getProducedPower() > 0) {
             yCount2 = powerIndicatorPos.h + 1;
         } else {
             yCount2 = powerIndicatorPos.h / 2;
         }
     } else {
-        yCount2 = lround(static_cast<double>(pLocalHouse->getProducedPower())
-                         / static_cast<double>(pLocalHouse->getPowerRequirement())
+        yCount2 = lround(static_cast<double>(local_house->getProducedPower())
+                         / static_cast<double>(local_house->getPowerRequirement())
                          * static_cast<double>(powerIndicatorPos.h / 2));
     }
 
@@ -139,10 +143,10 @@ void GameInterface::draw(Point position) {
         SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
 
     // draw spice level indicator
-    if (pLocalHouse->getCapacity() == 0) {
+    if (local_house->getCapacity() == 0) {
         yCount2 = 0;
     } else {
-        yCount2 = lround((pLocalHouse->getStoredCredits() / pLocalHouse->getCapacity()) * spiceIndicatorPos.h);
+        yCount2 = lround((local_house->getStoredCredits() / local_house->getCapacity()) * spiceIndicatorPos.h);
     }
 
     if (yCount2 > spiceIndicatorPos.h + 1) {
@@ -164,11 +168,11 @@ void GameInterface::draw(Point position) {
         SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
 
     // draw credits
-    const auto credits       = pLocalHouse->getCredits();
+    const auto credits       = local_house->getCredits();
     const auto CreditsBuffer = std::to_string((credits < 0) ? 0 : credits);
     const auto NumDigits     = static_cast<int>(CreditsBuffer.length());
 
-    auto* const digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+    auto* const digitsTex = dune::globals::pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for (int i = NumDigits - 1; i >= 0; i--) {
         auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
@@ -179,7 +183,9 @@ void GameInterface::draw(Point position) {
 }
 
 void GameInterface::updateObjectInterface() {
-    const auto& selected = currentGame->getSelectedList();
+    auto* const game = dune::globals::currentGame.get();
+
+    const auto& selected = game->getSelectedList();
 
     if (selected.empty()) {
         removeOldContainer();
@@ -193,10 +199,10 @@ void GameInterface::updateObjectInterface() {
     if (size == 1) {
         const auto selected_object_id = *selected.begin();
 
-        auto* pObject = currentGame->getObjectManager().getObject(selected_object_id);
+        auto* pObject = game->getObjectManager().getObject(selected_object_id);
         if (!pObject) {
             sdl2::log_error("The selected object %d cannot be found!", selected_object_id);
-            currentGame->clearSelectedList();
+            game->clearSelectedList();
             return;
         }
 

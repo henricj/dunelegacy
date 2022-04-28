@@ -45,7 +45,7 @@ void Radar::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_Radar;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 6;
     numImagesY     = 1;
     firstAnimFrame = 2;
@@ -55,7 +55,7 @@ void Radar::init() {
 Radar::~Radar() = default;
 
 std::unique_ptr<ObjectInterface> Radar::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return RadarInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);

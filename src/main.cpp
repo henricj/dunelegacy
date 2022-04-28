@@ -145,57 +145,62 @@ float getLogicalToPhysicalScale(int physicalWidth, int physicalHeight) {
 }
 
 void setVideoMode(int displayIndex) {
+    dune::globals::screenTexture.reset();
+    dune::globals::renderer.reset();
+    dune::globals::window.reset();
     int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
 
-    if (settings.video.fullscreen)
+    auto& video = dune::globals::settings.video;
+
+    if (video.fullscreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     else
         videoFlags |= SDL_WINDOW_RESIZABLE;
 
-    const SDL_DisplayMode targetDisplayMode{0, settings.video.physicalWidth, settings.video.physicalHeight, 0, nullptr};
+    const SDL_DisplayMode targetDisplayMode{0, video.physicalWidth, video.physicalHeight, 0, nullptr};
 
     SDL_DisplayMode closestDisplayMode;
 
-    if (settings.video.fullscreen) {
+    if (video.fullscreen) {
         if (SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
             sdl2::log_info("Warning: Falling back to a display resolution of 640x480!");
-            settings.video.physicalWidth  = 640;
-            settings.video.physicalHeight = 480;
-            settings.video.width          = 640;
-            settings.video.height         = 480;
+            video.physicalWidth  = 640;
+            video.physicalHeight = 480;
+            video.width          = 640;
+            video.height         = 480;
         } else {
-            settings.video.physicalWidth  = closestDisplayMode.w;
-            settings.video.physicalHeight = closestDisplayMode.h;
-            settings.video.width          = settings.video.physicalWidth;
-            settings.video.height         = settings.video.physicalHeight;
+            video.physicalWidth  = closestDisplayMode.w;
+            video.physicalHeight = closestDisplayMode.h;
+            video.width          = video.physicalWidth;
+            video.height         = video.physicalHeight;
         }
     } else {
         SDL_DisplayMode displayMode;
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
-        if (settings.video.physicalWidth > displayMode.w || settings.video.physicalHeight > displayMode.h) {
-            settings.video.physicalWidth  = displayMode.w;
-            settings.video.physicalHeight = displayMode.h;
+        if (video.physicalWidth > displayMode.w || video.physicalHeight > displayMode.h) {
+            video.physicalWidth  = displayMode.w;
+            video.physicalHeight = displayMode.h;
         }
 
-        settings.video.width  = settings.video.physicalWidth;
-        settings.video.height = settings.video.physicalHeight;
+        video.width  = video.physicalWidth;
+        video.height = video.physicalHeight;
     }
 
-    sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", settings.video.physicalWidth,
-                   settings.video.physicalHeight, settings.video.width, settings.video.height, videoFlags);
+    sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", video.physicalWidth, video.physicalHeight,
+                   video.width, video.height, videoFlags);
 
-    window = SDL_CreateWindow("Dune Legacy", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
-                              SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), settings.video.physicalWidth,
-                              settings.video.physicalHeight, videoFlags);
+    sdl2::window_ptr window{SDL_CreateWindow("Dune Legacy", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
+                                             SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex), video.physicalWidth,
+                                             video.physicalHeight, videoFlags)};
 
     if (!window)
         THROW(sdl_error, "Unable to create window: %s!", SDL_GetError());
 
-    SDL_SetWindowMinimumSize(window, GUIStyle::MINIMUM_WIDTH, GUIStyle::MINIMUM_HEIGHT);
+    SDL_SetWindowMinimumSize(window.get(), GUIStyle::MINIMUM_WIDTH, GUIStyle::MINIMUM_HEIGHT);
 
     { // Scope
-        const auto screen_format = SDL_GetWindowPixelFormat(window);
+        const auto screen_format = SDL_GetWindowPixelFormat(window.get());
 
         sdl2::log_info("The window is using pixel format %s and the default format is %s",
                        SDL_GetPixelFormatName(screen_format), SDL_GetPixelFormatName(SCREEN_FORMAT));
@@ -213,8 +218,8 @@ void setVideoMode(int displayIndex) {
         }
     }
 
-    if (settings.video.renderer != "default")
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, settings.video.renderer.c_str());
+    if (video.renderer != "default")
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, video.renderer.c_str());
 
     SDL_SetHint(SDL_HINT_RENDER_BATCHING, "1");
     // SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
@@ -223,7 +228,7 @@ void setVideoMode(int displayIndex) {
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 
     // Prefer DX11 on Windows
-    if (settings.video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
+    if (video.renderer == "default" || nullptr == SDL_GetHint(SDL_HINT_RENDER_DRIVER))
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
 #    if defined(_DEBUG)
     SDL_SetHint(SDL_HINT_RENDER_DIRECT3D11_DEBUG, "1");
@@ -234,14 +239,15 @@ void setVideoMode(int displayIndex) {
     if (const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER))
         sdl2::log_info("   requested render driver: %s", render_driver_hint);
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
+    sdl2::renderer_ptr renderer{
+        SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE)};
 
     if (!renderer)
         THROW(sdl_error, "Unable to create renderer: %s!", SDL_GetError());
 
     { // Scope
         SDL_RendererInfo info;
-        if (0 == SDL_GetRendererInfo(renderer, &info)) {
+        if (0 == SDL_GetRendererInfo(renderer.get(), &info)) {
             sdl2::SDL_LogRenderer(&info);
 
             const auto* const begin = info.texture_formats;
@@ -258,15 +264,19 @@ void setVideoMode(int displayIndex) {
         }
     }
 
-    screenTexture = SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, settings.video.width,
-                                      settings.video.height);
+    sdl2::texture_ptr screenTexture{
+        SDL_CreateTexture(renderer.get(), SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, video.width, video.height)};
 
     uint32_t screen_format = 0;
     int screen_access      = 0;
-    if (0 == SDL_QueryTexture(screenTexture, &screen_format, &screen_access, nullptr, nullptr)) {
+    if (0 == SDL_QueryTexture(screenTexture.get(), &screen_format, &screen_access, nullptr, nullptr)) {
         if (screen_format != SCREEN_FORMAT)
             sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", SDL_GetPixelFormatName(screen_format));
     }
+
+    dune::globals::window        = std::move(window);
+    dune::globals::renderer      = std::move(renderer);
+    dune::globals::screenTexture = std::move(screenTexture);
 }
 
 namespace {
@@ -282,6 +292,8 @@ void updateFullscreen() {
         return;
 
     pendingFullscreen = false;
+
+    auto* const window = dune::globals::window.get();
 
     const auto window_flags = SDL_GetWindowFlags(window);
 
@@ -459,6 +471,8 @@ std::string getUserLanguage() {
 }
 
 void load_settings(const INIFile& myINIFile) {
+    auto& settings = dune::globals::settings;
+
     settings.general.playIntro         = myINIFile.getBoolValue("General", "Play Intro", false);
     settings.general.playerName        = myINIFile.getStringValue("General", "Player Name", "Player");
     settings.general.language          = myINIFile.getStringValue("General", "Language", "en");
@@ -526,7 +540,9 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
 
     load_settings(myINIFile);
 
-    pTextManager = std::make_unique<TextManager>(settings.general.language);
+    auto& settings = dune::globals::settings;
+
+    dune::globals::pTextManager = std::make_unique<TextManager>(settings.general.language);
 
     const auto missingFiles = FileManager::getMissingFiles();
     if (!missingFiles.empty()) {
@@ -550,7 +566,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         }
 
         // reinit text manager
-        pTextManager = std::make_unique<TextManager>(settings.general.language);
+        dune::globals::pTextManager = std::make_unique<TextManager>(settings.general.language);
     }
 
     for (int i = 1; i < argc; i++) {
@@ -578,9 +594,9 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         settings.video.physicalWidth  = displayMode.w;
         settings.video.physicalHeight = displayMode.h;
         settings.video.width          = displayMode.w;
-        ;
+
         settings.video.height = displayMode.h;
-        ;
+
         settings.video.preferredZoomLevel = 1;
 
         myINIFile.setIntValue("Video", "Width", settings.video.width);
@@ -626,7 +642,7 @@ float physical_dpi(SDL_Window* sdl_window) {
 
     SDL_SysWMinfo wmInfo{};
     SDL_VERSION(&wmInfo.version)
-    SDL_GetWindowWMInfo(window, &wmInfo);
+    SDL_GetWindowWMInfo(dune::globals::window.get(), &wmInfo);
 
     const auto hwnd = wmInfo.info.win.window;
 
@@ -698,165 +714,173 @@ bool run_game(int argc, char* argv[]) {
     bool bFirstInit      = true;
     bool bFirstGamestart = false;
 
-    debug       = false;
-    cursorFrame = UI_CursorNormal;
+    dune::globals::debug       = false;
+    dune::globals::cursorFrame = UI_CursorNormal;
 
     do {
-        if (configure_game(argc, argv, bFirstInit))
-            bFirstGamestart = true;
-
-        if (bFirstInit) {
-            sdl2::log_info("Initializing audio...");
-            if (Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
-                // SDL_Quit();
-                // THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY,
-                // SDL_GetError());
-            } else {
-                sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
-
-                SDL_version compiledVersion{};
-                SDL_MIXER_VERSION(&compiledVersion)
-                const auto* const linkedVersion = Mix_Linked_Version();
-                sdl2::log_info("SDL Mixer runtime v%d.%d.%d", linkedVersion->major, linkedVersion->minor,
-                               linkedVersion->patch);
-                sdl2::log_info("SDL Mixer compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
-                               compiledVersion.patch);
-            }
-        }
-
-        GlobalCleanup file_cleanup{pFileManager};
-        pFileManager = std::make_unique<FileManager>();
-
-        // now we can finish loading texts
-        GlobalCleanup text_cleanup{pTextManager};
-        pTextManager->loadData();
-
-        palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
-
-        sdl2::log_info("Setting video mode...");
-        setVideoMode(currentDisplayIndex);
-        SDL_RendererInfo rendererInfo;
-        SDL_GetRendererInfo(renderer, &rendererInfo);
-        sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width,
-                       rendererInfo.max_texture_height);
-
-        static constexpr auto video_default_typeface = "Philosopher-Bold.ttf";
-
-        const auto typeface = settings.video.typeface.empty() || "default" == settings.video.typeface
-                                ? video_default_typeface
-                                : settings.video.typeface;
-
-        sdl2::log_info("Loading fonts from typeface %s...", typeface);
-        GlobalCleanup font_cleanup{pFontManager};
-        pFontManager = std::make_unique<FontManager>(typeface);
-
-        GUIStyle::setGUIStyle(std::make_unique<DuneStyle>(pFontManager.get()));
-
-        update_display_scale(window);
-
         { // Scope
-            int w, h;
-            SDL_GetRendererOutputSize(renderer, &w, &h);
-            GUIStyle::getInstance().setLogicalSize(renderer, w, h);
-        }
+            GlobalCleanup text_cleanup{dune::globals::pTextManager};
 
-        sdl2::log_info("Loading graphics and sounds...");
+            if (configure_game(argc, argv, bFirstInit))
+                bFirstGamestart = true;
 
-        GlobalCleanup sfx_cleanup{pSFXManager};
+            if (bFirstInit) {
+                sdl2::log_info("Initializing audio...");
+                if (Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
+                    // SDL_Quit();
+                    // THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY,
+                    // SDL_GetError());
+                } else {
+                    sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
+
+                    SDL_version compiledVersion{};
+                    SDL_MIXER_VERSION(&compiledVersion)
+                    const auto* const linkedVersion = Mix_Linked_Version();
+                    sdl2::log_info("SDL Mixer runtime v%d.%d.%d", linkedVersion->major, linkedVersion->minor,
+                                   linkedVersion->patch);
+                    sdl2::log_info("SDL Mixer compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
+                                   compiledVersion.patch);
+                }
+            }
+
+            GlobalCleanup file_cleanup{dune::globals::pFileManager};
+            dune::globals::pFileManager = std::make_unique<FileManager>();
+
+            auto* const pFileManager = dune::globals::pFileManager.get();
+            auto* const pTextManager = dune::globals::pTextManager.get();
+            auto& settings           = dune::globals::settings;
+
+            // now we can finish loading texts
+            pTextManager->loadData();
+
+            dune::globals::palette = LoadPalette_RW(pFileManager->openFile("IBM.PAL").get());
+
+            sdl2::log_info("Setting video mode...");
+            setVideoMode(currentDisplayIndex);
+
+            auto* const renderer = dune::globals::renderer.get();
+
+            SDL_RendererInfo rendererInfo;
+            SDL_GetRendererInfo(renderer, &rendererInfo);
+            sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width,
+                           rendererInfo.max_texture_height);
+
+            static constexpr auto video_default_typeface = "Philosopher-Bold.ttf";
+
+            const auto typeface = settings.video.typeface.empty() || "default" == settings.video.typeface
+                                    ? video_default_typeface
+                                    : settings.video.typeface;
+
+            sdl2::log_info("Loading fonts from typeface %s...", typeface);
+            GlobalCleanup font_cleanup{dune::globals::pFontManager};
+            dune::globals::pFontManager = std::make_unique<FontManager>(typeface);
+
+            GUIStyle::setGUIStyle(std::make_unique<DuneStyle>(dune::globals::pFontManager.get()));
+
+            update_display_scale(dune::globals::window.get());
+
+            { // Scope
+                int w, h;
+                SDL_GetRendererOutputSize(renderer, &w, &h);
+                GUIStyle::getInstance().setLogicalSize(renderer, w, h);
+            }
+
+            sdl2::log_info("Loading graphics and sounds...");
+
+            GlobalCleanup sfx_cleanup{dune::globals::pSFXManager};
 #ifdef HAS_ASYNC
-        // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
-        auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
-            const auto start   = std::chrono::steady_clock::now();
-            auto ret           = std::make_unique<SFXManager>();
-            const auto elapsed = std::chrono::steady_clock::now() - start;
-            return std::make_pair(std::move(ret), elapsed);
-        });
+            // If we have async, initialize the sounds on another thread while we initialize GFX on this one.
+            auto sfxManagerFut = std::async(std::launch::async | std::launch::deferred, [] {
+                const auto start   = std::chrono::steady_clock::now();
+                auto ret           = std::make_unique<SFXManager>();
+                const auto elapsed = std::chrono::steady_clock::now() - start;
+                return std::make_pair(std::move(ret), elapsed);
+            });
 #else
-        // g++ does not provide std::launch::async on all platforms
-        pSFXManager = std::make_unique<SFXManager>();
+            // g++ does not provide std::launch::async on all platforms
+            pSFXManager = std::make_unique<SFXManager>();
 #endif
 
-        GlobalCleanup gfx_cleanup{pGFXManager};
-        const auto start   = std::chrono::steady_clock::now();
-        pGFXManager        = std::make_unique<GFXManager>();
-        const auto elapsed = std::chrono::steady_clock::now() - start;
+            GlobalCleanup gfx_cleanup{dune::globals::pGFXManager};
+            const auto start           = std::chrono::steady_clock::now();
+            dune::globals::pGFXManager = std::make_unique<GFXManager>();
+            const auto elapsed         = std::chrono::steady_clock::now() - start;
 
-        sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
+            sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
 
-        if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
-            SDL_SetCursor(cursor);
+            auto* const pGFXManager = dune::globals::pGFXManager.get();
+
+            if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
+                SDL_SetCursor(cursor);
 
 #ifdef HAS_ASYNC
-        try {
-            auto sfxResult = sfxManagerFut.get();
-            pSFXManager    = std::move(sfxResult.first);
-            sdl2::log_info("SFXManager time: %f", std::chrono::duration<double>(sfxResult.second).count());
-        } catch (const std::exception& e) {
-            pSFXManager        = nullptr;
-            const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
-                                              "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
-                                              demangleSymbol(typeid(e).name()), e.what());
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
-        }
+            try {
+                auto sfxResult             = sfxManagerFut.get();
+                dune::globals::pSFXManager = std::move(sfxResult.first);
+                sdl2::log_info("SFXManager time: %f", std::chrono::duration<double>(sfxResult.second).count());
+            } catch (const std::exception& e) {
+                dune::globals::pSFXManager.reset();
+                const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
+                                                  "thrown:\n\n%s\n\nDune Legacy is unable to play sound!",
+                                                  demangleSymbol(typeid(e).name()), e.what());
+                SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Dune Legacy: Warning", message.c_str(), nullptr);
+            }
 #endif
 
-        if (bFirstInit) {
-            sdl2::log_info("Starting sound player...");
-            soundPlayer = std::make_unique<SoundPlayer>();
+            if (bFirstInit) {
+                sdl2::log_info("Starting sound player...");
+                dune::globals::soundPlayer = std::make_unique<SoundPlayer>();
 
-            if (settings.audio.musicType == "directory") {
-                sdl2::log_info("Starting directory music player...");
-                musicPlayer = std::make_unique<DirectoryPlayer>();
-            } else if (settings.audio.musicType == "adl") {
-                sdl2::log_info("Starting ADL music player...");
-                musicPlayer = std::make_unique<ADLPlayer>();
-            } else if (settings.audio.musicType == "xmi") {
-                sdl2::log_info("Starting XMI music player...");
-                musicPlayer = std::make_unique<XMIPlayer>();
+                if (settings.audio.musicType == "directory") {
+                    sdl2::log_info("Starting directory music player...");
+                    dune::globals::musicPlayer = std::make_unique<DirectoryPlayer>();
+                } else if (settings.audio.musicType == "adl") {
+                    sdl2::log_info("Starting ADL music player...");
+                    dune::globals::musicPlayer = std::make_unique<ADLPlayer>();
+                } else if (settings.audio.musicType == "xmi") {
+                    sdl2::log_info("Starting XMI music player...");
+                    dune::globals::musicPlayer = std::make_unique<XMIPlayer>();
+                } else {
+                    THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
+                }
+
+                // musicPlayer->changeMusic(MUSIC_INTRO);
+            }
+
+            // Playing intro
+            if (((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
+                sdl2::log_info("Playing intro...");
+                Intro().run();
+            }
+
+            bFirstInit = false;
+
+            sdl2::log_info("Starting main menu...");
+
+            { // Scope
+                GlobalCleanup game_cleanup{dune::globals::currentGame};
+                GlobalCleanup border_cleanup{dune::globals::screenborder};
+
+                if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
+                    bExitGame = true;
+                }
+            }
+
+            sdl2::log_info("Deinitialize...");
+
+            GUIStyle::destroyGUIStyle();
+
+            // clear everything
+            if (bExitGame) {
+                dune::globals::musicPlayer.reset();
+                dune::globals::soundPlayer.reset();
+                Mix_HaltMusic();
+                Mix_CloseAudio();
             } else {
-                THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
-            }
-
-            // musicPlayer->changeMusic(MUSIC_INTRO);
-        }
-
-        // Playing intro
-        if (((bFirstGamestart) || (settings.general.playIntro)) && (bFirstInit)) {
-            sdl2::log_info("Playing intro...");
-            Intro().run();
-        }
-
-        bFirstInit = false;
-
-        sdl2::log_info("Starting main menu...");
-
-        { // Scope
-            GlobalCleanup game_cleanup{currentGame};
-            GlobalCleanup border_cleanup{screenborder};
-
-            if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
-                bExitGame = true;
+                // save the current display index for later reuse
+                currentDisplayIndex = SDL_GetWindowDisplayIndex(dune::globals::window.get());
             }
         }
-
-        sdl2::log_info("Deinitialize...");
-
-        GUIStyle::destroyGUIStyle();
-
-        // clear everything
-        if (bExitGame) {
-            musicPlayer.reset();
-            soundPlayer.reset();
-            Mix_HaltMusic();
-            Mix_CloseAudio();
-        } else {
-            // save the current display index for later reuse
-            currentDisplayIndex = SDL_GetWindowDisplayIndex(window);
-        }
-
-        SDL_DestroyTexture(screenTexture);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
 
         sdl2::log_info("Deinitialization finished!");
     } while (!bExitGame);
@@ -907,8 +931,8 @@ int main(int argc, char* argv[]) {
 
     // global try/catch around everything
     try {
-        GlobalCleanup sound_cleanup{soundPlayer};
-        GlobalCleanup music_cleanup{musicPlayer};
+        GlobalCleanup sound_cleanup{dune::globals::soundPlayer};
+        GlobalCleanup music_cleanup{dune::globals::musicPlayer};
 
         // init fnkdat
         { // Scope

@@ -66,7 +66,7 @@ void StarPort::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_Starport;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 10;
     numImagesY     = 1;
     firstAnimFrame = 2;
@@ -101,6 +101,9 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
     const auto& choam       = owner->getChoam();
     const auto numAvailable = choam.getNumAvailable(itemID);
 
+    using dune::globals::soundPlayer;
+    const auto* const currentGame = dune::globals::currentGame.get();
+
     if (numAvailable <= 0) {
         soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
         currentGame->addToNewsTicker(_("This unit is sold out"));
@@ -121,13 +124,13 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
 }
 
 void StarPort::handlePlaceOrderClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
 }
 
 void StarPort::handleCancelOrderClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID));
 }
 
 void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
@@ -199,7 +202,7 @@ void StarPort::doPlaceOrder() {
 
     if (!currentProductionQueue.empty()) {
 
-        if (currentGame->getGameInitSettings().getGameOptions().instantBuild) {
+        if (dune::globals::currentGame->getGameInitSettings().getGameOptions().instantBuild) {
             arrivalTimer = 1;
         } else {
             arrivalTimer = STARPORT_ARRIVETIME;
@@ -225,11 +228,12 @@ void StarPort::updateBuildList() {
 
     auto iter = buildList.begin();
 
-    const auto& choam = owner->getChoam();
+    const auto& choam       = owner->getChoam();
+    const auto& object_data = dune::globals::currentGame->objectData;
 
     for (auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
-        const auto& objData = currentGame->objectData.data[itemOrder[i]][static_cast<int>(originalHouseID)];
+        const auto& objData = object_data.data[itemOrder[i]][static_cast<int>(originalHouseID)];
 
         if (objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(iter, itemOrder[i], choam.getPrice(itemOrder[i]));
@@ -254,19 +258,19 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
 
                 if (pos.x == 0)
                     frigate->setAngle(ANGLETYPE::RIGHT);
-                else if (pos.x == currentGameMap->getSizeX() - 1)
+                else if (pos.x == dune::globals::currentGameMap->getSizeX() - 1)
                     frigate->setAngle(ANGLETYPE::LEFT);
                 else if (pos.y == 0)
                     frigate->setAngle(ANGLETYPE::DOWN);
-                else if (pos.y == currentGameMap->getSizeY() - 1)
+                else if (pos.y == dune::globals::currentGameMap->getSizeY() - 1)
                     frigate->setAngle(ANGLETYPE::UP);
 
                 deployTimer = MILLI2CYCLES(2000);
 
                 currentProducedItem = ItemID_Invalid;
 
-                if (getOwner() == pLocalHouse) {
-                    soundPlayer->playVoice(Voice_enum::FrigateHasArrived, getOwner()->getHouseID());
+                if (getOwner() == dune::globals::pLocalHouse) {
+                    dune::globals::soundPlayer->playVoice(Voice_enum::FrigateHasArrived, getOwner()->getHouseID());
                     context.game.addToNewsTicker(_("@DUNE.ENG|80#Frigate has arrived"));
                 }
             } else
@@ -314,13 +318,16 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                             newUnit->setAngle(destinationDrawnAngle(newUnit->getLocation(), newUnit->getDestination()));
                         }
 
-                        if (getOwner() == pLocalHouse) {
+                        if (getOwner() == dune::globals::pLocalHouse) {
                             if (isFlyingUnit(newUnitItemID)) {
-                                soundPlayer->playVoice(Voice_enum::UnitLaunched, getOwner()->getHouseID());
+                                dune::globals::soundPlayer->playVoice(Voice_enum::UnitLaunched,
+                                                                      getOwner()->getHouseID());
                             } else if (newUnitItemID == Unit_Harvester) {
-                                soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
+                                dune::globals::soundPlayer->playVoice(Voice_enum::HarvesterDeployed,
+                                                                      getOwner()->getHouseID());
                             } else {
-                                soundPlayer->playVoice(Voice_enum::UnitDeployed, getOwner()->getHouseID());
+                                dune::globals::soundPlayer->playVoice(Voice_enum::UnitDeployed,
+                                                                      getOwner()->getHouseID());
                             }
                         }
 

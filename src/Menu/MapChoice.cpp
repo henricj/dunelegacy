@@ -35,8 +35,10 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
     : house(newHouse), lastScenario((lastMission + 1) / 3 + 1), alreadyPlayedRegions(oldAlreadyPlayedRegions) {
     disableQuitting(true);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_MapChoiceScreen, house);
+    const auto* const pBackground = gfx->getUIGraphic(UI_MapChoiceScreen, house);
     setBackground(pBackground);
     MapChoice::resize(getTextureSize(pBackground));
 
@@ -74,11 +76,12 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
             // first time we're on the map choice screen
 
             // create black rectangle
-            mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
+            mapSurface = convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoicePlanet));
             constexpr SDL_Rect dest{16, 48, 608, 240};
             SDL_FillRect(mapSurface.get(), &dest, COLOR_BLACK);
-            mapTexture = sdl2::texture_ptr{
-                SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
+            mapTexture =
+                sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT,
+                                                    SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
             SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
             mapChoiceState = MAPCHOICESTATE_FADEINPLANET;
@@ -108,7 +111,7 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
 MapChoice::~MapChoice() = default;
 
 int MapChoice::showMenu() {
-    musicPlayer->changeMusic(MUSIC_MAPCHOICE);
+    dune::globals::musicPlayer->changeMusic(MUSIC_MAPCHOICE);
 
     return MenuBase::showMenu();
 }
@@ -135,6 +138,9 @@ int MapChoice::getSelectedMission() const {
 void MapChoice::drawSpecificStuff() {
     using namespace std::chrono_literals;
 
+    auto* const renderer = dune::globals::renderer.get();
+    auto* const gfx      = dune::globals::pGFXManager.get();
+
     SDL_UpdateTexture(mapTexture.get(), nullptr, mapSurface->pixels, mapSurface->pitch);
     Dune_RenderCopy(renderer, mapTexture.get(), nullptr, &centerAreaRect);
 
@@ -143,7 +149,7 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_FADEINPLANET: {
             if (curBlendBlitter == nullptr) {
                 sdl2::surface_ptr pSurface =
-                    convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoicePlanet));
+                    convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoicePlanet));
                 SDL_Rect dest   = {0, 0, getWidth(pSurface.get()), getHeight(pSurface.get())};
                 curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
@@ -172,7 +178,7 @@ void MapChoice::drawSpecificStuff() {
         case MAPCHOICESTATE_BLENDPLANET: {
             if (curBlendBlitter == nullptr) {
                 sdl2::surface_ptr pSurface =
-                    convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMapOnly));
+                    convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoiceMapOnly));
                 SDL_Rect dest   = {0, 0, getWidth(pSurface.get()), getHeight(pSurface.get())};
                 curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
@@ -200,9 +206,8 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDMAP: {
             if (curBlendBlitter == nullptr) {
-                sdl2::surface_ptr pSurface =
-                    convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
-                SDL_Rect dest   = {0, 0, getWidth(pSurface.get()), getHeight(pSurface.get())};
+                sdl2::surface_ptr pSurface = convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoiceMap));
+                SDL_Rect dest              = {0, 0, getWidth(pSurface.get()), getHeight(pSurface.get())};
                 curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pSurface), mapSurface.get(), dest);
             }
 
@@ -239,7 +244,7 @@ void MapChoice::drawSpecificStuff() {
                     // there is still some region to blend in
                     const auto pieceNum =
                         static_cast<UIGraphics_Enum>(group[lastScenario].newRegion[region][curRegion2Blit]);
-                    auto* surface = pGFXManager->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
+                    auto* surface      = gfx->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
                     auto pPieceSurface = convertSurfaceToDisplayFormat(surface);
                     auto dest =
                         calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
@@ -285,7 +290,7 @@ void MapChoice::drawSpecificStuff() {
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow =
-                    pGFXManager->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
+                    gfx->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
                 const int arrowFrame =
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128U % 4U);
                 assert(arrowFrame >= 0 && arrowFrame < 4);
@@ -300,7 +305,7 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLINKING: {
             if (dune::as_milliseconds(dune::dune_clock::now() - selectionTime) % 900 < 450) {
-                if (const auto* const pieceTexture = pGFXManager->getMapChoicePiece(selectedRegion, house)) {
+                if (const auto* const pieceTexture = gfx->getMapChoicePiece(selectedRegion, house)) {
                     pieceTexture->draw(renderer, piecePosition[selectedRegion].x + centerAreaRect.x,
                                        piecePosition[selectedRegion].y + centerAreaRect.y);
                 }
@@ -313,7 +318,7 @@ void MapChoice::drawSpecificStuff() {
 
                 const int arrowNum = std::max<int>(0, std::min<int>(8, group[lastScenario].attackRegion[i].arrowNum));
                 const auto* const arrow =
-                    pGFXManager->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
+                    gfx->getUIGraphic(static_cast<UIGraphics_Enum>(UI_MapChoiceArrow_None + arrowNum), house);
                 const int arrowFrame =
                     static_cast<int>(dune::as_milliseconds(dune::dune_clock::now().time_since_epoch()) / 128 % 4);
                 const auto src  = calcSpriteSourceRect(arrow, arrowFrame, 4);
@@ -340,7 +345,7 @@ bool MapChoice::doInput(SDL_Event& event) {
             const int y = event.button.y - centerAreaRect.y;
 
             if (x > 0 && x < centerAreaRect.w && y > 0 && y < centerAreaRect.h) {
-                auto* const clickmap = pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
+                auto* const clickmap = dune::globals::pGFXManager->getUIGraphicSurface(UI_MapChoiceClickMap);
 
                 uint8_t regionNum = 0;
                 {
@@ -370,10 +375,12 @@ bool MapChoice::doInput(SDL_Event& event) {
 }
 
 void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     // Load map surface
-    mapSurface = convertSurfaceToDisplayFormat(pGFXManager->getUIGraphicSurface(UI_MapChoiceMap));
-    mapTexture = sdl2::texture_ptr{
-        SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
+    mapSurface = convertSurfaceToDisplayFormat(gfx->getUIGraphicSurface(UI_MapChoiceMap));
+    mapTexture = sdl2::texture_ptr{SDL_CreateTexture(dune::globals::renderer.get(), SCREEN_FORMAT,
+                                                     SDL_TEXTUREACCESS_STREAMING, mapSurface->w, mapSurface->h)};
     SDL_SetTextureBlendMode(mapTexture.get(), SDL_BLENDMODE_BLEND);
 
     if (group.size() < 2)
@@ -384,7 +391,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 
         for_each_housetype([&](const auto h) {
             for (auto pieceNum : g.newRegion[static_cast<int>(h)]) {
-                SDL_Surface* pieceSurface = pGFXManager->getMapChoicePieceSurface(pieceNum, h);
+                auto* const pieceSurface = gfx->getMapChoicePieceSurface(pieceNum, h);
                 SDL_Rect dest = calcDrawingRect(pieceSurface, piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                 SDL_BlitSurface(pieceSurface, nullptr, mapSurface.get(), &dest);
             }
@@ -395,7 +402,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 void MapChoice::loadINI() {
     const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[static_cast<int>(house)]);
 
-    INIFile RegionINI(pFileManager->openFile(filename).get());
+    INIFile RegionINI(dune::globals::pFileManager->openFile(filename).get());
 
     piecePosition[0].x = 0;
     piecePosition[0].y = 0;

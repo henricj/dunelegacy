@@ -26,8 +26,11 @@
 
 // forward declarations
 class GameInitSettings;
-extern SDL_Window* window;
-extern SDL_Renderer* renderer;
+
+namespace dune::globals {
+extern sdl2::window_ptr window;
+extern sdl2::renderer_ptr renderer;
+} // namespace dune::globals
 
 void drawCursor();
 

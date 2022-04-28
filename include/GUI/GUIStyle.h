@@ -233,7 +233,7 @@ public:
     createButtonSurface(uint32_t width, uint32_t height, std::string_view text, bool pressed, bool activated,
                         Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const = 0;
 
-    virtual DuneTextureOwned
+    virtual DuneSurfaceOwned
     createButtonText(uint32_t width, uint32_t height, std::string_view text, bool activated,
                      Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT) const = 0;
 

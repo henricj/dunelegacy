@@ -31,7 +31,8 @@
 #include <iostream>
 
 XMIPlayer::XMIPlayer()
-    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "XMIPlayer"), music(nullptr) {
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "XMIPlayer"),
+      music(nullptr) {
 
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
     if ((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
@@ -303,7 +304,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-        sdl2::RWops_ptr inputrwop = pFileManager->openFile(std::filesystem::path(filename));
+        auto inputrwop = dune::globals::pFileManager->openFile(std::filesystem::path(filename));
         SDLDataSource input(inputrwop.release(), 1);
 
         auto tmpFilename = getTmpFileName();

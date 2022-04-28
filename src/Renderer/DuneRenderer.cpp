@@ -3,9 +3,11 @@
 void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, float h, uint32_t color) {
     setRenderDrawColor(renderer, color);
 
+    const auto zoom = dune::globals::currentZoomlevel;
+
     // now draw the box with parts at all corners
-    for (auto i = 0; i <= currentZoomlevel; i++) {
-        const auto offset = static_cast<float>(currentZoomlevel + 1) * 3.f;
+    for (auto i = 0; i <= zoom; i++) {
+        const auto offset = static_cast<float>(zoom + 1) * 3.f;
         const auto fi     = static_cast<float>(i);
 
         // top left bit

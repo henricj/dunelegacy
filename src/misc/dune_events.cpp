@@ -77,6 +77,9 @@ extern "C" int dune_watch_events(void* userdata, SDL_Event* event) {
 
                     const RECT* const prcNewWindow =
                         reinterpret_cast<RECT*>(event->syswm.msg->msg.win.lParam); // NOLINT(performance-no-int-to-ptr)
+
+                    auto* const window = dune::globals::window.get();
+
                     SDL_SetWindowPosition(window, prcNewWindow->left, prcNewWindow->top);
                     SDL_SetWindowSize(window, prcNewWindow->right - prcNewWindow->left,
                                       prcNewWindow->bottom - prcNewWindow->top);

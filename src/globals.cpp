@@ -15,6 +15,8 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <globals.h>
+
 #include <FileClasses/music/MusicPlayer.h>
 #include <SoundPlayer.h>
 
@@ -26,17 +28,19 @@
 #include <Network/NetworkManager.h>
 
 #include <Bullet.h>
-#include <globals.h>
 
+#include "misc/SDL2pp.h"
+
+namespace dune::globals {
 // SDL stuff
-SDL_Window* window;          ///< the window
-SDL_Renderer* renderer;      ///< the renderer
-SDL_Texture* screenTexture;  ///< the texture
-Palette palette;             ///< the palette for the screen
-int drawnMouseX;             ///< the current mouse position (x coordinate)
-int drawnMouseY;             ///< the current mouse position (y coordinate)
-UIGraphics_Enum cursorFrame; ///< the current mouse cursor
-int currentZoomlevel;        ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
+sdl2::window_ptr window;         ///< the window
+sdl2::renderer_ptr renderer;     ///< the renderer
+sdl2::texture_ptr screenTexture; ///< the texture
+Palette palette;                 ///< the palette for the screen
+int drawnMouseX;                 ///< the current mouse position (x coordinate)
+int drawnMouseY;                 ///< the current mouse position (y coordinate)
+UIGraphics_Enum cursorFrame;     ///< the current mouse cursor
+int currentZoomlevel;            ///< 0 = the smallest zoom level, 1 = medium zoom level, 2 = maximum zoom level
 
 // abstraction layers
 std::unique_ptr<SoundPlayer> soundPlayer; ///< manager for playing sfx and voice
@@ -64,3 +68,5 @@ std::vector<std::unique_ptr<Bullet>> bulletList; ///< the list of all bullets
 SettingsClass settings; ///< the settings read from the settings file
 
 bool debug; ///< is set for debugging purposes
+
+} // namespace dune::globals

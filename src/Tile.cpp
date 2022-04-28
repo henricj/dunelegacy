@@ -42,7 +42,7 @@ inline constexpr auto FOGTIME = MILLI2CYCLES(10 * 1000);
 
 Tile::Tile() : type(Terrain_Sand) {
 
-    sprite = pGFXManager->getObjPic(ObjPic_Terrain);
+    sprite = dune::globals::pGFXManager->getObjPic(ObjPic_Terrain);
 }
 
 Tile::~Tile() = default;
@@ -283,6 +283,11 @@ void Tile::blitGround(Game* game) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject(game->getObjectManager())->isAStructure())
         return;
 
+    auto* const gfx          = dune::globals::pGFXManager.get();
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const auto tileIndex       = static_cast<int>(getTerrainTile());
     const auto indexX          = tileIndex % NUM_TERRAIN_TILES_X;
     const auto indexY          = tileIndex / NUM_TERRAIN_TILES_X;
@@ -295,17 +300,16 @@ void Tile::blitGround(Game* game) {
 
     // draw terrain
     if (destroyedStructureTile == DestroyedStructure_None || destroyedStructureTile == DestroyedStructure_Wall) {
-        Dune_RenderCopyF(renderer, sprite[currentZoomlevel], &source, &pos);
+        Dune_RenderCopyF(renderer, sprite[zoom], &source, &pos);
     }
 
     if (destroyedStructureTile != DestroyedStructure_None) {
-        const auto* const pDestroyedStructureTex =
-            pGFXManager->getZoomedObjPic(ObjPic_DestroyedStructure, currentZoomlevel);
+        const auto* const pDestroyedStructureTex = gfx->getZoomedObjPic(ObjPic_DestroyedStructure, zoom);
         const SDL_Rect source2 = {destroyedStructureTile * zoomed_tilesize, 0, zoomed_tilesize, zoomed_tilesize};
         Dune_RenderCopyF(renderer, pDestroyedStructureTex, &source2, &pos);
     }
 
-    if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    if (isFoggedByTeam(game, dune::globals::pLocalHouse->getTeamID()))
         return;
 
     source.y = 0;
@@ -315,7 +319,7 @@ void Tile::blitGround(Game* game) {
     source.y = 0;
 
     // tracks
-    const auto* const pTracks = pGFXManager->getZoomedObjPic(ObjPic_Terrain_Tracks, currentZoomlevel);
+    const auto* const pTracks = gfx->getZoomedObjPic(ObjPic_Terrain_Tracks, zoom);
     for (auto i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
         const auto tracktime = static_cast<int>(gameCycleCount - tracksCreationTime[i]);
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
@@ -334,10 +338,10 @@ void Tile::blitGround(Game* game) {
                        static_cast<float>(zoomed_tilesize), static_cast<float>(zoomed_tilesize)};
 
         if (damageItem.damageType == Tile::TerrainDamage_enum::Terrain_RockDamage) {
-            auto* const texture = pGFXManager->getZoomedObjPic(ObjPic_RockDamage, currentZoomlevel);
+            auto* const texture = gfx->getZoomedObjPic(ObjPic_RockDamage, zoom);
             Dune_RenderCopyF(renderer, texture, &source, &dest);
         } else {
-            auto* const texture = pGFXManager->getZoomedObjPic(ObjPic_SandDamage, currentZoomlevel);
+            auto* const texture = gfx->getZoomedObjPic(ObjPic_SandDamage, zoom);
             Dune_RenderCopyF(renderer, texture, &source, &pos);
         }
     }
@@ -354,11 +358,13 @@ void Tile::blitStructures(Game* game) const {
 
     auto* map = game->getMap();
 
+    const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
     map->for_each(pStructure->getX(), pStructure->getY(), pStructure->getX() + pStructure->getStructureSizeX(),
                   pStructure->getY() + pStructure->getStructureSizeY(), [&](const auto& tile) {
-                      if (screenborder->isTileInsideScreen(tile.location)
-                          && (tile.isExploredByTeam(game, pLocalHouse->getTeamID()) || debug)) {
-                          pStructure->setFogged(isFoggedByTeam(game, pLocalHouse->getTeamID()));
+                      if (dune::globals::screenborder->isTileInsideScreen(tile.location)
+                          && (tile.isExploredByTeam(game, team_id) || dune::globals::debug)) {
+                          pStructure->setFogged(isFoggedByTeam(game, team_id));
 
                           if (&tile == this) {
                               // only this tile will draw it, so will be drawn only once
@@ -371,12 +377,17 @@ void Tile::blitStructures(Game* game) const {
 }
 
 void Tile::blitUndergroundUnits(Game* game) const {
-    if (!hasAnUndergroundUnit() || isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    if (!hasAnUndergroundUnit())
+        return;
+
+    const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
+    if (isFoggedByTeam(game, team_id))
         return;
 
     auto* current = getUndergroundUnit(game->getObjectManager());
 
-    if (current->isVisible(pLocalHouse->getTeamID())) {
+    if (current->isVisible(team_id)) {
         if (location == current->getLocation()) {
             current->blitToScreen();
         }
@@ -384,8 +395,13 @@ void Tile::blitUndergroundUnits(Game* game) const {
 }
 
 void Tile::blitDeadUnits(Game* game) {
-    if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    if (isFoggedByTeam(game, dune::globals::pLocalHouse->getTeamID()))
         return;
+
+    auto* const gfx          = dune::globals::pGFXManager.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    auto* const screenborder = dune::globals::screenborder.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
 
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
 
@@ -394,22 +410,22 @@ void Tile::blitDeadUnits(Game* game) {
         const DuneTexture* pTexture = nullptr;
         switch (deadUnit.type) {
             case DeadUnit_Infantry: {
-                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                pTexture = gfx->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, zoom);
                 source.x = (deadUnit.timer < 1000 && deadUnit.onSand) ? zoomed_tile : 0;
             } break;
 
             case DeadUnit_Infantry_Squashed1: {
-                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                pTexture = gfx->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, zoom);
                 source.x = 4 * zoomed_tile;
             } break;
 
             case DeadUnit_Infantry_Squashed2: {
-                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, currentZoomlevel);
+                pTexture = gfx->getZoomedObjPic(ObjPic_DeadInfantry, deadUnit.house, zoom);
                 source.x = 5 * zoomed_tile;
             } break;
 
             case DeadUnit_Carryall: {
-                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
+                pTexture = gfx->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, zoom);
                 if (deadUnit.onSand) {
                     source.x = (deadUnit.timer < 1000) ? 5 * zoomed_tile : 4 * zoomed_tile;
                 } else {
@@ -418,7 +434,7 @@ void Tile::blitDeadUnits(Game* game) {
             } break;
 
             case DeadUnit_Ornithopter: {
-                pTexture = pGFXManager->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, currentZoomlevel);
+                pTexture = gfx->getZoomedObjPic(ObjPic_DeadAirUnit, deadUnit.house, zoom);
                 if (deadUnit.onSand) {
                     source.x = (deadUnit.timer < 1000) ? 2 * zoomed_tile : zoomed_tile;
                 } else {
@@ -440,7 +456,9 @@ void Tile::blitDeadUnits(Game* game) {
 }
 
 void Tile::blitInfantry(Game* game) {
-    if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
+    if (isFoggedByTeam(game, team_id))
         return;
 
     for (const auto objectID : assignedInfantryList) {
@@ -449,7 +467,7 @@ void Tile::blitInfantry(Game* game) {
             continue;
         }
 
-        if (pInfantry->isVisible(pLocalHouse->getTeamID())) {
+        if (pInfantry->isVisible(team_id)) {
             if (location == pInfantry->getLocation()) {
                 pInfantry->blitToScreen();
             }
@@ -458,13 +476,17 @@ void Tile::blitInfantry(Game* game) {
 }
 
 void Tile::blitNonInfantryGroundUnits(Game* game) {
-    if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
+    if (isFoggedByTeam(game, team_id))
         return;
 
     for (const auto objectID : assignedNonInfantryGroundObjectList) {
         auto* pObject = game->getObjectManager().getObject(objectID);
+        if (pObject == nullptr)
+            continue;
 
-        if (pObject && pObject->isAUnit() && pObject->isVisible(pLocalHouse->getTeamID())) {
+        if (pObject->isAUnit() && pObject->isVisible(team_id)) {
             if (location == pObject->getLocation()) {
                 pObject->blitToScreen();
             }
@@ -473,8 +495,10 @@ void Tile::blitNonInfantryGroundUnits(Game* game) {
 }
 
 void Tile::blitAirUnits(Game* game) {
-    const auto* const player_house = pLocalHouse;
-    const auto is_fogged           = isFoggedByTeam(game, player_house->getTeamID());
+    const auto* const player_house = dune::globals::pLocalHouse;
+
+    const auto team_id   = player_house->getTeamID();
+    const auto is_fogged = isFoggedByTeam(game, team_id);
 
     for (const auto objectID : assignedAirUnitList) {
         auto* pAirUnit = game->getObjectManager().getObject<AirUnit>(objectID);
@@ -483,7 +507,7 @@ void Tile::blitAirUnits(Game* game) {
         }
 
         if (!is_fogged || pAirUnit->getOwner() == player_house) {
-            if (pAirUnit->isVisible(pLocalHouse->getTeamID())) {
+            if (pAirUnit->isVisible(team_id)) {
                 if (location == pAirUnit->getLocation()) {
                     pAirUnit->blitToScreen();
                 }
@@ -493,7 +517,9 @@ void Tile::blitAirUnits(Game* game) {
 }
 
 void Tile::blitSelectionRects(Game* game) const {
-    if (isFoggedByTeam(game, pLocalHouse->getTeamID()))
+    const auto team_id = dune::globals::pLocalHouse->getTeamID();
+
+    if (isFoggedByTeam(game, team_id))
         return;
 
     const auto& object_manager = game->getObjectManager();
@@ -504,7 +530,7 @@ void Tile::blitSelectionRects(Game* game) const {
             return;
 
         // possibly draw selection rectangle multiple times, e.g. for structures
-        if (pObject->isVisible(pLocalHouse->getTeamID())) {
+        if (pObject->isVisible(team_id)) {
             if (pObject->isSelected())
                 pObject->drawSelectionBox();
 
@@ -801,10 +827,11 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
         return;
 
     // a spice bloom
-    soundPlayer->playSoundAt(Sound_enum::Sound_Bloom, getLocation());
-    screenborder->shakeScreen(18);
-    if (pTrigger == pLocalHouse) {
-        soundPlayer->playVoice(Voice_enum::BloomLocated, pLocalHouse->getHouseID());
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Bloom, getLocation());
+    dune::globals::screenborder->shakeScreen(18);
+    const auto* const house = dune::globals::pLocalHouse;
+    if (pTrigger == house) {
+        dune::globals::soundPlayer->playVoice(Voice_enum::BloomLocated, house->getHouseID());
     }
 
     setType(context, Terrain_Spice); // Set this tile to spice first
@@ -944,7 +971,7 @@ bool Tile::isExploredByTeam(const Game* game, int teamID) const {
 }
 
 bool Tile::isFoggedByHouse(bool fogOfWarEnabled, uint32_t gameCycleCount, HOUSETYPE houseID) const noexcept {
-    if (debug)
+    if (dune::globals::debug)
         return false;
 
     if (fogOfWarEnabled) {
@@ -955,7 +982,7 @@ bool Tile::isFoggedByHouse(bool fogOfWarEnabled, uint32_t gameCycleCount, HOUSET
 }
 
 bool Tile::isFoggedByTeam(const Game* game, int teamID) const {
-    if (debug)
+    if (dune::globals::debug)
         return false;
 
     if (!game->getGameInitSettings().getGameOptions().fogOfWar) {
@@ -975,7 +1002,7 @@ bool Tile::isFoggedByTeam(const Game* game, int teamID) const {
 }
 
 uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
-    if (!debug && !isExploredByTeam(game, pHouse->getTeamID())) {
+    if (!dune::globals::debug && !isExploredByTeam(game, pHouse->getTeamID())) {
         return COLOR_BLACK;
     }
 
@@ -983,13 +1010,14 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
         return fogColor;
     }
 
-    const auto* const pObject = getObject(game->getObjectManager());
-    if (pObject != nullptr) {
+    if (const auto* const pObject = getObject(game->getObjectManager())) {
         uint32_t color = 0;
 
         if (pObject->getItemID() == Unit_Sandworm) {
             color = COLOR_WHITE;
         } else {
+            const auto& palette = dune::globals::palette;
+
             // clang-format off
             switch (pObject->getOwner()->getHouseID()) {
             case HOUSETYPE::HOUSE_HARKONNEN:   color = SDL2RGB(palette[PALCOLOR_HARKONNEN]);  break;
@@ -998,7 +1026,7 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
             case HOUSETYPE::HOUSE_FREMEN:      color = SDL2RGB(palette[PALCOLOR_FREMEN]);     break;
             case HOUSETYPE::HOUSE_SARDAUKAR:   color = SDL2RGB(palette[PALCOLOR_SARDAUKAR]);  break;
             case HOUSETYPE::HOUSE_MERCENARY:   color = SDL2RGB(palette[PALCOLOR_MERCENARY]);  break;
-            default:                color = COLOR_BLACK;                           break;
+            default:                           color = COLOR_BLACK;                           break;
             }
             // clang-format on
         }
@@ -1010,14 +1038,14 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
         }
 
         // units and structures of the enemy are not visible if no radar
-        if (!radar && !debug && (pObject->getOwner()->getTeamID() != pHouse->getTeamID())) {
+        if (!radar && !dune::globals::debug && (pObject->getOwner()->getTeamID() != pHouse->getTeamID())) {
             return COLOR_BLACK;
         }
 
         return color;
     }
 
-    if (!radar && !debug) {
+    if (!radar && !dune::globals::debug) {
         return COLOR_BLACK;
     }
 
@@ -1028,7 +1056,7 @@ uint32_t Tile::getRadarColor(const Game* game, House* pHouse, bool radar) {
 
 Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     const auto terrainType = type;
-    auto* const map        = currentGameMap;
+    auto* const map        = dune::globals::currentGameMap;
 
     const auto x = location.x;
     const auto y = location.y;
@@ -1107,7 +1135,7 @@ int Tile::getHideTile(const Game* game, int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    auto* const map = currentGameMap;
+    auto* const map = dune::globals::currentGameMap;
 
     // are all surrounding tiles explored?
 
@@ -1131,7 +1159,7 @@ int Tile::getFogTile(const Game* game, int teamID) const {
     const auto x = location.x;
     const auto y = location.y;
 
-    auto* const map = currentGameMap;
+    auto* const map = dune::globals::currentGameMap;
 
     // are all surrounding tiles fogged?
     if (((!map->tileExists(x, y - 1)) || (!map->getTile(x, y - 1)->isFoggedByTeam(game, teamID)))

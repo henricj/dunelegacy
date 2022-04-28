@@ -128,7 +128,7 @@ void Window::handleInput(SDL_Event& event) {
 
         case SDL_MOUSEWHEEL: {
             if (event.wheel.y != 0) {
-                handleMouseWheel(drawnMouseX, drawnMouseY, (event.wheel.y > 0));
+                handleMouseWheel(dune::globals::drawnMouseX, dune::globals::drawnMouseY, (event.wheel.y > 0));
             }
         } break;
 
@@ -151,7 +151,7 @@ void Window::handleInput(SDL_Event& event) {
                 case SDL_WINDOWEVENT_SIZE_CHANGED: {
                     auto& gui = GUIStyle::getInstance();
 
-                    gui.setLogicalSize(renderer, event.window.data1, event.window.data2);
+                    gui.setLogicalSize(dune::globals::renderer.get(), event.window.data1, event.window.data2);
 
                     const auto actual = getRendererSize();
 
@@ -160,7 +160,7 @@ void Window::handleInput(SDL_Event& event) {
                     const auto size = getMinimumSize();
 
                     if (size.x > 0 && size.y > 0)
-                        SDL_SetWindowMinimumSize(window, size.x, size.y);
+                        SDL_SetWindowMinimumSize(dune::globals::window.get(), size.x, size.y);
                 } break;
 
                 case SDL_WINDOWEVENT_DISPLAY_CHANGED: {

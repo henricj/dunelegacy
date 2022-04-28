@@ -57,7 +57,7 @@ void Saboteur::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Saboteur;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = 4;
     numImagesY = 3;
@@ -92,7 +92,7 @@ bool Saboteur::update(const GameContext& context) {
 
                 if (blockDistance(location, closestPoint) <= 1.5_fix) {
                     if (isVisible(getOwner()->getTeamID())) {
-                        screenborder->shakeScreen(18);
+                        dune::globals::screenborder->shakeScreen(18);
                     }
                 }
 
@@ -128,7 +128,7 @@ void Saboteur::destroy(const GameContext& context) {
     context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
     if (isVisible(getOwner()->getTeamID())) {
-        soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
     }
 
     parent::destroy(context);

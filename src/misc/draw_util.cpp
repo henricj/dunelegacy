@@ -155,8 +155,6 @@ void drawRectNoLock(SDL_Surface* surface, int x1, int y1, int x2, int y2, uint32
 }
 
 sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
-    assert(renderer == ::renderer);
-
     auto w = 0;
     auto h = 0;
     if (SDL_GetRendererOutputSize(renderer, &w, &h)) {
@@ -268,7 +266,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
                        inSurface->w, inSurface->h);
     }
 
-    sdl2::texture_ptr pTexture{SDL_CreateTextureFromSurface(renderer, inSurface)};
+    sdl2::texture_ptr pTexture{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), inSurface)};
 
     if (pTexture == nullptr) {
         THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ")

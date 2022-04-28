@@ -38,7 +38,8 @@ void TextBox::updateTextures() {
     if (!pTextureWithoutCaret || !pTextureWithCaret) {
         invalidateTextures();
 
-        const auto& gui = GUIStyle::getInstance();
+        const auto& gui      = GUIStyle::getInstance();
+        auto* const renderer = dune::globals::renderer.get();
 
         const auto size = getSize();
 
@@ -59,6 +60,8 @@ void TextBox::draw(Point position) {
 
     if (!pTextureWithoutCaret || !pTextureWithCaret)
         return;
+
+    auto* const renderer = dune::globals::renderer.get();
 
     if (isActive()) {
         using namespace std::chrono_literals;

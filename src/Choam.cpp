@@ -45,8 +45,9 @@ int Choam::getPrice(ItemID_enum itemID) const {
 }
 
 bool Choam::isCheap(ItemID_enum itemID) const {
-    return (getPrice(itemID) < currentGame->objectData.data[itemID][static_cast<int>(house->getHouseID())].price
-                                   * 1.3_fix); // A bit of logic to make starports better
+    const auto price = dune::globals::currentGame->objectData.data[itemID][static_cast<int>(house->getHouseID())].price;
+
+    return (getPrice(itemID) < price * 1.3_fix); // A bit of logic to make starports better
 }
 
 int Choam::getNumAvailable(ItemID_enum itemID) const {
@@ -104,7 +105,7 @@ void Choam::update(const GameContext& context) {
             buildItem.price = price;
         }
 
-        if ((pLocalHouse == house) && (house->hasStarPort())) {
+        if ((dune::globals::pLocalHouse == house) && (house->hasStarPort())) {
             game.addToNewsTicker(_("New Starport prices"));
         }
     }

@@ -156,7 +156,7 @@ INIFile::KeyIterator INIFile::Section::begin() const {
     \return the iterator
 */
 INIFile::KeyIterator INIFile::Section::end() const {
-    return KeyIterator();
+    return {};
 }
 
 /**
@@ -681,7 +681,7 @@ INIFile::SectionIterator INIFile::begin() const {
     \return the iterator
 */
 INIFile::SectionIterator INIFile::end() const {
-    return SectionIterator();
+    return {};
 }
 
 /// Get a key iterator pointing at the first key in the specified section

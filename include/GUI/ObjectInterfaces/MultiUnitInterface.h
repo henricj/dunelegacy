@@ -48,7 +48,8 @@ public:
 
 protected:
     MultiUnitInterface(const GameContext& context) : context_{context} {
-        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(
+            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
         MultiUnitInterface::addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
 
@@ -65,7 +66,9 @@ protected:
 
         buttonVBox.addWidget(VSpacer::create(6));
 
-        moveButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
+        auto* const gfx = dune::globals::pGFXManager.get();
+
+        moveButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorMove_Zoomlevel0));
         moveButton.setTooltipText(_("Move to a position (Hotkey: M)"));
         moveButton.setToggleButton(true);
         moveButton.setOnClick([] { onMove(); });
@@ -73,7 +76,7 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(2));
 
-        attackButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
+        attackButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
         attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
         attackButton.setToggleButton(true);
         attackButton.setOnClick([] { onAttack(); });
@@ -81,7 +84,7 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(2));
 
-        carryallDropButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
+        carryallDropButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
         carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
         carryallDropButton.setToggleButton(true);
         carryallDropButton.setOnClick([] { onCarryallDrop(); });
@@ -89,7 +92,7 @@ protected:
 
         actionHBox.addWidget(HSpacer::create(2));
 
-        captureButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
+        captureButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
         captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
         captureButton.setToggleButton(true);
         captureButton.setOnClick([] { onCapture(); });
@@ -99,28 +102,28 @@ protected:
 
         buttonVBox.addWidget(VSpacer::create(2));
 
-        returnButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_ReturnIcon));
+        returnButton.setSymbol(gfx->getUIGraphicSurface(UI_ReturnIcon));
         returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
         returnButton.setOnClick([this] { onReturn(); });
         commandHBox.addWidget(&returnButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
-        deployButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DeployIcon));
+        deployButton.setSymbol(gfx->getUIGraphicSurface(UI_DeployIcon));
         deployButton.setTooltipText(_("Build a new construction yard"));
         deployButton.setOnClick([this] { onDeploy(); });
         commandHBox.addWidget(&deployButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
-        destructButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_DestructIcon));
+        destructButton.setSymbol(gfx->getUIGraphicSurface(UI_DestructIcon));
         destructButton.setTooltipText(_("Self-destruct this unit"));
         destructButton.setOnClick([this] { onDestruct(); });
         commandHBox.addWidget(&destructButton);
 
         commandHBox.addWidget(HSpacer::create(2));
 
-        sendToRepairButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_SendToRepairIcon));
+        sendToRepairButton.setSymbol(gfx->getUIGraphicSurface(UI_SendToRepairIcon));
         sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
         sendToRepairButton.setOnClick([this] { OnSendToRepair(); });
         commandHBox.addWidget(&sendToRepairButton);
@@ -191,51 +194,57 @@ protected:
         update();
     }
 
-    static void onMove() { currentGame->currentCursorMode = Game::CursorMode_Move; }
+    static void onMove() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Move; }
 
-    static void onAttack() { currentGame->currentCursorMode = Game::CursorMode_Attack; }
+    static void onAttack() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Attack; }
 
-    static void onCapture() { currentGame->currentCursorMode = Game::CursorMode_Capture; }
+    static void onCapture() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Capture; }
 
-    static void onCarryallDrop() { currentGame->currentCursorMode = Game::CursorMode_CarryallDrop; }
+    static void onCarryallDrop() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_CarryallDrop; }
 
     void onReturn() {
-        for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            auto* pHarvester    = dynamic_cast<Harvester*>(pObject);
-            if (pHarvester != nullptr) {
+        auto* const game = dune::globals::currentGame.get();
+
+        for (const uint32_t selectedUnitID : game->getSelectedList()) {
+            auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+
+            if (auto* const pHarvester = dune_cast<Harvester>(pObject))
                 pHarvester->handleReturnClick(context_);
-            }
         }
     }
 
     void OnSendToRepair() {
-        for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            auto* pGroundUnit   = dynamic_cast<GroundUnit*>(pObject);
-            if ((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {
-                pGroundUnit->handleSendToRepairClick();
+        auto* const game = dune::globals::currentGame.get();
+
+        for (const uint32_t selectedUnitID : game->getSelectedList()) {
+            auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+
+            if (auto* const pGroundUnit = dune_cast<GroundUnit>(pObject)) {
+                if (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())
+                    pGroundUnit->handleSendToRepairClick();
             }
         }
     }
 
     void onDeploy() {
-        for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            MCV* pMCV           = dynamic_cast<MCV*>(pObject);
-            if (pMCV != nullptr) {
+        auto* const game = dune::globals::currentGame.get();
+
+        for (const uint32_t selectedUnitID : game->getSelectedList()) {
+            auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+            if (MCV* pMCV = dune_cast<MCV>(pObject)) {
                 pMCV->handleDeployClick();
             }
         }
     }
 
     void onDestruct() {
-        for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            auto* pDevastator   = dynamic_cast<Devastator*>(pObject);
-            if (pDevastator != nullptr) {
+        auto* const game = dune::globals::currentGame.get();
+
+        for (const auto selectedUnitID : game->getSelectedList()) {
+            auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+
+            if (auto* const pDevastator = dune_cast<Devastator>(pObject))
                 pDevastator->handleStartDevastateClick();
-            }
         }
     }
 
@@ -276,13 +285,15 @@ protected:
         \return true = everything ok, false = the object container should be removed
     */
     bool update() override {
-        if (currentGame->getSelectedList().empty()) {
+        auto* const game = dune::globals::currentGame.get();
+
+        if (game->getSelectedList().empty()) {
             return false;
         }
 
-        moveButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Move);
-        attackButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Attack);
-        captureButton.setToggleState(currentGame->currentCursorMode == Game::CursorMode_Capture);
+        moveButton.setToggleState(game->currentCursorMode == Game::CursorMode_Move);
+        attackButton.setToggleState(game->currentCursorMode == Game::CursorMode_Attack);
+        captureButton.setToggleState(game->currentCursorMode == Game::CursorMode_Capture);
 
         bool bGuard     = true;
         bool bAreaGuard = true;
@@ -299,10 +310,10 @@ protected:
         bool bShowRepair       = false;
         bool bShowCarryallDrop = false;
 
-        for (const uint32_t selectedUnitID : currentGame->getSelectedList()) {
-            ObjectBase* pObject = currentGame->getObjectManager().getObject(selectedUnitID);
-            auto* pUnit         = dynamic_cast<UnitBase*>(pObject);
-            if (pUnit != nullptr) {
+        for (const auto selectedUnitID : game->getSelectedList()) {
+            auto* const pObject = game->getObjectManager().getObject(selectedUnitID);
+
+            if (const auto* const pUnit = dune_cast<UnitBase>(pObject)) {
                 const ATTACKMODE attackMode = pUnit->getAttackMode();
                 bGuard                      = bGuard && (attackMode == GUARD);
                 bAreaGuard                  = bAreaGuard && (attackMode == AREAGUARD);
@@ -354,7 +365,7 @@ protected:
         destructButton.setVisible(bShowDevastate);
         sendToRepairButton.setVisible(bShowRepair);
         carryallDropButton.setVisible(bShowCarryallDrop
-                                      && currentGame->getGameInitSettings().getGameOptions().manualCarryallDrops);
+                                      && game->getGameInitSettings().getGameOptions().manualCarryallDrops);
 
         guardButton.setToggleState(bGuard);
         areaGuardButton.setToggleState(bAreaGuard);

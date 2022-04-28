@@ -22,7 +22,9 @@
 
 #include <Renderer/DuneTextures.h>
 
-extern SDL_Renderer* renderer;
+namespace dune::globals {
+extern sdl2::renderer_ptr renderer;
+}
 
 enum class HAlign {
     Left,
@@ -521,11 +523,14 @@ calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAli
     \return the rectangle describing the size (w,h) of the rendering target (x and y are always zero)
 */
 inline auto getRendererSize() {
-    SDL_Rect rect = {0, 0, 0, 0};
+    auto* const renderer = dune::globals::renderer.get();
+
+    SDL_Rect rect{};
     SDL_RenderGetLogicalSize(renderer, &rect.w, &rect.h);
-    if (rect.w == 0 || rect.h == 0) {
+
+    if (rect.w == 0 || rect.h == 0)
         SDL_GetRendererOutputSize(renderer, &rect.w, &rect.h);
-    }
+
     return rect;
 }
 

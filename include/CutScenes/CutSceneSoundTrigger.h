@@ -46,7 +46,7 @@ public:
         Trigger this trigger. This method is only called if currentFrameNumber == getTriggerFrameNumber()
         \param  currentFrameNumber  the current frame number relative to the beginning of the current scene
     */
-    void trigger(int currentFrameNumber) override { soundPlayer->playSound(sound); }
+    void trigger(int currentFrameNumber) override { dune::globals::soundPlayer->playSound(sound); }
 
 private:
     Mix_Chunk* sound; ///< the sound to play

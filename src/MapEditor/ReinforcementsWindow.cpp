@@ -35,10 +35,12 @@
 ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse), reinforcements(pMapEditor->getReinforcements()) {
 
-    color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+
+    auto* const gfx = dune::globals::pGFXManager.get();
 
     // set up window
-    const auto* const pBackground = pGFXManager->getUIGraphic(UI_NewMapWindow);
+    const auto* const pBackground = gfx->getUIGraphic(UI_NewMapWindow);
     setBackground(pBackground);
 
     ReinforcementsWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
@@ -74,28 +76,28 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     hBox1.addWidget(HSpacer::create(3));
 
-    listEntryUpButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
-                                pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
+    listEntryUpButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
+                                gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick([this] { onUp(); });
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    listEntryDownButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
-                                  pGFXManager->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
+    listEntryDownButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
+                                  gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick([this] { onDown(); });
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Spacer::create(), 6.0);
 
-    addListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus, house),
-                                 pGFXManager->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
+    addListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Plus, house),
+                                 gfx->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick([this] { onAdd(); });
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(VSpacer::create(3));
-    removeListEntryButton.setSymbol(pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus, house),
-                                    pGFXManager->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
+    removeListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Minus, house),
+                                    gfx->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick([this] { onRemove(); });
     listControlVBox.addWidget(&removeListEntryButton, 25);

@@ -37,7 +37,8 @@ public:
 
 protected:
     WindTrapInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(
+            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 
@@ -56,7 +57,7 @@ protected:
         \return true = everything ok, false = the object container should be removed
     */
     bool update() override {
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return false;
         }

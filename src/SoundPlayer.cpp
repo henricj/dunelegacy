@@ -26,9 +26,9 @@
 
 #include <misc/exceptions.h>
 
-SoundPlayer::SoundPlayer() : sfxVolume(settings.audio.sfxVolume) {
+SoundPlayer::SoundPlayer() : sfxVolume(dune::globals::settings.audio.sfxVolume) {
 
-    if (!pSFXManager) {
+    if (!dune::globals::pSFXManager) {
         soundOn = false;
         return;
     }
@@ -50,13 +50,13 @@ SoundPlayer::SoundPlayer() : sfxVolume(settings.audio.sfxVolume) {
     Mix_GroupChannels(22, 23, static_cast<int>(ChannelGroup::Other));
     // clang-format on
 
-    soundOn = settings.audio.playSFX;
+    soundOn = dune::globals::settings.audio.playSFX;
 }
 
 SoundPlayer::~SoundPlayer() = default;
 
 void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
-    if (!soundOn || !pSFXManager)
+    if (!soundOn || !dune::globals::pSFXManager)
         return;
 
     const auto voice_index = static_cast<int>(id);
@@ -65,7 +65,7 @@ void SoundPlayer::playVoice(Voice_enum id, HOUSETYPE houseID) const {
 
     Mix_Chunk* tmp = nullptr;
 
-    if ((tmp = pSFXManager->getVoice(id, houseID)) == nullptr) {
+    if ((tmp = dune::globals::pSFXManager->getVoice(id, houseID)) == nullptr) {
         THROW(std::invalid_argument, "There is no voice with ID %d!", voice_index);
     }
 
@@ -79,12 +79,17 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
     if (!soundOn)
         return;
 
+    auto* const currentGameMap = dune::globals::currentGameMap;
+
     if (!currentGameMap->tileExists(location)
-        || !currentGameMap->getTile(location)->isExploredByTeam(currentGame.get(), pLocalHouse->getTeamID())) {
+        || !currentGameMap->getTile(location)->isExploredByTeam(dune::globals::currentGame.get(),
+                                                                dune::globals::pLocalHouse->getTeamID())) {
         return;
     }
 
     const auto realCoord = location * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
+
+    auto* const screenborder = dune::globals::screenborder.get();
 
     if (screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE))) {
         playSound(soundID, sfxVolume);
@@ -98,11 +103,11 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
 }
 
 void SoundPlayer::toggleSound() noexcept {
-    soundOn = !soundOn && pSFXManager;
+    soundOn = !soundOn && dune::globals::pSFXManager;
 }
 
 void SoundPlayer::setSound(bool value) noexcept {
-    soundOn = value && pSFXManager;
+    soundOn = value && dune::globals::pSFXManager;
 }
 
 void SoundPlayer::playSound(Mix_Chunk* sound) const {
@@ -120,7 +125,7 @@ void SoundPlayer::playSound(Sound_enum id) const {
 }
 
 void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
-    if (!soundOn || !pSFXManager)
+    if (!soundOn || !dune::globals::pSFXManager)
         return;
 
     const auto sound_index = static_cast<int>(soundID);
@@ -162,7 +167,7 @@ void SoundPlayer::playSound(Sound_enum soundID, int volume) const {
 
     Mix_Chunk* sound = nullptr;
 
-    if ((sound = pSFXManager->getSound(soundID)) == nullptr)
+    if ((sound = dune::globals::pSFXManager->getSound(soundID)) == nullptr)
         THROW(std::invalid_argument, "There is no sound with ID %d!", sound_index);
 
     const auto group = static_cast<int>(soundID2ChannelGroup[sound_index]);

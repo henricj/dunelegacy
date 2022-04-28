@@ -47,10 +47,12 @@ void SonicTank::init() {
     assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Tank_Base;
     gunGraphicID  = ObjPic_Sonictank_Gun;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -59,24 +61,29 @@ void SonicTank::init() {
 SonicTank::~SonicTank() = default;
 
 void SonicTank::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const pUnitGraphic = graphic[zoom];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    static constexpr Coord sonicTankTurretOffset[] = {Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8),
-                                                      Coord(0, -8), Coord(0, -8), Coord(0, -8), Coord(0, -8)};
+    static constexpr auto sonicTankTurretOffset =
+        std::to_array<Coord>({{0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}, {0, -8}});
 
-    const auto* const pTurretGraphic = turretGraphic[currentZoomlevel];
-    const auto source2               = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest2                 = calcSpriteDrawingRect(
-                        pTurretGraphic, screenborder->world2screenX(realX + sonicTankTurretOffset[static_cast<int>(drawnAngle)].x),
-                        screenborder->world2screenY(realY + sonicTankTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
-                        HAlign::Center, VAlign::Center);
+    const auto* const pTurretGraphic = turretGraphic[zoom];
+
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto dest2   = calcSpriteDrawingRect(
+          pTurretGraphic, screenborder->world2screenX(realX + sonicTankTurretOffset[static_cast<int>(drawnAngle)].x),
+          screenborder->world2screenY(realY + sonicTankTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+          HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 
@@ -91,7 +98,7 @@ void SonicTank::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
     }
 
     parent::destroy(context);
@@ -109,5 +116,5 @@ bool SonicTank::canAttack(const ObjectBase* object) const {
 }
 
 void SonicTank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_Sonic, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Sonic, location);
 }

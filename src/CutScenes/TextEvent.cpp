@@ -32,7 +32,7 @@ TextEvent::TextEvent(const std::string& text, uint32_t color, int startFrame, in
 
     text_height_ = gui.getTextHeight(font_size);
 
-    pTexture = gui.createMultilineText(renderer, text, color, font_size, true);
+    pTexture = gui.createMultilineText(dune::globals::renderer.get(), text, color, font_size, true);
 }
 
 TextEvent::~TextEvent() = default;
@@ -61,5 +61,5 @@ void TextEvent::draw(int currentFrameNumber) const {
 
     SDL_SetTextureAlphaMod(pTexture.get(), alpha);
 
-    pTexture.draw(renderer, dest_x, dest_y);
+    pTexture.draw(dune::globals::renderer.get(), dest_x, dest_y);
 }

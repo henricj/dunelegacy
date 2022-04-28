@@ -57,7 +57,7 @@ void Checkbox::draw(Point position) {
     if (!tex)
         return;
 
-    tex.draw(renderer, position.x, position.y);
+    tex.draw(dune::globals::renderer.get(), position.x, position.y);
 }
 
 void Checkbox::resize(uint32_t width, uint32_t height) {
@@ -71,7 +71,8 @@ void Checkbox::updateTextures() {
     if (!pUnpressedTexture) {
         invalidateTextures();
 
-        const auto& gui = GUIStyle::getInstance();
+        const auto& gui      = GUIStyle::getInstance();
+        auto* const renderer = dune::globals::renderer.get();
 
         const auto size = getSize();
 

@@ -75,7 +75,7 @@ void Refinery::init() {
     owner->incrementStructures(itemID);
 
     graphicID  = ObjPic_Refinery;
-    graphic    = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX = 10;
     numImagesY = 1;
 }
@@ -101,7 +101,7 @@ void Refinery::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> Refinery::getInterfaceContainer(const GameContext& context) {
-    if (pLocalHouse == owner || debug) {
+    if (dune::globals::pLocalHouse == owner || dune::globals::debug) {
         return RefineryAndSiloInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -122,8 +122,8 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
     extractingSpice = false;
 
     if (firstRun) {
-        if (getOwner() == pLocalHouse)
-            soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
+        if (getOwner() == dune::globals::pLocalHouse)
+            dune::globals::soundPlayer->playVoice(Voice_enum::HarvesterDeployed, getOwner()->getHouseID());
     }
 
     firstRun = false;
@@ -135,7 +135,7 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
             pCarryall->setDestination(pHarvester->getGuardPoint());
         } else {
             const auto deployPos =
-                currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
+                dune::globals::currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
 
             if (deployPos.isInvalid()) {
                 sdl2::log_error("Unable to locate deployment location for harvester!");
@@ -206,7 +206,7 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
         // find carryall
         Carryall* pCarryall = nullptr;
         if (pHarvester->getGuardPoint().isValid() && getOwner()->hasCarryalls()) {
-            for (auto* const pUnit : unitList) {
+            for (auto* const pUnit : dune::globals::unitList) {
                 if (pUnit->getOwner() == owner)
                     continue;
 

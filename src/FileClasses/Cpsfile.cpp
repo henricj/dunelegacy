@@ -77,11 +77,11 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
         THROW(std::runtime_error, "LoadCPS_RW(): SDL_CreateRGBSurface has failed!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy line by line
-    char* RESTRICT p = static_cast<char*>(pic->pixels);
+    auto* const RESTRICT p = static_cast<char*>(pic->pixels);
     for (int y = 0; y < SIZE_Y; ++y) {
         memcpy(p + y * pic->pitch, pImageOut.get() + y * SIZE_X, SIZE_X);
     }

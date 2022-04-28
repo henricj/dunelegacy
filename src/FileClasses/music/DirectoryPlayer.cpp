@@ -26,7 +26,8 @@
 #include <filesystem>
 
 DirectoryPlayer::DirectoryPlayer()
-    : MusicPlayer(settings.audio.playMusic, settings.audio.musicVolume, "DirectoryPlayer") {
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume,
+                  "DirectoryPlayer") {
     // determine path to config file
     auto [ok, configfilepath] = fnkdat(FNKDAT_USER | FNKDAT_CREAT);
 

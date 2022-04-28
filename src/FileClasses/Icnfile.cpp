@@ -199,7 +199,7 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
         THROW(std::runtime_error, "Icnfile::getPicture(): Cannot create surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy to surface
@@ -322,7 +322,7 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
         THROW(std::runtime_error, "Icnfile::getPictureArray(): Cannot create surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     int tileidx = 0;
@@ -386,7 +386,7 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
         THROW(std::runtime_error, "Icnfile::getPictureRow(): Cannot create surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     uint32_t tileCount = 0u;
@@ -437,7 +437,7 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
         THROW(std::runtime_error, "Icnfile::getPictureRow2(): Cannot create surface!");
     }
 
-    palette.applyToSurface(pic.get());
+    dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
     va_list arg_ptr;

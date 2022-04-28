@@ -37,7 +37,8 @@ public:
 
 protected:
     RadarInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const Uint32 color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const Uint32 color = SDL2RGB(
+            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
         mainHBox.addWidget(&textVBox);
 

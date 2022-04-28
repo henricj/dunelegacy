@@ -240,9 +240,9 @@ Coord AIPlayer::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_WOR: {
                     // place near sand
                     FixPoint nearestSand = 10000000;
-                    for (int y = 0; y < currentGameMap->getSizeY(); y++) {
-                        for (int x = 0; x < currentGameMap->getSizeX(); x++) {
-                            if (!currentGameMap->getTile(x, y)->isRock()) {
+                    for (int y = 0; y < getMap().getSizeY(); y++) {
+                        for (int x = 0; x < getMap().getSizeX(); x++) {
+                            if (!getMap().getTile(x, y)->isRock()) {
                                 const auto distance = blockDistance(pos, Coord(x, y));
                                 if (distance < nearestSand) {
                                     nearestSand = distance;
@@ -310,22 +310,22 @@ int AIPlayer::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
 
     int numAdjacentStructureTiles = 0;
 
-    const auto* const map = currentGameMap;
+    const auto& map = getMap();
 
     for (int y = pos.y; y < pos.y + structureSizeY; y++) {
-        if (map->hasAStructure(context_, pos.x - 1, y)) {
+        if (map.hasAStructure(context_, pos.x - 1, y)) {
             numAdjacentStructureTiles++;
         }
-        if (map->hasAStructure(context_, pos.x + structureSizeX, y)) {
+        if (map.hasAStructure(context_, pos.x + structureSizeX, y)) {
             numAdjacentStructureTiles++;
         }
     }
 
     for (int x = pos.x; x < pos.x + structureSizeX; x++) {
-        if (map->hasAStructure(context_, x, pos.y - 1)) {
+        if (map.hasAStructure(context_, x, pos.y - 1)) {
             numAdjacentStructureTiles++;
         }
-        if (map->hasAStructure(context_, x, pos.y + structureSizeY)) {
+        if (map.hasAStructure(context_, x, pos.y + structureSizeY)) {
             numAdjacentStructureTiles++;
         }
     }
@@ -791,8 +791,8 @@ void AIPlayer::checkAllUnits() {
 bool AIPlayer::isAllowedToArm() const {
     std::array<int, NUM_TEAMS> teamScore{};
 
-    int maxTeamScore = 0;
-    currentGame->for_each_house([&](const auto& house) {
+    auto maxTeamScore = 0;
+    context_.game.for_each_house([&](const auto& house) {
         teamScore[house.getTeamID()] += house.getUnitBuiltValue();
 
         if (house.getTeamID() != getHouse()->getTeamID()) {

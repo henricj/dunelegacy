@@ -40,7 +40,8 @@ public:
 
 protected:
     explicit BuilderInterface(const GameContext& context, int objectID) : DefaultStructureInterface(context, objectID) {
-        const auto color = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(pLocalHouse->getHouseID())] + 3]);
+        const auto color = SDL2RGB(
+            dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
         upgradeButton.setText(_("Upgrade"));
         upgradeButton.setTextColor(color);
@@ -56,7 +57,7 @@ protected:
 
         mainHBox.addWidget(Spacer::create());
 
-        ObjectBase* pObject = currentGame->getObjectManager().getObject(objectID);
+        ObjectBase* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
         auto* pBuilder      = dynamic_cast<BuilderBase*>(pObject);
         if (pBuilder) {
             pBuilderList = BuilderList::create(pBuilder->getObjectID());
@@ -80,7 +81,7 @@ protected:
     }
 
     void onUpgrade() const {
-        auto* const pObject  = currentGame->getObjectManager().getObject(objectID);
+        auto* const pObject  = dune::globals::currentGame->getObjectManager().getObject(objectID);
         auto* const pBuilder = dynamic_cast<BuilderBase*>(pObject);
         if (pBuilder != nullptr && !pBuilder->isUpgrading()) {
             pBuilder->handleUpgradeClick();
@@ -93,7 +94,7 @@ protected:
         \return true = everything ok, false = the object container should be removed
     */
     bool update() override {
-        auto* const pObject = currentGame->getObjectManager().getObject(objectID);
+        auto* const pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
         if (pObject == nullptr) {
             return false;
         }

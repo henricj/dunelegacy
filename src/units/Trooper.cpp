@@ -44,7 +44,7 @@ void Trooper::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Trooper;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = 4;
     numImagesY = 3;
@@ -61,5 +61,5 @@ bool Trooper::canAttack(const ObjectBase* object) const {
 }
 
 void Trooper::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_RocketSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_RocketSmall, location);
 }

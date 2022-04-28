@@ -189,8 +189,8 @@ void ReinforcementTrigger::trigger(const GameContext& context) {
                             dropCoord = dropHouse->getStrongestUnitPosition();
                         } else {
                             // house has no units => random position
-                            const int x = game.randomGen.rand(0, currentGameMap->getSizeX() - 1);
-                            const int y = game.randomGen.rand(0, currentGameMap->getSizeY() - 1);
+                            const int x = game.randomGen.rand(0, map.getSizeX() - 1);
+                            const int y = game.randomGen.rand(0, map.getSizeY() - 1);
                             dropCoord   = Coord(x, y);
                         }
                     }

@@ -134,7 +134,7 @@ public:
 
     template<class... Args>
     void add_bullet(Args&&... args) {
-        bulletList.push_back(std::make_unique<Bullet>(std::forward<Args>(args)...));
+        dune::globals::bulletList.push_back(std::make_unique<Bullet>(std::forward<Args>(args)...));
     }
 
     template<typename F>

@@ -222,7 +222,7 @@ public:
     bool update(const GameContext& context) override;
 
     bool canPass(int xPos, int yPos) const {
-        const auto* const pTile = currentGameMap->tryGetTile(xPos, yPos);
+        const auto* const pTile = dune::globals::currentGameMap->tryGetTile(xPos, yPos);
 
         return pTile ? canPassTile(pTile) : false;
     }

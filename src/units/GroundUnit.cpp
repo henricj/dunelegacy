@@ -52,14 +52,17 @@ void GroundUnit::save(OutputStream& stream) const {
 }
 
 void GroundUnit::assignToMap(const GameContext& context, const Coord& pos) {
-    if (currentGameMap->tileExists(pos)) {
-        currentGameMap->getTile(pos)->assignNonInfantryGroundObject(getObjectID());
-        currentGameMap->viewMap(owner->getHouseID(), pos, getViewRange());
+    auto& map = context.map;
+
+    if (auto* tile = map.tryGetTile(pos.x, pos.y)) {
+        tile->assignNonInfantryGroundObject(getObjectID());
+        map.viewMap(owner->getHouseID(), pos, getViewRange());
     }
 }
 
 void GroundUnit::checkPos(const GameContext& context) {
-    auto* pTile = currentGameMap->getTile(location);
+    auto* pTile = context.map.getTile(location);
+
     if (!moving && !justStoppedMoving && !isInfantry()) {
         pTile->setTrack(drawnAngle, context.game.getGameCycleCount());
     }
@@ -105,8 +108,8 @@ void GroundUnit::checkPos(const GameContext& context) {
                     } else {
                         // the repair yard is already in use by some other unit => move out
                         const Coord newDestination =
-                            currentGameMap->findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(),
-                                                           pRepairYard->getStructureSize());
+                            context.map.findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(),
+                                                       pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
                 }
@@ -129,12 +132,13 @@ void GroundUnit::checkPos(const GameContext& context) {
 }
 
 void GroundUnit::playConfirmSound() {
-    soundPlayer->playVoice(pGFXManager->random().getRandOf(Voice_enum::Acknowledged, Voice_enum::Affirmative),
-                           getOwner()->getHouseID());
+    dune::globals::soundPlayer->playVoice(
+        dune::globals::pGFXManager->random().getRandOf(Voice_enum::Acknowledged, Voice_enum::Affirmative),
+        getOwner()->getHouseID());
 }
 
 void GroundUnit::playSelectSound() {
-    soundPlayer->playVoice(Voice_enum::Reporting, getOwner()->getHouseID());
+    dune::globals::soundPlayer->playVoice(Voice_enum::Reporting, getOwner()->getHouseID());
 }
 
 /**
@@ -154,7 +158,7 @@ bool GroundUnit::requestCarryall(const GameContext& context) {
         // This allows a unit to keep requesting a carryall even if one isn't available right now
         doSetAttackMode(context, CARRYALLREQUESTED);
 
-        for (auto* pUnit : unitList) {
+        for (auto* pUnit : dune::globals::unitList) {
             if (pUnit->getOwner() != owner)
                 continue;
 
@@ -219,7 +223,7 @@ bool GroundUnit::hasBookedCarrier() {
 }
 
 const UnitBase* GroundUnit::getCarrier() const {
-    return currentGame->getObjectManager().getObject<UnitBase>(bookedCarrier);
+    return dune::globals::currentGame->getObjectManager().getObject<UnitBase>(bookedCarrier);
 }
 
 FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const {
@@ -255,8 +259,8 @@ void GroundUnit::navigate(const GameContext& context) {
 }
 
 void GroundUnit::handleSendToRepairClick() {
-    currentGame->getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID));
+    dune::globals::currentGame->getCommandManager().addCommand(
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID));
 }
 
 void GroundUnit::doRepair(const GameContext& context) noexcept {
@@ -268,7 +272,7 @@ void GroundUnit::doRepair(const GameContext& context) noexcept {
     FixPoint closestLeastBookedRepairYardDistance = 1000000;
     const RepairYard* pBestRepairYard             = nullptr;
 
-    for (auto* pStructure : structureList) {
+    for (auto* pStructure : dune::globals::structureList) {
         auto* const pRepairYard = dune_cast<RepairYard>(pStructure);
         if (pRepairYard && (pStructure->getOwner() == owner)) {
 

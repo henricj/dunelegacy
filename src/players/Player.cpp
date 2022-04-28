@@ -90,11 +90,11 @@ const ObjectBase* Player::getObject(uint32_t objectID) const {
 }
 
 const RobustList<const StructureBase*>& Player::getStructureList() {
-    return reinterpret_cast<const RobustList<const StructureBase*>&>(structureList);
+    return reinterpret_cast<const RobustList<const StructureBase*>&>(dune::globals::structureList);
 }
 
 const RobustList<const UnitBase*>& Player::getUnitList() const {
-    return reinterpret_cast<const RobustList<const UnitBase*>&>(unitList);
+    return reinterpret_cast<const RobustList<const UnitBase*>&>(dune::globals::unitList);
 }
 
 const House* Player::getHouse(HOUSETYPE houseID) {

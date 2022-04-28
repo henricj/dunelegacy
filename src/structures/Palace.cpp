@@ -70,7 +70,7 @@ void Palace::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_Palace;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 4;
     numImagesY     = 1;
     firstAnimFrame = 2;
@@ -85,7 +85,7 @@ void Palace::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext& context) {
-    if ((pLocalHouse == owner) || (debug)) {
+    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
         return PalaceInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -93,18 +93,18 @@ std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext
 
 void Palace::handleSpecialClick(const GameContext& context) {
     context.game.getCommandManager().addCommand(
-        Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID));
 }
 
 void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos) {
     auto& game      = context.game;
     const auto& map = context.map;
 
-    if (map.tileExists(xPos, yPos)) {
-        game.getCommandManager().addCommand(Command(pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,
-                                                    objectID, static_cast<uint32_t>(xPos),
-                                                    static_cast<uint32_t>(yPos)));
-    }
+    if (!map.tileExists(xPos, yPos))
+        return;
+
+    game.getCommandManager().addCommand({dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,
+                                         objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)});
 }
 
 void Palace::doSpecialWeapon(const GameContext& context) {
@@ -159,11 +159,11 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
 
     context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
                            nullptr);
-    soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, getLocation());
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, getLocation());
 
-    if (getOwner() != pLocalHouse) {
+    if (getOwner() != dune::globals::pLocalHouse) {
         context.game.addToNewsTicker(_("@DUNE.ENG|81#Missile is approaching"));
-        soundPlayer->playVoice(Voice_enum::MissileApproaching, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::MissileApproaching, dune::globals::pLocalHouse->getHouseID());
     }
 
     specialWeaponTimer = getMaxSpecialWeaponTimer();
@@ -175,7 +175,7 @@ void Palace::updateStructureSpecificStuff(const GameContext& context) {
         if (specialWeaponTimer <= 0) {
             specialWeaponTimer = 0;
 
-            if (getOwner() == pLocalHouse) {
+            if (getOwner() == dune::globals::pLocalHouse) {
                 context.game.addToNewsTicker(_("Palace is ready"));
             } else if (getOwner()->isAI()) {
 
@@ -255,7 +255,7 @@ bool Palace::callFremen(const GameContext& context) {
         return true;
     }
 
-    if (getOwner() == pLocalHouse) {
+    if (getOwner() == dune::globals::pLocalHouse) {
         context.game.addToNewsTicker(_("Unable to spawn Fremen"));
     }
 
@@ -271,7 +271,8 @@ bool Palace::spawnSaboteur(const GameContext& context) {
     if (getOwner()->isAI()) {
         saboteur->doSetAttackMode(context, HUNT);
         context.game.addToNewsTicker(_("@DUNE.ENG|79#Saboteur is approaching"));
-        soundPlayer->playVoice(Voice_enum::SaboteurApproaching, pLocalHouse->getHouseID());
+        dune::globals::soundPlayer->playVoice(Voice_enum::SaboteurApproaching,
+                                              dune::globals::pLocalHouse->getHouseID());
     }
 
     return true;

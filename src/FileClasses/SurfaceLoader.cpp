@@ -223,6 +223,8 @@ SurfaceLoader::SurfaceLoader() {
 
     const auto start = std::chrono::steady_clock::now();
 
+    auto* const file_manager = dune::globals::pFileManager.get();
+
     // open all shp files
     auto units   = loadShpfile("UNITS.SHP");
     auto units1  = loadShpfile("UNITS1.SHP");
@@ -235,9 +237,10 @@ SurfaceLoader::SurfaceLoader() {
     auto menshpm = loadShpfile("MENSHPM.SHP");
 
     std::unique_ptr<Shpfile> choam;
-    if (pFileManager->exists("CHOAM." + _("LanguageFileExtension"))) {
+
+    if (file_manager->exists("CHOAM." + _("LanguageFileExtension"))) {
         choam = loadShpfile("CHOAM." + _("LanguageFileExtension"));
-    } else if (pFileManager->exists("CHOAMSHP.SHP")) {
+    } else if (file_manager->exists("CHOAMSHP.SHP")) {
         choam = loadShpfile("CHOAMSHP.SHP");
     } else {
         THROW(std::runtime_error,
@@ -245,7 +248,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     std::unique_ptr<Shpfile> bttn;
-    if (pFileManager->exists("BTTN." + _("LanguageFileExtension"))) {
+    if (file_manager->exists("BTTN." + _("LanguageFileExtension"))) {
         bttn = loadShpfile("BTTN." + _("LanguageFileExtension"));
     } else {
         // The US-Version has the buttons in SHAPES.SHP
@@ -253,7 +256,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     std::unique_ptr<Shpfile> mentat;
-    if (pFileManager->exists("MENTAT." + _("LanguageFileExtension"))) {
+    if (file_manager->exists("MENTAT." + _("LanguageFileExtension"))) {
         mentat = loadShpfile("MENTAT." + _("LanguageFileExtension"));
     } else {
         mentat = loadShpfile("MENTAT.SHP");
@@ -264,13 +267,13 @@ SurfaceLoader::SurfaceLoader() {
 
     // Load icon file
     auto icon =
-        std::make_unique<Icnfile>(pFileManager->openFile("ICON.ICN").get(), pFileManager->openFile("ICON.MAP").get());
+        std::make_unique<Icnfile>(file_manager->openFile("ICON.ICN").get(), file_manager->openFile("ICON.MAP").get());
 
     // Load radar static
     auto radar = loadWsafile("STATIC.WSA");
 
     // open bene palette
-    Palette benePalette = LoadPalette_RW(pFileManager->openFile("BENE.PAL").get());
+    Palette benePalette = LoadPalette_RW(file_manager->openFile("BENE.PAL").get());
 
     const auto elapsed = std::chrono::steady_clock::now() - start;
     sdl2::log_info("SurfaceLoader load time: %s",
@@ -391,9 +394,9 @@ SurfaceLoader::SurfaceLoader() {
     objPic[ObjPic_Terrain_Hidden][harkIdx][0]    = icon->getPictureRow(108, 123);
     objPic[ObjPic_Terrain_HiddenFog][harkIdx][0] = icon->getPictureRow(108, 123);
     objPic[ObjPic_Terrain_Tracks][harkIdx][0]    = icon->getPictureRow(25, 32);
-    objPic[ObjPic_Star][harkIdx][0]              = LoadPNG_RW(pFileManager->openFile("Star5x5.png").get());
-    objPic[ObjPic_Star][harkIdx][1]              = LoadPNG_RW(pFileManager->openFile("Star7x7.png").get());
-    objPic[ObjPic_Star][harkIdx][2]              = LoadPNG_RW(pFileManager->openFile("Star11x11.png").get());
+    objPic[ObjPic_Star][harkIdx][0]              = LoadPNG_RW(file_manager->openFile("Star5x5.png").get());
+    objPic[ObjPic_Star][harkIdx][1]              = LoadPNG_RW(file_manager->openFile("Star7x7.png").get());
+    objPic[ObjPic_Star][harkIdx][2]              = LoadPNG_RW(file_manager->openFile("Star11x11.png").get());
 
     SDL_Color fogTransparent = {0, 0, 0, 96};
     SDL_SetPaletteColors(objPic[ObjPic_Terrain_HiddenFog][harkIdx][0]->format->palette, &fogTransparent, PALCOLOR_BLACK,
@@ -436,7 +439,7 @@ SurfaceLoader::SurfaceLoader() {
     smallDetailPic[Picture_Deviator]         = extractSmallDetailPic("ORDRTANK.WSA");
     smallDetailPic[Picture_DeathHand]        = extractSmallDetailPic("GOLD-BB.WSA");
     smallDetailPic[Picture_Fremen]           = extractSmallDetailPic("FREMEN.WSA");
-    if (pFileManager->exists("FRIGATE.WSA")) {
+    if (file_manager->exists("FRIGATE.WSA")) {
         smallDetailPic[Picture_Frigate] = extractSmallDetailPic("FRIGATE.WSA");
     } else {
         // US-Version 1.07 does not contain FRIGATE.WSA
@@ -554,7 +557,7 @@ SurfaceLoader::SurfaceLoader() {
         Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorAttack_Zoomlevel0][harkIdx].get(), 1, 1);
     SDL_SetColorKey(uiGraphic[UI_CursorAttack_Zoomlevel2][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_CursorCapture_Zoomlevel0][harkIdx] = LoadPNG_RW(pFileManager->openFile("Capture.png").get());
+    uiGraphic[UI_CursorCapture_Zoomlevel0][harkIdx] = LoadPNG_RW(file_manager->openFile("Capture.png").get());
     SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel0][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorCapture_Zoomlevel1][harkIdx] =
         Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][harkIdx].get(), 1, 1);
@@ -563,7 +566,7 @@ SurfaceLoader::SurfaceLoader() {
         Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCapture_Zoomlevel0][harkIdx].get(), 1, 1);
     SDL_SetColorKey(uiGraphic[UI_CursorCapture_Zoomlevel2][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][harkIdx] = LoadPNG_RW(pFileManager->openFile("CarryallDrop.png").get());
+    uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][harkIdx] = LoadPNG_RW(file_manager->openFile("CarryallDrop.png").get());
     SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_CursorCarryallDrop_Zoomlevel1][harkIdx] =
         Scaler::defaultDoubleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][harkIdx].get(), 1, 1);
@@ -572,16 +575,16 @@ SurfaceLoader::SurfaceLoader() {
         Scaler::defaultTripleTiledSurface(uiGraphic[UI_CursorCarryallDrop_Zoomlevel0][harkIdx].get(), 1, 1);
     SDL_SetColorKey(uiGraphic[UI_CursorCarryallDrop_Zoomlevel2][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_ReturnIcon][harkIdx] = LoadPNG_RW(pFileManager->openFile("Return.png").get());
+    uiGraphic[UI_ReturnIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("Return.png").get());
     SDL_SetColorKey(uiGraphic[UI_ReturnIcon][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_DeployIcon][harkIdx] = LoadPNG_RW(pFileManager->openFile("Deploy.png").get());
+    uiGraphic[UI_DeployIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("Deploy.png").get());
     SDL_SetColorKey(uiGraphic[UI_DeployIcon][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_DestructIcon][harkIdx] = LoadPNG_RW(pFileManager->openFile("Destruct.png").get());
+    uiGraphic[UI_DestructIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("Destruct.png").get());
     SDL_SetColorKey(uiGraphic[UI_DestructIcon][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_SendToRepairIcon][harkIdx] = LoadPNG_RW(pFileManager->openFile("SendToRepair.png").get());
+    uiGraphic[UI_SendToRepairIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("SendToRepair.png").get());
     SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][harkIdx].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_CreditsDigits][harkIdx] = shapes->getPictureArray(
@@ -614,7 +617,7 @@ SurfaceLoader::SurfaceLoader() {
         picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_SARDAUKAR);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)] =
         picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_MERCENARY);
-    uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx] = LoadPNG_RW(pFileManager->openFile("UI_SelectionBox.png").get());
+    uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx] = LoadPNG_RW(file_manager->openFile("UI_SelectionBox.png").get());
     SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_SelectionBox_Zoomlevel1][harkIdx] =
         Scaler::defaultDoubleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx].get(), 1, 1);
@@ -623,7 +626,7 @@ SurfaceLoader::SurfaceLoader() {
         Scaler::defaultTripleTiledSurface(uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx].get(), 1, 1);
     SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel2][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][harkIdx] =
-        LoadPNG_RW(pFileManager->openFile("UI_OtherPlayerSelectionBox.png").get());
+        LoadPNG_RW(file_manager->openFile("UI_OtherPlayerSelectionBox.png").get());
     SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel1][harkIdx] =
         Scaler::defaultDoubleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][harkIdx].get(), 1, 1);
@@ -639,10 +642,10 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_BuilderListUpperCap][harkIdx] = picFactory_.createBuilderListUpperCap();
     uiGraphic[UI_BuilderListLowerCap][harkIdx] = picFactory_.createBuilderListLowerCap();
     uiGraphic[UI_CustomGamePlayersArrow][harkIdx] =
-        LoadPNG_RW(pFileManager->openFile("CustomGamePlayers_Arrow.png").get());
+        LoadPNG_RW(file_manager->openFile("CustomGamePlayers_Arrow.png").get());
     SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_CustomGamePlayersArrowNeutral][harkIdx] =
-        LoadPNG_RW(pFileManager->openFile("CustomGamePlayers_ArrowNeutral.png").get());
+        LoadPNG_RW(file_manager->openFile("CustomGamePlayers_ArrowNeutral.png").get());
     SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_MessageBox][harkIdx] = picFactory_.createMessageBoxBorder();
 
@@ -662,27 +665,27 @@ SurfaceLoader::SurfaceLoader() {
     SDL_SetColorKey(uiGraphic[UI_Upgrade][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_Upgrade_Pressed][harkIdx] = choam->getPicture(5);
     SDL_SetColorKey(uiGraphic[UI_Upgrade_Pressed][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_Repair][harkIdx]         = LoadPNG_RW(pFileManager->openFile("Button_Repair.png").get());
-    uiGraphic[UI_Repair_Pressed][harkIdx] = LoadPNG_RW(pFileManager->openFile("Button_RepairPushed.png").get());
-    uiGraphic[UI_Minus][harkIdx]          = LoadPNG_RW(pFileManager->openFile("Button_Minus.png").get());
+    uiGraphic[UI_Repair][harkIdx]         = LoadPNG_RW(file_manager->openFile("Button_Repair.png").get());
+    uiGraphic[UI_Repair_Pressed][harkIdx] = LoadPNG_RW(file_manager->openFile("Button_RepairPushed.png").get());
+    uiGraphic[UI_Minus][harkIdx]          = LoadPNG_RW(file_manager->openFile("Button_Minus.png").get());
     uiGraphic[UI_Minus_Active][harkIdx] =
         mapSurfaceColorRange(uiGraphic[UI_Minus][harkIdx].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 2);
-    uiGraphic[UI_Minus_Pressed][harkIdx] = LoadPNG_RW(pFileManager->openFile("Button_MinusPushed.png").get());
-    uiGraphic[UI_Plus][harkIdx]          = LoadPNG_RW(pFileManager->openFile("Button_Plus.png").get());
+    uiGraphic[UI_Minus_Pressed][harkIdx] = LoadPNG_RW(file_manager->openFile("Button_MinusPushed.png").get());
+    uiGraphic[UI_Plus][harkIdx]          = LoadPNG_RW(file_manager->openFile("Button_Plus.png").get());
     uiGraphic[UI_Plus_Active][harkIdx] =
         mapSurfaceColorRange(uiGraphic[UI_Plus][harkIdx].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 2);
-    uiGraphic[UI_Plus_Pressed][harkIdx]  = LoadPNG_RW(pFileManager->openFile("Button_PlusPushed.png").get());
-    uiGraphic[UI_MissionSelect][harkIdx] = LoadPNG_RW(pFileManager->openFile("Menu_MissionSelect.png").get());
+    uiGraphic[UI_Plus_Pressed][harkIdx]  = LoadPNG_RW(file_manager->openFile("Button_PlusPushed.png").get());
+    uiGraphic[UI_MissionSelect][harkIdx] = LoadPNG_RW(file_manager->openFile("Menu_MissionSelect.png").get());
     picFactory_.drawFrame(uiGraphic[UI_MissionSelect][harkIdx].get(), PictureFactory::SimpleFrame, nullptr);
     SDL_SetColorKey(uiGraphic[UI_MissionSelect][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_OptionsMenu][harkIdx]    = picFactory_.createOptionsMenu();
     uiGraphic[UI_LoadSaveWindow][harkIdx] = picFactory_.createMenu(280, 228);
     uiGraphic[UI_NewMapWindow][harkIdx]   = picFactory_.createMenu(600, 440);
-    uiGraphic[UI_DuneLegacy][harkIdx]     = LoadPNG_RW(pFileManager->openFile("DuneLegacy.png").get());
+    uiGraphic[UI_DuneLegacy][harkIdx]     = LoadPNG_RW(file_manager->openFile("DuneLegacy.png").get());
     uiGraphic[UI_GameMenu][harkIdx]       = picFactory_.createMenu(uiGraphic[UI_DuneLegacy][harkIdx].get(), 158);
     picFactory_.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
 
-    uiGraphic[UI_PlanetBackground][harkIdx] = LoadCPS_RW(pFileManager->openFile("BIGPLAN.CPS").get());
+    uiGraphic[UI_PlanetBackground][harkIdx] = LoadCPS_RW(file_manager->openFile("BIGPLAN.CPS").get());
     picFactory_.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), PictureFactory::SimpleFrame);
     uiGraphic[UI_MenuButtonBorder][harkIdx] =
         picFactory_.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
@@ -690,11 +693,11 @@ SurfaceLoader::SurfaceLoader() {
     picFactory_.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
 
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATH.CPS").get()).get());
+        Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATH.CPS").get()).get());
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATA.CPS").get()).get());
+        Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATA.CPS").get()).get());
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATO.CPS").get()).get());
+        Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATO.CPS").get()).get());
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)] =
         PictureFactory::mapMentatSurfaceToFremen(
             uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)].get());
@@ -706,7 +709,7 @@ SurfaceLoader::SurfaceLoader() {
             uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)].get());
 
     uiGraphic[UI_MentatBackgroundBene][harkIdx] =
-        Scaler::defaultDoubleSurface(LoadCPS_RW(pFileManager->openFile("MENTATM.CPS").get()).get());
+        Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATM.CPS").get()).get());
     if (uiGraphic[UI_MentatBackgroundBene][harkIdx] != nullptr) {
         benePalette.applyToSurface(uiGraphic[UI_MentatBackgroundBene][harkIdx].get());
     }
@@ -737,10 +740,10 @@ SurfaceLoader::SurfaceLoader() {
 
     { // Scope
         sdl2::surface_ptr pHouseChoiceBackground;
-        if (pFileManager->exists("HERALD." + _("LanguageFileExtension"))) {
-            pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD." + _("LanguageFileExtension")).get());
+        if (file_manager->exists("HERALD." + _("LanguageFileExtension"))) {
+            pHouseChoiceBackground = LoadCPS_RW(file_manager->openFile("HERALD." + _("LanguageFileExtension")).get());
         } else {
-            pHouseChoiceBackground = LoadCPS_RW(pFileManager->openFile("HERALD.CPS").get());
+            pHouseChoiceBackground = LoadCPS_RW(file_manager->openFile("HERALD.CPS").get());
         }
 
         uiGraphic[UI_HouseSelect][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
@@ -789,20 +792,20 @@ SurfaceLoader::SurfaceLoader() {
         uiGraphic[UI_Herald_Colored][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)].get());
 
     uiGraphic[UI_Herald_ArrowLeft][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("ArrowLeft.png").get());
+        LoadPNG_RW(file_manager->openFile("ArrowLeft.png").get());
     uiGraphic[UI_Herald_ArrowLeftLarge][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = Scaler::defaultDoubleSurface(
         uiGraphic[UI_Herald_ArrowLeft][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get());
     uiGraphic[UI_Herald_ArrowLeftHighlight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("ArrowLeftHighlight.png").get());
+        LoadPNG_RW(file_manager->openFile("ArrowLeftHighlight.png").get());
     uiGraphic[UI_Herald_ArrowLeftHighlightLarge][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::defaultDoubleSurface(
             uiGraphic[UI_Herald_ArrowLeftHighlight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get());
     uiGraphic[UI_Herald_ArrowRight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("ArrowRight.png").get());
+        LoadPNG_RW(file_manager->openFile("ArrowRight.png").get());
     uiGraphic[UI_Herald_ArrowRightLarge][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = Scaler::defaultDoubleSurface(
         uiGraphic[UI_Herald_ArrowRight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get());
     uiGraphic[UI_Herald_ArrowRightHighlight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("ArrowRightHighlight.png").get());
+        LoadPNG_RW(file_manager->openFile("ArrowRightHighlight.png").get());
     uiGraphic[UI_Herald_ArrowRightHighlightLarge][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::defaultDoubleSurface(
             uiGraphic[UI_Herald_ArrowRightHighlight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get());
@@ -820,13 +823,13 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)] =
         picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_MERCENARY);
     uiGraphic[UI_MapChoicePlanet][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("PLANET.CPS").get()).get());
+        Scaler::doubleSurfaceNN(LoadCPS_RW(file_manager->openFile("PLANET.CPS").get()).get());
     SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceMapOnly][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNEMAP.CPS").get()).get());
+        Scaler::doubleSurfaceNN(LoadCPS_RW(file_manager->openFile("DUNEMAP.CPS").get()).get());
     SDL_SetColorKey(uiGraphic[UI_MapChoiceMapOnly][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("DUNERGN.CPS").get()).get());
+        Scaler::doubleSurfaceNN(LoadCPS_RW(file_manager->openFile("DUNERGN.CPS").get()).get());
     SDL_SetColorKey(uiGraphic[UI_MapChoiceMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
 
     // make black lines inside the map non-transparent
@@ -845,7 +848,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     uiGraphic[UI_MapChoiceClickMap][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        Scaler::doubleSurfaceNN(LoadCPS_RW(pFileManager->openFile("RGNCLK.CPS").get()).get());
+        Scaler::doubleSurfaceNN(LoadCPS_RW(file_manager->openFile("RGNCLK.CPS").get()).get());
     uiGraphic[UI_MapChoiceArrow_None][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::defaultDoubleSurface(arrows->getPicture(0).get());
     SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_None][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
@@ -880,11 +883,11 @@ SurfaceLoader::SurfaceLoader() {
     SDL_SetColorKey(uiGraphic[UI_MapChoiceArrow_Left][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
 
     uiGraphic[UI_StructureSizeLattice][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("StructureSizeLattice.png").get());
+        LoadPNG_RW(file_manager->openFile("StructureSizeLattice.png").get());
     SDL_SetColorKey(uiGraphic[UI_StructureSizeLattice][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE,
                     0);
     uiGraphic[UI_StructureSizeConcrete][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("StructureSizeConcrete.png").get());
+        LoadPNG_RW(file_manager->openFile("StructureSizeConcrete.png").get());
     SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE,
                     0);
 
@@ -892,29 +895,29 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_BottomBar][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = picFactory_.createBottomBar();
 
     uiGraphic[UI_MapEditor_ExitIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorExitIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorExitIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_ExitIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_NewIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorNewIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorNewIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_NewIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_LoadIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorLoadIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorLoadIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_LoadIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_SaveIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorSaveIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorSaveIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_SaveIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_UndoIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorUndoIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorUndoIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_UndoIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RedoIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorRedoIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorRedoIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_RedoIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_PlayerIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorPlayerIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorPlayerIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_PlayerIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE,
                     0);
     uiGraphic[UI_MapEditor_MapSettingsIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMapSettingsIcon.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMapSettingsIcon.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MapSettingsIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ChoamIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = scaleSurface(
@@ -930,51 +933,51 @@ SurfaceLoader::SurfaceLoader() {
         getSubFrame(objPic[ObjPic_Troopers][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)][0].get(), 0, 0, 4, 4);
     SDL_SetColorKey(uiGraphic[UI_MapEditor_TeamsIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorNoneIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMirrorNone.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMirrorNone.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorNoneIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorHorizontalIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMirrorHorizontal.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMirrorHorizontal.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorHorizontalIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorVerticalIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMirrorVertical.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMirrorVertical.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorVerticalIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorBothIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMirrorBoth.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMirrorBoth.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorBothIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_MirrorPointIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMirrorPoint.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMirrorPoint.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_MirrorPointIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ArrowUp][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorArrowUp.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorArrowUp.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowUp][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ArrowUp_Active][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowUp][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                              PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 3);
     uiGraphic[UI_MapEditor_ArrowDown][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorArrowDown.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorArrowDown.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_ArrowDown][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_ArrowDown_Active][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         mapSurfaceColorRange(uiGraphic[UI_MapEditor_ArrowDown][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                              PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 3);
     uiGraphic[UI_MapEditor_Plus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorPlus.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorPlus.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Plus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Plus_Active][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         mapSurfaceColorRange(uiGraphic[UI_MapEditor_Plus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                              PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 3);
     uiGraphic[UI_MapEditor_Minus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorMinus.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorMinus.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Minus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_Minus_Active][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         mapSurfaceColorRange(uiGraphic[UI_MapEditor_Minus][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                              PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 3);
     uiGraphic[UI_MapEditor_RotateLeftIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorRotateLeft.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorRotateLeft.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
@@ -983,7 +986,7 @@ SurfaceLoader::SurfaceLoader() {
     SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateLeftHighlightIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateRightIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        LoadPNG_RW(pFileManager->openFile("MapEditorRotateRight.png").get());
+        LoadPNG_RW(file_manager->openFile("MapEditorRotateRight.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_RotateRightIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
                     SDL_TRUE, 0);
     uiGraphic[UI_MapEditor_RotateRightHighlightIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
@@ -1100,11 +1103,11 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_Ornithopter][harkIdx] =
         getSubFrame(objPic[ObjPic_Ornithopter][harkIdx][0].get(), 0, 0, 8, 3);
 
-    uiGraphic[UI_MapEditor_Pen1x1][harkIdx] = LoadPNG_RW(pFileManager->openFile("MapEditorPen1x1.png").get());
+    uiGraphic[UI_MapEditor_Pen1x1][harkIdx] = LoadPNG_RW(file_manager->openFile("MapEditorPen1x1.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen1x1][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_Pen3x3][harkIdx] = LoadPNG_RW(pFileManager->openFile("MapEditorPen3x3.png").get());
+    uiGraphic[UI_MapEditor_Pen3x3][harkIdx] = LoadPNG_RW(file_manager->openFile("MapEditorPen3x3.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen3x3][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_MapEditor_Pen5x5][harkIdx] = LoadPNG_RW(pFileManager->openFile("MapEditorPen5x5.png").get());
+    uiGraphic[UI_MapEditor_Pen5x5][harkIdx] = LoadPNG_RW(file_manager->openFile("MapEditorPen5x5.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][harkIdx].get(), SDL_TRUE, 0);
 
     // load animations
@@ -1406,7 +1409,7 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
             case Anim_Sandworm: animation[Anim_Sandworm] = loadAnimationFromWsa("WORM.WSA"); break;
             case Anim_Sardaukar: animation[Anim_Sardaukar] = loadAnimationFromWsa("SARDUKAR.WSA"); break;
             case Anim_Frigate: {
-                if (pFileManager->exists("FRIGATE.WSA")) {
+                if (dune::globals::pFileManager->exists("FRIGATE.WSA")) {
                     animation[Anim_Frigate] = loadAnimationFromWsa("FRIGATE.WSA");
                 } else {
                     // US-Version 1.07 does not contain FRIGATE.WSA
@@ -1439,7 +1442,7 @@ sdl2::surface_ptr SurfaceLoader::createMainBackgroundSurface(int width, int heig
 
 std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename) const {
     try {
-        return std::make_unique<Shpfile>(pFileManager->openFile(filename).get());
+        return std::make_unique<Shpfile>(dune::globals::pFileManager->openFile(filename).get());
     } catch (std::exception& e) {
         THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
     }
@@ -1447,7 +1450,7 @@ std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename)
 
 std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename) const {
     try {
-        return std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
+        return std::make_unique<Wsafile>(dune::globals::pFileManager->openFile(filename).get());
     } catch (std::exception& e) {
         THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
     }
@@ -1462,7 +1465,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
     }
 
     { // Scope
-        const auto myWsafile = std::make_unique<Wsafile>(pFileManager->openFile(filename).get());
+        const auto myWsafile = std::make_unique<Wsafile>(dune::globals::pFileManager->openFile(filename).get());
 
         const sdl2::surface_ptr tmp{myWsafile->getPicture(0)};
         if (tmp == nullptr) {
@@ -1473,7 +1476,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
             THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
         }
 
-        palette.applyToSurface(pSurface.get());
+        dune::globals::palette.applyToSurface(pSurface.get());
 
         const sdl2::surface_lock lock_out{pSurface.get()};
         const sdl2::surface_lock lock_in{tmp.get()};
@@ -1501,7 +1504,7 @@ sdl2::surface_ptr SurfaceLoader::createBackgroundTileSurface() const {
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {
-    const auto file    = pFileManager->openFile(filename);
+    const auto file    = dune::globals::pFileManager->openFile(filename);
     const auto wsafile = std::make_unique<Wsafile>(file.get());
 
     return wsafile->getAnimation(0, wsafile->getNumFrames() - 1, true, false);
@@ -1568,8 +1571,10 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
 
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
-            SDL_SetPaletteColors(arrowPic->format->palette,
-                                 &palette[houseToPaletteIndex[static_cast<int>(house)] + (i + k) % 4], 251 + k, 1);
+            const auto house_index   = houseToPaletteIndex[static_cast<int>(house)];
+            const auto* const colors = &dune::globals::palette[house_index + (i + k) % 4];
+
+            SDL_SetPaletteColors(arrowPic->format->palette, colors, 251 + k, 1);
         }
 
         SDL_BlitSurface(arrowPic, nullptr, returnPic.get(), &dest);
@@ -1585,12 +1590,14 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     const auto& name    = ObjPicNames.at(id);
     const auto filename = fmt::format("Mask_2x_{}.png", name);
 
-    if (settings.video.scaler == "ScaleHD") {
-        if (pFileManager->exists(filename)) {
+    if (dune::globals::settings.video.scaler == "ScaleHD") {
+        auto* const file_manager = dune::globals::pFileManager.get();
+
+        if (file_manager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
                 Scaler::doubleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
-            const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
+            const sdl2::surface_ptr pOverlay = LoadPNG_RW(file_manager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so
@@ -1626,12 +1633,13 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
 
     const auto filename = fmt::format("Mask_3x_{}.png", name);
 
-    if (settings.video.scaler == "ScaleHD") {
-        if (pFileManager->exists(filename)) {
+    if (dune::globals::settings.video.scaler == "ScaleHD") {
+        auto* const file_manager = dune::globals::pFileManager.get();
+        if (file_manager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
                 Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};
 
-            const sdl2::surface_ptr pOverlay = LoadPNG_RW(pFileManager->openFile(filename).get());
+            const sdl2::surface_ptr pOverlay = LoadPNG_RW(file_manager->openFile(filename).get());
             SDL_SetColorKey(pOverlay.get(), SDL_TRUE, PALCOLOR_UI_COLORCYCLE);
 
             // SDL_BlitSurface will silently map PALCOLOR_BLACK to PALCOLOR_TRANSPARENT as both are RGB(0,0,0,255), so

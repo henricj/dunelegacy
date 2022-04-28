@@ -27,7 +27,8 @@ inline constexpr auto MESSAGESCROLLTIME  = (16 * MESSAGESCROLLSPEED);
 inline constexpr auto MESSAGETIME        = (16 * MESSAGESCROLLSPEED);
 
 NewsTicker::NewsTicker()
-    : pBackground(pGFXManager->getUIGraphic(UI_MessageBox)), pCurrentMessageTexture(nullptr), timer(-MESSAGETIME) {
+    : pBackground(dune::globals::pGFXManager->getUIGraphic(UI_MessageBox)), pCurrentMessageTexture(nullptr),
+      timer(-MESSAGETIME) {
     Widget::enableResizing(false, false);
 
     Widget::resize(getTextureSize(pBackground));
@@ -58,6 +59,8 @@ void NewsTicker::draw(Point position) {
         return;
     }
 
+    auto* const renderer = dune::globals::renderer.get();
+
     pBackground->draw(renderer, position.x, position.y);
 
     // draw message
@@ -76,8 +79,9 @@ void NewsTicker::draw(Point position) {
         // draw text
         if (currentMessage != messages.front()) {
             currentMessage = messages.front();
-            pCurrentMessageTexture.reset(SDL_CreateTextureFromSurface(
-                renderer, pFontManager->getFont(12)->createTextSurface(currentMessage, COLOR_BLACK).get()));
+            const auto text_surface =
+                dune::globals::pFontManager->getFont(12)->createTextSurface(currentMessage, COLOR_BLACK);
+            pCurrentMessageTexture.reset(SDL_CreateTextureFromSurface(renderer, text_surface.get()));
         }
 
         if (pCurrentMessageTexture != nullptr) {

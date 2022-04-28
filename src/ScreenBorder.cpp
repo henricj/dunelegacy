@@ -90,7 +90,7 @@ void ScreenBorder::setNewScreenCenter(const Coord& newPosition) {
 
 bool ScreenBorder::scrollLeft() {
     if (topLeftCorner.x > 0) {
-        const int scrollAmount = std::min(settings.general.scrollSpeed, topLeftCorner.x);
+        const int scrollAmount = std::min(dune::globals::settings.general.scrollSpeed, topLeftCorner.x);
         topLeftCorner.x -= scrollAmount;
         bottomRightCorner.x -= scrollAmount;
         return true;
@@ -100,7 +100,8 @@ bool ScreenBorder::scrollLeft() {
 
 bool ScreenBorder::scrollRight() {
     if (bottomRightCorner.x < mapSizeX * TILESIZE - 1) {
-        const int scrollAmount = std::min(settings.general.scrollSpeed, mapSizeX * TILESIZE - 1 - bottomRightCorner.x);
+        const int scrollAmount =
+            std::min(dune::globals::settings.general.scrollSpeed, mapSizeX * TILESIZE - 1 - bottomRightCorner.x);
         topLeftCorner.x += scrollAmount;
         bottomRightCorner.x += scrollAmount;
         return true;
@@ -110,7 +111,7 @@ bool ScreenBorder::scrollRight() {
 
 bool ScreenBorder::scrollUp() {
     if (topLeftCorner.y > 0) {
-        const int scrollAmount = std::min(settings.general.scrollSpeed, topLeftCorner.y);
+        const int scrollAmount = std::min(dune::globals::settings.general.scrollSpeed, topLeftCorner.y);
         topLeftCorner.y -= scrollAmount;
         bottomRightCorner.y -= scrollAmount;
         return true;
@@ -120,7 +121,8 @@ bool ScreenBorder::scrollUp() {
 
 bool ScreenBorder::scrollDown() {
     if (bottomRightCorner.y < mapSizeY * TILESIZE - 1) {
-        const int scrollAmount = std::min(settings.general.scrollSpeed, mapSizeY * TILESIZE - 1 - bottomRightCorner.y);
+        const int scrollAmount =
+            std::min(dune::globals::settings.general.scrollSpeed, mapSizeY * TILESIZE - 1 - bottomRightCorner.y);
         topLeftCorner.y += scrollAmount;
         bottomRightCorner.y += scrollAmount;
         return true;

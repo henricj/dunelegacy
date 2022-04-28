@@ -756,7 +756,7 @@ int NetworkManager::getMaxPeerRoundTripTime() {
 }
 
 void NetworkManager::debugNetwork(const char* fmt, ...) {
-    if (settings.network.debugNetwork) {
+    if (dune::globals::settings.network.debugNetwork) {
         va_list args;
         va_start(args, fmt);
         vfprintf(stderr, fmt, args);

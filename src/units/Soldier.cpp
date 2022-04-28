@@ -44,7 +44,7 @@ void Soldier::init() {
     owner->incrementUnits(itemID);
 
     graphicID = ObjPic_Soldier;
-    graphic   = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
     numImagesX = 4;
     numImagesY = 3;
@@ -53,19 +53,11 @@ void Soldier::init() {
 Soldier::~Soldier() = default;
 
 bool Soldier::canAttack(const ObjectBase* object) const {
-    return (object != nullptr)
-
-        && (object->isAStructure()
-
-            || !object->isAFlyingUnit())
-
-        && ((object->getOwner()->getTeamID() != owner->getTeamID())
-
-            || object->getItemID() == Unit_Sandworm)
-
+    return (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit())
+        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
         && object->isVisible(getOwner()->getTeamID());
 }
 
 void Soldier::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_Gun, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Gun, location);
 }

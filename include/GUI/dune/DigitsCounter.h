@@ -25,7 +25,9 @@
 #include <algorithm>
 #include <memory>
 
+namespace dune::globals {
 extern std::unique_ptr<GFXManager> pGFXManager;
+}
 
 /// A widget for showing digits (like the credits in dune are shown)
 class DigitsCounter final : public Widget {
@@ -53,11 +55,14 @@ public:
         \param  position    Position to draw the widget to
     */
     void draw(Point position) override {
-        const auto* const tex = pGFXManager->getUIGraphic(UI_MissionSelect);
+        auto* const gfx      = dune::globals::pGFXManager.get();
+        auto* const renderer = dune::globals::renderer.get();
+
+        const auto* const tex = gfx->getUIGraphic(UI_MissionSelect);
 
         tex->draw(renderer, position.x, position.y);
 
-        const auto* const digitsTex = pGFXManager->getUIGraphic(UI_CreditsDigits);
+        const auto* const digitsTex = gfx->getUIGraphic(UI_CreditsDigits);
 
         char creditsBuffer[3];
         const auto& [ptr, ec] = std::to_chars(std::begin(creditsBuffer), std::end(creditsBuffer), count);
@@ -79,7 +84,7 @@ public:
         \return the minimum size of this digits counter
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        const auto* const tex = pGFXManager->getUIGraphic(UI_MissionSelect);
+        const auto* const tex = dune::globals::pGFXManager->getUIGraphic(UI_MissionSelect);
         if (tex != nullptr) {
             return getTextureSize(tex);
         }

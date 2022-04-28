@@ -41,7 +41,7 @@ Barracks::Barracks(uint32_t objectID, const ObjectStreamInitializer& initializer
 void Barracks::init() {
     owner->incrementStructures(itemID);
 
-    graphicID = ObjPic_Barracks, graphic = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID = ObjPic_Barracks, graphic = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 4;
     numImagesY     = 1;
     firstAnimFrame = 2;

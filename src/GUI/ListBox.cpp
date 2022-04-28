@@ -109,6 +109,8 @@ void ListBox::draw(Point position) {
 
     updateTextures();
 
+    auto* const renderer = dune::globals::renderer.get();
+
     if (pBackground)
         pBackground.draw(renderer, position.x, position.y);
 
@@ -182,7 +184,7 @@ void ListBox::updateTextures() {
     const auto& gui = GUIStyle::getInstance();
 
     if (!pBackground)
-        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
+        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(dune::globals::renderer.get());
 
     if (!pForeground) {
         const auto scale = gui.getActualScale();

@@ -35,10 +35,12 @@
 // - POPPA.VOC
 
 SFXManager::SFXManager() {
+    const auto& language = dune::globals::settings.general.language;
+
     // load voice and language specific sounds
-    if (settings.general.language == "de") {
+    if (language == "de") {
         loadNonEnglishVoice("G");
-    } else if (settings.general.language == "fr") {
+    } else if (language == "fr") {
         loadNonEnglishVoice("F");
     } else {
         loadEnglishVoice();
@@ -54,7 +56,9 @@ SFXManager::SFXManager() {
 SFXManager::~SFXManager() = default;
 
 Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) const {
-    if (settings.general.language == "de" || settings.general.language == "fr") {
+    const auto& language = dune::globals::settings.general.language;
+
+    if (language == "de" || language == "fr") {
         return getNonEnglishVoice(id, house);
     }
     return getEnglishVoice(id, house);
@@ -71,7 +75,8 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) const {
 
 sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) const {
 
-    const auto rwop          = pFileManager->openFile(adlFile);
+    const auto rwop = dune::globals::pFileManager->openFile(adlFile);
+
     const auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
     pSoundAdlibPC->setVolume(volume);
     sdl2::mix_chunk_ptr chunk{pSoundAdlibPC->getSubsong(index)};
@@ -299,7 +304,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     lngVoice[static_cast<int>(Voice_enum::BloomLocated)] = getChunkFromFile(languagePrefix + "BLOOM.VOC");
 
     // "Warning Wormsign"
-    if (pFileManager->exists(languagePrefix + "WORMY.VOC")) {
+    if (dune::globals::pFileManager->exists(languagePrefix + "WORMY.VOC")) {
         const auto WarningChunk  = getChunkFromFile(languagePrefix + "WARNING.VOC");
         const auto WormSignChunk = getChunkFromFile(languagePrefix + "WORMY.VOC");
         lngVoice[static_cast<int>(Voice_enum::WarningWormSign)] =

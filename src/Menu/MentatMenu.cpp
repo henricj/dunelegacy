@@ -28,7 +28,7 @@
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
     : nextSpecialAnimation(dune::dune_clock::now()
-                           + dune::as_dune_clock_duration(pGFXManager->random().rand(8000, 20000))),
+                           + dune::as_dune_clock_duration(dune::globals::pGFXManager->random().rand(8000, 20000))),
       house(newHouse) {
 
     disableQuitting(true);
@@ -36,7 +36,7 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
     // set up window
     const DuneTexture* pBackground = nullptr;
 
-    auto* gfx = pGFXManager.get();
+    auto* const gfx = dune::globals::pGFXManager.get();
 
     if (house == HOUSETYPE::HOUSE_INVALID) {
         pBackground = gfx->getUIGraphic(UI_MentatBackgroundBene);
@@ -225,15 +225,17 @@ void MentatMenu::update() {
         textLabel.resize(620, 240);
     }
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     if (specialAnim.getAnimation() != nullptr && specialAnim.getAnimation()->isFinished()) {
         if (nextSpecialAnimation < dune::dune_clock::now()) {
             specialAnim.getAnimation()->setNumLoops(1);
             nextSpecialAnimation =
-                dune::dune_clock::now() + dune::as_dune_clock_duration(pGFXManager->random().rand(8000, 20000));
+                dune::dune_clock::now() + dune::as_dune_clock_duration(gfx->random().rand(8000, 20000));
         }
     }
 
-    const Point mouse(drawnMouseX - getPosition().x, drawnMouseY - getPosition().y);
+    const Point mouse(dune::globals::drawnMouseX - getPosition().x, dune::globals::drawnMouseY - getPosition().y);
     const bool bPressed = SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(SDL_BUTTON_LEFT);
 
     const Point eyesPos     = windowWidget.getWidgetPosition(&eyesAnim);
@@ -269,8 +271,8 @@ void MentatMenu::update() {
     if (bPressed) {
         if (abs(mouseMouthPos.x) <= mouthSize.x / 2 && abs(mouseMouthPos.y) <= mouthSize.y / 2) {
             if (mouthAnim.getAnimation()->getCurrentFrameOverride() == INVALID_FRAME) {
-                mouthAnim.getAnimation()->setFrameOverride(pGFXManager->random().getRandOf(
-                    MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
+                mouthAnim.getAnimation()->setFrameOverride(
+                    gfx->random().getRandOf(MentatMouthOpen1, MentatMouthOpen2, MentatMouthOpen3, MentatMouthOpen4));
             }
         } else {
             mouthAnim.getAnimation()->resetFrameOverride();

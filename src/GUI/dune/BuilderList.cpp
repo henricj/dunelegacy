@@ -38,11 +38,14 @@
 BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObjectID) {
     BuilderList::enableResizing(false, true);
 
-    upButton.setTextures(pGFXManager->getUIGraphic(UI_ButtonUp, pLocalHouse->getHouseID()),
-                         pGFXManager->getUIGraphic(UI_ButtonUp_Pressed, pLocalHouse->getHouseID()));
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
-    downButton.setTextures(pGFXManager->getUIGraphic(UI_ButtonDown, pLocalHouse->getHouseID()),
-                           pGFXManager->getUIGraphic(UI_ButtonDown_Pressed, pLocalHouse->getHouseID()));
+    const auto house_id = dune::globals::pLocalHouse->getHouseID();
+
+    upButton.setTextures(gfx->getUIGraphic(UI_ButtonUp, house_id), gfx->getUIGraphic(UI_ButtonUp_Pressed, house_id));
+
+    downButton.setTextures(gfx->getUIGraphic(UI_ButtonDown, house_id),
+                           gfx->getUIGraphic(UI_ButtonDown_Pressed, house_id));
 
     StaticContainer::addWidget(&upButton, Point((WIDGET_WIDTH - ARROWBTN_WIDTH) / 2, 0), upButton.getSize());
     upButton.setOnClick([this] { onUp(); });
@@ -58,6 +61,8 @@ BuilderList::BuilderList(uint32_t builderObjectID) : builderObjectID(builderObje
     orderButton.setText(_("Order"));
 
     const auto& gui = GUIStyle::getInstance();
+
+    auto* const renderer = dune::globals::renderer.get();
 
     pSoldOutTextTexture          = gui.createMultilineText(renderer, _("SOLD OUT"), COLOR_WHITE, 12, true);
     pAlreadyBuiltTextTexture     = gui.createMultilineText(renderer, _("ALREADY\nBUILT"), COLOR_WHITE, 12, true);
@@ -86,6 +91,8 @@ void BuilderList::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) 
 bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     StaticContainer::handleMouseLeft(x, y, pressed);
 
+    auto* const currentGame = dune::globals::currentGame.get();
+
     auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
     if (!pBuilder) {
         return false;
@@ -102,6 +109,9 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
         if (mouseLeftButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
+
+            const auto* const soundPlayer = dune::globals::soundPlayer.get();
+
             if (getItemIDFromIndex(mouseLeftButton) == static_cast<int>(pBuilder->getCurrentProducedItem())
                 && pBuilder->isWaitingToPlace()) {
                 soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
@@ -132,7 +142,8 @@ bool BuilderList::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
 bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
     StaticContainer::handleMouseRight(x, y, pressed);
 
-    auto* pBuilder = dynamic_cast<BuilderBase*>(currentGame->getObjectManager().getObject(builderObjectID));
+    auto* pBuilder =
+        dynamic_cast<BuilderBase*>(dune::globals::currentGame->getObjectManager().getObject(builderObjectID));
     if (!pBuilder) {
         return false;
     }
@@ -148,6 +159,9 @@ bool BuilderList::handleMouseRight(int32_t x, int32_t y, bool pressed) {
         if (mouseRightButton == getButton(x, y)) {
             // button released
             assert(pBuilder);
+
+            const auto* const soundPlayer = dune::globals::soundPlayer.get();
+
             if (getItemIDFromIndex(mouseRightButton) == static_cast<int>(pBuilder->getCurrentProducedItem())
                 && !pBuilder->isOnHold()) {
                 soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
@@ -184,12 +198,17 @@ bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {
 }
 
 void BuilderList::draw(Point position) {
-    SDL_Rect blackRectDest = {position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING, getSize().x,
-                              getRealHeight(getSize().y) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING)
-                                  - BUILDERBTN_SPACING - ORDERBTN_HEIGHT};
+    auto* const renderer    = dune::globals::renderer.get();
+    auto* const currentGame = dune::globals::currentGame.get();
+    auto* const gfx         = dune::globals::pGFXManager.get();
+
+    SDL_Rect blackRectDest{position.x, position.y + ARROWBTN_HEIGHT + BUILDERBTN_SPACING, getSize().x,
+                           getRealHeight(getSize().y) - 2 * (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) - BUILDERBTN_SPACING
+                               - ORDERBTN_HEIGHT};
     renderFillRect(renderer, &blackRectDest, COLOR_BLACK);
 
     const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
+
     if (pBuilder != nullptr) {
         auto* const pStarport = dune_cast<StarPort>(pBuilder);
 
@@ -236,10 +255,10 @@ void BuilderList::draw(Point position) {
                 }
 
                 if (isStructure(buildItem.itemID)) {
-                    if (const auto* const pLattice = pGFXManager->getUIGraphic(UI_StructureSizeLattice))
+                    if (const auto* const pLattice = dune::globals::pGFXManager->getUIGraphic(UI_StructureSizeLattice))
                         pLattice->draw(renderer, dest.x + 2, dest.y + 2);
 
-                    if (const auto* const pConcrete = pGFXManager->getUIGraphic(UI_StructureSizeConcrete)) {
+                    if (const auto* const pConcrete = gfx->getUIGraphic(UI_StructureSizeConcrete)) {
                         const SDL_Rect srcConcrete   = {0, 0, 1 + getStructureSize(buildItem.itemID).x * 6,
                                                         1 + getStructureSize(buildItem.itemID).y * 6};
                         const SDL_FRect destConcrete = {static_cast<float>(dest.x + 2), static_cast<float>(dest.y + 2),
@@ -336,13 +355,13 @@ void BuilderList::draw(Point position) {
         }
     }
 
-    if (const auto* const pBuilderListUpperCap = pGFXManager->getUIGraphic(UI_BuilderListUpperCap)) {
+    if (const auto* const pBuilderListUpperCap = gfx->getUIGraphic(UI_BuilderListUpperCap)) {
         pBuilderListUpperCap->draw(renderer, blackRectDest.x - 3, blackRectDest.y - 13 + 4);
 
         const auto builderListUpperCapDest =
             calcDrawingRect(pBuilderListUpperCap, blackRectDest.x - 3, blackRectDest.y - 13 + 4);
 
-        if (const auto* const pBuilderListLowerCap = pGFXManager->getUIGraphic(UI_BuilderListLowerCap)) {
+        if (const auto* const pBuilderListLowerCap = gfx->getUIGraphic(UI_BuilderListLowerCap)) {
             pBuilderListLowerCap->draw(renderer, blackRectDest.x - 3, blackRectDest.y + blackRectDest.h - 3 - 4);
 
             const auto builderListLowerCapDest =
@@ -362,6 +381,9 @@ void BuilderList::drawOverlay(Point position) {
 
     if (dune::dune_clock::now() - lastMouseMovement <= 800ms)
         return;
+
+    auto* const currentGame = dune::globals::currentGame.get();
+    auto* const renderer    = dune::globals::renderer.get();
 
     // Draw tooltip
     const auto btn = getButton(lastMousePos.x, lastMousePos.y);
@@ -406,6 +428,7 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
 
     StaticContainer::resize(width, height);
 
+    auto* const currentGame = dune::globals::currentGame.get();
     if (!currentGame)
         return;
 
@@ -447,6 +470,7 @@ void BuilderList::onUp() {
 }
 
 void BuilderList::onDown() {
+    auto* const currentGame    = dune::globals::currentGame.get();
     const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);
 
     if (pBuilder && currentListPos < static_cast<int>(pBuilder->getBuildList().size()) - getNumButtons(getSize().y)) {
@@ -455,6 +479,7 @@ void BuilderList::onDown() {
 }
 
 void BuilderList::onOrder() const {
+    auto* const currentGame = dune::globals::currentGame.get();
     if (auto* const pStarport = currentGame->getObjectManager().getObject<StarPort>(builderObjectID)) {
         pStarport->handlePlaceOrderClick();
     }
@@ -475,6 +500,8 @@ Point BuilderList::getButtonPosition(int BtnNumber) {
 }
 
 int BuilderList::getButton(int x, int y) const {
+    auto* const currentGame = dune::globals::currentGame.get();
+
     if (const auto* pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID)) {
         for (int i = 0; i < static_cast<int>(pBuilder->getBuildList().size()); i++) {
             if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
@@ -493,6 +520,7 @@ int BuilderList::getButton(int x, int y) const {
 }
 
 ItemID_enum BuilderList::getItemIDFromIndex(int i) const {
+    auto* const currentGame = dune::globals::currentGame.get();
 
     if (i >= 0) {
         const auto* const pBuilder = currentGame->getObjectManager().getObject<BuilderBase>(builderObjectID);

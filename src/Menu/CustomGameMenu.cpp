@@ -41,7 +41,7 @@
 #include <memory>
 
 CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
-    : bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(settings.gameOptions) {
+    : bMultiplayer(multiplayer), bLANServer(LANServer), currentGameOptions(dune::globals::settings.gameOptions) {
     // set up window
 
     CustomGameMenu::setWindowWidget(&windowWidget);
@@ -165,7 +165,7 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
         if (filename != "") {
             auto savegamedata = readCompleteFile(filename);
 
-            auto servername = settings.general.playerName + "'s Game";
+            auto servername = dune::globals::settings.general.playerName + "'s Game";
             GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata),
                                               std::move(servername));
 
@@ -193,7 +193,7 @@ void CustomGameMenu::onNext() {
 
     GameInitSettings gameInitSettings;
     if (bMultiplayer) {
-        std::string servername = settings.general.playerName + "'s Game";
+        auto servername = dune::globals::settings.general.playerName + "'s Game";
         gameInitSettings =
             GameInitSettings(getBasename(mapFilename, true), readCompleteFile(mapFilename), std::move(servername),
                              multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);

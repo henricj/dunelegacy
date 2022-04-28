@@ -71,7 +71,7 @@ void Label::draw(Point position) {
     const auto x = position.x + (size.x - pTexture.width_) / 2;
     const auto y = position.y + (size.y - pTexture.height_) / 2;
 
-    pTexture.draw(renderer, x, y);
+    pTexture.draw(dune::globals::renderer.get(), x, y);
 }
 
 std::unique_ptr<Label>
@@ -95,8 +95,8 @@ void Label::updateTextures() {
         return gui.getMinimumLabelSize(tmp, font).x - 4.f;
     });
 
-    pTexture = gui.createLabel(renderer, getSize().x, getSize().y, textLines, fontSize, alignment, textcolor,
-                               textshadowcolor, backgroundcolor);
+    pTexture = gui.createLabel(dune::globals::renderer.get(), getSize().x, getSize().y, textLines, fontSize, alignment,
+                               textcolor, textshadowcolor, backgroundcolor);
 }
 
 void Label::invalidateTextures() {

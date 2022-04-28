@@ -44,7 +44,7 @@ void LightFactory::init() {
     owner->incrementStructures(itemID);
 
     graphicID      = ObjPic_LightFactory;
-    graphic        = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
     numImagesX     = 6;
     numImagesY     = 1;
     firstAnimFrame = 2;

@@ -46,10 +46,12 @@ void Tank::init() {
     assert(itemID == Unit_Tank);
     owner->incrementUnits(itemID);
 
+    auto* const gfx = dune::globals::pGFXManager.get();
+
     graphicID     = ObjPic_Tank_Base;
-    graphic       = pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     gunGraphicID  = ObjPic_Tank_Gun;
-    turretGraphic = pGFXManager->getObjPic(gunGraphicID, getOwner()->getHouseID());
+    turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
     numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
     numImagesY = 1;
@@ -58,16 +60,20 @@ void Tank::init() {
 Tank::~Tank() = default;
 
 void Tank::blitToScreen() {
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
+
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);
 
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    const auto* const pUnitGraphic = graphic[zoom];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
     const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    const auto* pTurretGraphic = turretGraphic[currentZoomlevel];
+    const auto* pTurretGraphic = turretGraphic[zoom];
     const auto source2         = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
                                                       static_cast<int>(ANGLETYPE::NUM_ANGLES));
     const auto dest2           = calcSpriteDrawingRect(pTurretGraphic, x, y, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
@@ -88,12 +94,12 @@ void Tank::destroy(const GameContext& context) {
         context.game.addExplosion(explosionID, realPos, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     TankBase::destroy(context);
 }
 
 void Tank::playAttackSound() {
-    soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
 }

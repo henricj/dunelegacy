@@ -60,5 +60,5 @@ void PictureLabel::draw(Point position) {
 
     const SDL_Rect dest{position.x, position.y, size_.x, size_.y};
 
-    Dune_RenderCopy(renderer, &duneTexture_, nullptr, &dest);
+    Dune_RenderCopy(dune::globals::renderer.get(), &duneTexture_, nullptr, &dest);
 }

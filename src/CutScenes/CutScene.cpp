@@ -32,6 +32,8 @@ CutScene::CutScene() : quitting(false) { }
 
 CutScene::~CutScene() {
     // Fixes some flickering
+    auto* const renderer = dune::globals::renderer.get();
+
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     Dune_RenderPresent(renderer);
@@ -69,6 +71,8 @@ void CutScene::run() {
                 {
                     if (event.key.keysym.sym == SDLK_SPACE || event.key.keysym.sym == SDLK_ESCAPE) {
                         // Fixes some flickering
+                        auto* const renderer = dune::globals::renderer.get();
+
                         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
                         SDL_RenderClear(renderer);
                         Dune_RenderPresent(renderer);
@@ -121,7 +125,7 @@ int CutScene::draw() {
         break;
     }
 
-    if (scenes.empty() && !musicPlayer->isMusicPlaying()) {
+    if (scenes.empty() && !dune::globals::musicPlayer->isMusicPlaying()) {
         quit();
     }
 
@@ -129,14 +133,18 @@ int CutScene::draw() {
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1) {
-    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get());
+    return std::make_unique<Wsafile>(dune::globals::pFileManager->openFile(name1).get());
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2) {
-    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get());
+    const auto* const file_manager = dune::globals::pFileManager.get();
+
+    return std::make_unique<Wsafile>(file_manager->openFile(name1).get(), file_manager->openFile(name2).get());
 }
 
 std::unique_ptr<Wsafile> CutScene::create_wsafile(const char* name1, const char* name2, const char* name3) {
-    return std::make_unique<Wsafile>(pFileManager->openFile(name1).get(), pFileManager->openFile(name2).get(),
-                                     pFileManager->openFile(name3).get());
+    const auto* const file_manager = dune::globals::pFileManager.get();
+
+    return std::make_unique<Wsafile>(file_manager->openFile(name1).get(), file_manager->openFile(name2).get(),
+                                     file_manager->openFile(name3).get());
 }

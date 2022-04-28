@@ -78,13 +78,15 @@ int MenuBase::showMenu() {
 
         update();
 
-        if (pNetworkManager != nullptr) {
-            pNetworkManager->update();
+        if (dune::globals::pNetworkManager != nullptr) {
+            dune::globals::pNetworkManager->update();
         }
 
         if (quitting) {
             return retVal;
         }
+
+        auto* const renderer = dune::globals::renderer.get();
 
         if (bClearScreen) {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -102,7 +104,7 @@ int MenuBase::showMenu() {
                 break;
         }
 
-        if (!settings.video.frameLimit)
+        if (!dune::globals::settings.video.frameLimit)
             continue;
 
         if (!doEventsUntil(frameStart + 32ms))
@@ -113,14 +115,16 @@ int MenuBase::showMenu() {
 }
 
 void MenuBase::draw() {
+    auto* const renderer = dune::globals::renderer.get();
+
     const SDL_Rect clipRect{getPosition().x, getPosition().y, getSize().x, getSize().y};
     SDL_RenderSetClipRect(renderer, &clipRect);
 
-    Window::draw();
+    parent::draw();
 
     drawSpecificStuff();
 
-    Window::drawOverlay();
+    parent::drawOverlay();
 
     SDL_RenderSetClipRect(renderer, nullptr);
 }
@@ -161,7 +165,7 @@ bool MenuBase::doInput(SDL_Event& event) {
 
                 case SDLK_TAB: {
                     if (SDL_GetModState() & KMOD_ALT) {
-                        SDL_MinimizeWindow(window);
+                        SDL_MinimizeWindow(dune::globals::window.get());
                     }
                 } break;
 
@@ -175,8 +179,8 @@ bool MenuBase::doInput(SDL_Event& event) {
 
             const auto actual = getSize();
 
-            drawnMouseX = std::max(0, std::min(mouse->x, actual.x - 1));
-            drawnMouseY = std::max(0, std::min(mouse->y, actual.y - 1));
+            dune::globals::drawnMouseX = std::max(0, std::min(mouse->x, actual.x - 1));
+            dune::globals::drawnMouseY = std::max(0, std::min(mouse->y, actual.y - 1));
         } break;
 
         case SDL_QUIT: {
@@ -213,5 +217,5 @@ void TopMenuBase::draw_background(Point position) {
     const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
                                 static_cast<float>(size.x), static_cast<float>(size.y)};
 
-    gui.drawBackground(renderer, dest);
+    gui.drawBackground(dune::globals::renderer.get(), dest);
 }

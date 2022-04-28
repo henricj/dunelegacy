@@ -60,9 +60,11 @@ void WaitingForOtherPlayers::update() {
     std::string text = _("Waiting for other players... ");
 
     // test if we need to wait for data to arrive
-    for (const std::string& playername : pNetworkManager->getConnectedPeers()) {
-        if (const auto* pPlayer = dynamic_cast<HumanPlayer*>(currentGame->getPlayerByName(playername))) {
-            if (pPlayer->nextExpectedCommandsCycle <= currentGame->getGameCycleCount()) {
+    for (const auto& playername : dune::globals::pNetworkManager->getConnectedPeers()) {
+        const auto* const game = dune::globals::currentGame.get();
+
+        if (const auto* pPlayer = dynamic_cast<HumanPlayer*>(game->getPlayerByName(playername))) {
+            if (pPlayer->nextExpectedCommandsCycle <= game->getGameCycleCount()) {
                 text += "\n" + pPlayer->getPlayername();
             }
         }
@@ -72,5 +74,5 @@ void WaitingForOtherPlayers::update() {
 }
 
 void WaitingForOtherPlayers::onRemove() {
-    currentGame->resumeGame();
+    dune::globals::currentGame->resumeGame();
 }

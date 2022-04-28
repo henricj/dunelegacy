@@ -54,19 +54,21 @@ void AirUnit::destroy(const GameContext& context) {
         context.game.addExplosion(Explosion_Medium2, position, owner->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
     }
 
     UnitBase::destroy(context);
 }
 
 void AirUnit::assignToMap(const GameContext& context, const Coord& pos) {
-    if (currentGameMap->tileExists(pos)) {
+    auto& map = context.map;
+
+    if (map.tileExists(pos)) {
         if (guardPoint.isInvalid()) {
             guardPoint = pos;
         }
 
-        currentGameMap->getTile(pos)->assignAirUnit(getObjectID());
+        map.getTile(pos)->assignAirUnit(getObjectID());
         // do not reveal map for air units
         // currentGameMap->viewMap(owner->getHouseID(), location, getViewRange());
     }
@@ -77,10 +79,14 @@ void AirUnit::checkPos(const GameContext& context) {
 }
 
 void AirUnit::blitToScreen() {
-    const auto* const shadow       = shadowGraphic[currentZoomlevel];
-    const auto* const pUnitGraphic = graphic[currentZoomlevel];
+    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom          = dune::globals::currentZoomlevel;
 
-    if (settings.video.rotateUnitGraphics) {
+    const auto* const shadow       = shadowGraphic[zoom];
+    const auto* const pUnitGraphic = graphic[zoom];
+
+    if (dune::globals::settings.video.rotateUnitGraphics) {
         const auto rotationAngleDeg = -angle.toDouble() * 360.0 / 8.0;
 
         if (shadow != nullptr) {

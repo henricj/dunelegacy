@@ -206,13 +206,13 @@ private:
     }
 
     void updateSurfaces() {
-        plusButton.setTextures(pGFXManager->getUIGraphic(UI_Plus, house),
-                               pGFXManager->getUIGraphic(UI_Plus_Pressed, house),
-                               pGFXManager->getUIGraphic(UI_Plus_Active, house));
+        auto* const gfx = dune::globals::pGFXManager.get();
 
-        minusButton.setTextures(pGFXManager->getUIGraphic(UI_Minus, house),
-                                pGFXManager->getUIGraphic(UI_Minus_Pressed, house),
-                                pGFXManager->getUIGraphic(UI_Minus_Active, house));
+        plusButton.setTextures(gfx->getUIGraphic(UI_Plus, house), gfx->getUIGraphic(UI_Plus_Pressed, house),
+                               gfx->getUIGraphic(UI_Plus_Active, house));
+
+        minusButton.setTextures(gfx->getUIGraphic(UI_Minus, house), gfx->getUIGraphic(UI_Minus_Pressed, house),
+                                gfx->getUIGraphic(UI_Minus_Active, house));
     }
 
     TextBox textBox;
