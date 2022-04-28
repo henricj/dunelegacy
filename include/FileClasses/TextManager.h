@@ -111,7 +111,7 @@ private:
     /**
         Add a original Dune 2 text file
     */
-    void addOrigDuneText(const std::string& filename, bool bDecode = false);
+    void addOrigDuneText(std::string_view filename, bool bDecode = false);
 
     std::array<std::unique_ptr<MentatTextFile>, 3> mentatStrings; ///< The MENTAT?.<EXTENSION> mentat menu texts
 
