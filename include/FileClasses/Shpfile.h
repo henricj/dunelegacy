@@ -28,8 +28,13 @@ inline constexpr auto TILE_FLIPH  = 0x00100000;
 inline constexpr auto TILE_FLIPV  = 0x01000000;
 inline constexpr auto TILE_ROTATE = 0x10000000;
 
-#define TILE_GETINDEX(x) (x & 0x0000FFFF)
-#define TILE_GETTYPE(x)  (x & 0xFFFF0000)
+constexpr auto TILE_GETINDEX(uint32_t x) {
+    return x & 0x0000FFFFU;
+}
+
+constexpr auto TILE_GETTYPE(uint32_t x) {
+    return x & 0xFFFF0000U;
+}
 
 /// A class for loading a *.SHP-File.
 /**
