@@ -797,6 +797,18 @@ sdl2::surface_ptr PictureFactory::createBuilderListLowerCap() const {
     return copySurface(builderListLowerCap.get());
 }
 
+sdl2::surface_ptr PictureFactory::createHarkonnenLogo() const {
+    return copySurface(harkonnenLogo.get());
+}
+
+sdl2::surface_ptr PictureFactory::createAtreidesLogo() const {
+    return copySurface(atreidesLogo.get());
+}
+
+sdl2::surface_ptr PictureFactory::createOrdosLogo() const {
+    return copySurface(ordosLogo.get());
+}
+
 sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     auto pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
@@ -806,7 +818,7 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
     replaceColor(pBlueReplaced.get(), 170, 194);
     replaceColor(pBlueReplaced.get(), 173, 195);
 
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
 
     auto pTmp1     = scaleSurface(Wsafile(file_manager->openFile("WORM.WSA").get()).getPicture(0).get(), 0.5);
     auto pSandworm = getSubPicture(pTmp1.get(), 40 - 18, 6 - 12, 83, 91);

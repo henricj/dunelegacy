@@ -217,5 +217,5 @@ void TopMenuBase::draw_background(Point position) {
     const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
                                 static_cast<float>(size.x), static_cast<float>(size.y)};
 
-    gui.drawBackground(dune::globals::renderer.get(), dest);
+    gui.drawMainBackground(dune::globals::renderer.get(), dest);
 }

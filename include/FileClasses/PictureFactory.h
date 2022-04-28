@@ -47,15 +47,19 @@ public:
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
     [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType, int width, int height, bool UseBackground);
     [[nodiscard]] sdl2::surface_ptr createMenu(int x, int y) const;
-    sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic, int y) const;
+    [[nodiscard]] sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic, int y) const;
     [[nodiscard]] sdl2::surface_ptr createOptionsMenu();
     [[nodiscard]] sdl2::surface_ptr createMessageBoxBorder() const;
-    sdl2::surface_ptr createHouseSelect(SDL_Surface* HouseChoice) const;
-    static sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice);
+    [[nodiscard]] sdl2::surface_ptr createHouseSelect(SDL_Surface* HouseChoice) const;
+    [[nodiscard]] static sdl2::surface_ptr createGreyHouseChoice(SDL_Surface* HouseChoice);
     [[nodiscard]] sdl2::surface_ptr createMapChoiceScreen(HOUSETYPE House) const;
-    sdl2::surface_ptr createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const;
+    [[nodiscard]] sdl2::surface_ptr createMentatHouseChoiceQuestion(HOUSETYPE House, Palette& benePalette) const;
     [[nodiscard]] sdl2::surface_ptr createBuilderListUpperCap() const;
     [[nodiscard]] sdl2::surface_ptr createBuilderListLowerCap() const;
+
+    [[nodiscard]] sdl2::surface_ptr createHarkonnenLogo() const;
+    [[nodiscard]] sdl2::surface_ptr createAtreidesLogo() const;
+    [[nodiscard]] sdl2::surface_ptr createOrdosLogo() const;
 
     static sdl2::surface_ptr createHeraldFre(SDL_Surface* heraldHark);
     static sdl2::surface_ptr createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre);

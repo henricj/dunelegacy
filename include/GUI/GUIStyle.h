@@ -333,6 +333,13 @@ public:
     virtual void drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) = 0;
 
     /**
+        Draw the main background
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    virtual void drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) = 0;
+
+    /**
         Creates a simple background for widgets
         \param  width       the width of the surface
         \param  height      the height of the surface

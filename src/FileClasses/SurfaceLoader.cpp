@@ -1112,6 +1112,10 @@ SurfaceLoader::SurfaceLoader() {
 
     uiGraphic[UI_Background_Tile][harkIdx] = picFactory_.createBackgroundTile();
 
+    uiGraphic[UI_Background_Logo][harkIdx]                                     = picFactory_.createHarkonnenLogo();
+    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] = picFactory_.createAtreidesLogo();
+    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]    = picFactory_.createOrdosLogo();
+
     // load animations
     animation[Anim_HarkonnenEyes] = menshph->getAnimation(0, 4, true, true);
     animation[Anim_HarkonnenEyes]->setFrameRate(0.3);

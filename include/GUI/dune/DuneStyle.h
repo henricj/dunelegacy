@@ -253,6 +253,13 @@ public:
     void drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) override;
 
     /**
+        Draw the main background
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    void drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) override;
+
+    /**
         Creates a simple background for widgets
         \param  width       the width of the surface
         \param  height      the height of the surface
