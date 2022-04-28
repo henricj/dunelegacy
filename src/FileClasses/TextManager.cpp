@@ -599,6 +599,7 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
     return unprocessedString;
 }
 
-void TextManager::addOrigDuneText(const std::string& filename, bool bDecode) {
-    origDuneText[filename] = std::make_unique<IndexedTextFile>(dune::globals::pFileManager->openFile(filename).get(), bDecode);
+void TextManager::addOrigDuneText(std::string_view filename, bool bDecode) {
+    origDuneText[std::string(filename)] =
+        std::make_unique<IndexedTextFile>(dune::globals::pFileManager->openFile(filename).get(), bDecode);
 }
