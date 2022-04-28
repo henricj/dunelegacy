@@ -21,6 +21,8 @@
 #include "DefaultObjectInterface.h"
 
 class DefaultStructureInterface : public DefaultObjectInterface {
+    using parent = DefaultObjectInterface;
+
 public:
     static std::unique_ptr<DefaultStructureInterface> create(const GameContext& context, int objectID);
 

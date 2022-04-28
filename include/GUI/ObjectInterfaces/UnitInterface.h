@@ -28,11 +28,13 @@
 #include <GUI/VBox.h>
 
 class UnitInterface final : public DefaultObjectInterface {
+    using parent = DefaultObjectInterface;
+
 public:
     static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID);
 
 protected:
-    explicit UnitInterface(const GameContext& context, int objectID);
+    UnitInterface(const GameContext& context, int objectID);
 
     static void onMove() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Move; }
 

@@ -21,9 +21,12 @@
 #include <GUI/StaticContainer.h>
 
 class ObjectInterface : public StaticContainer {
-public:
+    using parent = StaticContainer;
+
+protected:
     ObjectInterface() = default;
 
+public:
     ~ObjectInterface() override = default;
 
     /**

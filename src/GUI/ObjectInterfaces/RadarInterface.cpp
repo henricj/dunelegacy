@@ -23,15 +23,15 @@
 
 #include <House.h>
 
-
 std::unique_ptr<RadarInterface> RadarInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<RadarInterface>{new RadarInterface{context, objectID}};
+    std::unique_ptr<RadarInterface> tmp{new RadarInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
 
-RadarInterface::RadarInterface(const GameContext& context, int objectID): DefaultStructureInterface(context, objectID) {
-    const Uint32 color = SDL2RGB(
+RadarInterface::RadarInterface(const GameContext& context, int objectID)
+    : DefaultStructureInterface(context, objectID) {
+    const auto color = SDL2RGB(
         dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
     mainHBox.addWidget(&textVBox);
@@ -46,10 +46,9 @@ RadarInterface::RadarInterface(const GameContext& context, int objectID): Defaul
 }
 
 bool RadarInterface::update() {
-    ObjectBase* pObject = context_.objectManager.getObject(objectID);
-    if (pObject == nullptr) {
+    const auto* pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
     const auto* pOwner = pObject->getOwner();
 

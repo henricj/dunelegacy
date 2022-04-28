@@ -20,13 +20,13 @@
 #include "GUI/Spacer.h"
 
 std::unique_ptr<DefaultObjectInterface> DefaultObjectInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<DefaultObjectInterface>{new DefaultObjectInterface(context, objectID)};
+    std::unique_ptr<DefaultObjectInterface> tmp{new DefaultObjectInterface(context, objectID)};
     tmp->pAllocated = true;
     return tmp;
 }
 
-DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int objectID): context_{context} {
-    ObjectBase* pObject = context_.objectManager.getObject(objectID);
+DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
+    const auto* const pObject = context_.objectManager.getObject(objectID);
     if (pObject == nullptr) {
         THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);
     }
@@ -34,12 +34,11 @@ DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int o
     this->objectID = objectID;
     itemID         = pObject->getItemID();
 
-    DefaultObjectInterface::addWidget(&topBox, Point(0, 0), Point(SIDEBARWIDTH - 25, 80));
+    DefaultObjectInterface::addWidget(&topBox, {0, 0}, {SIDEBARWIDTH - 25, 80});
 
-    DefaultObjectInterface::addWidget(&mainHBox, Point(0, 80),
-                                      Point(SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148));
+    DefaultObjectInterface::addWidget(&mainHBox, {0, 80}, {SIDEBARWIDTH - 25, getRendererHeight() - 80 - 148});
 
-    topBox.addWidget(&topBoxHBox, Point(0, 22), Point(SIDEBARWIDTH - 25, 58));
+    topBox.addWidget(&topBoxHBox, {0, 22}, {SIDEBARWIDTH - 25, 58});
 
     topBoxHBox.addWidget(Spacer::create());
     topBoxHBox.addWidget(&objPicture);
@@ -50,6 +49,6 @@ DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int o
 }
 
 bool DefaultObjectInterface::update() {
-    ObjectBase* pObject = context_.objectManager.getObject(objectID);
-    return (pObject != nullptr);
+    const auto* const pObject = context_.objectManager.getObject(objectID);
+    return pObject != nullptr;
 }

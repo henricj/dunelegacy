@@ -23,15 +23,15 @@
 
 #include <House.h>
 
-
 std::unique_ptr<RefineryAndSiloInterface> RefineryAndSiloInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<RefineryAndSiloInterface>{new RefineryAndSiloInterface{context, objectID}};
+    std::unique_ptr<RefineryAndSiloInterface> tmp{new RefineryAndSiloInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
 
-RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, int objectID): DefaultStructureInterface(context, objectID) {
-    const Uint32 color = SDL2RGB(
+RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, int objectID)
+    : DefaultStructureInterface(context, objectID) {
+    const auto color = SDL2RGB(
         dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
     mainHBox.addWidget(&textVBox);
@@ -46,10 +46,9 @@ RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, i
 }
 
 bool RefineryAndSiloInterface::update() {
-    auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    const auto* pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
     const House* pOwner = pObject->getOwner();
 

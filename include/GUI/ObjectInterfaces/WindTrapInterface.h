@@ -24,6 +24,8 @@
 #include <GUI/VBox.h>
 
 class WindTrapInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID);
 

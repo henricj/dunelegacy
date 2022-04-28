@@ -23,6 +23,8 @@
 #include <GUI/ProgressBar.h>
 
 class PalaceInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<PalaceInterface> create(const GameContext& context, int objectID);
 

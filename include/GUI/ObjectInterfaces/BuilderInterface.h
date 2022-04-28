@@ -20,22 +20,19 @@
 
 #include "DefaultStructureInterface.h"
 
-#include <FileClasses/TextManager.h>
-
 #include <GUI/Label.h>
 #include <GUI/ProgressBar.h>
 #include <GUI/TextButton.h>
 #include <GUI/dune/BuilderList.h>
 
-#include <structures/BuilderBase.h>
-#include <structures/StarPort.h>
-
 class BuilderInterface final : public DefaultStructureInterface {
+    using parent = DefaultStructureInterface;
+
 public:
     static std::unique_ptr<BuilderInterface> create(const GameContext& context, int objectID);
 
 protected:
-    explicit BuilderInterface(const GameContext& context, int objectID);
+    BuilderInterface(const GameContext& context, int objectID);
 
     void onUpgrade() const;
 
@@ -49,7 +46,7 @@ protected:
     TextButton upgradeButton;
     TextProgressBar upgradeProgressBar;
     Label starportTimerLabel;
-    BuilderList* pBuilderList;
+    BuilderList* pBuilderList{};
 };
 
 #endif // BUILDERINTERFACE_H

@@ -24,12 +24,13 @@
 #include <House.h>
 
 std::unique_ptr<WindTrapInterface> WindTrapInterface::create(const GameContext& context, int objectID) {
-    auto tmp        = std::unique_ptr<WindTrapInterface>{new WindTrapInterface{context, objectID}};
+    std::unique_ptr<WindTrapInterface> tmp{new WindTrapInterface{context, objectID}};
     tmp->pAllocated = true;
     return tmp;
 }
 
-WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID): DefaultStructureInterface(context, objectID) {
+WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID)
+    : DefaultStructureInterface(context, objectID) {
     const Uint32 color = SDL2RGB(
         dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
@@ -45,15 +46,14 @@ WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID): 
 }
 
 bool WindTrapInterface::update() {
-    auto* pObject = dune::globals::currentGame->getObjectManager().getObject(objectID);
-    if (pObject == nullptr) {
+    const auto* const pObject = context_.objectManager.getObject(objectID);
+    if (pObject == nullptr)
         return false;
-    }
 
     const House* pOwner = pObject->getOwner();
 
     requiredEnergyLabel.setText(" " + _("Required") + ": " + std::to_string(pOwner->getPowerRequirement()));
     producedEnergyLabel.setText(" " + _("Produced") + ": " + std::to_string(pOwner->getProducedPower()));
 
-    return DefaultStructureInterface::update();
+    return parent::update();
 }
