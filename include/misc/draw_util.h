@@ -51,6 +51,11 @@ inline void setRenderDrawColor(SDL_Renderer* renderer, uint32_t color) {
                            (color & AMASK) >> ASHIFT);
 }
 
+inline void renderDrawLineF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2, uint32_t color) {
+    setRenderDrawColor(renderer, color);
+    SDL_RenderDrawLineF(renderer, x1, y1, x2, y2);
+}
+
 inline void renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2, uint32_t color) {
     setRenderDrawColor(renderer, color);
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
