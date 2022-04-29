@@ -520,18 +520,38 @@ calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAli
 
 /**
     Returns size of the rendering target.
+    \return a point describing the size (w,h) of the rendering target (x and y are always zero)
+*/
+inline auto getRendererSizePoint() {
+    auto* const renderer = dune::globals::renderer.get();
+
+    int w, h;
+    SDL_RenderGetLogicalSize(renderer, &w, &h);
+
+    if (w == 0 || h == 0)
+        SDL_GetRendererOutputSize(renderer, &w, &h);
+
+    return SDL_Point{w, h};
+}
+
+/**
+    Returns size of the rendering target.
+    \return a point describing the size (w,h) of the rendering target (x and y are always zero)
+*/
+inline auto getRendererSizePointF() {
+    const auto point = getRendererSizePoint();
+
+    return SDL_FPoint{static_cast<float>(point.x), static_cast<float>(point.y)};
+}
+
+/**
+    Returns size of the rendering target.
     \return the rectangle describing the size (w,h) of the rendering target (x and y are always zero)
 */
 inline auto getRendererSize() {
-    auto* const renderer = dune::globals::renderer.get();
+    const auto point = getRendererSizePoint();
 
-    SDL_Rect rect{};
-    SDL_RenderGetLogicalSize(renderer, &rect.w, &rect.h);
-
-    if (rect.w == 0 || rect.h == 0)
-        SDL_GetRendererOutputSize(renderer, &rect.w, &rect.h);
-
-    return rect;
+    return SDL_Rect{0, 0, point.x, point.y};
 }
 
 /**
