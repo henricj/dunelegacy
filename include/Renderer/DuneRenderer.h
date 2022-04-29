@@ -197,4 +197,20 @@ inline int DuneDrawLines(SDL_Renderer* renderer, std::initializer_list<const SDL
     return SDL_RenderDrawLinesF(renderer, std::data(points), points.size());
 }
 
+inline int DuneDrawRects(SDL_Renderer* renderer, std::span<SDL_FRect> rects) {
+    return SDL_RenderDrawRectsF(renderer, rects.data(), rects.size());
+}
+
+inline int DuneDrawRects(SDL_Renderer* renderer, std::initializer_list<const SDL_FRect> rects) {
+    return SDL_RenderDrawRectsF(renderer, std::data(rects), rects.size());
+}
+
+inline int DuneFillRects(SDL_Renderer* renderer, std::span<SDL_FRect> rects) {
+    return SDL_RenderFillRectsF(renderer, rects.data(), rects.size());
+}
+
+inline int DuneFillRects(SDL_Renderer* renderer, std::initializer_list<const SDL_FRect> rects) {
+    return SDL_RenderFillRectsF(renderer, std::data(rects), rects.size());
+}
+
 #endif // DUNERENDERER_H
