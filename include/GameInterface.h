@@ -89,6 +89,8 @@ public:
 private:
     void removeOldContainer();
 
+    void draw_indicator(SDL_Renderer* renderer, const SDL_FRect& dest, float percent, uint32_t color);
+
     // windowWidget needs to be above pObjectContainer so that pObjectContainer's dtor
     // runs before windowWidget's dtor.
     StaticContainer windowWidget; ///< The main widget of this interface
@@ -110,7 +112,7 @@ private:
 
     ChatManager chatManager; ///< Manages chat manages shown overlayed with the main map
 
-    std::vector<SDL_Point> render_points_;
+    std::vector<SDL_FRect> render_rects_;
 
     const GameContext context_;
 };
