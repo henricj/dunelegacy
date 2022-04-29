@@ -39,9 +39,9 @@ public:
     ~SurfaceLoader();
 
     SurfaceLoader(const SurfaceLoader&)            = delete;
-    SurfaceLoader(SurfaceLoader&&)                 = default;
+    SurfaceLoader(SurfaceLoader&&)                 = delete;
     SurfaceLoader& operator=(const SurfaceLoader&) = delete;
-    SurfaceLoader& operator=(SurfaceLoader&&)      = default;
+    SurfaceLoader& operator=(SurfaceLoader&&)      = delete;
 
     SDL_Surface* getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z);
     SDL_Surface* getZoomedObjSurface(unsigned int id, unsigned int z) {
