@@ -52,7 +52,7 @@ public:
     void draw(Point position) override;
 
     /**
-        Checks whether the newticker currently shows a message
+        Checks whether the news ticker currently shows a message
         \return true if a message is shown, false otherwise
     */
     virtual bool newsTickerHasMessage() { return newsticker.hasMessage(); }
@@ -99,10 +99,10 @@ private:
         pObjectContainer;       ///< The container holding information about the currently selected unit/structure
     uint32_t objectID{NONE_ID}; ///< The id of the currently selected object
 
-    HBox topBarHBox; ///< The container for the top bar containing newsticker, options button and mentat button
+    HBox topBarHBox; ///< The container for the top bar containing news ticker, options button and mentat button
     NewsTicker
-        newsticker; ///< The newsticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
-    PictureButton optionsButton; ///< Button for accessing the ingame menu
+        newsticker; ///< The news ticker showing news on the game (e.g. new starport prices, harvester fill level, etc.)
+    PictureButton optionsButton; ///< Button for accessing the in-game menu
     PictureButton mentatButton;  ///< Button for accessing the mentat menu
     PictureLabel topBar;         ///< The background of the top bar
 
@@ -110,7 +110,7 @@ private:
 
     RadarView radarView; ///< This is the minimap/radar in the side bar
 
-    ChatManager chatManager; ///< Manages chat manages shown overlayed with the main map
+    ChatManager chatManager; ///< Manages chat shown overlaid with the main map
 
     std::vector<SDL_FRect> render_rects_;
 
