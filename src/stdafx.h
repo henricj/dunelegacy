@@ -46,8 +46,6 @@
 #    include <ScreenBorder.h>
 #    include <SoundPlayer.h>
 
-#    include <fmt/format.h>
-#    include <fmt/printf.h>
 #    include <misc/FileSystem.h>
 #    include <misc/Random.h>
 #    include <misc/SDL2pp.h>
@@ -60,6 +58,9 @@
 #    include <SoundPlayer.h>
 
 #    include <mmath.h>
+
+#    include <fmt/format.h>
+#    include <fmt/printf.h>
 
 #    include <algorithm>
 #    include <array>
