@@ -240,9 +240,8 @@ void DropDownBox::resize(uint32_t width, uint32_t height) {
 }
 
 void DropDownBox::resizeListBox() {
-    const int listBoxHeight = std::max(1, std::min(numVisibleEntries, getNumEntries()))
-                                * static_cast<int>(GUIStyle::getInstance().getListBoxEntryHeight())
-                            + 2;
+    const int listBoxHeight =
+        std::max(1, std::min(numVisibleEntries, getNumEntries())) * GUIStyle::getInstance().getListBoxEntryHeight() + 2;
     listBox.resize(getSize().x - 1, listBoxHeight);
 }
 

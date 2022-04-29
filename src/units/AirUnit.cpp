@@ -130,8 +130,8 @@ void AirUnit::blitToScreen() {
 
         const auto source =
             calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-        const auto dest = calcSpriteDrawingRect(pUnitGraphic, static_cast<float>(x), static_cast<float>(y), numImagesX,
-                                                numImagesY, HAlign::Center, VAlign::Center);
+        const auto dest =
+            calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
     }

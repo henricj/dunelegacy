@@ -345,7 +345,7 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {
 
-    return getPlayerName((HOUSETYPE)reinforcementInfo.houseID) + ", " + resolveItemName(reinforcementInfo.unitID) + ", "
+    return getPlayerName(reinforcementInfo.houseID) + ", " + resolveItemName(reinforcementInfo.unitID) + ", "
          + resolveDropLocationName(reinforcementInfo.dropLocation) + ", " + std::to_string(reinforcementInfo.droptime)
          + " min" + (reinforcementInfo.bRepeat ? ", +" : "");
 }

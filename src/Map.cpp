@@ -166,8 +166,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                         if ((pAirUnit->getItemID() != Unit_Carryall) && (pAirUnit->getItemID() != Unit_Sandworm)
                             && (pAirUnit->getItemID() != Unit_Frigate)) {
                             // try to deviate
-                            if (random_.randFixPoint()
-                                < getDeviateWeakness(static_cast<HOUSETYPE>(pAirUnit->getOriginalHouseID()))) {
+                            if (random_.randFixPoint() < getDeviateWeakness(pAirUnit->getOriginalHouseID())) {
                                 pAirUnit->deviate(context, damagerOwner);
                             }
                         }
@@ -211,8 +210,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                             if ((pUnit->getItemID() != Unit_Carryall) && (pUnit->getItemID() != Unit_Sandworm)
                                 && (pUnit->getItemID() != Unit_Frigate)) {
                                 // try to deviate
-                                if (random_.randFixPoint()
-                                    < getDeviateWeakness(static_cast<HOUSETYPE>(pUnit->getOriginalHouseID()))) {
+                                if (random_.randFixPoint() < getDeviateWeakness(pUnit->getOriginalHouseID())) {
                                     pUnit->deviate(context, damagerOwner);
                                 }
                             }

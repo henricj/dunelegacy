@@ -359,8 +359,8 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
 
 std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
 
-    return getPlayerName((HOUSETYPE)aiteamInfo.houseID) + ", " + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior)
-         + ", " + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", " + std::to_string(aiteamInfo.minUnits) + ", "
+    return getPlayerName(aiteamInfo.houseID) + ", " + getAITeamBehaviorNameByID(aiteamInfo.aiTeamBehavior) + ", "
+         + getAITeamTypeNameByID(aiteamInfo.aiTeamType) + ", " + std::to_string(aiteamInfo.minUnits) + ", "
          + std::to_string(aiteamInfo.maxUnits);
 }
 

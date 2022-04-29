@@ -193,7 +193,7 @@ static uint16_t SeedRand() {
     // convert back to native endianess
     Seed = SDL_SwapLE32(Seed);
 
-    return ((uint16_t)a);
+    return a;
 }
 
 /**

@@ -178,9 +178,9 @@ void GameInterface::draw(Point position) {
     auto* const digitsTex = dune::globals::pGFXManager->getUIGraphic(UI_CreditsDigits);
 
     for (int i = NumDigits - 1; i >= 0; i--) {
-        auto source = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
-        auto dest   = calcSpriteDrawingRect(
-              digitsTex, getRendererWidth() - sideBar.getSize().x + 49 + (6 - NumDigits + i) * 10, 135, 10);
+        auto source     = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
+        const auto x    = renderer_width - left + 49 + (6 - NumDigits + i) * 10;
+        const auto dest = calcSpriteDrawingRect(digitsTex, x, 135, 10);
         Dune_RenderCopyF(renderer, digitsTex, &source, &dest);
     }
 }
