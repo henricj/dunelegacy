@@ -208,7 +208,7 @@ TopMenuBase::TopMenuBase() {
 TopMenuBase::~TopMenuBase() = default;
 
 void TopMenuBase::draw_background(Point position) {
-    MenuBase::draw_background(position);
+    parent::draw_background(position);
 
     auto& gui = GUIStyle::getInstance();
 
