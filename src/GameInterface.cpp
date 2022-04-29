@@ -90,6 +90,36 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
 
 GameInterface::~GameInterface() = default;
 
+void GameInterface::draw_indicator(SDL_Renderer* const renderer, const SDL_FRect& dest, float percent, uint32_t color) {
+
+    auto yCount2 = static_cast<float>(dest.h) * percent;
+
+    if (yCount2 > dest.h)
+        yCount2 = dest.h;
+    else if (yCount2 <= 0)
+        return;
+
+    static constexpr auto indicator_height = 6;
+
+    render_rects_.clear();
+
+    for (auto i = 0; i < yCount2 + indicator_height; i += indicator_height) {
+        const auto high = std::min(static_cast<float>(i + indicator_height), yCount2);
+        const auto low  = i + 2;
+
+        if (high <= low)
+            break;
+
+        render_rects_.emplace_back(dest.x + 1, dest.y + dest.h - high, dest.w - 2, high - low);
+    }
+
+    if (render_rects_.empty())
+        return;
+
+    setRenderDrawColor(renderer, color);
+    DuneFillRects(renderer, render_rects_);
+}
+
 void GameInterface::draw(Point position) {
     parent::draw(position);
 
@@ -97,75 +127,48 @@ void GameInterface::draw(Point position) {
 
     // draw Power Indicator and Spice indicator
 
-    const SDL_Rect powerIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 14, 146, 4,
-                                        getRendererHeight() - 146 - 2};
-    renderFillRect(renderer, &powerIndicatorPos, COLOR_BLACK);
+    const auto [renderer_width, renderer_height] = getRendererSizePointF();
 
-    const SDL_Rect spiceIndicatorPos = {getRendererWidth() - sideBar.getSize().x + 20, 146, 4,
-                                        getRendererHeight() - 146 - 2};
-    renderFillRect(renderer, &spiceIndicatorPos, COLOR_BLACK);
+    const auto left = static_cast<float>(sideBar.getSize().x);
 
-    int xCount = 0;
+    const SDL_FRect powerIndicatorPos{renderer_width - left + 14, 146, 4, renderer_height - 146 - 2};
+    const SDL_FRect spiceIndicatorPos{renderer_width - left + 20, 146, 4, renderer_height - 146 - 2};
 
-    int yCount  = 0;
-    int yCount2 = 0;
+    setRenderDrawColor(renderer, COLOR_BLACK);
+    DuneFillRects(renderer, {powerIndicatorPos, spiceIndicatorPos});
 
     const auto* const local_house = dune::globals::pLocalHouse;
 
     // draw power level indicator
-    if (local_house->getPowerRequirement() == 0) {
-        if (local_house->getProducedPower() > 0) {
-            yCount2 = powerIndicatorPos.h + 1;
+    const auto power_required = local_house->getPowerRequirement();
+    const auto power_produced = local_house->getProducedPower();
+
+    auto power_percent = 0.f;
+
+    if (power_required == 0) {
+        if (power_produced > 0) {
+            power_percent = 1;
         } else {
-            yCount2 = powerIndicatorPos.h / 2;
+            power_percent = 0.5f;
         }
     } else {
-        yCount2 = lround(static_cast<double>(local_house->getProducedPower())
-                         / static_cast<double>(local_house->getPowerRequirement())
-                         * static_cast<double>(powerIndicatorPos.h / 2));
+        power_percent = 0.5f * static_cast<float>(power_produced) / static_cast<float>(power_required);
     }
 
-    if (yCount2 > powerIndicatorPos.h + 1) {
-        yCount2 = powerIndicatorPos.h + 1;
-    }
-
-    setRenderDrawColor(renderer, COLOR_GREEN);
-    render_points_.clear();
-    for (yCount = 0; yCount < yCount2; yCount++) {
-        for (xCount = 1; xCount < powerIndicatorPos.w - 1; xCount++) {
-            if (((yCount / 2) % 3) != 0) {
-                render_points_.emplace_back(xCount + powerIndicatorPos.x,
-                                            powerIndicatorPos.y + powerIndicatorPos.h - yCount);
-            }
-        }
-    }
-    if (!render_points_.empty())
-        SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
+    draw_indicator(renderer, powerIndicatorPos, power_percent, COLOR_GREEN);
 
     // draw spice level indicator
-    if (local_house->getCapacity() == 0) {
-        yCount2 = 0;
-    } else {
-        yCount2 = lround((local_house->getStoredCredits() / local_house->getCapacity()) * spiceIndicatorPos.h);
+    const auto spice_capacity = local_house->getCapacity();
+
+    auto spice_percent = 0.f;
+
+    if (spice_capacity > 0) {
+        const auto spice_stored = local_house->getStoredCredits();
+
+        spice_percent = spice_stored.toFloat() / static_cast<float>(spice_capacity);
     }
 
-    if (yCount2 > spiceIndicatorPos.h + 1) {
-        yCount2 = spiceIndicatorPos.h + 1;
-    }
-
-    setRenderDrawColor(renderer, COLOR_ORANGE);
-    render_points_.clear();
-    for (yCount = 0; yCount < yCount2; yCount++) {
-        for (xCount = 1; xCount < spiceIndicatorPos.w - 1; xCount++) {
-            if (yCount / 2 % 3 == 0)
-                continue;
-
-            render_points_.emplace_back(xCount + spiceIndicatorPos.x,
-                                        spiceIndicatorPos.y + spiceIndicatorPos.h - yCount);
-        }
-    }
-    if (!render_points_.empty())
-        SDL_RenderDrawPoints(renderer, render_points_.data(), static_cast<int>(render_points_.size()));
+    draw_indicator(renderer, spiceIndicatorPos, spice_percent, COLOR_ORANGE);
 
     // draw credits
     const auto credits       = local_house->getCredits();
