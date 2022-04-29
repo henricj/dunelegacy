@@ -305,7 +305,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             break;
 
         case State_HumanUnits: {
-            const float MaxUnitsDestroyed = static_cast<float>(max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200));
+            const float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             const float UnitsComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentUnitsComplete = NAN;
@@ -334,7 +334,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             break;
 
         case State_AIUnits: {
-            const float MaxUnitsDestroyed = static_cast<float>(max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200));
+            const float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             const float UnitsComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentUnitsComplete = NAN;
@@ -363,8 +363,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             break;
 
         case State_HumanBuildings: {
-            const float MaxBuildingsDestroyed =
-                static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
+            const float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             const float BuildingsComplete = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
             float Human_PercentBuildingsComplete = NAN;
@@ -393,8 +392,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             break;
 
         case State_AIBuildings: {
-            const float MaxBuildingsDestroyed =
-                static_cast<float>(max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200));
+            const float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             const float BuildingsComplete = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
             float AI_PercentBuildingsComplete = NAN;
