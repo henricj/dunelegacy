@@ -36,8 +36,8 @@
 #include <cmath>
 
 namespace {
-auto max3(float a, float b, float c) {
-    return std::max(a, std::max(b, c));
+constexpr auto max3(float a, float b, float c) {
+    return std::max({a, b, c});
 }
 
 inline constexpr auto PROGRESSBARTIME = 4000.0f;
