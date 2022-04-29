@@ -98,9 +98,8 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
 
                 auto g = map_data.g;
 
-                auto difficulty = (pUnit->isAFlyingUnit()
-                                       ? FixPoint(1)
-                                       : pUnit->getTerrainDifficulty(static_cast<TERRAINTYPE>(nextTile.getType())));
+                auto difficulty =
+                    (pUnit->isAFlyingUnit() ? FixPoint(1) : pUnit->getTerrainDifficulty(nextTile.getType()));
 
                 if ((nextCoord.x != currentCoord.x) && (nextCoord.y != currentCoord.y)) {
                     // add diagonal movement cost

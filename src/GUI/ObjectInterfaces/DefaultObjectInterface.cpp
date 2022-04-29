@@ -43,7 +43,7 @@ DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int o
     topBoxHBox.addWidget(Spacer::create());
     topBoxHBox.addWidget(&objPicture);
 
-    objPicture.setTexture(resolveItemPicture(itemID, (HOUSETYPE)pObject->getOriginalHouseID()));
+    objPicture.setTexture(resolveItemPicture(itemID, pObject->getOriginalHouseID()));
 
     topBoxHBox.addWidget(Spacer::create());
 }

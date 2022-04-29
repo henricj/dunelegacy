@@ -220,7 +220,7 @@ void md5_update(md5_context* ctx, const unsigned char* input, int ilen) {
         ctx->total[1]++;
 
     if (left && ilen >= fill) {
-        memcpy((void*)(ctx->buffer + left), (void*)input, fill);
+        memcpy(ctx->buffer + left, input, fill);
         md5_process(ctx, ctx->buffer);
         input += fill;
         ilen -= fill;
@@ -234,7 +234,7 @@ void md5_update(md5_context* ctx, const unsigned char* input, int ilen) {
     }
 
     if (ilen > 0) {
-        memcpy((void*)(ctx->buffer + left), (void*)input, ilen);
+        memcpy(ctx->buffer + left, input, ilen);
     }
 }
 
@@ -263,7 +263,7 @@ void md5_finish(md5_context* ctx, unsigned char output[16]) {
     last = ctx->total[0] & 0x3F;
     padn = last < 56 ? 56 - last : 120 - last;
 
-    md5_update(ctx, (unsigned char*)md5_padding, padn);
+    md5_update(ctx, md5_padding, padn);
     md5_update(ctx, msglen, 8);
 
     PUT_ULONG_LE(ctx->state[0], output, 0);
