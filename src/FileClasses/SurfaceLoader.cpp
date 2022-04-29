@@ -276,8 +276,7 @@ SurfaceLoader::SurfaceLoader() {
     Palette benePalette = LoadPalette_RW(file_manager->openFile("BENE.PAL").get());
 
     const auto elapsed = std::chrono::steady_clock::now() - start;
-    sdl2::log_info("SurfaceLoader load time: %s",
-                   std::to_string(std::chrono::duration<double>(elapsed).count()).c_str());
+    sdl2::log_info("SurfaceLoader load time: %f", std::chrono::duration<double>(elapsed).count());
 
     constexpr auto harkIdx = static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN);
 
@@ -1213,8 +1212,7 @@ SurfaceLoader::SurfaceLoader() {
 
                 if (!windtrap)
                     THROW(std::runtime_error,
-                          fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom)
-                              .c_str());
+                          fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom));
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 windtrap = generateWindtrapAnimationFrames(windtrap.get());
