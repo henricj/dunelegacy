@@ -63,6 +63,8 @@ private:
 };
 
 class TopMenuBase : public MenuBase {
+    using parent = MenuBase;
+
 protected:
     TopMenuBase();
 
