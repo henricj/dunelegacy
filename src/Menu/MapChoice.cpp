@@ -242,10 +242,9 @@ void MapChoice::drawSpecificStuff() {
 
                 if (curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
                     // there is still some region to blend in
-                    const auto pieceNum =
-                        static_cast<UIGraphics_Enum>(group[lastScenario].newRegion[region][curRegion2Blit]);
-                    auto* surface      = gfx->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
-                    auto pPieceSurface = convertSurfaceToDisplayFormat(surface);
+                    const auto pieceNum = group[lastScenario].newRegion[region][curRegion2Blit];
+                    auto* surface       = gfx->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
+                    auto pPieceSurface  = convertSurfaceToDisplayFormat(surface);
                     auto dest =
                         calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);
                     curBlendBlitter = std::make_unique<BlendBlitter>(std::move(pPieceSurface), mapSurface.get(), dest);
