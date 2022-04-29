@@ -56,18 +56,12 @@ public:
 
     Animation* getAnimation(unsigned int id);
 
-    sdl2::surface_ptr createMainBackgroundSurface(int width, int height) const;
-
     sdl2::surface_ptr generateWindtrapAnimationFrames(SDL_Surface* windtrapPic) const;
     static sdl2::surface_ptr
     generateMapChoiceArrowFrames(SDL_Surface* arrowPic, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
     [[nodiscard]] sdl2::surface_ptr extractSmallDetailPic(const std::string& filename) const;
 
     [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return pBackgroundSurface.get(); }
-
-    [[discard]] sdl2::surface_ptr createBackgroundSurface(int width, int height) const;
-
-    [[discard]] sdl2::surface_ptr createBackgroundTileSurface() const;
 
 private:
     [[nodiscard]] std::unique_ptr<Animation> loadAnimationFromWsa(const std::string& filename) const;
@@ -92,8 +86,6 @@ private:
 
     // 32-bit surfaces
     sdl2::surface_ptr pBackgroundSurface;
-
-    PictureFactory picFactory_;
 };
 
 #endif // SURFACELOADER_H

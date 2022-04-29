@@ -318,14 +318,6 @@ public:
     virtual DuneTextureOwned createToolTip(SDL_Renderer* renderer, std::string_view text) const = 0;
 
     /**
-        Creates a simple background for e.g. a window
-        \param  width       the width of the surface
-        \param  height      the height of the surface
-        \return the new surface
-    */
-    virtual DuneSurfaceOwned createBackground(int width, int height) const = 0;
-
-    /**
         Draw a simple background for e.g. a window
         \param  rect        the area to draw
         \return the new surface

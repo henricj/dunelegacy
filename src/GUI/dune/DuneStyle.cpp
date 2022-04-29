@@ -859,38 +859,6 @@ DuneTextureOwned DuneStyle::createToolTip(SDL_Renderer* renderer, std::string_vi
                             static_cast<float>(surface->h) * scale};
 }
 
-DuneSurfaceOwned DuneStyle::createBackground(int width, int height) const {
-    const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
-
-    sdl2::surface_ptr pSurface;
-    if (const auto* gfx = dune::globals::pGFXManager.get()) {
-        pSurface = gfx->createBackgroundSurface(scaled_width, scaled_height);
-        if (!pSurface) {
-            return {};
-        }
-    } else {
-        // data manager not yet loaded
-        pSurface = sdl2::surface_ptr{
-            SDL_CreateRGBSurface(0, scaled_width, scaled_height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
-        if (pSurface == nullptr) {
-            return {};
-        }
-        SDL_FillRect(pSurface.get(), nullptr, buttonBackgroundColor);
-    }
-
-    drawRect(pSurface.get(), 0, 0, pSurface->w - 1, pSurface->h - 1, buttonBorderColor);
-    drawHLine(pSurface.get(), 1, 1, pSurface->w - 2, buttonEdgeTopLeftColor);
-    drawHLine(pSurface.get(), 2, 2, pSurface->w - 3, buttonEdgeTopLeftColor);
-    drawVLine(pSurface.get(), 1, 1, pSurface->h - 2, buttonEdgeTopLeftColor);
-    drawVLine(pSurface.get(), 2, 2, pSurface->h - 3, buttonEdgeTopLeftColor);
-    drawHLine(pSurface.get(), 1, pSurface->h - 2, pSurface->w - 2, buttonEdgeBottomRightColor);
-    drawHLine(pSurface.get(), 2, pSurface->h - 3, pSurface->w - 3, buttonEdgeBottomRightColor);
-    drawVLine(pSurface.get(), pSurface->w - 2, 1, pSurface->h - 2, buttonEdgeBottomRightColor);
-    drawVLine(pSurface.get(), pSurface->w - 3, 2, pSurface->h - 3, buttonEdgeBottomRightColor);
-
-    return DuneSurfaceOwned{std::move(pSurface), static_cast<float>(width), static_cast<float>(height)};
-}
-
 void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     if (rect.w <= 0 || rect.h <= 0)
         THROW(std::invalid_argument, "Attempting to draw an empty background!");
