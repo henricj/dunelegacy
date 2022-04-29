@@ -96,6 +96,12 @@ public:
         sdl2::surface_ptr vborder;
     } frame[NUM_DECORATIONFRAMES];
 
+    [[nodiscard]] DecorationBorderType createDecorationBorder() const;
+    [[nodiscard]] BorderStyle createBorderStyle(DecorationFrame type) const;
+
+private:
+    [[nodiscard]] sdl2::surface_ptr createBackgroundTile(SDL_Surface* fame_pic) const;
+
     sdl2::surface_ptr background;
     sdl2::surface_ptr gameStatsBackground;
     sdl2::surface_ptr creditsBorder;

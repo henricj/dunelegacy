@@ -481,6 +481,24 @@ sdl2::surface_ptr PictureFactory::createBackgroundTile() const {
     return copySurface(backgroundTile.get());
 }
 
+PictureFactory::DecorationBorderType PictureFactory::createDecorationBorder() const {
+    const auto& d = decorationBorder;
+
+    return {copySurface(d.ball.get()), copySurface(d.hspacer.get()), copySurface(d.vspacer.get()),
+            copySurface(d.hborder.get()), copySurface(d.vborder.get())};
+}
+
+PictureFactory::BorderStyle PictureFactory::createBorderStyle(DecorationFrame type) const {
+    if (type >= NUM_DECORATIONFRAMES)
+        THROW(std::invalid_argument, "PictureFactory::PictureFactory: Decoration type out-of-range (%d)!", type);
+
+    const auto& f = frame[type];
+
+    return {copySurface(f.leftUpperCorner.get()), copySurface(f.rightUpperCorner.get()),
+            copySurface(f.leftLowerCorner.get()), copySurface(f.rightLowerCorner.get()),
+            copySurface(f.hborder.get()),         copySurface(f.vborder.get())};
+}
+
 sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) const {
     const auto PatternNormal    = getSubPicture(fame_pic, 0, 1, 63, 67);
     const auto PatternHFlipped  = flipHSurface(getSubPicture(fame_pic, 0, 1, 63, 67).get());
