@@ -75,17 +75,9 @@ public:
         return surfaceLoader.getMapChoicePieceSurface(num, house);
     }
 
-    DuneTextureOwned createMainBackground(SDL_Renderer* renderer, int width, int height) const;
-
-    sdl2::surface_ptr createBackgroundTile() const { return surfaceLoader.createBackgroundTileSurface(); }
-
     Animation* getAnimation(unsigned int id) { return surfaceLoader.getAnimation(id); }
 
     [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return surfaceLoader.getBackgroundSurface(); }
-
-    [[nodiscard]] sdl2::surface_ptr createBackgroundSurface(const int width, const int height) const {
-        return surfaceLoader.createBackgroundSurface(width, height);
-    }
 
     [[nodiscard]] SDL_Texture* getTempStreamingTexture(SDL_Renderer* renderer, int width, int height);
 

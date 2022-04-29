@@ -238,14 +238,6 @@ public:
     DuneTextureOwned createToolTip(SDL_Renderer* renderer, std::string_view text) const override;
 
     /**
-        Creates a simple background for e.g. a window
-        \param  width       the width of the surface
-        \param  height      the height of the surface
-        \return the new surface
-    */
-    DuneSurfaceOwned createBackground(int width, int height) const override;
-
-    /**
         Draw a simple background for e.g. a window
         \param  rect        the area to draw
         \return the new surface

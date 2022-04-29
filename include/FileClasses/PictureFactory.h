@@ -79,9 +79,6 @@ public:
 
     typedef enum { SimpleFrame, DecorationFrame1, DecorationFrame2, NUM_DECORATIONFRAMES } DecorationFrame;
 
-private:
-    [[nodiscard]] sdl2::surface_ptr createBackgroundTile(SDL_Surface* fame_pic) const;
-
     struct DecorationBorderType {
         sdl2::surface_ptr ball;
         sdl2::surface_ptr hspacer;

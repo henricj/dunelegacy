@@ -587,10 +587,12 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_SendToRepairIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("SendToRepair.png").get());
     SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][harkIdx].get(), SDL_TRUE, 0);
 
+    PictureFactory picFactory;
+
     uiGraphic[UI_CreditsDigits][harkIdx] = shapes->getPictureArray(
         10, 1, 2 | TILE_NORMAL, 3 | TILE_NORMAL, 4 | TILE_NORMAL, 5 | TILE_NORMAL, 6 | TILE_NORMAL, 7 | TILE_NORMAL,
         8 | TILE_NORMAL, 9 | TILE_NORMAL, 10 | TILE_NORMAL, 11 | TILE_NORMAL);
-    uiGraphic[UI_SideBar][harkIdx] = picFactory_.createSideBar(false);
+    uiGraphic[UI_SideBar][harkIdx] = picFactory.createSideBar(false);
     uiGraphic[UI_Indicator][harkIdx] =
         units1->getPictureArray(3, 1, 8 | TILE_NORMAL, 9 | TILE_NORMAL, 10 | TILE_NORMAL);
     SDL_SetColorKey(uiGraphic[UI_Indicator][harkIdx].get(), SDL_TRUE, 0);
@@ -605,18 +607,18 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_GreyPlace_Zoomlevel0][harkIdx]    = PictureFactory::createPlacingGrid(16, PALCOLOR_LIGHTGREY);
     uiGraphic[UI_GreyPlace_Zoomlevel1][harkIdx]    = PictureFactory::createPlacingGrid(32, PALCOLOR_LIGHTGREY);
     uiGraphic[UI_GreyPlace_Zoomlevel2][harkIdx]    = PictureFactory::createPlacingGrid(48, PALCOLOR_LIGHTGREY);
-    uiGraphic[UI_MenuBackground][harkIdx]          = picFactory_.createMainBackground();
-    uiGraphic[UI_GameStatsBackground][harkIdx]     = picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_HARKONNEN);
+    uiGraphic[UI_MenuBackground][harkIdx]          = picFactory.createMainBackground();
+    uiGraphic[UI_GameStatsBackground][harkIdx]     = picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_HARKONNEN);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_ATREIDES);
+        picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_ATREIDES);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_ORDOS);
+        picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_ORDOS);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)] =
-        picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_FREMEN);
+        picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_FREMEN);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_SARDAUKAR)] =
-        picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_SARDAUKAR);
+        picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_SARDAUKAR);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)] =
-        picFactory_.createGameStatsBackground(HOUSETYPE::HOUSE_MERCENARY);
+        picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_MERCENARY);
     uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx] = LoadPNG_RW(file_manager->openFile("UI_SelectionBox.png").get());
     SDL_SetColorKey(uiGraphic[UI_SelectionBox_Zoomlevel0][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_SelectionBox_Zoomlevel1][harkIdx] =
@@ -634,20 +636,20 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][harkIdx] =
         Scaler::defaultTripleTiledSurface(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel0][harkIdx].get(), 1, 1);
     SDL_SetColorKey(uiGraphic[UI_OtherPlayerSelectionBox_Zoomlevel2][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_TopBar][harkIdx]              = picFactory_.createTopBar();
+    uiGraphic[UI_TopBar][harkIdx]              = picFactory.createTopBar();
     uiGraphic[UI_ButtonUp][harkIdx]            = choam->getPicture(0);
     uiGraphic[UI_ButtonUp_Pressed][harkIdx]    = choam->getPicture(1);
     uiGraphic[UI_ButtonDown][harkIdx]          = choam->getPicture(2);
     uiGraphic[UI_ButtonDown_Pressed][harkIdx]  = choam->getPicture(3);
-    uiGraphic[UI_BuilderListUpperCap][harkIdx] = picFactory_.createBuilderListUpperCap();
-    uiGraphic[UI_BuilderListLowerCap][harkIdx] = picFactory_.createBuilderListLowerCap();
+    uiGraphic[UI_BuilderListUpperCap][harkIdx] = picFactory.createBuilderListUpperCap();
+    uiGraphic[UI_BuilderListLowerCap][harkIdx] = picFactory.createBuilderListLowerCap();
     uiGraphic[UI_CustomGamePlayersArrow][harkIdx] =
         LoadPNG_RW(file_manager->openFile("CustomGamePlayers_Arrow.png").get());
     SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrow][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_CustomGamePlayersArrowNeutral][harkIdx] =
         LoadPNG_RW(file_manager->openFile("CustomGamePlayers_ArrowNeutral.png").get());
     SDL_SetColorKey(uiGraphic[UI_CustomGamePlayersArrowNeutral][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_MessageBox][harkIdx] = picFactory_.createMessageBoxBorder();
+    uiGraphic[UI_MessageBox][harkIdx] = picFactory.createMessageBoxBorder();
 
     if (bttn != nullptr) {
         uiGraphic[UI_Mentat][harkIdx]          = bttn->getPicture(0);
@@ -676,21 +678,20 @@ SurfaceLoader::SurfaceLoader() {
         mapSurfaceColorRange(uiGraphic[UI_Plus][harkIdx].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 2);
     uiGraphic[UI_Plus_Pressed][harkIdx]  = LoadPNG_RW(file_manager->openFile("Button_PlusPushed.png").get());
     uiGraphic[UI_MissionSelect][harkIdx] = LoadPNG_RW(file_manager->openFile("Menu_MissionSelect.png").get());
-    picFactory_.drawFrame(uiGraphic[UI_MissionSelect][harkIdx].get(), PictureFactory::SimpleFrame, nullptr);
+    picFactory.drawFrame(uiGraphic[UI_MissionSelect][harkIdx].get(), PictureFactory::SimpleFrame, nullptr);
     SDL_SetColorKey(uiGraphic[UI_MissionSelect][harkIdx].get(), SDL_TRUE, 0);
-    uiGraphic[UI_OptionsMenu][harkIdx]    = picFactory_.createOptionsMenu();
-    uiGraphic[UI_LoadSaveWindow][harkIdx] = picFactory_.createMenu(280, 228);
-    uiGraphic[UI_NewMapWindow][harkIdx]   = picFactory_.createMenu(600, 440);
+    uiGraphic[UI_OptionsMenu][harkIdx]    = picFactory.createOptionsMenu();
+    uiGraphic[UI_LoadSaveWindow][harkIdx] = picFactory.createMenu(280, 228);
+    uiGraphic[UI_NewMapWindow][harkIdx]   = picFactory.createMenu(600, 440);
     uiGraphic[UI_DuneLegacy][harkIdx]     = LoadPNG_RW(file_manager->openFile("DuneLegacy.png").get());
-    uiGraphic[UI_GameMenu][harkIdx]       = picFactory_.createMenu(uiGraphic[UI_DuneLegacy][harkIdx].get(), 158);
-    picFactory_.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
+    uiGraphic[UI_GameMenu][harkIdx]       = picFactory.createMenu(uiGraphic[UI_DuneLegacy][harkIdx].get(), 158);
+    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
 
     uiGraphic[UI_PlanetBackground][harkIdx] = LoadCPS_RW(file_manager->openFile("BIGPLAN.CPS").get());
-    picFactory_.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), PictureFactory::SimpleFrame);
-    uiGraphic[UI_MenuButtonBorder][harkIdx] =
-        picFactory_.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
+    picFactory.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), PictureFactory::SimpleFrame);
+    uiGraphic[UI_MenuButtonBorder][harkIdx] = picFactory.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
 
-    picFactory_.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
+    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
 
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATH.CPS").get()).get());
@@ -715,17 +716,17 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_HARKONNEN, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_HARKONNEN, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_ATREIDES, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_ATREIDES, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_ORDOS, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_ORDOS, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_SARDAUKAR)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_SARDAUKAR, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_SARDAUKAR, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_FREMEN, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_FREMEN, benePalette);
     uiGraphic[UI_MentatHouseChoiceInfoQuestion][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)] =
-        picFactory_.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_MERCENARY, benePalette);
+        picFactory.createMentatHouseChoiceQuestion(HOUSETYPE::HOUSE_MERCENARY, benePalette);
 
     uiGraphic[UI_MentatYes][harkIdx]             = Scaler::defaultDoubleSurface(mentat->getPicture(0).get());
     uiGraphic[UI_MentatYes_Pressed][harkIdx]     = Scaler::defaultDoubleSurface(mentat->getPicture(1).get());
@@ -747,7 +748,7 @@ SurfaceLoader::SurfaceLoader() {
         }
 
         uiGraphic[UI_HouseSelect][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-            picFactory_.createHouseSelect(pHouseChoiceBackground.get());
+            picFactory.createHouseSelect(pHouseChoiceBackground.get());
         uiGraphic[UI_SelectYourHouseLarge][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
             Scaler::defaultDoubleSurface(getSubPicture(pHouseChoiceBackground.get(), 0, 0, 320, 50).get());
         uiGraphic[UI_Herald_Colored][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
@@ -811,17 +812,17 @@ SurfaceLoader::SurfaceLoader() {
             uiGraphic[UI_Herald_ArrowRightHighlight][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get());
 
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_HARKONNEN);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_HARKONNEN);
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_ATREIDES);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_ATREIDES);
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_ORDOS);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_ORDOS);
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_FREMEN)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_FREMEN);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_FREMEN);
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_SARDAUKAR)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_SARDAUKAR);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_SARDAUKAR);
     uiGraphic[UI_MapChoiceScreen][static_cast<int>(HOUSETYPE::HOUSE_MERCENARY)] =
-        picFactory_.createMapChoiceScreen(HOUSETYPE::HOUSE_MERCENARY);
+        picFactory.createMapChoiceScreen(HOUSETYPE::HOUSE_MERCENARY);
     uiGraphic[UI_MapChoicePlanet][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::doubleSurfaceNN(LoadCPS_RW(file_manager->openFile("PLANET.CPS").get()).get());
     SDL_SetColorKey(uiGraphic[UI_MapChoicePlanet][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE, 0);
@@ -891,8 +892,8 @@ SurfaceLoader::SurfaceLoader() {
     SDL_SetColorKey(uiGraphic[UI_StructureSizeConcrete][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(), SDL_TRUE,
                     0);
 
-    uiGraphic[UI_MapEditor_SideBar][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]   = picFactory_.createSideBar(true);
-    uiGraphic[UI_MapEditor_BottomBar][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = picFactory_.createBottomBar();
+    uiGraphic[UI_MapEditor_SideBar][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]   = picFactory.createSideBar(true);
+    uiGraphic[UI_MapEditor_BottomBar][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] = picFactory.createBottomBar();
 
     uiGraphic[UI_MapEditor_ExitIcon][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         LoadPNG_RW(file_manager->openFile("MapEditorExitIcon.png").get());
@@ -1110,11 +1111,11 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_MapEditor_Pen5x5][harkIdx] = LoadPNG_RW(file_manager->openFile("MapEditorPen5x5.png").get());
     SDL_SetColorKey(uiGraphic[UI_MapEditor_Pen5x5][harkIdx].get(), SDL_TRUE, 0);
 
-    uiGraphic[UI_Background_Tile][harkIdx] = picFactory_.createBackgroundTile();
+    uiGraphic[UI_Background_Tile][harkIdx] = picFactory.createBackgroundTile();
 
-    uiGraphic[UI_Background_Logo][harkIdx]                                     = picFactory_.createHarkonnenLogo();
-    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] = picFactory_.createAtreidesLogo();
-    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]    = picFactory_.createOrdosLogo();
+    uiGraphic[UI_Background_Logo][harkIdx]                                     = picFactory.createHarkonnenLogo();
+    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] = picFactory.createAtreidesLogo();
+    uiGraphic[UI_Background_Logo][static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]    = picFactory.createOrdosLogo();
 
     // load animations
     animation[Anim_HarkonnenEyes] = menshph->getAnimation(0, 4, true, true);
@@ -1176,7 +1177,7 @@ SurfaceLoader::SurfaceLoader() {
     }
 
     // pBackgroundSurface is separate as we never draw it but use it to construct other sprites
-    pBackgroundSurface = convertSurfaceToDisplayFormat(picFactory_.createBackground().get());
+    pBackgroundSurface = convertSurfaceToDisplayFormat(picFactory.createBackground().get());
 
     { // Scope
         auto replace_color = [&](ObjPic_enum id, HOUSETYPE house, int zoom, uint32_t oldColor, uint32_t newColor) {
@@ -1438,14 +1439,6 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
     return animation[id].get();
 }
 
-sdl2::surface_ptr SurfaceLoader::createMainBackgroundSurface(int width, int height) const {
-    auto surface = createBackgroundSurface(width, height);
-
-    picFactory_.drawMainBackground(surface.get());
-
-    return surface;
-}
-
 std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename) const {
     try {
         return std::make_unique<Shpfile>(dune::globals::pFileManager->openFile(filename).get());
@@ -1499,14 +1492,6 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
     }
 
     return pSurface;
-}
-
-sdl2::surface_ptr SurfaceLoader::createBackgroundSurface(int width, int height) const {
-    return picFactory_.createBackground(width, height);
-}
-
-sdl2::surface_ptr SurfaceLoader::createBackgroundTileSurface() const {
-    return picFactory_.createBackgroundTile();
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {

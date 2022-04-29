@@ -56,11 +56,21 @@ void WidgetWithBackground::resize(uint32_t width, uint32_t height) {
 }
 
 void WidgetWithBackground::draw_background(Point position) {
-    const auto* background = getBackground();
-    if (!background)
-        return;
-
     auto* const renderer = dune::globals::renderer.get();
+
+    const auto* background = getBackground();
+    if (!background) {
+        if (bSelfGeneratedBackground) {
+            auto& size = getSize();
+
+            const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y),
+                                 static_cast<float>(size.x), static_cast<float>(size.y)};
+
+            GUIStyle::getInstance().drawBackground(renderer, dest);
+        }
+
+        return;
+    }
 
     SDL_FRect dst{static_cast<float>(position.x), static_cast<float>(position.y), background->width_,
                   background->height_};
@@ -79,6 +89,9 @@ void WidgetWithBackground::draw_background(Point position) {
 }
 
 void WidgetWithBackground::draw(Point position) {
+    if (bTransparentBackground)
+        return;
+
     draw_background(position);
 }
 
@@ -92,7 +105,7 @@ void WidgetWithBackground::invalidateTextures() {
 }
 
 DuneSurfaceOwned WidgetWithBackground::createBackground() {
-    return GUIStyle::getInstance().createBackground(getSize().x, getSize().y);
+    return {};
 }
 
 const DuneTexture* WidgetWithBackground::getBackground() {
