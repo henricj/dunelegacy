@@ -6,7 +6,7 @@
 inline constexpr auto NUM_TERRAIN_TILES_X             = 11;
 inline constexpr auto NUM_TERRAIN_TILES_Y             = 8;
 inline constexpr auto NUM_MAPCHOICEPIECES             = 28;
-inline constexpr auto NUM_WINDTRAP_ANIMATIONS         = (2 * STRUCTURE_ANIMATIONTIMER + 4);
+inline constexpr auto NUM_WINDTRAP_ANIMATIONS         = 2 * STRUCTURE_ANIMATIONTIMER + 4;
 inline constexpr auto NUM_WINDTRAP_ANIMATIONS_PER_ROW = 10;
 inline constexpr auto NUM_STATIC_ANIMATIONS_PER_ROW   = 7;
 //
@@ -87,7 +87,7 @@ enum ObjPic_enum {
     ObjPic_Terrain_HiddenFog,
     ObjPic_Terrain_Tracks,
     ObjPic_Star,
-    NUM_OBJPICS
+    NUM_OBJPICS [[notmaybe_unused]]
 };
 
 // SmallDetailPics
@@ -179,7 +179,7 @@ enum TinyPicture_Enum {
     TinyPicture_Special          = 38,
     TinyPicture_Infantry         = 39,
     TinyPicture_Troopers         = 40,
-    NUM_TINYPICTURE
+    NUM_TINYPICTURE [[notmaybe_unused]]
 };
 
 // UI Graphics
@@ -382,7 +382,7 @@ enum UIGraphics_Enum {
     UI_MapEditor_Pen5x5,
     UI_Background_Tile,
     UI_Background_Logo,
-    NUM_UIGRAPHICS
+    NUM_UIGRAPHICS [[notmaybe_unused]]
 };
 
 enum class GeneratedPicture { PalaceReadyText };

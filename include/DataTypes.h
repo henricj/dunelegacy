@@ -316,10 +316,13 @@ enum class HOUSETYPE : int8_t {
     HOUSE_FIRST [[maybe_unused]] = HOUSE_HARKONNEN,
     HOUSE_LAST [[maybe_unused]]  = HOUSE_MERCENARY
 };
+inline constexpr auto NUM_HOUSES  = static_cast<int>(HOUSETYPE::NUM_HOUSES);
+inline constexpr auto HOUSE_FIRST = static_cast<int>(HOUSETYPE::HOUSE_FIRST);
+inline constexpr auto HOUSE_LAST  = static_cast<int>(HOUSETYPE::HOUSE_LAST);
 
 template<typename F>
 void for_each_housetype(F&& f) {
-    for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++i)
+    for (auto i = 0; i < NUM_HOUSES; ++i)
         f(static_cast<HOUSETYPE>(i));
 }
 
@@ -335,6 +338,7 @@ enum class ANGLETYPE : int8_t {
     NUM_ANGLES [[maybe_unused]],
     INVALID_ANGLE [[maybe_unused]] = INVALID
 };
+inline constexpr auto NUM_ANGLES = static_cast<int>(ANGLETYPE::NUM_ANGLES);
 
 enum class DropLocation : int8_t {
     Drop_Invalid [[maybe_unused]] = -1,
