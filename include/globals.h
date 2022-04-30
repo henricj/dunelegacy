@@ -18,6 +18,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#include "FileClasses/GFXConstants.h"
 #include <Colors.h>
 #include <DataTypes.h>
 #include <FileClasses/Palette.h>

@@ -21,6 +21,8 @@
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 
+class GameContext;
+
 /**
     This class is the base class for all triggers.
 */

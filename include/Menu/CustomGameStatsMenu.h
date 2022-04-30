@@ -18,6 +18,7 @@
 #ifndef CUSTOMGAMESTATSMENU_H
 #define CUSTOMGAMESTATSMENU_H
 
+#include "Game.h"
 #include "MenuBase.h"
 #include <GUI/HBox.h>
 #include <GUI/Label.h>

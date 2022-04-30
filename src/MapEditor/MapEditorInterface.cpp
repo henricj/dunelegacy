@@ -30,6 +30,7 @@
 #include <globals.h>
 
 #include <FileClasses/GFXManager.h>
+#include <FileClasses/TextManager.h>
 #include <Game.h>
 #include <House.h>
 #include <ScreenBorder.h>

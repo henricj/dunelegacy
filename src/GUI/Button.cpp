@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <SoundPlayer.h>
 
 #include "misc/DrawingRectHelper.h"
@@ -28,6 +29,17 @@
 
 Button::Button()  = default;
 Button::~Button() = default;
+
+void Button::setTooltipText(std::string text) {
+    tooltipText = std::move(text);
+
+    if (tooltipTexture)
+        tooltipTexture = DuneTextureOwned{};
+
+    if (!tooltipText.empty()) {
+        tooltipTexture = GUIStyle::getInstance().createToolTip(dune::globals::renderer.get(), tooltipText);
+    }
+}
 
 void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {

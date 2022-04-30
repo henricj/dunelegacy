@@ -18,9 +18,9 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <string_view>
+#include "misc/SDL2pp.h"
 
-struct SDL_Surface;
+#include <string_view>
 
 class Font {
 protected:

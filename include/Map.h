@@ -18,12 +18,15 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include "ObjectBase.h"
 #include "misc/Random.h"
 #include <AStarSearch.h>
 #include <Tile.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 #include <misc/exceptions.h>
+
+#include <queue>
 
 class Map final {
 public:

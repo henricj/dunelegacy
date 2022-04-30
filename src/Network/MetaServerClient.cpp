@@ -19,8 +19,10 @@
 
 #include <Network/ENetHttp.h>
 
+#include "misc/Random.h"
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
+
 #include <mmath.h>
 
 #include <config.h>

@@ -1,5 +1,7 @@
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 
+#include "FileClasses/GFXManager.h"
+#include "FileClasses/SurfaceLoader.h"
 #include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/TextManager.h>

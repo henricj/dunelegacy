@@ -16,10 +16,12 @@
  */
 
 #include <FileClasses/Icnfile.h>
+
 #include <FileClasses/Palette.h>
 
 #include <misc/exceptions.h>
 
+#include "globals.h"
 #include <Definitions.h>
 
 #include <SDL2/SDL_endian.h>

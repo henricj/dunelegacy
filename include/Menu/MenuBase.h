@@ -20,6 +20,8 @@
 
 #include <GUI/Window.h>
 
+#include "misc/dune_clock.h"
+
 #include <SDL2/SDL_events.h>
 
 inline constexpr auto MENU_QUIT_DEFAULT = -1;

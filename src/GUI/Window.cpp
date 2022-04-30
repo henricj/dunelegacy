@@ -15,9 +15,11 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <GUI/Window.h>
+
+#include "misc/DrawingRectHelper.h"
 #include "misc/dune_events.h"
 #include <GUI/GUIStyle.h>
-#include <GUI/Window.h>
 #include <globals.h>
 
 Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position(x, y) {

@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <Game.h>
 #include <Map.h>
 #include <units/UnitBase.h>

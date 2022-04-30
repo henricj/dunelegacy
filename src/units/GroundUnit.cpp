@@ -29,6 +29,8 @@
 #include <structures/RepairYard.h>
 #include <units/Carryall.h>
 
+#include "mmath.h"
+
 GroundUnit::GroundUnit(const GroundUnitConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
     : UnitBase(constants, objectID, initializer) { }
 

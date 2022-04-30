@@ -16,6 +16,8 @@
  */
 
 #include <misc/draw_util.h>
+
+#include "misc/DrawingRectHelper.h"
 #include <misc/exceptions.h>
 #include <misc/sdl_support.h>
 

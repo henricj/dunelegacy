@@ -21,6 +21,8 @@
 #include <DataTypes.h>
 #include <data.h>
 
+#include "ObjectBase.h"
+
 #include <fixmath/FixPoint.h>
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
@@ -31,8 +33,10 @@
 inline constexpr auto DAMAGE_PER_TILE = 5;
 
 // forward declarations
+class Game;
+class GameContext;
 class House;
-class ObjectBase;
+class ObjectManager;
 class UnitBase;
 class AirUnit;
 class InfantryBase;

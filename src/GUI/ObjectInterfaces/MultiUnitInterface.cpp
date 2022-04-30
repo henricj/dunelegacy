@@ -19,6 +19,8 @@
 
 #include "GUI/Spacer.h"
 
+#include "FileClasses/GFXManager.h"
+#include "Game.h"
 #include <FileClasses/TextManager.h>
 
 #include <units/Devastator.h>

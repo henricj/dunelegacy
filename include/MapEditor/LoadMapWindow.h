@@ -25,7 +25,8 @@
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 #include <GUI/Window.h>
-#include <misc/SDL2pp.h>
+
+#include <filesystem>
 
 class LoadMapWindow final : public Window {
 public:

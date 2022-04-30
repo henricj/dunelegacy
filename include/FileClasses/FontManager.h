@@ -22,6 +22,7 @@
 
 #include <misc/SDL2pp.h>
 
+#include <filesystem>
 #include <memory>
 #include <string_view>
 #include <unordered_map>

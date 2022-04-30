@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/SFXManager.h>
 #include <Game.h>

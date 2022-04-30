@@ -19,6 +19,8 @@
 #define IFILESTREAM_H
 
 #include "InputStream.h"
+
+#include <filesystem>
 #include <string>
 
 class IFileStream final : public InputStream {

@@ -17,6 +17,8 @@
 
 #include <mmath.h>
 
+#include "globals.h"
+
 int world2zoomedWorld(int x) {
     const auto zoom = dune::globals::currentZoomlevel;
 

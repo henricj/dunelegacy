@@ -17,6 +17,7 @@
 
 #include <House.h>
 
+#include "mmath.h"
 #include <globals.h>
 #include <sand.h>
 
@@ -39,8 +40,9 @@
 #include <units/Carryall.h>
 #include <units/Harvester.h>
 
-#include <fmt/printf.h>
 #include <misc/exceptions.h>
+
+#include <fmt/printf.h>
 
 #include <algorithm>
 #include <numeric>

@@ -2,6 +2,8 @@
 #ifndef DUNE_TIMER_RESOLUTION_H
 #define DUNE_TIMER_RESOLUTION_H
 
+#include <cstdint>
+
 namespace dune {
 #if defined(_WIN32)
 

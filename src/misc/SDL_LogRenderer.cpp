@@ -1,3 +1,5 @@
+#include "misc/SDL2pp.h"
+
 #include <SDL2/SDL.h>
 
 static void

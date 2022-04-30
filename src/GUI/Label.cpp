@@ -17,6 +17,7 @@
 
 #include "GUI/Label.h"
 
+#include "misc/DrawingRectHelper.h"
 #include <misc/draw_util.h>
 #include <misc/string_util.h>
 

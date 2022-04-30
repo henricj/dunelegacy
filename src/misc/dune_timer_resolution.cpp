@@ -1,6 +1,11 @@
 #include <misc/dune_timer_resolution.h>
 
+#include "misc/SDL2pp.h"
+
+#include <limits>
+
 #if defined(_WIN32)
+#    include <Windows.h>
 #    include <timeapi.h>
 #endif
 

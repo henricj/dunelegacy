@@ -23,6 +23,7 @@
 #include <FileClasses/GFXManager.h>
 
 #include <algorithm>
+#include <charconv>
 #include <memory>
 
 namespace dune::globals {

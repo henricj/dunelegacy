@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <FileClasses/GFXManager.h>
 #include <House.h>
 #include <Map.h>

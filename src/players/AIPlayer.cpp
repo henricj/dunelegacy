@@ -17,6 +17,7 @@
 
 #include <players/AIPlayer.h>
 
+#include "mmath.h"
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <House.h>

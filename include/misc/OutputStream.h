@@ -22,6 +22,8 @@
 #include <fixmath/FixPoint.h>
 #include <misc/SDL2pp.h>
 
+#include <gsl/gsl>
+
 #include <exception>
 #include <list>
 #include <string>

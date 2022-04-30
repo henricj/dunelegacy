@@ -21,9 +21,11 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <House.h>
 #include <Map.h>
 #include <SoundPlayer.h>
+
 #include <units/UnitBase.h>
 
 #include <players/HumanPlayer.h>

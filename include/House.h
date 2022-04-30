@@ -32,6 +32,7 @@
 class UnitBase;
 class StructureBase;
 class ObjectBase;
+class Player;
 class HumanPlayer;
 
 class House final {

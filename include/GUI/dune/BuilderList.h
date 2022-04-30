@@ -18,6 +18,7 @@
 #ifndef BUILDERLIST_H
 #define BUILDERLIST_H
 
+#include "data.h"
 #include <GUI/PictureButton.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/TextButton.h>

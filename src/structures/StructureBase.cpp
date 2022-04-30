@@ -28,6 +28,7 @@
 
 #include <players/HumanPlayer.h>
 
+#include "FileClasses/GFXManager.h"
 #include <misc/draw_util.h>
 
 #include <units/UnitBase.h>

@@ -16,9 +16,15 @@
  */
 
 #include <CutScenes/CrossBlendVideoEvent.h>
+
 #include <globals.h>
 #include <misc/SDL2pp.h>
 #include <misc/Scaler.h>
+
+#include "misc/DrawingRectHelper.h"
+#include "misc/draw_util.h"
+
+#include <memory>
 
 CrossBlendVideoEvent::CrossBlendVideoEvent(SDL_Surface* pStartSurface, SDL_Surface* pEndSurface, bool bCenterVertical)
     : currentFrame(0), bCenterVertical(bCenterVertical) {

@@ -1,6 +1,7 @@
 #include <misc/Random.h>
 
 #include "misc/SDL2pp.h"
+#include "misc/string_util.h"
 
 #include <digestpp/digestpp.hpp>
 

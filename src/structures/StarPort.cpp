@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <Choam.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>

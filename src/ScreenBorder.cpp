@@ -17,6 +17,7 @@
 
 #include <ScreenBorder.h>
 
+#include "misc/Random.h"
 #include <misc/InputStream.h>
 #include <misc/OutputStream.h>
 

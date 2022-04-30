@@ -18,6 +18,7 @@
 #ifndef METASERVERCLIENT_H
 #define METASERVERCLIENT_H
 
+#include "misc/dune_clock.h"
 #include <Network/GameServerInfo.h>
 #include <Network/MetaServerCommands.h>
 #include <misc/SDL2pp.h>

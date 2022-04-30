@@ -18,6 +18,7 @@
 #ifndef LOADSAVEPNG_H
 #define LOADSAVEPNG_H
 
+#include <filesystem>
 #include <optional>
 #include <tuple>
 

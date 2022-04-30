@@ -17,9 +17,11 @@
 
 #include <GUI/dune/MessageTicker.h>
 
-#include <globals.h>
-
+#include "Renderer/DuneRenderer.h"
+#include "misc/DrawingRectHelper.h"
 #include <FileClasses/FontManager.h>
+
+#include <globals.h>
 
 inline constexpr auto MESSAGESCROLLSPEED = 5;
 inline constexpr auto MESSAGESCROLLTIME  = (20 * MESSAGESCROLLSPEED);

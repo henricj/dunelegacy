@@ -17,6 +17,8 @@
 
 #include "GUI/Checkbox.h"
 
+#include "globals.h"
+
 Checkbox::Checkbox() {
     Checkbox::enableResizing(true, false);
     setToggleButton(true);

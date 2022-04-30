@@ -16,11 +16,13 @@
  */
 
 #include <FileClasses/Cpsfile.h>
+
 #include <FileClasses/Decode.h>
 #include <FileClasses/Palette.h>
 
 #include <misc/exceptions.h>
 
+#include "globals.h"
 #include <Definitions.h>
 
 #include <cstdio>

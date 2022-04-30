@@ -24,6 +24,7 @@
 
 #include "ObjectBase.h"
 
+#include <queue>
 #include <unordered_map>
 
 // forward declarations

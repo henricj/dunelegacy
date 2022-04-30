@@ -17,6 +17,7 @@
 
 #include <players/SmartBot.h>
 
+#include "mmath.h"
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <House.h>
@@ -31,7 +32,7 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-#include <algorithm>
+#include <string>
 
 inline constexpr auto AIUPDATEINTERVAL = 50;
 inline constexpr auto REFINERYLIMIT    = 10;

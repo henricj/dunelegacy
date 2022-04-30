@@ -3,6 +3,7 @@
 
 #include <ctime>
 #include <optional>
+#include <string>
 
 namespace dune {
 
