@@ -123,7 +123,9 @@ if(MSVC)
 endif()
 
 
-target_precompile_headers(dunelegacy REUSE_FROM dune)
+if(NOT MSVC)
+	target_precompile_headers(dunelegacy REUSE_FROM dune)
+endif()
 
 add_custom_command(
         TARGET dunelegacy POST_BUILD
