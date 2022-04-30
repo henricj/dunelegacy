@@ -21,6 +21,7 @@
 #include <misc/exceptions.h>
 
 #include <algorithm>
+#include <charconv>
 #include <functional>
 #include <string>
 #include <unordered_map>
