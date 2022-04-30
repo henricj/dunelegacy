@@ -38,14 +38,15 @@ public:
     [[nodiscard]] sdl2::surface_ptr createSideBar(bool bEditor) const;
     [[nodiscard]] sdl2::surface_ptr createBottomBar() const;
     [[nodiscard]] static sdl2::surface_ptr createPlacingGrid(int size, int color);
-    void drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest = nullptr) const;
+    void drawFrame(SDL_Surface* Pic, DecorationFrame decorationType, SDL_Rect* dest = nullptr) const;
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
     [[nodiscard]] sdl2::surface_ptr createBackgroundTile() const;
     [[nodiscard]] sdl2::surface_ptr createBackground(int width, int height) const;
     [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
     void drawMainBackground(SDL_Surface* surface) const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
-    [[nodiscard]] sdl2::surface_ptr createFrame(unsigned int DecorationType, int width, int height, bool UseBackground);
+    [[nodiscard]] sdl2::surface_ptr
+    createFrame(DecorationFrame decorationType, int width, int height, bool UseBackground);
     [[nodiscard]] sdl2::surface_ptr createMenu(int x, int y) const;
     [[nodiscard]] sdl2::surface_ptr createMenu(SDL_Surface* CaptionPic, int y) const;
     [[nodiscard]] sdl2::surface_ptr createOptionsMenu();
@@ -77,15 +78,13 @@ public:
     static sdl2::surface_ptr mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat);
     static std::unique_ptr<Animation> mapMentatAnimationToMercenary(Animation* ordosAnimation);
 
-    typedef enum { SimpleFrame, DecorationFrame1, DecorationFrame2, NUM_DECORATIONFRAMES } DecorationFrame;
-
     struct DecorationBorderType {
         sdl2::surface_ptr ball;
         sdl2::surface_ptr hspacer;
         sdl2::surface_ptr vspacer;
         sdl2::surface_ptr hborder;
         sdl2::surface_ptr vborder;
-    } decorationBorder;
+    };
 
     struct BorderStyle {
         sdl2::surface_ptr leftUpperCorner;
@@ -94,7 +93,7 @@ public:
         sdl2::surface_ptr rightLowerCorner;
         sdl2::surface_ptr hborder;
         sdl2::surface_ptr vborder;
-    } frame[NUM_DECORATIONFRAMES];
+    };
 
     [[nodiscard]] DecorationBorderType createDecorationBorder() const;
     [[nodiscard]] BorderStyle createBorderStyle(DecorationFrame type) const;
@@ -118,6 +117,9 @@ private:
     sdl2::surface_ptr builderListLowerCap;
 
     sdl2::surface_ptr backgroundTile;
+
+    DecorationBorderType decorationBorder;
+    std::array<BorderStyle, static_cast<int>(DecorationFrame::NUM_DECORATIONFRAMES)> frame;
 };
 
 #endif // PICTUREFACTORY_H

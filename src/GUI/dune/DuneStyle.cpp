@@ -859,6 +859,62 @@ DuneTextureOwned DuneStyle::createToolTip(SDL_Renderer* renderer, std::string_vi
                             static_cast<float>(surface->h) * scale};
 }
 
+void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType, const SDL_FRect& rect) {
+    const auto type = static_cast<int>(decorationType);
+
+    if (type < 0 || type > NUM_DECORATIONFRAMES)
+        THROW(std::invalid_argument, "DuneStyle::drawFrame: Invalid frame type (%d)!", type);
+
+    const auto& frame = dune::globals::pGFXManager->getBorderStyle(decorationType);
+
+    const auto right_upper_x = rect.x + rect.w - 1 - frame.rightUpperCorner.width_;
+    const auto left_lower_y  = rect.y + rect.h - 1 - frame.leftLowerCorner.height_;
+    const auto right_lower_x = rect.x + rect.w - 1 - frame.rightLowerCorner.width_;
+    const auto right_lower_y = rect.y + rect.h - 1 - frame.rightLowerCorner.height_;
+
+    const auto left_upper_x_w = rect.x + frame.leftUpperCorner.width_;
+    const auto left_lower_x_w = rect.x + frame.leftLowerCorner.width_;
+
+    const auto left_upper_y_h  = rect.y + frame.leftUpperCorner.height_;
+    const auto right_upper_y_h = rect.y + frame.rightUpperCorner.height_;
+
+    // hborders
+    const auto hborder_height = static_cast<float>(frame.hborder.size());
+
+    for (auto i = 0u; i < frame.hborder.size(); ++i) {
+        const auto fi    = static_cast<float>(i);
+        const auto color = frame.hborder[i];
+
+        const auto lower_y = rect.y + rect.h - 1 - hborder_height + fi;
+
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+        DuneDrawRects(renderer, {{left_upper_x_w, rect.y + fi, right_upper_x - left_upper_x_w, 1},
+                                 {left_lower_x_w, lower_y, right_lower_x - left_lower_x_w, 1}});
+    }
+
+    // vborders
+    const auto vborder_width = static_cast<float>(frame.vborder.size());
+
+    for (auto i = 0u; i < frame.vborder.size(); ++i) {
+        const auto fi    = static_cast<float>(i);
+        const auto color = frame.vborder[i];
+
+        const auto right_x = rect.x + rect.w - 1 - vborder_width + fi;
+
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+        DuneDrawRects(renderer, {{rect.x + fi, left_upper_y_h, 1, left_lower_y - left_upper_y_h},
+                                 {right_x, right_upper_y_h, 1, right_lower_y - right_upper_y_h}});
+    }
+
+    // corners
+    frame.leftUpperCorner.draw(renderer, rect.x, rect.y);
+    frame.rightUpperCorner.draw(renderer, right_upper_x, rect.y);
+    frame.leftLowerCorner.draw(renderer, rect.x, left_lower_y);
+    frame.rightLowerCorner.draw(renderer, right_lower_x, right_lower_y);
+}
+
 void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     if (rect.w <= 0 || rect.h <= 0)
         THROW(std::invalid_argument, "Attempting to draw an empty background!");
@@ -885,6 +941,8 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
 
 void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     drawBackground(renderer, rect);
+
+    drawFrame(renderer, DecorationFrame::DecorationFrame2, {rect.x + 3, rect.y + 3, rect.w - 6, rect.h - 6});
 
     auto* const gfx = dune::globals::pGFXManager.get();
 

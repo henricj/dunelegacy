@@ -63,6 +63,26 @@ public:
 
     [[nodiscard]] SDL_Surface* getBackgroundSurface() const { return pBackgroundSurface.get(); }
 
+    struct DecorationBorderType {
+        SDL_Surface* ball;
+        SDL_Surface* hspacer;
+        SDL_Surface* vspacer;
+        SDL_Surface* hborder;
+        SDL_Surface* vborder;
+    };
+
+    struct BorderStyle {
+        SDL_Surface* leftUpperCorner;
+        SDL_Surface* rightUpperCorner;
+        SDL_Surface* leftLowerCorner;
+        SDL_Surface* rightLowerCorner;
+        SDL_Surface* hborder;
+        SDL_Surface* vborder;
+    };
+
+    [[nodiscard]] DecorationBorderType getDecorationBorder() const;
+    [[nodiscard]] BorderStyle getBorderStyle(DecorationFrame type) const;
+
 private:
     [[nodiscard]] std::unique_ptr<Animation> loadAnimationFromWsa(const std::string& filename) const;
 
@@ -86,6 +106,9 @@ private:
 
     // 32-bit surfaces
     sdl2::surface_ptr pBackgroundSurface;
+
+    PictureFactory ::DecorationBorderType decorationBorder_;
+    std::array<PictureFactory ::BorderStyle, static_cast<int>(DecorationFrame::NUM_DECORATIONFRAMES)> frame_;
 };
 
 #endif // SURFACELOADER_H

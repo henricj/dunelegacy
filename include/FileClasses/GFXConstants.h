@@ -388,6 +388,9 @@ enum UIGraphics_Enum {
 enum class GeneratedPicture { PalaceReadyText };
 inline constexpr int NUM_GENERATEDPICTURES = 1;
 
+enum class DecorationFrame { SimpleFrame, DecorationFrame1, DecorationFrame2, NUM_DECORATIONFRAMES };
+inline constexpr int NUM_DECORATIONFRAMES = static_cast<int>(DecorationFrame::NUM_DECORATIONFRAMES);
+
 // Animation
 enum Animation_enum {
     Anim_HarkonnenEyes,

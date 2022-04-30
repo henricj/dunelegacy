@@ -319,6 +319,15 @@ public:
     virtual DuneTextureOwned createToolTip(SDL_Renderer* renderer, std::string_view text) const = 0;
 
     /**
+        Draw a frame
+        \param  renderer        the renderer to use
+        \param  decorationType  the type of frame to draw
+        \param  rect            the area to draw
+        \return the new surface
+    */
+    virtual void drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType, const SDL_FRect& rect) = 0;
+
+    /**
         Draw a simple background for e.g. a window
         \param  renderer    the renderer to use
         \param  rect        the area to draw
