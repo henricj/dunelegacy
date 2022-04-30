@@ -17,6 +17,8 @@ add_executable(random_test random_test.cpp)
 target_include_directories(random_test PRIVATE ../../include)
 target_link_libraries(random_test PRIVATE dune GTest::gtest GTest::gtest_main)
 
-target_precompile_headers(random_test REUSE_FROM dune)
+if(NOT MSVC)
+	target_precompile_headers(random_test REUSE_FROM dune)
+endif()
 
 add_test(NAME random COMMAND random_test)

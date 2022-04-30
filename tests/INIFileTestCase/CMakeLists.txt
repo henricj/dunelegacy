@@ -23,6 +23,8 @@ add_custom_command(
                 ${INI_FILES}
                 ${CMAKE_CURRENT_BINARY_DIR})
 
-target_precompile_headers(INIFileTestCase REUSE_FROM dune)
+if(NOT MSVC)
+    target_precompile_headers(INIFileTestCase REUSE_FROM dune)
+endif()
 
 add_test(NAME INIFile COMMAND INIFileTestCase)
