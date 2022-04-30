@@ -675,7 +675,7 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
 }
 
 sdl2::surface_ptr PictureFactory::createGreyHouseChoice(SDL_Surface* HouseChoice) {
-    static const unsigned char index2greyindex[] = {
+    static constexpr unsigned char index2greyindex[] = {
         0,   0,   0,   13,  233, 127, 0,   131, 0,   0,   0,   0,   0,   13, 14,  15,  15,  127, 127, 14, 14,  14,
         14,  130, 24,  131, 131, 13,  13,  29,  30,  31,  0,   128, 128, 14, 14,  14,  14,  130, 130, 24, 24,  14,
         13,  13,  0,   29,  0,   0,   30,  0,   0,   183, 0,   0,   0,   0,  0,   0,   14,  30,  30,  30, 126, 0,
