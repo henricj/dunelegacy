@@ -11,9 +11,11 @@ DuneTextures::DuneTextures() = default;
 DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pictures_type&& object_pictures,
                            small_details_type&& small_details, tiny_pictures_type&& tiny_pictures,
                            ui_graphics_type&& ui_graphics, map_choice_type&& map_choice,
-                           generated_type&& generated_pictures)
+                           generated_type&& generated_pictures,
+                 decoration_border_type&& decoration_border, border_style_type&& border_style)
     : object_pictures_{object_pictures}, small_details_{small_details}, tiny_pictures_{tiny_pictures},
       ui_graphics_{ui_graphics}, map_choice_{map_choice}, generated_pictures_{generated_pictures},
+      decoration_border_{decoration_border}, border_style_{border_style},
       textures_{std::move(textures)} { }
 
 // clang-format on
@@ -195,6 +197,9 @@ public:
     using identifier_type = Identifier;
 
     int add(Identifier identifier, SDL_Surface* surface) {
+        if (nullptr == surface)
+            THROW(std::invalid_argument, "PackerSurfaces: Cannot use an invalid surface!");
+
         const auto idx = static_cast<int>(surfaces_.size());
 
         surfaces_.push_back({identifier, surface});
@@ -659,6 +664,143 @@ private:
     std::array<sdl2::surface_ptr, std::tuple_size<textures_type>::value> generated_;
 };
 
+class DecorationBorderPicturesPacker final : public PackerBase<DuneTextures::decoration_border_type, int> {
+public:
+    void initialize(const SurfaceLoader* surfaceLoader) {
+        const auto border = surfaceLoader->getDecorationBorder();
+
+        surfaces_.add(0, border.ball);
+        surfaces_.add(1, border.hspacer);
+        surfaces_.add(2, border.vspacer);
+        surfaces_.add(3, border.hborder);
+        surfaces_.add(4, border.vborder);
+    }
+
+    void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
+        factory23.update<identifier_type>(key, texture,
+                                          [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+    }
+
+    void update_duplicates() {
+        surfaces_.update_duplicates([&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+    }
+
+private:
+    DuneTexture& lookup(identifier_type n) {
+        switch (n) {
+            case 0: return textures_.ball;
+            case 1: return textures_.hspacer;
+            case 2: return textures_.vspacer;
+            case 3: return textures_.hborder;
+            case 4: return textures_.vborder;
+            default: THROW(std::out_of_range, "Invalid texture identifier!");
+        }
+    }
+};
+
+namespace {
+std::vector<SDL_Color> get_colors_horizontal(SDL_Surface* surface) {
+    std::vector<SDL_Color> colors;
+    colors.reserve(surface->w);
+
+    sdl2::surface_lock lock{surface};
+
+    const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
+
+    for (auto x = 0; x < surface->w; ++x) {
+        Uint8 r, g, b, a;
+        SDL_GetRGBA(pixels[x], surface->format, &r, &g, &b, &a);
+
+        colors.emplace_back(r, g, b, a);
+    }
+
+    return colors;
+}
+
+std::vector<SDL_Color> get_colors_vertical(SDL_Surface* surface) {
+    std::vector<SDL_Color> colors;
+    colors.reserve(surface->h);
+
+    sdl2::surface_lock lock{surface};
+
+    const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
+
+    for (auto y = 0; y < surface->h; ++y) {
+        Uint8 r, g, b, a;
+        SDL_GetRGBA(pixels[y * surface->pitch / sizeof(Uint32)], surface->format, &r, &g, &b, &a);
+
+        colors.emplace_back(r, g, b, a);
+    }
+
+    return colors;
+}
+
+} // namespace
+
+class BorderStylePicturesPacker final : public PackerBase<DuneTextures::border_style_type, int> {
+public:
+    void initialize(const SurfaceLoader* surfaceLoader) {
+        auto n = 0;
+        for (auto i = 0; i < NUM_DECORATIONFRAMES; ++i) {
+            const auto frame = surfaceLoader->getBorderStyle(static_cast<DecorationFrame>(i));
+
+            surfaces_.add(n++, frame.leftUpperCorner);
+            surfaces_.add(n++, frame.rightUpperCorner);
+            surfaces_.add(n++, frame.leftLowerCorner);
+            surfaces_.add(n++, frame.rightLowerCorner);
+
+            if (frame.hborder->format->format == SCREEN_FORMAT)
+                hborder[i] = get_colors_vertical(frame.hborder);
+            else {
+                sdl2::surface_ptr surface{SDL_ConvertSurfaceFormat(frame.hborder, SCREEN_FORMAT, 0)};
+
+                hborder[i] = get_colors_vertical(surface.get());
+            }
+
+            if (frame.vborder->format->format == SCREEN_FORMAT)
+                vborder[i] = get_colors_horizontal(frame.vborder);
+            else {
+                sdl2::surface_ptr surface{SDL_ConvertSurfaceFormat(frame.vborder, SCREEN_FORMAT, 0)};
+
+                vborder[i] = get_colors_horizontal(surface.get());
+            }
+        }
+    }
+
+    void update(AtlasFactory23& factory23, int key, SDL_Texture* texture) {
+        factory23.update<identifier_type>(key, texture,
+                                          [&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+    }
+
+    void update_duplicates() {
+        surfaces_.update_duplicates([&](const auto& identifier) -> DuneTexture& { return lookup(identifier); });
+
+        for (auto i = 0; i < NUM_DECORATIONFRAMES; ++i) {
+            textures_[i].hborder = std::move(hborder[i]);
+            textures_[i].vborder = std::move(vborder[i]);
+        }
+    }
+
+private:
+    DuneTexture& lookup(identifier_type n) {
+        const auto idx = n / 4;
+        const auto id  = n % 4;
+
+        auto& texture = textures_[idx];
+
+        switch (id) {
+            case 0: return texture.leftUpperCorner;
+            case 1: return texture.rightUpperCorner;
+            case 2: return texture.leftLowerCorner;
+            case 3: return texture.rightLowerCorner;
+            default: THROW(std::out_of_range, "Invalid texture identifier!");
+        }
+    }
+
+    std::array<std::vector<SDL_Color>, NUM_DECORATIONFRAMES> hborder{};
+    std::array<std::vector<SDL_Color>, NUM_DECORATIONFRAMES> vborder{};
+};
+
 } // namespace
 
 DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surfaceLoader) {
@@ -691,6 +833,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     TinyPicturePacker tiny_picture_packer;
     SmallDetailPicsPacker small_detail_pics_packer;
     GeneratedPicturesPacker generated_pictures_packer;
+    DecorationBorderPicturesPacker decoration_border_packer;
+    BorderStylePicturesPacker border_style_pictures_packer;
 
     object_picture_packer.initialize(surfaceLoader);
     ui_graphic_packer.initialize(surfaceLoader);
@@ -698,6 +842,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     tiny_picture_packer.initialize(surfaceLoader);
     small_detail_pics_packer.initialize(surfaceLoader);
     generated_pictures_packer.initialize(surfaceLoader);
+    decoration_border_packer.initialize(surfaceLoader);
+    border_style_pictures_packer.initialize(surfaceLoader);
 
     std::vector<sdl2::texture_ptr> textures;
 
@@ -796,6 +942,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
             const auto tpp_key = tiny_picture_packer.add(factory23);
             const auto sdp_key = small_detail_pics_packer.add(factory23);
             const auto gpp_key = generated_pictures_packer.add(factory23);
+            const auto dbp_key = decoration_border_packer.add(factory23);
+            const auto bsp_key = border_style_pictures_packer.add(factory23);
 
             auto texture = factory23.pack(renderer, format, max_side);
 
@@ -807,6 +955,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
             tiny_picture_packer.update(factory23, tpp_key, texture.get());
             small_detail_pics_packer.update(factory23, sdp_key, texture.get());
             generated_pictures_packer.update(factory23, gpp_key, texture.get());
+            decoration_border_packer.update(factory23, dbp_key, texture.get());
+            border_style_pictures_packer.update(factory23, bsp_key, texture.get());
 
             textures.emplace_back(std::move(texture));
 
@@ -820,6 +970,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         tiny_picture_packer.update_duplicates();
         small_detail_pics_packer.update_duplicates();
         generated_pictures_packer.update_duplicates();
+        decoration_border_packer.update_duplicates();
+        border_style_pictures_packer.update_duplicates();
     }
 
     // auto count = 0;
@@ -836,5 +988,7 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
                         tiny_picture_packer.dune_textures(),
                         ui_graphic_packer.dune_textures(),
                         map_choice_packer.dune_textures(),
-                        generated_pictures_packer.dune_textures()};
+                        generated_pictures_packer.dune_textures(),
+                        decoration_border_packer.dune_textures(),
+                        border_style_pictures_packer.dune_textures()};
 }

@@ -81,6 +81,14 @@ public:
 
     [[nodiscard]] SDL_Texture* getTempStreamingTexture(SDL_Renderer* renderer, int width, int height);
 
+    [[nodiscard]] DuneTextures::DecorationBorderType getDecorationBorder() const {
+        return duneTextures.getDecorationBorder();
+    }
+
+    [[nodiscard]] DuneTextures::BorderStyle getBorderStyle(DecorationFrame type) const {
+        return duneTextures.getBorderStyle(type);
+    }
+
     Random& random() noexcept { return random_; }
 
 private:

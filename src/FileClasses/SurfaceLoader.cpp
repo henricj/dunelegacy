@@ -677,20 +677,21 @@ SurfaceLoader::SurfaceLoader() {
         mapSurfaceColorRange(uiGraphic[UI_Plus][harkIdx].get(), PALCOLOR_HARKONNEN, PALCOLOR_HARKONNEN - 2);
     uiGraphic[UI_Plus_Pressed][harkIdx]  = LoadPNG_RW(file_manager->openFile("Button_PlusPushed.png").get());
     uiGraphic[UI_MissionSelect][harkIdx] = LoadPNG_RW(file_manager->openFile("Menu_MissionSelect.png").get());
-    picFactory.drawFrame(uiGraphic[UI_MissionSelect][harkIdx].get(), PictureFactory::SimpleFrame, nullptr);
+    picFactory.drawFrame(uiGraphic[UI_MissionSelect][harkIdx].get(), DecorationFrame::SimpleFrame, nullptr);
     SDL_SetColorKey(uiGraphic[UI_MissionSelect][harkIdx].get(), SDL_TRUE, 0);
     uiGraphic[UI_OptionsMenu][harkIdx]    = picFactory.createOptionsMenu();
     uiGraphic[UI_LoadSaveWindow][harkIdx] = picFactory.createMenu(280, 228);
     uiGraphic[UI_NewMapWindow][harkIdx]   = picFactory.createMenu(600, 440);
     uiGraphic[UI_DuneLegacy][harkIdx]     = LoadPNG_RW(file_manager->openFile("DuneLegacy.png").get());
     uiGraphic[UI_GameMenu][harkIdx]       = picFactory.createMenu(uiGraphic[UI_DuneLegacy][harkIdx].get(), 158);
-    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
+    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), DecorationFrame::SimpleFrame);
 
     uiGraphic[UI_PlanetBackground][harkIdx] = LoadCPS_RW(file_manager->openFile("BIGPLAN.CPS").get());
-    picFactory.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), PictureFactory::SimpleFrame);
-    uiGraphic[UI_MenuButtonBorder][harkIdx] = picFactory.createFrame(PictureFactory::DecorationFrame1, 190, 123, false);
+    picFactory.drawFrame(uiGraphic[UI_PlanetBackground][harkIdx].get(), DecorationFrame::SimpleFrame);
+    uiGraphic[UI_MenuButtonBorder][harkIdx] =
+        picFactory.createFrame(DecorationFrame::DecorationFrame1, 190, 123, false);
 
-    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), PictureFactory::SimpleFrame);
+    picFactory.drawFrame(uiGraphic[UI_DuneLegacy][harkIdx].get(), DecorationFrame::SimpleFrame);
 
     uiGraphic[UI_MentatBackground][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
         Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MENTATH.CPS").get()).get());
@@ -1244,6 +1245,11 @@ SurfaceLoader::SurfaceLoader() {
             });
         }
     }
+
+    decorationBorder_ = picFactory.createDecorationBorder();
+
+    for (auto i = 0; i < NUM_DECORATIONFRAMES; ++i)
+        frame_[i] = picFactory.createBorderStyle(static_cast<DecorationFrame>(i));
 }
 
 SurfaceLoader::~SurfaceLoader() = default;
@@ -1490,6 +1496,19 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
     }
 
     return pSurface;
+}
+
+SurfaceLoader::DecorationBorderType SurfaceLoader::getDecorationBorder() const {
+    const auto& db = decorationBorder_;
+
+    return {db.ball.get(), db.hspacer.get(), db.vspacer.get(), db.hborder.get(), db.vborder.get()};
+}
+
+SurfaceLoader::BorderStyle SurfaceLoader::getBorderStyle(DecorationFrame type) const {
+    const auto& bf = frame_[static_cast<int>(type)];
+
+    return {bf.leftUpperCorner.get(),  bf.rightUpperCorner.get(), bf.leftLowerCorner.get(),
+            bf.rightLowerCorner.get(), bf.hborder.get(),          bf.vborder.get()};
 }
 
 std::unique_ptr<Animation> SurfaceLoader::loadAnimationFromWsa(const std::string& filename) const {

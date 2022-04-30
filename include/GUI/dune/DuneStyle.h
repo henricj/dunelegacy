@@ -238,7 +238,16 @@ public:
     DuneTextureOwned createToolTip(SDL_Renderer* renderer, std::string_view text) const override;
 
     /**
+        Draw a frame
+        \param  renderer    the renderer to use
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    void drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType, const SDL_FRect& rect) override;
+
+    /**
         Draw a simple background for e.g. a window
+        \param  renderer    the renderer to use
         \param  rect        the area to draw
         \return the new surface
     */
@@ -246,6 +255,7 @@ public:
 
     /**
         Draw the main background
+        \param  renderer    the renderer to use
         \param  rect        the area to draw
         \return the new surface
     */

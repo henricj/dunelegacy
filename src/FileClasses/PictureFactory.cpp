@@ -35,6 +35,8 @@
 
 #include <memory>
 
+#include "players/AIPlayer.h"
+
 PictureFactory::PictureFactory() {
     auto* const file_manager = dune::globals::pFileManager.get();
 
@@ -69,77 +71,83 @@ PictureFactory::PictureFactory() {
     decorationBorder.hborder = rotateSurfaceRight(decorationBorder.vborder.get());
 
     // simple Frame
-    frame[SimpleFrame].leftUpperCorner = getSubPicture(ChoamPic.get(), 120, 17, 8, 8);
-    putPixel(frame[SimpleFrame].leftUpperCorner.get(), 7, 7, 0);
-    putPixel(frame[SimpleFrame].leftUpperCorner.get(), 6, 7, 0);
-    putPixel(frame[SimpleFrame].leftUpperCorner.get(), 7, 6, 0);
+    auto& simple_frame = frame[static_cast<int>(DecorationFrame::SimpleFrame)];
 
-    frame[SimpleFrame].rightUpperCorner = getSubPicture(ChoamPic.get(), 312, 17, 8, 8);
-    putPixel(frame[SimpleFrame].rightUpperCorner.get(), 0, 7, 0);
-    putPixel(frame[SimpleFrame].rightUpperCorner.get(), 0, 6, 0);
-    putPixel(frame[SimpleFrame].rightUpperCorner.get(), 1, 7, 0);
+    simple_frame.leftUpperCorner = getSubPicture(ChoamPic.get(), 120, 17, 8, 8);
+    putPixel(simple_frame.leftUpperCorner.get(), 7, 7, 0);
+    putPixel(simple_frame.leftUpperCorner.get(), 6, 7, 0);
+    putPixel(simple_frame.leftUpperCorner.get(), 7, 6, 0);
 
-    frame[SimpleFrame].leftLowerCorner = getSubPicture(ChoamPic.get(), 120, 31, 8, 8);
-    putPixel(frame[SimpleFrame].leftLowerCorner.get(), 7, 0, 0);
-    putPixel(frame[SimpleFrame].leftLowerCorner.get(), 6, 0, 0);
-    putPixel(frame[SimpleFrame].leftLowerCorner.get(), 7, 1, 0);
+    simple_frame.rightUpperCorner = getSubPicture(ChoamPic.get(), 312, 17, 8, 8);
+    putPixel(simple_frame.rightUpperCorner.get(), 0, 7, 0);
+    putPixel(simple_frame.rightUpperCorner.get(), 0, 6, 0);
+    putPixel(simple_frame.rightUpperCorner.get(), 1, 7, 0);
 
-    frame[SimpleFrame].rightLowerCorner = getSubPicture(ChoamPic.get(), 312, 31, 8, 8);
-    putPixel(frame[SimpleFrame].rightLowerCorner.get(), 0, 0, 0);
-    putPixel(frame[SimpleFrame].rightLowerCorner.get(), 1, 0, 0);
-    putPixel(frame[SimpleFrame].rightLowerCorner.get(), 0, 1, 0);
+    simple_frame.leftLowerCorner = getSubPicture(ChoamPic.get(), 120, 31, 8, 8);
+    putPixel(simple_frame.leftLowerCorner.get(), 7, 0, 0);
+    putPixel(simple_frame.leftLowerCorner.get(), 6, 0, 0);
+    putPixel(simple_frame.leftLowerCorner.get(), 7, 1, 0);
 
-    frame[SimpleFrame].hborder = getSubPicture(ChoamPic.get(), 128, 17, 1, 4);
-    frame[SimpleFrame].vborder = getSubPicture(ChoamPic.get(), 120, 25, 4, 1);
+    simple_frame.rightLowerCorner = getSubPicture(ChoamPic.get(), 312, 31, 8, 8);
+    putPixel(simple_frame.rightLowerCorner.get(), 0, 0, 0);
+    putPixel(simple_frame.rightLowerCorner.get(), 1, 0, 0);
+    putPixel(simple_frame.rightLowerCorner.get(), 0, 1, 0);
+
+    simple_frame.hborder = getSubPicture(ChoamPic.get(), 128, 17, 1, 4);
+    simple_frame.vborder = getSubPicture(ChoamPic.get(), 120, 25, 4, 1);
 
     // Decoration Frame 1
-    frame[DecorationFrame1].leftUpperCorner = getSubPicture(ChoamPic.get(), 2, 57, 11, 12);
-    putPixel(frame[DecorationFrame1].leftUpperCorner.get(), 10, 11, 0);
-    putPixel(frame[DecorationFrame1].leftUpperCorner.get(), 9, 11, 0);
-    putPixel(frame[DecorationFrame1].leftUpperCorner.get(), 10, 10, 0);
+    auto& decoration_frame = frame[static_cast<int>(DecorationFrame::DecorationFrame1)];
 
-    frame[DecorationFrame1].rightUpperCorner = getSubPicture(ChoamPic.get(), 44, 57, 11, 12);
-    putPixel(frame[DecorationFrame1].rightUpperCorner.get(), 0, 11, 0);
-    putPixel(frame[DecorationFrame1].rightUpperCorner.get(), 0, 10, 0);
-    putPixel(frame[DecorationFrame1].rightUpperCorner.get(), 1, 11, 0);
+    decoration_frame.leftUpperCorner = getSubPicture(ChoamPic.get(), 2, 57, 11, 12);
+    putPixel(decoration_frame.leftUpperCorner.get(), 10, 11, 0);
+    putPixel(decoration_frame.leftUpperCorner.get(), 9, 11, 0);
+    putPixel(decoration_frame.leftUpperCorner.get(), 10, 10, 0);
 
-    frame[DecorationFrame1].leftLowerCorner = getSubPicture(ChoamPic.get(), 2, 132, 11, 11);
-    putPixel(frame[DecorationFrame1].leftLowerCorner.get(), 10, 0, 0);
-    putPixel(frame[DecorationFrame1].leftLowerCorner.get(), 9, 0, 0);
-    putPixel(frame[DecorationFrame1].leftLowerCorner.get(), 10, 1, 0);
+    decoration_frame.rightUpperCorner = getSubPicture(ChoamPic.get(), 44, 57, 11, 12);
+    putPixel(decoration_frame.rightUpperCorner.get(), 0, 11, 0);
+    putPixel(decoration_frame.rightUpperCorner.get(), 0, 10, 0);
+    putPixel(decoration_frame.rightUpperCorner.get(), 1, 11, 0);
 
-    frame[DecorationFrame1].rightLowerCorner = getSubPicture(ChoamPic.get(), 44, 132, 11, 11);
-    putPixel(frame[DecorationFrame1].rightLowerCorner.get(), 0, 0, 0);
-    putPixel(frame[DecorationFrame1].rightLowerCorner.get(), 1, 0, 0);
-    putPixel(frame[DecorationFrame1].rightLowerCorner.get(), 0, 1, 0);
+    decoration_frame.leftLowerCorner = getSubPicture(ChoamPic.get(), 2, 132, 11, 11);
+    putPixel(decoration_frame.leftLowerCorner.get(), 10, 0, 0);
+    putPixel(decoration_frame.leftLowerCorner.get(), 9, 0, 0);
+    putPixel(decoration_frame.leftLowerCorner.get(), 10, 1, 0);
 
-    frame[DecorationFrame1].hborder = getSubPicture(ChoamPic.get(), 13, 57, 1, 4);
-    frame[DecorationFrame1].vborder = getSubPicture(ChoamPic.get(), 2, 69, 4, 1);
+    decoration_frame.rightLowerCorner = getSubPicture(ChoamPic.get(), 44, 132, 11, 11);
+    putPixel(decoration_frame.rightLowerCorner.get(), 0, 0, 0);
+    putPixel(decoration_frame.rightLowerCorner.get(), 1, 0, 0);
+    putPixel(decoration_frame.rightLowerCorner.get(), 0, 1, 0);
+
+    decoration_frame.hborder = getSubPicture(ChoamPic.get(), 13, 57, 1, 4);
+    decoration_frame.vborder = getSubPicture(ChoamPic.get(), 2, 69, 4, 1);
 
     // Decoration Frame 2
-    frame[DecorationFrame2].leftUpperCorner = getSubPicture(ChoamPic.get(), 121, 41, 9, 9);
-    drawHLine(frame[DecorationFrame2].leftUpperCorner.get(), 6, 6, 8, 0);
-    drawHLine(frame[DecorationFrame2].leftUpperCorner.get(), 6, 7, 8, 0);
-    drawHLine(frame[DecorationFrame2].leftUpperCorner.get(), 6, 8, 8, 0);
+    auto& decoration_frame2 = frame[static_cast<int>(DecorationFrame::DecorationFrame2)];
 
-    frame[DecorationFrame2].rightUpperCorner = getSubPicture(ChoamPic.get(), 309, 41, 10, 9);
-    drawHLine(frame[DecorationFrame2].rightUpperCorner.get(), 0, 6, 3, 0);
-    drawHLine(frame[DecorationFrame2].rightUpperCorner.get(), 0, 7, 3, 0);
-    drawHLine(frame[DecorationFrame2].rightUpperCorner.get(), 0, 8, 3, 0);
+    decoration_frame2.leftUpperCorner = getSubPicture(ChoamPic.get(), 121, 41, 9, 9);
+    drawHLine(decoration_frame2.leftUpperCorner.get(), 6, 6, 8, 0);
+    drawHLine(decoration_frame2.leftUpperCorner.get(), 6, 7, 8, 0);
+    drawHLine(decoration_frame2.leftUpperCorner.get(), 6, 8, 8, 0);
 
-    frame[DecorationFrame2].leftLowerCorner = getSubPicture(ChoamPic.get(), 121, 157, 9, 10);
-    drawHLine(frame[DecorationFrame2].leftLowerCorner.get(), 6, 0, 8, 0);
-    drawHLine(frame[DecorationFrame2].leftLowerCorner.get(), 6, 1, 8, 0);
-    drawHLine(frame[DecorationFrame2].leftLowerCorner.get(), 6, 2, 8, 0);
-    drawHLine(frame[DecorationFrame2].leftLowerCorner.get(), 7, 3, 8, 0);
+    decoration_frame2.rightUpperCorner = getSubPicture(ChoamPic.get(), 309, 41, 10, 9);
+    drawHLine(decoration_frame2.rightUpperCorner.get(), 0, 6, 3, 0);
+    drawHLine(decoration_frame2.rightUpperCorner.get(), 0, 7, 3, 0);
+    drawHLine(decoration_frame2.rightUpperCorner.get(), 0, 8, 3, 0);
 
-    frame[DecorationFrame2].rightLowerCorner = getSubPicture(ChoamPic.get(), 309, 158, 10, 9);
-    drawHLine(frame[DecorationFrame2].rightLowerCorner.get(), 0, 0, 3, 0);
-    drawHLine(frame[DecorationFrame2].rightLowerCorner.get(), 0, 1, 3, 0);
-    drawHLine(frame[DecorationFrame2].rightLowerCorner.get(), 0, 2, 3, 0);
+    decoration_frame2.leftLowerCorner = getSubPicture(ChoamPic.get(), 121, 157, 9, 10);
+    drawHLine(decoration_frame2.leftLowerCorner.get(), 6, 0, 8, 0);
+    drawHLine(decoration_frame2.leftLowerCorner.get(), 6, 1, 8, 0);
+    drawHLine(decoration_frame2.leftLowerCorner.get(), 6, 2, 8, 0);
+    drawHLine(decoration_frame2.leftLowerCorner.get(), 7, 3, 8, 0);
 
-    frame[DecorationFrame2].hborder = getSubPicture(ChoamPic.get(), 133, 41, 1, 4);
-    frame[DecorationFrame2].vborder = getSubPicture(ChoamPic.get(), 121, 51, 4, 1);
+    decoration_frame2.rightLowerCorner = getSubPicture(ChoamPic.get(), 309, 158, 10, 9);
+    drawHLine(decoration_frame2.rightLowerCorner.get(), 0, 0, 3, 0);
+    drawHLine(decoration_frame2.rightLowerCorner.get(), 0, 1, 3, 0);
+    drawHLine(decoration_frame2.rightLowerCorner.get(), 0, 2, 3, 0);
+
+    decoration_frame2.hborder = getSubPicture(ChoamPic.get(), 133, 41, 1, 4);
+    decoration_frame2.vborder = getSubPicture(ChoamPic.get(), 121, 51, 4, 1);
 
     for (auto& f : frame) {
         SDL_SetColorKey(f.leftUpperCorner.get(), SDL_TRUE, 0);
@@ -386,11 +394,16 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
     return placingGrid;
 }
 
-void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SDL_Rect* dest) const {
+void PictureFactory::drawFrame(SDL_Surface* Pic, DecorationFrame decorationType, SDL_Rect* dest) const {
     if (Pic == nullptr)
         return;
 
-    if (DecorationType >= NUM_DECORATIONFRAMES)
+    if (decorationType >= DecorationFrame::NUM_DECORATIONFRAMES)
+        return;
+
+    const auto type = static_cast<int>(decorationType);
+
+    if (type < 0)
         return;
 
     SDL_Rect tmp;
@@ -403,59 +416,54 @@ void PictureFactory::drawFrame(SDL_Surface* Pic, unsigned int DecorationType, SD
     }
 
     // corners
-    SDL_Rect dest1 = calcDrawingRect(frame[DecorationType].leftUpperCorner.get(), dest->x, dest->y);
-    SDL_BlitSurface(frame[DecorationType].leftUpperCorner.get(), nullptr, Pic, &dest1);
+    SDL_Rect dest1 = calcDrawingRect(frame[type].leftUpperCorner.get(), dest->x, dest->y);
+    SDL_BlitSurface(frame[type].leftUpperCorner.get(), nullptr, Pic, &dest1);
 
     SDL_Rect dest2 =
-        calcDrawingRect(frame[DecorationType].rightUpperCorner.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
-    SDL_BlitSurface(frame[DecorationType].rightUpperCorner.get(), nullptr, Pic, &dest2);
+        calcDrawingRect(frame[type].rightUpperCorner.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
+    SDL_BlitSurface(frame[type].rightUpperCorner.get(), nullptr, Pic, &dest2);
 
-    SDL_Rect dest3 = calcDrawingRect(frame[DecorationType].leftLowerCorner.get(), dest->x, dest->h - 1, HAlign::Left,
-                                     VAlign::Bottom);
-    SDL_BlitSurface(frame[DecorationType].leftLowerCorner.get(), nullptr, Pic, &dest3);
+    SDL_Rect dest3 =
+        calcDrawingRect(frame[type].leftLowerCorner.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
+    SDL_BlitSurface(frame[type].leftLowerCorner.get(), nullptr, Pic, &dest3);
 
-    SDL_Rect dest4 = calcDrawingRect(frame[DecorationType].rightLowerCorner.get(), dest->w - 1, dest->h - 1,
-                                     HAlign::Right, VAlign::Bottom);
-    SDL_BlitSurface(frame[DecorationType].rightLowerCorner.get(), nullptr, Pic, &dest4);
+    SDL_Rect dest4 =
+        calcDrawingRect(frame[type].rightLowerCorner.get(), dest->w - 1, dest->h - 1, HAlign::Right, VAlign::Bottom);
+    SDL_BlitSurface(frame[type].rightLowerCorner.get(), nullptr, Pic, &dest4);
 
     // hborders
-    SDL_Rect dest5 = calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->y);
-    for (dest5.x = frame[DecorationType].leftUpperCorner.get()->w + dest->x;
-         dest5.x <= dest->w - frame[DecorationType].rightUpperCorner.get()->w - 1;
-         dest5.x += frame[DecorationType].hborder.get()->w) {
+    SDL_Rect dest5 = calcDrawingRect(frame[type].hborder.get(), dest->x, dest->y);
+    for (dest5.x = frame[type].leftUpperCorner.get()->w + dest->x;
+         dest5.x <= dest->w - frame[type].rightUpperCorner.get()->w - 1; dest5.x += frame[type].hborder.get()->w) {
         SDL_Rect tmpDest = dest5;
-        SDL_BlitSurface(frame[DecorationType].hborder.get(), nullptr, Pic, &tmpDest);
+        SDL_BlitSurface(frame[type].hborder.get(), nullptr, Pic, &tmpDest);
     }
 
-    SDL_Rect dest6 =
-        calcDrawingRect(frame[DecorationType].hborder.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
-    for (dest6.x = frame[DecorationType].leftLowerCorner.get()->w + dest->x;
-         dest6.x <= dest->w - frame[DecorationType].rightLowerCorner.get()->w - 1;
-         dest6.x += frame[DecorationType].hborder.get()->w) {
+    SDL_Rect dest6 = calcDrawingRect(frame[type].hborder.get(), dest->x, dest->h - 1, HAlign::Left, VAlign::Bottom);
+    for (dest6.x = frame[type].leftLowerCorner.get()->w + dest->x;
+         dest6.x <= dest->w - frame[type].rightLowerCorner.get()->w - 1; dest6.x += frame[type].hborder.get()->w) {
         SDL_Rect tmpDest = dest6;
-        SDL_BlitSurface(frame[DecorationType].hborder.get(), nullptr, Pic, &tmpDest);
+        SDL_BlitSurface(frame[type].hborder.get(), nullptr, Pic, &tmpDest);
     }
 
     // vborders
-    SDL_Rect dest7 = calcDrawingRect(frame[DecorationType].vborder.get(), dest->x, dest->y);
-    for (dest7.y = frame[DecorationType].leftUpperCorner.get()->h + dest->y;
-         dest7.y <= dest->h - frame[DecorationType].leftLowerCorner.get()->h - 1;
-         dest7.y += frame[DecorationType].vborder.get()->h) {
+    SDL_Rect dest7 = calcDrawingRect(frame[type].vborder.get(), dest->x, dest->y);
+    for (dest7.y = frame[type].leftUpperCorner.get()->h + dest->y;
+         dest7.y <= dest->h - frame[type].leftLowerCorner.get()->h - 1; dest7.y += frame[type].vborder.get()->h) {
         SDL_Rect tmpDest = dest7;
-        SDL_BlitSurface(frame[DecorationType].vborder.get(), nullptr, Pic, &tmpDest);
+        SDL_BlitSurface(frame[type].vborder.get(), nullptr, Pic, &tmpDest);
     }
 
-    SDL_Rect dest8 =
-        calcDrawingRect(frame[DecorationType].vborder.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
-    for (dest8.y = frame[DecorationType].rightUpperCorner.get()->h + dest->y;
-         dest8.y <= dest->h - frame[DecorationType].rightLowerCorner.get()->h - 1;
-         dest8.y += frame[DecorationType].vborder.get()->h) {
+    SDL_Rect dest8 = calcDrawingRect(frame[type].vborder.get(), dest->w - 1, dest->y, HAlign::Right, VAlign::Top);
+    for (dest8.y = frame[type].rightUpperCorner.get()->h + dest->y;
+         dest8.y <= dest->h - frame[type].rightLowerCorner.get()->h - 1; dest8.y += frame[type].vborder.get()->h) {
         SDL_Rect tmpDest = dest8;
-        SDL_BlitSurface(frame[DecorationType].vborder.get(), nullptr, Pic, &tmpDest);
+        SDL_BlitSurface(frame[type].vborder.get(), nullptr, Pic, &tmpDest);
     }
 }
 
-sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType, int width, int height, bool UseBackground) {
+sdl2::surface_ptr
+PictureFactory::createFrame(DecorationFrame decorationType, int width, int height, bool UseBackground) {
     sdl2::surface_ptr Pic;
     if (UseBackground) {
         Pic = getSubPicture(background.get(), 0, 0, width, height);
@@ -468,7 +476,7 @@ sdl2::surface_ptr PictureFactory::createFrame(unsigned int DecorationType, int w
         SDL_SetColorKey(Pic.get(), SDL_TRUE, 0);
     }
 
-    drawFrame(Pic.get(), DecorationType);
+    drawFrame(Pic.get(), decorationType);
 
     return Pic;
 }
@@ -489,10 +497,12 @@ PictureFactory::DecorationBorderType PictureFactory::createDecorationBorder() co
 }
 
 PictureFactory::BorderStyle PictureFactory::createBorderStyle(DecorationFrame type) const {
-    if (type >= NUM_DECORATIONFRAMES)
-        THROW(std::invalid_argument, "PictureFactory::PictureFactory: Decoration type out-of-range (%d)!", type);
+    const auto type_int = static_cast<int>(type);
 
-    const auto& f = frame[type];
+    if (type_int < 0 || type >= DecorationFrame::NUM_DECORATIONFRAMES)
+        THROW(std::invalid_argument, "PictureFactory::PictureFactory: Decoration type out-of-range (%d)!", type_int);
+
+    const auto& f = frame[type_int];
 
     return {copySurface(f.leftUpperCorner.get()), copySurface(f.rightUpperCorner.get()),
             copySurface(f.leftLowerCorner.get()), copySurface(f.rightLowerCorner.get()),
@@ -541,7 +551,7 @@ sdl2::surface_ptr PictureFactory::createMainBackground() const {
 
 void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
     SDL_Rect dest0 = {3, 3, getWidth(surface) - 3, getHeight(surface) - 3};
-    drawFrame(surface, DecorationFrame2, &dest0);
+    drawFrame(surface, DecorationFrame::DecorationFrame2, &dest0);
 
     SDL_Rect dest1 = calcDrawingRect(harkonnenLogo.get(), 11, 11);
     SDL_BlitSurface(harkonnenLogo.get(), nullptr, surface, &dest1);
@@ -562,7 +572,7 @@ void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
 
     VersionText.reset();
 
-    drawFrame(Version.get(), SimpleFrame);
+    drawFrame(Version.get(), DecorationFrame::SimpleFrame);
 
     SDL_Rect dest5 =
         calcDrawingRect(Version.get(), getWidth(surface) - 11, getHeight(surface) - 11, HAlign::Right, VAlign::Bottom);
@@ -613,10 +623,10 @@ sdl2::surface_ptr PictureFactory::createMenu(int x, int y) const {
 
     SDL_FillRect(Pic.get(), &dest1, PALCOLOR_GREY);
 
-    drawFrame(Pic.get(), SimpleFrame, &dest1);
+    drawFrame(Pic.get(), DecorationFrame::SimpleFrame, &dest1);
 
     SDL_Rect dest2 = calcDrawingRect(Pic.get(), 0, dest1.h);
-    drawFrame(Pic.get(), DecorationFrame1, &dest2);
+    drawFrame(Pic.get(), DecorationFrame::DecorationFrame1, &dest2);
 
     return Pic;
 }
@@ -630,10 +640,10 @@ sdl2::surface_ptr PictureFactory::createMenu(SDL_Surface* CaptionPic, int y) con
     SDL_Rect dest1 = calcDrawingRect(CaptionPic, 0, 0);
     SDL_BlitSurface(CaptionPic, nullptr, Pic.get(), &dest1);
 
-    drawFrame(Pic.get(), SimpleFrame, &dest1);
+    drawFrame(Pic.get(), DecorationFrame::SimpleFrame, &dest1);
 
     SDL_Rect dest2 = calcDrawingRect(Pic.get(), 0, dest1.h);
-    drawFrame(Pic.get(), DecorationFrame1, &dest2);
+    drawFrame(Pic.get(), DecorationFrame::DecorationFrame1, &dest2);
 
     return Pic;
 }
@@ -651,10 +661,10 @@ sdl2::surface_ptr PictureFactory::createOptionsMenu() {
     tmp.reset();
 
     SDL_Rect dest1 = {0, 0, getWidth(Pic.get()), 27};
-    drawFrame(Pic.get(), SimpleFrame, &dest1);
+    drawFrame(Pic.get(), DecorationFrame::SimpleFrame, &dest1);
 
     SDL_Rect dest2 = calcDrawingRect(Pic.get(), 0, dest1.h);
-    drawFrame(Pic.get(), DecorationFrame1, &dest2);
+    drawFrame(Pic.get(), DecorationFrame::DecorationFrame1, &dest2);
 
     return Pic;
 }
@@ -669,7 +679,7 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
     const SDL_Rect dest = {0, 50, getWidth(Pic.get()), getHeight(Pic.get()) - 50};
     SDL_FillRect(Pic.get(), &dest, PALCOLOR_BLACK);
 
-    drawFrame(Pic.get(), SimpleFrame, nullptr);
+    drawFrame(Pic.get(), DecorationFrame::SimpleFrame, nullptr);
 
     return Pic;
 }
