@@ -478,7 +478,7 @@ void CampaignStatsMenu::calculateScore(int level) {
         }
     }
 
-    spiceHarvestedByAI = spice_harvested_by_ai.toFloat();
+    spiceHarvestedByAI    = spice_harvested_by_ai.toFloat();
     spiceHarvestedByHuman = spice_harvested_by_human.toFloat();
 
     if (currentGame->areCheatsEnabled()) {
