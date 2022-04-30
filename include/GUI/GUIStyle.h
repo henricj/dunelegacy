@@ -312,6 +312,7 @@ public:
 
     /**
         Creates a tool tip surface.
+        \param  renderer    the renderer to use
         \param  text        the tool tip text
         \return the new surface
     */
@@ -319,6 +320,7 @@ public:
 
     /**
         Draw a simple background for e.g. a window
+        \param  renderer    the renderer to use
         \param  rect        the area to draw
         \return the new surface
     */
@@ -326,6 +328,7 @@ public:
 
     /**
         Draw the main background
+        \param  renderer    the renderer to use
         \param  rect        the area to draw
         \return the new surface
     */
