@@ -1,5 +1,9 @@
 #include <misc/BlendBlitter.h>
 
+#include "FileClasses/GFXManager.h"
+
+#include "globals.h"
+
 BlendBlitter::BlendBlitter(sdl2::surface_ptr SrcPic, SDL_Surface* DestPic, SDL_Rect DestPicRect, int numSteps)
     : src{std::move(SrcPic)}, dest{DestPic}, destRect{DestPicRect}, numSteps{numSteps}, StepsLeft(numSteps),
       N(static_cast<uint64_t>(src->w) * static_cast<uint64_t>(src->h)), m(N) {

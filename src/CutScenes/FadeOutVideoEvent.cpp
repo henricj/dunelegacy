@@ -15,8 +15,10 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Colors.h>
 #include <CutScenes/FadeOutVideoEvent.h>
+
+#include "misc/DrawingRectHelper.h"
+#include <Colors.h>
 #include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>

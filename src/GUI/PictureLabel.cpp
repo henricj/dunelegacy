@@ -17,6 +17,8 @@
 
 #include <GUI/PictureLabel.h>
 
+#include "globals.h"
+
 PictureLabel::PictureLabel()  = default;
 PictureLabel::~PictureLabel() = default;
 

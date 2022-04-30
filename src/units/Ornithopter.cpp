@@ -25,6 +25,8 @@
 #include <Map.h>
 #include <SoundPlayer.h>
 
+#include "mmath.h"
+
 namespace {
 inline constexpr auto ORNITHOPTER_FRAMETIME = 3;
 

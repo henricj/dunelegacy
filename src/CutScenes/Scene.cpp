@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "Renderer/DuneRenderer.h"
 #include <misc/SDL2pp.h>
 
 Scene::Scene() = default;

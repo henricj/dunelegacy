@@ -19,6 +19,8 @@
 
 #include <globals.h>
 
+#include "ScreenBorder.h"
+#include "mmath.h"
 #include <Explosion.h>
 #include <FileClasses/GFXManager.h>
 #include <Game.h>

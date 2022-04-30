@@ -1,5 +1,9 @@
 #include "misc/dune_localtime.h"
 
+#include <ctime>
+#include <optional>
+#include <string>
+
 std::optional<std::tm> dune::dune_localtime() {
     time_t raw_time;
     std::time(&raw_time);

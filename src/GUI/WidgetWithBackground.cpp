@@ -20,6 +20,8 @@
 #include "GUI/GUIStyle.h"
 #include "misc/draw_util.h"
 
+#include "globals.h"
+
 WidgetWithBackground::~WidgetWithBackground() = default;
 
 void WidgetWithBackground::setTransparentBackground(bool bTransparent) {

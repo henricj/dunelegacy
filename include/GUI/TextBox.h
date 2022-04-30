@@ -18,9 +18,14 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 
+#include "GUIStyle.h"
 #include "Widget.h"
+#include "misc/dune_clock.h"
 #include <misc/SDL2pp.h>
+
+#include <functional>
 #include <string>
+#include <string_view>
 
 /// A class for a text box
 class TextBox final : public Widget {

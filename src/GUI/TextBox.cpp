@@ -17,6 +17,13 @@
 
 #include "GUI/TextBox.h"
 
+#include "GUI/GUIStyle.h"
+#include "globals.h"
+#include "misc/dune_clock.h"
+#include "misc/string_util.h"
+
+#include <chrono>
+
 TextBox::TextBox() {
     parent::enableResizing(true, false);
     resize(getMinimumSize().x, getMinimumSize().y);

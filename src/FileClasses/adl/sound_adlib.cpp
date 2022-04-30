@@ -52,13 +52,14 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <memory>
-
 #include <SDL2/SDL_endian.h>
 #include <SDL2/SDL_mixer.h>
 
 #include <FileClasses/adl/surroundopl.h>
 #include <FileClasses/adl/wemuopl.h>
+
+#include <array>
+#include <memory>
 
 // Basic Adlib Programming:
 // http://www.gamedev.net/reference/articles/article446.asp

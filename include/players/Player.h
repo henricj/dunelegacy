@@ -18,6 +18,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "ObjectBase.h"
+#include "misc/Random.h"
 #include <DataTypes.h>
 #include <data.h>
 #include <misc/InputStream.h>

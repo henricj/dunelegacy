@@ -27,6 +27,8 @@
 #include <FileClasses/TextManager.h>
 #include <Network/NetworkManager.h>
 
+#include "Game.h"
+#include "ScreenBorder.h"
 #include <Bullet.h>
 
 #include "misc/SDL2pp.h"

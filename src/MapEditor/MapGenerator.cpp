@@ -19,9 +19,8 @@
 
 #include <globals.h>
 
+#include "misc/string_util.h"
 #include <misc/Random.h>
-
-#include <gsl/gsl>
 
 inline constexpr auto ROCKFILLER =
     2; // how many times random generator will try to remove sand "holes" for rock from the map

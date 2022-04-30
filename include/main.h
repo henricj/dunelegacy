@@ -20,6 +20,7 @@
 
 #include <misc/SDL2pp.h>
 
+#include <filesystem>
 #include <string>
 
 /**

@@ -16,6 +16,8 @@
  */
 
 #include <CutScenes/HoldPictureVideoEvent.h>
+
+#include "misc/DrawingRectHelper.h"
 #include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>

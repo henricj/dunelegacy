@@ -25,6 +25,8 @@
 #include <misc/FileSystem.h>
 #include <misc/exceptions.h>
 
+#include "globals.h"
+
 #ifdef _
 #    undef _
 #endif

@@ -17,6 +17,9 @@
 
 #include <misc/Scaler.h>
 
+#include "Definitions.h"
+#include "misc/draw_util.h"
+
 #include <algorithm>
 
 DoubleSurfaceFunction* Scaler::defaultDoubleSurface           = doubleSurfaceScale2x;

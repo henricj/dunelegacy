@@ -21,10 +21,13 @@
 #include "GUIStyle.h"
 #include "Widget.h"
 #include "misc/draw_util.h"
+#include "misc/dune_clock.h"
 #include <misc/SDL2pp.h>
 
 #include <functional>
 #include <string>
+
+#include "misc/DrawingRectHelper.h"
 
 /// A abstract base class for all buttons
 class Button : public Widget {
@@ -55,7 +58,7 @@ public:
         \param  bEnabled    true = enable button, false = disable button
     */
     void setEnabled(bool bEnabled) override {
-        Widget::setEnabled(bEnabled);
+        parent::setEnabled(bEnabled);
         if (bEnabled == false) {
             bPressed = false;
         }
@@ -65,16 +68,7 @@ public:
         Sets a tooltip text. This text is shown when the mouse remains a short time over this button.
         \param  text    The text for this tooltip
     */
-    void setTooltipText(const std::string& text) {
-        tooltipText = text;
-
-        if (tooltipTexture)
-            tooltipTexture = DuneTextureOwned{};
-
-        if (!tooltipText.empty()) {
-            tooltipTexture = GUIStyle::getInstance().createToolTip(dune::globals::renderer.get(), tooltipText);
-        }
-    }
+    void setTooltipText(std::string text);
 
     /**
         Returns the current tooltip text.

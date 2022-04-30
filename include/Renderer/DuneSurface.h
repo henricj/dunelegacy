@@ -18,6 +18,7 @@
 #ifndef DUNESURFACE_H
 #define DUNESURFACE_H
 
+#include "DuneTexture.h"
 #include "misc/SDL2pp.h"
 
 struct SDL_Renderer;

@@ -26,6 +26,7 @@
 #include <GUI/VBox.h>
 #include <GUI/Window.h>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 

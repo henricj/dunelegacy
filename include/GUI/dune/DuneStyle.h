@@ -21,6 +21,8 @@
 #include "Renderer/DuneSurface.h"
 #include <GUI/GUIStyle.h>
 
+class FontManager;
+
 class DuneStyle final : public GUIStyle {
 public:
     /// default constructor

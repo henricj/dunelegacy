@@ -15,10 +15,12 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <FileClasses/Decode.h>
-#include <FileClasses/Palette.h>
 #include <FileClasses/Wsafile.h>
 
+#include <FileClasses/Decode.h>
+#include <FileClasses/Palette.h>
+
+#include "globals.h"
 #include <Definitions.h>
 
 #include <SDL2/SDL_endian.h>

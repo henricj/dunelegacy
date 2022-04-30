@@ -17,6 +17,10 @@
 
 #include <players/PlayerFactory.h>
 
+#include "Game.h"
+#include "ObjectBase.h"
+#include "misc/Random.h"
+
 #include <players/AIPlayer.h>
 #include <players/CampaignAIPlayer.h>
 #include <players/HumanPlayer.h>
@@ -24,6 +28,14 @@
 #include <players/SmartBot.h>
 
 std::vector<PlayerFactory::PlayerData> PlayerFactory::playerDataList;
+
+Random
+PlayerFactory::PlayerData::create_random(const GameContext& context, House* house, std::string_view playername) const {
+    const auto random_name =
+        fmt::format("player {} {} {} {}", name, static_cast<int>(house->getHouseID()), playerclass, playername);
+
+    return context.game.randomFactory.create(random_name);
+}
 
 void PlayerFactory::registerAllPlayers() {
     add<HumanPlayer>(HUMANPLAYERCLASS, "Human Player");

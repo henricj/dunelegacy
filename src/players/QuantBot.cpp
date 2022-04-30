@@ -17,6 +17,7 @@
 
 #include <players/QuantBot.h>
 
+#include "mmath.h"
 #include <Game.h>
 #include <GameInitSettings.h>
 #include <House.h>
@@ -35,8 +36,6 @@
 #include <units/MCV.h>
 #include <units/Saboteur.h>
 #include <units/UnitBase.h>
-
-#include <algorithm>
 
 inline constexpr auto AIUPDATEINTERVAL = 50;
 

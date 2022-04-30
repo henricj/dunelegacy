@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
 

@@ -23,12 +23,11 @@
 #include <fixmath/FixPoint.h>
 #include <mmath.h>
 
-#include <algorithm>
-
 inline constexpr auto SCROLLBORDER = 3;
 
 class InputStream;
 class OutputStream;
+class Random;
 
 /// This class manages everything that is related to the current view onto the map.
 class ScreenBorder final {

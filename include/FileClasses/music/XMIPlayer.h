@@ -22,6 +22,8 @@
 
 #include <SDL2/SDL_mixer.h>
 
+#include <filesystem>
+
 // Forward declarations
 class CadlPlayer;
 

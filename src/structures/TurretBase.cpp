@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "mmath.h"
 #include <Bullet.h>
 #include <Game.h>
 #include <House.h>

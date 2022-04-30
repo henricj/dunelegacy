@@ -20,7 +20,11 @@
 
 #include <Definitions.h>
 
+#include "misc/Random.h"
+
 #include <SDL2/SDL_mixer.h>
+
+#include <string_view>
 
 //! \enum MUSICTYPE
 /*! Types of music available in the game*/

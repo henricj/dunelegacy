@@ -18,10 +18,11 @@
 #ifndef LANGAMEFINDERANDANNOUNCER_H
 #define LANGAMEFINDERANDANNOUNCER_H
 
+#include "misc/dune_clock.h"
 #include <Network/GameServerInfo.h>
-#include <misc/SDL2pp.h>
 
 #include <enet/enet.h>
+
 #include <functional>
 #include <list>
 #include <string>

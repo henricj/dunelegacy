@@ -18,18 +18,18 @@
 #ifndef OBJECTBASE_H
 #define OBJECTBASE_H
 
+#include "FileClasses/GFXConstants.h"
+#include "data.h"
 #include <DataTypes.h>
 #include <Definitions.h>
 #include <ObjectPointer.h>
 #include <fixmath/FixPoint.h>
 
-#include "data.h"
-
 #include <globals.h>
 
-#include <bitset>
-
 #include <SDL2/SDL.h>
+
+#include <bitset>
 
 // forward declarations
 class Game;

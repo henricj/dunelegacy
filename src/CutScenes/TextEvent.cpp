@@ -17,6 +17,9 @@
 
 #include <CutScenes/TextEvent.h>
 
+#include "Renderer/DuneRenderer.h"
+#include "misc/DrawingRectHelper.h"
+#include <FileClasses/FontManager.h>
 #include <GUI/GUIStyle.h>
 
 #include <globals.h>

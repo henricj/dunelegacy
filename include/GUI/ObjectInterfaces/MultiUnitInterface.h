@@ -18,6 +18,7 @@
 #ifndef MULTIUNITINTERFACE_H
 #define MULTIUNITINTERFACE_H
 
+#include "ObjectBase.h"
 #include "ObjectInterface.h"
 
 #include <GUI/HBox.h>

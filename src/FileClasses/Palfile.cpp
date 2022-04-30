@@ -16,6 +16,8 @@
  */
 
 #include <FileClasses/Palfile.h>
+
+#include "Definitions.h"
 #include <misc/exceptions.h>
 
 #include <cstdio>

@@ -15,17 +15,20 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <players/CampaignAIPlayer.h>
+
+#include "Game.h"
+#include "mmath.h"
 #include <House.h>
 #include <Map.h>
 #include <misc/Random.h>
-#include <players/CampaignAIPlayer.h>
 #include <sand.h>
-
-#include <unordered_map>
 
 #include <structures/ConstructionYard.h>
 #include <structures/Palace.h>
 #include <units/UnitBase.h>
+
+#include <unordered_map>
 
 namespace {
 inline constexpr auto AIUPDATEINTERVAL = 50;

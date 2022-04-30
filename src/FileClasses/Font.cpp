@@ -17,6 +17,10 @@
 
 #include "FileClasses/Font.h"
 
+#include "Definitions.h"
+
+#include <vector>
+
 Font::~Font() = default;
 
 sdl2::surface_ptr Font::createMultilineTextSurface(std::string_view text, uint32_t color, bool bCentered) const {

@@ -19,6 +19,10 @@
 #define DUNETEXTURE_H
 
 #include "misc/SDL2pp.h"
+#include <SDL2/SDL.h>
+
+#include <cassert>
+#include <limits>
 
 struct SDL_Renderer;
 

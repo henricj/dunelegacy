@@ -25,6 +25,8 @@
 
 #include <globals.h>
 
+#include "misc/Random.h"
+
 GameInitSettings::GameInitSettings() = default;
 
 GameInitSettings::GameInitSettings(HOUSETYPE newHouseID, const SettingsClass::GameOptionsClass& gameOptions)
@@ -133,6 +135,13 @@ void GameInitSettings::save(OutputStream& stream) const {
     for (const HouseInfo& houseInfo : houseInfoList) {
         houseInfo.save(stream);
     }
+}
+
+const std::vector<uint8_t>& GameInitSettings::getRandomSeed() noexcept {
+    if (randomSeed.empty())
+        randomSeed = RandomFactory::createRandomSeed("game master seed");
+
+    return randomSeed;
 }
 
 std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int mission) {

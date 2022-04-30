@@ -37,7 +37,10 @@
 
 #include <Menu/MainMenu.h>
 
+#include "Game.h"
+#include "ScreenBorder.h"
 #include "misc/dune_events.h"
+#include "misc/sdl_support.h"
 #include <misc/FileSystem.h>
 #include <misc/SDL2pp.h>
 #include <misc/Scaler.h>

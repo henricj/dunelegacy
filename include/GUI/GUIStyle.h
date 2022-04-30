@@ -30,6 +30,8 @@
 
 #include "Renderer/DuneSurface.h"
 
+enum class DecorationFrame;
+
 inline constexpr auto COLOR_DEFAULT = COLOR_INVALID;
 
 enum Alignment_Enum {

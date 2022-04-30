@@ -20,6 +20,7 @@
 
 #include <Trigger/Trigger.h>
 
+#include "data.h"
 #include <DataTypes.h>
 
 #include <vector>
@@ -42,8 +43,8 @@ public:
     ReinforcementTrigger(const ReinforcementTrigger&) = default;
     ReinforcementTrigger(ReinforcementTrigger&&)      = default;
 
-    ReinforcementTrigger& operator=(const ReinforcementTrigger&&);
-    ReinforcementTrigger& operator=(ReinforcementTrigger&&);
+    ReinforcementTrigger& operator=(const ReinforcementTrigger&) = default;
+    ReinforcementTrigger& operator=(ReinforcementTrigger&&)      = default;
 
     /**
         This constructor constructs the trigger from a stream.
