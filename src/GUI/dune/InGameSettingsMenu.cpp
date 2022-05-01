@@ -22,9 +22,7 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
-#include <Game.h>
 #include <House.h>
-#include <ScreenBorder.h>
 #include <SoundPlayer.h>
 #include <main.h>
 
@@ -32,8 +30,12 @@
 
 InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
     HOUSETYPE houseID   = dune::globals::pLocalHouse->getHouseID();
-    const Uint32 color1 = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(houseID)] + 2]);
-    const Uint32 color2 = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(houseID)] + 3]);
+    const auto& palette = dune::globals::palette;
+
+    const auto palette_index = houseToPaletteIndex[static_cast<int>(houseID)];
+
+    const Uint32 color1 = SDL2RGB(palette[palette_index + 2]);
+    const Uint32 color2 = SDL2RGB(palette[palette_index + 3]);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -101,13 +103,13 @@ void InGameSettingsMenu::init() {
     const auto& settings = dune::globals::settings;
 
     newGamespeed = settings.gameOptions.gameSpeed;
-    gameSpeedBar.setProgress(100.0 - ((newGamespeed - GAMESPEED_MIN) * 100.0) / (GAMESPEED_MAX - GAMESPEED_MIN));
+    update_speed_bar();
 
     previousVolume = volume = dune::globals::soundPlayer->getSfxVolume();
-    volumeBar.setProgress((100.0 * volume) / MIX_MAX_VOLUME);
+    update_volume_bar();
 
     scrollSpeed = settings.general.scrollSpeed;
-    scrollSpeedBar.setProgress(scrollSpeed);
+    scrollSpeedBar.setProgress(static_cast<float>(scrollSpeed));
 }
 
 bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
@@ -168,20 +170,20 @@ void InGameSettingsMenu::onGameSpeedPlus() {
     if (newGamespeed > GAMESPEED_MIN)
         newGamespeed -= 1;
 
-    gameSpeedBar.setProgress(100 - ((newGamespeed - GAMESPEED_MIN) * 100) / (GAMESPEED_MAX - GAMESPEED_MIN));
+    update_speed_bar();
 }
 
 void InGameSettingsMenu::onGameSpeedMinus() {
     if (newGamespeed < GAMESPEED_MAX)
         newGamespeed += 1;
 
-    gameSpeedBar.setProgress(100 - ((newGamespeed - GAMESPEED_MIN) * 100) / (GAMESPEED_MAX - GAMESPEED_MIN));
+    update_speed_bar();
 }
 
 void InGameSettingsMenu::onVolumePlus() {
     if (volume <= MIX_MAX_VOLUME - 4) {
         volume += 4;
-        volumeBar.setProgress((100 * volume) / MIX_MAX_VOLUME);
+        update_volume_bar();
         dune::globals::soundPlayer->setSfxVolume(volume);
         dune::globals::musicPlayer->setMusicVolume(volume);
     }
@@ -190,7 +192,7 @@ void InGameSettingsMenu::onVolumePlus() {
 void InGameSettingsMenu::onVolumeMinus() {
     if (volume >= 4) {
         volume -= 4;
-        volumeBar.setProgress((100 * volume) / MIX_MAX_VOLUME);
+        update_volume_bar();
         dune::globals::soundPlayer->setSfxVolume(volume);
         dune::globals::musicPlayer->setMusicVolume(volume);
     }
@@ -198,10 +200,23 @@ void InGameSettingsMenu::onVolumeMinus() {
 
 void InGameSettingsMenu::onScrollSpeedPlus() {
     scrollSpeed = std::min(scrollSpeed + 4, 100);
-    scrollSpeedBar.setProgress(scrollSpeed);
+    scrollSpeedBar.setProgress(static_cast<float>(scrollSpeed));
 }
 
 void InGameSettingsMenu::onScrollSpeedMinus() {
     scrollSpeed = std::max(scrollSpeed - 4, 1);
-    scrollSpeedBar.setProgress(scrollSpeed);
+    scrollSpeedBar.setProgress(static_cast<float>(scrollSpeed));
+}
+
+void InGameSettingsMenu::update_speed_bar() {
+    static constexpr auto scale = 100.f / static_cast<float>(GAMESPEED_MAX - GAMESPEED_MIN);
+
+    const auto percent = 100.f - scale * static_cast<float>(newGamespeed - GAMESPEED_MIN);
+    gameSpeedBar.setProgress(percent);
+}
+
+void InGameSettingsMenu::update_volume_bar() {
+    static constexpr auto scale = 100.0f / static_cast<float>(MIX_MAX_VOLUME);
+
+    volumeBar.setProgress(scale * static_cast<float>(volume));
 }
