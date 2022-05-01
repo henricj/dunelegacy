@@ -20,16 +20,7 @@ add_sources(GUI_SOURCES
 	Widget.cpp
 	WidgetWithBackground.cpp
 	Window.cpp
-	dune/BuilderList.cpp
-	dune/ChatManager.cpp
-	dune/DuneStyle.cpp
-	dune/GameOptionsWindow.cpp
-	dune/InGameMenu.cpp
-	dune/InGameSettingsMenu.cpp
-	dune/LoadSaveWindow.cpp
-	dune/MessageTicker.cpp
-	dune/NewsTicker.cpp
-	dune/WaitingForOtherPlayers.cpp
 )
 
+include(GUI/dune/sources.cmake)
 include(GUI/ObjectInterfaces/sources.cmake)

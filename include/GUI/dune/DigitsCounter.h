@@ -20,24 +20,18 @@
 
 #include <GUI/Widget.h>
 
-#include <FileClasses/GFXManager.h>
-
 #include <algorithm>
-#include <charconv>
-#include <memory>
-
-namespace dune::globals {
-extern std::unique_ptr<GFXManager> pGFXManager;
-}
 
 /// A widget for showing digits (like the credits in dune are shown)
 class DigitsCounter final : public Widget {
+    using parent = Widget;
+
 public:
     /// default constructor
-    DigitsCounter() { Widget::enableResizing(false, false); }
+    DigitsCounter();
 
     /// destructor
-    ~DigitsCounter() override = default;
+    ~DigitsCounter() override;
 
     /**
         Get the current count of this digits counter
@@ -55,42 +49,14 @@ public:
         Draws this widget to screen. This method is called before drawOverlay().
         \param  position    Position to draw the widget to
     */
-    void draw(Point position) override {
-        auto* const gfx      = dune::globals::pGFXManager.get();
-        auto* const renderer = dune::globals::renderer.get();
-
-        const auto* const tex = gfx->getUIGraphic(UI_MissionSelect);
-
-        tex->draw(renderer, position.x, position.y);
-
-        const auto* const digitsTex = gfx->getUIGraphic(UI_CreditsDigits);
-
-        char creditsBuffer[3];
-        const auto& [ptr, ec] = std::to_chars(std::begin(creditsBuffer), std::end(creditsBuffer), count);
-        if (ec == std::errc{}) {
-            const auto digits = static_cast<int>(ptr - std::begin(creditsBuffer));
-
-            for (auto i = digits - 1; i >= 0; i--) {
-                const auto source = calcSpriteSourceRect(digitsTex, creditsBuffer[i] - '0', 10);
-                const auto dest2 =
-                    calcSpriteDrawingRect(digitsTex, position.x + 40 + (6 - digits + i) * 10, position.y + 16, 10);
-                Dune_RenderCopyF(renderer, digitsTex, &source, &dest2);
-            }
-        }
-    }
+    void draw(Point position) override;
 
     /**
         Returns the minimum size of this digits counter. The widget should not
         be resized to a size smaller than this.
         \return the minimum size of this digits counter
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        const auto* const tex = dune::globals::pGFXManager->getUIGraphic(UI_MissionSelect);
-        if (tex != nullptr) {
-            return getTextureSize(tex);
-        }
-        return {0, 0};
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
 private:
     unsigned int count = 0;
