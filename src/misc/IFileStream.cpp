@@ -39,7 +39,7 @@ IFileStream::~IFileStream() {
 bool IFileStream::open(const std::filesystem::path& filename) {
     close();
 
-    const auto normal = std::filesystem::canonical(filename);
+    const auto normal = filename.lexically_normal().make_preferred();
 
 #ifdef _WIN32
     fp = _wfsopen(normal.c_str(), L"rbS", _SH_DENYWR);
@@ -131,6 +131,9 @@ bool IFileStream::readBool() {
 }
 
 float IFileStream::readFloat() {
+    // We could use std::bit_cast from <bit>, but it is unclear
+    // if Xcode supports it yet.
+    // return std::bit_cast<float>(readUint32());
     const uint32_t tmp = readUint32();
     float tmp2         = NAN;
     memcpy(&tmp2, &tmp, sizeof(uint32_t)); // workaround for a strange optimization in gcc 4.1
