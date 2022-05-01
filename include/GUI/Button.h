@@ -18,16 +18,12 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "GUIStyle.h"
 #include "Widget.h"
-#include "misc/draw_util.h"
 #include "misc/dune_clock.h"
 #include <misc/SDL2pp.h>
 
 #include <functional>
 #include <string>
-
-#include "misc/DrawingRectHelper.h"
 
 /// A abstract base class for all buttons
 class Button : public Widget {
