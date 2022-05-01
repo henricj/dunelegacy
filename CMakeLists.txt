@@ -25,10 +25,17 @@ add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+option(DUNE_PRECOMPILED_HEADERS "Use precompiled headers" ON)
+if(DUNE_PRECOMPILED_HEADERS)
+    message(STATUS "Enabling precompiled headers")
+endif()
+
+option(DUNE_ASAN "Enable ASAN")
 if(DUNE_ASAN)
     include(setup/asan-setup)
 endif()
 
+option(DUNE_ASAN "Enable UBSAN")
 if(DUNE_UBSAN)
     include(setup/ubsan-setup)
 endif()

@@ -107,7 +107,9 @@ if(NOT HAVE_DOUBLE_FROM_CHARS)
 	target_compile_definitions(dune PUBLIC NEED_DOUBLE_FROM_CHARS)
 endif()
 
-target_precompile_headers(dune PRIVATE stdafx.h)
+if(DUNE_PRECOMPILED_HEADERS)
+	target_precompile_headers(dune PRIVATE stdafx.h)
+endif()
 
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
@@ -122,9 +124,12 @@ if(MSVC)
    endif()
 endif()
 
-
-if(NOT MSVC)
-	target_precompile_headers(dunelegacy REUSE_FROM dune)
+if(DUNE_PRECOMPILED_HEADERS)
+	if(MSVC)
+		target_precompile_headers(dunelegacy PRIVATE stdafx.h)
+	else()
+		target_precompile_headers(dunelegacy REUSE_FROM dune)
+	endif()
 endif()
 
 add_custom_command(
