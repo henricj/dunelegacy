@@ -301,18 +301,6 @@ public:
     createListBoxEntry(int width, std::string_view text, bool selected, Uint32 color = COLOR_DEFAULT) const = 0;
 
     /**
-        Creates the overlay surface for a progress bar widget. This surface is then drawn
-        above the progress bar widget.
-        \param  width       the width of the progress bar
-        \param  height      the height of the progress bar
-        \param  percent     a value between 0.0 and 100.0
-        \param  color       the color of the overlay (COLOR_DEFAULT = default color for this style)
-        \return the new surface
-    */
-    virtual sdl2::surface_ptr
-    createProgressBarOverlay(uint32_t width, uint32_t height, double percent, Uint32 color = COLOR_DEFAULT) const = 0;
-
-    /**
         Creates a tool tip surface.
         \param  renderer    the renderer to use
         \param  text        the tool tip text
