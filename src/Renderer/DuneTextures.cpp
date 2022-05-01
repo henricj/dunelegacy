@@ -42,8 +42,8 @@ DuneTextures::DuneTextures(std::vector<sdl2::texture_ptr>&& textures, object_pic
 DuneTextures::~DuneTextures() = default;
 
 namespace {
-constexpr bool allow_flip            = false;
-constexpr auto runtime_flipping_mode = rectpack2D::flipping_option::DISABLED;
+inline constexpr bool allow_flip            = false;
+inline constexpr auto runtime_flipping_mode = rectpack2D::flipping_option::DISABLED;
 
 using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
 using rect_type   = rectpack2D::output_rect_t<spaces_type>;
