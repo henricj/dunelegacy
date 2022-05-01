@@ -20,15 +20,11 @@
 
 #include "WidgetWithBackground.h"
 
-#include "misc/DrawingRectHelper.h"
 #include <misc/SDL2pp.h>
-#include <misc/draw_util.h>
 
 #include <string>
 
-#include <GUI/GUIStyle.h>
-
-#include <cmath>
+#include "GUIStyle.h"
 
 /// A class for a progress bar widget
 class ProgressBar : public WidgetWithBackground {
@@ -50,18 +46,7 @@ public:
         Sets the progress of this progress bar.
         \param newPercent  Should be between 0.0 and 100.0
     */
-    void setProgress(double newPercent) {
-        if (percent != newPercent) {
-            percent = newPercent;
-            if (percent < 0.0) {
-                percent = 0.0;
-            } else if (percent > 100.0) {
-                percent = 100.0;
-            }
-
-            invalidateTextures();
-        }
-    }
+    void setProgress(float newPercent);
 
     /**
         Return the current progress.
@@ -105,21 +90,8 @@ public:
     void draw(Point position) override;
 
 protected:
-    /**
-        This method is called whenever the textures of this widget are needed, e.g. before drawing. This method
-        should be overwritten by subclasses if they like to defer texture creation as long as possible.
-        This method should first check whether a renewal of the textures is necessary.
-    */
-    void updateTextures() override;
-
-    /**
-        This method frees all textures that are used by this progress bar
-    */
-    void invalidateTextures() override;
-
-    sdl2::texture_ptr pForeground = nullptr;
-
-    double percent{};               ///< Percent from 0.0 to 100.0
+    DuneTextureOwned pContent;
+    float percent{};                ///< Percent from 0.0 to 100.0
     uint32_t color = COLOR_DEFAULT; ///< The color of the progress overlay
     bool bDrawShadow{};             ///< Draw shadow under the foreground surface
 };
@@ -141,7 +113,7 @@ public:
         to fit this text.
         \param  text The new text for this progress bar
     */
-    virtual void setText(const std::string& text);
+    virtual void setText(std::string text);
 
     /**
         Get the text of this progress bar.
@@ -165,12 +137,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this progress bar
     */
-    [[nodiscard]] Point getMinimumSize() const override {
-        if (text.empty()) {
-            return {4, 4};
-        }
-        return GUIStyle::getInstance().getMinimumButtonSize(text);
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
 protected:
     /**
@@ -179,6 +146,13 @@ protected:
         This method should first check whether a renewal of the textures is necessary.
     */
     void updateTextures() override;
+
+    /**
+        This method frees all textures that are used by this widget
+    */
+    void invalidateTextures() override;
+
+    DuneSurfaceOwned createBackground() override;
 
     std::string text; ///< Text of this progress bar
 
@@ -199,17 +173,7 @@ public:
     PictureProgressBar& operator=(const PictureProgressBar&) = delete;
     PictureProgressBar& operator=(PictureProgressBar&&)      = delete;
 
-    void setTexture(const DuneTexture* pBackground) {
-        setBackground(pBackground);
-
-        if (const auto* const background = getBackground()) {
-            resize(getTextureSize(background));
-        } else {
-            resize(4, 4);
-        }
-
-        resizeAll();
-    }
+    void setTexture(const DuneTexture* pBackground);
 
     /**
         Returns the minimum size of this progress bar. The progress bar should not

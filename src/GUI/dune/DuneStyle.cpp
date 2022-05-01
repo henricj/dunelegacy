@@ -805,32 +805,6 @@ DuneSurfaceOwned DuneStyle::createListBoxEntry(int width, std::string_view text,
     return DuneSurfaceOwned{std::move(surface), static_cast<float>(width), static_cast<float>(height)};
 }
 
-sdl2::surface_ptr
-DuneStyle::createProgressBarOverlay(uint32_t width, uint32_t height, double percent, uint32_t color) const {
-    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, static_cast<int>(width), static_cast<int>(height), SCREEN_BPP,
-                                                    RMASK, GMASK, BMASK, AMASK)};
-    if (!pSurface)
-        return nullptr;
-
-    SDL_FillRect(pSurface.get(), nullptr, COLOR_TRANSPARENT);
-
-    if (color == COLOR_DEFAULT) {
-        // default color
-
-        const int max_i = std::max(static_cast<int>(std::round(percent * 0.01 * (static_cast<int>(width) - 4))), 0);
-
-        const SDL_Rect dest = {2, 2, max_i, static_cast<int>(height) - 4};
-        SDL_FillRect(pSurface.get(), &dest, COLOR_HALF_TRANSPARENT);
-    } else {
-        const auto max_i = static_cast<int>(std::round(percent * 0.01 * width));
-
-        const SDL_Rect dest = {0, 0, max_i, static_cast<int>(height)};
-        SDL_FillRect(pSurface.get(), &dest, color);
-    }
-
-    return pSurface;
-}
-
 DuneTextureOwned DuneStyle::createToolTip(SDL_Renderer* renderer, std::string_view text) const {
     const auto helpTextSurface = createSurfaceWithText(text, COLOR_YELLOW, 12);
     if (!helpTextSurface) {
