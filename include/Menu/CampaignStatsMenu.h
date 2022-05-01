@@ -42,7 +42,7 @@ private:
 
     void calculateScore(int level);
 
-    typedef enum {
+    enum class CampaignStatsState {
         State_HumanSpice,
         State_Between_HumanSpice_and_AISpice,
         State_AISpice,
@@ -55,7 +55,7 @@ private:
         State_Between_HumanBuildings_and_AIBuildings,
         State_AIBuildings,
         State_Finished
-    } CampaignStatsState;
+    };
 
     StaticContainer windowWidget;
     Label scoreLabel;
@@ -98,7 +98,7 @@ private:
     Label buildingsEnemyLabel;
 
     dune::dune_clock::time_point currentStateStartTime{};
-    CampaignStatsState currentState = State_HumanSpice;
+    CampaignStatsState currentState = CampaignStatsState::State_HumanSpice;
 
     int unitsDestroyedByHuman = 0;
     int unitsDestroyedByAI    = 0;

@@ -219,17 +219,17 @@ int CampaignStatsMenu::showMenu() {
     dune::globals::musicPlayer->changeMusic(MUSIC_GAMESTAT);
 
     currentStateStartTime = dune::dune_clock::now();
-    currentState          = State_HumanSpice;
+    currentState          = CampaignStatsState::State_HumanSpice;
 
     return MenuBase::showMenu();
 }
 
 bool CampaignStatsMenu::doInput(SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONUP) {
-        if (currentState == State_Finished) {
+        if (currentState == CampaignStatsState::State_Finished) {
             quit();
         } else {
-            while (currentState != State_Finished) {
+            while (currentState != CampaignStatsState::State_Finished) {
                 doState(dune::as_dune_clock_duration(PROGRESSBARTIME));
             }
         }
@@ -246,7 +246,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
     using dune::globals::soundPlayer;
 
     switch (currentState) {
-        case State_HumanSpice: {
+        case CampaignStatsState::State_HumanSpice: {
             const float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
             const float SpiceComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -259,7 +259,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 Human_PercentSpiceComplete = spiceHarvestedByHuman * 100.0f / MaxSpiceHarvested;
                 spiceYouLabel.setText(std::to_string(static_cast<int>(spiceHarvestedByHuman)));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Between_HumanSpice_and_AISpice;
+                currentState          = CampaignStatsState::State_Between_HumanSpice_and_AISpice;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -268,14 +268,14 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             spiceYouShadowProgressBar.setProgress(Human_PercentSpiceComplete);
         } break;
 
-        case State_Between_HumanSpice_and_AISpice: {
+        case CampaignStatsState::State_Between_HumanSpice_and_AISpice: {
             if (elapsedTime > WAITTIME) {
-                currentState          = State_AISpice;
+                currentState          = CampaignStatsState::State_AISpice;
                 currentStateStartTime = dune::dune_clock::now();
             }
         } break;
 
-        case State_AISpice: {
+        case CampaignStatsState::State_AISpice: {
             const float MaxSpiceHarvested = max3(spiceHarvestedByHuman, spiceHarvestedByAI, 3000.0f);
             const float SpiceComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -288,7 +288,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 AI_PercentSpiceComplete = spiceHarvestedByAI * 100.0f / MaxSpiceHarvested;
                 spiceEnemyLabel.setText(std::to_string(static_cast<int>(spiceHarvestedByAI)));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Between_AISpice_and_HumanUnits;
+                currentState          = CampaignStatsState::State_Between_AISpice_and_HumanUnits;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -297,14 +297,14 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             spiceEnemyShadowProgressBar.setProgress(AI_PercentSpiceComplete);
         } break;
 
-        case State_Between_AISpice_and_HumanUnits:
+        case CampaignStatsState::State_Between_AISpice_and_HumanUnits:
             if (elapsedTime > WAITTIME) {
-                currentState          = State_HumanUnits;
+                currentState          = CampaignStatsState::State_HumanUnits;
                 currentStateStartTime = dune::dune_clock::now();
             }
             break;
 
-        case State_HumanUnits: {
+        case CampaignStatsState::State_HumanUnits: {
             const float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             const float UnitsComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -317,7 +317,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 Human_PercentUnitsComplete = unitsDestroyedByHuman * 100.0f / MaxUnitsDestroyed;
                 unitsYouLabel.setText(std::to_string(unitsDestroyedByHuman));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Between_HumanUnits_and_AIUnits;
+                currentState          = CampaignStatsState::State_Between_HumanUnits_and_AIUnits;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -326,14 +326,14 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             unitsYouShadowProgressBar.setProgress(Human_PercentUnitsComplete);
         } break;
 
-        case State_Between_HumanUnits_and_AIUnits:
+        case CampaignStatsState::State_Between_HumanUnits_and_AIUnits:
             if (elapsedTime > WAITTIME) {
-                currentState          = State_AIUnits;
+                currentState          = CampaignStatsState::State_AIUnits;
                 currentStateStartTime = dune::dune_clock::now();
             }
             break;
 
-        case State_AIUnits: {
+        case CampaignStatsState::State_AIUnits: {
             const float MaxUnitsDestroyed = max3(unitsDestroyedByHuman, unitsDestroyedByAI, 200);
             const float UnitsComplete     = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -346,7 +346,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 AI_PercentUnitsComplete = unitsDestroyedByAI * 100.0f / MaxUnitsDestroyed;
                 unitsEnemyLabel.setText(std::to_string(unitsDestroyedByAI));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Between_AIUnits_and_HumanBuildings;
+                currentState          = CampaignStatsState::State_Between_AIUnits_and_HumanBuildings;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -355,14 +355,14 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             unitsEnemyShadowProgressBar.setProgress(AI_PercentUnitsComplete);
         } break;
 
-        case State_Between_AIUnits_and_HumanBuildings:
+        case CampaignStatsState::State_Between_AIUnits_and_HumanBuildings:
             if (elapsedTime > WAITTIME) {
-                currentState          = State_HumanBuildings;
+                currentState          = CampaignStatsState::State_HumanBuildings;
                 currentStateStartTime = dune::dune_clock::now();
             }
             break;
 
-        case State_HumanBuildings: {
+        case CampaignStatsState::State_HumanBuildings: {
             const float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             const float BuildingsComplete = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -375,7 +375,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 Human_PercentBuildingsComplete = structuresDestroyedByHuman * 100.0f / MaxBuildingsDestroyed;
                 buildingsYouLabel.setText(std::to_string(structuresDestroyedByHuman));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Between_HumanBuildings_and_AIBuildings;
+                currentState          = CampaignStatsState::State_Between_HumanBuildings_and_AIBuildings;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -384,14 +384,14 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             buildingsYouShadowProgressBar.setProgress(Human_PercentBuildingsComplete);
         } break;
 
-        case State_Between_HumanBuildings_and_AIBuildings:
+        case CampaignStatsState::State_Between_HumanBuildings_and_AIBuildings:
             if (elapsedTime > WAITTIME) {
-                currentState          = State_AIBuildings;
+                currentState          = CampaignStatsState::State_AIBuildings;
                 currentStateStartTime = dune::dune_clock::now();
             }
             break;
 
-        case State_AIBuildings: {
+        case CampaignStatsState::State_AIBuildings: {
             const float MaxBuildingsDestroyed = max3(structuresDestroyedByHuman, structuresDestroyedByAI, 200);
             const float BuildingsComplete = std::min(dune::as_milliseconds<float>(elapsedTime) / PROGRESSBARTIME, 1.0f);
 
@@ -405,7 +405,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
                 AI_PercentBuildingsComplete = structuresDestroyedByAI * 100.0f / MaxBuildingsDestroyed;
                 buildingsEnemyLabel.setText(std::to_string(structuresDestroyedByAI));
                 soundPlayer->playSound(Sound_enum::Sound_Tick);
-                currentState          = State_Finished;
+                currentState          = CampaignStatsState::State_Finished;
                 currentStateStartTime = dune::dune_clock::now();
             }
 
@@ -414,7 +414,7 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
             buildingsEnemyShadowProgressBar.setProgress(AI_PercentBuildingsComplete);
         } break;
 
-        case State_Finished:
+        case CampaignStatsState::State_Finished:
         default: {
             // nothing
         } break;
