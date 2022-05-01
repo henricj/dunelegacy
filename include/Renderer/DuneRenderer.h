@@ -8,7 +8,7 @@
 #include <initializer_list>
 #include <span>
 
-class DuneTexture;
+struct DuneTexture;
 
 #if _DEBUG
 #    include <map>
@@ -32,15 +32,17 @@ inline void countRenderCopy(SDL_Texture* texture) { }
 
 #endif // _DEBUG
 
-int Dune_RenderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* dstrect,
-                      const double angle, const SDL_Point* center, const SDL_RendererFlip flip) {
+inline int
+Dune_RenderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_Rect* dstrect,
+                  const double angle, const SDL_Point* center, const SDL_RendererFlip flip) {
     DuneRendererImplementation::countRenderCopy(texture);
 
     return SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, angle, center, flip);
 }
 
-int Dune_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_FRect* dstrect,
-                       const double angle, const SDL_FPoint* center, const SDL_RendererFlip flip) {
+inline int
+Dune_RenderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* srcrect, const SDL_FRect* dstrect,
+                   const double angle, const SDL_FPoint* center, const SDL_RendererFlip flip) {
     DuneRendererImplementation::countRenderCopy(texture);
 
     return SDL_RenderCopyExF(renderer, texture, srcrect, dstrect, angle, center, flip);
