@@ -25,14 +25,25 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 
-#include <fmt/printf.h>
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
 
-#include <sand.h>
+#include <fmt/printf.h>
+
+#include <algorithm>
+#include <chrono>
+#include <exception>
+#include <memory>
+#include <string>
+#include <utility>
 
 MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldAlreadyPlayedRegions)
     : house(newHouse), lastScenario((lastMission + 1) / 3 + 1), alreadyPlayedRegions(oldAlreadyPlayedRegions) {
+    // We are a top level window
+    const auto size = getRendererSize();
+
+    MapChoice::resize(size.w, size.h);
+
     disableQuitting(true);
 
     auto* const gfx = dune::globals::pGFXManager.get();
@@ -40,7 +51,6 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
     // set up window
     const auto* const pBackground = gfx->getUIGraphic(UI_MapChoiceScreen, house);
     setBackground(pBackground);
-    MapChoice::resize(getTextureSize(pBackground));
 
     centerAreaRect.x = getRendererWidth() / 2 - 320;
     centerAreaRect.y = getRendererHeight() / 2 - 200;
@@ -54,11 +64,11 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
 
     auto numSelectableRegions = 0;
     auto numRegions           = 0;
-    for (int i = 0; i < 4; i++) {
+    for (auto i = 0; i < 4; i++) {
         const int regionNum = group[lastScenario].attackRegion[i].regionNum;
         if (regionNum > 0) {
             numRegions++;
-            if ((alreadyPlayedRegions & 1 << regionNum) == 0) {
+            if ((alreadyPlayedRegions & (1 << regionNum)) == 0) {
                 numSelectableRegions++;
             }
         }
@@ -99,7 +109,7 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
 
     if (numSelectableRegions == 0) {
         // reset all selectable regions
-        for (int i = 0; i < 4; i++) {
+        for (auto i = 0; i < 4; i++) {
             const int regionNum = group[lastScenario].attackRegion[i].regionNum;
             if (regionNum > 0) {
                 alreadyPlayedRegions &= ~(1 << regionNum);
@@ -113,18 +123,18 @@ MapChoice::~MapChoice() = default;
 int MapChoice::showMenu() {
     dune::globals::musicPlayer->changeMusic(MUSIC_MAPCHOICE);
 
-    return MenuBase::showMenu();
+    return parent::showMenu();
 }
 
 int MapChoice::getSelectedMission() const {
-    int regionIndex = 0;
+    auto regionIndex = 0;
     for (regionIndex = 0; regionIndex < 4; regionIndex++) {
         if (group[lastScenario].attackRegion[regionIndex].regionNum == selectedRegion) {
             break;
         }
     }
 
-    int newMission = 0;
+    auto newMission = 0;
     if (lastScenario <= 7) {
         newMission = (lastScenario - 1) * 3 + 2 + regionIndex;
     } else if (lastScenario == 8) {
@@ -228,12 +238,11 @@ void MapChoice::drawSpecificStuff() {
 
         case MAPCHOICESTATE_BLENDING: {
             if (curBlendBlitter == nullptr) {
-                const auto int_house             = static_cast<int>(house);
-                static constexpr auto num_houses = static_cast<int>(HOUSETYPE::NUM_HOUSES);
+                const auto int_house = static_cast<int>(house);
 
-                const auto region = (static_cast<int>(curHouse2Blit) + int_house) % num_houses;
+                const auto region = [&] { return (static_cast<int>(curHouse2Blit) + int_house) % NUM_HOUSES; };
 
-                const auto blitThreshold = [&] { return group[lastScenario].newRegion[region].size(); };
+                const auto blitThreshold = [&] { return group[lastScenario].newRegion[region()].size(); };
 
                 while (curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit >= blitThreshold()) {
                     curRegion2Blit = 0;
@@ -242,8 +251,8 @@ void MapChoice::drawSpecificStuff() {
 
                 if (curHouse2Blit < HOUSETYPE::NUM_HOUSES && curRegion2Blit < blitThreshold()) {
                     // there is still some region to blend in
-                    const auto pieceNum = group[lastScenario].newRegion[region][curRegion2Blit];
-                    auto* surface       = gfx->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region));
+                    const auto pieceNum = group[lastScenario].newRegion[region()][curRegion2Blit];
+                    auto* surface       = gfx->getMapChoicePieceSurface(pieceNum, static_cast<HOUSETYPE>(region()));
                     auto pPieceSurface  = convertSurfaceToDisplayFormat(surface);
                     auto dest =
                         calcDrawingRect(pPieceSurface.get(), piecePosition[pieceNum].x, piecePosition[pieceNum].y);

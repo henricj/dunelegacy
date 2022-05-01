@@ -31,8 +31,6 @@
 #include <units/UnitBase.h>
 
 #include <algorithm>
-#include <climits>
-
 #include <cmath>
 
 namespace {
@@ -45,6 +43,11 @@ inline constexpr auto WAITTIME        = dune::as_dune_clock_duration(1000);
 } // namespace
 
 CampaignStatsMenu::CampaignStatsMenu(int level) {
+    // We are a top level window
+    const auto size = getRendererSize();
+
+    CampaignStatsMenu::resize(size.w, size.h);
+
     calculateScore(level);
 
     const Uint32 colorYou = SDL2RGB(
@@ -54,7 +57,6 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     // set up window
     const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_GameStatsBackground);
     setBackground(pBackground);
-    resize(getTextureSize(pBackground));
 
     CampaignStatsMenu::setWindowWidget(&windowWidget);
 
