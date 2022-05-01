@@ -21,6 +21,8 @@
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 #include <rectpack2D/finders_interface.h>
 
+//#include "FileClasses/SaveTextureAsBmp.h"
+
 #include <set>
 
 DuneTextures::DuneTextures() = default;
@@ -44,6 +46,8 @@ DuneTextures::~DuneTextures() = default;
 namespace {
 inline constexpr bool allow_flip            = false;
 inline constexpr auto runtime_flipping_mode = rectpack2D::flipping_option::DISABLED;
+
+inline constexpr auto guard = 1;
 
 using spaces_type = rectpack2D::empty_spaces<allow_flip, rectpack2D::default_empty_spaces>;
 using rect_type   = rectpack2D::output_rect_t<spaces_type>;
@@ -143,7 +147,7 @@ public:
     int add(int w, int h) {
         const auto ret = static_cast<int>(rectangles_.size());
 
-        rectangles_.emplace_back(0, 0, w, h);
+        rectangles_.emplace_back(0, 0, w + guard, h + guard);
 
         return ret;
     }
@@ -315,10 +319,10 @@ public:
         const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
-        const auto draw = [&](const auto r, int s_idx, SDL_Surface* surface) {
-            SDL_Rect dst{r.x, r.y, r.w, r.h};
+        const auto draw = [&](const auto& r, int s_idx, SDL_Surface* surface) {
+            SDL_Rect atlas_rect{r.x + 1, r.y + 1, r.w - guard, r.h - guard};
 
-            if (!drawSurface(surface, nullptr, atlas_surface.get(), &dst)) {
+            if (!drawSurface(surface, nullptr, atlas_surface.get(), &atlas_rect)) {
                 // Retry after converting from palette to 32-bit surface...
                 const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
@@ -327,11 +331,43 @@ public:
                     return false;
                 }
 
-                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &dst)) {
+                if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &atlas_rect)) {
                     sdl2::log_warn("Unable to draw object %u for house %d");
                     return false;
                 }
             }
+
+            // Copy the edge pixels to the guard.
+
+            { // Top
+                const SDL_Rect src{0, 0, surface->w, 1};
+                SDL_Rect dst{r.x + 1, r.y, surface->w, 1};
+
+                drawSurface(surface, &src, atlas_surface.get(), &dst);
+            }
+
+            { // Left
+                const SDL_Rect src{0, 0, 1, surface->h};
+                SDL_Rect dst{r.x, r.y + 1, 1, surface->h};
+
+                drawSurface(surface, &src, atlas_surface.get(), &dst);
+            }
+
+            { // Bottom
+                const SDL_Rect src{0, surface->h - 1, surface->w, 1};
+                SDL_Rect dst{r.x + 1, r.y + 1 + surface->h, surface->w, 1};
+
+                drawSurface(surface, &src, atlas_surface.get(), &dst);
+            }
+
+            { // Right
+                const SDL_Rect src{surface->w - 1, 0, 1, surface->h};
+                SDL_Rect dst{r.x + 1 + surface->w, r.y + 1, 1, surface->h};
+
+                drawSurface(surface, &src, atlas_surface.get(), &dst);
+            }
+
+            // Fill in the corners
 
             return true;
         };
@@ -364,7 +400,7 @@ public:
         const auto& set = surface_sets_.at(key);
 
         set.for_each(packer_, [&](const auto& r, auto s_idx, auto* surface) {
-            const SDL_Rect rect{r.x, r.y, r.w, r.h};
+            const SDL_Rect rect{r.x + 1, r.y + 1, r.w - guard, r.h - guard};
 
             lookup(s_idx) = DuneTexture{texture, rect};
         });
@@ -994,11 +1030,12 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
     }
 
     // auto count = 0;
-    // for(const auto& texture : textures) {
-    //    auto path = std::filesystem::path{"c:/temp/"} / fmt::format("texture_{}.bmp", count++);
-    //    path      = path.lexically_normal().make_preferred();
+    // for (const auto& texture : textures) {
+    //     auto path = std::filesystem::path{"c:/temp/"} / fmt::format("texture_{}.png", count++);
 
-    //    SaveTextureAsBmp(renderer, texture.get(), reinterpret_cast<const char *>(path.u8string().c_str()));
+    //    path = path.lexically_normal().make_preferred();
+
+    //    SaveTextureAsPng(renderer, texture.get(), reinterpret_cast<const char*>(path.u8string().c_str()));
     //}
 
     return DuneTextures{std::move(textures),
