@@ -31,6 +31,9 @@ std::unique_ptr<RepairYardInterface> RepairYardInterface::create(const GameConte
 
 RepairYardInterface::RepairYardInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
+
+    repairUnitProgressBar.setColor(COLOR_HALF_TRANSPARENT);
+
     mainHBox.addWidget(Spacer::create());
     mainHBox.addWidget(&repairUnitProgressBar);
     mainHBox.addWidget(Spacer::create());
@@ -45,7 +48,7 @@ bool RepairYardInterface::update() {
         if (const auto* pUnit = pRepairYard->getRepairUnit()) {
             repairUnitProgressBar.setVisible(true);
             repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));
-            repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toDouble());
+            repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toFloat());
         } else {
             repairUnitProgressBar.setVisible(false);
         }
