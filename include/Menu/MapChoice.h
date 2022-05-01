@@ -38,6 +38,8 @@ inline constexpr auto MAPCHOICESTATE_ARROWS       = 6;
 inline constexpr auto MAPCHOICESTATE_BLINKING     = 7;
 
 class MapChoice final : public MenuBase {
+    using parent = MenuBase;
+
 public:
     MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t alreadyPlayedRegions);
     ~MapChoice() override;
