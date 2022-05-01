@@ -47,8 +47,7 @@
       "inherits": "windows-x64",
       "displayName": "Windows x64 Debug",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug",
-        "DUNE_CRT_HEAP_DEBUG": true
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
