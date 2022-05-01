@@ -18,17 +18,16 @@
 #ifndef PROGRESSBAR_H
 #define PROGRESSBAR_H
 
-#include "WidgetWithBackground.h"
-
-#include <misc/SDL2pp.h>
-
-#include <string>
+#include "Widget.h"
 
 #include "GUIStyle.h"
 
+#include <string>
+#include <variant>
+
 /// A class for a progress bar widget
-class ProgressBar : public WidgetWithBackground {
-    using parent = WidgetWithBackground;
+class ProgressBar : public Widget {
+    using parent = Widget;
 
 public:
     /// default constructor
@@ -90,10 +89,10 @@ public:
     void draw(Point position) override;
 
 protected:
-    DuneTextureOwned pContent;
     float percent{};                ///< Percent from 0.0 to 100.0
     uint32_t color = COLOR_DEFAULT; ///< The color of the progress overlay
     bool bDrawShadow{};             ///< Draw shadow under the foreground surface
+    std::variant<std::monostate, DuneTextureOwned, const DuneTexture*> pContent;
 };
 
 class TextProgressBar final : public ProgressBar {
@@ -152,8 +151,6 @@ protected:
     */
     void invalidateTextures() override;
 
-    DuneSurfaceOwned createBackground() override;
-
     std::string text; ///< Text of this progress bar
 
     Uint32 textcolor       = COLOR_DEFAULT;
@@ -173,7 +170,7 @@ public:
     PictureProgressBar& operator=(const PictureProgressBar&) = delete;
     PictureProgressBar& operator=(PictureProgressBar&&)      = delete;
 
-    void setTexture(const DuneTexture* pBackground);
+    void setTexture(const DuneTexture* content);
 
     /**
         Returns the minimum size of this progress bar. The progress bar should not
