@@ -29,8 +29,6 @@ void WidgetWithBackground::setTransparentBackground(bool bTransparent) {
 }
 
 void WidgetWithBackground::setBackground(const DuneTexture* pBackground) {
-    setBackground(static_cast<SDL_Surface*>(nullptr));
-
     if (!pBackground || !*pBackground) {
         bSelfGeneratedBackground = true;
         this->pBackground        = nullptr;
@@ -114,12 +112,12 @@ const DuneTexture* WidgetWithBackground::getBackground() {
     if (bTransparentBackground)
         return nullptr;
 
-    if (bSelfGeneratedBackground
-        && (!pBackground || !*pBackground || pBackground->source_.w != getSize().x
-            || pBackground->source_.h != getSize().y)) {
+    if (bSelfGeneratedBackground && (!pBackground || !*pBackground)) {
         const auto surface = createBackground();
 
-        setBackground(surface.get());
+        auto* const renderer = dune::globals::renderer.get();
+
+        setBackground(surface.createTexture(renderer));
     }
 
     return pBackground && *pBackground ? pBackground : nullptr;
