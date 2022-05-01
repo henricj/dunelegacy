@@ -65,6 +65,9 @@ private:
     void onScrollSpeedPlus();
     void onScrollSpeedMinus();
 
+    void update_volume_bar();
+    void update_speed_bar();
+
     StaticContainer windowWidget;
 
     TextButton cancelButton;
