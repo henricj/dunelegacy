@@ -64,11 +64,24 @@ void ProgressBar::draw(Point position) {
         renderFillRectF(renderer, &dest2, COLOR_BLACK);
     }
 
-    const auto foreground = pContent.as_dune_texture();
-    gui.RenderButton(renderer,
-                     {static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(size.x),
-                      static_cast<float>(size.y)},
-                     foreground ? &foreground : nullptr, true);
+    const auto render_button = [&](const DuneTexture* foreground) {
+        gui.RenderButton(renderer,
+                         {static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(size.x),
+                          static_cast<float>(size.y)},
+                         foreground, true);
+    };
+
+    if (std::holds_alternative<DuneTextureOwned>(pContent)) {
+        const auto foreground = std::get<DuneTextureOwned>(pContent).as_dune_texture();
+
+        render_button(foreground ? &foreground : nullptr);
+    } else if (std::holds_alternative<const DuneTexture*>(pContent)) {
+        const auto* foreground = std::get<const DuneTexture*>(pContent);
+
+        foreground->draw(renderer, position.x, position.y);
+
+    } else
+        render_button(nullptr);
 
     if (color == COLOR_DEFAULT) {
         // default color
@@ -124,7 +137,7 @@ Point TextProgressBar::getMinimumSize() const {
 void TextProgressBar::updateTextures() {
     parent::updateTextures();
 
-    if (pContent)
+    if (std::holds_alternative<DuneTextureOwned>(pContent))
         return;
 
     auto* const renderer = dune::globals::renderer.get();
@@ -140,17 +153,7 @@ void TextProgressBar::updateTextures() {
 void TextProgressBar::invalidateTextures() {
     parent::invalidateTextures();
 
-    pContent.reset();
-}
-
-DuneSurfaceOwned TextProgressBar::createBackground() {
-    const auto& gui = GUIStyle::getInstance();
-
-    const auto size = getSize();
-
-    auto surface = gui.createButtonText(size.x, size.y, text, false, textcolor, textshadowcolor);
-
-    return surface;
+    pContent = std::monostate{};
 }
 
 PictureProgressBar::PictureProgressBar() {
@@ -158,21 +161,20 @@ PictureProgressBar::PictureProgressBar() {
 }
 PictureProgressBar::~PictureProgressBar() = default;
 
-void PictureProgressBar::setTexture(const DuneTexture* pBackground) {
-    setBackground(pBackground);
-
-    if (const auto* const background = getBackground())
-        resize(getTextureSize(background));
+void PictureProgressBar::setTexture(const DuneTexture* content) {
+    if (content && *content)
+        pContent = content;
     else
-        resize(4, 4);
+        pContent = std::monostate{};
+
+    resize(getMinimumSize());
 
     resizeAll();
 }
 
 Point PictureProgressBar::getMinimumSize() const {
-    if (const auto* const background = getBackground()) {
-        return getTextureSize(background);
-    }
+    if (std::holds_alternative<const DuneTexture*>(pContent))
+        return (getTextureSize(std::get<const DuneTexture*>(pContent)));
 
     return {4, 4};
 }
