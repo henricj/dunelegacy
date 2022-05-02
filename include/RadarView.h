@@ -85,7 +85,7 @@ public:
 private:
     enum class RadarMode { RadarOff, RadarOn, AnimationRadarOff, AnimationRadarOn };
 
-    void updateRadarSurface(int scale, int offsetX, int offsetY);
+    void updateRadarSurface(int scale, int offsetX, int offsetY) const;
 
     RadarMode currentRadarMode; ///< the current mode of the radar
 

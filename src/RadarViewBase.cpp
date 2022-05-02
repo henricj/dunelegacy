@@ -47,8 +47,10 @@ Coord RadarViewBase::getWorldCoords(int mouseX, int mouseY) const {
 
     calculateScaleAndOffsets(getMapSizeX(), getMapSizeY(), scale, offsetX, offsetY);
 
-    return Coord(((positionOnRadar.x - offsetX) * getMapSizeX() * TILESIZE) / (getMapSizeX() * scale),
-                 ((positionOnRadar.y - offsetY) * getMapSizeY() * TILESIZE) / (getMapSizeY() * scale));
+    const auto x = ((positionOnRadar.x - offsetX) * getMapSizeX() * TILESIZE) / (getMapSizeX() * scale);
+    const auto y = ((positionOnRadar.y - offsetY) * getMapSizeY() * TILESIZE) / (getMapSizeY() * scale);
+
+    return {x, y};
 }
 
 void RadarViewBase::calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& scale, int& offsetX, int& offsetY) {

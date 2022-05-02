@@ -85,13 +85,15 @@ void RadarView::draw(Point position) {
             const SDL_Rect dest = calcDrawingRect(radarTexture.get(), radarPosition.x, radarPosition.y);
             Dune_RenderCopy(renderer, radarTexture.get(), nullptr, &dest);
 
-            SDL_Rect radarRect;
-            radarRect.x = (screenborder->getLeft() * mapSizeX * scale) / (mapSizeX * TILESIZE) + offsetX;
-            radarRect.y = (screenborder->getTop() * mapSizeY * scale) / (mapSizeY * TILESIZE) + offsetY;
-            radarRect.w =
-                ((screenborder->getRight() - screenborder->getLeft()) * mapSizeX * scale) / (mapSizeX * TILESIZE);
-            radarRect.h =
-                ((screenborder->getBottom() - screenborder->getTop()) * mapSizeY * scale) / (mapSizeY * TILESIZE);
+            SDL_FRect radarRect{};
+            radarRect.x = static_cast<float>(offsetX)
+                        + static_cast<float>(screenborder->getLeft() * scale) / static_cast<float>(TILESIZE);
+            radarRect.y = static_cast<float>(offsetY)
+                        + static_cast<float>(screenborder->getTop() * scale) / static_cast<float>(TILESIZE);
+            radarRect.w = static_cast<float>((screenborder->getRight() - screenborder->getLeft()) * scale)
+                        / static_cast<float>(TILESIZE);
+            radarRect.h = static_cast<float>((screenborder->getBottom() - screenborder->getTop()) * scale)
+                        / static_cast<float>(TILESIZE);
 
             if (radarRect.x < offsetX) {
                 radarRect.w -= radarRect.x;
@@ -103,19 +105,20 @@ void RadarView::draw(Point position) {
                 radarRect.y = offsetY;
             }
 
-            const auto offsetFromRightX = 128 - mapSizeX * scale - offsetX;
-            if (radarRect.x + radarRect.w > radarPosition.w - offsetFromRightX) {
-                radarRect.w = radarPosition.w - offsetFromRightX - radarRect.x - 1;
+            const auto offsetFromRightX = static_cast<float>(128 - mapSizeX * scale) - offsetX;
+            if (radarRect.x + radarRect.w > static_cast<float>(radarPosition.w) - offsetFromRightX) {
+                radarRect.w = static_cast<float>(radarPosition.w) - offsetFromRightX - radarRect.x - 1;
             }
 
-            const auto offsetFromBottomY = 128 - mapSizeY * scale - offsetY;
-            if (radarRect.y + radarRect.h > radarPosition.h - offsetFromBottomY) {
-                radarRect.h = radarPosition.h - offsetFromBottomY - radarRect.y - 1;
+            const auto offsetFromBottomY = static_cast<float>(128 - mapSizeY * scale) - offsetY;
+            if (radarRect.y + radarRect.h > static_cast<float>(radarPosition.h) - offsetFromBottomY) {
+                radarRect.h = static_cast<float>(radarPosition.h) - offsetFromBottomY - radarRect.y - 1;
             }
 
-            renderDrawRect(renderer, radarPosition.x + radarRect.x, radarPosition.y + radarRect.y,
-                           radarPosition.x + (radarRect.x + radarRect.w), radarPosition.y + (radarRect.y + radarRect.h),
-                           COLOR_WHITE);
+            renderDrawRectF(renderer, static_cast<float>(radarPosition.x) + radarRect.x,
+                            static_cast<float>(radarPosition.y) + radarRect.y,
+                            static_cast<float>(radarPosition.x) + (radarRect.x + radarRect.w - 1),
+                            static_cast<float>(radarPosition.y) + (radarRect.y + radarRect.h - 1), COLOR_WHITE);
 
         } break;
 
@@ -125,9 +128,10 @@ void RadarView::draw(Point position) {
                 radarStaticAnimation, animFrame % NUM_STATIC_ANIMATIONS_PER_ROW, NUM_STATIC_ANIMATIONS_PER_ROW,
                 animFrame / NUM_STATIC_ANIMATIONS_PER_ROW,
                 (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
-            const auto dest = calcSpriteDrawingRect(
-                radarStaticAnimation, radarPosition.x, radarPosition.y, NUM_STATIC_ANIMATIONS_PER_ROW,
-                (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1) / NUM_STATIC_ANIMATIONS_PER_ROW);
+            const auto dest = calcSpriteDrawingRect(radarStaticAnimation, static_cast<float>(radarPosition.x),
+                                                    static_cast<float>(radarPosition.y), NUM_STATIC_ANIMATIONS_PER_ROW,
+                                                    (NUM_STATIC_FRAMES + NUM_STATIC_ANIMATIONS_PER_ROW - 1)
+                                                        / NUM_STATIC_ANIMATIONS_PER_ROW);
             Dune_RenderCopyF(renderer, radarStaticAnimation, &source, &dest);
         } break;
     }
@@ -197,26 +201,31 @@ void RadarView::switchRadarMode(bool bOn) {
     }
 }
 
-void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) {
+void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) const {
 
     // Lock radarSurface for direct access to the pixels
     sdl2::surface_lock lock{radarSurface.get()};
 
-    auto* map = dune::globals::currentGameMap;
+    auto* map         = dune::globals::currentGameMap;
+    auto* const game  = dune::globals::currentGame.get();
+    auto* const house = dune::globals::pLocalHouse;
 
-    const auto radar_on =
-        ((currentRadarMode == RadarMode::RadarOn) || (currentRadarMode == RadarMode::AnimationRadarOff));
+    const auto radar_on = currentRadarMode == RadarMode::RadarOn || currentRadarMode == RadarMode::AnimationRadarOff;
+
+    const auto pitch = radarSurface->pitch;
+
+    auto* const RESTRICT pixels = static_cast<uint8_t*>(radarSurface->pixels) + offsetY * pitch;
 
     map->for_all([&](Tile& t) {
-        auto color = t.getRadarColor(dune::globals::currentGame.get(), dune::globals::pLocalHouse, radar_on);
+        auto color = t.getRadarColor(game, house, radar_on);
         color      = MapRGBA(radarSurface->format, color);
 
-        uint8_t* const RESTRICT out =
-            static_cast<uint8_t*>(radarSurface->pixels) + (offsetY + scale * t.getLocation().y) * radarSurface->pitch;
-        const auto offset = (offsetX + scale * t.getLocation().x);
+        auto* const RESTRICT out = pixels + scale * t.getLocation().y * pitch;
+
+        const auto offset = offsetX + scale * t.getLocation().x;
 
         for (auto j = 0; j < scale; j++) {
-            auto* p = reinterpret_cast<uint32_t*>(out + j * radarSurface->pitch) + offset;
+            auto* p = reinterpret_cast<uint32_t*>(out + j * pitch) + offset;
 
             for (auto i = 0; i < scale; ++i, ++p) {
                 // Do not use putPixel here to avoid overhead
