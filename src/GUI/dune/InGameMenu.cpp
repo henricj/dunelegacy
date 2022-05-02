@@ -176,12 +176,12 @@ void InGameMenu::onSettings() {
 
 void InGameMenu::onSave() {
     auto [ok, savepath] = fnkdat(bMultiplayer ? "mpsave/" : "save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(true, _("Save Game"), savepath, "dls", "", color));
+    openWindow(LoadSaveWindow::create(true, _("Save Game"), savepath, "dls", "", color).release());
 }
 
 void InGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls", "", color));
+    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls", "", color).release());
 }
 
 void InGameMenu::onRestart() {

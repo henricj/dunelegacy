@@ -141,12 +141,12 @@ void SinglePlayerMenu::onSkirmish() {
 
 void SinglePlayerMenu::onLoadSavegame() {
     auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
+    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls").release());
 }
 
 void SinglePlayerMenu::onLoadReplay() {
     auto [ok, replaypath] = fnkdat("replay/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Replay"), replaypath, "rpl"));
+    openWindow(LoadSaveWindow::create(false, _("Load Replay"), replaypath, "rpl").release());
 }
 
 void SinglePlayerMenu::onCancel() {

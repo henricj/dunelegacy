@@ -208,6 +208,27 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     }
 }
 
+std::unique_ptr<LoadSaveWindow>
+LoadSaveWindow::create(bool bSave, const std::string& caption, const std::filesystem::path& directory,
+                       const std::string& extension, const std::string& preselectedFile, Uint32 color) {
+    std::vector<std::filesystem::path> directories;
+    directories.push_back(directory);
+    std::vector<std::string> directoryTitles;
+    directoryTitles.emplace_back();
+
+    return create(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
+}
+
+std::unique_ptr<LoadSaveWindow>
+LoadSaveWindow::create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories,
+                       const std::vector<std::string>& directoryTitles, const std::string& extension,
+                       int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color) {
+    std::unique_ptr<LoadSaveWindow> dlg{new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension,
+                                                           preselectedDirectoryIndex, preselectedFile, color)};
+    dlg->pAllocated = true;
+    return dlg;
+}
+
 void LoadSaveWindow::onOK() {
     if (!bSaveWindow) {
         const auto index = fileList.getSelectedIndex();
