@@ -147,7 +147,7 @@ public:
     int add(int w, int h) {
         const auto ret = static_cast<int>(rectangles_.size());
 
-        rectangles_.emplace_back(0, 0, w + guard, h + guard);
+        rectangles_.emplace_back(0, 0, w + 2 * guard, h + 2 * guard);
 
         return ret;
     }
@@ -320,7 +320,7 @@ public:
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
         const auto draw = [&](const auto& r, int s_idx, SDL_Surface* surface) {
-            SDL_Rect atlas_rect{r.x + 1, r.y + 1, r.w - guard, r.h - guard};
+            SDL_Rect atlas_rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
             if (!drawSurface(surface, nullptr, atlas_surface.get(), &atlas_rect)) {
                 // Retry after converting from palette to 32-bit surface...
@@ -341,28 +341,28 @@ public:
 
             { // Top
                 const SDL_Rect src{0, 0, surface->w, 1};
-                SDL_Rect dst{r.x + 1, r.y, surface->w, 1};
+                SDL_Rect dst{atlas_rect.x, atlas_rect.y - 1, src.w, 1};
 
                 drawSurface(surface, &src, atlas_surface.get(), &dst);
             }
 
             { // Left
                 const SDL_Rect src{0, 0, 1, surface->h};
-                SDL_Rect dst{r.x, r.y + 1, 1, surface->h};
+                SDL_Rect dst{atlas_rect.x - 1, atlas_rect.y, 1, src.h};
 
                 drawSurface(surface, &src, atlas_surface.get(), &dst);
             }
 
             { // Bottom
                 const SDL_Rect src{0, surface->h - 1, surface->w, 1};
-                SDL_Rect dst{r.x + 1, r.y + 1 + surface->h, surface->w, 1};
+                SDL_Rect dst{atlas_rect.x, atlas_rect.y + surface->h, src.w, 1};
 
                 drawSurface(surface, &src, atlas_surface.get(), &dst);
             }
 
             { // Right
                 const SDL_Rect src{surface->w - 1, 0, 1, surface->h};
-                SDL_Rect dst{r.x + 1 + surface->w, r.y + 1, 1, surface->h};
+                SDL_Rect dst{atlas_rect.x + surface->w, atlas_rect.y, 1, src.h};
 
                 drawSurface(surface, &src, atlas_surface.get(), &dst);
             }
@@ -400,7 +400,7 @@ public:
         const auto& set = surface_sets_.at(key);
 
         set.for_each(packer_, [&](const auto& r, auto s_idx, auto* surface) {
-            const SDL_Rect rect{r.x + 1, r.y + 1, r.w - guard, r.h - guard};
+            const SDL_Rect rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
             lookup(s_idx) = DuneTexture{texture, rect};
         });
