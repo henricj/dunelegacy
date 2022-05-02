@@ -929,9 +929,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
         assert(factory23.empty());
 
         static const std::set<uint32_t> force_combine_ui_graphic = {
-            UI_RadarAnimation,   UI_DuneLegacy,           UI_MenuBackground,  UI_GameMenu,
-            UI_MapChoiceMap,     UI_MapChoiceMapOnly,     UI_MapChoicePlanet, UI_MapChoiceClickMap,
-            UI_MenuButtonBorder, UI_SelectYourHouseLarge, UI_NewMapWindow};
+            UI_RadarAnimation,  UI_DuneLegacy,        UI_GameMenu,         UI_MapChoiceMap,         UI_MapChoiceMapOnly,
+            UI_MapChoicePlanet, UI_MapChoiceClickMap, UI_MenuButtonBorder, UI_SelectYourHouseLarge, UI_NewMapWindow};
 
         auto combined_ui_graphic = [&](const auto& identifier, SDL_Surface* surface) {
             const auto& [id, h] = identifier;

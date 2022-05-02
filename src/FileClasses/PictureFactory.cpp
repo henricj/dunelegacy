@@ -35,8 +35,6 @@
 
 #include <memory>
 
-#include "players/AIPlayer.h"
-
 PictureFactory::PictureFactory() {
     auto* const file_manager = dune::globals::pFileManager.get();
 
@@ -545,44 +543,6 @@ sdl2::surface_ptr PictureFactory::createBackgroundTile(SDL_Surface* fame_pic) co
 
 sdl2::surface_ptr PictureFactory::createBackground(const int width, const int height) const {
     return createTiledSurface(backgroundTile.get(), width, height);
-}
-
-sdl2::surface_ptr PictureFactory::createMainBackground() const {
-    auto Pic = copySurface(background.get());
-    drawMainBackground(Pic.get());
-    return Pic;
-}
-
-void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
-    SDL_Rect dest0 = {3, 3, getWidth(surface) - 3, getHeight(surface) - 3};
-    drawFrame(surface, DecorationFrame::DecorationFrame2, &dest0);
-
-    SDL_Rect dest1 = calcDrawingRect(harkonnenLogo.get(), 11, 11);
-    SDL_BlitSurface(harkonnenLogo.get(), nullptr, surface, &dest1);
-
-    SDL_Rect dest2 = calcDrawingRect(atreidesLogo.get(), getWidth(surface) - 11, 11, HAlign::Right, VAlign::Top);
-    SDL_BlitSurface(atreidesLogo.get(), nullptr, surface, &dest2);
-
-    SDL_Rect dest3 = calcDrawingRect(ordosLogo.get(), 11, getHeight(surface) - 11, HAlign::Left, VAlign::Bottom);
-    SDL_BlitSurface(ordosLogo.get(), nullptr, surface, &dest3);
-
-    const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
-
-    const auto black = SDL2RGB(dune::globals::palette[PALCOLOR_BLACK]);
-
-    sdl2::surface_ptr VersionText{dune::globals::pFontManager->getFont(14)->createTextSurface(VERSION, black)};
-
-    SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
-                                     HAlign::Center, VAlign::Center);
-    SDL_BlitSurface(VersionText.get(), nullptr, Version.get(), &dest4);
-
-    VersionText.reset();
-
-    drawFrame(Version.get(), DecorationFrame::SimpleFrame);
-
-    SDL_Rect dest5 =
-        calcDrawingRect(Version.get(), getWidth(surface) - 11, getHeight(surface) - 11, HAlign::Right, VAlign::Bottom);
-    SDL_BlitSurface(Version.get(), nullptr, surface, &dest5);
 }
 
 sdl2::surface_ptr PictureFactory::createGameStatsBackground(HOUSETYPE House) const {
