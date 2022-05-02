@@ -44,7 +44,10 @@ void Widget::resizeAll() {
     if (parent != nullptr) {
         parent->resizeAll();
     } else {
-        resize(std::max(getMinimumSize().x, getSize().x), std::max(getMinimumSize().y, getSize().y));
+        const auto minimum_size = getMinimumSize();
+        const auto current_size = getSize();
+
+        resize(std::max(minimum_size.x, current_size.x), std::max(minimum_size.y, current_size.y));
     }
 }
 
