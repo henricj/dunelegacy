@@ -29,15 +29,10 @@
 #include <GUI/Spacer.h>
 
 InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
-    HOUSETYPE houseID   = dune::globals::pLocalHouse->getHouseID();
-    const auto& palette = dune::globals::palette;
-
-    const auto palette_index = houseToPaletteIndex[static_cast<int>(houseID)];
-
-    const Uint32 color1 = SDL2RGB(palette[palette_index + 2]);
-    const Uint32 color2 = SDL2RGB(palette[palette_index + 3]);
-
     const auto* const gfx = dune::globals::pGFXManager.get();
+    const auto& palette   = dune::globals::palette;
+
+    const auto houseID = dune::globals::pLocalHouse->getHouseID();
 
     // set up window
     const auto* pBackground = gfx->getUIGraphic(UI_OptionsMenu, houseID);
@@ -46,6 +41,11 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
     InGameSettingsMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
     InGameSettingsMenu::setWindowWidget(&windowWidget);
+
+    const auto palette_index = houseToPaletteIndex[static_cast<int>(houseID)];
+
+    const Uint32 color1 = SDL2RGB(palette[palette_index + 2]);
+    const Uint32 color2 = SDL2RGB(palette[palette_index + 3]);
 
     // Game speed
     gameSpeedMinus.setTextures(gfx->getUIGraphic(UI_Minus, houseID), gfx->getUIGraphic(UI_Minus_Pressed, houseID));
