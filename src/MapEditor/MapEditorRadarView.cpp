@@ -23,8 +23,8 @@
 
 #include <sand.h>
 
+#include <Definitions.h>
 #include <ScreenBorder.h>
-#include <Tile.h>
 
 #include <misc/draw_util.h>
 
