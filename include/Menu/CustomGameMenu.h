@@ -32,8 +32,8 @@
 
 #include <filesystem>
 
-class CustomGameMenu final : public TopMenuBase {
-    using parent = TopMenuBase;
+class CustomGameMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
 
 public:
     CustomGameMenu(bool multiplayer, bool LANServer = true);

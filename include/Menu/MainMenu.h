@@ -26,8 +26,8 @@
 #include <GUI/TextButton.h>
 #include <GUI/VBox.h>
 
-class MainMenu final : public TopMenuBase {
-    using parent = TopMenuBase;
+class MainMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
 
 public:
     MainMenu();

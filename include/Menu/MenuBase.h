@@ -64,6 +64,26 @@ private:
     int retVal{MENU_QUIT_DEFAULT};
 };
 
+class DefaultWindowBase : public Window {
+    using parent = Window;
+
+protected:
+    /**
+        Constructor for creating a window
+        \param  x   x position of this window
+        \param  y   y position of this window
+        \param  w   width of this window
+        \param  h   height of this window
+    */
+    DefaultWindowBase(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+
+public:
+    ~DefaultWindowBase() override;
+
+protected:
+    void draw_background(Point position) override;
+};
+
 class TopMenuBase : public MenuBase {
     using parent = MenuBase;
 
@@ -72,6 +92,16 @@ protected:
 
 public:
     ~TopMenuBase() override;
+};
+
+class MainMenuBase : public TopMenuBase {
+    using parent = TopMenuBase;
+
+protected:
+    MainMenuBase();
+
+public:
+    ~MainMenuBase() override;
 
 protected:
     void draw_background(Point position) override;

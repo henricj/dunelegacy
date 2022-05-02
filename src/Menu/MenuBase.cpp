@@ -198,6 +198,23 @@ bool MenuBase::doInput(SDL_Event& event) {
     return !quitting;
 }
 
+DefaultWindowBase::DefaultWindowBase(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : Window(x, y, w, h) { }
+
+DefaultWindowBase::~DefaultWindowBase() = default;
+
+void DefaultWindowBase::draw_background(Point position) {
+    parent::draw_background(position);
+
+    auto& gui = GUIStyle::getInstance();
+
+    const auto& size = getSize();
+
+    const auto dest = SDL_FRect{static_cast<float>(position.x), static_cast<float>(position.y),
+                                static_cast<float>(size.x), static_cast<float>(size.y)};
+
+    gui.drawBackground(dune::globals::renderer.get(), dest);
+}
+
 TopMenuBase::TopMenuBase() {
     // We are a top level window
     const auto size = getRendererSize();
@@ -207,7 +224,10 @@ TopMenuBase::TopMenuBase() {
 
 TopMenuBase::~TopMenuBase() = default;
 
-void TopMenuBase::draw_background(Point position) {
+MainMenuBase::MainMenuBase()  = default;
+MainMenuBase::~MainMenuBase() = default;
+
+void MainMenuBase::draw_background(Point position) {
     parent::draw_background(position);
 
     auto& gui = GUIStyle::getInstance();

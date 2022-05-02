@@ -20,8 +20,8 @@
 
 #include <list>
 
-class MultiPlayerMenu final : public TopMenuBase {
-    using parent = TopMenuBase;
+class MultiPlayerMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
 
 public:
     MultiPlayerMenu();
