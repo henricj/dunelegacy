@@ -275,11 +275,6 @@ protected:
     FixPoint harvestedSpice;
 
     const GameContext context;
-
-private:
-    void init();
-
-    void registerUnit(std::unique_ptr<UnitBase> unit);
 };
 
 #endif // HOUSE_H

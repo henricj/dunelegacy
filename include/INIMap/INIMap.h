@@ -87,8 +87,6 @@ protected:
         return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY;
     }
 
-    bool save(const std::filesystem::path& filename) const;
-
     std::string mapname;
     inifile_ptr inifile;
 

@@ -139,7 +139,6 @@ private:
     void onUp();
     void onDown();
     void onOrder() const;
-    void onCancel() const;
 
     int currentListPos = 0;
     PictureButton upButton;

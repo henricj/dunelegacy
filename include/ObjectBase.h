@@ -330,7 +330,6 @@ protected:
 
 private:
     FixPoint health; ///< The health of this object
-    void init();
 };
 
 template<typename ObjectType>

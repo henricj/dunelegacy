@@ -51,8 +51,6 @@ private:
     void build(const GameContext& context);
     void attack();
 
-    [[nodiscard]] bool isAllowedToArm() const;
-
     [[nodiscard]] int getMaxHarvester() const;
 
     Difficulty difficulty;  ///< difficulty level
