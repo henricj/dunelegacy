@@ -93,13 +93,15 @@ public:
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual void setAllowedChars(const std::string& allowedChars = "") { this->allowedChars = allowedChars; }
+    virtual void setAllowedChars(std::string allowedChars = {}) { this->allowedChars = std::move(allowedChars); }
 
     /**
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
-    virtual void setForbiddenChars(const std::string& forbiddenChars = "") { this->forbiddenChars = forbiddenChars; }
+    virtual void setForbiddenChars(std::string forbiddenChars = {}) {
+        this->forbiddenChars = std::move(forbiddenChars);
+    }
 
     /**
         Sets the function that should be called when the text of this text box changes.
