@@ -81,7 +81,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
         mainVBox.addWidget(&directoryHBox, 20);
     }
 
-    mainVBox.addWidget(&fileListHBox, (bSave ? 120 : 150) - (directories.size() > 1 ? 20 : 0));
+    mainVBox.addWidget(&fileListHBox, (bSave ? 121 : 151) - (directories.size() > 1 ? 20 : 0));
     fileList.setColor(color);
     fileList.setOnSelectionChange([this](bool bInteractive) { onSelectionChange(bInteractive); });
     fileList.setOnDoubleClick([this] { onOK(); });
