@@ -63,9 +63,6 @@ public:
     */
     void onChildWindowClose(Window* pChildWindow) override;
 
-    void onSaveNameCancel();
-    void onSaveNameConfirm();
-
     /**
         This static method creates a dynamic load/save window.
         The idea behind this method is to simply create a new dialog on the fly and

@@ -245,14 +245,6 @@ public:
     */
     static void saveObject(OutputStream& stream, ObjectBase* obj);
 
-    /**
-        This method loads an object from the stream.
-        \param stream   the stream to read from
-        \param objectID the object id that this unit/structure should get
-        \return the read unit/structure
-    */
-    static std::unique_ptr<ObjectBase> loadObject(InputStream& stream, uint32_t objectID);
-
     ObjectManager& getObjectManager() noexcept { return objectManager; }
     [[nodiscard]] const ObjectManager& getObjectManager() const noexcept { return objectManager; }
     [[nodiscard]] GameInterface& getGameInterface() const noexcept { return *pInterface; }

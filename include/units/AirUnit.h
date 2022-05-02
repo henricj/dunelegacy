@@ -70,9 +70,6 @@ protected:
     FixPoint currentMaxSpeed = 2; ///< The current maximum allowed speed
 
     zoomable_texture shadowGraphic{}; ///< The graphic for the shadow of this air unit
-
-private:
-    void initAirUnit();
 };
 
 template<>

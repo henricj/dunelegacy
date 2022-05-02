@@ -16,8 +16,6 @@ public:
     void resume();
 
 private:
-    void restore();
-
     static uint32_t limit_target_ms(uint32_t target_ms);
 
     const uint32_t target_ms_;
