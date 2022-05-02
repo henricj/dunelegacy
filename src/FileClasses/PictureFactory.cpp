@@ -194,6 +194,7 @@ PictureFactory::PictureFactory() {
         THROW(std::runtime_error, "PictureFactory::PictureFactory: Cannot create new Picture!");
     }
     dune::globals::palette.applyToSurface(builderListUpperCap.get());
+    assert(builderListUpperCap->format->BitsPerPixel == 8);
     SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
@@ -221,6 +222,7 @@ PictureFactory::PictureFactory() {
     }
 
     dune::globals::palette.applyToSurface(builderListLowerCap.get());
+    assert(builderListLowerCap->format->BitsPerPixel == 8);
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
@@ -249,7 +251,7 @@ sdl2::surface_ptr PictureFactory::createTopBar() const {
     auto topBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
 
     const SDL_Rect dest1 = {0, 31, getWidth(topBar.get()), 12};
-    SDL_FillRect(topBar.get(), &dest1, PALCOLOR_TRANSPARENT);
+    SDL_FillRect(topBar.get(), &dest1, COLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 32);
     for (dest2.x = 0; dest2.x < topBar->w; dest2.x += decorationBorder.hborder.get()->w) {
@@ -271,7 +273,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
     auto sideBar = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, dune::globals::settings.video.height);
 
     const SDL_Rect dest1 = {0, 0, 13, getHeight(sideBar.get())};
-    SDL_FillRect(sideBar.get(), &dest1, PALCOLOR_TRANSPARENT);
+    SDL_FillRect(sideBar.get(), &dest1, COLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.vborder.get(), 0, 0);
     for (dest2.y = 0; dest2.y < sideBar->h; dest2.y += decorationBorder.vborder.get()->h) {
@@ -294,7 +296,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
     drawHLine(sideBar.get(), 0, 44 + decorationBorder.vspacer.get()->h, decorationBorder.vspacer.get()->w - 1, 96);
 
     const SDL_Rect dest6 = {13, 0, getWidth(sideBar.get()) - 1, 132};
-    SDL_FillRect(sideBar.get(), &dest6, PALCOLOR_TRANSPARENT);
+    SDL_FillRect(sideBar.get(), &dest6, COLOR_TRANSPARENT);
     drawRect(sideBar.get(), 13, 1, sideBar->w - 2, 130, 115);
 
     SDL_Rect dest7 = calcDrawingRect(decorationBorder.vspacer.get(), 0, 130, HAlign::Left, VAlign::Bottom);
@@ -351,7 +353,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
 sdl2::surface_ptr PictureFactory::createBottomBar() const {
     auto BottomBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
     const SDL_Rect dest1 = {0, 0, getWidth(BottomBar.get()), 13};
-    SDL_FillRect(BottomBar.get(), &dest1, PALCOLOR_TRANSPARENT);
+    SDL_FillRect(BottomBar.get(), &dest1, COLOR_TRANSPARENT);
 
     SDL_Rect dest2 = calcDrawingRect(decorationBorder.hborder.get(), 0, 0);
     for (dest2.x = 0; dest2.x < BottomBar->w; dest2.x += decorationBorder.hborder.get()->w) {
@@ -378,11 +380,13 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
     dune::globals::palette.applyToSurface(placingGrid.get());
     sdl2::surface_lock lock{placingGrid.get()};
 
+    auto* const pixels = static_cast<uint8_t*>(placingGrid->pixels);
+
     for (auto y = 0; y < size; y++) {
-        auto* const out = static_cast<uint8_t*>(placingGrid->pixels) + y * placingGrid->pitch;
+        auto* const RESTRICT out = pixels + y * placingGrid->pitch;
         for (auto x = 0; x < size; x++) {
             if (x % 2 == y % 2) {
-                out[x] = color;
+                out[x] = static_cast<uint8_t>(color);
             } else {
                 out[x] = 0;
             }
@@ -564,7 +568,9 @@ void PictureFactory::drawMainBackground(SDL_Surface* surface) const {
 
     const sdl2::surface_ptr Version{getSubPicture(background.get(), 0, 0, 75, 32)};
 
-    sdl2::surface_ptr VersionText{dune::globals::pFontManager->getFont(14)->createTextSurface(VERSION, PALCOLOR_BLACK)};
+    const auto black = SDL2RGB(dune::globals::palette[PALCOLOR_BLACK]);
+
+    sdl2::surface_ptr VersionText{dune::globals::pFontManager->getFont(14)->createTextSurface(VERSION, black)};
 
     SDL_Rect dest4 = calcDrawingRect(VersionText.get(), getWidth(Version.get()) / 2, getHeight(Version.get()) / 2 + 2,
                                      HAlign::Center, VAlign::Center);
@@ -621,7 +627,9 @@ sdl2::surface_ptr PictureFactory::createMenu(int x, int y) const {
 
     SDL_Rect dest1 = {0, 0, getWidth(Pic.get()), 27};
 
-    SDL_FillRect(Pic.get(), &dest1, PALCOLOR_GREY);
+    const auto grey = SDL2RGB(dune::globals::palette[PALCOLOR_GREY]);
+
+    SDL_FillRect(Pic.get(), &dest1, grey);
 
     drawFrame(Pic.get(), DecorationFrame::SimpleFrame, &dest1);
 
@@ -677,6 +685,7 @@ sdl2::surface_ptr PictureFactory::createHouseSelect(SDL_Surface* HouseChoice) co
     auto Pic = copySurface(HouseChoice);
 
     const SDL_Rect dest = {0, 50, getWidth(Pic.get()), getHeight(Pic.get()) - 50};
+    assert(Pic->format->BitsPerPixel == 8);
     SDL_FillRect(Pic.get(), &dest, PALCOLOR_BLACK);
 
     drawFrame(Pic.get(), DecorationFrame::SimpleFrame, nullptr);
@@ -766,6 +775,7 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
 
     // clear everything in the middle
     static constexpr SDL_Rect clearRect = {8, 24, 304, 119};
+    assert(pMapChoiceScreen->format->BitsPerPixel == 8);
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
     pMapChoiceScreen = Scaler::defaultDoubleSurface(
@@ -838,8 +848,11 @@ sdl2::surface_ptr PictureFactory::createOrdosLogo() const {
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
+    assert(heraldHark->format->BitsPerPixel == 8);
+
     auto pRedReplaced = mapSurfaceColorRange(heraldHark, PALCOLOR_HARKONNEN, PALCOLOR_FREMEN);
 
+    assert(pRedReplaced->format->BitsPerPixel == 8);
     const auto pBlueReplaced = mapSurfaceColorRange(pRedReplaced.get(), PALCOLOR_ATREIDES, PALCOLOR_FREMEN + 1);
     pRedReplaced.reset();
 
@@ -866,6 +879,7 @@ sdl2::surface_ptr PictureFactory::createHeraldFre(SDL_Surface* heraldHark) {
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_Surface* heraldAtre) {
+    assert(heraldOrd->format->BitsPerPixel == 8);
     const auto pGreenReplaced = mapSurfaceColorRange(heraldOrd, PALCOLOR_ORDOS, PALCOLOR_SARDAUKAR - 1);
 
     replaceColor(pGreenReplaced.get(), 3, 209);
@@ -884,6 +898,7 @@ sdl2::surface_ptr PictureFactory::createHeraldSard(SDL_Surface* heraldOrd, SDL_S
 }
 
 sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_Surface* heraldOrd) {
+    assert(heraldAtre->format->BitsPerPixel == 8);
     auto pBlueReplaced = mapSurfaceColorRange(heraldAtre, PALCOLOR_ATREIDES, PALCOLOR_MERCENARY);
 
     const auto pRedReplaced = mapSurfaceColorRange(pBlueReplaced.get(), PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES);
@@ -922,6 +937,7 @@ std::unique_ptr<Animation> PictureFactory::createFremenPlanet(SDL_Surface* heral
     SDL_Rect dest      = {12, 66, getWidth(heraldFre) - 2, getHeight(heraldFre)};
     SDL_BlitSurface(heraldFre, &src, newFrame.get(), &dest);
 
+    assert(newFrame->format->BitsPerPixel == 8);
     drawRect(newFrame.get(), 0, 0, newFrame->w - 1, newFrame->h - 1, PALCOLOR_WHITE);
 
     newAnimation->addFrame(std::move(newFrame));
@@ -1019,6 +1035,7 @@ PictureFactory::createMercenaryPlanet(Animation* atreidesPlanetAnimation, SDL_Su
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToMercenary(SDL_Surface* ordosMentat) {
+    assert(ordosMentat->format->BitsPerPixel == 8);
     auto mappedSurface = mapSurfaceColorRange(ordosMentat, PALCOLOR_ORDOS, PALCOLOR_MERCENARY);
 
     uint8_t colorMap[256];
@@ -1048,6 +1065,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToFremen(Animation*
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToSardaukar(SDL_Surface* harkonnenMentat) {
+    assert(harkonnenMentat->format->BitsPerPixel == 8);
     auto mappedSurface = mapSurfaceColorRange(harkonnenMentat, PALCOLOR_HARKONNEN, PALCOLOR_SARDAUKAR);
 
     uint8_t colorMap[256];
@@ -1097,6 +1115,7 @@ std::unique_ptr<Animation> PictureFactory::mapMentatAnimationToMercenary(Animati
 }
 
 sdl2::surface_ptr PictureFactory::mapMentatSurfaceToFremen(SDL_Surface* fremenMentat) {
+    assert(fremenMentat->format->BitsPerPixel == 8);
     sdl2::surface_ptr mappedSurface{mapSurfaceColorRange(fremenMentat, PALCOLOR_ATREIDES, PALCOLOR_FREMEN)};
 
     uint8_t colorMap[256];
