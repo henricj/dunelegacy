@@ -214,7 +214,7 @@ void CustomGameMenu::onCancel() {
 
 void CustomGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("mpsave/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls"));
+    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls").release());
 }
 
 void CustomGameMenu::onGameOptions() {
