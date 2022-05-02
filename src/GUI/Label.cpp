@@ -18,7 +18,6 @@
 #include "GUI/Label.h"
 
 #include "misc/DrawingRectHelper.h"
-#include <misc/draw_util.h>
 #include <misc/string_util.h>
 
 #include <algorithm>
@@ -39,22 +38,26 @@ Point Label::getMinimumSize() const {
     // split text into single lines at every '\n'
     size_t startpos = 0;
     size_t nextpos  = 0;
-    std::vector<std::string> hardLines;
+    std::vector<std::string_view> hardLines;
     do {
         nextpos = text.find('\n', startpos);
         if (nextpos == std::string::npos) {
-            hardLines.emplace_back(text, startpos, text.length() - startpos);
+            hardLines.emplace_back(text.data() + startpos, text.length() - startpos);
         } else {
-            hardLines.emplace_back(text, startpos, nextpos - startpos);
+            hardLines.emplace_back(text.data() + startpos, nextpos - startpos);
             startpos = nextpos + 1;
         }
     } while (nextpos != std::string::npos);
 
-    for (const std::string& hardLine : hardLines) {
-        Point minLabelSize = GUIStyle::getInstance().getMinimumLabelSize(hardLine, fontSize);
-        p.x                = std::max(p.x, minLabelSize.x);
+    const auto& style = GUIStyle::getInstance();
+
+    for (const auto& hardLine : hardLines) {
+        const auto minLabelSize = style.getMinimumLabelSize(hardLine, fontSize);
+
+        p.x = std::max(p.x, minLabelSize.x);
         p.y += minLabelSize.y;
     }
+
     return p;
 }
 
@@ -69,8 +72,8 @@ void Label::draw(Point position) {
 
     const auto size = getSize();
 
-    const auto x = position.x + (size.x - pTexture.width_) / 2;
-    const auto y = position.y + (size.y - pTexture.height_) / 2;
+    const auto x = static_cast<float>(position.x) + (static_cast<float>(size.x) - pTexture.width_) / 2;
+    const auto y = static_cast<float>(position.y) + (static_cast<float>(size.y) - pTexture.height_) / 2;
 
     pTexture.draw(dune::globals::renderer.get(), x, y);
 }
@@ -90,14 +93,18 @@ void Label::updateTextures() {
     if (pTexture)
         return;
 
-    auto& gui = GUIStyle::getInstance();
+    const auto& gui      = GUIStyle::getInstance();
+    auto* const renderer = dune::globals::renderer.get();
 
-    const auto textLines = greedyWordWrap(text, getSize().x, [&gui, font = fontSize](std::string_view tmp) {
-        return gui.getMinimumLabelSize(tmp, font).x - 4.f;
-    });
+    const auto size = getSize();
 
-    pTexture = gui.createLabel(dune::globals::renderer.get(), getSize().x, getSize().y, textLines, fontSize, alignment,
-                               textcolor, textshadowcolor, backgroundcolor);
+    const auto textLines =
+        greedyWordWrap(text, static_cast<float>(size.x), [&gui, font = fontSize](std::string_view tmp) {
+            return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x) - 4.f;
+        });
+
+    pTexture = gui.createLabel(renderer, size.x, size.y, textLines, fontSize, alignment, textcolor, textshadowcolor,
+                               backgroundcolor);
 }
 
 void Label::invalidateTextures() {
