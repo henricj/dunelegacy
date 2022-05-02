@@ -37,15 +37,12 @@ public:
     /**
         Constructor
     */
-    RadarViewBase() : Widget(), bRadarInteraction(false) {
-        RadarViewBase::resize(RADARWIDTH + (2 * RADARVIEW_BORDERTHICKNESS),
-                              RADARHEIGHT + (2 * RADARVIEW_BORDERTHICKNESS));
-    }
+    RadarViewBase();
 
     /**
         Destructor
     */
-    ~RadarViewBase() override = default;
+    ~RadarViewBase() override;
 
     /**
         Get the map size in x direction
@@ -61,7 +58,7 @@ public:
 
     /**
         Draws the radar to screen. This method is called before drawOverlay().
-        \param  Position    Position to draw the radar to
+        \param  position    Position to draw the radar to
     */
     void draw(Point position) override { }
 
@@ -71,21 +68,7 @@ public:
         \param mouseY the y-coordinate to check (relative to the top left corner of the radar)
         \return true, if inside the radar view; false otherwise
     */
-    [[nodiscard]] bool isOnRadar(int mouseX, int mouseY) const {
-        int scale   = 1;
-        int offsetX = 0;
-        int offsetY = 0;
-
-        calculateScaleAndOffsets(getMapSizeX(), getMapSizeY(), scale, offsetX, offsetY);
-
-        const int offsetFromRightX  = 128 - getMapSizeX() * scale - offsetX;
-        const int offsetFromBottomY = 128 - getMapSizeY() * scale - offsetY;
-
-        return ((mouseX >= offsetX + RADARVIEW_BORDERTHICKNESS)
-                && (mouseX < RADARWIDTH - offsetFromRightX + RADARVIEW_BORDERTHICKNESS)
-                && (mouseY >= offsetY + RADARVIEW_BORDERTHICKNESS)
-                && (mouseY < RADARHEIGHT - offsetFromBottomY + RADARVIEW_BORDERTHICKNESS));
-    }
+    [[nodiscard]] bool isOnRadar(int mouseX, int mouseY) const;
 
     /**
         This method returns the corresponding world coordinates for a point on the radar
@@ -93,46 +76,18 @@ public:
         \param mouseY  the position on the radar screen (relative to the top left corner of the radar)
         \return the world coordinates
     */
-    [[nodiscard]] Coord getWorldCoords(int mouseX, int mouseY) const {
-        const Coord positionOnRadar(mouseX - RADARVIEW_BORDERTHICKNESS, mouseY - RADARVIEW_BORDERTHICKNESS);
-
-        int scale   = 1;
-        int offsetX = 0;
-        int offsetY = 0;
-
-        calculateScaleAndOffsets(getMapSizeX(), getMapSizeY(), scale, offsetX, offsetY);
-
-        return Coord(((positionOnRadar.x - offsetX) * getMapSizeX() * TILESIZE) / (getMapSizeX() * scale),
-                     ((positionOnRadar.y - offsetY) * getMapSizeY() * TILESIZE) / (getMapSizeY() * scale));
-    }
+    [[nodiscard]] Coord getWorldCoords(int mouseX, int mouseY) const;
 
     /**
         This method calculates the scale and the offsets that are necessary to show a minimap centered inside a 128x128
-       rectangle. \param  MapSizeX    The width of the map in tiles \param  MapSizeY    The height of the map in tiles
+       rectangle.
+        \param  MapSizeX    The width of the map in tiles
+        \param  MapSizeY    The height of the map in tiles
         \param  scale       The scale factor is saved here
         \param  offsetX     The offset in x direction is saved here
         \param  offsetY     The offset in y direction is saved here
     */
-    static void calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& scale, int& offsetX, int& offsetY) {
-        scale   = 1;
-        offsetX = 0;
-        offsetY = 0;
-
-        if (MapSizeX <= 32 && MapSizeY <= 32) {
-            scale *= 2;
-        }
-
-        if (MapSizeX <= 64 && MapSizeY <= 64) {
-            scale *= 2;
-        }
-
-        if (MapSizeX <= 21 && MapSizeY <= 21) {
-            scale++;
-        }
-
-        offsetX = (128 - (MapSizeX * scale)) / 2;
-        offsetY = (128 - (MapSizeY * scale)) / 2;
-    }
+    static void calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& scale, int& offsetX, int& offsetY);
 
     /**
         Returns the minimum size of this widget. The widget should not
@@ -150,13 +105,7 @@ public:
         \param  y               y-coordinate (relative to the left top corner of the widget)
         \param  insideOverlay   true, if (x,y) is inside an overlay and this widget may be behind it, false otherwise
     */
-    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override {
-        if (bRadarInteraction && isOnRadar(x, y)) {
-            if (pOnRadarClick) {
-                bRadarInteraction = pOnRadarClick(getWorldCoords(x, y), false, true);
-            }
-        }
-    }
+    void handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) override;
 
     /**
         Handles a left mouse click.
@@ -165,19 +114,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override {
-        if (pressed) {
-            if (isOnRadar(x, y)) {
-                if (pOnRadarClick) {
-                    bRadarInteraction = pOnRadarClick(getWorldCoords(x, y), false, false);
-                }
-                return true;
-            }
-            return false;
-        }
-        bRadarInteraction = false;
-        return false;
-    }
+    bool handleMouseLeft(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Handles a right mouse click.
@@ -186,19 +123,7 @@ public:
         \param  pressed true = mouse button pressed, false = mouse button released
         \return true = click was processed by the widget, false = click was not processed by the widget
     */
-    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override {
-        if (pressed) {
-            if (isOnRadar(x, y)) {
-                if (pOnRadarClick) {
-                    bRadarInteraction = pOnRadarClick(getWorldCoords(x, y), true, false);
-                }
-                return true;
-            }
-            return false;
-        }
-        bRadarInteraction = false;
-        return false;
-    }
+    bool handleMouseRight(int32_t x, int32_t y, bool pressed) override;
 
     /**
         Sets the function that should be called when the radar view is clicked.
