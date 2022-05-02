@@ -25,7 +25,7 @@
 GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGameOptions)
     : Window(50, 50, 626, 340), gameOptions(initialGameOptions) {
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     GameOptionsWindow::setWindowWidget(&vbox);
     vbox.addWidget(VSpacer::create(6));
