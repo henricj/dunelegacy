@@ -29,8 +29,13 @@
 
 #include <fmt/printf.h>
 
-#include <cstdio>
+#include <filesystem>
+#include <string>
 #include <utility>
+
+namespace {
+inline constexpr auto invalid_chars = "?*:|<>/\\\"'`";
+}
 
 LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
                                const std::vector<std::filesystem::path>& directories,
@@ -44,9 +49,9 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
     const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_LoadSaveWindow);
     setBackground(pBackground);
 
-    Window::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
+    LoadSaveWindow::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
-    Window::setWindowWidget(&mainHBox);
+    LoadSaveWindow::setWindowWidget(&mainHBox);
 
     mainHBox.addWidget(HSpacer::create(16));
     mainHBox.addWidget(&mainVBox);
@@ -63,9 +68,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
         directoryButtons.reserve(directories.size());
 
         for (const auto& title : directoryTitles) {
-            directoryButtons.emplace_back();
-
-            auto& button = directoryButtons.back();
+            auto& button = directoryButtons.emplace_back();
 
             button.setText(title);
             button.setTextColor(color);
@@ -90,7 +93,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
         saveName.setTextColor(color);
         mainVBox.addWidget(&saveName);
         saveName.setMaximumTextLength(64);
-        saveName.setForbiddenChars("?*:|<>/\\\"");
+        saveName.setForbiddenChars(invalid_chars);
         mainVBox.addWidget(VSpacer::create(5));
     }
 
@@ -127,7 +130,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 }
 
 LoadSaveWindow::~LoadSaveWindow() {
-    fileList.setOnSelectionChange(std::function<void(bool)>());
+    fileList.setOnSelectionChange({});
 }
 
 void LoadSaveWindow::updateEntries() {
@@ -234,6 +237,7 @@ void LoadSaveWindow::onOK() {
         const auto index = fileList.getSelectedIndex();
         if (index >= 0) {
             filename = directories[currentDirectoryIndex] / (fileList.getEntry(index) + "." + extension);
+            filename = filename.lexically_normal().native();
 
             auto* const pParentWindow = dynamic_cast<Window*>(getParent());
             if (pParentWindow != nullptr) {
@@ -243,7 +247,7 @@ void LoadSaveWindow::onOK() {
     } else {
         const auto savename = saveName.getText();
 
-        if (!savename.empty() && savename.find_first_of("\\/") == std::string::npos) {
+        if (!savename.empty() && savename.find_first_of(invalid_chars) == std::string::npos) {
             filename = directories[currentDirectoryIndex] / fmt::format("{}.{}", saveName.getText(), extension);
 
             auto* const pParentWindow = dynamic_cast<Window*>(getParent());
@@ -267,7 +271,7 @@ void LoadSaveWindow::onCancel() {
 void LoadSaveWindow::onDirectoryChange(int i) {
     currentDirectoryIndex = i;
     for (auto j = 0; j < directoryButtons.size(); j++) {
-        directoryButtons[j].setToggleState((i == j));
+        directoryButtons[j].setToggleState(i == j);
     }
 
     updateEntries();
