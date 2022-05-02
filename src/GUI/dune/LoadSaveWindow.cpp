@@ -168,13 +168,8 @@ bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
             if (index >= 0) {
 
                 auto* pQstBox = QstBox::create(
-                    fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()),
-
-                    _("Yes"),
-
-                    _("No"),
-
-                    QSTBOX_BUTTON1);
+                    fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()), _("Yes"),
+                    _("No"), QSTBOX_BUTTON1);
 
                 pQstBox->setTextColor(color);
 
