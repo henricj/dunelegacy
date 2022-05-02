@@ -18,6 +18,7 @@ add_sources(TOP_SOURCES
 	ObjectManager.cpp
 	ObjectPointer.cpp
 	RadarView.cpp
+	RadarViewBase.cpp
 	sand.cpp
 	ScreenBorder.cpp
 	SoundPlayer.cpp
