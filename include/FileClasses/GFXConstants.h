@@ -218,7 +218,6 @@ enum UIGraphics_Enum {
     UI_GreyPlace_Zoomlevel0,
     UI_GreyPlace_Zoomlevel1,
     UI_GreyPlace_Zoomlevel2,
-    UI_MenuBackground,
     UI_GameStatsBackground,
     UI_SelectionBox_Zoomlevel0,
     UI_SelectionBox_Zoomlevel1,

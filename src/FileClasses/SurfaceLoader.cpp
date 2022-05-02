@@ -606,7 +606,6 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_GreyPlace_Zoomlevel0][harkIdx]    = PictureFactory::createPlacingGrid(16, PALCOLOR_LIGHTGREY);
     uiGraphic[UI_GreyPlace_Zoomlevel1][harkIdx]    = PictureFactory::createPlacingGrid(32, PALCOLOR_LIGHTGREY);
     uiGraphic[UI_GreyPlace_Zoomlevel2][harkIdx]    = PictureFactory::createPlacingGrid(48, PALCOLOR_LIGHTGREY);
-    uiGraphic[UI_MenuBackground][harkIdx]          = picFactory.createMainBackground();
     uiGraphic[UI_GameStatsBackground][harkIdx]     = picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_HARKONNEN);
     uiGraphic[UI_GameStatsBackground][static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
         picFactory.createGameStatsBackground(HOUSETYPE::HOUSE_ATREIDES);

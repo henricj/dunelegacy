@@ -42,8 +42,6 @@ public:
     [[nodiscard]] sdl2::surface_ptr createBackground() const;
     [[nodiscard]] sdl2::surface_ptr createBackgroundTile() const;
     [[nodiscard]] sdl2::surface_ptr createBackground(int width, int height) const;
-    [[nodiscard]] sdl2::surface_ptr createMainBackground() const;
-    void drawMainBackground(SDL_Surface* surface) const;
     [[nodiscard]] sdl2::surface_ptr createGameStatsBackground(HOUSETYPE House) const;
     [[nodiscard]] sdl2::surface_ptr
     createFrame(DecorationFrame decorationType, int width, int height, bool UseBackground);
