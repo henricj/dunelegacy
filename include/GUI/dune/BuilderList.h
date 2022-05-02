@@ -110,7 +110,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this widget
     */
-    Point getMinimumSize() const override {
+    [[nodiscard]] Point getMinimumSize() const override {
         return {WIDGET_WIDTH, BUILDERBTN_HEIGHT * 3 + (ARROWBTN_HEIGHT + BUILDERBTN_SPACING) * 2
                                   + BUILDERBTN_SPACING * 4 + ORDERBTN_HEIGHT + BUILDERBTN_SPACING};
     }
@@ -133,8 +133,8 @@ private:
     static int getRealHeight(int height);
     static int getNumButtons(int height);
     static Point getButtonPosition(int BtnNumber);
-    int getButton(int x, int y) const;
-    ItemID_enum getItemIDFromIndex(int i) const;
+    [[nodiscard]] int getButton(int x, int y) const;
+    [[nodiscard]] ItemID_enum getItemIDFromIndex(int i) const;
 
     void onUp();
     void onDown();
