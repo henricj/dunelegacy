@@ -20,6 +20,7 @@
 #include <misc/draw_util.h>
 
 #include "Renderer/DuneSurface.h"
+#include "dune_version.h"
 #include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>
@@ -966,6 +967,20 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
 
     if (ordos)
         ordos->draw(renderer, 11, rect.h - 11 - ordos->height_);
+
+    const auto version = createText(renderer, DUNE_GIT_DESCRIBE, COLOR_BLACK, 12);
+
+    if (!version)
+        return;
+
+    const auto width  = version.width_ + 18;
+    const auto height = version.height_ + 12;
+
+    const SDL_FRect dest{rect.x + rect.w - width - 11, rect.y + rect.h - height - 11, width, height};
+
+    version.draw(renderer, dest.x + (dest.w - version.width_) / 2, dest.y + (dest.h - version.height_) / 2);
+
+    drawFrame(renderer, DecorationFrame::SimpleFrame, dest);
 }
 
 DuneSurfaceOwned DuneStyle::createWidgetBackground(int width, int height) const {
