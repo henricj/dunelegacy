@@ -952,7 +952,7 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
 
     drawFrame(renderer, DecorationFrame::DecorationFrame2, {rect.x + 3, rect.y + 3, rect.w - 6, rect.h - 6});
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     auto* harkonnen = gfx->getUIGraphic(UI_Background_Logo, HOUSETYPE::HOUSE_HARKONNEN);
     auto* atreides  = gfx->getUIGraphic(UI_Background_Logo, HOUSETYPE::HOUSE_ATREIDES);
@@ -969,10 +969,7 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
 }
 
 DuneSurfaceOwned DuneStyle::createWidgetBackground(int width, int height) const {
-    const auto [scaled_width, scaled_height] = getPhysicalSize(width, height);
-
-    sdl2::surface_ptr surface =
-        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
+    sdl2::surface_ptr surface{SDL_CreateRGBSurface(0, width, height, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
     if (!surface)
         return {};
