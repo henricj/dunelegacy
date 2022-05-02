@@ -720,8 +720,8 @@ calcAlignedDrawingRect(const DuneTexture* pTexture, HAlign halign = HAlign::Cent
 }
 
 inline auto as_rect(const SDL_FRect& rect) {
-    return SDL_Rect{static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::ceil(rect.y)),
-                    static_cast<int>(std::ceil(rect.w)), static_cast<int>(std::ceil(rect.h))};
+    return SDL_Rect{static_cast<int>(std::ceil(rect.x)), static_cast<int>(std::floor(rect.y)),
+                    static_cast<int>(std::ceil(rect.w)), static_cast<int>(std::floor(rect.h))};
 }
 
 #endif // DRAWINGRECTHELPER_H
