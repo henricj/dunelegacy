@@ -37,7 +37,7 @@ public:
 
     void onOK();
 
-    const SettingsClass::GameOptionsClass& getGameOptions() const { return gameOptions; }
+    [[nodiscard]] const SettingsClass::GameOptionsClass& getGameOptions() const { return gameOptions; }
 
     /**
         This static method creates a dynamic game options window.

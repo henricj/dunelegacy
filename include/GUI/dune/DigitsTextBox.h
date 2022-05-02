@@ -94,7 +94,7 @@ public:
 
     void setValue(int newValue) { setValue(newValue, false); }
 
-    int getValue() const {
+    [[nodiscard]] int getValue() const {
         int x = 0;
         if (parseString(textBox.getText(), x)) {
             return x;
@@ -142,7 +142,7 @@ public:
         in a direction this method returns the size in that direction.
         \return the minimum size of this text box
     */
-    Point getMinimumSize() const override {
+    [[nodiscard]] Point getMinimumSize() const override {
         if (textBox.getParent() != this || buttonVBox.getParent() != this) {
             // we are about to be destroyed
             return {0, 0};
