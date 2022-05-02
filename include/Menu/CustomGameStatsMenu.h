@@ -29,8 +29,8 @@
 
 #include <DataTypes.h>
 
-class CustomGameStatsMenu final : public TopMenuBase {
-    using parent = TopMenuBase;
+class CustomGameStatsMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
 
 public:
     CustomGameStatsMenu();

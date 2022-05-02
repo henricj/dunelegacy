@@ -292,6 +292,14 @@ public:
 
 private:
     /**
+        Fill with the background tile
+        \param  renderer    the renderer to use
+        \param  rect        the area to draw
+        \return the new surface
+    */
+    void drawBackgroundTiles(SDL_Renderer* renderer, const SDL_FRect& rect);
+
+    /**
         Creates a surface with text on it
         \param  text        text to draw
         \param  color       the color of the text

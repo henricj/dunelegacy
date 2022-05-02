@@ -28,8 +28,8 @@
 #include <GUI/VBox.h>
 #include <GUI/dune/DigitsCounter.h>
 
-class SinglePlayerSkirmishMenu final : public TopMenuBase {
-    using parent = TopMenuBase;
+class SinglePlayerSkirmishMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
 
 public:
     SinglePlayerSkirmishMenu();

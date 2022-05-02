@@ -889,7 +889,7 @@ void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType
     frame.rightLowerCorner.draw(renderer, right_lower_x, right_lower_y);
 }
 
-void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
+void DuneStyle::drawBackgroundTiles(SDL_Renderer* renderer, const SDL_FRect& rect) {
     if (rect.w <= 0 || rect.h <= 0)
         THROW(std::invalid_argument, "Attempting to draw an empty background!");
 
@@ -913,8 +913,27 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     }
 }
 
+void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
+    drawBackgroundTiles(renderer, rect);
+
+    setRenderDrawColor(renderer, buttonBorderColor);
+    DuneDrawRects(renderer, {{rect.x, rect.y, rect.w - 1, rect.h - 1}});
+
+    setRenderDrawColor(renderer, buttonEdgeTopLeftColor);
+    DuneDrawRects(renderer, {{rect.x + 1, rect.y + 1, rect.w - 2, 1},
+                             {rect.x + 2, rect.y + 2, rect.w - 3, 1},
+                             {rect.x + 1, rect.y + 1, 1, rect.h - 2},
+                             {rect.x + 2, rect.y + 2, 1, rect.h - 3}});
+
+    setRenderDrawColor(renderer, buttonEdgeBottomRightColor);
+    DuneDrawRects(renderer, {{rect.x + 1, rect.y + rect.h - 2, rect.w - 2, 1},
+                             {rect.x + 2, rect.y + rect.h - 3, rect.w - 3, 1},
+                             {rect.x + rect.w - 2, rect.y + 1, 1, rect.h - 2},
+                             {rect.x + rect.w - 3, rect.y + 2, 1, rect.h - 3}});
+}
+
 void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
-    drawBackground(renderer, rect);
+    drawBackgroundTiles(renderer, rect);
 
     drawFrame(renderer, DecorationFrame::DecorationFrame2, {rect.x + 3, rect.y + 3, rect.w - 6, rect.h - 6});
 
