@@ -93,9 +93,11 @@ private:
     UIGraphics_Enum selectedRegion = static_cast<UIGraphics_Enum>(-1);
     dune::dune_clock::time_point selectionTime{};
     dune::dune_clock::time_point stateSwitchTime{};
+
+    StaticContainer container_;
     MessageTicker msgticker;
 
-    SDL_Rect centerAreaRect;
+    SDL_Rect centerAreaRect{};
 };
 
 #endif // MAPCHOICE_H

@@ -44,6 +44,8 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
 
     MapChoice::resize(size.w, size.h);
 
+    MapChoice::setWindowWidget(&container_);
+
     disableQuitting(true);
 
     auto* const gfx = dune::globals::pGFXManager.get();
@@ -52,12 +54,13 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
     const auto* const pBackground = gfx->getUIGraphic(UI_MapChoiceScreen, house);
     setBackground(pBackground);
 
-    centerAreaRect.x = getRendererWidth() / 2 - 320;
-    centerAreaRect.y = getRendererHeight() / 2 - 200;
+    centerAreaRect.x = size.w / 2 - 320;
+    centerAreaRect.y = size.h / 2 - 200;
     centerAreaRect.w = 640;
     centerAreaRect.h = 400;
 
-    msgticker.resize(640, 30);
+    msgticker.resize(415, 44);
+    container_.addWidget(&msgticker, {centerAreaRect.x + 112, centerAreaRect.y + 322}, msgticker.getSize());
 
     // load all data from ini
     loadINI();
@@ -342,8 +345,6 @@ void MapChoice::drawSpecificStuff() {
             }
         } break;
     }
-
-    msgticker.draw(Point(centerAreaRect.x + 110, centerAreaRect.y + 320));
 }
 
 bool MapChoice::doInput(SDL_Event& event) {
@@ -408,7 +409,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 }
 
 void MapChoice::loadINI() {
-    const std::string filename = fmt::sprintf("REGION%c.INI", houseChar[static_cast<int>(house)]);
+    const auto filename = fmt::sprintf("REGION%c.INI", houseChar[static_cast<int>(house)]);
 
     INIFile RegionINI(dune::globals::pFileManager->openFile(filename).get());
 
@@ -416,8 +417,8 @@ void MapChoice::loadINI() {
     piecePosition[0].y = 0;
 
     // read [PIECES]
-    for (int i = 1; i < 28; i++) {
-        std::string entry = RegionINI.getStringValue("PIECES", std::to_string(i));
+    for (auto i = 1u; i < piecePosition.size(); i++) {
+        const auto entry = RegionINI.getStringValue("PIECES", std::to_string(i));
 
         std::string strXPos;
         std::string strYPos;
@@ -426,16 +427,18 @@ void MapChoice::loadINI() {
             THROW(std::runtime_error, "File '%s' contains invalid value for key '%d'", filename, i);
         }
 
-        piecePosition[i].x = atol(strXPos.c_str());
-        piecePosition[i].y = atol(strYPos.c_str());
-        piecePosition[i].x += 8;
-        piecePosition[i].y += 24;
-        piecePosition[i].x *= 2;
-        piecePosition[i].y *= 2;
+        auto& coord = piecePosition[i];
+
+        coord.x = parseStringThrows<int>(strXPos);
+        coord.y = parseStringThrows<int>(strYPos);
+        coord.x += 8;
+        coord.y += 24;
+        coord.x *= 2;
+        coord.y *= 2;
     }
 
     for (int i = 1; i <= 8; i++) {
-        std::string strSection = "GROUP" + std::to_string(i);
+        const auto strSection = fmt::format("GROUP{}", i);
 
         // read new regions
         for_each_housetype([&](const auto h) {
@@ -457,9 +460,9 @@ void MapChoice::loadINI() {
             }
             // clang-format on
 
-            const std::string strValue = RegionINI.getStringValue(strSection, key);
+            const auto strValue = RegionINI.getStringValue(strSection, key);
             if (!strValue.empty()) {
-                const std::vector<std::string> strRegions = splitStringToStringVector(strValue);
+                const auto strRegions = splitStringToStringVector(strValue);
 
                 for (auto& strRegion : strRegions) {
                     int value;
@@ -474,16 +477,19 @@ void MapChoice::loadINI() {
 
         // read attackRegion (REG1, REG2, REG3)
         for (int a = 0; a < 4; a++) {
-            std::string strKey = "REG" + std::to_string(a + 1);
+            auto strKey = fmt::format("REG{}", a + 1);
 
-            std::string tmp = RegionINI.getStringValue(strSection, strKey);
+            auto tmp = RegionINI.getStringValue(strSection, strKey);
+
+            auto& attack_region = group[i].attackRegion[a];
+
             if (tmp.empty()) {
-                group[i].attackRegion[a].regionNum       = 0;
-                group[i].attackRegion[a].arrowNum        = 0;
-                group[i].attackRegion[a].arrowPosition.x = 0;
-                group[i].attackRegion[a].arrowPosition.y = 0;
+                attack_region.regionNum       = 0;
+                attack_region.arrowNum        = 0;
+                attack_region.arrowPosition.x = 0;
+                attack_region.arrowPosition.y = 0;
             } else {
-                std::vector<std::string> strAttackRegion = splitStringToStringVector(tmp);
+                auto strAttackRegion = splitStringToStringVector(tmp);
 
                 if (strAttackRegion.size() < 4) {
                     THROW(std::runtime_error,
@@ -491,42 +497,35 @@ void MapChoice::loadINI() {
                           strSection, strKey);
                 }
 
-                group[i].attackRegion[a].regionNum       = atol(strAttackRegion[0].c_str());
-                group[i].attackRegion[a].arrowNum        = atol(strAttackRegion[1].c_str());
-                group[i].attackRegion[a].arrowPosition.x = atol(strAttackRegion[2].c_str());
-                group[i].attackRegion[a].arrowPosition.y = atol(strAttackRegion[3].c_str());
-                group[i].attackRegion[a].arrowPosition.x *= 2;
-                group[i].attackRegion[a].arrowPosition.y *= 2;
+                attack_region.regionNum       = parseStringThrows<int>(strAttackRegion[0]);
+                attack_region.arrowNum        = parseStringThrows<int>(strAttackRegion[1]);
+                attack_region.arrowPosition.x = parseStringThrows<int>(strAttackRegion[2]);
+                attack_region.arrowPosition.y = parseStringThrows<int>(strAttackRegion[3]);
+                attack_region.arrowPosition.x *= 2;
+                attack_region.arrowPosition.y *= 2;
             }
         }
 
         // read text
-        for (int j = 1; j < 28; j++) {
-            std::string key = _("LanguageFileExtension") + "TXT" + std::to_string(j);
+        for (auto j = 1; j < 28; j++) {
+            auto key = _("LanguageFileExtension") + fmt::format("TXT{}", j);
 
             if (!RegionINI.hasKey(strSection, key)) {
                 // Workaround for bug in REGIONO.INI / GROUP1 / GERTXT 6: Add space after TXT
-                key = _("LanguageFileExtension") + "TXT " + std::to_string(j);
+                key = _("LanguageFileExtension") + fmt::format("TXT {}", j);
             }
 
-            std::string str = convertCP850ToUTF8(RegionINI.getStringValue(strSection, key));
-            if (!str.empty()) {
-                TGroup::TText tmp;
-                tmp.message = str;
-                tmp.region  = j;
-                group[i].text.push_back(tmp);
-            } else {
+            auto str = convertCP850ToUTF8(RegionINI.getStringValue(strSection, key));
+            if (str.empty()) {
                 // try TXT? without leading language
-                std::string key = std::string("TXT") + std::to_string(j);
+                key = fmt::sprintf("TXT%d", j);
 
-                std::string str = convertCP850ToUTF8(RegionINI.getStringValue(strSection, key));
-                if (!str.empty()) {
-                    TGroup::TText tmp;
-                    tmp.message = str;
-                    tmp.region  = j;
-                    group[i].text.push_back(tmp);
-                }
+                str = convertCP850ToUTF8(RegionINI.getStringValue(strSection, key));
+                if (str.empty())
+                    continue;
             }
+
+            group[i].text.emplace_back(std::move(str), j);
         }
     }
 }
