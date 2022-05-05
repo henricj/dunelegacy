@@ -96,12 +96,10 @@ void RadarView::draw(Point position) {
                         / static_cast<float>(TILESIZE);
 
             if (radarRect.x < offsetX) {
-                radarRect.w -= radarRect.x;
                 radarRect.x = offsetX;
             }
 
             if (radarRect.y < offsetY) {
-                radarRect.h -= radarRect.y;
                 radarRect.y = offsetY;
             }
 
