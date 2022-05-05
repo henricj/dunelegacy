@@ -35,10 +35,8 @@ MessageTicker::MessageTicker() : timer(-MESSAGETIME) {
 
 MessageTicker::~MessageTicker() = default;
 
-void MessageTicker::addMessage(const std::string& msg) {
-    const auto surface = dune::globals::pFontManager->getFont(14)->createTextSurface(msg, COLOR_BLACK);
-
-    messageTextures.emplace(SDL_CreateTextureFromSurface(dune::globals::renderer.get(), surface.get()));
+void MessageTicker::addMessage(std::string msg) {
+    messages.emplace(std::move(msg));
 }
 
 void MessageTicker::draw(Point position) {
@@ -46,39 +44,59 @@ void MessageTicker::draw(Point position) {
         return;
 
     // draw message
-    if (messageTextures.empty())
+    if (messages.empty())
         return;
 
     if (timer++ == MESSAGESCROLLTIME) {
         timer = -MESSAGETIME;
         // delete first message
-        messageTextures.pop();
+        messages.pop();
+
+        texture_.reset();
 
         // if no more messages leave
-        if (messageTextures.empty()) {
+        if (messages.empty()) {
             return;
         }
     }
 
-    SDL_Texture* tex = messageTextures.front().get();
+    auto* const renderer = dune::globals::renderer.get();
+
+    if (!texture_) {
+        const auto& message = messages.front();
+
+        if (trim(message).empty())
+            return;
+
+        const auto& gui = GUIStyle::getInstance();
+
+        texture_ = gui.createText(renderer, messages.front(), COLOR_BLACK, 14);
+
+        if (!texture_)
+            return;
+    }
+
+    const auto size = getSize();
+
+    const SDL_Rect clip{position.x + 17, position.y + 8, size.x - 33, size.y - 16};
 
     // draw text
-    SDL_Rect textLocation = {position.x + 21, position.y + 17, 0, 0};
-    SDL_Rect cut          = {0, 0, 0, 0};
+    const auto x = static_cast<float>(position.x) + 21.f;
+    auto y       = static_cast<float>(position.y) + 17.f;
 
     if (timer > 0) {
         // start scrolling the text
-        const int newsTickerInnerEdgeY = position.y + 10;
-        textLocation.y -= (timer / MESSAGESCROLLSPEED);
-        if (textLocation.y < newsTickerInnerEdgeY) {
-            cut.y          = newsTickerInnerEdgeY - textLocation.y;
-            textLocation.y = newsTickerInnerEdgeY;
-        }
+        static constexpr auto scale = 1.f / static_cast<float>(MESSAGESCROLLSPEED);
+        y -= static_cast<float>(timer) * scale;
     }
 
-    textLocation.w = cut.w = getWidth(tex);
-    textLocation.h = cut.h = getHeight(tex) - cut.y;
+    dune::RenderClip clipping{renderer, clip};
 
-    auto* const renderer = dune::globals::renderer.get();
-    Dune_RenderCopy(renderer, tex, &cut, &textLocation);
+    texture_.draw(renderer, x, y);
+}
+
+void MessageTicker::invalidateTextures() {
+    parent::invalidateTextures();
+
+    texture_.reset();
 }
