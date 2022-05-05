@@ -135,6 +135,47 @@ bool parseString(std::string_view text, TValue& value) {
     return ec == std::errc{} && ptr == last;
 }
 
+/**
+    Parse a string into a value of the given type.
+    \param text            The string to parse
+    \param defaultValue    The value to return if the conversion fails
+    \return The value parsed from the string or the default value
+ */
+template<typename TValue>
+TValue parseStringDefault(std::string_view text, TValue defaultValue) {
+    text = trim(text);
+
+    auto last = text.data() + text.size();
+
+    TValue value{};
+    auto [ptr, ec] = std::from_chars(text.data(), last, value);
+
+    if (ec == std::errc{} && ptr == last)
+        return value;
+    else
+        return defaultValue;
+}
+
+/**
+    Parse a string into a value of the given type.
+    \param text            The string to parse
+    \return The value parsed from the string or the default value
+ */
+template<typename TValue>
+TValue parseStringThrows(std::string_view text) {
+    text = trim(text);
+
+    auto last = text.data() + text.size();
+
+    TValue value{};
+    auto [ptr, ec] = std::from_chars(text.data(), last, value);
+
+    if (ec == std::errc{} && ptr == last)
+        return value;
+
+    THROW(std::invalid_argument, "Unable to parse '%s'.", text);
+}
+
 inline void convertToLower(std::string& str) {
     std::ranges::transform(str, str.begin(), tolower);
 }
