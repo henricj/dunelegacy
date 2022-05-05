@@ -36,7 +36,7 @@
 #include <memory>
 
 PictureFactory::PictureFactory() {
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
 
     auto ScreenPic = LoadCPS_RW(file_manager->openFile("SCREEN.CPS").get());
     if (ScreenPic == nullptr) {
