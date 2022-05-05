@@ -283,10 +283,10 @@ void Tile::blitGround(Game* game) {
     if (hasANonInfantryGroundObject() && getNonInfantryGroundObject(game->getObjectManager())->isAStructure())
         return;
 
-    auto* const gfx          = dune::globals::pGFXManager.get();
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const gfx          = dune::globals::pGFXManager.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto tileIndex       = static_cast<int>(getTerrainTile());
     const auto indexX          = tileIndex % NUM_TERRAIN_TILES_X;
@@ -398,10 +398,10 @@ void Tile::blitDeadUnits(Game* game) {
     if (isFoggedByTeam(game, dune::globals::pLocalHouse->getTeamID()))
         return;
 
-    auto* const gfx          = dune::globals::pGFXManager.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    auto* const screenborder = dune::globals::screenborder.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const gfx          = dune::globals::pGFXManager.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto zoomed_tile = world2zoomedWorld(TILESIZE);
 

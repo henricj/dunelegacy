@@ -47,7 +47,7 @@ void SiegeTank::init() {
     assert(itemID == Unit_SiegeTank);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Siegetank_Base;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
@@ -61,8 +61,8 @@ void SiegeTank::init() {
 SiegeTank::~SiegeTank() = default;
 
 void SiegeTank::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
 
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);

@@ -26,7 +26,7 @@ AboutMenu::AboutMenu() {
 
     AboutMenu::setWindowWidget(&windowWidget);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     // set up pictures in the background
     const auto* const pPlanetBackground = gfx->getUIGraphic(UI_PlanetBackground);

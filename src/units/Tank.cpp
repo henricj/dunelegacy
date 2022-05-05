@@ -46,7 +46,7 @@ void Tank::init() {
     assert(itemID == Unit_Tank);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Tank_Base;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
@@ -60,9 +60,9 @@ void Tank::init() {
 Tank::~Tank() = default;
 
 void Tank::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);

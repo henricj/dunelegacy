@@ -79,9 +79,9 @@ void AirUnit::checkPos(const GameContext& context) {
 }
 
 void AirUnit::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto* const shadow       = shadowGraphic[zoom];
     const auto* const pUnitGraphic = graphic[zoom];

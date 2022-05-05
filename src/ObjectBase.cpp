@@ -107,7 +107,7 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectStreamInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
-    auto* const game = dune::globals::currentGame.get();
+    const auto* const game = dune::globals::currentGame.get();
 
     auto& stream    = initializer.stream();
     originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
@@ -496,7 +496,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                 if (pTile->isExploredByTeam(game, getOwner()->getTeamID())
                     && !pTile->isFoggedByTeam(game, getOwner()->getTeamID()) && pTile->hasAnObject()) {
 
-                    auto* const pNewTarget = pTile->getObject(game->getObjectManager());
+                    const auto* const pNewTarget = pTile->getObject(game->getObjectManager());
                     if (!pNewTarget)
                         continue;
 

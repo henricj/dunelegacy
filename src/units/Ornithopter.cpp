@@ -54,7 +54,7 @@ void Ornithopter::init() {
     assert(itemID == Unit_Ornithopter);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Ornithopter;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());

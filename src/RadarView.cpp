@@ -61,13 +61,13 @@ void RadarView::draw(Point position) {
     const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
                                     RADARWIDTH, RADARHEIGHT};
 
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
 
     switch (currentRadarMode) {
         case RadarMode::RadarOff:
         case RadarMode::RadarOn: {
-            auto* const map = dune::globals::currentGameMap;
+            const auto* const map = dune::globals::currentGameMap;
 
             const auto mapSizeX = map->getSizeX();
             const auto mapSizeY = map->getSizeY();
@@ -204,9 +204,9 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) const {
     // Lock radarSurface for direct access to the pixels
     sdl2::surface_lock lock{radarSurface.get()};
 
-    auto* map         = dune::globals::currentGameMap;
-    auto* const game  = dune::globals::currentGame.get();
-    auto* const house = dune::globals::pLocalHouse;
+    auto* map              = dune::globals::currentGameMap;
+    const auto* const game = dune::globals::currentGame.get();
+    auto* const house      = dune::globals::pLocalHouse;
 
     const auto radar_on = currentRadarMode == RadarMode::RadarOn || currentRadarMode == RadarMode::AnimationRadarOff;
 

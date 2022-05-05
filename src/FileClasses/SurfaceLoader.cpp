@@ -1598,7 +1598,7 @@ sdl2::surface_ptr SurfaceLoader::generateDoubledObjPic(unsigned int id, int h) c
     const auto filename = fmt::format("Mask_2x_{}.png", name);
 
     if (dune::globals::settings.video.scaler == "ScaleHD") {
-        auto* const file_manager = dune::globals::pFileManager.get();
+        const auto* const file_manager = dune::globals::pFileManager.get();
 
         if (file_manager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
@@ -1641,7 +1641,7 @@ sdl2::surface_ptr SurfaceLoader::generateTripledObjPic(unsigned int id, int h) c
     const auto filename = fmt::format("Mask_3x_{}.png", name);
 
     if (dune::globals::settings.video.scaler == "ScaleHD") {
-        auto* const file_manager = dune::globals::pFileManager.get();
+        const auto* const file_manager = dune::globals::pFileManager.get();
         if (file_manager->exists(filename)) {
             pSurface = sdl2::surface_ptr{
                 Scaler::tripleTiledSurfaceNN(objPic[id][h][0].get(), objPicTiles[id].x, objPicTiles[id].y)};

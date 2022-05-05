@@ -1002,7 +1002,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
             curHouseInfo.player2Label.setTextColor(color);
             curHouseInfo.player2DropDown.setColor(color);
 
-            auto* const gfx = dune::globals::pGFXManager.get();
+            const auto* const gfx = dune::globals::pGFXManager.get();
 
             if (house == HOUSETYPE::HOUSE_INVALID) {
                 curHouseInfo.player1ArrowLabel.setTexture(gfx->getUIGraphic(UI_CustomGamePlayersArrowNeutral));

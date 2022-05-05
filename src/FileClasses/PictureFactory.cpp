@@ -38,17 +38,17 @@
 PictureFactory::PictureFactory() {
     const auto* const file_manager = dune::globals::pFileManager.get();
 
-    auto ScreenPic = LoadCPS_RW(file_manager->openFile("SCREEN.CPS").get());
+    const auto ScreenPic = LoadCPS_RW(file_manager->openFile("SCREEN.CPS").get());
     if (ScreenPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read SCREEN.CPS!");
     }
 
-    auto FamePic = LoadCPS_RW(file_manager->openFile("FAME.CPS").get());
+    const auto FamePic = LoadCPS_RW(file_manager->openFile("FAME.CPS").get());
     if (FamePic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read FAME.CPS!");
     }
 
-    auto ChoamPic = LoadCPS_RW(file_manager->openFile("CHOAM.CPS").get());
+    const auto ChoamPic = LoadCPS_RW(file_manager->openFile("CHOAM.CPS").get());
     if (ChoamPic == nullptr) {
         THROW(std::runtime_error, "PictureFactory::PictureFactory(): Cannot read CHOAM.CPS!");
     }
@@ -164,9 +164,9 @@ PictureFactory::PictureFactory() {
     gameStatsBackground = copySurface(background.get());
 
     {
-        auto FamePic2  = Scaler::defaultDoubleSurface(FamePic.get());
-        auto pSurface  = getSubPicture(FamePic2.get(), 16, 160, 610, 74);
-        SDL_Rect dest2 = calcDrawingRect(pSurface.get(), 16, 234);
+        const auto FamePic2 = Scaler::defaultDoubleSurface(FamePic.get());
+        const auto pSurface = getSubPicture(FamePic2.get(), 16, 160, 610, 74);
+        SDL_Rect dest2      = calcDrawingRect(pSurface.get(), 16, 234);
         SDL_BlitSurface(pSurface.get(), nullptr, FamePic2.get(), &dest2);
 
         SDL_Rect dest3 = calcDrawingRect(pSurface.get(), 16, 234 + 74);
@@ -196,18 +196,18 @@ PictureFactory::PictureFactory() {
     SDL_FillRect(builderListUpperCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
-        auto builderListUpperCapLeft = getSubPicture(ChoamPic.get(), 64, 3, 42, 18);
-        SDL_Rect dest5               = {0, 0, 42, 18};
+        const auto builderListUpperCapLeft = getSubPicture(ChoamPic.get(), 64, 3, 42, 18);
+        SDL_Rect dest5                     = {0, 0, 42, 18};
         SDL_BlitSurface(builderListUpperCapLeft.get(), nullptr, builderListUpperCap.get(), &dest5);
     }
     {
-        auto builderListUpperCapMiddle = getSubPicture(ChoamPic.get(), 69, 3, 38, 13);
-        SDL_Rect dest6                 = {42, 0, 38, 13};
+        const auto builderListUpperCapMiddle = getSubPicture(ChoamPic.get(), 69, 3, 38, 13);
+        SDL_Rect dest6                       = {42, 0, 38, 13};
         SDL_BlitSurface(builderListUpperCapMiddle.get(), nullptr, builderListUpperCap.get(), &dest6);
     }
     {
-        auto builderListUpperCapRight = getSubPicture(ChoamPic.get(), 69, 3, 48, 21);
-        SDL_Rect dest7                = {64, 0, 48, 21};
+        const auto builderListUpperCapRight = getSubPicture(ChoamPic.get(), 69, 3, 48, 21);
+        SDL_Rect dest7                      = {64, 0, 48, 21};
         SDL_BlitSurface(builderListUpperCapRight.get(), nullptr, builderListUpperCap.get(), &dest7);
     }
     replaceColor(builderListUpperCap.get(), 30, 0);
@@ -224,18 +224,18 @@ PictureFactory::PictureFactory() {
     SDL_FillRect(builderListLowerCap.get(), nullptr, PALCOLOR_TRANSPARENT);
 
     {
-        auto builderListLowerCapLeft = getSubPicture(ChoamPic.get(), 64, 149, 44, 17);
-        SDL_Rect dest8               = {0, 0, 44, 17};
+        const auto builderListLowerCapLeft = getSubPicture(ChoamPic.get(), 64, 149, 44, 17);
+        SDL_Rect dest8                     = {0, 0, 44, 17};
         SDL_BlitSurface(builderListLowerCapLeft.get(), nullptr, builderListLowerCap.get(), &dest8);
     }
     {
-        auto builderListLowerCapMiddle = getSubPicture(ChoamPic.get(), 68, 152, 40, 14);
-        SDL_Rect dest9                 = {44, 3, 40, 14};
+        const auto builderListLowerCapMiddle = getSubPicture(ChoamPic.get(), 68, 152, 40, 14);
+        SDL_Rect dest9                       = {44, 3, 40, 14};
         SDL_BlitSurface(builderListLowerCapMiddle.get(), nullptr, builderListLowerCap.get(), &dest9);
     }
     {
-        auto builderListLowerCapRight = getSubPicture(ChoamPic.get(), 68, 149, 48, 17);
-        SDL_Rect dest10               = {64, 0, 48, 17};
+        const auto builderListLowerCapRight = getSubPicture(ChoamPic.get(), 68, 149, 48, 17);
+        SDL_Rect dest10                     = {64, 0, 48, 17};
         SDL_BlitSurface(builderListLowerCapRight.get(), nullptr, builderListLowerCap.get(), &dest10);
     }
 
@@ -762,7 +762,7 @@ sdl2::surface_ptr PictureFactory::createMentatHouseChoiceQuestion(HOUSETYPE Hous
 
     sdl2::surface_ptr pQuestionPart2 = nullptr;
 
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
 
     // clang-format off
     switch(House) {
@@ -869,7 +869,7 @@ sdl2::surface_ptr PictureFactory::createHeraldMerc(SDL_Surface* heraldAtre, SDL_
 
     const auto pFrameAndCurtain = combinePictures(pRedReplaced.get(), pCurtain.get(), 7, 7);
 
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
 
     auto pSoldier = Wsafile(file_manager->openFile("INFANTRY.WSA").get()).getPicture(0);
     pSoldier      = getSubPicture(pSoldier.get(), 49, 17, 83, 91);

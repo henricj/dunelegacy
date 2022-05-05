@@ -57,7 +57,7 @@ void Frigate::init() {
     assert(itemID == Unit_Frigate);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Frigate;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
@@ -138,7 +138,7 @@ bool Frigate::update(const GameContext& context) {
 
     // check if this frigate has to be removed because it has just brought all units to the Starport
     if (active) {
-        auto* const map = dune::globals::currentGameMap;
+        const auto* const map = dune::globals::currentGameMap;
 
         if (droppedOffCargo
             && ((getRealX() < -TILESIZE) || (getRealX() > (map->getSizeX() + 1) * TILESIZE) || (getRealY() < -TILESIZE)

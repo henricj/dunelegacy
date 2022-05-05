@@ -52,9 +52,9 @@ void MapEditorRadarView::draw(Point position) {
     const SDL_Rect radarPosition = {position.x + RADARVIEW_BORDERTHICKNESS, position.y + RADARVIEW_BORDERTHICKNESS,
                                     RADARWIDTH, RADARHEIGHT};
 
-    const MapData& map       = pMapEditor->getMap();
-    auto* const renderer     = dune::globals::renderer.get();
-    auto* const screenborder = dune::globals::screenborder.get();
+    const MapData& map             = pMapEditor->getMap();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
 
     int scale   = 1;
     int offsetX = 0;

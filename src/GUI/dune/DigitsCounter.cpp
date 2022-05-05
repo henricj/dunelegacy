@@ -29,8 +29,8 @@ DigitsCounter::DigitsCounter() {
 DigitsCounter::~DigitsCounter() = default;
 
 void DigitsCounter::draw(Point position) {
-    auto* const gfx      = dune::globals::pGFXManager.get();
-    auto* const renderer = dune::globals::renderer.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
+    auto* const renderer  = dune::globals::renderer.get();
 
     const auto* const tex = gfx->getUIGraphic(UI_MissionSelect);
 

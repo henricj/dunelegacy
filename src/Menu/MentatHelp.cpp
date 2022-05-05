@@ -65,7 +65,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
     windowWidget.addWidget(&itemDescriptionLabel, Point(256 + 4, 96 + 4), Point(368 - 8, 224 - 8));
     itemDescriptionLabel.setVisible(false);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     const auto* const pMentatExit        = gfx->getUIGraphic(UI_MentatExit);
     const auto* const pMentatExitPressed = gfx->getUIGraphic(UI_MentatExit_Pressed);

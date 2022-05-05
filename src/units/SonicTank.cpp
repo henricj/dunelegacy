@@ -47,7 +47,7 @@ void SonicTank::init() {
     assert(itemID == Unit_SonicTank);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Tank_Base;
     gunGraphicID  = ObjPic_Sonictank_Gun;
@@ -61,9 +61,9 @@ void SonicTank::init() {
 SonicTank::~SonicTank() = default;
 
 void SonicTank::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);

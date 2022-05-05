@@ -56,7 +56,7 @@ void ProgressBar::draw(Point position) {
     const auto size = getSize();
 
     auto* const renderer = dune::globals::renderer.get();
-    auto& gui            = GUIStyle::getInstance();
+    const auto& gui      = GUIStyle::getInstance();
 
     if (bDrawShadow) {
         const SDL_FRect dest2{static_cast<float>(position.x + 2), static_cast<float>(position.y + 2),

@@ -136,8 +136,8 @@ void Sandworm::blitToScreen() {
     static constexpr int shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
     using dune::globals::currentZoomlevel;
-    auto* const renderer     = dune::globals::renderer.get();
-    auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
 
     if (shimmerOffsetIndex >= 0) {
         // render sandworm's shimmer
@@ -293,7 +293,7 @@ bool Sandworm::sleepOrDie(const GameContext& context) {
 void Sandworm::setTarget(const ObjectBase* newTarget) {
     parent::setTarget(newTarget);
 
-    auto* const house = dune::globals::pLocalHouse;
+    const auto* const house = dune::globals::pLocalHouse;
 
     if (newTarget == nullptr || newTarget->getOwner() != house
         || (warningWormSignPlayedFlags & 1 << static_cast<int>(house->getHouseID())) != 0)
