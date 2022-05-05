@@ -18,25 +18,29 @@
 #ifndef MESSAGETICKER_H
 #define MESSAGETICKER_H
 
+#include "Renderer/DuneTexture.h"
 #include <GUI/Widget.h>
 #include <misc/SDL2pp.h>
 
-#include <memory>
 #include <queue>
 #include <string>
 
 class MessageTicker final : public Widget {
+    using parent = Widget;
+
 public:
     MessageTicker();
     ~MessageTicker() override;
 
-    void addMessage(const std::string& msg);
+    void addMessage(std::string msg);
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to
     */
     void draw(Point position) override;
+
+    void invalidateTextures() override;
 
     /**
         Returns the minimum size of this widget. The widget should not
@@ -46,7 +50,8 @@ public:
     [[nodiscard]] Point getMinimumSize() const override { return {0, 0}; }
 
 private:
-    std::queue<sdl2::texture_ptr> messageTextures;
+    DuneTextureOwned texture_;
+    std::queue<std::string> messages;
     int timer;
 };
 
