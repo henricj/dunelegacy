@@ -433,7 +433,7 @@ void CampaignStatsMenu::calculateScore(int level) {
     auto spice_harvested_by_human = 0.0_fix;
     auto spice_harvested_by_ai    = 0.0_fix;
 
-    auto* const game = dune::globals::currentGame.get();
+    const auto* const game = dune::globals::currentGame.get();
 
     totalTime = game->getGameTime() / 1000;
 

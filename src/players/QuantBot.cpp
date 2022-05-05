@@ -220,7 +220,7 @@ void QuantBot::save(OutputStream& stream) const {
 }
 
 void QuantBot::update() {
-    auto& game = context_.game;
+    const auto& game = context_.game;
 
     if (getGameCycleCount() == 0) {
         // The game just started and we gather some

@@ -42,7 +42,7 @@
 
 Finale::Finale(HOUSETYPE house) {
 
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
     ;
     switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN: {

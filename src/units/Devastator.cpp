@@ -53,7 +53,7 @@ void Devastator::init() {
     assert(itemID == Unit_Devastator);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Devastator_Base;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
@@ -72,9 +72,9 @@ void Devastator::save(OutputStream& stream) const {
 }
 
 void Devastator::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const int x1 = screenborder->world2screenX(realX);
     const int y1 = screenborder->world2screenY(realY);

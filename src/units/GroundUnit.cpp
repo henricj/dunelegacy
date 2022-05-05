@@ -275,7 +275,7 @@ void GroundUnit::doRepair(const GameContext& context) noexcept {
     const RepairYard* pBestRepairYard             = nullptr;
 
     for (auto* pStructure : dune::globals::structureList) {
-        auto* const pRepairYard = dune_cast<RepairYard>(pStructure);
+        const auto* const pRepairYard = dune_cast<RepairYard>(pStructure);
         if (pRepairYard && (pStructure->getOwner() == owner)) {
 
             if (pRepairYard->getNumBookings() == 0) {

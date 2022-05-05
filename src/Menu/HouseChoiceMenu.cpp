@@ -39,7 +39,7 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
     HouseChoiceMenu::setWindowWidget(&windowWidget);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     selectYourHouseLabel.setTexture(gfx->getUIGraphic(UI_SelectYourHouseLarge));
     windowWidget.addWidget(&selectYourHouseLabel, Point(0, 0), Point(100, 640));
@@ -91,7 +91,7 @@ void HouseChoiceMenu::onHouseButton(int button) {
 }
 
 void HouseChoiceMenu::updateHouseChoice() {
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     // House1 button
     house1Button.setTextures(gfx->getUIGraphic(UI_Herald_ColoredLarge, houseOrder[currentHouseChoiceScrollPos + 0]));

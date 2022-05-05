@@ -759,9 +759,9 @@ bool run_game(int argc, char* argv[]) {
             GlobalCleanup file_cleanup{dune::globals::pFileManager};
             dune::globals::pFileManager = std::make_unique<FileManager>();
 
-            auto* const pFileManager = dune::globals::pFileManager.get();
-            auto* const pTextManager = dune::globals::pTextManager.get();
-            auto& settings           = dune::globals::settings;
+            const auto* const pFileManager = dune::globals::pFileManager.get();
+            auto* const pTextManager       = dune::globals::pTextManager.get();
+            auto& settings                 = dune::globals::settings;
 
             // now we can finish loading texts
             pTextManager->loadData();
@@ -821,7 +821,7 @@ bool run_game(int argc, char* argv[]) {
 
             sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
 
-            auto* const pGFXManager = dune::globals::pGFXManager.get();
+            const auto* const pGFXManager = dune::globals::pGFXManager.get();
 
             if (auto* cursor = pGFXManager->getCursor(UI_CursorNormal))
                 SDL_SetCursor(cursor);

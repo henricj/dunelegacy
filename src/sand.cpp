@@ -594,7 +594,7 @@ std::string getAITeamTypeNameByID(AITeamType aiTeamType) {
 */
 FixPoint getDeviateWeakness(HOUSETYPE house) {
 
-    auto* const game = dune::globals::currentGame.get();
+    const auto* const game = dune::globals::currentGame.get();
 
     // Deviators are crap enough. If this is a custom game remove the weakness nerf
     // so that Ordos is playable for Humans

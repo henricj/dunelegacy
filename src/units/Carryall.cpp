@@ -63,7 +63,7 @@ void Carryall::init() {
     assert(itemID == Unit_Carryall);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Carryall;
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());

@@ -109,8 +109,8 @@ void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
 }
 
 void InfantryBase::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto dest =
         calcSpriteDrawingRect(graphic[zoom], screenborder->world2screenX(realX), screenborder->world2screenY(realY),

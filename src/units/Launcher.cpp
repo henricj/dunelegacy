@@ -46,7 +46,7 @@ void Launcher::init() {
     assert(itemID == Unit_Launcher);
     owner->incrementUnits(itemID);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     graphicID     = ObjPic_Tank_Base;
     gunGraphicID  = ObjPic_Launcher_Gun;
@@ -60,9 +60,9 @@ void Launcher::init() {
 Launcher::~Launcher() = default;
 
 void Launcher::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto x1 = screenborder->world2screenX(realX);
     const auto y1 = screenborder->world2screenY(realY);

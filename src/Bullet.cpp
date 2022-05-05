@@ -96,7 +96,7 @@ Bullet::Bullet(InputStream& stream) {
     shooterID  = stream.readUint32();
     uint32_t x = stream.readUint32();
 
-    auto* const game = dune::globals::currentGame.get();
+    const auto* const game = dune::globals::currentGame.get();
     if (x < static_cast<uint32_t>(HOUSETYPE::NUM_HOUSES)) {
         owner = game->getHouse(static_cast<HOUSETYPE>(x));
     } else {
@@ -128,7 +128,7 @@ void Bullet::init() {
 
     const auto houseID = owner->getHouseID();
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     switch (bulletID) {
         case Bullet_DRocket: {
@@ -256,9 +256,9 @@ void Bullet::save(OutputStream& stream) const {
 }
 
 void Bullet::blitToScreen(uint32_t cycleCount) const {
-    const auto zoom          = dune::globals::currentZoomlevel;
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
 
     const auto imageW = getWidth(graphic[zoom]) / numFrames;
     const auto imageH = getHeight(graphic[zoom]);

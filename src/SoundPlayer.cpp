@@ -89,7 +89,7 @@ void SoundPlayer::playSoundAt(Sound_enum soundID, const Coord& location) const {
 
     const auto realCoord = location * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
 
-    auto* const screenborder = dune::globals::screenborder.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
 
     if (screenborder->isInsideScreen(realCoord, Coord(TILESIZE, TILESIZE))) {
         playSound(soundID, sfxVolume);

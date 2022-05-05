@@ -33,7 +33,7 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     mainHBox.addWidget(&weaponBox);
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     const auto* const pTexture = gfx->getSmallDetailPic(Picture_DeathHand);
     weaponBox.addWidget(&weaponProgressBar, Point((SIDEBARWIDTH - 25 - getWidth(pTexture)) / 2, 5),

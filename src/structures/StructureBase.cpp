@@ -132,9 +132,9 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
 }
 
 void StructureBase::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto index  = fogged ? lastVisibleFrame : curAnimFrame;
     const auto indexX = index % numImagesX;
@@ -254,8 +254,8 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
-    auto* const game         = dune::globals::currentGame.get();
-    auto* const local_player = dune::globals::pLocalPlayer;
+    auto* const game               = dune::globals::currentGame.get();
+    const auto* const local_player = dune::globals::pLocalPlayer;
 
     if ((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y)
         || (yPos >= (location.y + getStructureSizeY()))) {

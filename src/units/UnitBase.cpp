@@ -245,7 +245,7 @@ bool UnitBase::attack(const GameContext& context) {
 }
 
 void UnitBase::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
 
     const auto x = screenborder->world2screenX(realX);
     const auto y = screenborder->world2screenY(realY);
@@ -369,10 +369,10 @@ void UnitBase::deviate(const GameContext& context, House* newOwner) {
 }
 
 void UnitBase::drawSelectionBox() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
-    auto* const gfx          = dune::globals::pGFXManager.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
+    const auto* const gfx          = dune::globals::pGFXManager.get();
 
     const DuneTexture* selectionBox = nullptr;
 
@@ -398,13 +398,13 @@ void UnitBase::drawSelectionBox() {
 }
 
 void UnitBase::drawOtherPlayerSelectionBox() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const DuneTexture* selectionBox = nullptr;
 
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
     switch (zoom) {
         case 0: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel0); break;
         case 1: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel1); break;

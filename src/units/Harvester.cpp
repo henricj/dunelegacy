@@ -93,9 +93,9 @@ void Harvester::save(OutputStream& stream) const {
 }
 
 void Harvester::blitToScreen() {
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    const auto zoom          = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
 
     const int x = screenborder->world2screenX(realX);
     const int y = screenborder->world2screenY(realY);
@@ -305,9 +305,9 @@ void Harvester::destroy(const GameContext& context) {
 void Harvester::drawSelectionBox() {
     const DuneTexture* selectionBox = nullptr;
 
-    auto* const screenborder = dune::globals::screenborder.get();
-    auto* const renderer     = dune::globals::renderer.get();
-    auto* const gfx          = dune::globals::pGFXManager.get();
+    const auto* const screenborder = dune::globals::screenborder.get();
+    auto* const renderer           = dune::globals::renderer.get();
+    const auto* const gfx          = dune::globals::pGFXManager.get();
 
     switch (dune::globals::currentZoomlevel) {
         case 0: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel0); break;

@@ -115,7 +115,7 @@ Game::~Game() {
 }
 
 void Game::resize() {
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     sideBarPos = calcAlignedDrawingRect(gfx->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos  = calcAlignedDrawingRect(gfx->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
@@ -969,7 +969,7 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
                     int xPos = INVALID_POS;
                     int yPos = INVALID_POS;
 
-                    auto* const screenborder = dune::globals::screenborder.get();
+                    const auto* const screenborder = dune::globals::screenborder.get();
 
                     if (screenborder->isScreenCoordInsideMap(dune::globals::drawnMouseX, dune::globals::drawnMouseY)) {
                         xPos = screenborder->screen2MapX(dune::globals::drawnMouseX);
@@ -2500,7 +2500,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
         return false;
     }
 
-    auto* const currentGame = dune::globals::currentGame.get();
+    const auto* const currentGame = dune::globals::currentGame.get();
     using dune::globals::soundPlayer;
 
     const auto placeItem = pBuilder->getCurrentProducedItem();

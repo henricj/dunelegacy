@@ -68,7 +68,7 @@ void CommandManager::load(InputStream& stream) {
 
 void CommandManager::update() {
     auto* const network_manager = dune::globals::pNetworkManager.get();
-    auto* const game            = dune::globals::currentGame.get();
+    const auto* const game      = dune::globals::currentGame.get();
 
     if (network_manager == nullptr)
         return;

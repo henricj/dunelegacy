@@ -78,7 +78,7 @@ void TextManager::loadData() {
     addOrigDuneText("DUNE." + ext);
     addOrigDuneText("MESSAGE." + ext);
 
-    auto* const file_manager = dune::globals::pFileManager.get();
+    const auto* const file_manager = dune::globals::pFileManager.get();
 
     // load all mentat texts
     mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =

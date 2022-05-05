@@ -842,7 +842,7 @@ void House::decrementHarvesters() {
             FixPoint closestDistance              = FixPt_MAX;
             const StructureBase* pClosestRefinery = nullptr;
 
-            for (auto* pStructure : dune::globals::structureList) {
+            for (const auto* pStructure : dune::globals::structureList) {
                 if ((pStructure->getItemID() == Structure_Refinery) && (pStructure->getOwner() == this)
                     && (pStructure->getHealth() > 0)) {
                     Coord pos = pStructure->getLocation();

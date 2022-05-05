@@ -50,7 +50,7 @@ Explosion::Explosion(InputStream& stream) {
 Explosion::~Explosion() = default;
 
 void Explosion::init() {
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     switch (explosionID) {
         case Explosion_Small: {
@@ -129,8 +129,8 @@ void Explosion::save(OutputStream& stream) const {
 }
 
 void Explosion::blitToScreen() const {
-    const auto zoom          = dune::globals::currentZoomlevel;
-    auto* const screenborder = dune::globals::screenborder.get();
+    const auto zoom                = dune::globals::currentZoomlevel;
+    const auto* const screenborder = dune::globals::screenborder.get();
 
     const uint16_t width  = getWidth(graphic[zoom]) / numFrames;
     const uint16_t height = getHeight(graphic[zoom]);

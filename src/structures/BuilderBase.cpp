@@ -294,7 +294,7 @@ int BuilderBase::getMaxUpgradeLevel() const {
     auto upgradeLevel = 0;
 
     for (int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
-        auto* const game = dune::globals::currentGame.get();
+        const auto* const game = dune::globals::currentGame.get();
 
         const auto& objData = game->objectData.data[i][static_cast<int>(originalHouseID)];
 
@@ -313,7 +313,7 @@ void BuilderBase::updateBuildList() {
 
         const auto itemID2Add = itemOrder[i];
 
-        auto* const game = dune::globals::currentGame.get();
+        const auto* const game = dune::globals::currentGame.get();
 
         const auto& objData = game->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
 
