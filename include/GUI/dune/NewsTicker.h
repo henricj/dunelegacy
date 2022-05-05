@@ -25,13 +25,15 @@
 #include <string>
 
 class NewsTicker final : public Widget {
+    using parent = Widget;
+
 public:
     NewsTicker();
     ~NewsTicker() override;
 
     [[nodiscard]] bool hasMessage() const { return !messages.empty(); }
-    void addMessage(const std::string& msg);
-    void addUrgentMessage(const std::string& msg);
+    void addMessage(std::string msg);
+    void addUrgentMessage(std::string msg);
 
     /**
         Draws this button to screen. This method is called before drawOverlay().
@@ -73,7 +75,7 @@ private:
     const DuneTexture* pBackground;
     unique_queue<std::string> messages;
     std::string currentMessage;
-    sdl2::texture_ptr pCurrentMessageTexture;
+    DuneTextureOwned pCurrentMessageTexture;
     int timer;
 };
 
