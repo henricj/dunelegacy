@@ -129,4 +129,20 @@ inline int DuneFillRects(SDL_Renderer* renderer, std::initializer_list<const SDL
     return SDL_RenderFillRectsF(renderer, std::data(rects), rects.size());
 }
 
+namespace dune {
+
+class RenderClip final {
+public:
+    RenderClip(SDL_Renderer* renderer, const SDL_Rect& clip);
+
+    ~RenderClip();
+
+private:
+    SDL_Rect old_clip{};
+    SDL_bool was_clipping_;
+    SDL_Renderer* renderer_;
+};
+
+} // namespace dune
+
 #endif // DUNERENDERER_H

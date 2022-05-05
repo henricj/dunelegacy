@@ -903,13 +903,7 @@ void DuneStyle::drawBackgroundTiles(SDL_Renderer* renderer, const SDL_FRect& rec
 
     const auto clip = as_rect(rect);
 
-    SDL_Rect old_clip{};
-    const auto was_clipping = SDL_RenderIsClipEnabled(renderer);
-
-    if (was_clipping)
-        SDL_RenderGetClipRect(renderer, &old_clip);
-
-    SDL_RenderSetClipRect(renderer, &clip);
+    dune::RenderClip render_clip{renderer, clip};
 
     SDL_FRect dest{rect.x, rect.y, tile_width, tile_height};
 
@@ -922,11 +916,6 @@ void DuneStyle::drawBackgroundTiles(SDL_Renderer* renderer, const SDL_FRect& rec
             SDL_RenderCopyF(renderer, tile->texture_, &src, &dest);
         }
     }
-
-    if (was_clipping)
-        SDL_RenderSetClipRect(renderer, &old_clip);
-    else
-        SDL_RenderSetClipRect(renderer, nullptr);
 }
 
 void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {

@@ -53,6 +53,26 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, flo
     }
 }
 
+namespace dune {
+
+RenderClip::RenderClip(SDL_Renderer* renderer, const SDL_Rect& clip) : renderer_{renderer} {
+    was_clipping_ = SDL_RenderIsClipEnabled(renderer);
+
+    if (was_clipping_)
+        SDL_RenderGetClipRect(renderer, &old_clip);
+
+    SDL_RenderSetClipRect(renderer, &clip);
+}
+
+RenderClip::~RenderClip() {
+    if (was_clipping_)
+        SDL_RenderSetClipRect(renderer_, &old_clip);
+    else
+        SDL_RenderSetClipRect(renderer_, nullptr);
+}
+
+} // namespace dune
+
 int Dune_RenderCopyEx(SDL_Renderer* renderer, const DuneTexture* texture, const SDL_Rect* srcrect,
                       const SDL_Rect* dstrect, const double angle, const SDL_Point* center,
                       const SDL_RendererFlip flip) {
