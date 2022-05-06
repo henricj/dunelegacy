@@ -922,7 +922,7 @@ void DuneStyle::drawBackground(SDL_Renderer* renderer, const SDL_FRect& rect) {
     drawBackgroundTiles(renderer, rect);
 
     setRenderDrawColor(renderer, buttonBorderColor);
-    DuneDrawRects(renderer, {{rect.x, rect.y, rect.w - 1, rect.h - 1}});
+    DuneDrawRects(renderer, {{rect.x, rect.y, rect.w, rect.h}});
 
     setRenderDrawColor(renderer, buttonEdgeTopLeftColor);
     DuneDrawRects(renderer, {{rect.x + 1, rect.y + 1, rect.w - 2, 1},
