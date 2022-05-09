@@ -24,8 +24,6 @@ add_sources(FILE_CLASSES_SOURCES
 	Vocfile.cpp
 	Wsafile.cpp
 	adl/sound_adlib.cpp
-	adl/surroundopl.cpp
-	adl/woodyopl.cpp
 	music/ADLPlayer.cpp
 	music/DirectoryPlayer.cpp
 	music/XMIPlayer.cpp

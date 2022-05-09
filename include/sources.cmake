@@ -26,11 +26,7 @@ add_sources(HEADERS
 	DataTypes.h
 	Definitions.h
 	Explosion.h
-	FileClasses/adl/opl.h
 	FileClasses/adl/sound_adlib.h
-	FileClasses/adl/surroundopl.h
-	FileClasses/adl/wemuopl.h
-	FileClasses/adl/woodyopl.h
 	FileClasses/Animation.h
 	FileClasses/Cpsfile.h
 	FileClasses/Decode.h

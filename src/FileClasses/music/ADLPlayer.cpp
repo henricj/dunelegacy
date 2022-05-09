@@ -19,8 +19,8 @@
 
 #include <globals.h>
 
+#include "FileCLasses/adl/sound_adlib.h"
 #include <FileClasses/FileManager.h>
-#include <FileClasses/adl/sound_adlib.h>
 
 #include <mmath.h>
 
