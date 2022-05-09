@@ -1,3 +1,5 @@
 add_subdirectory(enet EXCLUDE_FROM_ALL)
 add_subdirectory(digestpp EXCLUDE_FROM_ALL)
 add_subdirectory(rectpack2D EXCLUDE_FROM_ALL)
+add_subdirectory(libbinio EXCLUDE_FROM_ALL)
+add_subdirectory(adplug EXCLUDE_FROM_ALL)

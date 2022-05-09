@@ -45,9 +45,13 @@
 #include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_mixer.h>
+
+#include <memory>
 #include <vector>
 
-class AdlibDriver;
+class CFileProvider;
+class CPlayer;
+class Copl;
 
 /**
  * AdLib implementation of the sound output device.
@@ -60,67 +64,47 @@ class AdlibDriver;
  * See AdlibDriver for more information.
  * @see AdlibDriver
  */
-class SoundAdlibPC {
+class SoundAdlibPC final {
 public:
-    explicit SoundAdlibPC(SDL_RWops* rwop);
-    SoundAdlibPC(SDL_RWops* rwop, int freq);
+    SoundAdlibPC(SDL_RWops* rwop, int freq = 0);
     SoundAdlibPC(const SoundAdlibPC& soundAdlibPC)            = delete;
     SoundAdlibPC& operator=(const SoundAdlibPC& soundAdlibPC) = delete;
     ~SoundAdlibPC();
 
-    static void callback(void*, uint8_t*, int);
+    static void callback(void* udata, uint8_t* stream, int len);
 
-    std::vector<int> getSubsongs();
+    void playTrack(int track);
 
-    bool init();
-    void process();
+    [[nodiscard]] bool isPlaying() const { return playing_; }
 
-    void playTrack(uint8_t track);
-    void haltTrack();
+    sdl2::mix_chunk_ptr getSubsong(int Num);
 
-    [[nodiscard]] bool isPlaying() const;
+    void setVolume(int newVolume) noexcept { volume_ = newVolume; }
 
-    void playSoundEffect(uint8_t track);
-
-    void beginFadeOut();
-
-    Mix_Chunk* getSubsong(int Num);
-
-    void setVolume(int newVolume) noexcept { volume = newVolume; }
-
-    [[nodiscard]] int getVolume() const noexcept { return volume; }
+    [[nodiscard]] int getVolume() const noexcept { return volume_; }
 
 private:
-    void internalLoadFile(SDL_RWops* rwop);
+    void read(int16_t* data, int samples);
 
-    void play(uint8_t track);
+    static std::unique_ptr<CFileProvider> create_provider(SDL_RWops* rwop);
 
-    void unk1();
-    void unk2();
-
-    AdlibDriver* _driver;
-
-    uint8_t _trackEntries[500];
-    uint8_t* _soundDataPtr;
-    int _sfxPlayingSound;
-
-    uint8_t _sfxPriority;
-    uint8_t _sfxFourthByteOfSong;
-
-    int _numSoundTriggers;
-    const int* _soundTriggers;
+    std::unique_ptr<Copl> create_opl();
 
     [[nodiscard]] unsigned char getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 
+    std::unique_ptr<Copl> opl_;
+    std::unique_ptr<CPlayer> driver_;
+
+    bool playing_{};
+    int volume_{MIX_MAX_VOLUME / 2};
+
     int m_channels;
     int m_freq;
     uint16_t m_format;
 
-    bool bJustStartedPlaying;
-
-    int volume;
+    float offset_{};
 };
 
 #endif

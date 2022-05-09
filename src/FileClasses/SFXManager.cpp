@@ -17,17 +17,18 @@
 
 #include <FileClasses/SFXManager.h>
 
-#include <algorithm>
-
 #include <globals.h>
 
+#include "FileClasses/adl/sound_adlib.h"
 #include <FileClasses/FileManager.h>
 #include <FileClasses/Vocfile.h>
 
-#include <FileClasses/adl/sound_adlib.h>
-
 #include <misc/exceptions.h>
 #include <misc/sound_util.h>
+
+#include <adlib.h>
+
+#include <algorithm>
 
 // Not used:
 // - EXCANNON.VOC (same as EXSMALL.VOC)
@@ -77,9 +78,9 @@ sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int i
 
     const auto rwop = dune::globals::pFileManager->openFile(adlFile);
 
-    const auto pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get(), AUDIO_FREQUENCY);
-    pSoundAdlibPC->setVolume(volume);
-    sdl2::mix_chunk_ptr chunk{pSoundAdlibPC->getSubsong(index)};
+    SoundAdlibPC player{rwop.get(), AUDIO_FREQUENCY};
+
+    auto chunk = player.getSubsong(index);
 
     return chunk;
 }
@@ -363,19 +364,31 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
 }
 
 void SFXManager::loadSounds() {
+
+    auto rwop = dune::globals::pFileManager->openFile("DUNE1.ADL");
+
+    SoundAdlibPC dune1{rwop.get(), AUDIO_FREQUENCY};
+
+    rwop.reset();
+
     // Sfx
-    soundChunk[static_cast<int>(Sound_enum::Sound_PlaceStructure)]  = getChunkFromFile("EXDUD.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ButtonClick)]     = getChunkFromFile("BUTTON.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_InvalidAction)]   = loadMixFromADL("DUNE1.ADL", 47);
-    soundChunk[static_cast<int>(Sound_enum::Sound_CreditsTick)]     = loadMixFromADL("DUNE1.ADL", 52, MIX_MAX_VOLUME);
-    soundChunk[static_cast<int>(Sound_enum::Sound_CreditsTickDown)] = loadMixFromADL("DUNE1.ADL", 53, MIX_MAX_VOLUME);
-    soundChunk[static_cast<int>(Sound_enum::Sound_Tick)]            = loadMixFromADL("DUNE1.ADL", 38);
-    soundChunk[static_cast<int>(Sound_enum::Sound_RadarNoise)]      = getChunkFromFile("STATICP.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionGas)]    = getChunkFromFile("EXGAS.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionTiny)]   = getChunkFromFile("EXTINY.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionSmall)]  = getChunkFromFile("EXSMALL.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionMedium)] = getChunkFromFile("EXMED.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionLarge)]  = getChunkFromFile("EXLARGE.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_PlaceStructure)] = getChunkFromFile("EXDUD.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ButtonClick)]    = getChunkFromFile("BUTTON.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_InvalidAction)]  = dune1.getSubsong(47);
+
+    const auto volume = dune1.getVolume();
+    dune1.setVolume(MIX_MAX_VOLUME);
+    soundChunk[static_cast<int>(Sound_enum::Sound_CreditsTick)]     = dune1.getSubsong(52);
+    soundChunk[static_cast<int>(Sound_enum::Sound_CreditsTickDown)] = dune1.getSubsong(53);
+    dune1.setVolume(volume);
+
+    soundChunk[static_cast<int>(Sound_enum::Sound_Tick)]               = dune1.getSubsong(38);
+    soundChunk[static_cast<int>(Sound_enum::Sound_RadarNoise)]         = getChunkFromFile("STATICP.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionGas)]       = getChunkFromFile("EXGAS.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionTiny)]      = getChunkFromFile("EXTINY.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionSmall)]     = getChunkFromFile("EXSMALL.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionMedium)]    = getChunkFromFile("EXMED.VOC");
+    soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionLarge)]     = getChunkFromFile("EXLARGE.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_ExplosionStructure)] = getChunkFromFile("CRUMBLE.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_WormAttack)]         = getChunkFromFile("WORMET3P.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_Gun)]                = getChunkFromFile("GUN.VOC");
@@ -386,11 +399,11 @@ void SFXManager::loadSounds() {
     soundChunk[static_cast<int>(Sound_enum::Sound_Scream3)]            = getChunkFromFile("VSCREAM3.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_Scream4)]            = getChunkFromFile("VSCREAM4.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_Scream5)]            = getChunkFromFile("VSCREAM5.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_Trumpet)]            = loadMixFromADL("DUNE1.ADL", 30);
-    soundChunk[static_cast<int>(Sound_enum::Sound_Drop)]               = loadMixFromADL("DUNE1.ADL", 24);
+    soundChunk[static_cast<int>(Sound_enum::Sound_Trumpet)]            = dune1.getSubsong(30);
+    soundChunk[static_cast<int>(Sound_enum::Sound_Drop)]               = dune1.getSubsong(24);
     soundChunk[static_cast<int>(Sound_enum::Sound_Squashed)]           = getChunkFromFile("SQUISH2.VOC");
     soundChunk[static_cast<int>(Sound_enum::Sound_MachineGun)]         = getChunkFromFile("GUNMULTI.VOC");
-    soundChunk[static_cast<int>(Sound_enum::Sound_Sonic)]              = loadMixFromADL("DUNE1.ADL", 43);
+    soundChunk[static_cast<int>(Sound_enum::Sound_Sonic)]              = dune1.getSubsong(43);
     soundChunk[static_cast<int>(Sound_enum::Sound_RocketSmall)]        = getChunkFromFile("MISLTINP.VOC");
 }
 
