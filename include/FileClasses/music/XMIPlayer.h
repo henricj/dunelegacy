@@ -67,7 +67,7 @@ public:
 private:
     std::filesystem::path getTmpFileName();
 
-    Mix_Music* music;
+    Mix_Music* music = nullptr;
 };
 
 #endif // XMIPLAYER_H

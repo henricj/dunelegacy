@@ -22,6 +22,8 @@
 #include <FileClasses/FileManager.h>
 #include <FileClasses/xmidi/xmidi.h>
 
+#include "misc/Random.h"
+#include "misc/string_util.h"
 #include <misc/fnkdat.h>
 
 #include <SDL2/SDL.h>
@@ -31,8 +33,7 @@
 #include <iostream>
 
 XMIPlayer::XMIPlayer()
-    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "XMIPlayer"),
-      music(nullptr) {
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "XMIPlayer") {
 
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
     if ((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
@@ -304,23 +305,26 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-        auto inputrwop = dune::globals::pFileManager->openFile(std::filesystem::path(filename));
-        SDLDataSource input(inputrwop.release(), 1);
-
         auto tmpFilename = getTmpFileName();
 
-        SDL_RWops* outputrwop = SDL_RWFromFile(tmpFilename.u8string(), "wb");
-        if (outputrwop == nullptr) {
-            std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
-            return;
+        { // Scope
+            auto input_path = std::filesystem::path(reinterpret_cast<const char8_t*>(filename.c_str()));
+            auto inputrwop  = dune::globals::pFileManager->openFile(input_path);
+            SDLDataSource input(inputrwop.get(), 0);
+
+            sdl2::RWops_ptr outputrwop{SDL_RWFromFile(tmpFilename.u8string(), "wb+")};
+            if (outputrwop == nullptr) {
+                std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
+                return;
+            }
+            SDLDataSource output(outputrwop.get(), 0);
+
+            XMIDI myXMIDI(&input, XMIDI_CONVERT_NOCONVERSION);
+            myXMIDI.retrieve(musicNum, &output);
+
+            input.close();
+            output.close();
         }
-        SDLDataSource output(outputrwop, 1);
-
-        XMIDI myXMIDI(&input, XMIDI_CONVERT_NOCONVERSION);
-        myXMIDI.retrieve(musicNum, &output);
-
-        input.close();
-        output.close();
 
         Mix_HaltMusic();
         if (music != nullptr) {
@@ -371,7 +375,10 @@ void XMIPlayer::setMusic(bool value) {
 }
 
 std::filesystem::path XMIPlayer::getTmpFileName() {
+    const auto random_bytes = RandomFactory::createRandomSeed("Temporary file");
+
     // determine path to config file
-    auto [ok, tmp] = fnkdat("tmp.mid", FNKDAT_USER | FNKDAT_CREAT);
-    return tmp;
+    const auto unique = to_hex(std::span{random_bytes}.subspan(0, 32), 0);
+
+    return std::filesystem::temp_directory_path() / fmt::format("tmp{}.mid", unique);
 }
