@@ -19,22 +19,19 @@
 
 #include <globals.h>
 
-#include "FileCLasses/adl/sound_adlib.h"
+#include "FileClasses/adl/sound_adlib.h"
 #include <FileClasses/FileManager.h>
 
-#include <mmath.h>
-
 ADLPlayer::ADLPlayer()
-    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "ADLPlayer"),
-      pSoundAdlibPC(nullptr) { }
+    : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "ADLPlayer") { }
 
 ADLPlayer::~ADLPlayer() {
     setMusic(false);
 }
 
 void ADLPlayer::changeMusic(MUSICTYPE musicType) {
-    int musicNum         = -1;
-    std::string filename = "";
+    int musicNum = -1;
+    std::string filename;
 
     if (currentMusicType == musicType && pSoundAdlibPC != nullptr && pSoundAdlibPC->isPlaying()) {
         return;
@@ -282,16 +279,16 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
     if (musicOn && !filename.empty()) {
 
         Mix_HookMusic(nullptr, nullptr);
-        delete pSoundAdlibPC;
+        pSoundAdlibPC.release();
 
-        sdl2::RWops_ptr rwop = dune::globals::pFileManager->openFile(filename);
+        auto rwop = dune::globals::pFileManager->openFile(filename);
 
-        pSoundAdlibPC = new SoundAdlibPC(rwop.get());
+        pSoundAdlibPC = std::make_unique<SoundAdlibPC>(rwop.get());
         pSoundAdlibPC->setVolume(musicVolume);
 
         pSoundAdlibPC->playTrack(musicNum);
 
-        Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC);
+        Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC.get());
 
         sdl2::log_info("Now playing %s!", filename.c_str());
     }
@@ -319,13 +316,12 @@ void ADLPlayer::setMusic(bool value) {
     } else {
         Mix_HookMusic(nullptr, nullptr);
 
-        delete pSoundAdlibPC;
-        pSoundAdlibPC = nullptr;
+        pSoundAdlibPC.reset();
     }
 }
 
 void ADLPlayer::setMusicVolume(int newVolume) {
-    MusicPlayer::setMusicVolume(newVolume);
+    parent::setMusicVolume(newVolume);
     if (musicOn) {
         pSoundAdlibPC->setVolume(newVolume);
     }
