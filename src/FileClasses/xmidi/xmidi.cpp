@@ -992,7 +992,7 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
         len = source->read4high();
 
         // Skip the FORM entries
-        if (0 != memcmp(buf, "FORM", 4)) {
+        if (0 == memcmp(buf, "FORM", 4)) {
             source->skip(4);
             source->read(buf, 4);
             len = source->read4high();
