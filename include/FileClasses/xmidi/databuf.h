@@ -165,7 +165,7 @@ private:
     int freesrc;
 
 public:
-    SDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
+    explicit SDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
 
     ~SDLDataSource() override { close(); }
 

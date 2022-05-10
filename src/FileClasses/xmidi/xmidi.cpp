@@ -23,24 +23,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <array>
 #include <iostream>
 
-using namespace std;
-
-#ifndef TRUE
-#    define TRUE true
-#endif
-#ifndef FALSE
-#    define FALSE false
-#endif
+namespace {
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a
 // patch change. This is to ensure that the default state of a midi file is with
-// the tracks centred, unless the first patch change says otherwise.
+// the tracks centered, unless the first patch change says otherwise.
 inline constexpr auto PATCH_VOL_PAN_BIAS = 5;
 
+} // namespace
+
 // This is a default set of patches to convert from MT32 to GM
-// The index is the MT32 Patch nubmer and the value is the GM Patch
-// This is only suitable for music that doesn'tdo timbre changes
+// The index is the MT32 Patch number and the value is the GM Patch
+// This is only suitable for music that doesn't do timbre changes
 // XMIDIs that contain Timbre changes will not convert properly
 constexpr char XMIDI::mt32asgm[128] = {
     0,   // 0    Piano 1
@@ -305,33 +300,22 @@ constexpr char XMIDI::mt32asgs[256] = {
     98,  0, // 126  Water Bell set to Crystal Pad(98)
     121, 0  // 127  Jungle Tune set to Breath Noise
 };
-// Constructor
-XMIDI::XMIDI(DataSource* source, int pconvert)
-    : events(nullptr), timing(nullptr), convert_type(pconvert), fixed(nullptr) {
-    int i = 16;
-    while (i--)
-        bank127[i] = 0;
 
+// Constructor
+XMIDI::XMIDI(DataSource* source, int pconvert) : convert_type(pconvert) {
     ExtractTracks(source);
 }
 
 XMIDI::~XMIDI() {
-    if (events) {
-        for (int i = 0; i < info.tracks; i++)
-            DeleteEventList(events[i]);
-        delete[] events;
-    }
-    if (timing)
-        delete[] timing;
-    if (fixed)
-        delete[] fixed;
+    for (auto event : events)
+        DeleteEventList(event);
 }
 
 int XMIDI::retrieve(unsigned int track, DataSource* dest) {
     int len = 0;
 
-    if (!events) {
-        cerr << "No midi data in loaded." << endl;
+    if (events.empty()) {
+        std::cerr << "No midi data in loaded." << std::endl;
         return 0;
     }
 
@@ -342,8 +326,7 @@ int XMIDI::retrieve(unsigned int track, DataSource* dest) {
         for (int i = 0; i < info.tracks; i++)
             DeleteEventList(events[i]);
 
-        delete[] events;
-        events    = new midi_event*[1];
+        events.resize(1);
         events[0] = list;
 
         info.tracks = 1;
@@ -351,7 +334,7 @@ int XMIDI::retrieve(unsigned int track, DataSource* dest) {
     }
 
     if (track >= info.tracks) {
-        cerr << "Can't retrieve MIDI data, track out of range" << endl;
+        std::cerr << "Can't retrieve MIDI data, track out of range" << std::endl;
         return 0;
     }
 
@@ -359,7 +342,7 @@ int XMIDI::retrieve(unsigned int track, DataSource* dest) {
     if (!fixed[track]) {
         list = events[track];
         MovePatchVolAndPan();
-        fixed[track]  = TRUE;
+        fixed[track]  = true;
         events[track] = list;
     }
 
@@ -387,13 +370,13 @@ int XMIDI::retrieve(unsigned int track, DataSource* dest) {
 }
 
 int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
-    if (!events) {
-        cerr << "No midi data in loaded." << endl;
+    if (events.empty()) {
+        std::cerr << "No midi data in loaded." << std::endl;
         return 0;
     }
 
     if (info.type == 1 && track != 0 || track >= info.tracks) {
-        cerr << "Can't retrieve MIDI data, track out of range" << endl;
+        std::cerr << "Can't retrieve MIDI data, track out of range" << std::endl;
         return 0;
     }
     DuplicateAndMerge(track);
@@ -406,11 +389,9 @@ int XMIDI::retrieve(unsigned int track, midi_event** dest, int& ppqn) {
 }
 
 void XMIDI::DeleteEventList(midi_event* mlist) {
-    const midi_event* event = nullptr;
-    const midi_event* next  = nullptr;
 
-    next  = mlist;
-    event = mlist;
+    const midi_event* next  = mlist;
+    const midi_event* event = mlist;
 
     while ((event = next)) {
         next = event->next;
@@ -422,24 +403,15 @@ void XMIDI::DeleteEventList(midi_event* mlist) {
 void XMIDI::CreateNewEvent(int time) {
     if (!list) {
         list = current = new midi_event;
-        current->next  = nullptr;
-        if (time < 0) {
-            current->time = 0;
-        } else {
+        if (time > 0)
             current->time = time;
-        }
-        current->buffer = nullptr;
-        current->len    = 0;
         return;
     }
 
     if (time < 0) {
         auto* event = new midi_event;
         event->next = list;
-        list = current  = event;
-        current->time   = 0;
-        current->buffer = nullptr;
-        current->len    = 0;
+        list = current = event;
         return;
     }
 
@@ -450,24 +422,19 @@ void XMIDI::CreateNewEvent(int time) {
         if (current->next->time > time) {
             auto* event = new midi_event;
 
-            event->next     = current->next;
-            current->next   = event;
-            current         = event;
-            current->time   = time;
-            current->buffer = nullptr;
-            current->len    = 0;
+            event->next   = current->next;
+            current->next = event;
+            current       = event;
+            current->time = time;
             return;
         }
 
         current = current->next;
     }
 
-    current->next   = new midi_event;
-    current         = current->next;
-    current->next   = nullptr;
-    current->time   = time;
-    current->buffer = nullptr;
-    current->len    = 0;
+    current->next = new midi_event;
+    current       = current->next;
+    current->time = time;
 }
 
 // Conventional Variable Length Quantity
@@ -574,8 +541,6 @@ void XMIDI::MovePatchVolAndPan(int channel) {
     patch          = new midi_event;
     patch->time    = temp->time;
     patch->status  = channel + 0xC0;
-    patch->len     = 0;
-    patch->buffer  = nullptr;
     patch->data[0] = temp->data[0];
 
     // Copy Volume
@@ -586,8 +551,6 @@ void XMIDI::MovePatchVolAndPan(int channel) {
     vol          = new midi_event;
     vol->status  = channel + 0xB0;
     vol->data[0] = 7;
-    vol->len     = 0;
-    vol->buffer  = nullptr;
 
     if (!temp) {
         vol->data[1] = 64;
@@ -604,8 +567,6 @@ void XMIDI::MovePatchVolAndPan(int channel) {
     bank          = new midi_event;
     bank->status  = channel + 0xB0;
     bank->data[0] = 0;
-    bank->len     = 0;
-    bank->buffer  = nullptr;
 
     if (!temp) {
         bank->data[1] = 0;
@@ -621,8 +582,6 @@ void XMIDI::MovePatchVolAndPan(int channel) {
     pan          = new midi_event;
     pan->status  = channel + 0xB0;
     pan->data[0] = 10;
-    pan->len     = 0;
-    pan->buffer  = nullptr;
 
     if (!temp) {
         pan->data[1] = 64;
@@ -712,13 +671,8 @@ void XMIDI::DuplicateAndMerge(int num) {
         current->data[0] = track[i]->data[0];
         current->data[1] = track[i]->data[1];
 
-        current->len = track[i]->len;
-
-        if (current->len) {
-            current->buffer = new unsigned char[current->len];
-            memcpy(current->buffer, track[i]->buffer, current->len);
-        } else
-            current->buffer = nullptr;
+        current->buffer.resize(track[i]->buffer.size());
+        std::ranges::copy(track[i]->buffer, current->buffer.begin());
 
         track[i] = track[i]->next;
     }
@@ -743,7 +697,7 @@ int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* 
     if (status >> 4 == 0xB && data == 0) {
         data = source->read1();
 
-        bank127[status & 0xF] = FALSE;
+        bank127[status & 0xF] = false;
 
         if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
             || convert_type == XMIDI_CONVERT_MT32_TO_GS127
@@ -756,7 +710,7 @@ int XMIDI::ConvertEvent(const int time, const unsigned char status, DataSource* 
         current->data[1] = data;
 
         if (convert_type == XMIDI_CONVERT_GS127_TO_GS && data == 127)
-            bank127[status & 0xF] = TRUE;
+            bank127[status & 0xF] = true;
 
         return 2;
     }
@@ -827,21 +781,21 @@ int XMIDI::ConvertSystemMessage(const int time, const unsigned char status, Data
         i++;
     }
 
-    i += GetVLQ(source, current->len);
+    unsigned len = 0;
+    i += GetVLQ(source, len);
+    current->buffer.resize(len);
 
-    if (!current->len)
+    if (current->buffer.empty())
         return i;
 
-    current->buffer = new unsigned char[current->len];
+    source->read(current->buffer.data(), current->buffer.size());
 
-    source->read(reinterpret_cast<char*>(current->buffer), current->len);
-
-    return i + current->len;
+    return i + current->buffer.size();
 }
 
 // XMIDI and Midi to List
 // Returns XMIDI PPQN
-int XMIDI::ConvertFiletoList(DataSource* source, const BOOL is_xmi) {
+int XMIDI::ConvertFiletoList(DataSource* source, const bool is_xmi) {
     int time                     = 0;
     unsigned int data            = 0;
     int end                      = 0;
@@ -938,7 +892,7 @@ unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
     unsigned int i            = 8;
     unsigned int j            = 0;
     unsigned int size_pos     = 0;
-    BOOL end                  = FALSE;
+    bool end                  = false;
 
     if (dest) {
         dest->write1('M');
@@ -993,26 +947,26 @@ unsigned int XMIDI::ConvertListToMTrk(DataSource* dest, midi_event* mlist) {
             case 0xF:
                 if (event->status == 0xFF) {
                     if (event->data[0] == 0x2f)
-                        end = TRUE;
+                        end = true;
                     if (dest)
                         dest->write1(event->data[0]);
                     i++;
                 }
 
-                i += PutVLQ(dest, event->len);
+                i += PutVLQ(dest, event->buffer.size());
 
-                if (event->len) {
-                    for (j = 0; j < event->len; j++) {
-                        if (dest)
-                            dest->write1(event->buffer[j]);
-                        i++;
+                if (!event->buffer.empty()) {
+                    i += event->buffer.size();
+                    if (dest) {
+                        for (auto b : event->buffer)
+                            dest->write1(b);
                     }
                 }
 
                 break;
 
             // Never occur
-            default: cerr << "Not supposed to see this" << endl; break;
+            default: std::cerr << "Not supposed to see this" << std::endl; break;
         }
     }
 
@@ -1053,8 +1007,9 @@ int XMIDI::ExtractTracksFromXmi(DataSource* source) {
         const int begin = source->getPos();
 
         // Convert it
-        if (!(ppqn = ConvertFiletoList(source, TRUE))) {
-            cerr << "Unable to convert data" << endl;
+        ppqn = ConvertFiletoList(source, true);
+        if (!ppqn) {
+            std::cerr << "Unable to convert data" << std::endl;
             break;
         }
         timing[num] = ppqn;
@@ -1076,7 +1031,7 @@ int XMIDI::ExtractTracksFromMid(DataSource* source) {
     unsigned int len = 0;
 
     while (source->getPos() < source->getSize() && num != info.tracks) {
-        std::array<char, 32> buf;
+        std::array<char, 32> buf{};
 
         // Read first 4 bytes of name
         source->read(buf.data(), 4);
@@ -1092,8 +1047,8 @@ int XMIDI::ExtractTracksFromMid(DataSource* source) {
         const auto begin = source->getPos();
 
         // Convert it
-        if (!ConvertFiletoList(source, FALSE)) {
-            cerr << "Unable to convert data" << endl;
+        if (!ConvertFiletoList(source, false) {
+            std::cerr << "Unable to convert data" << std::endl;
             break;
         }
 
@@ -1131,12 +1086,12 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
         // XDIRless XMIDI, we can handle them here.
         if (!memcmp(buf, "XMID", 4)) {
-            cerr << "Warning: XMIDI doesn't have XDIR" << endl;
+            std::cerr << "Warning: XMIDI doesn't have XDIR" << std::endl;
             info.tracks = 1;
 
         } // Not an XMIDI that we recognise
         else if (0 != memcmp(buf, "XDIR", 4)) {
-            cerr << "Not a recognised XMID" << endl;
+            std::cerr << "Not a recognised XMID" << std::endl;
             return 0;
 
         } // Seems Valid
@@ -1154,7 +1109,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
                 i += 8;
 
                 if (0 != memcmp(buf, "INFO", 4)) {
-                    // Must allign
+                    // Must align
                     source->skip(chunk_len + 1 & ~1);
                     i += chunk_len + 1 & ~1;
                     continue;
@@ -1170,7 +1125,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             // Didn't get to fill the header
             if (info.tracks == 0) {
-                cerr << "Not a valid XMID" << endl;
+                std::cerr << "Not a valid XMID" << std::endl;
                 return 0;
             }
 
@@ -1183,8 +1138,8 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             // Not an XMID
             if (0 != memcmp(buf, "CAT ", 4)) {
-                cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )"
-                     << endl;
+                std::cerr << "Not a recognized XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )"
+                          << std::endl;
                 return 0;
             }
 
@@ -1196,57 +1151,51 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             // Not an XMID
             if (0 != memcmp(buf, "XMID", 4)) {
-                cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)"
-                     << endl;
+                std::cerr << "Not a recognized XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)"
+                          << std::endl;
                 return 0;
             }
         }
 
         // Ok it's an XMID, so pass it to the ExtractCode
 
-        events    = new midi_event*[info.tracks];
-        timing    = new short[info.tracks];
-        fixed     = new BOOL[info.tracks];
+        events.resize(info.tracks);
+        timing.resize(info.tracks);
+        fixed.resize(info.tracks);
         info.type = 0;
 
         for (i = 0; i < info.tracks; i++) {
             events[i] = nullptr;
-            fixed[i]  = FALSE;
+            timing[i] = 0;
+            fixed[i]  = false;
         }
 
         count = ExtractTracksFromXmi(source);
 
         if (count != info.tracks) {
-            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only (" << count
-                 << ")" << endl;
+            std::cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only ("
+                      << count << ")" << std::endl;
 
-            int i = 0;
+            for (auto event : events)
+                DeleteEventList(event);
 
-            for (i = 0; i < info.tracks; i++)
-                DeleteEventList(events[i]);
-
-            delete[] events;
-            delete[] timing;
+            events.clear();
+            timing.clear();
+            fixed.clear();
 
             return 0;
         }
 
         return 1;
 
-    } // Definately a Midi
-    if (!memcmp(buf, "MThd", 4))
-
-    {
+    } // Definitely a Midi
+    if (!memcmp(buf, "MThd", 4)) {
 
         // Simple read length of header
-
         len = source->read4high();
 
-        if (len < 6)
-
-        {
-
-            cerr << "Not a valid MIDI" << endl;
+        if (len < 6) {
+            std::cerr << "Not a valid MIDI" << std::endl;
 
             return 0;
         }
@@ -1255,42 +1204,31 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
         info.tracks = source->read2high();
 
-        events = new midi_event*[info.tracks];
-
-        timing = new short[info.tracks];
-
-        fixed = new BOOL[info.tracks];
+        events.resize(info.tracks);
+        timing.resize(info.tracks);
+        fixed.resize(info.tracks);
 
         timing[0] = source->read2high();
 
-        for (i = 0; i < info.tracks; i++)
-
-        {
-
+        for (i = 0; i < info.tracks; i++) {
             timing[i] = timing[0];
-
             events[i] = nullptr;
-
-            fixed[i] = FALSE;
+            fixed[i]  = false;
         }
 
         count = ExtractTracksFromMid(source);
 
-        if (count != info.tracks)
+        if (count != info.tracks) {
 
-        {
+            std::cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only ("
+                      << count << ")" << std::endl;
 
-            cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only (" << count
-                 << ")" << endl;
-
-            for (i = 0; i < info.tracks; i++) {
-
+            for (auto event : events)
                 DeleteEventList(events[i]);
-            }
 
-            delete[] events;
-
-            delete[] timing;
+            events.clear();
+            timing.clear();
+            fixed.clear();
 
             return 0;
         }
@@ -1298,9 +1236,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
         return 1;
 
     } // A RIFF Midi, just pass the source back to this function at the start of the midi file
-    if (!memcmp(buf, "RIFF", 4))
-
-    {
+    if (!memcmp(buf, "RIFF", 4)) {
 
         // Read len
 
@@ -1312,21 +1248,15 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
         // Not an RMID
 
-        if (0 != memcmp(buf, "RMID", 4))
-
-        {
-
-            cerr << "Invalid RMID" << endl;
+        if (0 != memcmp(buf, "RMID", 4)) {
+            std::cerr << "Invalid RMID" << std::endl;
 
             return 0;
         }
 
         // Is a RMID
 
-        for (i = 4; i < len; i++)
-
-        {
-
+        for (i = 4; i < len; i++) {
             // Read 4 bytes of type
 
             source->read(buf, 4);
@@ -1335,12 +1265,8 @@ int XMIDI::ExtractTracks(DataSource* source) {
 
             i += 8;
 
-            if (0 != memcmp(buf, "data", 4))
-
-            {
-
-                // Must allign
-
+            if (0 != memcmp(buf, "data", 4)) {
+                // Must align
                 source->skip(chunk_len + 1 & ~1);
 
                 i += chunk_len + 1 & ~1;
@@ -1351,7 +1277,7 @@ int XMIDI::ExtractTracks(DataSource* source) {
             return ExtractTracks(source);
         }
 
-        cerr << "Failed to find midi data in RIFF Midi" << endl;
+        std::cerr << "Failed to find midi data in RIFF Midi" << std::endl;
 
         return 0;
     }

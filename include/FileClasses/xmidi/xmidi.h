@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include <windows.h>
 #include "databuf.h"
 
-using BOOL = int;
+#include <vector>
 
 // Conversion types for Midi files
 inline constexpr auto XMIDI_CONVERT_NOCONVERSION      = 0;
@@ -51,23 +51,15 @@ inline constexpr auto XMIDI_CONTROLLER_NEXT_BREAK = 117;
 // Maximum number of for loops we'll allow
 inline constexpr auto XMIDI_MAX_FOR_LOOP_COUNT = 128;
 
-struct midi_event {
+struct midi_event final {
     int time{0};
     unsigned char status{0};
 
-    unsigned char data[2];
+    std::array<unsigned char, 2> data{};
 
-    unsigned int len{0};
-    unsigned char* buffer{nullptr};
+    std::vector<char> buffer;
 
     midi_event* next{nullptr};
-
-    midi_event() = default;
-
-    ~midi_event() {
-        delete[] buffer;
-        buffer = nullptr;
-    }
 };
 
 class XMIDI {
@@ -81,17 +73,17 @@ protected:
     midi_descriptor info;
 
 private:
-    midi_event** events;
-    signed short* timing;
+    std::vector<midi_event*> events;
+    std::vector<signed short> timing;
 
-    midi_event* list;
-    midi_event* current;
+    midi_event* list{};
+    midi_event* current{};
 
     const static char mt32asgm[128];
     const static char mt32asgs[256];
-    BOOL bank127[16];
-    int convert_type;
-    BOOL* fixed;
+    std::array<bool, 16> bank127{};
+    int convert_type{};
+    std::vector<bool> fixed;
 
 public:
     XMIDI(DataSource* source, int pconvert);
@@ -110,7 +102,7 @@ public:
     int retrieve(unsigned int track, midi_event** dest, int& ppqn);
     static void DeleteEventList(midi_event* mlist);
 
-    // Not yet implimented
+    // Not yet implemented
     // int apply_patch (int track, DataSource *source);
 
 private:
@@ -130,7 +122,7 @@ private:
     int ConvertEvent(int time, unsigned char status, DataSource* source, int size);
     int ConvertSystemMessage(int time, unsigned char status, DataSource* source);
 
-    int ConvertFiletoList(DataSource* source, BOOL is_xmi);
+    int ConvertFiletoList(DataSource* source, bool is_xmi);
     static unsigned int ConvertListToMTrk(DataSource* dest, midi_event* mlist);
 
     int ExtractTracksFromXmi(DataSource* source);
