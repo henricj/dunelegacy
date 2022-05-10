@@ -24,6 +24,8 @@
 class SoundAdlibPC;
 
 class ADLPlayer final : public MusicPlayer {
+    using parent = MusicPlayer;
+
 public:
     ADLPlayer();
     ~ADLPlayer() override;
@@ -58,7 +60,7 @@ public:
     void setMusicVolume(int newVolume) override;
 
 private:
-    SoundAdlibPC* pSoundAdlibPC;
+    std::unique_ptr<SoundAdlibPC> pSoundAdlibPC;
 };
 
 #endif // ADLPLAYER_H
