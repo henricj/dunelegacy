@@ -54,16 +54,28 @@ void CutScene::run() {
         for (;;) {
             const auto now = dune::dune_clock::now();
 
-            if (now >= frameDone)
-                break;
+            if (nextFrameTime > 0) {
+                if (now >= frameDone) {
+                    // We are done with the current frame, but check for any events before continuing to the
+                    // next frame.
+                    if (!SDL_PollEvent(&event))
+                        break;
+                } else {
+                    // We keep waiting until the frame is done.  We could wake up before the frame is done,
+                    // even without an even to process, so we continue to the top of the loop to recompute
+                    // the remaining time.
+                    const auto remaining =
+                        std::chrono::duration_cast<std::chrono::milliseconds>(frameDone - now).count();
 
-            const auto remaining = std::chrono::duration_cast<std::chrono::milliseconds>(frameDone - now).count();
-
-            if (remaining < 1 || remaining > 1000)
-                break;
-
-            if (!dune::Dune_WaitEvent(&event, static_cast<uint32_t>(remaining)))
-                continue;
+                    if (!dune::Dune_WaitEvent(&event, static_cast<uint32_t>(remaining)))
+                        continue;
+                }
+            } else {
+                // The current frame claims it is done, but we delay here in case it is polling for something.
+                // This keeps this thread from hogging a CPU and keeps the event pump running.
+                if (!dune::Dune_WaitEvent(&event, 1))
+                    break;
+            }
 
             // check the events
             switch (event.type) {
