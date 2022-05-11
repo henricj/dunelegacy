@@ -1047,7 +1047,7 @@ int XMIDI::ExtractTracksFromMid(DataSource* source) {
         const auto begin = source->getPos();
 
         // Convert it
-        if (!ConvertFiletoList(source, false) {
+        if (!ConvertFiletoList(source, false)) {
             std::cerr << "Unable to convert data" << std::endl;
             break;
         }
