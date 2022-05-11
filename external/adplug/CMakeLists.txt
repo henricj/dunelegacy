@@ -151,8 +151,17 @@ set(HEADERS
 	adplug/src/xsm.h
 )
 
+check_symbol_exists(_stricmp "string.h" HAVE_STRICMP)
+check_symbol_exists(strcasecmp "strings.h" HAVE_STRCASECMP)
+
 add_library(adplug ${SOURCES} ${HEADERS})
 target_link_libraries(adplug PUBLIC libbinio)
+
+if(HAVE_STRICMP)
+	target_compile_definitions(adplug PRIVATE stricmp=_stricmp)
+elseif(HAVE_STRCASECMP)
+	target_compile_definitions(adplug PRIVATE stricmp=strcasecmp)
+endif()
 
 target_include_directories(adplug
 	INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include adplug/src
