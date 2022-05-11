@@ -37,7 +37,7 @@ bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout) {
     assert(event);
 
     if (timeout < 1)
-        return false;
+        return 0 != SDL_PollEvent(event);
 
 #if defined(_WIN32)
     // The API that SDL_WaitEventTimeout() uses has a minimum wait time of 10ms.
