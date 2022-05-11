@@ -334,7 +334,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
 
         music = Mix_LoadMUS(reinterpret_cast<const char*>(tmpFilename.u8string().c_str()));
         if (music != nullptr) {
-            if (Mix_PlayMusic(music, -1) == -1) {
+            if (Mix_PlayMusic(music, 1) == 1) {
                 sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
             } else {
                 Mix_VolumeMusic(musicVolume);
