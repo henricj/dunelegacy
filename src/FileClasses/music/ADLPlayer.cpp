@@ -279,7 +279,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
     if (musicOn && !filename.empty()) {
 
         Mix_HookMusic(nullptr, nullptr);
-        pSoundAdlibPC.release();
+        pSoundAdlibPC.reset();
 
         auto rwop = dune::globals::pFileManager->openFile(filename);
 
