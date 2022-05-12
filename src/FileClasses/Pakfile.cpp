@@ -96,7 +96,7 @@ Pakfile::~Pakfile() {
             SDL_RWwrite(fPakFile.get(), fileEntrie.filename.u8string().c_str(),
                         fileEntrie.filename.u8string().length() + 1, 1);
         }
-        const uint32_t tmp = 0;
+        static constexpr uint32_t tmp = 0;
         SDL_RWwrite(fPakFile.get(), &tmp, sizeof(uint32_t), 1);
 
         // write out data
