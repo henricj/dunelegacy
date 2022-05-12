@@ -1,285 +1,378 @@
 /*
-Copyright (C) 2000, 2001  The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
-
-// Datasource class for universal methods to retreive data from different sources
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifndef DATABUF_H
 #define DATABUF_H
 
-#include <misc/SDL2pp.h>
+#include "utils.h"
 
+#include <cassert>
+#include <cstddef>
 #include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <iomanip>
+#include <memory>
+#include <string>
+#include <vector>
 
-typedef char* charptr;
+class ODataSource;
 
-class DataSource {
+/**
+ * Abstract input base class.
+ */
+class IDataSource {
 public:
-    DataSource()          = default;
-    virtual ~DataSource() = default;
+    IDataSource()                                  = default;
+    IDataSource(const IDataSource&)                = delete;
+    IDataSource& operator=(const IDataSource&)     = delete;
+    IDataSource(IDataSource&&) noexcept            = default;
+    IDataSource& operator=(IDataSource&&) noexcept = default;
+    virtual ~IDataSource() noexcept                = default;
 
-    virtual unsigned int read1()     = 0;
-    virtual unsigned int read2()     = 0;
-    virtual unsigned int read2high() = 0;
-    virtual unsigned int read4()     = 0;
-    virtual unsigned int read4high() = 0;
-    virtual void read(char*, size_t) = 0;
+    virtual uint32_t peek() = 0;
 
-    virtual void write1(unsigned int)     = 0;
-    virtual void write2(unsigned int)     = 0;
-    virtual void write2high(unsigned int) = 0;
-    virtual void write4(unsigned int)     = 0;
-    virtual void write4high(unsigned int) = 0;
+    virtual uint32_t read1()         = 0;
+    virtual uint16_t read2()         = 0;
+    virtual uint16_t read2high()     = 0;
+    virtual uint32_t read4()         = 0;
+    virtual uint32_t read4high()     = 0;
+    virtual void read(void*, size_t) = 0;
+    virtual void read(std::string& s, size_t len) {
+        s.resize(len);
+        read(s.data(), s.size());
+    }
+    std::unique_ptr<unsigned char[]> readN(size_t N) {
+        auto ptr = std::make_unique<unsigned char[]>(N);
+        read(ptr.get(), N);
+        return ptr;
+    }
+    virtual std::unique_ptr<IDataSource> makeSource(size_t) = 0;
 
-    virtual void seek(unsigned int) = 0;
-    virtual void skip(int)          = 0;
-    virtual unsigned int getSize()  = 0;
-    virtual unsigned int getPos()   = 0;
+    virtual void seek(size_t)         = 0;
+    virtual void skip(std::streamoff) = 0;
+    virtual size_t getSize() const    = 0;
+    virtual size_t getPos() const     = 0;
+    size_t getAvail() const {
+        size_t const msize = getSize();
+        size_t const mpos  = getPos();
+        return msize >= mpos ? msize - mpos : 0;
+    }
+    virtual bool eof() const = 0;
+    virtual bool good() const { return true; }
+    virtual void clear_error() { }
+
+    virtual void copy_to(ODataSource& dest);
+
+    void readline(std::string& str) {
+        str.erase();
+        while (!eof()) {
+            char character = static_cast<char>(read1());
+            if (character == '\r') {
+                continue; // Skip cr
+            }
+            if (character == '\n') {
+                break; // break on line feed
+            }
+            str += character;
+        }
+    }
 };
 
-class BufferDataSource final : public DataSource {
-private:
-    unsigned char *buf, *buf_ptr;
-    unsigned int size;
+/**
+ * Stream-based input data source which does not own the stream.
+ */
+class IStreamDataSource : public IDataSource {
+protected:
+    std::istream* in;
 
 public:
-    BufferDataSource(char* data, unsigned int len) : size(len) {
-        buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
+    explicit IStreamDataSource(std::istream* data_stream) : in(data_stream) { }
+
+    uint32_t peek() final { return in->peek(); }
+
+    uint32_t read1() final { return Read1(in); }
+
+    uint16_t read2() final { return Read2(in); }
+
+    uint16_t read2high() final { return Read2high(in); }
+
+    uint32_t read4() final { return Read4(in); }
+
+    uint32_t read4high() final { return Read4high(in); }
+
+    void read(void* b, size_t len) final { in->read(static_cast<char*>(b), len); }
+
+    std::unique_ptr<IDataSource> makeSource(size_t len) final;
+
+    void seek(size_t pos) final { in->seekg(pos); }
+
+    void skip(std::streamoff pos) final { in->seekg(pos, std::ios::cur); }
+
+    size_t getSize() const final { return get_file_size(*in); }
+
+    size_t getPos() const final { return in->tellg(); }
+
+    bool eof() const final {
+        in->get();
+        bool ret = in->eof();
+        if (!ret) {
+            in->unget();
+        }
+        return ret;
     }
+    bool good() const final { return in && in->good(); }
+    void clear_error() final { in->clear(); }
+};
 
-    ~BufferDataSource() override = default;
+/**
+ * Buffer-based input data source which does not own the buffer.
+ */
+class IBufferDataView : public IDataSource {
+protected:
+    const unsigned char* buf;
+    const unsigned char* buf_ptr;
+    std::size_t size;
 
-    unsigned int read1() override {
-        unsigned char b0 = 0;
-        b0               = *buf_ptr++;
-        return (b0);
+public:
+    IBufferDataView(const void* data, size_t len)
+        : buf(static_cast<const unsigned char*>(data)), buf_ptr(buf), size(len) {
+        // data can be nullptr if len is also 0
+        assert(data != nullptr || len == 0);
     }
+    IBufferDataView(const std::unique_ptr<unsigned char[]>& data_, size_t len) : IBufferDataView(data_.get(), len) { }
 
-    unsigned int read2() override {
-        unsigned char b0 = 0;
+    // Prevent use after free.
+    IBufferDataView(std::unique_ptr<unsigned char[]>&& data_, size_t len) = delete;
 
-        unsigned char b1 = 0;
-        b0               = (unsigned char)*buf_ptr++;
-        b1               = (unsigned char)*buf_ptr++;
-        return (b0 + (b1 << 8));
-    }
+    uint32_t peek() final { return *buf_ptr; }
 
-    unsigned int read2high() override {
-        unsigned char b0 = 0;
+    uint32_t read1() final { return Read1(buf_ptr); }
 
-        unsigned char b1 = 0;
-        b1               = (unsigned char)*buf_ptr++;
-        b0               = (unsigned char)*buf_ptr++;
-        return (b0 + (b1 << 8));
-    }
+    uint16_t read2() final { return Read2(buf_ptr); }
 
-    unsigned int read4() override {
-        unsigned char b0 = 0;
+    uint16_t read2high() final { return Read2high(buf_ptr); }
 
-        unsigned char b1 = 0;
+    uint32_t read4() final { return Read4(buf_ptr); }
 
-        unsigned char b2 = 0;
+    uint32_t read4high() final { return Read4high(buf_ptr); }
 
-        unsigned char b3 = 0;
-        b0               = (unsigned char)*buf_ptr++;
-        b1               = (unsigned char)*buf_ptr++;
-        b2               = (unsigned char)*buf_ptr++;
-        b3               = (unsigned char)*buf_ptr++;
-        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
-    }
-
-    unsigned int read4high() override {
-        unsigned char b0 = 0;
-
-        unsigned char b1 = 0;
-
-        unsigned char b2 = 0;
-
-        unsigned char b3 = 0;
-        b3               = (unsigned char)*buf_ptr++;
-        b2               = (unsigned char)*buf_ptr++;
-        b1               = (unsigned char)*buf_ptr++;
-        b0               = (unsigned char)*buf_ptr++;
-        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
-    }
-
-    void read(char* b, size_t len) override {
-        memcpy(b, buf_ptr, len);
+    void read(void* b, size_t len) final {
+        std::memcpy(b, buf_ptr, len);
         buf_ptr += len;
     }
 
-    void write1(unsigned int val) override { *buf_ptr++ = val & 0xff; }
-
-    void write2(unsigned int val) override {
-        *buf_ptr++ = val & 0xff;
-        *buf_ptr++ = (val >> 8) & 0xff;
+    void read(std::string& s, size_t len) final {
+        s = std::string(reinterpret_cast<const char*>(buf_ptr), len);
+        buf_ptr += len;
     }
 
-    void write2high(unsigned int val) override {
-        *buf_ptr++ = (val >> 8) & 0xff;
-        *buf_ptr++ = val & 0xff;
-    }
+    std::unique_ptr<IDataSource> makeSource(size_t len) final;
 
-    void write4(unsigned int val) override {
-        *buf_ptr++ = val & 0xff;
-        *buf_ptr++ = (val >> 8) & 0xff;
-        *buf_ptr++ = (val >> 16) & 0xff;
-        *buf_ptr++ = (val >> 24) & 0xff;
-    }
+    void seek(size_t pos) final { buf_ptr = buf + pos; }
 
-    void write4high(unsigned int val) override {
-        *buf_ptr++ = (val >> 24) & 0xff;
-        *buf_ptr++ = (val >> 16) & 0xff;
-        *buf_ptr++ = (val >> 8) & 0xff;
-        *buf_ptr++ = val & 0xff;
-    }
+    void skip(std::streamoff pos) final { buf_ptr += pos; }
 
-    void seek(unsigned int pos) override { buf_ptr = buf + pos; }
+    size_t getSize() const final { return size; }
 
-    void skip(int pos) override { buf_ptr += pos; }
+    size_t getPos() const final { return buf_ptr - buf; }
 
-    unsigned int getSize() override { return size; }
+    const unsigned char* getPtr() { return buf_ptr; }
 
-    unsigned int getPos() override { return static_cast<int>(buf_ptr - buf); }
+    bool eof() const final { return buf_ptr >= buf + size; }
 
-    [[nodiscard]] unsigned char* getPtr() const noexcept { return buf_ptr; }
+    bool good() const final { return (buf != nullptr) && (size != 0U); }
+
+    void copy_to(ODataSource& dest) final;
 };
 
-class SDLDataSource final : public DataSource {
-private:
-    SDL_RWops* rwop;
-    int freesrc;
+/**
+ * Buffer-based input data source which owns the stream.
+ */
+class IBufferDataSource : public IBufferDataView {
+protected:
+    std::unique_ptr<unsigned char[]> data;
 
 public:
-    explicit SDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
-
-    ~SDLDataSource() override { close(); }
-
-    virtual void close() {
-        if (freesrc && rwop != nullptr) {
-            SDL_RWclose(rwop);
-            rwop = nullptr;
-        }
+    IBufferDataSource(void* data_, size_t len)
+        : IBufferDataView(data_, len), data(static_cast<unsigned char*>(data_)) { }
+    IBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
+        : IBufferDataView(data_, len), data(std::move(data_)) { }
+    auto steal_data(size_t& len) {
+        len = size;
+        return std::move(data);
     }
-
-    unsigned int read1() override {
-        unsigned char b0 = 0;
-        SDL_RWread(rwop, &b0, sizeof(b0), 1);
-        return (b0);
-    }
-
-    unsigned int read2() override {
-        unsigned char b0 = 0;
-
-        unsigned char b1 = 0;
-        SDL_RWread(rwop, &b0, sizeof(b0), 1);
-        SDL_RWread(rwop, &b1, sizeof(b1), 1);
-        return (b0 + (b1 << 8));
-    }
-
-    unsigned int read2high() override {
-        unsigned char b0 = 0;
-
-        unsigned char b1 = 0;
-        SDL_RWread(rwop, &b1, sizeof(b1), 1);
-        SDL_RWread(rwop, &b0, sizeof(b0), 1);
-        return (b0 + (b1 << 8));
-    }
-
-    unsigned int read4() override {
-        unsigned char b0 = 0;
-
-        unsigned char b1 = 0;
-
-        unsigned char b2 = 0;
-
-        unsigned char b3 = 0;
-        SDL_RWread(rwop, &b0, sizeof(b0), 1);
-        SDL_RWread(rwop, &b1, sizeof(b1), 1);
-        SDL_RWread(rwop, &b2, sizeof(b2), 1);
-        SDL_RWread(rwop, &b3, sizeof(b3), 1);
-        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
-    }
-
-    unsigned int read4high() override {
-        unsigned char b0 = 0;
-
-        unsigned char b1 = 0;
-
-        unsigned char b2 = 0;
-
-        unsigned char b3 = 0;
-        SDL_RWread(rwop, &b3, sizeof(b3), 1);
-        SDL_RWread(rwop, &b2, sizeof(b2), 1);
-        SDL_RWread(rwop, &b1, sizeof(b1), 1);
-        SDL_RWread(rwop, &b0, sizeof(b0), 1);
-        return (b0 + (b1 << 8) + (b2 << 16) + (b3 << 24));
-    }
-
-    void read(char* b, size_t len) override { SDL_RWread(rwop, b, 1, len); }
-
-    void write1(unsigned int val) override {
-        const uint8_t b0 = val & 0xff;
-        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
-    }
-
-    void write2(unsigned int val) override {
-        const uint8_t b0 = val & 0xff;
-        const uint8_t b1 = (val >> 8) & 0xff;
-        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
-        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
-    }
-
-    void write2high(unsigned int val) override {
-        const uint8_t b0 = val & 0xff;
-        const uint8_t b1 = (val >> 8) & 0xff;
-        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
-        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
-    }
-
-    void write4(unsigned int val) override {
-        const uint8_t b0 = val & 0xff;
-        const uint8_t b1 = (val >> 8) & 0xff;
-        const uint8_t b2 = (val >> 16) & 0xff;
-        const uint8_t b3 = (val >> 24) & 0xff;
-        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
-        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
-        SDL_RWwrite(rwop, &b2, sizeof(b2), 1);
-        SDL_RWwrite(rwop, &b3, sizeof(b3), 1);
-    }
-
-    void write4high(unsigned int val) override {
-        const uint8_t b0 = val & 0xff;
-        const uint8_t b1 = (val >> 8) & 0xff;
-        const uint8_t b2 = (val >> 16) & 0xff;
-        const uint8_t b3 = (val >> 24) & 0xff;
-        SDL_RWwrite(rwop, &b3, sizeof(b3), 1);
-        SDL_RWwrite(rwop, &b2, sizeof(b2), 1);
-        SDL_RWwrite(rwop, &b1, sizeof(b1), 1);
-        SDL_RWwrite(rwop, &b0, sizeof(b0), 1);
-    }
-
-    void seek(unsigned int pos) override { SDL_RWseek(rwop, pos, SEEK_SET); }
-
-    void skip(int pos) override { SDL_RWseek(rwop, pos, SEEK_CUR); }
-
-    unsigned int getSize() override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
-
-    unsigned int getPos() override { return static_cast<unsigned int>(SDL_RWtell(rwop)); }
 };
 
-#endif
+/**
+ * Abstract output base class.
+ */
+class ODataSource {
+public:
+    ODataSource()                                  = default;
+    ODataSource(const ODataSource&)                = delete;
+    ODataSource& operator=(const ODataSource&)     = delete;
+    ODataSource(ODataSource&&) noexcept            = default;
+    ODataSource& operator=(ODataSource&&) noexcept = default;
+    virtual ~ODataSource() noexcept                = default;
+
+    virtual void write1(uint32_t)           = 0;
+    virtual void write2(uint16_t)           = 0;
+    virtual void write2high(uint16_t)       = 0;
+    virtual void write4(uint32_t)           = 0;
+    virtual void write4high(uint32_t)       = 0;
+    virtual void write(const void*, size_t) = 0;
+    virtual void write(const std::string& s) { write(s.data(), s.size()); }
+
+    virtual void seek(size_t)         = 0;
+    virtual void skip(std::streamoff) = 0;
+    virtual size_t getSize() const    = 0;
+    virtual size_t getPos() const     = 0;
+    virtual void flush() { }
+    virtual bool good() const { return true; }
+    virtual void clear_error() { }
+};
+
+/**
+ * Stream-based output data source which does not own the stream.
+ */
+class OStreamDataSource : public ODataSource {
+protected:
+    std::ostream* out;
+
+public:
+    explicit OStreamDataSource(std::ostream* data_stream) : out(data_stream) { }
+
+    void write1(uint32_t val) final { Write1(out, static_cast<uint16_t>(val)); }
+
+    void write2(uint16_t val) final { Write2(out, val); }
+
+    void write2high(uint16_t val) final { Write2high(out, val); }
+
+    void write4(uint32_t val) final { Write4(out, val); }
+
+    void write4high(uint32_t val) final { Write4high(out, val); }
+
+    void write(const void* b, size_t len) final { out->write(static_cast<const char*>(b), len); }
+
+    void write(const std::string& s) final { out->write(&s[0], s.size()); }
+
+    void seek(size_t pos) final { out->seekp(pos); }
+
+    void skip(std::streamoff pos) final { out->seekp(pos, std::ios::cur); }
+
+    size_t getSize() const final { return out->tellp(); }
+
+    size_t getPos() const final { return out->tellp(); }
+
+    void flush() final { out->flush(); }
+    bool good() const final { return out->good(); }
+    void clear_error() final { out->clear(); }
+};
+
+/**
+ * Buffer-based output data source which does not own the buffer.
+ */
+class OBufferDataSpan : public ODataSource {
+protected:
+    unsigned char* buf;
+    unsigned char* buf_ptr;
+    std::size_t size;
+
+public:
+    OBufferDataSpan(void* data, size_t len) : buf(static_cast<unsigned char*>(data)), buf_ptr(buf), size(len) {
+        // data can be nullptr if len is also 0
+        assert(data != nullptr || len == 0);
+    }
+
+    OBufferDataSpan(const std::unique_ptr<unsigned char[]>& data_, size_t len) : OBufferDataSpan(data_.get(), len) { }
+
+    // Prevent use after free.
+    OBufferDataSpan(std::unique_ptr<unsigned char[]>&& data_, size_t len) = delete;
+
+    void write1(uint32_t val) final { Write1(buf_ptr, val); }
+
+    void write2(uint16_t val) final { Write2(buf_ptr, val); }
+
+    void write2high(uint16_t val) final { Write2high(buf_ptr, val); }
+
+    void write4(uint32_t val) final { Write4(buf_ptr, val); }
+
+    void write4high(uint32_t val) final { Write4high(buf_ptr, val); }
+
+    void write(const void* b, size_t len) final {
+        std::memcpy(buf_ptr, b, len);
+        buf_ptr += len;
+    }
+
+    void write(const std::string& s) final { write(&s[0], s.size()); }
+
+    void seek(size_t pos) final { buf_ptr = buf + pos; }
+
+    void skip(std::streamoff pos) final { buf_ptr += pos; }
+
+    size_t getSize() const final { return size; }
+
+    size_t getPos() const final { return buf_ptr - buf; }
+
+    unsigned char* getPtr() { return buf_ptr; }
+};
+
+/**
+ * Buffer-based output data source which owns the buffer.
+ */
+class OBufferDataSource : public OBufferDataSpan {
+    std::unique_ptr<unsigned char[]> data;
+
+public:
+    explicit OBufferDataSource(size_t len) : OBufferDataSpan(nullptr, 0), data(std::make_unique<unsigned char[]>(len)) {
+        assert(len != 0);
+        buf_ptr = buf = data.get();
+        size          = len;
+    }
+    OBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
+        : OBufferDataSpan(data_, len), data(std::move(data_)) { }
+    OBufferDataSource(void* data_, size_t len)
+        : OBufferDataSpan(data_, len), data(static_cast<unsigned char*>(data_)) { }
+};
+
+inline void IDataSource::copy_to(ODataSource& dest) {
+    size_t len = getSize();
+    auto data  = readN(len);
+    dest.write(data.get(), len);
+}
+
+inline std::unique_ptr<IDataSource> IStreamDataSource::makeSource(size_t len) {
+    return std::make_unique<IBufferDataSource>(readN(len), len);
+}
+
+inline std::unique_ptr<IDataSource> IBufferDataView::makeSource(size_t len) {
+    size_t avail = getAvail();
+    if (avail < len) {
+        len = avail;
+    }
+    const unsigned char* ptr = getPtr();
+    skip(len);
+    return std::make_unique<IBufferDataView>(ptr, len);
+}
+
+inline void IBufferDataView::copy_to(ODataSource& dest) {
+    size_t len = getAvail();
+    dest.write(getPtr(), len);
+    skip(len);
+}
+
+#endif // DATABUF_H
