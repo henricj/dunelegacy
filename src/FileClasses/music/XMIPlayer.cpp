@@ -19,8 +19,10 @@
 
 #include <globals.h>
 
+#include "FileClasses/xmidi/SDLDataSource.h"
+#include "FileClasses/xmidi/XMidiEventList.h"
 #include <FileClasses/FileManager.h>
-#include <FileClasses/xmidi/xmidi.h>
+#include <FileClasses/xmidi/XMidiFile.h>
 
 #include "misc/Random.h"
 #include "misc/string_util.h"
@@ -30,7 +32,6 @@
 #include <SDL2/SDL_mixer.h>
 
 #include <filesystem>
-#include <iostream>
 
 XMIPlayer::XMIPlayer()
     : MusicPlayer(dune::globals::settings.audio.playMusic, dune::globals::settings.audio.musicVolume, "XMIPlayer") {
@@ -310,19 +311,29 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
         { // Scope
             auto input_path = std::filesystem::path(reinterpret_cast<const char8_t*>(filename.c_str()));
             auto inputrwop  = dune::globals::pFileManager->openFile(input_path);
-            SDLDataSource input(inputrwop.get(), 0);
+            ISDLDataSource input(inputrwop.get(), 0);
 
-            sdl2::RWops_ptr outputrwop{SDL_RWFromFile(tmpFilename.u8string(), "wb+")};
-            if (outputrwop == nullptr) {
-                std::cerr << "Cannot open file " << tmpFilename << "!" << std::endl;
-                return;
-            }
-            SDLDataSource output(outputrwop.get(), 0);
-
-            XMIDI myXMIDI(&input, XMIDI_CONVERT_NOCONVERSION);
-            myXMIDI.retrieve(musicNum, &output);
+            XMidiFile myXMIDI(&input, XMIDIFILE_CONVERT_NOCONVERSION);
 
             input.close();
+            inputrwop.reset();
+
+            const auto event_list = myXMIDI.GetEventList(musicNum);
+
+            if (nullptr == event_list) {
+                sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
+                return;
+            }
+            sdl2::RWops_ptr outputrwop{SDL_RWFromFile(tmpFilename.u8string(), "wb+")};
+            if (outputrwop == nullptr) {
+                sdl2::log_info("XMIPlayer: cannot open file: %s!", reinterpret_cast<const char*>(tmpFilename.c_str()));
+                return;
+            }
+
+            OSDLDataSource output(outputrwop.get(), 0);
+
+            event_list->write(&output);
+
             output.close();
         }
 
