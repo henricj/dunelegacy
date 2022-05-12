@@ -1,0 +1,9 @@
+add_sources(FILE_CLASSES_SOURCES
+	databuf.cpp
+	SDLDataSource.cpp
+	XMidiEvent.cpp
+	XMidiEventList.cpp
+	XMidiFile.cpp
+	XMidiNoteStack.cpp
+	XMidiSequence.cpp
+)

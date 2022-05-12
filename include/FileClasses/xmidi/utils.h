@@ -59,7 +59,7 @@ inline uint8_t Read1(const uint8_t*& in) {
  */
 
 template<typename Source>
-inline uint16_t Read2(Source& in) {
+uint16_t Read2(Source& in) {
     uint16_t b0 = Read1(in);
     uint16_t b1 = Read1(in);
     return (b1 << 8) | b0;
@@ -70,7 +70,7 @@ inline uint16_t Read2(Source& in) {
  */
 
 template<typename Source>
-inline uint16_t Read2high(Source& in) {
+uint16_t Read2high(Source& in) {
     uint16_t b0 = Read1(in);
     uint16_t b1 = Read1(in);
     return (b0 << 8) | b1;
@@ -81,7 +81,7 @@ inline uint16_t Read2high(Source& in) {
  */
 
 template<typename Source>
-inline uint32_t Read4(Source& in) {
+uint32_t Read4(Source& in) {
     uint32_t b0 = Read1(in);
     uint32_t b1 = Read1(in);
     uint32_t b2 = Read1(in);
@@ -93,7 +93,7 @@ inline uint32_t Read4(Source& in) {
  *  Read a 4-byte long value, hsb first.
  */
 template<typename Source>
-inline uint32_t Read4high(Source& in) {
+uint32_t Read4high(Source& in) {
     uint32_t b0 = Read1(in);
     uint32_t b1 = Read1(in);
     uint32_t b2 = Read1(in);
@@ -105,7 +105,7 @@ inline uint32_t Read4high(Source& in) {
  *  Read a 2-byte value, lsb first, unsigned.
  */
 template<typename Source>
-inline int16_t Read2s(Source& in) {
+int16_t Read2s(Source& in) {
     return static_cast<int16_t>(Read2(in));
 }
 
@@ -113,7 +113,7 @@ inline int16_t Read2s(Source& in) {
  *  Read a 4-byte value, lsb first, unsigned.
  */
 template<typename Source>
-inline int32_t Read4s(Source& in) {
+int32_t Read4s(Source& in) {
     return static_cast<int32_t>(Read4(in));
 }
 
@@ -122,7 +122,7 @@ inline int32_t Read4s(Source& in) {
  */
 
 template<typename T, typename Source>
-inline T ReadN(Source& in) {
+T ReadN(Source& in) {
     T val = 0;
     for (size_t i = 0; i < sizeof(T); i++)
         val |= static_cast<T>(T(Read1(in)) << (8 * i));
@@ -134,7 +134,7 @@ inline T ReadN(Source& in) {
  */
 
 template<typename T, typename Source>
-inline T ReadNhigh(Source& in) {
+T ReadNhigh(Source& in) {
     T val = 0;
     for (int i = sizeof(T) - 1; i >= 0; i--)
         val |= static_cast<T>(T(Read1(in)) << (8 * i));
@@ -240,7 +240,7 @@ inline void Write1(uint8_t*& out, uint8_t val) {
  */
 
 template<typename Dest>
-inline void Write2(Dest& out, uint16_t val) {
+void Write2(Dest& out, uint16_t val) {
     Write1(out, static_cast<uint8_t>(val));
     Write1(out, static_cast<uint8_t>(val >> 8));
 }
@@ -250,7 +250,7 @@ inline void Write2(Dest& out, uint16_t val) {
  */
 
 template<typename Dest>
-inline void Write2high(Dest& out, uint16_t val) {
+void Write2high(Dest& out, uint16_t val) {
     Write1(out, static_cast<uint8_t>(val >> 8));
     Write1(out, static_cast<uint8_t>(val));
 }
@@ -260,7 +260,7 @@ inline void Write2high(Dest& out, uint16_t val) {
  */
 
 template<typename Dest>
-inline void Write4(Dest& out, uint32_t val) {
+void Write4(Dest& out, uint32_t val) {
     Write1(out, static_cast<uint8_t>(val));
     Write1(out, static_cast<uint8_t>(val >> 8));
     Write1(out, static_cast<uint8_t>(val >> 16));
@@ -272,7 +272,7 @@ inline void Write4(Dest& out, uint32_t val) {
  */
 
 template<typename Dest>
-inline void Write4high(Dest& out, uint32_t val) {
+void Write4high(Dest& out, uint32_t val) {
     Write1(out, static_cast<uint8_t>(val >> 24));
     Write1(out, static_cast<uint8_t>(val >> 16));
     Write1(out, static_cast<uint8_t>(val >> 8));
@@ -284,7 +284,7 @@ inline void Write4high(Dest& out, uint32_t val) {
  */
 
 template<typename Dest>
-inline void Write4s(Dest& out, int32_t val) {
+void Write4s(Dest& out, int32_t val) {
     Write4(out, static_cast<uint32_t>(val));
 }
 
@@ -293,7 +293,7 @@ inline void Write4s(Dest& out, int32_t val) {
  */
 
 template<typename T, typename Dest>
-inline void WriteN(Dest& out, T val) {
+void WriteN(Dest& out, T val) {
     for (size_t i = 0; i < sizeof(T); i++)
         Write1(out, static_cast<uint8_t>(val >> (8 * i)));
 }
@@ -303,7 +303,7 @@ inline void WriteN(Dest& out, T val) {
  */
 
 template<typename T, typename Dest>
-inline void WriteNhigh(Dest& out, T val) {
+void WriteNhigh(Dest& out, T val) {
     for (int i = sizeof(T) - 1; i >= 0; i--)
         Write1(out, static_cast<uint8_t>(val >> (8 * i)));
 }

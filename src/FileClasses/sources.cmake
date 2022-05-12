@@ -27,8 +27,6 @@ add_sources(FILE_CLASSES_SOURCES
 	music/ADLPlayer.cpp
 	music/DirectoryPlayer.cpp
 	music/XMIPlayer.cpp
-	xmidi/XMidiEventList.cpp
-	xmidi/XMidiFile.cpp
-	xmidi/XMidiSequence.cpp
 )
 
+include(FileClasses/xmidi/sources.cmake)

@@ -22,46 +22,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gamma.h"
 
+#include <array>
+
 class IDataSource;
 class OIDataSource;
 struct XMidiEvent;
 class XMidiEventList;
 
 // Conversion types for Midi files
-#define XMIDIFILE_CONVERT_NOCONVERSION  4
-#define XMIDIFILE_CONVERT_MT32_TO_GM    1
-#define XMIDIFILE_CONVERT_MT32_TO_GS    2
-#define XMIDIFILE_CONVERT_MT32_TO_GS127 3
-#define XMIDIFILE_CONVERT_GM_TO_MT32    0
+inline static constexpr auto XMIDIFILE_CONVERT_NOCONVERSION  = 4;
+inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GM    = 1;
+inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS    = 2;
+inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS127 = 3;
+inline static constexpr auto XMIDIFILE_CONVERT_GM_TO_MT32    = 0;
 
-#define XMIDIFILE_CONVERT_GS127_TO_GS 5
-#define XMIDIFILE_HINT_XMIDI_MT_FILE  7
-#define XMIDIFILE_HINT_SYX_FILE       8
-#define XMIDIFILE_HINT_SYSEX_IN_MID   9
+inline static constexpr auto XMIDIFILE_CONVERT_GS127_TO_GS = 5;
+inline static constexpr auto XMIDIFILE_HINT_XMIDI_MT_FILE  = 7;
+inline static constexpr auto XMIDIFILE_HINT_SYX_FILE       = 8;
+inline static constexpr auto XMIDIFILE_HINT_SYSEX_IN_MID   = 9;
 
 class XMidiFile {
 protected:
-    uint16_t num_tracks;
+    uint16_t num_tracks{};
 
 private:
-    XMidiEventList** events;
+    std::vector<XMidiEventList*> events;
 
-    XMidiEvent* list;
-    XMidiEvent* branches;
-    XMidiEvent* current;
-    XMidiEvent* x_patch_bank_cur;
-    XMidiEvent* x_patch_bank_first;
+    XMidiEvent* list{};
+    XMidiEvent* branches{};
+    XMidiEvent* current{};
+    XMidiEvent* x_patch_bank_cur{};
+    XMidiEvent* x_patch_bank_first{};
 
     const static char mt32asgm[128];
     const static char mt32asgs[256];
     const static char gmasmt32[128];
-    bool bank127[16];
-    int convert_type;
+    std::array<bool, 16> bank127{};
+    int convert_type{};
 
-    bool do_reverb;
-    bool do_chorus;
-    int chorus_value;
-    int reverb_value;
+    bool do_reverb{};
+    bool do_chorus{};
+    int chorus_value{};
+    int reverb_value{};
 
     // Midi Volume Curve Modification
     static GammaTable<unsigned char> VolumeCurve;
@@ -71,15 +73,10 @@ public:
     XMidiFile(IDataSource* source, int pconvert);
     ~XMidiFile();
 
-    int number_of_tracks() { return num_tracks; }
+    [[nodiscard]] int number_of_tracks() const { return num_tracks; }
 
     // External Event list functions
     XMidiEventList* GetEventList(uint32_t track);
-    XMidiEventList* StealEventList() {
-        XMidiEventList* tmp = GetEventList(0);
-        events              = nullptr;
-        return tmp;
-    }
 
     // Not yet implemented
     // int apply_patch (int track, DataSource *source);
@@ -102,16 +99,16 @@ private:
     void AdjustTimings(uint32_t ppqn); // This is used by Midi's ONLY!
     void ApplyFirstState(first_state& fs, int chan_mask);
 
-    int ConvertNote(const int time, const unsigned char status, IDataSource* source, const int size);
-    int ConvertEvent(const int time, const unsigned char status, IDataSource* source, const int size, first_state& fs);
-    int ConvertSystemMessage(const int time, const unsigned char status, IDataSource* source);
-    int CreateMT32SystemMessage(const int time, uint32_t address_base, uint16_t address_offset, uint32_t len,
+    int ConvertNote(int time, unsigned char status, IDataSource* source, int size);
+    int ConvertEvent(int time, unsigned char status, IDataSource* source, int size, first_state& fs);
+    int ConvertSystemMessage(int time, unsigned char status, IDataSource* source);
+    int CreateMT32SystemMessage(int time, uint32_t address_base, uint16_t address_offset, uint32_t len,
                                 const void* data = nullptr, IDataSource* source = nullptr);
 
-    int ConvertFiletoList(IDataSource* source, const bool is_xmi, first_state& fs);
+    int ConvertFiletoList(IDataSource* source, bool is_xmi, first_state& fs);
 
     int ExtractTracksFromXmi(IDataSource* source);
-    int ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, const int num_tracks, const bool type1);
+    int ExtractTracksFromMid(IDataSource* source, uint32_t ppqn, int num_tracks, bool type1);
 
     int ExtractTracks(IDataSource* source);
 

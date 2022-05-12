@@ -48,16 +48,11 @@ private:
     int freesrc;
 
 public:
-    explicit ISDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
+    explicit ISDLDataSource(SDL_RWops* rwop, int freesrc = 0);
 
-    ~ISDLDataSource() override { close(); }
+    ~ISDLDataSource() override;
 
-    virtual void close() {
-        if (freesrc && rwop != nullptr) {
-            SDL_RWclose(rwop);
-            rwop = nullptr;
-        }
-    }
+    virtual void close();
 
     uint32_t read1() override { return Read1(rwop); }
 
@@ -69,32 +64,21 @@ public:
 
     uint32_t read4high() override { return Read4high(rwop); }
 
-    void read(void* b, size_t len) override {
-        if (len != SDL_RWread(rwop, b, 1, len))
-            THROW(std::runtime_error, "Unable to read file.");
-    }
+    void read(void* b, size_t len) override;
 
-    void seek(size_t pos) override {
-        if (-1 == SDL_RWseek(rwop, pos, SEEK_SET))
-            THROW(std::runtime_error, "Unable to seek file.");
-    }
+    void seek(size_t pos) override;
 
-    void skip(std::streamoff pos) override {
-        if (-1 == SDL_RWseek(rwop, pos, SEEK_CUR))
-            THROW(std::runtime_error, "Unable to skip file.");
-    }
+    void skip(std::streamoff pos) override;
 
     [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
 
     [[nodiscard]] size_t getPos() const override { return static_cast<unsigned int>(SDL_RWtell(rwop)); }
 
-    uint32_t peek() override { THROW(std::runtime_error, "Peek is not supported"); }
+    uint32_t peek() override;
 
-    std::unique_ptr<IDataSource> makeSource(size_t len) override {
-        return std::make_unique<IBufferDataSource>(readN(len), len);
-    }
+    std::unique_ptr<IDataSource> makeSource(size_t len) override;
 
-    [[nodiscard]] bool eof() const override { return getPos() == getSize(); }
+    [[nodiscard]] bool eof() const override { return getPos() < getSize(); }
 };
 
 class OSDLDataSource final : public ODataSource {
@@ -103,16 +87,11 @@ private:
     int freesrc;
 
 public:
-    explicit OSDLDataSource(SDL_RWops* rwop, int freesrc = 0) : rwop(rwop), freesrc(freesrc) { }
+    explicit OSDLDataSource(SDL_RWops* rwop, int freesrc = 0);
 
-    ~OSDLDataSource() override { close(); }
+    ~OSDLDataSource() override;
 
-    virtual void close() {
-        if (freesrc && rwop != nullptr) {
-            SDL_RWclose(rwop);
-            rwop = nullptr;
-        }
-    }
+    virtual void close();
 
     void write1(uint32_t val) override { Write1(rwop, static_cast<uint8_t>(val)); }
 
@@ -124,20 +103,11 @@ public:
 
     void write4high(uint32_t val) override { Write4high(rwop, val); }
 
-    void write(const void* b, size_t len) override {
-        if (len != SDL_RWwrite(rwop, b, 1, len))
-            THROW(std::runtime_error, "Unable to write file.");
-    }
+    void write(const void* b, size_t len) override;
 
-    void seek(size_t pos) override {
-        if (-1 == SDL_RWseek(rwop, pos, SEEK_SET))
-            THROW(std::runtime_error, "Unable to seek file.");
-    }
+    void seek(size_t pos) override;
 
-    void skip(std::streamoff pos) override {
-        if (-1 == SDL_RWseek(rwop, pos, SEEK_CUR))
-            THROW(std::runtime_error, "Unable to skip file.");
-    }
+    void skip(std::streamoff pos) override;
 
     [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
 
