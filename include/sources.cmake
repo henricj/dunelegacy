@@ -58,7 +58,14 @@ add_sources(HEADERS
 	FileClasses/Vocfile.h
 	FileClasses/Wsafile.h
 	FileClasses/xmidi/databuf.h
-	FileClasses/xmidi/xmidi.h
+	FileClasses/xmidi/utils.h
+	FileClasses/xmidi/SDLDataSource.h
+	FileClasses/xmidi/XMidiEvent.h
+	FileClasses/xmidi/XMidiEventList.h
+	FileClasses/xmidi/XMidiFile.h
+	FileClasses/xmidi/XMidiNoteStack.h
+	FileClasses/xmidi/XMidiSequence.h
+	FileClasses/xmidi/XMidiSequenceHandler.h
 	fixmath/fix16.h
 	fixmath/fix16_trig_sin_lut.h
 	fixmath/fix32.h
