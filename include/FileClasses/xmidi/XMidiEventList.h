@@ -26,8 +26,8 @@ class ODataSource;
 
 #include "XMidiEvent.h"
 
-class XMidiEventList {
-    int counter;
+class XMidiEventList final {
+    int counter = 0;
 
     // Helper funcs for Write
     int putVLQ(ODataSource* dest, uint32_t value);
@@ -35,13 +35,13 @@ class XMidiEventList {
 
 public:
     uint16_t chan_mask;
-    XMidiEvent* events;
+    XMidiEvent* events{};
 
     //! XMidiFile Seq Branch Index controllers. For Ult126 = loop start
-    XMidiEvent* branches;
+    XMidiEvent* branches{};
 
     //! Patch and Bank change events
-    XMidiEvent* x_patch_bank;
+    XMidiEvent* x_patch_bank{};
 
     //! Write the list to a DataSource
     int write(ODataSource* dest);
@@ -55,9 +55,9 @@ public:
     //! Find the Sequence Branch Event for the index
     //! \param index The index to search for
     //! \return The event found, or 0
-    XMidiEvent* findBranchEvent(int index) {
+    [[nodiscard]] XMidiEvent* findBranchEvent(int index) const {
 
-        XMidiEvent* b = branches;
+        auto* b = branches;
 
         while (b) {
             if (b->data[1] == (index & 0xFF))

@@ -19,15 +19,13 @@
 
 #include "utils.h"
 
-#include <cassert>
 #include <cstddef>
-#include <cstdio>
-#include <cstring>
-#include <fstream>
-#include <iomanip>
+#include <ios>
+#include <istream>
 #include <memory>
+#include <ostream>
 #include <string>
-#include <vector>
+#include <utility>
 
 class ODataSource;
 
@@ -41,7 +39,7 @@ public:
     IDataSource& operator=(const IDataSource&)     = delete;
     IDataSource(IDataSource&&) noexcept            = default;
     IDataSource& operator=(IDataSource&&) noexcept = default;
-    virtual ~IDataSource() noexcept                = default;
+    virtual ~IDataSource() noexcept;
 
     virtual uint32_t peek() = 0;
 
@@ -55,41 +53,27 @@ public:
         s.resize(len);
         read(s.data(), s.size());
     }
-    std::unique_ptr<unsigned char[]> readN(size_t N) {
-        auto ptr = std::make_unique<unsigned char[]>(N);
-        read(ptr.get(), N);
-        return ptr;
-    }
+    std::unique_ptr<unsigned char[]> readN(size_t N);
     virtual std::unique_ptr<IDataSource> makeSource(size_t) = 0;
 
-    virtual void seek(size_t)         = 0;
-    virtual void skip(std::streamoff) = 0;
-    virtual size_t getSize() const    = 0;
-    virtual size_t getPos() const     = 0;
-    size_t getAvail() const {
+    virtual void seek(size_t)                    = 0;
+    virtual void skip(std::streamoff)            = 0;
+    [[nodiscard]] virtual size_t getSize() const = 0;
+    [[nodiscard]] virtual size_t getPos() const  = 0;
+
+    [[nodiscard]] size_t getAvail() const {
         size_t const msize = getSize();
         size_t const mpos  = getPos();
         return msize >= mpos ? msize - mpos : 0;
     }
-    virtual bool eof() const = 0;
-    virtual bool good() const { return true; }
+
+    [[nodiscard]] virtual bool eof() const = 0;
+    [[nodiscard]] virtual bool good() const { return true; }
     virtual void clear_error() { }
 
     virtual void copy_to(ODataSource& dest);
 
-    void readline(std::string& str) {
-        str.erase();
-        while (!eof()) {
-            char character = static_cast<char>(read1());
-            if (character == '\r') {
-                continue; // Skip cr
-            }
-            if (character == '\n') {
-                break; // break on line feed
-            }
-            str += character;
-        }
-    }
+    void readline(std::string& str);
 };
 
 /**
@@ -100,7 +84,8 @@ protected:
     std::istream* in;
 
 public:
-    explicit IStreamDataSource(std::istream* data_stream) : in(data_stream) { }
+    explicit IStreamDataSource(std::istream* data_stream);
+    ~IStreamDataSource() override;
 
     uint32_t peek() final { return in->peek(); }
 
@@ -122,19 +107,12 @@ public:
 
     void skip(std::streamoff pos) final { in->seekg(pos, std::ios::cur); }
 
-    size_t getSize() const final { return get_file_size(*in); }
+    [[nodiscard]] size_t getSize() const final { return get_file_size(*in); }
 
-    size_t getPos() const final { return in->tellg(); }
+    [[nodiscard]] size_t getPos() const final { return in->tellg(); }
 
-    bool eof() const final {
-        in->get();
-        bool ret = in->eof();
-        if (!ret) {
-            in->unget();
-        }
-        return ret;
-    }
-    bool good() const final { return in && in->good(); }
+    [[nodiscard]] bool eof() const final;
+    [[nodiscard]] bool good() const final { return in && in->good(); }
     void clear_error() final { in->clear(); }
 };
 
@@ -148,12 +126,9 @@ protected:
     std::size_t size;
 
 public:
-    IBufferDataView(const void* data, size_t len)
-        : buf(static_cast<const unsigned char*>(data)), buf_ptr(buf), size(len) {
-        // data can be nullptr if len is also 0
-        assert(data != nullptr || len == 0);
-    }
+    IBufferDataView(const void* data, size_t len);
     IBufferDataView(const std::unique_ptr<unsigned char[]>& data_, size_t len) : IBufferDataView(data_.get(), len) { }
+    ~IBufferDataView() override;
 
     // Prevent use after free.
     IBufferDataView(std::unique_ptr<unsigned char[]>&& data_, size_t len) = delete;
@@ -170,15 +145,9 @@ public:
 
     uint32_t read4high() final { return Read4high(buf_ptr); }
 
-    void read(void* b, size_t len) final {
-        std::memcpy(b, buf_ptr, len);
-        buf_ptr += len;
-    }
+    void read(void* b, size_t len) final;
 
-    void read(std::string& s, size_t len) final {
-        s = std::string(reinterpret_cast<const char*>(buf_ptr), len);
-        buf_ptr += len;
-    }
+    void read(std::string& s, size_t len) final;
 
     std::unique_ptr<IDataSource> makeSource(size_t len) final;
 
@@ -186,15 +155,15 @@ public:
 
     void skip(std::streamoff pos) final { buf_ptr += pos; }
 
-    size_t getSize() const final { return size; }
+    [[nodiscard]] size_t getSize() const final { return size; }
 
-    size_t getPos() const final { return buf_ptr - buf; }
+    [[nodiscard]] size_t getPos() const final { return buf_ptr - buf; }
 
-    const unsigned char* getPtr() { return buf_ptr; }
+    [[nodiscard]] const unsigned char* getPtr() const { return buf_ptr; }
 
-    bool eof() const final { return buf_ptr >= buf + size; }
+    [[nodiscard]] bool eof() const final { return buf_ptr >= buf + size; }
 
-    bool good() const final { return (buf != nullptr) && (size != 0U); }
+    [[nodiscard]] bool good() const final { return (buf != nullptr) && (size != 0U); }
 
     void copy_to(ODataSource& dest) final;
 };
@@ -207,10 +176,10 @@ protected:
     std::unique_ptr<unsigned char[]> data;
 
 public:
-    IBufferDataSource(void* data_, size_t len)
-        : IBufferDataView(data_, len), data(static_cast<unsigned char*>(data_)) { }
-    IBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
-        : IBufferDataView(data_, len), data(std::move(data_)) { }
+    IBufferDataSource(void* data_, size_t len);
+    IBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len);
+    ~IBufferDataSource() override;
+
     auto steal_data(size_t& len) {
         len = size;
         return std::move(data);
@@ -227,7 +196,7 @@ public:
     ODataSource& operator=(const ODataSource&)     = delete;
     ODataSource(ODataSource&&) noexcept            = default;
     ODataSource& operator=(ODataSource&&) noexcept = default;
-    virtual ~ODataSource() noexcept                = default;
+    virtual ~ODataSource() noexcept;
 
     virtual void write1(uint32_t)           = 0;
     virtual void write2(uint16_t)           = 0;
@@ -235,14 +204,14 @@ public:
     virtual void write4(uint32_t)           = 0;
     virtual void write4high(uint32_t)       = 0;
     virtual void write(const void*, size_t) = 0;
-    virtual void write(const std::string& s) { write(s.data(), s.size()); }
+    virtual void write(const std::string& s);
 
-    virtual void seek(size_t)         = 0;
-    virtual void skip(std::streamoff) = 0;
-    virtual size_t getSize() const    = 0;
-    virtual size_t getPos() const     = 0;
+    virtual void seek(size_t)                    = 0;
+    virtual void skip(std::streamoff)            = 0;
+    [[nodiscard]] virtual size_t getSize() const = 0;
+    [[nodiscard]] virtual size_t getPos() const  = 0;
     virtual void flush() { }
-    virtual bool good() const { return true; }
+    [[nodiscard]] virtual bool good() const { return true; }
     virtual void clear_error() { }
 };
 
@@ -254,7 +223,8 @@ protected:
     std::ostream* out;
 
 public:
-    explicit OStreamDataSource(std::ostream* data_stream) : out(data_stream) { }
+    explicit OStreamDataSource(std::ostream* data_stream);
+    ~OStreamDataSource() override;
 
     void write1(uint32_t val) final { Write1(out, static_cast<uint16_t>(val)); }
 
@@ -274,12 +244,12 @@ public:
 
     void skip(std::streamoff pos) final { out->seekp(pos, std::ios::cur); }
 
-    size_t getSize() const final { return out->tellp(); }
+    [[nodiscard]] size_t getSize() const final { return out->tellp(); }
 
-    size_t getPos() const final { return out->tellp(); }
+    [[nodiscard]] size_t getPos() const final { return out->tellp(); }
 
     void flush() final { out->flush(); }
-    bool good() const final { return out->good(); }
+    [[nodiscard]] bool good() const final { return out->good(); }
     void clear_error() final { out->clear(); }
 };
 
@@ -293,12 +263,9 @@ protected:
     std::size_t size;
 
 public:
-    OBufferDataSpan(void* data, size_t len) : buf(static_cast<unsigned char*>(data)), buf_ptr(buf), size(len) {
-        // data can be nullptr if len is also 0
-        assert(data != nullptr || len == 0);
-    }
-
-    OBufferDataSpan(const std::unique_ptr<unsigned char[]>& data_, size_t len) : OBufferDataSpan(data_.get(), len) { }
+    OBufferDataSpan(void* data, size_t len);
+    OBufferDataSpan(const std::unique_ptr<unsigned char[]>& data_, size_t len);
+    ~OBufferDataSpan() override;
 
     // Prevent use after free.
     OBufferDataSpan(std::unique_ptr<unsigned char[]>&& data_, size_t len) = delete;
@@ -313,10 +280,7 @@ public:
 
     void write4high(uint32_t val) final { Write4high(buf_ptr, val); }
 
-    void write(const void* b, size_t len) final {
-        std::memcpy(buf_ptr, b, len);
-        buf_ptr += len;
-    }
+    void write(const void* b, size_t len) final;
 
     void write(const std::string& s) final { write(&s[0], s.size()); }
 
@@ -324,11 +288,11 @@ public:
 
     void skip(std::streamoff pos) final { buf_ptr += pos; }
 
-    size_t getSize() const final { return size; }
+    [[nodiscard]] size_t getSize() const final { return size; }
 
-    size_t getPos() const final { return buf_ptr - buf; }
+    [[nodiscard]] size_t getPos() const final { return buf_ptr - buf; }
 
-    unsigned char* getPtr() { return buf_ptr; }
+    [[nodiscard]] unsigned char* getPtr() const { return buf_ptr; }
 };
 
 /**
@@ -338,41 +302,10 @@ class OBufferDataSource : public OBufferDataSpan {
     std::unique_ptr<unsigned char[]> data;
 
 public:
-    explicit OBufferDataSource(size_t len) : OBufferDataSpan(nullptr, 0), data(std::make_unique<unsigned char[]>(len)) {
-        assert(len != 0);
-        buf_ptr = buf = data.get();
-        size          = len;
-    }
-    OBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len)
-        : OBufferDataSpan(data_, len), data(std::move(data_)) { }
-    OBufferDataSource(void* data_, size_t len)
-        : OBufferDataSpan(data_, len), data(static_cast<unsigned char*>(data_)) { }
+    explicit OBufferDataSource(size_t len);
+    OBufferDataSource(std::unique_ptr<unsigned char[]> data_, size_t len);
+    OBufferDataSource(void* data_, size_t len);
+    ~OBufferDataSource() override;
 };
-
-inline void IDataSource::copy_to(ODataSource& dest) {
-    size_t len = getSize();
-    auto data  = readN(len);
-    dest.write(data.get(), len);
-}
-
-inline std::unique_ptr<IDataSource> IStreamDataSource::makeSource(size_t len) {
-    return std::make_unique<IBufferDataSource>(readN(len), len);
-}
-
-inline std::unique_ptr<IDataSource> IBufferDataView::makeSource(size_t len) {
-    size_t avail = getAvail();
-    if (avail < len) {
-        len = avail;
-    }
-    const unsigned char* ptr = getPtr();
-    skip(len);
-    return std::make_unique<IBufferDataView>(ptr, len);
-}
-
-inline void IBufferDataView::copy_to(ODataSource& dest) {
-    size_t len = getAvail();
-    dest.write(getPtr(), len);
-    skip(len);
-}
 
 #endif // DATABUF_H

@@ -24,144 +24,40 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "XMidiEvent.h"
 
-class XMidiNoteStack {
+class XMidiNoteStack final {
     XMidiEvent* notes = nullptr; // Top of the stack
     int polyphony     = 0;
     int max_polyphony = 0;
 
 public:
     // Just clear it. Don't care about what's actually in it
-    inline void clear() {
-        notes         = nullptr;
-        polyphony     = 0;
-        max_polyphony = 0;
-    }
+    void clear();
 
     // Pops the top of the stack if its off_time is <= time (6000th of second)
-    inline XMidiEvent* PopTime(uint32_t time) {
-        if (notes && notes->ex.note_on.note_time <= time) {
-            XMidiEvent* note           = notes;
-            notes                      = note->ex.note_on.next_note;
-            note->ex.note_on.next_note = nullptr;
-            polyphony--;
-            return note;
-        }
-
-        return nullptr;
-    }
+    XMidiEvent* PopTime(uint32_t time);
 
     // Pops the top of the stack
-    inline XMidiEvent* Pop() {
-        if (notes) {
-            XMidiEvent* note           = notes;
-            notes                      = note->ex.note_on.next_note;
-            note->ex.note_on.next_note = nullptr;
-            polyphony--;
-            return note;
-        }
-
-        return nullptr;
-    }
+    XMidiEvent* Pop();
 
     // Pops the top of the stack
-    inline XMidiEvent* Remove(XMidiEvent* event) {
-        XMidiEvent* prev = nullptr;
-        XMidiEvent* note = notes;
-        while (note) {
-
-            if (note == event) {
-                if (prev)
-                    prev->ex.note_on.next_note = note->ex.note_on.next_note;
-                else
-                    notes = note->ex.note_on.next_note;
-                note->ex.note_on.next_note = nullptr;
-                polyphony--;
-                return note;
-            }
-            prev = note;
-            note = note->ex.note_on.next_note;
-        }
-        return nullptr;
-    }
+    XMidiEvent* Remove(XMidiEvent* event);
 
     // Finds the note that has same pitch and channel, and pops it
-    inline XMidiEvent* FindAndPop(XMidiEvent* event) {
-
-        XMidiEvent* prev = nullptr;
-        XMidiEvent* note = notes;
-        while (note) {
-
-            if ((note->status & 0xF) == (event->status & 0xF) && note->data[0] == event->data[0]) {
-                if (prev)
-                    prev->ex.note_on.next_note = note->ex.note_on.next_note;
-                else
-                    notes = note->ex.note_on.next_note;
-                note->ex.note_on.next_note = nullptr;
-                polyphony--;
-                return note;
-            }
-            prev = note;
-            note = note->ex.note_on.next_note;
-        }
-        return nullptr;
-    }
+    XMidiEvent* FindAndPop(XMidiEvent* event);
 
     // Pushes a note onto the top of the stack
-    inline void Push(XMidiEvent* event) {
-        event->ex.note_on.next_note = notes;
-        notes                       = event;
-        polyphony++;
-        if (max_polyphony < polyphony)
-            max_polyphony = polyphony;
-    }
+    void Push(XMidiEvent* event);
 
-    inline void Push(XMidiEvent* event, uint32_t time) {
-        event->ex.note_on.note_time = time;
-        event->ex.note_on.next_note = nullptr;
-
-        polyphony++;
-        if (max_polyphony < polyphony)
-            max_polyphony = polyphony;
-
-        if (!notes || time <= notes->ex.note_on.note_time) {
-            event->ex.note_on.next_note = notes;
-            notes                       = event;
-        } else {
-            XMidiEvent* prev = notes;
-            while (prev) {
-                XMidiEvent* note = prev->ex.note_on.next_note;
-
-                if (!note || time <= note->ex.note_on.note_time) {
-                    event->ex.note_on.next_note = note;
-                    prev->ex.note_on.next_note  = event;
-                    return;
-                }
-                prev = note;
-            }
-        }
-    }
+    void Push(XMidiEvent* event, uint32_t time);
 
     // Finds the note that has same pitch and channel, and sets its after touch to our velocity
-    inline void SetAftertouch(XMidiEvent* event) {
+    void SetAftertouch(XMidiEvent* event) const;
 
-        // XMidiEvent *prev = 0;
-        XMidiEvent* note = notes;
-        while (note) {
+    [[nodiscard]] XMidiEvent* GetNotes() const { return notes; }
 
-            if ((note->status & 0xF) == (event->status & 0xF) && note->data[0] == event->data[0]) {
-                note->ex.note_on.actualvel = event->data[1];
-                return;
-            }
-            // prev = note;
-            note = note->ex.note_on.next_note;
-        }
-    }
+    [[nodiscard]] int GetPolyphony() const { return polyphony; }
 
-    inline XMidiEvent* GetNotes() { return notes; }
-
-    inline int GetPolyphony() { return polyphony; }
-
-    inline int GetMaxPolyphony() { return max_polyphony; }
+    [[nodiscard]] int GetMaxPolyphony() const { return max_polyphony; }
 };
 
 #endif // XMIDINOTESTACK_H_INCLUDED

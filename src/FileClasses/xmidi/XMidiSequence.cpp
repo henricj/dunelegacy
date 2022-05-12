@@ -19,46 +19,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "FileClasses/xmidi/XMidiSequence.h"
 
-#include "FileClasses/xmidi/XMidiFile.h"
 #include "FileClasses/xmidi/XMidiSequenceHandler.h"
 
+namespace {
 // Define this to stop the Midisequencer from attempting to
 // catch up time if it has missed over 1200 ticks or 1/5th of a second
 // This is useful for when debugging, since the Sequencer will not attempt
 // to play hundreds of events at the same time if execution is broken, and
 // later resumed.
-#define XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER 1200
+inline constexpr auto XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER = 1200;
+} // namespace
 
-const uint16_t XMidiSequence::ChannelShadow::centre_value   = 0x2000;
-const uint8_t XMidiSequence::ChannelShadow::fine_value      = centre_value & 127;
-const uint8_t XMidiSequence::ChannelShadow::coarse_value    = centre_value >> 7;
-const uint16_t XMidiSequence::ChannelShadow::combined_value = (coarse_value << 8) | fine_value;
+constexpr uint16_t XMidiSequence::ChannelShadow::centre_value   = 0x2000;
+constexpr uint8_t XMidiSequence::ChannelShadow::fine_value      = centre_value & 127;
+constexpr uint8_t XMidiSequence::ChannelShadow::coarse_value    = centre_value >> 7;
+constexpr uint16_t XMidiSequence::ChannelShadow::combined_value = (coarse_value << 8) | fine_value;
 
 XMidiSequence::XMidiSequence(XMidiSequenceHandler* Handler, uint16_t seq_id, XMidiEventList* events, bool Repeat,
                              int volume, int branch)
-    : handler(Handler), sequence_id(seq_id), evntlist(events), event(nullptr), repeat(Repeat), last_tick(0),
-      loop_num(-1), vol_multi(volume), paused(false), speed(100) {
-    std::memset(loop_event, 0, XMIDI_MAX_FOR_LOOP_COUNT * sizeof(int));
-    std::memset(loop_count, 0, XMIDI_MAX_FOR_LOOP_COUNT * sizeof(int));
-    event = evntlist->events;
+    : handler(Handler), sequence_id(seq_id), evntlist(events), repeat(Repeat), vol_multi(volume) {
+    event_ = evntlist->events;
 
     for (int i = 0; i < 16; i++) {
         shadows[i].reset();
-        handler->sequenceSendEvent(sequence_id,
-                                   i | (MIDI_STATUS_CONTROLLER << 4) | (XMIDI_CONTROLLER_BANK_CHANGE << 8));
+        const auto message = i | (MIDI_STATUS_CONTROLLER << 4) | (XMIDI_CONTROLLER_BANK_CHANGE << 8);
+        handler->sequenceSendEvent(sequence_id, message);
     }
 
     // Jump to branch
-    XMidiEvent* brnch = events->findBranchEvent(branch);
-    if (brnch) {
+    if (auto* const brnch = events->findBranchEvent(branch)) {
         last_tick = brnch->time;
-        event     = brnch;
+        event_    = brnch;
 
-        XMidiEvent* event = evntlist->events;
-        while (event != brnch) {
+        for (auto* event = evntlist->events; event != brnch; event = event->next)
             updateShadowForEvent(event);
-            event = event->next;
-        }
+
         for (int i = 0; i < 16; i++)
             gainChannel(i);
     }
@@ -69,7 +64,7 @@ XMidiSequence::XMidiSequence(XMidiSequenceHandler* Handler, uint16_t seq_id, XMi
 
 XMidiSequence::~XMidiSequence() {
     // Handle note off's here
-    while (XMidiEvent* note = notes_on.Pop())
+    while (const auto* const note = notes_on.Pop())
         handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
 
     for (int i = 0; i < 16; i++) {
@@ -131,18 +126,13 @@ int XMidiSequence::playEvent() {
     if (start == 0xFFFFFFFF)
         initClock();
 
-    XMidiEvent* note;
-
     // Handle note off's here
-    while ((note = notes_on.PopTime(getRealTime())) != nullptr)
+    while (const auto* const note = notes_on.PopTime(getRealTime()))
         handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
 
     // No events left, but we still have notes on, so say we are still playing, if not report we've finished
-    if (!event) {
-        if (notes_on.GetNotes())
-            return 1;
-        else
-            return -1;
+    if (!event_) {
+        return notes_on.GetNotes() ? 1 : -1;
     }
 
     // Effectively paused, so indicate it
@@ -150,7 +140,7 @@ int XMidiSequence::playEvent() {
         return 1;
 
     // Play all waiting notes;
-    int32_t aim  = ((event->time - last_tick) * 5000) / speed;
+    int32_t aim  = ((event_->time - last_tick) * 5000) / speed;
     int32_t diff = aim - getTime();
 
     if (diff > 5)
@@ -158,31 +148,31 @@ int XMidiSequence::playEvent() {
 
     addOffset(aim);
 
-    last_tick = event->time;
+    last_tick = event_->time;
 
-#ifdef XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER
-    if (diff < -XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER)
-        addOffset(-diff);
-#endif
+    if constexpr (XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER > 0) {
+        if (diff < -XMIDISEQUENCER_NO_CATCHUP_WAIT_OVER)
+            addOffset(-diff);
+    }
 
     // Handle note off's here too
-    while ((note = notes_on.PopTime(getRealTime())) != nullptr)
+    while (const auto* const note = notes_on.PopTime(getRealTime()))
         handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
 
     // XMidi For Loop
-    if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_FOR_LOOP) {
+    if ((event_->status >> 4) == MIDI_STATUS_CONTROLLER && event_->data[0] == XMIDI_CONTROLLER_FOR_LOOP) {
         if (loop_num < XMIDI_MAX_FOR_LOOP_COUNT - 1)
             loop_num++;
         else
             THROW(std::runtime_error, "XMIDI: Exceeding maximum loop count");
 
-        loop_count[loop_num] = event->data[1];
-        loop_event[loop_num] = event;
+        loop_count[loop_num] = event_->data[1];
+        loop_event[loop_num] = event_;
 
     } // XMidi Next/Break
-    else if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_NEXT_BREAK) {
+    else if ((event_->status >> 4) == MIDI_STATUS_CONTROLLER && event_->data[0] == XMIDI_CONTROLLER_NEXT_BREAK) {
         if (loop_num != -1) {
-            if (event->data[1] < 64) {
+            if (event_->data[1] < 64) {
                 loop_num--;
             }
         } else {
@@ -196,28 +186,29 @@ int XMidiSequence::playEvent() {
                 loop_event[loop_num] = branch;
             }
         }
-        event = nullptr;
+        event_ = nullptr;
     } // XMidi Callback Trigger
-    else if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_CALLBACK_TRIG) {
-        handler->handleCallbackTrigger(sequence_id, event->data[1]);
+    else if ((event_->status >> 4) == MIDI_STATUS_CONTROLLER && event_->data[0] == XMIDI_CONTROLLER_CALLBACK_TRIG) {
+        handler->handleCallbackTrigger(sequence_id, event_->data[1]);
     } // Not SysEx
-    else if (event->status < 0xF0) {
+    else if (event_->status < 0xF0) {
         sendEvent();
     }
     // SysEx gets sent immediately
-    else if (event->status != 0xFF) {
-        handler->sequenceSendSysEx(sequence_id, event->status, event->ex.sysex_data.buffer, event->ex.sysex_data.len);
+    else if (event_->status != 0xFF) {
+        handler->sequenceSendSysEx(sequence_id, event_->status, event_->ex.sysex_data.buffer,
+                                   event_->ex.sysex_data.len);
     }
 
     // If we've got another note, play that next
-    if (event)
-        event = event->next;
+    if (event_)
+        event_ = event_->next;
 
     // Now, handle what to do when we are at the end
-    if (!event) {
+    if (!event_) {
         // If we have for loop events, follow them
         if (loop_num != -1) {
-            event     = loop_event[loop_num]->next;
+            event_    = loop_event[loop_num]->next;
             last_tick = loop_event[loop_num]->time;
 
             if (loop_count[loop_num])
@@ -227,7 +218,7 @@ int XMidiSequence::playEvent() {
         // Or, if we are repeating, but there hasn't been any for loop events,
         // repeat from the start
         else if (repeat) {
-            event = evntlist->events;
+            event_ = evntlist->events;
             if (last_tick == 0)
                 return 1;
             last_tick = 0;
@@ -240,14 +231,14 @@ int XMidiSequence::playEvent() {
         }
     }
 
-    if (!event) {
+    if (!event_) {
         if (notes_on.GetNotes())
             return 1;
         else
             return -1;
     }
 
-    aim  = ((event->time - last_tick) * 5000) / speed;
+    aim  = ((event_->time - last_tick) * 5000) / speed;
     diff = aim - getTime();
 
     if (diff < 0)
@@ -259,17 +250,16 @@ int32_t XMidiSequence::timeTillNext() {
     int32_t sixthoToNext = 0x7FFFFFFF; // Int max
 
     // Time remaining on notes currently being played
-    XMidiEvent* note;
-    if ((note = notes_on.GetNotes())) {
-        int32_t diff = note->ex.note_on.note_time - getRealTime();
+    if (const auto* const note = notes_on.GetNotes()) {
+        const int32_t diff = note->ex.note_on.note_time - getRealTime();
         if (diff < sixthoToNext)
             sixthoToNext = diff;
     }
 
     // Time till the next event, if we are playing
-    if (speed > 0 && event && !paused) {
-        int32_t aim  = ((event->time - last_tick) * 5000) / speed;
-        int32_t diff = aim - getTime();
+    if (speed > 0 && event_ && !paused) {
+        const int32_t aim  = ((event_->time - last_tick) * 5000) / speed;
+        const int32_t diff = aim - getTime();
 
         if (diff < sixthoToNext)
             sixthoToNext = diff;
@@ -278,106 +268,108 @@ int32_t XMidiSequence::timeTillNext() {
 }
 
 void XMidiSequence::updateShadowForEvent(XMidiEvent* event) {
-    unsigned int chan = event->status & 0xF;
-    unsigned int type = event->status >> 4;
-    uint32_t data     = event->data[0] | (event->data[1] << 8);
+    const unsigned int chan = event->status & 0xF;
+    const unsigned int type = event->status >> 4;
+    const uint32_t data     = event->data[0] | (event->data[1] << 8);
 
     // Shouldn't be required. XMidi should automatically detect all anyway
     // evntlist->chan_mask |= 1 << chan;
 
     // Update the shadows here
 
+    auto& shadow = shadows[chan];
+
     if (type == MIDI_STATUS_CONTROLLER) {
         // Channel volume
         if (event->data[0] == 7) {
-            shadows[chan].volumes[0] = event->data[1];
+            shadow.volumes[0] = event->data[1];
         } else if (event->data[0] == 39) {
-            shadows[chan].volumes[1] = event->data[1];
+            shadow.volumes[1] = event->data[1];
         }
         // Bank
         else if (event->data[0] == 0 || event->data[0] == 32) {
-            shadows[chan].bank[event->data[0] / 32] = event->data[1];
+            shadow.bank[event->data[0] / 32] = event->data[1];
         }
         // modWheel
         else if (event->data[0] == 1 || event->data[0] == 33) {
-            shadows[chan].modWheel[event->data[0] / 32] = event->data[1];
+            shadow.modWheel[event->data[0] / 32] = event->data[1];
         }
         // footpedal
         else if (event->data[0] == 4 || event->data[0] == 36) {
-            shadows[chan].footpedal[event->data[0] / 32] = event->data[1];
+            shadow.footpedal[event->data[0] / 32] = event->data[1];
         }
         // pan
         else if (event->data[0] == 9 || event->data[0] == 41) {
-            shadows[chan].pan[event->data[0] / 32] = event->data[1];
+            shadow.pan[event->data[0] / 32] = event->data[1];
         }
         // balance
         else if (event->data[0] == 10 || event->data[0] == 42) {
-            shadows[chan].balance[event->data[0] / 32] = event->data[1];
+            shadow.balance[event->data[0] / 32] = event->data[1];
         }
         // expression
         else if (event->data[0] == 11 || event->data[0] == 43) {
-            shadows[chan].expression[event->data[0] / 32] = event->data[1];
+            shadow.expression[event->data[0] / 32] = event->data[1];
         }
         // sustain
         else if (event->data[0] == 64) {
-            shadows[chan].effects = event->data[1];
+            shadow.effects = event->data[1];
         }
         // effect
         else if (event->data[0] == 91) {
-            shadows[chan].effects = event->data[1];
+            shadow.effects = event->data[1];
         }
         // chorus
         else if (event->data[0] == 93) {
-            shadows[chan].chorus = event->data[1];
+            shadow.chorus = event->data[1];
         }
         // XMidi bank
         else if (event->data[0] == XMIDI_CONTROLLER_BANK_CHANGE) {
-            shadows[chan].xbank = event->data[1];
+            shadow.xbank = event->data[1];
         }
     } else if (type == MIDI_STATUS_PROG_CHANGE) {
-        shadows[chan].program = data;
+        shadow.program = data;
     } else if (type == MIDI_STATUS_PITCH_WHEEL) {
-        shadows[chan].pitchWheel = data;
+        shadow.pitchWheel = data;
     }
 }
 
 void XMidiSequence::sendEvent() {
     // unsigned int chan = event->status & 0xF;
-    unsigned int type = event->status >> 4;
-    uint32_t data     = event->data[0] | (event->data[1] << 8);
+    const unsigned int type = event_->status >> 4;
+    uint32_t data           = event_->data[0] | (event_->data[1] << 8);
 
     // Shouldn't be required. XMidi should automatically detect all anyway
     // evntlist->chan_mask |= 1 << chan;
 
     // Update the shadows here
-    updateShadowForEvent(event);
+    updateShadowForEvent(event_);
 
     if (type == MIDI_STATUS_CONTROLLER) {
         // Channel volume
-        if (event->data[0] == 7) {
-            data = event->data[0] | (((event->data[1] * vol_multi) / 0xFF) << 8);
+        if (event_->data[0] == 7) {
+            data = event_->data[0] | (((event_->data[1] * vol_multi) / 0xFF) << 8);
         }
     } else if (type == MIDI_STATUS_AFTERTOUCH) {
-        notes_on.SetAftertouch(event);
+        notes_on.SetAftertouch(event_);
     }
 
-    if ((type != MIDI_STATUS_NOTE_ON || event->data[1]) && type != MIDI_STATUS_NOTE_OFF) {
+    if ((type != MIDI_STATUS_NOTE_ON || event_->data[1]) && type != MIDI_STATUS_NOTE_OFF) {
 
         if (type == MIDI_STATUS_NOTE_ON) {
 
-            if (!event->data[1])
+            if (!event_->data[1])
                 return;
 
-            notes_on.Remove(event);
+            notes_on.Remove(event_);
 
-            handler->sequenceSendEvent(sequence_id, event->status | (data << 8));
-            event->ex.note_on.actualvel = event->data[1];
+            handler->sequenceSendEvent(sequence_id, event_->status | (data << 8));
+            event_->ex.note_on.actualvel = event_->data[1];
 
-            notes_on.Push(event, ((event->ex.note_on.duration - 1) * 5000 / speed) + getStart());
+            notes_on.Push(event_, ((event_->ex.note_on.duration - 1) * 5000 / speed) + getStart());
         }
         // Only send IF the channel has been marked enabled
         else
-            handler->sequenceSendEvent(sequence_id, event->status | (data << 8));
+            handler->sequenceSendEvent(sequence_id, event_->status | (data << 8));
     }
 }
 
@@ -447,7 +439,7 @@ void XMidiSequence::setVolume(int new_volume) {
 
 void XMidiSequence::loseChannel(int i) {
     // If the channel matches, send a note off for any note
-    XMidiEvent* note = notes_on.GetNotes();
+    const XMidiEvent* note = notes_on.GetNotes();
     while (note) {
         if ((note->status & 0xF) == i)
             handler->sequenceSendEvent(sequence_id, note->status + (note->data[0] << 8));
@@ -459,7 +451,7 @@ void XMidiSequence::gainChannel(int i) {
     applyShadow(i);
 
     // If the channel matches, send a note on for any note
-    XMidiEvent* note = notes_on.GetNotes();
+    const XMidiEvent* note = notes_on.GetNotes();
     while (note) {
         if ((note->status & 0xF) == i)
             handler->sequenceSendEvent(sequence_id,
@@ -486,14 +478,15 @@ int XMidiSequence::countNotesOn(int chan) {
     if (paused)
         return 0;
 
-    int ret          = 0;
-    XMidiEvent* note = notes_on.GetNotes();
-    while (note) {
+    int ret = 0;
+
+    for (const XMidiEvent* note = notes_on.GetNotes(); note; note = note->ex.note_on.next_note) {
         if ((note->status & 0xF) == chan)
             ret++;
-        note = note->ex.note_on.next_note;
     }
     return ret;
 }
+
+XMidiSequenceHandler::~XMidiSequenceHandler() = default;
 
 // Protection

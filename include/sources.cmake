@@ -58,8 +58,9 @@ add_sources(HEADERS
 	FileClasses/Vocfile.h
 	FileClasses/Wsafile.h
 	FileClasses/xmidi/databuf.h
-	FileClasses/xmidi/utils.h
+	FileClasses/xmidi/gamma.h
 	FileClasses/xmidi/SDLDataSource.h
+	FileClasses/xmidi/utils.h
 	FileClasses/xmidi/XMidiEvent.h
 	FileClasses/xmidi/XMidiEventList.h
 	FileClasses/xmidi/XMidiFile.h

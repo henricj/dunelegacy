@@ -25,11 +25,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMidiNoteStack.h"
 #include "XMidiSequenceHandler.h"
 
-class XMidiSequence {
+#include <array>
+
+class XMidiSequence final {
 public:
     //! Create the XXMidiSequence object
     //! \param handler XMidiSequenceHandler object that the events are to be sent to
-    //! \param sequence_id The id num for this sequence
+    //! \param seq_id The id num for this sequence
     //! \param events The Midi event list that is to be played
     //! \param repeat Specifies if repeating is enabled or disabled
     //! \param volume Volume level to play at
@@ -42,7 +44,7 @@ public:
 
     //! Play a single waiting event
     //! \return <0 if there is no more events
-    //! \return 0 if there are pending events that can be played imediately
+    //! \return 0 if there are pending events that can be played immediately
     //! \return >0 if there are pending events in the future
     int playEvent();
 
@@ -56,7 +58,7 @@ public:
 
     //! Get the current volume level
     //! \return the current volume level (0-255)
-    int getVolume() { return vol_multi; }
+    [[nodiscard]] int getVolume() const { return vol_multi; }
 
     //! Set the speed of playback
     //! \param new_speed the new playback speed (percentage)
@@ -73,12 +75,12 @@ public:
     void gainChannel(int i);
 
     //! Apply a shadow state
-    //! \param c the channel to apply the shadow for
+    //! \param i the channel to apply the shadow for
     void applyShadow(int i);
 
     //! Get the channel used mask
     //! \return the mask of used channels
-    uint16_t getChanMask() { return evntlist->chan_mask; }
+    [[nodiscard]] uint16_t getChanMask() const { return evntlist->chan_mask; }
 
     //! Pause the sequence
     void pause();
@@ -87,7 +89,7 @@ public:
     void unpause();
 
     //! Is the sequence paused
-    bool isPaused() { return paused; }
+    [[nodiscard]] bool isPaused() const { return paused; }
 
     //! Count the number of notes on for a chan
     //! \param chan The channel to count for
@@ -95,24 +97,24 @@ public:
     int countNotesOn(int chan);
 
 private:
-    XMidiSequenceHandler* handler; //!< The handler the events are sent to
-    uint16_t sequence_id;          //!< The sequence id of this sequence
-    XMidiEventList* evntlist;      //!< The Midi event list that is being played
-    XMidiEvent* event;             //!< The next event to be played
-    bool repeat;                   //!< Specifies if repeating is enabled
-    XMidiNoteStack notes_on;       //!< Note stack of notes currently playing, and time to stop
-    uint32_t last_tick;            //!< The tick of the previously played notes
-    uint32_t start;                //!< XMidi Clock (in 1/6000 seconds)
-    int loop_num;                  //!< The level of the loop we are currently in
-    int vol_multi;                 //!< Volume multiplier (0-255)
-    bool paused;                   //!< Is the sequence paused
-    int speed;                     //!< Percentage of speed to playback at
+    XMidiSequenceHandler* handler{}; //!< The handler the events are sent to
+    uint16_t sequence_id;            //!< The sequence id of this sequence
+    XMidiEventList* evntlist{};      //!< The Midi event list that is being played
+    XMidiEvent* event_{};            //!< The next event to be played
+    bool repeat;                     //!< Specifies if repeating is enabled
+    XMidiNoteStack notes_on;         //!< Note stack of notes currently playing, and time to stop
+    uint32_t last_tick = 0;          //!< The tick of the previously played notes
+    uint32_t start;                  //!< XMidi Clock (in 1/6000 seconds)
+    int loop_num = -1;               //!< The level of the loop we are currently in
+    int vol_multi;                   //!< Volume multiplier (0-255)
+    bool paused = false;             //!< Is the sequence paused
+    int speed   = 100;               //!< Percentage of speed to playback at
 
     //! The for loop event that triggered the loop per level
-    XMidiEvent* loop_event[XMIDI_MAX_FOR_LOOP_COUNT];
+    std::array<XMidiEvent*, XMIDI_MAX_FOR_LOOP_COUNT> loop_event{};
 
     //! The amount of times we have left that we can loop per level
-    int loop_count[XMIDI_MAX_FOR_LOOP_COUNT];
+    std::array<int, XMIDI_MAX_FOR_LOOP_COUNT> loop_count{};
 
     struct ChannelShadow {
         static const uint16_t centre_value;
@@ -146,19 +148,19 @@ private:
     void updateShadowForEvent(XMidiEvent* event);
 
     //! Initialize the XMidi clock to begin now
-    inline void initClock() { start = handler->getTickCount(sequence_id); }
+    void initClock() { start = handler->getTickCount(sequence_id); }
 
     //! Add an offset to the XMidi clock
-    inline void addOffset(uint32_t offset) { start += offset; }
+    void addOffset(uint32_t offset) { start += offset; }
 
     //! Get the current time of the XMidi clock
-    inline uint32_t getTime() { return handler->getTickCount(sequence_id) - start; }
+    [[nodiscard]] uint32_t getTime() const { return handler->getTickCount(sequence_id) - start; }
 
     //! Get the start time of the XMidi clock
-    inline uint32_t getStart() { return start; }
+    [[nodiscard]] uint32_t getStart() const { return start; }
 
     //! Get the real time of the XMidi clock
-    inline uint32_t getRealTime() { return handler->getTickCount(sequence_id); }
+    [[nodiscard]] uint32_t getRealTime() const { return handler->getTickCount(sequence_id); }
 };
 
 #endif // XMIDISEQUENCE_H_INCLUDED
