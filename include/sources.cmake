@@ -59,6 +59,7 @@ add_sources(HEADERS
 	FileClasses/Wsafile.h
 	FileClasses/xmidi/databuf.h
 	FileClasses/xmidi/gamma.h
+	FileClasses/xmidi/MemoryDataSource.h
 	FileClasses/xmidi/SDLDataSource.h
 	FileClasses/xmidi/utils.h
 	FileClasses/xmidi/XMidiEvent.h
