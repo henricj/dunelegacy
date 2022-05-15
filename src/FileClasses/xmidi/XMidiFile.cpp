@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "FileClasses/xmidi/databuf.h"
 #include "FileClasses/xmidi/gamma.h"
 
+#include "misc/SDL2pp.h"
+
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
@@ -318,38 +320,31 @@ constexpr char XMidiFile::mt32asgs[256] = {
 
 // Reverse mapping. GM Notes converted to MT-32 patches
 constexpr char XMidiFile::gmasmt32[128] = {
-    0x00, 0x01, 0x03, 0x07, 0x05, 0x06, 0x11, 0x15, 0x16, 0x65, 0x65, 0x62, 0x68, 0x67, 0x66, 0x69,
-
-    0x0C, 0x09, 0x0A, 0x0D, 0x0E, 0x0F, 0x57, 0x0F, 0x3B, 0x3C, 0x3B, 0x3E, 0x3D, 0x3B, 0x3E, 0x3E,
-
-    0x40, 0x43, 0x42, 0x47, 0x44, 0x45, 0x42, 0x46, 0x35, 0x34, 0x36, 0x38, 0x35, 0x33, 0x39, 0x70,
-
-    0X30, 0x32, 0x30, 0x32, 0x22, 0x2A, 0x21, 0x7A, 0X58, 0x5A, 0x5E, 0x59, 0x5C, 0x5F, 0x59, 0x5B,
-
-    0x4E, 0x4F, 0x50, 0x51, 0x54, 0x55, 0x56, 0x53, 0x4B, 0x49, 0x4C, 0x4D, 0x6E, 0x6B, 0x6C, 0x48,
-
-    0x2F, 0x43, 0x4B, 0x33, 0x3D, 0x48, 0x34, 0x43, 0x20, 0x21, 0x43, 0x22, 0x20, 0x20, 0x21, 0x21,
-
-    0x29, 0x24, 0x23, 0x25, 0x2D, 0x21, 0x2B, 0x20, 0x3F, 0x69, 0x69, 0x69, 0x33, 0x51, 0x34, 0x51,
-
-    0x17, 0x67, 0x67, 0x71, 0x75, 0x71, 0x74, 0x77, 0x7C, 0x78, 0x77, 0x7C, 0x7B, 0x78, 0x77, 0x72};
+    0x00, 0x01, 0x03, 0x07, 0x05, 0x06, 0x11, 0x15, 0x16, 0x65, 0x65, 0x62, 0x68, 0x67, 0x66, 0x69, 0x0C, 0x09, 0x0A,
+    0x0D, 0x0E, 0x0F, 0x57, 0x0F, 0x3B, 0x3C, 0x3B, 0x3E, 0x3D, 0x3B, 0x3E, 0x3E, 0x40, 0x43, 0x42, 0x47, 0x44, 0x45,
+    0x42, 0x46, 0x35, 0x34, 0x36, 0x38, 0x35, 0x33, 0x39, 0x70, 0X30, 0x32, 0x30, 0x32, 0x22, 0x2A, 0x21, 0x7A, 0X58,
+    0x5A, 0x5E, 0x59, 0x5C, 0x5F, 0x59, 0x5B, 0x4E, 0x4F, 0x50, 0x51, 0x54, 0x55, 0x56, 0x53, 0x4B, 0x49, 0x4C, 0x4D,
+    0x6E, 0x6B, 0x6C, 0x48, 0x2F, 0x43, 0x4B, 0x33, 0x3D, 0x48, 0x34, 0x43, 0x20, 0x21, 0x43, 0x22, 0x20, 0x20, 0x21,
+    0x21, 0x29, 0x24, 0x23, 0x25, 0x2D, 0x21, 0x2B, 0x20, 0x3F, 0x69, 0x69, 0x69, 0x33, 0x51, 0x34, 0x51, 0x17, 0x67,
+    0x67, 0x71, 0x75, 0x71, 0x74, 0x77, 0x7C, 0x78, 0x77, 0x7C, 0x7B, 0x78, 0x77, 0x72};
 
 namespace {
 //
 // MT32 SysEx
 //
-constexpr uint32_t sysex_data_start = 7; // Data starts at byte 7
-// static const uint32_t sysex_max_data_size = 256;
+
+inline constexpr uint32_t sysex_data_start = 7; // Data starts at byte 7
+// inline constexpr uint32_t sysex_max_data_size = 256;
 
 //
 // Percussion
 //
 
-constexpr uint32_t rhythm_base     = 0x030110; // Note, these are 7 bit!
-constexpr uint32_t rhythm_mem_size = 4;
+inline constexpr uint32_t rhythm_base     = 0x030110; // Note, these are 7 bit!
+inline constexpr uint32_t rhythm_mem_size = 4;
 
-constexpr uint32_t rhythm_first_note = 24;
-// static const uint32_t rhythm_num_notes = 64;
+inline constexpr uint32_t rhythm_first_note = 24;
+// inline const uint32_t rhythm_num_notes = 64;
 
 // Memory offset based on index in the table
 constexpr uint32_t rhythm_mem_offset(uint32_t index_num) {
@@ -371,8 +366,8 @@ struct RhythmSetupData {
 //
 // Timbre Memory Consts
 //
-constexpr uint32_t timbre_base     = 0x080000; // Note, these are 7 bit!
-constexpr uint32_t timbre_mem_size = 246;
+inline constexpr uint32_t timbre_base     = 0x080000; // Note, these are 7 bit!
+inline constexpr uint32_t timbre_mem_size = 246;
 
 uint32_t timbre_mem_offset(uint32_t timbre_num) {
     return timbre_num * 256;
@@ -381,8 +376,8 @@ uint32_t timbre_mem_offset(uint32_t timbre_num) {
 //
 // Patch Memory Consts
 //
-constexpr uint32_t patch_base     = 0x050000; // Note, these are 7 bit!
-constexpr uint32_t patch_mem_size = 8;
+inline constexpr uint32_t patch_base     = 0x050000; // Note, these are 7 bit!
+inline constexpr uint32_t patch_mem_size = 8;
 
 constexpr uint32_t patch_mem_offset(uint32_t patch_num) {
     return patch_num * 8;
@@ -399,7 +394,7 @@ struct PatchMemData {
     uint8_t dummy;
 };
 
-constexpr PatchMemData patch_template = {
+inline constexpr PatchMemData patch_template = {
     2,  // timbre_group
     0,  // timbre_num
     24, // key_shift
@@ -413,7 +408,7 @@ constexpr PatchMemData patch_template = {
 //
 // System Area Consts
 //
-constexpr uint32_t system_base = 0x100000; // Note, these are 7 bit!
+inline constexpr uint32_t system_base = 0x100000; // Note, these are 7 bit!
 // static const uint32_t system_mem_size = 0x17;	// Display is 20 ASCII characters (32-127)
 #ifndef offsetof // Broken <cstddef>? Just in case...
 #    define offsetof(type, field) reinterpret_cast<uintptr>(&(static_cast<type*>(0)->field))
@@ -430,14 +425,14 @@ struct systemArea {
     char masterVol;          // MASTER VOLUME 0-100
 };
 
-constexpr char system_init_reverb[3] = {0, 3, 2};                   // reverb mode = 0, time = 3, level = 2
-constexpr char system_part_chans[9]  = {1, 2, 3, 4, 5, 6, 7, 8, 9}; // default (0-based) chans for each part
-constexpr char system_part_rsv[9]    = {3, 4, 3, 4, 3, 4, 3, 4, 4}; // # of reserved AIL partials/channel
+inline constexpr char system_init_reverb[3] = {0, 3, 2};                   // reverb mode = 0, time = 3, level = 2
+inline constexpr char system_part_chans[9]  = {1, 2, 3, 4, 5, 6, 7, 8, 9}; // default (0-based) chans for each part
+inline constexpr char system_part_rsv[9]    = {3, 4, 3, 4, 3, 4, 3, 4, 4}; // # of reserved AIL partials/channel
 
 //
 // All Dev Reset
 //
-constexpr uint32_t all_dev_reset_base = 0x7f0000;
+inline constexpr uint32_t all_dev_reset_base = 0x7f0000;
 
 } // namespace
 
