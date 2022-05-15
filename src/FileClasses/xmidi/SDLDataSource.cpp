@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "FileClasses/xmidi/SDLDataSource.h"
 
+#include <ios>
+
 ISDLDataSource::ISDLDataSource(SDL_RWops* rwop, int freesrc) : rwop(rwop), freesrc(freesrc), reader_{rwop} { }
 
 ISDLDataSource::~ISDLDataSource() {

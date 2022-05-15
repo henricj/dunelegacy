@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <ios>
 #include <optional>
 #include <span>
 
@@ -81,7 +82,7 @@ public:
         if (pos >= buffer_position && pos < current_unbuffered) {
             const auto offset = pos - buffer_position;
 
-            pending_ = std::span{buffer_.data() + offset, current_unbuffered - pos};
+            pending_ = std::span{buffer_.data() + offset, static_cast<size_t>(current_unbuffered - pos)};
             return;
         }
 
@@ -90,7 +91,7 @@ public:
             THROW(std::runtime_error, "Unable to seek file.");
     }
 
-    void skip(int64_t pos) {
+    void skip(std::streamoff pos) {
         if (0 == pos)
             return;
 
@@ -104,7 +105,7 @@ public:
             const auto buffer_offset = previous + pos;
 
             if (buffer_offset >= 0) {
-                pending_ = std::span{buffer_.data() + buffer_offset, pending_.size() - pos};
+                pending_ = std::span{buffer_.data() + buffer_offset, static_cast<size_t>(pending_.size() - pos)};
                 return;
             }
         }
