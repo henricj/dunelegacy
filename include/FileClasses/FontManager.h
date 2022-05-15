@@ -24,7 +24,6 @@
 
 #include <filesystem>
 #include <memory>
-#include <string_view>
 #include <unordered_map>
 
 class Font;
@@ -48,7 +47,9 @@ public:
 private:
     std::unique_ptr<Font> loadFont(unsigned int fontSize) const;
 
-    std::filesystem::path font_path_;
+    static std::vector<char> loadImage(std::filesystem::path font_path);
+
+    const std::vector<char> font_;
     std::unordered_map<uint32_t, std::unique_ptr<Font>> fonts;
 };
 
