@@ -62,23 +62,23 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
     }
 
-    Uint32 mentnameSectionSize = SDL_SwapBE32(reinterpret_cast<Uint32*>(filedata.data())[4]);
+    auto mentnameSectionSize = SDL_SwapBE32(reinterpret_cast<const Uint32*>(filedata.data())[4]);
 
-    unsigned char* pMentNameSection = filedata.data() + 20;
+    const auto* const pMentNameSection = filedata.data() + 20;
 
-    unsigned char* pCurrentPos         = pMentNameSection;
-    unsigned char* pMentNameSectionEnd = pMentNameSection + mentnameSectionSize;
+    const auto* pCurrentPos               = pMentNameSection;
+    const auto* const pMentNameSectionEnd = pMentNameSection + mentnameSectionSize;
     while (pCurrentPos < pMentNameSectionEnd) {
-        unsigned int entryLength = *pCurrentPos;
+        const auto entryLength = *pCurrentPos;
 
-        Uint32 entryContentOffset = dune::read_be_uint32(reinterpret_cast<Uint32*>(pCurrentPos + 1)[0]);
+        auto entryContentOffset = dune::read_be_uint32(reinterpret_cast<const Uint32*>(pCurrentPos + 1)[0]);
 
-        const auto* p = reinterpret_cast<char*>(pCurrentPos);
+        const auto* p = reinterpret_cast<const char*>(pCurrentPos);
 
         unsigned int numMenuEntry = p[5] - '0';
         unsigned int menuLevel    = p[6] - '0';
 
-        std::string entryTitle(p + 7);
+        const std::string_view entryTitle(p + 7);
 
         const uint16_t techLevel = p[entryLength - 1];
 
@@ -87,20 +87,23 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
                   entryContentOffset);
         }
 
-        std::string compressedEntryContent(reinterpret_cast<char*>(filedata.data()) + entryContentOffset);
+        const std::string_view compressedEntryContent(reinterpret_cast<const char*>(filedata.data())
+                                                      + entryContentOffset);
 
-        std::string entryContent = convertCP850ToUTF8(decodeString(compressedEntryContent));
+        const auto entryContent = convertCP850ToUTF8(decodeString(compressedEntryContent));
 
-        size_t delimPos            = entryContent.find_first_of('*');
-        std::string filename       = entryContent.substr(0, delimPos);
-        std::string nameAndContent = delimPos == std::string::npos ? "" : entryContent.substr(delimPos + 1);
+        const auto delimPos = entryContent.find_first_of('*');
+        const auto valid    = delimPos != std::string::npos;
+        std::string filename{entryContent.data(), valid ? delimPos : 0};
+        const auto nameAndContent = valid ? std::string_view(entryContent.data() + delimPos + 1) : "";
 
-        size_t delimPos2    = nameAndContent.find(" \n");
-        std::string name    = nameAndContent.substr(0, delimPos2);
-        std::string content = delimPos2 == std::string::npos ? "" : nameAndContent.substr(delimPos2 + 2);
+        const auto delimPos2 = nameAndContent.find(" \n");
+        const auto valid2    = delimPos2 != std::string_view::npos;
+        std::string name{nameAndContent.data(), valid2 ? delimPos2 : 0};
+        std::string content{valid2 ? nameAndContent.substr(delimPos2 + 2) : ""};
 
-        mentatEntries.emplace_back(convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel, filename, name,
-                                   content);
+        mentatEntries.emplace_back(convertCP850ToUTF8(entryTitle), numMenuEntry, menuLevel, techLevel,
+                                   std::move(filename), std::move(name), std::move(content));
 
         pCurrentPos += entryLength;
     }
