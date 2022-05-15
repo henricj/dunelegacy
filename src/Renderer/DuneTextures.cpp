@@ -766,7 +766,11 @@ std::vector<SDL_Color> get_colors_horizontal(SDL_Surface* surface) {
         Uint8 r, g, b, a;
         SDL_GetRGBA(pixels[x], surface->format, &r, &g, &b, &a);
 
+#ifdef __clang__
+        colors.push_back({r, g, b, a});
+#else
         colors.emplace_back(r, g, b, a);
+#endif
     }
 
     return colors;
@@ -784,7 +788,11 @@ std::vector<SDL_Color> get_colors_vertical(SDL_Surface* surface) {
         Uint8 r, g, b, a;
         SDL_GetRGBA(pixels[y * surface->pitch / sizeof(Uint32)], surface->format, &r, &g, &b, &a);
 
+#ifdef __clang__
+        colors.push_back({r, g, b, a});
+#else
         colors.emplace_back(r, g, b, a);
+#endif
     }
 
     return colors;
