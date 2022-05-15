@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "FileClasses/xmidi/SDLDataSource.h"
 
-ISDLDataSource::ISDLDataSource(SDL_RWops* rwop, int freesrc) : rwop(rwop), freesrc(freesrc) { }
+ISDLDataSource::ISDLDataSource(SDL_RWops* rwop, int freesrc) : rwop(rwop), freesrc(freesrc), reader_{rwop} { }
 
 ISDLDataSource::~ISDLDataSource() {
     close();
@@ -32,18 +32,16 @@ void ISDLDataSource::close() {
 }
 
 void ISDLDataSource::read(void* b, size_t len) {
-    if (len != SDL_RWread(rwop, b, 1, len))
+    if (1 != reader_.read(b, len, 1))
         THROW(std::runtime_error, "Unable to read file.");
 }
 
 void ISDLDataSource::seek(size_t pos) {
-    if (-1 == SDL_RWseek(rwop, pos, SEEK_SET))
-        THROW(std::runtime_error, "Unable to seek file.");
+    reader_.seek(pos);
 }
 
 void ISDLDataSource::skip(std::streamoff pos) {
-    if (-1 == SDL_RWseek(rwop, pos, SEEK_CUR))
-        THROW(std::runtime_error, "Unable to skip file.");
+    reader_.skip(pos);
 }
 
 uint32_t ISDLDataSource::peek() {
