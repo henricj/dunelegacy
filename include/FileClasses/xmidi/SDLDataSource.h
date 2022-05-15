@@ -21,31 +21,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "databuf.h"
 
+#include "misc/BufferedReader.h"
+
 #include <misc/SDL2pp.h>
 
 #include <SDL2/SDL_rwops.h>
 
-#include <exception>
-
-inline uint8_t Read1(SDL_RWops* rwop) {
+inline uint8_t Read1(BufferedReader<>& reader) {
     uint8_t value;
-    if (1 != SDL_RWread(rwop, &value, 1, 1))
+    if (!reader.read_one(&value, 1))
         THROW(std::runtime_error, "Read failed");
 
     return value;
 }
 
-inline uint8_t Write1(SDL_RWops* rwop, uint8_t value) {
+inline void Write1(SDL_RWops* rwop, uint8_t value) {
     if (1 != SDL_RWwrite(rwop, &value, 1, 1))
         THROW(std::runtime_error, "Write failed");
-
-    return value;
 }
 
 class ISDLDataSource final : public IDataSource {
 private:
     SDL_RWops* rwop;
     int freesrc;
+    BufferedReader<> reader_;
 
 public:
     explicit ISDLDataSource(SDL_RWops* rwop, int freesrc = 0);
@@ -54,15 +53,15 @@ public:
 
     virtual void close();
 
-    uint32_t read1() override { return Read1(rwop); }
+    uint32_t read1() override { return Read1(reader_); }
 
-    uint16_t read2() override { return Read2(rwop); }
+    uint16_t read2() override { return Read2(reader_); }
 
-    uint16_t read2high() override { return Read2high(rwop); }
+    uint16_t read2high() override { return Read2high(reader_); }
 
-    uint32_t read4() override { return Read4(rwop); }
+    uint32_t read4() override { return Read4(reader_); }
 
-    uint32_t read4high() override { return Read4high(rwop); }
+    uint32_t read4high() override { return Read4high(reader_); }
 
     void read(void* b, size_t len) override;
 
@@ -72,7 +71,7 @@ public:
 
     [[nodiscard]] size_t getSize() const override { return static_cast<unsigned int>(SDL_RWsize(rwop)); }
 
-    [[nodiscard]] size_t getPos() const override { return static_cast<unsigned int>(SDL_RWtell(rwop)); }
+    [[nodiscard]] size_t getPos() const override { return reader_.position(); }
 
     uint32_t peek() override;
 
