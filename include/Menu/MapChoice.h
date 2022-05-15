@@ -19,6 +19,7 @@
 #define MAPCHOICE_H
 
 #include "FileClasses/GFXConstants.h"
+#include "GUI/StaticContainer.h"
 #include "MenuBase.h"
 #include <DataTypes.h>
 #include <GUI/dune/MessageTicker.h>

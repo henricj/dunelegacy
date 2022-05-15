@@ -31,6 +31,10 @@
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 
+#include <SDL2/SDL.h>
+
+#include <vector>
+
 GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, context_{context} {
     GameInterface::setTransparentBackground(true);
 
