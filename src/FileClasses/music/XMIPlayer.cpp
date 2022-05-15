@@ -19,14 +19,11 @@
 
 #include <globals.h>
 
+#include "FileClasses/xmidi/MemoryDataSource.h"
 #include "FileClasses/xmidi/SDLDataSource.h"
 #include "FileClasses/xmidi/XMidiEventList.h"
 #include <FileClasses/FileManager.h>
 #include <FileClasses/xmidi/XMidiFile.h>
-
-#include "misc/Random.h"
-#include "misc/string_util.h"
-#include <misc/fnkdat.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -48,12 +45,7 @@ XMIPlayer::XMIPlayer()
 }
 
 XMIPlayer::~XMIPlayer() {
-    if (music != nullptr) {
-        Mix_FreeMusic(music);
-        music = nullptr;
-    }
-
-    std::filesystem::remove(getTmpFileName());
+    music.reset();
 
     Mix_Quit();
 }
@@ -306,7 +298,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
     currentMusicType = musicType;
 
     if (musicOn && !filename.empty()) {
-        auto tmpFilename = getTmpFileName();
+        std::vector<uint8_t> midi_list;
 
         { // Scope
             auto input_path = std::filesystem::path(reinterpret_cast<const char8_t*>(filename.c_str()));
@@ -324,35 +316,31 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
                 sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
                 return;
             }
-            sdl2::RWops_ptr outputrwop{SDL_RWFromFile(tmpFilename.u8string(), "wb+")};
-            if (outputrwop == nullptr) {
-                sdl2::log_info("XMIPlayer: cannot open file: %s!", reinterpret_cast<const char*>(tmpFilename.c_str()));
-                return;
-            }
 
-            OSDLDataSource output(outputrwop.get(), 0);
+            OMemoryDataSource output;
 
             event_list->write(&output);
 
-            output.close();
+            midi_list = output.takeBuffer();
         }
 
         Mix_HaltMusic();
-        if (music != nullptr) {
-            Mix_FreeMusic(music);
-            music = nullptr;
-        }
+        music.reset();
 
-        music = Mix_LoadMUS(reinterpret_cast<const char*>(tmpFilename.u8string().c_str()));
-        if (music != nullptr) {
-            if (Mix_PlayMusic(music, 1) == 1) {
-                sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
+        { // Scope
+            sdl2::RWops_ptr midi_rwops{SDL_RWFromConstMem(midi_list.data(), midi_list.size())};
+
+            music = sdl2::mix_music_ptr{Mix_LoadMUSType_RW(midi_rwops.get(), MUS_MID, 0)};
+            if (music != nullptr) {
+                if (Mix_PlayMusic(music.get(), 1) == 1) {
+                    sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
+                } else {
+                    Mix_VolumeMusic(musicVolume);
+                    sdl2::log_info("Now playing %s!", filename);
+                }
             } else {
-                Mix_VolumeMusic(musicVolume);
-                sdl2::log_info("Now playing %s!", reinterpret_cast<const char*>(tmpFilename.u8string().c_str()));
+                sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());
             }
-        } else {
-            sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());
         }
     }
 }
@@ -365,8 +353,7 @@ void XMIPlayer::toggleSound() {
         musicOn = false;
         if (music != nullptr) {
             Mix_HaltMusic();
-            Mix_FreeMusic(music);
-            music = nullptr;
+            music.reset();
         }
     }
 }
@@ -382,14 +369,6 @@ void XMIPlayer::setMusic(bool value) {
         changeMusic(MUSIC_RANDOM);
     } else if (music != nullptr) {
         Mix_HaltMusic();
+        music.reset();
     }
-}
-
-std::filesystem::path XMIPlayer::getTmpFileName() {
-    const auto random_bytes = RandomFactory::createRandomSeed("Temporary file");
-
-    // determine path to config file
-    const auto unique = to_hex(std::span{random_bytes}.subspan(0, 32), 0);
-
-    return std::filesystem::temp_directory_path() / fmt::format("tmp{}.mid", unique);
 }
