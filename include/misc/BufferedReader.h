@@ -8,10 +8,10 @@
 #include <optional>
 #include <span>
 
-template<int BufferSize = 4096>
+template<int BufferSize = 32768>
 class BufferedReader final {
 public:
-    BufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
+    explicit BufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
 
     size_t read(void* data, size_t size, size_t maxnum) {
         if (size < 1 || maxnum < 1)
@@ -51,6 +51,74 @@ public:
         return read_one(&value, sizeof(TValue));
     }
 
+    [[nodiscard]] size_t size() const { return SDL_RWsize(rwop_); }
+
+    [[nodiscard]] size_t position() const { return SDL_RWtell(rwop_) - pending_.size(); }
+
+    void clear() { pending_ = {}; }
+
+    void seek(size_t pos) {
+        const auto current_unbuffered = SDL_RWtell(rwop_);
+
+        const auto current = current_unbuffered - pending_.size();
+
+        if (pos == current)
+            return;
+
+        if (pos >= current && pos < current_unbuffered) {
+            const auto offset = pos - current;
+
+            pending_ = pending_.subspan(offset);
+            return;
+        }
+
+        // We might be able to do better since anything in the buffer_ to the left
+        // of pending_ is still valid.
+        const auto previous = pending_.data() - buffer_.data();
+        assert(current >= previous);
+
+        const auto buffer_position = current - previous;
+        if (pos >= buffer_position && pos < current_unbuffered) {
+            const auto offset = pos - buffer_position;
+
+            pending_ = std::span{buffer_.data() + offset, current_unbuffered - pos};
+            return;
+        }
+
+        clear();
+        if (-1 == SDL_RWseek(rwop_, pos, SEEK_SET))
+            THROW(std::runtime_error, "Unable to seek file.");
+    }
+
+    void skip(int64_t pos) {
+        if (0 == pos)
+            return;
+
+        if (pos > 0 && pos < pending_.size()) {
+            pending_ = pending_.subspan(pos);
+            return;
+        }
+
+        if (pos < 0) {
+            const auto previous      = pending_.data() - buffer_.data();
+            const auto buffer_offset = previous + pos;
+
+            if (buffer_offset >= 0) {
+                pending_ = std::span{buffer_.data() + buffer_offset, pending_.size() - pos};
+                return;
+            }
+        }
+
+        // We might be able to do better since anything in the buffer_ to the left
+        // of pending_ is still valid.
+
+        pos -= pending_.size();
+        clear();
+
+        if (-1 == SDL_RWseek(rwop_, pos, SEEK_CUR))
+            THROW(std::runtime_error, "Unable to skip file.");
+    }
+
 private:
     bool fill() {
         if (!pending_.empty() && pending_.data() != buffer_.data()) {
@@ -61,23 +129,25 @@ private:
             pending_ = std::span{buffer_.data(), pending_size};
         }
 
-        if (pending_.size() < buffer_.size()) {
-            const auto pending_size = pending_.size();
-            const auto remaining    = buffer_.size() - pending_size;
+        const auto pending_size = pending_.size();
+        const auto buffer_size  = buffer_.size();
 
-            assert(pending_size >= 0 && pending_size <= buffer_.size());
-            assert(remaining > 0);
+        if (pending_size >= buffer_size)
+            THROW(std::runtime_error, "The buffer is already full (%d >= %d)!", pending_size, buffer_size);
 
-            const auto actual_read = SDL_RWread(rwop_, buffer_.data() + pending_size, 1, remaining);
+        const auto remaining = buffer_size - pending_size;
 
-            if (0 == actual_read) {
-                eof_ = true;
-                return false;
-            }
+        assert(pending_size >= 0 && pending_size <= buffer_size);
+        assert(remaining > 0);
 
-            pending_ = std::span{buffer_.data(), pending_size + actual_read};
+        const auto actual_read = SDL_RWread(rwop_, buffer_.data() + pending_size, 1, remaining);
+
+        if (0 == actual_read) {
+            eof_ = true;
+            return false;
         }
 
+        pending_ = std::span{buffer_.data(), pending_size + actual_read};
         return true;
     }
 
@@ -114,10 +184,10 @@ private:
     std::array<char, BufferSize> buffer_;
 };
 
-template<int BufferSize = 4096>
+template<int BufferSize = 32768>
 class SimpleBufferedReader final {
 public:
-    SimpleBufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
+    explicit SimpleBufferedReader(SDL_RWops* rwop) : rwop_{rwop} { }
 
     size_t read(void* data, size_t maxnum) {
         if (maxnum < 1)
@@ -160,6 +230,31 @@ public:
         pending_ = pending_.subspan(1);
 
         return c;
+    }
+
+    [[nodiscard]] size_t size() const { return SDL_RWsize(rwop_); }
+
+    [[nodiscard]] size_t position() const { return SDL_RWtell(rwop_) - pending_.size(); }
+
+    void clear() { pending_ = {}; }
+
+    void seek(size_t pos) {
+        clear();
+        if (-1 == SDL_RWseek(rwop_, pos, SEEK_SET))
+            THROW(std::runtime_error, "Unable to seek file.");
+    }
+
+    void skip(int64_t pos) {
+        if (pos > 0 && pos < pending_.size()) {
+            pending_ = pending_.subspan(pos);
+            return;
+        }
+
+        pos -= pending_.size();
+        clear();
+
+        if (-1 == SDL_RWseek(rwop_, pos, SEEK_CUR))
+            THROW(std::runtime_error, "Unable to skip file.");
     }
 
 private:
