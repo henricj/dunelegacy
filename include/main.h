@@ -23,6 +23,8 @@
 #include <filesystem>
 #include <string>
 
+class CaseInsensitiveFileSystemCache;
+
 /**
     Return an appropriate factor between logical and physical resolution.
     \param  physicalWidth   the physical width of the display
@@ -74,7 +76,7 @@ void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, c
     This function shows a list of missing pak-files in a message box.
     It returns, when the message box is closed.
 */
-void showMissingFilesMessageBox();
+void showMissingFilesMessageBox(const CaseInsensitiveFileSystemCache& cache);
 
 /**
     This function tries to determine the system language the user uses.

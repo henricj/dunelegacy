@@ -32,35 +32,83 @@
 #include <filesystem>
 #include <mutex>
 
-FileManager::FileManager() {
+std::vector<std::unique_ptr<Pakfile>>
+PakFileManager::loadPakFiles(const CaseInsensitiveFilesystemCache& cache, std::span<const std::string> files) {
     sdl2::log_info("FileManager is loading PAK-Files...");
     sdl2::log_info("MD5-Checksum                      Filename");
 
-    const auto search_path = getSearchPath();
+    std::vector<std::unique_ptr<Pakfile>> pakFiles;
+    pakFiles.reserve(files.size());
 
-    for (const auto& filename : getNeededFiles()) {
-        for (const auto& sp : search_path) {
-            auto filepath = sp / filename;
-            if (getCaseInsensitiveFilename(filepath)) {
-                try {
-                    sdl2::log_info("%s  %s", md5FromFilename(filepath),
-                                   reinterpret_cast<const char*>(filepath.u8string().c_str()));
-                    pakFiles.push_back(std::make_unique<Pakfile>(filepath));
-                } catch (std::exception& e) {
-                    pakFiles.clear();
+    for (const auto& filename : files) {
+        auto filepath0 = cache.find(std::u8string{reinterpret_cast<const char8_t*>(filename.data()), filename.size()});
 
-                    THROW(io_error, "Error while opening '%s': %s!",
-                          reinterpret_cast<const char*>(filepath.u8string().c_str()), e.what());
-                }
+        if (!filepath0.has_value())
+            continue;
 
-                // break out of searchPath-loop because we have opened the file in one directory
-                break;
-            }
+        auto& filepath = filepath0.value();
+
+        try {
+            sdl2::log_info("%s  %s", md5FromFilename(filepath),
+                           reinterpret_cast<const char*>(filepath.u8string().c_str()));
+            pakFiles.emplace_back(std::make_unique<Pakfile>(filepath));
+        } catch (std::exception& e) {
+            THROW(io_error, "Error while opening '%s': %s!", reinterpret_cast<const char*>(filepath.u8string().c_str()),
+                  e.what());
         }
     }
 
     sdl2::log_info("");
+
+    return pakFiles;
 }
+
+PakFileManager::pak_directory_type PakFileManager::createPakDirectory() const {
+    pak_directory_type directory;
+
+    for (auto& pf : pakFiles_) {
+        for (auto i = 0; i < pf->getNumFiles(); ++i)
+            directory[pf->getFilename(i)] = std::make_tuple(pf.get(), i);
+    }
+
+    return directory;
+}
+
+CaseInsensitiveFilesystemCache::CaseInsensitiveFilesystemCache(std::span<const std::filesystem::path> paths)
+    : files_{createFilesystemDirectory(paths)} { }
+
+std::optional<std::filesystem::path> CaseInsensitiveFilesystemCache::find(const std::u8string& filename) const {
+    const auto it = files_.find(filename);
+    if (it == files_.end())
+        return std::nullopt;
+
+    return it->second;
+}
+
+CaseInsensitiveFilesystemCache::filesystem_directory_type
+CaseInsensitiveFilesystemCache::createFilesystemDirectory(std::span<const std::filesystem::path> paths) const {
+    filesystem_directory_type files;
+
+    for (const auto& path : paths) {
+        for (const auto& de : std::filesystem::directory_iterator(path)) {
+            if (!de.is_regular_file())
+                continue;
+
+            auto file_path      = de.path().lexically_normal().make_preferred();
+            const auto filename = file_path.filename();
+
+            auto& file = files[filename.u8string()];
+
+            if (file.empty())
+                file = std::move(file_path);
+        }
+    }
+
+    return files;
+}
+
+FileManager::FileManager()
+    : filesystem_cache_{getSearchPath()}, pak_files_{filesystem_cache_, PakFileConfiguration ::getNeededFiles()} { }
 
 FileManager::~FileManager() = default;
 
@@ -78,8 +126,8 @@ const std::vector<std::filesystem::path>& FileManager::getSearchPath() {
     return search_path;
 }
 
-std::vector<std::filesystem::path> FileManager::getNeededFiles() {
-    std::vector<std::filesystem::path> fileList = {
+std::vector<std::string> PakFileConfiguration::getNeededFiles() {
+    std::vector<std::string> fileList = {
         "LEGACY.PAK", "OPENSD2.PAK", "GFXHD.PAK",  "DUNE.PAK",  "SCENARIO.PAK", "MENTAT.PAK",
         "VOC.PAK",    "MERC.PAK",    "FINALE.PAK", "INTRO.PAK", "INTROVOC.PAK", "SOUND.PAK",
     };
@@ -98,78 +146,123 @@ std::vector<std::filesystem::path> FileManager::getNeededFiles() {
     return fileList;
 }
 
-std::vector<std::filesystem::path> FileManager::getMissingFiles() {
-    std::vector<std::filesystem::path> MissingFiles;
-    const auto searchPath = getSearchPath();
+std::vector<std::filesystem::path> PakFileConfiguration::getMissingFiles(const CaseInsensitiveFilesystemCache& cache) {
+    std::vector<std::filesystem::path> missing;
 
-    for (const auto& fileName : getNeededFiles()) {
-        auto bFound = false;
-        for (const auto& sp : searchPath) {
-            auto filepath = sp / fileName;
-            if (getCaseInsensitiveFilename(filepath)) {
-                bFound = true;
-                break;
-            }
-        }
+    const auto files = getNeededFiles();
 
-        if (!bFound) {
-            MissingFiles.push_back(fileName);
-        }
+    for (const auto& fileName : files) {
+        const auto path =
+            cache.find(std::u8string{reinterpret_cast<const char8_t*>(fileName.c_str()), fileName.size()});
+        if (!path.has_value())
+            missing.emplace_back(path.value());
     }
 
-    return MissingFiles;
+    return missing;
 }
 
 sdl2::RWops_ptr FileManager::openFile(std::filesystem::path filename) const {
     if (filename.is_absolute()) {
-        if (sdl2::RWops_ptr ret{SDL_RWFromFile(filename.make_preferred().u8string(), "rb")})
+        if (sdl2::RWops_ptr ret{SDL_RWFromFile(filename.lexically_normal().make_preferred().u8string(), "rb")})
             return ret;
     } else {
         // try loading external file
-        for (const auto& searchPath : getSearchPath()) {
-            auto externalFilename = searchPath / filename;
-            if (getCaseInsensitiveFilename(externalFilename)) {
-                if (sdl2::RWops_ptr ret{SDL_RWFromFile(externalFilename.make_preferred().u8string().c_str(), "rb")})
-                    return ret;
-            }
+        const auto fit = filesystem_cache_.find(filename.u8string());
+        if (fit.has_value()) {
+            if (sdl2::RWops_ptr ret{SDL_RWFromFile(fit.value().u8string(), "rb")})
+                return ret;
         }
 
         // now try loading from pak file
-        for (const auto& pPakFile : pakFiles) {
-            if (pPakFile->exists(filename)) {
-                return pPakFile->openFile(filename);
-            }
-        }
+        const auto [pPakFile, index] = pak_files_.find(filename.string());
+        if (pPakFile)
+            return pPakFile->openFile(index);
     }
 
     THROW(io_error, "Cannot find '%s'!", filename.string());
 }
 
 bool FileManager::exists(std::filesystem::path filename) const {
+    if (filename.is_absolute()) {
+        std::error_code ec;
+        if (is_regular_file(filename, ec))
+            return ec == std::error_code{};
+
+        return false;
+    }
 
     // try finding external file
-    for (const auto& searchPath : getSearchPath()) {
-        auto externalFilename = searchPath / filename;
-        if (getCaseInsensitiveFilename(externalFilename)) {
+    {
+        // Scope
+        const auto fit = filesystem_cache_.find(filename.u8string());
+        if (fit.has_value())
             return true;
-        }
     }
 
     // now try finding in one pak file
-    for (const auto& pPakFile : pakFiles) {
-        if (pPakFile->exists(filename)) {
+    {
+        // scope
+        const auto [pPakFile, index] = pak_files_.find(filename.string());
+        if (pPakFile)
             return true;
-        }
     }
 
     return false;
 }
 
-std::string FileManager::md5FromFilename(std::filesystem::path filename) {
+void CaseInsensitiveFilesystemCache::refresh(std::span<const std::filesystem::path> paths) {
+    files_ = createFilesystemDirectory(paths);
+}
+
+bool CaseInsensitiveFilesystemCache::CaseInsensitiveEqualTo::operator()(const std::u8string& lhs,
+                                                                        const std::u8string& rhs) const {
+    if (&lhs == &rhs)
+        return true;
+
+    if (lhs.length() != rhs.length())
+        return false;
+
+    return std::ranges::equal(lhs, rhs, [](auto a, auto b) {
+        // Force values to be "unsigned char" or std::tolower()'s behavior is undefined.
+        return a == b || std::tolower(static_cast<unsigned char>(a)) == std::tolower(static_cast<unsigned char>(b));
+    });
+}
+
+size_t CaseInsensitiveFilesystemCache::CaseInsensitiveHash::operator()(const std::u8string& value) const {
+    auto sum = value.size();
+
+    // Force "c" to be "unsigned char" or std::tolower()'s behavior is undefined.
+    for (unsigned char c : value)
+        sum = sum * 101 + std::tolower(c);
+
+    return sum;
+}
+
+std::string PakFileManager::md5FromFilename(std::filesystem::path filename) {
     std::array<unsigned char, 16> md5sum{};
 
-    if (md5_file(reinterpret_cast<const char*>(filename.make_preferred().u8string().c_str()), md5sum.data()) != 0)
+    const auto path = filename.lexically_normal().make_preferred().u8string();
+
+    if (md5_file(reinterpret_cast<const char*>(path.c_str()), md5sum.data()) != 0)
         THROW(io_error, "Cannot open or read '%s'!", filename.string());
 
     return to_hex(md5sum, 0);
+}
+
+PakFileManager::PakFileManager(const CaseInsensitiveFilesystemCache& cache, std::span<const std::string> files)
+    : pakFiles_{loadPakFiles(cache, files)}, pak_directory_(createPakDirectory()) { }
+
+std::tuple<const Pakfile*, int> PakFileManager::find(const std::string& filename) const {
+    const auto it = pak_directory_.find(filename);
+
+    if (it == pak_directory_.end())
+        return {nullptr, 0};
+
+    const auto [pPakFile, index] = it->second;
+
+    return {pPakFile, index};
+}
+
+bool PakFileManager::exists(const std::string& filename) const {
+    return pak_directory_.contains(filename);
 }

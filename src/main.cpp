@@ -410,13 +410,13 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
     }
 }
 
-void showMissingFilesMessageBox() {
+void showMissingFilesMessageBox(const CaseInsensitiveFilesystemCache& filesystemCache) {
     SDL_ShowCursor(SDL_ENABLE);
 
     std::string instruction =
         "Dune Legacy uses the data files from original Dune II. The following files are missing:\n";
 
-    for (const auto& missingFile : FileManager::getMissingFiles()) {
+    for (const auto& missingFile : PakFileConfiguration::getMissingFiles(filesystemCache)) {
         instruction += fmt::sprintf(" %s\n", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
         sdl2::log_error("missing required %s", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
     }
@@ -548,7 +548,9 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
 
     dune::globals::pTextManager = std::make_unique<TextManager>(settings.general.language);
 
-    const auto missingFiles = FileManager::getMissingFiles();
+    const CaseInsensitiveFilesystemCache filesystemCache(FileManager::getSearchPath());
+
+    const auto missingFiles = PakFileConfiguration ::getMissingFiles(filesystemCache);
     if (!missingFiles.empty()) {
         // set back to English
         auto setBackToEnglishWarning =
@@ -907,9 +909,12 @@ struct DuneHeapDebug final {
     DuneHeapDebug() {
         auto tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
         tmpDbgFlag |= _CRTDBG_DELAY_FREE_MEM_DF;
-        tmpDbgFlag |= _CRTDBG_CHECK_CRT_DF;
+        // tmpDbgFlag |= _CRTDBG_CHECK_CRT_DF;
         tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+        // tmpDbgFlag |= _CRTDBG_CHECK_EVERY_1024_DF;
         _CrtSetDbgFlag(tmpDbgFlag);
+
+        sdl2::log_info("Enabling CRT heap debugging (%x)", tmpDbgFlag);
     }
     ~DuneHeapDebug() { _CrtDumpMemoryLeaks(); }
 };
@@ -976,13 +981,15 @@ int main(int argc, char* argv[]) {
         dune::logging_configure(!bShowDebugLog);
 
         // First check for missing files
-        const auto missingFiles = FileManager::getMissingFiles();
+        const CaseInsensitiveFilesystemCache filesystemCache(FileManager::getSearchPath());
+
+        const auto missingFiles = PakFileConfiguration ::getMissingFiles(filesystemCache);
 
         if (!missingFiles.empty()) {
             // create data directory inside config directory
             auto [ok, tmp] = fnkdat("data", FNKDAT_USER | FNKDAT_CREAT);
 
-            showMissingFilesMessageBox();
+            showMissingFilesMessageBox(filesystemCache);
 
             return EXIT_FAILURE;
         }

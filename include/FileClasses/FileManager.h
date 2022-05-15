@@ -23,8 +23,65 @@
 
 #include <filesystem>
 #include <memory>
+#include <optional>
+#include <span>
 #include <string>
+#include <unordered_map>
 #include <vector>
+
+class CaseInsensitiveFilesystemCache final {
+public:
+    explicit CaseInsensitiveFilesystemCache(std::span<const std::filesystem::path> paths);
+
+    [[nodiscard]] std::optional<std::filesystem::path> find(const std::u8string& filename) const;
+
+    void refresh(std::span<const std::filesystem::path> paths);
+
+private:
+    struct CaseInsensitiveEqualTo {
+        bool operator()(const std::u8string& lhs, const std::u8string& rhs) const;
+    };
+    struct CaseInsensitiveHash {
+        size_t operator()(const std::u8string& v) const;
+    };
+
+    using filesystem_directory_type =
+        std::unordered_map<std::u8string, std::filesystem::path, CaseInsensitiveHash, CaseInsensitiveEqualTo>;
+
+    [[nodiscard]] filesystem_directory_type
+    createFilesystemDirectory(std::span<const std::filesystem::path> paths) const;
+
+    filesystem_directory_type files_;
+};
+
+class PakFileConfiguration final {
+public:
+    [[nodiscard]] static std::vector<std::string> getNeededFiles();
+    [[nodiscard]] static std::vector<std::filesystem::path>
+    getMissingFiles(const CaseInsensitiveFilesystemCache& cache);
+};
+
+class PakFileManager final {
+public:
+    explicit PakFileManager(const CaseInsensitiveFilesystemCache& cache, std::span<const std::string> files);
+
+    [[nodiscard]] std::tuple<const Pakfile*, int> find(const std::string& filename) const;
+
+    bool exists(const std::string& filename) const;
+
+private:
+    using pak_directory_type = std::unordered_map<std::string, std::tuple<Pakfile*, int>>;
+
+    [[nodiscard]] static std::string md5FromFilename(std::filesystem::path filename);
+
+    [[nodiscard]] static std::vector<std::unique_ptr<Pakfile>>
+    loadPakFiles(const CaseInsensitiveFilesystemCache& cache, std::span<const std::string> files);
+
+    [[nodiscard]] pak_directory_type createPakDirectory() const;
+
+    const std::vector<std::unique_ptr<Pakfile>> pakFiles_;
+    const pak_directory_type pak_directory_;
+};
 
 /// A class for loading all the PAK-Files.
 /**
@@ -35,7 +92,7 @@ public:
     /**
         Constructor.
     */
-    explicit FileManager();
+    FileManager();
 
     FileManager(const FileManager& fileManager) = delete;
     FileManager(FileManager&& fileManager)      = delete;
@@ -45,9 +102,7 @@ public:
     FileManager& operator=(const FileManager& fileManager) = delete;
     FileManager& operator=(FileManager&& fileManager)      = delete;
 
-    static const std::vector<std::filesystem::path>& getSearchPath();
-    static std::vector<std::filesystem::path> getNeededFiles();
-    static std::vector<std::filesystem::path> getMissingFiles();
+    [[nodiscard]] static const std::vector<std::filesystem::path>& getSearchPath();
 
     /**
         Opens the file specified via filename. This method first tries to open the file in one of the
@@ -62,9 +117,8 @@ public:
     [[nodiscard]] bool exists(std::filesystem::path filename) const;
 
 private:
-    static std::string md5FromFilename(std::filesystem::path filename);
-
-    std::vector<std::unique_ptr<Pakfile>> pakFiles;
+    CaseInsensitiveFilesystemCache filesystem_cache_;
+    PakFileManager pak_files_;
 };
 
 #endif // FILEMANAGER_H
