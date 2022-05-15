@@ -184,6 +184,7 @@ using window_ptr       = implementation::unique_ptr_deleter<SDL_Window, SDL_Dest
 using cursor_ptr       = implementation::unique_ptr_deleter<SDL_Cursor, SDL_FreeCursor>;
 
 using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChunk>;
+using mix_music_ptr = implementation::unique_ptr_deleter<Mix_Music, Mix_FreeMusic>;
 
 template<typename... Args>
 void log_message(int category, SDL_LogPriority priority, std::string_view format, Args&&... args) {
