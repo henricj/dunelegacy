@@ -22,11 +22,6 @@
 
 #include <SDL2/SDL_mixer.h>
 
-#include <filesystem>
-
-// Forward declarations
-class CadlPlayer;
-
 class XMIPlayer final : public MusicPlayer {
 public:
     XMIPlayer();
@@ -65,9 +60,7 @@ public:
     }
 
 private:
-    std::filesystem::path getTmpFileName();
-
-    Mix_Music* music = nullptr;
+    sdl2::mix_music_ptr music;
 };
 
 #endif // XMIPLAYER_H
