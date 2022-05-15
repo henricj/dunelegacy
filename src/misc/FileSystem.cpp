@@ -252,7 +252,7 @@ std::vector<FileInfo> getFileList(const std::filesystem::path& directory, const 
 
 bool getCaseInsensitiveFilename(std::filesystem::path& filepath) {
     std::error_code ec;
-    const auto cpath = std::filesystem::canonical(filepath, ec);
+    const auto cpath = canonical(filepath, ec);
 
     if (!ec) {
         filepath = cpath;
