@@ -110,7 +110,11 @@ void GameInterface::draw_indicator(SDL_Renderer* const renderer, const SDL_FRect
         if (high <= low)
             break;
 
+#ifdef __clang__
+        render_rects_.push_back({dest.x + 1, dest.y + dest.h - high, dest.w - 2, high - low});
+#else
         render_rects_.emplace_back(dest.x + 1, dest.y + dest.h - high, dest.w - 2, high - low);
+#endif
     }
 
     if (render_rects_.empty())
