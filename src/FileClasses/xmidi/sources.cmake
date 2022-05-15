@@ -1,5 +1,6 @@
 add_sources(FILE_CLASSES_SOURCES
 	databuf.cpp
+	MemoryDataSource.cpp
 	SDLDataSource.cpp
 	XMidiEvent.cpp
 	XMidiEventList.cpp
