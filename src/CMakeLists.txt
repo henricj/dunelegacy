@@ -68,7 +68,7 @@ if(UNIX)
 endif()
 
 
-add_library(dune ${SOURCES} ${HEADERS})
+add_library(dune STATIC ${SOURCES} ${HEADERS})
 target_compile_options(dune PRIVATE ${dune_flags})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC git_version ${LIBS})
