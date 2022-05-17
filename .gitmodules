@@ -16,3 +16,6 @@
 [submodule "external/adplug/adplug"]
 	path = external/adplug/adplug
 	url = https://github.com/adplug/adplug.git
+[submodule "external/SDL_mixer/SDL_mixer"]
+	path = external/SDL_mixer/SDL_mixer
+	url = https://github.com/henricj/SDL_mixer.git
