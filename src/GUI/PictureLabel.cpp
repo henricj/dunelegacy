@@ -17,8 +17,6 @@
 
 #include <GUI/PictureLabel.h>
 
-#include "globals.h"
-
 PictureLabel::PictureLabel()  = default;
 PictureLabel::~PictureLabel() = default;
 
@@ -28,29 +26,21 @@ void PictureLabel::setSurface(sdl2::surface_unique_or_nonowning_ptr pSurface) {
 
     duneTexture_ = DuneTexture{localTexture_.get()};
 
-    size_ = Point(duneTexture_.source_rect().w, duneTexture_.source_rect().h);
-
-    resize(size_);
+    resize(getMinimumSize());
 }
 
 void PictureLabel::setTexture(const DuneTexture* pTexture) {
     assert(pTexture != &duneTexture_);
 
-    duneTexture_ = *pTexture;
-
     localTexture_.reset();
 
-    if (duneTexture_.texture_) {
-        size_ = Point(duneTexture_.source_rect().w, duneTexture_.source_rect().h);
-    } else {
-        size_ = Point{};
-    }
+    duneTexture_ = *pTexture;
 
-    resize(size_);
+    resize(getMinimumSize());
 }
 
 Point PictureLabel::getMinimumSize() const {
-    return size_;
+    return {static_cast<int>(std::ceil(duneTexture_.width_)), static_cast<int>(std::ceil(duneTexture_.height_))};
 }
 
 void PictureLabel::draw(Point position) {
@@ -60,7 +50,5 @@ void PictureLabel::draw(Point position) {
     if (!duneTexture_.texture_)
         return;
 
-    const SDL_Rect dest{position.x, position.y, size_.x, size_.y};
-
-    Dune_RenderCopy(dune::globals::renderer.get(), &duneTexture_, nullptr, &dest);
+    duneTexture_.draw(dune::globals::renderer.get(), static_cast<float>(position.x), static_cast<float>(position.y));
 }

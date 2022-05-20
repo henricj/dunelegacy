@@ -68,7 +68,6 @@ public:
     void draw(Point position) override;
 
 private:
-    Point size_{};
     sdl2::texture_ptr localTexture_;
     DuneTexture duneTexture_; ///< The texture that is shown
 };
