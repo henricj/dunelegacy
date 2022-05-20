@@ -20,14 +20,15 @@
 
 #include <misc/exceptions.h>
 
+#include <fmt/format.h>
+
 #include <algorithm>
 #include <charconv>
 #include <functional>
+#include <span>
 #include <string>
 #include <unordered_map>
 #include <vector>
-
-#include <gsl/gsl>
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1600) /* VS 2010 and above */
 #    include <sal.h>
@@ -243,5 +244,21 @@ std::string decodeString(std::string_view text);
 std::string to_hex(std::span<const uint8_t> data, int group = 8);
 std::string to_hex(std::span<const uint32_t> data);
 std::string to_hex(std::span<const uint64_t> data);
+
+template<typename TDuration>
+std::string format_duration(TDuration d) {
+    const auto hours = std::chrono::duration_cast<std::chrono::hours>(d);
+    d -= hours;
+
+    const auto minutes = std::chrono::duration_cast<std::chrono::minutes>(d);
+    d -= minutes;
+
+    const auto seconds = std::chrono::duration_cast<std::chrono::seconds>(d);
+    d -= seconds;
+
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(d);
+
+    return fmt::format("{}:{:02}:{:02}.{:03}", hours.count(), minutes.count(), seconds.count(), milliseconds.count());
+}
 
 #endif // STRING_UTIL_H
