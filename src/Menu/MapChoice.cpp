@@ -383,6 +383,15 @@ bool MapChoice::doInput(SDL_Event& event) {
     return MenuBase::doInput(event);
 }
 
+void MapChoice::resize(uint32_t width, uint32_t height) {
+    MenuBase::resize(width, height);
+
+    centerAreaRect.x = static_cast<int>(width) / 2 - 320;
+    centerAreaRect.y = static_cast<int>(height) / 2 - 200;
+
+    container_.setWidgetGeometry(&msgticker, {centerAreaRect.x + 112, centerAreaRect.y + 322}, msgticker.getSize());
+}
+
 void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
     auto* const gfx = dune::globals::pGFXManager.get();
 
