@@ -193,6 +193,33 @@ void GameInterface::draw(Point position) {
     }
 }
 
+void GameInterface::resize(uint32_t width, uint32_t height) {
+    parent::resize(width, height);
+
+    const auto topSize = topBar.getMinimumSize();
+    windowWidget.setWidgetGeometry(&topBar, {}, {topSize.x, topSize.y - 12});
+
+    const auto sideBarSize = sideBar.getMinimumSize();
+
+    const auto iWidth = static_cast<int>(width);
+
+    windowWidget.setWidgetGeometry(&sideBar, {iWidth - sideBarSize.x, 0}, sideBarSize);
+
+    const auto sideBarX = sideBar.getSize().x;
+
+    windowWidget.setWidgetGeometry(&topBarHBox, {5, 5}, {iWidth - sideBarX, topBar.getSize().y - 10});
+
+    windowWidget.setWidgetGeometry(&radarView, {iWidth - sideBarX + SIDEBAR_COLUMN_WIDTH, 0},
+                                   radarView.getMinimumSize());
+
+    windowWidget.setWidgetGeometry(&chatManager, {20, 60}, {iWidth - sideBarX, 360});
+
+    if (pObjectContainer) {
+        windowWidget.setWidgetGeometry(pObjectContainer.get(), {iWidth - sideBarX + 24, 146},
+                                       {sideBarX - 25, static_cast<int>(height) - 148});
+    }
+}
+
 void GameInterface::updateObjectInterface() {
     auto* const game = dune::globals::currentGame.get();
 

@@ -91,7 +91,6 @@ public:
 
     using parent::resize;
 
-protected:
     /**
         This method must be overwritten by all container classes. It should return
         the position of the specified widget.
@@ -100,6 +99,12 @@ protected:
     */
     Point getPosition(const StaticContainer_WidgetData& widgetData) const override { return widgetData.position; }
 
+    /**
+        Update the given widget's position and size.
+        \param pWidget      the widget (must already be in the container)
+        \param position     the position
+        \param size         the size
+     */
     void setWidgetGeometry(Widget* pWidget, Point position, Point size);
 };
 

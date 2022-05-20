@@ -52,6 +52,15 @@ public:
     void draw(Point position) override;
 
     /**
+        This method resizes the window to width and height.
+        \param  width   the new width of this widget
+        \param  height  the new height of this widget
+    */
+    void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
+
+    /**
         Checks whether the news ticker currently shows a message
         \return true if a message is shown, false otherwise
     */
