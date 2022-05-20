@@ -23,7 +23,9 @@
 #include <GUI/PictureLabel.h>
 #include <GUI/StaticContainer.h>
 
-class HouseChoiceMenu final : public MenuBase {
+class HouseChoiceMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
+
 public:
     HouseChoiceMenu();
     ~HouseChoiceMenu() override;

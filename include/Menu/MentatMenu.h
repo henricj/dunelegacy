@@ -27,8 +27,8 @@
 
 #include <string>
 
-class MentatMenu : public MenuBase {
-    using parent = MenuBase;
+class MentatMenu : public TopMenuBase {
+    using parent = TopMenuBase;
 
 protected:
     MentatMenu(HOUSETYPE newHouse);
