@@ -98,22 +98,22 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
     return surface;
 }
 
-void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
+void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, std::filesystem::path filename) {
     const auto surface = CreateSurfaceFromTexture(renderer, texture, nullptr);
 
     if (!surface)
         return;
 
     /* Save result to an image */
-    if (SDL_SaveBMP(surface.get(), filename)) {
+    if (SDL_SaveBMP(surface.get(), filename.u8string())) {
         sdl2::log_info("Failed saving image: %s\n", SDL_GetError());
         return;
     }
 
-    sdl2::log_info("Saved texture as BMP to \"%s\"\n", filename);
+    sdl2::log_info("Saved texture as BMP to \"%s\"\n", reinterpret_cast<const char*>(filename.u8string().c_str()));
 }
 
-void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, const char* filename) {
+void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, std::filesystem::path filename) {
     const auto surface = CreateSurfaceFromTexture(renderer, texture, nullptr);
 
     if (!surface)
@@ -125,5 +125,5 @@ void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, const char* 
         return;
     }
 
-    sdl2::log_info("Saved texture as PNG to \"%s\"\n", filename);
+    sdl2::log_info("Saved texture as PNG to \"%s\"\n", reinterpret_cast<const char*>(filename.u8string().c_str()));
 }
