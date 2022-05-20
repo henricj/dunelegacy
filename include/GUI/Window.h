@@ -105,7 +105,7 @@ public:
         \param  rect    position of this window
     */
     virtual void setCurrentPosition(const SDL_FRect& rect) {
-        setCurrentPosition(std::ceil(rect.x), std::ceil(rect.y), std::ceil(rect.w), std::ceil(rect.h));
+        setCurrentPosition(std::floor(rect.x), std::floor(rect.y), std::ceil(rect.w), std::ceil(rect.h));
     }
 
     /**
