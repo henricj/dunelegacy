@@ -423,7 +423,7 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
     setWidgetGeometry(&orderButton, Point(0, getRealHeight(height) - ORDERBTN_HEIGHT + 2),
                       Point(WIDGET_WIDTH, ORDERBTN_HEIGHT));
 
-    StaticContainer::resize(width, height);
+    parent::resize(width, height);
 
     auto* const currentGame = dune::globals::currentGame.get();
     if (!currentGame)

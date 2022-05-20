@@ -82,14 +82,14 @@ public:
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
-        \param  Position    Position to draw the widget to
+        \param  position    Position to draw the widget to
     */
     void draw(Point position) override;
 
     /**
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
-        \param  Position    Position to draw the window to. The position of the window is added to this.
+        \param  position    Position to draw the window to. The position of the window is added to this.
     */
     void drawOverlay(Point position) override;
 
