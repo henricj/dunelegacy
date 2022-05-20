@@ -182,7 +182,8 @@ void MentatMenu::setText(const std::string& text) {
         mentatTexts.push_back(text);
     }
 
-    mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0 : mentatTexts[0].length() / 25 + 1);
+    mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0
+                                                                 : static_cast<int>(mentatTexts[0].length() / 25) + 1);
     textLabel.setText(mentatTexts[0]);
     textLabel.setVisible(true);
     textLabel.resize(620, 240);
@@ -280,6 +281,14 @@ void MentatMenu::update() {
     } else {
         mouthAnim.getAnimation()->resetFrameOverride();
     }
+}
+
+bool MentatMenu::doInput(SDL_Event& event) {
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+        showNextMentatText();
+    }
+
+    return parent::doInput(event);
 }
 
 void MentatMenu::drawSpecificStuff() {

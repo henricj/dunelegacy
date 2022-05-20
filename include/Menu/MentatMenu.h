@@ -48,13 +48,7 @@ public:
 
     void update() override;
 
-    bool doInput(SDL_Event& event) override {
-        if (event.type == SDL_MOUSEBUTTONDOWN) {
-            showNextMentatText();
-        }
-
-        return parent::doInput(event);
-    }
+    bool doInput(SDL_Event& event) override;
 
 protected:
     void showNextMentatText() { nextMentatTextSwitch = dune::dune_clock::time_point::min(); }
