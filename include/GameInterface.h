@@ -61,13 +61,13 @@ public:
         This method adds a message to the news ticker
         \param  text    the message to add
     */
-    virtual void addToNewsTicker(const std::string& text) { newsticker.addMessage(text); }
+    virtual void addToNewsTicker(std::string text) { newsticker.addMessage(std::move(text)); }
 
     /**
         This method adds a urgent message to the news ticker
         \param  text    the urgent message to add
     */
-    virtual void addUrgentMessageToNewsTicker(const std::string& text) { newsticker.addUrgentMessage(text); }
+    virtual void addUrgentMessageToNewsTicker(std::string text) { newsticker.addUrgentMessage(std::move(text)); }
 
     /**
         Returns the radar view
