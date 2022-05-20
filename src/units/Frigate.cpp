@@ -112,7 +112,7 @@ bool Frigate::update(const GameContext& context) {
     }
 
     if (dist >= 0) {
-        static const FixPoint minSpeed = FixPoint32(TILESIZE / 32);
+        static constexpr auto minSpeed = FixPoint32(TILESIZE / 32);
         if (dist < TILESIZE / 2) {
             currentMaxSpeed = std::min(dist, minSpeed);
         } else if (dist >= 10 * TILESIZE) {

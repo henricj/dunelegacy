@@ -381,7 +381,7 @@ bool Bullet::update(const GameContext& context) {
             angleDifference += 256;
         }
 
-        static const FixPoint turnSpeed = 4.5_fix;
+        static constexpr auto turnSpeed = 4.5_fix;
 
         if (angleDifference >= turnSpeed) {
             angleDifference = turnSpeed;

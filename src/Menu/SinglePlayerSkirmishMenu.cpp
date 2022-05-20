@@ -27,9 +27,10 @@
 
 #include "GUI/Spacer.h"
 
-static const std::array<HOUSETYPE, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseOrder = {
-    HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
-    HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
+namespace {
+constexpr std::array houseOrder = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE::HOUSE_ORDOS,  HOUSETYPE::HOUSE_HARKONNEN,
+                                   HOUSETYPE::HOUSE_MERCENARY, HOUSETYPE::HOUSE_FREMEN, HOUSETYPE::HOUSE_SARDAUKAR};
+}
 
 SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     // set up window
