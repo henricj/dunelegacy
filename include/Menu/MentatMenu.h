@@ -19,11 +19,11 @@
 #define MENTATMENU_H
 
 #include "MenuBase.h"
+
+#include "DataTypes.h"
 #include <GUI/Label.h>
 #include <GUI/StaticContainer.h>
 #include <GUI/dune/AnimationLabel.h>
-
-#include <misc/SDL2pp.h>
 
 #include <string>
 

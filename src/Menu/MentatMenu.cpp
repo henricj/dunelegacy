@@ -19,11 +19,9 @@
 
 #include <globals.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <FileClasses/GFXManager.h>
 
-#include <mmath.h>
-
-#include <algorithm>
 #include <regex>
 
 MentatMenu::MentatMenu(HOUSETYPE newHouse)
@@ -212,14 +210,14 @@ void MentatMenu::update() {
             if (text.empty()) {
                 onMentatTextFinished();
                 nextMentatTextSwitch   = dune::dune_clock::time_point::max();
-                currentMentatTextIndex = mentatTexts.size();
+                currentMentatTextIndex = static_cast<int>(mentatTexts.size());
             } else {
                 nextMentatTextSwitch =
                     dune::dune_clock::now() + dune::as_dune_clock_duration(text.length()) * 75 + 1000ms;
             }
         }
 
-        mouthAnim.getAnimation()->setNumLoops(text.empty() ? 0 : text.length() / 25 + 1);
+        mouthAnim.getAnimation()->setNumLoops(text.empty() ? 0 : static_cast<int>(text.length() / 25) + 1);
 
         textLabel.setText(text);
         textLabel.setVisible(true);
@@ -293,10 +291,11 @@ bool MentatMenu::doInput(SDL_Event& event) {
 
 void MentatMenu::drawSpecificStuff() {
     Point shoulderPos;
+
     switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR: {
-            shoulderPos = Point(256, 209) + getPosition();
+            shoulderPos = Point(256, 209);
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES:
@@ -304,12 +303,12 @@ void MentatMenu::drawSpecificStuff() {
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY:
         default: {
-            shoulderPos = Point(256, 257) + getPosition();
+            shoulderPos = Point(256, 257);
         } break;
     }
 
-    shoulderAnim.draw(shoulderPos);
-    textLabel.draw(Point(10, 5) + getPosition());
+    shoulderAnim.draw(shoulderPos + position);
+    textLabel.draw(Point(10, 5) + position);
 }
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) {

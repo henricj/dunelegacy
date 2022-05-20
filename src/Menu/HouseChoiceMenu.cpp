@@ -29,9 +29,11 @@ static constexpr HOUSETYPE houseOrder[] = {HOUSETYPE::HOUSE_ATREIDES,  HOUSETYPE
 
 HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
+    const auto size = getSize();
+
     // set up window
-    const int xpos = std::max(0, (getRendererWidth() - 640) / 2);
-    const int ypos = std::max(0, (getRendererHeight() - 400) / 2);
+    const int xpos = std::max(0, (size.x - 640) / 2);
+    const int ypos = std::max(0, (size.y - 400) / 2);
 
     HouseChoiceMenu::setCurrentPosition(xpos, ypos, 640, 400);
 
@@ -42,30 +44,31 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
     const auto* const gfx = dune::globals::pGFXManager.get();
 
     selectYourHouseLabel.setTexture(gfx->getUIGraphic(UI_SelectYourHouseLarge));
-    windowWidget.addWidget(&selectYourHouseLabel, Point(0, 0), Point(100, 640));
+    windowWidget.addWidget(&selectYourHouseLabel, {0, 0}, {100, 640});
 
     // set up buttons
     house1Button.setOnClick([&] { onHouseButton(0); });
-    windowWidget.addWidget(&house1Button, Point(40, 108), Point(168, 182));
+    windowWidget.addWidget(&house1Button, {40, 108}, {168, 182});
 
     house2Button.setOnClick([&] { onHouseButton(1); });
-    windowWidget.addWidget(&house2Button, Point(235, 108), Point(168, 182));
+    windowWidget.addWidget(&house2Button, {235, 108}, {168, 182});
 
     house3Button.setOnClick([&] { onHouseButton(2); });
-    windowWidget.addWidget(&house3Button, Point(430, 108), Point(168, 182));
+    windowWidget.addWidget(&house3Button, {430, 108}, {168, 182});
 
     const auto* const pArrowLeft          = gfx->getUIGraphic(UI_Herald_ArrowLeftLarge);
     const auto* const pArrowLeftHighlight = gfx->getUIGraphic(UI_Herald_ArrowLeftHighlightLarge);
     houseLeftButton.setTextures(pArrowLeft, pArrowLeft, pArrowLeftHighlight);
     houseLeftButton.setOnClick([&] { onHouseLeft(); });
     houseLeftButton.setVisible(false);
-    windowWidget.addWidget(&houseLeftButton, Point(320 - getWidth(pArrowLeft) - 85, 360), getTextureSize(pArrowLeft));
+    windowWidget.addWidget(&houseLeftButton, {320 - static_cast<int>(getWidth(pArrowLeft)) - 85, 360},
+                           getTextureSize(pArrowLeft));
 
     const auto* const pArrowRight          = gfx->getUIGraphic(UI_Herald_ArrowRightLarge);
     const auto* const pArrowRightHighlight = gfx->getUIGraphic(UI_Herald_ArrowRightHighlightLarge);
     houseRightButton.setTextures(pArrowRight, pArrowRight, pArrowRightHighlight);
     houseRightButton.setOnClick([&] { onHouseRight(); });
-    windowWidget.addWidget(&houseRightButton, Point(320 + 85, 360), getTextureSize(pArrowRight));
+    windowWidget.addWidget(&houseRightButton, {320 + 85, 360}, getTextureSize(pArrowRight));
 
     updateHouseChoice();
 }

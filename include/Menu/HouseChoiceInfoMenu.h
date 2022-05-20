@@ -34,8 +34,6 @@ public:
 
     void onMentatTextFinished() override;
 
-    void drawSpecificStuff() override;
-
 private:
     void onYes();
     void onNo();
