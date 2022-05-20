@@ -8,7 +8,7 @@ std::optional<std::tm> dune::dune_localtime() {
     time_t raw_time;
     std::time(&raw_time);
 
-    std::tm time_info;
+    std::tm time_info{};
 
 #if HAVE_MS_LOCALTIME_S
     if (const auto error = localtime_s(&time_info, &raw_time))
