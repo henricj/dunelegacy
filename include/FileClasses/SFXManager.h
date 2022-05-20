@@ -52,8 +52,9 @@ enum class Voice_enum {
     HouseHarkonnen,
     HouseAtreides,
     HouseOrdos,
-    NUM_VOICE
+    NUM_VOICE [[maybe_unused]]
 };
+inline constexpr auto NUM_VOICE = static_cast<int>(Voice_enum::NUM_VOICE);
 
 // Sound
 enum class Sound_enum {
@@ -85,8 +86,9 @@ enum class Sound_enum {
     Sound_MachineGun,
     Sound_Sonic,
     Sound_RocketSmall,
-    NUM_SOUNDCHUNK
+    NUM_SOUNDCHUNK [[maybe_unused]]
 };
+inline constexpr auto NUM_SOUNDCHUNK = static_cast<int>(Sound_enum::NUM_SOUNDCHUNK);
 
 class SFXManager final {
 public:
