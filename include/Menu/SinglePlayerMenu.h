@@ -39,6 +39,15 @@ public:
     */
     void onChildWindowClose(Window* pChildWindow) override;
 
+    /**
+        This method resizes the window to width and height.
+        \param  width   the new width of this widget
+        \param  height  the new height of this widget
+    */
+    void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
+
 private:
     void onCampaign();
     void onCustom();

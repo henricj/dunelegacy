@@ -100,6 +100,26 @@ MainMenu::MainMenu() {
 
 MainMenu::~MainMenu() = default;
 
+void MainMenu::resize(uint32_t width, uint32_t height) {
+    parent::resize(width, height);
+
+    const auto iWidth  = static_cast<int>(width);
+    const auto iHeight = static_cast<int>(height);
+
+    const auto planet_size = planetPicture.getSize();
+    windowWidget.setWidgetGeometry(&planetPicture, {(iWidth - planet_size.x) / 2, iHeight / 2 - planet_size.y + 10},
+                                   planet_size);
+
+    const auto dune_size = duneLegacy.getSize();
+    windowWidget.setWidgetGeometry(&duneLegacy, {(iWidth - dune_size.x) / 2, iHeight / 2 + 28}, dune_size);
+
+    const auto border_size = buttonBorder.getSize();
+    windowWidget.setWidgetGeometry(&buttonBorder, {(iWidth - border_size.x) / 2, iHeight / 2 + 59}, border_size);
+
+    const auto menu_size = MenuButtons.getSize();
+    windowWidget.setWidgetGeometry(&MenuButtons, {(iWidth - 160) / 2, iHeight / 2 + 64}, menu_size);
+}
+
 int MainMenu::showMenu() {
     dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 

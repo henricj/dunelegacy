@@ -65,7 +65,8 @@ void Window::closeChildWindow() {
 void Window::setCurrentPosition(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
     position.x = x;
     position.y = y;
-    resize(w, h);
+    if (size.x != w || size.y != h)
+        resize(w, h);
 }
 
 bool Window::processChildWindowOpenCloses() {

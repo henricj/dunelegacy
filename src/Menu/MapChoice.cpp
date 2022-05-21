@@ -384,7 +384,7 @@ bool MapChoice::doInput(SDL_Event& event) {
 }
 
 void MapChoice::resize(uint32_t width, uint32_t height) {
-    MenuBase::resize(width, height);
+    parent::resize(width, height);
 
     centerAreaRect.x = static_cast<int>(width) / 2 - 320;
     centerAreaRect.y = static_cast<int>(height) / 2 - 200;

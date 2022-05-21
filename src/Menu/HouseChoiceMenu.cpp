@@ -75,6 +75,17 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
 
 HouseChoiceMenu::~HouseChoiceMenu() = default;
 
+void HouseChoiceMenu::resize(uint32_t width, uint32_t height) {
+    parent::resize(width, height);
+
+    const auto size = getSize();
+
+    const int xpos = std::max(0, (size.x - 640) / 2);
+    const int ypos = std::max(0, (size.y - 400) / 2);
+
+    HouseChoiceMenu::setCurrentPosition(xpos, ypos, 640, 400);
+}
+
 void HouseChoiceMenu::onHouseButton(int button) {
     using dune::globals::soundPlayer;
 
