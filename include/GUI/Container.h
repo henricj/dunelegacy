@@ -172,7 +172,7 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override {
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override {
         if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
 
@@ -192,7 +192,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    bool handleTextInput(SDL_TextInputEvent& textInput) override {
+    bool handleTextInput(const SDL_TextInputEvent& textInput) override {
         if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
 
@@ -298,7 +298,7 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the container, false = key stroke was not processed by the container
     */
-    bool handleKeyPressOverlay(SDL_KeyboardEvent& key) override {
+    bool handleKeyPressOverlay(const SDL_KeyboardEvent& key) override {
         if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
 
@@ -313,7 +313,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the container, false = text input was not processed by the container
     */
-    bool handleTextInputOverlay(SDL_TextInputEvent& textInput) override {
+    bool handleTextInputOverlay(const SDL_TextInputEvent& textInput) override {
         if (isEnabled() == false || isVisible() == false || isActive() == false)
             return false;
 

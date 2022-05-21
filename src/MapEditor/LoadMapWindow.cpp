@@ -135,7 +135,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
     onMapTypeChange(0);
 }
 
-bool LoadMapWindow::handleKeyPress(SDL_KeyboardEvent& key) {
+bool LoadMapWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (pChildWindow != nullptr) {
         const bool ret = pChildWindow->handleKeyPress(key);
         return ret;

@@ -97,7 +97,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
 
 InGameMenu::~InGameMenu() = default;
 
-bool InGameMenu::handleKeyPress(SDL_KeyboardEvent& key) {
+bool InGameMenu::handleKeyPress(const SDL_KeyboardEvent& key) {
     switch (key.keysym.sym) {
         case SDLK_ESCAPE: {
             dune::globals::currentGame->resumeGame();

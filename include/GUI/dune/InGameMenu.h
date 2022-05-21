@@ -33,7 +33,7 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the window, false = key stroke was not processed by the window
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         This method is called, when the child window is about to be closed.

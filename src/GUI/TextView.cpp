@@ -43,7 +43,7 @@ bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up) {
     return scrollbar.handleMouseWheel(0, 0, up);
 }
 
-bool TextView::handleKeyPress(SDL_KeyboardEvent& key) {
+bool TextView::handleKeyPress(const SDL_KeyboardEvent& key) {
     Widget::handleKeyPress(key);
 
     scrollbar.handleKeyPress(key);

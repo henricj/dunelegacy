@@ -90,7 +90,7 @@ bool Window::processChildWindowOpenCloses() {
     return bClosed;
 }
 
-void Window::handleInput(SDL_Event& event) {
+void Window::handleInput(const SDL_Event& event) {
     if (pChildWindow != nullptr) {
         pChildWindow->handleInput(event);
 
@@ -236,7 +236,7 @@ bool Window::handleMouseWheel(int32_t x, int32_t y, bool up) {
     return false;
 }
 
-bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
+bool Window::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (pChildWindow != nullptr) {
         return pChildWindow->handleKeyPress(key);
     }
@@ -247,7 +247,7 @@ bool Window::handleKeyPress(SDL_KeyboardEvent& key) {
     return false;
 }
 
-bool Window::handleTextInput(SDL_TextInputEvent& textInput) {
+bool Window::handleTextInput(const SDL_TextInputEvent& textInput) {
     if (pChildWindow != nullptr) {
         return pChildWindow->handleTextInput(textInput);
     }

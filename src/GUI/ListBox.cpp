@@ -76,7 +76,7 @@ bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
     return scrollbar.handleMouseWheel(0, 0, up);
 }
 
-bool ListBox::handleKeyPress(SDL_KeyboardEvent& key) {
+bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     parent::handleKeyPress(key);
     if (isActive()) {
         switch (key.keysym.sym) {

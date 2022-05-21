@@ -113,7 +113,7 @@ public:
         be called.
         \param  event   SDL_Event that occurs.
     */
-    virtual void handleInput(SDL_Event& event);
+    virtual void handleInput(const SDL_Event& event);
 
     /**
         Handles a mouse movement.
@@ -157,14 +157,14 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the window, false = key stroke was not processed by the window
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         Handles a text input event.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the window, false = text input was not processed by the window
     */
-    bool handleTextInput(SDL_TextInputEvent& textInput) override;
+    bool handleTextInput(const SDL_TextInputEvent& textInput) override;
 
     /**
         Draws this window to screen. This method should be called every frame.

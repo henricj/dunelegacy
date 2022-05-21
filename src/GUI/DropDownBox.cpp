@@ -152,7 +152,7 @@ bool DropDownBox::handleMouseWheelOverlay(int32_t x, int32_t y, bool up) {
     return false;
 }
 
-bool DropDownBox::handleKeyPress(SDL_KeyboardEvent& key) {
+bool DropDownBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     if ((!isEnabled()) || (!isVisible())) {
         return false;
     }

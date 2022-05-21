@@ -165,14 +165,14 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the text box, false = key stroke was not processed by the text box
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         Handles a text input event.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    bool handleTextInput(SDL_TextInputEvent& textInput) override;
+    bool handleTextInput(const SDL_TextInputEvent& textInput) override;
 
 protected:
     /**

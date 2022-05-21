@@ -55,7 +55,7 @@ public:
 
     [[nodiscard]] std::string getExtension() const noexcept { return extension; }
 
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         This method is called, when the child window is about to be closed.

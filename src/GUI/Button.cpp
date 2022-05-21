@@ -86,7 +86,7 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     return true;
 }
 
-bool Button::handleKeyPress(SDL_KeyboardEvent& key) {
+bool Button::handleKeyPress(const SDL_KeyboardEvent& key) {
     if ((!isVisible()) || (!isEnabled()) || (!isActive())) {
         return true;
     }

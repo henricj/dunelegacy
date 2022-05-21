@@ -305,7 +305,7 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPress(SDL_KeyboardEvent& key) {
+    virtual bool handleKeyPress(const SDL_KeyboardEvent& key) {
         if (isActive() && (key.keysym.sym == SDLK_TAB)) {
             setInactive();
         }
@@ -317,7 +317,7 @@ public:
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    virtual bool handleTextInput(SDL_TextInputEvent& textInput) { return false; }
+    virtual bool handleTextInput(const SDL_TextInputEvent& textInput) { return false; }
 
     /**
         Handles mouse movement in overlays.
@@ -360,14 +360,14 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    virtual bool handleKeyPressOverlay(SDL_KeyboardEvent& key) { return false; }
+    virtual bool handleKeyPressOverlay(const SDL_KeyboardEvent& key) { return false; }
 
     /**
         Handles a text input event in overlays.
         \param  textInput the text input that was performed.
         \return true = text input was processed by the widget, false = text input was not processed by the widget
     */
-    virtual bool handleTextInputOverlay(SDL_TextInputEvent& textInput) { return false; }
+    virtual bool handleTextInputOverlay(const SDL_TextInputEvent& textInput) { return false; }
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().

@@ -36,7 +36,7 @@ public:
     const auto& getLoadMapname() const { return loadMapname; }
     bool isLoadMapSingleplayer() const { return loadMapSingleplayer; }
 
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         This method is called, when the child window is about to be closed.

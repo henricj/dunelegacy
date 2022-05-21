@@ -112,7 +112,7 @@ void InGameSettingsMenu::init() {
     scrollSpeedBar.setProgress(static_cast<float>(scrollSpeed));
 }
 
-bool InGameSettingsMenu::handleKeyPress(SDL_KeyboardEvent& key) {
+bool InGameSettingsMenu::handleKeyPress(const SDL_KeyboardEvent& key) {
     switch (key.keysym.sym) {
         case SDLK_RETURN:
             if (SDL_GetModState() & KMOD_ALT) {

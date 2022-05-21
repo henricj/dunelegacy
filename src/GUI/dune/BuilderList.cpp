@@ -191,7 +191,7 @@ bool BuilderList::handleMouseWheel(int32_t x, int32_t y, bool up) {
     return false;
 }
 
-bool BuilderList::handleKeyPress(SDL_KeyboardEvent& key) {
+bool BuilderList::handleKeyPress(const SDL_KeyboardEvent& key) {
     return StaticContainer::handleKeyPress(key);
 }
 

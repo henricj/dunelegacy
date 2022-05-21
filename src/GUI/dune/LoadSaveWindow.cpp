@@ -153,7 +153,7 @@ void LoadSaveWindow::updateEntries() {
     }
 }
 
-bool LoadSaveWindow::handleKeyPress(SDL_KeyboardEvent& key) {
+bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (pChildWindow != nullptr) {
         const auto ret = pChildWindow->handleKeyPress(key);
         return ret;

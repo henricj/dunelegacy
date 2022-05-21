@@ -99,7 +99,7 @@ bool TextBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     return true;
 }
 
-bool TextBox::handleKeyPress(SDL_KeyboardEvent& key) {
+bool TextBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (!isVisible() || !isEnabled() || !isActive())
         return true;
 
@@ -126,7 +126,7 @@ bool TextBox::handleKeyPress(SDL_KeyboardEvent& key) {
     return true;
 }
 
-bool TextBox::handleTextInput(SDL_TextInputEvent& textInput) {
+bool TextBox::handleTextInput(const SDL_TextInputEvent& textInput) {
     if (!isVisible() || !isEnabled() || !isActive())
         return true;
 

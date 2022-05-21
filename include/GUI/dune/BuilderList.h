@@ -78,7 +78,7 @@ public:
         \param  key the key that was pressed or released.
         \return true = key stroke was processed by the widget, false = key stroke was not processed by the widget
     */
-    bool handleKeyPress(SDL_KeyboardEvent& key) override;
+    bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
     /**
         Draws this widget to screen. This method is called before drawOverlay().
