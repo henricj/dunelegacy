@@ -44,10 +44,10 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 
     setBackground(pBackground);
 
+    setCenterBackground(false);
+
     background_width_  = pBackground->width_;
     background_height_ = pBackground->height_;
-
-    MentatMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
     MentatMenu::setWindowWidget(&windowWidget);
 

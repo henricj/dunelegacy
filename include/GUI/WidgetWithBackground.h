@@ -84,12 +84,16 @@ protected:
 
     virtual DuneSurfaceOwned createBackground();
 
+    void setCenterBackground(bool value) { center_background_ = value; }
+    bool getCenterBackground() const { return center_background_; }
+
 private:
     const DuneTexture* pBackground_{}; ///< background texture
 
     bool bTransparentBackground_{}; ///< true = no background is drawn
     bool bSelfGeneratedBackground_{
         true}; ///< true = background is created by this window, false = created by someone else
+    bool center_background_{true};
 
     sdl2::texture_ptr localTexture_;
     DuneTexture localDuneTexture_;

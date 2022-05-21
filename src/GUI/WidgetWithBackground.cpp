@@ -75,15 +75,17 @@ void WidgetWithBackground::draw_background(Point position) {
     SDL_FRect dst{static_cast<float>(position.x), static_cast<float>(position.y), background->width_,
                   background->height_};
 
-    const auto size = getSize();
+    if (center_background_) {
+        const auto size = getSize();
 
-    const auto x = static_cast<float>(size.x);
-    const auto y = static_cast<float>(size.y);
+        const auto w = static_cast<float>(size.x);
+        if (dst.w != w) // NOLINT(clang-diagnostic-float-equal)
+            dst.x += (w - dst.w) / 2;
 
-    if (dst.w != x) // NOLINT(clang-diagnostic-float-equal)
-        dst.x += (x - dst.w) / 2;
-    if (dst.h != y) // NOLINT(clang-diagnostic-float-equal)
-        dst.y += (y - dst.h) / 2;
+        const auto h = static_cast<float>(size.y);
+        if (dst.h != h) // NOLINT(clang-diagnostic-float-equal)
+            dst.y += (h - dst.h) / 2;
+    }
 
     background->draw(renderer, dst.x, dst.y);
 }
