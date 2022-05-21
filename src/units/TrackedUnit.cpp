@@ -99,7 +99,7 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
     return false;
 }
 
-const std::array<FixPoint, Terrain_SpecialBloom + 1> TrackedUnit::terrain_difficulty = {
+constexpr std::array<FixPoint, Terrain_SpecialBloom + 1> TrackedUnit::terrain_difficulty = {
     1_fix,      // Terrain_Slab
     1.5625_fix, // Terrain_Sand
     1.375_fix,  // Terrain_Rock
