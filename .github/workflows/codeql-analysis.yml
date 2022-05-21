@@ -84,6 +84,8 @@ jobs:
       uses: ashutoshvarma/action-cmake-build@master
       with:
         build-dir: ${{ runner.workspace }}/build
+        cc: gcc-11
+        cxx: g++-11
         configure-options: -G Ninja -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
         build-type: Release
         parallel: 8
