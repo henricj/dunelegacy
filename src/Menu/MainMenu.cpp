@@ -62,21 +62,21 @@ MainMenu::MainMenu() {
                            Point(160, 111));
 
     singlePlayerButton.setText(_("SINGLE PLAYER"));
-    singlePlayerButton.setOnClick([] { onSinglePlayer(); });
+    singlePlayerButton.setOnClick([this] { onSinglePlayer(); });
     MenuButtons.addWidget(&singlePlayerButton);
     singlePlayerButton.setActive();
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     multiPlayerButton.setText(_("MULTIPLAYER"));
-    multiPlayerButton.setOnClick([] { onMultiPlayer(); });
+    multiPlayerButton.setOnClick([this] { onMultiPlayer(); });
     MenuButtons.addWidget(&multiPlayerButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
 
     //    MenuButtons.addWidget(VSpacer::create(16));
     mapEditorButton.setText(_("MAP EDITOR"));
-    mapEditorButton.setOnClick([] { onMapEditor(); });
+    mapEditorButton.setOnClick([this] { onMapEditor(); });
     MenuButtons.addWidget(&mapEditorButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
@@ -88,7 +88,7 @@ MainMenu::MainMenu() {
     MenuButtons.addWidget(VSpacer::create(3));
 
     aboutButton.setText(_("ABOUT"));
-    aboutButton.setOnClick([] { onAbout(); });
+    aboutButton.setOnClick([this] { onAbout(); });
     MenuButtons.addWidget(&aboutButton);
 
     MenuButtons.addWidget(VSpacer::create(3));
@@ -120,30 +120,30 @@ void MainMenu::resize(uint32_t width, uint32_t height) {
     windowWidget.setWidgetGeometry(&MenuButtons, {(iWidth - 160) / 2, iHeight / 2 + 64}, menu_size);
 }
 
-int MainMenu::showMenu() {
+int MainMenu::showMenuImpl() {
     dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 
-    return parent::showMenu();
+    return parent::showMenuImpl();
 }
 
 void MainMenu::onSinglePlayer() {
     SinglePlayerMenu singlePlayerMenu;
-    singlePlayerMenu.showMenu();
+    singlePlayerMenu.showMenu([&](const auto& e) { doInput(e); });
 }
 
 void MainMenu::onMultiPlayer() {
     MultiPlayerMenu multiPlayerMenu;
-    multiPlayerMenu.showMenu();
+    multiPlayerMenu.showMenu([&](const auto& e) { doInput(e); });
 }
 
 void MainMenu::onMapEditor() {
     MapEditor mapEditor;
-    mapEditor.RunEditor();
+    mapEditor.RunEditor([&](const auto& e) { doInput(e); });
 }
 
 void MainMenu::onOptions() {
     OptionsMenu optionsMenu;
-    const int ret = optionsMenu.showMenu();
+    const int ret = optionsMenu.showMenu([&](const auto& e) { doInput(e); });
 
     if (ret == MENU_QUIT_REINITIALIZE) {
         quit(MENU_QUIT_REINITIALIZE);
@@ -152,7 +152,7 @@ void MainMenu::onOptions() {
 
 void MainMenu::onAbout() {
     AboutMenu myAbout;
-    myAbout.showMenu();
+    myAbout.showMenu([&](const auto& e) { doInput(e); });
 }
 
 void MainMenu::onQuit() {

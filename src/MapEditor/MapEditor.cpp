@@ -20,6 +20,9 @@
 #include <MapEditor/MapGenerator.h>
 #include <MapEditor/MapMirror.h>
 
+#include <GUI/Window.h>
+#include <Menu/MenuBase.h>
+
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/INIFile.h>
 #include <FileClasses/LoadSavePNG.h>
@@ -27,6 +30,7 @@
 
 #include <structures/Wall.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
 
@@ -89,11 +93,11 @@ void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
     mapMirror = MapMirror::createMapMirror(currentMirrorMode, map.getSizeX(), map.getSizeY());
 }
 
-void MapEditor::RunEditor() {
+void MapEditor::RunEditor(MenuBase::event_handler_type handler) {
     while (!bQuitEditor) {
         const auto frameStart = dune::dune_clock::now();
 
-        processInput();
+        processInput(handler);
         drawScreen();
 
         if (dune::globals::settings.video.frameLimit) {
@@ -996,7 +1000,7 @@ void MapEditor::drawScreen() {
     Dune_RenderPresent(renderer);
 }
 
-void MapEditor::processInput() {
+void MapEditor::processInput(MenuBase::event_handler_type handler) {
     SDL_Event event;
 
     auto* const screenborder = dune::globals::screenborder.get();
@@ -1323,6 +1327,9 @@ void MapEditor::processInput() {
                 } break;
             }
         }
+
+        if (handler && Window::isBroadcastEventType(event.type))
+            handler(event);
     }
 
     if ((!pInterface->hasChildWindow()) && (SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_INPUT_FOCUS)) {

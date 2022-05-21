@@ -106,7 +106,7 @@ SinglePlayerMenu::SinglePlayerMenu() {
 SinglePlayerMenu::~SinglePlayerMenu() = default;
 
 void SinglePlayerMenu::onCampaign() {
-    int player = HouseChoiceMenu().showMenu();
+    int player = HouseChoiceMenu().showMenu([&](const auto& e) { doInput(e); });
 
     if (player < 0) {
         return;

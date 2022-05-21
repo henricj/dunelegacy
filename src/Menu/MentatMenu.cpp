@@ -284,12 +284,12 @@ void MentatMenu::update() {
     }
 }
 
-bool MentatMenu::doInput(SDL_Event& event) {
+void MentatMenu::doInputImpl(const SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONDOWN) {
         showNextMentatText();
     }
 
-    return parent::doInput(event);
+    parent::doInputImpl(event);
 }
 
 void MentatMenu::resize(uint32_t width, uint32_t height) {

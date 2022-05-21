@@ -24,6 +24,8 @@
 
 #include <SDL2/SDL_events.h>
 
+#include <functional>
+
 inline constexpr auto MENU_QUIT_DEFAULT = -1;
 
 class MenuBase : public Window {
@@ -33,6 +35,8 @@ protected:
     MenuBase();
 
 public:
+    using event_handler_type = std::function<void(const SDL_Event&)>;
+
     ~MenuBase() override;
 
     MenuBase(const MenuBase&)            = delete;
@@ -40,7 +44,8 @@ public:
     MenuBase& operator=(const MenuBase&) = delete;
     MenuBase& operator=(MenuBase&&)      = delete;
 
-    virtual int showMenu();
+    int showMenu(event_handler_type handler = {});
+
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
     virtual bool isQuitting() { return quitting; }
     void disableQuitting(bool disable) { bAllowQuitting = !disable; }
@@ -50,18 +55,23 @@ public:
     virtual void drawSpecificStuff();
 
     void draw() override;
-    virtual bool doInput(SDL_Event& event);
+
+    bool doInput(const SDL_Event& event);
 
     void setClearScreen(bool bClearScreen) { this->bClearScreen = bClearScreen; }
 
 protected:
     bool doEventsUntil(dune::dune_clock::time_point until);
 
+    virtual int showMenuImpl();
+    virtual void doInputImpl(const SDL_Event& event);
+
 private:
     bool bClearScreen   = true;
     bool bAllowQuitting = true;
     bool quitting       = false;
     int retVal{MENU_QUIT_DEFAULT};
+    event_handler_type sdl_handler_;
 };
 
 class DefaultWindowBase : public Window {

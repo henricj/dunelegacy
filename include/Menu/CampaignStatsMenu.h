@@ -33,11 +33,12 @@ public:
     explicit CampaignStatsMenu(int level);
     ~CampaignStatsMenu() override;
 
-    int showMenu() override;
-
-    bool doInput(SDL_Event& event) override;
-
     void drawSpecificStuff() override;
+
+protected:
+    int showMenuImpl() override;
+
+    void doInputImpl(const SDL_Event& event) override;
 
 private:
     void doState(dune::dune_clock::duration elapsedTime);

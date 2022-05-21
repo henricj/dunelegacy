@@ -105,12 +105,13 @@ void MentatHelp::drawSpecificStuff() {
     renderDrawVLine(renderer, x2 - 3, y1 + 3, y2 - 3, DuneStyle::buttonEdgeBottomRightColor);
 }
 
-bool MentatHelp::doInput(SDL_Event& event) {
+void MentatHelp::doInputImpl(const SDL_Event& event) {
     if (!mentatTopicsList.isVisible() && event.type == SDL_MOUSEBUTTONDOWN) {
         showNextMentatText();
-        return true;
+        return;
     }
-    return MentatMenu::doInput(event);
+
+    MentatMenu::doInputImpl(event);
 }
 
 void MentatHelp::onMentatTextFinished() {

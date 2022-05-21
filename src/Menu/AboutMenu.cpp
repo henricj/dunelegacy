@@ -76,10 +76,10 @@ void AboutMenu::resize(uint32_t width, uint32_t height) {
     windowWidget.setWidgetGeometry(&text, {(iWidth - 160) / 2, iHeight / 2 + 70}, text_size);
 }
 
-bool AboutMenu::doInput(SDL_Event& event) {
+void AboutMenu::doInputImpl(const SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONUP) {
         quit();
     }
 
-    return MenuBase::doInput(event);
+    parent::doInputImpl(event);
 }

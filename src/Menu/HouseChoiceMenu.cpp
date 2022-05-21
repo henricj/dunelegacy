@@ -100,7 +100,7 @@ void HouseChoiceMenu::onHouseButton(int button) {
     }
     // clang-format on
 
-    const int ret = HouseChoiceInfoMenu(selectedHouse).showMenu();
+    const int ret = HouseChoiceInfoMenu(selectedHouse).showMenu([&](const auto& e) { doInput(e); });
     quit(ret == MENU_QUIT_DEFAULT ? MENU_QUIT_DEFAULT : static_cast<int>(selectedHouse));
 }
 

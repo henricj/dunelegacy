@@ -86,7 +86,7 @@ void BriefingMenu::onMentatTextFinished() {
     repeatButton.setVisible(true);
 }
 
-int BriefingMenu::showMenu() {
+int BriefingMenu::showMenuImpl() {
     using dune::globals::musicPlayer;
 
     switch (type) {
@@ -148,7 +148,7 @@ int BriefingMenu::showMenu() {
         } break;
     }
 
-    return parent::showMenu();
+    return parent::showMenuImpl();
 }
 
 void BriefingMenu::onRepeat() {

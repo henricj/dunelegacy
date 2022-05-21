@@ -45,14 +45,11 @@ public:
     MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t alreadyPlayedRegions);
     ~MapChoice() override;
 
-    int showMenu() override;
-
     [[nodiscard]] int getSelectedMission() const;
 
     [[nodiscard]] uint32_t getAlreadyPlayedRegions() const { return alreadyPlayedRegions; }
 
     void drawSpecificStuff() override;
-    bool doInput(SDL_Event& event) override;
 
     /**
         This method resizes the window to width and height.
@@ -63,11 +60,15 @@ public:
 
     using parent::resize;
 
+protected:
+    int showMenuImpl() override;
+
+    void doInputImpl(const SDL_Event& event) override;
+
 private:
     void createMapSurfaceWithPieces(unsigned int scenario);
     void loadINI();
 
-private:
     struct TGroup {
         std::array<std::vector<UIGraphics_Enum>, static_cast<int>(HOUSETYPE::NUM_HOUSES)> newRegion;
 

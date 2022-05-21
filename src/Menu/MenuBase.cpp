@@ -31,6 +31,8 @@
 #include <main.h>
 #include <sand.h>
 
+#include <gsl/gsl>
+
 MenuBase::MenuBase() : Window(0, 0, 0, 0) { }
 
 MenuBase::~MenuBase() = default;
@@ -66,7 +68,14 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
     return true;
 }
 
-int MenuBase::showMenu() {
+int MenuBase::showMenu(event_handler_type handler) {
+    sdl_handler_         = handler;
+    auto cleanup_handler = gsl::finally([&] { sdl_handler_ = decltype(sdl_handler_){}; });
+
+    return showMenuImpl();
+}
+
+int MenuBase::showMenuImpl() {
     using namespace std::chrono_literals;
 
     SDL_Event event{};
@@ -131,7 +140,7 @@ void MenuBase::draw() {
 
 void MenuBase::drawSpecificStuff() { }
 
-bool MenuBase::doInput(SDL_Event& event) {
+void MenuBase::doInputImpl(const SDL_Event& event) {
     switch (event.type) {
         case SDL_KEYDOWN: {
             // Look for a keypress
@@ -192,8 +201,15 @@ bool MenuBase::doInput(SDL_Event& event) {
         default: {
         } break;
     }
+}
+
+bool MenuBase::doInput(const SDL_Event& event) {
+    doInputImpl(event);
 
     handleInput(event);
+
+    if (sdl_handler_ && isBroadcastEventType(event.type))
+        sdl_handler_(event);
 
     return !quitting;
 }

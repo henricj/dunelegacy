@@ -36,9 +36,10 @@ public:
 
     void drawSpecificStuff() override;
 
-    bool doInput(SDL_Event& event) override;
-
     void onMentatTextFinished() override;
+
+protected:
+    void doInputImpl(const SDL_Event& event) override;
 
 private:
     void onExit();

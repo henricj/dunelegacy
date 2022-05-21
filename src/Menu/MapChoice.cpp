@@ -25,6 +25,9 @@
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 
+#include "Renderer/DuneRenderer.h"
+#include "misc/DrawingRectHelper.h"
+#include "misc/draw_util.h"
 #include <misc/exceptions.h>
 #include <misc/string_util.h>
 
@@ -123,10 +126,10 @@ MapChoice::MapChoice(HOUSETYPE newHouse, unsigned int lastMission, uint32_t oldA
 
 MapChoice::~MapChoice() = default;
 
-int MapChoice::showMenu() {
+int MapChoice::showMenuImpl() {
     dune::globals::musicPlayer->changeMusic(MUSIC_MAPCHOICE);
 
-    return parent::showMenu();
+    return parent::showMenuImpl();
 }
 
 int MapChoice::getSelectedMission() const {
@@ -347,7 +350,7 @@ void MapChoice::drawSpecificStuff() {
     }
 }
 
-bool MapChoice::doInput(SDL_Event& event) {
+void MapChoice::doInputImpl(const SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
         if (mapChoiceState == MAPCHOICESTATE_ARROWS) {
             const int x = event.button.x - centerAreaRect.x;
@@ -380,7 +383,8 @@ bool MapChoice::doInput(SDL_Event& event) {
             bFastBlending = true;
         }
     }
-    return MenuBase::doInput(event);
+
+    parent::doInputImpl(event);
 }
 
 void MapChoice::resize(uint32_t width, uint32_t height) {

@@ -39,7 +39,8 @@ public:
 
     using parent::resize;
 
-    bool doInput(SDL_Event& event) override;
+protected:
+    void doInputImpl(const SDL_Event& event) override;
 
 private:
     StaticContainer windowWidget;

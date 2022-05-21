@@ -48,8 +48,6 @@ public:
 
     void update() override;
 
-    bool doInput(SDL_Event& event) override;
-
     /**
         This method resizes the window to width and height.
         \param  width   the new width of this widget
@@ -60,6 +58,8 @@ public:
     using parent::resize;
 
 protected:
+    void doInputImpl(const SDL_Event& event) override;
+
     void showNextMentatText() { nextMentatTextSwitch = dune::dune_clock::time_point::min(); }
 
     virtual void onMentatTextFinished() { }

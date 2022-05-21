@@ -47,14 +47,15 @@ public:
 
     using parent::resize;
 
-    int showMenu() override;
+protected:
+    int showMenuImpl() override;
 
 private:
-    static void onSinglePlayer();
-    static void onMultiPlayer();
-    static void onMapEditor();
+    void onSinglePlayer();
+    void onMultiPlayer();
+    void onMapEditor();
     void onOptions();
-    static void onAbout();
+    void onAbout();
     void onQuit();
 
     StaticContainer windowWidget;

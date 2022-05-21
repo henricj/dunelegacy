@@ -129,7 +129,7 @@ public:
 
     friend class INIMapEditorLoader; ///< loading INI Maps is done with a INIMapEditorLoader helper object
 
-    void RunEditor();
+    void RunEditor(MenuBase::event_handler_type eventHandler);
 
     void onQuit() { bQuitEditor = true; }
 
@@ -261,7 +261,7 @@ private:
     void performTerrainChange(int x, int y, TERRAINTYPE terrainType);
 
     void drawScreen();
-    void processInput();
+    void processInput(MenuBase::event_handler_type handler);
     void drawCursor();
     void drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const;
     [[nodiscard]] TERRAINTYPE getTerrain(int x, int y) const;

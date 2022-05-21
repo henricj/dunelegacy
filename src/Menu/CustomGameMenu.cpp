@@ -169,7 +169,8 @@ void CustomGameMenu::onChildWindowClose(Window* pChildWindow) {
             GameInitSettings gameInitSettings(getBasename(filename, true), std::move(savegamedata),
                                               std::move(servername));
 
-            int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
+            int ret =
+                CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu([&](const auto& e) { doInput(e); });
             if (ret != MENU_QUIT_DEFAULT) {
                 quit(ret);
             }
@@ -202,7 +203,7 @@ void CustomGameMenu::onNext() {
                                             multiplePlayersPerHouseCheckbox.isChecked(), currentGameOptions);
     }
 
-    int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu();
+    int ret = CustomGamePlayers(gameInitSettings, true, bLANServer).showMenu([&](const auto& e) { doInput(e); });
     if (ret != MENU_QUIT_DEFAULT) {
         quit(ret);
     }

@@ -217,16 +217,16 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
 
 CampaignStatsMenu::~CampaignStatsMenu() = default;
 
-int CampaignStatsMenu::showMenu() {
+int CampaignStatsMenu::showMenuImpl() {
     dune::globals::musicPlayer->changeMusic(MUSIC_GAMESTAT);
 
     currentStateStartTime = dune::dune_clock::now();
     currentState          = CampaignStatsState::State_HumanSpice;
 
-    return MenuBase::showMenu();
+    return parent::showMenuImpl();
 }
 
-bool CampaignStatsMenu::doInput(SDL_Event& event) {
+void CampaignStatsMenu::doInputImpl(const SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONUP) {
         if (currentState == CampaignStatsState::State_Finished) {
             quit();
@@ -237,7 +237,7 @@ bool CampaignStatsMenu::doInput(SDL_Event& event) {
         }
     }
 
-    return MenuBase::doInput(event);
+    parent::doInputImpl(event);
 }
 
 void CampaignStatsMenu::drawSpecificStuff() {

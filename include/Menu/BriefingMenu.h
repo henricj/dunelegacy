@@ -35,7 +35,8 @@ public:
 
     void onMentatTextFinished() override;
 
-    int showMenu() override;
+protected:
+    int showMenuImpl() override;
 
 private:
     std::string text;
