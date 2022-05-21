@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <FileClasses/GFXManager.h>
 
 AboutMenu::AboutMenu() {

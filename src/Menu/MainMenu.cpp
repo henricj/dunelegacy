@@ -19,6 +19,7 @@
 
 #include <globals.h>
 
+#include "misc/DrawingRectHelper.h"
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>

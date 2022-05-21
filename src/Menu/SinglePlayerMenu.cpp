@@ -162,7 +162,7 @@ void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
         extension = pLoadSaveWindow->getExtension();
     }
 
-    if (filename != "") {
+    if (!filename.empty()) {
         if (extension == "dls") {
 
             try {

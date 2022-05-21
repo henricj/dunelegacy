@@ -24,6 +24,8 @@
 #include <GUI/StaticContainer.h>
 
 class AboutMenu final : public MainMenuBase {
+    using parent = MainMenuBase;
+
 public:
     AboutMenu();
     ~AboutMenu() override;

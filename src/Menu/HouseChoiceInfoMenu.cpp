@@ -19,7 +19,6 @@
 
 #include <globals.h>
 
-#include <FileClasses/FileManager.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 

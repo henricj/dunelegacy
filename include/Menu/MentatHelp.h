@@ -28,6 +28,8 @@
 #include <GUI/dune/AnimationLabel.h>
 
 class MentatHelp final : public MentatMenu {
+    using parent = MentatMenu;
+
 public:
     MentatHelp(HOUSETYPE newHouse, int techLevel, int mission);
     ~MentatHelp() override;

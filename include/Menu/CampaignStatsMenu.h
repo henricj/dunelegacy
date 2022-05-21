@@ -27,6 +27,8 @@
 #include <string>
 
 class CampaignStatsMenu final : public MenuBase {
+    using parent = MenuBase;
+
 public:
     explicit CampaignStatsMenu(int level);
     ~CampaignStatsMenu() override;
