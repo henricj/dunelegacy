@@ -25,7 +25,7 @@
 
 std::unique_ptr<RefineryAndSiloInterface> RefineryAndSiloInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<RefineryAndSiloInterface> tmp{new RefineryAndSiloInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

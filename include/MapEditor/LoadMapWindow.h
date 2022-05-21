@@ -52,8 +52,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static LoadMapWindow* create(int color = -1) {
-        auto* dlg       = new LoadMapWindow(color);
-        dlg->pAllocated = true;
+        auto* dlg        = new LoadMapWindow(color);
+        dlg->pAllocated_ = true;
         return dlg;
     }
 

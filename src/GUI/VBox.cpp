@@ -130,7 +130,7 @@ void VBox::resize(uint32_t width, uint32_t height) {
 VBox* VBox::create() {
     VBox* vbox = new VBox();
 
-    vbox->pAllocated = true;
+    vbox->pAllocated_ = true;
     return vbox;
 }
 

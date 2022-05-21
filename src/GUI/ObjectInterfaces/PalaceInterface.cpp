@@ -10,7 +10,7 @@
 
 std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<PalaceInterface> tmp{new PalaceInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

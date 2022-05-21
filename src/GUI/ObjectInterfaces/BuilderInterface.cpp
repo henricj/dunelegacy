@@ -28,7 +28,7 @@
 
 std::unique_ptr<BuilderInterface> BuilderInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<BuilderInterface> tmp{new BuilderInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

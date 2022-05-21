@@ -44,8 +44,8 @@ public:
         \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
     */
     static Spacer* create() {
-        Spacer* sp     = new Spacer();
-        sp->pAllocated = true;
+        Spacer* sp      = new Spacer();
+        sp->pAllocated_ = true;
         return sp;
     }
 };
@@ -85,8 +85,8 @@ public:
         \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
     */
     static HSpacer* create(uint32_t width) {
-        HSpacer* sp    = new HSpacer(width);
-        sp->pAllocated = true;
+        HSpacer* sp     = new HSpacer(width);
+        sp->pAllocated_ = true;
         return sp;
     }
 
@@ -129,8 +129,8 @@ public:
         \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
     */
     static VSpacer* create(uint32_t height) {
-        VSpacer* sp    = new VSpacer(height);
-        sp->pAllocated = true;
+        VSpacer* sp     = new VSpacer(height);
+        sp->pAllocated_ = true;
         return sp;
     }
 

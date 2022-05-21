@@ -30,7 +30,7 @@
 
 std::unique_ptr<MultiUnitInterface> MultiUnitInterface::create(const GameContext& context) {
     std::unique_ptr<MultiUnitInterface> tmp{new MultiUnitInterface{context}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

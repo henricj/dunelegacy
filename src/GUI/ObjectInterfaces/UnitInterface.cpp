@@ -29,7 +29,7 @@
 
 std::unique_ptr<UnitInterface> UnitInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<UnitInterface> tmp{new UnitInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

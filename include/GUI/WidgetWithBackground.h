@@ -77,7 +77,7 @@ protected:
     */
     void invalidateTextures() override;
 
-    [[nodiscard]] const DuneTexture* getBackground() const noexcept { return pBackground; }
+    [[nodiscard]] const DuneTexture* getBackground() const noexcept { return pBackground_; }
     [[nodiscard]] const DuneTexture* getBackground();
 
     void setBackground(SDL_Surface* surface);
@@ -85,10 +85,10 @@ protected:
     virtual DuneSurfaceOwned createBackground();
 
 private:
-    const DuneTexture* pBackground{}; ///< background texture
+    const DuneTexture* pBackground_{}; ///< background texture
 
-    bool bTransparentBackground{}; ///< true = no background is drawn
-    bool bSelfGeneratedBackground{
+    bool bTransparentBackground_{}; ///< true = no background is drawn
+    bool bSelfGeneratedBackground_{
         true}; ///< true = background is created by this window, false = created by someone else
 
     sdl2::texture_ptr localTexture_;

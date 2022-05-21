@@ -136,12 +136,12 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
 }
 
 bool LoadMapWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
-    if (pChildWindow != nullptr) {
-        const bool ret = pChildWindow->handleKeyPress(key);
+    if (pChildWindow_ != nullptr) {
+        const bool ret = pChildWindow_->handleKeyPress(key);
         return ret;
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
         if (key.keysym.sym == SDLK_RETURN) {
             onLoad();
             return true;
@@ -168,7 +168,7 @@ bool LoadMapWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
 
             return true;
         }
-        return pWindowWidget->handleKeyPress(key);
+        return pWindowWidget_->handleKeyPress(key);
     }
     return false;
 }

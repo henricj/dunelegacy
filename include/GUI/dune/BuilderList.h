@@ -116,8 +116,8 @@ public:
     }
 
     static BuilderList* create(uint32_t builderObjectID) {
-        auto* tmp       = new BuilderList(builderObjectID);
-        tmp->pAllocated = true;
+        auto* tmp        = new BuilderList(builderObjectID);
+        tmp->pAllocated_ = true;
         return tmp;
     }
 

@@ -22,19 +22,19 @@
 #include <GUI/GUIStyle.h>
 #include <globals.h>
 
-Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position(x, y) {
+Window::Window(uint32_t x, uint32_t y, uint32_t w, uint32_t h) : position_(x, y) {
 
     Window::resize(w, h);
 }
 
 Window::~Window() {
-    if (pChildWindow != nullptr) {
+    if (pChildWindow_ != nullptr) {
         Window::closeChildWindow();
         processChildWindowOpenCloses();
     }
 
-    if (pWindowWidget != nullptr) {
-        pWindowWidget->destroy();
+    if (pWindowWidget_ != nullptr) {
+        pWindowWidget_->destroy();
     }
 }
 
@@ -43,48 +43,48 @@ void Window::openWindow(Window* pChildWindow) {
         return;
     }
 
-    if (this->pChildWindow != nullptr) {
-        queuedChildWindows.push(pChildWindow);
+    if (this->pChildWindow_ != nullptr) {
+        queuedChildWindows_.push(pChildWindow);
         closeChildWindow();
     } else {
-        this->pChildWindow = pChildWindow;
-        this->pChildWindow->setParent(this);
-        pChildWindowAlreadyClosed = false;
+        this->pChildWindow_ = pChildWindow;
+        this->pChildWindow_->setParent(this);
+        pChildWindowAlreadyClosed_ = false;
     }
 }
 
 void Window::closeChildWindow() {
-    if (pChildWindow != nullptr && !pChildWindowAlreadyClosed) {
-        closeChildWindowCounter++;
-        pChildWindow->setEnabled(false);
-        pChildWindow->setVisible(false);
-        pChildWindowAlreadyClosed = true;
+    if (pChildWindow_ != nullptr && !pChildWindowAlreadyClosed_) {
+        closeChildWindowCounter_++;
+        pChildWindow_->setEnabled(false);
+        pChildWindow_->setVisible(false);
+        pChildWindowAlreadyClosed_ = true;
     }
 }
 
 void Window::setCurrentPosition(uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
-    position.x = x;
-    position.y = y;
-    if (size.x != w || size.y != h)
+    position_.x = x;
+    position_.y = y;
+    if (size_.x != w || size_.y != h)
         resize(w, h);
 }
 
 bool Window::processChildWindowOpenCloses() {
     bool bClosed = false;
 
-    while (closeChildWindowCounter > 0) {
-        onChildWindowClose(pChildWindow);
-        pChildWindow->destroy();
-        closeChildWindowCounter--;
+    while (closeChildWindowCounter_ > 0) {
+        onChildWindowClose(pChildWindow_);
+        pChildWindow_->destroy();
+        closeChildWindowCounter_--;
         bClosed = true;
 
-        if (!queuedChildWindows.empty()) {
-            pChildWindow = queuedChildWindows.front();
-            queuedChildWindows.pop();
-            pChildWindow->setParent(this);
-            pChildWindowAlreadyClosed = false;
+        if (!queuedChildWindows_.empty()) {
+            pChildWindow_ = queuedChildWindows_.front();
+            queuedChildWindows_.pop();
+            pChildWindow_->setParent(this);
+            pChildWindowAlreadyClosed_ = false;
         } else {
-            pChildWindow = nullptr;
+            pChildWindow_ = nullptr;
         }
     }
 
@@ -101,8 +101,8 @@ bool Window::isBroadcastEventType(Uint32 type) {
 }
 
 void Window::handleInput(const SDL_Event& event) {
-    if (pChildWindow != nullptr) {
-        pChildWindow->handleInput(event);
+    if (pChildWindow_ != nullptr) {
+        pChildWindow_->handleInput(event);
 
         if (processChildWindowOpenCloses()) {
             // Small hack: simulate mouse movement to get rid of tooltips
@@ -193,28 +193,29 @@ void Window::handleInput(const SDL_Event& event) {
 }
 
 void Window::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    if (pChildWindow != nullptr) {
-        pChildWindow->handleMouseMovement(x, y);
+    if (pChildWindow_ != nullptr) {
+        pChildWindow_->handleMouseMovement(x, y);
         return;
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        const bool insideOverlay = pWindowWidget->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
-        pWindowWidget->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        const bool insideOverlay = pWindowWidget_->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
+        pWindowWidget_->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
     }
 }
 
 bool Window::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    if (pChildWindow != nullptr) {
-        return pChildWindow->handleMouseLeft(x, y, pressed);
+    if (pChildWindow_ != nullptr) {
+        return pChildWindow_->handleMouseLeft(x, y, pressed);
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        const bool bProcessed = pWindowWidget->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
-                             || pWindowWidget->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        const bool bProcessed =
+            pWindowWidget_->handleMouseLeftOverlay(x - getPosition().x, y - getPosition().y, pressed)
+            || pWindowWidget_->handleMouseLeft(x - getPosition().x, y - getPosition().y, pressed);
         if (pressed && (!bProcessed)) {
-            pWindowWidget->setActive(false);
-            pWindowWidget->setActive(true);
+            pWindowWidget_->setActive(false);
+            pWindowWidget_->setActive(true);
         }
         return bProcessed;
     }
@@ -223,47 +224,47 @@ bool Window::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
 }
 
 bool Window::handleMouseRight(int32_t x, int32_t y, bool pressed) {
-    if (pChildWindow != nullptr) {
-        return pChildWindow->handleMouseRight(x, y, pressed);
+    if (pChildWindow_ != nullptr) {
+        return pChildWindow_->handleMouseRight(x, y, pressed);
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
-            || pWindowWidget->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        return pWindowWidget_->handleMouseRightOverlay(x - getPosition().x, y - getPosition().y, pressed)
+            || pWindowWidget_->handleMouseRight(x - getPosition().x, y - getPosition().y, pressed);
     }
     return false;
 }
 
 bool Window::handleMouseWheel(int32_t x, int32_t y, bool up) {
-    if (pChildWindow != nullptr) {
-        return pChildWindow->handleMouseWheel(x, y, up);
+    if (pChildWindow_ != nullptr) {
+        return pChildWindow_->handleMouseWheel(x, y, up);
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
-            || pWindowWidget->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        return pWindowWidget_->handleMouseWheelOverlay(x - getPosition().x, y - getPosition().y, up)
+            || pWindowWidget_->handleMouseWheel(x - getPosition().x, y - getPosition().y, up);
     }
     return false;
 }
 
 bool Window::handleKeyPress(const SDL_KeyboardEvent& key) {
-    if (pChildWindow != nullptr) {
-        return pChildWindow->handleKeyPress(key);
+    if (pChildWindow_ != nullptr) {
+        return pChildWindow_->handleKeyPress(key);
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleKeyPressOverlay(key) || pWindowWidget->handleKeyPress(key);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        return pWindowWidget_->handleKeyPressOverlay(key) || pWindowWidget_->handleKeyPress(key);
     }
     return false;
 }
 
 bool Window::handleTextInput(const SDL_TextInputEvent& textInput) {
-    if (pChildWindow != nullptr) {
-        return pChildWindow->handleTextInput(textInput);
+    if (pChildWindow_ != nullptr) {
+        return pChildWindow_->handleTextInput(textInput);
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
-        return pWindowWidget->handleTextInputOverlay(textInput) || pWindowWidget->handleTextInput(textInput);
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
+        return pWindowWidget_->handleTextInputOverlay(textInput) || pWindowWidget_->handleTextInput(textInput);
     }
     return false;
 }
@@ -272,26 +273,26 @@ void Window::draw(Point position) {
     if (isVisible()) {
         parent::draw(getPosition());
 
-        if (pWindowWidget != nullptr) {
-            pWindowWidget->draw(Point(position.x + getPosition().x, position.y + getPosition().y));
+        if (pWindowWidget_ != nullptr) {
+            pWindowWidget_->draw(Point(position.x + getPosition().x, position.y + getPosition().y));
         }
     }
 
-    if (pChildWindow != nullptr) {
-        pChildWindow->draw();
+    if (pChildWindow_ != nullptr) {
+        pChildWindow_->draw();
     }
 }
 
 void Window::drawOverlay(Point position) {
-    if (pChildWindow != nullptr) {
-        pChildWindow->drawOverlay();
-    } else if (isVisible() && (pWindowWidget != nullptr)) {
-        pWindowWidget->drawOverlay(Point(position.x + getPosition().x, position.y + getPosition().y));
+    if (pChildWindow_ != nullptr) {
+        pChildWindow_->drawOverlay();
+    } else if (isVisible() && (pWindowWidget_ != nullptr)) {
+        pWindowWidget_->drawOverlay(Point(position.x + getPosition().x, position.y + getPosition().y));
     }
 }
 
 void Window::setWindowWidget(Widget* widget) {
-    this->pWindowWidget = widget;
+    this->pWindowWidget_ = widget;
 
     if (widget == nullptr)
         return;
@@ -304,8 +305,8 @@ void Window::setWindowWidget(Widget* widget) {
 void Window::resize(uint32_t width, uint32_t height) {
     parent::resize(width, height);
 
-    if (pWindowWidget != nullptr)
-        pWindowWidget->resize(width, height);
+    if (pWindowWidget_ != nullptr)
+        pWindowWidget_->resize(width, height);
 }
 
 void Window::resizeAll() {

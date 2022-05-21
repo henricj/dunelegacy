@@ -147,7 +147,7 @@ void MenuBase::doInputImpl(const SDL_Event& event) {
             switch (event.key.keysym.sym) {
 
                 case SDLK_ESCAPE: {
-                    if (pChildWindow == nullptr && bAllowQuitting) {
+                    if (pChildWindow_ == nullptr && bAllowQuitting) {
                         quit();
                     }
                 } break;
@@ -193,7 +193,7 @@ void MenuBase::doInputImpl(const SDL_Event& event) {
         } break;
 
         case SDL_QUIT: {
-            if (pChildWindow == nullptr && bAllowQuitting) {
+            if (pChildWindow_ == nullptr && bAllowQuitting) {
                 quit();
             }
         } break;

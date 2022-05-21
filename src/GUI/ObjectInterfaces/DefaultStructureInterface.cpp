@@ -26,7 +26,7 @@
 
 std::unique_ptr<DefaultStructureInterface> DefaultStructureInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<DefaultStructureInterface> tmp{new DefaultStructureInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

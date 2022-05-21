@@ -72,8 +72,8 @@ public:
     */
     void resize(uint32_t width, uint32_t height) override {
         Window::resize(width, height);
-        position.x = (getRendererWidth() - getSize().x) / 2;
-        position.y = (getRendererHeight() - getSize().y) / 2;
+        position_.x = (getRendererWidth() - getSize().x) / 2;
+        position_.y = (getRendererHeight() - getSize().y) / 2;
     }
 
     using parent::resize;
@@ -84,8 +84,8 @@ public:
     */
     void resizeAll() override {
         // QstBox should get bigger if content changes
-        if (pWindowWidget != nullptr) {
-            Point newSize = pWindowWidget->getMinimumSize();
+        if (pWindowWidget_ != nullptr) {
+            Point newSize = pWindowWidget_->getMinimumSize();
             newSize.x     = std::max(newSize.x, 120);
             newSize.y     = std::max(newSize.y, 30);
             resize(newSize.x, newSize.y);
@@ -110,8 +110,8 @@ public:
     */
     static QstBox* create(const std::string& text, const std::string& button1Text = "Yes",
                           const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
-        auto* qstbox       = new QstBox(text, button1Text, button2Text, defaultFocus);
-        qstbox->pAllocated = true;
+        auto* qstbox        = new QstBox(text, button1Text, button2Text, defaultFocus);
+        qstbox->pAllocated_ = true;
         return qstbox;
     }
 

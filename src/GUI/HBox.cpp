@@ -124,8 +124,8 @@ void HBox::resize(uint32_t width, uint32_t height) {
 }
 
 HBox* HBox::create() {
-    HBox* hbox       = new HBox();
-    hbox->pAllocated = true;
+    HBox* hbox        = new HBox();
+    hbox->pAllocated_ = true;
     return hbox;
 }
 

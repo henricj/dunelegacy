@@ -83,7 +83,7 @@ Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor,
     auto label = std::make_unique<Label>();
     label->setText(text);
     label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
-    label->pAllocated = true;
+    label->pAllocated_ = true;
     return label;
 }
 

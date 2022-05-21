@@ -295,8 +295,8 @@ void MentatMenu::doInputImpl(const SDL_Event& event) {
 void MentatMenu::resize(uint32_t width, uint32_t height) {
     parent::resize(width, height);
 
-    position.x = static_cast<int>(std::floor((static_cast<float>(width) - background_width_) / 2));
-    position.y = static_cast<int>(std::floor((static_cast<float>(height) - background_height_) / 2));
+    position_.x = static_cast<int>(std::floor((static_cast<float>(width) - background_width_) / 2));
+    position_.y = static_cast<int>(std::floor((static_cast<float>(height) - background_height_) / 2));
 }
 
 void MentatMenu::drawSpecificStuff() {
@@ -317,8 +317,8 @@ void MentatMenu::drawSpecificStuff() {
         } break;
     }
 
-    shoulderAnim.draw(shoulderPos + position);
-    textLabel.draw(Point{10, 5} + position);
+    shoulderAnim.draw(shoulderPos + position_);
+    textLabel.draw(Point{10, 5} + position_);
 }
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) {

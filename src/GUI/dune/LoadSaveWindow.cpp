@@ -154,12 +154,12 @@ void LoadSaveWindow::updateEntries() {
 }
 
 bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
-    if (pChildWindow != nullptr) {
-        const auto ret = pChildWindow->handleKeyPress(key);
+    if (pChildWindow_ != nullptr) {
+        const auto ret = pChildWindow_->handleKeyPress(key);
         return ret;
     }
 
-    if (isEnabled() && (pWindowWidget != nullptr)) {
+    if (isEnabled() && (pWindowWidget_ != nullptr)) {
         if (key.keysym.sym == SDLK_RETURN) {
             onOK();
             return true;
@@ -181,7 +181,7 @@ bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
 
             return true;
         }
-        return pWindowWidget->handleKeyPress(key);
+        return pWindowWidget_->handleKeyPress(key);
     }
     return false;
 }
@@ -228,7 +228,7 @@ LoadSaveWindow::create(bool bSave, const std::string& caption, const std::vector
                        int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color) {
     std::unique_ptr<LoadSaveWindow> dlg{new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension,
                                                            preselectedDirectoryIndex, preselectedFile, color)};
-    dlg->pAllocated = true;
+    dlg->pAllocated_ = true;
     return dlg;
 }
 

@@ -47,8 +47,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static InGameSettingsMenu* create() {
-        auto* dlg       = new InGameSettingsMenu();
-        dlg->pAllocated = true;
+        auto* dlg        = new InGameSettingsMenu();
+        dlg->pAllocated_ = true;
         return dlg;
     }
 

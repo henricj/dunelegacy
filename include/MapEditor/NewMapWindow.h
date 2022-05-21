@@ -44,8 +44,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static NewMapWindow* create(HOUSETYPE house) {
-        auto* dlg       = new NewMapWindow(house);
-        dlg->pAllocated = true;
+        auto* dlg        = new NewMapWindow(house);
+        dlg->pAllocated_ = true;
         return dlg;
     }
 

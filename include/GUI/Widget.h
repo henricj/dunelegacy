@@ -143,13 +143,13 @@ public:
         Sets the parent of this widget.
         \param pParent new parent (nullptr is also possible)
     */
-    void setParent(Widget* pParent) noexcept { parent = pParent; }
+    void setParent(Widget* pParent) noexcept { parent_ = pParent; }
 
     /**
         Returns the parent of this widget
         \return the parent of this widget or nullptr if it has no parent.
     */
-    [[nodiscard]] Widget* getParent() const noexcept { return parent; }
+    [[nodiscard]] Widget* getParent() const noexcept { return parent_; }
 
     /**
         Enable or disable this widget. A disabled widget is not responding
@@ -160,27 +160,27 @@ public:
         if ((bEnabled == false) && (isActive() == true)) {
             setInactive();
         }
-        enabled = bEnabled;
+        enabled_ = bEnabled;
     }
 
     /**
         Returns whether this widget is enabled or not.
         \return true = widget is enabled, false = widget is disabled
     */
-    [[nodiscard]] bool isEnabled() const noexcept { return enabled; }
+    [[nodiscard]] bool isEnabled() const noexcept { return enabled_; }
 
     /**
         Sets this widget visible or invisible. An invisible widget does not
         responding to clicks and key presses.
         \return bVisible    true = visible, false = invisible
     */
-    virtual void setVisible(bool bVisible) { visible = bVisible; }
+    virtual void setVisible(bool bVisible) { visible_ = bVisible; }
 
     /**
         Returns whether this widget is visible or not.
         \return true = visible, false = invisible
     */
-    [[nodiscard]] bool isVisible() const noexcept { return visible; }
+    [[nodiscard]] bool isVisible() const noexcept { return visible_; }
 
     /**
         Sets this widget active. The parent widgets are also activated and the
@@ -197,7 +197,7 @@ public:
         Returns whether this widget is currently active.
         \return true = currently active, false = currently inactive
     */
-    [[nodiscard]] bool isActive() const noexcept { return active; }
+    [[nodiscard]] bool isActive() const noexcept { return active_; }
 
     /**
         Returns whether this widget can be set active.
@@ -215,7 +215,7 @@ public:
         Returns the current size of this widget.
         \return current size of this widget
     */
-    [[nodiscard]] const Point& getSize() const noexcept { return size; }
+    [[nodiscard]] const Point& getSize() const noexcept { return size_; }
 
     /**
         Returns the minimum size of this widget. The widget should not
@@ -230,14 +230,14 @@ public:
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in X direction, false = not resizeable in X direction
     */
-    [[nodiscard]] bool resizingXAllowed() const { return resizeX; }
+    [[nodiscard]] bool resizingXAllowed() const { return resizeX_; }
 
     /**
         Returns whether this widget is allowed to be resized in Y direction.
         You should not resize a widget, that is not resizeable.
         \return true = resizeable in Y direction, false = not resizeable in Y direction
     */
-    [[nodiscard]] bool resizingYAllowed() const { return resizeY; }
+    [[nodiscard]] bool resizingYAllowed() const { return resizeY_; }
 
     /**
         This method resizes the widget. This method should only be
@@ -255,8 +255,8 @@ public:
         \param  height  the new height of this widget
     */
     virtual void resize(uint32_t width, uint32_t height) {
-        size.x = width;
-        size.y = height;
+        size_.x = width;
+        size_.y = height;
     }
 
     /**
@@ -399,13 +399,13 @@ public:
         Sets the function that should be called when this widget gains focus.
         \param  pOnGainFocus    A function to call on focus gain
     */
-    void setOnGainFocus(std::function<void()> pOnGainFocus) { this->pOnGainFocus = std::move(pOnGainFocus); }
+    void setOnGainFocus(std::function<void()> pOnGainFocus) { this->pOnGainFocus_ = std::move(pOnGainFocus); }
 
     /**
         Sets the function that should be called when this widget loses focus.
         \param  pOnLostFocus    A function to call on focus loss
     */
-    void setOnLostFocus(std::function<void()> pOnLostFocus) { this->pOnLostFocus = std::move(pOnLostFocus); }
+    void setOnLostFocus(std::function<void()> pOnLostFocus) { this->pOnLostFocus_ = std::move(pOnLostFocus); }
 
 protected:
     /**
@@ -423,8 +423,8 @@ protected:
         \param  bResizeY    true = resizing in y direction allowed, false = resizing in y direction not allowed
     */
     virtual void enableResizing(bool bResizeX, bool bResizeY) {
-        resizeX = bResizeX;
-        resizeY = bResizeY;
+        resizeX_ = bResizeX;
+        resizeY_ = bResizeY;
     }
 
     /**
@@ -448,19 +448,19 @@ protected:
     virtual void invalidateTextures() { }
 
     /// If this widget is created via a named constructor (static create method) then bAllocated is true
-    bool pAllocated{};
+    bool pAllocated_{};
 
 private:
-    bool visible{true}; ///< Is this widget visible?
-    bool enabled{true}; ///< Is this widget enabled?
-    bool active{};      ///< Is this widget active?
-    bool resizeX{};     ///< Is this widget resizable in X direction?
-    bool resizeY{};     ///< Is this widget resizable in Y direction?
-    Point size;         ///< The size of this widget
-    Widget* parent{};   ///< The parent widget
+    bool visible_{true}; ///< Is this widget visible?
+    bool enabled_{true}; ///< Is this widget enabled?
+    bool active_{};      ///< Is this widget active?
+    bool resizeX_{};     ///< Is this widget resizable in X direction?
+    bool resizeY_{};     ///< Is this widget resizable in Y direction?
+    Point size_;         ///< The size of this widget
+    Widget* parent_{};   ///< The parent widget
 
-    std::function<void()> pOnGainFocus; ///< function that is called when this widget gains focus
-    std::function<void()> pOnLostFocus; ///< function that is called when this widget loses focus
+    std::function<void()> pOnGainFocus_; ///< function that is called when this widget gains focus
+    std::function<void()> pOnLostFocus_; ///< function that is called when this widget loses focus
 };
 
 #endif // WIDGET_H

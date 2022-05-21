@@ -20,29 +20,29 @@
 Widget::Widget() = default;
 
 Widget::~Widget() {
-    pAllocated = false;
-    if (parent != nullptr) {
-        parent->removeChildWidget(this);
+    pAllocated_ = false;
+    if (parent_ != nullptr) {
+        parent_->removeChildWidget(this);
     }
 }
 
 void Widget::setActive() {
-    active = true;
-    if (parent != nullptr) {
-        parent->setActiveChildWidget(true, this);
+    active_ = true;
+    if (parent_ != nullptr) {
+        parent_->setActiveChildWidget(true, this);
     }
 }
 
 void Widget::setInactive() {
-    active = false;
-    if (parent != nullptr) {
-        parent->setActiveChildWidget(false, this);
+    active_ = false;
+    if (parent_ != nullptr) {
+        parent_->setActiveChildWidget(false, this);
     }
 }
 
 void Widget::resizeAll() {
-    if (parent != nullptr) {
-        parent->resizeAll();
+    if (parent_ != nullptr) {
+        parent_->resizeAll();
     } else {
         const auto minimum_size = getMinimumSize();
         const auto current_size = getSize();
@@ -52,25 +52,25 @@ void Widget::resizeAll() {
 }
 
 void Widget::destroy() {
-    if (pAllocated == true) {
-        pAllocated = false;
+    if (pAllocated_ == true) {
+        pAllocated_ = false;
         delete this;
     } else {
-        if (parent != nullptr) {
-            parent->removeChildWidget(this);
+        if (parent_ != nullptr) {
+            parent_->removeChildWidget(this);
         }
     }
 }
 
 void Widget::setActive(bool bActive) {
-    const auto oldActive = active;
-    active               = bActive;
+    const auto oldActive = active_;
+    active_              = bActive;
 
     if (oldActive != bActive) {
-        if (active && pOnGainFocus) {
-            pOnGainFocus();
-        } else if (!active && pOnLostFocus) {
-            pOnLostFocus();
+        if (active_ && pOnGainFocus_) {
+            pOnGainFocus_();
+        } else if (!active_ && pOnLostFocus_) {
+            pOnLostFocus_();
         }
     }
 }

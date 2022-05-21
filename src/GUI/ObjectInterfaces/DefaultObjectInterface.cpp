@@ -21,7 +21,7 @@
 
 std::unique_ptr<DefaultObjectInterface> DefaultObjectInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<DefaultObjectInterface> tmp{new DefaultObjectInterface(context, objectID)};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

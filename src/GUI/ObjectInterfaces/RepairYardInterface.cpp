@@ -25,7 +25,7 @@
 
 std::unique_ptr<RepairYardInterface> RepairYardInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<RepairYardInterface> tmp{new RepairYardInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

@@ -356,8 +356,8 @@ public:
         \return The new created dropdown box (will be automatically destroyed when it's parent widget is destroyed)
     */
     static std::unique_ptr<DropDownBox> create() {
-        auto dropDownBox        = std::make_unique<DropDownBox>();
-        dropDownBox->pAllocated = true;
+        auto dropDownBox         = std::make_unique<DropDownBox>();
+        dropDownBox->pAllocated_ = true;
         return dropDownBox;
     }
 

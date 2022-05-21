@@ -48,10 +48,10 @@ public:
         \param  pChildWidget    widget to remove
     */
     void removeChildWidget(Widget* pChildWidget) override {
-        if (pChildWidget == pWindowWidget) {
-            pWindowWidget = nullptr;
-        } else if (pChildWidget == pChildWindow) {
-            pChildWindow = nullptr;
+        if (pChildWidget == pWindowWidget_) {
+            pWindowWidget_ = nullptr;
+        } else if (pChildWidget == pChildWindow_) {
+            pChildWindow_ = nullptr;
         }
     }
 
@@ -77,13 +77,13 @@ public:
         This method checks whether this window has a child window.
         \return true if child window present, false otherwise
     */
-    [[nodiscard]] bool hasChildWindow() const { return (pChildWindow != nullptr); }
+    [[nodiscard]] bool hasChildWindow() const { return (pChildWindow_ != nullptr); }
 
     /**
         Get the current position of this window.
         \return current position of this window
     */
-    [[nodiscard]] const Point& getPosition() const noexcept { return position; }
+    [[nodiscard]] const Point& getPosition() const noexcept { return position_; }
 
     /**
         Sets the current window position and size.
@@ -201,7 +201,7 @@ public:
         Returns the current window widget.
         \return the current window widget
     */
-    virtual Widget* getWindowWidget() { return pWindowWidget; }
+    virtual Widget* getWindowWidget() { return pWindowWidget_; }
 
     /**
         This method resizes the window to width and height.
@@ -224,13 +224,13 @@ public:
 protected:
     bool processChildWindowOpenCloses();
 
-    int closeChildWindowCounter{};          ///< Close the child window after processing all input?
-    Window* pChildWindow{};                 ///< The current child window
-    bool pChildWindowAlreadyClosed{};       /// Is the child window already closed?
-    std::queue<Window*> queuedChildWindows; ///< We cannot close child windows while they are processed. Queue any newly
-                                            ///< opened windows here until we close the current child window
-    Widget* pWindowWidget = nullptr;        ///< The current window widget
-    Point position;                         ///< The left top corner of this window
+    int closeChildWindowCounter_{};          ///< Close the child window after processing all input?
+    Window* pChildWindow_{};                 ///< The current child window
+    bool pChildWindowAlreadyClosed_{};       /// Is the child window already closed?
+    std::queue<Window*> queuedChildWindows_; ///< We cannot close child windows while they are processed. Queue any
+                                             ///< newly opened windows here until we close the current child window
+    Widget* pWindowWidget_ = nullptr; ///< The current window widget
+    Point position_;                  ///< The left top corner of this window
 };
 
 #endif // WINDOW_H

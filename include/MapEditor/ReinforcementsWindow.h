@@ -50,8 +50,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static ReinforcementsWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg       = new ReinforcementsWindow(pMapEditor, house);
-        dlg->pAllocated = true;
+        auto* dlg        = new ReinforcementsWindow(pMapEditor, house);
+        dlg->pAllocated_ = true;
         return dlg;
     }
 

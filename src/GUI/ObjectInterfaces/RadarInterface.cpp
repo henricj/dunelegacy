@@ -25,7 +25,7 @@
 
 std::unique_ptr<RadarInterface> RadarInterface::create(const GameContext& context, int objectID) {
     std::unique_ptr<RadarInterface> tmp{new RadarInterface{context, objectID}};
-    tmp->pAllocated = true;
+    tmp->pAllocated_ = true;
     return tmp;
 }
 

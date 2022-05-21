@@ -47,8 +47,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static GameOptionsWindow* create(SettingsClass::GameOptionsClass& initialGameOptions) {
-        auto* dlg       = new GameOptionsWindow(initialGameOptions);
-        dlg->pAllocated = true;
+        auto* dlg        = new GameOptionsWindow(initialGameOptions);
+        dlg->pAllocated_ = true;
         return dlg;
     }
 

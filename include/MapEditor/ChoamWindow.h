@@ -45,8 +45,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static ChoamWindow* create(MapEditor* pMapEditor, HOUSETYPE house) {
-        auto* dlg       = new ChoamWindow(pMapEditor, house);
-        dlg->pAllocated = true;
+        auto* dlg        = new ChoamWindow(pMapEditor, house);
+        dlg->pAllocated_ = true;
         return dlg;
     }
 
