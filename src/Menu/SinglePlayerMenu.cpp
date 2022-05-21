@@ -24,7 +24,6 @@
 
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
-#include <misc/string_util.h>
 
 #include <Menu/CustomGameMenu.h>
 #include <Menu/HouseChoiceMenu.h>

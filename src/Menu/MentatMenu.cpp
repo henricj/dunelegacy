@@ -55,11 +55,11 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_HARKONNEN: {
             auto* anim = gfx->getAnimation(Anim_HarkonnenEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(64, 176), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {64, 176}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_HarkonnenMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(64, 208), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {64, 208}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_HarkonnenShoulder);
             shoulderAnim.setAnimation(anim);
@@ -69,15 +69,15 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_ATREIDES: {
             auto* anim = gfx->getAnimation(Anim_AtreidesEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(80, 160), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {80, 160}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_AtreidesMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(80, 192), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {80, 192}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_AtreidesBook);
             specialAnim.setAnimation(anim);
-            windowWidget.addWidget(&specialAnim, Point(145, 305), specialAnim.getMinimumSize());
+            windowWidget.addWidget(&specialAnim, {145, 305}, specialAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_AtreidesShoulder);
             shoulderAnim.setAnimation(anim);
@@ -87,16 +87,16 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_ORDOS: {
             auto* anim = gfx->getAnimation(Anim_OrdosEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(32, 160), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {32, 160}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_OrdosMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(32, 192), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {32, 192}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_OrdosRing);
             specialAnim.setAnimation(anim);
             specialAnim.getAnimation()->setCurrentFrameNumber(specialAnim.getAnimation()->getNumberOfFrames() - 1);
-            windowWidget.addWidget(&specialAnim, Point(178, 289), specialAnim.getMinimumSize());
+            windowWidget.addWidget(&specialAnim, {178, 289}, specialAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_OrdosShoulder);
             shoulderAnim.setAnimation(anim);
@@ -106,15 +106,15 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_FREMEN: {
             auto* anim = gfx->getAnimation(Anim_FremenEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(80, 160), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {80, 160}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_FremenMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(80, 192), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {80, 192}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_FremenBook);
             specialAnim.setAnimation(anim);
-            windowWidget.addWidget(&specialAnim, Point(145, 305), specialAnim.getMinimumSize());
+            windowWidget.addWidget(&specialAnim, {145, 305}, specialAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_FremenShoulder);
             shoulderAnim.setAnimation(anim);
@@ -124,11 +124,11 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_SARDAUKAR: {
             auto* anim = gfx->getAnimation(Anim_SardaukarEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(64, 176), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {64, 176}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_SardaukarMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(64, 208), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {64, 208}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_SardaukarShoulder);
             shoulderAnim.setAnimation(anim);
@@ -138,16 +138,16 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
         case HOUSETYPE::HOUSE_MERCENARY: {
             auto* anim = gfx->getAnimation(Anim_MercenaryEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(32, 160), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {32, 160}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_MercenaryMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(32, 192), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {32, 192}, mouthAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_MercenaryRing);
             specialAnim.setAnimation(anim);
             specialAnim.getAnimation()->setCurrentFrameNumber(specialAnim.getAnimation()->getNumberOfFrames() - 1);
-            windowWidget.addWidget(&specialAnim, Point(178, 289), specialAnim.getMinimumSize());
+            windowWidget.addWidget(&specialAnim, {178, 289}, specialAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_MercenaryShoulder);
             shoulderAnim.setAnimation(anim);
@@ -158,11 +158,11 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
             // bene gese
             auto* anim = gfx->getAnimation(Anim_BeneEyes);
             eyesAnim.setAnimation(anim);
-            windowWidget.addWidget(&eyesAnim, Point(128, 160), eyesAnim.getMinimumSize());
+            windowWidget.addWidget(&eyesAnim, {128, 160}, eyesAnim.getMinimumSize());
 
             anim = gfx->getAnimation(Anim_BeneMouth);
             mouthAnim.setAnimation(anim);
-            windowWidget.addWidget(&mouthAnim, Point(112, 192), mouthAnim.getMinimumSize());
+            windowWidget.addWidget(&mouthAnim, {112, 192}, mouthAnim.getMinimumSize());
         } break;
     }
 
@@ -305,7 +305,7 @@ void MentatMenu::drawSpecificStuff() {
     switch (house) {
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR: {
-            shoulderPos = Point(256, 209);
+            shoulderPos = {256, 209};
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES:
@@ -313,12 +313,12 @@ void MentatMenu::drawSpecificStuff() {
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY:
         default: {
-            shoulderPos = Point(256, 257);
+            shoulderPos = {256, 257};
         } break;
     }
 
     shoulderAnim.draw(shoulderPos + position);
-    textLabel.draw(Point(10, 5) + position);
+    textLabel.draw(Point{10, 5} + position);
 }
 
 int MentatMenu::getMissionSpecificAnim(int missionnumber) {
