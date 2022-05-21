@@ -50,6 +50,15 @@ public:
 
     bool doInput(SDL_Event& event) override;
 
+    /**
+        This method resizes the window to width and height.
+        \param  width   the new width of this widget
+        \param  height  the new height of this widget
+    */
+    void resize(uint32_t width, uint32_t height) override;
+
+    using parent::resize;
+
 protected:
     void showNextMentatText() { nextMentatTextSwitch = dune::dune_clock::time_point::min(); }
 
@@ -86,6 +95,9 @@ protected:
     AnimationLabel specialAnim;
     AnimationLabel shoulderAnim;
     Label textLabel;
+
+    float background_width_{};
+    float background_height_{};
 };
 
 #endif // MENTATMENU_H

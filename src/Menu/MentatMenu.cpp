@@ -44,6 +44,9 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 
     setBackground(pBackground);
 
+    background_width_  = pBackground->width_;
+    background_height_ = pBackground->height_;
+
     MentatMenu::setCurrentPosition(calcAlignedDrawingRect(pBackground, HAlign::Center, VAlign::Center));
 
     MentatMenu::setWindowWidget(&windowWidget);
@@ -287,6 +290,13 @@ bool MentatMenu::doInput(SDL_Event& event) {
     }
 
     return parent::doInput(event);
+}
+
+void MentatMenu::resize(uint32_t width, uint32_t height) {
+    parent::resize(width, height);
+
+    position.x = static_cast<int>(std::floor((static_cast<float>(width) - background_width_) / 2));
+    position.y = static_cast<int>(std::floor((static_cast<float>(height) - background_height_) / 2));
 }
 
 void MentatMenu::drawSpecificStuff() {
