@@ -91,6 +91,15 @@ bool Window::processChildWindowOpenCloses() {
     return bClosed;
 }
 
+namespace {
+const auto event_type_filter =
+    std::unordered_set<Uint32>{SDL_WINDOWEVENT, SDL_DISPLAYEVENT_ORIENTATION, SDL_RENDER_DEVICE_RESET};
+}
+
+bool Window::isBroadcastEventType(Uint32 type) {
+    return event_type_filter.contains(type);
+}
+
 void Window::handleInput(const SDL_Event& event) {
     if (pChildWindow != nullptr) {
         pChildWindow->handleInput(event);

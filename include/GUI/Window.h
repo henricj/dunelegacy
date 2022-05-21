@@ -219,6 +219,8 @@ public:
     */
     void resizeAll() override;
 
+    [[nodiscard]] static bool isBroadcastEventType(Uint32 type);
+
 protected:
     bool processChildWindowOpenCloses();
 
