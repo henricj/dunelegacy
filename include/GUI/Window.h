@@ -229,8 +229,8 @@ protected:
     bool pChildWindowAlreadyClosed_{};       /// Is the child window already closed?
     std::queue<Window*> queuedChildWindows_; ///< We cannot close child windows while they are processed. Queue any
                                              ///< newly opened windows here until we close the current child window
-    Widget* pWindowWidget_ = nullptr; ///< The current window widget
-    Point position_;                  ///< The left top corner of this window
+    Widget* pWindowWidget_ = nullptr;        ///< The current window widget
+    Point position_;                         ///< The left top corner of this window
 };
 
 #endif // WINDOW_H
