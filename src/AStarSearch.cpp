@@ -31,7 +31,7 @@ inline constexpr auto MAX_NODES_CHECKED = 128 * 128;
 AStarSearch::AStarSearch(Map* pMap)
     : sizeX(pMap->getSizeX()), sizeY(pMap->getSizeY()), bestCoord{} { //, heap_compare_(mapData) {
 
-    mapData.resize(sizeX * sizeY);
+    mapData.resize(static_cast<decltype(mapData)::size_type>(sizeX) * sizeY);
 
     depthCheckCount.resize(std::min(sizeX, sizeY));
 }
@@ -46,7 +46,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     memset(&depthCheckCount[0], 0, sizeof(depthCheckCount[0]) * depthCheckCount.size());
 #endif
     openList.clear();
-    openList.reserve(2 * std::max(sizeX, sizeY));
+    openList.reserve(decltype(openList)::size_type{2} * std::max(sizeX, sizeY));
 
     const auto* const destinationTile = pMap->getTile(destination);
 
