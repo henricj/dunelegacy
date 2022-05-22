@@ -67,16 +67,7 @@ public:
         This method checks if there is something to draw in the next frame
         \return true, if there are no more VideoEvents in the queue
     */
-    [[nodiscard]] bool isFinished() {
-        if (videoEvents.empty()) {
-            return true;
-        }
-        if (videoEvents.size() == 1) {
-
-            return videoEvents.front()->isFinished();
-        }
-        return false;
-    }
+    [[nodiscard]] bool isFinished() const;
 
     /**
         This method draws the current frame. First the video and then the text is drawn. Afterwards CutSceneTriggers are

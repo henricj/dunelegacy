@@ -47,6 +47,17 @@ void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
     triggerList.insert(iter, std::move(newTrigger));
 }
 
+bool Scene::isFinished() const {
+    if (videoEvents.empty()) {
+        return true;
+    }
+    if (videoEvents.size() == 1) {
+
+        return videoEvents.front()->isFinished();
+    }
+    return false;
+}
+
 int Scene::draw() {
     auto nextFrameTime = 0;
 
