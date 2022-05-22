@@ -22,7 +22,7 @@
 #include <misc/SDL2pp.h>
 #include <string>
 
-class GameServerInfo {
+class GameServerInfo final {
 public:
     ENetAddress serverAddress{};
     std::string serverName;

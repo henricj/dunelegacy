@@ -25,9 +25,9 @@
 #include <list>
 #include <utility>
 
-class ChangeEventList {
+class ChangeEventList final {
 public:
-    class ChangeEvent {
+    class ChangeEvent final {
     public:
         enum class EventType { ChangeHouse, ChangeTeam, ChangePlayer, SetHumanPlayer };
 
