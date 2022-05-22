@@ -57,13 +57,7 @@ public:
     [[nodiscard]] int getTeamID() const noexcept { return teamID; }
 
     [[nodiscard]] bool isAI() const noexcept { return ai; }
-    [[nodiscard]] bool isAlive() const noexcept {
-        return (teamID == 0)
-            || !(((numStructures - numItem[Structure_Wall]) <= 0)
-                 && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate]
-                       - numItem[Unit_Sandworm])
-                      <= 0)));
-    }
+    [[nodiscard]] bool isAlive() const noexcept;
 
     [[nodiscard]] bool hasCarryalls() const noexcept { return (numItem[Unit_Carryall] > 0); }
     [[nodiscard]] bool hasBarracks() const noexcept { return (numItem[Structure_Barracks] > 0); }
@@ -129,29 +123,19 @@ public:
         This function checks if the limit for ground units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further ground units is allowed
     */
-    [[nodiscard]] bool isGroundUnitLimitReached() const {
-        const int numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall]
-                                - numItem[Unit_Ornithopter];
-        return (numGroundUnit + (numItem[Unit_Soldier] + 2) / 3 + (numItem[Unit_Trooper] + 2) / 3 >= maxUnits);
-    }
+    [[nodiscard]] bool isGroundUnitLimitReached() const;
 
     /**
         This function checks if the limit for infantry units is already reached. Infantry units are only counted as 1/3.
         \return true, if the limit is already reached, false if building further infantry units is allowed
     */
-    [[nodiscard]] bool isInfantryUnitLimitReached() const {
-        const auto numGroundUnit = numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall]
-                                 - numItem[Unit_Ornithopter];
-        return (numGroundUnit + numItem[Unit_Soldier] / 3 + numItem[Unit_Trooper] / 3 >= maxUnits);
-    }
+    [[nodiscard]] bool isInfantryUnitLimitReached() const;
 
     /**
         This function checks if the limit for air units is already reached.
         \return true, if the limit is already reached, false if building further air units is allowed
     */
-    [[nodiscard]] bool isAirUnitLimitReached() const {
-        return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11 * std::max(maxUnits, 25) / 25);
-    }
+    [[nodiscard]] bool isAirUnitLimitReached() const;
 
     Choam& getChoam() { return choam; }
     [[nodiscard]] const Choam& getChoam() const { return choam; }
@@ -196,7 +180,7 @@ public:
 
     template<typename UnitType>
     UnitType* createUnit(bool byScenario = false) {
-        static_assert(std::is_base_of<UnitBase, UnitType>::value, "UnitType not derived from UnitBase");
+        static_assert(std::is_base_of_v<UnitBase, UnitType>, "UnitType not derived from UnitBase");
 
         return context.objectManager.createObjectFromType<UnitType>(ObjectInitializer{context.game, this, byScenario});
     }
@@ -222,57 +206,58 @@ protected:
 
     std::vector<std::unique_ptr<Player>> players; ///< List of associated players that control this house
 
-    bool ai; ///< Is this an ai player?
+    bool ai{}; ///< Is this an ai player?
 
-    HOUSETYPE houseID; ///< The house number
-    uint8_t teamID;    ///< The team number
+    HOUSETYPE houseID{}; ///< The house number
+    uint8_t teamID{};    ///< The team number
 
-    int numStructures;       ///< How many structures does this player have?
-    int numUnits;            ///< How many units does this player have?
-    int numItem[Num_ItemID]; ///< This array contains the number of structures/units of a certain type this player has
-    int numItemBuilt[Num_ItemID];  /// Number of items built by player
-    int numItemKills[Num_ItemID];  /// Number of items killed by player
-    int numItemLosses[Num_ItemID]; /// Number of items lost by player
-    int32_t
-        numItemDamageInflicted[Num_ItemID]; /// Amount of damage inflicted by a specific unit type owned by the player
+    int numStructures{}; ///< How many structures does this player have?
+    int numUnits{};      ///< How many units does this player have?
+    std::array<int, Num_ItemID>
+        numItem{}; ///< This array contains the number of structures/units of a certain type this player has
+    std::array<int, Num_ItemID> numItemBuilt{};  /// Number of items built by player
+    std::array<int, Num_ItemID> numItemKills{};  /// Number of items killed by player
+    std::array<int, Num_ItemID> numItemLosses{}; /// Number of items lost by player
+    std::array<int32_t, Num_ItemID>
+        numItemDamageInflicted{}; /// Amount of damage inflicted by a specific unit type owned by the player
 
-    int capacity;         ///< Total spice capacity
-    int producedPower;    ///< Power produced by this player
-    int powerRequirement; ///< How much power does this player use?
+    int capacity{};         ///< Total spice capacity
+    int producedPower{};    ///< Power produced by this player
+    int powerRequirement{}; ///< How much power does this player use?
 
-    FixPoint storedCredits;   ///< current number of credits that are stored in refineries/silos
-    FixPoint startingCredits; ///< number of starting credits this player still has
-    int oldCredits;           ///< amount of credits in the last game cycle (used for playing the credits tick sound)
+    FixPoint storedCredits{};   ///< current number of credits that are stored in refineries/silos
+    FixPoint startingCredits{}; ///< number of starting credits this player still has
+    int oldCredits{};           ///< amount of credits in the last game cycle (used for playing the credits tick sound)
 
-    int maxUnits; ///< maximum number of units this house is allowed to build
-    int quota;    ///< number of credits to win
+    int maxUnits{}; ///< maximum number of units this house is allowed to build
+    int quota{};    ///< number of credits to win
 
     Choam choam; ///< the things that are deliverable at the starport
 
     std::vector<AITeamInfo> aiteams; ///< the ai teams that were loaded from the map
 
-    int powerUsageTimer; ///< every N ticks you have to pay for your power usage
+    int powerUsageTimer{}; ///< every N ticks you have to pay for your power usage
 
-    bool bHadContactWithEnemy; ///< did this house already have contact with an enemy (= tiles with enemy units were
-                               ///< explored by this house or allied houses)
-    bool bHadDirectContactWithEnemy; ///< did this house already have direct contact with an enemy (= tiles with enemy
-                                     ///< units were explored by this house)
+    bool bHadContactWithEnemy{}; ///< did this house already have contact with an enemy (= tiles with enemy units were
+                                 ///< explored by this house or allied houses)
+    bool bHadDirectContactWithEnemy{}; ///< did this house already have direct contact with an enemy (= tiles with enemy
+                                       ///< units were explored by this house)
 
-    int numVisibleEnemyUnits;    ///< the number of enemy units visible; will be reset to 0 each cycle
-    int numVisibleFriendlyUnits; ///< the number of visible units from the same team; will be reset to 0 each cycle
+    int numVisibleEnemyUnits{};    ///< the number of enemy units visible; will be reset to 0 each cycle
+    int numVisibleFriendlyUnits{}; ///< the number of visible units from the same team; will be reset to 0 each cycle
 
     // statistic
-    int unitBuiltValue;
-    int structureBuiltValue;
-    int militaryValue;
-    int killValue;
-    int lossValue;
-    int numBuiltUnits;
-    int numBuiltStructures;
-    int destroyedValue;
-    int numDestroyedUnits;
-    int numDestroyedStructures;
-    FixPoint harvestedSpice;
+    int unitBuiltValue{};
+    int structureBuiltValue{};
+    int militaryValue{};
+    int killValue{};
+    int lossValue{};
+    int numBuiltUnits{};
+    int numBuiltStructures{};
+    int destroyedValue{};
+    int numDestroyedUnits{};
+    int numDestroyedStructures{};
+    FixPoint harvestedSpice{};
 
     const GameContext context;
 };

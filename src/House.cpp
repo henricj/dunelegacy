@@ -46,26 +46,9 @@
 
 #include <algorithm>
 #include <numeric>
+#include <stdexcept>
 
-House::House(const GameContext& context) : choam(this), context(context) {
-    ai = true;
-
-    numUnits      = 0;
-    numStructures = 0;
-    for (int i = 0; i < Num_ItemID; i++) {
-        numItem[i]                = 0;
-        numItemBuilt[i]           = 0;
-        numItemKills[i]           = 0;
-        numItemLosses[i]          = 0;
-        numItemDamageInflicted[i] = 0;
-    }
-
-    capacity         = 0;
-    powerRequirement = 0;
-
-    numVisibleEnemyUnits    = 0;
-    numVisibleFriendlyUnits = 0;
-}
+House::House(const GameContext& context) : ai{true}, choam(this), context(context) { }
 
 House::~House() = default;
 
@@ -76,29 +59,11 @@ House::House(const GameContext& context, HOUSETYPE newHouse, int newCredits, int
     houseID      = is_valid_house ? newHouse : static_cast<HOUSETYPE>(0);
     this->teamID = teamID;
 
-    storedCredits   = 0;
     startingCredits = newCredits;
     oldCredits      = lround(storedCredits + startingCredits);
 
     this->maxUnits = maxUnits;
     this->quota    = quota;
-
-    bHadContactWithEnemy       = false;
-    bHadDirectContactWithEnemy = false;
-
-    unitBuiltValue         = 0;
-    structureBuiltValue    = 0;
-    militaryValue          = 0;
-    killValue              = 0;
-    lossValue              = 0;
-    numBuiltUnits          = 0;
-    numBuiltStructures     = 0;
-    destroyedValue         = 0;
-    numDestroyedUnits      = 0;
-    numDestroyedStructures = 0;
-    harvestedSpice         = 0;
-    producedPower          = 0;
-    powerUsageTimer        = 0;
 }
 
 House::House(const GameContext& context, InputStream& stream) : House(context) {
@@ -129,14 +94,14 @@ House::House(const GameContext& context, InputStream& stream) : House(context) {
 
     choam.load(stream);
 
-    uint32_t numAITeams = stream.readUint32();
-    for (uint32_t i = 0; i < numAITeams; i++) {
+    const auto numAITeams = stream.readUint32();
+    for (auto i = 0U; i < numAITeams; i++) {
         aiteams.emplace_back(stream);
     }
 
-    uint32_t numPlayers = stream.readUint32();
-    for (uint32_t i = 0; i < numPlayers; i++) {
-        std::string playerclass = stream.readString();
+    const auto numPlayers = stream.readUint32();
+    for (auto i = 0U; i < numPlayers; i++) {
+        const auto playerclass  = stream.readString();
         const auto* pPlayerData = PlayerFactory::getByPlayerClass(playerclass);
         if (pPlayerData == nullptr) {
             sdl2::log_info("Warning: Cannot load player '%s'", playerclass.c_str());
@@ -196,20 +161,48 @@ void House::save(OutputStream& stream) const {
 }
 
 void House::addPlayer(std::unique_ptr<Player> newPlayer) {
-    Player* pNewPlayer = newPlayer.get();
+    auto* const pNewPlayer = newPlayer.get();
 
-    ai = !(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players.empty());
+    if (nullptr == pNewPlayer)
+        THROW(std::invalid_argument, "House::addPlayer passed null newPlayer!");
 
     players.push_back(std::move(newPlayer));
 
-    const auto newPlayerID = static_cast<uint8_t>((static_cast<uint8_t>(houseID) << 4) | players.size());
-    pNewPlayer->playerID   = newPlayerID;
+    ai = !(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players.empty());
+
+    const auto newPlayerID =
+        static_cast<uint8_t>((static_cast<uint8_t>(houseID) << 4U) | static_cast<uint8_t>(players.size()));
+    pNewPlayer->playerID = newPlayerID;
 
     context.game.registerPlayer(pNewPlayer);
 }
 
+bool House::isAlive() const noexcept {
+    return (teamID == 0)
+        || !(((numStructures - numItem[Structure_Wall]) <= 0)
+             && (((numUnits - numItem[Unit_Carryall] - numItem[Unit_Harvester] - numItem[Unit_Frigate]
+                   - numItem[Unit_Sandworm])
+                  <= 0)));
+}
+
 void House::setProducedPower(int newPower) {
     producedPower = newPower;
+}
+
+bool House::isGroundUnitLimitReached() const {
+    const int numGroundUnit =
+        numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+    return (numGroundUnit + (numItem[Unit_Soldier] + 2) / 3 + (numItem[Unit_Trooper] + 2) / 3 >= maxUnits);
+}
+
+bool House::isInfantryUnitLimitReached() const {
+    const auto numGroundUnit =
+        numUnits - numItem[Unit_Soldier] - numItem[Unit_Trooper] - numItem[Unit_Carryall] - numItem[Unit_Ornithopter];
+    return (numGroundUnit + numItem[Unit_Soldier] / 3 + numItem[Unit_Trooper] / 3 >= maxUnits);
+}
+
+bool House::isAirUnitLimitReached() const {
+    return (numItem[Unit_Carryall] + numItem[Unit_Ornithopter] >= 11 * std::max(maxUnits, 25) / 25);
 }
 
 void House::addCredits(FixPoint newCredits, bool wasRefined) {
