@@ -22,7 +22,7 @@
     This class is the base class for triggers that are triggered at a certain frame.
 */
 class CutSceneTrigger {
-public:
+protected:
     /**
         Constructor
         \param  frameNumber the frame number relative to the start of the current scene where this trigger should be
@@ -30,6 +30,7 @@ public:
     */
     explicit CutSceneTrigger(int frameNumber);
 
+public:
     CutSceneTrigger(const CutSceneTrigger&)            = delete;
     CutSceneTrigger(CutSceneTrigger&&)                 = delete;
     CutSceneTrigger& operator=(const CutSceneTrigger&) = delete;
