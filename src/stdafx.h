@@ -26,13 +26,9 @@
 #    include <FileClasses/FileManager.h>
 #    include <FileClasses/FontManager.h>
 #    include <FileClasses/GFXManager.h>
-#    include <FileClasses/INIFile.h>
 #    include <FileClasses/Palfile.h>
 #    include <FileClasses/SFXManager.h>
 #    include <FileClasses/TextManager.h>
-#    include <FileClasses/music/ADLPlayer.h>
-#    include <FileClasses/music/DirectoryPlayer.h>
-#    include <FileClasses/music/XMIPlayer.h>
 
 #    include <GUI/GUIStyle.h>
 #    include <GUI/dune/DuneStyle.h>
