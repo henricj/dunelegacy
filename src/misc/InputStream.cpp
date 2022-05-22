@@ -61,15 +61,6 @@ void InputStream::readUint8Vector(std::vector<uint8_t>& vec) {
     }
 }
 
-std::list<uint32_t> InputStream::readUint32List() {
-    std::list<uint32_t> List;
-    const auto size = readUint32();
-    for (unsigned int i = 0; i < size; i++) {
-        List.push_back(readUint32());
-    }
-    return List;
-}
-
 void InputStream::readUint32Vector(std::vector<uint32_t>& vec) {
     vec.clear();
     const auto size = readUint32();

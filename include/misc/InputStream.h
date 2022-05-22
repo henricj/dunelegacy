@@ -105,12 +105,6 @@ public:
     void readUint8Vector(std::vector<uint8_t>& vec);
 
     /**
-        Reads a list of Uint32 written by writeUint32List().
-        \return the read list
-    */
-    std::list<uint32_t> readUint32List();
-
-    /**
         Reads a vector of Uint32 written by writeUint32Vector().
         \param vec operate in place (reduce heap thrashing)
     */

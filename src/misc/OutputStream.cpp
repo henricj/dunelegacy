@@ -40,13 +40,6 @@ void OutputStream::writeUint8Vector(std::span<const uint8_t> dataVector) {
     }
 }
 
-void OutputStream::writeUint32List(const std::list<uint32_t>& dataList) {
-    writeUint32(static_cast<uint32_t>(dataList.size()));
-    for (const auto data : dataList) {
-        writeUint32(data);
-    }
-}
-
 void OutputStream::writeUint32Vector(std::span<const uint32_t> dataVector) {
     writeUint32(static_cast<uint32_t>(dataVector.size()));
     for (const auto data : dataVector) {

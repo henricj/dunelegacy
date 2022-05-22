@@ -102,12 +102,6 @@ public:
     void writeUint8Vector(std::span<const uint8_t> dataVector);
 
     /**
-        Writes out a complete list of Uint32
-        \param  dataList    the list to write
-    */
-    void writeUint32List(const std::list<uint32_t>& dataList);
-
-    /**
         Writes out a complete vector of Uint32
         \param  dataVector the vector to write
     */
