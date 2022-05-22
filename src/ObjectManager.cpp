@@ -22,6 +22,8 @@
 #include <Game.h>
 #include <ObjectBase.h>
 
+#include <ranges>
+
 ObjectManager::ObjectManager() {
     objectMap.reserve(100);
 }
@@ -31,10 +33,10 @@ ObjectManager::~ObjectManager() = default;
 void ObjectManager::save(OutputStream& stream) const {
     stream.writeUint32(nextFreeObjectID);
 
-    stream.writeUint32(objectMap.size());
-    for (const auto& objectEntry : objectMap) {
-        stream.writeUint32(objectEntry.second->getObjectID());
-        dune::globals::currentGame->saveObject(stream, objectEntry.second.get());
+    stream.writeUint32(static_cast<uint32_t>(objectMap.size()));
+    for (const auto& object : objectMap | std::views::values) {
+        stream.writeUint32(object->getObjectID());
+        Game::saveObject(stream, object.get());
     }
 }
 
