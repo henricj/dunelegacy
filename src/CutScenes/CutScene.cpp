@@ -17,16 +17,14 @@
 
 #include <CutScenes/CutScene.h>
 
+#include "Renderer/DuneRenderer.h"
 #include "misc/dune_events.h"
+#include "misc/dune_timer_resolution.h"
 #include <FileClasses/FileManager.h>
-#include <FileClasses/Palfile.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <misc/SDL2pp.h>
 
 #include <globals.h>
-#include <sand.h>
-
-#include "misc/dune_timer_resolution.h"
 
 CutScene::CutScene() : quitting(false) { }
 
@@ -98,42 +96,39 @@ void CutScene::run() {
 }
 
 void CutScene::startNewScene() {
-    scenes.push(std::make_unique<Scene>());
+    scenes.emplace();
 }
 
 void CutScene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent) {
-    if (scenes.empty()) {
-        scenes.push(std::make_unique<Scene>());
-    }
+    if (scenes.empty())
+        startNewScene();
 
-    scenes.back()->addVideoEvent(std::move(newVideoEvent));
+    scenes.back().addVideoEvent(std::move(newVideoEvent));
 }
 
 void CutScene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent) {
-    if (scenes.empty()) {
-        scenes.push(std::make_unique<Scene>());
-    }
+    if (scenes.empty())
+        startNewScene();
 
-    scenes.back()->addTextEvent(std::move(newTextEvent));
+    scenes.back().addTextEvent(std::move(newTextEvent));
 }
 
 void CutScene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
-    if (scenes.empty()) {
-        scenes.push(std::make_unique<Scene>());
-    }
+    if (scenes.empty())
+        startNewScene();
 
-    scenes.back()->addTrigger(std::move(newTrigger));
+    scenes.back().addTrigger(std::move(newTrigger));
 }
 
 int CutScene::draw() {
     int nextFrameTime = 0;
 
     while (!scenes.empty()) {
-        if (scenes.front()->isFinished()) {
+        if (scenes.front().isFinished()) {
             scenes.pop();
             continue;
         }
-        nextFrameTime = scenes.front()->draw();
+        nextFrameTime = scenes.front().draw();
         break;
     }
 
