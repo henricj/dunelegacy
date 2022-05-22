@@ -69,20 +69,20 @@ private:
     void createMapSurfaceWithPieces(unsigned int scenario);
     void loadINI();
 
-    struct TGroup {
-        std::array<std::vector<UIGraphics_Enum>, static_cast<int>(HOUSETYPE::NUM_HOUSES)> newRegion;
+    struct TGroup final {
+        std::array<std::vector<UIGraphics_Enum>, NUM_HOUSES> newRegion;
 
-        struct TAttackRegion {
-            int regionNum;
-            int arrowNum;
+        struct TAttackRegion final {
+            int regionNum{};
+            int arrowNum{};
             Coord arrowPosition;
         };
 
         std::array<TAttackRegion, 4> attackRegion;
 
-        struct TText {
+        struct TText final {
             std::string message;
-            int region; ///< when this region is changed, this message will appear.
+            int region{}; ///< when this region is changed, this message will appear.
         };
 
         std::vector<TText> text;
