@@ -231,7 +231,7 @@ protected:
 
     public:
         BoxOffsets(int size, Coord box = Coord(1, 1));
-        std::vector<std::pair<int, int>>& search_set(int depth) { return box_sets_[depth - 1]; }
+        std::vector<std::pair<int, int>>& search_set(size_t depth) { return box_sets_[depth - 1]; }
 
         [[nodiscard]] size_t max_depth() const noexcept { return box_sets_.size(); }
     };

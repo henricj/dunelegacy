@@ -42,13 +42,6 @@
 #include <cstdio>
 #include <io.h>
 
-#ifndef STDOUT_FILENO
-#    define STDOUT_FILENO 1
-#endif
-#ifndef STDERR_FILENO
-#    define STDERR_FILENO 2
-#endif
-
 namespace {
 
 constexpr auto scale_MiB = 1.0 / (1024 * 1024);
@@ -130,20 +123,20 @@ file_time_duration convert_to_file_time_duration(FILETIME& time) {
 void log_windows_version() {
     const auto name = read_windows_product_name();
 
-    {
-        // Scope
+    { // Scope
         using RtlGetVersionType = NTSTATUS(WINAPI*)(LPOSVERSIONINFOEXW);
 
-        const auto ntdll_module = GetModuleHandleA("ntdll");
+        if (const auto ntdll_module = GetModuleHandleA("ntdll")) {
+            auto* const RtlGetVersion =
+                reinterpret_cast<RtlGetVersionType>(GetProcAddress(ntdll_module, "RtlGetVersion"));
 
-        auto* const RtlGetVersion = reinterpret_cast<RtlGetVersionType>(GetProcAddress(ntdll_module, "RtlGetVersion"));
-
-        if (RtlGetVersion) {
-            RTL_OSVERSIONINFOEXW os_version{sizeof(os_version)};
-            if (NT_SUCCESS(RtlGetVersion(&os_version))) {
-                sdl2::log_info("System: %s (%d.%d.%d)", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
-                               os_version.dwBuildNumber);
-                return;
+            if (RtlGetVersion) {
+                RTL_OSVERSIONINFOEXW os_version{sizeof(os_version)};
+                if (NT_SUCCESS(RtlGetVersion(&os_version))) {
+                    sdl2::log_info("System: %s (%d.%d.%d)", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
+                                   os_version.dwBuildNumber);
+                    return;
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ private:
     int32_t attackTimer;   ///< When to build the next structure/unit
     int32_t retreatTimer;  ///< When you last retreated>
 
-    int initialItemCount[Num_ItemID];
+    std::array<int, Num_ItemID> initialItemCount{};
     int initialMilitaryValue   = 0;
     int militaryValueLimit     = 0;
     int harvesterLimit         = 4;

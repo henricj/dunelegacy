@@ -1110,7 +1110,7 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
         return;
     }
 
-    const auto playername = dune::globals::settings.general.playerName;
+    auto playername = dune::globals::settings.general.playerName;
 
     setPlayer2Slot(playername, boxnum);
 

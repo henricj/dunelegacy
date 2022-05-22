@@ -34,7 +34,7 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
         THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
     }
 
-    ENetAddress address;
+    ENetAddress address{};
     address.host = ENET_HOST_ANY;
     address.port = port;
 
@@ -745,21 +745,9 @@ void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedLis
     sendPacketToAllConnectedPeers(packetStream, 0);
 }
 
-int NetworkManager::getMaxPeerRoundTripTime() {
-    int maxPeerRTT = 0;
+int NetworkManager::getMaxPeerRoundTripTime() const {
+    const auto max_rtt =
+        std::ranges::max(peerList, {}, [](const auto* const p) { return p->roundTripTime; })->roundTripTime;
 
-    for (const ENetPeer* pCurrentPeer : peerList) {
-        maxPeerRTT = std::max(maxPeerRTT, static_cast<int>(pCurrentPeer->roundTripTime));
-    }
-
-    return maxPeerRTT;
-}
-
-void NetworkManager::debugNetwork(const char* fmt, ...) {
-    if (dune::globals::settings.network.debugNetwork) {
-        va_list args;
-        va_start(args, fmt);
-        vfprintf(stderr, fmt, args);
-        va_end(args);
-    }
+    return static_cast<int>(max_rtt);
 }

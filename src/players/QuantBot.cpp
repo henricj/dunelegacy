@@ -578,7 +578,7 @@ Coord QuantBot::findMcvPlaceLocation(const MCV* pMCV) {
 Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
     // Will over allocate space for small maps so its not clean
     // But should allow Richard to compile
-    int buildLocationScore[128][128] = {{0}};
+    int buildLocationScore[128][128] = {};
 
     int bestLocationX     = -1;
     int bestLocationY     = -1;
@@ -640,7 +640,7 @@ Coord QuantBot::findPlaceLocation(ItemID_enum itemID) {
 
                                         if (getMap().hasAStructure(context_, i, j)) {
                                             // If one of our buildings is nearby favour the location
-                                            // if it is someone elses building don't favour it
+                                            // if it is someone else's building don't favour it
                                             if (getMap().getTile(i, j)->getOwner() == getHouse()->getHouseID()) {
                                                 buildLocationScore[placeLocationX][placeLocationY] += 3;
                                             } else {

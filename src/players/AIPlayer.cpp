@@ -692,6 +692,9 @@ void AIPlayer::attack() {
     Coord destination;
     const UnitBase* pLeaderUnit = nullptr;
     for (const auto* pUnit : getUnitList()) {
+        if (nullptr == pUnit)
+            continue;
+
         if (pUnit->isRespondable() && (pUnit->getOwner() == getHouse())
             && pUnit->isActive()
             /*&& !(pUnit->getAttackMode() == HUNT)*/
@@ -707,12 +710,10 @@ void AIPlayer::attack() {
                 destination.x = pLeaderUnit->getX();
                 destination.y = pLeaderUnit->getY();
 
-                const auto* const closestStructure = pLeaderUnit->findClosestTargetStructure();
-                if (closestStructure) {
+                if (const auto* const closestStructure = pLeaderUnit->findClosestTargetStructure()) {
                     destination = closestStructure->getClosestPoint(pLeaderUnit->getLocation());
                 } else {
-                    const auto* closestUnit = pLeaderUnit->findClosestTargetUnit();
-                    if (closestUnit) {
+                    if (const auto* const closestUnit = pLeaderUnit->findClosestTargetUnit()) {
                         destination.x = closestUnit->getX();
                         destination.y = closestUnit->getY();
                     }

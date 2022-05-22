@@ -104,7 +104,7 @@ public:
         return peerNameList;
     }
 
-    int getMaxPeerRoundTripTime();
+    int getMaxPeerRoundTripTime() const;
 
     LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer.get(); }
 
@@ -177,7 +177,10 @@ public:
     }
 
 private:
-    static void debugNetwork(PRINTF_FORMAT_STRING const char* fmt, ...) PRINTF_VARARG_FUNC(1);
+    template<typename... Args>
+    void debugNetwork(std::string_view format, Args&&... args) {
+        sdl2::log_info(format, std::forward<Args>(args)...);
+    }
 
     void sendPacketToHost(ENetPacketOStream& packetStream, int channel = 0);
 
