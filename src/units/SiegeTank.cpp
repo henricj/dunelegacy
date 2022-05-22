@@ -54,7 +54,7 @@ void SiegeTank::init() {
     gunGraphicID  = ObjPic_Siegetank_Gun;
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 
@@ -80,14 +80,13 @@ void SiegeTank::blitToScreen() {
 
     const auto* const pTurretGraphic = turretGraphic[zoom];
 
-    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
-                                              static_cast<int>(ANGLETYPE::NUM_ANGLES));
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle), NUM_ANGLES);
 
     const auto offset = siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)];
 
-    const auto dest2 = calcSpriteDrawingRect(
-        pTurretGraphic, screenborder->world2screenX(realX + offset.x), screenborder->world2screenY(realY + offset.y),
-        static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
+    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic, screenborder->world2screenX(realX + offset.x),
+                                             screenborder->world2screenY(realY + offset.y), NUM_ANGLES, 1,
+                                             HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 

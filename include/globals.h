@@ -96,10 +96,10 @@ inline static constexpr auto houseToPaletteIndex =
     std::to_array({PALCOLOR_HARKONNEN, PALCOLOR_ATREIDES, PALCOLOR_ORDOS, PALCOLOR_FREMEN, PALCOLOR_SARDAUKAR,
                    PALCOLOR_MERCENARY}); ///< the base colors for the different houses
 
-static_assert(std::tuple_size_v<decltype(houseToPaletteIndex)> == static_cast<int>(HOUSETYPE::NUM_HOUSES));
+static_assert(std::tuple_size_v<decltype(houseToPaletteIndex)> == NUM_HOUSES);
 
 inline static constexpr auto houseChar = std::to_array({'H', 'A', 'O', 'F', 'S', 'M'}); ///< character for each house
 
-static_assert(std::tuple_size_v<decltype(houseChar)> == static_cast<int>(HOUSETYPE::NUM_HOUSES));
+static_assert(std::tuple_size_v<decltype(houseChar)> == NUM_HOUSES);
 
 #endif // GLOBALS_H

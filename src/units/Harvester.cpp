@@ -78,7 +78,7 @@ void Harvester::init() {
     graphicID = ObjPic_Harvester;
     graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 
@@ -120,12 +120,12 @@ void Harvester::blitToScreen() {
             frame -= LASTSANDFRAME;
         }
 
-        const auto sandSource = calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle),
-                                                     static_cast<int>(ANGLETYPE::NUM_ANGLES), frame, LASTSANDFRAME + 1);
-        const auto sandDest   = calcSpriteDrawingRectF(
-              pSandGraphic, screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
-              screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y),
-              static_cast<int>(ANGLETYPE::NUM_ANGLES), LASTSANDFRAME + 1, HAlign::Center, VAlign::Center);
+        const auto sandSource =
+            calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), NUM_ANGLES, frame, LASTSANDFRAME + 1);
+        const auto sandDest = calcSpriteDrawingRectF(
+            pSandGraphic, screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
+            screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y), NUM_ANGLES,
+            LASTSANDFRAME + 1, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyF(renderer, pSandGraphic, &sandSource, &sandDest);
     }

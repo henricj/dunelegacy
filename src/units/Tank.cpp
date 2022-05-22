@@ -53,7 +53,7 @@ void Tank::init() {
     gunGraphicID  = ObjPic_Tank_Gun;
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 
@@ -74,10 +74,8 @@ void Tank::blitToScreen() {
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
     const auto* pTurretGraphic = turretGraphic[zoom];
-    const auto source2         = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle),
-                                                      static_cast<int>(ANGLETYPE::NUM_ANGLES));
-    const auto dest2           = calcSpriteDrawingRect(pTurretGraphic, x, y, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1,
-                                                       HAlign::Center, VAlign::Center);
+    const auto source2         = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnTurretAngle), NUM_ANGLES);
+    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic, x, y, NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 

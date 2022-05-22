@@ -212,7 +212,7 @@ void TankBase::turn(const GameContext& context) {
 void TankBase::turnTurretLeft() {
     turretAngle += turretTurnSpeed;
     if (turretAngle >= 7.5_fix) {
-        turretAngle -= static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        turretAngle -= NUM_ANGLES;
     }
 
     drawnTurretAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(turretAngle)));
@@ -221,7 +221,7 @@ void TankBase::turnTurretLeft() {
 void TankBase::turnTurretRight() {
     turretAngle -= turretTurnSpeed;
     if (turretAngle <= -0.5_fix) {
-        turretAngle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        turretAngle += NUM_ANGLES;
     }
 
     drawnTurretAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(turretAngle)));

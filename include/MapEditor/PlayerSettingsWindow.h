@@ -80,7 +80,7 @@ private:
         DigitsTextBox maxUnitsTextBox;
     };
 
-    std::array<PlayerWidgets, static_cast<int>(HOUSETYPE::NUM_HOUSES)> playerWidgets;
+    std::array<PlayerWidgets, NUM_HOUSES> playerWidgets;
 
     HBox buttonHBox;
 

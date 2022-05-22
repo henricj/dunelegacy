@@ -56,8 +56,8 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
     const INIFile objectDataFile(dune::globals::pFileManager->openFile(filename).get());
 
     // load default structure values
-    ObjectDataStruct structureDefaultData[static_cast<int>(HOUSETYPE::NUM_HOUSES)];
-    for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    ObjectDataStruct structureDefaultData[NUM_HOUSES];
+    for (int h = 0; h < NUM_HOUSES; h++) {
         structureDefaultData[h].enabled = loadBoolValue(objectDataFile, "default structure", "Enabled", houseChar[h]);
         structureDefaultData[h].hitpoints =
             loadIntValue(objectDataFile, "default structure", "HitPoints", houseChar[h]);
@@ -90,8 +90,8 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
     }
 
     // load default unit values
-    ObjectDataStruct unitDefaultData[static_cast<int>(HOUSETYPE::NUM_HOUSES)];
-    for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    ObjectDataStruct unitDefaultData[NUM_HOUSES];
+    for (int h = 0; h < NUM_HOUSES; h++) {
         unitDefaultData[h].enabled      = loadBoolValue(objectDataFile, "default unit", "Enabled", houseChar[h]);
         unitDefaultData[h].hitpoints    = loadIntValue(objectDataFile, "default unit", "HitPoints", houseChar[h]);
         unitDefaultData[h].price        = loadIntValue(objectDataFile, "default unit", "Price", houseChar[h]);
@@ -115,7 +115,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
 
     // set default values
     for (int i = 0; i < Num_ItemID; i++) {
-        for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        for (int h = 0; h < NUM_HOUSES; h++) {
             if (isStructure(static_cast<ItemID_enum>(i))) {
                 data[i][h] = structureDefaultData[h];
             } else {
@@ -138,7 +138,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
             continue;
         }
 
-        for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        for (int h = 0; h < NUM_HOUSES; h++) {
 
             const ObjectDataStruct& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
 

@@ -144,14 +144,13 @@ private:
 
     bool bServer;
     bool bLANServer;
-    std::array<HouseInfo, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseInfo;
+    std::array<HouseInfo, NUM_HOUSES> houseInfo;
     int numHouses;
     std::vector<HOUSETYPE> boundHousesOnMap;
     dune::dune_clock::time_point startGameTime = dune::dune_clock::time_point::min();
     int brainEqHumanSlot =
         -1; ///< If we have an old map with Brain=Human and Brain=CPU, store index of Brain=Human here
-    std::array<int, static_cast<int>(HOUSETYPE::NUM_HOUSES)>
-        slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
+    std::array<int, NUM_HOUSES> slotToTeam; ///< Maps the slot number to a team number (both zero-based indices)
 };
 
 #endif // CUSTOMGAMEPLAYERS_H

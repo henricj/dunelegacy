@@ -353,7 +353,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
 
     // find "player?" sections
     std::vector<std::string> playerSectionsOnMap;
-    for (int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 1; i <= NUM_HOUSES; i++) {
         std::string sectionname = "player" + std::to_string(i);
         if (inifile->hasSection(sectionname)) {
             playerSectionsOnMap.push_back(sectionname);
@@ -363,7 +363,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
     // find unbounded houses
     std::vector<HOUSETYPE> unboundedHouses;
 
-    for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    for (int h = 0; h < NUM_HOUSES; h++) {
         bool bFound = false;
         for (const auto& houseInfo : houseInfoList) {
             if (houseInfo.houseID == static_cast<HOUSETYPE>(h)) {
@@ -379,7 +379,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
     }
 
     // init housename2house mapping with every house section marked as unused
-    for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 0; i < NUM_HOUSES; i++) {
         auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(i));
         convertToLower(houseName);
 
@@ -511,7 +511,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
         return;
     }
 
-    std::array<bool, static_cast<int>(HOUSETYPE::NUM_HOUSES)> nextSpecialUnitIsSonicTank;
+    std::array<bool, NUM_HOUSES> nextSpecialUnitIsSonicTank;
     std::ranges::fill(nextSpecialUnitIsSonicTank, true);
 
     for (const INIFile::Key& key : inifile->getSection("UNITS")) {
@@ -547,7 +547,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
                 int_angle = 64;
             }
             int_angle        = (int_angle + 16) / 32;
-            int_angle        = static_cast<int>(ANGLETYPE::NUM_ANGLES) - int_angle + 2;
+            int_angle        = NUM_ANGLES - int_angle + 2;
             const auto angle = normalizeAngle(static_cast<ANGLETYPE>(int_angle));
 
             int Num2Place      = 1;

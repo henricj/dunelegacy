@@ -565,7 +565,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         }
     }
 
-    for (int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 1; i <= NUM_HOUSES; i++) {
         loadedINIFile->removeSection("player" + std::to_string(i));
     }
 
@@ -613,7 +613,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     // remove players that are leftovers
-    for (int i = currentAnyHouseNumber; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = currentAnyHouseNumber; i < NUM_HOUSES; i++) {
         loadedINIFile->removeSection("Player" + std::to_string(i));
     }
 
@@ -659,8 +659,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         int angle = static_cast<int>(unit.angle);
 
-        angle =
-            (((static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + 2) % static_cast<int>(ANGLETYPE::NUM_ANGLES)) * 32;
+        angle = (((NUM_ANGLES - angle) + 2) % NUM_ANGLES) * 32;
 
         std::string unitValue = house2housename[static_cast<int>(unit.house)] + "," + getItemNameByID(unit.itemID) + ","
                               + std::to_string(unit.health) + "," + std::to_string(position) + ","
@@ -811,10 +810,9 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
-                    for (int k = static_cast<int>(currentHouse);
-                         k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
-                        if (players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
-                            nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                    for (int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + NUM_HOUSES; k++) {
+                        if (players[k % NUM_HOUSES].bActive == bHouseIsActive) {
+                            nextHouse = static_cast<HOUSETYPE>(k % NUM_HOUSES);
                             break;
                         }
                     }
@@ -827,8 +825,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
 
                         addUndoOperation(placeOperation.perform(this));
 
-                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1)
-                                                              % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % NUM_HOUSES);
                     }
                 }
             }
@@ -856,10 +853,9 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                 for (int i = 0; i < mapMirror->getSize(); i++) {
 
                     auto nextHouse = HOUSETYPE::HOUSE_INVALID;
-                    for (int k = static_cast<int>(currentHouse);
-                         k < static_cast<int>(currentHouse) + static_cast<int>(HOUSETYPE::NUM_HOUSES); k++) {
-                        if (players[k % static_cast<int>(HOUSETYPE::NUM_HOUSES)].bActive == bHouseIsActive) {
-                            nextHouse = static_cast<HOUSETYPE>(k % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                    for (int k = static_cast<int>(currentHouse); k < static_cast<int>(currentHouse) + NUM_HOUSES; k++) {
+                        if (players[k % NUM_HOUSES].bActive == bHouseIsActive) {
+                            nextHouse = static_cast<HOUSETYPE>(k % NUM_HOUSES);
                             break;
                         }
                     }
@@ -874,8 +870,7 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
                                                                    currentEditorMode.attackmode);
 
                         addUndoOperation(placeOperation.perform(this));
-                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1)
-                                                              % static_cast<int>(HOUSETYPE::NUM_HOUSES));
+                        currentHouse = static_cast<HOUSETYPE>((static_cast<int>(nextHouse) + 1) % NUM_HOUSES);
                     }
                 }
             }
@@ -1749,7 +1744,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             std::to_array<Coord>({{8, -16}, {-4, -12}, {0, -16}, {4, -12}, {-8, -16}, {0, -12}, {-4, -12}, {0, -12}});
 
         ObjPic_enum objectPicBase{};
-        auto framesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        auto framesX = NUM_ANGLES;
         auto framesY = 1;
 
         auto objectPicGun     = static_cast<ObjPic_enum>(-1);
@@ -1784,7 +1779,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         const auto* const pObjectSprite = gfx->getZoomedObjPic(objectPicBase, unit.house, zoom);
 
         const auto angle_int = static_cast<int>(unit.angle);
-        int angle            = angle_int / (static_cast<int>(ANGLETYPE::NUM_ANGLES) / framesX);
+        int angle            = angle_int / (NUM_ANGLES / framesX);
 
         int frame = (unit.itemID == Unit_Sandworm) ? 5 : 0;
 
@@ -1803,14 +1798,14 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         if (objectPicGun >= 0) {
             const auto* const pGunSprite = gfx->getZoomedObjPic(objectPicGun, unit.house, zoom);
 
-            auto source2 = calcSpriteSourceRect(pGunSprite, angle_int, static_cast<int>(ANGLETYPE::NUM_ANGLES));
+            auto source2 = calcSpriteSourceRect(pGunSprite, angle_int, NUM_ANGLES);
 
             const auto& gun = (*gunOffset)[angle_int];
             const auto sx   = pScreenborder->world2screenX((position.x * TILESIZE) + (TILESIZE / 2) + gun.x);
             const auto sy   = pScreenborder->world2screenY((position.y * TILESIZE) + (TILESIZE / 2) + gun.y);
 
-            const auto drawLocation2 = calcSpriteDrawingRectF(
-                pGunSprite, sx, sy, static_cast<int>(ANGLETYPE::NUM_ANGLES), 1, HAlign::Center, VAlign::Center);
+            const auto drawLocation2 =
+                calcSpriteDrawingRectF(pGunSprite, sx, sy, NUM_ANGLES, 1, HAlign::Center, VAlign::Center);
 
             Dune_RenderCopyF(renderer, pGunSprite, &source2, &drawLocation2);
         }

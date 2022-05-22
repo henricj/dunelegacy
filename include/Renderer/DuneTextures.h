@@ -56,14 +56,11 @@ public:
     }
 
     using object_pictures_type =
-        std::array<std::array<std::array<DuneTexture, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_OBJPICS>,
-                   NUM_ZOOMLEVEL>;
-    using small_details_type = std::array<DuneTexture, NUM_SMALLDETAILPICS>;
-    using tiny_pictures_type = std::array<DuneTexture, NUM_TINYPICTURE>;
-    using ui_graphics_type =
-        std::array<std::array<DuneTexture, NUM_UIGRAPHICS>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>;
-    using map_choice_type =
-        std::array<std::array<DuneTexture, NUM_MAPCHOICEPIECES>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>;
+        std::array<std::array<std::array<DuneTexture, NUM_HOUSES>, NUM_OBJPICS>, NUM_ZOOMLEVEL>;
+    using small_details_type     = std::array<DuneTexture, NUM_SMALLDETAILPICS>;
+    using tiny_pictures_type     = std::array<DuneTexture, NUM_TINYPICTURE>;
+    using ui_graphics_type       = std::array<std::array<DuneTexture, NUM_UIGRAPHICS>, NUM_HOUSES>;
+    using map_choice_type        = std::array<std::array<DuneTexture, NUM_MAPCHOICEPIECES>, NUM_HOUSES>;
     using generated_type         = std::array<DuneTexture, NUM_GENERATEDPICTURES>;
     using decoration_border_type = DecorationBorderType;
     using border_style_type      = std::array<BorderStyle, NUM_DECORATIONFRAMES>;

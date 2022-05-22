@@ -60,7 +60,7 @@ void Ornithopter::init() {
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     shadowGraphic = gfx->getObjPic(ObjPic_OrnithopterShadow, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 3;
 
     currentMaxSpeed = dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;

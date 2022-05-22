@@ -84,7 +84,7 @@ private:
         ProgressBar progressBar3;
     };
 
-    std::array<HouseStat, static_cast<int>(HOUSETYPE::NUM_HOUSES)> houseStat;
+    std::array<HouseStat, NUM_HOUSES> houseStat;
 
     // bottom row of buttons
     HBox buttonHBox;

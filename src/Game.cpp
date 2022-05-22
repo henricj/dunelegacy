@@ -1689,7 +1689,7 @@ bool Game::loadSaveGame(InputStream& stream) {
     objectData.load(stream);
 
     // load the house(s) info
-    for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (auto i = 0; i < NUM_HOUSES; i++) {
         if (stream.readBool()) {
             // house in game
             house[i] = std::make_unique<House>(context, stream);
@@ -1702,7 +1702,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         for (const auto& houseInfo : oldHouseInfoList) {
 
             // find the right house
-            for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            for (int i = 0; i < NUM_HOUSES; i++) {
                 if ((house[i] != nullptr) && (house[i]->getHouseID() == houseInfo.houseID)) {
                     // iterate over all players
                     const auto& players = house[i]->getPlayerList();
@@ -1840,7 +1840,7 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     objectData.save(fs);
 
     // write the house(s) info
-    for (int i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 0; i < NUM_HOUSES; i++) {
         fs.writeBool(house[i] != nullptr);
 
         if (house[i] != nullptr) {

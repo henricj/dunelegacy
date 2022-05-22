@@ -138,7 +138,7 @@ ANGLETYPE MapMirrorPoint::getAngle(ANGLETYPE angle, int i) const {
     switch(i%2) {
         case 0:     return angle;
         case 1: {
-            auto int_angle = static_cast<int>(angle) + static_cast<int>(ANGLETYPE::NUM_ANGLES) / 2;
+            auto int_angle = static_cast<int>(angle) + NUM_ANGLES / 2;
 
             return normalizeAngle(static_cast<ANGLETYPE>(int_angle));
         }

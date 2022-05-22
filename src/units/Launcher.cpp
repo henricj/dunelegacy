@@ -53,7 +53,7 @@ void Launcher::init() {
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 

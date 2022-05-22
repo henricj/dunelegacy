@@ -117,11 +117,11 @@ void Tile::load(InputStream& stream) {
 
     destroyedStructureTile = stream.readSint32();
 
-    bool bTrackCounter[static_cast<int>(ANGLETYPE::NUM_ANGLES)]{};
+    bool bTrackCounter[NUM_ANGLES]{};
     stream.readBools(&bTrackCounter[0], &bTrackCounter[1], &bTrackCounter[2], &bTrackCounter[3], &bTrackCounter[4],
                      &bTrackCounter[5], &bTrackCounter[6], &bTrackCounter[7]);
 
-    for (int i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
+    for (int i = 0; i < NUM_ANGLES; i++) {
         if (bTrackCounter[i]) {
             tracksCreationTime[i] = stream.readUint32();
         }
@@ -192,7 +192,7 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeSint32(destroyedStructureTile);
 
     // clean-up tracksCreationTime to save space in the save game
-    std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)> tracksCreationTimeToSave;
+    std::array<uint32_t, NUM_ANGLES> tracksCreationTimeToSave;
     for (int i = 0; i < tracksCreationTimeToSave.size(); i++) {
         tracksCreationTimeToSave[i] = (tracksCreationTime[i] + TRACKSTIME < gameCycleCount) ? 0 : tracksCreationTime[i];
     }
@@ -320,7 +320,7 @@ void Tile::blitGround(Game* game) {
 
     // tracks
     const auto* const pTracks = gfx->getZoomedObjPic(ObjPic_Terrain_Tracks, zoom);
-    for (auto i = 0; i < static_cast<int>(ANGLETYPE::NUM_ANGLES); i++) {
+    for (auto i = 0; i < NUM_ANGLES; i++) {
         const auto tracktime = static_cast<int>(gameCycleCount - tracksCreationTime[i]);
         if ((tracksCreationTime[i] != 0) && (tracktime < TRACKSTIME)) {
             source.x = ((10 - i) % 8) * zoomed_tilesize;
@@ -925,7 +925,7 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
             auto candidate = game.randomGen.rand(0, numCandidates - 1);
 
             House* pEnemyHouse = nullptr;
-            for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+            for (auto i = 0; i < NUM_HOUSES; i++) {
                 auto* const pHouse = game.getHouse(static_cast<HOUSETYPE>(i));
                 if (pHouse != nullptr && pHouse->getTeamID() != pTrigger->getTeamID() && pHouse->getNumUnits() > 0) {
                     if (candidate == 0) {
@@ -959,7 +959,7 @@ bool Tile::hasAStructure(const ObjectManager& objectManager) const {
 }
 
 bool Tile::isExploredByTeam(const Game* game, int teamID) const {
-    for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    for (auto h = 0; h < NUM_HOUSES; h++) {
         const auto* pHouse = game->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
             if (isExploredByHouse(static_cast<HOUSETYPE>(h))) {
@@ -989,7 +989,7 @@ bool Tile::isFoggedByTeam(const Game* game, int teamID) const {
         return false;
     }
 
-    for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+    for (auto h = 0; h < NUM_HOUSES; h++) {
         const auto* pHouse = game->getHouse(static_cast<HOUSETYPE>(h));
         if ((pHouse != nullptr) && (pHouse->getTeamID() == teamID)) {
             if ((game->getGameCycleCount() - lastAccess[h]) < FOGTIME) {

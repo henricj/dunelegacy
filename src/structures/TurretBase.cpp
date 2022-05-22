@@ -77,12 +77,10 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
 
                 if (angle > static_cast<int>(wantedAngle)) {
                     angleRight = angle - static_cast<int>(wantedAngle);
-                    angleLeft =
-                        FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + static_cast<int>(wantedAngle);
+                    angleLeft  = FixPoint::abs(NUM_ANGLES - angle) + static_cast<int>(wantedAngle);
                 } else if (angle < static_cast<int>(wantedAngle)) {
-                    angleRight =
-                        FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - static_cast<int>(wantedAngle)) + angle;
-                    angleLeft = static_cast<int>(wantedAngle) - angle;
+                    angleRight = FixPoint::abs(NUM_ANGLES - static_cast<int>(wantedAngle)) + angle;
+                    angleLeft  = static_cast<int>(wantedAngle) - angle;
                 }
 
                 if (angleLeft <= angleRight) {

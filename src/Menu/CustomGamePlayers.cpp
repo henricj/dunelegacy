@@ -934,8 +934,7 @@ void CustomGamePlayers::extractMapInfo(INIFile* pMap) {
         currentIndex++;
     }
 
-    for (int p = 0;
-         p < static_cast<int>(HOUSETYPE::NUM_HOUSES) && currentIndex < static_cast<int>(HOUSETYPE::NUM_HOUSES); p++) {
+    for (int p = 0; p < NUM_HOUSES && currentIndex < NUM_HOUSES; p++) {
         if (pMap->hasSection("Player" + std::to_string(p + 1))) {
             std::string teamName = strToUpper(pMap->getStringValue("Player" + std::to_string(p + 1), "Brain",
                                                                    "Team " + std::to_string(currentIndex + p + 1)));
@@ -1018,7 +1017,7 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
         addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID);
 
-        for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        for (int h = 0; h < NUM_HOUSES; h++) {
             bool bAddHouse = 0;
 
             bool bCheck = 0;
@@ -1345,7 +1344,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
             int currentItemIndex =
                 houseDropDownBox.getEntryIntData(0) == static_cast<int>(HOUSETYPE::HOUSE_INVALID) ? 1 : 0;
 
-            for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+            for (int h = 0; h < NUM_HOUSES; h++) {
                 if (currentItemIndex < houseDropDownBox.getNumEntries()
                     && houseDropDownBox.getEntryIntData(currentItemIndex) == h) {
                     if (h == static_cast<int>(house)) {

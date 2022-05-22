@@ -49,7 +49,7 @@ void RaiderTrike::init() {
     graphicID = ObjPic_Trike;
     graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 

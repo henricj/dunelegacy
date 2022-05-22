@@ -177,29 +177,29 @@ void AirUnit::turn(const GameContext& context) {
 
         if (angle > destinationAngle) {
             angleRight = angle - destinationAngle;
-            angleLeft  = FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - angle) + destinationAngle;
+            angleLeft  = FixPoint::abs(NUM_ANGLES - angle) + destinationAngle;
         } else if (angle < destinationAngle) {
-            angleRight = FixPoint::abs(static_cast<int>(ANGLETYPE::NUM_ANGLES) - destinationAngle) + angle;
+            angleRight = FixPoint::abs(NUM_ANGLES - destinationAngle) + angle;
             angleLeft  = destinationAngle - angle;
         }
 
         if (angleLeft <= angleRight) {
             angle += std::min(turn_speed, angleLeft);
-            if (angle > static_cast<int>(ANGLETYPE::NUM_ANGLES)) {
-                angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES);
+            if (angle > NUM_ANGLES) {
+                angle -= NUM_ANGLES;
             }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         } else {
             angle -= std::min(turn_speed, angleRight);
             if (angle < 0) {
-                angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+                angle += NUM_ANGLES;
             }
             drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
         }
     } else {
         angle -= turn_speed / 8;
         if (angle < 0) {
-            angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+            angle += NUM_ANGLES;
         }
         drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
     }

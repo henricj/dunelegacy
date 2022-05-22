@@ -1373,7 +1373,7 @@ void UnitBase::turn(const GameContext& context) {
 void UnitBase::turnLeft(const GameContext& context) {
     angle += context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if (angle >= 7.5_fix) {
-        angle -= static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        angle -= NUM_ANGLES;
     }
     drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }
@@ -1381,7 +1381,7 @@ void UnitBase::turnLeft(const GameContext& context) {
 void UnitBase::turnRight(const GameContext& context) {
     angle -= context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
     if (angle <= -0.5_fix) {
-        angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        angle += NUM_ANGLES;
     }
     drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
 }

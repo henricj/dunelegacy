@@ -63,7 +63,7 @@ void Frigate::init() {
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     shadowGraphic = gfx->getObjPic(ObjPic_FrigateShadow, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 1;
 }
 

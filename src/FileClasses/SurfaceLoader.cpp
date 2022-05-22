@@ -403,7 +403,7 @@ SurfaceLoader::SurfaceLoader() {
 
     // scale obj pics and apply color key
     for (int id = 0; id < NUM_OBJPICS; id++) {
-        for (int h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); h++) {
+        for (int h = 0; h < NUM_HOUSES; h++) {
             if (objPic[id][h][0] != nullptr) {
                 if (objPic[id][h][1] == nullptr) {
                     objPic[id][h][1] = generateDoubledObjPic(id, h);
@@ -1192,7 +1192,7 @@ SurfaceLoader::SurfaceLoader() {
         };
 
         for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-            for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
+            for (auto h = 0; h < NUM_HOUSES; ++h) {
                 const auto house = static_cast<HOUSETYPE>(h);
 
                 // Create the per-house Windtrap surfaces
@@ -1205,7 +1205,7 @@ SurfaceLoader::SurfaceLoader() {
         }
 
         for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
-            for (auto h = 0; h < static_cast<int>(HOUSETYPE::NUM_HOUSES); ++h) {
+            for (auto h = 0; h < NUM_HOUSES; ++h) {
                 const auto house = static_cast<HOUSETYPE>(h);
 
                 auto& windtrap = objPic[ObjPic_Windtrap][h][zoom];

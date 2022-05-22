@@ -517,7 +517,7 @@ void House::lose(bool bSilent) const {
 
         bool finished = true;
 
-        for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+        for (auto i = 0; i < NUM_HOUSES; i++) {
             const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
             if (pHouse != nullptr && pHouse->isAlive()
                 && pHouse->getTeamID() == dune::globals::pLocalHouse->getTeamID()) {
@@ -541,7 +541,7 @@ void House::lose(bool bSilent) const {
         // if the only players left are on the thisPlayers team, pLocalHouse has won
         auto finished = true;
 
-        for (auto i = 0; i < static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+        for (auto i = 0; i < NUM_HOUSES; i++) {
             const auto* const pHouse = context.game.getHouse(static_cast<HOUSETYPE>(i));
             if (pHouse != nullptr && pHouse->isAlive() && pHouse->getTeamID() != 0
                 && pHouse->getTeamID() != dune::globals::pLocalHouse->getTeamID()) {

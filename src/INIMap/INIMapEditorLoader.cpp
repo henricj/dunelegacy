@@ -271,7 +271,7 @@ void INIMapEditorLoader::loadMap() {
    [Ordos], [Harkonnen]).
 */
 void INIMapEditorLoader::loadHouses() {
-    for (int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
+    for (int houseID = 0; houseID < NUM_HOUSES; houseID++) {
         std::string houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(houseID));
 
         if (inifile->hasSection(houseName)) {
@@ -291,10 +291,10 @@ void INIMapEditorLoader::loadHouses() {
         }
     }
 
-    for (int i = 1; i <= static_cast<int>(HOUSETYPE::NUM_HOUSES); i++) {
+    for (int i = 1; i <= NUM_HOUSES; i++) {
         std::string sectionname = "player" + std::to_string(i);
         if (inifile->hasSection(sectionname)) {
-            for (int houseID = 0; houseID < static_cast<int>(HOUSETYPE::NUM_HOUSES); houseID++) {
+            for (int houseID = 0; houseID < NUM_HOUSES; houseID++) {
                 auto& player = pMapEditor->getPlayers()[houseID];
 
                 if (!player.bActive) {
@@ -390,7 +390,7 @@ void INIMapEditorLoader::loadUnits() {
                 int_angle = 64;
             }
             int_angle  = (int_angle + 16) / 32;
-            int_angle  = static_cast<int>(ANGLETYPE::NUM_ANGLES) - int_angle + 2;
+            int_angle  = NUM_ANGLES - int_angle + 2;
             auto angle = normalizeAngle(static_cast<ANGLETYPE>(int_angle));
 
             ItemID_enum itemID = getItemIDByName(UnitStr);

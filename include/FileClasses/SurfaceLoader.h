@@ -93,12 +93,9 @@ private:
     [[nodiscard]] sdl2::surface_ptr generateTripledObjPic(unsigned int id, int h) const;
 
     // 8-bit surfaces kept in main memory for processing as needed, e.g. color remapping
-    std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, static_cast<int>(HOUSETYPE::NUM_HOUSES)>,
-               NUM_OBJPICS>
-        objPic;
-    std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_UIGRAPHICS> uiGraphic;
-    std::array<std::array<sdl2::surface_ptr, static_cast<int>(HOUSETYPE::NUM_HOUSES)>, NUM_MAPCHOICEPIECES>
-        mapChoicePieces;
+    std::array<std::array<std::array<sdl2::surface_ptr, NUM_ZOOMLEVEL>, NUM_HOUSES>, NUM_OBJPICS> objPic;
+    std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_UIGRAPHICS> uiGraphic;
+    std::array<std::array<sdl2::surface_ptr, NUM_HOUSES>, NUM_MAPCHOICEPIECES> mapChoicePieces;
     std::array<std::unique_ptr<Animation>, NUM_ANIMATION> animation{};
 
     std::array<sdl2::surface_ptr, NUM_SMALLDETAILPICS> smallDetailPic;

@@ -461,10 +461,9 @@ private:
 
     int32_t destroyedStructureTile{DestroyedStructure_None}; ///< the tile drawn for a destroyed structure
     mutable TERRAINTILETYPE terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
-    std::array<uint32_t, static_cast<int>(ANGLETYPE::NUM_ANGLES)>
-        tracksCreationTime{};            ///< Contains the game cycle the tracks on sand appeared
-    std::vector<DAMAGETYPE> damage;      ///< damage positions
-    std::vector<DEADUNITTYPE> deadUnits; ///< dead units
+    std::array<uint32_t, NUM_ANGLES> tracksCreationTime{}; ///< Contains the game cycle the tracks on sand appeared
+    std::vector<DAMAGETYPE> damage;                        ///< damage positions
+    std::vector<DEADUNITTYPE> deadUnits;                   ///< dead units
 
     std::vector<uint32_t> assignedAirUnitList;                 ///< all the air units on this tile
     std::vector<uint32_t> assignedInfantryList;                ///< all infantry units on this tile

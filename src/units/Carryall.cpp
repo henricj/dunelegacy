@@ -69,7 +69,7 @@ void Carryall::init() {
     graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
     shadowGraphic = gfx->getObjPic(ObjPic_CarryallShadow, getOwner()->getHouseID());
 
-    numImagesX = static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    numImagesX = NUM_ANGLES;
     numImagesY = 2;
 }
 

@@ -111,9 +111,8 @@ public:
         int8_t upgradeLevel; ///< How many upgrades must the builder already have made
     };
 
-    ObjectDataStruct data[Num_ItemID]
-                         [static_cast<int>(HOUSETYPE::NUM_HOUSES)]; ///< here is all the data stored. It is public for
-                                                                    ///< easy and fast access. Use only read-only.
+    ObjectDataStruct data[Num_ItemID][NUM_HOUSES]; ///< here is all the data stored. It is public for
+                                                   ///< easy and fast access. Use only read-only.
 
 private:
     int loadIntValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar,

@@ -65,7 +65,7 @@ inline FixPoint Deg256ToRad(FixPoint angle) {
 */
 inline int angleDiff(ANGLETYPE angle1, ANGLETYPE angle2) {
     const int diff = std::abs(static_cast<int>(angle1) - static_cast<int>(angle2));
-    return std::min(diff, static_cast<int>(ANGLETYPE::NUM_ANGLES) - diff);
+    return std::min(diff, NUM_ANGLES - diff);
 }
 
 inline ANGLETYPE angleToDrawnAngle(FixPoint angle) {
@@ -137,12 +137,12 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
 inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
     const auto int_angle = static_cast<int>(angle);
 
-    if (int_angle >= 0 && int_angle < static_cast<int>(ANGLETYPE::NUM_ANGLES))
+    if (int_angle >= 0 && int_angle < NUM_ANGLES)
         return angle;
 
-    auto mod_angle = int_angle % static_cast<int>(ANGLETYPE::NUM_ANGLES);
+    auto mod_angle = int_angle % NUM_ANGLES;
     if (int_angle < 0)
-        mod_angle += static_cast<int>(ANGLETYPE::NUM_ANGLES);
+        mod_angle += NUM_ANGLES;
 
     return static_cast<ANGLETYPE>(mod_angle);
 }
