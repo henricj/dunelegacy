@@ -215,12 +215,12 @@ public:
         aiteams.emplace_back(houseID, aiTeamBehavior, aiTeamType, minUnits, maxUnits);
     }
 
-    [[nodiscard]] const std::list<std::unique_ptr<Player>>& getPlayerList() const { return players; }
+    [[nodiscard]] const std::vector<std::unique_ptr<Player>>& getPlayerList() const { return players; }
 
 protected:
     void decrementHarvesters();
 
-    std::list<std::unique_ptr<Player>> players; ///< List of associated players that control this house
+    std::vector<std::unique_ptr<Player>> players; ///< List of associated players that control this house
 
     bool ai; ///< Is this an ai player?
 
