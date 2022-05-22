@@ -1114,67 +1114,68 @@ void CustomGamePlayers::onClickPlayerDropDownBox(int boxnum) {
 
     setPlayer2Slot(playername, boxnum);
 
-    auto* const network_manager = dune::globals::pNetworkManager.get();
-    if (boxnum >= 0 && network_manager != nullptr) {
-        ChangeEventList changeEventList;
-        changeEventList.changeEventList.emplace_back(boxnum, std::move(playername));
+    if (boxnum >= 0) {
+        if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
+            ChangeEventList changeEventList;
+            changeEventList.changeEventList.emplace_back(boxnum, std::move(playername));
 
-        network_manager->sendChangeEventList(changeEventList);
+            network_manager->sendChangeEventList(changeEventList);
+        }
     }
 }
 
 void CustomGamePlayers::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
     if (bHost) {
         quit(cause);
-    } else {
-        for (int i = 0; i < numHouses * 2; i++) {
-            DropDownBox& curDropDownBox =
-                i % 2 == 0 ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
-
-            if (curDropDownBox.getSelectedEntryIntData() == PLAYER_HUMAN
-                && curDropDownBox.getSelectedEntry() == playername) {
-
-                curDropDownBox.clearAllEntries();
-                curDropDownBox.addEntry(_("open"), PLAYER_OPEN);
-                curDropDownBox.setSelectedItem(0);
-
-                if (gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
-                    curDropDownBox.addEntry(_("closed"), PLAYER_CLOSED);
-                    for (unsigned int k = 1; k < PlayerFactory::getList().size(); k++) {
-                        curDropDownBox.addEntry(PlayerFactory::getByIndex(k)->getName(), k);
-                    }
-                }
-
-                break;
-            }
-        }
-
-        if (!bServer) {
-            for (int i = 0; i < numHouses; i++) {
-                bool bIsThisPlayer = false;
-                if (houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player1DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
-                        bIsThisPlayer = true;
-                    }
-                }
-
-                if (houseInfo[i].player2DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
-                    if (houseInfo[i].player2DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
-                        bIsThisPlayer = true;
-                    }
-                }
-
-                houseInfo[i].player1DropDown.setEnabled(bIsThisPlayer);
-                houseInfo[i].player2DropDown.setEnabled(bIsThisPlayer);
-                houseInfo[i].houseDropDown.setEnabled(bIsThisPlayer);
-                houseInfo[i].teamDropDown.setEnabled(bIsThisPlayer);
-            }
-        }
-
-        checkPlayerBoxes();
-
-        addInfoMessage(playername + " disconnected!");
+        return;
     }
+
+    for (int i = 0; i < numHouses * 2; i++) {
+        DropDownBox& curDropDownBox = i % 2 == 0 ? houseInfo[i / 2].player1DropDown : houseInfo[i / 2].player2DropDown;
+
+        if (curDropDownBox.getSelectedEntryIntData() == PLAYER_HUMAN
+            && curDropDownBox.getSelectedEntry() == playername) {
+
+            curDropDownBox.clearAllEntries();
+            curDropDownBox.addEntry(_("open"), PLAYER_OPEN);
+            curDropDownBox.setSelectedItem(0);
+
+            if (gameInitSettings.getGameType() != GameType::LoadMultiplayer) {
+                curDropDownBox.addEntry(_("closed"), PLAYER_CLOSED);
+                for (unsigned int k = 1; k < PlayerFactory::getList().size(); k++) {
+                    curDropDownBox.addEntry(PlayerFactory::getByIndex(k)->getName(), k);
+                }
+            }
+
+            break;
+        }
+    }
+
+    if (!bServer) {
+        for (int i = 0; i < numHouses; i++) {
+            bool bIsThisPlayer = false;
+            if (houseInfo[i].player1DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
+                if (houseInfo[i].player1DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
+                    bIsThisPlayer = true;
+                }
+            }
+
+            if (houseInfo[i].player2DropDown.getSelectedEntryIntData() == PLAYER_HUMAN) {
+                if (houseInfo[i].player2DropDown.getSelectedEntry() == dune::globals::settings.general.playerName) {
+                    bIsThisPlayer = true;
+                }
+            }
+
+            houseInfo[i].player1DropDown.setEnabled(bIsThisPlayer);
+            houseInfo[i].player2DropDown.setEnabled(bIsThisPlayer);
+            houseInfo[i].houseDropDown.setEnabled(bIsThisPlayer);
+            houseInfo[i].teamDropDown.setEnabled(bIsThisPlayer);
+        }
+    }
+
+    checkPlayerBoxes();
+
+    addInfoMessage(playername + " disconnected!");
 }
 
 void CustomGamePlayers::onStartGame(dune::dune_clock::duration timeLeft) {
