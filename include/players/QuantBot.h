@@ -23,6 +23,11 @@
 
 #include <DataTypes.h>
 
+#include <array>
+#include <limits>
+#include <string>
+#include <vector>
+
 class QuantBot final : public Player {
 public:
     enum class Difficulty { Easy = 0, Medium = 1, Hard = 2, Brutal = 3, Defend = 4 };
@@ -68,7 +73,7 @@ private:
     Coord findSquadRallyLocation();
     Coord findSquadRetreatLocation();
 
-    std::list<Coord> placeLocations; ///< Where to place structures
+    std::vector<Coord> placeLocations; ///< Where to place structures
 
     void checkAllUnits();
     void retreatAllUnits();

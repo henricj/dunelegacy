@@ -22,6 +22,9 @@
 
 #include <DataTypes.h>
 
+#include <deque>
+#include <string>
+
 class SmartBot final : public Player {
 public:
     enum class Difficulty { Normal = 0, Defense = 1, Hard = 2 };
@@ -58,7 +61,7 @@ private:
     int32_t buildTimer;     ///< When to build the next structure/unit
     int harvesterLimit = 4; ///< maximum number of harvesters
 
-    std::list<Coord> placeLocations; ///< Where to place structures
+    std::deque<Coord> placeLocations; ///< Where to place structures
 
     bool focusEconomy();
     bool focusMilitary();

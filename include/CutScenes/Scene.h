@@ -21,8 +21,10 @@
 #include <CutScenes/CutSceneTrigger.h>
 #include <CutScenes/TextEvent.h>
 #include <CutScenes/VideoEvent.h>
+
 #include <list>
 #include <queue>
+#include <vector>
 
 /// A class for representing one part of a cutscene.
 /**
@@ -86,7 +88,7 @@ private:
     int currentFrameNumber{}; ///< current frame number in this frame
 
     std::queue<std::unique_ptr<VideoEvent>> videoEvents;     ///< queue of all VideoEvents in this scene
-    std::list<std::unique_ptr<TextEvent>> textEvents;        ///< list of all TextEvents in this scene
+    std::vector<std::unique_ptr<TextEvent>> textEvents;      ///< list of all TextEvents in this scene
     std::list<std::unique_ptr<CutSceneTrigger>> triggerList; ///< list of all CutSceneTriggers in this scene
 };
 
