@@ -106,152 +106,142 @@ Finale::Finale(HOUSETYPE house) {
         case HOUSETYPE::HOUSE_HARKONNEN: {
             startNewScene();
 
-            addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 25));
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace1.get()));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 52));
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace1.get()));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 23));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_You_are_indeed_not_entirely),
-                                                     color, 22, 47, false, true, false));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_You_have_lied_to_us), color, 70,
-                                                     60, true, true, false));
-            addTrigger(std::make_unique<CutSceneMusicTrigger>(0, MUSIC_FINALE_H));
+            addVideoEvent<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20);
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 25);
+            addVideoEvent<WSAVideoEvent>(pPalace1.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 52);
+            addVideoEvent<WSAVideoEvent>(pPalace1.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 23);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_You_are_indeed_not_entirely), color, 22, 47, false,
+                                    true, false);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_You_have_lied_to_us), color, 70, 60, true, true,
+                                    false);
+            addTrigger<CutSceneMusicTrigger>(0, MUSIC_FINALE_H);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
+            addVideoEvent<WSAVideoEvent>(pImperator.get());
             addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
                 pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 3));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_What_lies_What_are),
-                                                     sardaukarColor, 2, 100, false, true, false));
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_What_lies_What_are), sardaukarColor, 2, 100, false,
+                                    true, false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_Your_lies_of_loyalty), color, 0,
-                                                     50, true, true, false));
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_Your_lies_of_loyalty), color, 0, 50, true, true,
+                                    false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 45));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 15));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_A_crime_for_which_you), color, 2,
-                                                     38, true, false, false));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_with_your_life), color, 42, 100,
-                                                     false, false, false));
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 45);
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 15);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_A_crime_for_which_you), color, 2, 38, true, false,
+                                    false);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_with_your_life), color, 42, 100, false, false,
+                                    false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace2->getPicture(0).get(), 5));
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace2.get()));
-            addVideoEvent(
-                std::make_unique<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 15));
-            addVideoEvent(
-                std::make_unique<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_NO_NO_NOOO), sardaukarColor, 10,
-                                                     30, false, true, false));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(10, click.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(15, blaster.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(17, blowup.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(38, click.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(43, blaster.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(45, blowup.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(67, glass.get()));
+            addVideoEvent<HoldPictureVideoEvent>(pPalace2->getPicture(0).get(), 5);
+            addVideoEvent<WSAVideoEvent>(pPalace2.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 15);
+            addVideoEvent<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_NO_NO_NOOO), sardaukarColor, 10, 30, false, true,
+                                    false);
+            addTrigger<CutSceneSoundTrigger>(10, click.get());
+            addTrigger<CutSceneSoundTrigger>(15, blaster.get());
+            addTrigger<CutSceneSoundTrigger>(17, blowup.get());
+            addTrigger<CutSceneSoundTrigger>(38, click.get());
+            addTrigger<CutSceneSoundTrigger>(43, blaster.get());
+            addTrigger<CutSceneSoundTrigger>(45, blowup.get());
+            addTrigger<CutSceneSoundTrigger>(67, glass.get());
 
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES: {
             startNewScene();
 
-            addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_Greetings_Emperor), color, 15, 48,
-                                                     false, true, false));
-            addTrigger(std::make_unique<CutSceneMusicTrigger>(0, MUSIC_FINALE_A));
+            addVideoEvent<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20);
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_Greetings_Emperor), color, 15, 48, false, true,
+                                    false);
+            addTrigger<CutSceneMusicTrigger>(0, MUSIC_FINALE_A);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-                pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 3));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_What_is_the_meaning),
-                                                     sardaukarColor, 2, 100, false, false, false));
+            addVideoEvent<WSAVideoEvent>(pImperator.get());
+            addVideoEvent<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 3);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_What_is_the_meaning), sardaukarColor, 2, 100,
+                                    false, false, false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace1.get()));
-            addVideoEvent(
-                std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(pPalace1->getNumFrames() - 1).get(), 25));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_You_are_formally_charged), color,
-                                                     0, 105, true, false, false));
+            addVideoEvent<WSAVideoEvent>(pPalace1.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(pPalace1->getNumFrames() - 1).get(), 25);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_You_are_formally_charged), color, 0, 105, true,
+                                    false, false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 34));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 20));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_The_House_shall_determine), color,
-                                                     2, 40, false, false, false));
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 34);
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 20);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_The_House_shall_determine), color, 2, 40, false,
+                                    false, false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace2->getPicture(0).get(), 15));
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace2.get()));
-            addVideoEvent(
-                std::make_unique<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 30));
-            addVideoEvent(
-                std::make_unique<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_Until_then_you_shall_no), color,
-                                                     2, 48, false, true, false));
+            addVideoEvent<HoldPictureVideoEvent>(pPalace2->getPicture(0).get(), 15);
+            addVideoEvent<WSAVideoEvent>(pPalace2.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 30);
+            addVideoEvent<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_Until_then_you_shall_no), color, 2, 48, false,
+                                    true, false);
 
         } break;
 
         case HOUSETYPE::HOUSE_ORDOS: {
             startNewScene();
 
-            addVideoEvent(std::make_unique<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_You_are_aware_Emperor), color, 22,
-                                                     46, false, true, false));
-            addTrigger(std::make_unique<CutSceneMusicTrigger>(0, MUSIC_FINALE_O));
+            addVideoEvent<FadeInVideoEvent>(pPalace1->getPicture(0).get(), 20);
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 50);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_You_are_aware_Emperor), color, 22, 46, false, true,
+                                    false);
+            addTrigger<CutSceneMusicTrigger>(0, MUSIC_FINALE_O);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pImperator.get()));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(
-                pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 3));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_What_games_What_are_you),
-                                                     sardaukarColor, 2, 100, false, true, false));
+            addVideoEvent<WSAVideoEvent>(pImperator.get());
+            addVideoEvent<HoldPictureVideoEvent>(pImperator->getPicture(pImperator->getNumFrames() - 1).get(), 3);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_What_games_What_are_you), sardaukarColor, 2, 100,
+                                    false, true, false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 40));
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace1.get()));
-            addVideoEvent(
-                std::make_unique<HoldPictureVideoEvent>(pPalace1->getPicture(pPalace1->getNumFrames() - 1).get(), 65));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_I_am_referring_to_your_game),
-                                                     color, 2, 35, false, true, false));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune),
-                                                     color, 40, 45, true, true, false));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_We_have_decided_to_take), color,
-                                                     88, 105, true, false, false));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(42, lizard.get()));
-            addTrigger(std::make_unique<CutSceneSoundTrigger>(62, lizard.get()));
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(0).get(), 40);
+            addVideoEvent<WSAVideoEvent>(pPalace1.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace1->getPicture(pPalace1->getNumFrames() - 1).get(), 65);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_I_am_referring_to_your_game), color, 2, 35, false,
+                                    true, false);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_We_were_your_pawns_and_Dune), color, 40, 45, true,
+                                    true, false);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_We_have_decided_to_take), color, 88, 105, true,
+                                    false, false);
+            addTrigger<CutSceneSoundTrigger>(42, lizard.get());
+            addTrigger<CutSceneSoundTrigger>(62, lizard.get());
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 29));
-            addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 20));
-            addTextEvent(std::make_unique<TextEvent>(pIntroText->getString(FinaleText_You_are_to_be_our_pawn), color, 2,
-                                                     47, false, true, false));
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(0).get(), 29);
+            addVideoEvent<HoldPictureVideoEvent>(pImperatorShocked->getPicture(1).get(), 20);
+            addTextEvent<TextEvent>(pIntroText->getString(FinaleText_You_are_to_be_our_pawn), color, 2, 47, false, true,
+                                    false);
 
             startNewScene();
 
-            addVideoEvent(std::make_unique<WSAVideoEvent>(pPalace2.get()));
-            addVideoEvent(
-                std::make_unique<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 15));
-            addVideoEvent(
-                std::make_unique<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20));
+            addVideoEvent<WSAVideoEvent>(pPalace2.get());
+            addVideoEvent<HoldPictureVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 15);
+            addVideoEvent<FadeOutVideoEvent>(pPalace2->getPicture(pPalace2->getNumFrames() - 1).get(), 20);
 
         } break;
 
@@ -260,13 +250,12 @@ Finale::Finale(HOUSETYPE house) {
         } break;
     }
 
-    addVideoEvent(std::make_unique<FadeInVideoEvent>(pPlanetDuneNormalSurface.get(), 20));
-    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPlanetDuneNormalSurface.get(), 10));
-    addVideoEvent(
-        std::make_unique<CrossBlendVideoEvent>(pPlanetDuneNormalSurface.get(), pPlanetDuneInHouseColorSurface.get()));
-    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(pPlanetDuneInHouseColorSurface.get(), 50));
-    addVideoEvent(std::make_unique<FadeOutVideoEvent>(pPlanetDuneInHouseColorSurface.get(), 20));
-    addVideoEvent(std::make_unique<HoldPictureVideoEvent>(nullptr, 10));
+    addVideoEvent<FadeInVideoEvent>(pPlanetDuneNormalSurface.get(), 20);
+    addVideoEvent<HoldPictureVideoEvent>(pPlanetDuneNormalSurface.get(), 10);
+    addVideoEvent<CrossBlendVideoEvent>(pPlanetDuneNormalSurface.get(), pPlanetDuneInHouseColorSurface.get());
+    addVideoEvent<HoldPictureVideoEvent>(pPlanetDuneInHouseColorSurface.get(), 50);
+    addVideoEvent<FadeOutVideoEvent>(pPlanetDuneInHouseColorSurface.get(), 20);
+    addVideoEvent<HoldPictureVideoEvent>(nullptr, 10);
 }
 
 Finale::~Finale() = default;
