@@ -22,6 +22,7 @@
 #include <FileClasses/Wsafile.h>
 #include <misc/SDL2pp.h>
 
+#include <concepts>
 #include <queue>
 
 /// A base class for running Dune 2 Cutscenes.
@@ -67,17 +68,32 @@ public:
     */
     void addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent);
 
+    template<std::derived_from<VideoEvent> EventType, typename... Args>
+    void addVideoEvent(Args&&... args) {
+        addVideoEvent(std::make_unique<EventType>(std::forward<Args>(args)...));
+    }
+
     /**
         This method adds a new text event to the current this scene.
         \param newTextEvent the new text event to be played in the current scene
     */
     void addTextEvent(std::unique_ptr<TextEvent> newTextEvent);
 
+    template<std::derived_from<TextEvent> EventType, typename... Args>
+    void addTextEvent(Args&&... args) {
+        addTextEvent(std::make_unique<EventType>(std::forward<Args>(args)...));
+    }
+
     /**
         This method adds a new trigger to the current this scene.
         \param newTrigger the new trigger to be triggered in the current scene
     */
     void addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger);
+
+    template<std::derived_from<CutSceneTrigger> Trigger, typename... Args>
+    void addTrigger(Args&&... args) {
+        addTrigger(std::make_unique<Trigger>(std::forward<Args>(args)...));
+    }
 
 protected:
     /**
