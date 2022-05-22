@@ -162,8 +162,8 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid block length!");
         }
         size_t len = tmp[0];
-        len |= tmp[1] << 8;
-        len |= tmp[2] << 16;
+        len |= static_cast<uint32_t>(tmp[1]) << 8U;
+        len |= static_cast<uint32_t>(tmp[2]) << 16U;
 
         switch (code) {
             case VOC_CODE_DATA: {
