@@ -27,11 +27,11 @@ Scene::Scene() = default;
 Scene::~Scene() = default;
 
 void Scene::addVideoEvent(std::unique_ptr<VideoEvent> newVideoEvent) {
-    videoEvents.push(std::move(newVideoEvent));
+    videoEvents.emplace(std::move(newVideoEvent));
 }
 
 void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent) {
-    textEvents.push_back(std::move(newTextEvent));
+    textEvents.emplace_back(std::move(newTextEvent));
 }
 
 void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
