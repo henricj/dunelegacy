@@ -162,7 +162,7 @@ public:
 
         template<typename T>
         void setValue(T newValue) {
-            std::array<char, 128> buffer;
+            std::array<char, 128> buffer{};
             const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
 
             setStringValue(std::string_view{&buffer[0], static_cast<size_t>(ptr - &buffer[0])});
