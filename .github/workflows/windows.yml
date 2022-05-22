@@ -120,16 +120,16 @@ jobs:
           cpack -G ZIP -v
 
       - name: Upload Binaries Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{env.PROJECT_ZIP_NAME}}
           path: ${{env.PROJECT_ZIP}}
 
-      - name: Upload Installer Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Setup ${{env.PROJECT_OUTPUT_NAME}}
-          path: ${{env.PROJECT_INSTALLER}}
+      #- name: Upload Installer Artifact
+        #uses: actions/upload-artifact@v3
+        #with:
+          #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
+          #path: ${{env.PROJECT_INSTALLER}}
 
       - name: Create Release
         if: contains(github.ref, 'modernize')
