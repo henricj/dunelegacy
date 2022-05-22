@@ -74,14 +74,15 @@ public:
 
         std::string completeLine;
         int line;
-        INIFileLine* nextLine;
-        INIFileLine* prevLine;
+        INIFileLine* nextLine{};
+        INIFileLine* prevLine{};
     };
 
     class Key final : public INIFileLine {
     public:
-        Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength, int valuestringbegin,
-            int valuestringlength);
+        Key(std::string completeLine, int lineNumber, std::string::size_type keystringbegin,
+            std::string::size_type keystringlength, std::string::size_type valuestringbegin,
+            std::string::size_type valuestringlength);
         Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
         ~Key() override;
 
@@ -200,12 +201,12 @@ public:
         static bool escapingValueNeeded(std::string_view value);
         static std::string escapeValue(std::string value);
 
-        int keyStringBegin;
-        int keyStringLength;
-        int valueStringBegin;
-        int valueStringLength;
-        Key* nextKey;
-        Key* prevKey;
+        std::string::size_type keyStringBegin;
+        std::string::size_type keyStringLength;
+        std::string::size_type valueStringBegin;
+        std::string::size_type valueStringLength;
+        Key* nextKey{};
+        Key* prevKey{};
     };
 
     class KeyIterator {
@@ -338,6 +339,7 @@ private:
 
     void insertSection(Section* newSection);
 
+    [[nodiscard]] Section* getSectionInternal(std::string_view sectionname);
     [[nodiscard]] const Section* getSectionInternal(std::string_view sectionname) const;
     Section* getSectionOrCreate(std::string_view sectionname);
 

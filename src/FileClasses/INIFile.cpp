@@ -33,11 +33,11 @@ INIFile::INIFileLine::INIFileLine(std::string completeLine, int lineNumber)
 
 INIFile::INIFileLine::~INIFileLine() = default;
 
-INIFile::Key::Key(std::string completeLine, int lineNumber, int keystringbegin, int keystringlength,
-                  int valuestringbegin, int valuestringlength)
+INIFile::Key::Key(std::string completeLine, int lineNumber, std::string::size_type keystringbegin,
+                  std::string::size_type keystringlength, std::string::size_type valuestringbegin,
+                  std::string::size_type valuestringlength)
     : INIFileLine(std::move(completeLine), lineNumber), keyStringBegin(keystringbegin),
-      keyStringLength(keystringlength), valueStringBegin(valuestringbegin), valueStringLength(valuestringlength),
-      nextKey(nullptr), prevKey(nullptr) { }
+      keyStringLength(keystringlength), valueStringBegin(valuestringbegin), valueStringLength(valuestringlength) { }
 
 INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded, bool bWhitespace)
     : INIFileLine(std::string{keyname} + (bWhitespace ? " = " : "=") + (bEscapeIfNeeded ? escapeValue(value) : value),
@@ -45,7 +45,7 @@ INIFile::Key::Key(std::string_view keyname, const std::string& value, bool bEsca
       keyStringBegin(0), keyStringLength(keyname.size()),
       valueStringBegin(keyname.size() + (bWhitespace ? 3 : 1)
                        + (bEscapeIfNeeded && escapingValueNeeded(value) ? 1 : 0)),
-      valueStringLength(value.size()), nextKey(nullptr), prevKey(nullptr) { }
+      valueStringLength(value.size()) { }
 
 INIFile::Key::~Key() = default;
 
@@ -169,7 +169,7 @@ bool INIFile::Section::hasKey(std::string_view key) const {
 }
 
 INIFile::Key* INIFile::Section::getKey(std::string_view keyname) const {
-    for (INIFile::Key& key : *this) {
+    for (auto& key : *this) {
         const auto key_begin = &key.completeLine[key.keyStringBegin];
 
         if (upper_compare(keyname, std::string_view(key_begin, key.keyStringLength)))
@@ -189,8 +189,8 @@ void INIFile::Section::setStringValue(std::string_view key, const std::string& n
             return;
         }
 
-        Key* curKey = new Key(key, newValue, bEscapeIfNeeded, bWhitespace);
-        Key* pKey   = keyRoot;
+        auto* curKey = new Key(key, newValue, bEscapeIfNeeded, bWhitespace);
+        auto* pKey   = keyRoot;
         if (pKey == nullptr) {
             // Section has no key yet
             if (nextLine == nullptr) {
@@ -257,7 +257,7 @@ void INIFile::Section::insertKey(Key* newKey) {
         keyRoot = newKey;
     } else {
         // insert into list
-        Key* curKey = keyRoot;
+        auto* curKey = keyRoot;
         while (curKey->nextKey != nullptr) {
             curKey = curKey->nextKey;
         }
@@ -323,10 +323,10 @@ INIFile::INIFile(SDL_RWops* RWopsFile, bool bWhitespace) : bWhitespace(bWhitespa
    purpose.
 */
 INIFile::~INIFile() {
-    const INIFileLine* curLine = firstLine;
+    const auto* curLine = firstLine;
     while (curLine != nullptr) {
-        const INIFileLine* tmp = curLine;
-        curLine                = curLine->nextLine;
+        const auto* tmp = curLine;
+        curLine         = curLine->nextLine;
         delete tmp;
     }
 
@@ -349,7 +349,7 @@ bool INIFile::hasSection(std::string_view section) const {
     \return the section if found, nullptr otherwise
 */
 const INIFile::Section& INIFile::getSection(std::string_view sectionname) const {
-    const Section* curSection = getSectionInternal(sectionname);
+    const auto* const curSection = getSectionInternal(sectionname);
 
     if (curSection == nullptr) {
         throw std::out_of_range("There is no section '" + std::string{sectionname} + "' in this INI file");
@@ -366,12 +366,12 @@ const INIFile::Section& INIFile::getSection(std::string_view sectionname) const 
 bool INIFile::removeSection(std::string_view sectionname) {
     clearSection(sectionname, false);
 
-    const auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    const std::unique_ptr<Section> curSection{getSectionInternal(sectionname)};
     if (curSection == nullptr) {
         return false;
     }
 
-    if (curSection == sectionRoot) {
+    if (curSection.get() == sectionRoot) {
         // the "" section cannot be removed
         firstLine = sectionRoot->nextSection;
     } else {
@@ -384,7 +384,7 @@ bool INIFile::removeSection(std::string_view sectionname) {
             curSection->nextLine->prevLine = curSection->prevLine;
         }
 
-        if (firstLine == curSection) {
+        if (firstLine == curSection.get()) {
             firstLine = curSection->nextLine;
         }
 
@@ -396,8 +396,6 @@ bool INIFile::removeSection(std::string_view sectionname) {
         if (curSection->nextSection != nullptr) {
             curSection->nextSection->prevSection = curSection->prevSection;
         }
-
-        delete curSection;
     }
 
     return true;
@@ -410,15 +408,15 @@ bool INIFile::removeSection(std::string_view sectionname) {
     \return true on success
 */
 bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectionEnd) {
-    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = getSectionInternal(sectionname);
     if (curSection == nullptr) {
         return false;
     }
 
-    INIFile::INIFileLine* pCurrentLine = sectionRoot == curSection ? firstLine : curSection->nextLine;
+    auto* pCurrentLine = sectionRoot == curSection ? firstLine : curSection->nextLine;
 
     while (pCurrentLine != nullptr && pCurrentLine != curSection->nextSection) {
-        INIFile::INIFileLine* tmp = pCurrentLine->nextLine;
+        auto* tmp = pCurrentLine->nextLine;
         delete pCurrentLine;
         pCurrentLine = tmp;
     }
@@ -457,7 +455,7 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
     \return true, if the key exists, false otherwise
 */
 bool INIFile::hasKey(const std::string& section, const std::string& key) const {
-    const Section* curSection = getSectionInternal(section);
+    const auto* const curSection = getSectionInternal(section);
     if (curSection == nullptr) {
         return false;
     }
@@ -471,7 +469,7 @@ bool INIFile::hasKey(const std::string& section, const std::string& key) const {
     \return the key if found, nullptr otherwise
 */
 const INIFile::Key* INIFile::getKey(std::string_view sectionname, std::string_view keyname) const {
-    const INIFile::Section* curSection = getSectionInternal(sectionname);
+    const auto* const curSection = getSectionInternal(sectionname);
     if (curSection == nullptr) {
         return nullptr;
     }
@@ -486,12 +484,12 @@ const INIFile::Key* INIFile::getKey(std::string_view sectionname, std::string_vi
     \return true if removing was successful
 */
 bool INIFile::removeKey(const std::string& sectionname, const std::string& keyname) {
-    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = getSectionInternal(sectionname);
     if (curSection == nullptr) {
         return false;
     }
 
-    const INIFile::Key* key = curSection->getKey(keyname);
+    const std::unique_ptr<Key> key{curSection->getKey(keyname)};
     if (key == nullptr) {
         return false;
     }
@@ -505,7 +503,7 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
         key->nextLine->prevLine = key->prevLine;
     }
 
-    if (firstLine == key) {
+    if (firstLine == key.get()) {
         firstLine = key->nextLine;
     }
 
@@ -518,11 +516,9 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
         key->nextKey->prevKey = key->prevKey;
     }
 
-    if (curSection->keyRoot == key) {
+    if (curSection->keyRoot == key.get()) {
         curSection->keyRoot = key->nextKey;
     }
-
-    delete key;
 
     return true;
 }
@@ -538,7 +534,7 @@ bool INIFile::removeKey(const std::string& sectionname, const std::string& keyna
 */
 std::string
 INIFile::getStringValue(std::string_view section, std::string_view key, const std::string& defaultValue) const {
-    const Key* curKey = getKey(section, key);
+    const auto* const curKey = getKey(section, key);
     if (curKey == nullptr) {
         return defaultValue;
     }
@@ -556,7 +552,7 @@ INIFile::getStringValue(std::string_view section, std::string_view key, const st
     \return The read number, defaultValue or 0
 */
 int INIFile::getIntValue(std::string_view section, std::string_view key, int defaultValue) const {
-    const Key* curKey = getKey(section, key);
+    const auto* const curKey = getKey(section, key);
     if (curKey == nullptr) {
         return defaultValue;
     }
@@ -575,7 +571,7 @@ int INIFile::getIntValue(std::string_view section, std::string_view key, int def
     \return true for "true", "enabled", "on" and "1"<br>false for "false", "disabled", "off" and "0"
 */
 bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool defaultValue) const {
-    const Key* curKey = getKey(section, key);
+    const auto* const curKey = getKey(section, key);
     if (curKey == nullptr)
         return defaultValue;
     return curKey->getBoolValue(defaultValue);
@@ -592,7 +588,7 @@ bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool 
     \return The read number, defaultValue or 0.0f
 */
 float INIFile::getFloatValue(std::string_view section, std::string_view key, float defaultValue) const {
-    const Key* curKey = getKey(section, key);
+    const auto* const curKey = getKey(section, key);
     if (curKey == nullptr)
         return defaultValue;
     return curKey->getFloatValue(defaultValue);
@@ -609,7 +605,7 @@ float INIFile::getFloatValue(std::string_view section, std::string_view key, flo
     \return The read number, defaultValue or 0.0
 */
 double INIFile::getDoubleValue(std::string_view section, std::string_view key, double defaultValue) const {
-    const Key* curKey = getKey(section, key);
+    const auto* const curKey = getKey(section, key);
     if (curKey == nullptr)
         return defaultValue;
     return curKey->getDoubleValue(defaultValue);
@@ -623,7 +619,7 @@ double INIFile::getDoubleValue(std::string_view section, std::string_view key, d
    value that should be set \param  bEscapeIfNeeded   escape the string if it contains any special characters
 */
 void INIFile::setStringValue(std::string_view section, std::string_view key, std::string value, bool bEscapeIfNeeded) {
-    Section* curSection = getSectionOrCreate(section);
+    auto* const curSection = getSectionOrCreate(section);
 
     if (curSection == nullptr) {
         std::cerr << "INIFile: Cannot create section with name " << section << "!" << std::endl;
@@ -691,7 +687,7 @@ INIFile::SectionIterator INIFile::end() const {
     \return the iterator
 */
 INIFile::KeyIterator INIFile::begin(std::string_view section) const {
-    const Section* curSection = getSectionInternal(section);
+    const auto* curSection = getSectionInternal(section);
     if (curSection == nullptr) {
         return KeyIterator(nullptr);
     }
@@ -734,24 +730,23 @@ bool INIFile::saveChangesTo(const std::filesystem::path& filename, bool bDOSLine
     \return true on success otherwise false.
 */
 bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
-    const INIFileLine* curLine = firstLine;
+    const auto* curLine = firstLine;
 
     bool error = false;
     while (curLine != nullptr) {
-        unsigned int written = SDL_RWwrite(file, curLine->completeLine.c_str(), 1, curLine->completeLine.size());
-        if (written != curLine->completeLine.size()) {
+        if (1 != SDL_RWwrite(file, curLine->completeLine.c_str(), curLine->completeLine.size(), 1)) {
             std::cout << SDL_GetError() << std::endl;
             error = true;
         }
 
         if (bDOSLineEnding) {
             // when dos line ending we also put it at the end of the file
-            if ((written = SDL_RWwrite(file, "\r\n", 2, 1)) != 1) {
+            if (1 != SDL_RWwrite(file, "\r\n", 2, 1)) {
                 error = true;
             }
         } else if (curLine->nextLine != nullptr) {
             // when no dos line ending we skip the ending at the last line
-            if ((written = SDL_RWwrite(file, "\n", 1, 1)) != 1) {
+            if (1 != SDL_RWwrite(file, "\n", 1, 1)) {
                 error = true;
             }
         }
@@ -764,7 +759,7 @@ bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
 // private methods
 
 void INIFile::flush() const {
-    const INIFileLine* curLine = firstLine;
+    const auto* curLine = firstLine;
 
     while (curLine != nullptr) {
         std::cout << curLine->completeLine << std::endl;
@@ -775,7 +770,7 @@ void INIFile::flush() const {
 void INIFile::readfile(SDL_RWops* file) {
     sectionRoot = new Section("", INVALID_LINE, 0, 0, bWhitespace);
 
-    Section* curSection = sectionRoot;
+    auto* curSection = sectionRoot;
 
     std::string completeLine;
     completeLine.reserve(256);
@@ -788,13 +783,12 @@ void INIFile::readfile(SDL_RWops* file) {
 
     SimpleBufferedReader buffer{file};
 
-    bool readfinished = false;
+    auto readfinished = false;
 
     while (!readfinished) {
         lineNum++;
 
         completeLine.clear();
-        unsigned char tmp = 0;
 
         while (true) {
             const auto tmp = buffer.getch();
@@ -880,7 +874,7 @@ void INIFile::readfile(SDL_RWops* file) {
                                     newKey = new Key(completeLine, lineNum, keystart, keyend - keystart, valuestart + 1,
                                                      valueend - valuestart - 1);
 
-                                    if (firstLine == nullptr) {
+                                    if (curLine == nullptr) {
                                         firstLine = newKey;
                                         curLine   = newKey;
                                     } else {
@@ -902,7 +896,7 @@ void INIFile::readfile(SDL_RWops* file) {
                                     newKey = new Key(completeLine, lineNum, keystart, keyend - keystart, valuestart,
                                                      valueend - valuestart);
 
-                                    if (firstLine == nullptr) {
+                                    if (curLine == nullptr) {
                                         firstLine = newKey;
                                         curLine   = newKey;
                                     } else {
@@ -947,7 +941,7 @@ void INIFile::insertSection(Section* newSection) {
         sectionRoot = newSection;
     } else {
         // insert into list
-        Section* curSection = sectionRoot;
+        auto* curSection = sectionRoot;
         while (curSection->nextSection != nullptr) {
             curSection = curSection->nextSection;
         }
@@ -959,8 +953,20 @@ void INIFile::insertSection(Section* newSection) {
 
 const INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname) const {
 
-    for (const Section* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
-        const auto cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
+    for (const auto* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
+        const auto* cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
+
+        if (upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))
+            return curSection;
+    }
+
+    return nullptr;
+}
+
+INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname) {
+
+    for (auto* curSection = sectionRoot; curSection != nullptr; curSection = curSection->nextSection) {
+        const auto* cur_begin = &curSection->completeLine[curSection->sectionStringBegin];
 
         if (upper_compare(sectionname, std::string_view(cur_begin, curSection->sectionStringLength)))
             return curSection;
@@ -970,7 +976,7 @@ const INIFile::Section* INIFile::getSectionInternal(std::string_view sectionname
 }
 
 INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
-    auto* curSection = const_cast<Section*>(getSectionInternal(sectionname));
+    auto* curSection = getSectionInternal(sectionname);
 
     if (curSection == nullptr) {
         // create new section
@@ -985,7 +991,7 @@ INIFile::Section* INIFile::getSectionOrCreate(std::string_view sectionname) {
         if (firstLine == nullptr) {
             firstLine = curSection;
         } else {
-            INIFileLine* curLine = firstLine;
+            auto* curLine = firstLine;
             while (curLine->nextLine != nullptr) {
                 curLine = curLine->nextLine;
             }
