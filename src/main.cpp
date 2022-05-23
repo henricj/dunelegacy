@@ -636,7 +636,7 @@ inline constexpr auto default_dpi =
 #if defined(_WIN32)
 float physical_dpi(SDL_Window* sdl_window) {
     using fn_ptr =
-        HRESULT(__cdecl*)(_In_ HMONITOR hmonitor, _In_ MONITOR_DPI_TYPE dpiType, _Out_ UINT * dpiX, _Out_ UINT * dpiY);
+        HRESULT(WINAPI*)(_In_ HMONITOR hmonitor, _In_ MONITOR_DPI_TYPE dpiType, _Out_ UINT * dpiX, _Out_ UINT * dpiY);
 
     static auto shcore = LoadLibraryA("Shcore.dll");
 
