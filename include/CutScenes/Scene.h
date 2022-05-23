@@ -78,9 +78,19 @@ public:
 private:
     int currentFrameNumber{}; ///< current frame number in this frame
 
-    std::queue<std::unique_ptr<VideoEvent>> videoEvents;     ///< queue of all VideoEvents in this scene
-    std::vector<std::unique_ptr<TextEvent>> textEvents;      ///< list of all TextEvents in this scene
-    std::list<std::unique_ptr<CutSceneTrigger>> triggerList; ///< list of all CutSceneTriggers in this scene
+    std::queue<std::unique_ptr<VideoEvent>> videoEvents; ///< queue of all VideoEvents in this scene
+    std::vector<std::unique_ptr<TextEvent>> textEvents;  ///< list of all TextEvents in this scene
+
+    struct TriggerCompare {
+        bool
+        operator()(const std::unique_ptr<CutSceneTrigger>& lhs, const std::unique_ptr<CutSceneTrigger>& rhs) const {
+            return lhs->getTriggerFrameNumber() > rhs->getTriggerFrameNumber();
+        }
+    };
+    using trigger_queue_type = std::priority_queue<std::unique_ptr<CutSceneTrigger>,
+                                                   std::vector<std::unique_ptr<CutSceneTrigger>>, TriggerCompare>;
+
+    trigger_queue_type triggerList; ///< list of all CutSceneTriggers in this scene
 };
 
 #endif // SCENE_H

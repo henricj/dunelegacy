@@ -35,16 +35,7 @@ void Scene::addTextEvent(std::unique_ptr<TextEvent> newTextEvent) {
 }
 
 void Scene::addTrigger(std::unique_ptr<CutSceneTrigger> newTrigger) {
-    auto iter = triggerList.begin();
-    while (iter != triggerList.end()) {
-        if ((*iter)->getTriggerFrameNumber() > newTrigger->getTriggerFrameNumber()) {
-            break;
-        }
-
-        ++iter;
-    }
-
-    triggerList.insert(iter, std::move(newTrigger));
+    triggerList.emplace(std::move(newTrigger));
 }
 
 bool Scene::isFinished() const {
@@ -86,7 +77,7 @@ int Scene::draw() {
 
     // 4.: Process Triggers
     while (!triggerList.empty()) {
-        const auto& pTrigger = triggerList.front();
+        const auto& pTrigger = triggerList.top();
 
         if (pTrigger->getTriggerFrameNumber() > currentFrameNumber) {
             break;
@@ -96,7 +87,7 @@ int Scene::draw() {
             pTrigger->trigger(currentFrameNumber);
         }
 
-        triggerList.pop_front();
+        triggerList.pop();
     }
 
     currentFrameNumber++;
