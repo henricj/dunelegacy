@@ -18,7 +18,6 @@
 #include <CutScenes/FadeOutVideoEvent.h>
 
 #include "misc/DrawingRectHelper.h"
-#include <Colors.h>
 #include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
@@ -27,7 +26,7 @@
 
 FadeOutVideoEvent::FadeOutVideoEvent(SDL_Surface* pSurface, int numFrames2FadeOut, bool bCenterVertical,
                                      bool bFadeWhite)
-    : currentFrame(0), numFrames2FadeOut(numFrames2FadeOut), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
+    : numFrames2FadeOut(numFrames2FadeOut), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
     const auto pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
 
     pTexture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), pTmp.get())};
@@ -43,7 +42,7 @@ int FadeOutVideoEvent::draw() {
     const auto dest =
         calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    const int alpha = std::max(0, 255 - 255 * currentFrame / numFrames2FadeOut);
+    const auto alpha = std::max(0, 255 - 255 * currentFrame / numFrames2FadeOut);
     if (bFadeWhite) {
         // fade to white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

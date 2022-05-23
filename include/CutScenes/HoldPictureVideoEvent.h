@@ -51,7 +51,7 @@ public:
     bool isFinished() override;
 
 private:
-    int currentFrame;           ///< the current frame number relative to the start of this HoldPictureVideoEvent
+    int currentFrame = 0;       ///< the current frame number relative to the start of this HoldPictureVideoEvent
     int numFrames2Hold;         ///< the number of frames the picture should be shown
     sdl2::texture_ptr pTexture; ///< the picture to show
     bool bCenterVertical; ///< true = center the surface vertically on the screen, false = blit the surface at the top

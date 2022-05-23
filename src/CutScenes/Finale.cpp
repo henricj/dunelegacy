@@ -38,8 +38,6 @@
 #include <misc/draw_util.h>
 #include <misc/sound_util.h>
 
-#include <string>
-
 Finale::Finale(HOUSETYPE house) {
 
     const auto* const file_manager = dune::globals::pFileManager.get();

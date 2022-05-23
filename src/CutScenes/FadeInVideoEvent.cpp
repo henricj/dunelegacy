@@ -18,7 +18,6 @@
 #include <CutScenes/FadeInVideoEvent.h>
 
 #include "misc/DrawingRectHelper.h"
-#include <Colors.h>
 #include <globals.h>
 #include <misc/Scaler.h>
 #include <misc/draw_util.h>
@@ -26,9 +25,9 @@
 #include <algorithm>
 
 FadeInVideoEvent::FadeInVideoEvent(SDL_Surface* pSurface, int numFrames2FadeIn, bool bCenterVertical, bool bFadeWhite)
-    : currentFrame(0), numFrames2FadeIn(numFrames2FadeIn), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
-    const sdl2::surface_ptr pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
-    pTexture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), pTmp.get())};
+    : numFrames2FadeIn(numFrames2FadeIn), bCenterVertical(bCenterVertical), bFadeWhite(bFadeWhite) {
+    const auto pTmp = convertSurfaceToDisplayFormat(Scaler::defaultDoubleSurface(pSurface).get());
+    pTexture        = sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), pTmp.get())};
 
     SDL_SetTextureBlendMode(pTexture.get(), SDL_BLENDMODE_BLEND);
 }
@@ -38,7 +37,7 @@ FadeInVideoEvent::~FadeInVideoEvent() = default;
 int FadeInVideoEvent::draw() {
     auto* const renderer = dune::globals::renderer.get();
 
-    const SDL_Rect dest =
+    const auto dest =
         calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
     const int alpha = std::min(255, 255 * currentFrame / numFrames2FadeIn);

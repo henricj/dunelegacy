@@ -50,7 +50,7 @@ public:
     bool isFinished() override;
 
 private:
-    int currentFrame;                    ///< the current frame number relative to the start of this WSAVideoEvent
+    int currentFrame = 0;                ///< the current frame number relative to the start of this WSAVideoEvent
     Wsafile* pWsafile;                   ///< the video to play
     sdl2::texture_ptr pStreamingTexture; ///< the texture used for rendering from
     bool bCenterVertical; ///< true = center the video vertically on the screen, false = blit the video frames at the

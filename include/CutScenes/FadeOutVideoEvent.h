@@ -53,7 +53,7 @@ public:
     bool isFinished() override;
 
 private:
-    int currentFrame;           ///< the current frame number relative to the start of this FadeOutVideoEvent
+    int currentFrame = 0;       ///< the current frame number relative to the start of this FadeOutVideoEvent
     int numFrames2FadeOut;      ///< the number of frames the fading should take
     sdl2::texture_ptr pTexture; ///< the picture to fade out
     bool bCenterVertical; ///< true = center the surface vertically on the screen, false = blit the surface at the top

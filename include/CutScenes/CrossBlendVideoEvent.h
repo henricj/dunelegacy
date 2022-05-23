@@ -53,7 +53,7 @@ public:
     bool isFinished() override;
 
 private:
-    int currentFrame; ///< the current frame number relative to the start of this CrossBlendVideoEvent
+    int currentFrame = 0; ///< the current frame number relative to the start of this CrossBlendVideoEvent
     std::unique_ptr<BlendBlitter> pBlendBlitter;  ///< the used blend blitter
     sdl2::surface_ptr pBlendBlitterTargetSurface; ///< the picture holding the current blending frame
     sdl2::texture_ptr pStreamingTexture;          ///< the texture used for rendering from
