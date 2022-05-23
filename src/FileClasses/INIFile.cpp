@@ -734,7 +734,9 @@ bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
 
     bool error = false;
     while (curLine != nullptr) {
-        if (1 != SDL_RWwrite(file, curLine->completeLine.c_str(), curLine->completeLine.size(), 1)) {
+        const auto& line = curLine->completeLine;
+
+        if (!line.empty() && 1 != SDL_RWwrite(file, line.data(), line.size(), 1)) {
             std::cout << SDL_GetError() << std::endl;
             error = true;
         }
