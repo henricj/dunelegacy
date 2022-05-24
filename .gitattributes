@@ -20,3 +20,5 @@
 *.jpg binary
 
 *.pbxproj -crlf -diff
+
+/tests/INIFileTestCase/INIFileTestCas?*.ini.ref? binary diff
