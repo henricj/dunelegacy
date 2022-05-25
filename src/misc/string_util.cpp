@@ -294,8 +294,8 @@ std::string convertCP850ToUTF8(std::string_view text) {
             result += c;
         } else {
             c = cp850toISO8859_1[c - 128];
-            result += 0xC0 | c >> 6;
-            result += 0x80 | c & 0x3F;
+            result += 0xC0 | (c >> 6);
+            result += 0x80 | (c & 0x3F);
         }
     }
     return result;

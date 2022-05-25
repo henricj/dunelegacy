@@ -135,8 +135,6 @@ int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight) 
 }
 
 float getLogicalToPhysicalScale(int physicalWidth, int physicalHeight) {
-    auto& gui = GUIStyle::getInstance();
-
     if (physicalWidth >= 1280 * 3 && physicalHeight >= 720 * 3) {
         return 3;
     }

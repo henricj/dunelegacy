@@ -377,7 +377,7 @@ void Game::drawScreen() {
 
                     if (fogTile != 0) {
                         const SDL_Rect source{fogTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};
-                        Dune_RenderCopyF(renderer, hiddenTexZoomed, &source, &drawLocation);
+                        Dune_RenderCopyF(renderer, hiddenFogTexZoomed, &source, &drawLocation);
                     }
                 }
             } else {
@@ -441,7 +441,7 @@ void Game::drawScreen() {
                     const auto is_slab = placeItem == Structure_Slab1 || placeItem == Structure_Slab4;
 
                     map->for_each(xPos, yPos, xPos + structureSize.x, yPos + structureSize.y,
-                                  [this, withinRange, invalidPlace, validPlace, is_slab,
+                                  [withinRange, invalidPlace, validPlace, is_slab,
                                    renderer     = dune::globals::renderer.get(),
                                    screenborder = dune::globals::screenborder.get()](auto& t) {
                                       const DuneTexture* image = nullptr;
@@ -554,8 +554,6 @@ void Game::drawScreen() {
         }
 
         const auto pFinishMessageTexture = gui.createText(renderer, message, COLOR_WHITE, 28);
-
-        const auto size = getRendererSize();
 
         const auto x = (sideBarPos.x - pFinishMessageTexture.width_) / 2;
         const auto y = topBarPos.h + (renderer_height - topBarPos.h - pFinishMessageTexture.height_) / 2;
@@ -1442,12 +1440,9 @@ void Game::runMainLoop(const GameContext& context) {
         if (bWaitForNetwork || bPause || gameCycleCount >= skipToGameCycle) {
             const auto until = (dune::globals::settings.video.frameLimit ? 16ms : 5ms) + frameStart;
 
-            const auto start = dune::dune_clock::now();
-
             doEventsUntil(context, until);
 
-            const auto stop    = dune::dune_clock::now();
-            const auto elapsed = stop - start;
+            const auto stop = dune::dune_clock::now();
 
             if (stop > until + 50ms) {
                 static auto count = 0;

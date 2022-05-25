@@ -49,7 +49,6 @@ sdl2::surface_ptr Font::createMultilineTextSurface(std::string_view text, uint32
     }
 
     const auto lineHeight = getTextHeight();
-    const auto width0     = getTextWidth(text);
     const auto lines      = static_cast<int>(textLines.size());
     const int height      = lineHeight * lines + lineHeight * (lines - 1) / 2;
 

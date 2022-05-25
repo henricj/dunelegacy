@@ -1323,7 +1323,7 @@ void QuantBot::build(int militaryValue) {
                                     itemID = Structure_LightFactory;
                                 } else if (itemCount[Structure_Radar] == 0
                                            && pBuilder->isAvailableToBuild(Structure_Radar)
-                                           && ((itemCount[Unit_Harvester] > 4 && money > 1500 || money > 3000))) {
+                                           && (((itemCount[Unit_Harvester] > 4 && money > 1500) || money > 3000))) {
                                     itemID = Structure_Radar;
                                 } else if (itemCount[Structure_HeavyFactory] == 0 && money > 10000
                                            && pBuilder->isAvailableToBuild(Structure_HeavyFactory)) {
@@ -1363,11 +1363,11 @@ void QuantBot::build(int militaryValue) {
                                     // logDebug("Build Repair... active: %d  total: %d", activeRepairYardCount,
                                     // getHouse()->getNumItems(Structure_RepairYard));
 
-                                } else if (pBuilder->isAvailableToBuild(Structure_HeavyFactory)
-                                               && (itemCount[Structure_HeavyFactory] <= activeHeavyFactoryCount
-                                                       && (money > 1000 + itemCount[Structure_HeavyFactory] * 1500)
-                                                   || itemCount[Structure_HeavyFactory] < 3
-                                                          && money > 1000 + itemCount[Structure_HeavyFactory] * 2000)
+                                } else if ((pBuilder->isAvailableToBuild(Structure_HeavyFactory)
+                                            && ((itemCount[Structure_HeavyFactory] <= activeHeavyFactoryCount
+                                                 && (money > 1000 + itemCount[Structure_HeavyFactory] * 1500))
+                                                || (itemCount[Structure_HeavyFactory] < 3
+                                                    && money > 1000 + itemCount[Structure_HeavyFactory] * 2000)))
                                            || (money > 1000 + itemCount[Structure_HeavyFactory] * 3000)) {
                                     // If we have a lot of money get more heavy factories
                                     itemID = Structure_HeavyFactory;

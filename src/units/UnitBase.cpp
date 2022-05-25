@@ -263,7 +263,7 @@ void UnitBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
-    if (dune::globals::pLocalHouse == owner && isRespondable() || dune::globals::debug) {
+    if ((dune::globals::pLocalHouse == owner && isRespondable()) || dune::globals::debug) {
         return UnitInterface::create(context, objectID);
     }
     return DefaultObjectInterface::create(context, objectID);
@@ -972,7 +972,7 @@ void UnitBase::doAttackPos(const GameContext& context, int xPos, int yPos, bool 
 }
 
 void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced) {
-    if (pTargetObject->getObjectID() == getObjectID() || !canAttack() && getItemID() != Unit_Harvester)
+    if (pTargetObject->getObjectID() == getObjectID() || (!canAttack() && getItemID() != Unit_Harvester))
         return;
 
     if (attackMode == CAPTURE)
@@ -1173,7 +1173,7 @@ void UnitBase::setGettingRepaired() {
 }
 
 void UnitBase::setGuardPoint(int newX, int newY) {
-    if (dune::globals::currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
+    if (dune::globals::currentGameMap->tileExists(newX, newY) || (newX == INVALID_POS && newY == INVALID_POS)) {
         guardPoint.x = newX;
         guardPoint.y = newY;
 

@@ -339,8 +339,6 @@ void BuilderList::draw(Point position) {
                     // draw number of this in build list
                     const auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num), COLOR_RED, 12);
 
-                    const auto size = getRendererSize();
-
                     const auto x = dest.x + BUILDERBTN_WIDTH - 3 - pNumberTexture.width_;
                     const auto y = dest.y + BUILDERBTN_HEIGHT - 2 - pNumberTexture.height_;
 

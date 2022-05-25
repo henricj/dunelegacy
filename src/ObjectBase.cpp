@@ -251,7 +251,7 @@ std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameCon
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
-    if (dune::globals::currentGameMap->tileExists(newX, newY) || newX == INVALID_POS && newY == INVALID_POS) {
+    if (dune::globals::currentGameMap->tileExists(newX, newY) || (newX == INVALID_POS && newY == INVALID_POS)) {
         destination.x = newX;
         destination.y = newY;
     }
@@ -314,7 +314,7 @@ void ObjectBase::unassignFromMap(const Coord& location) const {
 
 bool ObjectBase::canAttack(const ObjectBase* object) const {
     return canAttack() && object != nullptr && (object->isAStructure() || !object->isAFlyingUnit())
-        && (object->getOwner()->getTeamID() != owner->getTeamID() && object->isVisible(getOwner()->getTeamID())
+        && ((object->getOwner()->getTeamID() != owner->getTeamID() && object->isVisible(getOwner()->getTeamID()))
             || object->getItemID() == Unit_Sandworm);
 }
 
@@ -500,7 +500,7 @@ const ObjectBase* ObjectBase::findTarget() const {
                     if (!pNewTarget)
                         continue;
 
-                    if ((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall
+                    if (((pNewTarget->getItemID() != Structure_Wall && pNewTarget->getItemID() != Unit_Carryall)
                          || pClosestTarget == nullptr)
                         && canAttack(pNewTarget)) {
                         if (targetDistance < closestTargetDistance) {

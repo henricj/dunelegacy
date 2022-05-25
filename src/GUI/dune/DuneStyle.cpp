@@ -215,8 +215,6 @@ DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_vi
     if (activated)
         textcolor = brightenUp(textcolor);
 
-    const auto scale = getActualScale();
-
     const auto line_width = scale_to_physical_integer(2);
 
     const auto box_x1 = scale_to_physical_integer(4);
@@ -479,10 +477,6 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height
 namespace {
 
 constexpr SDL_FRect offset_rect(const SDL_FRect& reference, float x, float y, float w, float h) {
-    return {reference.x + x, reference.y + y, reference.w + w, reference.h + h};
-}
-
-constexpr SDL_Rect offset_rect(const SDL_Rect& reference, int x, int y, int w, int h) {
     return {reference.x + x, reference.y + y, reference.w + w, reference.h + h};
 }
 

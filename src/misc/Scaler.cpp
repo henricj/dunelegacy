@@ -386,13 +386,13 @@ sdl2::surface_ptr Scaler::tripleTiledSurfaceScale3x(SDL_Surface* src, int tilesX
 
                     if (B != H && D != F) {
                         E0 = D == B ? D : E;
-                        E1 = D == B && E != C || B == F && E != A ? B : E;
+                        E1 = (D == B && E != C) || (B == F && E != A) ? B : E;
                         E2 = B == F ? F : E;
-                        E3 = D == B && E != G || D == H && E != A ? D : E;
+                        E3 = (D == B && E != G) || (D == H && E != A) ? D : E;
                         E4 = E;
-                        E5 = B == F && E != I || H == F && E != C ? F : E;
+                        E5 = (B == F && E != I) || (H == F && E != C) ? F : E;
                         E6 = D == H ? D : E;
-                        E7 = D == H && E != I || H == F && E != G ? H : E;
+                        E7 = (D == H && E != I) || (H == F && E != G) ? H : E;
                         E8 = H == F ? F : E;
                     } else {
                         E0 = E;

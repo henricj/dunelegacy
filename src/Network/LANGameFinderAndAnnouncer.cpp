@@ -22,6 +22,8 @@
 
 #include <config.h>
 
+#include <ranges>
+
 inline constexpr auto NETWORKPACKET_ANNOUNCEGAME           = 1;
 inline constexpr auto NETWORKPACKET_REMOVEGAMEANNOUNCEMENT = 2;
 inline constexpr auto NETWORKPACKET_REQUESTANNOUNCE        = 3;
@@ -87,7 +89,7 @@ LANGameFinderAndAnnouncer::LANGameFinderAndAnnouncer() : announceSocket(enet_soc
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Setting socket option 'ENET_SOCKOPT_BROADCAST' failed!");
     }
 
-    ENetAddress address;
+    ENetAddress address{};
     address.host = ENET_HOST_ANY;
     address.port = LANGAME_ANNOUNCER_PORT;
 
@@ -122,7 +124,7 @@ void LANGameFinderAndAnnouncer::update() {
 
 void LANGameFinderAndAnnouncer::announceGame() {
 
-    ENetAddress destinationAddress;
+    ENetAddress destinationAddress{};
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
@@ -130,17 +132,19 @@ void LANGameFinderAndAnnouncer::announceGame() {
 
     announcePacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     announcePacket.type        = NETWORKPACKET_ANNOUNCEGAME;
-    strncpy(announcePacket.serverName, serverName.c_str(), LANGAME_ANNOUNCER_MAXGAMENAMESIZE);
-    strncpy(announcePacket.serverVersion, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE);
+    std::ranges::copy(serverName | std::views::take(sizeof announcePacket.serverName), announcePacket.serverName);
+    std::ranges::copy(VERSIONSTRING | std::views::take(sizeof announcePacket.serverVersion),
+                      announcePacket.serverVersion);
     announcePacket.serverPort = SDL_SwapLE16(serverPort);
-    strncpy(announcePacket.mapName, mapName.c_str(), LANGAME_ANNOUNCER_MAXMAPNAMESIZE);
-    announcePacket.numPlayers = numPlayers;
-    announcePacket.maxPlayers = maxPlayers;
+    std::ranges::copy(mapName | std::views::take(sizeof announcePacket.mapName), announcePacket.mapName);
+    announcePacket.numPlayers = static_cast<char>(numPlayers);
+    announcePacket.maxPlayers = static_cast<char>(maxPlayers);
 
-    ENetBuffer enetBuffer;
+    ENetBuffer enetBuffer{};
     enetBuffer.data       = &announcePacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_AnnounceGame);
-    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+
+    const int err = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // blocked
     } else if (err < 0) {
@@ -151,7 +155,7 @@ void LANGameFinderAndAnnouncer::announceGame() {
 }
 
 void LANGameFinderAndAnnouncer::refreshServerList() const {
-    ENetAddress destinationAddress;
+    ENetAddress destinationAddress{};
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
@@ -160,10 +164,11 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
     requestPacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     requestPacket.type        = NETWORKPACKET_REQUESTANNOUNCE;
 
-    ENetBuffer enetBuffer;
+    ENetBuffer enetBuffer{};
     enetBuffer.data       = &requestPacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_RequestGame);
-    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+
+    const int err = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // blocked
     } else if (err < 0) {
@@ -172,14 +177,15 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
 }
 
 void LANGameFinderAndAnnouncer::receivePackets() {
-    NetworkPacket_AnnounceGame announcePacket;
+    NetworkPacket_AnnounceGame announcePacket{};
 
     ENetAddress senderAddress;
 
-    ENetBuffer enetBuffer;
+    ENetBuffer enetBuffer{};
     enetBuffer.data       = &announcePacket;
     enetBuffer.dataLength = sizeof(announcePacket);
-    int receivedBytes     = enet_socket_receive(announceSocket, &senderAddress, &enetBuffer, 1);
+
+    int receivedBytes = enet_socket_receive(announceSocket, &senderAddress, &enetBuffer, 1);
     if (receivedBytes == 0) {
         // blocked
     } else if (receivedBytes < 0) {
@@ -190,15 +196,15 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             && (announcePacket.type == NETWORKPACKET_ANNOUNCEGAME)
             && (strncmp(announcePacket.serverVersion, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE) == 0)) {
 
-            std::string serverName = std::string(announcePacket.serverName, LANGAME_ANNOUNCER_MAXGAMENAMESIZE);
-            serverName.resize(strlen(serverName.c_str())); // strip off '\0' at the end of the std::string
-            int serverPort = SDL_SwapLE16(announcePacket.serverPort);
+            auto make_string = [](auto& src) { return std::string{std::begin(src), std::ranges::find(src, '\0')}; };
 
-            std::string mapName = std::string(announcePacket.mapName, LANGAME_ANNOUNCER_MAXMAPNAMESIZE);
-            mapName.resize(strlen(mapName.c_str())); // strip off '\0' at the end of the std::string
+            const auto serverName = make_string(announcePacket.serverName);
+            int serverPort        = SDL_SwapLE16(announcePacket.serverPort);
 
-            int numPlayers = announcePacket.numPlayers;
-            int maxPlayers = announcePacket.maxPlayers;
+            const auto mapName = make_string(announcePacket.mapName);
+
+            const auto numPlayers = static_cast<int>(announcePacket.numPlayers);
+            const auto maxPlayers = static_cast<int>(announcePacket.maxPlayers);
 
             GameServerInfo gameServerInfo;
             gameServerInfo.serverAddress.host = senderAddress.host;
@@ -211,7 +217,7 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             gameServerInfo.lastUpdate         = dune::as_milliseconds(dune::dune_clock::now().time_since_epoch());
 
             bool bUpdate = false;
-            for (GameServerInfo& curGameServerInfo : gameServerInfoList) {
+            for (auto& curGameServerInfo : gameServerInfoList) {
                 if ((curGameServerInfo.serverAddress.host == gameServerInfo.serverAddress.host)
                     && (curGameServerInfo.serverAddress.port == gameServerInfo.serverAddress.port)) {
                     curGameServerInfo = gameServerInfo;
@@ -221,14 +227,12 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             }
 
             if (bUpdate) {
-                if (pOnUpdateServer) {
+                if (pOnUpdateServer)
                     pOnUpdateServer(gameServerInfo);
-                }
             } else {
-                gameServerInfoList.push_back(gameServerInfo);
-                if (pOnNewServer) {
-                    pOnNewServer(gameServerInfo);
-                }
+                gameServerInfoList.push_back(std::move(gameServerInfo));
+                if (pOnNewServer)
+                    pOnNewServer(gameServerInfoList.back());
             }
         } else if ((receivedBytes == sizeof(NetworkPacket_RemoveGameAnnouncement))
                    && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
@@ -239,8 +243,9 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             auto iter = gameServerInfoList.begin();
             while (iter != gameServerInfoList.end()) {
                 if ((iter->serverAddress.host == senderAddress.host) && (iter->serverAddress.port == serverPort)) {
-                    GameServerInfo tmpGameServerInfo = *iter;
-                    iter                             = gameServerInfoList.erase(iter);
+                    auto tmpGameServerInfo = *iter;
+
+                    iter = gameServerInfoList.erase(iter);
 
                     if (pOnRemoveServer) {
                         pOnRemoveServer(tmpGameServerInfo);
@@ -277,7 +282,7 @@ void LANGameFinderAndAnnouncer::updateServerInfoList() {
 
 void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
 
-    ENetAddress destinationAddress;
+    ENetAddress destinationAddress{};
     destinationAddress.host = ENET_HOST_BROADCAST;
     destinationAddress.port = LANGAME_ANNOUNCER_PORT;
 
@@ -287,10 +292,11 @@ void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
     removeAnnouncementPacket.type        = NETWORKPACKET_REMOVEGAMEANNOUNCEMENT;
     removeAnnouncementPacket.serverPort  = SDL_SwapLE16(serverPort);
 
-    ENetBuffer enetBuffer;
+    ENetBuffer enetBuffer{};
     enetBuffer.data       = &removeAnnouncementPacket;
     enetBuffer.dataLength = sizeof(NetworkPacket_RemoveGameAnnouncement);
-    const int err         = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
+
+    const int err = enet_socket_send(announceSocket, &destinationAddress, &enetBuffer, 1);
     if (err == 0) {
         // would have blocked, need to resend later
     } else if (err < 0) {

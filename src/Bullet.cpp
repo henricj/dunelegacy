@@ -307,7 +307,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
 
             if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
                                      lock.pitch())) {
-                const auto sdl_error = SDL_GetError();
+                sdl2::log_error("Bullet render pixels failed: %s!", SDL_GetError());
             }
         }
 

@@ -679,8 +679,8 @@ void CustomGamePlayers::onNext() {
         const int currentPlayer1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
         const int currentPlayer2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
-        if (currentPlayer1 != PLAYER_OPEN && currentPlayer1 != PLAYER_CLOSED
-            || currentPlayer2 != PLAYER_OPEN && currentPlayer2 != PLAYER_CLOSED) {
+        if ((currentPlayer1 != PLAYER_OPEN && currentPlayer1 != PLAYER_CLOSED)
+            || (currentPlayer2 != PLAYER_OPEN && currentPlayer2 != PLAYER_CLOSED)) {
             numUsedHouses++;
 
             const int currentTeam = curHouseInfo.teamDropDown.getSelectedEntryIntData();
@@ -689,8 +689,8 @@ void CustomGamePlayers::onNext() {
                 const int player1 = houseInfo[j].player1DropDown.getSelectedEntryIntData();
                 const int player2 = houseInfo[j].player2DropDown.getSelectedEntryIntData();
 
-                if (player1 != PLAYER_OPEN && player1 != PLAYER_CLOSED
-                    || player2 != PLAYER_OPEN && player2 != PLAYER_CLOSED) {
+                if ((player1 != PLAYER_OPEN && player1 != PLAYER_CLOSED)
+                    || (player2 != PLAYER_OPEN && player2 != PLAYER_CLOSED)) {
 
                     const int team = houseInfo[j].teamDropDown.getSelectedEntryIntData();
                     if (currentTeam == team) {
@@ -1276,7 +1276,7 @@ void CustomGamePlayers::checkPlayerBoxes() {
             numPlayers++;
         }
 
-        if (!gameInitSettings.isMultiplePlayersPerHouse() || player1 == PLAYER_OPEN && player2 == PLAYER_OPEN
+        if (!gameInitSettings.isMultiplePlayersPerHouse() || (player1 == PLAYER_OPEN && player2 == PLAYER_OPEN)
             || curHouseInfo.player2DropDown.getNumEntries() == 0) {
             curHouseInfo.player2DropDown.setVisible(false);
             curHouseInfo.player2DropDown.setEnabled(false);
