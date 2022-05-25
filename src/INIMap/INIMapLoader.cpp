@@ -347,7 +347,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
     // find "player?" sections
     std::vector<std::string> playerSectionsOnMap;
     for (int i = 1; i <= NUM_HOUSES; i++) {
-        const auto sectionname = std::format("player{}", i);
+        const auto sectionname = fmt::format("player{}", i);
         if (inifile->hasSection(sectionname)) {
             playerSectionsOnMap.push_back(sectionname);
         }

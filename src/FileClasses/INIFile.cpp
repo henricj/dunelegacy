@@ -148,7 +148,7 @@ bool INIFile::Key::escapingValueNeeded(const std::string_view value) {
 
 std::string INIFile::Key::escapeValue(std::string value) {
     if (escapingValueNeeded(value))
-        return std::format("\"{}\"", value);
+        return fmt::format("\"{}\"", value);
 
     return value;
 }
@@ -157,7 +157,7 @@ INIFile::Section::Section(std::string completeLine, substring section, bool bWhi
     : INIFileLine(std::move(completeLine)), section_{section}, bWhitespace(bWhitespace) { }
 
 INIFile::Section::Section(std::string_view sectionname, bool bWhitespace)
-    : INIFileLine{std::format("[{}]", sectionname)}, section_{1, sectionname.size()}, bWhitespace(bWhitespace) { }
+    : INIFileLine{fmt::format("[{}]", sectionname)}, section_{1, sectionname.size()}, bWhitespace(bWhitespace) { }
 
 INIFile::Section::~Section() = default;
 
