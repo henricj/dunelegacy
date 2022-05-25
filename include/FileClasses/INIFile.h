@@ -53,30 +53,35 @@ public:
         constexpr substring(std::string::size_type offset, std::string::size_type size)
             : offset_{offset}, size_{size} { }
 
-        constexpr std::string::size_type offset() const { return offset_; }
-        constexpr std::string::size_type size() const { return size_; }
+        [[nodiscard]] constexpr std::string::size_type offset() const { return offset_; }
+        [[nodiscard]] constexpr std::string::size_type size() const { return size_; }
 
-        constexpr bool empty() const { return size_ == 0; }
-        constexpr std::string_view apply(std::string_view s) const { return s.substr(offset_, size_); }
+        [[nodiscard]] constexpr bool empty() const { return size_ == 0; }
+        [[nodiscard]] constexpr std::string_view apply(std::string_view s) const { return s.substr(offset_, size_); }
 
     private:
         std::string::size_type offset_;
         std::string::size_type size_;
     };
 
-    class INIFileLine {
+    class Line {
     public:
-        INIFileLine(std::string completeLine);
-        virtual ~INIFileLine();
+        explicit Line(std::string completeLine);
+        virtual ~Line();
 
-        friend class INIFile;
-        friend class Section;
+        Line(const Line&)            = default;
+        Line(Line&&)                 = default;
+        Line& operator=(const Line&) = default;
+        Line& operator=(Line&&)      = default;
+
+        [[nodiscard]] const auto& line() const { return line_; }
+        [[nodiscard]] bool empty() const { return line_.empty(); }
 
     protected:
-        std::string completeLine;
+        std::string line_;
     };
 
-    class Key final : public INIFileLine {
+    class Key final : public Line {
     private:
         struct initializer {
             std::string completeLine;
@@ -92,6 +97,11 @@ public:
         Key(std::string completeLine, substring key, substring value);
         Key(std::string_view keyname, std::string_view value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
         ~Key() override;
+
+        Key(const Key&)            = default;
+        Key(Key&&)                 = default;
+        Key& operator=(const Key&) = default;
+        Key& operator=(Key&&)      = default;
 
         [[nodiscard]] std::string_view getKeyName() const;
         [[nodiscard]] std::string_view getStringView() const;
@@ -206,11 +216,16 @@ public:
         substring value_;
     };
 
-    class Section final : public INIFileLine {
+    class Section final : public Line {
     public:
         Section(std::string completeLine, substring section, bool bWhitespace = true);
         Section(std::string_view sectionname, bool bWhitespace = true);
         ~Section() override;
+
+        Section(const Section&)            = default;
+        Section(Section&&)                 = default;
+        Section& operator=(const Section&) = default;
+        Section& operator=(Section&&)      = default;
 
         [[nodiscard]] std::string_view getSectionName() const;
 
@@ -231,8 +246,8 @@ public:
         return lines_.size();
     }
 
-    size_t getLineNumber(std::string_view sectionname) const;
-    size_t getLineNumber(std::string_view sectionname, std::string_view keyname) const;
+    [[nodiscard]] size_t getLineNumber(std::string_view sectionname) const;
+    [[nodiscard]] size_t getLineNumber(std::string_view sectionname, std::string_view keyname) const;
 
     [[nodiscard]] bool hasSection(std::string_view section) const;
     [[nodiscard]] const Section& getSection(std::string_view sectionname) const;
@@ -264,7 +279,7 @@ public:
              | std::views::transform([](auto& v) { return std::get<Section>(v); });
     }
 
-    auto keys(std::string_view sectionname) const {
+    [[nodiscard]] auto keys(std::string_view sectionname) const {
         auto section = getSectionInternal(sectionname);
 
         return section | std::views::filter([](auto& v) { return std::holds_alternative<Key>(v); })
@@ -272,7 +287,7 @@ public:
     }
 
 private:
-    using line_type  = std::variant<INIFileLine, Key, Section>;
+    using line_type  = std::variant<Line, Key, Section>;
     using lines_type = std::deque<line_type>;
 
     lines_type lines_;

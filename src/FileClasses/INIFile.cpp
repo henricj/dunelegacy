@@ -30,28 +30,31 @@
 
 using namespace std::literals;
 
-INIFile::INIFileLine::INIFileLine(std::string completeLine) : completeLine(std::move(completeLine)) { }
+INIFile::Line::Line(std::string completeLine) : line_(std::move(completeLine)) { }
 
-INIFile::INIFileLine::~INIFileLine() = default;
+INIFile::Line::~Line() = default;
 
 INIFile::Key::Key(std::string completeLine, substring key, substring value)
-    : INIFileLine(std::move(completeLine)), key_(key), value_{value} { }
+    : Line(std::move(completeLine)), key_(key), value_{value} { }
 
 INIFile::Key::Key(initializer&& init) : Key(std::move(init.completeLine), init.key, init.value) { }
 
 INIFile::Key::initializer
 INIFile::Key::Key::createLine(std::string_view keyname, std::string value, bool bEscapeIfNeeded, bool bWhitespace) {
-    const std::string escaped_value{bEscapeIfNeeded ? escapeValue(std::string{value}) : value};
 
-    const auto escape_offset = !escaped_value.empty() && escaped_value[0] == '"' ? 1U : 0U;
+    const auto value_size = value.size();
+
+    const auto escaped_value{bEscapeIfNeeded ? escapeValue(value) : std::move(value)};
+
+    const auto quote_offset = !escaped_value.empty() && escaped_value[0] == '"' ? 1U : 0U;
 
     const auto equal = bWhitespace ? " = "sv : "="sv;
 
-    const auto value_offset = keyname.size() + equal.size() + escape_offset;
+    const auto value_offset = keyname.size() + equal.size() + quote_offset;
 
     auto line = fmt::format("{}{}{}", keyname, equal, escaped_value);
 
-    return {std::move(line), {0, keyname.size()}, {value_offset, value.size()}};
+    return {std::move(line), {0, keyname.size()}, {value_offset, value_size}};
 }
 
 INIFile::Key::Key(std::string_view keyname, std::string_view value, bool bEscapeIfNeeded, bool bWhitespace)
@@ -60,11 +63,11 @@ INIFile::Key::Key(std::string_view keyname, std::string_view value, bool bEscape
 INIFile::Key::~Key() = default;
 
 std::string_view INIFile::Key::getKeyName() const {
-    return key_.apply(completeLine);
+    return key_.apply(line_);
 }
 
 std::string_view INIFile::Key::getStringView() const {
-    return value_.apply(completeLine);
+    return value_.apply(line_);
 }
 
 namespace {
@@ -105,7 +108,7 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
     if (value_.empty())
         return defaultValue;
 
-    const auto it = bool_lookup.find(value_.apply(completeLine));
+    const auto it = bool_lookup.find(value_.apply(line_));
 
     if (it == bool_lookup.end())
         return defaultValue;
@@ -115,20 +118,20 @@ bool INIFile::Key::getBoolValue(bool defaultValue) const {
 
 void INIFile::Key::setStringValue(std::string_view newValue, bool bEscapeIfNeeded) {
     const auto need_escape = bEscapeIfNeeded ? escapingValueNeeded(newValue) : false;
-    const auto is_escaped  = value_.offset() >= completeLine.size() ? false : '"' == completeLine[value_.offset() - 1u];
+    const auto is_escaped  = value_.offset() >= line_.size() ? false : '"' == line_[value_.offset() - 1u];
 
     auto valueStringBegin = value_.offset();
 
     if (need_escape == is_escaped) {
-        completeLine.replace(valueStringBegin, value_.size(), newValue.data(), newValue.size());
+        line_.replace(valueStringBegin, value_.size(), newValue.data(), newValue.size());
     } else if (!need_escape && is_escaped) {
         --valueStringBegin;
-        completeLine.replace(valueStringBegin, value_.size() + 2, newValue.data(), newValue.size());
+        line_.replace(valueStringBegin, value_.size() + 2, newValue.data(), newValue.size());
     } else {
         // We need to add quotes...
-        completeLine.replace(valueStringBegin, value_.size(), "\"\"");
+        line_.replace(valueStringBegin, value_.size(), "\"\"");
         ++valueStringBegin;
-        completeLine.insert(valueStringBegin, newValue.data(), newValue.size());
+        line_.insert(valueStringBegin, newValue.data(), newValue.size());
     }
 
     value_ = {valueStringBegin, newValue.size()};
@@ -154,10 +157,10 @@ std::string INIFile::Key::escapeValue(std::string value) {
 }
 
 INIFile::Section::Section(std::string completeLine, substring section, bool bWhitespace)
-    : INIFileLine(std::move(completeLine)), section_{section}, bWhitespace(bWhitespace) { }
+    : Line(std::move(completeLine)), section_{section}, bWhitespace(bWhitespace) { }
 
 INIFile::Section::Section(std::string_view sectionname, bool bWhitespace)
-    : INIFileLine{fmt::format("[{}]", sectionname)}, section_{1, sectionname.size()}, bWhitespace(bWhitespace) { }
+    : Line{fmt::format("[{}]", sectionname)}, section_{1, sectionname.size()}, bWhitespace(bWhitespace) { }
 
 INIFile::Section::~Section() = default;
 
@@ -167,7 +170,7 @@ INIFile::Section::~Section() = default;
     \return name of this section
 */
 std::string_view INIFile::Section::getSectionName() const {
-    return section_.apply(completeLine);
+    return section_.apply(line_);
 }
 
 // public methods
@@ -180,8 +183,8 @@ std::string_view INIFile::Section::getSectionName() const {
 */
 INIFile::INIFile(bool bWhitespace, std::string_view firstLineComment) : bWhitespace(bWhitespace) {
     if (!firstLineComment.empty()) {
-        lines_.emplace_back(fmt::format("; {}", firstLineComment));
-        lines_.emplace_back(""s);
+        lines_.emplace_back(std::in_place_type<Line>, fmt::format("; {}", firstLineComment));
+        lines_.emplace_back(std::in_place_type<Line>, ""s);
     }
 }
 
@@ -523,8 +526,8 @@ void INIFile::setStringValue(std::string_view sectionname, std::string_view keyn
                     key.setStringValue(value, bEscapeIfNeeded);
                     return;
                 }
-            } else if (std::holds_alternative<INIFileLine>(line)) {
-                if (std::get<INIFileLine>(line).completeLine.empty())
+            } else if (std::holds_alternative<Line>(line)) {
+                if (std::get<Line>(line).empty())
                     last_blank = it;
             }
         }
@@ -532,7 +535,7 @@ void INIFile::setStringValue(std::string_view sectionname, std::string_view keyn
 
     // If we don't have a blank line and this isn't the last section, then add a blank line.
     if (last_blank == section.end() && section.end() != lines_.end())
-        last_blank = lines_.emplace(section.end(), ""s);
+        last_blank = lines_.emplace(section.end(), std::in_place_type<Line>, ""s);
 
     // Insert the new key after the last key in the section.  If there are no keys, add it before the last
     // blank line.
@@ -615,7 +618,7 @@ bool INIFile::saveChangesTo(SDL_RWops* file, bool bDOSLineEnding) const {
     for (auto& line_variant : lines_) {
         const auto ok = std::visit(
             [file, write_eol, &first](auto& value) {
-                const auto& line = value.completeLine;
+                const auto& line = value.line();
 
                 if (first)
                     first = false;
@@ -650,7 +653,7 @@ void INIFile::flush() const {
     for (auto& line_variant : lines_) {
         std::visit(
             [&](const auto& value) {
-                const auto& line = value.completeLine;
+                const auto& line = value.line();
 
                 std::cout << line << std::endl;
             },
@@ -664,11 +667,7 @@ void INIFile::readfile(SDL_RWops* file) {
     std::string completeLine;
     completeLine.reserve(256);
 
-    int lineNum                 = 0;
-    INIFileLine* curLine        = nullptr;
-    INIFileLine* newINIFileLine = nullptr;
-    Section* newSection         = nullptr;
-    Key* newKey                 = nullptr;
+    int lineNum = 0;
 
     SimpleBufferedReader buffer{file};
 
@@ -698,7 +697,7 @@ void INIFile::readfile(SDL_RWops* file) {
 
         if (ret == -1) {
             // empty line or comment
-            lines_.emplace_back(completeLine);
+            lines_.emplace_back(std::in_place_type<Line>, completeLine);
         } else {
 
             if (line[ret] == '[') {
@@ -769,7 +768,7 @@ void INIFile::readfile(SDL_RWops* file) {
                 std::cerr << "INIFile: Syntax-Error in line " << lineNum << ":" << completeLine << " !" << std::endl;
             }
             // save this line as a comment
-            lines_.emplace_back(completeLine);
+            lines_.emplace_back(std::in_place_type<Line>, completeLine);
         }
     }
 }

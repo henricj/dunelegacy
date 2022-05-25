@@ -74,28 +74,28 @@ TEST(INIFileSimple, add_section) {
 TEST(INIFileSimple, add_remove_section) {
     INIFile file(true, {});
 
-    file.setBoolValue("Simple", "Key1", false);
+    file.setBoolValue("Simple", "Key1", true);
 
     const auto value = file.getBoolValue("Simple", "Key1");
 
-    EXPECT_FALSE(value);
+    EXPECT_TRUE(value);
 
     file.removeSection("Simple");
 
     const auto value2 = file.getBoolValue("Simple", "Key1");
 
-    EXPECT_FALSE(value);
+    EXPECT_FALSE(value2);
 }
 
 TEST(INIFileSimple, add_remove_section2) {
     INIFile file(true, {});
 
     file.setIntValue("", "RootKey1", 123);
-    file.setBoolValue("Simple", "Key1", false);
+    file.setBoolValue("Simple", "Key1", true);
 
     const auto value = file.getBoolValue("Simple", "Key1");
 
-    EXPECT_FALSE(value);
+    EXPECT_TRUE(value);
 
     file.removeSection("Simple");
 
@@ -105,7 +105,7 @@ TEST(INIFileSimple, add_remove_section2) {
 
     const auto value2 = file.getBoolValue("Simple", "Key1");
 
-    EXPECT_FALSE(value);
+    EXPECT_FALSE(value2);
 }
 
 TEST(INIFileSimple, clear_root_section) {

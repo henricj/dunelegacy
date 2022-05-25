@@ -1,7 +1,7 @@
 #include "INIFileTestCase2.h"
 
-#include <cstdio>
-
+#include <fstream>
+#include <ranges>
 
 TEST_F(INIFileTestCase2, modifyData) {
 	INIFile inifile("INIFileTestCase2.ini");
@@ -40,31 +40,12 @@ TEST_F(INIFileTestCase2, addSectionAndKeys) {
 
 bool INIFileTestCase2::fileCompare(std::string filename1, std::string filename2) {
 
-	FILE* fp1 = fopen(filename1.c_str(), "r");
-	if(fp1 == NULL) {
-		perror("fileCompare");
-		return false;	
-	}
+    std::ifstream fp1{filename1};
+    std::vector<char> file1{std::istream_iterator<char>{fp1}, std::istream_iterator<char>{}};
 
-	FILE* fp2 = fopen(filename2.c_str(), "r");
-	if(fp2 == NULL) {
-		perror("fileCompare");
-		fclose(fp1);
-		return false;	
-	}
+    std::ifstream fp2{filename2};
+    std::vector<char> file2{std::istream_iterator<char>{fp2}, std::istream_iterator<char>{}};
 
-	while(!feof(fp1) && !feof(fp2)) {
-		if(fgetc(fp1) != fgetc(fp2)) {
-			fclose(fp1);
-			fclose(fp2);
-			return false;
-		}	
-	}
-
-	bool equal = feof(fp1) && feof(fp2);
-		
-	fclose(fp1);
-	fclose(fp2);
-	return equal;
+    return std::ranges::equal(file1, file2);
 }
 
