@@ -17,6 +17,8 @@
 
 #include <algorithm>
 
+using namespace std::literals;
+
 INIMapEditorLoader::INIMapEditorLoader(MapEditor* pMapEditor, INIMap::inifile_ptr pINIFile)
     : INIMap(std::move(pINIFile)), pMapEditor(pMapEditor) {
     load();
@@ -98,8 +100,7 @@ void INIMapEditorLoader::loadMap() {
             } break;
 
             default: {
-                logError(inifile->getKey("BASIC", "MapScale")->getLineNumber(),
-                         "Unknown MapScale '" + std::to_string(mapscale) + "'!");
+                logError(inifile->getLineNumber("BASIC", "MapScale"), "Unknown MapScale '%d'!", mapscale);
             } break;
         }
 
@@ -115,9 +116,9 @@ void INIMapEditorLoader::loadMap() {
 
         const std::string BloomString = inifile->getStringValue("MAP", "Bloom");
         if (!BloomString.empty()) {
-            const std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
+            const auto BloomPositions = splitStringToStringVector(BloomString);
 
-            for (auto& BloomPosition : BloomPositions) {
+            for (const auto& BloomPosition : BloomPositions) {
                 // set bloom
                 int BloomPos = 0;
                 if (parseString(BloomPosition, BloomPos)) {
@@ -125,15 +126,15 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(BloomPos);
                     pMapEditor->getSpiceBlooms().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Bloom")->getLineNumber(),
-                               "Invalid spice bloom position: '" + BloomPosition + "'");
+                    logWarning(inifile->getLineNumber("MAP", "Bloom"), "Invalid spice bloom position: '%s'!",
+                               BloomPosition);
                 }
             }
         }
 
-        const std::string SpecialString = inifile->getStringValue("MAP", "Special");
+        const auto SpecialString = inifile->getStringValue("MAP", "Special");
         if (!SpecialString.empty()) {
-            const std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
+            const auto SpecialPositions = splitStringToStringVector(SpecialString);
 
             for (auto& SpecialPosition : SpecialPositions) {
                 // set special
@@ -143,8 +144,8 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(SpecialPos);
                     pMapEditor->getSpecialBlooms().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Special")->getLineNumber(),
-                               "Invalid special bloom position: '" + SpecialPosition + "'");
+                    logWarning(inifile->getLineNumber("MAP", "Special"), "Invalid special bloom position: '%s'!",
+                               SpecialPosition);
                 }
             }
         }
@@ -153,7 +154,7 @@ void INIMapEditorLoader::loadMap() {
         if (!FieldString.empty()) {
             const std::vector<std::string> FieldPositions = splitStringToStringVector(FieldString);
 
-            for (auto& FieldPosition : FieldPositions) {
+            for (const auto& FieldPosition : FieldPositions) {
                 // set bloom
                 int FieldPos = 0;
                 if (parseString(FieldPosition, FieldPos)) {
@@ -161,8 +162,8 @@ void INIMapEditorLoader::loadMap() {
                     int ypos = getYPos(FieldPos);
                     pMapEditor->getSpiceFields().emplace_back(xpos, ypos);
                 } else {
-                    logWarning(inifile->getKey("MAP", "Field")->getLineNumber(),
-                               "Invalid spice field position: '" + FieldPosition + "'");
+                    logWarning(inifile->getLineNumber("MAP", "Field"), "Invalid spice field position: '%s'!",
+                               FieldPosition);
                 }
             }
         }
@@ -185,24 +186,21 @@ void INIMapEditorLoader::loadMap() {
         logicalOffsetY = 0;
 
         for (int y = 0; y < sizeY; y++) {
-            std::string rowKey = fmt::sprintf("%.3d", y);
+            const auto rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile->hasKey("MAP", rowKey)) {
-                logWarning(inifile->getSection("MAP").getLineNumber(),
-                           "Map row " + std::to_string(y) + " does not exist!");
+                logWarning(inifile->getLineNumber("MAP"), "Map row %d does not exist!", y);
                 continue;
             }
 
-            std::string rowString = inifile->getStringValue("MAP", rowKey);
+            const auto rowString = inifile->getStringValue("MAP", rowKey);
 
-            int rowLength = rowString.size();
+            auto rowLength = rowString.size();
 
             if (rowLength < sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
-                           "Map row " + std::to_string(y) + " is not long enough!");
+                logWarning(inifile->getLineNumber("MAP", rowKey), "Map row %d is not long enough!", y);
             } else if (rowLength > sizeX) {
-                logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
-                           "Map row " + std::to_string(y) + " is too long!");
+                logWarning(inifile->getLineNumber("MAP", rowKey), "Map row %d is too long!", y);
                 rowLength = sizeX;
             }
 
@@ -251,7 +249,7 @@ void INIMapEditorLoader::loadMap() {
                     } break;
 
                     default: {
-                        logWarning(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                        logWarning(inifile->getLineNumber("MAP", rowKey),
                                    std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
                                        + std::to_string(x) + ", " + std::to_string(y) + ")!");
                         type = Terrain_Sand;
@@ -325,22 +323,24 @@ void INIMapEditorLoader::loadHouses() {
     This method loads the choam section of the INI file
 */
 void INIMapEditorLoader::loadChoam() {
-    if (!inifile->hasSection("CHOAM")) {
+    static constexpr auto sectionname = "CHOAM"sv;
+
+    if (!inifile->hasSection(sectionname)) {
         return;
     }
 
-    for (const INIFile::Key& key : inifile->getSection("CHOAM")) {
-        std::string UnitStr = key.getKeyName();
+    for (const auto& key : inifile->keys(sectionname)) {
+        const auto UnitStr = key.getKeyName();
 
         auto unitID = getItemIDByName(UnitStr);
         if ((unitID == ItemID_Invalid) || !isUnit(unitID)) {
-            logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid unit string: '%s'", UnitStr);
             continue;
         }
 
         int num = key.getIntValue(-2);
         if (num == -2) {
-            logWarning(key.getLineNumber(), "Invalid choam number!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid choam number!");
             continue;
         }
 
@@ -356,17 +356,19 @@ void INIMapEditorLoader::loadChoam() {
     This method loads the units specified by the [Units] section.
 */
 void INIMapEditorLoader::loadUnits() {
-    if (!inifile->hasSection("UNITS")) {
+    static constexpr auto sectionname = "UNITS"sv;
+
+    if (!inifile->hasSection(sectionname)) {
         return;
     }
 
-    for (const INIFile::Key& key : inifile->getSection("UNITS")) {
+    for (const auto& key : inifile->keys(sectionname)) {
         if (key.getKeyName().find("ID") == 0) {
             int unitID = 0;
             parseString(key.getKeyName().substr(2), unitID);
 
             std::string HouseStr, UnitStr, health, PosStr, rotation, mode;
-            splitString(key.getStringValue(), HouseStr, UnitStr, health, PosStr, rotation, mode);
+            splitString(key.getStringView(), HouseStr, UnitStr, health, PosStr, rotation, mode);
 
             HOUSETYPE houseID = getHouseID(HouseStr);
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
@@ -374,19 +376,22 @@ void INIMapEditorLoader::loadUnits() {
                 continue;
             }
             if (houseID == HOUSETYPE::HOUSE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid house string for '" + UnitStr + "': '" + HouseStr + "'!");
                 continue;
             }
 
             int pos = 0;
             if (!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid position string for '" + UnitStr + "': '" + PosStr + "'!");
                 continue;
             }
 
             int int_angle = 0;
             if (!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
-                logWarning(key.getLineNumber(), "Invalid rotation string: '" + rotation + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid rotation string: '" + rotation + "'!");
                 int_angle = 64;
             }
             int_angle  = (int_angle + 16) / 32;
@@ -395,19 +400,22 @@ void INIMapEditorLoader::loadUnits() {
 
             ItemID_enum itemID = getItemIDByName(UnitStr);
             if ((itemID == ItemID_Invalid) || !isUnit(itemID)) {
-                logWarning(key.getLineNumber(), "Invalid unit string: '" + UnitStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid unit string: '" + UnitStr + "'!");
                 continue;
             }
 
             int iHealth = 0;
             if (!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid health string: '" + health + "'!");
                 iHealth = 256;
             }
 
             ATTACKMODE attackmode = getAttackModeByName(mode);
             if (attackmode == ATTACKMODE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid attackmode string: '" + mode + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid attackmode string: '" + mode + "'!");
                 attackmode = AREAGUARD;
             }
 
@@ -428,7 +436,8 @@ void INIMapEditorLoader::loadUnits() {
                                            attackmode);
 
         } else {
-            logWarning(key.getLineNumber(), "Invalid unit key: '" + key.getKeyName() + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid unit key: '%s'!",
+                       key.getKeyName());
         }
     }
 }
@@ -437,45 +446,50 @@ void INIMapEditorLoader::loadUnits() {
     This method loads the structures specified by the [Structures] section.
 */
 void INIMapEditorLoader::loadStructures() {
-    if (!inifile->hasSection("STRUCTURES")) {
+    static constexpr auto sectionname = "STRUCTURES"sv;
+
+    if (!inifile->hasSection(sectionname)) {
         return;
     }
 
     int genID = -2;
 
-    for (const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
-        std::string tmpkey = key.getKeyName();
-        std::string tmp    = key.getStringValue();
+    for (const auto& key : inifile->keys(sectionname)) {
+        const auto tmpkey = key.getKeyName();
+        const auto tmp    = key.getStringView();
 
         if (tmpkey.compare(0, 3, "GEN") == 0) {
             // Gen Object/Structure
-            std::string PosStr = tmpkey.substr(3, tmpkey.size() - 3);
-            int pos            = 0;
+            const auto PosStr = tmpkey.substr(3, tmpkey.size() - 3);
+            int pos           = 0;
             if (!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), "Invalid position string: '" + PosStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid position string: '%s'!",
+                           PosStr);
                 continue;
             }
 
             std::string HouseStr, BuildingStr;
             splitString(tmp, HouseStr, BuildingStr);
 
-            HOUSETYPE houseID = getHouseID(HouseStr);
+            const auto houseID = getHouseID(HouseStr);
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
             }
             if (houseID == HOUSETYPE::HOUSE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid house string for '%s': '%s'!", BuildingStr, HouseStr);
                 continue;
             }
 
-            ItemID_enum itemID = getItemIDByName(BuildingStr);
+            auto itemID = getItemIDByName(BuildingStr);
 
             if ((itemID == Structure_Slab1) || (itemID == Structure_Slab4) || (itemID == Structure_Wall)) {
                 pMapEditor->structures.emplace_back(genID, houseID, itemID, 256, Coord(getXPos(pos), getYPos(pos)));
                 genID--;
             } else {
-                logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "' for GEN-Placement!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid building string: '%s' for GEN-Placement!", BuildingStr);
             }
 
         } else if (tmpkey.compare(0, 2, "ID") == 0) {
@@ -488,37 +502,41 @@ void INIMapEditorLoader::loadStructures() {
 
             int pos = 0;
             if (!parseString(PosStr, pos) || (pos < 0)) {
-                logWarning(key.getLineNumber(), "Invalid position string for '" + BuildingStr + "': '" + PosStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid position string for '%s': '%s'!", BuildingStr, PosStr);
                 continue;
             }
 
-            HOUSETYPE houseID = getHouseID(HouseStr);
+            const auto houseID = getHouseID(HouseStr);
             if (houseID == HOUSETYPE::HOUSE_UNUSED) {
                 // skip structure for unused house
                 continue;
             }
             if (houseID == HOUSETYPE::HOUSE_INVALID) {
-                logWarning(key.getLineNumber(), "Invalid house string for '" + BuildingStr + "': '" + HouseStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid house string for '%s': '%s'!", BuildingStr, HouseStr);
                 continue;
             }
 
-            int iHealth = 0;
+            auto iHealth = 0;
             if (!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(key.getLineNumber(), "Invalid health string: '" + health + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid health string: '%s'!",
+                           health);
                 iHealth = 256;
             }
 
-            ItemID_enum itemID = getItemIDByName(BuildingStr);
+            auto itemID = getItemIDByName(BuildingStr);
 
             if ((itemID == ItemID_Invalid) || !isStructure(itemID)) {
-                logWarning(key.getLineNumber(), "Invalid building string: '" + BuildingStr + "'!");
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid building string: '%s'!",
+                           BuildingStr);
                 continue;
             }
 
             pMapEditor->structures.emplace_back(structureID, houseID, itemID, iHealth,
                                                 Coord(getXPos(pos), getYPos(pos)));
         } else {
-            logWarning(key.getLineNumber(), "Invalid structure key: '" + tmpkey + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid structure key: '%s'!", tmpkey);
         }
     }
 }
@@ -527,21 +545,23 @@ void INIMapEditorLoader::loadStructures() {
     This method loads the reinforcements from the [REINFORCEMENTS] section.
 */
 void INIMapEditorLoader::loadReinforcements() {
-    if (!inifile->hasSection("REINFORCEMENTS")) {
+    static constexpr auto sectionname = "REINFORCEMENTS"sv;
+
+    if (!inifile->hasSection(sectionname)) {
         return;
     }
 
-    for (const INIFile::Key& key : inifile->getSection("REINFORCEMENTS")) {
+    for (const auto& key : inifile->keys(sectionname)) {
         std::string strHouseName;
         std::string strUnitName;
         std::string strDropLocation;
         std::string strTime;
         std::string strPlus;
 
-        if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime)) {
-            if (!splitString(key.getStringValue(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
-                logWarning(key.getLineNumber(),
-                           "Invalid reinforcement string: " + key.getKeyName() + " = " + key.getStringValue());
+        if (!splitString(key.getStringView(), strHouseName, strUnitName, strDropLocation, strTime)) {
+            if (!splitString(key.getStringView(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
+                logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                           "Invalid reinforcement string: %s = %s", key.getKeyName(), key.getStringView());
                 continue;
             }
         }
@@ -552,29 +572,33 @@ void INIMapEditorLoader::loadReinforcements() {
             continue;
         }
         if (houseID == HOUSETYPE::HOUSE_INVALID) {
-            logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid house string: '%s'!",
+                       strHouseName);
             continue;
         }
 
-        auto unitID = getItemIDByName(strUnitName);
+        const auto unitID = getItemIDByName(strUnitName);
         if ((unitID == ItemID_Invalid) || !isUnit(unitID)) {
-            logWarning(key.getLineNumber(), "Invalid unit string: '" + strUnitName + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid unit string: '%s'!",
+                       strUnitName);
             continue;
         }
 
         auto dropLocation = getDropLocationByName(strDropLocation);
         if (dropLocation == DropLocation::Drop_Invalid) {
-            logWarning(key.getLineNumber(), "Invalid drop location string: '" + strDropLocation + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid drop location string: '%s'!",
+                       strDropLocation);
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        uint32_t droptime = 0;
+        auto droptime = 0;
         if (!parseString(strTime, droptime)) {
-            logWarning(key.getLineNumber(), "Invalid drop time string: '" + strTime + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()),
+                       "Invalid drop time string: '" + strTime + "'!");
             continue;
         }
 
-        bool bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
+        auto bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
 
         pMapEditor->getReinforcements().emplace_back(houseID, unitID, dropLocation, droptime, bRepeat);
     }
@@ -584,20 +608,23 @@ void INIMapEditorLoader::loadReinforcements() {
     This method loads the AI teams from the [TEAMS] section.
 */
 void INIMapEditorLoader::loadAITeams() {
-    if (!inifile->hasSection("TEAMS")) {
+    static constexpr auto sectionname = "TEAMS"sv;
+
+    if (!inifile->hasSection(sectionname)) {
         return;
     }
 
-    for (const INIFile::Key& key : inifile->getSection("TEAMS")) {
+    for (const auto& key : inifile->keys(sectionname)) {
         std::string strHouseName;
         std::string strAITeamBehavior;
         std::string strAITeamType;
         std::string strMinUnits;
         std::string strMaxUnits;
 
-        if (!splitString(key.getStringValue(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits,
+        if (!splitString(key.getStringView(), strHouseName, strAITeamBehavior, strAITeamType, strMinUnits,
                          strMaxUnits)) {
-            logWarning(key.getLineNumber(), "Invalid teams string: " + key.getKeyName() + " = " + key.getStringValue());
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid teams string: %s = %s",
+                       key.getKeyName(), key.getStringView());
             continue;
         }
 
@@ -607,31 +634,36 @@ void INIMapEditorLoader::loadAITeams() {
             continue;
         }
         if (houseID == HOUSETYPE::HOUSE_INVALID) {
-            logWarning(key.getLineNumber(), "Invalid house string: '" + strHouseName + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid house string: '%s'!",
+                       strHouseName);
             continue;
         }
 
-        AITeamBehavior aiTeamBehavior = getAITeamBehaviorByName(strAITeamBehavior);
+        auto aiTeamBehavior = getAITeamBehaviorByName(strAITeamBehavior);
         if (aiTeamBehavior == AITeamBehavior::AITeamBehavior_Invalid) {
-            logWarning(key.getLineNumber(), "Invalid team behavior string: '" + strAITeamBehavior + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid team behavior string: '%s'!",
+                       strAITeamBehavior);
             aiTeamBehavior = AITeamBehavior::AITeamBehavior_Normal;
         }
 
-        AITeamType aiTeamType = getAITeamTypeByName(strAITeamType);
+        auto aiTeamType = getAITeamTypeByName(strAITeamType);
         if (aiTeamType == AITeamType::AITeamType_Invalid) {
-            logWarning(key.getLineNumber(), "Invalid team type string: '" + strAITeamType + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid team type string: '%s'!",
+                       strAITeamType);
             aiTeamType = AITeamType::AITeamType_Foot;
         }
 
-        int minUnits = 0;
+        auto minUnits = 0;
         if (!parseString(strMinUnits, minUnits)) {
-            logWarning(key.getLineNumber(), "Invalid min units string: '" + strMinUnits + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid min units string: '%s'!",
+                       strMinUnits);
             continue;
         }
 
-        int maxUnits = 0;
+        auto maxUnits = 0;
         if (!parseString(strMaxUnits, maxUnits)) {
-            logWarning(key.getLineNumber(), "Invalid max units string: '" + strMaxUnits + "'!");
+            logWarning(inifile->getLineNumber(sectionname, key.getKeyName()), "Invalid max units string: '%s'!",
+                       strMaxUnits);
             continue;
         }
 
@@ -639,8 +671,8 @@ void INIMapEditorLoader::loadAITeams() {
     }
 }
 
-HOUSETYPE INIMapEditorLoader::getHouseID(const std::string& name) {
-    const std::string lowerName = strToLower(name);
+HOUSETYPE INIMapEditorLoader::getHouseID(std::string_view name) {
+    const auto lowerName = strToLower(name);
 
     const auto it = housename2house.find(lowerName);
 

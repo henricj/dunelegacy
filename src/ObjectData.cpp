@@ -124,8 +124,8 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         }
     }
 
-    for (INIFile::Section& section : objectDataFile) {
-        const std::string& sectionName = section.getSectionName();
+    for (const auto& section : objectDataFile.sections()) {
+        const auto sectionName = section.getSectionName();
 
         if (sectionName.empty() || sectionName == "default structure" || sectionName == "default unit") {
             continue;
@@ -226,43 +226,43 @@ void ObjectData::load(InputStream& stream) {
     }
 }
 
-int ObjectData::loadIntValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                             char houseChar, int defaultValue) {
-    const std::string specializedKey = key + "(" + houseChar + ")";
+int ObjectData::loadIntValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                             char houseChar, int defaultValue) const {
+    const auto specializedKey = fmt::format("{}({})", key, houseChar);
     if (objectDataFile.hasKey(section, specializedKey)) {
         return objectDataFile.getIntValue(section, specializedKey, defaultValue);
     }
     return objectDataFile.getIntValue(section, key, defaultValue);
 }
 
-bool ObjectData::loadBoolValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                               char houseChar, bool defaultValue) {
-    const std::string specializedKey = key + "(" + houseChar + ")";
+bool ObjectData::loadBoolValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                               char houseChar, bool defaultValue) const {
+    const auto specializedKey = fmt::format("{}({})", key, houseChar);
     if (objectDataFile.hasKey(section, specializedKey)) {
         return objectDataFile.getBoolValue(section, specializedKey, defaultValue);
     }
     return objectDataFile.getBoolValue(section, key, defaultValue);
 }
 
-FixPoint ObjectData::loadFixPointValue(const INIFile& objectDataFile, const std::string& section,
-                                       const std::string& key, char houseChar, FixPoint defaultValue) {
-    const std::string specializedKey = key + "(" + houseChar + ")";
+FixPoint ObjectData::loadFixPointValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                                       char houseChar, FixPoint defaultValue) const {
+    const auto specializedKey = fmt::format("{}({})", key, houseChar);
     if (objectDataFile.hasKey(section, specializedKey)) {
         return FixPoint(objectDataFile.getStringValue(section, specializedKey, defaultValue.toString()));
     }
     return FixPoint(objectDataFile.getStringValue(section, key, defaultValue.toString()));
 }
 
-std::string ObjectData::loadStringValue(const INIFile& objectDataFile, const std::string& section,
-                                        const std::string& key, char houseChar, const std::string& defaultValue) {
-    const std::string specializedKey = key + "(" + houseChar + ")";
+std::string ObjectData::loadStringValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                                        char houseChar, std::string_view defaultValue) const {
+    const auto specializedKey = fmt::format("{}({})", key, houseChar);
     if (objectDataFile.hasKey(section, specializedKey)) {
         return objectDataFile.getStringValue(section, specializedKey, defaultValue);
     }
     return objectDataFile.getStringValue(section, key, defaultValue);
 }
 
-ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
+ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, std::string_view section, std::string_view key,
                                    char houseChar, ItemID_enum defaultValue) {
     const std::string strItem{trim(loadStringValue(objectDataFile, section, key, houseChar, ""))};
 
@@ -287,12 +287,11 @@ ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, const std::str
 }
 
 std::bitset<Structure_LastID + 1>
-ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section,
-                                          const std::string& key, char houseChar,
-                                          std::bitset<Structure_LastID + 1> defaultValue) {
+ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                                          char houseChar, std::bitset<Structure_LastID + 1> defaultValue) const {
     std::bitset<Structure_LastID + 1> resultSet;
 
-    const std::string strList = loadStringValue(objectDataFile, section, key, houseChar, "");
+    const auto strList = loadStringValue(objectDataFile, section, key, houseChar, "");
 
     if (strList.empty())
         return defaultValue;
@@ -300,16 +299,16 @@ ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const s
     if (trim(strToLower(strList)) == "invalid")
         return resultSet;
 
-    const std::vector<std::string> strItemList = splitStringToStringVector(strList);
+    const auto strItemList = splitStringToStringVector(strList);
 
-    for (const std::string& strItem : strItemList) {
-        std::string strItem2{trim(strItem)};
+    for (const auto& strItem : strItemList) {
+        const auto strItem2 = trim(strItem);
 
-        const ItemID_enum itemID = getItemIDByName(strItem2);
+        const auto itemID = getItemIDByName(strItem2);
         if (itemID == ItemID_Invalid || !isStructure(itemID)) {
             sdl2::log_info(
                 "Warning: Cannot read object data from section '%s', key '%s': '%s' is no valid structure name!",
-                section.c_str(), key.c_str(), strItem2.c_str());
+                section, key, strItem2);
             return defaultValue;
         }
 

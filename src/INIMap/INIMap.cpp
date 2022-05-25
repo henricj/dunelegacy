@@ -16,14 +16,15 @@ INIMap::INIMap(GameType gameType, const std::filesystem::path& mapname, const st
 
 INIMap::~INIMap() = default;
 
-void INIMap::checkFeatures() {
+void INIMap::checkFeatures() const {
     if (!inifile->hasSection("FEATURES")) {
         return;
     }
 
-    for (const auto& key : inifile->getSection("FEATURES")) {
-        if (key.getBoolValue(true) == true) {
-            logError(key.getLineNumber(), "Unsupported feature \"" + key.getKeyName() + "\"!");
+    for (const auto& key : inifile->keys("FEATURES")) {
+        if (key.getBoolValue(true)) {
+            logError(inifile->getLineNumber("FEATURES", key.getKeyName()), "Unsupported feature \"%s\"!",
+                     key.getKeyName());
             return;
         }
     }

@@ -44,7 +44,7 @@ private:
     void loadReinforcements();
     void loadAITeams();
 
-    HOUSETYPE getHouseID(const std::string& name);
+    HOUSETYPE getHouseID(std::string_view name);
 
     MapEditor* pMapEditor;
     std::unordered_map<std::string, HOUSETYPE> housename2house;

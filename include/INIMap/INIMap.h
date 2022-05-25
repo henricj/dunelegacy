@@ -47,15 +47,17 @@ protected:
         Log a warning while reading the scenario file.
         \param  warning the warning message
     */
-    void logWarning(const std::string& warning) { sdl2::log_info("%s: %s", mapname.c_str(), warning.c_str()); }
+    void logWarning(std::string_view warning) const { sdl2::log_info("%s: %s", mapname.c_str(), warning); }
 
     /**
         Log a warning while reading the scenario file.
         \param  line    the line number the warning occurs
-        \param  warning the warning message
+        \param  format  the warning message format
+        \param  args    any arguments for the warning message format
     */
-    void logWarning(int line, const std::string& warning) {
-        sdl2::log_info("%s:%d: %s", mapname.c_str(), line, warning.c_str());
+    template<typename... Args>
+    void logWarning(size_t line, std::string_view format, Args&&... args) const {
+        sdl2::log_info("%s:%d: %s", mapname, line, fmt::sprintf(format, std::forward<Args>(args)...));
     }
 
     /**
@@ -63,22 +65,24 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(const std::string& error) { THROW(std::runtime_error, mapname + ": " + error); }
+    void logError(const std::string& error) const { THROW(std::runtime_error, "%s: %s", mapname, error); }
 
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
         with error as the exception message
         \param  line    the line number the error occurs
-        \param  error the error message
+        \param  format  the error message format
+        \param  args    any arguments for the error message format
     */
-    void logError(int line, const std::string& error) {
-        THROW(std::runtime_error, mapname + ":" + std::to_string(line) + ": " + error);
+    template<typename... Args>
+    void logError(size_t line, std::string_view format, Args&&... args) const {
+        THROW(std::runtime_error, "%s:%d: %s", mapname, line, fmt::sprintf(format, std::forward<Args>(args)...));
     }
 
     /**
     Checks if all map features of this map are supported.
     */
-    void checkFeatures();
+    void checkFeatures() const;
 
     [[nodiscard]] int getXPos(int pos) const {
         return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX;

@@ -23,10 +23,12 @@
 #include <array>
 #include <charconv>
 #include <filesystem>
+#include <ranges>
 #include <string>
 #include <string_view>
+#include <variant>
 
-inline constexpr auto INVALID_LINE = -1;
+inline constexpr auto INVALID_LINE = 0u;
 
 //!  A class for reading and writing *.ini configuration files.
 /*!
@@ -46,48 +48,52 @@ inline constexpr auto INVALID_LINE = -1;
 */
 class INIFile {
 public:
-    //\cond
-    class INIFileLine;
-    class Key;
-    class KeyIterator;
-    class Section;
-    class SectionIterator;
+    class substring final {
+    public:
+        constexpr substring(std::string::size_type offset, std::string::size_type size)
+            : offset_{offset}, size_{size} { }
+
+        constexpr std::string::size_type offset() const { return offset_; }
+        constexpr std::string::size_type size() const { return size_; }
+
+        constexpr bool empty() const { return size_ == 0; }
+        constexpr std::string_view apply(std::string_view s) const { return s.substr(offset_, size_); }
+
+    private:
+        std::string::size_type offset_;
+        std::string::size_type size_;
+    };
 
     class INIFileLine {
     public:
-        INIFileLine(std::string completeLine, int lineNumber);
+        INIFileLine(std::string completeLine);
         virtual ~INIFileLine();
-
-        [[nodiscard]] int getLineNumber() const noexcept { return line; }
 
         friend class INIFile;
         friend class Section;
 
     protected:
-        void shiftLineNumber(int shift) noexcept {
-            auto pCurrentLine = this;
-            while (pCurrentLine != nullptr) {
-                pCurrentLine->line += shift;
-                pCurrentLine = pCurrentLine->nextLine;
-            }
-        }
-
         std::string completeLine;
-        int line;
-        INIFileLine* nextLine{};
-        INIFileLine* prevLine{};
     };
 
     class Key final : public INIFileLine {
+    private:
+        struct initializer {
+            std::string completeLine;
+            substring key;
+            substring value;
+        };
+        static initializer
+        createLine(std::string_view keyname, std::string value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
+
+        Key(initializer&& init);
+
     public:
-        Key(std::string completeLine, int lineNumber, std::string::size_type keystringbegin,
-            std::string::size_type keystringlength, std::string::size_type valuestringbegin,
-            std::string::size_type valuestringlength);
-        Key(std::string_view keyname, const std::string& value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
+        Key(std::string completeLine, substring key, substring value);
+        Key(std::string_view keyname, std::string_view value, bool bEscapeIfNeeded = true, bool bWhitespace = true);
         ~Key() override;
 
-        [[nodiscard]] std::string getKeyName() const;
-        [[nodiscard]] std::string getStringValue() const { return std::string{getStringView()}; }
+        [[nodiscard]] std::string_view getKeyName() const;
         [[nodiscard]] std::string_view getStringView() const;
 
         [[nodiscard]] bool getBoolValue(bool defaultValue = false) const;
@@ -192,146 +198,85 @@ public:
             setValue(newValue);
         }
 
-        friend class INIFile;
-        friend class KeyIterator;
-        friend class Section;
-        friend class SectionIterator;
-
     protected:
         static bool escapingValueNeeded(std::string_view value);
         static std::string escapeValue(std::string value);
 
-        std::string::size_type keyStringBegin;
-        std::string::size_type keyStringLength;
-        std::string::size_type valueStringBegin;
-        std::string::size_type valueStringLength;
-        Key* nextKey{};
-        Key* prevKey{};
-    };
-
-    class KeyIterator {
-    public:
-        KeyIterator() noexcept : key(nullptr) { }
-
-        explicit KeyIterator(Key* pKey) noexcept : key(pKey) { }
-
-        Key& operator*() const noexcept { return *key; }
-
-        Key* operator->() const noexcept { return key; }
-
-        bool operator==(const KeyIterator& other) const noexcept { return (key == other.key); }
-
-        bool operator!=(const KeyIterator& other) const noexcept { return !(operator==(other)); }
-
-        void operator++() {
-            if (key != nullptr) {
-                key = key->nextKey;
-            }
-        }
-
-    private:
-        Key* key;
+        substring key_;
+        substring value_;
     };
 
     class Section final : public INIFileLine {
     public:
-        Section(std::string completeLine, int lineNumber, int sectionstringbegin, int sectionstringlength,
-                bool bWhitespace = true);
+        Section(std::string completeLine, substring section, bool bWhitespace = true);
         Section(std::string_view sectionname, bool bWhitespace = true);
         ~Section() override;
 
-        [[nodiscard]] std::string getSectionName() const;
-        [[nodiscard]] KeyIterator begin() const;
-        [[nodiscard]] KeyIterator end() const;
-
-        [[nodiscard]] bool hasKey(std::string_view key) const;
-        [[nodiscard]] Key* getKey(std::string_view keyname) const;
-
-        void setStringValue(std::string_view key, const std::string& newValue, bool bEscapeIfNeeded = true);
-        void setIntValue(std::string_view key, int newValue);
-        void setBoolValue(std::string_view key, bool newValue);
-        void setDoubleValue(std::string_view key, double newValue);
-
-        friend class INIFile;
-        friend class SectionIterator;
+        [[nodiscard]] std::string_view getSectionName() const;
 
     protected:
-        void insertKey(Key* newKey);
-
-        int sectionStringBegin;
-        int sectionStringLength;
-        Section* nextSection;
-        Section* prevSection;
-        Key* keyRoot;
+        substring section_;
         bool bWhitespace;
     };
-
-    class SectionIterator {
-    public:
-        SectionIterator() noexcept : section(nullptr) { }
-
-        explicit SectionIterator(Section* pSection) noexcept : section(pSection) { }
-
-        Section& operator*() const noexcept { return *section; }
-
-        Section* operator->() const noexcept { return section; }
-
-        bool operator==(const SectionIterator& other) const noexcept { return (section == other.section); }
-
-        bool operator!=(const SectionIterator& other) const noexcept { return !(operator==(other)); }
-
-        void operator++() noexcept {
-            if (section != nullptr) {
-                section = section->nextSection;
-            }
-        }
-
-    private:
-        Section* section;
-    };
-
-    //\endcond
 
 public:
     INIFile(bool bWhitespace, std::string_view firstLineComment);
     INIFile(const std::filesystem::path& filename, bool bWhitespace = true);
     INIFile(SDL_RWops* RWopsFile, bool bWhitespace = true);
-    INIFile(const INIFile& o) = delete;
+    INIFile(const INIFile&) = delete;
+    INIFile(INIFile&&)      = delete;
     ~INIFile();
+
+    auto lines() const {
+        return lines_.size();
+    }
+
+    size_t getLineNumber(std::string_view sectionname) const;
+    size_t getLineNumber(std::string_view sectionname, std::string_view keyname) const;
 
     [[nodiscard]] bool hasSection(std::string_view section) const;
     [[nodiscard]] const Section& getSection(std::string_view sectionname) const;
     bool removeSection(std::string_view sectionname);
     bool clearSection(std::string_view sectionname, bool bBlankLineAtSectionEnd = true);
-    [[nodiscard]] bool hasKey(const std::string& section, const std::string& key) const;
-    [[nodiscard]] const Key* getKey(std::string_view sectionname, std::string_view keyname) const;
-    bool removeKey(const std::string& section, const std::string& key);
+    [[nodiscard]] bool hasKey(std::string_view section, std::string_view key) const;
+    [[nodiscard]] const Key* getKey(std::string_view section, std::string_view key) const;
+    bool removeKey(std::string_view section, std::string_view key);
 
     [[nodiscard]] std::string
-    getStringValue(std::string_view section, std::string_view key, const std::string& defaultValue = "") const;
+    getStringValue(std::string_view section, std::string_view key, std::string_view defaultValue = {}) const;
     [[nodiscard]] int getIntValue(std::string_view section, std::string_view key, int defaultValue = 0) const;
     [[nodiscard]] bool getBoolValue(std::string_view section, std::string_view key, bool defaultValue = false) const;
     [[nodiscard]] float getFloatValue(std::string_view section, std::string_view key, float defaultValue = 0.0f) const;
     [[nodiscard]] double
     getDoubleValue(std::string_view section, std::string_view key, double defaultValue = 0.0) const;
 
-    void setStringValue(std::string_view section, std::string_view key, std::string value, bool bEscapeIfNeeded = true);
+    void
+    setStringValue(std::string_view section, std::string_view key, std::string_view value, bool bEscapeIfNeeded = true);
     void setIntValue(std::string_view section, std::string_view key, int value);
     void setBoolValue(std::string_view section, std::string_view key, bool value);
     void setDoubleValue(std::string_view section, std::string_view key, double value);
 
-    [[nodiscard]] SectionIterator begin() const;
-    [[nodiscard]] SectionIterator end() const;
-
-    [[nodiscard]] KeyIterator begin(std::string_view section) const;
-    [[nodiscard]] KeyIterator end(std::string_view section) const;
-
     [[nodiscard]] bool saveChangesTo(const std::filesystem::path& filename, bool bDOSLineEnding = false) const;
     bool saveChangesTo(SDL_RWops* file, bool bDOSLineEnding = false) const;
 
+    auto sections() const {
+        return lines_ | std::views::filter([](auto& v) { return std::holds_alternative<Section>(v); })
+             | std::views::transform([](auto& v) { return std::get<Section>(v); });
+    }
+
+    auto keys(std::string_view sectionname) const {
+        auto section = getSectionInternal(sectionname);
+
+        return section | std::views::filter([](auto& v) { return std::holds_alternative<Key>(v); })
+             | std::views::transform([](auto& v) { return std::get<Key>(v); });
+    }
+
 private:
-    INIFileLine* firstLine{};
-    Section* sectionRoot{};
+    using line_type  = std::variant<INIFileLine, Key, Section>;
+    using lines_type = std::deque<line_type>;
+
+    lines_type lines_;
+
     bool bWhitespace;
 
     void flush() const;
@@ -339,9 +284,21 @@ private:
 
     void insertSection(Section* newSection);
 
-    [[nodiscard]] Section* getSectionInternal(std::string_view sectionname);
-    [[nodiscard]] const Section* getSectionInternal(std::string_view sectionname) const;
-    Section* getSectionOrCreate(std::string_view sectionname);
+    [[nodiscard]] lines_type::iterator findSectionInternal(std::string_view sectionname);
+    [[nodiscard]] lines_type::const_iterator findSectionInternal(std::string_view sectionname) const;
+
+    [[nodiscard]] std::ranges::subrange<lines_type::iterator> getSectionInternal(std::string_view sectionname);
+    [[nodiscard]] std::ranges::subrange<lines_type::const_iterator>
+    getSectionInternal(std::string_view sectionname) const;
+
+    [[nodiscard]] lines_type::iterator
+    getKeyInternal(std::ranges::subrange<lines_type::iterator> section, std::string_view key);
+    [[nodiscard]] lines_type::const_iterator
+    getKeyInternal(std::ranges::subrange<lines_type::const_iterator> section, std::string_view key) const;
+    [[nodiscard]] lines_type::iterator getKeyInternal(std::string_view section, std::string_view key);
+    [[nodiscard]] lines_type::const_iterator getKeyInternal(std::string_view section, std::string_view key) const;
+
+    [[nodiscard]] std::ranges::subrange<lines_type::iterator> getSectionOrCreate(std::string_view sectionname);
 
     static bool isValidSectionName(std::string_view sectionname);
     static bool isValidKeyName(std::string_view keyname);
@@ -355,7 +312,7 @@ private:
     static bool isWhitespace(unsigned char s);
     static bool isNormalChar(unsigned char s);
 
-    static bool upper_compare(std::string_view s1, std::string_view s2);
+    static bool lower_compare(std::string_view s1, std::string_view s2);
 };
 
 #endif // INIFILE_H

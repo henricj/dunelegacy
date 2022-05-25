@@ -12,13 +12,15 @@ void INIFileTestCase1::SetUp() {
     path = std::filesystem::canonical(path, ec);
     ASSERT_FALSE(ec);
 
-    pINIFile = std::make_unique<INIFile>(reinterpret_cast<const char *>(path.u8string().c_str()));
+    pINIFile = std::make_unique<INIFile>(reinterpret_cast<const char*>(path.u8string().c_str()));
 
-    // Make sure we loaded soemthing...
-    ASSERT_NE(pINIFile->begin(), pINIFile->end());
+    // Make sure we loaded something...
+    EXPECT_GE(pINIFile->lines(), 5);
 }
 
-void INIFileTestCase1::TearDown() { pINIFile.reset(); }
+void INIFileTestCase1::TearDown() {
+    pINIFile.reset();
+}
 
 TEST_F(INIFileTestCase1, anonymousSection) {
     EXPECT_EQ(pINIFile->getStringValue("", "anonymous_section_key"), "exists");
@@ -94,42 +96,43 @@ TEST_F(INIFileTestCase1, extreme) {
 }
 
 TEST_F(INIFileTestCase1, iterateSections) {
-    INIFile::SectionIterator iter = pINIFile->begin();
+    auto sections = pINIFile->sections();
 
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "");
+    auto iter = sections.begin();
+
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section1_StringKeys");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section1_StringKeys");
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section2_IntKeys");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section2_IntKeys");
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section3_BoolKeys");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section3_BoolKeys");
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section4_DoubleKeys");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section4_DoubleKeys");
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section5_mixedCase");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section5_mixedCase");
+    EXPECT_NE(iter, sections.end());
+    EXPECT_EQ((*iter).getSectionName(), "Section6 extreme");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end());
-    EXPECT_EQ(iter->getSectionName(), "Section6 extreme");
-    ++iter;
-    EXPECT_EQ(iter, pINIFile->end());
+    EXPECT_EQ(iter, sections.end());
 }
 
 TEST_F(INIFileTestCase1, iterateKeys) {
-    INIFile::KeyIterator iter = pINIFile->begin("Section6 extreme");
+    auto section = pINIFile->keys("Section6 extreme");
 
-    EXPECT_NE(iter, pINIFile->end("Section6 extreme"));
-    EXPECT_EQ(iter->getKeyName(), "a b c");
-    EXPECT_EQ(iter->getStringValue(), "xyz abc");
+    auto iter = section.begin();
+
+    EXPECT_NE(iter, section.end());
+    EXPECT_EQ((*iter).getKeyName(), "a b c");
+    EXPECT_EQ((*iter).getStringView(), "xyz abc");
     ++iter;
-    EXPECT_NE(iter, pINIFile->end("Section6 extreme"));
-    EXPECT_EQ(iter->getKeyName(), "tricky string");
-    EXPECT_EQ(iter->getStringValue(), "comment #fake comment");
+    EXPECT_NE(iter, section.end());
+    EXPECT_EQ((*iter).getKeyName(), "tricky string");
+    EXPECT_EQ((*iter).getStringView(), "comment #fake comment");
     ++iter;
-    EXPECT_EQ(iter, pINIFile->end("Section6 extreme"));
+    EXPECT_EQ(iter, section.end());
 }

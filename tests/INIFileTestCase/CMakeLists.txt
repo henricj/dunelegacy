@@ -1,7 +1,14 @@
 
 find_package(GTest CONFIG REQUIRED)
 
-add_executable(INIFileTestCase ../../src/FileClasses/INIFile.cpp INIFileTestCase1.cpp INIFileTestCase2.cpp INIFileTestCase3.cpp)
+add_executable(INIFileTestCase
+    ../../src/FileClasses/INIFile.cpp
+    INIFileTestCase1.cpp
+    INIFileTestCase2.cpp
+    INIFileTestCase3.cpp
+    INIFileTestSimple.cpp
+)
+
 target_link_libraries(INIFileTestCase PRIVATE dune GTest::gtest GTest::gtest_main)
 
 set(INI_FILES

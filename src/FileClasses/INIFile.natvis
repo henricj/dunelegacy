@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="INIFile::Key">
+	  <DisplayString>{{Key={completeLine}}}</DisplayString>
+  </Type>
+	<Type Name="INIFile::Section">
+		<DisplayString>{{Section={completeLine}}}</DisplayString>
+	</Type>
+</AutoVisualizer>

@@ -15,6 +15,8 @@
 
 #include <algorithm>
 
+using namespace std::literals;
+
 INIMapPreviewCreator::INIMapPreviewCreator(INIMap::inifile_ptr pINIFile) : INIMap(std::move(pINIFile)) { }
 
 INIMapPreviewCreator::~INIMapPreviewCreator() = default;
@@ -104,7 +106,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
         // "draw" spice fields into SeedMap
         std::string FieldString = inifile->getStringValue("MAP", "Field");
-        if (FieldString != "") {
+        if (!FieldString.empty()) {
             std::vector<std::string> FieldPositions = splitStringToStringVector(FieldString);
 
             for (auto& FieldPosition : FieldPositions) {
@@ -128,8 +130,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     }
 
                 } else {
-                    logError(inifile->getKey("MAP", "Field")->getLineNumber(),
-                             "Invalid value for key Field: " + FieldString);
+                    logError(inifile->getLineNumber("MAP", "Field"), "Invalid value for key Field: " + FieldString);
                 }
             }
         }
@@ -182,7 +183,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
         // draw spice blooms
         std::string BloomString = inifile->getStringValue("MAP", "Bloom");
-        if (BloomString != "") {
+        if (!BloomString.empty()) {
             std::vector<std::string> BloomPositions = splitStringToStringVector(BloomString);
 
             for (const std::string& strBloomPos : BloomPositions) {
@@ -200,20 +201,19 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                         }
                     }
                 } else {
-                    logError(inifile->getKey("MAP", "Bloom")->getLineNumber(),
-                             "Invalid value for key Bloom: " + BloomString);
+                    logError(inifile->getLineNumber("MAP", "Bloom"), "Invalid value for key Bloom: " + BloomString);
                 }
             }
         }
 
         // draw special blooms
-        std::string SpecialString = inifile->getStringValue("MAP", "Special");
-        if (SpecialString != "") {
-            std::vector<std::string> SpecialPositions = splitStringToStringVector(SpecialString);
+        const auto SpecialString = inifile->getStringValue("MAP", "Special");
+        if (!SpecialString.empty()) {
+            const auto SpecialPositions = splitStringToStringVector(SpecialString);
 
-            for (const std::string& strSpecialPos : SpecialPositions) {
+            for (const auto& strSpecialPos : SpecialPositions) {
                 // set bloom
-                int SpecialPos = 0;
+                auto SpecialPos = 0;
                 if (parseString(strSpecialPos, SpecialPos)) {
                     int xpos = SpecialPos % logicalSizeX - logicalOffsetX;
                     int ypos = SpecialPos / logicalSizeX - logicalOffsetY;
@@ -226,7 +226,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                         }
                     }
                 } else {
-                    logError(inifile->getKey("MAP", "Special")->getLineNumber(),
+                    logError(inifile->getLineNumber("MAP", "Special"),
                              "Invalid value for key Special: " + SpecialString);
                 }
             }
@@ -251,14 +251,13 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         offsetY += borderWidth;
 
         for (int y = 0; y < sizeY; y++) {
-            std::string rowKey = fmt::sprintf("%.3d", y);
+            const auto rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile->hasKey("MAP", rowKey)) {
-                logError(inifile->getSection("MAP").getLineNumber(),
-                         "Map row " + std::to_string(y) + " does not exist!");
+                logError(inifile->getLineNumber("MAP"), "Map row " + std::to_string(y) + " does not exist!");
             }
 
-            std::string rowString = inifile->getStringValue("MAP", rowKey);
+            const auto rowString = inifile->getStringValue("MAP", rowKey);
             for (int x = 0; x < sizeX; x++) {
                 Uint32 color = COLOR_BLACK;
                 switch (rowString.at(x)) {
@@ -299,7 +298,7 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                     } break;
 
                     default: {
-                        logError(inifile->getKey("MAP", rowKey)->getLineNumber(),
+                        logError(inifile->getLineNumber("MAP", rowKey),
                                  std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
                                      + std::to_string(x) + ", " + std::to_string(y) + ")!");
                     } break;
@@ -314,17 +313,19 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
         }
     }
 
+    static constexpr auto sectionname = "STRUCTURES"sv;
+
     // draw structures
-    if (inifile->hasSection("STRUCTURES")) {
-        for (const INIFile::Key& key : inifile->getSection("STRUCTURES")) {
-            std::string tmpkey = key.getKeyName();
-            std::string tmp    = key.getStringValue();
+    if (inifile->hasSection(sectionname)) {
+        for (const INIFile::Key& key : inifile->keys(sectionname)) {
+            const auto tmpkey = key.getKeyName();
+            const auto tmp    = key.getStringView();
 
             if (tmpkey.compare(0, 3, "GEN") == 0) {
                 // Gen Object/Structure
 
-                std::string PosStr = tmpkey.substr(3, tmpkey.size() - 3);
-                int pos            = 0;
+                const auto PosStr = tmpkey.substr(3, tmpkey.size() - 3);
+                int pos           = 0;
                 if (!parseString(PosStr, pos)) {
                     continue;
                 }
@@ -346,7 +347,8 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                             color   = COLOR_RGB(val, val, val);
                         }
                     } else {
-                        logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
+                        logError(inifile->getLineNumber(sectionname, key.getKeyName()),
+                                 "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
 
@@ -388,7 +390,8 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
                             color   = COLOR_RGB(val, val, val);
                         }
                     } else {
-                        logError(key.getLineNumber(), "Invalid house string: '" + HouseStr + "'!");
+                        logError(inifile->getLineNumber(sectionname, key.getKeyName()),
+                                 "Invalid house string: '" + HouseStr + "'!");
                     }
                 }
 

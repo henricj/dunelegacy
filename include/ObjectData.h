@@ -115,20 +115,19 @@ public:
                                                    ///< easy and fast access. Use only read-only.
 
 private:
-    int loadIntValue(const INIFile& objectDataFile, const std::string& section, const std::string& key, char houseChar,
-                     int defaultValue = 0);
-    bool loadBoolValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                       char houseChar, bool defaultValue = false);
-    FixPoint loadFixPointValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                               char houseChar, FixPoint defaultValue = 0);
-    std::string loadStringValue(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                                char houseChar, const std::string& defaultValue = "");
-    ItemID_enum loadItemID(const INIFile& objectDataFile, const std::string& section, const std::string& key,
+    int loadIntValue(const INIFile& objectDataFile, std::string_view section, std::string_view key, char houseChar,
+                     int defaultValue = 0) const;
+    bool loadBoolValue(const INIFile& objectDataFile, std::string_view section, std::string_view key, char houseChar,
+                       bool defaultValue = false) const;
+    FixPoint loadFixPointValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                               char houseChar, FixPoint defaultValue = 0) const;
+    std::string loadStringValue(const INIFile& objectDataFile, std::string_view section, std::string_view key,
+                                char houseChar, std::string_view defaultValue = "") const;
+    ItemID_enum loadItemID(const INIFile& objectDataFile, std::string_view section, std::string_view key,
                            char houseChar, ItemID_enum defaultValue = ItemID_Invalid);
-    std::bitset<Structure_LastID + 1>
-    loadPrerequisiteStructuresSet(const INIFile& objectDataFile, const std::string& section, const std::string& key,
-                                  char houseChar,
-                                  std::bitset<Structure_LastID + 1> defaultValue = std::bitset<Structure_LastID + 1>());
+    std::bitset<Structure_LastID + 1> loadPrerequisiteStructuresSet(
+        const INIFile& objectDataFile, std::string_view section, std::string_view key, char houseChar,
+        std::bitset<Structure_LastID + 1> defaultValue = std::bitset<Structure_LastID + 1>()) const;
 };
 
 #endif // OBJECTDATA_H
