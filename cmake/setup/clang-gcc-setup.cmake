@@ -1,6 +1,6 @@
 message(STATUS "Configuring Clang/GCC")
 
-set(DUNE_CLANG_FLAGS "")
+set(DUNE_CLANG_FLAGS "-Wall")
 
 set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
 set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
