@@ -155,11 +155,11 @@ void LANGameFinderAndAnnouncer::announceGame() {
 
     announcePacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
     announcePacket.type        = NETWORKPACKET_ANNOUNCEGAME;
-    std::ranges::copy(serverName | std::views::take(sizeof announcePacket.serverName), announcePacket.serverName);
-    std::ranges::copy(VERSIONSTRING | std::views::take(sizeof announcePacket.serverVersion),
+    std::ranges::copy(std::ranges::take_view(serverName, sizeof announcePacket.serverName), announcePacket.serverName);
+    std::ranges::copy(std::ranges::take_view(VERSIONSTRING, sizeof announcePacket.serverVersion),
                       announcePacket.serverVersion);
     announcePacket.serverPort = SDL_SwapLE16(serverPort);
-    std::ranges::copy(mapName | std::views::take(sizeof announcePacket.mapName), announcePacket.mapName);
+    std::ranges::copy(std::ranges::take_view(mapName, sizeof announcePacket.mapName), announcePacket.mapName);
     announcePacket.numPlayers = static_cast<char>(numPlayers);
     announcePacket.maxPlayers = static_cast<char>(maxPlayers);
 
