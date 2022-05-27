@@ -34,19 +34,17 @@ RepairYardInterface::RepairYardInterface(const GameContext& context, int objectI
 }
 
 bool RepairYardInterface::update() {
-    auto* pObject = context_.objectManager.getObject(objectID);
-    if (pObject == nullptr)
+    auto* const pRepairYard = context_.objectManager.getObject<RepairYard>(objectID);
+    if (pRepairYard == nullptr)
         return false;
 
-    if (auto* const pRepairYard = dune_cast<RepairYard>(pObject)) {
-        if (const auto* pUnit = pRepairYard->getRepairUnit()) {
-            repairUnitProgressBar.setVisible(true);
-            repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));
-            repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toFloat());
-        } else {
-            repairUnitProgressBar.setVisible(false);
-        }
+    if (const auto* pUnit = pRepairYard->getRepairUnit()) {
+        repairUnitProgressBar.setVisible(true);
+        repairUnitProgressBar.setTexture(resolveItemPicture(pUnit->getItemID()));
+        repairUnitProgressBar.setProgress(((pUnit->getHealth() * 100) / pUnit->getMaxHealth()).toFloat());
+    } else {
+        repairUnitProgressBar.setVisible(false);
     }
 
-    return DefaultStructureInterface::update();
+    return parent::update();
 }
