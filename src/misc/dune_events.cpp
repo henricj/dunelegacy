@@ -61,7 +61,7 @@ bool Dune_WaitEvent(SDL_Event* event, uint32_t timeout) {
 namespace {
 inline constexpr auto local_win32_WM_DPICHANGED = 0x02E0;
 
-extern "C" int dune_watch_events(void* userdata, SDL_Event* event) {
+extern "C" int dune_watch_events([[maybe_unused]] void* userdata, SDL_Event* event) {
     switch (event->type) {
         case SDL_SYSWMEVENT: {
             assert(event && event->syswm.msg);

@@ -268,7 +268,7 @@ void CustomGameMenu::onMapTypeChange(int buttonID) {
     }
 }
 
-void CustomGameMenu::onMapListSelectionChange(bool bInteractive) {
+void CustomGameMenu::onMapListSelectionChange([[maybe_unused]] bool bInteractive) {
     nextButton.setEnabled(true);
 
     if (mapList.getSelectedIndex() < 0) {

@@ -113,7 +113,7 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
     }
 }
 
-bool Sandworm::attack(const GameContext& context) {
+bool Sandworm::attack([[maybe_unused]] const GameContext& context) {
     if (primaryWeaponTimer == 0) {
         if (target_) {
             dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location_);

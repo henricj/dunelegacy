@@ -45,15 +45,15 @@ public:
     LoadSaveWindow& operator=(LoadSaveWindow&&)      = delete;
 
     void updateEntries();
-    [[nodiscard]] std::filesystem::path getFilename() const noexcept { return filename; }
+    [[nodiscard]] std::filesystem::path getFilename() const noexcept { return filename_; }
 
-    [[nodiscard]] bool isSaveWindow() const noexcept { return bSaveWindow; }
+    [[nodiscard]] bool isSaveWindow() const noexcept { return bSaveWindow_; }
 
-    [[nodiscard]] const std::filesystem::path& getDirectory() const { return directories[currentDirectoryIndex]; }
+    [[nodiscard]] const std::filesystem::path& getDirectory() const { return directories_[currentDirectoryIndex_]; }
 
-    [[nodiscard]] int getCurrentDirectoryIndex() const { return currentDirectoryIndex; }
+    [[nodiscard]] int getCurrentDirectoryIndex() const { return currentDirectoryIndex_; }
 
-    [[nodiscard]] std::string getExtension() const noexcept { return extension; }
+    [[nodiscard]] std::string getExtension() const noexcept { return extension_; }
 
     bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 
@@ -122,14 +122,14 @@ private:
     TextButton cancelButton;
     TextBox saveName;
 
-    bool bSaveWindow;
-    std::filesystem::path filename;
-    std::vector<std::filesystem::path> directories;
-    std::vector<std::string> directoryTitles;
-    std::string extension;
-    int currentDirectoryIndex;
-    std::string preselectedFile;
-    uint32_t color;
+    bool bSaveWindow_;
+    std::filesystem::path filename_;
+    std::vector<std::filesystem::path> directories_;
+    std::vector<std::string> directoryTitles_;
+    std::string extension_;
+    int currentDirectoryIndex_;
+    std::string preselectedFile_;
+    uint32_t color_;
 };
 
 #endif // LOADSAVEWINDOW_H

@@ -1621,8 +1621,6 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
         SDL_Rect selectionDest;
         if (structure.itemID_ == Structure_Slab1) {
             // Load Terrain sprite
-            const auto* const terrainSprite = gfx->getZoomedObjPic(ObjPic_Terrain, zoom);
-
             SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,
                                zoomedTilesize, zoomedTilesize};
             SDL_FRect dest  = {(pScreenborder->world2screenX(position.x * TILESIZE)),
@@ -1635,8 +1633,6 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                                      static_cast<int>(dest.h)};
         } else if (structure.itemID_ == Structure_Slab4) {
             // Load Terrain Surface
-            const auto* const terrainSprite = gfx->getZoomedObjPic(ObjPic_Terrain, zoom);
-
             for (int y = position.y; y < position.y + 2; y++) {
                 for (int x = position.x; x < position.x + 2; x++) {
                     SDL_Rect source = {static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab) * zoomedTilesize, 0,

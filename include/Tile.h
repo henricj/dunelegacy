@@ -197,9 +197,9 @@ public:
     };
 
     struct DAMAGETYPE {
-        TerrainDamage_enum damageType{};
-        int tile{};
-        Coord realPos;
+        TerrainDamage_enum damageType_{};
+        int tile_{};
+        Coord realPos_;
     };
 
     /**

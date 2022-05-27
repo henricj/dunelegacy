@@ -90,10 +90,10 @@ void Tile::load(InputStream& stream) {
         damage_.reserve(numDamage);
         for (uint32_t i = 0; i < numDamage; i++) {
             DAMAGETYPE newDamage;
-            newDamage.damageType = static_cast<TerrainDamage_enum>(stream.readUint32());
-            newDamage.tile       = stream.readSint32();
-            newDamage.realPos.x  = stream.readSint32();
-            newDamage.realPos.y  = stream.readSint32();
+            newDamage.damageType_ = static_cast<TerrainDamage_enum>(stream.readUint32());
+            newDamage.tile_       = stream.readSint32();
+            newDamage.realPos_.x  = stream.readSint32();
+            newDamage.realPos_.y  = stream.readSint32();
 
             damage_.push_back(newDamage);
         }
@@ -172,10 +172,10 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     if (!damage_.empty()) {
         stream.writeUint32(damage_.size());
         for (const auto& damageItem : damage_) {
-            stream.writeUint32(static_cast<uint32_t>(damageItem.damageType));
-            stream.writeSint32(damageItem.tile);
-            stream.writeSint32(damageItem.realPos.x);
-            stream.writeSint32(damageItem.realPos.y);
+            stream.writeUint32(static_cast<uint32_t>(damageItem.damageType_));
+            stream.writeSint32(damageItem.tile_);
+            stream.writeSint32(damageItem.realPos_.x);
+            stream.writeSint32(damageItem.realPos_.y);
         }
     }
 
@@ -328,12 +328,12 @@ void Tile::blitGround(Game* game) {
 
     // damage
     for (const auto& damageItem : damage_) {
-        source.x = damageItem.tile * zoomed_tilesize;
-        SDL_FRect dest{screenborder->world2screenX(damageItem.realPos.x) - static_cast<float>(zoomed_tilesize) / 2.f,
-                       screenborder->world2screenY(damageItem.realPos.y) - static_cast<float>(zoomed_tilesize) / 2.f,
+        source.x = damageItem.tile_ * zoomed_tilesize;
+        SDL_FRect dest{screenborder->world2screenX(damageItem.realPos_.x) - static_cast<float>(zoomed_tilesize) / 2.f,
+                       screenborder->world2screenY(damageItem.realPos_.y) - static_cast<float>(zoomed_tilesize) / 2.f,
                        static_cast<float>(zoomed_tilesize), static_cast<float>(zoomed_tilesize)};
 
-        if (damageItem.damageType == Tile::TerrainDamage_enum::Terrain_RockDamage) {
+        if (damageItem.damageType_ == Tile::TerrainDamage_enum::Terrain_RockDamage) {
             auto* const texture = gfx->getZoomedObjPic(ObjPic_RockDamage, zoom);
             Dune_RenderCopyF(renderer, texture, &source, &dest);
         } else {
@@ -855,9 +855,9 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
 
     if (damage_.size() < DAMAGE_PER_TILE) {
         DAMAGETYPE newDamage;
-        newDamage.tile       = static_cast<int>(SANDDAMAGETYPE::SandDamage1);
-        newDamage.damageType = TerrainDamage_enum::Terrain_SandDamage;
-        newDamage.realPos    = realLocation;
+        newDamage.tile_       = static_cast<int>(SANDDAMAGETYPE::SandDamage1);
+        newDamage.damageType_ = TerrainDamage_enum::Terrain_SandDamage;
+        newDamage.realPos_    = realLocation;
 
         damage_.push_back(newDamage);
     }

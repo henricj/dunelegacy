@@ -100,7 +100,7 @@ bool ScrollBar::handleMouseWheel(int32_t x, int32_t y, bool up) {
     return false;
 }
 
-bool ScrollBar::handleKeyPress(const SDL_KeyboardEvent& key) {
+bool ScrollBar::handleKeyPress([[maybe_unused]] const SDL_KeyboardEvent& key) {
     return true;
 }
 

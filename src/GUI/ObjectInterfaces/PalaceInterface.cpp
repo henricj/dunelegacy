@@ -14,7 +14,7 @@ std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& cont
     return tmp;
 }
 
-sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, GeneratedPicture id) {
+sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, [[maybe_unused]] GeneratedPicture id) {
     auto* const deathHandSurface = surfaceLoader->getSmallDetailSurface(Picture_DeathHand);
 
     const auto pText{dune::globals::pFontManager->getFont(12)->createTextSurface(_("READY"), COLOR_WHITE)};

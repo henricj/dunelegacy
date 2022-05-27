@@ -69,10 +69,9 @@ public:
 
     Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& randomGen,
                          const Coord& gatherPoint = Coord::Invalid(), const Coord& buildingSize = Coord(0, 0));
-    const // building size is num squares
-        Coord
-        findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(),
-                       const Coord& buildingSize = Coord(0, 0)) {
+    // building size is num squares
+    Coord findDeploySpot(UnitBase* pUnit, const Coord& origin, const Coord& gatherPoint = Coord::Invalid(),
+                         const Coord& buildingSize = Coord(0, 0)) {
         return findDeploySpot(pUnit, origin, random_, gatherPoint, buildingSize);
     }
 
@@ -148,6 +147,24 @@ public:
     template<typename F>
     void for_all(F&& f) const {
         std::for_each(std::begin(tiles), std::end(tiles), f);
+    }
+
+    template<typename F>
+    void for_all_xy(F&& f) {
+        for (auto x = 0; x < sizeX; ++x) {
+            for (auto y = 0; y < sizeY; ++y) {
+                f(x, y, tiles[tile_index(x, y)]);
+            }
+        }
+    }
+
+    template<typename F>
+    void for_all_xy(F&& f) const {
+        for (auto x = 0; x < sizeX; ++x) {
+            for (auto y = 0; y < sizeY; ++y) {
+                f(x, y, tiles[tile_index(x, y)]);
+            }
+        }
     }
 
 protected:

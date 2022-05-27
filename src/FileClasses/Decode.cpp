@@ -68,7 +68,8 @@ int decode40(const unsigned char* image_in, unsigned char* image_out) {
 
         } else {
             // bit 7 = 1
-            if (!(count = code & 0x7f)) {
+            count = code & 0x7f;
+            if (!count) {
                 count = dune::read_le_uint16(readp);
                 readp += 2;
                 code = count >> 8;

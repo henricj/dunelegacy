@@ -295,7 +295,7 @@ void ReinforcementsWindow::onRemove() {
     }
 }
 
-void ReinforcementsWindow::onSelectionChange(bool bInteractive) {
+void ReinforcementsWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
     const int index = reinforcementsListBox.getSelectedIndex();
 
     if (index >= 0) {

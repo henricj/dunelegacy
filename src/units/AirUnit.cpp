@@ -74,7 +74,7 @@ void AirUnit::assignToMap(const GameContext& context, const Coord& pos) {
     }
 }
 
-void AirUnit::checkPos(const GameContext& context) {
+void AirUnit::checkPos([[maybe_unused]] const GameContext& context) {
     // do nothing
 }
 

@@ -254,18 +254,17 @@ Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
 }
 
 void StructureBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
-    auto* const game               = dune::globals::currentGame.get();
     const auto* const local_player = dune::globals::pLocalPlayer;
+
+    auto& command_manager = context.game.getCommandManager();
 
     if ((xPos < location_.x) || (xPos >= (location_.x + getStructureSizeX())) || (yPos < location_.y)
         || (yPos >= (location_.y + getStructureSizeY()))) {
-        game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
-                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID_,
-                                                     static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
+        command_manager.addCommand(Command(local_player->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
+                                           objectID_, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     } else {
-        game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
-                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID_,
-                                                     static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
+        command_manager.addCommand(Command(local_player->getPlayerID(), CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION,
+                                           objectID_, static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
     }
 }
 
@@ -280,7 +279,7 @@ void StructureBase::doSetDeployPosition(int xPos, int yPos) {
     setForced(true);
 }
 
-void StructureBase::doRepair(const GameContext& context) {
+void StructureBase::doRepair([[maybe_unused]] const GameContext& context) {
     repairing = true;
 }
 

@@ -137,8 +137,9 @@ sdl2::surface_ptr INIMapPreviewCreator::createMinimapImageOfMap(int borderWidth,
 
         for (int y = 0; y < sizeY; y++) {
             for (int x = 0; x < sizeX; x++) {
-                Uint32 color              = COLOR_BLACK;
-                unsigned char seedmaptype = SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4;
+                Uint32 color = COLOR_BLACK;
+                const auto seedmaptype =
+                    static_cast<uint8_t>(SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4u);
                 switch (seedmaptype) {
 
                     case 0x7: {

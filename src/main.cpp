@@ -398,7 +398,7 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
     }
 #endif
 
-    playername[0] = std::toupper(static_cast<unsigned char>(playername[0]));
+    playername[0] = static_cast<char>(std::toupper(static_cast<unsigned char>(playername[0])));
 
     // replace player name, language, server port and metaserver
     const std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);

@@ -119,12 +119,12 @@ private:
     void onMirrorModeButton(int mode);
 
 private:
-    MapEditor* pMapEditor;
+    MapEditor* pMapEditor_;
 
     MapEditorRadarView radarView;
 
-    int currentEditStructureID;
-    int currentEditUnitID;
+    int currentEditStructureID_;
+    int currentEditUnitID_;
 
     StaticContainer windowWidget;
 
@@ -267,10 +267,10 @@ private:
     SymbolButton unitDetailsRotateLeftButton;
     SymbolButton unitDetailsRotateRightButton;
 
-    int currentTerrainType    = -1;
-    int currentTerrainPenSize = -1;
+    int currentTerrainType_    = -1;
+    int currentTerrainPenSize_ = -1;
 
-    HOUSETYPE house;
-    uint32_t color;
+    HOUSETYPE house_;
+    uint32_t color_;
 };
 #endif // MAPEDITORINTERFACE_H

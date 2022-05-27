@@ -51,14 +51,14 @@ public:
         Return the current progress.
         \return the current progress in percent
     */
-    [[nodiscard]] double getProgress() const noexcept { return percent; }
+    [[nodiscard]] double getProgress() const noexcept { return percent_; }
 
     /**
         Sets the color of the progress bar overlay
         \param  color   the new color (COLOR_DEFAULT = default)
     */
     void setColor(Uint32 color = COLOR_DEFAULT) {
-        this->color = color;
+        this->color_ = color;
         invalidateTextures();
     }
 
@@ -66,7 +66,7 @@ public:
         Specifies if a shadow is drawn or not.
         \param  bDrawShadow if true, a shadow is drawn
     */
-    void setDrawShadow(bool bDrawShadow) { this->bDrawShadow = bDrawShadow; }
+    void setDrawShadow(bool bDrawShadow) { this->bDrawShadow_ = bDrawShadow; }
 
     /**
         This method resizes the progress bar to width and height. This method should only
@@ -89,10 +89,10 @@ public:
     void draw(Point position) override;
 
 protected:
-    float percent{};                ///< Percent from 0.0 to 100.0
-    uint32_t color = COLOR_DEFAULT; ///< The color of the progress overlay
-    bool bDrawShadow{};             ///< Draw shadow under the foreground surface
-    std::variant<std::monostate, DuneTextureOwned, const DuneTexture*> pContent;
+    float percent_{};                ///< Percent from 0.0 to 100.0
+    uint32_t color_ = COLOR_DEFAULT; ///< The color of the progress overlay
+    bool bDrawShadow_{};             ///< Draw shadow under the foreground surface
+    std::variant<std::monostate, DuneTextureOwned, const DuneTexture*> pContent_;
 };
 
 class TextProgressBar final : public ProgressBar {
@@ -118,7 +118,7 @@ public:
         Get the text of this progress bar.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; }
+    [[nodiscard]] const std::string& getText() const noexcept { return text_; }
 
     /**
         Sets the text color for this progress bar.
@@ -126,8 +126,8 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
+        this->text_color_        = textcolor;
+        this->text_shadow_color_ = textshadowcolor;
         invalidateTextures();
     }
 
@@ -151,10 +151,10 @@ protected:
     */
     void invalidateTextures() override;
 
-    std::string text; ///< Text of this progress bar
+    std::string text_; ///< Text of this progress bar
 
-    Uint32 textcolor       = COLOR_DEFAULT;
-    Uint32 textshadowcolor = COLOR_DEFAULT;
+    Uint32 text_color_        = COLOR_DEFAULT;
+    Uint32 text_shadow_color_ = COLOR_DEFAULT;
 };
 
 class PictureProgressBar final : public ProgressBar {

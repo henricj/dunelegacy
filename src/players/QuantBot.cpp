@@ -419,9 +419,9 @@ void QuantBot::update() {
     }
 }
 
-void QuantBot::onObjectWasBuilt(const ObjectBase* pObject) { }
+void QuantBot::onObjectWasBuilt([[maybe_unused]] const ObjectBase* pObject) { }
 
-void QuantBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) { }
+void QuantBot::onDecrementStructures([[maybe_unused]] ItemID_enum itemID, [[maybe_unused]] const Coord& location) { }
 
 /// When we take losses we should hold off from attacking for longer...
 void QuantBot::onDecrementUnits(ItemID_enum itemID) {
@@ -441,8 +441,8 @@ void QuantBot::onIncrementUnitKills(ItemID_enum itemID) {
         // logDebug("kill ");
     }
 }
-void QuantBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
-    const ObjectBase* pDamager = getObject(damagerID);
+void QuantBot::onDamage(const ObjectBase* pObject, [[maybe_unused]] int damage, uint32_t damagerID) {
+    const auto* const pDamager = getObject(damagerID);
 
     if (pDamager == nullptr || pDamager->getOwner() == getHouse() || pObject->getItemID() == Unit_Sandworm) {
         return;

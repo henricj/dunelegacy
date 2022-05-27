@@ -74,7 +74,8 @@ Mix_Chunk* SFXManager::getSound(Sound_enum id) const {
     return soundChunk[sound_index].get();
 }
 
-sdl2::mix_chunk_ptr SFXManager::loadMixFromADL(const std::string& adlFile, int index, int volume) const {
+sdl2::mix_chunk_ptr
+SFXManager::loadMixFromADL(const std::string& adlFile, int index, [[maybe_unused]] int volume) const {
 
     const auto rwop = dune::globals::pFileManager->openFile(adlFile);
 
@@ -404,7 +405,7 @@ void SFXManager::loadSounds() {
     soundChunk[static_cast<int>(Sound_enum::Sound_RocketSmall)]        = getChunkFromFile("MISLTINP.VOC");
 }
 
-Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, HOUSETYPE house) const {
+Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, [[maybe_unused]] HOUSETYPE house) const {
     const auto voice_index = static_cast<int>(id);
 
     if (voice_index < 0 || voice_index >= lngVoice.size())

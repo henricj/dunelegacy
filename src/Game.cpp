@@ -2026,7 +2026,7 @@ bool Game::isOnRadarView(int mouseX, int mouseY) const {
                                                  mouseY - sideBarPos_.y);
 }
 
-void Game::handleChatInput(const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
+void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     if (keyboardEvent.keysym.sym == SDLK_ESCAPE) {
         chatMode_ = false;
     } else if (keyboardEvent.keysym.sym == SDLK_RETURN) {

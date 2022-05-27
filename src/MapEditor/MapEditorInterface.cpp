@@ -49,10 +49,10 @@
 #include <misc/draw_util.h>
 
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
-    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), radarView(pMapEditor), currentEditStructureID(INVALID),
-      currentEditUnitID(INVALID), house(HOUSETYPE::HOUSE_HARKONNEN) {
+    : Window(0, 0, 0, 0), pMapEditor_(pMapEditor), radarView(pMapEditor), currentEditStructureID_(INVALID),
+      currentEditUnitID_(INVALID), house_(HOUSETYPE::HOUSE_HARKONNEN) {
 
-    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color_ = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house_)] + 3]);
 
     MapEditorInterface::setTransparentBackground(true);
 
@@ -732,7 +732,7 @@ void MapEditorInterface::onHouseChanges() {
 
     int currentIndex     = 0;
     int currentPlayerNum = 1;
-    for (const auto& player : pMapEditor->getPlayers()) {
+    for (const auto& player : pMapEditor_->getPlayers()) {
         std::string entryName =
             player.bActive_
                 ? (player.bAnyHouse_ ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name_)
@@ -756,13 +756,13 @@ void MapEditorInterface::onNewMap() {
 
     onMirrorModeButton(0);
 
-    teamsButton.setVisible((pMapEditor->getMapVersion() < 2));
-    mirrorModeNoneButton.setVisible((pMapEditor->getMapVersion() >= 2));
-    mirrorModeHorizontalButton.setVisible((pMapEditor->getMapVersion() >= 2));
-    mirrorModeVerticalButton.setVisible((pMapEditor->getMapVersion() >= 2));
-    mirrorModeBothButton.setVisible((pMapEditor->getMapVersion() >= 2));
-    mirrorModePointButton.setVisible((pMapEditor->getMapVersion() >= 2));
-    editorModeUnits_SpecialUnit.setVisible((pMapEditor->getMapVersion() >= 2));
+    teamsButton.setVisible((pMapEditor_->getMapVersion() < 2));
+    mirrorModeNoneButton.setVisible((pMapEditor_->getMapVersion() >= 2));
+    mirrorModeHorizontalButton.setVisible((pMapEditor_->getMapVersion() >= 2));
+    mirrorModeVerticalButton.setVisible((pMapEditor_->getMapVersion() >= 2));
+    mirrorModeBothButton.setVisible((pMapEditor_->getMapVersion() >= 2));
+    mirrorModePointButton.setVisible((pMapEditor_->getMapVersion() >= 2));
+    editorModeUnits_SpecialUnit.setVisible((pMapEditor_->getMapVersion() >= 2));
 }
 
 void MapEditorInterface::deselectAll() {
@@ -783,7 +783,7 @@ void MapEditorInterface::onObjectSelected() {
     windowWidget.removeChildWidget(&structureDetailsHBox);
     windowWidget.removeChildWidget(&unitDetailsHBox);
 
-    const MapEditor::Structure* pStructure = pMapEditor->getSelectedStructure();
+    const MapEditor::Structure* pStructure = pMapEditor_->getSelectedStructure();
 
     if (pStructure != nullptr) {
         windowWidget.addWidget(&structureDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
@@ -794,7 +794,7 @@ void MapEditorInterface::onObjectSelected() {
         changeHouseDropDown(pStructure->house_);
     }
 
-    if (const auto* pUnit = pMapEditor->getSelectedUnit()) {
+    if (const auto* pUnit = pMapEditor_->getSelectedUnit()) {
         windowWidget.addWidget(&unitDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
@@ -810,13 +810,13 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         const auto loadMapFilepath = pNewMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
-            pMapEditor->loadMap(loadMapFilepath);
+            pMapEditor_->loadMap(loadMapFilepath);
         } else {
             const MapData& mapdata = pNewMapWindow->getMapData();
 
             if (mapdata.getSizeX() > 0) {
-                pMapEditor->setMap(mapdata, MapInfo(pNewMapWindow->getMapSeed(), pNewMapWindow->getAuthor(),
-                                                    pNewMapWindow->getLicense()));
+                pMapEditor_->setMap(mapdata, MapInfo(pNewMapWindow->getMapSeed(), pNewMapWindow->getAuthor(),
+                                                     pNewMapWindow->getLicense()));
                 onPlayers();
             }
         }
@@ -826,38 +826,39 @@ void MapEditorInterface::onChildWindowClose(Window* pChildWindow) {
         const auto loadMapFilepath = pLoadMapWindow->getLoadMapFilepath();
 
         if (!loadMapFilepath.empty()) {
-            pMapEditor->loadMap(loadMapFilepath);
+            pMapEditor_->loadMap(loadMapFilepath);
         }
     }
 
     const auto* pLoadSaveWindow = dynamic_cast<LoadSaveWindow*>(pChildWindow);
     if (pLoadSaveWindow != nullptr && !pLoadSaveWindow->getFilename().empty()) {
-        pMapEditor->saveMap(pLoadSaveWindow->getFilename());
+        pMapEditor_->saveMap(pLoadSaveWindow->getFilename());
     }
 
     const auto* pQstBox = dynamic_cast<QstBox*>(pChildWindow);
     if (pQstBox != nullptr && pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
-        pMapEditor->onQuit();
+        pMapEditor_->onQuit();
     }
 }
 
 void MapEditorInterface::onNew() {
-    openWindow(NewMapWindow::create(house));
+    openWindow(NewMapWindow::create(house_));
 }
 
-bool MapEditorInterface::onRadarClick(Coord worldPosition, bool bRightMouseButton, bool bDrag) {
+bool MapEditorInterface::onRadarClick(Coord worldPosition, [[maybe_unused]] bool bRightMouseButton,
+                                      [[maybe_unused]] bool bDrag) {
     dune::globals::screenborder->setNewScreenCenter(worldPosition);
     return true;
 }
 
 void MapEditorInterface::onQuit() {
-    if (pMapEditor->hasChangeSinceLastSave()) {
-        QstBox* pQstBox =
+    if (pMapEditor_->hasChangeSinceLastSave()) {
+        auto* const pQstBox =
             QstBox::create(_("Do you really want to quit and lose unsaved changes to this map?"), _("Yes"), _("No"));
-        pQstBox->setTextColor(color);
+        pQstBox->setTextColor(color_);
         openWindow(pQstBox);
     } else {
-        pMapEditor->onQuit();
+        pMapEditor_->onQuit();
     }
 }
 
@@ -874,11 +875,11 @@ void MapEditorInterface::onSave() {
     mapDirectories.emplace_back(tmp2);
     directoryTitles.push_back(_("MP Maps"));
 
-    const auto& lastSaveName = pMapEditor->getLastSaveName();
+    const auto& lastSaveName = pMapEditor_->getLastSaveName();
     std::filesystem::path mapname;
     int lastSaveDirectoryIndex = 0;
     if (lastSaveName.empty()) {
-        mapname = pMapEditor->generateMapname();
+        mapname = pMapEditor_->generateMapname();
     } else {
         mapname = getBasename(lastSaveName, true);
 
@@ -893,49 +894,49 @@ void MapEditorInterface::onSave() {
     }
 
     openWindow(LoadSaveWindow::create(true, _("Save Map"), mapDirectories, directoryTitles,
-                                      pMapEditor->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex,
-                                      reinterpret_cast<const char*>(mapname.u8string().c_str()), color)
+                                      pMapEditor_->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex,
+                                      reinterpret_cast<const char*>(mapname.u8string().c_str()), color_)
                    .release());
 }
 
 void MapEditorInterface::onLoad() {
-    openWindow(LoadMapWindow::create(color));
+    openWindow(LoadMapWindow::create(color_));
 }
 
 void MapEditorInterface::onPlayers() {
-    openWindow(PlayerSettingsWindow::create(pMapEditor, house));
+    openWindow(PlayerSettingsWindow::create(pMapEditor_, house_));
 }
 
 void MapEditorInterface::onMapSettings() {
-    openWindow(MapSettingsWindow::create(pMapEditor, house));
+    openWindow(MapSettingsWindow::create(pMapEditor_, house_));
 }
 
 void MapEditorInterface::onChoam() {
-    openWindow(ChoamWindow::create(pMapEditor, house));
+    openWindow(ChoamWindow::create(pMapEditor_, house_));
 }
 
 void MapEditorInterface::onReinforcements() {
-    openWindow(ReinforcementsWindow::create(pMapEditor, house));
+    openWindow(ReinforcementsWindow::create(pMapEditor_, house_));
 }
 
 void MapEditorInterface::onTeams() {
-    openWindow(TeamsWindow::create(pMapEditor, house));
+    openWindow(TeamsWindow::create(pMapEditor_, house_));
 }
 
 void MapEditorInterface::onUndo() {
-    pMapEditor->undoLastOperation();
+    pMapEditor_->undoLastOperation();
 
-    currentEditUnitID      = INVALID;
-    currentEditStructureID = INVALID;
+    currentEditUnitID_      = INVALID;
+    currentEditStructureID_ = INVALID;
 
     onObjectSelected();
 }
 
 void MapEditorInterface::onRedo() {
-    pMapEditor->redoLastOperation();
+    pMapEditor_->redoLastOperation();
 
-    currentEditUnitID      = INVALID;
-    currentEditStructureID = INVALID;
+    currentEditUnitID_      = INVALID;
+    currentEditStructureID_ = INVALID;
 
     onObjectSelected();
 }
@@ -949,7 +950,7 @@ void MapEditorInterface::onHouseDropDownChanged(bool bInteractive) {
     changeInterfaceColor(static_cast<HOUSETYPE>(index));
 
     if (bInteractive) {
-        pMapEditor->setEditorMode(MapEditor::EditorMode());
+        pMapEditor_->setEditorMode(MapEditor::EditorMode());
         deselectAll();
     }
 }
@@ -967,7 +968,7 @@ void MapEditorInterface::onModeButton(int button) {
     switch (button) {
         case 1: {
             // add terrain mode
-            if (pMapEditor->getMapVersion() < 2) {
+            if (pMapEditor_->getMapVersion() < 2) {
                 windowWidget.addWidget(&editorModeClassicTerrain_MainVBox,
                                        Point(getRendererWidth() - sideBar.getSize().x + 14, 200),
                                        Point(sideBar.getSize().x - 14, getRendererHeight() - 200));
@@ -996,12 +997,12 @@ void MapEditorInterface::onModeButton(int button) {
         } break;
     }
 
-    pMapEditor->setEditorMode(MapEditor::EditorMode());
+    pMapEditor_->setEditorMode(MapEditor::EditorMode());
     deselectAll();
 }
 
 void MapEditorInterface::onTerrainButton(int terrainType) {
-    currentTerrainType = terrainType;
+    currentTerrainType_ = terrainType;
 
     editorModeTerrain_Sand.setToggleState((terrainType == Terrain_Sand));
     editorModeTerrain_Dunes.setToggleState((terrainType == Terrain_Dunes));
@@ -1016,28 +1017,28 @@ void MapEditorInterface::onTerrainButton(int terrainType) {
     editorModeClassicTerrain_SpecialBloom.setToggleState((terrainType == Terrain_SpecialBloom));
     editorModeClassicTerrain_SpiceField.setToggleState((terrainType == Terrain_Spice));
 
-    if (currentTerrainType >= 0) {
-        pMapEditor->setEditorMode(
-            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType), currentTerrainPenSize));
+    if (currentTerrainType_ >= 0) {
+        pMapEditor_->setEditorMode(
+            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType_), currentTerrainPenSize_));
     }
 }
 
 void MapEditorInterface::onTerrainPenButton(int pensize) {
-    currentTerrainPenSize = pensize;
+    currentTerrainPenSize_ = pensize;
 
     editorModeTerrain_Pen1x1.setToggleState((pensize == 1));
     editorModeTerrain_Pen3x3.setToggleState((pensize == 3));
     editorModeTerrain_Pen5x5.setToggleState((pensize == 5));
 
-    if (currentTerrainType >= 0) {
-        pMapEditor->setEditorMode(
-            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType), currentTerrainPenSize));
+    if (currentTerrainType_ >= 0) {
+        pMapEditor_->setEditorMode(
+            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType_), currentTerrainPenSize_));
     }
 }
 
 void MapEditorInterface::onSetTacticalPosition() {
     deselectAll();
-    pMapEditor->setEditorMode(MapEditor::EditorMode(true));
+    pMapEditor_->setEditorMode(MapEditor::EditorMode(true));
 }
 
 void MapEditorInterface::onStructButton(ItemID_enum structType) {
@@ -1062,7 +1063,7 @@ void MapEditorInterface::onStructButton(ItemID_enum structType) {
 
     if (structType >= 0) {
         const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
-        pMapEditor->setEditorMode(MapEditor::EditorMode(house, structType, 256));
+        pMapEditor_->setEditorMode(MapEditor::EditorMode(house, structType, 256));
     }
 }
 
@@ -1090,26 +1091,26 @@ void MapEditorInterface::onUnitButton(ItemID_enum unitType) {
 
     if (unitType >= 0) {
         const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
-        pMapEditor->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
+        pMapEditor_->setEditorMode(MapEditor::EditorMode(house, unitType, 256, static_cast<ANGLETYPE>(0), AREAGUARD));
     }
 }
 
 void MapEditorInterface::onStructureHealthDropDown(bool bInteractive) {
 
     if (bInteractive) {
-        currentEditUnitID = INVALID;
+        currentEditUnitID_ = INVALID;
 
-        if (pMapEditor->getSelectedStructureID() != currentEditStructureID) {
-            pMapEditor->startOperation();
-            currentEditStructureID = pMapEditor->getSelectedStructureID();
+        if (pMapEditor_->getSelectedStructureID() != currentEditStructureID_) {
+            pMapEditor_->startOperation();
+            currentEditStructureID_ = pMapEditor_->getSelectedStructureID();
         }
 
-        const std::vector<int> selectedStructures = pMapEditor->getMirrorStructures(currentEditStructureID);
+        const std::vector<int> selectedStructures = pMapEditor_->getMirrorStructures(currentEditStructureID_);
 
         for (const int selectedStructure : selectedStructures) {
             MapEditorEditStructureOperation editStructureOperation(
                 selectedStructure, structureDetailsHealthDropDownBox.getSelectedEntryIntData());
-            pMapEditor->addUndoOperation(editStructureOperation.perform(pMapEditor));
+            pMapEditor_->addUndoOperation(editStructureOperation.perform(pMapEditor_));
         }
     }
 }
@@ -1117,46 +1118,46 @@ void MapEditorInterface::onStructureHealthDropDown(bool bInteractive) {
 void MapEditorInterface::onUnitHealthDropDown(bool bInteractive) {
 
     if (bInteractive) {
-        currentEditStructureID = INVALID;
+        currentEditStructureID_ = INVALID;
 
-        if (pMapEditor->getSelectedUnitID() != currentEditUnitID) {
-            pMapEditor->startOperation();
-            currentEditUnitID = pMapEditor->getSelectedUnitID();
+        if (pMapEditor_->getSelectedUnitID() != currentEditUnitID_) {
+            pMapEditor_->startOperation();
+            currentEditUnitID_ = pMapEditor_->getSelectedUnitID();
         }
 
-        const std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
+        const std::vector<int> selectedUnits = pMapEditor_->getMirrorUnits(currentEditUnitID_);
 
         for (const int selectedUnit : selectedUnits) {
-            const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
+            const MapEditor::Unit* pUnit = pMapEditor_->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(
                 pUnit->id_, unitDetailsHealthDropDownBox.getSelectedEntryIntData(), pUnit->angle_, pUnit->attack_mode_);
-            pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
+            pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
         }
     }
 }
 
 void MapEditorInterface::onSelectedUnitRotateLeft() {
-    onUnitRotateLeft(pMapEditor->getSelectedUnitID());
+    onUnitRotateLeft(pMapEditor_->getSelectedUnitID());
 }
 
 void MapEditorInterface::onUnitRotateLeft(int unitID) {
-    currentEditStructureID = INVALID;
+    currentEditStructureID_ = INVALID;
 
-    if (unitID != currentEditUnitID) {
-        pMapEditor->startOperation();
-        currentEditUnitID = unitID;
+    if (unitID != currentEditUnitID_) {
+        pMapEditor_->startOperation();
+        currentEditUnitID_ = unitID;
     }
 
-    const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
+    const std::vector<int> mirrorUnits = pMapEditor_->getMirrorUnits(unitID, true);
     for (int i = 0; i < static_cast<int>(mirrorUnits.size()); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
 
-        const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
+        const MapEditor::Unit* pMirrorUnit = pMapEditor_->getUnit(mirrorUnits[i]);
 
         auto currentAngle = pMirrorUnit->angle_;
-        currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
+        currentAngle      = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
         if (pMirrorUnit->itemID_ == Unit_Soldier || pMirrorUnit->itemID_ == Unit_Saboteur
             || pMirrorUnit->itemID_ == Unit_Trooper || pMirrorUnit->itemID_ == Unit_Infantry
             || pMirrorUnit->itemID_ == Unit_Troopers) {
@@ -1166,37 +1167,37 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
         }
 
         currentAngle = normalizeAngle(currentAngle);
-        currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
+        currentAngle = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
 
         MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
                                                      pMirrorUnit->attack_mode_);
 
-        pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
+        pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
     }
 }
 
 void MapEditorInterface::onSelectedUnitRotateRight() {
-    onUnitRotateRight(pMapEditor->getSelectedUnitID());
+    onUnitRotateRight(pMapEditor_->getSelectedUnitID());
 }
 
 void MapEditorInterface::onUnitRotateRight(int unitID) {
-    currentEditStructureID = INVALID;
+    currentEditStructureID_ = INVALID;
 
-    if (unitID != currentEditUnitID) {
-        pMapEditor->startOperation();
-        currentEditUnitID = unitID;
+    if (unitID != currentEditUnitID_) {
+        pMapEditor_->startOperation();
+        currentEditUnitID_ = unitID;
     }
 
-    const std::vector<int> mirrorUnits = pMapEditor->getMirrorUnits(unitID, true);
+    const std::vector<int> mirrorUnits = pMapEditor_->getMirrorUnits(unitID, true);
     for (int i = 0; i < static_cast<int>(mirrorUnits.size()); i++) {
         if (mirrorUnits[i] == INVALID) {
             continue;
         }
 
-        const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
+        const MapEditor::Unit* pMirrorUnit = pMapEditor_->getUnit(mirrorUnits[i]);
 
         auto currentAngle = pMirrorUnit->angle_;
-        currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
+        currentAngle      = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
         if (pMirrorUnit->itemID_ == Unit_Soldier || pMirrorUnit->itemID_ == Unit_Saboteur
             || pMirrorUnit->itemID_ == Unit_Trooper || pMirrorUnit->itemID_ == Unit_Infantry
             || pMirrorUnit->itemID_ == Unit_Troopers) {
@@ -1205,41 +1206,41 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
             currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) - 1);
         }
         currentAngle = normalizeAngle(currentAngle);
-        currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
+        currentAngle = pMapEditor_->getMapMirror()->getAngle(currentAngle, i);
 
         MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
                                                      pMirrorUnit->attack_mode_);
 
-        pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
+        pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
     }
 }
 
 void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
 
     if (bInteractive) {
-        currentEditStructureID = INVALID;
+        currentEditStructureID_ = INVALID;
 
-        if (pMapEditor->getSelectedUnitID() != currentEditUnitID) {
-            pMapEditor->startOperation();
-            currentEditUnitID = pMapEditor->getSelectedUnitID();
+        if (pMapEditor_->getSelectedUnitID() != currentEditUnitID_) {
+            pMapEditor_->startOperation();
+            currentEditUnitID_ = pMapEditor_->getSelectedUnitID();
         }
 
-        const std::vector<int> selectedUnits = pMapEditor->getMirrorUnits(currentEditUnitID);
+        const std::vector<int> selectedUnits = pMapEditor_->getMirrorUnits(currentEditUnitID_);
 
         for (const int selectedUnit : selectedUnits) {
-            const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
+            const MapEditor::Unit* pUnit = pMapEditor_->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(
                 pUnit->id_, pUnit->health_, pUnit->angle_,
                 static_cast<ATTACKMODE>(unitDetailsAttackModeDropDownBox.getSelectedEntryIntData()));
-            pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
+            pMapEditor_->addUndoOperation(editUnitOperation.perform(pMapEditor_));
         }
     }
 }
 
 void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 
-    for (size_t i = 0; i < pMapEditor->getPlayers().size(); i++) {
-        if (pMapEditor->getPlayers()[i].house_ == newHouse) {
+    for (size_t i = 0; i < pMapEditor_->getPlayers().size(); i++) {
+        if (pMapEditor_->getPlayers()[i].house_ == newHouse) {
             houseDropDownBox.setSelectedItem(i);
             break;
         }
@@ -1247,14 +1248,14 @@ void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 }
 
 void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
-    house = newHouse;
-    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
+    house_ = newHouse;
+    color_ = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
-    terrainButton.setTextColor(color);
-    structuresButton.setTextColor(color);
-    unitsButton.setTextColor(color);
+    terrainButton.setTextColor(color_);
+    structuresButton.setTextColor(color_);
+    unitsButton.setTextColor(color_);
 
-    houseDropDownBox.setColor(color);
+    houseDropDownBox.setColor(color_);
 
     auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -1285,7 +1286,7 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     editorModeClassicTerrain_SpiceBloom.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_SpiceBloom, newHouse));
     editorModeClassicTerrain_SpecialBloom.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_SpecialBloom, newHouse));
     editorModeClassicTerrain_SpiceField.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Spice, newHouse));
-    editorModeClassicTerrain_SetTacticalPos.setTextColor(color);
+    editorModeClassicTerrain_SetTacticalPos.setTextColor(color_);
 
     editorModeStructs_Slab1.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Slab1, newHouse));
     editorModeStructs_Wall.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Wall, newHouse));
@@ -1327,14 +1328,14 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     editorModeUnits_Carryall.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Carryall, newHouse));
     editorModeUnits_Ornithopter.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Ornithopter, newHouse));
 
-    structureDetailsHealthLabel.setTextColor(color);
-    structureDetailsHealthDropDownBox.setColor(color);
+    structureDetailsHealthLabel.setTextColor(color_);
+    structureDetailsHealthDropDownBox.setColor(color_);
 
-    unitDetailsHealthLabel.setTextColor(color);
-    unitDetailsHealthDropDownBox.setColor(color);
+    unitDetailsHealthLabel.setTextColor(color_);
+    unitDetailsHealthDropDownBox.setColor(color_);
 
-    unitDetailsAttackModeLabel.setTextColor(color);
-    unitDetailsAttackModeDropDownBox.setColor(color);
+    unitDetailsAttackModeLabel.setTextColor(color_);
+    unitDetailsAttackModeDropDownBox.setColor(color_);
 
     unitDetailsRotateLeftButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_RotateLeftIcon, newHouse),
                                           gfx->getUIGraphicSurface(UI_MapEditor_RotateLeftHighlightIcon, newHouse));
@@ -1343,7 +1344,7 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
 }
 
 void MapEditorInterface::onMirrorModeButton(int mode) {
-    pMapEditor->setMirrorMode(static_cast<MirrorMode>(mode));
+    pMapEditor_->setMirrorMode(static_cast<MirrorMode>(mode));
 
     mirrorModeNoneButton.setToggleState((mode == MirrorModeNone));
     mirrorModeHorizontalButton.setToggleState((mode == MirrorModeHorizontal));

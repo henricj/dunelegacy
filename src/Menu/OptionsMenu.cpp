@@ -240,7 +240,7 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
 
 OptionsMenu::~OptionsMenu() = default;
 
-void OptionsMenu::onChangeOption(bool bInteractive) {
+void OptionsMenu::onChangeOption([[maybe_unused]] bool bInteractive) {
     const auto& settings = dune::globals::settings;
 
     bool bChanged = false;

@@ -995,8 +995,7 @@ int XMidiFile::CreateMT32SystemMessage(const int time, uint32_t address_base, ui
 
 // XMidiFile and Midi to List. Returns bit mask of channels used
 int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_state& fs) {
-    int time = 0; // 120th of a second
-    uint32_t data;
+    int time        = 0; // 120th of a second
     int end         = 0;
     uint32_t status = 0;
     int play_size   = 2;
@@ -1007,6 +1006,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
 
     while (!end && source->getAvail() > 0) {
         if (!is_xmi) {
+            uint32_t data;
             GetVLQ(source, data);
             time += data;
 
@@ -1017,6 +1017,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
             } else
                 source->skip(-1);
         } else {
+            uint32_t data;
             GetVLQ2(source, data);
             time += data;
 

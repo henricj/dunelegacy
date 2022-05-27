@@ -41,9 +41,9 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
                                const std::vector<std::filesystem::path>& directories,
                                const std::vector<std::string>& directoryTitles, std::string extension,
                                int preselectedDirectoryIndex, const std::string& preselectedFile, uint32_t color)
-    : Window(0, 0, 0, 0), bSaveWindow(bSave), directories(directories), directoryTitles(directoryTitles),
-      extension(std::move(extension)), currentDirectoryIndex(preselectedDirectoryIndex),
-      preselectedFile(preselectedFile), color(color) {
+    : Window(0, 0, 0, 0), bSaveWindow_(bSave), directories_(directories), directoryTitles_(directoryTitles),
+      extension_(std::move(extension)), currentDirectoryIndex_(preselectedDirectoryIndex),
+      preselectedFile_(preselectedFile), color_(color) {
 
     // set up window
     const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_LoadSaveWindow);
@@ -116,17 +116,17 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
     mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     if (directories.size() > 1) {
-        onDirectoryChange(currentDirectoryIndex);
+        onDirectoryChange(currentDirectoryIndex_);
     } else {
         updateEntries();
     }
 
-    if (bSaveWindow && (fileList.getSelectedIndex() < 0)) {
+    if (bSaveWindow_ && (fileList.getSelectedIndex() < 0)) {
         saveName.setText(preselectedFile);
         saveName.setActive();
     }
 
-    this->preselectedFile.clear();
+    this->preselectedFile_.clear();
 }
 
 LoadSaveWindow::~LoadSaveWindow() {
@@ -138,12 +138,12 @@ void LoadSaveWindow::updateEntries() {
 
     int preselectedFileIndex = -1;
     for (const auto& fileName :
-         getFileNamesList(directories[currentDirectoryIndex], extension, true, FileListOrder_ModifyDate_Dsc)) {
+         getFileNamesList(directories_[currentDirectoryIndex_], extension_, true, FileListOrder_ModifyDate_Dsc)) {
         const std::string entryName{reinterpret_cast<const char*>(fileName.stem().u8string().c_str())};
 
         fileList.addEntry(entryName);
 
-        if (entryName == preselectedFile) {
+        if (entryName == preselectedFile_) {
             preselectedFileIndex = fileList.getNumEntries() - 1;
         }
     }
@@ -174,7 +174,7 @@ bool LoadSaveWindow::handleKeyPress(const SDL_KeyboardEvent& key) {
                     fmt::sprintf(_("Do you really want to delete '%s' ?"), fileList.getEntry(index).c_str()), _("Yes"),
                     _("No"), QSTBOX_BUTTON1);
 
-                pQstBox->setTextColor(color);
+                pQstBox->setTextColor(color_);
 
                 openWindow(pQstBox);
             }
@@ -195,7 +195,7 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
     if (index < 0)
         return;
 
-    const auto file2delete = directories[currentDirectoryIndex] / (fileList.getEntry(index) + "." + extension);
+    const auto file2delete = directories_[currentDirectoryIndex_] / (fileList.getEntry(index) + "." + extension_);
 
     if (std::filesystem::remove(file2delete) != 0)
         return;
@@ -233,11 +233,11 @@ LoadSaveWindow::create(bool bSave, const std::string& caption, const std::vector
 }
 
 void LoadSaveWindow::onOK() {
-    if (!bSaveWindow) {
+    if (!bSaveWindow_) {
         const auto index = fileList.getSelectedIndex();
         if (index >= 0) {
-            filename = directories[currentDirectoryIndex] / (fileList.getEntry(index) + "." + extension);
-            filename = filename.lexically_normal().native();
+            filename_ = directories_[currentDirectoryIndex_] / (fileList.getEntry(index) + "." + extension_);
+            filename_ = filename_.lexically_normal().native();
 
             auto* const pParentWindow = dynamic_cast<Window*>(getParent());
             if (pParentWindow != nullptr) {
@@ -248,7 +248,7 @@ void LoadSaveWindow::onOK() {
         const auto savename = saveName.getText();
 
         if (!savename.empty() && savename.find_first_of(invalid_chars) == std::string::npos) {
-            filename = directories[currentDirectoryIndex] / fmt::format("{}.{}", saveName.getText(), extension);
+            filename_ = directories_[currentDirectoryIndex_] / fmt::format("{}.{}", saveName.getText(), extension_);
 
             auto* const pParentWindow = dynamic_cast<Window*>(getParent());
             if (pParentWindow != nullptr) {
@@ -269,7 +269,7 @@ void LoadSaveWindow::onCancel() {
 }
 
 void LoadSaveWindow::onDirectoryChange(int i) {
-    currentDirectoryIndex = i;
+    currentDirectoryIndex_ = i;
     for (auto j = 0; j < directoryButtons.size(); j++) {
         directoryButtons[j].setToggleState(i == j);
     }
@@ -278,7 +278,7 @@ void LoadSaveWindow::onDirectoryChange(int i) {
 }
 
 void LoadSaveWindow::onSelectionChange(bool bInteractive) {
-    if (!bSaveWindow)
+    if (!bSaveWindow_)
         return;
 
     const int index = fileList.getSelectedIndex();

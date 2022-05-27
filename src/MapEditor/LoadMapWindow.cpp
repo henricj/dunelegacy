@@ -258,7 +258,7 @@ void LoadMapWindow::onMapTypeChange(int buttonID) {
     }
 }
 
-void LoadMapWindow::onMapListSelectionChange(bool bInteractive) {
+void LoadMapWindow::onMapListSelectionChange([[maybe_unused]] bool bInteractive) {
     loadButton.setEnabled(true);
 
     if (mapList.getSelectedIndex() < 0) {

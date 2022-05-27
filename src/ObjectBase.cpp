@@ -357,7 +357,7 @@ uint32_t ObjectBase::getHealthColor() const {
     return COLOR_RED;
 }
 
-Coord ObjectBase::getClosestPoint(const Coord& point) const {
+Coord ObjectBase::getClosestPoint([[maybe_unused]] const Coord& point) const {
     return location_;
 }
 

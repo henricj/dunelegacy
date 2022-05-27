@@ -126,7 +126,7 @@ MultiPlayerMenu::~MultiPlayerMenu() {
     This child window will be closed after this method returns.
     \param  pChildWindow    The child window that will be closed
 */
-void MultiPlayerMenu::onChildWindowClose(Window* pChildWindow) {
+void MultiPlayerMenu::onChildWindowClose([[maybe_unused]] Window* pChildWindow) {
     // Connection canceled
     // TODO
 }
@@ -158,7 +158,7 @@ void MultiPlayerMenu::onConnect() {
     openWindow(MsgBox::create(_("Connecting...")));
 }
 
-void MultiPlayerMenu::onPeerDisconnected(const std::string& playername, bool bHost, int cause) {
+void MultiPlayerMenu::onPeerDisconnected([[maybe_unused]] const std::string& playername, bool bHost, int cause) {
     if (bHost) {
         auto* const network_manager = dune::globals::pNetworkManager.get();
 
@@ -228,7 +228,7 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
     internetGamesButton.setToggleState(buttonID == 1);
 }
 
-void MultiPlayerMenu::onGameListSelectionChange(bool bInteractive) { }
+void MultiPlayerMenu::onGameListSelectionChange([[maybe_unused]] bool bInteractive) { }
 
 void MultiPlayerMenu::onNewLANServer(GameServerInfo gameServerInfo) {
     LANGameList.push_back(gameServerInfo);
@@ -274,19 +274,21 @@ void MultiPlayerMenu::onRemoveLANServer(GameServerInfo gameServerInfo) {
 
 void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& gameServerInfoList) {
     // remove all game servers from the list that are not included in the sent list
-    auto oldListIter = InternetGameList.begin();
-    int index        = 0;
-    while (oldListIter != InternetGameList.end()) {
-        GameServerInfo& gameServerInfo = *oldListIter;
+    { // Scope
+        auto oldListIter = InternetGameList.begin();
+        int index        = 0;
+        while (oldListIter != InternetGameList.end()) {
+            GameServerInfo& gameServerInfo = *oldListIter;
 
-        if (std::ranges::find(gameServerInfoList, gameServerInfo) == gameServerInfoList.end()) {
-            // not found => remove
-            gameList.removeEntry(index);
-            oldListIter = InternetGameList.erase(oldListIter);
-        } else {
-            // found => move on
-            ++oldListIter;
-            ++index;
+            if (std::ranges::find(gameServerInfoList, gameServerInfo) == gameServerInfoList.end()) {
+                // not found => remove
+                gameList.removeEntry(index);
+                oldListIter = InternetGameList.erase(oldListIter);
+            } else {
+                // found => move on
+                ++oldListIter;
+                ++index;
+            }
         }
     }
 

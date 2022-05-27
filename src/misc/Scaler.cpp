@@ -130,7 +130,8 @@ sdl2::surface_ptr Scaler::doubleSurfaceNN(SDL_Surface* src) {
     \param  tilesY          ignored
     \return the scaled surface
 */
-sdl2::surface_ptr Scaler::doubleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY) {
+sdl2::surface_ptr
+Scaler::doubleTiledSurfaceNN(SDL_Surface* src, [[maybe_unused]] int tilesX, [[maybe_unused]] int tilesY) {
     return doubleSurfaceNN(src);
 }
 
@@ -188,7 +189,8 @@ sdl2::surface_ptr Scaler::tripleSurfaceNN(SDL_Surface* src) {
     \param  tilesY          ignored
     \return the scaled surface
 */
-sdl2::surface_ptr Scaler::tripleTiledSurfaceNN(SDL_Surface* src, int tilesX, int tilesY) {
+sdl2::surface_ptr
+Scaler::tripleTiledSurfaceNN(SDL_Surface* src, [[maybe_unused]] int tilesX, [[maybe_unused]] int tilesY) {
     return tripleSurfaceNN(src);
 }
 

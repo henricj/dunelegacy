@@ -74,9 +74,9 @@ void GUIStyle::setLogicalSize(SDL_Renderer* renderer, int physical_width, int ph
     sdl2::log_info("Setting logical size %dx%d (%dx%d) with scale %f", w, h, physical_width, physical_height, scale);
 }
 
-sdl2::surface_ptr GUIStyle::createEmptySurface(uint32_t width, uint32_t height, bool transparent) const {
-    sdl2::surface_ptr pSurface =
-        sdl2::surface_ptr{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};
+sdl2::surface_ptr
+GUIStyle::createEmptySurface(uint32_t width, uint32_t height, [[maybe_unused]] bool transparent) const {
+    sdl2::surface_ptr pSurface{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK)};
 
     if (!pSurface) {
         return nullptr;

@@ -46,7 +46,7 @@ Coord MapMirrorNone::getCoord(Coord originalCoord, [[maybe_unused]] int i, [[may
     return originalCoord;
 }
 
-ANGLETYPE MapMirrorNone::getAngle(ANGLETYPE angle, int i) const {
+ANGLETYPE MapMirrorNone::getAngle(ANGLETYPE angle, [[maybe_unused]] int i) const {
     return angle;
 }
 

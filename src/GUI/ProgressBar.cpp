@@ -34,14 +34,14 @@ ProgressBar::~ProgressBar() {
 }
 
 void ProgressBar::setProgress(float newPercent) {
-    if (percent == newPercent)
+    if (percent_ == newPercent)
         return;
 
-    percent = newPercent;
-    if (percent < 0.f)
-        percent = 0.f;
-    else if (percent > 100.f)
-        percent = 100.f;
+    percent_ = newPercent;
+    if (percent_ < 0.f)
+        percent_ = 0.f;
+    else if (percent_ > 100.f)
+        percent_ = 100.f;
 }
 
 void ProgressBar::draw(Point position) {
@@ -58,9 +58,9 @@ void ProgressBar::draw(Point position) {
     auto* const renderer = dune::globals::renderer.get();
     const auto& gui      = GUIStyle::getInstance();
 
-    if (bDrawShadow) {
+    if (bDrawShadow_) {
         const SDL_FRect dest2{static_cast<float>(position.x + 2), static_cast<float>(position.y + 2),
-                              percent * 0.01f * static_cast<float>(size.x), static_cast<float>(size.y)};
+                              percent_ * 0.01f * static_cast<float>(size.x), static_cast<float>(size.y)};
         renderFillRectF(renderer, &dest2, COLOR_BLACK);
     }
 
@@ -71,24 +71,24 @@ void ProgressBar::draw(Point position) {
                          foreground, true);
     };
 
-    if (std::holds_alternative<DuneTextureOwned>(pContent)) {
-        const auto foreground = std::get<DuneTextureOwned>(pContent).as_dune_texture();
+    if (std::holds_alternative<DuneTextureOwned>(pContent_)) {
+        const auto foreground = std::get<DuneTextureOwned>(pContent_).as_dune_texture();
 
         render_button(foreground ? &foreground : nullptr);
-    } else if (std::holds_alternative<const DuneTexture*>(pContent)) {
-        const auto* foreground = std::get<const DuneTexture*>(pContent);
+    } else if (std::holds_alternative<const DuneTexture*>(pContent_)) {
+        const auto* foreground = std::get<const DuneTexture*>(pContent_);
 
         foreground->draw(renderer, position.x, position.y);
 
     } else
         render_button(nullptr);
 
-    if (color == COLOR_DEFAULT) {
+    if (color_ == COLOR_DEFAULT) {
         // default color
 
         auto const full_width = static_cast<float>(size.x) - 4.f;
 
-        auto width = percent * 0.01f * full_width;
+        auto width = percent_ * 0.01f * full_width;
 
         if (width < 0)
             width = 0;
@@ -103,7 +103,7 @@ void ProgressBar::draw(Point position) {
     } else {
         const auto full_width = static_cast<float>(size.x);
 
-        auto width = percent * 0.01f * full_width;
+        auto width = percent_ * 0.01f * full_width;
 
         if (width < 0)
             width = 0;
@@ -112,7 +112,7 @@ void ProgressBar::draw(Point position) {
 
         const SDL_FRect dest = {static_cast<float>(position.x), static_cast<float>(position.y), width,
                                 static_cast<float>(size.y)};
-        setRenderDrawColor(renderer, color);
+        setRenderDrawColor(renderer, color_);
         SDL_RenderFillRectF(renderer, &dest);
     }
 }
@@ -121,23 +121,23 @@ TextProgressBar::TextProgressBar()  = default;
 TextProgressBar::~TextProgressBar() = default;
 
 void TextProgressBar::setText(std::string text) {
-    if (this->text != text) {
-        this->text = std::move(text);
+    if (this->text_ != text) {
+        this->text_ = std::move(text);
         resizeAll();
     }
 }
 
 Point TextProgressBar::getMinimumSize() const {
-    if (text.empty()) {
+    if (text_.empty()) {
         return {4, 4};
     }
-    return GUIStyle::getInstance().getMinimumButtonSize(text);
+    return GUIStyle::getInstance().getMinimumButtonSize(text_);
 }
 
 void TextProgressBar::updateTextures() {
     parent::updateTextures();
 
-    if (std::holds_alternative<DuneTextureOwned>(pContent))
+    if (std::holds_alternative<DuneTextureOwned>(pContent_))
         return;
 
     auto* const renderer = dune::globals::renderer.get();
@@ -145,15 +145,15 @@ void TextProgressBar::updateTextures() {
 
     const auto size = getSize();
 
-    const auto surface = gui.createButtonText(size.x, size.y, text, false, textcolor, textshadowcolor);
+    const auto surface = gui.createButtonText(size.x, size.y, text_, false, text_color_, text_shadow_color_);
 
-    pContent = surface.createTexture(renderer);
+    pContent_ = surface.createTexture(renderer);
 }
 
 void TextProgressBar::invalidateTextures() {
     parent::invalidateTextures();
 
-    pContent = std::monostate{};
+    pContent_ = std::monostate{};
 }
 
 PictureProgressBar::PictureProgressBar() {
@@ -163,9 +163,9 @@ PictureProgressBar::~PictureProgressBar() = default;
 
 void PictureProgressBar::setTexture(const DuneTexture* content) {
     if (content && *content)
-        pContent = content;
+        pContent_ = content;
     else
-        pContent = std::monostate{};
+        pContent_ = std::monostate{};
 
     resize(getMinimumSize());
 
@@ -173,8 +173,8 @@ void PictureProgressBar::setTexture(const DuneTexture* content) {
 }
 
 Point PictureProgressBar::getMinimumSize() const {
-    if (std::holds_alternative<const DuneTexture*>(pContent))
-        return (getTextureSize(std::get<const DuneTexture*>(pContent)));
+    if (std::holds_alternative<const DuneTexture*>(pContent_))
+        return (getTextureSize(std::get<const DuneTexture*>(pContent_)));
 
     return {4, 4};
 }

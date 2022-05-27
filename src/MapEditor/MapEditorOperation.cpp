@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-std::unique_ptr<MapEditorOperation> MapEditorStartOperation::perform(MapEditor* pMapEditor) {
+std::unique_ptr<MapEditorOperation> MapEditorStartOperation::perform([[maybe_unused]] MapEditor* pMapEditor) {
     return std::make_unique<MapEditorStartOperation>();
 }
 
@@ -13,16 +13,18 @@ std::unique_ptr<MapEditorOperation> MapEditorTerrainEditOperation::perform(MapEd
 
     MapData& map = pMapEditor->getMap();
 
-    TERRAINTYPE oldTerrainType = map(x, y);
+    auto& tile = map(x, y);
 
-    map(x, y) = terrainType;
+    TERRAINTYPE oldTerrainType = tile;
+
+    tile = terrainType;
 
     return std::make_unique<MapEditorTerrainEditOperation>(x, y, oldTerrainType);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorTerrainAddSpiceBloomOperation::perform(MapEditor* pMapEditor) {
 
-    std::vector<Coord>& spiceBlooms = pMapEditor->getSpiceBlooms();
+    auto& spiceBlooms = pMapEditor->getSpiceBlooms();
 
     if (std::ranges::find(spiceBlooms, Coord(x, y)) != spiceBlooms.end()) {
         return std::make_unique<MapEditorNoOperation>();

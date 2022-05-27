@@ -133,8 +133,9 @@ void INIMapLoader::loadMap() {
 
         for (int j = 0; j < map->getSizeY(); j++) {
             for (int i = 0; i < map->getSizeX(); i++) {
-                auto type                 = Terrain_Sand;
-                unsigned char seedmaptype = SeedMap[(j + logicalOffsetY_) * 64 + i + logicalOffsetX_] >> 4;
+                auto type = Terrain_Sand;
+                const auto seedmaptype =
+                    static_cast<uint8_t>(SeedMap[(j + logicalOffsetY_) * 64 + i + logicalOffsetX_] >> 4u);
                 switch (seedmaptype) {
 
                     case 0x7: /* Sand */ type = Terrain_Sand; break;

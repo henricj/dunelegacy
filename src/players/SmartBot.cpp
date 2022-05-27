@@ -105,12 +105,12 @@ void SmartBot::update() {
     }
 }
 
-void SmartBot::onObjectWasBuilt(const ObjectBase* pObject) { }
+void SmartBot::onObjectWasBuilt([[maybe_unused]] const ObjectBase* pObject) { }
 
-void SmartBot::onDecrementStructures(ItemID_enum itemID, const Coord& location) { }
+void SmartBot::onDecrementStructures([[maybe_unused]] ItemID_enum itemID, [[maybe_unused]] const Coord& location) { }
 
 void SmartBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
-    const ObjectBase* pDamager = getObject(damagerID);
+    const auto* pDamager = getObject(damagerID);
 
     if (pDamager == nullptr || pDamager->getOwner() == getHouse()) {
         return;
@@ -235,23 +235,23 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
 
             switch (itemID) {
                 case Structure_Slab1: {
-                    rating = 10000000;
+                    rating = 10'000'000;
                 } break;
 
                 case Structure_Refinery: {
                     // place near spice
                     Coord spicePos;
                     if (getMap().findSpice(spicePos, pos)) {
-                        rating = 10000000 - blockDistance(pos, spicePos);
+                        rating = 10'000'000 - blockDistance(pos, spicePos);
                     } else {
-                        rating = 10000000;
+                        rating = 10'000'000;
                     }
                 } break;
 
                 case Structure_ConstructionYard: {
-                    FixPoint nearestUnit = 10000000;
+                    FixPoint nearestUnit = 10'000'000;
 
-                    for (const UnitBase* pUnit : getUnitList()) {
+                    for (const auto* pUnit : getUnitList()) {
                         if (pUnit->getOwner() == getHouse()) {
                             FixPoint tmp = blockDistance(pos, pUnit->getLocation());
                             if (tmp < nearestUnit) {
@@ -260,7 +260,7 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
                         }
                     }
 
-                    rating = 10000000 - nearestUnit;
+                    rating = 10'000'000 - nearestUnit;
                 } break;
 
                 case Structure_Barracks:
@@ -272,19 +272,17 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
                     // place near sand
                     const auto& map = context_.map;
 
-                    FixPoint nearestSand = 10000000;
-                    for (int y = 0; y < map.getSizeY(); y++) {
-                        for (int x = 0; x < map.getSizeX(); x++) {
-                            if (!map.getTile(x, y)->isRock()) {
-                                FixPoint tmp = blockDistance(pos, Coord(x, y));
-                                if (tmp < nearestSand) {
-                                    nearestSand = tmp;
-                                }
-                            }
-                        }
-                    }
+                    FixPoint nearestSand = 10'000'000;
+                    map.for_all_xy([&](auto tx, auto ty, auto& tile) {
+                        if (tile.isRock())
+                            return;
 
-                    rating = 10000000 - nearestSand;
+                        const auto tmp = blockDistance(pos, {tx, ty});
+                        if (tmp < nearestSand)
+                            nearestSand = tmp;
+                    });
+
+                    rating = 10'000'000 - nearestSand;
                     rating *= (1 + getNumAdjacentStructureTiles(pos, structureSizeX, structureSizeY));
                 } break;
 
@@ -292,18 +290,18 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_GunTurret:
                 case Structure_RocketTurret: {
                     // place towards enemy
-                    FixPoint nearestEnemy = 10000000;
+                    FixPoint nearestEnemy = 10'000'000;
 
-                    for (const StructureBase* pStructure : getStructureList()) {
+                    for (const auto* pStructure : getStructureList()) {
                         if (pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
-                            FixPoint dist = blockDistance(pos, pStructure->getLocation());
+                            const auto dist = blockDistance(pos, pStructure->getLocation());
                             if (dist < nearestEnemy) {
                                 nearestEnemy = dist;
                             }
                         }
                     }
 
-                    rating = 10000000 - nearestEnemy;
+                    rating = 10'000'000 - nearestEnemy;
                 } break;
 
                 case Structure_HighTechFactory:
@@ -314,9 +312,9 @@ Coord SmartBot::findPlaceLocation(ItemID_enum itemID) {
                 case Structure_WindTrap:
                 default: {
                     // place at a save place
-                    FixPoint nearestEnemy = 10000000;
+                    FixPoint nearestEnemy = 10'000'000;
 
-                    for (const StructureBase* pStructure : getStructureList()) {
+                    for (const auto* pStructure : getStructureList()) {
                         if (pStructure->getOwner()->getTeamID() != getHouse()->getTeamID()) {
                             FixPoint dist = blockDistance(pos, pStructure->getLocation());
                             if (dist < nearestEnemy) {
@@ -367,7 +365,7 @@ int SmartBot::getNumAdjacentStructureTiles(Coord pos, int structureSizeX, int st
     return numAdjacentStructureTiles;
 }
 
-void SmartBot::build(const GameContext& context) {
+void SmartBot::build([[maybe_unused]] const GameContext& context) {
     // Lets count what we are building
     int buildQueue[ItemID_LastID] = {};
 

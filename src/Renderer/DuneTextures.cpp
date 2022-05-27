@@ -65,14 +65,14 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
     }();
 
     const auto result_size = rectpack2D::find_best_packing<spaces_type>(
-        rectangles,
-        make_finder_input(
-            max_side, discard_step, [](const auto& rect) { return rectpack2D::callback_result::CONTINUE_PACKING; },
-            [&failed](const auto& rect) {
-                failed = true;
-                return rectpack2D::callback_result::ABORT_PACKING;
-            },
-            runtime_flipping_mode));
+        rectangles, make_finder_input(
+                        max_side, discard_step,
+                        []([[maybe_unused]] const auto& rect) { return rectpack2D::callback_result::CONTINUE_PACKING; },
+                        [&failed]([[maybe_unused]] const auto& rect) {
+                            failed = true;
+                            return rectpack2D::callback_result::ABORT_PACKING;
+                        },
+                        runtime_flipping_mode));
 
     if (failed) {
         sdl2::log_info("Packing failed ");
@@ -312,14 +312,14 @@ public:
         return ret;
     }
 
-    sdl2::texture_ptr pack(SDL_Renderer* render, uint32_t format, int max_side) {
+    sdl2::texture_ptr pack(SDL_Renderer* renderer, uint32_t format, int max_side) {
         if (!packer_.pack(max_side))
             return nullptr;
 
         const sdl2::surface_ptr atlas_surface{
             SDL_CreateRGBSurfaceWithFormat(0, packer_.width(), packer_.height(), SDL_BITSPERPIXEL(format), format)};
 
-        const auto draw = [&](const auto& r, int s_idx, SDL_Surface* surface) {
+        const auto draw = [&](const auto& r, [[maybe_unused]] int s_idx, SDL_Surface* surface) {
             SDL_Rect atlas_rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
             if (!drawSurface(surface, nullptr, atlas_surface.get(), &atlas_rect)) {
@@ -383,8 +383,7 @@ public:
 
         // SDL_SaveBMP(atlas_surface.get(), path.u8string().c_str());
 
-        auto texture =
-            sdl2::texture_ptr{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), atlas_surface.get())};
+        auto texture = sdl2::texture_ptr{SDL_CreateTextureFromSurface(renderer, atlas_surface.get())};
 
         if (texture && SDL_SetTextureBlendMode(texture.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND)) {
             sdl2::log_warn("Unable to set texture atlas blend mode");
@@ -399,7 +398,7 @@ public:
 
         const auto& set = surface_sets_.at(key);
 
-        set.for_each(packer_, [&](const auto& r, auto s_idx, auto* surface) {
+        set.for_each(packer_, [&](const auto& r, auto s_idx, [[maybe_unused]] auto* surface) {
             const SDL_Rect rect{r.x + guard, r.y + guard, r.w - 2 * guard, r.h - 2 * guard};
 
             lookup(s_idx) = DuneTexture{texture, rect};
@@ -915,8 +914,8 @@ DuneTextures DuneTextures::create(SDL_Renderer* renderer, SurfaceLoader* surface
 
         for (auto zoom = 0; zoom < NUM_ZOOMLEVEL; ++zoom) {
 
-            const auto opp_key =
-                object_picture_packer.add(factory23, [&](const auto& identifier, SDL_Surface* surface) {
+            const auto opp_key = object_picture_packer.add(
+                factory23, [&](const auto& identifier, [[maybe_unused]] SDL_Surface* surface) {
                     const auto& [id, h, z] = identifier;
 
                     return zoom == z;

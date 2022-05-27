@@ -282,7 +282,7 @@ void TeamsWindow::onRemove() {
     }
 }
 
-void TeamsWindow::onSelectionChange(bool bInteractive) {
+void TeamsWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
     const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 0) {

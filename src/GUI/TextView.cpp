@@ -38,7 +38,7 @@ bool TextView::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     return scrollbar_.handleMouseLeft(x - getSize().x + scrollbar_.getSize().x, y, pressed);
 }
 
-bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up) {
+bool TextView::handleMouseWheel([[maybe_unused]] int32_t x, [[maybe_unused]] int32_t y, bool up) {
     // forward mouse wheel event to scrollbar
     return scrollbar_.handleMouseWheel(0, 0, up);
 }

@@ -118,7 +118,7 @@ void CampaignAIPlayer::update() {
     updateUnits();
 }
 
-void CampaignAIPlayer::onObjectWasBuilt(const ObjectBase* pObject) { }
+void CampaignAIPlayer::onObjectWasBuilt([[maybe_unused]] const ObjectBase* pObject) { }
 
 void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& location) {
     if (structureQueue.size() < 5) {
@@ -126,13 +126,13 @@ void CampaignAIPlayer::onDecrementStructures(ItemID_enum itemID, const Coord& lo
     }
 }
 
-void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
-    if (!pObject->isAUnit() || !pObject->isRespondable()) {
+void CampaignAIPlayer::onDamage(const ObjectBase* pObject, [[maybe_unused]] int damage, uint32_t damagerID) {
+    if (!pObject->isAUnit() || !pObject->isRespondable())
         return;
-    }
-    const auto* pUnit = static_cast<const UnitBase*>(pObject);
 
-    const ObjectBase* pDamager = getObject(damagerID);
+    const auto* const pUnit = static_cast<const UnitBase*>(pObject);
+
+    const auto* const pDamager = getObject(damagerID);
     if (!pDamager) {
         return;
     }
@@ -153,7 +153,7 @@ void CampaignAIPlayer::onDamage(const ObjectBase* pObject, int damage, uint32_t 
 }
 
 void CampaignAIPlayer::updateStructures() {
-    for (const StructureBase* pStructure : getStructureList()) {
+    for (const auto* pStructure : getStructureList()) {
         if (pStructure->getOwner() != getHouse()) {
             continue;
         }

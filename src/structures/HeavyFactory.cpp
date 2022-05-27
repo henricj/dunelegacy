@@ -74,7 +74,7 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
     }
 }
 
-void HeavyFactory::updateStructureSpecificStuff(const GameContext& context) {
+void HeavyFactory::updateStructureSpecificStuff([[maybe_unused]] const GameContext& context) {
     if (deployTimer > 0) {
         firstAnimFrame = 4;
         lastAnimFrame  = 5;

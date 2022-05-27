@@ -169,7 +169,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     mirrorModeDropDownBox.addEntry(_("Horizontal and vertical"), MirrorModeBoth);
     mirrorModeDropDownBox.addEntry(_("Inverse"), MirrorModePoint);
     mirrorModeDropDownBox.setSelectedItem(0);
-    mirrorModeDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
+    mirrorModeDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     mirrorModeDropDownBox.setColor(color);
     mirrorModeHBox.addWidget(&mirrorModeDropDownBox, 160);
     mirrorModeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);

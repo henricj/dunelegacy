@@ -38,30 +38,30 @@ inline constexpr auto NETWORKPACKET_REQUESTANNOUNCE        = 3;
 #endif
 
 struct PACKEDDATASTRUCTURE NetworkPacket_Unknown {
-    enet_uint32 magicNumber;
-    enet_uint8 type;
+    enet_uint32 magicNumber_;
+    enet_uint8 type_;
 };
 
 struct PACKEDDATASTRUCTURE NetworkPacket_AnnounceGame {
-    enet_uint32 magicNumber;
-    enet_uint8 type;
+    enet_uint32 magicNumber_;
+    enet_uint8 type_;
     enet_uint16 serverPort_;
-    char serverName[LANGAME_ANNOUNCER_MAXGAMENAMESIZE];
-    char serverVersion[LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE];
-    char mapName[LANGAME_ANNOUNCER_MAXMAPNAMESIZE];
-    char numPlayers;
+    char serverName_[LANGAME_ANNOUNCER_MAXGAMENAMESIZE];
+    char serverVersion_[LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE];
+    char mapName_[LANGAME_ANNOUNCER_MAXMAPNAMESIZE];
+    char numPlayers_;
     char maxPlayers_;
 };
 
 struct PACKEDDATASTRUCTURE NetworkPacket_RemoveGameAnnouncement {
-    enet_uint32 magicNumber;
-    enet_uint8 type;
+    enet_uint32 magicNumber_;
+    enet_uint8 type_;
     enet_uint16 serverPort_;
 };
 
 struct PACKEDDATASTRUCTURE NetworkPacket_RequestGame {
-    enet_uint32 magicNumber;
-    enet_uint8 type;
+    enet_uint32 magicNumber_;
+    enet_uint8 type_;
 };
 
 #ifdef _MSC_VER_
@@ -111,13 +111,13 @@ LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
     enet_socket_destroy(announceSocket_);
 }
 
-void LANGameFinderAndAnnouncer::startAnnounce(const std::string& serverName, int serverPort_,
-                                              const std::string& mapName, uint8_t numPlayers, uint8_t maxPlayers_) {
+void LANGameFinderAndAnnouncer::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
+                                              uint8_t numPlayers, uint8_t maxPlayers) {
     this->serverName_ = serverName;
-    this->serverPort_ = serverPort_;
+    this->serverPort_ = serverPort;
     this->mapName_    = mapName;
     this->numPlayers_ = numPlayers;
-    this->maxPlayers_ = maxPlayers_;
+    this->maxPlayers_ = maxPlayers;
     lastAnnounce_     = dune::dune_clock::now();
 }
 
@@ -154,14 +154,15 @@ void LANGameFinderAndAnnouncer::announceGame() {
 
     NetworkPacket_AnnounceGame announcePacket{};
 
-    announcePacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
-    announcePacket.type        = NETWORKPACKET_ANNOUNCEGAME;
-    std::ranges::copy(std::ranges::take_view(serverName_, sizeof announcePacket.serverName), announcePacket.serverName);
-    std::ranges::copy(std::ranges::take_view(VERSIONSTRING, sizeof announcePacket.serverVersion),
-                      announcePacket.serverVersion);
+    announcePacket.magicNumber_ = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
+    announcePacket.type_        = NETWORKPACKET_ANNOUNCEGAME;
+    std::ranges::copy(std::ranges::take_view(serverName_, sizeof announcePacket.serverName_),
+                      announcePacket.serverName_);
+    std::ranges::copy(std::ranges::take_view(VERSIONSTRING, sizeof announcePacket.serverVersion_),
+                      announcePacket.serverVersion_);
     announcePacket.serverPort_ = SDL_SwapLE16(serverPort_);
-    std::ranges::copy(std::ranges::take_view(mapName_, sizeof announcePacket.mapName), announcePacket.mapName);
-    announcePacket.numPlayers  = static_cast<char>(numPlayers_);
+    std::ranges::copy(std::ranges::take_view(mapName_, sizeof announcePacket.mapName_), announcePacket.mapName_);
+    announcePacket.numPlayers_ = static_cast<char>(numPlayers_);
     announcePacket.maxPlayers_ = static_cast<char>(maxPlayers_);
 
     ENetBuffer enetBuffer{};
@@ -185,8 +186,8 @@ void LANGameFinderAndAnnouncer::refreshServerList() const {
 
     NetworkPacket_RequestGame requestPacket{};
 
-    requestPacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
-    requestPacket.type        = NETWORKPACKET_REQUESTANNOUNCE;
+    requestPacket.magicNumber_ = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
+    requestPacket.type_        = NETWORKPACKET_REQUESTANNOUNCE;
 
     ENetBuffer enetBuffer{};
     enetBuffer.data       = &requestPacket;
@@ -216,27 +217,27 @@ void LANGameFinderAndAnnouncer::receivePackets() {
         THROW(std::runtime_error, "LANGameFinderAndAnnouncer: Receiving data failed!");
     } else {
         if ((receivedBytes == sizeof(NetworkPacket_AnnounceGame))
-            && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
-            && (announcePacket.type == NETWORKPACKET_ANNOUNCEGAME)
-            && (strncmp(announcePacket.serverVersion, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE) == 0)) {
+            && (SDL_SwapLE32(announcePacket.magicNumber_) == LANGAME_ANNOUNCER_MAGICNUMBER)
+            && (announcePacket.type_ == NETWORKPACKET_ANNOUNCEGAME)
+            && (strncmp(announcePacket.serverVersion_, VERSIONSTRING, LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE) == 0)) {
 
             auto make_string = [](auto& src) { return std::string{std::begin(src), std::ranges::find(src, '\0')}; };
 
-            const auto serverName = make_string(announcePacket.serverName);
-            int serverPort_       = SDL_SwapLE16(announcePacket.serverPort_);
+            const auto serverName = make_string(announcePacket.serverName_);
+            const auto serverPort = SDL_SwapLE16(announcePacket.serverPort_);
 
-            const auto mapName = make_string(announcePacket.mapName);
+            const auto mapName = make_string(announcePacket.mapName_);
 
-            const auto numPlayers  = static_cast<int>(announcePacket.numPlayers);
-            const auto maxPlayers_ = static_cast<int>(announcePacket.maxPlayers_);
+            const auto numPlayers = static_cast<int>(announcePacket.numPlayers_);
+            const auto maxPlayers = static_cast<int>(announcePacket.maxPlayers_);
 
             GameServerInfo gameServerInfo;
             gameServerInfo.serverAddress.host = senderAddress.host;
-            gameServerInfo.serverAddress.port = serverPort_;
+            gameServerInfo.serverAddress.port = serverPort;
             gameServerInfo.serverName         = serverName;
             gameServerInfo.mapName            = mapName;
             gameServerInfo.numPlayers         = numPlayers;
-            gameServerInfo.maxPlayers         = maxPlayers_;
+            gameServerInfo.maxPlayers         = maxPlayers;
             gameServerInfo.bPasswordProtected = false;
             gameServerInfo.lastUpdate         = dune::as_milliseconds(dune::dune_clock::now().time_since_epoch());
 
@@ -259,8 +260,8 @@ void LANGameFinderAndAnnouncer::receivePackets() {
                     pOnNewServer_(gameServerInfoList_.back());
             }
         } else if ((receivedBytes == sizeof(NetworkPacket_RemoveGameAnnouncement))
-                   && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
-                   && (announcePacket.type == NETWORKPACKET_REMOVEGAMEANNOUNCEMENT)) {
+                   && (SDL_SwapLE32(announcePacket.magicNumber_) == LANGAME_ANNOUNCER_MAGICNUMBER)
+                   && (announcePacket.type_ == NETWORKPACKET_REMOVEGAMEANNOUNCEMENT)) {
 
             int serverPort_ = SDL_SwapLE16(announcePacket.serverPort_);
 
@@ -279,8 +280,8 @@ void LANGameFinderAndAnnouncer::receivePackets() {
                 }
             }
         } else if ((serverPort_ > 0) && (receivedBytes == sizeof(NetworkPacket_RequestGame))
-                   && (SDL_SwapLE32(announcePacket.magicNumber) == LANGAME_ANNOUNCER_MAGICNUMBER)
-                   && (announcePacket.type == NETWORKPACKET_REQUESTANNOUNCE)) {
+                   && (SDL_SwapLE32(announcePacket.magicNumber_) == LANGAME_ANNOUNCER_MAGICNUMBER)
+                   && (announcePacket.type_ == NETWORKPACKET_REQUESTANNOUNCE)) {
 
             announceGame();
         }
@@ -312,9 +313,9 @@ void LANGameFinderAndAnnouncer::sendRemoveGameAnnouncement() {
 
     NetworkPacket_RemoveGameAnnouncement removeAnnouncementPacket{};
 
-    removeAnnouncementPacket.magicNumber = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
-    removeAnnouncementPacket.type        = NETWORKPACKET_REMOVEGAMEANNOUNCEMENT;
-    removeAnnouncementPacket.serverPort_ = SDL_SwapLE16(serverPort_);
+    removeAnnouncementPacket.magicNumber_ = SDL_SwapLE32(LANGAME_ANNOUNCER_MAGICNUMBER);
+    removeAnnouncementPacket.type_        = NETWORKPACKET_REMOVEGAMEANNOUNCEMENT;
+    removeAnnouncementPacket.serverPort_  = SDL_SwapLE16(serverPort_);
 
     ENetBuffer enetBuffer{};
     enetBuffer.data       = &removeAnnouncementPacket;

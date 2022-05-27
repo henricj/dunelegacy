@@ -49,7 +49,8 @@ const std::string& BasePakfile::getFilename(unsigned int index) const {
     return fileEntries[index].filename;
 }
 
-size_t BasePakfile::WriteFile(SDL_RWops* pRWop, const void* ptr, size_t size, size_t n) {
+size_t BasePakfile::WriteFile([[maybe_unused]] SDL_RWops* pRWop, [[maybe_unused]] const void* ptr,
+                              [[maybe_unused]] size_t size, [[maybe_unused]] size_t n) {
     return 0;
 }
 
