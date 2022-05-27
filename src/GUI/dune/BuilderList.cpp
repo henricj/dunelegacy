@@ -269,10 +269,11 @@ void BuilderList::draw(Point position) {
 
                 // draw price
                 {
-                    const auto pPriceTexture =
-                        gui.createText(renderer, fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
+                    auto pPriceTexture = gui.createText(renderer, fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
 
                     pPriceTexture.draw(renderer, dest.x + 2.f, dest.y + BUILDERBTN_HEIGHT - pPriceTexture.height_ - 3);
+
+                    dune::defer_destroy_texture(std::move(pPriceTexture));
                 }
 
                 if (pStarport != nullptr) {
@@ -337,12 +338,14 @@ void BuilderList::draw(Point position) {
 
                 if (buildItem.num > 0) {
                     // draw number of this in build list
-                    const auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num), COLOR_RED, 12);
+                    auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num), COLOR_RED, 12);
 
                     const auto x = dest.x + BUILDERBTN_WIDTH - 3 - pNumberTexture.width_;
                     const auto y = dest.y + BUILDERBTN_HEIGHT - 2 - pNumberTexture.height_;
 
                     pNumberTexture.draw(renderer, x, y);
+
+                    dune::defer_destroy_texture(std::move(pNumberTexture));
                 }
             }
 

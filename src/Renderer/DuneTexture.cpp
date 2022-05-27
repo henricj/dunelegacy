@@ -19,6 +19,10 @@
 
 #include "Renderer/DuneRenderer.h"
 
+#include <memory>
+#include <utility>
+#include <vector>
+
 DuneTexture::DuneTexture(SDL_Texture* texture, const SDL_Rect& rect)
     : texture_{texture}, source_{rect}, width_{static_cast<float>(rect.w)}, height_{static_cast<float>(rect.h)} { }
 
@@ -124,3 +128,32 @@ void DuneTextureOwned::draw(SDL_Renderer* renderer, float x, float y) const noex
     if (SDL_RenderCopyF(renderer, texture_.get(), nullptr, &dst))
         sdl2::log_info("SDL_RenderCopyF failed: %s", SDL_GetError());
 }
+
+namespace {
+class DeferDestroy final {
+public:
+    void defer(sdl2::texture_ptr t) { pending_.push_back(std::move(t)); }
+    void clear() { pending_.clear(); }
+
+private:
+    std::vector<sdl2::texture_ptr> pending_;
+};
+
+DeferDestroy pending_textures;
+} // namespace
+
+extern "C" int dune_is_destroying_textures = 0;
+
+namespace dune {
+
+void defer_destroy_texture(sdl2::texture_ptr texture) {
+    pending_textures.defer(std::move(texture));
+}
+
+void destroy_textures() {
+    dune_is_destroying_textures = 1;
+    pending_textures.clear();
+    dune_is_destroying_textures = 0;
+}
+
+} // namespace dune

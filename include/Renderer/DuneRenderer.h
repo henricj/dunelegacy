@@ -2,6 +2,7 @@
 #define DUNERENDERER_H
 
 #include "Colors.h"
+#include "DuneTexture.h"
 
 #include <SDL2/SDL.h>
 
@@ -93,6 +94,8 @@ inline void Dune_RenderPresent(SDL_Renderer* renderer) {
 #endif // _DEBUG
 
     SDL_RenderPresent(renderer);
+
+    dune::destroy_textures();
 }
 
 void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, float h, Uint32 color = COLOR_WHITE);

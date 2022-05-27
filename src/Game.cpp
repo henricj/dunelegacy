@@ -516,18 +516,22 @@ void Game::drawScreen() {
         const auto str = fmt::sprintf("fps: %4.1f\nrenderer: %4.1fms\nupdate: %4.1fms", 1000.0f / averageFrameTime,
                                       averageRenderTime, averageUpdateTime);
 
-        const auto pTexture = gui.createMultilineText(renderer, str, COLOR_WHITE, 14);
+        auto pTexture = gui.createMultilineText(renderer, str, COLOR_WHITE, 14);
 
         pTexture.draw(renderer, sideBarPos.x - 14.f * 8.f, 60.f);
+
+        dune::defer_destroy_texture(std::move(pTexture));
     }
 
     if (bShowTime) {
         const int seconds  = static_cast<int>(getGameTime()) / 1000;
         const auto strTime = fmt::sprintf(" %.2d:%.2d:%.2d", seconds / 3600, (seconds % 3600) / 60, (seconds % 60));
 
-        const auto pTimeTexture = gui.createText(renderer, strTime, COLOR_WHITE, 14);
+        auto pTimeTexture = gui.createText(renderer, strTime, COLOR_WHITE, 14);
 
         pTimeTexture.draw(renderer, 0.f, renderer_height - pTimeTexture.height_);
+
+        dune::defer_destroy_texture(std::move(pTimeTexture));
     }
 
     if (bPause) {

@@ -131,4 +131,15 @@ struct DuneTextureOwned final {
     }
 };
 
+namespace dune {
+
+void defer_destroy_texture(sdl2::texture_ptr texture);
+void destroy_textures();
+
+inline void defer_destroy_texture(DuneTextureOwned texture) {
+    defer_destroy_texture(std::move(texture.texture_));
+}
+
+} // namespace dune
+
 #endif // DUNETEXTURE_H

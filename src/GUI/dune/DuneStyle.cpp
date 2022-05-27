@@ -951,7 +951,7 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
     if (ordos)
         ordos->draw(renderer, 11, rect.h - 11 - ordos->height_);
 
-    const auto version = createText(renderer, DUNE_GIT_DESCRIBE, COLOR_BLACK, 12);
+    auto version = createText(renderer, DUNE_GIT_DESCRIBE, COLOR_BLACK, 12);
 
     if (!version)
         return;
@@ -964,6 +964,8 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
     version.draw(renderer, dest.x + (dest.w - version.width_) / 2, dest.y + (dest.h - version.height_) / 2);
 
     drawFrame(renderer, DecorationFrame::SimpleFrame, dest);
+
+    dune::defer_destroy_texture(std::move(version));
 }
 
 DuneSurfaceOwned DuneStyle::createWidgetBackground(int width, int height) const {
