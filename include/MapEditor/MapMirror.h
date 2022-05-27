@@ -49,7 +49,10 @@ public:
 
     [[nodiscard]] int getSize() const override { return 1; }
 
-    [[nodiscard]] bool mirroringPossible(Coord coord, Coord objectSize = Coord(1, 1)) const override { return true; }
+    [[nodiscard]] bool
+    mirroringPossible([[maybe_unused]] Coord coord, [[maybe_unused]] Coord objectSize = Coord(1, 1)) const override {
+        return true;
+    }
 
     [[nodiscard]] Coord getCoord(Coord originalCoord, int i, Coord objectSize = Coord(1, 1)) const override;
 

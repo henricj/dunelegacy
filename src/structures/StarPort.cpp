@@ -63,13 +63,13 @@ StarPort::StarPort(uint32_t objectID, const ObjectStreamInitializer& initializer
 }
 
 void StarPort::init() {
-    assert(itemID == Structure_StarPort);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_StarPort);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_Starport;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 10;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_Starport;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 10;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }
@@ -99,7 +99,7 @@ void StarPort::doBuildRandom(const GameContext& context) {
 }
 
 void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
-    const auto& choam       = owner->getChoam();
+    const auto& choam       = owner_->getChoam();
     const auto numAvailable = choam.getNumAvailable(itemID);
 
     using dune::globals::soundPlayer;
@@ -113,7 +113,7 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
 
     for (const auto& buildItem : getBuildList()) {
         if (buildItem.itemID == itemID) {
-            if ((owner->getCredits() < static_cast<int>(buildItem.price))) {
+            if ((owner_->getCredits() < static_cast<int>(buildItem.price))) {
                 soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
                 currentGame->addToNewsTicker(_("Not enough money"));
                 return;
@@ -126,16 +126,16 @@ void StarPort::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
 
 void StarPort::handlePlaceOrderClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_PLACEORDER, objectID_));
 }
 
 void StarPort::handleCancelOrderClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STARPORT_CANCELORDER, objectID_));
 }
 
 void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
-    auto& choam = owner->getChoam();
+    auto& choam = owner_->getChoam();
 
     for (auto& buildItem : getBuildList()) {
         if (buildItem.itemID != itemID)
@@ -148,10 +148,10 @@ void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
                 break;
             }
 
-            if ((owner->getCredits() >= static_cast<int>(buildItem.price))) {
+            if ((owner_->getCredits() >= static_cast<int>(buildItem.price))) {
                 buildItem.num++;
                 currentProductionQueue.emplace_back(itemID, buildItem.price);
-                owner->takeCredits(buildItem.price);
+                owner_->takeCredits(buildItem.price);
 
                 if (!choam.setNumAvailable(itemID, numAvailable - 1)) {
                     // sold out
@@ -164,7 +164,7 @@ void StarPort::doProduceItem(ItemID_enum itemID, bool multipleMode) {
 }
 
 void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
-    auto& choam = owner->getChoam();
+    auto& choam = owner_->getChoam();
 
     for (auto& buildItem : getBuildList()) {
         if (buildItem.itemID != itemID)
@@ -189,7 +189,7 @@ void StarPort::doCancelItem(ItemID_enum itemID, bool multipleMode) {
 
                 // Cancel the best found item if any was found
                 if (iterMostExpensiveItem != currentProductionQueue.end()) {
-                    owner->returnCredits(iterMostExpensiveItem->price);
+                    owner_->returnCredits(iterMostExpensiveItem->price);
                     currentProductionQueue.erase(iterMostExpensiveItem);
                 }
             }
@@ -229,12 +229,12 @@ void StarPort::updateBuildList() {
 
     auto iter = buildList.begin();
 
-    const auto& choam       = owner->getChoam();
+    const auto& choam       = owner_->getChoam();
     const auto& object_data = dune::globals::currentGame->objectData;
 
     for (auto i = 0; itemOrder[i] != ItemID_Invalid; ++i) {
 
-        const auto& objData = object_data.data[itemOrder[i]][static_cast<int>(originalHouseID)];
+        const auto& objData = object_data.data[itemOrder[i]][static_cast<int>(originalHouseID_)];
 
         if (objData.enabled && (choam.getNumAvailable(itemOrder[i]) != INVALID)) {
             insertItem(iter, itemOrder[i], choam.getPrice(itemOrder[i]));
@@ -250,7 +250,7 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
     if (arrivalTimer > 0) {
         if (--arrivalTimer == 0) {
             // make a frigate with all the cargo
-            if (auto* const frigate = dune_cast<Frigate>(owner->createUnit(Unit_Frigate))) {
+            if (auto* const frigate = dune_cast<Frigate>(owner_->createUnit(Unit_Frigate))) {
                 const auto pos = context.map.findClosestEdgePoint(getLocation() + Coord(1, 1), Coord(1, 1));
                 frigate->deploy(context, pos);
                 frigate->setTarget(this);
@@ -304,13 +304,13 @@ void StarPort::updateStructureSpecificStuff(const GameContext& context) {
                             && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester)
                                 || (newUnit->getItemID() == Unit_MCV))) {
                             // Don't want harvesters going to the rally point
-                            unitDestination = location;
+                            unitDestination = location_;
                         } else {
-                            unitDestination = destination;
+                            unitDestination = destination_;
                         }
 
                         const auto spot =
-                            context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
+                            context.map.findDeploySpot(newUnit, location_, unitDestination, getStructureSize());
                         newUnit->deploy(context, spot);
 
                         if (unitDestination.isValid()) {

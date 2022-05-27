@@ -68,7 +68,7 @@ void InfantryBase::save(OutputStream& stream) const {
 }
 
 void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int yPos) {
-    if (respondable && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
+    if (respondable_ && ((getItemID() == Unit_Soldier) || (getItemID() == Unit_Trooper))) {
         const auto* const tempTarget = context.map.tryGetObject(context, xPos, yPos);
 
         if (!tempTarget)
@@ -76,7 +76,7 @@ void InfantryBase::handleCaptureClick(const GameContext& context, int xPos, int 
 
         // capture structure
         context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_INFANTRY_CAPTURE, objectID,
+                                                            CMDTYPE::CMD_INFANTRY_CAPTURE, objectID_,
                                                             tempTarget->getObjectID()));
     }
 }
@@ -104,7 +104,7 @@ void InfantryBase::assignToMap(const GameContext& context, const Coord& pos) {
     if (auto* tile = map.tryGetTile(pos.x, pos.y)) {
         oldTilePosition = tilePosition;
         tilePosition    = tile->assignInfantry(objectManager, getObjectID());
-        map.viewMap(owner->getHouseID(), pos, getViewRange());
+        map.viewMap(owner_->getHouseID(), pos, getViewRange());
     }
 }
 
@@ -113,10 +113,10 @@ void InfantryBase::blitToScreen() {
     const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto dest =
-        calcSpriteDrawingRect(graphic[zoom], screenborder->world2screenX(realX), screenborder->world2screenY(realY),
-                              numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        calcSpriteDrawingRect(graphic_[zoom], screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
+                              numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
 
-    auto temp = drawnAngle;
+    auto temp = drawnAngle_;
     if (temp == ANGLETYPE::UP) {
         temp = ANGLETYPE::RIGHTUP;
     } else if (temp == ANGLETYPE::DOWN) {
@@ -127,10 +127,10 @@ void InfantryBase::blitToScreen() {
         temp = ANGLETYPE::RIGHT;
     }
 
-    const SDL_Rect source = calcSpriteSourceRect(graphic[zoom], static_cast<int>(temp), numImagesX,
-                                                 (walkFrame / 10 == 3) ? 1 : walkFrame / 10, numImagesY);
+    const SDL_Rect source = calcSpriteSourceRect(graphic_[zoom], static_cast<int>(temp), numImagesX_,
+                                                 (walkFrame / 10 == 3) ? 1 : walkFrame / 10, numImagesY_);
 
-    Dune_RenderCopyF(dune::globals::renderer.get(), graphic[zoom], &source, &dest);
+    Dune_RenderCopyF(dune::globals::renderer.get(), graphic_[zoom], &source, &dest);
 }
 
 bool InfantryBase::canPassTile(const Tile* pTile) const {
@@ -148,8 +148,8 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
     } else {
         const auto* const object = pTile->getGroundObject(dune::globals::currentGame->getObjectManager());
 
-        if ((object != nullptr) && (object->getObjectID() == target.getObjectID()) && object->isAStructure()
-            && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID())) {
+        if ((object != nullptr) && (object->getObjectID() == target_.getObjectID()) && object->isAStructure()
+            && (object->getOwner()->getTeamID() != owner_->getTeamID()) && object->isVisible(getOwner()->getTeamID())) {
             passable = true;
         } else {
             passable = (!pTile->hasANonInfantryGroundObject()
@@ -176,7 +176,7 @@ void InfantryBase::checkPos(const GameContext& context) {
 
     walkFrame = 0;
 
-    if (auto* tile = map.tryGetTile(location.x, location.y)) {
+    if (auto* tile = map.tryGetTile(location_.x, location_.y)) {
         if (tile->isSpiceBloom()) {
             setHealth(0);
             tile->triggerSpiceBloom(context, getOwner());
@@ -185,17 +185,17 @@ void InfantryBase::checkPos(const GameContext& context) {
         }
     }
 
-    const auto* const object = target.getObjPointer();
+    const auto* const object = target_.getObjPointer();
 
     if (!object || !object->isAStructure())
         return;
 
     // check to see if close enough to blow up target
     if (getOwner()->getTeamID() == object->getOwner()->getTeamID()) {
-        const auto closestPoint = object->getClosestPoint(location);
+        const auto closestPoint = object->getClosestPoint(location_);
 
-        if (blockDistance(location, closestPoint) <= 0.5_fix) {
-            StructureBase* pCapturedStructure = target.getStructurePointer();
+        if (blockDistance(location_, closestPoint) <= 0.5_fix) {
+            StructureBase* pCapturedStructure = target_.getStructurePointer();
             if (pCapturedStructure->getHealthColor() == COLOR_RED) {
                 House* pOwner                      = pCapturedStructure->getOwner();
                 const auto targetID                = pCapturedStructure->getItemID();
@@ -211,10 +211,10 @@ void InfantryBase::checkPos(const GameContext& context) {
                 UnitBase* pContainedUnit = nullptr;
 
                 if (pCapturedStructure->getItemID() == Structure_Silo) {
-                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity
+                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID_)].capacity
                                   * (pOwner->getStoredCredits() / pOwner->getCapacity());
                 } else if (pCapturedStructure->getItemID() == Structure_Refinery) {
-                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID)].capacity
+                    capturedSpice = game.objectData.data[Structure_Silo][static_cast<int>(originalHouseID_)].capacity
                                   * (pOwner->getStoredCredits() / pOwner->getCapacity());
                     auto* pRefinery = static_cast<Refinery*>(pCapturedStructure);
                     if (!pRefinery->isFree()) {
@@ -275,7 +275,7 @@ void InfantryBase::checkPos(const GameContext& context) {
                 objectManager.removeObject(pCapturedStructure->getObjectID());
 
                 // ... and create a new one
-                auto* pNewStructure = owner->placeStructure(NONE_ID, targetID, posX, posY, false, true);
+                auto* pNewStructure = owner_->placeStructure(NONE_ID, targetID, posX, posY, false, true);
 
                 pNewStructure->setOriginalHouseID(origHouse);
                 pNewStructure->setHealth(oldHealth);
@@ -291,7 +291,7 @@ void InfantryBase::checkPos(const GameContext& context) {
                 }
 
                 if (containedUnitID != ItemID_enum::ItemID_Invalid) {
-                    auto* pNewUnit = owner->createUnit(containedUnitID);
+                    auto* pNewUnit = owner_->createUnit(containedUnitID);
 
                     pNewUnit->setRespondable(false);
                     pNewUnit->setActive(false);
@@ -316,8 +316,8 @@ void InfantryBase::checkPos(const GameContext& context) {
 
                 // steal credits
                 pOwner->takeCredits(capturedSpice);
-                owner->addCredits(capturedSpice, false);
-                owner->updateBuildLists();
+                owner_->addCredits(capturedSpice, false);
+                owner_->updateBuildLists();
 
             } else {
                 const int damage = lround(std::min(pCapturedStructure->getHealth() / 2, getHealth() * 2));
@@ -327,11 +327,11 @@ void InfantryBase::checkPos(const GameContext& context) {
             setTarget(nullptr);
             setHealth(0);
         }
-    } else if (target.getObjPointer() != nullptr && target.getObjPointer()->isAStructure()) {
+    } else if (target_.getObjPointer() != nullptr && target_.getObjPointer()->isAStructure()) {
         Coord closestPoint;
-        closestPoint = target.getObjPointer()->getClosestPoint(location);
+        closestPoint = target_.getObjPointer()->getClosestPoint(location_);
 
-        if (blockDistance(location, closestPoint) <= 0.5_fix) {
+        if (blockDistance(location_, closestPoint) <= 0.5_fix) {
             // destroy unit indirectly
             setTarget(nullptr);
             setHealth(0);
@@ -342,7 +342,7 @@ void InfantryBase::checkPos(const GameContext& context) {
 void InfantryBase::destroy(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
-    auto* pTile = map.tryGetTile(location.x, location.y);
+    auto* pTile = map.tryGetTile(location_.x, location_.y);
     if (pTile && isVisible()) {
 
         if (pTile->hasANonInfantryGroundObject()) {
@@ -350,10 +350,10 @@ void InfantryBase::destroy(const GameContext& context) {
                 // squashed
                 pTile->assignDeadUnit(game.randomGen.randBool() ? DeadUnit_Infantry_Squashed1
                                                                 : DeadUnit_Infantry_Squashed2,
-                                      owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
+                                      owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
 
                 if (isVisible(getOwner()->getTeamID())) {
-                    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Squashed, location);
+                    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Squashed, location_);
                 }
             } else {
                 // this unit has captured a building
@@ -361,13 +361,13 @@ void InfantryBase::destroy(const GameContext& context) {
 
         } else if (getItemID() != Unit_Saboteur) {
             // "normal" dead
-            pTile->assignDeadUnit(DeadUnit_Infantry, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
+            pTile->assignDeadUnit(DeadUnit_Infantry, owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
 
             if (isVisible(getOwner()->getTeamID())) {
                 const auto sound_id = dune::globals::pGFXManager->random().getRandOf(
                     Sound_enum::Sound_Scream1, Sound_enum::Sound_Scream2, Sound_enum::Sound_Scream3,
                     Sound_enum::Sound_Scream4, Sound_enum::Sound_Scream5, Sound_enum::Sound_Trumpet);
-                dune::globals::soundPlayer->playSoundAt(sound_id, location);
+                dune::globals::soundPlayer->playSoundAt(sound_id, location_);
             }
         }
     }
@@ -377,12 +377,12 @@ void InfantryBase::destroy(const GameContext& context) {
 
 void InfantryBase::move(const GameContext& context) {
     if (!moving && !justStoppedMoving && (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        context.map.viewMap(owner->getHouseID(), location, getViewRange());
+        context.map.viewMap(owner_->getHouseID(), location_, getViewRange());
     }
 
     if (moving && !justStoppedMoving) {
-        realX += xSpeed;
-        realY += ySpeed;
+        realX_ += xSpeed;
+        realY_ += ySpeed;
 
         // check if unit is on the first half of the way
         FixPoint fromDistanceX;
@@ -392,58 +392,60 @@ void InfantryBase::move(const GameContext& context) {
 
         const FixPoint epsilon = 3.75_fix;
 
-        if (location != nextSpot) {
-            const auto abstractDistanceX = FixPoint::abs(location.x * TILESIZE + TILESIZE / 2 - (realX - bumpyOffsetX));
-            const auto abstractDistanceY = FixPoint::abs(location.y * TILESIZE + TILESIZE / 2 - (realY - bumpyOffsetY));
+        if (location_ != nextSpot) {
+            const auto abstractDistanceX =
+                FixPoint::abs(location_.x * TILESIZE + TILESIZE / 2 - (realX_ - bumpyOffsetX));
+            const auto abstractDistanceY =
+                FixPoint::abs(location_.y * TILESIZE + TILESIZE / 2 - (realY_ - bumpyOffsetY));
 
-            fromDistanceX = FixPoint::abs(location.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[oldTilePosition].x
-                                          - (realX - bumpyOffsetX));
-            fromDistanceY = FixPoint::abs(location.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[oldTilePosition].y
-                                          - (realY - bumpyOffsetY));
+            fromDistanceX = FixPoint::abs(location_.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[oldTilePosition].x
+                                          - (realX_ - bumpyOffsetX));
+            fromDistanceY = FixPoint::abs(location_.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[oldTilePosition].y
+                                          - (realY_ - bumpyOffsetY));
             toDistanceX   = FixPoint::abs(nextSpot.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x
-                                          - (realX - bumpyOffsetX));
+                                          - (realX_ - bumpyOffsetX));
             toDistanceY   = FixPoint::abs(nextSpot.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y
-                                          - (realY - bumpyOffsetY));
+                                          - (realY_ - bumpyOffsetY));
 
             // check if unit is half way out of old tile
             if ((abstractDistanceX >= TILESIZE / 2 + epsilon) || (abstractDistanceY >= TILESIZE / 2 + epsilon)) {
                 // let something else go in
-                unassignFromMap(location);
-                oldLocation = location;
-                location    = nextSpot;
+                unassignFromMap(location_);
+                oldLocation_ = location_;
+                location_    = nextSpot;
 
-                context.map.viewMap(owner->getHouseID(), location, getViewRange());
+                context.map.viewMap(owner_->getHouseID(), location_, getViewRange());
             }
 
         } else {
-            fromDistanceX = FixPoint::abs(oldLocation.x * TILESIZE + TILESIZE / 2
-                                          + tilePositionOffset[oldTilePosition].x - (realX - bumpyOffsetX));
-            fromDistanceY = FixPoint::abs(oldLocation.y * TILESIZE + TILESIZE / 2
-                                          + tilePositionOffset[oldTilePosition].y - (realY - bumpyOffsetY));
-            toDistanceX   = FixPoint::abs(location.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x
-                                          - (realX - bumpyOffsetX));
-            toDistanceY   = FixPoint::abs(location.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y
-                                          - (realY - bumpyOffsetY));
+            fromDistanceX = FixPoint::abs(oldLocation_.x * TILESIZE + TILESIZE / 2
+                                          + tilePositionOffset[oldTilePosition].x - (realX_ - bumpyOffsetX));
+            fromDistanceY = FixPoint::abs(oldLocation_.y * TILESIZE + TILESIZE / 2
+                                          + tilePositionOffset[oldTilePosition].y - (realY_ - bumpyOffsetY));
+            toDistanceX   = FixPoint::abs(location_.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x
+                                          - (realX_ - bumpyOffsetX));
+            toDistanceY   = FixPoint::abs(location_.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y
+                                          - (realY_ - bumpyOffsetY));
 
             Coord wantedReal;
             wantedReal.x = nextSpot.x * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].x;
             wantedReal.y = nextSpot.y * TILESIZE + TILESIZE / 2 + tilePositionOffset[tilePosition].y;
 
-            if ((FixPoint::abs(wantedReal.x - (realX - bumpyOffsetX)) <= FixPoint::abs(xSpeed) / 2 + epsilon)
-                && (FixPoint::abs(wantedReal.y - (realY - bumpyOffsetY)) <= FixPoint::abs(ySpeed) / 2 + epsilon)) {
-                realX        = wantedReal.x;
-                realY        = wantedReal.y;
+            if ((FixPoint::abs(wantedReal.x - (realX_ - bumpyOffsetX)) <= FixPoint::abs(xSpeed) / 2 + epsilon)
+                && (FixPoint::abs(wantedReal.y - (realY_ - bumpyOffsetY)) <= FixPoint::abs(ySpeed) / 2 + epsilon)) {
+                realX_       = wantedReal.x;
+                realY_       = wantedReal.y;
                 bumpyOffsetX = 0;
                 bumpyOffsetY = 0;
 
-                if (forced && (location == destination) && !target) {
+                if (forced_ && (location_ == destination_) && !target_) {
                     setForced(false);
                 }
 
                 moving            = false;
                 justStoppedMoving = true;
 
-                oldLocation.invalidate();
+                oldLocation_.invalidate();
             }
         }
 
@@ -462,8 +464,8 @@ void InfantryBase::setLocation(const GameContext& context, int xPos, int yPos) {
         parent::setLocation(context, xPos, yPos);
 
         if (tilePosition != INVALID_POS) {
-            realX += tilePositionOffset[tilePosition].x;
-            realY += tilePositionOffset[tilePosition].y;
+            realX_ += tilePositionOffset[tilePosition].x;
+            realY_ += tilePositionOffset[tilePosition].y;
         }
     }
 }
@@ -482,7 +484,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
         int dx = 0;
         int dy = 0;
         // clang-format off
-        switch(drawnAngle) {
+        switch(drawnAngle_) {
             case ANGLETYPE::RIGHT:     dx += TILESIZE;                 break;
             case ANGLETYPE::RIGHTUP:   dx += TILESIZE; dy -= TILESIZE; break;
             case ANGLETYPE::UP:                        dy -= TILESIZE; break;
@@ -502,7 +504,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
         dx -= sx;
         dy -= sy;
 
-        const FixPoint scale = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed
+        const FixPoint scale = context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].maxspeed
                              / FixPoint::sqrt((dx * dx + dy * dy));
         xSpeed = dx * scale;
         ySpeed = dy * scale;

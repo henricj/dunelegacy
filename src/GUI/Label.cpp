@@ -52,7 +52,7 @@ Point Label::getMinimumSize() const {
     const auto& style = GUIStyle::getInstance();
 
     for (const auto& hardLine : hardLines) {
-        const auto minLabelSize = style.getMinimumLabelSize(hardLine, fontSize);
+        const auto minLabelSize = style.getMinimumLabelSize(hardLine, fontSize_);
 
         p.x = std::max(p.x, minLabelSize.x);
         p.y += minLabelSize.y;
@@ -99,12 +99,12 @@ void Label::updateTextures() {
     const auto size = getSize();
 
     const auto textLines =
-        greedyWordWrap(text_, static_cast<float>(size.x), [&gui, font = fontSize](std::string_view tmp) {
+        greedyWordWrap(text_, static_cast<float>(size.x), [&gui, font = fontSize_](std::string_view tmp) {
             return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x) - 4.f;
         });
 
-    pTexture_ = gui.createLabel(renderer, size.x, size.y, textLines, fontSize, alignment_, textcolor, textshadowcolor,
-                                backgroundcolor);
+    pTexture_ = gui.createLabel(renderer, size.x, size.y, textLines, fontSize_, alignment_, text_color_,
+                                text_shadow_color_, background_color_);
 }
 
 void Label::invalidateTextures() {

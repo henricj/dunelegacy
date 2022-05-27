@@ -523,7 +523,8 @@ MapData createMapWithSeed(uint32_t Para_Seed, int mapscale) {
 
             TERRAINTYPE terrainType = Terrain_Sand;
 
-            const unsigned char seedmaptype = SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4;
+            const auto seedmaptype =
+                static_cast<uint8_t>(SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4u);
             switch (seedmaptype) {
                 case 0x7: {
                     // Normal sand

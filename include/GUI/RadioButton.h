@@ -46,7 +46,7 @@ public:
         \param  text The new text for this radio button
     */
     virtual void setText(const std::string& text) {
-        this->text = text;
+        this->text_ = text;
         resizeAll();
     }
 
@@ -54,7 +54,7 @@ public:
         Get the text of this radio button.
         \return the text of this radio button
     */
-    [[nodiscard]] const std::string& getText() const { return text; }
+    [[nodiscard]] const std::string& getText() const { return text_; }
 
     /**
         Sets the text color for this radio button.
@@ -105,7 +105,7 @@ public:
         \return the minimum size of this button
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        return GUIStyle::getInstance().getMinimumRadioButtonSize(text);
+        return GUIStyle::getInstance().getMinimumRadioButtonSize(text_);
     }
 
 protected:
@@ -122,13 +122,13 @@ protected:
     void invalidateTextures() override;
 
 private:
-    uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
-    uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
-    std::string text;                         ///< Text of this radio button
-    DuneTextureOwned pCheckedActiveTexture;   ///< Texture that is shown when the radio button is activated by keyboard
-                                              ///< or by mouse hover
+    uint32_t text_color_        = COLOR_DEFAULT; ///< Text color
+    uint32_t text_shadow_color_ = COLOR_DEFAULT; ///< Text shadow color
+    std::string text_;                           ///< Text of this radio button
+    DuneTextureOwned pCheckedActiveTexture_; ///< Texture that is shown when the radio button is activated by keyboard
+                                             ///< or by mouse hover
 
-    RadioButtonManager* pRadioButtonManager{}; ///< The Manager for managing the toggle states
+    RadioButtonManager* pRadioButtonManager_{}; ///< The Manager for managing the toggle states
 };
 
 #endif // RADIOBUTTON_H

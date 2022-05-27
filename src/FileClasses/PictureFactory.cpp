@@ -738,9 +738,10 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     assert(pMapChoiceScreen->format->BitsPerPixel == 8);
     SDL_FillRect(pMapChoiceScreen.get(), &clearRect, PALCOLOR_TRANSPARENT);
 
-    pMapChoiceScreen = Scaler::defaultDoubleSurface(
-        mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(House)])
-            .get());
+    pMapChoiceScreen =
+        Scaler::defaultDoubleSurface(mapSurfaceColorRange(pMapChoiceScreen.get(), PALCOLOR_HARKONNEN,
+                                                          dune::globals::houseToPaletteIndex[static_cast<int>(House)])
+                                         .get());
     auto pFullMapChoiceScreen = copySurface(background.get());
 
     SDL_Rect dest = calcAlignedDrawingRect(pMapChoiceScreen.get(), pFullMapChoiceScreen.get());

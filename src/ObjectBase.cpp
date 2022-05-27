@@ -74,32 +74,32 @@
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID,
                        const ObjectInitializer& initializer)
     : ObjectBase(object_constants, objectID) {
-    originalHouseID = initializer.owner()->getHouseID();
-    owner           = initializer.owner();
-    byScenario      = initializer.byScenario();
+    originalHouseID_ = initializer.owner()->getHouseID();
+    owner_           = initializer.owner();
+    byScenario_      = initializer.byScenario();
 
-    health       = 0;
-    badlyDamaged = false;
+    health_       = 0;
+    badlyDamaged_ = false;
 
-    location    = Coord::Invalid();
-    oldLocation = Coord::Invalid();
-    destination = Coord::Invalid();
-    realX       = 0;
-    realY       = 0;
+    location_    = Coord::Invalid();
+    oldLocation_ = Coord::Invalid();
+    destination_ = Coord::Invalid();
+    realX_       = 0;
+    realY_       = 0;
 
-    drawnAngle = static_cast<ANGLETYPE>(0);
-    angle      = static_cast<int>(drawnAngle);
+    drawnAngle_ = static_cast<ANGLETYPE>(0);
+    angle_      = static_cast<int>(drawnAngle_);
 
-    active                = false;
-    respondable           = true;
-    byScenario            = false;
-    selected              = false;
-    selectedByOtherPlayer = false;
+    active_                = false;
+    respondable_           = true;
+    byScenario_            = false;
+    selected_              = false;
+    selectedByOtherPlayer_ = false;
 
-    forced = false;
+    forced_ = false;
     ObjectBase::setTarget(nullptr);
-    targetFriendly = false;
-    attackMode     = GUARD;
+    targetFriendly_ = false;
+    attackMode_     = GUARD;
 
     setVisible(VIS_ALL, false);
 }
@@ -109,55 +109,55 @@ ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t obj
     : ObjectBase(object_constants, objectID) {
     const auto* const game = dune::globals::currentGame.get();
 
-    auto& stream    = initializer.stream();
-    originalHouseID = static_cast<HOUSETYPE>(stream.readUint32());
-    owner           = game->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
+    auto& stream     = initializer.stream();
+    originalHouseID_ = static_cast<HOUSETYPE>(stream.readUint32());
+    owner_           = game->getHouse(static_cast<HOUSETYPE>(stream.readUint32()));
 
-    health       = stream.readFixPoint();
-    badlyDamaged = stream.readBool();
+    health_       = stream.readFixPoint();
+    badlyDamaged_ = stream.readBool();
 
-    location.x    = stream.readSint32();
-    location.y    = stream.readSint32();
-    oldLocation.x = stream.readSint32();
-    oldLocation.y = stream.readSint32();
-    destination.x = stream.readSint32();
-    destination.y = stream.readSint32();
-    realX         = stream.readFixPoint();
-    realY         = stream.readFixPoint();
+    location_.x    = stream.readSint32();
+    location_.y    = stream.readSint32();
+    oldLocation_.x = stream.readSint32();
+    oldLocation_.y = stream.readSint32();
+    destination_.x = stream.readSint32();
+    destination_.y = stream.readSint32();
+    realX_         = stream.readFixPoint();
+    realY_         = stream.readFixPoint();
 
-    angle      = stream.readFixPoint();
-    drawnAngle = static_cast<ANGLETYPE>(stream.readSint8());
+    angle_      = stream.readFixPoint();
+    drawnAngle_ = static_cast<ANGLETYPE>(stream.readSint8());
 
-    active      = stream.readBool();
-    respondable = stream.readBool();
-    byScenario  = stream.readBool();
+    active_      = stream.readBool();
+    respondable_ = stream.readBool();
+    byScenario_  = stream.readBool();
 
     if (game->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
-        selected              = stream.readBool();
-        selectedByOtherPlayer = stream.readBool();
+        selected_              = stream.readBool();
+        selectedByOtherPlayer_ = stream.readBool();
     } else {
-        selected              = false;
-        selectedByOtherPlayer = false;
+        selected_              = false;
+        selectedByOtherPlayer_ = false;
     }
 
-    forced = stream.readBool();
-    target.load(stream);
-    targetFriendly = stream.readBool();
-    attackMode     = static_cast<ATTACKMODE>(stream.readUint32());
+    forced_ = stream.readBool();
+    target_.load(stream);
+    targetFriendly_ = stream.readBool();
+    attackMode_     = static_cast<ATTACKMODE>(stream.readUint32());
 
     std::array<bool, 7> b{false, false, false, false, false, false, false};
 
     stream.readBools(&b[0], &b[1], &b[2], &b[3], &b[4], &b[5], &b[6]);
 
-    for (decltype(visible.size()) i = 0; i < visible.size(); ++i)
-        visible[i] = b[i];
+    for (decltype(visible_.size()) i = 0; i < visible_.size(); ++i)
+        visible_[i] = b[i];
 }
 
 ObjectBase::ObjectBase(const ObjectBaseConstants& object_constants, uint32_t objectID)
-    : constants_{object_constants}, itemID{object_constants.itemID}, objectID{objectID} {
-    graphicID  = static_cast<ObjPic_enum>(-1);
-    numImagesX = 0;
-    numImagesY = 0;
+    : constants_{object_constants}, itemID_{object_constants.itemID}, objectID_{objectID} {
+    graphicID_  = static_cast<ObjPic_enum>(-1);
+    numImagesX_ = 0;
+    numImagesY_ = 0;
 }
 
 ObjectBase::~ObjectBase() = default;
@@ -166,42 +166,42 @@ void ObjectBase::destroy(const GameContext& context) {
     context.objectManager.removeObject(getObjectID());
 }
 
-void ObjectBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) { }
+void ObjectBase::cleanup([[maybe_unused]] const GameContext& context, [[maybe_unused]] HumanPlayer* humanPlayer) { }
 
 void ObjectBase::save(OutputStream& stream) const {
-    stream.writeUint32(static_cast<uint32_t>(originalHouseID));
-    stream.writeUint32(static_cast<uint32_t>(owner->getHouseID()));
+    stream.writeUint32(static_cast<uint32_t>(originalHouseID_));
+    stream.writeUint32(static_cast<uint32_t>(owner_->getHouseID()));
 
-    stream.writeFixPoint(health);
-    stream.writeBool(badlyDamaged);
+    stream.writeFixPoint(health_);
+    stream.writeBool(badlyDamaged_);
 
-    stream.writeSint32(location.x);
-    stream.writeSint32(location.y);
-    stream.writeSint32(oldLocation.x);
-    stream.writeSint32(oldLocation.y);
-    stream.writeSint32(destination.x);
-    stream.writeSint32(destination.y);
-    stream.writeFixPoint(realX);
-    stream.writeFixPoint(realY);
+    stream.writeSint32(location_.x);
+    stream.writeSint32(location_.y);
+    stream.writeSint32(oldLocation_.x);
+    stream.writeSint32(oldLocation_.y);
+    stream.writeSint32(destination_.x);
+    stream.writeSint32(destination_.y);
+    stream.writeFixPoint(realX_);
+    stream.writeFixPoint(realY_);
 
-    stream.writeFixPoint(angle);
-    stream.writeSint8(static_cast<int8_t>(drawnAngle));
+    stream.writeFixPoint(angle_);
+    stream.writeSint8(static_cast<int8_t>(drawnAngle_));
 
-    stream.writeBool(active);
-    stream.writeBool(respondable);
-    stream.writeBool(byScenario);
+    stream.writeBool(active_);
+    stream.writeBool(respondable_);
+    stream.writeBool(byScenario_);
 
     if (dune::globals::currentGame->getGameInitSettings().getGameType() != GameType::CustomMultiplayer) {
-        stream.writeBool(selected);
-        stream.writeBool(selectedByOtherPlayer);
+        stream.writeBool(selected_);
+        stream.writeBool(selectedByOtherPlayer_);
     }
 
-    stream.writeBool(forced);
-    target.save(stream);
-    stream.writeBool(targetFriendly);
-    stream.writeUint32(attackMode);
+    stream.writeBool(forced_);
+    target_.save(stream);
+    stream.writeBool(targetFriendly_);
+    stream.writeUint32(attackMode_);
 
-    stream.writeBools(visible[0], visible[1], visible[2], visible[3], visible[4], visible[5], visible[6]);
+    stream.writeBools(visible_[0], visible_[1], visible_[2], visible_[3], visible_[4], visible_[5], visible_[6]);
 }
 
 /**
@@ -209,18 +209,19 @@ void ObjectBase::save(OutputStream& stream) const {
     \return the center point in world coordinates
 */
 Coord ObjectBase::getCenterPoint() const {
-    return {lround(realX), lround(realY)};
+    return {lround(realX_), lround(realY_)};
 }
 
-Coord ObjectBase::getClosestCenterPoint(const Coord& objectLocation) const {
+Coord ObjectBase::getClosestCenterPoint([[maybe_unused]] const Coord& objectLocation) const {
     return getCenterPoint();
 }
 
 int ObjectBase::getMaxHealth() const {
-    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].hitpoints;
+    return dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].hitpoints;
 }
 
-void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
+void ObjectBase::handleDamage([[maybe_unused]] const GameContext& context, int damage, uint32_t damagerID,
+                              House* damagerOwner) {
     if (damage >= 0) {
         FixPoint newHealth = getHealth();
 
@@ -230,7 +231,7 @@ void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t d
             setHealth(0);
 
             if (damagerOwner != nullptr) {
-                damagerOwner->informHasKilled(itemID);
+                damagerOwner->informHasKilled(itemID_);
             }
         } else {
             setHealth(newHealth);
@@ -244,64 +245,64 @@ void ObjectBase::handleDamage(const GameContext& context, int damage, uint32_t d
     getOwner()->noteDamageLocation(this, damage, damagerID);
 }
 
-void ObjectBase::handleInterfaceEvent(SDL_Event* event) { }
+void ObjectBase::handleInterfaceEvent([[maybe_unused]] SDL_Event* event) { }
 
 std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void ObjectBase::setDestination(int newX, int newY) {
     if (dune::globals::currentGameMap->tileExists(newX, newY) || (newX == INVALID_POS && newY == INVALID_POS)) {
-        destination.x = newX;
-        destination.y = newY;
+        destination_.x = newX;
+        destination_.y = newY;
     }
 }
 
 void ObjectBase::setHealth(FixPoint newHealth) {
     if (newHealth >= 0 && newHealth <= getMaxHealth()) {
-        health       = newHealth;
-        badlyDamaged = health < BADLYDAMAGEDRATIO * getMaxHealth();
+        health_       = newHealth;
+        badlyDamaged_ = health_ < BADLYDAMAGEDRATIO * getMaxHealth();
     }
 }
 
 void ObjectBase::setLocation(const GameContext& context, int xPos, int yPos) {
     if (xPos == INVALID_POS && yPos == INVALID_POS) {
-        location.invalidate();
+        location_.invalidate();
     } else if (context.map.tileExists(xPos, yPos)) {
-        location.x = xPos;
-        location.y = yPos;
-        realX      = location.x * TILESIZE;
-        realY      = location.y * TILESIZE;
+        location_.x = xPos;
+        location_.y = yPos;
+        realX_      = location_.x * TILESIZE;
+        realY_      = location_.y * TILESIZE;
 
-        assignToMap(context, location);
+        assignToMap(context, location_);
     }
 }
 
 void ObjectBase::setVisible(int teamID, bool status) {
     if (teamID == VIS_ALL) {
         if (status) {
-            visible.set();
+            visible_.set();
         } else {
-            visible.reset();
+            visible_.reset();
         }
     } else if (teamID >= 0 && teamID < NUM_TEAMS) {
-        visible[teamID] = status;
+        visible_[teamID] = status;
     }
 }
 
 void ObjectBase::setTarget(const ObjectBase* newTarget) {
-    target.pointTo(newTarget);
+    target_.pointTo(newTarget);
 
     auto friendly = false;
 
-    if (target) {
-        if (const auto* targetPtr = target.getObjPointer()) {
-            friendly = targetPtr->getOwner()->getTeamID() == owner->getTeamID() && getItemID() != Unit_Sandworm
+    if (target_) {
+        if (const auto* targetPtr = target_.getObjPointer()) {
+            friendly = targetPtr->getOwner()->getTeamID() == owner_->getTeamID() && getItemID() != Unit_Sandworm
                     && targetPtr->getItemID() != Unit_Sandworm;
         }
     }
 
-    targetFriendly = friendly;
+    targetFriendly_ = friendly;
 }
 
 void ObjectBase::unassignFromMap(const Coord& location) const {
@@ -314,37 +315,37 @@ void ObjectBase::unassignFromMap(const Coord& location) const {
 
 bool ObjectBase::canAttack(const ObjectBase* object) const {
     return canAttack() && object != nullptr && (object->isAStructure() || !object->isAFlyingUnit())
-        && ((object->getOwner()->getTeamID() != owner->getTeamID() && object->isVisible(getOwner()->getTeamID()))
+        && ((object->getOwner()->getTeamID() != owner_->getTeamID() && object->isVisible(getOwner()->getTeamID()))
             || object->getItemID() == Unit_Sandworm);
 }
 
 bool ObjectBase::isOnScreen() const {
     const Coord position{lround(getRealX()), lround(getRealY())};
 
-    auto* const texture = graphic[dune::globals::currentZoomlevel];
+    auto* const texture = graphic_[dune::globals::currentZoomlevel];
 
-    const Coord size{static_cast<int>(std::ceil(getWidth(texture) / numImagesX)),
-                     static_cast<int>(std::ceil(getHeight(texture) / numImagesY))};
+    const Coord size{static_cast<int>(std::ceil(getWidth(texture) / numImagesX_)),
+                     static_cast<int>(std::ceil(getHeight(texture) / numImagesY_))};
 
     return dune::globals::screenborder->isInsideScreen(position, size);
 }
 
 bool ObjectBase::isVisible(int teamID) const {
-    if (visible.all())
+    if (visible_.all())
         return true;
 
     if (teamID >= 0 && teamID < NUM_TEAMS) {
-        return visible[teamID];
+        return visible_[teamID];
     }
     return false;
 }
 
 bool ObjectBase::isVisible() const {
-    return visible.any();
+    return visible_.any();
 }
 
 uint32_t ObjectBase::getHealthColor() const {
-    const FixPoint healthPercent = health / getMaxHealth();
+    const FixPoint healthPercent = health_ / getMaxHealth();
 
     if (healthPercent >= BADLYDAMAGEDRATIO) {
         return COLOR_LIGHTGREEN;
@@ -357,7 +358,7 @@ uint32_t ObjectBase::getHealthColor() const {
 }
 
 Coord ObjectBase::getClosestPoint(const Coord& point) const {
-    return location;
+    return location_;
 }
 
 const StructureBase* ObjectBase::findClosestTargetStructure() const {
@@ -446,7 +447,7 @@ const ObjectBase* ObjectBase::findTarget() const {
     //                     *
 
     auto checkRange = 0;
-    switch (attackMode) {
+    switch (attackMode_) {
         case GUARD: {
             checkRange = getWeaponRange();
         } break;
@@ -480,14 +481,14 @@ const ObjectBase* ObjectBase::findTarget() const {
     auto* const map = dune::globals::currentGameMap;
 
     Coord coord;
-    const auto startY = std::max(0, location.y - checkRange);
-    const auto endY   = std::min(map->getSizeY() - 1, location.y + checkRange);
+    const auto startY = std::max(0, location_.y - checkRange);
+    const auto endY   = std::min(map->getSizeY() - 1, location_.y + checkRange);
     for (coord.y = startY; coord.y <= endY; coord.y++) {
-        const auto startX = std::max(0, location.x - checkRange);
-        const auto endX   = std::min(map->getSizeX() - 1, location.x + checkRange);
+        const auto startX = std::max(0, location_.x - checkRange);
+        const auto endX   = std::min(map->getSizeX() - 1, location_.x + checkRange);
         for (coord.x = startX; coord.x <= endX; coord.x++) {
 
-            const auto targetDistance = blockDistance(location, coord);
+            const auto targetDistance = blockDistance(location_, coord);
             if (targetDistance <= checkRange) {
                 auto* const game = dune::globals::currentGame.get();
 
@@ -517,7 +518,7 @@ const ObjectBase* ObjectBase::findTarget() const {
 }
 
 int ObjectBase::getViewRange() const {
-    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].viewrange;
+    return dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].viewrange;
 }
 
 int ObjectBase::getAreaGuardRange() const {
@@ -525,15 +526,15 @@ int ObjectBase::getAreaGuardRange() const {
 }
 
 int ObjectBase::getWeaponRange() const {
-    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+    return dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].weaponrange;
 }
 
 int ObjectBase::getWeaponReloadTime() const {
-    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponreloadtime;
+    return dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].weaponreloadtime;
 }
 
 int ObjectBase::getInfSpawnProp() const {
-    return dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].infspawnprop;
+    return dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].infspawnprop;
 }
 
 namespace {
@@ -609,8 +610,8 @@ ObjectBase::loadObject(ItemID_enum itemID, uint32_t objectID, const ObjectStream
 }
 
 bool ObjectBase::targetInWeaponRange() const {
-    const auto coord = target.getObjPointer()->getClosestPoint(location);
-    const auto dist  = blockDistance(location, coord);
+    const auto coord = target_.getObjPointer()->getClosestPoint(location_);
+    const auto dist  = blockDistance(location_, coord);
 
-    return dist <= dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].weaponrange;
+    return dist <= dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].weaponrange;
 }

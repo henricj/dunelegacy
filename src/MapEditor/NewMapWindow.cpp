@@ -40,7 +40,7 @@
 
 NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(currentHouse) {
 
-    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -96,7 +96,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     mapSizeXDropDownBox.addEntry("64", 64);
     mapSizeXDropDownBox.addEntry("128", 128);
     mapSizeXDropDownBox.setSelectedItem(2);
-    mapSizeXDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
+    mapSizeXDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     mapSizeYLabel.setText(_("Map Height:"));
     mapSizeYLabel.setTextColor(color);
     mapSizeYDropDownBox.setColor(color);
@@ -104,7 +104,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     mapSizeYDropDownBox.addEntry("64", 64);
     mapSizeYDropDownBox.addEntry("128", 128);
     mapSizeYDropDownBox.setSelectedItem(2);
-    mapSizeYDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
+    mapSizeYDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
 
     mapScaleLabel.setText(_("Map Scale:"));
     mapScaleLabel.setTextColor(color);
@@ -113,7 +113,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     mapScaleDropDownBox.addEntry(_("Small (32x32)"), 1);
     mapScaleDropDownBox.addEntry(_("Normal (62x62)"), 0);
     mapScaleDropDownBox.setSelectedItem(2);
-    mapScaleDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
+    mapScaleDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
 
     basicMapPropertiesVBox.addWidget(Widget::create<VSpacer>(4).release());
     basicMapPropertiesVBox.addWidget(&rngHBox);
@@ -127,7 +127,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     rngSeedTextBox.setMinMax(0, 32767);
     rngSeedTextBox.setValue(gfx->random().rand(0, 32767));
     rngSeedTextBox.setColor(house, color);
-    rngSeedTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
+    rngSeedTextBox.setOnValueChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rngSeedTextBox, 80);
 
     rngHBox.addWidget(Widget::create<HSpacer>(2).release());
@@ -139,7 +139,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     rockDigitsTextBox.setMinMax(0, 99);
     rockDigitsTextBox.setValue(ROCKFIELDS);
     rockDigitsTextBox.setColor(house, color);
-    rockDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
+    rockDigitsTextBox.setOnValueChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rockDigitsTextBox, 45);
 
     rngHBox.addWidget(Widget::create<HSpacer>(2).release());
@@ -151,7 +151,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     spiceDigitsTextBox.setMinMax(0, 99);
     spiceDigitsTextBox.setValue(SPICEFIELDS);
     spiceDigitsTextBox.setColor(house, color);
-    spiceDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
+    spiceDigitsTextBox.setOnValueChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&spiceDigitsTextBox, 45);
 
     rngHBox.addWidget(Widget::create<Spacer>().release(), 3.0);
@@ -260,7 +260,7 @@ void NewMapWindow::onChildWindowClose(Window* pChildWindow) {
         loadMapname         = pLoadMapWindow->getLoadMapname();
         loadMapSingleplayer = pLoadMapWindow->isLoadMapSingleplayer();
 
-        if (loadMapFilepath != "") {
+        if (!loadMapFilepath.empty()) {
             auto* pParentWindow = dynamic_cast<Window*>(getParent());
             if (pParentWindow != nullptr) {
                 pParentWindow->closeChildWindow();

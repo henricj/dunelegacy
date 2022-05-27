@@ -139,10 +139,10 @@ void BuilderBase::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return BuilderInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return BuilderInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void BuilderBase::insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price) {
@@ -160,7 +160,7 @@ void BuilderBase::insertItem(build_list_type::iterator& iter, ItemID_enum item_i
     }
 
     if (price == -1) {
-        price = dune::globals::currentGame->objectData.data[item_id][static_cast<int>(originalHouseID)].price;
+        price = dune::globals::currentGame->objectData.data[item_id][static_cast<int>(originalHouseID_)].price;
     }
 
     iter = buildItemList.emplace(iter, item_id, price);
@@ -178,7 +178,7 @@ void BuilderBase::removeItem(build_list_type::iterator& iter, ItemID_enum item_i
 
     // is this item currently produced?
     if (currentProducedItem == item_id) {
-        owner->returnCredits(productionProgress);
+        owner_->returnCredits(productionProgress);
         productionProgress  = 0;
         currentProducedItem = ItemID_Invalid;
     }
@@ -190,7 +190,7 @@ void BuilderBase::removeItem(build_list_type::iterator& iter, ItemID_enum item_i
 }
 
 void BuilderBase::setOwner(House* no) {
-    this->owner = no;
+    this->owner_ = no;
 }
 
 bool BuilderBase::isWaitingToPlace() const {
@@ -227,7 +227,7 @@ void BuilderBase::updateProductionProgress() {
     const auto* const tmp = getBuildItem(currentProducedItem);
 
     if ((productionProgress < tmp->price) && (!isOnHold()) && (!isUnitLimitReached(currentProducedItem))
-        && (owner->getCredits() > 0)) {
+        && (owner_->getCredits() > 0)) {
 
         const FixPoint oldProgress = productionProgress;
 
@@ -235,20 +235,20 @@ void BuilderBase::updateProductionProgress() {
 
         if (game->getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint totalBuildCosts =
-                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
+                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID_)].price;
             const auto buildCosts = totalBuildCosts - productionProgress;
 
-            productionProgress += owner->takeCredits(buildCosts);
+            productionProgress += owner_->takeCredits(buildCosts);
         } else {
 
             const auto buildSpeed = std::min(getHealth() / getMaxHealth(), buildSpeedLimit);
             const FixPoint totalBuildCosts =
-                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].price;
+                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID_)].price;
             const auto totalBuildGameTicks =
-                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID)].buildtime * 15;
+                game->objectData.data[currentProducedItem][static_cast<int>(originalHouseID_)].buildtime * 15;
             const auto buildCosts = totalBuildCosts / totalBuildGameTicks;
 
-            productionProgress += owner->takeCredits(buildCosts * buildSpeed);
+            productionProgress += owner_->takeCredits(buildCosts * buildSpeed);
 
             /* That was wrong. Build speed does not depend on power production
                 if (getOwner()->hasPower() || (((currentGame->gameType == GameType::Campaign) || (currentGame->gameType
@@ -260,7 +260,7 @@ void BuilderBase::updateProductionProgress() {
                 }*/
         }
 
-        if ((oldProgress == productionProgress) && (owner == dune::globals::pLocalHouse)) {
+        if ((oldProgress == productionProgress) && (owner_ == dune::globals::pLocalHouse)) {
             game->addToNewsTicker(_("Not enough money"));
         }
 
@@ -296,9 +296,9 @@ int BuilderBase::getMaxUpgradeLevel() const {
     for (int i = ItemID_FirstID; i <= ItemID_LastID; ++i) {
         const auto* const game = dune::globals::currentGame.get();
 
-        const auto& objData = game->objectData.data[i][static_cast<int>(originalHouseID)];
+        const auto& objData = game->objectData.data[i][static_cast<int>(originalHouseID_)];
 
-        if (objData.enabled && (objData.builder == itemID) && (objData.techLevel <= game->techLevel)) {
+        if (objData.enabled && (objData.builder == itemID_) && (objData.techLevel <= game->techLevel)) {
             upgradeLevel = std::max(upgradeLevel, static_cast<int>(objData.upgradeLevel));
         }
     }
@@ -315,9 +315,9 @@ void BuilderBase::updateBuildList() {
 
         const auto* const game = dune::globals::currentGame.get();
 
-        const auto& objData = game->objectData.data[itemID2Add][static_cast<int>(originalHouseID)];
+        const auto& objData = game->objectData.data[itemID2Add][static_cast<int>(originalHouseID_)];
 
-        if (!objData.enabled || (objData.builder != itemID) || (objData.upgradeLevel > curUpgradeLev)
+        if (!objData.enabled || (objData.builder != itemID_) || (objData.upgradeLevel > curUpgradeLev)
             || (objData.techLevel > game->techLevel)) {
             // first simple checks have rejected this item as being available for built in this builder
             removeItem(iter, itemID2Add);
@@ -327,7 +327,7 @@ void BuilderBase::updateBuildList() {
             auto bPrerequisitesMet = true;
             for (int itemID2Test = Structure_FirstID; itemID2Test <= Structure_LastID; itemID2Test++) {
                 if (objData.prerequisiteStructuresSet[itemID2Test]
-                    && (owner->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
+                    && (owner_->getNumItems(static_cast<ItemID_enum>(itemID2Test)) <= 0)) {
                     bPrerequisitesMet = false;
                     break;
                 }
@@ -346,7 +346,7 @@ void BuilderBase::setWaitingToPlace() {
     if (currentProducedItem == ItemID_Invalid)
         return;
 
-    if (owner == dune::globals::pLocalHouse) {
+    if (owner_ == dune::globals::pLocalHouse) {
         using dune::globals::soundPlayer;
 
         if (isStructure(currentProducedItem)) {
@@ -365,7 +365,7 @@ void BuilderBase::setWaitingToPlace() {
         deployTimer = MILLI2CYCLES(750);
     } else {
         // its a structure
-        if (owner == dune::globals::pLocalHouse) {
+        if (owner_ == dune::globals::pLocalHouse) {
             dune::globals::currentGame->addToNewsTicker(_("@DUNE.ENG|51#Construction is complete"));
         }
     }
@@ -376,7 +376,7 @@ void BuilderBase::unSetWaitingToPlace() {
 }
 
 int BuilderBase::getUpgradeCost(const GameContext& context) const {
-    return context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price / 2;
+    return context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].price / 2;
 }
 
 void BuilderBase::produce_item(const GameContext& context) {
@@ -404,12 +404,12 @@ void BuilderBase::produce_item(const GameContext& context) {
                 && ((newUnit->getItemID() == Unit_Carryall) || (newUnit->getItemID() == Unit_Harvester)
                     || (newUnit->getItemID() == Unit_MCV))) {
                 // Don't want harvesters going to the rally point
-                unitDestination = location;
+                unitDestination = location_;
             } else {
-                unitDestination = destination;
+                unitDestination = destination_;
             }
 
-            const auto spot = context.map.findDeploySpot(newUnit, location, unitDestination, getStructureSize());
+            const auto spot = context.map.findDeploySpot(newUnit, location_, unitDestination, getStructureSize());
 
             newUnit->deploy(context, spot);
 
@@ -442,10 +442,10 @@ bool BuilderBase::update(const GameContext& context) {
 
         if (context.game.getGameInitSettings().getGameOptions().instantBuild) {
             const FixPoint upgradePriceLeft = totalUpgradePrice - upgradeProgress;
-            upgradeProgress += owner->takeCredits(upgradePriceLeft);
+            upgradeProgress += owner_->takeCredits(upgradePriceLeft);
         } else {
             const FixPoint totalUpgradeGameTicks = 30 * 100 / 5;
-            upgradeProgress += owner->takeCredits(totalUpgradePrice / totalUpgradeGameTicks);
+            upgradeProgress += owner_->takeCredits(totalUpgradePrice / totalUpgradeGameTicks);
         }
 
         if (upgradeProgress >= totalUpgradePrice) {
@@ -480,7 +480,7 @@ void BuilderBase::removeBuiltItemFromProductionQueue() {
 
 void BuilderBase::handleUpgradeClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_UPGRADE, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_BUILDER_UPGRADE, objectID_));
 }
 
 void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) {
@@ -488,7 +488,7 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
         if (buildItem.itemID == itemID) {
             if (dune::globals::currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
                 && (itemID == Structure_Palace)
-                && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
+                && ((buildItem.num > 0) || (owner_->getNumItems(Structure_Palace) > 0))) {
                 // only one palace allowed
                 dune::globals::soundPlayer->playSound(Sound_enum::Sound_InvalidAction);
                 return;
@@ -497,19 +497,19 @@ void BuilderBase::handleProduceItemClick(ItemID_enum itemID, bool multipleMode) 
     }
 
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID,
+                                                                       CMDTYPE::CMD_BUILDER_PRODUCEITEM, objectID_,
                                                                        itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleCancelItemClick(ItemID_enum itemID, bool multipleMode) {
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_CANCELITEM, objectID,
+                                                                       CMDTYPE::CMD_BUILDER_CANCELITEM, objectID_,
                                                                        itemID, static_cast<uint32_t>(multipleMode)));
 }
 
 void BuilderBase::handleSetOnHoldClick(bool OnHold) {
     dune::globals::currentGame->getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                                       CMDTYPE::CMD_BUILDER_SETONHOLD, objectID,
+                                                                       CMDTYPE::CMD_BUILDER_SETONHOLD, objectID_,
                                                                        static_cast<uint32_t>(OnHold)));
 }
 
@@ -517,7 +517,7 @@ bool BuilderBase::doUpgrade(const GameContext& context) {
     if (upgrading) {
         return false;
     }
-    if (isAllowedToUpgrade() && (owner->getCredits() >= getUpgradeCost(context))) {
+    if (isAllowedToUpgrade() && (owner_->getCredits() >= getUpgradeCost(context))) {
 
         upgrading = true;
 
@@ -534,7 +534,7 @@ void BuilderBase::doProduceItem(ItemID_enum itemID, bool multipleMode) {
             for (int i = 0; i < (multipleMode ? 5 : 1); i++) {
                 if (dune::globals::currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
                     && (itemID == Structure_Palace)
-                    && ((buildItem.num > 0) || (owner->getNumItems(Structure_Palace) > 0))) {
+                    && ((buildItem.num > 0) || (owner_->getNumItems(Structure_Palace) > 0))) {
                     // only one palace allowed
                     return;
                 }
@@ -570,7 +570,7 @@ void BuilderBase::doCancelItem(ItemID_enum itemID, bool multipleMode) {
 
                     if (queueItemIter != currentProductionQueue.rend()) {
                         if (buildItem.num == 0 && bCancelCurrentItem) {
-                            owner->returnCredits(productionProgress);
+                            owner_->returnCredits(productionProgress);
                         } else {
                             bCancelCurrentItem = false;
                         }

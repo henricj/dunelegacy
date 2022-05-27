@@ -54,13 +54,13 @@ RepairYard::RepairYard(uint32_t objectID, const ObjectStreamInitializer& initial
 }
 
 void RepairYard::init() {
-    assert(itemID == Structure_RepairYard);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_RepairYard);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_RepairYard;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 10;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_RepairYard;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 10;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }
@@ -86,10 +86,10 @@ void RepairYard::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> RepairYard::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return RepairYardInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return RepairYardInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryall) {
@@ -108,7 +108,7 @@ void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryal
         pCarryall->setTarget(nullptr);
         pCarryall->setDestination(pRepairUnit->getGuardPoint());
     } else {
-        const Coord deployPos = context.map.findDeploySpot(pRepairUnit, location, destination, getStructureSize());
+        const Coord deployPos = context.map.findDeploySpot(pRepairUnit, location_, destination_, getStructureSize());
 
         pRepairUnit->setForced(false);
         pRepairUnit->doSetAttackMode(context, (pRepairUnit->getItemID() == Unit_Harvester) ? HARVEST : GUARD);
@@ -148,7 +148,7 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
         return;
 
     if (pRepairUnit->getHealth() * 100 / pRepairUnit->getMaxHealth() < 100) {
-        if (owner->takeCredits(UNIT_REPAIRCOST) > 0)
+        if (owner_->takeCredits(UNIT_REPAIRCOST) > 0)
             pRepairUnit->addHealth();
 
         /*
@@ -157,13 +157,13 @@ void RepairYard::updateStructureSpecificStuff(const GameContext& context) {
             can be kept at the frontline letting an initial successful attack snowball
         */
     } else if (!pRepairUnit->isAwaitingPickup()
-               && blockDistance(location, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE
+               && blockDistance(location_, pRepairUnit->getGuardPoint()) >= MIN_CARRYALL_LIFT_DISTANCE
                && context.game.getGameInitSettings().getGameOptions().manualCarryallDrops) {
         // find carryall
         Carryall* pCarryall = nullptr;
         if ((pRepairUnit->getGuardPoint().isValid()) && getOwner()->hasCarryalls()) {
             for (auto* pUnit : dune::globals::unitList) {
-                if (pUnit->getOwner() != owner)
+                if (pUnit->getOwner() != owner_)
                     continue;
 
                 if (auto* const pTmpCarryall = dune_cast<Carryall>(pUnit)) {

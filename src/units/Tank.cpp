@@ -43,18 +43,18 @@ Tank::Tank(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Tank::init() {
-    assert(itemID == Unit_Tank);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Tank);
+    owner_->incrementUnits(itemID_);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    graphicID     = ObjPic_Tank_Base;
-    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_    = ObjPic_Tank_Base;
+    graphic_      = gfx->getObjPic(graphicID_, getOwner()->getHouseID());
     gunGraphicID  = ObjPic_Tank_Gun;
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Tank::~Tank() = default;
@@ -64,12 +64,12 @@ void Tank::blitToScreen() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const auto x = screenborder->world2screenX(realX);
-    const auto y = screenborder->world2screenY(realY);
+    const auto x = screenborder->world2screenX(realX_);
+    const auto y = screenborder->world2screenY(realY_);
 
-    const auto* const pUnitGraphic = graphic[zoom];
-    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic_[zoom];
+    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX_, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
@@ -85,19 +85,19 @@ void Tank::blitToScreen() {
 }
 
 void Tank::destroy(const GameContext& context) {
-    if (context.map.tileExists(location) && isVisible()) {
-        const Coord realPos(lround(realX), lround(realY));
+    if (context.map.tileExists(location_) && isVisible()) {
+        const Coord realPos(lround(realX_), lround(realY_));
         const auto explosionID =
             context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
-        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
+        context.game.addExplosion(explosionID, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location_);
     }
 
     TankBase::destroy(context);
 }
 
 void Tank::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
 }

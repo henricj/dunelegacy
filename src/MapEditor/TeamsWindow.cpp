@@ -32,9 +32,9 @@
 #include <FileClasses/TextManager.h>
 
 TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
-    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse), aiteams(pMapEditor->getAITeams()) {
+    : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house_(currentHouse), aiteams_(pMapEditor->getAITeams()) {
 
-    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color_ = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house_)] + 3]);
 
     auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -61,34 +61,34 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     centralVBox.addWidget(&hBox1, 6.0);
 
-    teamsListBox.setColor(color);
+    teamsListBox.setColor(color_);
     teamsListBox.setOnSelectionChange([this](auto interactive) { onSelectionChange(interactive); });
     hBox1.addWidget(&teamsListBox, 1.0);
 
     hBox1.addWidget(Widget::create<HSpacer>(3).release());
 
-    listEntryUpButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
-                                gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
+    listEntryUpButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp, house_),
+                                gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house_));
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick([this] { onUp(); });
     listControlVBox.addWidget(&listEntryUpButton, 25);
     listControlVBox.addWidget(Widget::create<VSpacer>(3).release());
-    listEntryDownButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
-                                  gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
+    listEntryDownButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown, house_),
+                                  gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house_));
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick([this] { onDown(); });
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
     listControlVBox.addWidget(Widget::create<Spacer>().release(), 6.0);
 
-    addListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Plus, house),
-                                 gfx->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
+    addListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Plus, house_),
+                                 gfx->getUIGraphicSurface(UI_MapEditor_Plus_Active, house_));
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick([this] { onAdd(); });
     listControlVBox.addWidget(&addListEntryButton, 25);
     listControlVBox.addWidget(Widget::create<VSpacer>(3).release());
-    removeListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Minus, house),
-                                    gfx->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
+    removeListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Minus, house_),
+                                    gfx->getUIGraphicSurface(UI_MapEditor_Minus_Active, house_));
     removeListEntryButton.setTooltipText(_("Remove"));
     removeListEntryButton.setOnClick([this] { onRemove(); });
     listControlVBox.addWidget(&removeListEntryButton, 25);
@@ -100,25 +100,25 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     centralVBox.addWidget(&hBox2);
 
     playerLabel.setText(_("Player") + ":");
-    playerLabel.setTextColor(color);
+    playerLabel.setTextColor(color_);
     hBox2.addWidget(&playerLabel, 95);
-    playerDropDownBox.setColor(color);
+    playerDropDownBox.setColor(color_);
     playerDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
 
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
-        if (player.bActive) {
-            std::string entryName = player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name;
-            playerDropDownBox.addEntry(entryName, static_cast<int>(player.house));
+        if (player.bActive_) {
+            std::string entryName = player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_;
+            playerDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
         }
     }
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
     hBox2.addWidget(Widget::create<Spacer>().release(), 5.0);
     aiTeamBehaviorLabel.setText(_("Team Behavior") + ":");
-    aiTeamBehaviorLabel.setTextColor(color);
+    aiTeamBehaviorLabel.setTextColor(color_);
     hBox2.addWidget(&aiTeamBehaviorLabel, 120);
-    aiTeamBehaviorDropDownBox.setColor(color);
+    aiTeamBehaviorDropDownBox.setColor(color_);
     aiTeamBehaviorDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
 
     aiTeamBehaviorDropDownBox.addEntry(getAITeamBehaviorNameByID(AITeamBehavior::AITeamBehavior_Normal),
@@ -139,9 +139,9 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     centralVBox.addWidget(&hBox3);
 
     aiTeamTypeLabel.setText(_("Team Type") + ":");
-    aiTeamTypeLabel.setTextColor(color);
+    aiTeamTypeLabel.setTextColor(color_);
     hBox3.addWidget(&aiTeamTypeLabel, 95);
-    aiTeamTypeDropDownBox.setColor(color);
+    aiTeamTypeDropDownBox.setColor(color_);
     aiTeamTypeDropDownBox.setOnSelectionChange([this](auto interactive) { onEntryChange(interactive); });
     aiTeamTypeDropDownBox.addEntry(_("Foot (Infantry, Troopers)"), static_cast<int>(AITeamType::AITeamType_Foot));
     aiTeamTypeDropDownBox.addEntry(_("Wheeled (Trike, Raider, Quad)"),
@@ -156,16 +156,16 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     hBox3.addWidget(&aiTeamTypeDropDownBox, 260);
     hBox3.addWidget(Widget::create<Spacer>().release(), 5.0);
     minUnitsLabel.setText(_("Units") + ":");
-    minUnitsLabel.setTextColor(color);
+    minUnitsLabel.setTextColor(color_);
     hBox3.addWidget(&minUnitsLabel);
-    minUnitsTextBox.setColor(house, color);
+    minUnitsTextBox.setColor(house_, color_);
     minUnitsTextBox.setMinMax(0, 99);
     minUnitsTextBox.setOnValueChange([this](auto interactive) { onMinUnitsChange(interactive); });
     hBox3.addWidget(&minUnitsTextBox, 47);
     maxUnitsLabel.setText(_("to"));
-    maxUnitsLabel.setTextColor(color);
+    maxUnitsLabel.setTextColor(color_);
     hBox3.addWidget(&maxUnitsLabel, 30);
-    maxUnitsTextBox.setColor(house, color);
+    maxUnitsTextBox.setColor(house_, color_);
     maxUnitsTextBox.setMinMax(0, 99);
     maxUnitsTextBox.setOnValueChange([this](auto interactive) { onMaxUnitsChange(interactive); });
     hBox3.addWidget(&maxUnitsTextBox, 47);
@@ -175,7 +175,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     mainVBox.addWidget(&buttonHBox);
 
     cancelButton.setText(_("Cancel"));
-    cancelButton.setTextColor(color);
+    cancelButton.setTextColor(color_);
     cancelButton.setOnClick([this] { onCancel(); });
 
     buttonHBox.addWidget(&cancelButton);
@@ -187,7 +187,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     okButton.setText(_("OK"));
-    okButton.setTextColor(color);
+    okButton.setTextColor(color_);
     okButton.setOnClick([this] { onOK(); });
 
     buttonHBox.addWidget(&okButton);
@@ -195,11 +195,11 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     // setup teams listbox
-    for (const AITeamInfo& aiteamInfo : aiteams) {
+    for (const AITeamInfo& aiteamInfo : aiteams_) {
         teamsListBox.addEntry(getDescribingString(aiteamInfo));
     }
 
-    if (!aiteams.empty()) {
+    if (!aiteams_.empty()) {
         teamsListBox.setSelectedItem(0);
         onSelectionChange(true);
     }
@@ -215,7 +215,7 @@ void TeamsWindow::onCancel() {
 void TeamsWindow::onOK() {
     pMapEditor->startOperation();
 
-    MapEditorChangeTeams changeTeamsOperation(aiteams);
+    MapEditorChangeTeams changeTeamsOperation(aiteams_);
 
     pMapEditor->addUndoOperation(changeTeamsOperation.perform(pMapEditor));
 
@@ -229,11 +229,11 @@ void TeamsWindow::onUp() {
     const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 1) {
-        const AITeamInfo aiteamInfo = aiteams.at(index);
-        aiteams.erase(aiteams.begin() + index);
+        const AITeamInfo aiteamInfo = aiteams_.at(index);
+        aiteams_.erase(aiteams_.begin() + index);
         teamsListBox.removeEntry(index);
 
-        aiteams.insert(aiteams.begin() + index - 1, aiteamInfo);
+        aiteams_.insert(aiteams_.begin() + index - 1, aiteamInfo);
         teamsListBox.insertEntry(index - 1, getDescribingString(aiteamInfo));
         teamsListBox.setSelectedItem(index - 1);
     }
@@ -243,11 +243,11 @@ void TeamsWindow::onDown() {
     const int index = teamsListBox.getSelectedIndex();
 
     if ((index >= 0) && (index < teamsListBox.getNumEntries() - 1)) {
-        const AITeamInfo aiteamInfo = aiteams.at(index);
-        aiteams.erase(aiteams.begin() + index);
+        const AITeamInfo aiteamInfo = aiteams_.at(index);
+        aiteams_.erase(aiteams_.begin() + index);
         teamsListBox.removeEntry(index);
 
-        aiteams.insert(aiteams.begin() + index + 1, aiteamInfo);
+        aiteams_.insert(aiteams_.begin() + index + 1, aiteamInfo);
         teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
         teamsListBox.setSelectedItem(index + 1);
     }
@@ -256,7 +256,7 @@ void TeamsWindow::onDown() {
 void TeamsWindow::onAdd() {
     if (pMapEditor->getMapVersion() < 2 && teamsListBox.getNumEntries() >= 16) {
         MsgBox* pMsgBox = MsgBox::create(_("Dune2-compatible maps support only up to 16 entries!"));
-        pMsgBox->setTextColor(color);
+        pMsgBox->setTextColor(color_);
         openWindow(pMsgBox);
         return;
     }
@@ -267,7 +267,7 @@ void TeamsWindow::onAdd() {
                                 static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData()),
                                 static_cast<AITeamType>(aiTeamTypeDropDownBox.getSelectedEntryIntData()),
                                 minUnitsTextBox.getValue(), maxUnitsTextBox.getValue());
-    aiteams.insert(aiteams.begin() + index + 1, aiteamInfo);
+    aiteams_.insert(aiteams_.begin() + index + 1, aiteamInfo);
     teamsListBox.insertEntry(index + 1, getDescribingString(aiteamInfo));
     teamsListBox.setSelectedItem(index + 1);
 }
@@ -276,7 +276,7 @@ void TeamsWindow::onRemove() {
     const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 0) {
-        aiteams.erase(aiteams.begin() + index);
+        aiteams_.erase(aiteams_.begin() + index);
         teamsListBox.removeEntry(index);
         teamsListBox.setSelectedItem(index < teamsListBox.getNumEntries() ? index : (teamsListBox.getNumEntries() - 1));
     }
@@ -286,7 +286,7 @@ void TeamsWindow::onSelectionChange(bool bInteractive) {
     const int index = teamsListBox.getSelectedIndex();
 
     if (index >= 0) {
-        AITeamInfo& aiteamInfo = aiteams.at(index);
+        AITeamInfo& aiteamInfo = aiteams_.at(index);
 
         for (int i = 0; i < playerDropDownBox.getNumEntries(); i++) {
             if (playerDropDownBox.getEntryIntData(i) == static_cast<int>(aiteamInfo.houseID)) {
@@ -345,7 +345,7 @@ void TeamsWindow::onEntryChange(bool bInteractive) {
         const int index = teamsListBox.getSelectedIndex();
 
         if (index >= 0) {
-            AITeamInfo& aiteamInfo = aiteams.at(index);
+            AITeamInfo& aiteamInfo = aiteams_.at(index);
             aiteamInfo.houseID     = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
             aiteamInfo.aiTeamBehavior =
                 static_cast<AITeamBehavior>(aiTeamBehaviorDropDownBox.getSelectedEntryIntData());
@@ -367,11 +367,12 @@ std::string TeamsWindow::getDescribingString(const AITeamInfo& aiteamInfo) {
 std::string TeamsWindow::getPlayerName(HOUSETYPE house) const {
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
-        if (player.house == house) {
-            return player.bAnyHouse ? fmt::sprintf(_("Player %d"), currentPlayerNum) : (_("House") + " " + player.name);
+        if (player.house_ == house) {
+            return player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum)
+                                     : (_("House") + " " + player.name_);
         }
 
-        if (player.bActive && player.bAnyHouse) {
+        if (player.bActive_ && player.bAnyHouse_) {
             currentPlayerNum++;
         }
     }

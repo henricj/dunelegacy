@@ -43,29 +43,29 @@ Quad::Quad(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Quad::init() {
-    assert(itemID == Unit_Quad);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Quad);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Quad;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Quad;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Quad::~Quad() = default;
 
 void Quad::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location_);
 }
 
 void Quad::destroy(const GameContext& context) {
-    if (dune::globals::currentGameMap->tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
+    if (dune::globals::currentGameMap->tileExists(location_) && isVisible()) {
+        Coord realPos(lround(realX_), lround(realY_));
+        context.game.addExplosion(Explosion_SmallUnit, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
     }
 
     parent::destroy(context);

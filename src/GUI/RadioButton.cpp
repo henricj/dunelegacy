@@ -18,7 +18,7 @@
 #include "GUI/RadioButton.h"
 
 RadioButton::RadioButton() {
-    Widget::enableResizing(true, false);
+    RadioButton::enableResizing(true, false);
     setToggleButton(true);
 }
 
@@ -29,19 +29,19 @@ RadioButton::~RadioButton() {
 }
 
 void RadioButton::registerRadioButtonManager(RadioButtonManager* pNewRadioButtonManager) {
-    if (pNewRadioButtonManager != pRadioButtonManager) {
+    if (pNewRadioButtonManager != pRadioButtonManager_) {
         unregisterFromRadioButtonManager();
-        pRadioButtonManager = pNewRadioButtonManager;
-        if (!pRadioButtonManager->isRegistered(this)) {
-            pRadioButtonManager->registerRadioButton(this);
+        pRadioButtonManager_ = pNewRadioButtonManager;
+        if (!pRadioButtonManager_->isRegistered(this)) {
+            pRadioButtonManager_->registerRadioButton(this);
         }
     }
 }
 
 void RadioButton::unregisterFromRadioButtonManager() {
-    if (pRadioButtonManager != nullptr) {
-        RadioButtonManager* pOldRadioButtonManager = pRadioButtonManager;
-        pRadioButtonManager                        = nullptr;
+    if (pRadioButtonManager_ != nullptr) {
+        RadioButtonManager* pOldRadioButtonManager = pRadioButtonManager_;
+        pRadioButtonManager_                       = nullptr;
         if (pOldRadioButtonManager->isRegistered(this)) {
             pOldRadioButtonManager->unregisterRadioButton(this);
         }
@@ -49,8 +49,8 @@ void RadioButton::unregisterFromRadioButtonManager() {
 }
 
 void RadioButton::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
-    this->textcolor       = textcolor;
-    this->textshadowcolor = textshadowcolor;
+    this->text_color_        = textcolor;
+    this->text_shadow_color_ = textshadowcolor;
     invalidateTextures();
 }
 
@@ -60,8 +60,8 @@ void RadioButton::setToggleState(bool bToggleState) {
     }
 
     if (bToggleState != getToggleState()) {
-        if (pRadioButtonManager != nullptr) {
-            pRadioButtonManager->setChecked(this);
+        if (pRadioButtonManager_ != nullptr) {
+            pRadioButtonManager_->setChecked(this);
         }
     }
 }
@@ -75,16 +75,16 @@ void RadioButton::draw(Point position) {
 
     DuneTexture tex;
     if (isChecked()) {
-        if ((isActive() || bHover) && pCheckedActiveTexture) {
-            tex = DuneTexture{pCheckedActiveTexture.get()};
+        if ((isActive() || bHover_) && pCheckedActiveTexture_) {
+            tex = DuneTexture{pCheckedActiveTexture_.get()};
         } else {
-            tex = *pPressedTexture;
+            tex = *pPressedTexture_;
         }
     } else {
-        if ((isActive() || bHover) && pActiveTexture) {
-            tex = *pActiveTexture;
+        if ((isActive() || bHover_) && pActiveTexture_) {
+            tex = *pActiveTexture_;
         } else {
-            tex = *pUnpressedTexture;
+            tex = *pUnpressedTexture_;
         }
     }
 
@@ -103,7 +103,7 @@ void RadioButton::resize(uint32_t width, uint32_t height) {
 void RadioButton::updateTextures() {
     parent::updateTextures();
 
-    if (!pUnpressedTexture) {
+    if (!pUnpressedTexture_) {
         invalidateTextures();
 
         const auto& gui      = GUIStyle::getInstance();
@@ -111,21 +111,21 @@ void RadioButton::updateTextures() {
 
         const auto size = getSize();
 
-        setTextures(gui.createRadioButtonSurface(size.x, size.y, text, false, false, textcolor, textshadowcolor)
+        setTextures(gui.createRadioButtonSurface(size.x, size.y, text_, false, false, text_color_, text_shadow_color_)
                         .createTexture(renderer),
-                    gui.createRadioButtonSurface(size.x, size.y, text, true, false, textcolor, textshadowcolor)
+                    gui.createRadioButtonSurface(size.x, size.y, text_, true, false, text_color_, text_shadow_color_)
                         .createTexture(renderer),
-                    gui.createRadioButtonSurface(size.x, size.y, text, false, true, textcolor, textshadowcolor)
+                    gui.createRadioButtonSurface(size.x, size.y, text_, false, true, text_color_, text_shadow_color_)
                         .createTexture(renderer));
 
-        pCheckedActiveTexture =
-            gui.createRadioButtonSurface(size.x, size.y, text, true, true, textcolor, textshadowcolor)
+        pCheckedActiveTexture_ =
+            gui.createRadioButtonSurface(size.x, size.y, text_, true, true, text_color_, text_shadow_color_)
                 .createTexture(renderer);
     }
 }
 
 void RadioButton::invalidateTextures() {
-    pCheckedActiveTexture.reset();
+    pCheckedActiveTexture_.reset();
 
     parent::invalidateTextures();
 }

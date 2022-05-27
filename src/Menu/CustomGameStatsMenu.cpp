@@ -39,7 +39,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     CustomGameStatsMenu::setWindowWidget(&windowWidget);
 
     const Uint32 localHouseColor = SDL2RGB(
-        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
+        dune::globals::palette
+            [dune::globals::houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
@@ -91,8 +92,9 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
     });
 
     for_each_stat(game, [&](const auto i, auto& house, auto& curHouseStat) {
-        const auto textcolor     = SDL2RGB(dune::globals::palette[houseToPaletteIndex[i] + 3]);
-        const auto progresscolor = SDL2RGB(dune::globals::palette[houseToPaletteIndex[i] + 1]);
+        const auto palette_index = dune::globals::houseToPaletteIndex[i];
+        const auto textcolor     = SDL2RGB(dune::globals::palette[palette_index + 3]);
+        const auto progresscolor = SDL2RGB(dune::globals::palette[palette_index + 1]);
 
         curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)));
         curHouseStat.houseName.setTextColor(textcolor);

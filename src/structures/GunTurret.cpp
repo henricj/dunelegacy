@@ -40,16 +40,16 @@ GunTurret::GunTurret(uint32_t objectID, const ObjectStreamInitializer& initializ
 }
 
 void GunTurret::init() {
-    assert(itemID == Structure_GunTurret);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_GunTurret);
+    owner_->incrementStructures(itemID_);
 
     attackSound = Sound_enum::Sound_ExplosionSmall;
 
-    graphicID    = ObjPic_GunTurret;
-    graphic      = dune::globals::pGFXManager->getObjPic(ObjPic_GunTurret, getOwner()->getHouseID());
-    numImagesX   = 10;
-    numImagesY   = 1;
-    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle)) % 8) + 2;
+    graphicID_   = ObjPic_GunTurret;
+    graphic_     = dune::globals::pGFXManager->getObjPic(ObjPic_GunTurret, getOwner()->getHouseID());
+    numImagesX_  = 10;
+    numImagesY_  = 1;
+    curAnimFrame = firstAnimFrame = lastAnimFrame = ((10 - static_cast<int>(drawnAngle_)) % 8) + 2;
 }
 
 GunTurret::~GunTurret() = default;

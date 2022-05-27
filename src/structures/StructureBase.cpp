@@ -75,7 +75,7 @@ void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer
     try {
         context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
         dune::globals::structureList.remove(this);
-        owner->decrementStructures(itemID, location);
+        owner_->decrementStructures(itemID_, location_);
     } catch (std::exception& e) {
         sdl2::log_info("StructureBase::cleanup(): %s", e.what());
     }
@@ -112,7 +112,7 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
             && (game.gameState != GameState::Start)) {
             bFoundNonConcreteTile = true;
 
-            if ((itemID != Structure_Wall) && (itemID != Structure_ConstructionYard)) {
+            if ((itemID_ != Structure_Wall) && (itemID_ != Structure_ConstructionYard)) {
                 setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * getStructureSizeX() * getStructureSizeY()));
             }
         }
@@ -137,14 +137,14 @@ void StructureBase::blitToScreen() {
     const auto zoom                = dune::globals::currentZoomlevel;
 
     const auto index  = fogged ? lastVisibleFrame : curAnimFrame;
-    const auto indexX = index % numImagesX;
-    const auto indexY = index / numImagesX;
+    const auto indexX = index % numImagesX_;
+    const auto indexY = index / numImagesX_;
 
-    const auto* const texture = graphic[zoom];
+    const auto* const texture = graphic_[zoom];
 
-    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(realX),
-                                              screenborder->world2screenY(realY.toFloat()), numImagesX, numImagesY);
-    const auto source = calcSpriteSourceRect(texture, indexX, numImagesX, indexY, numImagesY);
+    const auto dest   = calcSpriteDrawingRect(texture, screenborder->world2screenX(realX_),
+                                              screenborder->world2screenY(realY_.toFloat()), numImagesX_, numImagesY_);
+    const auto source = calcSpriteSourceRect(texture, indexX, numImagesX_, indexY, numImagesY_);
 
     Dune_RenderCopyF(renderer, texture, &source, &dest);
 
@@ -170,10 +170,10 @@ void StructureBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> StructureBase::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return DefaultStructureInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return DefaultStructureInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void StructureBase::drawSelectionBox() {
@@ -181,13 +181,13 @@ void StructureBase::drawSelectionBox() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    auto* const texture = graphic[zoom];
+    auto* const texture = graphic_[zoom];
 
     SDL_FRect dest{};
-    dest.x = screenborder->world2screenX(realX);
-    dest.y = screenborder->world2screenY(realY);
-    dest.w = getWidth(texture) / static_cast<float>(numImagesX);
-    dest.h = getHeight(texture) / static_cast<float>(numImagesY);
+    dest.x = screenborder->world2screenX(realX_);
+    dest.y = screenborder->world2screenY(realY_);
+    dest.w = getWidth(texture) / static_cast<float>(numImagesX_);
+    dest.h = getHeight(texture) / static_cast<float>(numImagesY_);
 
     // now draw the selection box thing, with parts at all corners of structure
     DuneDrawSelectionBox(renderer, dest);
@@ -206,24 +206,24 @@ void StructureBase::drawOtherPlayerSelectionBox() {
     const auto zoom                = dune::globals::currentZoomlevel;
 
     SDL_FRect dest{};
-    dest.x = screenborder->world2screenX(realX) + static_cast<float>(zoom + 1);
-    dest.y = screenborder->world2screenY(realY) + static_cast<float>(zoom + 1);
-    dest.w = getWidth(graphic[zoom]) / static_cast<float>(numImagesX) - static_cast<float>(2 * (zoom + 1));
-    dest.h = getHeight(graphic[zoom]) / static_cast<float>(numImagesY) - static_cast<float>(2 * (zoom + 1));
+    dest.x = screenborder->world2screenX(realX_) + static_cast<float>(zoom + 1);
+    dest.y = screenborder->world2screenY(realY_) + static_cast<float>(zoom + 1);
+    dest.w = getWidth(graphic_[zoom]) / static_cast<float>(numImagesX_) - static_cast<float>(2 * (zoom + 1));
+    dest.h = getHeight(graphic_[zoom]) / static_cast<float>(numImagesY_) - static_cast<float>(2 * (zoom + 1));
 
     // now draw the selection box thing, with parts at all corners of structure
     DuneDrawSelectionBox(renderer, dest, COLOR_LIGHTBLUE);
 }
 
 void StructureBase::drawGatheringPointLine() {
-    if (!isABuilder() || getItemID() == Structure_ConstructionYard || !destination.isValid()
+    if (!isABuilder() || getItemID() == Structure_ConstructionYard || !destination_.isValid()
         || getOwner() != dune::globals::pLocalHouse)
         return;
 
     const auto* const screenborder = dune::globals::screenborder.get();
     auto* const renderer           = dune::globals::renderer.get();
 
-    const auto indicatorPosition = destination * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
+    const auto indicatorPosition = destination_ * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
     const auto structurePosition = getCenterPoint();
 
     renderDrawLineF(renderer, screenborder->world2screenX(structurePosition.x),
@@ -246,7 +246,7 @@ void StructureBase::drawGatheringPointLine() {
     \return the center point in world coordinates
 */
 Coord StructureBase::getCenterPoint() const {
-    return {lround(realX + getStructureSizeX() * TILESIZE / 2), lround(realY + getStructureSizeY() * TILESIZE / 2)};
+    return {lround(realX_ + getStructureSizeX() * TILESIZE / 2), lround(realY_ + getStructureSizeY() * TILESIZE / 2)};
 }
 
 Coord StructureBase::getClosestCenterPoint(const Coord& objectLocation) const {
@@ -257,21 +257,21 @@ void StructureBase::handleActionClick(const GameContext& context, int xPos, int 
     auto* const game               = dune::globals::currentGame.get();
     const auto* const local_player = dune::globals::pLocalPlayer;
 
-    if ((xPos < location.x) || (xPos >= (location.x + getStructureSizeX())) || (yPos < location.y)
-        || (yPos >= (location.y + getStructureSizeY()))) {
+    if ((xPos < location_.x) || (xPos >= (location_.x + getStructureSizeX())) || (yPos < location_.y)
+        || (yPos >= (location_.y + getStructureSizeY()))) {
         game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
-                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID_,
                                                      static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     } else {
         game->getCommandManager().addCommand(Command(local_player->getPlayerID(),
-                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID,
+                                                     CMDTYPE::CMD_STRUCTURE_SETDEPLOYPOSITION, objectID_,
                                                      static_cast<uint32_t>(NONE_ID), static_cast<uint32_t>(NONE_ID)));
     }
 }
 
 void StructureBase::handleRepairClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_REPAIR, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_STRUCTURE_REPAIR, objectID_));
 }
 
 void StructureBase::doSetDeployPosition(int xPos, int yPos) {
@@ -286,8 +286,8 @@ void StructureBase::doRepair(const GameContext& context) {
 
 void StructureBase::setDestination(int newX, int newY) {
     if (dune::globals::currentGameMap->tileExists(newX, newY) || ((newX == INVALID_POS) && (newY == INVALID_POS))) {
-        destination.x = newX;
-        destination.y = newY;
+        destination_.x = newX;
+        destination_.y = newY;
     }
 }
 
@@ -299,7 +299,7 @@ void StructureBase::setJustPlaced() {
 
 bool StructureBase::update(const GameContext& context) {
     if (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0) {
-        context.map.viewMap(owner->getHouseID(), location, getViewRange());
+        context.map.viewMap(owner_->getHouseID(), location_, getViewRange());
     }
 
     if (!fogged) {
@@ -308,18 +308,18 @@ bool StructureBase::update(const GameContext& context) {
 
     // degrade
     if ((degradeTimer >= 0) && context.game.getGameInitSettings().getGameOptions().concreteRequired
-        && (owner->getPowerRequirement() > owner->getProducedPower())) {
+        && (owner_->getPowerRequirement() > owner_->getProducedPower())) {
         degradeTimer--;
         if (degradeTimer <= 0) {
             degradeTimer = MILLI2CYCLES(15 * 1000);
 
             int damageMultiplier = 1;
-            if (owner->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN
-                || owner->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
+            if (owner_->getHouseID() == HOUSETYPE::HOUSE_HARKONNEN
+                || owner_->getHouseID() == HOUSETYPE::HOUSE_SARDAUKAR) {
                 damageMultiplier = 3;
-            } else if (owner->getHouseID() == HOUSETYPE::HOUSE_ORDOS) {
+            } else if (owner_->getHouseID() == HOUSETYPE::HOUSE_ORDOS) {
                 damageMultiplier = 2;
-            } else if (owner->getHouseID() == HOUSETYPE::HOUSE_MERCENARY) {
+            } else if (owner_->getHouseID() == HOUSETYPE::HOUSE_MERCENARY) {
                 damageMultiplier = 5;
             }
 
@@ -337,18 +337,18 @@ bool StructureBase::update(const GameContext& context) {
     }
 
     if (repairing) {
-        if (owner->getCredits() >= 5) {
+        if (owner_->getCredits() >= 5) {
             // Original dune 2 is doing the repair calculation with fix-point math (multiply everything with 256).
             // It is calculating what fraction 2 hitpoints of the maximum health would be.
             const auto fraction     = (2 * 256) / getMaxHealth();
-            const auto object_price = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].price;
+            const auto object_price = context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].price;
 
             const auto repairprice = FixPoint(fraction * object_price) / 256;
 
             // Original dune is always repairing 5 hitpoints (for the costs of 2) but we are only repairing 1/30th of
             // that
             const auto repairHealth = 5_fix / 30_fix;
-            owner->takeCredits(repairprice / 30);
+            owner_->takeCredits(repairprice / 30);
             const auto newHealth = getHealth() + repairHealth;
             if (newHealth >= getMaxHealth()) {
                 setHealth(getMaxHealth());
@@ -359,7 +359,7 @@ bool StructureBase::update(const GameContext& context) {
         } else {
             repairing = false;
         }
-    } else if (owner->isAI() && (getHealth() < getMaxHealth() / 2)) {
+    } else if (owner_->isAI() && (getHealth() < getMaxHealth() / 2)) {
         doRepair(context);
     }
 
@@ -404,7 +404,7 @@ void StructureBase::destroy(const GameContext& context) {
         Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,
         Destroyed3x3Structure_BottomLeft, Destroyed3x3Structure_BottomCenter, Destroyed3x3Structure_BottomRight};
 
-    if (itemID == Structure_Wall) {
+    if (itemID_ == Structure_Wall) {
         pDestroyedStructureTiles     = DestroyedStructureTilesWall;
         DestroyedStructureTilesSizeY = 1;
     } else {
@@ -439,20 +439,21 @@ void StructureBase::destroy(const GameContext& context) {
 
     auto& [game, map, objectManager] = context;
 
-    if (itemID != Structure_Wall) {
+    if (itemID_ != Structure_Wall) {
         for (int j = 0; j < getStructureSizeY(); j++) {
             for (int i = 0; i < getStructureSizeX(); i++) {
-                auto* const pTile = map.getTile(location.x + i, location.y + j);
+                auto* const pTile = map.getTile(location_.x + i, location_.y + j);
                 pTile->setDestroyedStructureTile(pDestroyedStructureTiles[DestroyedStructureTilesSizeY * j + i]);
 
-                Coord position((location.x + i) * TILESIZE + TILESIZE / 2, (location.y + j) * TILESIZE + TILESIZE / 2);
+                Coord position((location_.x + i) * TILESIZE + TILESIZE / 2,
+                               (location_.y + j) * TILESIZE + TILESIZE / 2);
                 uint32_t explosionID = game.randomGen.getRandOf(Explosion_Large1, Explosion_Large2);
-                game.addExplosion(explosionID, position, owner->getHouseID());
+                game.addExplosion(explosionID, position, owner_->getHouseID());
 
                 if (game.randomGen.rand(1, 100) <= getInfSpawnProp()) {
-                    auto* pNewUnit = owner->createUnit(Unit_Soldier);
+                    auto* pNewUnit = owner_->createUnit(Unit_Soldier);
                     pNewUnit->setHealth(pNewUnit->getMaxHealth() / 2);
-                    pNewUnit->deploy(context, location + Coord(i, j));
+                    pNewUnit->deploy(context, location_ + Coord(i, j));
                 }
             }
         }
@@ -461,30 +462,30 @@ void StructureBase::destroy(const GameContext& context) {
     objectManager.removeObject(getObjectID());
 
     if (isVisible(dune::globals::pLocalHouse->getTeamID()))
-        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location);
+        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionStructure, location_);
 }
 
 Coord StructureBase::getClosestPoint(const Coord& objectLocation) const {
     Coord closestPoint;
 
     // find the closest tile of a structure from a location
-    if (objectLocation.x <= location.x) {
+    if (objectLocation.x <= location_.x) {
         // if we are left of the structure
         // set destination, left most point
-        closestPoint.x = location.x;
-    } else if (objectLocation.x >= (location.x + getStructureSizeX() - 1)) {
+        closestPoint.x = location_.x;
+    } else if (objectLocation.x >= (location_.x + getStructureSizeX() - 1)) {
         // vica versa
-        closestPoint.x = location.x + getStructureSizeX() - 1;
+        closestPoint.x = location_.x + getStructureSizeX() - 1;
     } else {
         // we are above or below at least one tile of the structure, closest path is straight
         closestPoint.x = objectLocation.x;
     }
 
     // same deal but with y
-    if (objectLocation.y <= location.y) {
-        closestPoint.y = location.y;
-    } else if (objectLocation.y >= (location.y + getStructureSizeY() - 1)) {
-        closestPoint.y = location.y + getStructureSizeY() - 1;
+    if (objectLocation.y <= location_.y) {
+        closestPoint.y = location_.y;
+    } else if (objectLocation.y >= (location_.y + getStructureSizeY() - 1)) {
+        closestPoint.y = location_.y + getStructureSizeY() - 1;
     } else {
         closestPoint.y = objectLocation.y;
     }

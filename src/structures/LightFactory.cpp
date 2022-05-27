@@ -40,13 +40,13 @@ LightFactory::LightFactory(uint32_t objectID, const ObjectStreamInitializer& ini
 }
 
 void LightFactory::init() {
-    assert(itemID == Structure_LightFactory);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_LightFactory);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_LightFactory;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 6;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_LightFactory;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 6;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }

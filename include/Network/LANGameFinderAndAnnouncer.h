@@ -57,20 +57,20 @@ public:
 
     void refreshServerList() const;
 
-    [[nodiscard]] const std::list<GameServerInfo>& getServerInfoList() const { return gameServerInfoList; }
+    [[nodiscard]] const std::list<GameServerInfo>& getServerInfoList() const { return gameServerInfoList_; }
 
     /**
         Sets the function that should be called when a new server is found
         \param  pOnNewServer    Function to call on new server found
     */
-    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer = pOnNewServer; }
+    void setOnNewServer(std::function<void(GameServerInfo)> pOnNewServer) { this->pOnNewServer_ = pOnNewServer; }
 
     /**
         Sets the function that should be called when a server is updated
         \param  pOnUpdateServer Function to call on server update
     */
     void setOnUpdateServer(std::function<void(GameServerInfo)> pOnUpdateServer) {
-        this->pOnUpdateServer = pOnUpdateServer;
+        this->pOnUpdateServer_ = pOnUpdateServer;
     }
 
     /**
@@ -78,7 +78,7 @@ public:
         \param  pOnRemoveServer function to call on server remove
     */
     void setOnRemoveServer(std::function<void(GameServerInfo)> pOnRemoveServer) {
-        this->pOnRemoveServer = pOnRemoveServer;
+        this->pOnRemoveServer_ = pOnRemoveServer;
     }
 
 private:
@@ -86,20 +86,20 @@ private:
     void updateServerInfoList();
     void sendRemoveGameAnnouncement();
 
-    std::string serverName;
-    int serverPort = 0;
-    std::string mapName;
-    uint8_t numPlayers = 0;
-    uint8_t maxPlayers = 0;
+    std::string serverName_;
+    int serverPort_ = 0;
+    std::string mapName_;
+    uint8_t numPlayers_ = 0;
+    uint8_t maxPlayers_ = 0;
 
-    dune::dune_clock::time_point lastAnnounce{};
-    ENetSocket announceSocket;
+    dune::dune_clock::time_point lastAnnounce_{};
+    ENetSocket announceSocket_;
 
-    std::list<GameServerInfo> gameServerInfoList;
+    std::list<GameServerInfo> gameServerInfoList_;
 
-    std::function<void(GameServerInfo)> pOnNewServer;
-    std::function<void(GameServerInfo)> pOnUpdateServer;
-    std::function<void(GameServerInfo)> pOnRemoveServer;
+    std::function<void(GameServerInfo)> pOnNewServer_;
+    std::function<void(GameServerInfo)> pOnUpdateServer_;
+    std::function<void(GameServerInfo)> pOnRemoveServer_;
 };
 
 #endif // LANGAMEFINDERANDANNOUNCER_H

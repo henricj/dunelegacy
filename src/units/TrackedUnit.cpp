@@ -44,8 +44,8 @@ void TrackedUnit::save(OutputStream& stream) const {
 void TrackedUnit::checkPos(const GameContext& context) {
     GroundUnit::checkPos(context);
 
-    if (active && justStoppedMoving) {
-        const auto* const tile = context.map.tryGetTile(location.x, location.y);
+    if (active_ && justStoppedMoving) {
+        const auto* const tile = context.map.tryGetTile(location_.x, location_.y);
 
         if (tile)
             tile->squash(context);
@@ -62,12 +62,12 @@ bool TrackedUnit::canPassTile(const Tile* pTile) const {
     if (!ground_object_result.first)
         return true;
 
-    if (ground_object_result.second == target.getObjectID()) {
+    if (ground_object_result.second == target_.getObjectID()) {
         const auto* const pObject =
             dune::globals::currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if ((pObject != nullptr) && targetFriendly && pObject->isAStructure()
-            && (pObject->getOwner()->getTeamID() == owner->getTeamID())
+        if ((pObject != nullptr) && targetFriendly_ && pObject->isAStructure()
+            && (pObject->getOwner()->getTeamID() == owner_->getTeamID())
             && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
             if (goingToRepairYard && (pObject->getItemID() == Structure_RepairYard)) {

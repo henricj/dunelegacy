@@ -48,8 +48,8 @@ public:
         \param  pOnGameServerInfoList   Function to call on an update to the server list
     */
     void setOnGameServerInfoList(std::function<void(std::list<GameServerInfo>&)> pOnGameServerInfoList) {
-        this->pOnGameServerInfoList = pOnGameServerInfoList;
-        lastServerInfoListUpdate    = dune::dune_clock::time_point{};
+        this->pOnGameServerInfoList_ = pOnGameServerInfoList;
+        lastServerInfoListUpdate_    = dune::dune_clock::time_point{};
     }
 
     /**
@@ -57,7 +57,7 @@ public:
         \param  pOnMetaServerError  Function to call on metaserver error
     */
     void setOnMetaServerError(std::function<void(int, const std::string&)> pOnMetaServerError) {
-        this->pOnMetaServerError = pOnMetaServerError;
+        this->pOnMetaServerError_ = pOnMetaServerError;
     }
 
     void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
@@ -108,42 +108,42 @@ private:
     // Shared data (used by main thread and connection thread):
 
     std::list<std::unique_ptr<MetaServerCommand>>
-        metaServerCommandList; ///< The command queue for the metaserver connection thread (shared between main thread
-                               ///< and metaserver connection thread, \see sharedDataMutex)
-    SDL_sem* availableMetaServerCommandsSemaphore; ///< This semaphore counts how many commands are available in the
-                                                   ///< metaServerCommandList
+        metaServerCommandList_; ///< The command queue for the metaserver connection thread (shared between main thread
+                                ///< and metaserver connection thread, \see sharedDataMutex)
+    SDL_sem* availableMetaServerCommandsSemaphore_; ///< This semaphore counts how many commands are available in the
+                                                    ///< metaServerCommandList
 
-    int metaserverErrorCause = 0; ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
-    std::string metaserverError;  ///< Set to some string in case a metaserver error occurs (only one error can be
-                                  ///< pending at once)
-    bool bUpdatedGameServerInfoList =
+    int metaserverErrorCause_ = 0; ///< Set to 0 in case of no error, else the id of the command sent to the metaserver
+    std::string metaserverError_;  ///< Set to some string in case a metaserver error occurs (only one error can be
+                                   ///< pending at once)
+    bool bUpdatedGameServerInfoList_ =
         false; ///< Was the gameServerInfoList updated? Set to true by the metaserver connection thread and reset to
                ///< false in the main thread (\see sharedDataMutex)
     std::list<GameServerInfo>
-        gameServerInfoList; ///< A list of all available game servers. Written by the metaserver connection thread and
-                            ///< read by the main thread (\see sharedDataMutex)
+        gameServerInfoList_; ///< A list of all available game servers. Written by the metaserver connection thread and
+                             ///< read by the main thread (\see sharedDataMutex)
 
-    SDL_mutex* sharedDataMutex; ///< This mutex must be locked before any shared data structures between the main thread
-                                ///< and the metaserver connection thread is read or modified)
+    SDL_mutex* sharedDataMutex_; ///< This mutex must be locked before any shared data structures between the main
+                                 ///< thread and the metaserver connection thread is read or modified)
 
-    SDL_Thread* connectionThread; ///< The metaserver connection thread that processes all the metaserver communication
+    SDL_Thread* connectionThread_; ///< The metaserver connection thread that processes all the metaserver communication
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName; ///< The name of the game server
-    int serverPort = 0;     ///< The port of the game server
-    std::string secret;     ///< The secret used for the metaserver updates
-    std::string mapName;    ///< The name of the map for which a game is currently set up
-    uint8_t numPlayers = 0; ///< The current number of players in the currently set up game
-    uint8_t maxPlayers = 0; ///< The maximum number of players in the currently set up game
+    std::string serverName_; ///< The name of the game server
+    int serverPort_ = 0;     ///< The port of the game server
+    std::string secret_;     ///< The secret used for the metaserver updates
+    std::string mapName_;    ///< The name of the map for which a game is currently set up
+    uint8_t numPlayers_ = 0; ///< The current number of players in the currently set up game
+    uint8_t maxPlayers_ = 0; ///< The maximum number of players in the currently set up game
 
     dune::dune_clock::time_point lastAnnounceUpdate{}; ///< The last time the game was announced
     dune::dune_clock::time_point
-        lastServerInfoListUpdate{}; ///< The last time the server list was updated by a request to the metaserver
+        lastServerInfoListUpdate_{}; ///< The last time the server list was updated by a request to the metaserver
 
     std::function<void(std::list<GameServerInfo>&)>
-        pOnGameServerInfoList;                                ///< Callback for updates to the game server list
-    std::function<void(int, std::string)> pOnMetaServerError; ///< Callback for metaserver errors
+        pOnGameServerInfoList_;                                ///< Callback for updates to the game server list
+    std::function<void(int, std::string)> pOnMetaServerError_; ///< Callback for metaserver errors
 };
 
 #endif // METASERVERCLIENT_H

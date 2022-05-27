@@ -38,20 +38,20 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
     address.host = ENET_HOST_ANY;
     address.port = port;
 
-    host = enet_host_create(&address, 32, 2, 0, 0);
-    if (host == nullptr) {
+    host_ = enet_host_create(&address, 32, 2, 0, 0);
+    if (host_ == nullptr) {
         enet_deinitialize();
         THROW(std::runtime_error, "NetworkManager: An error occurred while trying to create a server host.");
     }
 
-    if (enet_host_compress_with_range_coder(host) < 0) {
+    if (enet_host_compress_with_range_coder(host_) < 0) {
         enet_deinitialize();
         THROW(std::runtime_error, "NetworkManager: Cannot activate range coder.");
     }
 
     try {
-        pLANGameFinderAndAnnouncer = std::make_unique<LANGameFinderAndAnnouncer>();
-        pMetaServerClient          = std::make_unique<MetaServerClient>(metaserver);
+        pLANGameFinderAndAnnouncer_ = std::make_unique<LANGameFinderAndAnnouncer>();
+        pMetaServerClient_          = std::make_unique<MetaServerClient>(metaserver);
     } catch (...) {
         enet_deinitialize();
         throw;
@@ -59,9 +59,9 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
 }
 
 NetworkManager::~NetworkManager() {
-    pMetaServerClient.reset();
-    pLANGameFinderAndAnnouncer.reset();
-    enet_host_destroy(host);
+    pMetaServerClient_.reset();
+    pLANGameFinderAndAnnouncer_.reset();
+    enet_host_destroy(host_);
     enet_deinitialize();
 }
 
@@ -70,51 +70,52 @@ void NetworkManager::startServer(bool bLANServer, const std::string& serverName,
     const std::string map_name{reinterpret_cast<const char*>(pGameInitSettings->getFilename().u8string().c_str())};
 
     if (bLANServer) {
-        if (pLANGameFinderAndAnnouncer != nullptr) {
-            pLANGameFinderAndAnnouncer->startAnnounce(serverName, host->address.port, map_name, numPlayers, maxPlayers);
+        if (pLANGameFinderAndAnnouncer_ != nullptr) {
+            pLANGameFinderAndAnnouncer_->startAnnounce(serverName, host_->address.port, map_name, numPlayers,
+                                                       maxPlayers);
         }
     } else {
-        if (pMetaServerClient != nullptr) {
-            pMetaServerClient->startAnnounce(serverName, host->address.port, map_name, numPlayers, maxPlayers);
+        if (pMetaServerClient_ != nullptr) {
+            pMetaServerClient_->startAnnounce(serverName, host_->address.port, map_name, numPlayers, maxPlayers);
         }
     }
 
-    bIsServer               = true;
-    this->bLANServer        = bLANServer;
-    this->numPlayers        = numPlayers;
-    this->maxPlayers        = maxPlayers;
-    this->playerName        = playerName;
-    this->pGameInitSettings = pGameInitSettings;
+    bIsServer_               = true;
+    this->bLANServer_        = bLANServer;
+    this->numPlayers_        = numPlayers;
+    this->maxPlayers_        = maxPlayers;
+    this->playerName_        = playerName;
+    this->pGameInitSettings_ = pGameInitSettings;
 }
 
 void NetworkManager::updateServer(int numPlayers) {
-    if (bLANServer) {
-        if (pLANGameFinderAndAnnouncer != nullptr) {
-            pLANGameFinderAndAnnouncer->updateAnnounce(numPlayers);
+    if (bLANServer_) {
+        if (pLANGameFinderAndAnnouncer_ != nullptr) {
+            pLANGameFinderAndAnnouncer_->updateAnnounce(numPlayers);
         }
     } else {
-        if (pMetaServerClient != nullptr) {
-            pMetaServerClient->updateAnnounce(numPlayers);
+        if (pMetaServerClient_ != nullptr) {
+            pMetaServerClient_->updateAnnounce(numPlayers);
         }
     }
 
-    this->numPlayers = numPlayers;
+    this->numPlayers_ = numPlayers;
 }
 
 void NetworkManager::stopServer() {
-    if (bLANServer) {
-        if (pLANGameFinderAndAnnouncer != nullptr) {
-            pLANGameFinderAndAnnouncer->stopAnnounce();
+    if (bLANServer_) {
+        if (pLANGameFinderAndAnnouncer_ != nullptr) {
+            pLANGameFinderAndAnnouncer_->stopAnnounce();
         }
     } else {
-        if (pMetaServerClient != nullptr) {
-            pMetaServerClient->stopAnnounce();
+        if (pMetaServerClient_ != nullptr) {
+            pMetaServerClient_->stopAnnounce();
         }
     }
 
-    bIsServer         = false;
-    bLANServer        = false;
-    pGameInitSettings = nullptr;
+    bIsServer_         = false;
+    bLANServer_        = false;
+    pGameInitSettings_ = nullptr;
 }
 
 void NetworkManager::connect(const std::string& hostname, int port, const std::string& playerName) {
@@ -131,68 +132,69 @@ void NetworkManager::connect(const std::string& hostname, int port, const std::s
 void NetworkManager::connect(ENetAddress address, const std::string& playerName) {
     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
-    connectPeer = enet_host_connect(host, &address, 2, 0);
-    if (connectPeer == nullptr) {
+    connectPeer_ = enet_host_connect(host_, &address, 2, 0);
+    if (connectPeer_ == nullptr) {
         THROW(std::runtime_error, "NetworkManager: No available peers for initiating a connection.");
     }
 
-    this->playerName = playerName;
+    this->playerName_ = playerName;
 
-    connectPeer->data = new PeerData(connectPeer, PeerData::PeerState::WaitingForConnect);
-    awaitingConnectionList.push_back(connectPeer);
+    connectPeer_->data = new PeerData(connectPeer_, PeerData::PeerState::WaitingForConnect);
+    awaitingConnectionList_.push_back(connectPeer_);
 }
 
 void NetworkManager::disconnect() {
-    for (ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+    for (ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList_) {
         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
     }
-    for (ENetPeer* pCurrentPeer : peerList) {
+    for (ENetPeer* pCurrentPeer : peerList_) {
         enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
     }
 }
 
 void NetworkManager::update() {
-    if (pLANGameFinderAndAnnouncer != nullptr) {
-        pLANGameFinderAndAnnouncer->update();
+    if (pLANGameFinderAndAnnouncer_ != nullptr) {
+        pLANGameFinderAndAnnouncer_->update();
     }
 
-    if (pMetaServerClient != nullptr) {
-        pMetaServerClient->update();
+    if (pMetaServerClient_ != nullptr) {
+        pMetaServerClient_->update();
     }
 
-    if (bIsServer) {
+    if (bIsServer_) {
         // Check for timeout of one client
-        if (!awaitingConnectionList.empty()) {
-            ENetPeer* pCurrentPeer = awaitingConnectionList.front();
+        if (!awaitingConnectionList_.empty()) {
+            ENetPeer* pCurrentPeer = awaitingConnectionList_.front();
             auto* peerData         = static_cast<PeerData*>(pCurrentPeer->data);
 
-            if (peerData->peerState == PeerData::PeerState::ReadyForOtherPeersToConnect) {
-                if (numPlayers >= maxPlayers) {
+            if (peerData->peerState_ == PeerData::PeerState::ReadyForOtherPeersToConnect) {
+                if (numPlayers_ >= maxPlayers_) {
                     enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_GAME_FULL);
                 } else {
                     // only one peer should be in state 'PeerState::WaitingForOtherPeersToConnect'
-                    peerData->peerState            = PeerData::PeerState::WaitingForOtherPeersToConnect;
-                    peerData->timeout              = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
-                    peerData->notYetConnectedPeers = peerList;
+                    peerData->peerState_            = PeerData::PeerState::WaitingForOtherPeersToConnect;
+                    peerData->timeout_              = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
+                    peerData->notYetConnectedPeers_ = peerList_;
 
-                    if (peerData->notYetConnectedPeers.empty()) {
+                    if (peerData->notYetConnectedPeers_.empty()) {
                         // first client on this server
                         // => change immediately to connected
 
                         // get change event list first
-                        const ChangeEventList changeEventList = pGetChangeEventListForNewPlayerCallback(peerData->name);
+                        const ChangeEventList changeEventList =
+                            pGetChangeEventListForNewPlayerCallback_(peerData->name_);
 
                         debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
-                                     peerData->name.c_str());
-                        peerList.push_back(pCurrentPeer);
-                        peerData->peerState = PeerData::PeerState::Connected;
-                        peerData->timeout   = dune::dune_clock::time_point{};
-                        awaitingConnectionList.remove(pCurrentPeer);
+                                     peerData->name_.c_str());
+                        peerList_.push_back(pCurrentPeer);
+                        peerData->peerState_ = PeerData::PeerState::Connected;
+                        peerData->timeout_   = dune::dune_clock::time_point{};
+                        awaitingConnectionList_.remove(pCurrentPeer);
 
                         // send peer game settings
                         ENetPacketOStream packetOStream2(ENET_PACKET_FLAG_RELIABLE);
                         packetOStream2.writeUint32(NETWORKPACKET_SENDGAMEINFO);
-                        pGameInitSettings->save(packetOStream2);
+                        pGameInitSettings_->save(packetOStream2);
 
                         changeEventList.save(packetOStream2);
 
@@ -204,16 +206,16 @@ void NetworkManager::update() {
                         packetOStream.writeUint32(NETWORKPACKET_CONNECT);
                         packetOStream.writeUint32(SDL_SwapBE32(pCurrentPeer->address.host));
                         packetOStream.writeUint16(pCurrentPeer->address.port);
-                        packetOStream.writeString(peerData->name);
+                        packetOStream.writeString(peerData->name_);
 
                         sendPacketToAllConnectedPeers(packetOStream);
                     }
                 }
             }
 
-            if (peerData->timeout != dune::dune_clock::time_point{} && dune::dune_clock::now() > peerData->timeout) {
+            if (peerData->timeout_ != dune::dune_clock::time_point{} && dune::dune_clock::now() > peerData->timeout_) {
                 // timeout
-                switch (peerData->peerState) {
+                switch (peerData->peerState_) {
                     case PeerData::PeerState::WaitingForName: {
                         // nothing to do
                     } break;
@@ -229,7 +231,7 @@ void NetworkManager::update() {
 
                         enet_peer_disconnect(pCurrentPeer, NETWORKDISCONNECT_TIMEOUT);
 
-                        awaitingConnectionList.pop_front();
+                        awaitingConnectionList_.pop_front();
                     } break;
 
                     case PeerData::PeerState::Connected:
@@ -242,56 +244,56 @@ void NetworkManager::update() {
     }
 
     ENetEvent event;
-    while (enet_host_service(host, &event, 0) > 0) {
+    while (enet_host_service(host_, &event, 0) > 0) {
 
         ENetPeer* peer = event.peer;
 
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT: {
-                if (bIsServer) {
+                if (bIsServer_) {
                     // Server
                     debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
                                  peer->address.port);
 
-                    auto newPeerData     = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
-                    newPeerData->timeout = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
+                    auto newPeerData      = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
+                    newPeerData->timeout_ = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
 
-                    debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name.c_str());
-                    awaitingConnectionList.push_back(peer);
+                    debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name_.c_str());
+                    awaitingConnectionList_.push_back(peer);
 
                     // Send name
                     ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                     packetStream.writeUint32(NETWORKPACKET_SENDNAME);
-                    packetStream.writeString(playerName);
+                    packetStream.writeString(playerName_);
 
                     peer->data = newPeerData.release();
                     sendPacketToPeer(peer, packetStream);
-                } else if (connectPeer != nullptr) {
+                } else if (connectPeer_ != nullptr) {
                     // Client
                     auto* peerData = static_cast<PeerData*>(peer->data);
 
-                    if (peer == connectPeer) {
+                    if (peer == connectPeer_) {
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                         packetStream.writeUint32(NETWORKPACKET_SENDNAME);
-                        packetStream.writeString(playerName);
+                        packetStream.writeString(playerName_);
 
                         sendPacketToHost(packetStream);
 
-                        peerData->peerState = PeerData::PeerState::WaitingForOtherPeersToConnect;
-                        peerData->timeout   = dune::dune_clock::time_point{};
+                        peerData->peerState_ = PeerData::PeerState::WaitingForOtherPeersToConnect;
+                        peerData->timeout_   = dune::dune_clock::time_point{};
                     } else {
                         debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
                                      peer->address.port);
 
-                        const auto* pConnectPeerData = static_cast<PeerData*>(connectPeer->data);
+                        const auto* pConnectPeerData = static_cast<PeerData*>(connectPeer_->data);
 
-                        if (pConnectPeerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
+                        if (pConnectPeerData->peerState_ == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             if (peerData == nullptr) {
                                 peerData   = new PeerData(peer, PeerData::PeerState::Connected);
                                 peer->data = peerData;
 
-                                debugNetwork("Adding '%s' to awaiting connection list\n", peerData->name.c_str());
-                                awaitingConnectionList.push_back(peer);
+                                debugNetwork("Adding '%s' to awaiting connection list\n", peerData->name_.c_str());
+                                awaitingConnectionList_.push_back(peer);
                             }
                         } else {
                             ENetPacketOStream packetStream1(ENET_PACKET_FLAG_RELIABLE);
@@ -303,7 +305,7 @@ void NetworkManager::update() {
 
                             ENetPacketOStream packetStream2(ENET_PACKET_FLAG_RELIABLE);
                             packetStream2.writeUint32(NETWORKPACKET_SENDNAME);
-                            packetStream2.writeString(playerName);
+                            packetStream2.writeString(playerName_);
 
                             sendPacketToPeer(peer, packetStream2);
                         }
@@ -330,12 +332,12 @@ void NetworkManager::update() {
                 const int disconnectCause = event.data;
 
                 debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(),
-                             peer->address.port, (peerData != nullptr) ? peerData->name.c_str() : "unknown",
+                             peer->address.port, (peerData != nullptr) ? peerData->name_.c_str() : "unknown",
                              disconnectCause);
 
                 if (peerData != nullptr) {
-                    if (std::ranges::find(awaitingConnectionList, peer) != awaitingConnectionList.end()) {
-                        if (peerData->peerState == PeerData::PeerState::WaitingForOtherPeersToConnect) {
+                    if (std::ranges::find(awaitingConnectionList_, peer) != awaitingConnectionList_.end()) {
+                        if (peerData->peerState_ == PeerData::PeerState::WaitingForOtherPeersToConnect) {
                             ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                             packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
                             packetStream.writeUint32(SDL_SwapBE32(peer->address.host));
@@ -344,13 +346,13 @@ void NetworkManager::update() {
                             sendPacketToAllConnectedPeers(packetStream);
                         }
 
-                        debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name.c_str());
-                        awaitingConnectionList.remove(peer);
+                        debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name_.c_str());
+                        awaitingConnectionList_.remove(peer);
                     }
 
-                    if (std::ranges::find(peerList, peer) != peerList.end()) {
-                        debugNetwork("Removing '%s' from peer list\n", peerData->name.c_str());
-                        peerList.remove(peer);
+                    if (std::ranges::find(peerList_, peer) != peerList_.end()) {
+                        debugNetwork("Removing '%s' from peer list\n", peerData->name_.c_str());
+                        peerList_.remove(peer);
 
                         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
                         packetStream.writeUint32(NETWORKPACKET_DISCONNECT);
@@ -359,14 +361,14 @@ void NetworkManager::update() {
 
                         sendPacketToAllConnectedPeers(packetStream);
 
-                        if (pOnPeerDisconnected) {
-                            pOnPeerDisconnected(peerData->name, (peer == connectPeer), disconnectCause);
+                        if (pOnPeerDisconnected_) {
+                            pOnPeerDisconnected_(peerData->name_, (peer == connectPeer_), disconnectCause);
                         }
                     } else {
-                        if (peer == connectPeer) {
+                        if (peer == connectPeer_) {
                             // host disconnected while establishing connection
-                            if (pOnPeerDisconnected) {
-                                pOnPeerDisconnected(peerData->name, true, disconnectCause);
+                            if (pOnPeerDisconnected_) {
+                                pOnPeerDisconnected_(peerData->name_, true, disconnectCause);
                             }
                         }
                     }
@@ -376,8 +378,8 @@ void NetworkManager::update() {
                 peer->data = nullptr;
                 peerData.reset();
 
-                if (peer == connectPeer) {
-                    connectPeer = nullptr;
+                if (peer == connectPeer_) {
+                    connectPeer_ = nullptr;
                 }
 
             } break;
@@ -396,7 +398,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
         switch (packetType) {
             case NETWORKPACKET_CONNECT: {
 
-                if (!bIsServer) {
+                if (!bIsServer_) {
                     ENetAddress address;
 
                     address.host = SDL_SwapBE32(packetStream.readUint32());
@@ -404,16 +406,16 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                     debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
 
-                    auto* newPeer = enet_host_connect(host, &address, 2, 0);
+                    auto* newPeer = enet_host_connect(host_, &address, 2, 0);
                     if (newPeer == nullptr) {
                         debugNetwork("NetworkManager: No available peers for initiating a connection.");
                     } else {
-                        auto* peerData = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
-                        peerData->name = packetStream.readString();
+                        auto* peerData  = new PeerData(newPeer, PeerData::PeerState::WaitingForOtherPeersToConnect);
+                        peerData->name_ = packetStream.readString();
 
                         newPeer->data = peerData;
-                        debugNetwork("Adding '%s' to awaiting connection list\n", peerData->name.c_str());
-                        awaitingConnectionList.push_back(newPeer);
+                        debugNetwork("Adding '%s' to awaiting connection list\n", peerData->name_.c_str());
+                        awaitingConnectionList_.push_back(newPeer);
                     }
                 }
             } break;
@@ -424,14 +426,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 address.host = SDL_SwapBE32(packetStream.readUint32());
                 address.port = packetStream.readUint16();
 
-                for (auto* const pCurrentPeer : peerList) {
+                for (auto* const pCurrentPeer : peerList_) {
                     if ((pCurrentPeer->address.host == address.host) && (pCurrentPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
                         break;
                     }
                 }
 
-                for (auto* const pAwaitingConnectionPeer : awaitingConnectionList) {
+                for (auto* const pAwaitingConnectionPeer : awaitingConnectionList_) {
                     if ((pAwaitingConnectionPeer->address.host == address.host)
                         && (pAwaitingConnectionPeer->address.port == address.port)) {
                         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
@@ -450,8 +452,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                 if (isServer()) {
 
-                    if (!awaitingConnectionList.empty()) {
-                        ENetPeer* pCurrentPeer = awaitingConnectionList.front();
+                    if (!awaitingConnectionList_.empty()) {
+                        ENetPeer* pCurrentPeer = awaitingConnectionList_.front();
                         auto* peerData         = static_cast<PeerData*>(pCurrentPeer->data);
                         if (!peerData) {
                             break;
@@ -460,9 +462,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         if ((pCurrentPeer->address.host == address.host)
                             && (pCurrentPeer->address.port == address.port)) {
 
-                            peerData->notYetConnectedPeers.remove(peer);
+                            peerData->notYetConnectedPeers_.remove(peer);
 
-                            if (peerData->notYetConnectedPeers.empty()) {
+                            if (peerData->notYetConnectedPeers_.empty()) {
                                 // send connected to all peers (excluding the new one)
                                 ENetPacketOStream packetOStream(ENET_PACKET_FLAG_RELIABLE);
                                 packetOStream.writeUint32(NETWORKPACKET_PEER_CONNECTED);
@@ -473,20 +475,20 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                                 // get change event list first
                                 ChangeEventList changeEventList =
-                                    pGetChangeEventListForNewPlayerCallback(peerData->name);
+                                    pGetChangeEventListForNewPlayerCallback_(peerData->name_);
 
                                 // move peer to peer list
                                 debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
-                                             peerData->name.c_str());
-                                peerList.push_back(pCurrentPeer);
-                                peerData->peerState = PeerData::PeerState::Connected;
-                                peerData->timeout   = dune::dune_clock::time_point{};
-                                awaitingConnectionList.remove(pCurrentPeer);
+                                             peerData->name_.c_str());
+                                peerList_.push_back(pCurrentPeer);
+                                peerData->peerState_ = PeerData::PeerState::Connected;
+                                peerData->timeout_   = dune::dune_clock::time_point{};
+                                awaitingConnectionList_.remove(pCurrentPeer);
 
                                 // send peer game settings
                                 ENetPacketOStream packetOStream2(ENET_PACKET_FLAG_RELIABLE);
                                 packetOStream2.writeUint32(NETWORKPACKET_SENDGAMEINFO);
-                                pGameInitSettings->save(packetOStream2);
+                                pGameInitSettings_->save(packetOStream2);
 
                                 changeEventList.save(packetOStream2);
 
@@ -495,7 +497,7 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                         }
                     }
                 } else {
-                    for (auto iter = awaitingConnectionList.begin(); iter != awaitingConnectionList.end(); ++iter) {
+                    for (auto iter = awaitingConnectionList_.begin(); iter != awaitingConnectionList_.end(); ++iter) {
                         auto* const pCurrentPeer = *iter;
 
                         if ((pCurrentPeer->address.host == address.host)
@@ -505,11 +507,11 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                                 continue;
                             }
                             debugNetwork("Moving '%s' from awaiting connection list to peer list\n",
-                                         peerData->name.c_str());
-                            peerList.push_back(pCurrentPeer);
-                            peerData->peerState = PeerData::PeerState::Connected;
-                            peerData->timeout   = dune::dune_clock::time_point{};
-                            awaitingConnectionList.erase(iter);
+                                         peerData->name_.c_str());
+                            peerList_.push_back(pCurrentPeer);
+                            peerData->peerState_ = PeerData::PeerState::Connected;
+                            peerData->timeout_   = dune::dune_clock::time_point{};
+                            awaitingConnectionList_.erase(iter);
                             break;
                         }
                     }
@@ -518,25 +520,25 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             case NETWORKPACKET_SENDGAMEINFO: {
-                if (!connectPeer) {
+                if (!connectPeer_) {
                     break;
                 }
 
-                auto* peerData = static_cast<PeerData*>(connectPeer->data);
+                auto* peerData = static_cast<PeerData*>(connectPeer_->data);
                 if (!peerData) {
                     break;
                 }
 
-                peerList            = awaitingConnectionList;
-                peerData->peerState = PeerData::PeerState::Connected;
-                peerData->timeout   = dune::dune_clock::time_point{};
-                awaitingConnectionList.clear();
+                peerList_            = awaitingConnectionList_;
+                peerData->peerState_ = PeerData::PeerState::Connected;
+                peerData->timeout_   = dune::dune_clock::time_point{};
+                awaitingConnectionList_.clear();
 
                 const GameInitSettings gameInitSettings(packetStream);
                 const ChangeEventList changeEventList(packetStream);
 
-                if (pOnReceiveGameInfo) {
-                    pOnReceiveGameInfo(gameInitSettings, changeEventList);
+                if (pOnReceiveGameInfo_) {
+                    pOnReceiveGameInfo_(gameInitSettings, changeEventList);
                 }
             } break;
 
@@ -550,19 +552,19 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 auto bFoundName    = false;
 
                 // check if name already exists
-                if (bIsServer) {
-                    if (playerName == newName) {
+                if (bIsServer_) {
+                    if (playerName_ == newName) {
                         enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                         bFoundName = true;
                     }
 
                     if (!bFoundName) {
-                        for (ENetPeer* pCurrentPeer : peerList) {
+                        for (ENetPeer* pCurrentPeer : peerList_) {
                             auto* pCurrentPeerData = static_cast<PeerData*>(pCurrentPeer->data);
                             if (!pCurrentPeerData) {
                                 continue;
                             }
-                            if (pCurrentPeerData->name == newName) {
+                            if (pCurrentPeerData->name_ == newName) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
                                 break;
@@ -571,9 +573,9 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                     }
 
                     if (!bFoundName) {
-                        for (ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList) {
+                        for (ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList_) {
                             auto* pAwaitingConnectionPeerData = static_cast<PeerData*>(pAwaitingConnectionPeer->data);
-                            if (pAwaitingConnectionPeerData && (pAwaitingConnectionPeerData->name == newName)) {
+                            if (pAwaitingConnectionPeerData && (pAwaitingConnectionPeerData->name_ == newName)) {
                                 enet_peer_disconnect_later(peer, NETWORKDISCONNECT_PLAYER_EXISTS);
                                 bFoundName = true;
                                 break;
@@ -583,10 +585,10 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 }
 
                 if (!bFoundName) {
-                    peerData->name = newName;
+                    peerData->name_ = newName;
 
-                    if (peerData->peerState == PeerData::PeerState::WaitingForName) {
-                        peerData->peerState = PeerData::PeerState::ReadyForOtherPeersToConnect;
+                    if (peerData->peerState_ == PeerData::PeerState::WaitingForName) {
+                        peerData->peerState_ = PeerData::PeerState::ReadyForOtherPeersToConnect;
                     }
                 }
             } break;
@@ -598,24 +600,24 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 }
 
                 const auto message = packetStream.readString();
-                if (pOnReceiveChatMessage) {
-                    pOnReceiveChatMessage(peerData->name, message);
+                if (pOnReceiveChatMessage_) {
+                    pOnReceiveChatMessage_(peerData->name_, message);
                 }
             } break;
 
             case NETWORKPACKET_CHANGEEVENTLIST: {
                 const ChangeEventList changeEventList(packetStream);
 
-                if (pOnReceiveChangeEventList) {
-                    pOnReceiveChangeEventList(changeEventList);
+                if (pOnReceiveChangeEventList_) {
+                    pOnReceiveChangeEventList_(changeEventList);
                 }
             } break;
 
             case NETWORKPACKET_STARTGAME: {
                 const auto timeLeft = packetStream.readUint32();
 
-                if (pOnStartGame) {
-                    pOnStartGame(dune::as_dune_clock_duration(timeLeft));
+                if (pOnStartGame_) {
+                    pOnStartGame_(dune::as_dune_clock_duration(timeLeft));
                 }
             } break;
 
@@ -627,8 +629,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 
                 const CommandList commandList(packetStream);
 
-                if (pOnReceiveCommandList) {
-                    pOnReceiveCommandList(peerData->name, commandList);
+                if (pOnReceiveCommandList_) {
+                    pOnReceiveCommandList_(peerData->name_, commandList);
                 }
             } break;
 
@@ -641,8 +643,8 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
                 const auto groupListIndex = packetStream.readSint32();
                 const auto selectedList   = packetStream.readUint32Set();
 
-                if (pOnReceiveSelectionList) {
-                    pOnReceiveSelectionList(peerData->name, selectedList, groupListIndex);
+                if (pOnReceiveSelectionList_) {
+                    pOnReceiveSelectionList_(peerData->name_, selectedList, groupListIndex);
                 }
             } break;
 
@@ -659,14 +661,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
 }
 
 void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int channel) {
-    if (connectPeer == nullptr) {
+    if (connectPeer_ == nullptr) {
         sdl2::log_info("NetworkManager: sendPacketToHost() called on server!");
         return;
     }
 
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    if (enet_peer_send(connectPeer, channel, enetPacket) < 0) {
+    if (enet_peer_send(connectPeer_, channel, enetPacket) < 0) {
         sdl2::log_info("NetworkManager: Cannot send packet!");
     }
 }
@@ -686,7 +688,7 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
 void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel) {
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    for (ENetPeer* pCurrentPeer : peerList) {
+    for (ENetPeer* pCurrentPeer : peerList_) {
         if (enet_peer_send(pCurrentPeer, channel, enetPacket) < 0) {
             sdl2::log_info("NetworkManager: Cannot send packet!");
         }
@@ -710,7 +712,7 @@ void NetworkManager::sendChangeEventList(const ChangeEventList& changeEventList)
     packetStream.writeUint32(NETWORKPACKET_CHANGEEVENTLIST);
     changeEventList.save(packetStream);
 
-    if (bIsServer) {
+    if (bIsServer_) {
         sendPacketToAllConnectedPeers(packetStream);
     } else {
         sendPacketToHost(packetStream);
@@ -718,7 +720,7 @@ void NetworkManager::sendChangeEventList(const ChangeEventList& changeEventList)
 }
 
 void NetworkManager::sendStartGame(unsigned int timeLeft) {
-    for (auto* pCurrentPeer : peerList) {
+    for (auto* pCurrentPeer : peerList_) {
         ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
         packetStream.writeUint32(NETWORKPACKET_STARTGAME);
 
@@ -747,7 +749,7 @@ void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedLis
 
 int NetworkManager::getMaxPeerRoundTripTime() const {
     const auto max_rtt =
-        std::ranges::max(peerList, {}, [](const auto* const p) { return p->roundTripTime; })->roundTripTime;
+        std::ranges::max(peerList_, {}, [](const auto* const p) { return p->roundTripTime; })->roundTripTime;
 
     return static_cast<int>(max_rtt);
 }

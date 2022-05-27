@@ -65,56 +65,56 @@ public:
         \return current center point in world coordinates.
     */
     [[nodiscard]] Coord getCurrentCenter() const {
-        return topLeftCorner + shakingOffset + (bottomRightCorner - topLeftCorner) / 2;
+        return topLeftCorner_ + shakingOffset_ + (bottomRightCorner_ - topLeftCorner_) / 2;
     }
 
     /**
         Returns the top left corner of the view in world coordinates.
         \return current top left corner in world coordinates.
     */
-    [[nodiscard]] Coord getTopLeftCorner() const { return topLeftCorner + shakingOffset; }
+    [[nodiscard]] Coord getTopLeftCorner() const { return topLeftCorner_ + shakingOffset_; }
 
     /**
         Returns the bottom right corner of the view in world coordinates.
         \return current bottom right corner in world coordinates.
     */
-    [[nodiscard]] Coord getBottomRightCorner() const { return bottomRightCorner + shakingOffset; }
+    [[nodiscard]] Coord getBottomRightCorner() const { return bottomRightCorner_ + shakingOffset_; }
 
     /**
         Returns the position of the left edge of the view in world coordinates.
         \return current left edge in world coordinates.
     */
-    [[nodiscard]] short getLeft() const { return topLeftCorner.x + shakingOffset.x; }
+    [[nodiscard]] short getLeft() const { return topLeftCorner_.x + shakingOffset_.x; }
 
     /**
         Returns the position of the top edge of the view in world coordinates.
         \return current top edge in world coordinates.
     */
-    [[nodiscard]] short getTop() const { return topLeftCorner.y + shakingOffset.y; }
+    [[nodiscard]] short getTop() const { return topLeftCorner_.y + shakingOffset_.y; }
 
     /**
         Returns the position of the right edge of the view in world coordinates.
         \return current right edge in world coordinates.
     */
-    [[nodiscard]] short getRight() const { return bottomRightCorner.x + shakingOffset.x; }
+    [[nodiscard]] short getRight() const { return bottomRightCorner_.x + shakingOffset_.x; }
 
     /**
         Returns the position of the bottom edge of the view in world coordinates.
         \return current bottom edge in world coordinates.
     */
-    [[nodiscard]] short getBottom() const { return bottomRightCorner.y + shakingOffset.y; }
+    [[nodiscard]] short getBottom() const { return bottomRightCorner_.y + shakingOffset_.y; }
 
     /**
         Returns the map coordinate of the top left corner of the current view.
         \return map coordinate of the top left corner
     */
-    [[nodiscard]] Coord getTopLeftTile() const { return (topLeftCorner + shakingOffset) / TILESIZE; }
+    [[nodiscard]] Coord getTopLeftTile() const { return (topLeftCorner_ + shakingOffset_) / TILESIZE; }
 
     /**
         Returns the map coordinate of the bottom right corner of the current view.
         \return map coordinate of the bottom right corner
     */
-    [[nodiscard]] Coord getBottomRightTile() const { return (bottomRightCorner + shakingOffset) / TILESIZE; }
+    [[nodiscard]] Coord getBottomRightTile() const { return (bottomRightCorner_ + shakingOffset_) / TILESIZE; }
 
     /**
         There may be a part of the tile at the top left corner that is outside the screen.
@@ -122,10 +122,10 @@ public:
         \return the part of the tile that lies outside the screen.
     */
     [[nodiscard]] Coord getCornerOffset() const {
-        return ((topLeftCorner + shakingOffset) / TILESIZE) * TILESIZE - (topLeftCorner + shakingOffset);
+        return ((topLeftCorner_ + shakingOffset_) / TILESIZE) * TILESIZE - (topLeftCorner_ + shakingOffset_);
     }
 
-    [[nodiscard]] const SDL_FRect& getGameBoard() const { return gameBoardRect; }
+    [[nodiscard]] const SDL_FRect& getGameBoard() const { return gameBoardRect_; }
 
     /**
         This method checks if some object is (partly) inside or completely outside the current view.
@@ -134,10 +134,10 @@ public:
         \return true if (partly) inside, false if completely outside
     */
     [[nodiscard]] bool isInsideScreen(const Coord& objectPosition, const Coord& objectSize) const {
-        return (((objectPosition.x + objectSize.x / 2) >= topLeftCorner.x + shakingOffset.x)
-                && ((objectPosition.x - objectSize.x / 2) <= bottomRightCorner.x + shakingOffset.x)
-                && ((objectPosition.y + objectSize.y / 2) >= topLeftCorner.y + shakingOffset.y)
-                && ((objectPosition.y - objectSize.y / 2) <= bottomRightCorner.y + shakingOffset.y));
+        return (((objectPosition.x + objectSize.x / 2) >= topLeftCorner_.x + shakingOffset_.x)
+                && ((objectPosition.x - objectSize.x / 2) <= bottomRightCorner_.x + shakingOffset_.x)
+                && ((objectPosition.y + objectSize.y / 2) >= topLeftCorner_.y + shakingOffset_.y)
+                && ((objectPosition.y - objectSize.y / 2) <= bottomRightCorner_.y + shakingOffset_.y));
     }
 
     /**
@@ -181,7 +181,7 @@ public:
         \return the x-coordinate on the screen
     */
     [[nodiscard]] float world2screenX(int x) const {
-        return world2zoomedWorld(x - topLeftCorner.x + shakingOffset.x + topLeftCornerOnScreen.x);
+        return world2zoomedWorld(x - topLeftCorner_.x + shakingOffset_.x + topLeftCornerOnScreen_.x);
     }
 
     /**
@@ -190,7 +190,7 @@ public:
         \return the x-coordinate on the screen
     */
     [[nodiscard]] float world2screenX(float x) const {
-        return world2zoomedWorld(x - (topLeftCorner.x - shakingOffset.x - topLeftCornerOnScreen.x));
+        return world2zoomedWorld(x - (topLeftCorner_.x - shakingOffset_.x - topLeftCornerOnScreen_.x));
     }
 
     /**
@@ -199,7 +199,7 @@ public:
         \return the x-coordinate on the screen
     */
     [[nodiscard]] float world2screenX(FixPoint x) const {
-        return world2zoomedWorld(x.toFloat() - (topLeftCorner.x - shakingOffset.x - topLeftCornerOnScreen.x));
+        return world2zoomedWorld(x.toFloat() - (topLeftCorner_.x - shakingOffset_.x - topLeftCornerOnScreen_.x));
     }
 
     /**
@@ -208,7 +208,7 @@ public:
         \return the y-coordinate on the screen
     */
     [[nodiscard]] float world2screenY(int y) const {
-        return world2zoomedWorld(y - topLeftCorner.y + shakingOffset.y + topLeftCornerOnScreen.y);
+        return world2zoomedWorld(y - topLeftCorner_.y + shakingOffset_.y + topLeftCornerOnScreen_.y);
     }
 
     /**
@@ -217,7 +217,7 @@ public:
         \return the y-coordinate on the screen
     */
     [[nodiscard]] float world2screenY(float y) const {
-        return world2zoomedWorld(y - (topLeftCorner.y - shakingOffset.y - topLeftCornerOnScreen.y));
+        return world2zoomedWorld(y - (topLeftCorner_.y - shakingOffset_.y - topLeftCornerOnScreen_.y));
     }
 
     /**
@@ -226,7 +226,7 @@ public:
         \return the y-coordinate on the screen
     */
     [[nodiscard]] float world2screenY(FixPoint y) const {
-        return world2zoomedWorld(y.toFloat() - (topLeftCorner.y - shakingOffset.y - topLeftCornerOnScreen.y));
+        return world2zoomedWorld(y.toFloat() - (topLeftCorner_.y - shakingOffset_.y - topLeftCornerOnScreen_.y));
     }
 
     /**
@@ -235,7 +235,7 @@ public:
         \return the x-position in world coordinates
     */
     [[nodiscard]] int screen2worldX(float x) const {
-        return zoomedWorld2world(x) - topLeftCornerOnScreen.x + topLeftCorner.x + shakingOffset.x;
+        return zoomedWorld2world(x) - topLeftCornerOnScreen_.x + topLeftCorner_.x + shakingOffset_.x;
     }
 
     /**
@@ -244,7 +244,7 @@ public:
         \return the y-position in world coordinates
     */
     [[nodiscard]] int screen2worldY(float y) const {
-        return zoomedWorld2world(y) - topLeftCornerOnScreen.y + topLeftCorner.y + shakingOffset.y;
+        return zoomedWorld2world(y) - topLeftCornerOnScreen_.y + topLeftCorner_.y + shakingOffset_.y;
     }
 
     /**
@@ -268,9 +268,9 @@ public:
         \return true, if inside, false otherwise
     */
     [[nodiscard]] bool isScreenCoordInsideMap(float x, float y) const {
-        return (zoomedWorld2world(x) >= topLeftCornerOnScreen.x && zoomedWorld2world(x) < bottomRightCornerOnScreen.x
-                && zoomedWorld2world(y) >= topLeftCornerOnScreen.y
-                && zoomedWorld2world(y) < bottomRightCornerOnScreen.y);
+        return (zoomedWorld2world(x) >= topLeftCornerOnScreen_.x && zoomedWorld2world(x) < bottomRightCornerOnScreen_.x
+                && zoomedWorld2world(y) >= topLeftCornerOnScreen_.y
+                && zoomedWorld2world(y) < bottomRightCornerOnScreen_.y);
     }
 
     /**
@@ -285,20 +285,20 @@ public:
     void update(Random& uiRandom);
 
 private:
-    SDL_FRect gameBoardRect; ///< the complete game board rectangle
+    SDL_FRect gameBoardRect_; ///< the complete game board rectangle
 
-    int mapSizeX{}; ///< The number of tiles in x direction
-    int mapSizeY{}; ///< The number of tiles in y direction
+    int mapSizeX_{}; ///< The number of tiles in x direction
+    int mapSizeY_{}; ///< The number of tiles in y direction
 
-    Coord topLeftCorner;     ///< the position of the top left corner in world coordinates
-    Coord bottomRightCorner; ///< the position of the bottom right corner in world coordinates
+    Coord topLeftCorner_;     ///< the position of the top left corner in world coordinates
+    Coord bottomRightCorner_; ///< the position of the bottom right corner in world coordinates
 
-    Coord shakingOffset; ///< this offset is added while shaking the screen (e.g. when a death hand explodes)
+    Coord shakingOffset_; ///< this offset is added while shaking the screen (e.g. when a death hand explodes)
 
-    CoordF topLeftCornerOnScreen;     ///< the position of the top left corner in screen coordinates
-    CoordF bottomRightCornerOnScreen; ///< the position of the bottom right corner in screen coordinates
+    CoordF topLeftCornerOnScreen_;     ///< the position of the top left corner in screen coordinates
+    CoordF bottomRightCornerOnScreen_; ///< the position of the bottom right corner in screen coordinates
 
-    int numShakingCycles{}; ///< the number of cycles the screen will shake
+    int numShakingCycles_{}; ///< the number of cycles the screen will shake
 };
 
 #endif // SCREENBORDER

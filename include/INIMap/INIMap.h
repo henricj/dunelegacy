@@ -35,7 +35,7 @@ class INIMap {
 protected:
     typedef unique_or_nonowning_ptr<INIFile> inifile_ptr;
 
-    explicit INIMap(inifile_ptr pINIFile) : inifile(std::move(pINIFile)) { }
+    explicit INIMap(inifile_ptr pINIFile) : inifile_(std::move(pINIFile)) { }
 
     INIMap(GameType gameType, const std::filesystem::path& mapname, const std::string& mapdata = "");
 
@@ -47,7 +47,7 @@ protected:
         Log a warning while reading the scenario file.
         \param  warning the warning message
     */
-    void logWarning(std::string_view warning) const { sdl2::log_info("%s: %s", mapname.c_str(), warning); }
+    void logWarning(std::string_view warning) const { sdl2::log_info("%s: %s", mapname_.c_str(), warning); }
 
     /**
         Log a warning while reading the scenario file.
@@ -57,7 +57,7 @@ protected:
     */
     template<typename... Args>
     void logWarning(size_t line, std::string_view format, Args&&... args) const {
-        sdl2::log_info("%s:%d: %s", mapname, line, fmt::sprintf(format, std::forward<Args>(args)...));
+        sdl2::log_info("%s:%d: %s", mapname_, line, fmt::sprintf(format, std::forward<Args>(args)...));
     }
 
     /**
@@ -65,7 +65,7 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(const std::string& error) const { THROW(std::runtime_error, "%s: %s", mapname, error); }
+    void logError(const std::string& error) const { THROW(std::runtime_error, "%s: %s", mapname_, error); }
 
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
@@ -76,7 +76,7 @@ protected:
     */
     template<typename... Args>
     void logError(size_t line, std::string_view format, Args&&... args) const {
-        THROW(std::runtime_error, "%s:%d: %s", mapname, line, fmt::sprintf(format, std::forward<Args>(args)...));
+        THROW(std::runtime_error, "%s:%d: %s", mapname_, line, fmt::sprintf(format, std::forward<Args>(args)...));
     }
 
     /**
@@ -85,23 +85,23 @@ protected:
     void checkFeatures() const;
 
     [[nodiscard]] int getXPos(int pos) const {
-        return (version < 2 ? (pos & 0x3f) : (pos % logicalSizeX)) - logicalOffsetX;
+        return (version_ < 2 ? (pos & 0x3f) : (pos % logicalSizeX_)) - logicalOffsetX_;
     }
     [[nodiscard]] int getYPos(int pos) const {
-        return (version < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX)) - logicalOffsetY;
+        return (version_ < 2 ? ((pos >> 6) & 0x3f) : (pos / logicalSizeX_)) - logicalOffsetY_;
     }
 
-    std::string mapname;
-    inifile_ptr inifile;
+    std::string mapname_;
+    inifile_ptr inifile_;
 
-    int version = 0;
+    int version_ = 0;
 
-    int sizeX          = 0;
-    int sizeY          = 0;
-    int logicalSizeX   = 0;
-    int logicalSizeY   = 0;
-    int logicalOffsetX = 0;
-    int logicalOffsetY = 0;
+    int sizeX_          = 0;
+    int sizeY_          = 0;
+    int logicalSizeX_   = 0;
+    int logicalSizeY_   = 0;
+    int logicalOffsetX_ = 0;
+    int logicalOffsetY_ = 0;
 };
 
 #endif // INIMAP_H

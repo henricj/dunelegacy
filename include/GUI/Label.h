@@ -43,7 +43,7 @@ public:
         \param  fontSize      the font size of the new font
     */
     virtual void setTextFontSize(int fontSize) {
-        this->fontSize = fontSize;
+        this->fontSize_ = fontSize;
         resizeAll();
     }
 
@@ -51,7 +51,7 @@ public:
         Gets the font size of this label. Default font size of a label is 14
         \return the font size of this label
     */
-    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize_; }
 
     /**
         Sets the text color for this label.
@@ -61,9 +61,9 @@ public:
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
                               Uint32 backgroundcolor = COLOR_TRANSPARENT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
-        this->backgroundcolor = backgroundcolor;
+        this->text_color_        = textcolor;
+        this->text_shadow_color_ = textshadowcolor;
+        this->background_color_  = backgroundcolor;
         invalidateTextures();
     }
 
@@ -153,12 +153,12 @@ protected:
     void invalidateTextures() override;
 
 private:
-    int fontSize           = 14;                ///< the size of the font to use
-    Uint32 textcolor       = COLOR_DEFAULT;     ///< the text color
-    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
-    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
-    std::string text_;                          ///< the text of this label
-    DuneTextureOwned pTexture_;                 ///< the texture of this label
+    int fontSize_             = 14;                ///< the size of the font to use
+    Uint32 text_color_        = COLOR_DEFAULT;     ///< the text color
+    Uint32 text_shadow_color_ = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 background_color_  = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text_;                             ///< the text of this label
+    DuneTextureOwned pTexture_;                    ///< the texture of this label
     Alignment_Enum alignment_ =
         static_cast<Alignment_Enum>(Alignment_Left | Alignment_VCenter); ///< the alignment of this label
 };

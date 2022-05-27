@@ -106,10 +106,10 @@ private:
     TextButton cancelButton;
     TextButton okButton;
 
-    MapEditor* pMapEditor;
+    MapEditor* pMapEditor_;
 
-    HOUSETYPE house;
-    uint32_t color;
+    HOUSETYPE house_;
+    uint32_t color_;
 
     std::vector<ReinforcementInfo> reinforcements;
 };

@@ -38,12 +38,12 @@ WOR::WOR(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void WOR::init() {
-    owner->incrementStructures(itemID);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_WOR;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 4;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_WOR;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 4;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }

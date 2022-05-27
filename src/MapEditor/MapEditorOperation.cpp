@@ -107,17 +107,17 @@ std::unique_ptr<MapEditorOperation> MapEditorStructurePlaceOperation::perform(Ma
     int maxID = 0;
     int minID = -1;
     for (const MapEditor::Structure& structure : structures) {
-        maxID = std::max(maxID, structure.id);
-        minID = std::min(minID, structure.id);
+        maxID = std::max(maxID, structure.id_);
+        minID = std::min(minID, structure.id_);
     }
 
-    int newID = (preferredID != INVALID) ? preferredID : (maxID + 1);
+    int newID = (preferredID_ != INVALID) ? preferredID_ : (maxID + 1);
 
-    if ((itemID == Structure_Slab1) || (itemID == Structure_Slab4) || (itemID == Structure_Wall)) {
+    if ((itemID_ == Structure_Slab1) || (itemID_ == Structure_Slab4) || (itemID_ == Structure_Wall)) {
         newID = minID - 1;
     }
 
-    structures.emplace_back(newID, house, itemID, health, position);
+    structures.emplace_back(newID, house_, itemID_, health_, position_);
 
     return std::make_unique<MapEditorRemoveStructureOperation>(newID);
 }
@@ -127,9 +127,9 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveStructureOperation::perform(M
     std::vector<MapEditor::Structure>& structures = pMapEditor->getStructureList();
 
     for (auto iter = structures.begin(); iter != structures.end(); ++iter) {
-        if (iter->id == id) {
+        if (iter->id_ == id) {
             auto redoOperation = std::make_unique<MapEditorStructurePlaceOperation>(
-                iter->id, iter->position, iter->house, iter->itemID, iter->health);
+                iter->id_, iter->position_, iter->house_, iter->itemID_, iter->health_);
 
             structures.erase(iter);
 
@@ -146,12 +146,12 @@ std::unique_ptr<MapEditorOperation> MapEditorUnitPlaceOperation::perform(MapEdit
 
     int maxID = 0;
     for (const MapEditor::Unit& unit : units) {
-        maxID = std::max(maxID, unit.id);
+        maxID = std::max(maxID, unit.id_);
     }
 
-    int newID = (preferredID != INVALID) ? preferredID : (maxID + 1);
+    int newID = (preferredID_ != INVALID) ? preferredID_ : (maxID + 1);
 
-    units.emplace_back(newID, house, itemID, health, position, angle, attackmode);
+    units.emplace_back(newID, house_, itemID_, health_, position_, angle_, attack_mode_);
 
     return std::make_unique<MapEditorRemoveUnitOperation>(newID);
 }
@@ -161,9 +161,10 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
     std::vector<MapEditor::Unit>& units = pMapEditor->getUnitList();
 
     for (auto iter = units.begin(); iter != units.end(); ++iter) {
-        if (iter->id == id) {
-            auto redoOperation = std::make_unique<MapEditorUnitPlaceOperation>(
-                iter->id, iter->position, iter->house, iter->itemID, iter->health, iter->angle, iter->attackmode);
+        if (iter->id_ == id_) {
+            auto redoOperation =
+                std::make_unique<MapEditorUnitPlaceOperation>(iter->id_, iter->position_, iter->house_, iter->itemID_,
+                                                              iter->health_, iter->angle_, iter->attack_mode_);
 
             units.erase(iter);
 
@@ -176,51 +177,51 @@ std::unique_ptr<MapEditorOperation> MapEditorRemoveUnitOperation::perform(MapEdi
 
 std::unique_ptr<MapEditorOperation> MapEditorEditStructureOperation::perform(MapEditor* pMapEditor) {
 
-    MapEditor::Structure* pStructure = pMapEditor->getStructure(id);
+    MapEditor::Structure* pStructure = pMapEditor->getStructure(id_);
 
-    int oldHealth = pStructure->health;
+    int oldHealth = pStructure->health_;
 
-    pStructure->health = health;
+    pStructure->health_ = health_;
 
-    return std::make_unique<MapEditorEditStructureOperation>(id, oldHealth);
+    return std::make_unique<MapEditorEditStructureOperation>(id_, oldHealth);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorEditUnitOperation::perform(MapEditor* pMapEditor) {
 
-    MapEditor::Unit* pUnit = pMapEditor->getUnit(id);
+    MapEditor::Unit* pUnit = pMapEditor->getUnit(id_);
 
-    int oldHealth            = pUnit->health;
-    ANGLETYPE oldAngle       = pUnit->angle;
-    ATTACKMODE oldAttackmode = pUnit->attackmode;
+    int oldHealth            = pUnit->health_;
+    ANGLETYPE oldAngle       = pUnit->angle_;
+    ATTACKMODE oldAttackmode = pUnit->attack_mode_;
 
-    pUnit->health     = health;
-    pUnit->angle      = angle;
-    pUnit->attackmode = attackmode;
+    pUnit->health_      = health_;
+    pUnit->angle_       = angle_;
+    pUnit->attack_mode_ = attack_mode_;
 
-    return std::make_unique<MapEditorEditUnitOperation>(id, oldHealth, oldAngle, oldAttackmode);
+    return std::make_unique<MapEditorEditUnitOperation>(id_, oldHealth, oldAngle, oldAttackmode);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorChangePlayer::perform(MapEditor* pMapEditor) {
 
-    auto& player = pMapEditor->getPlayers()[playerNum];
+    auto& player = pMapEditor->getPlayers()[playerNum_];
 
-    bool bOldActive      = player.bActive;
-    bool bOldAnyHouse    = player.bAnyHouse;
-    int oldCredits       = player.credits;
-    std::string oldBrain = player.brain;
-    int oldQuota         = player.quota;
-    int oldMaxunit       = player.maxunit;
+    bool bOldActive      = player.bActive_;
+    bool bOldAnyHouse    = player.bAnyHouse_;
+    int oldCredits       = player.credits_;
+    std::string oldBrain = player.brain_;
+    int oldQuota         = player.quota_;
+    int oldMaxunit       = player.maxunit_;
 
-    player.bActive   = bActive;
-    player.bAnyHouse = bAnyHouse;
-    player.credits   = credits;
-    player.brain     = brain;
-    player.quota     = quota;
-    player.maxunit   = maxunit;
+    player.bActive_   = bActive_;
+    player.bAnyHouse_ = bAnyHouse_;
+    player.credits_   = credits_;
+    player.brain_     = brain_;
+    player.quota_     = quota_;
+    player.maxunit_   = max_unit_;
 
     pMapEditor->informPlayersChanged();
 
-    return std::make_unique<MapEditorChangePlayer>(playerNum, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota,
+    return std::make_unique<MapEditorChangePlayer>(playerNum_, bOldActive, bOldAnyHouse, oldCredits, oldBrain, oldQuota,
                                                    oldMaxunit);
 }
 
@@ -228,24 +229,24 @@ std::unique_ptr<MapEditorOperation> MapEditorChangeChoam::perform(MapEditor* pMa
 
     auto& choam = pMapEditor->getChoam();
 
-    int oldAmount = choam.contains(itemID) ? choam[itemID] : -1;
+    int oldAmount = choam.contains(itemID_) ? choam[itemID_] : -1;
 
-    if (amount >= 0) {
-        choam[itemID] = amount;
+    if (amount_ >= 0) {
+        choam[itemID_] = amount_;
     } else {
         // for -1 or other negative values we remove this item from choam
         // (THIS IS DIFFERENT TO -1 IN THE INI FILE WHERE -1 MEANS AN AMOUNT OF 0)
-        choam.erase(itemID);
+        choam.erase(itemID_);
     }
 
-    return std::make_unique<MapEditorChangeChoam>(itemID, oldAmount);
+    return std::make_unique<MapEditorChangeChoam>(itemID_, oldAmount);
 }
 
 std::unique_ptr<MapEditorOperation> MapEditorChangeReinforcements::perform(MapEditor* pMapEditor) {
 
     std::vector<ReinforcementInfo> oldReinforcements = pMapEditor->getReinforcements();
 
-    pMapEditor->setReinforcements(reinforcements);
+    pMapEditor->setReinforcements(reinforcements_);
 
     return std::make_unique<MapEditorChangeReinforcements>(oldReinforcements);
 }
@@ -254,7 +255,7 @@ std::unique_ptr<MapEditorOperation> MapEditorChangeTeams::perform(MapEditor* pMa
 
     std::vector<AITeamInfo> oldAITeams = pMapEditor->getAITeams();
 
-    pMapEditor->setAITeams(aiteams);
+    pMapEditor->setAITeams(ai_teams_);
 
     return std::make_unique<MapEditorChangeTeams>(oldAITeams);
 }
@@ -263,7 +264,7 @@ std::unique_ptr<MapEditorOperation> MapEditorChangeMapInfo::perform(MapEditor* p
 
     MapInfo oldMapInfo = pMapEditor->getMapInfo();
 
-    pMapEditor->setMapInfo(mapInfo);
+    pMapEditor->setMapInfo(mapInfo_);
 
     return std::make_unique<MapEditorChangeMapInfo>(oldMapInfo);
 }

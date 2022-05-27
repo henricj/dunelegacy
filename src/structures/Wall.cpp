@@ -48,13 +48,13 @@ Wall::Wall(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Wall::init() {
-    assert(itemID == Structure_Wall);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_Wall);
+    owner_->incrementStructures(itemID_);
 
-    graphicID  = ObjPic_Wall;
-    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX = 25;
-    numImagesY = 3;
+    graphicID_  = ObjPic_Wall;
+    graphic_    = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_ = 25;
+    numImagesY_ = 3;
 }
 
 Wall::~Wall() = default;
@@ -72,7 +72,7 @@ void Wall::destroy(const GameContext& context) {
     auto& [game, map, objectManager] = context;
 
     // fix wall to the north
-    if (const auto* tile = map.tryGetTile(location.x, location.y - 1)) {
+    if (const auto* tile = map.tryGetTile(location_.x, location_.y - 1)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedDown = true;
             pWall->fixWall(context);
@@ -80,7 +80,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the south
-    if (const auto* tile = map.tryGetTile(location.x, location.y + 1)) {
+    if (const auto* tile = map.tryGetTile(location_.x, location_.y + 1)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedUp = true;
             pWall->fixWall(context);
@@ -88,7 +88,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the west
-    if (const auto* tile = map.tryGetTile(location.x - 1, location.y)) {
+    if (const auto* tile = map.tryGetTile(location_.x - 1, location_.y)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedRight = true;
             pWall->fixWall(context);
@@ -96,7 +96,7 @@ void Wall::destroy(const GameContext& context) {
     }
 
     // fix wall to the east
-    if (const auto* tile = map.tryGetTile(location.x + 1, location.y)) {
+    if (const auto* tile = map.tryGetTile(location_.x + 1, location_.y)) {
         if (auto* pWall = dune_cast<Wall>(tile->getGroundObject(objectManager))) {
             pWall->bWallDestroyedLeft = true;
             pWall->fixWall(context);
@@ -122,28 +122,28 @@ void Wall::setLocation(const GameContext& context, int xPos, int yPos) {
     Wall* pWall = nullptr;
 
     // fix wall to the north
-    pWall = map.getGroundObject<Wall>(context, location.x, location.y - 1);
+    pWall = map.getGroundObject<Wall>(context, location_.x, location_.y - 1);
     if (pWall) {
         pWall->bWallDestroyedDown = false;
         pWall->fixWall(context);
     }
 
     // fix wall to the south
-    pWall = map.getGroundObject<Wall>(context, location.x, location.y + 1);
+    pWall = map.getGroundObject<Wall>(context, location_.x, location_.y + 1);
     if (pWall) {
         pWall->bWallDestroyedUp = false;
         pWall->fixWall(context);
     }
 
     // fix wall to the west
-    pWall = map.getGroundObject<Wall>(context, location.x - 1, location.y);
+    pWall = map.getGroundObject<Wall>(context, location_.x - 1, location_.y);
     if (pWall) {
         pWall->bWallDestroyedRight = false;
         pWall->fixWall(context);
     }
 
     // fix wall to the east
-    pWall = map.getGroundObject<Wall>(context, location.x + 1, location.y);
+    pWall = map.getGroundObject<Wall>(context, location_.x + 1, location_.y);
     if (pWall) {
         pWall->bWallDestroyedLeft = false;
         pWall->fixWall(context);
@@ -155,8 +155,8 @@ void Wall::setLocation(const GameContext& context, int xPos, int yPos) {
 */
 void Wall::fixWall(const GameContext& context) {
 
-    const int i = location.x;
-    const int j = location.y;
+    const int i = location_.x;
+    const int j = location_.y;
 
     int maketile = Wall_LeftRight;
 

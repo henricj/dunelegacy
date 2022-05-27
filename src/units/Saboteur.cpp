@@ -44,7 +44,7 @@ Saboteur::Saboteur(uint32_t objectID, const ObjectInitializer& initializer)
 
     setVisible(VIS_ALL, false);
     setVisible(getOwner()->getTeamID(), true);
-    attackMode = GUARD;
+    attackMode_ = GUARD;
 }
 
 Saboteur::Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -53,14 +53,14 @@ Saboteur::Saboteur(uint32_t objectID, const ObjectStreamInitializer& initializer
 }
 
 void Saboteur::init() {
-    assert(itemID == Unit_Saboteur);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Saboteur);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Saboteur;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Saboteur;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = 4;
-    numImagesY = 3;
+    numImagesX_ = 4;
+    numImagesY_ = 3;
 }
 
 Saboteur::~Saboteur() = default;
@@ -68,11 +68,11 @@ Saboteur::~Saboteur() = default;
 void Saboteur::checkPos(const GameContext& context) {
     parent::checkPos(context);
 
-    if (!active)
+    if (!active_)
         return;
 
     std::array<bool, NUM_TEAMS> canBeSeen{};
-    context.map.for_each(location.x - 2, location.x + 3, location.y - 2, location.y + 3, [&](const auto& tile) {
+    context.map.for_each(location_.x - 2, location_.x + 3, location_.y - 2, location_.y + 3, [&](const auto& tile) {
         if (const auto* const object = tile.getObject(context.objectManager)) {
             if (const auto* const owner = object->getOwner())
                 canBeSeen[owner->getTeamID()] = true;
@@ -84,13 +84,13 @@ void Saboteur::checkPos(const GameContext& context) {
 }
 
 bool Saboteur::update(const GameContext& context) {
-    if (active && !moving) {
+    if (active_ && !moving) {
         // check to see if close enough to blow up target
-        if (auto* pObject = target.getObjPointer()) { //&& target.getObjPointer()->isAStructure()
+        if (auto* pObject = target_.getObjPointer()) { //&& target.getObjPointer()->isAStructure()
             if (getOwner()->getTeamID() != pObject->getOwner()->getTeamID()) {
-                const auto closestPoint = pObject->getClosestPoint(location);
+                const auto closestPoint = pObject->getClosestPoint(location_);
 
-                if (blockDistance(location, closestPoint) <= 1.5_fix) {
+                if (blockDistance(location_, closestPoint) <= 1.5_fix) {
                     if (isVisible(getOwner()->getTeamID())) {
                         dune::globals::screenborder->shakeScreen(18);
                     }
@@ -119,16 +119,16 @@ bool Saboteur::canAttack(const ObjectBase* object) const {
         && ((object->isAStructure()
              || (object->isAGroundUnit() && !object->isInfantry()
                  && object->getItemID() != Unit_Sandworm)) /* allow attack tanks*/
-            && (object->getOwner()->getTeamID() != owner->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
+            && (object->getOwner()->getTeamID() != owner_->getTeamID()) && object->isVisible(getOwner()->getTeamID()));
 }
 
 void Saboteur::destroy(const GameContext& context) {
-    Coord realPos(lround(realX), lround(realY));
+    Coord realPos(lround(realX_), lround(realY_));
     const auto explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
-    context.game.addExplosion(explosionID, realPos, owner->getHouseID());
+    context.game.addExplosion(explosionID, realPos, owner_->getHouseID());
 
     if (isVisible(getOwner()->getTeamID())) {
-        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+        dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location_);
     }
 
     parent::destroy(context);

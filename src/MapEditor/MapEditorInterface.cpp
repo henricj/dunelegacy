@@ -52,7 +52,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), radarView(pMapEditor), currentEditStructureID(INVALID),
       currentEditUnitID(INVALID), house(HOUSETYPE::HOUSE_HARKONNEN) {
 
-    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     MapEditorInterface::setTransparentBackground(true);
 
@@ -734,12 +734,13 @@ void MapEditorInterface::onHouseChanges() {
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
         std::string entryName =
-            player.bActive ? (player.bAnyHouse ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name)
-                           : ("(" + player.name + ")");
+            player.bActive_
+                ? (player.bAnyHouse_ ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name_)
+                : ("(" + player.name_ + ")");
 
-        houseDropDownBox.addEntry(entryName, static_cast<int>(player.house));
+        houseDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
 
-        if (static_cast<int>(player.house) == currentSelection) {
+        if (static_cast<int>(player.house_) == currentSelection) {
             houseDropDownBox.setSelectedItem(currentIndex);
         }
         currentIndex++;
@@ -788,19 +789,19 @@ void MapEditorInterface::onObjectSelected() {
         windowWidget.addWidget(&structureDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
-        structureDetailsHealthDropDownBox.setSelectedItem(pStructure->health - 1);
+        structureDetailsHealthDropDownBox.setSelectedItem(pStructure->health_ - 1);
 
-        changeHouseDropDown(pStructure->house);
+        changeHouseDropDown(pStructure->house_);
     }
 
     if (const auto* pUnit = pMapEditor->getSelectedUnit()) {
         windowWidget.addWidget(&unitDetailsHBox, Point(0, getRendererHeight() - bottomBar.getSize().y + 14 + 3),
                                Point(getRendererWidth() - sideBar.getSize().x, 24));
 
-        unitDetailsHealthDropDownBox.setSelectedItem(pUnit->health - 1);
-        unitDetailsAttackModeDropDownBox.setSelectedItem(pUnit->attackmode);
+        unitDetailsHealthDropDownBox.setSelectedItem(pUnit->health_ - 1);
+        unitDetailsAttackModeDropDownBox.setSelectedItem(pUnit->attack_mode_);
 
-        changeHouseDropDown(pUnit->house);
+        changeHouseDropDown(pUnit->house_);
     }
 }
 
@@ -1128,7 +1129,7 @@ void MapEditorInterface::onUnitHealthDropDown(bool bInteractive) {
         for (const int selectedUnit : selectedUnits) {
             const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(
-                pUnit->id, unitDetailsHealthDropDownBox.getSelectedEntryIntData(), pUnit->angle, pUnit->attackmode);
+                pUnit->id_, unitDetailsHealthDropDownBox.getSelectedEntryIntData(), pUnit->angle_, pUnit->attack_mode_);
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }
     }
@@ -1154,11 +1155,11 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
 
         const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
-        auto currentAngle = pMirrorUnit->angle;
+        auto currentAngle = pMirrorUnit->angle_;
         currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
-        if (pMirrorUnit->itemID == Unit_Soldier || pMirrorUnit->itemID == Unit_Saboteur
-            || pMirrorUnit->itemID == Unit_Trooper || pMirrorUnit->itemID == Unit_Infantry
-            || pMirrorUnit->itemID == Unit_Troopers) {
+        if (pMirrorUnit->itemID_ == Unit_Soldier || pMirrorUnit->itemID_ == Unit_Saboteur
+            || pMirrorUnit->itemID_ == Unit_Trooper || pMirrorUnit->itemID_ == Unit_Infantry
+            || pMirrorUnit->itemID_ == Unit_Troopers) {
             currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) + 2);
         } else {
             currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) + 1);
@@ -1167,8 +1168,8 @@ void MapEditorInterface::onUnitRotateLeft(int unitID) {
         currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
 
-        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id, pMirrorUnit->health, currentAngle,
-                                                     pMirrorUnit->attackmode);
+        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
+                                                     pMirrorUnit->attack_mode_);
 
         pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
     }
@@ -1194,11 +1195,11 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
 
         const MapEditor::Unit* pMirrorUnit = pMapEditor->getUnit(mirrorUnits[i]);
 
-        auto currentAngle = pMirrorUnit->angle;
+        auto currentAngle = pMirrorUnit->angle_;
         currentAngle      = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
-        if (pMirrorUnit->itemID == Unit_Soldier || pMirrorUnit->itemID == Unit_Saboteur
-            || pMirrorUnit->itemID == Unit_Trooper || pMirrorUnit->itemID == Unit_Infantry
-            || pMirrorUnit->itemID == Unit_Troopers) {
+        if (pMirrorUnit->itemID_ == Unit_Soldier || pMirrorUnit->itemID_ == Unit_Saboteur
+            || pMirrorUnit->itemID_ == Unit_Trooper || pMirrorUnit->itemID_ == Unit_Infantry
+            || pMirrorUnit->itemID_ == Unit_Troopers) {
             currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) - 2);
         } else {
             currentAngle = static_cast<ANGLETYPE>(static_cast<int>(currentAngle) - 1);
@@ -1206,8 +1207,8 @@ void MapEditorInterface::onUnitRotateRight(int unitID) {
         currentAngle = normalizeAngle(currentAngle);
         currentAngle = pMapEditor->getMapMirror()->getAngle(currentAngle, i);
 
-        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id, pMirrorUnit->health, currentAngle,
-                                                     pMirrorUnit->attackmode);
+        MapEditorEditUnitOperation editUnitOperation(pMirrorUnit->id_, pMirrorUnit->health_, currentAngle,
+                                                     pMirrorUnit->attack_mode_);
 
         pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
     }
@@ -1228,7 +1229,7 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
         for (const int selectedUnit : selectedUnits) {
             const MapEditor::Unit* pUnit = pMapEditor->getUnit(selectedUnit);
             MapEditorEditUnitOperation editUnitOperation(
-                pUnit->id, pUnit->health, pUnit->angle,
+                pUnit->id_, pUnit->health_, pUnit->angle_,
                 static_cast<ATTACKMODE>(unitDetailsAttackModeDropDownBox.getSelectedEntryIntData()));
             pMapEditor->addUndoOperation(editUnitOperation.perform(pMapEditor));
         }
@@ -1238,7 +1239,7 @@ void MapEditorInterface::onUnitAttackModeDropDown(bool bInteractive) {
 void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 
     for (size_t i = 0; i < pMapEditor->getPlayers().size(); i++) {
-        if (pMapEditor->getPlayers()[i].house == newHouse) {
+        if (pMapEditor->getPlayers()[i].house_ == newHouse) {
             houseDropDownBox.setSelectedItem(i);
             break;
         }
@@ -1247,7 +1248,7 @@ void MapEditorInterface::changeHouseDropDown(HOUSETYPE newHouse) {
 
 void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
     house = newHouse;
-    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
+    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
     terrainButton.setTextColor(color);
     structuresButton.setTextColor(color);

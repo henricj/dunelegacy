@@ -61,9 +61,9 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
     const auto& palette = dune::globals::palette;
 
     const auto houseOfVisitor = (house_idx + 2) % 3;
-    const auto color          = SDL2RGB(palette[houseToPaletteIndex[house_idx] + 1]);
+    const auto color          = SDL2RGB(palette[dune::globals::houseToPaletteIndex[house_idx] + 1]);
     const auto sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
-    const auto visitorColor   = SDL2RGB(palette[houseToPaletteIndex[houseOfVisitor] + 1]);
+    const auto visitorColor   = SDL2RGB(palette[dune::globals::houseToPaletteIndex[houseOfVisitor] + 1]);
 
     if (firstMeanwhile) {
         // Meanwhile after level 4

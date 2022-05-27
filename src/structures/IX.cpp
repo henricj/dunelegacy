@@ -38,13 +38,13 @@ IX::IX(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void IX::init() {
-    assert(itemID == Structure_IX);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_IX);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_IX;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 4;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_IX;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 4;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }

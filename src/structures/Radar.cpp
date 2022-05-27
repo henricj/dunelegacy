@@ -41,13 +41,13 @@ Radar::Radar(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Radar::init() {
-    assert(itemID == Structure_Radar);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_Radar);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_Radar;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 6;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_Radar;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 6;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 5;
 }
@@ -55,10 +55,10 @@ void Radar::init() {
 Radar::~Radar() = default;
 
 std::unique_ptr<ObjectInterface> Radar::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return RadarInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return RadarInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void Radar::destroy(const GameContext& context) {

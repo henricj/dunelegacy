@@ -36,29 +36,29 @@ class DigitsTextBox final : public HBox {
 
 public:
     DigitsTextBox() {
-        textBox.setText("0");
-        textBox.setAllowedChars("-0123456789");
-        textBox.setOnLostFocus([this] { onTextBoxLostFocus(); });
-        DigitsTextBox::addWidget(&textBox);
+        textBox_.setText("0");
+        textBox_.setAllowedChars("-0123456789");
+        textBox_.setOnLostFocus([this] { onTextBoxLostFocus(); });
+        DigitsTextBox::addWidget(&textBox_);
 
-        buttonVBox.addWidget(Widget::create<Spacer>().release());
+        buttonVBox_.addWidget(Widget::create<Spacer>().release());
 
-        plusButton.setOnClick([this] { onIncrement(); });
-        buttonVBox.addWidget(&plusButton, 0.0);
+        plusButton_.setOnClick([this] { onIncrement(); });
+        buttonVBox_.addWidget(&plusButton_, 0.0);
 
-        minusButton.setOnClick([this] { onDecrement(); });
-        buttonVBox.addWidget(&minusButton, 0.0);
+        minusButton_.setOnClick([this] { onDecrement(); });
+        buttonVBox_.addWidget(&minusButton_, 0.0);
 
-        buttonVBox.addWidget(Widget::create<Spacer>().release());
+        buttonVBox_.addWidget(Widget::create<Spacer>().release());
 
         updateSurfaces();
 
-        DigitsTextBox::addWidget(&buttonVBox, 0.0);
+        DigitsTextBox::addWidget(&buttonVBox_, 0.0);
     }
 
     ~DigitsTextBox() override {
         // we don't want to get notified because we are then already gone
-        textBox.setOnLostFocus(std::function<void()>());
+        textBox_.setOnLostFocus(std::function<void()>());
     }
 
     /**
@@ -68,35 +68,36 @@ public:
        \param   textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setColor(HOUSETYPE house, uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->house = house;
+        this->house_ = house;
         updateSurfaces();
-        textBox.setTextColor(textcolor, textshadowcolor);
+        textBox_.setTextColor(textcolor, textshadowcolor);
     }
 
     void setMinMax(int newMinValue, int newMaxValue) {
-        minValue = newMinValue;
-        maxValue = newMaxValue;
+        minValue_ = newMinValue;
+        maxValue_ = newMaxValue;
 
         const int currentValue = getValue();
 
-        if (currentValue < minValue) {
-            setValue(minValue, false);
-        } else if (currentValue > maxValue) {
-            setValue(maxValue, false);
+        if (currentValue < minValue_) {
+            setValue(minValue_, false);
+        } else if (currentValue > maxValue_) {
+            setValue(maxValue_, false);
         }
 
-        textBox.setMaximumTextLength(std::to_string(maxValue).length() + (((minValue < 0) && (maxValue >= 0)) ? 1 : 0));
+        textBox_.setMaximumTextLength(std::to_string(maxValue_).length()
+                                      + (((minValue_ < 0) && (maxValue_ >= 0)) ? 1 : 0));
 
         resizeAll();
     }
 
-    void setIncrementValue(int newIncrementValue) { incrementValue = newIncrementValue; }
+    void setIncrementValue(int newIncrementValue) { incrementValue_ = newIncrementValue; }
 
     void setValue(int newValue) { setValue(newValue, false); }
 
     [[nodiscard]] int getValue() const {
         int x = 0;
-        if (parseString(textBox.getText(), x)) {
+        if (parseString(textBox_.getText(), x)) {
             return x;
         }
         return 0;
@@ -107,8 +108,8 @@ public:
         \param  pOnValueChange  A function to call on value change
     */
     void setOnValueChange(std::function<void(bool)> pOnValueChange) {
-        textBox.setOnTextChange(pOnValueChange);
-        this->pOnValueChange = pOnValueChange;
+        textBox_.setOnTextChange(pOnValueChange);
+        this->pOnValueChange_ = pOnValueChange;
     }
 
     /**
@@ -143,91 +144,91 @@ public:
         \return the minimum size of this text box
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        if (textBox.getParent() != this || buttonVBox.getParent() != this) {
+        if (textBox_.getParent() != this || buttonVBox_.getParent() != this) {
             // we are about to be destroyed
             return {0, 0};
         }
 
-        const Point textBoxMinimumSize    = textBox.getMinimumSize();
-        const Point buttonVBoxMinimumSize = buttonVBox.getMinimumSize();
+        const Point textBoxMinimumSize    = textBox_.getMinimumSize();
+        const Point buttonVBoxMinimumSize = buttonVBox_.getMinimumSize();
 
-        const std::string testString(std::max(1, textBox.getMaximumTextLength()), '9');
+        const std::string testString(std::max(1, textBox_.getMaximumTextLength()), '9');
 
-        return {
-            textBoxMinimumSize.x + buttonVBoxMinimumSize.x
-                + static_cast<int>(GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox.getTextFontSize())),
-            std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
+        return {textBoxMinimumSize.x + buttonVBoxMinimumSize.x
+                    + static_cast<int>(
+                        GUIStyle::getInstance().getTextWidth(testString.c_str(), textBox_.getTextFontSize())),
+                std::max(textBoxMinimumSize.y, buttonVBoxMinimumSize.y)};
     }
 
 protected:
     void setValue(int newValue, bool bInteractive) {
-        textBox.setText(std::to_string(newValue));
-        if (bInteractive && pOnValueChange) {
-            pOnValueChange(true);
+        textBox_.setText(std::to_string(newValue));
+        if (bInteractive && pOnValueChange_) {
+            pOnValueChange_(true);
         }
     }
 
 private:
     void onTextBoxLostFocus() {
         int x = 0;
-        if (parseString(textBox.getText(), x)) {
-            if (x < minValue) {
-                setValue(minValue, true);
-            } else if (x > maxValue) {
-                setValue(maxValue, true);
+        if (parseString(textBox_.getText(), x)) {
+            if (x < minValue_) {
+                setValue(minValue_, true);
+            } else if (x > maxValue_) {
+                setValue(maxValue_, true);
             }
         } else {
-            setValue((0 >= minValue && 0 <= maxValue) ? 0 : minValue, true);
+            setValue((0 >= minValue_ && 0 <= maxValue_) ? 0 : minValue_, true);
         }
     }
 
     void onIncrement() {
         int currentValue = getValue();
-        currentValue += incrementValue;
-        if (currentValue < minValue) {
-            setValue(minValue, true);
-        } else if (currentValue <= maxValue) {
+        currentValue += incrementValue_;
+        if (currentValue < minValue_) {
+            setValue(minValue_, true);
+        } else if (currentValue <= maxValue_) {
             setValue(currentValue, true);
         } else {
-            setValue(maxValue, true);
+            setValue(maxValue_, true);
         }
     }
 
     void onDecrement() {
         int currentValue = getValue();
-        currentValue -= incrementValue;
-        if (currentValue > maxValue) {
-            setValue(maxValue, true);
-        } else if (currentValue >= minValue) {
+        currentValue -= incrementValue_;
+        if (currentValue > maxValue_) {
+            setValue(maxValue_, true);
+        } else if (currentValue >= minValue_) {
             setValue(currentValue, true);
         } else {
-            setValue(minValue, true);
+            setValue(minValue_, true);
         }
     }
 
     void updateSurfaces() {
         auto* const gfx = dune::globals::pGFXManager.get();
 
-        plusButton.setTextures(gfx->getUIGraphic(UI_Plus, house), gfx->getUIGraphic(UI_Plus_Pressed, house),
-                               gfx->getUIGraphic(UI_Plus_Active, house));
+        plusButton_.setTextures(gfx->getUIGraphic(UI_Plus, house_), gfx->getUIGraphic(UI_Plus_Pressed, house_),
+                                gfx->getUIGraphic(UI_Plus_Active, house_));
 
-        minusButton.setTextures(gfx->getUIGraphic(UI_Minus, house), gfx->getUIGraphic(UI_Minus_Pressed, house),
-                                gfx->getUIGraphic(UI_Minus_Active, house));
+        minusButton_.setTextures(gfx->getUIGraphic(UI_Minus, house_), gfx->getUIGraphic(UI_Minus_Pressed, house_),
+                                 gfx->getUIGraphic(UI_Minus_Active, house_));
     }
 
-    TextBox textBox;
-    VBox buttonVBox;
-    PictureButton plusButton;
-    PictureButton minusButton;
+    TextBox textBox_;
+    VBox buttonVBox_;
+    PictureButton plusButton_;
+    PictureButton minusButton_;
 
-    std::function<void(bool)> pOnValueChange;
+    std::function<void(bool)> pOnValueChange_;
 
-    int minValue = std::numeric_limits<int>::min();
-    int maxValue = std::numeric_limits<int>::max();
+    int minValue_ = std::numeric_limits<int>::min();
+    int maxValue_ = std::numeric_limits<int>::max();
 
-    int incrementValue = 1;
+    int incrementValue_ = 1;
 
-    HOUSETYPE house{HOUSETYPE::HOUSE_HARKONNEN};
+    HOUSETYPE house_{HOUSETYPE::HOUSE_HARKONNEN};
 };
 
 #endif // DIGITSTEXTBOX_H

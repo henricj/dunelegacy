@@ -92,7 +92,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
                 if (!pUnit->canPassTile(&nextTile))
                     return;
 
-                const auto& nextCoord = nextTile.location;
+                const auto& nextCoord = nextTile.location_;
                 const auto nextKey    = pMap->getKey(nextTile);
 
                 assert(nextKey == pMap->getKey(nextCoord.x, nextCoord.y));
@@ -207,7 +207,7 @@ void AStarSearch::Search(Map* pMap, UnitBase* pUnit, Coord start, Coord destinat
     }
 }
 
-bool AStarSearch::getFoundPath(Map* pMap, std::vector<Coord>& path) const {
+bool AStarSearch::getFoundPath([[maybe_unused]] Map* pMap, std::vector<Coord>& path) const {
     path.clear();
 
     if (!bestCoord) {

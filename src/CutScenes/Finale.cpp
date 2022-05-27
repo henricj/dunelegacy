@@ -80,9 +80,10 @@ Finale::Finale(HOUSETYPE house) {
     if (pPlanetDuneInHouseColorSurface == nullptr) {
         THROW(std::runtime_error, "Finale::Finale(): Cannot open MAPPLAN.CPS!");
     }
-    pPlanetDuneInHouseColorSurface = mapSurfaceColorRange(
-        pPlanetDuneInHouseColorSurface.get(), houseToPaletteIndex[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)],
-        houseToPaletteIndex[static_cast<int>(house)]);
+    pPlanetDuneInHouseColorSurface =
+        mapSurfaceColorRange(pPlanetDuneInHouseColorSurface.get(),
+                             dune::globals::houseToPaletteIndex[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)],
+                             dune::globals::houseToPaletteIndex[static_cast<int>(house)]);
 
     if (house == HOUSETYPE::HOUSE_HARKONNEN || house == HOUSETYPE::HOUSE_ATREIDES || house == HOUSETYPE::HOUSE_ORDOS) {
         lizard  = getChunkFromFile("LIZARD1.VOC");
@@ -97,7 +98,7 @@ Finale::Finale(HOUSETYPE house) {
 
     const auto& palette = dune::globals::palette;
 
-    const Uint32 color          = SDL2RGB(palette[houseToPaletteIndex[static_cast<int>(house)] + 1]);
+    const Uint32 color          = SDL2RGB(palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 1]);
     const Uint32 sardaukarColor = SDL2RGB(palette[PALCOLOR_SARDAUKAR + 1]);
 
     switch (house) {

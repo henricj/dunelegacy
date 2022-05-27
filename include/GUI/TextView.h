@@ -40,7 +40,7 @@ public:
         \param  fontSize      the size of the new font
     */
     virtual void setTextFontSize(int fontSize) {
-        this->fontSize = fontSize;
+        this->fontSize_ = fontSize;
         resize(getSize().x, getSize().y);
     }
 
@@ -48,7 +48,7 @@ public:
         Gets the font size of this text view. Default font size of a text view is 14
         \return the font size of this text view
     */
-    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize_; }
 
     /**
         Sets the text color for this label.
@@ -58,9 +58,9 @@ public:
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT,
                               Uint32 backgroundcolor = COLOR_TRANSPARENT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
-        this->backgroundcolor = backgroundcolor;
+        this->text_color_        = textcolor;
+        this->text_shadow_color_ = textshadowcolor;
+        this->background_color_  = backgroundcolor;
         invalidateTextures();
     }
 
@@ -70,7 +70,7 @@ public:
        Alignment_Top or Alignment_Bottom)
     */
     virtual void setAlignment(Alignment_Enum alignment) {
-        this->alignment = alignment;
+        this->alignment_ = alignment;
         invalidateTextures();
     }
 
@@ -79,7 +79,7 @@ public:
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
        Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment; }
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment_; }
 
     /**
         This method sets a new text for this label and resizes this label
@@ -87,7 +87,7 @@ public:
         \param  text The new text for this button
     */
     virtual void setText(const std::string& text) {
-        this->text = text;
+        this->text_ = text;
         resizeAll();
     }
 
@@ -95,7 +95,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; }
+    [[nodiscard]] const std::string& getText() const noexcept { return text_; }
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -154,7 +154,7 @@ public:
         \return the minimum size of this scroll bar
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        Point tmp = scrollbar.getMinimumSize();
+        Point tmp = scrollbar_.getMinimumSize();
         tmp.x += 30;
         return tmp;
     }
@@ -169,23 +169,23 @@ public:
         Is the scrollbar always shown or is it hidden if not needed
         \return true if scrollbar is hidden if not needed
     */
-    [[nodiscard]] bool getAutohideScrollbar() const { return bAutohideScrollbar; }
+    [[nodiscard]] bool getAutohideScrollbar() const { return bAutohideScrollbar_; }
 
     /**
         Set if the scrollbar shall be hidden if not needed
         \param  bAutohideScrollbar  true = hide scrollbar, false = show always
     */
-    void setAutohideScrollbar(bool bAutohideScrollbar) { this->bAutohideScrollbar = bAutohideScrollbar; }
+    void setAutohideScrollbar(bool bAutohideScrollbar) { this->bAutohideScrollbar_ = bAutohideScrollbar; }
 
     /**
         Scrolls the text box to the start.
     */
-    void scrollToStart() { scrollbar.setCurrentValue(0); }
+    void scrollToStart() { scrollbar_.setCurrentValue(0); }
 
     /**
         Scrolls the text box to the last line.
     */
-    void scrollToEnd() { scrollbar.setCurrentValue(scrollbar.getRangeMax()); }
+    void scrollToEnd() { scrollbar_.setCurrentValue(scrollbar_.getRangeMax()); }
 
 protected:
     /**
@@ -201,20 +201,20 @@ protected:
     void invalidateTextures() override;
 
 private:
-    int fontSize           = 14;                ///< the size of the font to use
-    Uint32 textcolor       = COLOR_DEFAULT;     ///< the text color
-    Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
-    Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
-    std::string text;                           ///< the text of this label
+    int fontSize_             = 14;                ///< the size of the font to use
+    Uint32 text_color_        = COLOR_DEFAULT;     ///< the text color
+    Uint32 text_shadow_color_ = COLOR_DEFAULT;     ///< the color of the shadow of the text
+    Uint32 background_color_  = COLOR_TRANSPARENT; ///< the color of the label background
+    std::string text_;                             ///< the text of this label
 
-    Alignment_Enum alignment =
+    Alignment_Enum alignment_ =
         static_cast<Alignment_Enum>(Alignment_Left | Alignment_Top); ///< the alignment of this label
 
-    DuneTextureOwned pBackground;
-    DuneTextureOwned pForeground;
-    ScrollBar scrollbar;
+    DuneTextureOwned pBackground_;
+    DuneTextureOwned pForeground_;
+    ScrollBar scrollbar_;
 
-    bool bAutohideScrollbar = true; ///< hide the scrollbar if not needed (default = true)
+    bool bAutohideScrollbar_ = true; ///< hide the scrollbar if not needed (default = true)
 };
 
 #endif // TEXTVIEW_H

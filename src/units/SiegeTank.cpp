@@ -44,18 +44,18 @@ SiegeTank::SiegeTank(uint32_t objectID, const ObjectStreamInitializer& initializ
 }
 
 void SiegeTank::init() {
-    assert(itemID == Unit_SiegeTank);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_SiegeTank);
+    owner_->incrementUnits(itemID_);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    graphicID     = ObjPic_Siegetank_Base;
-    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_    = ObjPic_Siegetank_Base;
+    graphic_      = gfx->getObjPic(graphicID_, getOwner()->getHouseID());
     gunGraphicID  = ObjPic_Siegetank_Gun;
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 SiegeTank::~SiegeTank() = default;
@@ -64,14 +64,14 @@ void SiegeTank::blitToScreen() {
     const auto* const screenborder = dune::globals::screenborder.get();
     auto* const renderer           = dune::globals::renderer.get();
 
-    const auto x1 = screenborder->world2screenX(realX);
-    const auto y1 = screenborder->world2screenY(realY);
+    const auto x1 = screenborder->world2screenX(realX_);
+    const auto y1 = screenborder->world2screenY(realY_);
 
     const auto zoom = dune::globals::currentZoomlevel;
 
-    const auto* const pUnitGraphic = graphic[zoom];
-    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic_[zoom];
+    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX_, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
@@ -84,8 +84,8 @@ void SiegeTank::blitToScreen() {
 
     const auto offset = siegeTankTurretOffset[static_cast<int>(drawnTurretAngle)];
 
-    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic, screenborder->world2screenX(realX + offset.x),
-                                             screenborder->world2screenY(realY + offset.y), NUM_ANGLES, 1,
+    const auto dest2 = calcSpriteDrawingRect(pTurretGraphic, screenborder->world2screenX(realX_ + offset.x),
+                                             screenborder->world2screenY(realY_ + offset.y), NUM_ANGLES, 1,
                                              HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
@@ -96,14 +96,14 @@ void SiegeTank::blitToScreen() {
 }
 
 void SiegeTank::destroy(const GameContext& context) {
-    if (context.map.tileExists(location) && isVisible()) {
-        const Coord realPos(lround(realX), lround(realY));
+    if (context.map.tileExists(location_) && isVisible()) {
+        const Coord realPos(lround(realX_), lround(realY_));
         const auto explosionID = context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
-        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
+        context.game.addExplosion(explosionID, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID())) {
             dune::globals::screenborder->shakeScreen(18);
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location_);
         }
     }
 
@@ -111,5 +111,5 @@ void SiegeTank::destroy(const GameContext& context) {
 }
 
 void SiegeTank::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
 }

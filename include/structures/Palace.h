@@ -61,7 +61,7 @@ public:
     int getSpecialWeaponTimer() const { return specialWeaponTimer; }
 
     int getMaxSpecialWeaponTimer() const {
-        if (originalHouseID == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR) {
+        if (originalHouseID_ == HOUSETYPE::HOUSE_HARKONNEN || originalHouseID_ == HOUSETYPE::HOUSE_SARDAUKAR) {
             // 10 min
             return MILLI2CYCLES(10 * 60 * 1000);
         } // 5 min

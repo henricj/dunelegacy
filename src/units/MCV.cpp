@@ -38,7 +38,7 @@ MCV::MCV(uint32_t objectID, const ObjectInitializer& initializer) : GroundUnit(m
     MCV::init();
 
     MCV::setHealth(getMaxHealth());
-    attackMode = GUARD;
+    attackMode_ = GUARD;
 }
 
 MCV::MCV(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -47,21 +47,21 @@ MCV::MCV(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void MCV::init() {
-    assert(itemID == Unit_MCV);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_MCV);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_MCV;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_MCV;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 MCV::~MCV() = default;
 
 void MCV::handleDeployClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_MCV_DEPLOY, objectID_));
 }
 
 bool MCV::doDeploy() {
@@ -95,17 +95,17 @@ bool MCV::doDeploy() {
 }
 
 bool MCV::canAttack(const ObjectBase* object) const {
-    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner->getTeamID())
+    return ((object != nullptr) && object->isInfantry() && (object->getOwner()->getTeamID() != owner_->getTeamID())
             && object->isVisible(getOwner()->getTeamID()));
 }
 
 void MCV::destroy(const GameContext& context) {
-    if (dune::globals::currentGameMap->tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
+    if (dune::globals::currentGameMap->tileExists(location_) && isVisible()) {
+        Coord realPos(lround(realX_), lround(realY_));
+        context.game.addExplosion(Explosion_SmallUnit, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
     }
 
     GroundUnit::destroy(context);

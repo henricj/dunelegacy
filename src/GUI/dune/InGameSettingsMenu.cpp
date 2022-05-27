@@ -42,7 +42,7 @@ InGameSettingsMenu::InGameSettingsMenu() : Window(0, 0, 0, 0) {
 
     InGameSettingsMenu::setWindowWidget(&windowWidget);
 
-    const auto palette_index = houseToPaletteIndex[static_cast<int>(houseID)];
+    const auto palette_index = dune::globals::houseToPaletteIndex[static_cast<int>(houseID)];
 
     const Uint32 color1 = SDL2RGB(palette[palette_index + 2]);
     const Uint32 color2 = SDL2RGB(palette[palette_index + 3]);

@@ -9,7 +9,7 @@ TextButton::~TextButton() = default;
 void TextButton::updateTextures() {
     parent::updateTextures();
 
-    if (!pUnpressedTexture) {
+    if (!pUnpressedTexture_) {
         invalidateTextures();
 
         const auto& gui      = GUIStyle::getInstance();

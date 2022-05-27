@@ -43,18 +43,18 @@ Launcher::Launcher(uint32_t objectID, const ObjectStreamInitializer& initializer
     Launcher::init();
 }
 void Launcher::init() {
-    assert(itemID == Unit_Launcher);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Launcher);
+    owner_->incrementUnits(itemID_);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    graphicID     = ObjPic_Tank_Base;
+    graphicID_    = ObjPic_Tank_Base;
     gunGraphicID  = ObjPic_Launcher_Gun;
-    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    graphic_      = gfx->getObjPic(graphicID_, getOwner()->getHouseID());
     turretGraphic = gfx->getObjPic(gunGraphicID, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Launcher::~Launcher() = default;
@@ -64,12 +64,12 @@ void Launcher::blitToScreen() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const auto x1 = screenborder->world2screenX(realX);
-    const auto y1 = screenborder->world2screenY(realY);
+    const auto x1 = screenborder->world2screenX(realX_);
+    const auto y1 = screenborder->world2screenY(realY_);
 
-    const auto* const pUnitGraphic = graphic[zoom];
-    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* const pUnitGraphic = graphic_[zoom];
+    const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);
+    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX_, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
@@ -78,10 +78,10 @@ void Launcher::blitToScreen() {
 
     const auto* const pTurretGraphic = turretGraphic[zoom];
 
-    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle), numImagesX);
+    const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle_), numImagesX_);
     const auto dest2   = calcSpriteDrawingRect(
-          pTurretGraphic, screenborder->world2screenX(realX + launcherTurretOffset[static_cast<int>(drawnAngle)].x),
-          screenborder->world2screenY(realY + launcherTurretOffset[static_cast<int>(drawnAngle)].y), numImagesX, 1,
+          pTurretGraphic, screenborder->world2screenX(realX_ + launcherTurretOffset[static_cast<int>(drawnAngle_)].x),
+          screenborder->world2screenY(realY_ + launcherTurretOffset[static_cast<int>(drawnAngle_)].y), numImagesX_, 1,
           HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
@@ -92,14 +92,14 @@ void Launcher::blitToScreen() {
 }
 
 void Launcher::destroy(const GameContext& context) {
-    if (context.map.tileExists(location) && isVisible()) {
-        const Coord realPos(lround(realX), lround(realY));
+    if (context.map.tileExists(location_) && isVisible()) {
+        const Coord realPos(lround(realX_), lround(realY_));
         const auto explosionID =
             context.game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2, Explosion_Flames);
-        context.game.addExplosion(explosionID, realPos, owner->getHouseID());
+        context.game.addExplosion(explosionID, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionMedium, location_);
     }
 
     parent::destroy(context);
@@ -107,10 +107,10 @@ void Launcher::destroy(const GameContext& context) {
 
 bool Launcher::canAttack(const ObjectBase* object) const {
     return ((object != nullptr)
-            && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+            && ((object->getOwner()->getTeamID() != owner_->getTeamID()) || object->getItemID() == Unit_Sandworm)
             && object->isVisible(getOwner()->getTeamID()));
 }
 
 void Launcher::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location_);
 }

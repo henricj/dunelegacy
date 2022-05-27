@@ -71,13 +71,13 @@ Refinery::Refinery(uint32_t objectID, const ObjectStreamInitializer& initializer
 }
 
 void Refinery::init() {
-    assert(itemID == Structure_Refinery);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_Refinery);
+    owner_->incrementStructures(itemID_);
 
-    graphicID  = ObjPic_Refinery;
-    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX = 10;
-    numImagesY = 1;
+    graphicID_  = ObjPic_Refinery;
+    graphic_    = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_ = 10;
+    numImagesY_ = 1;
 }
 
 Refinery::~Refinery() = default;
@@ -101,16 +101,16 @@ void Refinery::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> Refinery::getInterfaceContainer(const GameContext& context) {
-    if (dune::globals::pLocalHouse == owner || dune::globals::debug) {
-        return RefineryAndSiloInterface::create(context, objectID);
+    if (dune::globals::pLocalHouse == owner_ || dune::globals::debug) {
+        return RefineryAndSiloInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void Refinery::assignHarvester(Harvester* newHarvester) {
     extractingSpice = true;
     harvester.pointTo(newHarvester);
-    drawnAngle     = static_cast<ANGLETYPE>(1);
+    drawnAngle_    = static_cast<ANGLETYPE>(1);
     firstAnimFrame = 8;
     lastAnimFrame  = 9;
     curAnimFrame   = 8;
@@ -118,7 +118,7 @@ void Refinery::assignHarvester(Harvester* newHarvester) {
 
 void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) {
     unBook();
-    drawnAngle      = static_cast<ANGLETYPE>(0);
+    drawnAngle_     = static_cast<ANGLETYPE>(0);
     extractingSpice = false;
 
     if (firstRun) {
@@ -135,7 +135,7 @@ void Refinery::deployHarvester(const GameContext& context, Carryall* pCarryall) 
             pCarryall->setDestination(pHarvester->getGuardPoint());
         } else {
             const auto deployPos =
-                dune::globals::currentGameMap->findDeploySpot(pHarvester, location, destination, getStructureSize());
+                dune::globals::currentGameMap->findDeploySpot(pHarvester, location_, destination_, getStructureSize());
 
             if (deployPos.isInvalid()) {
                 sdl2::log_error("Unable to locate deployment location for harvester!");
@@ -201,13 +201,13 @@ void Refinery::updateStructureSpecificStuff(const GameContext& context) {
 
         extractionSpeed = extractionSpeed * scale / 5;
 
-        owner->addCredits(pHarvester->extractSpice(extractionSpeed), true);
+        owner_->addCredits(pHarvester->extractSpice(extractionSpeed), true);
     } else if (!pHarvester->isAwaitingPickup() && pHarvester->getGuardPoint().isValid()) {
         // find carryall
         Carryall* pCarryall = nullptr;
         if (pHarvester->getGuardPoint().isValid() && getOwner()->hasCarryalls()) {
             for (auto* const pUnit : dune::globals::unitList) {
-                if (pUnit->getOwner() == owner)
+                if (pUnit->getOwner() == owner_)
                     continue;
 
                 if (auto* const pTmpCarryall = dune_cast<Carryall>(pUnit)) {

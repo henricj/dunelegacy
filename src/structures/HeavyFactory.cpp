@@ -40,13 +40,13 @@ HeavyFactory::HeavyFactory(uint32_t objectID, const ObjectStreamInitializer& ini
 }
 
 void HeavyFactory::init() {
-    assert(itemID == Structure_HeavyFactory);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_HeavyFactory);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_HeavyFactory;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 8;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_HeavyFactory;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 8;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }
@@ -54,7 +54,7 @@ void HeavyFactory::init() {
 HeavyFactory::~HeavyFactory() = default;
 
 void HeavyFactory::doBuildRandom(const GameContext& context) {
-    if (isAllowedToUpgrade() && (getUpgradeCost(context) <= owner->getCredits())) {
+    if (isAllowedToUpgrade() && (getUpgradeCost(context) <= owner_->getCredits())) {
         doUpgrade(context);
         return;
     }

@@ -67,7 +67,7 @@ public:
     NetworkManager& operator=(const NetworkManager&) = delete;
     NetworkManager& operator=(NetworkManager&&)      = delete;
 
-    [[nodiscard]] bool isServer() const noexcept { return bIsServer; }
+    [[nodiscard]] bool isServer() const noexcept { return bIsServer_; }
 
     void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
                      GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
@@ -94,10 +94,10 @@ public:
     [[nodiscard]] std::list<std::string> getConnectedPeers() const {
         std::list<std::string> peerNameList;
 
-        for (const ENetPeer* pPeer : peerList) {
+        for (const ENetPeer* pPeer : peerList_) {
             auto* peerData = static_cast<PeerData*>(pPeer->data);
             if (peerData != nullptr) {
-                peerNameList.push_back(peerData->name);
+                peerNameList.push_back(peerData->name_);
             }
         }
 
@@ -106,16 +106,16 @@ public:
 
     int getMaxPeerRoundTripTime() const;
 
-    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer.get(); }
+    LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer_.get(); }
 
-    MetaServerClient* getMetaServerClient() { return pMetaServerClient.get(); }
+    MetaServerClient* getMetaServerClient() { return pMetaServerClient_.get(); }
 
     /**
         Sets the function that should be called when a chat message is received
         \param  pOnReceiveChatMessage   function to call on new chat message
     */
     void setOnReceiveChatMessage(std::function<void(const std::string&, const std::string&)> pOnReceiveChatMessage) {
-        this->pOnReceiveChatMessage = pOnReceiveChatMessage;
+        this->pOnReceiveChatMessage_ = pOnReceiveChatMessage;
     }
 
     /**
@@ -123,7 +123,7 @@ public:
         \param  pOnReceiveGameInfo  function to call on receive
     */
     void setOnReceiveGameInfo(std::function<void(const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo) {
-        this->pOnReceiveGameInfo = pOnReceiveGameInfo;
+        this->pOnReceiveGameInfo_ = pOnReceiveGameInfo;
     }
 
     /**
@@ -131,7 +131,7 @@ public:
         \param  pOnReceiveChangeEventList   function to call on receive
     */
     void setOnReceiveChangeEventList(std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList) {
-        this->pOnReceiveChangeEventList = pOnReceiveChangeEventList;
+        this->pOnReceiveChangeEventList_ = pOnReceiveChangeEventList;
     }
 
     /**
@@ -139,7 +139,7 @@ public:
         \param  pOnPeerDisconnected function to call on disconnect
     */
     void setOnPeerDisconnected(std::function<void(const std::string&, bool, int)> pOnPeerDisconnected) {
-        this->pOnPeerDisconnected = pOnPeerDisconnected;
+        this->pOnPeerDisconnected_ = pOnPeerDisconnected;
     }
 
     /**
@@ -148,7 +148,7 @@ public:
     */
     void setGetChangeEventListForNewPlayerCallback(
         std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback) {
-        this->pGetChangeEventListForNewPlayerCallback = pGetChangeEventListForNewPlayerCallback;
+        this->pGetChangeEventListForNewPlayerCallback_ = pGetChangeEventListForNewPlayerCallback;
     }
 
     /**
@@ -156,7 +156,7 @@ public:
         \param  pOnStartGame    function to call on receive
     */
     void setOnStartGame(std::function<void(dune::dune_clock::duration)> pOnStartGame) {
-        this->pOnStartGame = pOnStartGame;
+        this->pOnStartGame_ = pOnStartGame;
     }
 
     /**
@@ -164,7 +164,7 @@ public:
         \param  pOnReceiveCommandList   function to call on receive
     */
     void setOnReceiveCommandList(std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList) {
-        this->pOnReceiveCommandList = pOnReceiveCommandList;
+        this->pOnReceiveCommandList_ = pOnReceiveCommandList;
     }
 
     /**
@@ -173,7 +173,7 @@ public:
     */
     void setOnReceiveSelectionList(
         std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList) {
-        this->pOnReceiveSelectionList = pOnReceiveSelectionList;
+        this->pOnReceiveSelectionList_ = pOnReceiveSelectionList;
     }
 
 private:
@@ -200,43 +200,43 @@ private:
             Connected
         };
 
-        PeerData(ENetPeer* pPeer, PeerState peerState) : pPeer(pPeer), peerState(peerState) { }
+        PeerData(ENetPeer* pPeer, PeerState peerState) : pPeer_(pPeer), peerState_(peerState) { }
 
-        ENetPeer* pPeer;
+        ENetPeer* pPeer_;
 
-        PeerState peerState;
-        dune::dune_clock::time_point timeout{};
+        PeerState peerState_;
+        dune::dune_clock::time_point timeout_{};
 
-        std::string name;
-        std::list<ENetPeer*> notYetConnectedPeers;
+        std::string name_;
+        std::list<ENetPeer*> notYetConnectedPeers_;
     };
 
-    ENetHost* host                      = nullptr;
-    bool bIsServer                      = false;
-    bool bLANServer                     = false;
-    GameInitSettings* pGameInitSettings = nullptr;
-    int numPlayers                      = 0;
-    int maxPlayers                      = 0;
+    ENetHost* host_                      = nullptr;
+    bool bIsServer_                      = false;
+    bool bLANServer_                     = false;
+    GameInitSettings* pGameInitSettings_ = nullptr;
+    int numPlayers_                      = 0;
+    int maxPlayers_                      = 0;
 
-    std::string playerName;
+    std::string playerName_;
 
-    ENetPeer* connectPeer = nullptr;
+    ENetPeer* connectPeer_ = nullptr;
 
-    std::list<ENetPeer*> peerList;
+    std::list<ENetPeer*> peerList_;
 
-    std::list<ENetPeer*> awaitingConnectionList;
+    std::list<ENetPeer*> awaitingConnectionList_;
 
-    std::function<void(const std::string&, const std::string&)> pOnReceiveChatMessage;
-    std::function<void(const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo;
-    std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList;
-    std::function<void(const std::string&, bool, int)> pOnPeerDisconnected;
-    std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback;
-    std::function<void(dune::dune_clock::duration)> pOnStartGame;
-    std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList;
-    std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList;
+    std::function<void(const std::string&, const std::string&)> pOnReceiveChatMessage_;
+    std::function<void(const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo_;
+    std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList_;
+    std::function<void(const std::string&, bool, int)> pOnPeerDisconnected_;
+    std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback_;
+    std::function<void(dune::dune_clock::duration)> pOnStartGame_;
+    std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList_;
+    std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList_;
 
-    std::unique_ptr<LANGameFinderAndAnnouncer> pLANGameFinderAndAnnouncer = nullptr;
-    std::unique_ptr<MetaServerClient> pMetaServerClient                   = nullptr;
+    std::unique_ptr<LANGameFinderAndAnnouncer> pLANGameFinderAndAnnouncer_ = nullptr;
+    std::unique_ptr<MetaServerClient> pMetaServerClient_                   = nullptr;
 };
 
 #endif // NETWORKMANAGER_H

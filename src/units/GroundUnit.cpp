@@ -58,20 +58,20 @@ void GroundUnit::assignToMap(const GameContext& context, const Coord& pos) {
 
     if (auto* tile = map.tryGetTile(pos.x, pos.y)) {
         tile->assignNonInfantryGroundObject(getObjectID());
-        map.viewMap(owner->getHouseID(), pos, getViewRange());
+        map.viewMap(owner_->getHouseID(), pos, getViewRange());
     }
 }
 
 void GroundUnit::checkPos(const GameContext& context) {
-    auto* pTile = context.map.getTile(location);
+    auto* pTile = context.map.getTile(location_);
 
     if (!moving && !justStoppedMoving && !isInfantry()) {
-        pTile->setTrack(drawnAngle, context.game.getGameCycleCount());
+        pTile->setTrack(drawnAngle_, context.game.getGameCycleCount());
     }
 
     if (justStoppedMoving) {
-        realX = location.x * TILESIZE + TILESIZE / 2;
-        realY = location.y * TILESIZE + TILESIZE / 2;
+        realX_ = location_.x * TILESIZE + TILESIZE / 2;
+        realY_ = location_.y * TILESIZE + TILESIZE / 2;
         // findTargetTimer = 0;  //allow a scan for new targets now
 
         if (pTile->isSpiceBloom()) {
@@ -86,15 +86,15 @@ void GroundUnit::checkPos(const GameContext& context) {
     /*
         Go to repair yard if low on health
     */
-    if (active && (getHealth() < getMaxHealth() / 2) && !goingToRepairYard && owner->hasRepairYard() && !pickedUp
-        && owner->hasCarryalls() && owner->getHouseID() == originalHouseID // stop deviated units from being repaired
-        && !isInfantry() && !forced) { // Stefan - Allow units with targets to be picked up for repairs
+    if (active_ && (getHealth() < getMaxHealth() / 2) && !goingToRepairYard && owner_->hasRepairYard() && !pickedUp
+        && owner_->hasCarryalls() && owner_->getHouseID() == originalHouseID_ // stop deviated units from being repaired
+        && !isInfantry() && !forced_) { // Stefan - Allow units with targets to be picked up for repairs
 
         doRepair(context);
     }
 
     if (goingToRepairYard) {
-        if (target.getObjPointer() == nullptr) {
+        if (target_.getObjPointer() == nullptr) {
             goingToRepairYard = false;
             awaitingPickup    = false;
             bookedCarrier     = NONE_ID;
@@ -103,14 +103,14 @@ void GroundUnit::checkPos(const GameContext& context) {
         } else {
             const auto* const pObject = pTile->getGroundObject(context.objectManager);
 
-            if (justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target.getObjectID())) {
-                if (const auto* const pRepairYard = dune_cast<RepairYard>(target.getObjPointer())) {
+            if (justStoppedMoving && (pObject != nullptr) && (pObject->getObjectID() == target_.getObjectID())) {
+                if (const auto* const pRepairYard = dune_cast<RepairYard>(target_.getObjPointer())) {
                     if (pRepairYard->isFree()) {
                         setGettingRepaired();
                     } else {
                         // the repair yard is already in use by some other unit => move out
                         const Coord newDestination =
-                            context.map.findDeploySpot(this, target.getObjPointer()->getLocation(), getLocation(),
+                            context.map.findDeploySpot(this, target_.getObjPointer()->getLocation(), getLocation(),
                                                        pRepairYard->getStructureSize());
                         doMove2Pos(context, newDestination, true);
                     }
@@ -120,8 +120,8 @@ void GroundUnit::checkPos(const GameContext& context) {
     }
 
     // If we are awaiting a pickup try book a carryall if we have one
-    if (!pickedUp && attackMode == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
-        if (getOwner()->hasCarryalls() && (target || (destination != location))) {
+    if (!pickedUp && attackMode_ == CARRYALLREQUESTED && bookedCarrier == NONE_ID) {
+        if (getOwner()->hasCarryalls() && (target_ || (destination_ != location_))) {
             requestCarryall(context);
         } else {
             if (getItemID() == Unit_Harvester) {
@@ -161,7 +161,7 @@ bool GroundUnit::requestCarryall(const GameContext& context) {
         doSetAttackMode(context, CARRYALLREQUESTED);
 
         for (auto* pUnit : dune::globals::unitList) {
-            if (pUnit->getOwner() != owner)
+            if (pUnit->getOwner() != owner_)
                 continue;
 
             auto* carryall = dune_cast<Carryall>(pUnit);
@@ -245,7 +245,7 @@ FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const {
 
 void GroundUnit::move(const GameContext& context) {
     if (!moving && !justStoppedMoving && (((context.game.getGameCycleCount() + getObjectID()) % 512) == 0)) {
-        context.map.viewMap(owner->getHouseID(), location, getViewRange());
+        context.map.viewMap(owner_->getHouseID(), location_, getViewRange());
     }
 
     parent::move(context);
@@ -262,7 +262,7 @@ void GroundUnit::navigate(const GameContext& context) {
 
 void GroundUnit::handleSendToRepairClick() {
     dune::globals::currentGame->getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_SENDTOREPAIR, objectID_));
 }
 
 void GroundUnit::doRepair(const GameContext& context) noexcept {
@@ -276,10 +276,10 @@ void GroundUnit::doRepair(const GameContext& context) noexcept {
 
     for (auto* pStructure : dune::globals::structureList) {
         const auto* const pRepairYard = dune_cast<RepairYard>(pStructure);
-        if (pRepairYard && (pStructure->getOwner() == owner)) {
+        if (pRepairYard && (pStructure->getOwner() == owner_)) {
 
             if (pRepairYard->getNumBookings() == 0) {
-                const auto tempDistance = blockDistance(location, pRepairYard->getClosestPoint(location));
+                const auto tempDistance = blockDistance(location_, pRepairYard->getClosestPoint(location_));
                 if (tempDistance < closestLeastBookedRepairYardDistance) {
                     closestLeastBookedRepairYardDistance = tempDistance;
                     pBestRepairYard                      = pRepairYard;

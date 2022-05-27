@@ -31,8 +31,8 @@ std::unique_ptr<RadarInterface> RadarInterface::create(const GameContext& contex
 
 RadarInterface::RadarInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
-    const auto color = SDL2RGB(
-        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
+    const auto house_id = static_cast<int>(dune::globals::pLocalHouse->getHouseID());
+    const auto color    = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[house_id] + 3]);
 
     mainHBox.addWidget(&textVBox);
 

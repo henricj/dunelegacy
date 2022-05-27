@@ -83,7 +83,7 @@ void Map::save(OutputStream& stream, uint32_t gameCycleCount) const {
 void Map::init_tile_location() {
     for (auto i = 0; i < sizeX; ++i) {
         for (auto j = 0; j < sizeY; ++j) {
-            tiles[tile_index(i, j)].location = Coord(i, j);
+            tiles[tile_index(i, j)].location_ = Coord(i, j);
         }
     }
 }
@@ -97,7 +97,7 @@ void Map::createSandRegions() {
 
     uint32_t region = 0;
     for (auto& tile : tiles) {
-        if (!tile.isRock() && !visited[tile_index(tile.location.x, tile.location.y)]) {
+        if (!tile.isRock() && !visited[tile_index(tile.location_.x, tile.location_.y)]) {
             tileQueue.push(&tile);
 
             while (!tileQueue.empty()) {
@@ -106,17 +106,18 @@ void Map::createSandRegions() {
 
                 pTile->setSandRegion(region);
 
-                index_for_each_angle(pTile->location.x, pTile->location.y, [&](ANGLETYPE angle, int index) {
-                    if (!visited[index])
-                        return;
+                index_for_each_angle(pTile->location_.x, pTile->location_.y,
+                                     [&]([[maybe_unused]] ANGLETYPE angle, int index) {
+                                         if (!visited[index])
+                                             return;
 
-                    auto* const tile_angle = &tiles[index];
+                                         auto* const tile_angle = &tiles[index];
 
-                    if (!tile_angle->isRock()) {
-                        tileQueue.push(tile_angle);
-                        visited[index] = true;
-                    }
-                });
+                                         if (!tile_angle->isRock()) {
+                                             tileQueue.push(tile_angle);
+                                             visited[index] = true;
+                                         }
+                                     });
             }
             region++;
         }
@@ -242,11 +243,11 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                             pTile->setOwner(static_cast<HOUSETYPE>(NONE_ID));
                         }
 
-                        const auto damage = (bulletID == BulletID_enum::Bullet_SmallRocket)
-                                              ? Tile::ROCKDAMAGETYPE::RockDamage1
-                                              : Tile::ROCKDAMAGETYPE::RockDamage2;
+                        const auto damage_type = (bulletID == BulletID_enum::Bullet_SmallRocket)
+                                                   ? Tile::ROCKDAMAGETYPE::RockDamage1
+                                                   : Tile::ROCKDAMAGETYPE::RockDamage2;
 
-                        pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage),
+                        pTile->addDamage(Tile::TerrainDamage_enum::Terrain_RockDamage, static_cast<int>(damage_type),
                                          realPos);
 
                     } else if ((type == TERRAINTYPE::Terrain_Sand) || (type == TERRAINTYPE::Terrain_Spice)) {
@@ -432,13 +433,13 @@ Coord Map::findDeploySpot(UnitBase* pUnit, const Coord& origin, Random& random, 
         }
 
         if (gatherPoint.isInvalid()) {
-            closestPoint = t.location;
+            closestPoint = t.location_;
             return SearchResult::Done;
         }
 
-        if (blockDistance(t.location, gatherPoint) < closestDistance) {
-            closestDistance = blockDistance(t.location, gatherPoint);
-            closestPoint    = t.location;
+        if (blockDistance(t.location_, gatherPoint) < closestDistance) {
+            closestDistance = blockDistance(t.location_, gatherPoint);
+            closestPoint    = t.location_;
             return SearchResult::DoneAtDepth;
         }
 
@@ -589,7 +590,7 @@ bool Map::findSpice(Coord& destination, const Coord& origin) {
         if (t.hasAGroundObject() || !t.hasSpice())
             return SearchResult::NotDone;
 
-        destination = t.location;
+        destination = t.location_;
         return SearchResult::Done;
     });
 }
@@ -651,7 +652,7 @@ void Map::createSpiceField(const GameContext& context, Coord location, int radiu
         [&](Tile& t) {
             if (t.isSand()) {
                 const auto terrain =
-                    centerIsThickSpice && (t.location == location) ? Terrain_ThickSpice : Terrain_Spice;
+                    centerIsThickSpice && (t.location_ == location) ? Terrain_ThickSpice : Terrain_Spice;
 
                 t.setType(context, terrain);
             }

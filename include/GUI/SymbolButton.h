@@ -83,7 +83,7 @@ protected:
     void updateTextures() override {
         Button::updateTextures();
 
-        if (!pUnpressedTexture) {
+        if (!pUnpressedTexture_) {
             invalidateTextures();
 
             sdl2::surface_ptr pUnpressed =

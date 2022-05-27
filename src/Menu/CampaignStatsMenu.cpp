@@ -51,7 +51,8 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     calculateScore(level);
 
     const Uint32 colorYou = SDL2RGB(
-        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 1]);
+        dune::globals::palette
+            [dune::globals::houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 1]);
     const Uint32 colorEnemy = SDL2RGB(dune::globals::palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window

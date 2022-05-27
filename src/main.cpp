@@ -398,7 +398,7 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
     }
 #endif
 
-    playername[0] = toupper(playername[0]);
+    playername[0] = std::toupper(static_cast<unsigned char>(playername[0]));
 
     // replace player name, language, server port and metaserver
     const std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
@@ -593,7 +593,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
         const auto factor = getLogicalToPhysicalResolutionFactor(displayMode.w, displayMode.h);
-        GUIStyle::getInstance().setZoom(factor);
+        GUIStyle::getInstance().setZoom(static_cast<float>(factor));
 
         settings.video.physicalWidth  = displayMode.w;
         settings.video.physicalHeight = displayMode.h;
@@ -646,7 +646,7 @@ float physical_dpi(SDL_Window* sdl_window) {
 
     SDL_SysWMinfo wmInfo{};
     SDL_VERSION(&wmInfo.version)
-    SDL_GetWindowWMInfo(dune::globals::window.get(), &wmInfo);
+    SDL_GetWindowWMInfo(sdl_window, &wmInfo);
 
     const auto hwnd = wmInfo.info.win.window;
 
@@ -939,7 +939,7 @@ struct TTF_handle final {
 } // namespace
 
 int main(int argc, char* argv[]) {
-    DuneHeapDebug heap_debug;
+    [[maybe_unused]] DuneHeapDebug heap_debug;
 
     dune::logging_initialize();
 

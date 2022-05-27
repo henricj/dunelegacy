@@ -28,8 +28,8 @@
 #include <units/UnitBase.h>
 
 UnitInterface::UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
-    const auto color = SDL2RGB(
-        dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
+    const auto house_id = static_cast<int>(dune::globals::pLocalHouse->getHouseID());
+    const auto color    = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[house_id] + 3]);
 
     mainHBox.addWidget(Widget::create<HSpacer>(4).release());
 

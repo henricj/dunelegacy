@@ -265,7 +265,7 @@ public:
     void blitSelectionRects(Game* game) const;
 
     void update() {
-        if (deadUnits.empty())
+        if (deadUnits_.empty())
             return;
 
         update_impl();
@@ -295,7 +295,7 @@ public:
         \return the center point in world coordinates
     */
     Coord getCenterPoint() const {
-        return Coord(location.x * TILESIZE + (TILESIZE / 2), location.y * TILESIZE + (TILESIZE / 2));
+        return Coord(location_.x * TILESIZE + (TILESIZE / 2), location_.y * TILESIZE + (TILESIZE / 2));
     }
 
     /*!
@@ -326,14 +326,7 @@ public:
         return dune_cast<ObjectType>(getGroundObject(objectManager));
     }
 
-    std::pair<bool, Dune::object_id_type> getGroundObjectID() const {
-        if (hasANonInfantryGroundObject())
-            return {true, assignedNonInfantryGroundObjectList.front()};
-        if (hasInfantry())
-            return {true, assignedInfantryList.front()};
-
-        return {false, 0};
-    }
+    std::pair<bool, Dune::object_id_type> getGroundObjectID() const;
 
     /*!
         returns a pointer to infantry object on this tile (if there's one)
@@ -344,13 +337,13 @@ public:
     ObjectBase* getObjectAt(const ObjectManager& objectManager, int x, int y) const;
     ObjectBase* getObjectWithID(const ObjectManager& objectManager, uint32_t objectID) const;
 
-    const std::vector<uint32_t>& getAirUnitList() const { return assignedAirUnitList; }
+    const std::vector<uint32_t>& getAirUnitList() const { return assignedAirUnitList_; }
 
-    const std::vector<uint32_t>& getInfantryList() const { return assignedInfantryList; }
+    const std::vector<uint32_t>& getInfantryList() const { return assignedInfantryList_; }
 
-    const std::vector<uint32_t>& getUndergroundUnitList() const { return assignedUndergroundUnitList; }
+    const std::vector<uint32_t>& getUndergroundUnitList() const { return assignedUndergroundUnitList_; }
 
-    const std::vector<uint32_t>& getNonInfantryGroundObjectList() const { return assignedNonInfantryGroundObjectList; }
+    const std::vector<uint32_t>& getNonInfantryGroundObjectList() const { return assignedNonInfantryGroundObjectList_; }
 
     /**
         This method is called when the spice bloom on this till shall be triggered. If this tile has no spice bloom
@@ -370,109 +363,76 @@ public:
         \param  cycle   the cycle this happens (normally the current game cycle)
     */
     void setExplored(HOUSETYPE houseID, uint32_t cycle) {
-        lastAccess[static_cast<int>(houseID)] = cycle;
-        explored[static_cast<int>(houseID)]   = true;
+        const auto house_id = static_cast<int>(houseID);
+
+        lastAccess_[house_id] = cycle;
+        explored_[house_id]   = true;
     }
 
-    void setOwner(HOUSETYPE newOwner) noexcept { owner = newOwner; }
-    void setSandRegion(uint32_t newSandRegion) noexcept { sandRegion = newSandRegion; }
+    void setOwner(HOUSETYPE newOwner) noexcept { owner_ = newOwner; }
+    void setSandRegion(uint32_t newSandRegion) noexcept { sandRegion_ = newSandRegion; }
     void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept {
-        destroyedStructureTile = newDestroyedStructureTile;
+        destroyedStructureTile_ = newDestroyedStructureTile;
     }
 
     bool hasAGroundObject() const noexcept { return (hasInfantry() || hasANonInfantryGroundObject()); }
-    bool hasAnAirUnit() const noexcept { return !assignedAirUnitList.empty(); }
-    bool hasAnUndergroundUnit() const noexcept { return !assignedUndergroundUnitList.empty(); }
-    bool hasANonInfantryGroundObject() const noexcept { return !assignedNonInfantryGroundObjectList.empty(); }
+    bool hasAnAirUnit() const noexcept { return !assignedAirUnitList_.empty(); }
+    bool hasAnUndergroundUnit() const noexcept { return !assignedUndergroundUnitList_.empty(); }
+    bool hasANonInfantryGroundObject() const noexcept { return !assignedNonInfantryGroundObjectList_.empty(); }
     bool hasAStructure(const ObjectManager& objectManager) const;
-    bool hasInfantry() const noexcept { return !assignedInfantryList.empty(); }
+    bool hasInfantry() const noexcept { return !assignedInfantryList_.empty(); }
     bool hasAnObject() const noexcept { return (hasAGroundObject() || hasAnAirUnit() || hasAnUndergroundUnit()); }
 
-    bool hasSpice() const noexcept { return (spice > 0); }
-    bool infantryNotFull() const noexcept { return (assignedInfantryList.size() < NUM_INFANTRY_PER_TILE); }
-    bool isConcrete() const noexcept { return (type == TERRAINTYPE::Terrain_Slab); }
-    bool isExploredByHouse(HOUSETYPE houseID) const { return explored[static_cast<int>(houseID)]; }
+    bool hasSpice() const noexcept { return (spice_ > 0); }
+    bool infantryNotFull() const noexcept { return (assignedInfantryList_.size() < NUM_INFANTRY_PER_TILE); }
+    bool isConcrete() const noexcept { return (type_ == TERRAINTYPE::Terrain_Slab); }
+    bool isExploredByHouse(HOUSETYPE houseID) const { return explored_[static_cast<int>(houseID)]; }
     bool isExploredByTeam(const Game* game, int teamID) const;
 
     bool isFoggedByHouse(bool fogOfWarEnabled, uint32_t gameCycleCount, HOUSETYPE houseID) const noexcept;
     bool isFoggedByTeam(const Game* game, int teamID) const;
-    bool isMountain() const noexcept { return (type == TERRAINTYPE::Terrain_Mountain); }
+    bool isMountain() const noexcept { return (type_ == TERRAINTYPE::Terrain_Mountain); }
     bool isRock() const noexcept {
-        return ((type == TERRAINTYPE::Terrain_Rock) || (type == TERRAINTYPE::Terrain_Slab)
-                || (type == TERRAINTYPE::Terrain_Mountain));
+        return ((type_ == TERRAINTYPE::Terrain_Rock) || (type_ == TERRAINTYPE::Terrain_Slab)
+                || (type_ == TERRAINTYPE::Terrain_Mountain));
     }
 
-    bool isSand() const noexcept { return (type == TERRAINTYPE::Terrain_Sand); }
-    bool isDunes() const noexcept { return (type == TERRAINTYPE::Terrain_Dunes); }
-    bool isSpiceBloom() const noexcept { return (type == TERRAINTYPE::Terrain_SpiceBloom); }
-    bool isSpecialBloom() const noexcept { return (type == TERRAINTYPE::Terrain_SpecialBloom); }
+    bool isSand() const noexcept { return (type_ == TERRAINTYPE::Terrain_Sand); }
+    bool isDunes() const noexcept { return (type_ == TERRAINTYPE::Terrain_Dunes); }
+    bool isSpiceBloom() const noexcept { return (type_ == TERRAINTYPE::Terrain_SpiceBloom); }
+    bool isSpecialBloom() const noexcept { return (type_ == TERRAINTYPE::Terrain_SpecialBloom); }
     bool isSpice() const noexcept {
-        return ((type == TERRAINTYPE::Terrain_Spice) || (type == TERRAINTYPE::Terrain_ThickSpice));
+        return ((type_ == TERRAINTYPE::Terrain_Spice) || (type_ == TERRAINTYPE::Terrain_ThickSpice));
     }
-    bool isThickSpice() const noexcept { return (type == TERRAINTYPE::Terrain_ThickSpice); }
+    bool isThickSpice() const noexcept { return (type_ == TERRAINTYPE::Terrain_ThickSpice); }
 
-    uint32_t getSandRegion() const noexcept { return sandRegion; }
-    HOUSETYPE getOwner() const noexcept { return owner; }
-    TERRAINTYPE getType() const noexcept { return type; }
-    FixPoint getSpice() const noexcept { return spice; }
+    uint32_t getSandRegion() const noexcept { return sandRegion_; }
+    HOUSETYPE getOwner() const noexcept { return owner_; }
+    TERRAINTYPE getType() const noexcept { return type_; }
+    FixPoint getSpice() const noexcept { return spice_; }
 
-    FixPoint getSpiceRemaining() const noexcept { return spice; }
+    FixPoint getSpiceRemaining() const noexcept { return spice_; }
 
-    const Coord& getLocation() const noexcept { return location; }
+    const Coord& getLocation() const noexcept { return location_; }
 
     uint32_t getRadarColor(const Game* game, House* pHouse, bool radar);
     TERRAINTILETYPE getTerrainTile() const {
-        if (terrainTile == TERRAINTILETYPE::TerrainTile_Invalid)
-            terrainTile = getTerrainTileImpl();
+        if (terrainTile_ == TERRAINTILETYPE::TerrainTile_Invalid)
+            terrainTile_ = getTerrainTileImpl();
 
-        return terrainTile;
+        return terrainTile_;
     }
     int getHideTile(const Game* game, int teamID) const;
     int getFogTile(const Game* game, int teamID) const;
-    int getDestroyedStructureTile() const noexcept { return destroyedStructureTile; }
+    int getDestroyedStructureTile() const noexcept { return destroyedStructureTile_; }
 
     bool isBlocked() const noexcept { return (isMountain() || hasAGroundObject()); }
 
-    void addDamage(Tile::TerrainDamage_enum damageType, int tile, Coord realPos) {
-        if (damage.size() >= DAMAGE_PER_TILE)
-            return;
+    void addDamage(Tile::TerrainDamage_enum damageType, int tile, Coord realPos);
 
-        DAMAGETYPE newDamage;
-        newDamage.tile       = tile;
-        newDamage.damageType = damageType;
-        newDamage.realPos    = realPos;
-
-        damage.push_back(newDamage);
-    }
-
-    Coord location; ///< location of this tile in map coordinates
+    Coord location_; ///< location of this tile in map coordinates
 
 private:
-    TERRAINTYPE type; ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
-
-    uint32_t fogColor{COLOR_BLACK}; ///< remember last color (radar)
-
-    HOUSETYPE owner{HOUSETYPE::HOUSE_INVALID}; ///< house ID of the owner of this tile
-    uint32_t sandRegion{NONE_ID};              ///< used by sandworms to check if can get to a unit
-
-    FixPoint spice{0}; ///< how much spice on this particular tile is left
-
-    zoomable_texture sprite{}; ///< the graphic to draw
-
-    int32_t destroyedStructureTile{DestroyedStructure_None}; ///< the tile drawn for a destroyed structure
-    mutable TERRAINTILETYPE terrainTile{TERRAINTILETYPE::TerrainTile_Invalid};
-    std::array<uint32_t, NUM_ANGLES> tracksCreationTime{}; ///< Contains the game cycle the tracks on sand appeared
-    std::vector<DAMAGETYPE> damage;                        ///< damage positions
-    std::vector<DEADUNITTYPE> deadUnits;                   ///< dead units
-
-    std::vector<uint32_t> assignedAirUnitList;                 ///< all the air units on this tile
-    std::vector<uint32_t> assignedInfantryList;                ///< all infantry units on this tile
-    std::vector<uint32_t> assignedUndergroundUnitList;         ///< all underground units on this tile
-    std::vector<uint32_t> assignedNonInfantryGroundObjectList; ///< all structures/vehicles on this tile
-
-    std::array<uint32_t, NUM_TEAMS> lastAccess{}; ///< contains for every team when this tile was seen last by this house
-    std::array<bool, NUM_TEAMS> explored{};       ///< contains for every team if this tile is explored
-
     void update_impl();
 
     template<typename Pred>
@@ -483,6 +443,32 @@ private:
     void forEachUnit(Visitor&& visitor) const;
 
     TERRAINTILETYPE getTerrainTileImpl() const;
+
+    TERRAINTYPE type_; ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
+
+    uint32_t fogColor_{COLOR_BLACK}; ///< remember last color (radar)
+
+    HOUSETYPE owner_{HOUSETYPE::HOUSE_INVALID}; ///< house ID of the owner of this tile
+    uint32_t sandRegion_{NONE_ID};              ///< used by sandworms to check if can get to a unit
+
+    FixPoint spice_{0}; ///< how much spice on this particular tile is left
+
+    zoomable_texture sprite_{}; ///< the graphic to draw
+
+    int32_t destroyedStructureTile_{DestroyedStructure_None}; ///< the tile drawn for a destroyed structure
+    mutable TERRAINTILETYPE terrainTile_{TERRAINTILETYPE::TerrainTile_Invalid};
+    std::array<uint32_t, NUM_ANGLES> tracksCreationTime_{}; ///< Contains the game cycle the tracks on sand appeared
+    std::vector<DAMAGETYPE> damage_;                        ///< damage positions
+    std::vector<DEADUNITTYPE> deadUnits_;                   ///< dead units
+
+    std::vector<uint32_t> assignedAirUnitList_;                 ///< all the air units on this tile
+    std::vector<uint32_t> assignedInfantryList_;                ///< all infantry units on this tile
+    std::vector<uint32_t> assignedUndergroundUnitList_;         ///< all underground units on this tile
+    std::vector<uint32_t> assignedNonInfantryGroundObjectList_; ///< all structures/vehicles on this tile
+
+    std::array<uint32_t, NUM_TEAMS>
+        lastAccess_{};                       ///< contains for every team when this tile was seen last by this house
+    std::array<bool, NUM_TEAMS> explored_{}; ///< contains for every team if this tile is explored
 };
 
 #endif // TILE_H

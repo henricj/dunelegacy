@@ -51,7 +51,7 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectInitializer& initializer)
 
     Sandworm::setHealth(getMaxHealth());
 
-    respondable = false;
+    respondable_ = false;
 
     for (auto& lastLoc : lastLocs) {
         lastLoc.invalidate();
@@ -77,14 +77,14 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer
 }
 
 void Sandworm::init() {
-    assert(itemID == Unit_Sandworm);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Sandworm);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Sandworm;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Sandworm;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = 1;
-    numImagesY = 9;
+    numImagesX_ = 1;
+    numImagesY_ = 9;
 
     drawnFrame = INVALID;
 }
@@ -115,8 +115,8 @@ void Sandworm::assignToMap(const GameContext& context, const Coord& pos) {
 
 bool Sandworm::attack(const GameContext& context) {
     if (primaryWeaponTimer == 0) {
-        if (target) {
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
+        if (target_) {
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location_);
             drawnFrame         = 0;
             attackFrameTimer   = SANDWORM_ATTACKFRAMETIME;
             primaryWeaponTimer = getWeaponReloadTime();
@@ -129,7 +129,7 @@ bool Sandworm::attack(const GameContext& context) {
 void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
     parent::deploy(context, newLocation);
 
-    respondable = false;
+    respondable_ = false;
 }
 
 void Sandworm::blitToScreen() {
@@ -185,20 +185,20 @@ void Sandworm::blitToScreen() {
     }
 
     if (drawnFrame != INVALID) {
-        const auto dest   = calcSpriteDrawingRect(graphic[currentZoomlevel], screenborder->world2screenX(realX),
-                                                  screenborder->world2screenY(realY), numImagesX, numImagesY,
+        const auto dest   = calcSpriteDrawingRect(graphic_[currentZoomlevel], screenborder->world2screenX(realX_),
+                                                  screenborder->world2screenY(realY_), numImagesX_, numImagesY_,
                                                   HAlign::Center, VAlign::Center);
-        const auto source = calcSpriteSourceRect(graphic[currentZoomlevel], 0, numImagesX, drawnFrame, numImagesY);
-        Dune_RenderCopyF(renderer, graphic[currentZoomlevel], &source, &dest);
+        const auto source = calcSpriteSourceRect(graphic_[currentZoomlevel], 0, numImagesX_, drawnFrame, numImagesY_);
+        Dune_RenderCopyF(renderer, graphic_[currentZoomlevel], &source, &dest);
     }
 }
 
 void Sandworm::checkPos(const GameContext& context) {
     if (justStoppedMoving) {
-        realX = location.x * TILESIZE + TILESIZE / 2;
-        realY = location.y * TILESIZE + TILESIZE / 2;
+        realX_ = location_.x * TILESIZE + TILESIZE / 2;
+        realY_ = location_.y * TILESIZE + TILESIZE / 2;
 
-        const auto* const infantry = context.map.tryGetInfantry(context, location.x, location.y);
+        const auto* const infantry = context.map.tryGetInfantry(context, location_.x, location_.y);
 
         if (infantry && infantry->getOwner() == dune::globals::pLocalHouse) {
             dune::globals::soundPlayer->playVoice(Voice_enum::SomethingUnderTheSand,
@@ -214,13 +214,13 @@ void Sandworm::engageTarget(const GameContext& context) {
 
     parent::engageTarget(context);
 
-    if (target) {
+    if (target_) {
         FixPoint maxDistance;
 
-        if (forced) {
+        if (forced_) {
             maxDistance = FixPt_MAX;
         } else {
-            switch (attackMode) {
+            switch (attackMode_) {
                 case GUARD:
                 case AMBUSH: {
                     maxDistance = getViewRange();
@@ -278,7 +278,7 @@ bool Sandworm::sleepOrDie(const GameContext& context) {
 
     // Make sand worms always drop spice, even if they don't die
     if (context.game.getGameInitSettings().getGameOptions().killedSandwormsDropSpice) {
-        context.map.createSpiceField(context, location, 4);
+        context.map.createSpiceField(context, location_, 4);
     }
 
     if (context.game.getGameInitSettings().getGameOptions().sandwormsRespawn) {
@@ -305,7 +305,7 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
 
 void Sandworm::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
     if (damage > 0)
-        attackMode = HUNT;
+        attackMode_ = HUNT;
 
     parent::handleDamage(context, damage, damagerID, damagerOwner);
 }
@@ -330,8 +330,8 @@ bool Sandworm::update(const GameContext& context) {
                 }
                 lastLocs[1] = realLocation;
             }
-            lastLocs[0].x      = lround(realX);
-            lastLocs[0].y      = lround(realY);
+            lastLocs[0].x      = lround(realX_);
+            lastLocs[0].y      = lround(realY_);
             shimmerOffsetIndex = ((game.getGameCycleCount() + getObjectID()) % 48) / 6;
         }
 
@@ -352,19 +352,19 @@ bool Sandworm::update(const GameContext& context) {
                     attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
                     if (drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
-                        if (target) {
-                            const auto* object = target.getObjPointer();
+                        if (target_) {
+                            const auto* object = target_.getObjPointer();
 
                             if (object) {
                                 const bool wasAlive =
                                     object->isVisible(getOwner()->getTeamID()); // see if unit was alive before attack
-                                const Coord realPos = Coord(lround(realX), lround(realY));
-                                map.damage(context, objectID, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
+                                const Coord realPos = Coord(lround(realX_), lround(realY_));
+                                map.damage(context, objectID_, getOwner(), realPos, Bullet_Sandworm, 5000, NONE_ID,
                                            false);
                                 // TODO: map.damage() might have invalidated "object"?  Do we need an object->isAlive()
                                 // method?
-                                if (wasAlive && target
-                                    && (!target.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
+                                if (wasAlive && target_
+                                    && (!target_.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
                                     kills++;
                                 }
                             }
@@ -417,7 +417,7 @@ bool Sandworm::canAttack(const ObjectBase* object) const {
     if (!canPassTile(pTile))
         return false;
 
-    return pTile->getSandRegion() == map->getTile(location)->getSandRegion();
+    return pTile->getSandRegion() == map->getTile(location_)->getSandRegion();
 }
 
 bool Sandworm::canPassTile(const Tile* pTile) const {
@@ -430,14 +430,14 @@ const ObjectBase* Sandworm::findTarget() const {
     if (isEating())
         return nullptr;
 
-    if ((attackMode == HUNT) || (attackMode == AREAGUARD)) {
+    if ((attackMode_ == HUNT) || (attackMode_ == AREAGUARD)) {
         const ObjectBase* closestTarget = nullptr;
         auto closestDistance            = FixPt_MAX;
 
         for (const auto* pUnit : dune::globals::unitList) {
-            if (canAttack(pUnit) && (blockDistance(location, pUnit->getLocation()) < closestDistance)) {
+            if (canAttack(pUnit) && (blockDistance(location_, pUnit->getLocation()) < closestDistance)) {
                 closestTarget   = pUnit;
-                closestDistance = blockDistance(location, pUnit->getLocation());
+                closestDistance = blockDistance(location_, pUnit->getLocation());
             }
         }
 
@@ -453,5 +453,5 @@ ANGLETYPE Sandworm::getCurrentAttackAngle() const {
 }
 
 void Sandworm::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location_);
 }

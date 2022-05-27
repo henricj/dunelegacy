@@ -66,13 +66,13 @@ Palace::Palace(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Palace::init() {
-    assert(itemID == Structure_Palace);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_Palace);
+    owner_->incrementStructures(itemID_);
 
-    graphicID      = ObjPic_Palace;
-    graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX     = 4;
-    numImagesY     = 1;
+    graphicID_     = ObjPic_Palace;
+    graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_    = 4;
+    numImagesY_    = 1;
     firstAnimFrame = 2;
     lastAnimFrame  = 3;
 }
@@ -85,15 +85,15 @@ void Palace::save(OutputStream& stream) const {
 }
 
 std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return PalaceInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return PalaceInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 void Palace::handleSpecialClick(const GameContext& context) {
     context.game.getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_SPECIALWEAPON, objectID_));
 }
 
 void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos) {
@@ -104,7 +104,7 @@ void Palace::handleDeathhandClick(const GameContext& context, int xPos, int yPos
         return;
 
     game.getCommandManager().addCommand({dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_PALACE_DEATHHAND,
-                                         objectID, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)});
+                                         objectID_, static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)});
 }
 
 void Palace::doSpecialWeapon(const GameContext& context) {
@@ -112,7 +112,7 @@ void Palace::doSpecialWeapon(const GameContext& context) {
         return;
     }
 
-    switch (originalHouseID) {
+    switch (originalHouseID_) {
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR: {
             // wrong house (see DoLaunchDeathhand)
@@ -144,7 +144,7 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
         return;
     }
 
-    if ((originalHouseID != HOUSETYPE::HOUSE_HARKONNEN) && (originalHouseID != HOUSETYPE::HOUSE_SARDAUKAR)) {
+    if ((originalHouseID_ != HOUSETYPE::HOUSE_HARKONNEN) && (originalHouseID_ != HOUSETYPE::HOUSE_SARDAUKAR)) {
         // wrong house (see DoSpecialWeapon)
         return;
     }
@@ -157,7 +157,7 @@ void Palace::doLaunchDeathhand(const GameContext& context, int x, int y) {
     const auto centerPoint = getCenterPoint();
     const Coord dest(x * TILESIZE + TILESIZE / 2 + deathOffX, y * TILESIZE + TILESIZE / 2 + deathOffY);
 
-    context.map.add_bullet(objectID, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
+    context.map.add_bullet(objectID_, &centerPoint, &dest, Bullet_LargeRocket, PALACE_DEATHHAND_WEAPONDAMAGE, false,
                            nullptr);
     dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, getLocation());
 
@@ -179,8 +179,8 @@ void Palace::updateStructureSpecificStuff(const GameContext& context) {
                 context.game.addToNewsTicker(_("Palace is ready"));
             } else if (getOwner()->isAI()) {
 
-                if ((originalHouseID == HOUSETYPE::HOUSE_HARKONNEN)
-                    || (originalHouseID == HOUSETYPE::HOUSE_SARDAUKAR)) {
+                if ((originalHouseID_ == HOUSETYPE::HOUSE_HARKONNEN)
+                    || (originalHouseID_ == HOUSETYPE::HOUSE_SARDAUKAR)) {
                     // Harkonnen and Sardaukar
 
                     // old tergetting logic used by default AI

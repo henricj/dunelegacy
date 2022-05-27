@@ -75,7 +75,7 @@ public:
 
     virtual void attack(const GameContext& context);
 
-    int getTurretAngle() const { return lround(angle); }
+    int getTurretAngle() const { return lround(angle_); }
 
 protected:
     const TurretBaseConstants& turret_constants() const noexcept {

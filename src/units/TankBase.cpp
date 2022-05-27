@@ -72,11 +72,11 @@ ANGLETYPE TankBase::getCurrentAttackAngle() const {
 
 void TankBase::navigate(const GameContext& context) {
     if (moving && !justStoppedMoving) {
-        if (location == destination) {
+        if (location_ == destination_) {
             targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else {
             // change the turret angle so it faces the direction we are moving in
-            targetAngle = destinationDrawnAngle(location, destination);
+            targetAngle = destinationDrawnAngle(location_, destination_);
         }
     }
 
@@ -131,7 +131,7 @@ void TankBase::engageTarget(const GameContext& context) {
         return;
     }
 
-    if (target && (targetDistance <= getWeaponRange()) && !targetFriendly) {
+    if (target_ && (targetDistance <= getWeaponRange()) && !targetFriendly_) {
         // we already have a (non-friendly) target in weapon range
         // => we need no close temporary target
         closeTarget.pointTo(NONE_ID);
@@ -139,8 +139,8 @@ void TankBase::engageTarget(const GameContext& context) {
     }
 
     if (closeTarget) {
-        const Coord targetLocation         = closeTarget.getObjPointer()->getClosestPoint(location);
-        const FixPoint closeTargetDistance = blockDistance(location, targetLocation);
+        const Coord targetLocation         = closeTarget.getObjPointer()->getClosestPoint(location_);
+        const FixPoint closeTargetDistance = blockDistance(location_, targetLocation);
 
         if (closeTargetDistance > getWeaponRange()) {
             // we are too far away
@@ -148,20 +148,20 @@ void TankBase::engageTarget(const GameContext& context) {
             return;
         }
 
-        targetAngle = destinationDrawnAngle(location, targetLocation);
+        targetAngle = destinationDrawnAngle(location_, targetLocation);
 
         if (drawnTurretAngle == targetAngle) {
-            const ObjectPointer temp = target;
-            target                   = closeTarget;
+            const ObjectPointer temp = target_;
+            target_                  = closeTarget;
             attack(context);
-            target = temp;
+            target_ = temp;
         }
     }
 }
 
 void TankBase::targeting(const GameContext& context) {
     if (findTargetTimer == 0) {
-        if (attackMode != STOP && !closeTarget && !moving && !justStoppedMoving) {
+        if (attackMode_ != STOP && !closeTarget && !moving && !justStoppedMoving) {
             // find a temporary target
             closeTarget = findTarget();
         }
@@ -176,12 +176,12 @@ void TankBase::turn(const GameContext& context) {
 
     if (!moving && !justStoppedMoving) {
         if (nextSpotAngle != ANGLETYPE::INVALID_ANGLE) {
-            if (angle > static_cast<int>(nextSpotAngle)) {
-                angleRight = angle - static_cast<int>(nextSpotAngle);
-                angleLeft  = FixPoint::abs(8 - angle) + static_cast<int>(nextSpotAngle);
-            } else if (angle < static_cast<int>(nextSpotAngle)) {
-                angleRight = FixPoint::abs(8 - static_cast<int>(nextSpotAngle)) + angle;
-                angleLeft  = static_cast<int>(nextSpotAngle) - angle;
+            if (angle_ > static_cast<int>(nextSpotAngle)) {
+                angleRight = angle_ - static_cast<int>(nextSpotAngle);
+                angleLeft  = FixPoint::abs(8 - angle_) + static_cast<int>(nextSpotAngle);
+            } else if (angle_ < static_cast<int>(nextSpotAngle)) {
+                angleRight = FixPoint::abs(8 - static_cast<int>(nextSpotAngle)) + angle_;
+                angleLeft  = static_cast<int>(nextSpotAngle) - angle_;
             }
 
             if (angleLeft <= angleRight) {

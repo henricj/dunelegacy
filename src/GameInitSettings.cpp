@@ -156,7 +156,7 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     }
 
     std::string name = "SCEN?0??.INI";
-    name[4]          = houseChar[static_cast<int>(newHouse)];
+    name[4]          = dune::globals::houseChar[static_cast<int>(newHouse)];
 
     name[6] = static_cast<char>('0' + (mission / 10));
     name[7] = static_cast<char>('0' + (mission % 10));

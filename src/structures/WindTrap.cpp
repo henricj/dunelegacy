@@ -41,13 +41,13 @@ WindTrap::WindTrap(uint32_t objectID, const ObjectStreamInitializer& initializer
 }
 
 void WindTrap::init() {
-    assert(itemID == Structure_WindTrap);
-    owner->incrementStructures(itemID);
+    assert(itemID_ == Structure_WindTrap);
+    owner_->incrementStructures(itemID_);
 
-    graphicID  = ObjPic_Windtrap;
-    graphic    = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
-    numImagesX = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
-    numImagesY = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    graphicID_  = ObjPic_Windtrap;
+    graphic_    = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
+    numImagesX_ = NUM_WINDTRAP_ANIMATIONS_PER_ROW;
+    numImagesY_ = (2 + NUM_WINDTRAP_ANIMATIONS + NUM_WINDTRAP_ANIMATIONS_PER_ROW - 1) / NUM_WINDTRAP_ANIMATIONS_PER_ROW;
     firstAnimFrame = 2;
     lastAnimFrame  = 2 + NUM_WINDTRAP_ANIMATIONS - 1;
 }
@@ -55,10 +55,10 @@ void WindTrap::init() {
 WindTrap::~WindTrap() = default;
 
 std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner) || (dune::globals::debug)) {
-        return WindTrapInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
+        return WindTrapInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 bool WindTrap::update(const GameContext& context) {
@@ -79,12 +79,12 @@ void WindTrap::setHealth(FixPoint newHealth) {
     StructureBase::setHealth(newHealth);
     const int producedPowerAfterwards = getProducedPower();
 
-    owner->setProducedPower(owner->getProducedPower() - producedPowerBefore + producedPowerAfterwards);
+    owner_->setProducedPower(owner_->getProducedPower() - producedPowerBefore + producedPowerAfterwards);
 }
 
 int WindTrap::getProducedPower() const {
     const int windTrapProducedPower =
-        abs(dune::globals::currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID)].power);
+        abs(dune::globals::currentGame->objectData.data[Structure_WindTrap][static_cast<int>(originalHouseID_)].power);
 
     const FixPoint ratio = getHealth() / getMaxHealth();
     return lround(ratio * windTrapProducedPower);

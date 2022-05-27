@@ -207,7 +207,7 @@ public:
 
     using ObjectBase::setDestination;
     void setDestination(int newX, int newY) override {
-        if ((destination.x != newX) || (destination.y != newY)) {
+        if ((destination_.x != newX) || (destination_.y != newY)) {
             ObjectBase::setDestination(newX, newY);
             clearPath();
         }
@@ -260,11 +260,11 @@ public:
 
     bool isMoving() const noexcept { return moving; }
 
-    bool wasDeviated() const noexcept { return (owner->getHouseID() != originalHouseID); }
+    bool wasDeviated() const noexcept { return (owner_->getHouseID() != originalHouseID_); }
 
-    ANGLETYPE getAngle() const noexcept { return drawnAngle; }
+    ANGLETYPE getAngle() const noexcept { return drawnAngle_; }
 
-    ATTACKMODE getAttackMode() const noexcept { return attackMode; }
+    ATTACKMODE getAttackMode() const noexcept { return attackMode_; }
 
     const Coord& getGuardPoint() const noexcept { return guardPoint; }
 

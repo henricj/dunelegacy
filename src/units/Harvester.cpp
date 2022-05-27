@@ -56,7 +56,7 @@ Harvester::Harvester(uint32_t objectID, const ObjectInitializer& initializer)
 
     Harvester::setHealth(getMaxHealth());
 
-    attackMode = GUARD;
+    attackMode_ = GUARD;
 }
 
 Harvester::Harvester(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -72,14 +72,14 @@ Harvester::Harvester(uint32_t objectID, const ObjectStreamInitializer& initializ
 }
 
 void Harvester::init() {
-    assert(itemID == Unit_Harvester);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Harvester);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Harvester;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Harvester;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Harvester::~Harvester() = default;
@@ -97,12 +97,12 @@ void Harvester::blitToScreen() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const int x = screenborder->world2screenX(realX);
-    const int y = screenborder->world2screenY(realY);
+    const int x = screenborder->world2screenX(realX_);
+    const int y = screenborder->world2screenY(realY_);
 
-    const auto* pUnitGraphic = graphic[zoom];
-    const auto source        = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX);
-    const auto dest = calcSpriteDrawingRectF(pUnitGraphic, x, y, numImagesX, 1, HAlign::Center, VAlign::Center);
+    const auto* pUnitGraphic = graphic_[zoom];
+    const auto source        = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);
+    const auto dest = calcSpriteDrawingRectF(pUnitGraphic, x, y, numImagesX_, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source, &dest);
 
@@ -121,10 +121,10 @@ void Harvester::blitToScreen() {
         }
 
         const auto sandSource =
-            calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle), NUM_ANGLES, frame, LASTSANDFRAME + 1);
+            calcSpriteSourceRect(pSandGraphic, static_cast<int>(drawnAngle_), NUM_ANGLES, frame, LASTSANDFRAME + 1);
         const auto sandDest = calcSpriteDrawingRectF(
-            pSandGraphic, screenborder->world2screenX(realX + harvesterSandOffset[static_cast<int>(drawnAngle)].x),
-            screenborder->world2screenY(realY + harvesterSandOffset[static_cast<int>(drawnAngle)].y), NUM_ANGLES,
+            pSandGraphic, screenborder->world2screenX(realX_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].x),
+            screenborder->world2screenY(realY_ + harvesterSandOffset[static_cast<int>(drawnAngle_)].y), NUM_ANGLES,
             LASTSANDFRAME + 1, HAlign::Center, VAlign::Center);
 
         Dune_RenderCopyF(renderer, pSandGraphic, &sandSource, &sandDest);
@@ -138,7 +138,7 @@ void Harvester::blitToScreen() {
 void Harvester::checkPos(const GameContext& context) {
     parent::checkPos(context);
 
-    if (attackMode == STOP) {
+    if (attackMode_ == STOP) {
         harvestingMode = false;
 
         if (getOwner()->isAI()) {
@@ -146,27 +146,28 @@ void Harvester::checkPos(const GameContext& context) {
         } /*The AI doesn't like STOP*/
     }
 
-    if (!active)
+    if (!active_)
         return;
 
     auto& map = context.map;
     if (returningToRefinery) {
-        if (const auto* const pRefinery = dune_cast<Refinery>(target.getObjPointer())) {
-            const auto* pObject = map.getGroundObject(context, location.x, location.y);
+        if (const auto* const pRefinery = dune_cast<Refinery>(target_.getObjPointer())) {
+            const auto* pObject = map.getGroundObject(context, location_.x, location_.y);
 
-            if (justStoppedMoving && pObject != nullptr && pObject->getObjectID() == target.getObjectID()) {
+            if (justStoppedMoving && pObject != nullptr && pObject->getObjectID() == target_.getObjectID()) {
                 if (pRefinery->isFree()) {
                     awaitingPickup = false;
                     setReturned(context);
                 } else {
                     // the repair yard is already in use by some other unit => move out
-                    const auto newDestination = map.findDeploySpot(this, target.getObjPointer()->getLocation(),
+                    const auto newDestination = map.findDeploySpot(this, target_.getObjPointer()->getLocation(),
                                                                    getLocation(), pRefinery->getStructureSize());
                     doMove2Pos(context, newDestination, true);
                     requestCarryall(context);
                 }
-            } else if (!awaitingPickup && owner->hasCarryalls() && pRefinery->isFree()
-                       && blockDistance(location, pRefinery->getClosestPoint(location)) >= MIN_CARRYALL_LIFT_DISTANCE) {
+            } else if (!awaitingPickup && owner_->hasCarryalls() && pRefinery->isFree()
+                       && blockDistance(location_, pRefinery->getClosestPoint(location_))
+                              >= MIN_CARRYALL_LIFT_DISTANCE) {
                 requestCarryall(context);
             }
 
@@ -179,12 +180,12 @@ void Harvester::checkPos(const GameContext& context) {
         Refinery* pBestRefinery                     = nullptr;
 
         for (auto* pStructure : dune::globals::structureList) {
-            if (pStructure->getOwner() != owner)
+            if (pStructure->getOwner() != owner_)
                 continue;
 
             if (auto* const pRefinery = dune_cast<Refinery>(pStructure)) {
-                Coord closestPoint        = pRefinery->getClosestPoint(location);
-                FixPoint refineryDistance = blockDistance(location, closestPoint);
+                Coord closestPoint        = pRefinery->getClosestPoint(location_);
+                FixPoint refineryDistance = blockDistance(location_, closestPoint);
 
                 if (pRefinery->getNumBookings() < leastNumBookings) {
                     leastNumBookings                   = pRefinery->getNumBookings();
@@ -203,20 +204,20 @@ void Harvester::checkPos(const GameContext& context) {
             doMove2Object(context, pBestRefinery);
             pBestRefinery->startAnimate();
         } else {
-            setDestination(location);
+            setDestination(location_);
         }
 
         return;
     }
 
-    if (harvestingMode && !hasBookedCarrier() && destination.isValid()
-        && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
+    if (harvestingMode && !hasBookedCarrier() && destination_.isValid()
+        && blockDistance(location_, destination_) >= MIN_CARRYALL_LIFT_DISTANCE) {
         requestCarryall(context);
 
         return;
     }
 
-    if (respondable && !harvestingMode && attackMode != STOP) {
+    if (respondable_ && !harvestingMode && attackMode_ != STOP) {
         if (spiceCheckCounter == 0) {
             // Find harvest location nearest to our base
             Coord newDestination;
@@ -225,8 +226,8 @@ void Harvester::checkPos(const GameContext& context) {
                 setGuardPoint(newDestination);
                 harvestingMode = true;
             } else {
-                setDestination(location);
-                setGuardPoint(location);
+                setDestination(location_);
+                setGuardPoint(location_);
                 harvestingMode = false;
             }
             spiceCheckCounter = 100;
@@ -246,7 +247,7 @@ void Harvester::deploy(const GameContext& context, const Coord& newLocation) {
         return;
 
     Coord newDestination;
-    if (attackMode != STOP && context.map.findSpice(newDestination, guardPoint)) {
+    if (attackMode_ != STOP && context.map.findSpice(newDestination, guardPoint)) {
         harvestingMode = true;
         setDestination(newDestination);
         setGuardPoint(newDestination);
@@ -259,8 +260,8 @@ void Harvester::destroy(const GameContext& context) {
         auto& game = context.game;
         auto& map  = context.map;
 
-        const int xpos = location.x;
-        const int ypos = location.y;
+        const int xpos = location_.x;
+        const int ypos = location_.y;
 
         if (map.tileExists(xpos, ypos)) {
             const auto spiceSpread = spice * 0.75_fix;
@@ -271,7 +272,7 @@ void Harvester::destroy(const GameContext& context) {
             /* how many regions have sand */
             map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
                          [xpos, ypos, circleRadius, &availableSandPos](auto& tile) {
-                             if (distanceFrom({xpos, ypos}, tile.location) + 0.0005_fix > circleRadius)
+                             if (distanceFrom({xpos, ypos}, tile.location_) + 0.0005_fix > circleRadius)
                                  return;
 
                              if (tile.isSand() || tile.isSpice())
@@ -281,7 +282,7 @@ void Harvester::destroy(const GameContext& context) {
             /* now we can spread spice */
             map.for_each(xpos - circleRadius, ypos - circleRadius, xpos + circleRadius, ypos + circleRadius,
                          [xpos, ypos, circleRadius, availableSandPos, spiceSpread](auto& tile) {
-                             if (distanceFrom({xpos, ypos}, tile.location) + 0.0005_fix > circleRadius)
+                             if (distanceFrom({xpos, ypos}, tile.location_) + 0.0005_fix > circleRadius)
                                  return;
 
                              if (tile.isSand() || tile.isSpice())
@@ -289,13 +290,13 @@ void Harvester::destroy(const GameContext& context) {
                          });
         }
 
-        Coord realPos(lround(realX), lround(realY));
+        Coord realPos(lround(realX_), lround(realY_));
         uint32_t explosionID = game.randomGen.getRandOf(Explosion_Medium1, Explosion_Medium2);
-        game.addExplosion(explosionID, realPos, owner->getHouseID());
+        game.addExplosion(explosionID, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID())) {
             dune::globals::screenborder->shakeScreen(18);
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionLarge, location_);
         }
     }
 
@@ -316,7 +317,7 @@ void Harvester::drawSelectionBox() {
         default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
     }
 
-    auto dest = calcDrawingRectF(selectionBox, screenborder->world2screenX(realX), screenborder->world2screenY(realY),
+    auto dest = calcDrawingRectF(selectionBox, screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
                                  HAlign::Center, VAlign::Center);
     Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 
@@ -340,14 +341,14 @@ void Harvester::handleDamage(const GameContext& context, int damage, uint32_t da
 
     const auto* const damager = context.objectManager.getObject(damagerID);
 
-    if (!target && !forced && damager && canAttack(damager) && attackMode != STOP) {
+    if (!target_ && !forced_ && damager && canAttack(damager) && attackMode_ != STOP) {
         setTarget(damager);
     }
 }
 
 void Harvester::handleReturnClick(const GameContext& context) {
     context.game.getCommandManager().addCommand(
-        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_HARVESTER_RETURN, objectID));
+        Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_HARVESTER_RETURN, objectID_));
 }
 
 void Harvester::doReturn() {
@@ -372,12 +373,12 @@ void Harvester::setDestination(int newX, int newY) {
 
     auto* const map = dune::globals::currentGameMap;
 
-    harvestingMode = attackMode != STOP && (map->tileExists(newX, newY) && map->getTile(newX, newY)->hasSpice());
+    harvestingMode = attackMode_ != STOP && (map->tileExists(newX, newY) && map->getTile(newX, newY)->hasSpice());
 }
 
 void Harvester::setTarget(const ObjectBase* newTarget) {
     if (returningToRefinery) {
-        if (auto* const refinery = dune_cast<Refinery>(target.getObjPointer())) {
+        if (auto* const refinery = dune_cast<Refinery>(target_.getObjPointer())) {
             refinery->unBook();
             returningToRefinery = false;
         }
@@ -385,7 +386,7 @@ void Harvester::setTarget(const ObjectBase* newTarget) {
 
     parent::setTarget(newTarget);
 
-    if (auto* const refinery = dune_cast<Refinery>(target.getObjPointer())) {
+    if (auto* const refinery = dune_cast<Refinery>(target_.getObjPointer())) {
         refinery->book();
         returningToRefinery = true;
     }
@@ -394,12 +395,12 @@ void Harvester::setTarget(const ObjectBase* newTarget) {
 void Harvester::setReturned(const GameContext& context) {
     context.map.removeObjectFromMap(getObjectID());
 
-    if (auto* refinery = dune_cast<Refinery>(target.getObjPointer()))
+    if (auto* refinery = dune_cast<Refinery>(target_.getObjPointer()))
         refinery->assignHarvester(this);
 
     returningToRefinery = false;
     moving              = false;
-    respondable         = false;
+    respondable_        = false;
     setActive(false);
 
     setLocation(context, INVALID_POS, INVALID_POS);
@@ -409,13 +410,13 @@ void Harvester::setReturned(const GameContext& context) {
 void Harvester::move(const GameContext& context) {
     parent::move(context);
 
-    if (active && !moving && !justStoppedMoving) {
+    if (active_ && !moving && !justStoppedMoving) {
         if (harvestingMode) {
 
-            if (location == destination) {
+            if (location_ == destination_) {
                 if (spice < HARVESTERMAXSPICE) {
 
-                    auto* tile = context.map.tryGetTile(location.x, location.y);
+                    auto* tile = context.map.tryGetTile(location_.x, location_.y);
                     if (!tile)
                         return;
 
@@ -426,19 +427,19 @@ void Harvester::move(const GameContext& context) {
                         const int afterTileType = tile->getType();
 
                         if (beforeTileType != afterTileType) {
-                            context.map.spiceRemoved(context, location);
-                            if (!context.map.findSpice(destination, location)) {
+                            context.map.spiceRemoved(context, location_);
+                            if (!context.map.findSpice(destination_, location_)) {
                                 doReturn();
                             } else {
-                                doMove2Pos(context, destination, false);
+                                doMove2Pos(context, destination_, false);
                             }
                         }
-                    } else if (!context.map.findSpice(destination, location)) {
+                    } else if (!context.map.findSpice(destination_, location_)) {
                         if (spice > 0) {
                             doReturn();
                         }
                     } else {
-                        doMove2Pos(context, destination, false);
+                        doMove2Pos(context, destination_, false);
                     }
                 } else {
                     doReturn();
@@ -449,13 +450,13 @@ void Harvester::move(const GameContext& context) {
 }
 
 bool Harvester::isHarvesting() const {
-    return harvestingMode && spice < HARVESTERMAXSPICE && blockDistance(location, destination) <= FixPt_SQRT2
-        && dune::globals::currentGameMap->tileExists(location)
-        && dune::globals::currentGameMap->getTile(location)->hasSpice();
+    return harvestingMode && spice < HARVESTERMAXSPICE && blockDistance(location_, destination_) <= FixPt_SQRT2
+        && dune::globals::currentGameMap->tileExists(location_)
+        && dune::globals::currentGameMap->getTile(location_)->hasSpice();
 }
 
 bool Harvester::canAttack(const ObjectBase* object) const {
-    return object != nullptr && object->isInfantry() && object->getOwner()->getTeamID() != owner->getTeamID()
+    return object != nullptr && object->isInfantry() && object->getOwner()->getTeamID() != owner_->getTeamID()
         && object->isVisible(getOwner()->getTeamID());
 }
 
@@ -482,7 +483,7 @@ void Harvester::setSpeeds(const GameContext& context) {
     speed                      = speed * (1 - MAXIMUMHARVESTERSLOWDOWN * percentFull);
 
     // clang-format off
-    switch(drawnAngle){
+    switch(drawnAngle_){
         case ANGLETYPE::LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
         case ANGLETYPE::LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
         case ANGLETYPE::UP:        xSpeed = 0;                         ySpeed = -speed;    break;

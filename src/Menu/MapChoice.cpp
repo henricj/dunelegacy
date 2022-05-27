@@ -422,7 +422,7 @@ void MapChoice::createMapSurfaceWithPieces(unsigned int scenario) {
 }
 
 void MapChoice::loadINI() {
-    const auto filename = fmt::sprintf("REGION%c.INI", houseChar[static_cast<int>(house)]);
+    const auto filename = fmt::sprintf("REGION%c.INI", dune::globals::houseChar[static_cast<int>(house)]);
 
     INIFile RegionINI(dune::globals::pFileManager->openFile(filename).get());
 

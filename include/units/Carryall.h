@@ -62,7 +62,7 @@ public:
 
     void setDropOfferer(bool status) { aDropOfferer = status; }
 
-    bool isBooked() const noexcept { return (target || hasCargo()); }
+    bool isBooked() const noexcept { return (target_ || hasCargo()); }
 
 private:
     void init();

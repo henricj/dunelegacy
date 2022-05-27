@@ -53,6 +53,8 @@ ObjectData::ObjectData() {
 ObjectData::~ObjectData() = default;
 
 void ObjectData::loadFromINIFile(const std::string& filename) {
+    using dune::globals::houseChar;
+
     const INIFile objectDataFile(dune::globals::pFileManager->openFile(filename).get());
 
     // load default structure values
@@ -139,6 +141,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         }
 
         for (int h = 0; h < NUM_HOUSES; h++) {
+            using dune::globals::houseChar;
 
             const ObjectDataStruct& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
 

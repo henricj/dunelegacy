@@ -35,7 +35,7 @@ public:
         Sets the function that should be called when this click map is clicked on.
         \param  pOnClick    A function to call when this map is clicked on
     */
-    void setOnClick(std::function<void(int, int)> pOnClick) { this->pOnClick = pOnClick; }
+    void setOnClick(std::function<void(int, int)> pOnClick) { this->pOnClick_ = pOnClick; }
 
     /**
         Handles a left mouse click.
@@ -53,15 +53,15 @@ public:
             return true;
         }
 
-        if (pressed && pOnClick) {
-            pOnClick(x, y);
+        if (pressed && pOnClick_) {
+            pOnClick_(x, y);
         }
 
         return true;
     }
 
 private:
-    std::function<void(int, int)> pOnClick; ///< function that is called when this click map is clicked
+    std::function<void(int, int)> pOnClick_; ///< function that is called when this click map is clicked
 };
 
 #endif // CLICKMAP_H

@@ -110,10 +110,10 @@ private:
 
     MapEditor* pMapEditor;
 
-    HOUSETYPE house;
-    uint32_t color;
+    HOUSETYPE house_;
+    uint32_t color_;
 
-    std::vector<AITeamInfo> aiteams;
+    std::vector<AITeamInfo> aiteams_;
 };
 
 #endif // TEAMSWINDOW_H

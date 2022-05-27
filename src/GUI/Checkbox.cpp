@@ -43,16 +43,16 @@ void Checkbox::draw(Point position) {
 
     DuneTexture tex;
     if (isChecked()) {
-        if ((isActive() || bHover) && pCheckedActiveTexture_) {
+        if ((isActive() || bHover_) && pCheckedActiveTexture_) {
             tex = pCheckedActiveTexture_.as_dune_texture();
         } else {
-            tex = *pPressedTexture;
+            tex = *pPressedTexture_;
         }
     } else {
-        if ((isActive() || bHover) && pActiveTexture) {
-            tex = *pActiveTexture;
+        if ((isActive() || bHover_) && pActiveTexture_) {
+            tex = *pActiveTexture_;
         } else {
-            tex = *pUnpressedTexture;
+            tex = *pUnpressedTexture_;
         }
     }
 
@@ -70,7 +70,7 @@ void Checkbox::resize(uint32_t width, uint32_t height) {
 void Checkbox::updateTextures() {
     parent::updateTextures();
 
-    if (!pUnpressedTexture) {
+    if (!pUnpressedTexture_) {
         invalidateTextures();
 
         const auto& gui      = GUIStyle::getInstance();

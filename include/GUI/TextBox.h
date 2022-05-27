@@ -54,14 +54,14 @@ public:
         Get the text of this text box.
         \return the text of this text box
     */
-    [[nodiscard]] std::string_view getText() const { return text; }
+    [[nodiscard]] std::string_view getText() const { return text_; }
 
     /**
         Sets a font size for this text box. Default font size of a text box is 14
         \param  fontSize      the size of the new font
     */
     virtual void setTextFontSize(int fontSize) {
-        this->fontSize = fontSize;
+        this->fontSize_ = fontSize;
         resize(getSize().x, getSize().y);
     }
 
@@ -69,7 +69,7 @@ public:
         Gets the font size of this text box. Default font size of a text box is 14
         \return the font size of this text box
     */
-    [[nodiscard]] virtual int getTextFontSize() const { return fontSize; }
+    [[nodiscard]] virtual int getTextFontSize() const { return fontSize_; }
 
     /**
         Sets the text color for this text box.
@@ -82,38 +82,38 @@ public:
         Sets the maximum length of the typed text
         \param  maxTextLength   the maximum length, -1 = unlimited
     */
-    virtual void setMaximumTextLength(int maxTextLength) { this->maxTextLength = maxTextLength; }
+    virtual void setMaximumTextLength(int maxTextLength) { this->maxTextLength_ = maxTextLength; }
 
     /**
         Gets the maximum length of the typed text
     */
-    [[nodiscard]] virtual int getMaximumTextLength() const { return maxTextLength; }
+    [[nodiscard]] virtual int getMaximumTextLength() const { return maxTextLength_; }
 
     /**
         Sets the set of allowed characters for this text box.
         \param  allowedChars    the set of allowed chars or an empty string if everything is allowed
     */
-    virtual void setAllowedChars(std::string allowedChars = {}) { this->allowedChars = std::move(allowedChars); }
+    virtual void setAllowedChars(std::string allowedChars = {}) { this->allowedChars_ = std::move(allowedChars); }
 
     /**
         Sets the set of forbidden characters for this text box.
         \param  forbiddenChars    the set of forbidden chars or an empty string if everything is allowed
     */
     virtual void setForbiddenChars(std::string forbiddenChars = {}) {
-        this->forbiddenChars = std::move(forbiddenChars);
+        this->forbiddenChars_ = std::move(forbiddenChars);
     }
 
     /**
         Sets the function that should be called when the text of this text box changes.
         \param  pOnTextChange   A function to call on text change
     */
-    void setOnTextChange(std::function<void(bool)> pOnTextChange) { this->pOnTextChange = pOnTextChange; }
+    void setOnTextChange(std::function<void(bool)> pOnTextChange) { this->pOnTextChange_ = pOnTextChange; }
 
     /**
         Sets the method that should be called when return is pressed
         \param  pOnReturn   A function to call on pressing return
     */
-    void setOnReturn(std::function<void()> pOnReturn) { this->pOnReturn = pOnReturn; }
+    void setOnReturn(std::function<void()> pOnReturn) { this->pOnReturn_ = pOnReturn; }
 
     /**
         Returns the minimum size of this text box. The text box should not
@@ -122,7 +122,7 @@ public:
         \return the minimum size of this text box
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        return GUIStyle::getInstance().getMinimumTextBoxSize(fontSize);
+        return GUIStyle::getInstance().getMinimumTextBoxSize(fontSize_);
     }
 
     /**
@@ -188,23 +188,23 @@ protected:
     void invalidateTextures() override;
 
 private:
-    int fontSize             = 14;            ///< the size of the font to use
-    uint32_t textcolor       = COLOR_DEFAULT; ///< Text color
-    uint32_t textshadowcolor = COLOR_DEFAULT; ///< Text shadow color
-    std::string text;                         ///< text in this text box
-    int maxTextLength = -1;                   ///< the maximum length of the typed text
+    int fontSize_               = 14;            ///< the size of the font to use
+    uint32_t text_color_        = COLOR_DEFAULT; ///< Text color
+    uint32_t text_shadow_color_ = COLOR_DEFAULT; ///< Text shadow color
+    std::string text_;                           ///< text in this text box
+    int maxTextLength_ = -1;                     ///< the maximum length of the typed text
 
-    std::string allowedChars;   ///< a set of allowed characters, empty string for everything allowed
-    std::string forbiddenChars; ///< a set of forbidden characters, empty string for everything allowed
+    std::string allowedChars_;   ///< a set of allowed characters, empty string for everything allowed
+    std::string forbiddenChars_; ///< a set of forbidden characters, empty string for everything allowed
 
-    dune::dune_clock::time_point lastCaretTime =
+    dune::dune_clock::time_point lastCaretTime_ =
         dune::dune_clock::now(); ///< Last time the caret changes from off to on or vise versa
 
-    std::function<void(bool)> pOnTextChange; ///< function that is called when the text of this text box changes
-    std::function<void()> pOnReturn;         ///< function that is called when return is pressed
+    std::function<void(bool)> pOnTextChange_; ///< function that is called when the text of this text box changes
+    std::function<void()> pOnReturn_;         ///< function that is called when return is pressed
 
-    DuneTextureOwned pTextureWithoutCaret; ///< Texture with caret off
-    DuneTextureOwned pTextureWithCaret;    ///< Texture with caret on
+    DuneTextureOwned pTextureWithoutCaret_; ///< Texture with caret off
+    DuneTextureOwned pTextureWithCaret_;    ///< Texture with caret on
 };
 
 #endif // TEXTBOX_H

@@ -33,19 +33,19 @@
 #include <utility>
 
 MetaServerClient::MetaServerClient(std::string metaServerURL)
-    : metaServerURL(std::move(metaServerURL)), availableMetaServerCommandsSemaphore(SDL_CreateSemaphore(0)) {
+    : metaServerURL(std::move(metaServerURL)), availableMetaServerCommandsSemaphore_(SDL_CreateSemaphore(0)) {
 
-    if (availableMetaServerCommandsSemaphore == nullptr) {
+    if (availableMetaServerCommandsSemaphore_ == nullptr) {
         THROW(std::runtime_error, "Unable to create semaphore");
     }
 
-    sharedDataMutex = SDL_CreateMutex();
-    if (sharedDataMutex == nullptr) {
+    sharedDataMutex_ = SDL_CreateMutex();
+    if (sharedDataMutex_ == nullptr) {
         THROW(std::runtime_error, "Unable to create mutex");
     }
 
-    connectionThread = SDL_CreateThread(connectionThreadMain, nullptr, this);
-    if (connectionThread == nullptr) {
+    connectionThread_ = SDL_CreateThread(connectionThreadMain, nullptr, this);
+    if (connectionThread_ == nullptr) {
         THROW(std::runtime_error, "Unable to create thread");
     }
 }
@@ -56,11 +56,11 @@ MetaServerClient::~MetaServerClient() {
 
     enqueueMetaServerCommand(std::make_unique<MetaServerExit>());
 
-    SDL_WaitThread(connectionThread, nullptr);
+    SDL_WaitThread(connectionThread_, nullptr);
 
-    SDL_DestroyMutex(sharedDataMutex);
+    SDL_DestroyMutex(sharedDataMutex_);
 
-    SDL_DestroySemaphore(availableMetaServerCommandsSemaphore);
+    SDL_DestroySemaphore(availableMetaServerCommandsSemaphore_);
 }
 
 void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
@@ -76,56 +76,56 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
     if (secret_key.size() > 16)
         secret_key.resize(16);
 
-    this->serverName = serverName;
-    this->serverPort = serverPort;
-    this->secret     = to_hex(secret_key);
-    this->mapName    = mapName;
-    this->numPlayers = numPlayers;
-    this->maxPlayers = maxPlayers;
+    this->serverName_ = serverName;
+    this->serverPort_ = serverPort_;
+    this->secret_     = to_hex(secret_key);
+    this->mapName_    = mapName;
+    this->numPlayers_ = numPlayers;
+    this->maxPlayers_ = maxPlayers;
 
     enqueueMetaServerCommand(
-        std::make_unique<MetaServerAdd>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+        std::make_unique<MetaServerAdd>(serverName_, serverPort_, secret_, mapName_, numPlayers_, maxPlayers_));
     lastAnnounceUpdate = dune::dune_clock::now();
 }
 
 void MetaServerClient::updateAnnounce(uint8_t numPlayers) {
-    if (serverPort > 0) {
-        this->numPlayers = numPlayers;
+    if (serverPort_ > 0) {
+        this->numPlayers_ = numPlayers;
         enqueueMetaServerCommand(
-            std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+            std::make_unique<MetaServerUpdate>(serverName_, serverPort_, secret_, mapName_, numPlayers, maxPlayers_));
         lastAnnounceUpdate = dune::dune_clock::now();
     }
 }
 
 void MetaServerClient::stopAnnounce() {
-    if (serverPort != 0) {
+    if (serverPort_ != 0) {
 
-        enqueueMetaServerCommand(std::make_unique<MetaServerRemove>(serverPort, secret));
+        enqueueMetaServerCommand(std::make_unique<MetaServerRemove>(serverPort_, secret_));
 
-        serverName = "";
-        serverPort = 0;
-        secret     = "";
-        mapName    = "";
-        numPlayers = 0;
-        maxPlayers = 0;
+        serverName_ = "";
+        serverPort_ = 0;
+        secret_     = "";
+        mapName_    = "";
+        numPlayers_ = 0;
+        maxPlayers_ = 0;
     }
 }
 
 void MetaServerClient::update() {
 
-    if (pOnGameServerInfoList) {
+    if (pOnGameServerInfoList_) {
         // someone is waiting for the list
 
-        if (dune::dune_clock::now() - lastServerInfoListUpdate > SERVERLIST_UPDATE_INTERVAL) {
+        if (dune::dune_clock::now() - lastServerInfoListUpdate_ > SERVERLIST_UPDATE_INTERVAL) {
             enqueueMetaServerCommand(std::make_unique<MetaServerList>());
-            lastServerInfoListUpdate = dune::dune_clock::now();
+            lastServerInfoListUpdate_ = dune::dune_clock::now();
         }
     }
 
-    if (serverPort != 0) {
+    if (serverPort_ != 0) {
         if (dune::dune_clock::now() - lastAnnounceUpdate > GAMESERVER_UPDATE_INTERVAL) {
-            enqueueMetaServerCommand(
-                std::make_unique<MetaServerUpdate>(serverName, serverPort, secret, mapName, numPlayers, maxPlayers));
+            enqueueMetaServerCommand(std::make_unique<MetaServerUpdate>(serverName_, serverPort_, secret_, mapName_,
+                                                                        numPlayers_, maxPlayers_));
             lastAnnounceUpdate = dune::dune_clock::now();
         }
     }
@@ -135,39 +135,39 @@ void MetaServerClient::update() {
     bool bTmpUpdatedGameServerInfoList = false;
     std::list<GameServerInfo> tmpGameServerInfoList;
 
-    SDL_LockMutex(sharedDataMutex);
+    SDL_LockMutex(sharedDataMutex_);
 
-    if (metaserverErrorCause != 0) {
-        errorCause           = metaserverErrorCause;
-        errorMsg             = metaserverError;
-        metaserverErrorCause = 0;
-        metaserverError      = "";
+    if (metaserverErrorCause_ != 0) {
+        errorCause            = metaserverErrorCause_;
+        errorMsg              = metaserverError_;
+        metaserverErrorCause_ = 0;
+        metaserverError_      = "";
     }
 
-    if (bUpdatedGameServerInfoList) {
-        tmpGameServerInfoList         = gameServerInfoList;
+    if (bUpdatedGameServerInfoList_) {
+        tmpGameServerInfoList         = gameServerInfoList_;
         bTmpUpdatedGameServerInfoList = true;
-        bUpdatedGameServerInfoList    = false;
+        bUpdatedGameServerInfoList_   = false;
     }
 
-    SDL_UnlockMutex(sharedDataMutex);
+    SDL_UnlockMutex(sharedDataMutex_);
 
-    if (pOnMetaServerError && (errorCause != 0)) {
-        pOnMetaServerError(errorCause, errorMsg);
+    if (pOnMetaServerError_ && (errorCause != 0)) {
+        pOnMetaServerError_(errorCause, errorMsg);
     }
 
-    if (pOnGameServerInfoList && bTmpUpdatedGameServerInfoList) {
-        pOnGameServerInfoList(tmpGameServerInfoList);
+    if (pOnGameServerInfoList_ && bTmpUpdatedGameServerInfoList) {
+        pOnGameServerInfoList_(tmpGameServerInfoList);
     }
 }
 
 void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerCommand> metaServerCommand) {
 
-    SDL_LockMutex(sharedDataMutex);
+    SDL_LockMutex(sharedDataMutex_);
 
     bool bInsert = true;
 
-    for (const auto& pMetaServerCommand : metaServerCommandList) {
+    for (const auto& pMetaServerCommand : metaServerCommandList_) {
         if (*pMetaServerCommand == *metaServerCommand) {
             bInsert = false;
             break;
@@ -175,48 +175,48 @@ void MetaServerClient::enqueueMetaServerCommand(std::unique_ptr<MetaServerComman
     }
 
     if (bInsert) {
-        metaServerCommandList.push_back(std::move(metaServerCommand));
+        metaServerCommandList_.push_back(std::move(metaServerCommand));
     }
 
-    SDL_UnlockMutex(sharedDataMutex);
+    SDL_UnlockMutex(sharedDataMutex_);
 
     if (bInsert) {
-        SDL_SemPost(availableMetaServerCommandsSemaphore);
+        SDL_SemPost(availableMetaServerCommandsSemaphore_);
     }
 }
 
 std::unique_ptr<MetaServerCommand> MetaServerClient::dequeueMetaServerCommand() {
 
-    while (SDL_SemWait(availableMetaServerCommandsSemaphore) != 0) { }
+    while (SDL_SemWait(availableMetaServerCommandsSemaphore_) != 0) { }
 
-    SDL_LockMutex(sharedDataMutex);
+    SDL_LockMutex(sharedDataMutex_);
 
-    std::unique_ptr<MetaServerCommand> nextMetaServerCommand = std::move(metaServerCommandList.front());
-    metaServerCommandList.pop_front();
+    std::unique_ptr<MetaServerCommand> nextMetaServerCommand = std::move(metaServerCommandList_.front());
+    metaServerCommandList_.pop_front();
 
-    SDL_UnlockMutex(sharedDataMutex);
+    SDL_UnlockMutex(sharedDataMutex_);
 
     return nextMetaServerCommand;
 }
 
 void MetaServerClient::setErrorMessage(int errorCause, const std::string& errorMessage) {
-    SDL_LockMutex(sharedDataMutex);
+    SDL_LockMutex(sharedDataMutex_);
 
-    if (metaserverErrorCause == 0) {
-        metaserverErrorCause  = errorCause;
-        this->metaserverError = errorMessage;
+    if (metaserverErrorCause_ == 0) {
+        metaserverErrorCause_  = errorCause;
+        this->metaserverError_ = errorMessage;
     }
 
-    SDL_UnlockMutex(sharedDataMutex);
+    SDL_UnlockMutex(sharedDataMutex_);
 }
 
 void MetaServerClient::setNewGameServerInfoList(const std::list<GameServerInfo>& newGameServerInfoList) {
-    SDL_LockMutex(sharedDataMutex);
+    SDL_LockMutex(sharedDataMutex_);
 
-    gameServerInfoList         = newGameServerInfoList;
-    bUpdatedGameServerInfoList = true;
+    gameServerInfoList_         = newGameServerInfoList;
+    bUpdatedGameServerInfoList_ = true;
 
-    SDL_UnlockMutex(sharedDataMutex);
+    SDL_UnlockMutex(sharedDataMutex_);
 }
 
 int MetaServerClient::connectionThreadMain(void* data) {

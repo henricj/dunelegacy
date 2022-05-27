@@ -39,9 +39,9 @@ Frigate::Frigate(uint32_t objectID, const ObjectInitializer& initializer)
 
     ObjectBase::setHealth(getMaxHealth());
 
-    attackMode = GUARD;
+    attackMode_ = GUARD;
 
-    respondable = false;
+    respondable_ = false;
 }
 
 Frigate::Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer)
@@ -54,21 +54,21 @@ Frigate::Frigate(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Frigate::init() {
-    assert(itemID == Unit_Frigate);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Frigate);
+    owner_->incrementUnits(itemID_);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    graphicID     = ObjPic_Frigate;
-    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_    = ObjPic_Frigate;
+    graphic_      = gfx->getObjPic(graphicID_, getOwner()->getHouseID());
     shadowGraphic = gfx->getObjPic(ObjPic_FrigateShadow, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Frigate::~Frigate() {
-    auto* pStarPort = dynamic_cast<StarPort*>(target.getObjPointer());
+    auto* pStarPort = dynamic_cast<StarPort*>(target_.getObjPointer());
     if (pStarPort) {
         pStarPort->informFrigateDestroyed();
     }
@@ -83,32 +83,32 @@ void Frigate::save(OutputStream& stream) const {
 void Frigate::checkPos(const GameContext& context) {
     AirUnit::checkPos(context);
 
-    if ((location == destination)
-        && (distanceFrom(realX, realY, destination.x * TILESIZE + (TILESIZE / 2),
-                         destination.y * TILESIZE + (TILESIZE / 2))
+    if ((location_ == destination_)
+        && (distanceFrom(realX_, realY_, destination_.x * TILESIZE + (TILESIZE / 2),
+                         destination_.y * TILESIZE + (TILESIZE / 2))
             < TILESIZE / 8)) {
-        auto* pStarport = dynamic_cast<StarPort*>(target.getStructurePointer());
+        auto* pStarport = dynamic_cast<StarPort*>(target_.getStructurePointer());
 
         if (pStarport != nullptr) {
             pStarport->startDeploying();
             setTarget(nullptr);
             setDestination(guardPoint);
             droppedOffCargo = true;
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Drop, location_);
         }
     }
 }
 
 bool Frigate::update(const GameContext& context) {
-    const FixPoint& maxSpeed = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    const FixPoint& maxSpeed = context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].maxspeed;
 
     FixPoint dist             = -1;
-    const auto* const pTarget = target.getObjPointer();
+    const auto* const pTarget = target_.getObjPointer();
     if (pTarget != nullptr && pTarget->isAUnit()) {
-        dist = distanceFrom(realX, realY, pTarget->getRealX(), pTarget->getRealY());
+        dist = distanceFrom(realX_, realY_, pTarget->getRealX(), pTarget->getRealY());
     } else if ((pTarget != nullptr) || !droppedOffCargo) {
-        dist = distanceFrom(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
-                            destination.y * TILESIZE + TILESIZE / 2);
+        dist = distanceFrom(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
+                            destination_.y * TILESIZE + TILESIZE / 2);
     }
 
     if (dist >= 0) {
@@ -131,13 +131,13 @@ bool Frigate::update(const GameContext& context) {
     }
 
     // check if target is destroyed
-    if ((!droppedOffCargo) && target.getStructurePointer() == nullptr) {
+    if ((!droppedOffCargo) && target_.getStructurePointer() == nullptr) {
         setDestination(guardPoint);
         droppedOffCargo = true;
     }
 
     // check if this frigate has to be removed because it has just brought all units to the Starport
-    if (active) {
+    if (active_) {
         const auto* const map = dune::globals::currentGameMap;
 
         if (droppedOffCargo
@@ -155,13 +155,13 @@ bool Frigate::update(const GameContext& context) {
 void Frigate::deploy(const GameContext& context, const Coord& newLocation) {
     parent::deploy(context, newLocation);
 
-    respondable = false;
+    respondable_ = false;
 }
 
 void Frigate::turn(const GameContext& context) {
     const auto& map = context.map;
 
-    if (active && droppedOffCargo
+    if (active_ && droppedOffCargo
         && ((getRealX() < TILESIZE / 2) || (getRealX() > map.getSizeX() * TILESIZE - TILESIZE / 2)
             || (getRealY() < TILESIZE / 2) || (getRealY() > map.getSizeY() * TILESIZE - TILESIZE / 2))) {
         // already partially outside the map => do not turn

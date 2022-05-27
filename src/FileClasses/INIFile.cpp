@@ -316,7 +316,7 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
 
         // now we add one blank line if not last section
         if (bBlankLineAtSectionEnd && was_last) {
-            auto pos = section_header + 1;
+            const auto pos = section_header + 1;
             if (pos != lines_.end())
                 lines_.emplace(pos, ""sv);
         }

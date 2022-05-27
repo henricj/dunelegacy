@@ -42,12 +42,12 @@ inline constexpr auto SMOKEDELAY    = 30;
 inline constexpr auto UNITIDLETIMER = GAMESPEED_DEFAULT * 315; // about every 5s
 
 UnitBase::UnitBase(const UnitBaseConstants& constants, uint32_t objectID, const ObjectInitializer& initializer)
-    : ObjectBase(constants, objectID, initializer), targetAngle(ANGLETYPE::INVALID_ANGLE), nextSpotAngle(drawnAngle) {
+    : ObjectBase(constants, objectID, initializer), targetAngle(ANGLETYPE::INVALID_ANGLE), nextSpotAngle(drawnAngle_) {
 
     UnitBase::init();
 
-    drawnAngle = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
-    angle      = static_cast<int>(drawnAngle);
+    drawnAngle_ = static_cast<ANGLETYPE>(initializer.game().randomGen.rand(0, 7));
+    angle_      = static_cast<int>(drawnAngle_);
 
     guardPoint = Coord::Invalid();
     attackPos  = Coord::Invalid();
@@ -112,7 +112,7 @@ void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
 
         map.removeObjectFromMap(getObjectID()); // no map point will reference now
 
-        game.getHouse(originalHouseID)->decrementUnits(itemID);
+        game.getHouse(originalHouseID_)->decrementUnits(itemID_);
 
         dune::globals::unitList.remove(this);
     } catch (std::exception& e) {
@@ -172,17 +172,18 @@ bool UnitBase::attack(const GameContext& context) {
     Coord centerPoint = getCenterPoint();
     bool bAirBullet   = false;
 
-    auto* pObject = target.getObjPointer();
+    auto* pObject = target_.getObjPointer();
     if (pObject != nullptr) {
-        targetCenterPoint = pObject->getClosestCenterPoint(location);
+        targetCenterPoint = pObject->getClosestCenterPoint(location_);
         bAirBullet        = pObject->isAFlyingUnit();
     } else {
         targetCenterPoint = context.map.getTile(attackPos)->getCenterPoint();
         bAirBullet        = false;
     }
 
-    int currentBulletType       = bulletType();
-    int32_t currentWeaponDamage = context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].weapondamage;
+    int currentBulletType = bulletType();
+    int32_t currentWeaponDamage =
+        context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].weapondamage;
 
     if (getItemID() == Unit_Trooper && !bAirBullet) {
         // Troopers change weapon type depending on distance
@@ -199,9 +200,9 @@ bool UnitBase::attack(const GameContext& context) {
 
     if (primaryWeaponTimer == 0) {
         dune::globals::bulletList.push_back(std::make_unique<Bullet>(
-            objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+            objectID_, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
-            context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
+            context.map.viewMap(pObject->getOwner()->getHouseID(), location_, 2);
         }
         playAttackSound();
         primaryWeaponTimer = getWeaponReloadTime();
@@ -209,8 +210,8 @@ bool UnitBase::attack(const GameContext& context) {
         secondaryWeaponTimer = 15;
 
         if (attackPos && getItemID() != Unit_SonicTank && context.map.getTile(attackPos)->isSpiceBloom()) {
-            setDestination(location);
-            forced = false;
+            setDestination(location_);
+            forced_ = false;
             attackPos.invalidate();
         }
 
@@ -222,16 +223,16 @@ bool UnitBase::attack(const GameContext& context) {
 
     if (numWeapons() == 2 && secondaryWeaponTimer == 0 && !isBadlyDamaged()) {
         dune::globals::bulletList.push_back(std::make_unique<Bullet>(
-            objectID, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
+            objectID_, &centerPoint, &targetCenterPoint, currentBulletType, currentWeaponDamage, bAirBullet, pObject));
         if (pObject != nullptr) {
-            context.map.viewMap(pObject->getOwner()->getHouseID(), location, 2);
+            context.map.viewMap(pObject->getOwner()->getHouseID(), location_, 2);
         }
         playAttackSound();
         secondaryWeaponTimer = -1;
 
         if (attackPos && getItemID() != Unit_SonicTank && context.map.getTile(attackPos)->isSpiceBloom()) {
-            setDestination(location);
-            forced = false;
+            setDestination(location_);
+            forced_ = false;
             attackPos.invalidate();
         }
 
@@ -247,13 +248,14 @@ bool UnitBase::attack(const GameContext& context) {
 void UnitBase::blitToScreen() {
     const auto* const screenborder = dune::globals::screenborder.get();
 
-    const auto x = screenborder->world2screenX(realX);
-    const auto y = screenborder->world2screenY(realY);
+    const auto x = screenborder->world2screenX(realX_);
+    const auto y = screenborder->world2screenY(realY_);
 
-    const auto* const pUnitGraphic = graphic[dune::globals::currentZoomlevel];
+    const auto* const pUnitGraphic = graphic_[dune::globals::currentZoomlevel];
     const auto source =
-        calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle), numImagesX, drawnFrame, numImagesY);
-    const auto dest = calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX, numImagesY, HAlign::Center, VAlign::Center);
+        calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_, drawnFrame, numImagesY_);
+    const auto dest =
+        calcSpriteDrawingRect(pUnitGraphic, x, y, numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(dune::globals::renderer.get(), pUnitGraphic, &source, &dest);
 
@@ -263,14 +265,14 @@ void UnitBase::blitToScreen() {
 }
 
 std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
-    if ((dune::globals::pLocalHouse == owner && isRespondable()) || dune::globals::debug) {
-        return UnitInterface::create(context, objectID);
+    if ((dune::globals::pLocalHouse == owner_ && isRespondable()) || dune::globals::debug) {
+        return UnitInterface::create(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID);
+    return DefaultObjectInterface::create(context, objectID_);
 }
 
 ANGLETYPE UnitBase::getCurrentAttackAngle() const {
-    return drawnAngle;
+    return drawnAngle_;
 }
 
 void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
@@ -280,7 +282,7 @@ void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
         setLocation(context, newLocation);
 
         if (guardPoint.isInvalid())
-            guardPoint = location;
+            guardPoint = location_;
         setDestination(guardPoint);
         pickedUp = false;
         setRespondable(true);
@@ -298,12 +300,12 @@ void UnitBase::deploy(const GameContext& context, const Coord& newLocation) {
         }
 
         if (isAGroundUnit() && getItemID() != Unit_Sandworm) {
-            if (map.getTile(location)->isSpiceBloom()) {
+            if (map.getTile(location_)->isSpiceBloom()) {
                 setHealth(0);
                 setVisible(VIS_ALL, false);
-                map.getTile(location)->triggerSpiceBloom(context, getOwner());
-            } else if (map.getTile(location)->isSpecialBloom()) {
-                map.getTile(location)->triggerSpecialBloom(context, getOwner());
+                map.getTile(location_)->triggerSpiceBloom(context, getOwner());
+            } else if (map.getTile(location_)->isSpecialBloom()) {
+                map.getTile(location_)->triggerSpecialBloom(context, getOwner());
             }
         }
 
@@ -323,14 +325,14 @@ void UnitBase::destroy(const GameContext& context) {
 
     if (isVisible()) {
         if (game.randomGen.rand(1, 100) <= getInfSpawnProp()) {
-            auto* pNewUnit = game.getHouse(originalHouseID)->createUnit(Unit_Soldier);
+            auto* pNewUnit = game.getHouse(originalHouseID_)->createUnit(Unit_Soldier);
             pNewUnit->setHealth(pNewUnit->getMaxHealth() / 2);
-            pNewUnit->deploy(context, location);
+            pNewUnit->deploy(context, location_);
 
-            if (owner->getHouseID() != originalHouseID) {
+            if (owner_->getHouseID() != originalHouseID_) {
                 // deviation is inherited
-                pNewUnit->owner   = owner;
-                pNewUnit->graphic = dune::globals::pGFXManager->getObjPic(pNewUnit->graphicID, owner->getHouseID());
+                pNewUnit->owner_   = owner_;
+                pNewUnit->graphic_ = dune::globals::pGFXManager->getObjPic(pNewUnit->graphicID_, owner_->getHouseID());
                 pNewUnit->deviationTimer = deviationTimer;
             }
         }
@@ -340,18 +342,18 @@ void UnitBase::destroy(const GameContext& context) {
 void UnitBase::deviate(const GameContext& context, House* newOwner) {
     const auto& [game, map, objectManager] = context;
 
-    if (newOwner->getHouseID() == originalHouseID) {
+    if (newOwner->getHouseID() == originalHouseID_) {
         quitDeviation(context);
     } else {
-        map.removeSelection(objectID);
+        map.removeSelection(objectID_);
         setTarget(nullptr);
-        setGuardPoint(location);
-        setDestination(location);
+        setGuardPoint(location_);
+        setDestination(location_);
         clearPath();
         doSetAttackMode(context, GUARD);
-        owner = newOwner;
+        owner_ = newOwner;
 
-        graphic = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+        graphic_ = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
         deviationTimer = DEVIATIONTIME;
     }
@@ -383,8 +385,8 @@ void UnitBase::drawSelectionBox() {
         default: selectionBox = gfx->getUIGraphic(UI_SelectionBox_Zoomlevel2); break;
     }
 
-    const auto screenX = screenborder->world2screenX(realX);
-    const auto screenY = screenborder->world2screenY(realY);
+    const auto screenX = screenborder->world2screenX(realX_);
+    const auto screenY = screenborder->world2screenY(realY_);
 
     const auto dest = calcDrawingRect(selectionBox, screenX, screenY, HAlign::Center, VAlign::Center);
     Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
@@ -412,14 +414,14 @@ void UnitBase::drawOtherPlayerSelectionBox() {
         default: selectionBox = gfx->getUIGraphic(UI_OtherPlayerSelectionBox_Zoomlevel2); break;
     }
 
-    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX),
-                                      screenborder->world2screenY(realY), HAlign::Center, VAlign::Center);
+    const auto dest = calcDrawingRect(selectionBox, screenborder->world2screenX(realX_),
+                                      screenborder->world2screenY(realY_), HAlign::Center, VAlign::Center);
     Dune_RenderCopyF(renderer, selectionBox, nullptr, &dest);
 }
 
 void UnitBase::releaseTarget() {
-    if (forced) {
-        guardPoint = location;
+    if (forced_) {
+        guardPoint = location_;
     }
     setDestination(guardPoint);
 
@@ -430,44 +432,44 @@ void UnitBase::releaseTarget() {
 
 void UnitBase::engageTarget(const GameContext& context) {
 
-    if (target && target.getObjPointer() == nullptr) {
+    if (target_ && target_.getObjPointer() == nullptr) {
         // the target does not exist anymore
         releaseTarget();
         return;
     }
 
-    if (target && !target.getObjPointer()->isActive()) {
+    if (target_ && !target_.getObjPointer()->isActive()) {
         // the target changed its state to inactive
         releaseTarget();
         return;
     }
 
-    if (target && !targetFriendly && !canAttack(target.getObjPointer())) {
+    if (target_ && !targetFriendly_ && !canAttack(target_.getObjPointer())) {
         // the (non-friendly) target cannot be attacked anymore
         releaseTarget();
         return;
     }
 
-    if (target && !targetFriendly && !forced && !isInAttackRange(target.getObjPointer())) {
+    if (target_ && !targetFriendly_ && !forced_ && !isInAttackRange(target_.getObjPointer())) {
         // the (non-friendly) target left the attack mode range (and we were not forced to attack it)
         releaseTarget();
         return;
     }
 
-    if (target) {
+    if (target_) {
         // we have a target unit or structure
 
-        const Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
+        const Coord targetLocation = target_.getObjPointer()->getClosestPoint(location_);
 
-        if (destination != targetLocation) {
+        if (destination_ != targetLocation) {
             // the location of the target has moved
             // => recalculate path
             clearPath();
         }
 
-        targetDistance = blockDistance(location, targetLocation);
+        targetDistance = blockDistance(location_, targetLocation);
 
-        const auto newTargetAngle = destinationDrawnAngle(location, targetLocation);
+        const auto newTargetAngle = destinationDrawnAngle(location_, targetLocation);
 
         if (bFollow) {
             // we are following someone
@@ -477,7 +479,7 @@ void UnitBase::engageTarget(const GameContext& context) {
 
         if (targetDistance > getWeaponRange()) {
             // we are not in attack range
-            if (target.getObjPointer()->isAFlyingUnit()) {
+            if (target_.getObjPointer()->isAFlyingUnit()) {
                 // we are not following this air unit
                 releaseTarget();
                 return;
@@ -490,7 +492,7 @@ void UnitBase::engageTarget(const GameContext& context) {
 
         // we are in attack range
 
-        if (targetFriendly && !forced) {
+        if (targetFriendly_ && !forced_) {
             // the target is friendly and we only attack these if were forced to do so
             return;
         }
@@ -499,19 +501,19 @@ void UnitBase::engageTarget(const GameContext& context) {
             // we are going to the repair yard
             // => we do not need to change the destination
             targetAngle = ANGLETYPE::INVALID_ANGLE;
-        } else if (attackMode == CAPTURE) {
+        } else if (attackMode_ == CAPTURE) {
             // we want to capture the target building
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
-        } else if (isTracked() && target.getObjPointer()->isInfantry() && !targetFriendly
+        } else if (isTracked() && target_.getObjPointer()->isInfantry() && !targetFriendly_
                    && context.map.tileExists(targetLocation) && !context.map.getTile(targetLocation)->isMountain()
-                   && forced) {
+                   && forced_) {
             // we squash the infantry unit because we are forced to
             setDestination(targetLocation);
             targetAngle = ANGLETYPE::INVALID_ANGLE;
         } else if (!isAFlyingUnit()) {
             // we decide to fire on the target thus we can stop moving
-            setDestination(location);
+            setDestination(location_);
             targetAngle = newTargetAngle;
         }
 
@@ -522,14 +524,14 @@ void UnitBase::engageTarget(const GameContext& context) {
     } else if (attackPos) {
         // we attack a position
 
-        targetDistance = blockDistance(location, attackPos);
+        targetDistance = blockDistance(location_, attackPos);
 
-        const auto newTargetAngle = destinationDrawnAngle(location, attackPos);
+        const auto newTargetAngle = destinationDrawnAngle(location_, attackPos);
 
         if (targetDistance <= getWeaponRange()) {
             if (!isAFlyingUnit()) {
                 // we are in weapon range thus we can stop moving
-                setDestination(location);
+                setDestination(location_);
                 targetAngle = newTargetAngle;
             }
 
@@ -546,11 +548,11 @@ void UnitBase::move(const GameContext& context) {
 
     if (moving && !justStoppedMoving) {
         if (!isBadlyDamaged() || isAFlyingUnit()) {
-            realX += xSpeed;
-            realY += ySpeed;
+            realX_ += xSpeed;
+            realY_ += ySpeed;
         } else {
-            realX += xSpeed / 2;
-            realY += ySpeed / 2;
+            realX_ += xSpeed / 2;
+            realY_ += ySpeed / 2;
         }
 
         // check if vehicle is on the first half of the way
@@ -558,36 +560,36 @@ void UnitBase::move(const GameContext& context) {
         FixPoint fromDistanceY;
         FixPoint toDistanceX;
         FixPoint toDistanceY;
-        if (location != nextSpot) {
+        if (location_ != nextSpot) {
             // check if vehicle is half way out of old tile
 
-            fromDistanceX = FixPoint::abs(location.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
-            fromDistanceY = FixPoint::abs(location.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
-            toDistanceX   = FixPoint::abs(nextSpot.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
-            toDistanceY   = FixPoint::abs(nextSpot.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
+            fromDistanceX = FixPoint::abs(location_.x * TILESIZE - (realX_ - bumpyOffsetX) + TILESIZE / 2);
+            fromDistanceY = FixPoint::abs(location_.y * TILESIZE - (realY_ - bumpyOffsetY) + TILESIZE / 2);
+            toDistanceX   = FixPoint::abs(nextSpot.x * TILESIZE - (realX_ - bumpyOffsetX) + TILESIZE / 2);
+            toDistanceY   = FixPoint::abs(nextSpot.y * TILESIZE - (realY_ - bumpyOffsetY) + TILESIZE / 2);
 
             if (fromDistanceX >= TILESIZE / 2 || fromDistanceY >= TILESIZE / 2) {
                 // let something else go in
-                unassignFromMap(location);
-                oldLocation = location;
-                location    = nextSpot;
+                unassignFromMap(location_);
+                oldLocation_ = location_;
+                location_    = nextSpot;
 
-                if (!isAFlyingUnit() && itemID != Unit_Sandworm) {
-                    context.map.viewMap(owner->getHouseID(), location, getViewRange());
+                if (!isAFlyingUnit() && itemID_ != Unit_Sandworm) {
+                    context.map.viewMap(owner_->getHouseID(), location_, getViewRange());
                 }
             }
 
         } else {
             // if vehicle is out of old tile
 
-            fromDistanceX = FixPoint::abs(oldLocation.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
-            fromDistanceY = FixPoint::abs(oldLocation.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
-            toDistanceX   = FixPoint::abs(location.x * TILESIZE - (realX - bumpyOffsetX) + TILESIZE / 2);
-            toDistanceY   = FixPoint::abs(location.y * TILESIZE - (realY - bumpyOffsetY) + TILESIZE / 2);
+            fromDistanceX = FixPoint::abs(oldLocation_.x * TILESIZE - (realX_ - bumpyOffsetX) + TILESIZE / 2);
+            fromDistanceY = FixPoint::abs(oldLocation_.y * TILESIZE - (realY_ - bumpyOffsetY) + TILESIZE / 2);
+            toDistanceX   = FixPoint::abs(location_.x * TILESIZE - (realX_ - bumpyOffsetX) + TILESIZE / 2);
+            toDistanceY   = FixPoint::abs(location_.y * TILESIZE - (realY_ - bumpyOffsetY) + TILESIZE / 2);
 
             if (fromDistanceX >= TILESIZE || fromDistanceY >= TILESIZE) {
 
-                if (forced && location == destination && !target) {
+                if (forced_ && location_ == destination_ && !target_) {
                     setForced(false);
                     if (getAttackMode() == CARRYALLREQUESTED) {
                         doSetAttackMode(context, GUARD);
@@ -596,12 +598,12 @@ void UnitBase::move(const GameContext& context) {
 
                 moving            = false;
                 justStoppedMoving = true;
-                realX             = location.x * TILESIZE + TILESIZE / 2;
-                realY             = location.y * TILESIZE + TILESIZE / 2;
+                realX_            = location_.x * TILESIZE + TILESIZE / 2;
+                realY_            = location_.y * TILESIZE + TILESIZE / 2;
                 bumpyOffsetX      = 0;
                 bumpyOffsetY      = 0;
 
-                oldLocation.invalidate();
+                oldLocation_.invalidate();
             }
         }
 
@@ -620,8 +622,8 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
     auto* const map = dune::globals::currentGameMap;
 
     if (hasBumpyMovementOnRock()
-        && (map->getTile(location)->getType() == Terrain_Rock || map->getTile(location)->getType() == Terrain_Mountain
-            || map->getTile(location)->getType() == Terrain_ThickSpice)) {
+        && (map->getTile(location_)->getType() == Terrain_Rock || map->getTile(location_)->getType() == Terrain_Mountain
+            || map->getTile(location_)->getType() == Terrain_ThickSpice)) {
         // bumping effect
 
         const FixPoint epsilon     = 0.005_fix;
@@ -630,82 +632,82 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
         const FixPoint absYSpeed   = FixPoint::abs(ySpeed);
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - absXSpeed) < absXSpeed / 2) {
-            realY -= bumpyOffset;
+            realY_ -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - absYSpeed) < absYSpeed / 2) {
-            realX += bumpyOffset;
+            realX_ += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 4 * absXSpeed) < absXSpeed / 2) {
-            realY += bumpyOffset;
+            realY_ += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 4 * absYSpeed) < absYSpeed / 2) {
-            realX -= bumpyOffset;
+            realX_ -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 10 * absXSpeed) < absXSpeed / 2) {
-            realY -= bumpyOffset;
+            realY_ -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 20 * absYSpeed) < absYSpeed / 2) {
-            realX += bumpyOffset;
+            realX_ += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(fromDistanceX - 14 * absXSpeed) < absXSpeed / 2) {
-            realY += bumpyOffset;
+            realY_ += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(fromDistanceY - 14 * absYSpeed) < absYSpeed / 2) {
-            realX -= bumpyOffset;
+            realX_ -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - absXSpeed) < absXSpeed / 2) {
-            realY -= bumpyOffset;
+            realY_ -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - absYSpeed) < absYSpeed / 2) {
-            realX += bumpyOffset;
+            realX_ += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 4 * absXSpeed) < absXSpeed / 2) {
-            realY += bumpyOffset;
+            realY_ += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 4 * absYSpeed) < absYSpeed / 2) {
-            realX -= bumpyOffset;
+            realX_ -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 10 * absXSpeed) < absXSpeed / 2) {
-            realY -= bumpyOffset;
+            realY_ -= bumpyOffset;
             bumpyOffsetY -= bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 10 * absYSpeed) < absYSpeed / 2) {
-            realX += bumpyOffset;
+            realX_ += bumpyOffset;
             bumpyOffsetX += bumpyOffset;
         }
 
         if (FixPoint::abs(xSpeed) >= epsilon && FixPoint::abs(toDistanceX - 14 * absXSpeed) < absXSpeed / 2) {
-            realY += bumpyOffset;
+            realY_ += bumpyOffset;
             bumpyOffsetY += bumpyOffset;
         }
         if (FixPoint::abs(ySpeed) >= epsilon && FixPoint::abs(toDistanceY - 14 * absYSpeed) < absYSpeed / 2) {
-            realX -= bumpyOffset;
+            realX_ -= bumpyOffset;
             bumpyOffsetX -= bumpyOffset;
         }
     }
 }
 
 void UnitBase::navigate_fallback(const GameContext& context) {
-    if (const auto* const targetPtr = target.getObjPointer()) {
-        if (targetFriendly && targetPtr->getItemID() != Structure_RepairYard
+    if (const auto* const targetPtr = target_.getObjPointer()) {
+        if (targetFriendly_ && targetPtr->getItemID() != Structure_RepairYard
             && (targetPtr->getItemID() != Structure_Refinery || getItemID() != Unit_Harvester)) {
             setTarget(nullptr);
         }
@@ -721,7 +723,7 @@ void UnitBase::navigate_fallback(const GameContext& context) {
             auto& options    = game.getGameInitSettings().getGameOptions();
 
             if ((options.manualCarryallDrops || house->isAI())
-                && blockDistance(location, destination) >= MIN_CARRYALL_LIFT_DISTANCE) {
+                && blockDistance(location_, destination_) >= MIN_CARRYALL_LIFT_DISTANCE) {
 
                 unit->requestCarryall(context);
                 return;
@@ -731,7 +733,7 @@ void UnitBase::navigate_fallback(const GameContext& context) {
 
     if (house->isAI()) {
         if (auto* const harvester = dune_cast<Harvester>(this)) {
-            if (!harvester->isReturning() && blockDistance(location, destination) >= 2) {
+            if (!harvester->isReturning() && blockDistance(location_, destination_) >= 2) {
                 // try getting back to a refinery
                 harvester->doReturn();
 
@@ -740,8 +742,8 @@ void UnitBase::navigate_fallback(const GameContext& context) {
         }
     }
 
-    ObjectBase::setDestination(location); // can't get any closer, give up
-    forced = false;
+    ObjectBase::setDestination(location_); // can't get any closer, give up
+    forced_ = false;
 }
 
 void UnitBase::navigate(const GameContext& context) {
@@ -755,14 +757,14 @@ void UnitBase::navigate(const GameContext& context) {
     if (moving || justStoppedMoving)
         return;
 
-    if (location != destination) {
+    if (location_ != destination_) {
         if (!nextSpotFound) {
 
             if (pathList.empty() && recalculatePathTimer == 0) {
                 recalculatePathTimer = 100;
 
                 // try searching for a path a number of times then give up
-                if (!SearchPathWithAStar() && ++noCloserPointCount >= 3 && location != oldLocation) {
+                if (!SearchPathWithAStar() && ++noCloserPointCount >= 3 && location_ != oldLocation_) {
 
                     navigate_fallback(context);
                 }
@@ -776,7 +778,7 @@ void UnitBase::navigate(const GameContext& context) {
                 noCloserPointCount   = 0;
             }
         } else {
-            const auto tempAngle = Map::getPosAngle(location, nextSpot);
+            const auto tempAngle = Map::getPosAngle(location_, nextSpot);
             if (tempAngle != ANGLETYPE::INVALID_ANGLE) {
                 nextSpotAngle = tempAngle;
             }
@@ -784,17 +786,17 @@ void UnitBase::navigate(const GameContext& context) {
             if (!canPass(nextSpot.x, nextSpot.y)) {
                 clearPath();
             } else {
-                if (drawnAngle == nextSpotAngle) {
+                if (drawnAngle_ == nextSpotAngle) {
                     moving        = true;
                     nextSpotFound = false;
 
                     assignToMap(context, nextSpot);
-                    angle = static_cast<int>(drawnAngle);
+                    angle_ = static_cast<int>(drawnAngle_);
                     setSpeeds(context);
                 }
             }
         }
-    } else if (!target && attackPos.isInvalid()) {
+    } else if (!target_ && attackPos.isInvalid()) {
         if ((game.getGameCycleCount() + getObjectID() * 1337) % MILLI2CYCLES(UNITIDLETIMER) == 0) {
             idleAction(context);
         }
@@ -815,7 +817,7 @@ void UnitBase::idleAction(const GameContext& context) {
 void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos) {
     const auto& map = context.map;
 
-    if (!respondable || !map.tileExists(xPos, yPos))
+    if (!respondable_ || !map.tileExists(xPos, yPos))
         return;
 
     auto& game = context.game;
@@ -829,17 +831,17 @@ void UnitBase::handleActionClick(const GameContext& context, int xPos, int yPos)
         const auto cmd_type = is_owner ? CMDTYPE::CMD_UNIT_MOVE2OBJECT : CMDTYPE::CMD_UNIT_ATTACKOBJECT;
 
         game.getCommandManager().addCommand(
-            Command{dune::globals::pLocalPlayer->getPlayerID(), cmd_type, objectID, tempTarget->getObjectID()});
+            Command{dune::globals::pLocalPlayer->getPlayerID(), cmd_type, objectID_, tempTarget->getObjectID()});
     } else {
         // move this unit
         game.getCommandManager().addCommand(Command{dune::globals::pLocalPlayer->getPlayerID(),
-                                                    CMDTYPE::CMD_UNIT_MOVE2POS, objectID, static_cast<uint32_t>(xPos),
+                                                    CMDTYPE::CMD_UNIT_MOVE2POS, objectID_, static_cast<uint32_t>(xPos),
                                                     static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)});
     }
 }
 
 void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos) {
-    if (!respondable)
+    if (!respondable_)
         return;
 
     const auto& map = context.map;
@@ -852,32 +854,32 @@ void UnitBase::handleAttackClick(const GameContext& context, int xPos, int yPos)
             // attack unit/structure or move to structure
 
             game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                        CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID,
+                                                        CMDTYPE::CMD_UNIT_ATTACKOBJECT, objectID_,
                                                         tempTarget->getObjectID()));
         } else {
             // attack pos
             game.getCommandManager().addCommand(
-                Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS, objectID,
+                Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_ATTACKPOS, objectID_,
                         static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
         }
     }
 }
 
 void UnitBase::handleMoveClick(const GameContext& context, int xPos, int yPos) {
-    if (!respondable)
+    if (!respondable_)
         return;
 
     if (context.map.tileExists(xPos, yPos)) {
         // move to pos
         context.game.getCommandManager().addCommand(
-            Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID,
+            Command(dune::globals::pLocalPlayer->getPlayerID(), CMDTYPE::CMD_UNIT_MOVE2POS, objectID_,
                     static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos), static_cast<uint32_t>(true)));
     }
 }
 
 void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode) {
     context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                        CMDTYPE::CMD_UNIT_SETMODE, objectID,
+                                                        CMDTYPE::CMD_UNIT_SETMODE, objectID_,
                                                         static_cast<uint32_t>(newAttackMode)));
 }
 
@@ -886,23 +888,23 @@ void UnitBase::handleSetAttackModeClick(const GameContext& context, ATTACKMODE n
     Request a Carryall to drop at target location
 **/
 void UnitBase::handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos) {
-    if (!respondable)
+    if (!respondable_)
         return;
 
     if (context.map.tileExists(xPos, yPos)) {
         context.game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
-                                                            CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID,
+                                                            CMDTYPE::CMD_UNIT_REQUESTCARRYALLDROP, objectID_,
                                                             static_cast<uint32_t>(xPos), static_cast<uint32_t>(yPos)));
     }
 }
 
 void UnitBase::doMove2Pos(const GameContext& context, int xPos, int yPos, bool bForced) {
-    if (attackMode == CAPTURE || attackMode == HUNT) {
+    if (attackMode_ == CAPTURE || attackMode_ == HUNT) {
         doSetAttackMode(context, GUARD);
     }
 
     if (context.map.tileExists(xPos, yPos)) {
-        if (xPos != destination.x || yPos != destination.y) {
+        if (xPos != destination_.x || yPos != destination_.y) {
             clearPath();
             findTargetTimer = 0;
         }
@@ -913,9 +915,9 @@ void UnitBase::doMove2Pos(const GameContext& context, int xPos, int yPos, bool b
         setGuardPoint(xPos, yPos);
     } else {
         setTarget(nullptr);
-        setDestination(location);
+        setDestination(location_);
         setForced(bForced);
-        setGuardPoint(location);
+        setGuardPoint(location_);
     }
 }
 
@@ -928,7 +930,7 @@ void UnitBase::doMove2Object(const GameContext& context, const ObjectBase* pTarg
         return;
     }
 
-    if (attackMode == CAPTURE || attackMode == HUNT) {
+    if (attackMode_ == CAPTURE || attackMode_ == HUNT) {
         doSetAttackMode(context, GUARD);
     }
 
@@ -957,7 +959,7 @@ void UnitBase::doAttackPos(const GameContext& context, int xPos, int yPos, bool 
         return;
     }
 
-    if (attackMode == CAPTURE) {
+    if (attackMode_ == CAPTURE) {
         doSetAttackMode(context, GUARD);
     }
 
@@ -975,15 +977,15 @@ void UnitBase::doAttackObject(const GameContext& context, const ObjectBase* pTar
     if (pTargetObject->getObjectID() == getObjectID() || (!canAttack() && getItemID() != Unit_Harvester))
         return;
 
-    if (attackMode == CAPTURE)
+    if (attackMode_ == CAPTURE)
         doSetAttackMode(context, GUARD);
 
     setDestination(INVALID_POS, INVALID_POS);
 
     setTarget(pTargetObject);
     // hack to make it possible to attack own repair yard
-    if (goingToRepairYard && target) {
-        if (auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer())) {
+    if (goingToRepairYard && target_) {
+        if (auto* const repair_yard = dune_cast<RepairYard>(target_.getObjPointer())) {
             repair_yard->unBook();
             goingToRepairYard = false;
         }
@@ -1006,13 +1008,13 @@ void UnitBase::doAttackObject(const GameContext& context, uint32_t TargetObjectI
 
 void UnitBase::doSetAttackMode(const GameContext& context, ATTACKMODE newAttackMode) {
     if (newAttackMode >= 0 && newAttackMode < ATTACKMODE_MAX)
-        attackMode = newAttackMode;
+        attackMode_ = newAttackMode;
 
-    if (attackMode == GUARD || attackMode == STOP) {
+    if (attackMode_ == GUARD || attackMode_ == STOP) {
         if (moving && !justStoppedMoving) {
             doMove2Pos(context, nextSpot, false);
         } else {
-            doMove2Pos(context, location, false);
+            doMove2Pos(context, location_, false);
         }
     }
 }
@@ -1028,9 +1030,9 @@ void UnitBase::handleDamage(const GameContext& context, int damage, uint32_t dam
 
     if (pDamager != nullptr) {
 
-        if (attackMode == HUNT && !forced) {
+        if (attackMode_ == HUNT && !forced_) {
             if (canAttack(pDamager)) {
-                if (!target || target.getObjPointer() == nullptr || !isInWeaponRange(target.getObjPointer())) {
+                if (!target_ || target_.getObjPointer() == nullptr || !isInWeaponRange(target_.getObjPointer())) {
                     // no target or target not on weapon range => switch target
                     doAttackObject(context, pDamager, false);
                 }
@@ -1053,7 +1055,7 @@ void UnitBase::handleDamage(const GameContext& context, int damage, uint32_t dam
 
 bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
     int checkRange = 0;
-    switch (attackMode) {
+    switch (attackMode_) {
         case GUARD: {
             checkRange = getItemID() == Unit_Sandworm ? getViewRange() : getWeaponRange();
         } break;
@@ -1093,7 +1095,7 @@ bool UnitBase::isInGuardRange(const ObjectBase* pObject) const {
 
 bool UnitBase::isInAttackRange(const ObjectBase* object) const {
     int checkRange = 0;
-    switch (attackMode) {
+    switch (attackMode_) {
         case GUARD: {
             checkRange = getWeaponRange();
         } break;
@@ -1136,22 +1138,22 @@ bool UnitBase::isInWeaponRange(const ObjectBase* object) const {
     if (object == nullptr)
         return false;
 
-    const Coord targetLocation = target.getObjPointer()->getClosestPoint(location);
+    const Coord targetLocation = target_.getObjPointer()->getClosestPoint(location_);
 
-    return blockDistance(location, targetLocation) <= getWeaponRange();
+    return blockDistance(location_, targetLocation) <= getWeaponRange();
 }
 
 void UnitBase::setAngle(ANGLETYPE newAngle) {
     if (!moving && !justStoppedMoving) {
-        newAngle   = normalizeAngle(newAngle);
-        drawnAngle = newAngle;
-        angle      = static_cast<int>(newAngle);
+        newAngle    = normalizeAngle(newAngle);
+        drawnAngle_ = newAngle;
+        angle_      = static_cast<int>(newAngle);
         clearPath();
     }
 }
 
 void UnitBase::setGettingRepaired() {
-    auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer());
+    auto* const repair_yard = dune_cast<RepairYard>(target_.getObjPointer());
 
     if (!repair_yard)
         return;
@@ -1160,15 +1162,15 @@ void UnitBase::setGettingRepaired() {
 
     repair_yard->assignUnit(this);
 
-    respondable = false;
+    respondable_ = false;
     setActive(false);
     setVisible(VIS_ALL, false);
     goingToRepairYard = false;
-    badlyDamaged      = false;
+    badlyDamaged_     = false;
 
     setTarget(nullptr);
     // setLocation(INVALID_POS, INVALID_POS);
-    setDestination(location);
+    setDestination(location_);
     nextSpotAngle = ANGLETYPE::DOWN;
 }
 
@@ -1179,12 +1181,12 @@ void UnitBase::setGuardPoint(int newX, int newY) {
 
         if (getItemID() == Unit_Harvester && guardPoint.isValid()) {
             if (dune::globals::currentGameMap->getTile(newX, newY)->hasSpice()) {
-                if (attackMode == STOP) {
-                    attackMode = GUARD;
+                if (attackMode_ == STOP) {
+                    attackMode_ = GUARD;
                 }
             } else {
-                if (attackMode != STOP) {
-                    attackMode = STOP;
+                if (attackMode_ != STOP) {
+                    attackMode_ = STOP;
                 }
             }
         }
@@ -1197,8 +1199,8 @@ void UnitBase::setLocation(const GameContext& context, int xPos, int yPos) {
         parent::setLocation(context, xPos, yPos);
     } else if (dune::globals::currentGameMap->tileExists(xPos, yPos)) {
         parent::setLocation(context, xPos, yPos);
-        realX += TILESIZE / 2;
-        realY += TILESIZE / 2;
+        realX_ += TILESIZE / 2;
+        realY_ += TILESIZE / 2;
         bumpyOffsetX = 0;
         bumpyOffsetY = 0;
     }
@@ -1214,24 +1216,24 @@ void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
     context.map.removeObjectFromMap(getObjectID());
 
     if (goingToRepairYard) {
-        if (auto* const repair_yard = dune_cast<RepairYard>(target.getObjPointer()))
+        if (auto* const repair_yard = dune_cast<RepairYard>(target_.getObjPointer()))
             repair_yard->unBook();
     }
 
     if (const auto* const harvester = dune_cast<Harvester>(this)) {
         if (harvester->isReturning()) {
-            if (auto* const refinery = dune_cast<Refinery>(target.getObjPointer()))
+            if (auto* const refinery = dune_cast<Refinery>(target_.getObjPointer()))
                 refinery->unBook();
         }
     }
 
-    target.pointTo(newCarrier);
+    target_.pointTo(newCarrier);
 
     goingToRepairYard = false;
-    forced            = false;
+    forced_           = false;
     moving            = false;
     pickedUp          = true;
-    respondable       = false;
+    respondable_      = false;
     setActive(false);
     setVisible(VIS_ALL, false);
 
@@ -1239,21 +1241,21 @@ void UnitBase::setPickedUp(const GameContext& context, UnitBase* newCarrier) {
 }
 
 FixPoint UnitBase::getMaxSpeed(const GameContext& context) const {
-    return context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    return context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].maxspeed;
 }
 
 void UnitBase::setSpeeds(const GameContext& context) {
     FixPoint speed = getMaxSpeed(context);
 
     if (!isAFlyingUnit()) {
-        speed += speed * (1 - getTerrainDifficulty(context.map.getTile(location)->getType()));
+        speed += speed * (1 - getTerrainDifficulty(context.map.getTile(location_)->getType()));
         if (isBadlyDamaged()) {
             speed *= HEAVILYDAMAGEDSPEEDMULTIPLIER;
         }
     }
 
     // clang-format off
-    switch(drawnAngle){
+    switch(drawnAngle_){
         case ANGLETYPE::LEFT:      xSpeed = -speed;                    ySpeed = 0;         break;
         case ANGLETYPE::LEFTUP:    xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = xSpeed;    break;
         case ANGLETYPE::UP:        xSpeed = 0;                         ySpeed = -speed;    break;
@@ -1272,7 +1274,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
     targetAngle = ANGLETYPE::INVALID_ANGLE;
 
     if (goingToRepairYard) {
-        if (auto* repairYard = dune_cast<RepairYard>(target.getObjPointer()))
+        if (auto* repairYard = dune_cast<RepairYard>(target_.getObjPointer()))
             repairYard->unBook();
 
         goingToRepairYard = false;
@@ -1280,7 +1282,7 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 
     parent::setTarget(newTarget);
 
-    if (auto* const currentTarget = dune_cast<RepairYard>(target.getObjPointer())) {
+    if (auto* const currentTarget = dune_cast<RepairYard>(target_.getObjPointer())) {
         if (currentTarget->getOwner() == getOwner()) {
             currentTarget->book();
             goingToRepairYard = true;
@@ -1291,13 +1293,13 @@ void UnitBase::setTarget(const ObjectBase* newTarget) {
 void UnitBase::targeting(const GameContext& context) {
     if (findTargetTimer == 0) {
 
-        if (attackMode != STOP && attackMode != CARRYALLREQUESTED) {
+        if (attackMode_ != STOP && attackMode_ != CARRYALLREQUESTED) {
 
             // lets add a bit of logic to make units recalibrate their nearest target if the target isn't in weapon
             // range
-            if (target && !attackPos && !forced
-                && (attackMode == GUARD || attackMode == AREAGUARD || attackMode == HUNT)) {
-                if (!isInWeaponRange(target.getObjPointer())) {
+            if (target_ && !attackPos && !forced_
+                && (attackMode_ == GUARD || attackMode_ == AREAGUARD || attackMode_ == HUNT)) {
+                if (!isInWeaponRange(target_.getObjPointer())) {
                     const auto* pNewTarget = findTarget();
 
                     if (pNewTarget != nullptr) {
@@ -1309,14 +1311,14 @@ void UnitBase::targeting(const GameContext& context) {
                 }
             }
 
-            if (!target && !attackPos && !moving && !justStoppedMoving && !forced) {
+            if (!target_ && !attackPos && !moving && !justStoppedMoving && !forced_) {
                 // we have no target, we have stopped moving and we weren't forced to do anything else
 
                 const ObjectBase* pNewTarget = findTarget();
 
                 if (pNewTarget != nullptr && isInGuardRange(pNewTarget)) {
                     // we have found a new target => attack it
-                    if (attackMode == AMBUSH) {
+                    if (attackMode_ == AMBUSH) {
                         doSetAttackMode(context, HUNT);
                     }
                     doAttackObject(context, pNewTarget, false);
@@ -1324,8 +1326,8 @@ void UnitBase::targeting(const GameContext& context) {
                     if (getItemID() == Unit_Sandworm) {
                         doSetAttackMode(context, HUNT);
                     }
-                } else if (attackMode == HUNT) {
-                    setGuardPoint(location);
+                } else if (attackMode_ == HUNT) {
+                    setGuardPoint(location_);
                     doSetAttackMode(context, GUARD);
                 }
 
@@ -1353,12 +1355,12 @@ void UnitBase::turn(const GameContext& context) {
             FixPoint angleLeft  = 0;
             FixPoint angleRight = 0;
 
-            if (angle > static_cast<int>(wantedAngle)) {
-                angleRight = angle - static_cast<int>(wantedAngle);
-                angleLeft  = FixPoint::abs(8 - angle) + static_cast<int>(wantedAngle);
-            } else if (angle < static_cast<int>(wantedAngle)) {
-                angleRight = FixPoint::abs(8 - static_cast<int>(wantedAngle)) + angle;
-                angleLeft  = static_cast<int>(wantedAngle) - angle;
+            if (angle_ > static_cast<int>(wantedAngle)) {
+                angleRight = angle_ - static_cast<int>(wantedAngle);
+                angleLeft  = FixPoint::abs(8 - angle_) + static_cast<int>(wantedAngle);
+            } else if (angle_ < static_cast<int>(wantedAngle)) {
+                angleRight = FixPoint::abs(8 - static_cast<int>(wantedAngle)) + angle_;
+                angleLeft  = static_cast<int>(wantedAngle) - angle_;
             }
 
             if (angleLeft <= angleRight) {
@@ -1371,39 +1373,39 @@ void UnitBase::turn(const GameContext& context) {
 }
 
 void UnitBase::turnLeft(const GameContext& context) {
-    angle += context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
-    if (angle >= 7.5_fix) {
-        angle -= NUM_ANGLES;
+    angle_ += context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].turnspeed;
+    if (angle_ >= 7.5_fix) {
+        angle_ -= NUM_ANGLES;
     }
-    drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
+    drawnAngle_ = normalizeAngle(static_cast<ANGLETYPE>(lround(angle_)));
 }
 
 void UnitBase::turnRight(const GameContext& context) {
-    angle -= context.game.objectData.data[itemID][static_cast<int>(originalHouseID)].turnspeed;
-    if (angle <= -0.5_fix) {
-        angle += NUM_ANGLES;
+    angle_ -= context.game.objectData.data[itemID_][static_cast<int>(originalHouseID_)].turnspeed;
+    if (angle_ <= -0.5_fix) {
+        angle_ += NUM_ANGLES;
     }
-    drawnAngle = normalizeAngle(static_cast<ANGLETYPE>(lround(angle)));
+    drawnAngle_ = normalizeAngle(static_cast<ANGLETYPE>(lround(angle_)));
 }
 
 void UnitBase::quitDeviation(const GameContext& context) {
     if (wasDeviated()) {
         // revert back to real owner
         setTarget(nullptr);
-        setGuardPoint(location);
-        setDestination(location);
-        owner          = context.game.getHouse(originalHouseID);
-        graphic        = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+        setGuardPoint(location_);
+        setDestination(location_);
+        owner_         = context.game.getHouse(originalHouseID_);
+        graphic_       = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
         deviationTimer = INVALID;
     }
 }
 
 bool UnitBase::update(const GameContext& context) {
-    if (active) {
+    if (active_) {
         targeting(context);
         navigate(context);
         move(context);
-        if (active) {
+        if (active_) {
             turn(context);
             updateVisibleUnits(context);
         }
@@ -1436,7 +1438,7 @@ void UnitBase::updateVisibleUnits(const GameContext& context) {
         return;
     }
 
-    const auto* pTile = context.map.tryGetTile(location.x, location.y);
+    const auto* pTile = context.map.tryGetTile(location_.x, location_.y);
     if (!pTile)
         return;
 
@@ -1470,12 +1472,12 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
     if (!ground_object_result.first)
         return true;
 
-    if (ground_object_result.second == target.getObjectID()) {
+    if (ground_object_result.second == target_.getObjectID()) {
         const auto* const pObject =
             dune::globals::currentGame->getObjectManager().getObject(ground_object_result.second);
 
-        if (pObject != nullptr && pObject->getObjectID() == target.getObjectID() && targetFriendly
-            && pObject->isAStructure() && pObject->getOwner()->getTeamID() == owner->getTeamID()
+        if (pObject != nullptr && pObject->getObjectID() == target_.getObjectID() && targetFriendly_
+            && pObject->isAStructure() && pObject->getOwner()->getTeamID() == owner_->getTeamID()
             && pObject->isVisible(getOwner()->getTeamID())) {
             // are we entering a repair yard?
             return goingToRepairYard && pObject->getItemID() == Structure_RepairYard
@@ -1488,24 +1490,24 @@ bool UnitBase::canPassTile(const Tile* pTile) const {
 bool UnitBase::SearchPathWithAStar() {
     Coord destinationCoord;
 
-    if (target) {
-        const auto* const obj_pointer = target.getObjPointer();
+    if (target_) {
+        const auto* const obj_pointer = target_.getObjPointer();
 
         if (obj_pointer != nullptr) {
-            if (itemID == Unit_Carryall && obj_pointer->getItemID() == Structure_Refinery) {
+            if (itemID_ == Unit_Carryall && obj_pointer->getItemID() == Structure_Refinery) {
                 destinationCoord = obj_pointer->getLocation() + Coord(2, 0);
-            } else if (itemID == Unit_Frigate && obj_pointer->getItemID() == Structure_StarPort) {
+            } else if (itemID_ == Unit_Frigate && obj_pointer->getItemID() == Structure_StarPort) {
                 destinationCoord = obj_pointer->getLocation() + Coord(1, 1);
             } else {
-                destinationCoord = obj_pointer->getClosestPoint(location);
+                destinationCoord = obj_pointer->getClosestPoint(location_);
             }
         } else
-            destinationCoord = destination;
+            destinationCoord = destination_;
     } else {
-        destinationCoord = destination;
+        destinationCoord = destination_;
     }
 
-    dune::globals::currentGameMap->find_path(this, location, destinationCoord, pathList);
+    dune::globals::currentGameMap->find_path(this, location_, destinationCoord, pathList);
 
     if (pathList.empty()) {
         nextSpotFound = false;

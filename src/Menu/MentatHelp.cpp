@@ -34,7 +34,8 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
 
     mentatEntries = dune::globals::pTextManager->getAllMentatEntries(newHouse, techLevel);
 
-    const auto color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
+    const auto color =
+        SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(newHouse)] + 3]);
 
     if (mission == 0)
         std::erase_if(mentatEntries, [](auto& e) { return e.numMenuEntry == 0; });

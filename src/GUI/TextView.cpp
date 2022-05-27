@@ -31,22 +31,22 @@ TextView::TextView() {
 TextView::~TextView() = default;
 
 void TextView::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x, y, insideOverlay);
+    scrollbar_.handleMouseMovement(x - getSize().x + scrollbar_.getSize().x, y, insideOverlay);
 }
 
 bool TextView::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
-    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
+    return scrollbar_.handleMouseLeft(x - getSize().x + scrollbar_.getSize().x, y, pressed);
 }
 
 bool TextView::handleMouseWheel(int32_t x, int32_t y, bool up) {
     // forward mouse wheel event to scrollbar
-    return scrollbar.handleMouseWheel(0, 0, up);
+    return scrollbar_.handleMouseWheel(0, 0, up);
 }
 
 bool TextView::handleKeyPress(const SDL_KeyboardEvent& key) {
     Widget::handleKeyPress(key);
 
-    scrollbar.handleKeyPress(key);
+    scrollbar_.handleKeyPress(key);
     return true;
 }
 
@@ -59,55 +59,55 @@ void TextView::draw(Point position) {
 
     auto* const renderer = dune::globals::renderer.get();
 
-    if (pBackground)
-        pBackground.draw(renderer, position.x, position.y);
+    if (pBackground_)
+        pBackground_.draw(renderer, position.x, position.y);
 
-    if (pForeground) {
+    if (pForeground_) {
         const auto& gui = GUIStyle::getInstance();
 
-        const auto lineHeight = gui.getTextHeight(fontSize) + 2.f;
+        const auto lineHeight = gui.getTextHeight(fontSize_) + 2.f;
 
-        const auto src_y = static_cast<int>(std::round(static_cast<float>(scrollbar.getCurrentValue()) * lineHeight));
+        const auto src_y = static_cast<int>(std::round(static_cast<float>(scrollbar_.getCurrentValue()) * lineHeight));
 
         const auto height =
-            std::min(getHeight(pForeground.get()),
+            std::min(getHeight(pForeground_.get()),
                      static_cast<int>(std::round(static_cast<int>(getSize().y) - 2 * gui.getActualScale())));
 
-        const SDL_Rect src{0, src_y, getWidth(pForeground.get()), height};
+        const SDL_Rect src{0, src_y, getWidth(pForeground_.get()), height};
 
         const SDL_FRect dest = {static_cast<float>(position.x) + 2.f, static_cast<float>(position.y) + 1.f,
-                                pForeground.width_,
-                                std::min(pForeground.height_, static_cast<float>(getSize().y) - 2.f)};
+                                pForeground_.width_,
+                                std::min(pForeground_.height_, static_cast<float>(getSize().y) - 2.f)};
 
-        Dune_RenderCopyF(renderer, pForeground.get(), &src, &dest);
+        Dune_RenderCopyF(renderer, pForeground_.get(), &src, &dest);
     }
 
     Point scrollBarPos = position;
-    scrollBarPos.x += getSize().x - scrollbar.getSize().x;
+    scrollBarPos.x += getSize().x - scrollbar_.getSize().x;
 
-    if (!bAutohideScrollbar || (scrollbar.getRangeMin() != scrollbar.getRangeMax())) {
-        scrollbar.draw(scrollBarPos);
+    if (!bAutohideScrollbar_ || (scrollbar_.getRangeMin() != scrollbar_.getRangeMax())) {
+        scrollbar_.draw(scrollBarPos);
     }
 }
 
 void TextView::resize(uint32_t width, uint32_t height) {
     invalidateTextures();
 
-    scrollbar.resize(scrollbar.getMinimumSize().x, height);
+    scrollbar_.resize(scrollbar_.getMinimumSize().x, height);
 
     auto& gui = GUIStyle::getInstance();
 
     const std::vector<std::string> textLines =
-        greedyWordWrap(text, static_cast<float>(getSize().x - scrollbar.getSize().x - 4),
-                       [&gui, font = fontSize](std::string_view tmp) {
+        greedyWordWrap(text_, static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
+                       [&gui, font = fontSize_](std::string_view tmp) {
                            return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
                        });
 
-    const auto lineHeight = gui.getTextHeight(fontSize) + 2.f;
+    const auto lineHeight = gui.getTextHeight(fontSize_) + 2.f;
 
     const auto numVisibleLines = static_cast<int>(std::floor(static_cast<int>(height) / lineHeight));
-    scrollbar.setRange(0, std::max(0, static_cast<int>(textLines.size()) - numVisibleLines));
-    scrollbar.setBigStepSize(std::max(1, numVisibleLines - 1));
+    scrollbar_.setRange(0, std::max(0, static_cast<int>(textLines.size()) - numVisibleLines));
+    scrollbar_.setBigStepSize(std::max(1, numVisibleLines - 1));
 
     Widget::resize(width, height);
 }
@@ -119,26 +119,26 @@ void TextView::updateTextures() {
 
     auto* const renderer = dune::globals::renderer.get();
 
-    if (!pBackground)
-        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
+    if (!pBackground_)
+        pBackground_ = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
 
-    if (!pForeground) {
-        const auto textLines = greedyWordWrap(text, static_cast<float>(getSize().x - scrollbar.getSize().x - 4),
-                                              [&gui, font = fontSize](std::string_view tmp) {
+    if (!pForeground_) {
+        const auto textLines = greedyWordWrap(text_, static_cast<float>(getSize().x - scrollbar_.getSize().x - 4),
+                                              [&gui, font = fontSize_](std::string_view tmp) {
                                                   return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x - 4);
                                               });
 
-        const auto lineHeight  = gui.getTextHeight(fontSize) + 2.f;
+        const auto lineHeight  = gui.getTextHeight(fontSize_) + 2.f;
         const auto labelHeight = static_cast<int>(std::ceil(lineHeight * static_cast<float>(textLines.size()) + 2.f));
 
-        pForeground = gui.createLabel(renderer, getSize().x - 4, labelHeight, textLines, fontSize, alignment, textcolor,
-                                      textshadowcolor, backgroundcolor);
+        pForeground_ = gui.createLabel(renderer, getSize().x - 4, labelHeight, textLines, fontSize_, alignment_,
+                                       text_color_, text_shadow_color_, background_color_);
     }
 }
 
 void TextView::invalidateTextures() {
-    pBackground.reset();
-    pForeground.reset();
+    pBackground_.reset();
+    pForeground_.reset();
 
     parent::invalidateTextures();
 }

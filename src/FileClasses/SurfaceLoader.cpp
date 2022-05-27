@@ -1271,7 +1271,8 @@ SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house
             THROW(std::runtime_error, "SurfaceLoader::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
         }
 
-        surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(), PALCOLOR_HARKONNEN, houseToPaletteIndex[idx]);
+        surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(), PALCOLOR_HARKONNEN,
+                                       dune::globals::houseToPaletteIndex[idx]);
     }
 
     return surface.get();
@@ -1307,7 +1308,8 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
         }
 
         // remap to this color
-        target = mapSurfaceColorRange(harkonnen, PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
+        target = mapSurfaceColorRange(harkonnen, PALCOLOR_HARKONNEN,
+                                      dune::globals::houseToPaletteIndex[static_cast<int>(house)]);
     }
 
     return target.get();
@@ -1328,7 +1330,7 @@ SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE
 
         mapChoicePieces[num][static_cast<int>(house)] =
             mapSurfaceColorRange(mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get(),
-                                 PALCOLOR_HARKONNEN, houseToPaletteIndex[static_cast<int>(house)]);
+                                 PALCOLOR_HARKONNEN, dune::globals::houseToPaletteIndex[static_cast<int>(house)]);
     }
 
     return mapChoicePieces[num][static_cast<int>(house)].get();
@@ -1578,7 +1580,7 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
 
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
-            const auto house_index   = houseToPaletteIndex[static_cast<int>(house)];
+            const auto house_index   = dune::globals::houseToPaletteIndex[static_cast<int>(house)];
             const auto* const colors = &dune::globals::palette[house_index + (i + k) % 4];
 
             SDL_SetPaletteColors(arrowPic->format->palette, colors, 251 + k, 1);

@@ -43,30 +43,30 @@ Trike::Trike(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Trike::init() {
-    assert(itemID == Unit_Trike);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Trike);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Trike;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Trike;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 1;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 1;
 }
 
 Trike::~Trike() = default;
 
 void Trike::destroy(const GameContext& context) {
-    if (context.map.tileExists(location) && isVisible()) {
-        Coord realPos(lround(realX), lround(realY));
-        context.game.addExplosion(Explosion_SmallUnit, realPos, owner->getHouseID());
+    if (context.map.tileExists(location_) && isVisible()) {
+        Coord realPos(lround(realX_), lround(realY_));
+        context.game.addExplosion(Explosion_SmallUnit, realPos, owner_->getHouseID());
 
         if (isVisible(getOwner()->getTeamID()))
-            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location);
+            dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_ExplosionSmall, location_);
     }
 
     GroundUnit::destroy(context);
 }
 
 void Trike::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_MachineGun, location_);
 }

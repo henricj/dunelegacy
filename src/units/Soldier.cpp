@@ -40,24 +40,24 @@ Soldier::Soldier(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Soldier::init() {
-    assert(itemID == Unit_Soldier);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Soldier);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Soldier;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Soldier;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = 4;
-    numImagesY = 3;
+    numImagesX_ = 4;
+    numImagesY_ = 3;
 }
 
 Soldier::~Soldier() = default;
 
 bool Soldier::canAttack(const ObjectBase* object) const {
     return (object != nullptr) && (object->isAStructure() || !object->isAFlyingUnit())
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+        && ((object->getOwner()->getTeamID() != owner_->getTeamID()) || object->getItemID() == Unit_Sandworm)
         && object->isVisible(getOwner()->getTeamID());
 }
 
 void Soldier::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Gun, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Gun, location_);
 }

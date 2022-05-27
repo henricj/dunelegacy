@@ -42,7 +42,7 @@ MapMirrorNone::MapMirrorNone(int mapsizeX, int mapsizeY)
  : MapMirror(mapsizeX, mapsizeY) {
 }
 
-Coord MapMirrorNone::getCoord(Coord originalCoord, int i, Coord objectSize) const {
+Coord MapMirrorNone::getCoord(Coord originalCoord, [[maybe_unused]] int i, [[maybe_unused]] Coord objectSize) const {
     return originalCoord;
 }
 

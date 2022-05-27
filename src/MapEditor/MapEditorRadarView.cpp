@@ -163,13 +163,14 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
     }
 
     for (const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
-        const auto color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(unit.house)]]);
+        const auto house_id = static_cast<int>(unit.house_);
+        const auto color    = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[house_id]]);
 
-        if (unit.position.x >= 0 && unit.position.x < map.getSizeX() && unit.position.y >= 0
-            && unit.position.y < map.getSizeY()) {
+        if (unit.position_.x >= 0 && unit.position_.x < map.getSizeX() && unit.position_.y >= 0
+            && unit.position_.y < map.getSizeY()) {
 
-            const auto x0 = offsetX + scale * unit.position.x;
-            const auto y0 = offsetY + scale * unit.position.y;
+            const auto x0 = offsetX + scale * unit.position_.x;
+            const auto y0 = offsetY + scale * unit.position_.y;
 
             for (int i = 0; i < scale; i++) {
                 for (int j = 0; j < scale; j++) {
@@ -180,16 +181,17 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
     }
 
     for (const auto& structure : pMapEditor->getStructureList()) {
-        const auto structureSize = getStructureSize(structure.itemID);
-        const auto color = SDL2RGB(dune::globals ::palette[houseToPaletteIndex[static_cast<int>(structure.house)]]);
+        const auto structureSize = getStructureSize(structure.itemID_);
+        const auto house_id      = static_cast<int>(structure.house_);
+        const auto color         = SDL2RGB(dune::globals ::palette[dune::globals::houseToPaletteIndex[house_id]]);
 
         for (int y = 0; y < structureSize.y; y++) {
-            const auto y0 = offsetY + scale * (structure.position.y + y);
+            const auto y0 = offsetY + scale * (structure.position_.y + y);
 
             for (int x = 0; x < structureSize.x; x++) {
 
                 if (x >= 0 && x < map.getSizeX() && y >= 0 && y < map.getSizeY()) {
-                    const auto x0 = offsetX + scale * (structure.position.x + x);
+                    const auto x0 = offsetX + scale * (structure.position_.x + x);
 
                     for (int i = 0; i < scale; i++) {
                         for (int j = 0; j < scale; j++) {

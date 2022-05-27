@@ -40,14 +40,14 @@ Trooper::Trooper(uint32_t objectID, const ObjectStreamInitializer& initializer)
 }
 
 void Trooper::init() {
-    assert(itemID == Unit_Trooper);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Trooper);
+    owner_->incrementUnits(itemID_);
 
-    graphicID = ObjPic_Trooper;
-    graphic   = dune::globals::pGFXManager->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_ = ObjPic_Trooper;
+    graphic_   = dune::globals::pGFXManager->getObjPic(graphicID_, getOwner()->getHouseID());
 
-    numImagesX = 4;
-    numImagesY = 3;
+    numImagesX_ = 4;
+    numImagesY_ = 3;
 }
 
 Trooper::~Trooper() = default;
@@ -55,11 +55,11 @@ Trooper::~Trooper() = default;
 bool Trooper::canAttack(const ObjectBase* object) const {
     return (object != nullptr)
 
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || (object->getItemID() == Unit_Sandworm))
+        && ((object->getOwner()->getTeamID() != owner_->getTeamID()) || (object->getItemID() == Unit_Sandworm))
 
         && object->isVisible(getOwner()->getTeamID());
 }
 
 void Trooper::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_RocketSmall, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_RocketSmall, location_);
 }

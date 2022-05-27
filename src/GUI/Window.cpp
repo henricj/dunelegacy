@@ -192,15 +192,16 @@ void Window::handleInput(const SDL_Event& event) {
     }
 }
 
-void Window::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
+void Window::handleMouseMovement(int32_t x, int32_t y, [[maybe_unused]] bool insideOverlay) {
     if (pChildWindow_ != nullptr) {
         pChildWindow_->handleMouseMovement(x, y);
         return;
     }
 
     if (isEnabled() && (pWindowWidget_ != nullptr)) {
-        const bool insideOverlay = pWindowWidget_->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
-        pWindowWidget_->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay);
+        const bool insideOverlay2 =
+            pWindowWidget_->handleMouseMovementOverlay(x - getPosition().x, y - getPosition().y);
+        pWindowWidget_->handleMouseMovement(x - getPosition().x, y - getPosition().y, insideOverlay2);
     }
 }
 

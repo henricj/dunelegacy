@@ -59,7 +59,14 @@ public:
     void clear() { pending_ = {}; }
 
     void seek(size_t pos) {
-        const auto current_unbuffered = SDL_RWtell(rwop_);
+        const auto current_unbuffered = [rwop = rwop_] {
+            const auto tell = SDL_RWtell(rwop);
+
+            if (tell < 0)
+                THROW(std::runtime_error, "Unable to get the current position: %S!", SDL_GetError());
+
+            return static_cast<size_t>(tell);
+        }();
 
         const auto current = current_unbuffered - pending_.size();
 
@@ -75,14 +82,14 @@ public:
 
         // We might be able to do better since anything in the buffer_ to the left
         // of pending_ is still valid.
-        const auto previous = pending_.data() - buffer_.data();
+        const auto previous = static_cast<size_t>(pending_.data() - buffer_.data());
         assert(current >= previous);
 
         const auto buffer_position = current - previous;
         if (pos >= buffer_position && pos < current_unbuffered) {
             const auto offset = pos - buffer_position;
 
-            pending_ = std::span{buffer_.data() + offset, static_cast<size_t>(current_unbuffered - pos)};
+            pending_ = std::span{buffer_.data() + offset, current_unbuffered - pos};
             return;
         }
 
@@ -95,7 +102,7 @@ public:
         if (0 == pos)
             return;
 
-        if (pos > 0 && pos < pending_.size()) {
+        if (pos > 0 && static_cast<size_t>(pos) < pending_.size()) {
             pending_ = pending_.subspan(pos);
             return;
         }

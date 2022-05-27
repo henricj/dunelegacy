@@ -51,19 +51,19 @@ Ornithopter::Ornithopter(uint32_t objectID, const ObjectStreamInitializer& initi
 }
 
 void Ornithopter::init() {
-    assert(itemID == Unit_Ornithopter);
-    owner->incrementUnits(itemID);
+    assert(itemID_ == Unit_Ornithopter);
+    owner_->incrementUnits(itemID_);
 
     const auto* const gfx = dune::globals::pGFXManager.get();
 
-    graphicID     = ObjPic_Ornithopter;
-    graphic       = gfx->getObjPic(graphicID, getOwner()->getHouseID());
+    graphicID_    = ObjPic_Ornithopter;
+    graphic_      = gfx->getObjPic(graphicID_, getOwner()->getHouseID());
     shadowGraphic = gfx->getObjPic(ObjPic_OrnithopterShadow, getOwner()->getHouseID());
 
-    numImagesX = NUM_ANGLES;
-    numImagesY = 3;
+    numImagesX_ = NUM_ANGLES;
+    numImagesY_ = 3;
 
-    currentMaxSpeed = dune::globals::currentGame->objectData.data[itemID][static_cast<int>(originalHouseID)].maxspeed;
+    currentMaxSpeed = dune::globals::currentGame->objectData.data[itemID_][static_cast<int>(originalHouseID_)].maxspeed;
 }
 
 Ornithopter::~Ornithopter() = default;
@@ -77,24 +77,24 @@ void Ornithopter::save(OutputStream& stream) const {
 void Ornithopter::checkPos(const GameContext& context) {
     parent::checkPos(context);
 
-    if (!target) {
-        if (destination.isValid()) {
-            if (blockDistance(location, destination) <= 2) {
-                destination.invalidate();
+    if (!target_) {
+        if (destination_.isValid()) {
+            if (blockDistance(location_, destination_) <= 2) {
+                destination_.invalidate();
             }
         } else {
-            if (blockDistance(location, guardPoint) > 17) {
+            if (blockDistance(location_, guardPoint) > 17) {
                 setDestination(guardPoint);
             }
         }
     }
 
-    drawnFrame = ((context.game.getGameCycleCount() + getObjectID()) / ORNITHOPTER_FRAMETIME) % numImagesY;
+    drawnFrame = ((context.game.getGameCycleCount() + getObjectID()) / ORNITHOPTER_FRAMETIME) % numImagesY_;
 }
 
 bool Ornithopter::canAttack(const ObjectBase* object) const {
     return (object != nullptr) && !object->isAFlyingUnit()
-        && ((object->getOwner()->getTeamID() != owner->getTeamID()) || object->getItemID() == Unit_Sandworm)
+        && ((object->getOwner()->getTeamID() != owner_->getTeamID()) || object->getItemID() == Unit_Sandworm)
         && object->isVisible(getOwner()->getTeamID());
 }
 
@@ -102,14 +102,14 @@ void Ornithopter::destroy(const GameContext& context) {
     // place wreck
     auto& map = context.map;
 
-    if (auto* pTile = map.tryGetTile(location.x, location.y))
-        pTile->assignDeadUnit(DeadUnit_Ornithopter, owner->getHouseID(), {realX.toFloat(), realY.toFloat()});
+    if (auto* pTile = map.tryGetTile(location_.x, location_.y))
+        pTile->assignDeadUnit(DeadUnit_Ornithopter, owner_->getHouseID(), {realX_.toFloat(), realY_.toFloat()});
 
     parent::destroy(context);
 }
 
 void Ornithopter::playAttackSound() {
-    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location);
+    dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_Rocket, location_);
 }
 
 bool Ornithopter::canPassTile(const Tile* pTile) const {
@@ -121,11 +121,11 @@ FixPoint Ornithopter::getDestinationAngle() const {
 
     if (timeLastShot > 0 && (dune::globals::currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
         // we already shot at target and now want to fly in the opposite direction
-        angle = destinationAngleRad(destination.x * TILESIZE + TILESIZE / 2, destination.y * TILESIZE + TILESIZE / 2,
-                                    realX, realY);
+        angle = destinationAngleRad(destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2,
+                                    realX_, realY_);
     } else {
-        angle = destinationAngleRad(realX, realY, destination.x * TILESIZE + TILESIZE / 2,
-                                    destination.y * TILESIZE + TILESIZE / 2);
+        angle = destinationAngleRad(realX_, realY_, destination_.x * TILESIZE + TILESIZE / 2,
+                                    destination_.y * TILESIZE + TILESIZE / 2);
     }
 
     return angle * (8 / (FixPt_PI << 1));

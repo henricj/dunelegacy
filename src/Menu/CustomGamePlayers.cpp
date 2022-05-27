@@ -990,9 +990,10 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
 
         if (houseInfoNum == -1 || houseInfoNum == i) {
 
-            const Uint32 color = house == HOUSETYPE::HOUSE_INVALID
-                                   ? COLOR_RGB(20, 20, 40)
-                                   : SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+            const auto color =
+                house == HOUSETYPE::HOUSE_INVALID
+                    ? COLOR_RGB(20, 20, 40)
+                    : SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
             curHouseInfo.houseLabel.setTextColor(color);
             curHouseInfo.houseDropDown.setColor(color);
             curHouseInfo.teamDropDown.setColor(color);

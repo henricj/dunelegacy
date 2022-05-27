@@ -46,8 +46,8 @@ private:
 
     HOUSETYPE getHouseID(std::string_view name);
 
-    MapEditor* pMapEditor;
-    std::unordered_map<std::string, HOUSETYPE> housename2house;
+    MapEditor* pMapEditor_;
+    std::unordered_map<std::string, HOUSETYPE> housename2house_;
 };
 
 #endif // INIMAPEDITORLOADER_H

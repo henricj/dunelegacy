@@ -56,7 +56,7 @@ public:
     void setEnabled(bool bEnabled) override {
         parent::setEnabled(bEnabled);
         if (bEnabled == false) {
-            bPressed = false;
+            bPressed_ = false;
         }
     }
 
@@ -70,25 +70,25 @@ public:
         Returns the current tooltip text.
         \return the current tooltip text
     */
-    [[nodiscard]] const std::string& getTooltipText() const noexcept { return tooltipText; }
+    [[nodiscard]] const std::string& getTooltipText() const noexcept { return tooltipText_; }
 
     /**
         Sets the function that should be called when this button is clicked on.
         \param  pOnClick    A function to call on click
     */
-    void setOnClick(std::function<void()> pOnClick) noexcept { this->pOnClick = pOnClick; }
+    void setOnClick(std::function<void()> pOnClick) noexcept { this->pOnClick_ = pOnClick; }
 
     /**
         Sets whether this button is a toggle button.
         \param bToggleButton    true = toggle button, false = normal button
     */
-    void setToggleButton(bool bToggleButton) { this->bToggleButton = bToggleButton; }
+    void setToggleButton(bool bToggleButton) { this->bToggleButton_ = bToggleButton; }
 
     /**
         Returns whether this button is a toggle button
         \return true = toggle button, false = normal button
     */
-    [[nodiscard]] bool isToggleButton() const noexcept { return bToggleButton; }
+    [[nodiscard]] bool isToggleButton() const noexcept { return bToggleButton_; }
 
     /**
         This method sets the current toggle state. If this button is no
@@ -97,7 +97,7 @@ public:
     */
     virtual void setToggleState(bool bToggleState) {
         if (isToggleButton()) {
-            this->bToggleState = bToggleState;
+            this->bToggleState_ = bToggleState;
         }
     }
 
@@ -105,7 +105,7 @@ public:
         This method returns whether this button is currently toggled or not.
         \return true = toggled, false = untoggled
     */
-    [[nodiscard]] bool getToggleState() const { return bToggleState; }
+    [[nodiscard]] bool getToggleState() const { return bToggleState_; }
 
     /**
         Handles a mouse movement. This method is for example needed for the tooltip.
@@ -172,25 +172,25 @@ protected:
     virtual void setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture,
                              DuneTextureOwned pActiveTexture = {});
 
-    const DuneTexture* pUnpressedTexture{}; ///< Texture that is normally shown
-    const DuneTexture* pPressedTexture{};   ///< Texture that is shown when the button is pressed
+    const DuneTexture* pUnpressedTexture_{}; ///< Texture that is normally shown
+    const DuneTexture* pPressedTexture_{};   ///< Texture that is shown when the button is pressed
     const DuneTexture*
-        pActiveTexture{}; ///< Texture that is shown when the button is activated by keyboard or by mouse hover
+        pActiveTexture_{}; ///< Texture that is shown when the button is activated by keyboard or by mouse hover
 
     /**
         This method frees all textures that are used by this button
     */
     void invalidateTextures() override;
 
-    std::string tooltipText;                               ///< the tooltip text
-    DuneTextureOwned tooltipTexture;                       ///< the tooltip texture
-    dune::dune_clock::time_point tooltipLastMouseMotion{}; ///< the last time the mouse was moved
+    std::string tooltipText_;                               ///< the tooltip text
+    DuneTextureOwned tooltipTexture_;                       ///< the tooltip texture
+    dune::dune_clock::time_point tooltipLastMouseMotion_{}; ///< the last time the mouse was moved
 
-    std::function<void()> pOnClick; ///< function that is called when this button is clicked
-    bool bPressed      = false;     ///< true = currently pressed, false = currently unpressed
-    bool bHover        = false;     ///< true = currently mouse hover, false = currently no mouse hover
-    bool bToggleButton = false;     ///< true = toggle button, false = normal button
-    bool bToggleState  = false;     ///< true = currently toggled, false = currently not toggled
+    std::function<void()> pOnClick_; ///< function that is called when this button is clicked
+    bool bPressed_      = false;     ///< true = currently pressed, false = currently unpressed
+    bool bHover_        = false;     ///< true = currently mouse hover, false = currently no mouse hover
+    bool bToggleButton_ = false;     ///< true = toggle button, false = normal button
+    bool bToggleState_  = false;     ///< true = currently toggled, false = currently not toggled
 
 private:
     sdl2::texture_ptr localUnpressed_;

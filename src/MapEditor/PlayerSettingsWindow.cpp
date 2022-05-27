@@ -33,7 +33,7 @@
 PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
-    color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
+    color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
     // set up window
     const auto* const pBackground = dune::globals::pGFXManager->getUIGraphic(UI_NewMapWindow);
@@ -61,8 +61,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         const auto& playerInfo = players[i];
 
-        const auto currentColor =
-            SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
+        const auto color_id     = static_cast<int>(playerInfo.colorOfHouse_);
+        const auto currentColor = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[color_id] + 3]);
 
         centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
@@ -82,13 +82,13 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].anyHouseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].anyHouseRadioButton);
 
-            playerWidgets[i].houseRadioButton.setText(getHouseNameByNumber(playerInfo.house));
+            playerWidgets[i].houseRadioButton.setText(getHouseNameByNumber(playerInfo.house_));
             playerWidgets[i].houseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].houseRadioButton, 110);
 
             playerWidgets[i].radioButtonManager.registerRadioButtons(2, &playerWidgets[i].anyHouseRadioButton,
                                                                      &playerWidgets[i].houseRadioButton);
-            if (playerInfo.bAnyHouse) {
+            if (playerInfo.bAnyHouse_) {
                 playerWidgets[i].anyHouseRadioButton.setChecked(true);
             } else {
                 playerWidgets[i].houseRadioButton.setChecked(true);
@@ -102,7 +102,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsLabel);
 
         playerWidgets[i].creditsTextBox.setMinMax(0, 100000);
-        playerWidgets[i].creditsTextBox.setValue(playerInfo.credits);
+        playerWidgets[i].creditsTextBox.setValue(playerInfo.credits_);
         playerWidgets[i].creditsTextBox.setIncrementValue(100);
         playerWidgets[i].creditsTextBox.setColor(house, currentColor);
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsTextBox, 80);
@@ -117,7 +117,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].teamDropDownBox.addEntry("Human", 0);
             playerWidgets[i].teamDropDownBox.addEntry("CPU", 1);
 
-            if (playerInfo.brain == "Human") {
+            if (playerInfo.brain_ == "Human") {
                 playerWidgets[i].teamDropDownBox.setSelectedItem(0);
             } else {
                 playerWidgets[i].teamDropDownBox.setSelectedItem(1);
@@ -131,7 +131,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].teamDropDownBox.addEntry("Team6", 5);
 
             for (int j = 0; j < 6; j++) {
-                if (playerWidgets[i].teamDropDownBox.getEntry(j) == playerInfo.brain) {
+                if (playerWidgets[i].teamDropDownBox.getEntry(j) == playerInfo.brain_) {
                     playerWidgets[i].teamDropDownBox.setSelectedItem(j);
                     break;
                 }
@@ -146,7 +146,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].spiceQuotaLabel.setTextColor(currentColor);
 
         playerWidgets[i].spiceQuotaTextBox.setMinMax(0, 99999);
-        playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota);
+        playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota_);
         playerWidgets[i].spiceQuotaTextBox.setIncrementValue(100);
         playerWidgets[i].spiceQuotaTextBox.setColor(house, currentColor);
 
@@ -154,13 +154,13 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].maxUnitsLabel.setTextColor(currentColor);
 
         playerWidgets[i].maxUnitsTextBox.setMinMax(0, 999);
-        playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit);
+        playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit_);
         playerWidgets[i].maxUnitsTextBox.setColor(house, currentColor);
 
         centralVBox.addWidget(&playerWidgets[i].playerHBox);
 
         // activate first 4 players
-        playerWidgets[i].playerCheckbox.setChecked(playerInfo.bActive);
+        playerWidgets[i].playerCheckbox.setChecked(playerInfo.bActive_);
         onPlayerCheckbox(i);
     }
 

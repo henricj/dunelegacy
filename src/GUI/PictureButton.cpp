@@ -26,8 +26,8 @@ void PictureButton::setSurfaces(sdl2::surface_ptr pUnpressedSurface, sdl2::surfa
 
     parent::setSurfaces(std::move(pUnpressedSurface), std::move(pPressedSurface), std::move(pActiveSurface));
 
-    if (this->pUnpressedTexture) {
-        resize(getTextureSize(pUnpressedTexture));
+    if (this->pUnpressedTexture_) {
+        resize(getTextureSize(pUnpressedTexture_));
     } else {
         resize(0, 0);
     }
@@ -56,8 +56,8 @@ void PictureButton::setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureO
 }
 
 Point PictureButton::getMinimumSize() const {
-    if (pUnpressedTexture) {
-        return getTextureSize(pUnpressedTexture);
+    if (pUnpressedTexture_) {
+        return getTextureSize(pUnpressedTexture_);
     }
 
     return {0, 0};

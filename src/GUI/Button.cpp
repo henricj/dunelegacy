@@ -31,23 +31,23 @@ Button::Button()  = default;
 Button::~Button() = default;
 
 void Button::setTooltipText(std::string text) {
-    tooltipText = std::move(text);
+    tooltipText_ = std::move(text);
 
-    if (tooltipTexture)
-        tooltipTexture = DuneTextureOwned{};
+    if (tooltipTexture_)
+        tooltipTexture_ = DuneTextureOwned{};
 
-    if (!tooltipText.empty()) {
-        tooltipTexture = GUIStyle::getInstance().createToolTip(dune::globals::renderer.get(), tooltipText);
+    if (!tooltipText_.empty()) {
+        tooltipTexture_ = GUIStyle::getInstance().createToolTip(dune::globals::renderer.get(), tooltipText_);
     }
 }
 
 void Button::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
     if ((x < 0) || (x >= getSize().x) || (y < 0) || (y >= getSize().y)) {
-        bPressed = false;
-        bHover   = false;
+        bPressed_ = false;
+        bHover_   = false;
     } else if (isEnabled() && !insideOverlay) {
-        bHover                 = true;
-        tooltipLastMouseMotion = dune::dune_clock::now();
+        bHover_                 = true;
+        tooltipLastMouseMotion_ = dune::dune_clock::now();
     }
 }
 
@@ -62,24 +62,24 @@ bool Button::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
 
     if (pressed) {
         // button pressed
-        bPressed = true;
-        if (!bToggleButton) {
+        bPressed_ = true;
+        if (!bToggleButton_) {
             dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
         }
     } else {
         // button released
-        if (bPressed) {
-            bPressed = false;
-            if (bToggleButton) {
+        if (bPressed_) {
+            bPressed_ = false;
+            if (bToggleButton_) {
                 const bool oldState = getToggleState();
-                setToggleState(!bToggleState);
+                setToggleState(!bToggleState_);
                 if (getToggleState() != oldState) {
                     dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
                 }
             }
 
-            if (pOnClick) {
-                pOnClick();
+            if (pOnClick_) {
+                pOnClick_();
             }
         }
     }
@@ -97,9 +97,9 @@ bool Button::handleKeyPress(const SDL_KeyboardEvent& key) {
     }
 
     if (key.keysym.sym == SDLK_SPACE) {
-        if (bToggleButton) {
+        if (bToggleButton_) {
             const bool oldState = getToggleState();
-            setToggleState(!bToggleState);
+            setToggleState(!bToggleState_);
             if (getToggleState() != oldState) {
                 dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
             }
@@ -107,16 +107,16 @@ bool Button::handleKeyPress(const SDL_KeyboardEvent& key) {
             dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
         }
 
-        if (pOnClick) {
-            pOnClick();
+        if (pOnClick_) {
+            pOnClick_();
         }
     }
 
-    if ((!bToggleButton) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
+    if ((!bToggleButton_) && (SDL_GetModState() == KMOD_NONE) && (key.keysym.sym == SDLK_RETURN)) {
         dune::globals::soundPlayer->playSound(Sound_enum::Sound_ButtonClick);
 
-        if (pOnClick) {
-            pOnClick();
+        if (pOnClick_) {
+            pOnClick_();
         }
     }
 
@@ -131,32 +131,32 @@ void Button::draw(Point position) {
     updateTextures();
 
     const DuneTexture* tex = nullptr;
-    if (bToggleState) {
-        if (pPressedTexture) {
-            tex = pPressedTexture;
+    if (bToggleState_) {
+        if (pPressedTexture_) {
+            tex = pPressedTexture_;
         } else {
-            if (isActive() && pActiveTexture) {
-                tex = pActiveTexture;
+            if (isActive() && pActiveTexture_) {
+                tex = pActiveTexture_;
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture_;
             }
         }
     } else {
-        if (bPressed) {
-            if (pPressedTexture) {
-                tex = pPressedTexture;
+        if (bPressed_) {
+            if (pPressedTexture_) {
+                tex = pPressedTexture_;
             } else {
-                if (isActive() && pActiveTexture) {
-                    tex = pActiveTexture;
+                if (isActive() && pActiveTexture_) {
+                    tex = pActiveTexture_;
                 } else {
-                    tex = pUnpressedTexture;
+                    tex = pUnpressedTexture_;
                 }
             }
         } else {
-            if ((isActive() || bHover) && pActiveTexture) {
-                tex = pActiveTexture;
+            if ((isActive() || bHover_) && pActiveTexture_) {
+                tex = pActiveTexture_;
             } else {
-                tex = pUnpressedTexture;
+                tex = pUnpressedTexture_;
             }
         }
     }
@@ -167,24 +167,24 @@ void Button::draw(Point position) {
     const SDL_FRect dest{static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(hw.x),
                          static_cast<float>(hw.y)};
 
-    gui.RenderButton(dune::globals::renderer.get(), dest, tex, bPressed);
+    gui.RenderButton(dune::globals::renderer.get(), dest, tex, bPressed_);
 }
 
-void Button::drawOverlay(Point position) {
+void Button::drawOverlay([[maybe_unused]] Point position) {
     using namespace std::chrono_literals;
 
-    if (!isVisible() || !isEnabled() || !bHover || !tooltipTexture)
+    if (!isVisible() || !isEnabled() || !bHover_ || !tooltipTexture_)
         return;
 
-    if (dune::dune_clock::now() - tooltipLastMouseMotion <= 750ms)
+    if (dune::dune_clock::now() - tooltipLastMouseMotion_ <= 750ms)
         return;
 
     const auto renderRect = getRendererSize();
     const auto render_w   = static_cast<float>(renderRect.w);
     const auto render_h   = static_cast<float>(renderRect.h);
 
-    auto dest = calcDrawingRect(tooltipTexture, dune::globals::drawnMouseX, dune::globals::drawnMouseY, HAlign::Left,
-                                VAlign::Bottom);
+    auto dest = calcDrawingRect(tooltipTexture_, static_cast<float>(dune::globals::drawnMouseX),
+                                static_cast<float>(dune::globals::drawnMouseY), HAlign::Left, VAlign::Bottom);
     if (dest.x + dest.w >= render_w) {
         // do not draw tooltip outside screen
         dest.x = render_w - dest.w;
@@ -198,13 +198,13 @@ void Button::drawOverlay(Point position) {
         dest.y = render_h - dest.h;
     }
 
-    Dune_RenderCopyF(dune::globals::renderer.get(), tooltipTexture.get(), nullptr, &dest);
+    Dune_RenderCopyF(dune::globals::renderer.get(), tooltipTexture_.get(), nullptr, &dest);
 }
 
 void Button::invalidateTextures() {
-    pUnpressedTexture = nullptr;
-    pPressedTexture   = nullptr;
-    pActiveTexture    = nullptr;
+    pUnpressedTexture_ = nullptr;
+    pPressedTexture_   = nullptr;
+    pActiveTexture_    = nullptr;
 
     localDuneUnpressed_ = DuneTexture{};
     localDunePressed_   = DuneTexture{};
@@ -239,9 +239,9 @@ void Button::setTextures(const DuneTexture* pUnpressedTexture, const DuneTexture
     if (!pActiveTexture || localActive_.get() != pActiveTexture->texture_)
         localActive_.reset();
 
-    this->pUnpressedTexture = pUnpressedTexture;
-    this->pPressedTexture   = pPressedTexture;
-    this->pActiveTexture    = pActiveTexture;
+    this->pUnpressedTexture_ = pUnpressedTexture;
+    this->pPressedTexture_   = pPressedTexture;
+    this->pActiveTexture_    = pActiveTexture;
 }
 
 void Button::setTextures(DuneTextureOwned pUnpressedTexture, DuneTextureOwned pPressedTexture,
