@@ -71,31 +71,31 @@ SinglePlayerMenu::SinglePlayerMenu() {
     menuButtonsVBox.addWidget(&campaignButton);
     campaignButton.setActive();
 
-    menuButtonsVBox.addWidget(VSpacer::create(3));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     customButton.setText(_("CUSTOM GAME"));
     customButton.setOnClick([this] { onCustom(); });
     menuButtonsVBox.addWidget(&customButton);
 
-    menuButtonsVBox.addWidget(VSpacer::create(3));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     skirmishButton.setText(_("SKIRMISH"));
     skirmishButton.setOnClick([] { onSkirmish(); });
     menuButtonsVBox.addWidget(&skirmishButton);
 
-    menuButtonsVBox.addWidget(VSpacer::create(3));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     loadSavegameButton.setText(_("LOAD GAME"));
     loadSavegameButton.setOnClick([this] { onLoadSavegame(); });
     menuButtonsVBox.addWidget(&loadSavegameButton);
 
-    menuButtonsVBox.addWidget(VSpacer::create(3));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     loadReplayButton.setText(_("LOAD REPLAY"));
     loadReplayButton.setOnClick([this] { onLoadReplay(); });
     menuButtonsVBox.addWidget(&loadReplayButton);
 
-    menuButtonsVBox.addWidget(VSpacer::create(3));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     cancelButton.setText(_("BACK"));
     cancelButton.setOnClick([this] { onCancel(); });

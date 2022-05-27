@@ -25,26 +25,26 @@ MultiPlayerMenu::MultiPlayerMenu() {
     captionLabel.setText("Multiplayer Game");
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
-    mainVBox.addWidget(VSpacer::create(24));
+    mainVBox.addWidget(Widget::create<VSpacer>(24).release());
 
     connectHBox.addWidget(Label::create("Host:").release(), 50);
     connectHostTextBox.setText("localhost");
     connectHBox.addWidget(&connectHostTextBox);
-    connectHBox.addWidget(HSpacer::create(20));
+    connectHBox.addWidget(Widget::create<HSpacer>(20).release());
     connectHBox.addWidget(Label::create("Port:").release(), 50);
     connectPortTextBox.setText(std::to_string(DEFAULT_PORT));
     connectHBox.addWidget(&connectPortTextBox, 90);
-    connectHBox.addWidget(HSpacer::create(20));
+    connectHBox.addWidget(Widget::create<HSpacer>(20).release());
     connectButton.setText(_("Connect"));
     connectButton.setOnClick([this] { onConnect(); });
     connectHBox.addWidget(&connectButton, 100);
 
-    mainVBox.addWidget(Spacer::create(), 0.05);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
     mainVBox.addWidget(&connectHBox, 28);
 
-    mainVBox.addWidget(VSpacer::create(16));
+    mainVBox.addWidget(Widget::create<VSpacer>(16).release());
 
-    mainVBox.addWidget(Spacer::create(), 0.05);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
     mainVBox.addWidget(&mainHBox, 0.85);
 
     mainHBox.addWidget(&leftVBox, 180);
@@ -53,18 +53,18 @@ MultiPlayerMenu::MultiPlayerMenu() {
     createLANGameButton.setOnClick([this] { onCreateLANGame(); });
     leftVBox.addWidget(&createLANGameButton, 0.1);
 
-    leftVBox.addWidget(VSpacer::create(8));
+    leftVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     createInternetGameButton.setText(_("Create Internet Game"));
     createInternetGameButton.setOnClick([this] { onCreateInternetGame(); });
     leftVBox.addWidget(&createInternetGameButton, 0.1);
 
-    leftVBox.addWidget(Spacer::create(), 0.8);
+    leftVBox.addWidget(Widget::create<Spacer>().release(), 0.8);
 
     rightVBox.addWidget(&gameTypeButtonsHBox, 24);
 
-    mainHBox.addWidget(HSpacer::create(8));
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<HSpacer>(8).release());
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
     LANGamesButton.setText(_("LAN Games"));
     LANGamesButton.setToggleButton(true);
@@ -76,7 +76,7 @@ MultiPlayerMenu::MultiPlayerMenu() {
     internetGamesButton.setOnClick([this] { onGameTypeChange(1); });
     gameTypeButtonsHBox.addWidget(&internetGamesButton, 0.35);
 
-    gameTypeButtonsHBox.addWidget(Spacer::create(), 0.3);
+    gameTypeButtonsHBox.addWidget(Widget::create<Spacer>().release(), 0.3);
 
     gameList.setAutohideScrollbar(false);
     gameList.setOnSelectionChange([this](auto interactive) { onGameListSelectionChange(interactive); });
@@ -84,24 +84,24 @@ MultiPlayerMenu::MultiPlayerMenu() {
     rightVBox.addWidget(&gameList, 0.95);
 
     mainHBox.addWidget(&rightVBox, 0.9);
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
-    mainVBox.addWidget(Spacer::create(), 0.05);
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     mainVBox.addWidget(&buttonHBox, 24);
 
-    buttonHBox.addWidget(HSpacer::create(70));
+    buttonHBox.addWidget(Widget::create<HSpacer>(70).release());
     backButton.setText(_("Back"));
     backButton.setOnClick([] { onQuit(); });
     buttonHBox.addWidget(&backButton, 0.1);
 
-    buttonHBox.addWidget(Spacer::create(), 0.8);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.8);
 
     joinButton.setText(_("Join"));
     joinButton.setOnClick([this] { onJoin(); });
     buttonHBox.addWidget(&joinButton, 0.1);
-    buttonHBox.addWidget(HSpacer::create(90));
+    buttonHBox.addWidget(Widget::create<HSpacer>(90).release());
 
     // Start Network Manager
     sdl2::log_info("Starting network...");

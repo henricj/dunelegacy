@@ -29,11 +29,9 @@ class BuilderInterface final : public DefaultStructureInterface {
     using parent = DefaultStructureInterface;
 
 public:
-    static std::unique_ptr<BuilderInterface> create(const GameContext& context, int objectID);
-
-protected:
     BuilderInterface(const GameContext& context, int objectID);
 
+protected:
     void onUpgrade() const;
 
     /**

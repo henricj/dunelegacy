@@ -45,16 +45,16 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
 
     LoadMapWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Load Map"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(22));
+    mainVBox.addWidget(Widget::create<VSpacer>(22).release());
 
     mainVBox.addWidget(&centralHBox, 346);
 
@@ -74,23 +74,23 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
     multiplayerUserMapsButton.setOnClick([this] { onMapTypeChange(1); });
     mapTypeButtonsHBox.addWidget(&multiplayerUserMapsButton);
 
-    mapTypeButtonsHBox.addWidget(Spacer::create(), 5.0);
+    mapTypeButtonsHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     mapList.setColor(color);
     mapList.setAutohideScrollbar(false);
     mapList.setOnSelectionChange([this](auto flag) { onMapListSelectionChange(flag); });
     mapList.setOnDoubleClick([this] { onLoad(); });
     leftVBox.addWidget(&mapList, 0.95);
 
-    leftVBox.addWidget(VSpacer::create(10));
+    leftVBox.addWidget(Widget::create<VSpacer>(10).release());
 
-    centralHBox.addWidget(HSpacer::create(8));
-    centralHBox.addWidget(Spacer::create(), 0.05);
+    centralHBox.addWidget(Widget::create<HSpacer>(8).release());
+    centralHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
     centralHBox.addWidget(&rightVBox, 180);
     minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("Choose map"), true, false));
     rightVBox.addWidget(&minimap);
 
-    rightVBox.addWidget(VSpacer::create(10));
+    rightVBox.addWidget(Widget::create<VSpacer>(10).release());
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
@@ -106,9 +106,9 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
     mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":", color).release());
     mapPropertyLicense.setTextColor(color);
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
-    rightVBox.addWidget(Spacer::create());
+    rightVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -118,11 +118,11 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
-    buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Widget::create<Spacer>().release());
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     loadButton.setText(_("Load"));
     loadButton.setTextColor(color);
@@ -130,7 +130,7 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
 
     buttonHBox.addWidget(&loadButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     onMapTypeChange(0);
 }

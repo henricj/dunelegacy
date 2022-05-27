@@ -23,6 +23,7 @@
 #include <misc/SDL2pp.h>
 
 #include <algorithm>
+#include <concepts>
 #include <functional>
 
 /// A point class for representing a point.
@@ -406,6 +407,23 @@ public:
         \param  pOnLostFocus    A function to call on focus loss
     */
     void setOnLostFocus(std::function<void()> pOnLostFocus) { this->pOnLostFocus_ = std::move(pOnLostFocus); }
+
+    /**
+        This static method creates a dynamic Widget object.
+        The idea behind this method is to simply create a new spacer on the fly and
+        add it to a container. If the container gets destroyed also this object will be freed.
+        \param args ctor arguments
+        \return The newly created object (will be automatically destroyed when it's parent widget is destroyed)
+    */
+    template<std::derived_from<Widget> TWidget, typename... Args>
+    static std::unique_ptr<TWidget> create(Args&&... args) {
+
+        auto w = std::make_unique<TWidget>(std::forward<Args>(args)...);
+
+        w->pAllocated_ = true;
+
+        return w;
+    }
 
 protected:
     /**

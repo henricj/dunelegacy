@@ -12,6 +12,7 @@ add_sources(GUI_SOURCES
 	RadioButton.cpp
 	RadioButtonManager.cpp
 	ScrollBar.cpp
+	Spacer.cpp
 	StaticContainer.cpp
 	TextBox.cpp
 	TextButton.cpp

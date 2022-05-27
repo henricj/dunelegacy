@@ -42,7 +42,7 @@ RadarInterface::RadarInterface(const GameContext& context, int objectID)
     enemyUnitsLabel.setTextFontSize(12);
     enemyUnitsLabel.setTextColor(color);
     textVBox.addWidget(&enemyUnitsLabel, 0.005);
-    textVBox.addWidget(Spacer::create(), 0.99);
+    textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
 
 bool RadarInterface::update() {

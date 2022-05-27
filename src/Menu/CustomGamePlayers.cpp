@@ -58,26 +58,26 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     captionLabel.setText(reinterpret_cast<const char*>(gameInitSettings.getFilename().u8string().c_str()));
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
-    mainVBox.addWidget(VSpacer::create(24));
+    mainVBox.addWidget(Widget::create<VSpacer>(24).release());
 
-    mainVBox.addWidget(Spacer::create(), 0.04);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.04);
 
     mainVBox.addWidget(&mainHBox, 0.6);
 
-    mainHBox.addWidget(Spacer::create(), 0.05);
-    leftVBox.addWidget(Spacer::create(), 0.1);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
+    leftVBox.addWidget(Widget::create<Spacer>().release(), 0.1);
     leftVBox.addWidget(&playerListHBox);
-    playerListHBox.addWidget(Spacer::create(), 0.4);
+    playerListHBox.addWidget(Widget::create<Spacer>().release(), 0.4);
     playerListHBox.addWidget(&playerListVBox, 0.2);
-    playerListHBox.addWidget(Spacer::create(), 0.4);
+    playerListHBox.addWidget(Widget::create<Spacer>().release(), 0.4);
     mainHBox.addWidget(&leftVBox, 0.8);
 
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
-    mainHBox.addWidget(HSpacer::create(8));
+    mainHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     mainHBox.addWidget(&rightVBox, 180);
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
     minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("Choose map"), true, false));
     rightVBox.addWidget(&minimap);
 
@@ -129,7 +129,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         extractMapInfo(&inimap);
     }
 
-    rightVBox.addWidget(VSpacer::create(10));
+    rightVBox.addWidget(Widget::create<VSpacer>(10).release());
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
@@ -141,22 +141,22 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
     mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
-    rightVBox.addWidget(Spacer::create());
+    rightVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(Spacer::create(), 0.04);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.04);
 
     mainVBox.addWidget(&buttonHBox, 0.32);
 
-    buttonHBox.addWidget(HSpacer::create(70));
+    buttonHBox.addWidget(Widget::create<HSpacer>(70).release());
 
-    backButtonVBox.addWidget(Spacer::create());
+    backButtonVBox.addWidget(Widget::create<Spacer>().release());
     backButton.setText(_("Back"));
     backButton.setOnClick([this] { onCancel(); });
     backButtonVBox.addWidget(&backButton, 24);
-    backButtonVBox.addWidget(VSpacer::create(14));
+    backButtonVBox.addWidget(Widget::create<VSpacer>(14).release());
     buttonHBox.addWidget(&backButtonVBox, 0.1);
 
-    buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.0625);
 
     chatTextView.setTextFontSize(12);
     chatVBox.addWidget(&chatTextView, 0.77);
@@ -165,7 +165,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
     }
     chatTextBox.setOnReturn([this] { onSendChatMessage(); });
     chatVBox.addWidget(&chatTextBox, 0.2);
-    chatVBox.addWidget(Spacer::create(), 0.03);
+    chatVBox.addWidget(Widget::create<Spacer>().release(), 0.03);
     buttonHBox.addWidget(&chatVBox, 0.675);
 
     if (gameInitSettings.getGameType() != GameType::CustomMultiplayer
@@ -176,20 +176,20 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     bool bLoadMultiplayer = gameInitSettings.getGameType() == GameType::LoadMultiplayer;
 
-    buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.0625);
 
-    nextButtonVBox.addWidget(Spacer::create());
+    nextButtonVBox.addWidget(Widget::create<Spacer>().release());
     nextButton.setText(_("Next"));
     nextButton.setOnClick([this] { onNext(); });
     nextButtonVBox.addWidget(&nextButton, 24);
-    nextButtonVBox.addWidget(VSpacer::create(14));
+    nextButtonVBox.addWidget(Widget::create<VSpacer>(14).release());
     if (!bServer) {
         nextButton.setEnabled(false);
         nextButton.setVisible(false);
     }
     buttonHBox.addWidget(&nextButtonVBox, 0.1);
 
-    buttonHBox.addWidget(HSpacer::create(90));
+    buttonHBox.addWidget(Widget::create<HSpacer>(90).release());
 
     auto boundHousesIt = boundHousesOnMap.begin();
 
@@ -249,7 +249,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         }
         curHouseInfo.teamDropDown.setOnSelectionChange(
             [this, i](auto interactive) { onChangeTeamDropDownBoxes(interactive, i); });
-        curHouseInfo.houseHBox.addWidget(HSpacer::create(10));
+        curHouseInfo.houseHBox.addWidget(Widget::create<HSpacer>(10).release());
         curHouseInfo.houseHBox.addWidget(&curHouseInfo.teamDropDown, 85);
 
         curHouseInfo.houseInfoVBox.addWidget(&curHouseInfo.houseHBox);
@@ -313,7 +313,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
         curHouseInfo.player1DropDown.setOnClick([this, capture0 = 2 * i] { onClickPlayerDropDownBox(capture0); });
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1DropDown, 100);
 
-        curHouseInfo.playerHBox.addWidget(HSpacer::create(10));
+        curHouseInfo.playerHBox.addWidget(Widget::create<HSpacer>(10).release());
 
         // add 2. player
         curHouseInfo.player2Label.setText(_("Player") + " 2");
@@ -374,8 +374,8 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
         playerListVBox.addWidget(&curHouseInfo.houseInfoVBox, 0.01);
 
-        playerListVBox.addWidget(VSpacer::create(4), 0.0);
-        playerListVBox.addWidget(Spacer::create(), 0.07);
+        playerListVBox.addWidget(Widget::create<VSpacer>(4).release(), 0.0);
+        playerListVBox.addWidget(Widget::create<Spacer>().release(), 0.07);
 
         if (i >= numHouses) {
             curHouseInfo.houseInfoVBox.setEnabled(false);
@@ -387,7 +387,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     checkPlayerBoxes();
 
-    leftVBox.addWidget(Spacer::create(), 0.3);
+    leftVBox.addWidget(Widget::create<Spacer>().release(), 0.3);
 
     // maybe there is a better fitting slot if we are loading a map in the old format with Brain=CPU and Brain=Human
     if (brainEqHumanSlot >= 0) {

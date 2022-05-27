@@ -53,16 +53,16 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 
     LoadSaveWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(caption);
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     if (directories.size() > 1) {
         directoryButtons.reserve(directories.size());
@@ -87,14 +87,14 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
     fileList.setOnDoubleClick([this] { onOK(); });
     fileListHBox.addWidget(&fileList);
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     if (bSave) {
         saveName.setTextColor(color);
         mainVBox.addWidget(&saveName);
         saveName.setMaximumTextLength(64);
         saveName.setForbiddenChars(invalid_chars);
-        mainVBox.addWidget(VSpacer::create(5));
+        mainVBox.addWidget(Widget::create<VSpacer>(5).release());
     }
 
     mainVBox.addWidget(&buttonHBox);
@@ -105,7 +105,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 
     buttonHBox.addWidget(&okButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     cancelButton.setText(_("Cancel"));
     cancelButton.setTextColor(color);
@@ -113,7 +113,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 
     buttonHBox.addWidget(&cancelButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     if (directories.size() > 1) {
         onDirectoryChange(currentDirectoryIndex);

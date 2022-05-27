@@ -26,12 +26,6 @@
 
 #include <type_traits>
 
-std::unique_ptr<BuilderInterface> BuilderInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<BuilderInterface> tmp{new BuilderInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 BuilderInterface::BuilderInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     const auto color = SDL2RGB(
@@ -49,7 +43,7 @@ BuilderInterface::BuilderInterface(const GameContext& context, int objectID)
     topBox.addWidget(&upgradeButton, {18, 2}, {83, 18});
     topBox.addWidget(&upgradeProgressBar, {18, 2}, {83, 18});
 
-    mainHBox.addWidget(Spacer::create());
+    mainHBox.addWidget(Widget::create<Spacer>().release());
 
     if (auto* const pBuilder = context_.objectManager.getObject<BuilderBase>(objectID)) {
         pBuilderList = BuilderList::create(pBuilder->getObjectID());
@@ -67,7 +61,7 @@ BuilderInterface::BuilderInterface(const GameContext& context, int objectID)
         }
     }
 
-    mainHBox.addWidget(Spacer::create());
+    mainHBox.addWidget(Widget::create<Spacer>().release());
 }
 
 void BuilderInterface::onUpgrade() const {

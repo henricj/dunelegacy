@@ -46,16 +46,16 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     MapSettingsWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Map Settings"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     mainVBox.addWidget(&centralVBox, 360);
 
@@ -65,7 +65,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winPictureLabel.setText(_("Picture on winning") + ":");
     winPictureLabel.setTextColor(color);
     winPictureVBox.addWidget(&winPictureLabel);
-    winPictureVBox.addWidget(VSpacer::create(3));
+    winPictureVBox.addWidget(Widget::create<VSpacer>(3).release());
     winPictureDropDownBox.setColor(color);
 
     availableWinPictures.emplace_back("WIN1.WSA");
@@ -85,13 +85,13 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     winPictureVBox.addWidget(&winPictureDropDownBox);
 
-    pictureHBox.addWidget(HSpacer::create(8));
+    pictureHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     pictureHBox.addWidget(&losePictureVBox);
     losePictureLabel.setText(_("Picture on losing") + ":");
     losePictureLabel.setTextColor(color);
     losePictureVBox.addWidget(&losePictureLabel);
-    losePictureVBox.addWidget(VSpacer::create(3));
+    losePictureVBox.addWidget(Widget::create<VSpacer>(3).release());
     losePictureDropDownBox.setColor(color);
 
     availableLosePictures.emplace_back("LOSTBILD.WSA");
@@ -111,13 +111,13 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     losePictureVBox.addWidget(&losePictureDropDownBox);
 
-    pictureHBox.addWidget(HSpacer::create(8));
+    pictureHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     pictureHBox.addWidget(&briefingPictureVBox);
     briefingPictureLabel.setText(_("Picture for briefing") + ":");
     briefingPictureLabel.setTextColor(color);
     briefingPictureVBox.addWidget(&briefingPictureLabel);
-    briefingPictureVBox.addWidget(VSpacer::create(3));
+    briefingPictureVBox.addWidget(Widget::create<VSpacer>(3).release());
     briefingPictureDropDownBox.setColor(color);
 
     availableBriefingPictures.emplace_back("HARVEST.WSA");
@@ -144,7 +144,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     briefingPictureVBox.addWidget(&briefingPictureDropDownBox);
 
-    centralVBox.addWidget(VSpacer::create(15));
+    centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
     gameFinishingConditionsLabel.setText(_("Conditions for finishing the game") + ":");
     gameFinishingConditionsLabel.setTextColor(color);
@@ -160,7 +160,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsTimeoutTextBox.setValue(mapInfo.timeout);
     winFlags1HBox.addWidget(&winFlagsTimeoutTextBox, 65);
 
-    winFlags1HBox.addWidget(Spacer::create());
+    winFlags1HBox.addWidget(Widget::create<Spacer>().release());
 
     winFlagsSpiceQuotaCheckbox.setText(_("Spice quota reached"));
     winFlagsSpiceQuotaCheckbox.setTextColor(color);
@@ -173,14 +173,14 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     winFlagsPlayerNoObjectsLeftCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS);
     winFlags2HBox.addWidget(&winFlagsPlayerNoObjectsLeftCheckbox, 284);
 
-    winFlags2HBox.addWidget(Spacer::create());
+    winFlags2HBox.addWidget(Widget::create<Spacer>().release());
 
     winFlagsAIPlayerNoObjectsLeftCheckbox.setText(_("Others have no units/structures left"));
     winFlagsAIPlayerNoObjectsLeftCheckbox.setTextColor(color);
     winFlagsAIPlayerNoObjectsLeftCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_AI_NO_BUILDINGS);
     winFlags2HBox.addWidget(&winFlagsAIPlayerNoObjectsLeftCheckbox, 284);
 
-    centralVBox.addWidget(VSpacer::create(15));
+    centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
     gameWinningConditionsLabel.setText(_("Conditions for winning the game (in case it is finished)") + ":");
     gameWinningConditionsLabel.setTextColor(color);
@@ -192,7 +192,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     loseFlagsTimeoutCheckbox.setChecked(mapInfo.loseFlags & WINLOSEFLAGS_TIMEOUT);
     loseFlags1HBox.addWidget(&loseFlagsTimeoutCheckbox, 0.0);
 
-    loseFlags1HBox.addWidget(Spacer::create());
+    loseFlags1HBox.addWidget(Widget::create<Spacer>().release());
 
     loseFlagsSpiceQuotaCheckbox.setText(_("Spice quota reached"));
     loseFlagsSpiceQuotaCheckbox.setTextColor(color);
@@ -205,14 +205,14 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     loseFlagsPlayerHasObjectsLeftCheckbox.setChecked(mapInfo.loseFlags & WINLOSEFLAGS_HUMAN_HAS_BUILDINGS);
     loseFlags2HBox.addWidget(&loseFlagsPlayerHasObjectsLeftCheckbox, 284);
 
-    loseFlags2HBox.addWidget(Spacer::create());
+    loseFlags2HBox.addWidget(Widget::create<Spacer>().release());
 
     loseFlagsAIPlayerNoObjectsLeftCheckbox.setText(_("Others have no units/structures left"));
     loseFlagsAIPlayerNoObjectsLeftCheckbox.setTextColor(color);
     loseFlagsAIPlayerNoObjectsLeftCheckbox.setChecked(mapInfo.loseFlags & WINLOSEFLAGS_AI_NO_BUILDINGS);
     loseFlags2HBox.addWidget(&loseFlagsAIPlayerNoObjectsLeftCheckbox, 284);
 
-    centralVBox.addWidget(VSpacer::create(15));
+    centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
     centralVBox.addWidget(&techLevelHBox);
     techLevelLabel.setText(_("Tech Level") + ":");
@@ -233,7 +233,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     techLevelDropDownBox.setVisible((pMapEditor->getMapVersion() >= 2));
     techLevelHBox.addWidget(&techLevelDropDownBox);
 
-    centralVBox.addWidget(VSpacer::create(15));
+    centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
     authorLabel.setText(_("Author:"));
     authorLabel.setTextColor(color);
@@ -241,10 +241,10 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     authorTextBox.setText(mapInfo.author);
     authorTextBox.setTextColor(color);
     authorHBox.addWidget(&authorTextBox);
-    authorHBox.addWidget(HSpacer::create(140));
+    authorHBox.addWidget(Widget::create<HSpacer>(140).release());
     centralVBox.addWidget(&authorHBox);
 
-    centralVBox.addWidget(VSpacer::create(10));
+    centralVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     licenseLabel.setText(_("License:"));
     licenseLabel.setTextColor(color);
@@ -252,12 +252,12 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     licenseTextBox.setText(mapInfo.license);
     licenseTextBox.setTextColor(color);
     licenseHBox.addWidget(&licenseTextBox);
-    licenseHBox.addWidget(HSpacer::create(140));
+    licenseHBox.addWidget(Widget::create<HSpacer>(140).release());
     centralVBox.addWidget(&licenseHBox);
 
-    centralVBox.addWidget(Spacer::create(), 100.0);
+    centralVBox.addWidget(Widget::create<Spacer>().release(), 100.0);
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -267,11 +267,11 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
-    buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Widget::create<Spacer>().release());
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
@@ -279,7 +279,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     buttonHBox.addWidget(&okButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 }
 
 void MapSettingsWindow::onCancel() {

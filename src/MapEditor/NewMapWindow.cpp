@@ -38,8 +38,7 @@
 
 #include <random>
 
-NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
-    : Window(0, 0, 0, 0), house(currentHouse), mapSeed(INVALID), loadMapSingleplayer(false) {
+NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(currentHouse) {
 
     color = SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(house)] + 3]);
 
@@ -53,16 +52,16 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     NewMapWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("New Map"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     mainVBox.addWidget(&centralVBox, 360);
 
@@ -83,10 +82,10 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     seedMapRadioButton.setOnClick([this] { onMapTypeChanged(2); });
     mapTypeHBox.addWidget(&seedMapRadioButton);
     mapTypeRadioButtons.registerRadioButtons(3, &emptyMapRadioButton, &randomMapRadioButton, &seedMapRadioButton);
-    mapTypeHBox.addWidget(Spacer::create(), 5.0);
+    mapTypeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     basicMapPropertiesVBox.addWidget(&mapTypeHBox);
 
-    basicMapPropertiesVBox.addWidget(VSpacer::create(4));
+    basicMapPropertiesVBox.addWidget(Widget::create<VSpacer>(4).release());
     basicMapPropertiesVBox.addWidget(&mapSizeHBox);
 
     // Widgets for MapSize_HBox (will be added when radio button is changed)
@@ -116,7 +115,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mapScaleDropDownBox.setSelectedItem(2);
     mapScaleDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
 
-    basicMapPropertiesVBox.addWidget(VSpacer::create(4));
+    basicMapPropertiesVBox.addWidget(Widget::create<VSpacer>(4).release());
     basicMapPropertiesVBox.addWidget(&rngHBox);
 
     std::random_device rd;
@@ -131,8 +130,8 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     rngSeedTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rngSeedTextBox, 80);
 
-    rngHBox.addWidget(HSpacer::create(2));
-    rngHBox.addWidget(Spacer::create(), 3.0);
+    rngHBox.addWidget(Widget::create<HSpacer>(2).release());
+    rngHBox.addWidget(Widget::create<Spacer>().release(), 3.0);
 
     rockLabel.setText(_("Rock:"));
     rockLabel.setTextColor(color);
@@ -143,8 +142,8 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     rockDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&rockDigitsTextBox, 45);
 
-    rngHBox.addWidget(HSpacer::create(2));
-    rngHBox.addWidget(Spacer::create(), 3.0);
+    rngHBox.addWidget(Widget::create<HSpacer>(2).release());
+    rngHBox.addWidget(Widget::create<Spacer>().release(), 3.0);
 
     spiceLabel.setText(_("Spice:"));
     spiceLabel.setTextColor(color);
@@ -155,11 +154,11 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     spiceDigitsTextBox.setOnValueChange([this](auto flag) { onMapPropertiesChanged(); });
     rngHBox.addWidget(&spiceDigitsTextBox, 45);
 
-    rngHBox.addWidget(Spacer::create(), 3.0);
+    rngHBox.addWidget(Widget::create<Spacer>().release(), 3.0);
 
     centralVBox.addWidget(&basicMapPropertiesHBox);
 
-    centralVBox.addWidget(VSpacer::create(10));
+    centralVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     mirrorModeLabel.setText(_("Mirror mode") + ":");
     mirrorModeLabel.setTextColor(color);
@@ -173,12 +172,12 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     mirrorModeDropDownBox.setOnSelectionChange([this](auto flag) { onMapPropertiesChanged(); });
     mirrorModeDropDownBox.setColor(color);
     mirrorModeHBox.addWidget(&mirrorModeDropDownBox, 160);
-    mirrorModeHBox.addWidget(Spacer::create(), 5.0);
+    mirrorModeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     centralVBox.addWidget(&mirrorModeHBox);
 
-    centralVBox.addWidget(Spacer::create(), 5.0);
+    centralVBox.addWidget(Widget::create<Spacer>().release(), 5.0);
 
-    centralVBox.addWidget(VSpacer::create(10));
+    centralVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     authorLabel.setText(_("Author:"));
     authorLabel.setTextColor(color);
@@ -186,10 +185,10 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     authorTextBox.setText("");
     authorTextBox.setTextColor(color);
     authorHBox.addWidget(&authorTextBox);
-    authorHBox.addWidget(HSpacer::create(140));
+    authorHBox.addWidget(Widget::create<HSpacer>(140).release());
     centralVBox.addWidget(&authorHBox);
 
-    centralVBox.addWidget(VSpacer::create(10));
+    centralVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     licenseLabel.setText(_("License:"));
     licenseLabel.setTextColor(color);
@@ -197,12 +196,12 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
     licenseTextBox.setText("CC-BY-SA");
     licenseTextBox.setTextColor(color);
     licenseHBox.addWidget(&licenseTextBox);
-    licenseHBox.addWidget(HSpacer::create(140));
+    licenseHBox.addWidget(Widget::create<HSpacer>(140).release());
     centralVBox.addWidget(&licenseHBox);
 
-    centralVBox.addWidget(Spacer::create());
+    centralVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -212,7 +211,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     loadButton.setText(_("Load Map") + "...");
     loadButton.setTextColor(color);
@@ -220,7 +219,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     buttonHBox.addWidget(&loadButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     createButton.setText(_("Create"));
     createButton.setTextColor(color);
@@ -228,7 +227,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse)
 
     buttonHBox.addWidget(&createButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     randomMapRadioButton.setChecked(true);
     onMapTypeChanged(1);
@@ -277,14 +276,14 @@ void NewMapWindow::onMapTypeChanged(int buttonID) {
     if (buttonID == 2) {
         mapSizeHBox.addWidget(&mapScaleLabel);
         mapSizeHBox.addWidget(&mapScaleDropDownBox, 120);
-        mapSizeHBox.addWidget(Spacer::create(), 5.0);
+        mapSizeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     } else {
         mapSizeHBox.addWidget(&mapSizeXLabel);
         mapSizeHBox.addWidget(&mapSizeXDropDownBox, 50);
-        mapSizeHBox.addWidget(HSpacer::create(30));
+        mapSizeHBox.addWidget(Widget::create<HSpacer>(30).release());
         mapSizeHBox.addWidget(&mapSizeYLabel);
         mapSizeHBox.addWidget(&mapSizeYDropDownBox, 50);
-        mapSizeHBox.addWidget(Spacer::create(), 5.0);
+        mapSizeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     }
 
     rngSeedLabel.setVisible((buttonID != 0));

@@ -51,13 +51,13 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     captionLabel.setText(bMultiplayer ? (bLANServer ? _("LAN Game") : _("Internet Game")) : _("Custom Game"));
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
-    mainVBox.addWidget(VSpacer::create(24));
+    mainVBox.addWidget(Widget::create<VSpacer>(24).release());
 
-    mainVBox.addWidget(Spacer::create(), 0.05);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
     mainVBox.addWidget(&mainHBox, 0.80);
 
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
     mainHBox.addWidget(&leftVBox, 0.8);
 
     leftVBox.addWidget(&mapTypeButtonsHBox, 24);
@@ -89,28 +89,28 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     mapList.setOnDoubleClick([this] { onNext(); });
     leftVBox.addWidget(&mapList, 0.95);
 
-    leftVBox.addWidget(VSpacer::create(10));
+    leftVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     multiplePlayersPerHouseCheckbox.setText(_("Multiple players per house"));
     optionsHBox.addWidget(&multiplePlayersPerHouseCheckbox);
-    optionsHBox.addWidget(Spacer::create());
+    optionsHBox.addWidget(Widget::create<Spacer>().release());
     gameOptionsButton.setText(_("Game Options..."));
     gameOptionsButton.setOnClick([this] { onGameOptions(); });
     optionsHBox.addWidget(&gameOptionsButton, 140);
 
-    leftVBox.addWidget(Spacer::create(), 0.05);
+    leftVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
     leftVBox.addWidget(&optionsHBox, 0.05);
 
-    mainHBox.addWidget(HSpacer::create(8));
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<HSpacer>(8).release());
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
     mainHBox.addWidget(&rightVBox, 180);
-    mainHBox.addWidget(Spacer::create(), 0.05);
+    mainHBox.addWidget(Widget::create<Spacer>().release(), 0.05);
     minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("Choose map"), true, false));
     rightVBox.addWidget(&minimap);
 
-    rightVBox.addWidget(VSpacer::create(10));
+    rightVBox.addWidget(Widget::create<VSpacer>(10).release());
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
@@ -122,35 +122,35 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
     mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":").release());
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
-    rightVBox.addWidget(Spacer::create());
+    rightVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(Spacer::create(), 0.05);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.05);
 
-    mainVBox.addWidget(VSpacer::create(20));
+    mainVBox.addWidget(Widget::create<VSpacer>(20).release());
     mainVBox.addWidget(&buttonHBox, 24);
-    mainVBox.addWidget(VSpacer::create(14), 0.0);
+    mainVBox.addWidget(Widget::create<VSpacer>(14).release(), 0.0);
 
-    buttonHBox.addWidget(HSpacer::create(70));
+    buttonHBox.addWidget(Widget::create<HSpacer>(70).release());
     cancelButton.setText(_("Back"));
     cancelButton.setOnClick([this] { onCancel(); });
     buttonHBox.addWidget(&cancelButton, 0.1);
 
-    buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.0625);
 
-    buttonHBox.addWidget(Spacer::create(), 0.25);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.25);
     loadButton.setText(_("Load"));
     loadButton.setVisible(bMultiplayer);
     loadButton.setEnabled(bMultiplayer);
     loadButton.setOnClick([this] { onLoad(); });
     buttonHBox.addWidget(&loadButton, 0.175);
-    buttonHBox.addWidget(Spacer::create(), 0.25);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.25);
 
-    buttonHBox.addWidget(Spacer::create(), 0.0625);
+    buttonHBox.addWidget(Widget::create<Spacer>().release(), 0.0625);
 
     nextButton.setText(_("Next"));
     nextButton.setOnClick([this] { onNext(); });
     buttonHBox.addWidget(&nextButton, 0.1);
-    buttonHBox.addWidget(HSpacer::create(90));
+    buttonHBox.addWidget(Widget::create<HSpacer>(90).release());
 
     onMapTypeChange(0);
 }

@@ -27,11 +27,9 @@ class WindTrapInterface final : public DefaultStructureInterface {
     using parent = DefaultStructureInterface;
 
 public:
-    static std::unique_ptr<WindTrapInterface> create(const GameContext& context, int objectID);
-
-protected:
     WindTrapInterface(const GameContext& context, int objectID);
 
+protected:
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.

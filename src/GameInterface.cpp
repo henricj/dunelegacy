@@ -67,19 +67,19 @@ GameInterface::GameInterface(const GameContext& context) : Window{0, 0, 0, 0}, c
 
     topBarHBox.addWidget(&newsticker);
 
-    topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(create<Spacer>().release());
 
     optionsButton.setTextures(gfx->getUIGraphic(UI_Options, house_id), gfx->getUIGraphic(UI_Options_Pressed, house_id));
     optionsButton.setOnClick([] { dune::globals::currentGame->onOptions(); });
     topBarHBox.addWidget(&optionsButton);
 
-    topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(create<Spacer>().release());
 
     mentatButton.setTextures(gfx->getUIGraphic(UI_Mentat, house_id), gfx->getUIGraphic(UI_Mentat_Pressed, house_id));
     mentatButton.setOnClick([] { dune::globals::currentGame->onMentat(); });
     topBarHBox.addWidget(&mentatButton);
 
-    topBarHBox.addWidget(Spacer::create());
+    topBarHBox.addWidget(create<Spacer>().release());
 
     // add radar
     windowWidget.addWidget(&radarView, {width - sideBar.getSize().x + SIDEBAR_COLUMN_WIDTH, 0},
@@ -270,7 +270,7 @@ void GameInterface::updateObjectInterface() {
 
         removeOldContainer();
 
-        pObjectContainer = MultiUnitInterface::create(context_);
+        pObjectContainer = create<MultiUnitInterface>(context_);
 
         windowWidget.addWidget(pObjectContainer.get(), {renderer_width - sideBar.getSize().x + 24, 146},
                                {sideBar.getSize().x - 25, getRendererHeight() - 148});

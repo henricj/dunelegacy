@@ -118,19 +118,19 @@ private:
     */
     void init(const std::string& text) {
         setWindowWidget(&vbox);
-        vbox.addWidget(VSpacer::create(6));
+        vbox.addWidget(Widget::create<VSpacer>(6).release());
         vbox.addWidget(&textLabel);
-        vbox.addWidget(VSpacer::create(3));
+        vbox.addWidget(Widget::create<VSpacer>(3).release());
         vbox.addWidget(&hbox);
-        vbox.addWidget(VSpacer::create(6));
-        hbox.addWidget(Spacer::create());
+        vbox.addWidget(Widget::create<VSpacer>(6).release());
+        hbox.addWidget(Widget::create<Spacer>().release());
         hbox.addWidget(&vbox2);
-        vbox2.addWidget(VSpacer::create(4));
+        vbox2.addWidget(Widget::create<VSpacer>(4).release());
         okbutton.setText("OK");
         okbutton.setOnClick([this] { onOK(); });
         vbox2.addWidget(&okbutton);
-        vbox2.addWidget(VSpacer::create(4));
-        hbox.addWidget(Spacer::create());
+        vbox2.addWidget(Widget::create<VSpacer>(4).release());
+        hbox.addWidget(Widget::create<Spacer>().release());
         setText(text);
         textLabel.setAlignment(Alignment_HCenter);
         okbutton.setActive();

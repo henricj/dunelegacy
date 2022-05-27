@@ -26,11 +26,9 @@ class RepairYardInterface final : public DefaultStructureInterface {
     using parent = DefaultStructureInterface;
 
 public:
-    static std::unique_ptr<RepairYardInterface> create(const GameContext& context, int objectID);
-
-protected:
     RepairYardInterface(const GameContext& context, int objectID);
 
+protected:
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.

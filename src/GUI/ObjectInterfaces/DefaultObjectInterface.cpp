@@ -40,12 +40,12 @@ DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int o
 
     topBox.addWidget(&topBoxHBox, {0, 22}, {SIDEBARWIDTH - 25, 58});
 
-    topBoxHBox.addWidget(Spacer::create());
+    topBoxHBox.addWidget(Widget::create<Spacer>().release());
     topBoxHBox.addWidget(&objPicture);
 
     objPicture.setTexture(resolveItemPicture(itemID, pObject->getOriginalHouseID()));
 
-    topBoxHBox.addWidget(Spacer::create());
+    topBoxHBox.addWidget(Widget::create<Spacer>().release());
 }
 
 bool DefaultObjectInterface::update() {

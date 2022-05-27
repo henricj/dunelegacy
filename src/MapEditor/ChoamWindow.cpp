@@ -45,16 +45,16 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     ChoamWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Choam"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     mainVBox.addWidget(&centralVBox, 360);
 
@@ -64,7 +64,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
                                 "available at the start of the game and every 30s one unit is added."));
     centralVBox.addWidget(&Label_Explanation);
 
-    centralVBox.addWidget(VSpacer::create(4));
+    centralVBox.addWidget(Widget::create<VSpacer>(4).release());
 
     auto& choam = pMapEditor->getChoam();
 
@@ -73,7 +73,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         ItemID_enum unit1 = choamUnits[i * 2];
         ItemID_enum unit2 = choamUnits[i * 2 + 1];
 
-        centralVBox.addWidget(VSpacer::create(2));
+        centralVBox.addWidget(Widget::create<VSpacer>(2).release());
 
         choamRows[i].Checkbox_Unit1.setText(resolveItemName(unit1));
         choamRows[i].Checkbox_Unit1.setTextColor(color);
@@ -87,7 +87,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         choamRows[i].TextBox_Unit1.setVisible(choam.contains(unit1));
         choamRows[i].HBox_Unit.addWidget(&choamRows[i].TextBox_Unit1, 65);
 
-        choamRows[i].HBox_Unit.addWidget(Spacer::create(), 20.0);
+        choamRows[i].HBox_Unit.addWidget(Widget::create<Spacer>().release(), 20.0);
 
         if (unit2 != ItemID_Invalid) {
             choamRows[i].Checkbox_Unit2.setText(resolveItemName(unit2));
@@ -106,9 +106,9 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
         centralVBox.addWidget(&choamRows[i].HBox_Unit);
     }
 
-    centralVBox.addWidget(Spacer::create());
+    centralVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -118,11 +118,11 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
-    buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Widget::create<Spacer>().release());
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
@@ -130,7 +130,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     buttonHBox.addWidget(&okButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 }
 
 void ChoamWindow::onCancel() {

@@ -23,20 +23,14 @@
 
 #include <structures/RepairYard.h>
 
-std::unique_ptr<RepairYardInterface> RepairYardInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<RepairYardInterface> tmp{new RepairYardInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 RepairYardInterface::RepairYardInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
 
     repairUnitProgressBar.setColor(COLOR_HALF_TRANSPARENT);
 
-    mainHBox.addWidget(Spacer::create());
+    mainHBox.addWidget(Widget::create<Spacer>().release());
     mainHBox.addWidget(&repairUnitProgressBar);
-    mainHBox.addWidget(Spacer::create());
+    mainHBox.addWidget(Widget::create<Spacer>().release());
 }
 
 bool RepairYardInterface::update() {

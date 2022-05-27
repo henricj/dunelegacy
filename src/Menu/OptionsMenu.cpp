@@ -57,37 +57,37 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
 
     windowWidget.addWidget(&mainVBox, Point(50, 50), Point(getSize().x - 100, getSize().y - 100));
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    NameHBox.addWidget(Spacer::create(), 0.5);
+    NameHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     NameHBox.addWidget(Label::create(_("Player Name")).release(), 190);
     nameTextBox.setMaximumTextLength(MAX_PLAYERNAMELENGTH);
     nameTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     NameHBox.addWidget(&nameTextBox, 290);
-    NameHBox.addWidget(Spacer::create(), 0.5);
+    NameHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     nameTextBox.setText(settings.general.playerName);
 
     mainVBox.addWidget(&NameHBox, 0.01);
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
-    gameOptionsHBox.addWidget(Spacer::create(), 0.5);
+    gameOptionsHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     gameOptionsHBox.addWidget(Label::create(_("Default Game Options")).release(), 190);
     gameOptionsButton.setText(_("Change..."));
     gameOptionsButton.setOnClick([this] { onGameOptions(); });
     gameOptionsHBox.addWidget(&gameOptionsButton, 130);
 
-    gameOptionsHBox.addWidget(Spacer::create(), 160);
+    gameOptionsHBox.addWidget(Widget::create<Spacer>().release(), 160);
 
-    gameOptionsHBox.addWidget(Spacer::create(), 0.5);
+    gameOptionsHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&gameOptionsHBox, 0.01);
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    languageHBox.addWidget(Spacer::create(), 0.5);
+    languageHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     languageHBox.addWidget(Label::create(_("Language")).release(), 190);
 
     for (auto i = decltype(availLanguages.size()){0}; i < availLanguages.size(); i++) {
@@ -99,14 +99,14 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
 
     languageDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     languageHBox.addWidget(&languageDropDownBox, 100);
-    languageHBox.addWidget(Spacer::create(), 190);
-    languageHBox.addWidget(Spacer::create(), 0.5);
+    languageHBox.addWidget(Widget::create<Spacer>().release(), 190);
+    languageHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&languageHBox, 0.01);
 
-    mainVBox.addWidget(VSpacer::create(1));
+    mainVBox.addWidget(Widget::create<VSpacer>(1).release());
 
-    generalHBox.addWidget(Spacer::create(), 0.5);
+    generalHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     generalHBox.addWidget(Label::create(_("Campaign AI")).release(), 190);
     for (unsigned int i = 1; i < PlayerFactory::getList().size(); i++) {
         aiDropDownBox.addEntry(PlayerFactory::getByIndex(i)->getName(), i);
@@ -114,18 +114,18 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     aiDropDownBox.setSelectedItem(PlayerFactory::getIndexByPlayerClass(settings.ai.campaignAI) - 1);
     aiDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     generalHBox.addWidget(&aiDropDownBox, 140);
-    generalHBox.addWidget(Spacer::create(), 20);
+    generalHBox.addWidget(Widget::create<Spacer>().release(), 20);
     introCheckbox.setText(_("Play Intro"));
     introCheckbox.setChecked(settings.general.playIntro);
     introCheckbox.setOnClick([this] { onChangeOption(true); });
     generalHBox.addWidget(&introCheckbox, 130);
-    generalHBox.addWidget(Spacer::create(), 0.5);
+    generalHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&generalHBox, 0.01);
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    resolutionHBox.addWidget(Spacer::create(), 0.5);
+    resolutionHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     resolutionHBox.addWidget(Label::create(_("Video Resolution")).release(), 190);
 
     int i = 0;
@@ -143,14 +143,14 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     }
     resolutionDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&resolutionDropDownBox, 130);
-    resolutionHBox.addWidget(Spacer::create(), 5);
+    resolutionHBox.addWidget(Widget::create<Spacer>().release(), 5);
     zoomlevelDropDownBox.addEntry("Zoom 1x", 0);
     zoomlevelDropDownBox.addEntry("Zoom 2x", 1);
     zoomlevelDropDownBox.addEntry("Zoom 3x", 2);
     zoomlevelDropDownBox.setSelectedItem(settings.video.preferredZoomLevel);
     zoomlevelDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&zoomlevelDropDownBox, 72);
-    resolutionHBox.addWidget(Spacer::create(), 5);
+    resolutionHBox.addWidget(Widget::create<Spacer>().release(), 5);
     for (int j = 0; j < Scaler::NumScaler; j++) {
         scalerDropDownBox.addEntry(Scaler::getScalerName(static_cast<Scaler::ScalerType>(j)));
     }
@@ -159,13 +159,13 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     scalerDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&scalerDropDownBox, 78);
 
-    resolutionHBox.addWidget(Spacer::create(), 0.5);
+    resolutionHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&resolutionHBox, 0.01);
 
-    mainVBox.addWidget(VSpacer::create(1));
+    mainVBox.addWidget(Widget::create<VSpacer>(1).release());
 
-    videoHBox.addWidget(Spacer::create(), 0.5);
+    videoHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     fullScreenCheckbox.setText(_("Full Screen"));
     fullScreenCheckbox.setChecked(settings.video.fullscreen);
     fullScreenCheckbox.setOnClick([this] { onChangeOption(true); });
@@ -174,13 +174,13 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     showTutorialHintsCheckbox.setChecked(settings.general.showTutorialHints);
     showTutorialHintsCheckbox.setOnClick([this] { onChangeOption(true); });
     videoHBox.addWidget(&showTutorialHintsCheckbox, 240);
-    videoHBox.addWidget(Spacer::create(), 0.5);
+    videoHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&videoHBox, 0.01);
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    audioHBox.addWidget(Spacer::create(), 0.5);
+    audioHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     playSFXCheckbox.setText(_("Play SFX"));
     playSFXCheckbox.setChecked(settings.audio.playSFX);
     playSFXCheckbox.setOnClick([this] { onChangeOption(true); });
@@ -189,53 +189,53 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     playMusicCheckbox.setChecked(settings.audio.playMusic);
     playMusicCheckbox.setOnClick([this] { onChangeOption(true); });
     audioHBox.addWidget(&playMusicCheckbox, 240);
-    audioHBox.addWidget(Spacer::create(), 0.5);
+    audioHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     mainVBox.addWidget(&audioHBox, 0.01);
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    networkPortHBox.addWidget(Spacer::create(), 0.5);
+    networkPortHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     networkPortHBox.addWidget(Label::create(_("Port")).release(), 190);
     portTextBox.setMaximumTextLength(5);
     portTextBox.setAllowedChars("0123456789");
     portTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     networkPortHBox.addWidget(&portTextBox, 100);
     portTextBox.setText(std::to_string(settings.network.serverPort));
-    networkPortHBox.addWidget(Spacer::create(), 190);
-    networkPortHBox.addWidget(Spacer::create(), 0.5);
+    networkPortHBox.addWidget(Widget::create<Spacer>().release(), 190);
+    networkPortHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     mainVBox.addWidget(&networkPortHBox, 0.01);
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
-    networkMetaServerHBox.addWidget(Spacer::create(), 0.5);
+    networkMetaServerHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     networkMetaServerHBox.addWidget(Label::create(_("MetaServer")).release(), 190);
     metaServerTextBox.setOnTextChange([this](auto interactive) { onChangeOption(interactive); });
     networkMetaServerHBox.addWidget(&metaServerTextBox, 290);
     metaServerTextBox.setText(settings.network.metaServer);
-    networkMetaServerHBox.addWidget(Spacer::create(), 0.5);
+    networkMetaServerHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
     mainVBox.addWidget(&networkMetaServerHBox, 0.01);
 
-    mainVBox.addWidget(Spacer::create(), 0.2);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.2);
 
-    okCancelHBox.addWidget(Spacer::create());
+    okCancelHBox.addWidget(Widget::create<Spacer>().release());
 
     backButton.setText(_("Back"));
     backButton.setOnClick([this] { onOptionsCancel(); });
     okCancelHBox.addWidget(&backButton);
 
-    okCancelHBox.addWidget(Spacer::create());
+    okCancelHBox.addWidget(Widget::create<Spacer>().release());
 
     acceptButton.setText(_("Accept"));
     acceptButton.setVisible(false);
     acceptButton.setOnClick([this] { onOptionsOK(); });
     okCancelHBox.addWidget(&acceptButton);
 
-    okCancelHBox.addWidget(Spacer::create());
+    okCancelHBox.addWidget(Widget::create<Spacer>().release());
 
     mainVBox.addWidget(&okCancelHBox, 26);
 
-    mainVBox.addWidget(Spacer::create(), 0.1);
+    mainVBox.addWidget(Widget::create<Spacer>().release(), 0.1);
 }
 
 OptionsMenu::~OptionsMenu() = default;

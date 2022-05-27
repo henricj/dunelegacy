@@ -32,11 +32,9 @@ class MultiUnitInterface final : public ObjectInterface {
     using parent = ObjectInterface;
 
 public:
-    static std::unique_ptr<MultiUnitInterface> create(const GameContext& context);
-
-protected:
     explicit MultiUnitInterface(const GameContext& context);
 
+protected:
     void onReturn();
 
     void OnSendToRepair();

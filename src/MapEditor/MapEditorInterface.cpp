@@ -86,77 +86,77 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     // add buttons
     windowWidget.addWidget(&topBarHBox, Point(0, 3), Point(getRendererWidth() - sideBar.getSize().x, 24));
 
-    topBarHBox.addWidget(HSpacer::create(3));
+    topBarHBox.addWidget(Widget::create<HSpacer>(3).release());
 
     exitButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ExitIcon));
     exitButton.setTooltipText(_("Leave Mapeditor"));
     exitButton.setOnClick([this] { onQuit(); });
     topBarHBox.addWidget(&exitButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     newButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_NewIcon));
     newButton.setTooltipText(_("New Map"));
     newButton.setOnClick([this] { onNew(); });
     topBarHBox.addWidget(&newButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     loadButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_LoadIcon));
     loadButton.setTooltipText(_("Load Map"));
     loadButton.setOnClick([this] { onLoad(); });
     topBarHBox.addWidget(&loadButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     saveButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_SaveIcon));
     saveButton.setTooltipText(_("Save Map"));
     saveButton.setOnClick([this] { onSave(); });
     topBarHBox.addWidget(&saveButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     undoButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_UndoIcon));
     undoButton.setTooltipText(_("Undo"));
     undoButton.setOnClick([this] { onUndo(); });
     topBarHBox.addWidget(&undoButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     redoButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_RedoIcon));
     redoButton.setTooltipText(_("Redo"));
     redoButton.setOnClick([this] { onRedo(); });
     topBarHBox.addWidget(&redoButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     playersButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_PlayerIcon));
     playersButton.setTooltipText(_("Player Settings"));
     playersButton.setOnClick([this] { onPlayers(); });
     topBarHBox.addWidget(&playersButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     mapSettingsButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MapSettingsIcon));
     mapSettingsButton.setTooltipText(_("Map Settings"));
     mapSettingsButton.setOnClick([this] { onMapSettings(); });
     topBarHBox.addWidget(&mapSettingsButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     choamButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ChoamIcon));
     choamButton.setTooltipText(_("Choam"));
     choamButton.setOnClick([this] { onChoam(); });
     topBarHBox.addWidget(&choamButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     reinforcementsButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ReinforcementsIcon));
     reinforcementsButton.setTooltipText(_("Reinforcements"));
     reinforcementsButton.setOnClick([this] { onReinforcements(); });
     topBarHBox.addWidget(&reinforcementsButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     teamsButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_TeamsIcon));
     teamsButton.setTooltipText(_("Teams"));
@@ -164,7 +164,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     teamsButton.setVisible((pMapEditor->getMapVersion() < 2));
     topBarHBox.addWidget(&teamsButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(10));
+    topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     mirrorModeNoneButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorNoneIcon));
     mirrorModeNoneButton.setToggleButton(true);
@@ -173,7 +173,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeNoneButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeNoneButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     mirrorModeHorizontalButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorHorizontalIcon));
     mirrorModeHorizontalButton.setToggleButton(true);
@@ -182,7 +182,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeHorizontalButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeHorizontalButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     mirrorModeVerticalButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorVerticalIcon));
     mirrorModeVerticalButton.setToggleButton(true);
@@ -191,7 +191,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeVerticalButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeVerticalButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     mirrorModeBothButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorBothIcon));
     mirrorModeBothButton.setToggleButton(true);
@@ -200,7 +200,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeBothButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeBothButton, 24);
 
-    topBarHBox.addWidget(HSpacer::create(1));
+    topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     mirrorModePointButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorPointIcon));
     mirrorModePointButton.setToggleButton(true);
@@ -209,7 +209,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModePointButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModePointButton, 24);
 
-    topBarHBox.addWidget(Spacer::create(), 0.5);
+    topBarHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
 
     // add editor mode buttons
     windowWidget.addWidget(&editorModeChooserHBox, Point(getRendererWidth() - sideBar.getSize().x + 14, 148),
@@ -220,14 +220,14 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     terrainButton.setOnClick([this] { onModeButton(1); });
     editorModeChooserHBox.addWidget(&terrainButton);
 
-    editorModeChooserHBox.addWidget(HSpacer::create(2));
+    editorModeChooserHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     structuresButton.setText("S");
     structuresButton.setToggleButton(true);
     structuresButton.setOnClick([this] { onModeButton(2); });
     editorModeChooserHBox.addWidget(&structuresButton);
 
-    editorModeChooserHBox.addWidget(HSpacer::create(2));
+    editorModeChooserHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     unitsButton.setText("U");
     unitsButton.setToggleButton(true);
@@ -249,53 +249,53 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeTerrain_Sand.setOnClick([this] { onTerrainButton(Terrain_Sand); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_Sand);
 
-    editorModeTerrain_HBox1.addWidget(HSpacer::create(2));
+    editorModeTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Dunes.setToggleButton(true);
     editorModeTerrain_Dunes.setOnClick([this] { onTerrainButton(Terrain_Dunes); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_Dunes);
 
-    editorModeTerrain_HBox1.addWidget(HSpacer::create(2));
+    editorModeTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_SpecialBloom.setToggleButton(true);
     editorModeTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(Terrain_SpecialBloom); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_SpecialBloom);
 
-    editorModeTerrain_VBox.addWidget(VSpacer::create(2));
+    editorModeTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
     editorModeTerrain_VBox.addWidget(&editorModeTerrain_HBox2);
 
     editorModeTerrain_Spice.setToggleButton(true);
     editorModeTerrain_Spice.setOnClick([this] { onTerrainButton(Terrain_Spice); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_Spice);
 
-    editorModeTerrain_HBox2.addWidget(HSpacer::create(2));
+    editorModeTerrain_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_ThickSpice.setToggleButton(true);
     editorModeTerrain_ThickSpice.setOnClick([this] { onTerrainButton(Terrain_ThickSpice); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_ThickSpice);
 
-    editorModeTerrain_HBox2.addWidget(HSpacer::create(2));
+    editorModeTerrain_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_SpiceBloom.setToggleButton(true);
     editorModeTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(Terrain_SpiceBloom); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_SpiceBloom);
 
-    editorModeTerrain_VBox.addWidget(VSpacer::create(2));
+    editorModeTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
     editorModeTerrain_VBox.addWidget(&editorModeTerrain_HBox3);
 
     editorModeTerrain_Rock.setToggleButton(true);
     editorModeTerrain_Rock.setOnClick([this] { onTerrainButton(Terrain_Rock); });
     editorModeTerrain_HBox3.addWidget(&editorModeTerrain_Rock);
 
-    editorModeTerrain_HBox3.addWidget(HSpacer::create(2));
+    editorModeTerrain_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Mountain.setToggleButton(true);
     editorModeTerrain_Mountain.setOnClick([this] { onTerrainButton(Terrain_Mountain); });
     editorModeTerrain_HBox3.addWidget(&editorModeTerrain_Mountain);
 
-    editorModeTerrain_HBox3.addWidget(Spacer::create());
+    editorModeTerrain_HBox3.addWidget(Widget::create<Spacer>().release());
 
-    editorModeTerrainVBox.addWidget(VSpacer::create(10));
+    editorModeTerrainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     // setup terrain pen size buttons
     editorModeTerrainVBox.addWidget(&editorModeTerrain_PenHBox, 40);
@@ -304,13 +304,13 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeTerrain_Pen1x1.setOnClick([this] { onTerrainPenButton(1); });
     editorModeTerrain_PenHBox.addWidget(&editorModeTerrain_Pen1x1);
 
-    editorModeTerrain_PenHBox.addWidget(HSpacer::create(2));
+    editorModeTerrain_PenHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Pen3x3.setToggleButton(true);
     editorModeTerrain_Pen3x3.setOnClick([this] { onTerrainPenButton(3); });
     editorModeTerrain_PenHBox.addWidget(&editorModeTerrain_Pen3x3);
 
-    editorModeTerrain_PenHBox.addWidget(HSpacer::create(2));
+    editorModeTerrain_PenHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Pen5x5.setToggleButton(true);
     editorModeTerrain_Pen5x5.setOnClick([this] { onTerrainPenButton(5); });
@@ -325,21 +325,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeClassicTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(Terrain_SpiceBloom); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpiceBloom);
 
-    editorModeClassicTerrain_HBox1.addWidget(HSpacer::create(2));
+    editorModeClassicTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeClassicTerrain_SpecialBloom.setToggleButton(true);
     editorModeClassicTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(Terrain_SpecialBloom); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpecialBloom);
 
-    editorModeClassicTerrain_HBox1.addWidget(HSpacer::create(2));
+    editorModeClassicTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeClassicTerrain_SpiceField.setToggleButton(true);
     editorModeClassicTerrain_SpiceField.setOnClick([this] { onTerrainButton(Terrain_Spice); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpiceField);
 
-    editorModeClassicTerrain_VBox.addWidget(VSpacer::create(2));
-    editorModeClassicTerrain_VBox.addWidget(Spacer::create());
-    editorModeClassicTerrain_VBox.addWidget(VSpacer::create(2));
+    editorModeClassicTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
+    editorModeClassicTerrain_VBox.addWidget(Widget::create<Spacer>().release());
+    editorModeClassicTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
     editorModeClassicTerrain_SetTacticalPos.setText(_("Set starting screen"));
     editorModeClassicTerrain_SetTacticalPos.setOnClick([this] { onSetTacticalPosition(); });
     editorModeClassicTerrain_VBox.addWidget(&editorModeClassicTerrain_SetTacticalPos);
@@ -375,21 +375,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_RocketTurret.setOnClick([this] { onStructButton(Structure_RocketTurret); });
     editorModeStructs_SmallStruct_HBox2.addWidget(&editorModeStructs_RocketTurret);
 
-    editorModeStructs_HBox1.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_ConstructionYard.setToggleButton(true);
     editorModeStructs_ConstructionYard.setTooltipText(resolveItemName(Structure_ConstructionYard));
     editorModeStructs_ConstructionYard.setOnClick([this] { onStructButton(Structure_ConstructionYard); });
     editorModeStructs_HBox1.addWidget(&editorModeStructs_ConstructionYard);
 
-    editorModeStructs_HBox1.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_Windtrap.setToggleButton(true);
     editorModeStructs_Windtrap.setTooltipText(resolveItemName(Structure_WindTrap));
     editorModeStructs_Windtrap.setOnClick([this] { onStructButton(Structure_WindTrap); });
     editorModeStructs_HBox1.addWidget(&editorModeStructs_Windtrap);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeStructs_VBox.addWidget(&editorModeStructs_HBox2, 2 * D2_TILESIZE + 10);
 
@@ -398,21 +398,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_Radar.setOnClick([this] { onStructButton(Structure_Radar); });
     editorModeStructs_HBox2.addWidget(&editorModeStructs_Radar);
 
-    editorModeStructs_HBox2.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_Silo.setToggleButton(true);
     editorModeStructs_Silo.setTooltipText(resolveItemName(Structure_Silo));
     editorModeStructs_Silo.setOnClick([this] { onStructButton(Structure_Silo); });
     editorModeStructs_HBox2.addWidget(&editorModeStructs_Silo);
 
-    editorModeStructs_HBox2.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_IX.setToggleButton(true);
     editorModeStructs_IX.setTooltipText(resolveItemName(Structure_IX));
     editorModeStructs_IX.setOnClick([this] { onStructButton(Structure_IX); });
     editorModeStructs_HBox2.addWidget(&editorModeStructs_IX);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeStructs_VBox.addWidget(&editorModeStructs_HBox3, 2 * D2_TILESIZE + 10);
 
@@ -421,21 +421,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_Barracks.setOnClick([this] { onStructButton(Structure_Barracks); });
     editorModeStructs_HBox3.addWidget(&editorModeStructs_Barracks);
 
-    editorModeStructs_HBox3.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_WOR.setToggleButton(true);
     editorModeStructs_WOR.setTooltipText(resolveItemName(Structure_WOR));
     editorModeStructs_WOR.setOnClick([this] { onStructButton(Structure_WOR); });
     editorModeStructs_HBox3.addWidget(&editorModeStructs_WOR);
 
-    editorModeStructs_HBox3.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_LightFactory.setToggleButton(true);
     editorModeStructs_LightFactory.setTooltipText(resolveItemName(Structure_LightFactory));
     editorModeStructs_LightFactory.setOnClick([this] { onStructButton(Structure_LightFactory); });
     editorModeStructs_HBox3.addWidget(&editorModeStructs_LightFactory);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeStructs_VBox.addWidget(&editorModeStructs_HBox4, 2 * D2_TILESIZE + 10);
 
@@ -444,14 +444,14 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_Refinery.setOnClick([this] { onStructButton(Structure_Refinery); });
     editorModeStructs_HBox4.addWidget(&editorModeStructs_Refinery);
 
-    editorModeStructs_HBox4.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox4.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_HighTechFactory.setToggleButton(true);
     editorModeStructs_HighTechFactory.setTooltipText(resolveItemName(Structure_HighTechFactory));
     editorModeStructs_HighTechFactory.setOnClick([this] { onStructButton(Structure_HighTechFactory); });
     editorModeStructs_HBox4.addWidget(&editorModeStructs_HighTechFactory);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeStructs_VBox.addWidget(&editorModeStructs_HBox5, 2 * D2_TILESIZE + 10);
 
@@ -460,14 +460,14 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_HeavyFactory.setOnClick([this] { onStructButton(Structure_HeavyFactory); });
     editorModeStructs_HBox5.addWidget(&editorModeStructs_HeavyFactory);
 
-    editorModeStructs_HBox5.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox5.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_RepairYard.setToggleButton(true);
     editorModeStructs_RepairYard.setTooltipText(resolveItemName(Structure_RepairYard));
     editorModeStructs_RepairYard.setOnClick([this] { onStructButton(Structure_RepairYard); });
     editorModeStructs_HBox5.addWidget(&editorModeStructs_RepairYard);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeStructs_VBox.addWidget(&editorModeStructs_HBox6, 3 * D2_TILESIZE + 10);
 
@@ -476,16 +476,16 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeStructs_Starport.setOnClick([this] { onStructButton(Structure_StarPort); });
     editorModeStructs_HBox6.addWidget(&editorModeStructs_Starport);
 
-    editorModeStructs_HBox6.addWidget(HSpacer::create(2));
+    editorModeStructs_HBox6.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeStructs_Palace.setToggleButton(true);
     editorModeStructs_Palace.setTooltipText(resolveItemName(Structure_Palace));
     editorModeStructs_Palace.setOnClick([this] { onStructButton(Structure_Palace); });
     editorModeStructs_HBox6.addWidget(&editorModeStructs_Palace);
 
-    editorModeStructs_VBox.addWidget(VSpacer::create(2));
+    editorModeStructs_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
-    editorModeStructs_MainVBox.addWidget(Spacer::create());
+    editorModeStructs_MainVBox.addWidget(Widget::create<Spacer>().release());
 
     // setup units mode
     editorModeUnits_MainVBox.addWidget(&editorModeUnits_VBox, 0.01);
@@ -497,21 +497,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Soldier.setOnClick([this] { onUnitButton(Unit_Soldier); });
     editorModeUnits_HBox1.addWidget(&editorModeUnits_Soldier);
 
-    editorModeUnits_HBox1.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Trooper.setToggleButton(true);
     editorModeUnits_Trooper.setTooltipText(resolveItemName(Unit_Trooper));
     editorModeUnits_Trooper.setOnClick([this] { onUnitButton(Unit_Trooper); });
     editorModeUnits_HBox1.addWidget(&editorModeUnits_Trooper);
 
-    editorModeUnits_HBox1.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Harvester.setToggleButton(true);
     editorModeUnits_Harvester.setTooltipText(resolveItemName(Unit_Harvester));
     editorModeUnits_Harvester.setOnClick([this] { onUnitButton(Unit_Harvester); });
     editorModeUnits_HBox1.addWidget(&editorModeUnits_Harvester);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox2, 2 * D2_TILESIZE);
 
@@ -520,21 +520,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Infantry.setOnClick([this] { onUnitButton(Unit_Infantry); });
     editorModeUnits_HBox2.addWidget(&editorModeUnits_Infantry);
 
-    editorModeUnits_HBox2.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Troopers.setToggleButton(true);
     editorModeUnits_Troopers.setTooltipText(resolveItemName(Unit_Troopers));
     editorModeUnits_Troopers.setOnClick([this] { onUnitButton(Unit_Troopers); });
     editorModeUnits_HBox2.addWidget(&editorModeUnits_Troopers);
 
-    editorModeUnits_HBox2.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_MCV.setToggleButton(true);
     editorModeUnits_MCV.setTooltipText(resolveItemName(Unit_MCV));
     editorModeUnits_MCV.setOnClick([this] { onUnitButton(Unit_MCV); });
     editorModeUnits_HBox2.addWidget(&editorModeUnits_MCV);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox3, 2 * D2_TILESIZE);
 
@@ -543,21 +543,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Trike.setOnClick([this] { onUnitButton(Unit_Trike); });
     editorModeUnits_HBox3.addWidget(&editorModeUnits_Trike);
 
-    editorModeUnits_HBox3.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Raider.setToggleButton(true);
     editorModeUnits_Raider.setTooltipText(resolveItemName(Unit_RaiderTrike));
     editorModeUnits_Raider.setOnClick([this] { onUnitButton(Unit_RaiderTrike); });
     editorModeUnits_HBox3.addWidget(&editorModeUnits_Raider);
 
-    editorModeUnits_HBox3.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Quad.setToggleButton(true);
     editorModeUnits_Quad.setTooltipText(resolveItemName(Unit_Quad));
     editorModeUnits_Quad.setOnClick([this] { onUnitButton(Unit_Quad); });
     editorModeUnits_HBox3.addWidget(&editorModeUnits_Quad);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox4, 2 * D2_TILESIZE);
 
@@ -566,21 +566,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Tank.setOnClick([this] { onUnitButton(Unit_Tank); });
     editorModeUnits_HBox4.addWidget(&editorModeUnits_Tank);
 
-    editorModeUnits_HBox4.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox4.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_SiegeTank.setToggleButton(true);
     editorModeUnits_SiegeTank.setTooltipText(resolveItemName(Unit_SiegeTank));
     editorModeUnits_SiegeTank.setOnClick([this] { onUnitButton(Unit_SiegeTank); });
     editorModeUnits_HBox4.addWidget(&editorModeUnits_SiegeTank);
 
-    editorModeUnits_HBox4.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox4.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Launcher.setToggleButton(true);
     editorModeUnits_Launcher.setTooltipText(resolveItemName(Unit_Launcher));
     editorModeUnits_Launcher.setOnClick([this] { onUnitButton(Unit_Launcher); });
     editorModeUnits_HBox4.addWidget(&editorModeUnits_Launcher);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox5, 2 * D2_TILESIZE);
 
@@ -589,21 +589,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Devastator.setOnClick([this] { onUnitButton(Unit_Devastator); });
     editorModeUnits_HBox5.addWidget(&editorModeUnits_Devastator);
 
-    editorModeUnits_HBox5.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox5.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_SonicTank.setToggleButton(true);
     editorModeUnits_SonicTank.setTooltipText(resolveItemName(Unit_SonicTank));
     editorModeUnits_SonicTank.setOnClick([this] { onUnitButton(Unit_SonicTank); });
     editorModeUnits_HBox5.addWidget(&editorModeUnits_SonicTank);
 
-    editorModeUnits_HBox5.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox5.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Deviator.setToggleButton(true);
     editorModeUnits_Deviator.setTooltipText(resolveItemName(Unit_Deviator));
     editorModeUnits_Deviator.setOnClick([this] { onUnitButton(Unit_Deviator); });
     editorModeUnits_HBox5.addWidget(&editorModeUnits_Deviator);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox6, 2 * D2_TILESIZE);
 
@@ -612,21 +612,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Saboteur.setOnClick([this] { onUnitButton(Unit_Saboteur); });
     editorModeUnits_HBox6.addWidget(&editorModeUnits_Saboteur);
 
-    editorModeUnits_HBox6.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox6.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Sandworm.setToggleButton(true);
     editorModeUnits_Sandworm.setTooltipText(resolveItemName(Unit_Sandworm));
     editorModeUnits_Sandworm.setOnClick([this] { onUnitButton(Unit_Sandworm); });
     editorModeUnits_HBox6.addWidget(&editorModeUnits_Sandworm);
 
-    editorModeUnits_HBox6.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox6.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_SpecialUnit.setToggleButton(true);
     editorModeUnits_SpecialUnit.setTooltipText("Special");
     editorModeUnits_SpecialUnit.setOnClick([this] { onUnitButton(Unit_Special); });
     editorModeUnits_HBox6.addWidget(&editorModeUnits_SpecialUnit);
 
-    editorModeUnits_VBox.addWidget(VSpacer::create(2));
+    editorModeUnits_VBox.addWidget(Widget::create<VSpacer>(2).release());
 
     editorModeUnits_VBox.addWidget(&editorModeUnits_HBox7, 2 * D2_TILESIZE);
 
@@ -635,21 +635,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_Carryall.setOnClick([this] { onUnitButton(Unit_Carryall); });
     editorModeUnits_HBox7.addWidget(&editorModeUnits_Carryall);
 
-    editorModeUnits_HBox7.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox7.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_Ornithopter.setToggleButton(true);
     editorModeUnits_Ornithopter.setTooltipText(resolveItemName(Unit_Ornithopter));
     editorModeUnits_Ornithopter.setOnClick([this] { onUnitButton(Unit_Ornithopter); });
     editorModeUnits_HBox7.addWidget(&editorModeUnits_Ornithopter);
 
-    editorModeUnits_HBox7.addWidget(HSpacer::create(2));
+    editorModeUnits_HBox7.addWidget(Widget::create<HSpacer>(2).release());
 
-    editorModeUnits_HBox7.addWidget(Spacer::create());
+    editorModeUnits_HBox7.addWidget(Widget::create<Spacer>().release());
 
-    editorModeUnits_MainVBox.addWidget(Spacer::create());
+    editorModeUnits_MainVBox.addWidget(Widget::create<Spacer>().release());
 
     // bottom bar (structure edit)
-    structureDetailsHBox.addWidget(HSpacer::create(4));
+    structureDetailsHBox.addWidget(Widget::create<HSpacer>(4).release());
     structureDetailsHealthLabel.setTextFontSize(12);
     structureDetailsHealthLabel.setText("Health:");
     structureDetailsHBox.addWidget(&structureDetailsHealthLabel, 0.1);
@@ -663,10 +663,10 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
         [this](auto interactive) { onStructureHealthDropDown(interactive); });
 
     structureDetailsHBox.addWidget(&structureDetailsHealthDropDownBox, 120);
-    structureDetailsHBox.addWidget(Spacer::create(), 1.0);
+    structureDetailsHBox.addWidget(Widget::create<Spacer>().release(), 1.0);
 
     // bottom bar (unit edit)
-    unitDetailsHBox.addWidget(HSpacer::create(5));
+    unitDetailsHBox.addWidget(Widget::create<HSpacer>(5).release());
     unitDetailsHealthLabel.setTextFontSize(12);
     unitDetailsHealthLabel.setText(_("Health") + ":");
     unitDetailsHBox.addWidget(&unitDetailsHealthLabel, 0.1);
@@ -679,7 +679,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     unitDetailsHBox.addWidget(&unitDetailsHealthDropDownBox, 115);
 
-    unitDetailsHBox.addWidget(HSpacer::create(4));
+    unitDetailsHBox.addWidget(Widget::create<HSpacer>(4).release());
     unitDetailsAttackModeLabel.setTextFontSize(12);
     unitDetailsAttackModeLabel.setText(_("Attack mode") + ":");
     unitDetailsHBox.addWidget(&unitDetailsAttackModeLabel, 0.1);
@@ -697,21 +697,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     unitDetailsHBox.addWidget(&unitDetailsAttackModeDropDownBox, 90);
 
-    unitDetailsHBox.addWidget(HSpacer::create(10));
+    unitDetailsHBox.addWidget(Widget::create<HSpacer>(10).release());
 
     unitDetailsRotateLeftButton.setTooltipText(_("Rotate left"));
     unitDetailsRotateLeftButton.setOnClick([this] { onSelectedUnitRotateLeft(); });
 
     unitDetailsHBox.addWidget(&unitDetailsRotateLeftButton, 24);
 
-    unitDetailsHBox.addWidget(HSpacer::create(1));
+    unitDetailsHBox.addWidget(Widget::create<HSpacer>(1).release());
 
     unitDetailsRotateRightButton.setTooltipText(_("Rotate right"));
     unitDetailsRotateRightButton.setOnClick([this] { onSelectedUnitRotateRight(); });
 
     unitDetailsHBox.addWidget(&unitDetailsRotateRightButton, 24);
 
-    unitDetailsHBox.addWidget(Spacer::create(), 1.0);
+    unitDetailsHBox.addWidget(Widget::create<Spacer>().release(), 1.0);
 
     onHouseChanges();
 

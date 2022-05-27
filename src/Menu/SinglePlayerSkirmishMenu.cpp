@@ -61,7 +61,7 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
     menuButtonsVBox.addWidget(&startButton);
     startButton.setActive();
 
-    menuButtonsVBox.addWidget(VSpacer::create(79));
+    menuButtonsVBox.addWidget(Widget::create<VSpacer>(79).release());
 
     backButton.setText(_("Back"));
     backButton.setOnClick([&] { onCancel(); });

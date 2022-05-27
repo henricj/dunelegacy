@@ -28,52 +28,52 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     const auto* const gfx = dune::globals::pGFXManager.get();
 
     GameOptionsWindow::setWindowWidget(&vbox);
-    vbox.addWidget(VSpacer::create(6));
+    vbox.addWidget(Widget::create<VSpacer>(6).release());
 
     captionlabel.setText(_("Game Options"));
     captionlabel.setAlignment(Alignment_HCenter);
     vbox.addWidget(&captionlabel);
-    vbox.addWidget(VSpacer::create(3));
+    vbox.addWidget(Widget::create<VSpacer>(3).release());
     vbox.addWidget(&hbox);
-    vbox.addWidget(VSpacer::create(6));
-    hbox.addWidget(Spacer::create());
+    vbox.addWidget(Widget::create<VSpacer>(6).release());
+    hbox.addWidget(Widget::create<Spacer>().release());
     hbox.addWidget(&vboxLeft);
-    hbox.addWidget(HSpacer::create(20));
+    hbox.addWidget(Widget::create<HSpacer>(20).release());
     hbox.addWidget(&vboxRight);
-    hbox.addWidget(Spacer::create());
-    vboxLeft.addWidget(Spacer::create());
+    hbox.addWidget(Widget::create<Spacer>().release());
+    vboxLeft.addWidget(Widget::create<Spacer>().release());
 
     startWithExploredMapCheckbox.setText(_("Start with Explored Map"));
     startWithExploredMapCheckbox.setTooltipText(
         _("If checked the complete map is unhidden at the beginning of the game."));
     startWithExploredMapCheckbox.setChecked(gameOptions.startWithExploredMap);
     vboxLeft.addWidget(&startWithExploredMapCheckbox);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
     structuresDegradeOnConcreteCheckbox.setText(_("Structures Degrade On Concrete"));
     structuresDegradeOnConcreteCheckbox.setTooltipText(
         _("If checked structures will degrade on power shortage even if built on concrete."));
     structuresDegradeOnConcreteCheckbox.setChecked(gameOptions.structuresDegradeOnConcrete);
     vboxLeft.addWidget(&structuresDegradeOnConcreteCheckbox);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
     sandwormsRespawnCheckbox.setText(_("Killed Sandworms Respawn"));
     sandwormsRespawnCheckbox.setTooltipText(_("If checked killed sandworms respawn after some time."));
     sandwormsRespawnCheckbox.setChecked(gameOptions.sandwormsRespawn);
     vboxLeft.addWidget(&sandwormsRespawnCheckbox);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
     killedSandwormsDropSpiceCheckbox.setText(_("Killed Sandworms Drop Spice"));
     killedSandwormsDropSpiceCheckbox.setTooltipText(_("If checked killed sandworms drop some spice."));
     killedSandwormsDropSpiceCheckbox.setChecked(gameOptions.killedSandwormsDropSpice);
     vboxLeft.addWidget(&killedSandwormsDropSpiceCheckbox);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
     manualCarryallDropsCheckbox.setText(_("Manual Carryall Drops"));
     manualCarryallDropsCheckbox.setTooltipText(_("If checked player can request carryall to transport units."));
     manualCarryallDropsCheckbox.setChecked(gameOptions.manualCarryallDrops);
     vboxLeft.addWidget(&manualCarryallDropsCheckbox);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
     maxUnitsOverrideCheckbox.setText(_("Override max. number of units"));
     maxUnitsOverrideCheckbox.setTooltipText(
@@ -88,9 +88,9 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     maxUnitsOverrideTextBox.setVisible(gameOptions.maximumNumberOfUnitsOverride >= 0);
     maxUnitsOverrideHBox.addWidget(&maxUnitsOverrideTextBox);
     vboxLeft.addWidget(&maxUnitsOverrideHBox, 24);
-    vboxLeft.addWidget(VSpacer::create(6));
+    vboxLeft.addWidget(Widget::create<VSpacer>(6).release());
 
-    vboxLeft.addWidget(VSpacer::create(62));
+    vboxLeft.addWidget(Widget::create<VSpacer>(62).release());
 
     concreteRequiredCheckbox.setText(_("Concrete Required"));
     /* xgettext:no-c-format */
@@ -98,38 +98,38 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
         _("If checked building on bare rock will result in 50% structure health penalty."));
     concreteRequiredCheckbox.setChecked(gameOptions.concreteRequired);
     vboxRight.addWidget(&concreteRequiredCheckbox);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     fogOfWarCheckbox.setText(_("Fog of War"));
     fogOfWarCheckbox.setTooltipText(
         _("If checked explored terrain will become foggy when no unit or structure is next to it."));
     fogOfWarCheckbox.setChecked(gameOptions.fogOfWar);
     vboxRight.addWidget(&fogOfWarCheckbox);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     instantBuildCheckbox.setText(_("Instant Build"));
     instantBuildCheckbox.setTooltipText(_("If checked the building of structures and units does not take any time."));
     instantBuildCheckbox.setChecked(gameOptions.instantBuild);
     vboxRight.addWidget(&instantBuildCheckbox);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     rocketTurretsNeedPowerCheckbox.setText(_("Rocket-Turrets Need Power"));
     rocketTurretsNeedPowerCheckbox.setTooltipText(_("If checked rocket turrets are dysfunctional on power shortage."));
     rocketTurretsNeedPowerCheckbox.setChecked(gameOptions.rocketTurretsNeedPower);
     vboxRight.addWidget(&rocketTurretsNeedPowerCheckbox);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     onlyOnePalaceCheckbox.setText(_("Only One Palace per House"));
     onlyOnePalaceCheckbox.setTooltipText(_("If checked only one palace can be build per house."));
     onlyOnePalaceCheckbox.setChecked(gameOptions.onlyOnePalace);
     vboxRight.addWidget(&onlyOnePalaceCheckbox);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     gameSpeedMinus.setTextures(gfx->getUIGraphic(UI_Minus), gfx->getUIGraphic(UI_Minus_Pressed));
     gameSpeedMinus.setOnClick([this] { onGameSpeedMinus(); });
-    gameSpeedHBox.addWidget(HSpacer::create(4));
+    gameSpeedHBox.addWidget(Widget::create<HSpacer>(4).release());
     gameSpeedHBox.addWidget(&gameSpeedMinus);
-    gameSpeedHBox.addWidget(HSpacer::create(2));
+    gameSpeedHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     gameSpeedBar.setText(_("Game speed"));
     gameSpeedHBox.addWidget(&gameSpeedBar);
@@ -137,20 +137,20 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     updateGameSpeedBar();
     gameSpeedPlus.setTextures(gfx->getUIGraphic(UI_Plus), gfx->getUIGraphic(UI_Plus_Pressed));
     gameSpeedPlus.setOnClick([this] { onGameSpeedPlus(); });
-    gameSpeedHBox.addWidget(HSpacer::create(2));
+    gameSpeedHBox.addWidget(Widget::create<HSpacer>(2).release());
     gameSpeedHBox.addWidget(&gameSpeedPlus);
-    gameSpeedHBox.addWidget(HSpacer::create(4));
+    gameSpeedHBox.addWidget(Widget::create<HSpacer>(4).release());
     vboxRight.addWidget(&gameSpeedHBox, 24);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
-    vboxRight.addWidget(VSpacer::create(20));
+    vboxRight.addWidget(Widget::create<VSpacer>(20).release());
 
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     okbutton.setText(_("OK"));
     okbutton.setOnClick([this] { onOK(); });
     vboxRight.addWidget(&okbutton, 30);
-    vboxRight.addWidget(VSpacer::create(6));
+    vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
     const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
     const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);

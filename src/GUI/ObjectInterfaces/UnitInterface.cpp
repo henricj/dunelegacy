@@ -27,19 +27,13 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-std::unique_ptr<UnitInterface> UnitInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<UnitInterface> tmp{new UnitInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 UnitInterface::UnitInterface(const GameContext& context, int objectID) : DefaultObjectInterface(context, objectID) {
     const auto color = SDL2RGB(
         dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
 
-    mainHBox.addWidget(HSpacer::create(4));
+    mainHBox.addWidget(Widget::create<HSpacer>(4).release());
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -49,7 +43,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     moveButton.setOnClick([] { onMove(); });
     actionHBox.addWidget(&moveButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     attackButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
     attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
@@ -57,7 +51,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     attackButton.setOnClick([] { onAttack(); });
     actionHBox.addWidget(&attackButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     carryallDropButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
     carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
@@ -65,7 +59,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     carryallDropButton.setOnClick([] { onCarryallDrop(); });
     actionHBox.addWidget(&carryallDropButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     captureButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
     captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
@@ -76,7 +70,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
 
     buttonVBox.addWidget(&actionHBox, 26);
 
-    buttonVBox.addWidget(VSpacer::create(2));
+    buttonVBox.addWidget(Widget::create<VSpacer>(2).release());
 
     returnButton.setSymbol(gfx->getUIGraphicSurface(UI_ReturnIcon));
     returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
@@ -84,7 +78,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     returnButton.setOnClick([this] { onReturn(); });
     commandHBox.addWidget(&returnButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     deployButton.setSymbol(gfx->getUIGraphicSurface(UI_DeployIcon));
     deployButton.setTooltipText(_("Build a new construction yard"));
@@ -92,7 +86,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     deployButton.setOnClick([this] { onDeploy(); });
     commandHBox.addWidget(&deployButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     destructButton.setSymbol(gfx->getUIGraphicSurface(UI_DestructIcon));
     destructButton.setTooltipText(_("Self-destruct this unit"));
@@ -100,7 +94,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     destructButton.setOnClick([this] { onDestruct(); });
     commandHBox.addWidget(&destructButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     sendToRepairButton.setSymbol(gfx->getUIGraphicSurface(UI_SendToRepairIcon));
     sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
@@ -109,7 +103,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
 
     buttonVBox.addWidget(&commandHBox, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     guardButton.setText(_("Guard"));
     guardButton.setTextColor(color);
@@ -118,7 +112,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     guardButton.setOnClick([this] { onGuard(); });
     buttonVBox.addWidget(&guardButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     areaGuardButton.setText(_("Area Guard"));
     areaGuardButton.setTextColor(color);
@@ -127,7 +121,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     areaGuardButton.setOnClick([this] { onAreaGuard(); });
     buttonVBox.addWidget(&areaGuardButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     stopButton.setText(_("Stop"));
     stopButton.setTextColor(color);
@@ -136,7 +130,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     stopButton.setOnClick([this] { onStop(); });
     buttonVBox.addWidget(&stopButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     ambushButton.setText(_("Ambush"));
     ambushButton.setTextColor(color);
@@ -145,7 +139,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     ambushButton.setOnClick([this] { onAmbush(); });
     buttonVBox.addWidget(&ambushButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     huntButton.setText(_("Hunt"));
     huntButton.setTextColor(color);
@@ -154,7 +148,7 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     huntButton.setOnClick([this] { onHunt(); });
     buttonVBox.addWidget(&huntButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     retreatButton.setText(_("Retreat"));
     retreatButton.setTextColor(color);
@@ -163,12 +157,12 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     retreatButton.setOnClick([this] { onRetreat(); });
     buttonVBox.addWidget(&retreatButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
-    buttonVBox.addWidget(Spacer::create());
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
+    buttonVBox.addWidget(Widget::create<Spacer>().release());
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     mainHBox.addWidget(&buttonVBox);
-    mainHBox.addWidget(HSpacer::create(5));
+    mainHBox.addWidget(Widget::create<HSpacer>(5).release());
 
     update();
 }

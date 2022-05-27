@@ -23,12 +23,6 @@
 
 #include <House.h>
 
-std::unique_ptr<RefineryAndSiloInterface> RefineryAndSiloInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<RefineryAndSiloInterface> tmp{new RefineryAndSiloInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     const auto color = SDL2RGB(
@@ -42,7 +36,7 @@ RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, i
     storedCreditsLabel.setTextFontSize(12);
     storedCreditsLabel.setTextColor(color);
     textVBox.addWidget(&storedCreditsLabel, 0.005);
-    textVBox.addWidget(Spacer::create(), 0.99);
+    textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
 
 bool RefineryAndSiloInterface::update() {
@@ -55,5 +49,5 @@ bool RefineryAndSiloInterface::update() {
     capacityLabel.setText(" " + _("Capacity") + ": " + std::to_string(pOwner->getCapacity()));
     storedCreditsLabel.setText(" " + _("Stored") + ": " + std::to_string(lround(pOwner->getStoredCredits())));
 
-    return DefaultStructureInterface::update();
+    return parent::update();
 }

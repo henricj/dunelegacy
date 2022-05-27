@@ -31,11 +31,9 @@ class UnitInterface final : public DefaultObjectInterface {
     using parent = DefaultObjectInterface;
 
 public:
-    static std::unique_ptr<UnitInterface> create(const GameContext& context, int objectID);
-
-protected:
     UnitInterface(const GameContext& context, int objectID);
 
+protected:
     static void onMove() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Move; }
 
     static void onAttack() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Attack; }

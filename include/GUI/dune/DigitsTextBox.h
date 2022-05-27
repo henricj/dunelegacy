@@ -41,7 +41,7 @@ public:
         textBox.setOnLostFocus([this] { onTextBoxLostFocus(); });
         DigitsTextBox::addWidget(&textBox);
 
-        buttonVBox.addWidget(Spacer::create());
+        buttonVBox.addWidget(Widget::create<Spacer>().release());
 
         plusButton.setOnClick([this] { onIncrement(); });
         buttonVBox.addWidget(&plusButton, 0.0);
@@ -49,7 +49,7 @@ public:
         minusButton.setOnClick([this] { onDecrement(); });
         buttonVBox.addWidget(&minusButton, 0.0);
 
-        buttonVBox.addWidget(Spacer::create());
+        buttonVBox.addWidget(Widget::create<Spacer>().release());
 
         updateSurfaces();
 

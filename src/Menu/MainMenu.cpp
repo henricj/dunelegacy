@@ -66,32 +66,32 @@ MainMenu::MainMenu() {
     MenuButtons.addWidget(&singlePlayerButton);
     singlePlayerButton.setActive();
 
-    MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(Widget::create<VSpacer>(3).release());
 
     multiPlayerButton.setText(_("MULTIPLAYER"));
     multiPlayerButton.setOnClick([this] { onMultiPlayer(); });
     MenuButtons.addWidget(&multiPlayerButton);
 
-    MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(Widget::create<VSpacer>(3).release());
 
-    //    MenuButtons.addWidget(VSpacer::create(16));
+    //    MenuButtons.addWidget(Widget::create<VSpacer>(16).release());
     mapEditorButton.setText(_("MAP EDITOR"));
     mapEditorButton.setOnClick([this] { onMapEditor(); });
     MenuButtons.addWidget(&mapEditorButton);
 
-    MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(Widget::create<VSpacer>(3).release());
 
     optionsButton.setText(_("OPTIONS"));
     optionsButton.setOnClick([this] { onOptions(); });
     MenuButtons.addWidget(&optionsButton);
 
-    MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(Widget::create<VSpacer>(3).release());
 
     aboutButton.setText(_("ABOUT"));
     aboutButton.setOnClick([this] { onAbout(); });
     MenuButtons.addWidget(&aboutButton);
 
-    MenuButtons.addWidget(VSpacer::create(3));
+    MenuButtons.addWidget(Widget::create<VSpacer>(3).release());
 
     quitButton.setText(_("QUIT"));
     quitButton.setOnClick([this] { onQuit(); });

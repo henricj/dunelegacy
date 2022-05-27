@@ -28,12 +28,6 @@
 #include <units/MCV.h>
 #include <units/UnitBase.h>
 
-std::unique_ptr<MultiUnitInterface> MultiUnitInterface::create(const GameContext& context) {
-    std::unique_ptr<MultiUnitInterface> tmp{new MultiUnitInterface{context}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{context} {
     const Uint32 color = SDL2RGB(
         dune::globals::palette[houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 3]);
@@ -44,13 +38,13 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
 
     topBox.addWidget(&topBoxHBox, Point(0, 22), Point(SIDEBARWIDTH - 25, 58));
 
-    topBoxHBox.addWidget(Spacer::create());
-    topBoxHBox.addWidget(VSpacer::create(56));
-    topBoxHBox.addWidget(Spacer::create());
+    topBoxHBox.addWidget(Widget::create<Spacer>().release());
+    topBoxHBox.addWidget(Widget::create<VSpacer>(56).release());
+    topBoxHBox.addWidget(Widget::create<Spacer>().release());
 
-    mainHBox.addWidget(HSpacer::create(4));
+    mainHBox.addWidget(Widget::create<HSpacer>(4).release());
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     auto* const gfx = dune::globals::pGFXManager.get();
 
@@ -60,7 +54,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     moveButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_Move; });
     actionHBox.addWidget(&moveButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     attackButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorAttack_Zoomlevel0));
     attackButton.setTooltipText(_("Attack a unit, structure or position (Hotkey: A)"));
@@ -68,7 +62,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     attackButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_Attack; });
     actionHBox.addWidget(&attackButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     carryallDropButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCarryallDrop_Zoomlevel0));
     carryallDropButton.setTooltipText(_("Request Carryall drop to a position (Hotkey: D)"));
@@ -76,7 +70,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     carryallDropButton.setOnClick([&game = context_.game] { game.currentCursorMode = Game::CursorMode_CarryallDrop; });
     actionHBox.addWidget(&carryallDropButton);
 
-    actionHBox.addWidget(HSpacer::create(2));
+    actionHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     captureButton.setSymbol(gfx->getUIGraphicSurface(UI_CursorCapture_Zoomlevel0));
     captureButton.setTooltipText(_("Capture a building (Hotkey: C)"));
@@ -86,28 +80,28 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
 
     buttonVBox.addWidget(&actionHBox, 26);
 
-    buttonVBox.addWidget(VSpacer::create(2));
+    buttonVBox.addWidget(Widget::create<VSpacer>(2).release());
 
     returnButton.setSymbol(gfx->getUIGraphicSurface(UI_ReturnIcon));
     returnButton.setTooltipText(_("Return harvester to refinery (Hotkey: H)"));
     returnButton.setOnClick([this] { onReturn(); });
     commandHBox.addWidget(&returnButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     deployButton.setSymbol(gfx->getUIGraphicSurface(UI_DeployIcon));
     deployButton.setTooltipText(_("Build a new construction yard"));
     deployButton.setOnClick([this] { onDeploy(); });
     commandHBox.addWidget(&deployButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     destructButton.setSymbol(gfx->getUIGraphicSurface(UI_DestructIcon));
     destructButton.setTooltipText(_("Self-destruct this unit"));
     destructButton.setOnClick([this] { onDestruct(); });
     commandHBox.addWidget(&destructButton);
 
-    commandHBox.addWidget(HSpacer::create(2));
+    commandHBox.addWidget(Widget::create<HSpacer>(2).release());
 
     sendToRepairButton.setSymbol(gfx->getUIGraphicSurface(UI_SendToRepairIcon));
     sendToRepairButton.setTooltipText(_("Repair this unit (Hotkey: R)"));
@@ -116,7 +110,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
 
     buttonVBox.addWidget(&commandHBox, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     guardButton.setText(_("Guard"));
     guardButton.setTextColor(color);
@@ -125,7 +119,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     guardButton.setOnClick([this] { setAttackMode(GUARD); });
     buttonVBox.addWidget(&guardButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     areaGuardButton.setText(_("Area Guard"));
     areaGuardButton.setTextColor(color);
@@ -134,7 +128,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     areaGuardButton.setOnClick([this] { setAttackMode(AREAGUARD); });
     buttonVBox.addWidget(&areaGuardButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     stopButton.setText(_("Stop"));
     stopButton.setTextColor(color);
@@ -143,7 +137,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     stopButton.setOnClick([this] { setAttackMode(STOP); });
     buttonVBox.addWidget(&stopButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     ambushButton.setText(_("Ambush"));
     ambushButton.setTextColor(color);
@@ -152,7 +146,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     ambushButton.setOnClick([this] { setAttackMode(AMBUSH); });
     buttonVBox.addWidget(&ambushButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     huntButton.setText(_("Hunt"));
     huntButton.setTextColor(color);
@@ -161,7 +155,7 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     huntButton.setOnClick([this] { setAttackMode(HUNT); });
     buttonVBox.addWidget(&huntButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     retreatButton.setText(_("Retreat"));
     retreatButton.setTextColor(color);
@@ -170,12 +164,12 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     retreatButton.setOnClick([this] { setAttackMode(RETREAT); });
     buttonVBox.addWidget(&retreatButton, 26);
 
-    buttonVBox.addWidget(VSpacer::create(6));
-    buttonVBox.addWidget(Spacer::create());
-    buttonVBox.addWidget(VSpacer::create(6));
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
+    buttonVBox.addWidget(Widget::create<Spacer>().release());
+    buttonVBox.addWidget(Widget::create<VSpacer>(6).release());
 
     mainHBox.addWidget(&buttonVBox);
-    mainHBox.addWidget(HSpacer::create(5));
+    mainHBox.addWidget(Widget::create<HSpacer>(5).release());
 
     update();
 }

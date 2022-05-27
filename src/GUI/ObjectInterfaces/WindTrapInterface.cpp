@@ -23,12 +23,6 @@
 
 #include <House.h>
 
-std::unique_ptr<WindTrapInterface> WindTrapInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<WindTrapInterface> tmp{new WindTrapInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     const Uint32 color = SDL2RGB(
@@ -42,7 +36,7 @@ WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID)
     producedEnergyLabel.setTextFontSize(12);
     producedEnergyLabel.setTextColor(color);
     textVBox.addWidget(&producedEnergyLabel, 0.005);
-    textVBox.addWidget(Spacer::create(), 0.99);
+    textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
 
 bool WindTrapInterface::update() {

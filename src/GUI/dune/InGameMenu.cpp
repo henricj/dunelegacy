@@ -40,25 +40,25 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
 
     InGameMenu::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(22));
+    mainHBox.addWidget(Widget::create<HSpacer>(22).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(22));
+    mainHBox.addWidget(Widget::create<HSpacer>(22).release());
 
-    mainVBox.addWidget(VSpacer::create(34));
+    mainVBox.addWidget(Widget::create<VSpacer>(34).release());
 
     resumeButton.setText(_("Resume Game"));
     resumeButton.setTextColor(color);
     resumeButton.setOnClick([] { onResume(); });
     mainVBox.addWidget(&resumeButton);
 
-    mainVBox.addWidget(VSpacer::create(3));
+    mainVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     saveGameButton.setText(_("Save Game"));
     saveGameButton.setTextColor(color);
     saveGameButton.setOnClick([this] { onSave(); });
     mainVBox.addWidget(&saveGameButton);
 
-    mainVBox.addWidget(VSpacer::create(3));
+    mainVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     loadGameButton.setText(_("Load Game"));
     loadGameButton.setTextColor(color);
@@ -67,7 +67,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
     loadGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&loadGameButton);
 
-    mainVBox.addWidget(VSpacer::create(3));
+    mainVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     gameSettingsButton.setText(_("Game Settings"));
     gameSettingsButton.setTextColor(color);
@@ -76,7 +76,7 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
     gameSettingsButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&gameSettingsButton);
 
-    mainVBox.addWidget(VSpacer::create(3));
+    mainVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     restartGameButton.setText(_("Restart Game"));
     restartGameButton.setTextColor(color);
@@ -85,14 +85,14 @@ InGameMenu::InGameMenu(bool bMultiplayer, int color) : Window(0, 0, 0, 0), bMult
     restartGameButton.setEnabled(!bMultiplayer);
     mainVBox.addWidget(&restartGameButton);
 
-    mainVBox.addWidget(VSpacer::create(3));
+    mainVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     quitButton.setText(_("Quit to Menu"));
     quitButton.setTextColor(color);
     quitButton.setOnClick([this] { onQuit(); });
     mainVBox.addWidget(&quitButton);
 
-    mainVBox.addWidget(VSpacer::create(6));
+    mainVBox.addWidget(Widget::create<VSpacer>(6).release());
 }
 
 InGameMenu::~InGameMenu() = default;

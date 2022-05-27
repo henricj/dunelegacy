@@ -43,16 +43,16 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     PlayerSettingsWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Player Settings"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     mainVBox.addWidget(&centralVBox, 360);
 
@@ -64,7 +64,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         const auto currentColor =
             SDL2RGB(dune::globals::palette[houseToPaletteIndex[static_cast<int>(playerInfo.colorOfHouse)] + 3]);
 
-        centralVBox.addWidget(VSpacer::create(15));
+        centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
         playerWidgets[i].playerCheckbox.setTextColor(currentColor);
         playerWidgets[i].playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
@@ -107,7 +107,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         playerWidgets[i].creditsTextBox.setColor(house, currentColor);
         playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsTextBox, 80);
 
-        playerWidgets[i].playerHBox.addWidget(Spacer::create(), 5.0);
+        playerWidgets[i].playerHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
 
         playerWidgets[i].teamLabel.setText(_("Team") + ":");
         playerWidgets[i].teamLabel.setTextColor(currentColor);
@@ -164,9 +164,9 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         onPlayerCheckbox(i);
     }
 
-    centralVBox.addWidget(Spacer::create());
+    centralVBox.addWidget(Widget::create<Spacer>().release());
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -176,7 +176,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     advancedBasicToggle.setText(_("Advanced..."));
     advancedBasicToggle.setTextColor(color);
@@ -184,7 +184,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     buttonHBox.addWidget(&advancedBasicToggle);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
@@ -192,7 +192,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     buttonHBox.addWidget(&okButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 }
 
 void PlayerSettingsWindow::onCancel() {

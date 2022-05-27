@@ -47,16 +47,16 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     ReinforcementsWindow::setWindowWidget(&mainHBox);
 
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
     mainHBox.addWidget(&mainVBox);
-    mainHBox.addWidget(HSpacer::create(16));
+    mainHBox.addWidget(Widget::create<HSpacer>(16).release());
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
     titleLabel.setText(_("Reinforcements"));
     mainVBox.addWidget(&titleLabel);
 
-    mainVBox.addWidget(VSpacer::create(8));
+    mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
     mainVBox.addWidget(&centralVBox, 360);
 
@@ -66,7 +66,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         _("Reinforcements are brought by a carryall. Multiple reinforcements at the same time are combined."));
     centralVBox.addWidget(&Label_Explanation);
 
-    centralVBox.addWidget(VSpacer::create(4));
+    centralVBox.addWidget(Widget::create<VSpacer>(4).release());
 
     centralVBox.addWidget(&hBox1, 6.0);
 
@@ -74,28 +74,28 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     reinforcementsListBox.setOnSelectionChange([this](auto interactive) { onSelectionChange(interactive); });
     hBox1.addWidget(&reinforcementsListBox, 1.0);
 
-    hBox1.addWidget(HSpacer::create(3));
+    hBox1.addWidget(Widget::create<HSpacer>(3).release());
 
     listEntryUpButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp, house),
                                 gfx->getUIGraphicSurface(UI_MapEditor_ArrowUp_Active, house));
     listEntryUpButton.setTooltipText(_("Move up"));
     listEntryUpButton.setOnClick([this] { onUp(); });
     listControlVBox.addWidget(&listEntryUpButton, 25);
-    listControlVBox.addWidget(VSpacer::create(3));
+    listControlVBox.addWidget(Widget::create<VSpacer>(3).release());
     listEntryDownButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown, house),
                                   gfx->getUIGraphicSurface(UI_MapEditor_ArrowDown_Active, house));
     listEntryDownButton.setTooltipText(_("Move down"));
     listEntryDownButton.setOnClick([this] { onDown(); });
     listControlVBox.addWidget(&listEntryDownButton, 25);
 
-    listControlVBox.addWidget(Spacer::create(), 6.0);
+    listControlVBox.addWidget(Widget::create<Spacer>().release(), 6.0);
 
     addListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Plus, house),
                                  gfx->getUIGraphicSurface(UI_MapEditor_Plus_Active, house));
     addListEntryButton.setTooltipText(_("Add"));
     addListEntryButton.setOnClick([this] { onAdd(); });
     listControlVBox.addWidget(&addListEntryButton, 25);
-    listControlVBox.addWidget(VSpacer::create(3));
+    listControlVBox.addWidget(Widget::create<VSpacer>(3).release());
     removeListEntryButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_Minus, house),
                                     gfx->getUIGraphicSurface(UI_MapEditor_Minus_Active, house));
     removeListEntryButton.setTooltipText(_("Remove"));
@@ -104,7 +104,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     hBox1.addWidget(&listControlVBox, 25);
 
-    centralVBox.addWidget(VSpacer::create(3));
+    centralVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     centralVBox.addWidget(&hBox2);
 
@@ -123,7 +123,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     }
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
-    hBox2.addWidget(HSpacer::create(15));
+    hBox2.addWidget(Widget::create<HSpacer>(15).release());
     unitLabel.setText(_("Unit") + ":");
     unitLabel.setTextColor(color);
     hBox2.addWidget(&unitLabel, 125);
@@ -138,7 +138,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     unitDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&unitDropDownBox);
 
-    centralVBox.addWidget(VSpacer::create(3));
+    centralVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     centralVBox.addWidget(&hBox3);
 
@@ -165,7 +165,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
                                      static_cast<int>(DropLocation::Drop_Homebase));
     dropLocationDropDownBox.setSelectedItem(7);
     hBox3.addWidget(&dropLocationDropDownBox, 120);
-    hBox3.addWidget(HSpacer::create(15));
+    hBox3.addWidget(Widget::create<HSpacer>(15).release());
     timeLabel.setText(_("Time") + " (min):");
     timeLabel.setTextColor(color);
     hBox3.addWidget(&timeLabel, 125);
@@ -173,13 +173,13 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     timeTextBox.setMinMax(0, 999);
     timeTextBox.setOnValueChange([this](auto interactive) { onEntryChange(interactive); });
     hBox3.addWidget(&timeTextBox, 50);
-    hBox3.addWidget(HSpacer::create(12));
+    hBox3.addWidget(Widget::create<HSpacer>(12).release());
     repeatCheckbox.setText(_("Repeat"));
     repeatCheckbox.setTextColor(color);
     repeatCheckbox.setOnClick([this] { onEntryChange(true); });
     hBox3.addWidget(&repeatCheckbox);
 
-    mainVBox.addWidget(VSpacer::create(5));
+    mainVBox.addWidget(Widget::create<VSpacer>(5).release());
 
     mainVBox.addWidget(&buttonHBox);
 
@@ -189,11 +189,11 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     buttonHBox.addWidget(&cancelButton);
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
-    buttonHBox.addWidget(Spacer::create());
+    buttonHBox.addWidget(Widget::create<Spacer>().release());
 
-    buttonHBox.addWidget(HSpacer::create(8));
+    buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     okButton.setText(_("OK"));
     okButton.setTextColor(color);
@@ -201,7 +201,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     buttonHBox.addWidget(&okButton);
 
-    mainVBox.addWidget(VSpacer::create(10));
+    mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
     // setup reinforcements listbox
     for (const ReinforcementInfo& reinforcement : reinforcements) {

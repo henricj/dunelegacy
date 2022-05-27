@@ -20,122 +20,70 @@
 
 #include "Widget.h"
 
-#include <iostream>
-
 /// A variable spacer class. This spacer fills in between widgets
 class Spacer final : public Widget {
 public:
     /// default constructor
-    Spacer() : Widget() { Spacer::enableResizing(true, true); }
+    Spacer();
 
     /// destructor
-    ~Spacer() override = default;
+    ~Spacer() override;
 
     /**
         Returns the minimum size of this spacer. That is (0,0).
         \return the minimum size of this widget
     */
-    [[nodiscard]] Point getMinimumSize() const override { return {0, 0}; }
-
-    /**
-        This static method creates a dynamic spacer object.
-        The idea behind this method is to simply create a new spacer on the fly and
-        add it to a container. If the container gets destroyed also this spacer will be freed.
-        \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
-    */
-    static Spacer* create() {
-        Spacer* sp      = new Spacer();
-        sp->pAllocated_ = true;
-        return sp;
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 };
 
 /// A horizontal fixed-size spacer class
 class HSpacer final : public Widget {
 public:
     /// default constructor
-    HSpacer() : Widget(), width{} {
-        HSpacer::resize(0, 0);
-        HSpacer::enableResizing(false, false);
-    }
+    HSpacer();
 
     /**
         Constructor.
         \param width    Width of this spacer.
     */
-    explicit HSpacer(uint32_t width) : Widget(), width{width} {
-        HSpacer::resize(width, 0);
-        HSpacer::enableResizing(false, false);
-    }
+    explicit HSpacer(int32_t width);
 
     /// destructor
-    ~HSpacer() override = default;
+    ~HSpacer() override;
 
     /**
         Returns the minimum size of this spacer. The returned size is (width,0).
         \return the minimum size of this spacer
     */
-    [[nodiscard]] Point getMinimumSize() const override { return Point(width, 0); }
-
-    /**
-        This static method creates a dynamic horizontal spacer object.
-        The idea behind this method is to simply create a new spacer on the fly and
-        add it to a container. If the container gets destroyed also this spacer will be freed.
-        \param width width of this spacer
-        \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
-    */
-    static HSpacer* create(uint32_t width) {
-        HSpacer* sp     = new HSpacer(width);
-        sp->pAllocated_ = true;
-        return sp;
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
 private:
-    uint32_t width; ///< width of this spacer
+    int32_t width_{}; ///< width of this spacer
 };
 
 /// A vertical fixed-size spacer class
 class VSpacer final : public Widget {
 public:
     /// default constructor
-    VSpacer() : Widget(), height{} {
-        VSpacer::resize(0, 0);
-        VSpacer::enableResizing(false, false);
-    }
+    VSpacer();
 
     /**
         Constructor.
         \param height   Height of this spacer.
     */
-    explicit VSpacer(uint32_t height) : Widget(), height{height} {
-        VSpacer::resize(0, height);
-        VSpacer::enableResizing(false, false);
-    }
+    explicit VSpacer(int32_t height);
 
     /// destructor
-    ~VSpacer() override = default;
+    ~VSpacer() override;
 
     /**
         Returns the minimum size of this spacer. The returned size is (0,height).
         \return the minimum size of this spacer
     */
-    [[nodiscard]] Point getMinimumSize() const override { return Point(0, height); }
-
-    /**
-        This static method creates a dynamic vertical spacer object.
-        The idea behind this method is to simply create a new spacer on the fly and
-        add it to a container. If the container gets destroyed also this spacer will be freed.
-        \param height height of this spacer
-        \return The new created spacer (will be automatically destroyed when it's parent widget is destroyed)
-    */
-    static VSpacer* create(uint32_t height) {
-        VSpacer* sp     = new VSpacer(height);
-        sp->pAllocated_ = true;
-        return sp;
-    }
+    [[nodiscard]] Point getMinimumSize() const override;
 
 private:
-    uint32_t height; ///< height of this spacer
+    int32_t height_{}; ///< height of this spacer
 };
 
 #endif // SPACER_H

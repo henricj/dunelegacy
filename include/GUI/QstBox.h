@@ -141,24 +141,24 @@ private:
     void
     init(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus) {
         setWindowWidget(&vbox);
-        vbox.addWidget(VSpacer::create(6));
+        vbox.addWidget(Widget::create<VSpacer>(6).release());
         vbox.addWidget(&textLabel);
-        vbox.addWidget(VSpacer::create(3));
+        vbox.addWidget(Widget::create<VSpacer>(3).release());
         vbox.addWidget(&hbox);
-        vbox.addWidget(VSpacer::create(6));
-        hbox.addWidget(Spacer::create(), 0.2);
+        vbox.addWidget(Widget::create<VSpacer>(6).release());
+        hbox.addWidget(Widget::create<Spacer>().release(), 0.2);
         hbox.addWidget(&vbox2, 0.6);
-        vbox2.addWidget(VSpacer::create(4));
+        vbox2.addWidget(Widget::create<VSpacer>(4).release());
         button1.setText(button1Text);
         button1.setOnClick([this] { onButton(QSTBOX_BUTTON1); });
         hbox2.addWidget(&button1);
-        hbox2.addWidget(HSpacer::create(6));
+        hbox2.addWidget(Widget::create<HSpacer>(6).release());
         button2.setText(button2Text);
         button2.setOnClick([this] { onButton(QSTBOX_BUTTON2); });
         hbox2.addWidget(&button2);
         vbox2.addWidget(&hbox2);
-        vbox2.addWidget(VSpacer::create(4));
-        hbox.addWidget(Spacer::create(), 0.2);
+        vbox2.addWidget(Widget::create<VSpacer>(4).release());
+        hbox.addWidget(Widget::create<Spacer>().release(), 0.2);
         setText(text);
         textLabel.setAlignment(Alignment_HCenter);
 
