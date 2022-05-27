@@ -1,6 +1,6 @@
 message(STATUS "Configuring Clang/GCC")
 
-add_compile_options(-Wall)
+set(DUNE_TARGET_COMPILE_FLAGS "-Wall" CACHE STRING "Dune compiler flags (not applied to external/*)")
 
 set(DUNE_TARGET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR} CACHE STRING "Target processor architecture")
 set_property(CACHE DUNE_TARGET_ARCHITECTURE PROPERTY STRINGS x64 x86 arm64)
