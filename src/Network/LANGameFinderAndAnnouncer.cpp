@@ -110,6 +110,29 @@ LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
     enet_socket_destroy(announceSocket);
 }
 
+void LANGameFinderAndAnnouncer::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
+                                              uint8_t numPlayers, uint8_t maxPlayers) {
+    this->serverName = serverName;
+    this->serverPort = serverPort;
+    this->mapName    = mapName;
+    this->numPlayers = numPlayers;
+    this->maxPlayers = maxPlayers;
+    lastAnnounce     = dune::dune_clock::now();
+}
+
+void LANGameFinderAndAnnouncer::updateAnnounce(uint8_t numPlayers) {
+    this->numPlayers = numPlayers;
+    if (serverPort > 0) {
+        announceGame();
+    }
+}
+
+void LANGameFinderAndAnnouncer::stopAnnounce() {
+    sendRemoveGameAnnouncement();
+    serverName.clear();
+    serverPort = 0;
+}
+
 void LANGameFinderAndAnnouncer::update() {
     if (serverPort > 0) {
         if (dune::dune_clock::now() - lastAnnounce > LANGAME_ANNOUNCER_INTERVAL) {

@@ -34,33 +34,22 @@ inline constexpr auto LANGAME_ANNOUNCER_MAXGAMENAMESIZE    = 32;
 inline constexpr auto LANGAME_ANNOUNCER_MAXGAMEVERSIONSIZE = 32;
 inline constexpr auto LANGAME_ANNOUNCER_MAXMAPNAMESIZE     = 64;
 
-class LANGameFinderAndAnnouncer {
+class LANGameFinderAndAnnouncer final {
 public:
     LANGameFinderAndAnnouncer();
     ~LANGameFinderAndAnnouncer();
 
+    LANGameFinderAndAnnouncer(const LANGameFinderAndAnnouncer&)            = delete;
+    LANGameFinderAndAnnouncer(LANGameFinderAndAnnouncer&&)                 = delete;
+    LANGameFinderAndAnnouncer& operator=(const LANGameFinderAndAnnouncer&) = delete;
+    LANGameFinderAndAnnouncer& operator=(LANGameFinderAndAnnouncer&&)      = delete;
+
     void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
-                       uint8_t maxPlayers) {
-        this->serverName = serverName;
-        this->serverPort = serverPort;
-        this->mapName    = mapName;
-        this->numPlayers = numPlayers;
-        this->maxPlayers = maxPlayers;
-        lastAnnounce     = dune::dune_clock::now();
-    }
+                       uint8_t maxPlayers);
 
-    void updateAnnounce(uint8_t numPlayers) {
-        this->numPlayers = numPlayers;
-        if (serverPort > 0) {
-            announceGame();
-        }
-    }
+    void updateAnnounce(uint8_t numPlayers);
 
-    void stopAnnounce() {
-        sendRemoveGameAnnouncement();
-        serverName = "";
-        serverPort = 0;
-    }
+    void stopAnnounce();
 
     void update();
 
