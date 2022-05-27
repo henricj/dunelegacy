@@ -73,7 +73,7 @@ public:
        Alignment_Top or Alignment_Bottom)
     */
     virtual void setAlignment(Alignment_Enum alignment) {
-        this->alignment = alignment;
+        this->alignment_ = alignment;
         invalidateTextures();
     }
 
@@ -82,7 +82,7 @@ public:
         \return Combination of (Alignment_HCenter, Alignment_Left or Alignment_Right) and (Alignment_VCenter,
        Alignment_Top or Alignment_Bottom)
     */
-    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment; }
+    [[nodiscard]] virtual Alignment_Enum getAlignment() const { return alignment_; }
 
     /**
         This method sets a new text for this label and resizes this label
@@ -90,8 +90,8 @@ public:
         \param  text The new text for this button
     */
     virtual void setText(std::string_view text) {
-        if (text != this->text) {
-            this->text = text;
+        if (text != this->text_) {
+            this->text_ = text;
             resizeAll();
         }
     }
@@ -100,7 +100,7 @@ public:
         Get the text of this label.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const { return text; }
+    [[nodiscard]] const std::string& getText() const { return text_; }
 
     /**
         This method resizes the label to width and height. This method should only
@@ -157,9 +157,9 @@ private:
     Uint32 textcolor       = COLOR_DEFAULT;     ///< the text color
     Uint32 textshadowcolor = COLOR_DEFAULT;     ///< the color of the shadow of the text
     Uint32 backgroundcolor = COLOR_TRANSPARENT; ///< the color of the label background
-    std::string text;                           ///< the text of this label
-    DuneTextureOwned pTexture;                  ///< the texture of this label
-    Alignment_Enum alignment =
+    std::string text_;                          ///< the text of this label
+    DuneTextureOwned pTexture_;                 ///< the texture of this label
+    Alignment_Enum alignment_ =
         static_cast<Alignment_Enum>(Alignment_Left | Alignment_VCenter); ///< the alignment of this label
 };
 

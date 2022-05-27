@@ -29,8 +29,8 @@ Checkbox::~Checkbox() {
 }
 
 void Checkbox::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
-    this->textcolor       = textcolor;
-    this->textshadowcolor = textshadowcolor;
+    this->text_color_        = textcolor;
+    this->text_shadow_color_ = textshadowcolor;
     invalidateTextures();
 }
 
@@ -43,8 +43,8 @@ void Checkbox::draw(Point position) {
 
     DuneTexture tex;
     if (isChecked()) {
-        if ((isActive() || bHover) && pCheckedActiveTexture) {
-            tex = pCheckedActiveTexture.as_dune_texture();
+        if ((isActive() || bHover) && pCheckedActiveTexture_) {
+            tex = pCheckedActiveTexture_.as_dune_texture();
         } else {
             tex = *pPressedTexture;
         }
@@ -78,20 +78,21 @@ void Checkbox::updateTextures() {
 
         const auto size = getSize();
 
-        setTextures(gui.createCheckboxSurface(size.x, size.y, text, false, false, textcolor, textshadowcolor)
+        setTextures(gui.createCheckboxSurface(size.x, size.y, text_, false, false, text_color_, text_shadow_color_)
                         .createTexture(renderer),
-                    gui.createCheckboxSurface(size.x, size.y, text, true, false, textcolor, textshadowcolor)
+                    gui.createCheckboxSurface(size.x, size.y, text_, true, false, text_color_, text_shadow_color_)
                         .createTexture(renderer),
-                    gui.createCheckboxSurface(size.x, size.y, text, false, true, textcolor, textshadowcolor)
+                    gui.createCheckboxSurface(size.x, size.y, text_, false, true, text_color_, text_shadow_color_)
                         .createTexture(renderer));
 
-        pCheckedActiveTexture = gui.createCheckboxSurface(size.x, size.y, text, true, true, textcolor, textshadowcolor)
-                                    .createTexture(renderer);
+        pCheckedActiveTexture_ =
+            gui.createCheckboxSurface(size.x, size.y, text_, true, true, text_color_, text_shadow_color_)
+                .createTexture(renderer);
     }
 }
 
 void Checkbox::invalidateTextures() {
-    pCheckedActiveTexture.reset();
+    pCheckedActiveTexture_.reset();
 
     parent::invalidateTextures();
 }

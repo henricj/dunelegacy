@@ -172,7 +172,7 @@ public:
 
     void handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) override;
 
-    void doRepair(const GameContext& context) noexcept override { }
+    void doRepair([[maybe_unused]] const GameContext& context) noexcept override { }
 
     /**
         Is this object in a range we are guarding. If yes we shall react.
@@ -236,7 +236,7 @@ public:
         \param  terrainType the type to consider
         \return Returns a speed factor. Higher values mean slower.
     */
-    virtual FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const { return 1; }
+    virtual FixPoint getTerrainDifficulty([[maybe_unused]] TERRAINTYPE terrainType) const { return 1; }
 
     virtual ANGLETYPE getCurrentAttackAngle() const;
 

@@ -22,58 +22,58 @@
 
 #include <chrono>
 
-ListBox::ListBox() : color(COLOR_DEFAULT) {
+ListBox::ListBox() : color_(COLOR_DEFAULT) {
     ListBox::enableResizing(true, true);
 
-    scrollbar.setOnChange([this] { onScrollbarChange(); });
+    scrollbar_.setOnChange([this] { onScrollbarChange(); });
     resize(ListBox::getMinimumSize().x, ListBox::getMinimumSize().y);
 }
 
 ListBox::~ListBox() = default;
 
 void ListBox::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
-    scrollbar.handleMouseMovement(x - getSize().x + scrollbar.getSize().x, y, insideOverlay);
+    scrollbar_.handleMouseMovement(x - getSize().x + scrollbar_.getSize().x, y, insideOverlay);
 }
 
 bool ListBox::handleMouseLeft(int32_t x, int32_t y, bool pressed) {
     using namespace std::chrono_literals;
 
-    const int scrollbarWidth = isScrollbarVisible() ? scrollbar.getSize().x : 0;
+    const int scrollbarWidth = isScrollbarVisible() ? scrollbar_.getSize().x : 0;
 
     if (x >= 0 && x < getSize().x - scrollbarWidth && y >= 0 && y < getSize().y) {
 
         if (pressed) {
-            const int index = (y - 1) / GUIStyle::getInstance().getListBoxEntryHeight() + firstVisibleElement;
+            const int index = (y - 1) / GUIStyle::getInstance().getListBoxEntryHeight() + firstVisibleElement_;
             if (index >= 0 && index < getNumEntries()) {
-                selectedElement = index;
+                selectedElement_ = index;
 
-                if (dune::dune_clock::now() - lastClickTime < 200ms) {
-                    if (pOnDoubleClick) {
-                        pOnDoubleClick();
+                if (dune::dune_clock::now() - lastClickTime_ < 200ms) {
+                    if (pOnDoubleClick_) {
+                        pOnDoubleClick_();
                     }
                 } else {
-                    lastClickTime = dune::dune_clock::now();
+                    lastClickTime_ = dune::dune_clock::now();
                     updateList();
-                    if (pOnSingleClick) {
-                        pOnSingleClick();
+                    if (pOnSingleClick_) {
+                        pOnSingleClick_();
                     }
-                    if (pOnSelectionChange) {
-                        pOnSelectionChange(true);
+                    if (pOnSelectionChange_) {
+                        pOnSelectionChange_(true);
                     }
                     setActive();
                 }
             }
         }
 
-        scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
+        scrollbar_.handleMouseLeft(x - getSize().x + scrollbar_.getSize().x, y, pressed);
         return true;
     }
-    return scrollbar.handleMouseLeft(x - getSize().x + scrollbar.getSize().x, y, pressed);
+    return scrollbar_.handleMouseLeft(x - getSize().x + scrollbar_.getSize().x, y, pressed);
 }
 
 bool ListBox::handleMouseWheel(int32_t x, int32_t y, bool up) {
     // forward mouse wheel event to scrollbar
-    return scrollbar.handleMouseWheel(0, 0, up);
+    return scrollbar_.handleMouseWheel(0, 0, up);
 }
 
 bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
@@ -81,14 +81,14 @@ bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
     if (isActive()) {
         switch (key.keysym.sym) {
             case SDLK_UP: {
-                if (selectedElement > 0) {
-                    setSelectedItem(selectedElement - 1, true);
+                if (selectedElement_ > 0) {
+                    setSelectedItem(selectedElement_ - 1, true);
                 }
             } break;
 
             case SDLK_DOWN: {
-                if (selectedElement < getNumEntries() - 1) {
-                    setSelectedItem(selectedElement + 1, true);
+                if (selectedElement_ < getNumEntries() - 1) {
+                    setSelectedItem(selectedElement_ + 1, true);
                 }
             } break;
 
@@ -96,9 +96,9 @@ bool ListBox::handleKeyPress(const SDL_KeyboardEvent& key) {
             } break;
         }
 
-        scrollbar.handleKeyPress(key);
+        scrollbar_.handleKeyPress(key);
     }
-    scrollbar.handleKeyPress(key);
+    scrollbar_.handleKeyPress(key);
     return true;
 }
 
@@ -111,24 +111,24 @@ void ListBox::draw(Point position) {
 
     auto* const renderer = dune::globals::renderer.get();
 
-    if (pBackground)
-        pBackground.draw(renderer, position.x, position.y);
+    if (pBackground_)
+        pBackground_.draw(renderer, position.x, position.y);
 
-    if (pForeground)
-        pForeground.draw(renderer, position.x + 2, position.y + 1);
+    if (pForeground_)
+        pForeground_.draw(renderer, position.x + 2, position.y + 1);
 
     Point ScrollBarPos = position;
-    ScrollBarPos.x += getSize().x - scrollbar.getSize().x;
+    ScrollBarPos.x += getSize().x - scrollbar_.getSize().x;
 
     if (isScrollbarVisible()) {
-        scrollbar.draw(ScrollBarPos);
+        scrollbar_.draw(ScrollBarPos);
     }
 }
 
 void ListBox::resize(uint32_t width, uint32_t height) {
     parent::resize(width, height);
 
-    scrollbar.resize(scrollbar.getMinimumSize().x, height);
+    scrollbar_.resize(scrollbar_.getMinimumSize().x, height);
 
     updateList();
 }
@@ -136,45 +136,45 @@ void ListBox::resize(uint32_t width, uint32_t height) {
 void ListBox::setActive() {
     parent::setActive();
 
-    if (selectedElement == -1 && getNumEntries() > 0) {
-        selectedElement = 0;
+    if (selectedElement_ == -1 && getNumEntries() > 0) {
+        selectedElement_ = 0;
         updateList();
-        if (pOnSelectionChange) {
-            pOnSelectionChange(false);
+        if (pOnSelectionChange_) {
+            pOnSelectionChange_(false);
         }
     }
 }
 
 void ListBox::setSelectedItem(int index, bool bInteractive) {
-    const bool bChanged = index != selectedElement;
+    const bool bChanged = index != selectedElement_;
 
     if (index <= -1) {
-        selectedElement = -1;
+        selectedElement_ = -1;
         updateList();
     } else if (index >= 0 && index < getNumEntries()) {
-        selectedElement = index;
+        selectedElement_ = index;
 
         const auto& gui = GUIStyle::getInstance();
 
         const int numVisibleElements = (getSize().y - 2) / gui.getListBoxEntryHeight() + 1;
 
-        if (selectedElement >= firstVisibleElement + numVisibleElements - 1) {
-            firstVisibleElement = selectedElement - (numVisibleElements - 1) + 1;
-        } else if (selectedElement < firstVisibleElement) {
-            firstVisibleElement = selectedElement;
+        if (selectedElement_ >= firstVisibleElement_ + numVisibleElements - 1) {
+            firstVisibleElement_ = selectedElement_ - (numVisibleElements - 1) + 1;
+        } else if (selectedElement_ < firstVisibleElement_) {
+            firstVisibleElement_ = selectedElement_;
         }
 
-        if (firstVisibleElement > getNumEntries() - numVisibleElements) {
-            firstVisibleElement = std::max(0, getNumEntries() - numVisibleElements + 1);
+        if (firstVisibleElement_ > getNumEntries() - numVisibleElements) {
+            firstVisibleElement_ = std::max(0, getNumEntries() - numVisibleElements + 1);
         }
 
-        scrollbar.setCurrentValue(firstVisibleElement);
+        scrollbar_.setCurrentValue(firstVisibleElement_);
 
         updateList();
     }
 
-    if (bChanged && pOnSelectionChange) {
-        pOnSelectionChange(bInteractive);
+    if (bChanged && pOnSelectionChange_) {
+        pOnSelectionChange_(bInteractive);
     }
 }
 
@@ -183,10 +183,11 @@ void ListBox::updateTextures() {
 
     const auto& gui = GUIStyle::getInstance();
 
-    if (!pBackground)
-        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(dune::globals::renderer.get());
+    if (!pBackground_)
+        pBackground_ =
+            gui.createWidgetBackground(getSize().x, getSize().y).createTexture(dune::globals::renderer.get());
 
-    if (!pForeground) {
+    if (!pForeground_) {
         const auto scale = gui.getActualScale();
 
         // create surfaces
@@ -209,27 +210,27 @@ void ListBox::updateTextures() {
         const auto scaled_entry_height = static_cast<int>(std::ceil(static_cast<float>(entry_height) * scale));
 
         const auto numVisibleElements = surfaceHeight / static_cast<int>(entry_height);
-        for (int i = firstVisibleElement; i < firstVisibleElement + numVisibleElements; ++i) {
+        for (int i = firstVisibleElement_; i < firstVisibleElement_ + numVisibleElements; ++i) {
             if (i >= getNumEntries())
                 break;
 
             auto pSurface = gui.createListBoxEntry(scaled_width, getEntry(i),
-                                                   bHighlightSelectedElement && i == selectedElement, color);
+                                                   bHighlightSelectedElement_ && i == selectedElement_, color_);
 
-            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement) * scaled_entry_height);
+            SDL_Rect dest = calcDrawingRect(pSurface.get(), 0, (i - firstVisibleElement_) * scaled_entry_height);
             SDL_BlitSurface(pSurface.get(), nullptr, pForegroundSurface.get(), &dest);
         }
 
         auto texture = convertSurfaceToTexture(std::move(pForegroundSurface));
 
-        pForeground =
+        pForeground_ =
             DuneTextureOwned{std::move(texture), static_cast<float>(surfaceWidth), static_cast<float>(surfaceHeight)};
     }
 }
 
 void ListBox::invalidateTextures() {
-    pBackground.reset();
-    pForeground.reset();
+    pBackground_.reset();
+    pForeground_.reset();
 
     parent::invalidateTextures();
 }
@@ -247,6 +248,6 @@ void ListBox::updateList() {
 
     const auto numVisibleElements = surfaceHeight / gui.getListBoxEntryHeight();
 
-    scrollbar.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
-    scrollbar.setBigStepSize(std::max(1, numVisibleElements - 1));
+    scrollbar_.setRange(0, std::max(0, getNumEntries() - numVisibleElements));
+    scrollbar_.setBigStepSize(std::max(1, numVisibleElements - 1));
 }

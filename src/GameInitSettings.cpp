@@ -112,7 +112,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeString(reinterpret_cast<const char*>(filename.u8string().c_str()));
     stream.writeString(filedata);
 
-    stream.writeUint8(mission);
+    stream.writeUint8(static_cast<Uint8>(mission));
     stream.writeUint32(alreadyPlayedRegions);
     stream.writeUint32(alreadyShownTutorialHints);
     stream.writeUint8Vector(randomSeed);
@@ -158,8 +158,8 @@ std::string GameInitSettings::getScenarioFilename(HOUSETYPE newHouse, int missio
     std::string name = "SCEN?0??.INI";
     name[4]          = houseChar[static_cast<int>(newHouse)];
 
-    name[6] = '0' + (mission / 10);
-    name[7] = '0' + (mission % 10);
+    name[6] = static_cast<char>('0' + (mission / 10));
+    name[7] = static_cast<char>('0' + (mission % 10));
 
     return name;
 }

@@ -27,8 +27,8 @@
 
 ScreenBorder::ScreenBorder(const SDL_FRect& gameBoardRect) : gameBoardRect(gameBoardRect) {
 
-    bottomRightCorner.x         = gameBoardRect.w;
-    bottomRightCorner.y         = gameBoardRect.h;
+    bottomRightCorner.x         = static_cast<int>(std::ceil(gameBoardRect.w));
+    bottomRightCorner.y         = static_cast<int>(std::ceil(gameBoardRect.h));
     topLeftCornerOnScreen.x     = gameBoardRect.x;
     topLeftCornerOnScreen.y     = gameBoardRect.y;
     bottomRightCornerOnScreen.x = gameBoardRect.x + gameBoardRect.w;
@@ -47,8 +47,8 @@ void ScreenBorder::load(InputStream& stream) {
 
 void ScreenBorder::save(OutputStream& stream) const {
     const auto center = getCurrentCenter();
-    stream.writeSint16(center.x);
-    stream.writeSint16(center.y);
+    stream.writeSint16(static_cast<Sint16>(center.x));
+    stream.writeSint16(static_cast<Sint16>(center.y));
 }
 
 void ScreenBorder::setNewScreenCenter(const Coord& newPosition) {

@@ -113,13 +113,13 @@ public:
             return;
         }
 
-        this->minValue = minValue;
-        this->maxValue = maxValue;
+        this->minValue_ = minValue;
+        this->maxValue_ = maxValue;
 
-        if (currentValue < minValue) {
-            currentValue = minValue;
-        } else if (currentValue > maxValue) {
-            currentValue = maxValue;
+        if (currentValue_ < minValue) {
+            currentValue_ = minValue;
+        } else if (currentValue_ > maxValue) {
+            currentValue_ = maxValue;
         }
 
         updateSliderButton();
@@ -129,13 +129,13 @@ public:
         Gets the range start of this ScrollBar.
         \return the start value of the range
     */
-    [[nodiscard]] [[nodiscard]] int getRangeMin() const noexcept { return minValue; }
+    [[nodiscard]] [[nodiscard]] int getRangeMin() const noexcept { return minValue_; }
 
     /**
         Gets the range end of this ScrollBar.
         \return the end value of the range
     */
-    [[nodiscard]] [[nodiscard]] int getRangeMax() const noexcept { return maxValue; }
+    [[nodiscard]] [[nodiscard]] int getRangeMax() const noexcept { return maxValue_; }
 
     /**
         Sets the big step size that is used when clicking between the arrows and the slider.
@@ -143,7 +143,7 @@ public:
         \param  stepSize    the new step size to advance scollbar when clicking inbetween
     */
     void setBigStepSize(int stepSize) {
-        bigStepSize = stepSize;
+        bigStepSize_ = stepSize;
         updateSliderButton();
     }
 
@@ -151,24 +151,24 @@ public:
         Returns the current position
         \return the current value
     */
-    [[nodiscard]] [[nodiscard]] int getCurrentValue() const noexcept { return currentValue; }
+    [[nodiscard]] [[nodiscard]] int getCurrentValue() const noexcept { return currentValue_; }
 
     /**
         Sets the current position. Should be in range
         \param newValue the new position
     */
     void setCurrentValue(int newValue) {
-        currentValue = newValue;
-        if (currentValue < minValue) {
-            currentValue = minValue;
-        } else if (currentValue > maxValue) {
-            currentValue = maxValue;
+        currentValue_ = newValue;
+        if (currentValue_ < minValue_) {
+            currentValue_ = minValue_;
+        } else if (currentValue_ > maxValue_) {
+            currentValue_ = maxValue_;
         }
 
         updateSliderButton();
 
-        if (pOnChange) {
-            pOnChange();
+        if (pOnChange_) {
+            pOnChange_();
         }
     }
 
@@ -176,14 +176,14 @@ public:
         Sets the function that should be called when this scroll bar changes its position.
         \param  pOnChange   A function to be called on change
     */
-    void setOnChange(std::function<void()> pOnChange) { this->pOnChange = pOnChange; }
+    void setOnChange(std::function<void()> pOnChange) { this->pOnChange_ = pOnChange; }
 
     /**
         Sets the color for this scrollbar.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
     virtual void setColor(uint32_t color) {
-        this->color = color;
+        this->color_ = color;
         updateArrowButtonSurface();
     }
 
@@ -196,20 +196,20 @@ protected:
     void updateTextures() override {
         parent::updateTextures();
 
-        if (pBackground)
+        if (pBackground_)
             return;
 
         const auto& gui      = GUIStyle::getInstance();
         auto* const renderer = dune::globals::renderer.get();
 
-        pBackground = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
+        pBackground_ = gui.createWidgetBackground(getSize().x, getSize().y).createTexture(renderer);
     }
 
     /**
         This method frees all textures that are used by this scrollbar
     */
     void invalidateTextures() override {
-        pBackground.reset();
+        pBackground_.reset();
 
         parent::invalidateTextures();
     }
@@ -219,27 +219,27 @@ private:
 
     void updateArrowButtonSurface();
 
-    void onArrow1() { setCurrentValue(currentValue - 1); }
+    void onArrow1() { setCurrentValue(currentValue_ - 1); }
 
-    void onArrow2() { setCurrentValue(currentValue + 1); }
+    void onArrow2() { setCurrentValue(currentValue_ + 1); }
 
-    DuneTextureOwned pBackground;
-    PictureButton arrow1;
-    PictureButton arrow2;
-    TextButton sliderButton;
+    DuneTextureOwned pBackground_;
+    PictureButton arrow1_;
+    PictureButton arrow2_;
+    TextButton sliderButton_;
 
-    std::function<void()> pOnChange; ///< function that is called when this scrollbar changes its position
+    std::function<void()> pOnChange_; ///< function that is called when this scrollbar changes its position
 
-    int currentValue = 1;
-    int minValue     = 1;
-    int maxValue     = 1;
-    int bigStepSize  = 10; ///< the step size when clicking between the arrows and the slider
-    Point sliderPosition;
+    int currentValue_ = 1;
+    int minValue_     = 1;
+    int maxValue_     = 1;
+    int bigStepSize_  = 10; ///< the step size when clicking between the arrows and the slider
+    Point sliderPosition_;
 
-    bool bDragSlider              = false;
-    int dragPositionFromSliderTop = false;
+    bool bDragSlider_              = false;
+    int dragPositionFromSliderTop_ = false;
 
-    uint32_t color; ///< the color
+    uint32_t color_; ///< the color
 };
 
 #endif // SCROLLBAR_H

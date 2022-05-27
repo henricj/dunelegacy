@@ -40,11 +40,11 @@ Point Label::getMinimumSize() const {
     size_t nextpos  = 0;
     std::vector<std::string_view> hardLines;
     do {
-        nextpos = text.find('\n', startpos);
+        nextpos = text_.find('\n', startpos);
         if (nextpos == std::string::npos) {
-            hardLines.emplace_back(text.data() + startpos, text.length() - startpos);
+            hardLines.emplace_back(text_.data() + startpos, text_.length() - startpos);
         } else {
-            hardLines.emplace_back(text.data() + startpos, nextpos - startpos);
+            hardLines.emplace_back(text_.data() + startpos, nextpos - startpos);
             startpos = nextpos + 1;
         }
     } while (nextpos != std::string::npos);
@@ -67,15 +67,15 @@ void Label::draw(Point position) {
 
     updateTextures();
 
-    if (!pTexture)
+    if (!pTexture_)
         return;
 
     const auto size = getSize();
 
-    const auto x = static_cast<float>(position.x) + (static_cast<float>(size.x) - pTexture.width_) / 2;
-    const auto y = static_cast<float>(position.y) + (static_cast<float>(size.y) - pTexture.height_) / 2;
+    const auto x = static_cast<float>(position.x) + (static_cast<float>(size.x) - pTexture_.width_) / 2;
+    const auto y = static_cast<float>(position.y) + (static_cast<float>(size.y) - pTexture_.height_) / 2;
 
-    pTexture.draw(dune::globals::renderer.get(), x, y);
+    pTexture_.draw(dune::globals::renderer.get(), x, y);
 }
 
 std::unique_ptr<Label>
@@ -90,7 +90,7 @@ Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor,
 void Label::updateTextures() {
     parent::updateTextures();
 
-    if (pTexture)
+    if (pTexture_)
         return;
 
     const auto& gui      = GUIStyle::getInstance();
@@ -99,16 +99,16 @@ void Label::updateTextures() {
     const auto size = getSize();
 
     const auto textLines =
-        greedyWordWrap(text, static_cast<float>(size.x), [&gui, font = fontSize](std::string_view tmp) {
+        greedyWordWrap(text_, static_cast<float>(size.x), [&gui, font = fontSize](std::string_view tmp) {
             return static_cast<float>(gui.getMinimumLabelSize(tmp, font).x) - 4.f;
         });
 
-    pTexture = gui.createLabel(renderer, size.x, size.y, textLines, fontSize, alignment, textcolor, textshadowcolor,
-                               backgroundcolor);
+    pTexture_ = gui.createLabel(renderer, size.x, size.y, textLines, fontSize, alignment_, textcolor, textshadowcolor,
+                                backgroundcolor);
 }
 
 void Label::invalidateTextures() {
-    pTexture = DuneTextureOwned();
+    pTexture_ = DuneTextureOwned();
 
     parent::invalidateTextures();
 }

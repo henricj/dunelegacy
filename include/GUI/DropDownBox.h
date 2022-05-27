@@ -128,7 +128,7 @@ public:
         \return the minimum size of this scroll bar
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        return Point(listBox.getMinimumSize().x, openListBoxButton.getSize().y + 2);
+        return {listBox.getMinimumSize().x, openListBoxButton.getSize().y + 2};
     }
 
     /**

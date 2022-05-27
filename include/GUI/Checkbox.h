@@ -40,7 +40,7 @@ public:
         \param  text The new text for this checkbox
     */
     virtual void setText(const std::string& text) {
-        this->text = text;
+        this->text_ = text;
         resizeAll();
     }
 
@@ -48,7 +48,7 @@ public:
         Get the text of this checkbox.
         \return the text of this checkbox
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; }
+    [[nodiscard]] const std::string& getText() const noexcept { return text_; }
 
     /**
         Sets the text color for this checkbox.
@@ -90,7 +90,9 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override { return GUIStyle::getInstance().getMinimumCheckboxSize(text); }
+    [[nodiscard]] Point getMinimumSize() const override {
+        return GUIStyle::getInstance().getMinimumCheckboxSize(text_);
+    }
 
 protected:
     /**
@@ -106,11 +108,11 @@ protected:
     void invalidateTextures() override;
 
 private:
-    uint32_t textcolor{COLOR_DEFAULT};       ///< Text color
-    uint32_t textshadowcolor{COLOR_DEFAULT}; ///< Text shadow color
-    std::string text;                        ///< Text of this checkbox
+    uint32_t text_color_{COLOR_DEFAULT};        ///< Text color
+    uint32_t text_shadow_color_{COLOR_DEFAULT}; ///< Text shadow color
+    std::string text_;                          ///< Text of this checkbox
     DuneTextureOwned
-        pCheckedActiveTexture; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
+        pCheckedActiveTexture_; ///< Texture that is shown when the checkbox is activated by keyboard or by mouse hover
 };
 
 #endif // CHECKBOX_H

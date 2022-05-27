@@ -23,8 +23,7 @@
 class VBox_WidgetData {
 public:
     VBox_WidgetData() = default;
-    VBox_WidgetData(Widget* _pWidget, int32_t _fixedHeight)
-        : pWidget(_pWidget), fixedHeight(_fixedHeight), weight(0.0) { }
+    VBox_WidgetData(Widget* _pWidget, int32_t _fixedHeight) : pWidget(_pWidget), fixedHeight(_fixedHeight) { }
     VBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedHeight(-1), weight(_weight) { }
 
     VBox_WidgetData(const VBox_WidgetData&)            = default;

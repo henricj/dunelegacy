@@ -226,7 +226,7 @@ public:
     explicit OStreamDataSource(std::ostream* data_stream);
     ~OStreamDataSource() override;
 
-    void write1(uint32_t val) final { Write1(out, static_cast<uint16_t>(val)); }
+    void write1(uint32_t val) final { Write1(out, static_cast<uint8_t>(val)); }
 
     void write2(uint16_t val) final { Write2(out, val); }
 
@@ -270,7 +270,7 @@ public:
     // Prevent use after free.
     OBufferDataSpan(std::unique_ptr<unsigned char[]>&& data_, size_t len) = delete;
 
-    void write1(uint32_t val) final { Write1(buf_ptr, val); }
+    void write1(uint32_t val) final { Write1(buf_ptr, static_cast<uint8_t>(val)); }
 
     void write2(uint16_t val) final { Write2(buf_ptr, val); }
 

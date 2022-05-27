@@ -58,7 +58,7 @@ public:
     void checkPos(const GameContext& context) override;
     bool canPassTile(const Tile* pTile) const override;
 
-    FixPoint getMaxSpeed(const GameContext& context) const override { return currentMaxSpeed; }
+    FixPoint getMaxSpeed([[maybe_unused]] const GameContext& context) const override { return currentMaxSpeed; }
 
 protected:
     virtual FixPoint getDestinationAngle() const;

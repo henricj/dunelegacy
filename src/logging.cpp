@@ -107,7 +107,8 @@ std::filesystem::path getLogFilepath() {
     return tmp;
 }
 
-void logOutputFunction(void* userdata, int category, SDL_LogPriority priority, const char* message) {
+void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int category, SDL_LogPriority priority,
+                       const char* message) {
 
     static constexpr std::string_view priorityStrings[] = {"<UNK> ",   "VERBOSE ", "DEBUG   ", "INFO    ",
                                                            "WARN    ", "ERROR   ", "CRITICAL"};

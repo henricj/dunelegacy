@@ -90,7 +90,7 @@ private:
 
     std::unique_ptr<Copl> create_opl();
 
-    [[nodiscard]] unsigned char getsampsize() const noexcept {
+    [[nodiscard]] auto getsampsize() const noexcept {
         return m_channels * (m_format == AUDIO_U8 || m_format == AUDIO_S8 ? 1 : 2);
     }
 

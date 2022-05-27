@@ -23,7 +23,7 @@
 class HBox_WidgetData {
 public:
     HBox_WidgetData() = default;
-    HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth), weight(0.0) { }
+    HBox_WidgetData(Widget* _pWidget, int32_t _fixedWidth) : pWidget(_pWidget), fixedWidth(_fixedWidth) { }
     HBox_WidgetData(Widget* _pWidget, double _weight) : pWidget(_pWidget), fixedWidth(-1), weight(_weight) { }
 
     HBox_WidgetData(const HBox_WidgetData&)            = default;

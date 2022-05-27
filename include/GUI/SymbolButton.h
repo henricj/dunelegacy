@@ -43,8 +43,8 @@ public:
             return;
         }
 
-        this->pSymbolSurface       = std::move(pSymbolSurface);
-        this->pActiveSymbolSurface = std::move(pActiveSymbolSurface);
+        this->pSymbolSurface_       = std::move(pSymbolSurface);
+        this->pActiveSymbolSurface_ = std::move(pActiveSymbolSurface);
 
         resizeAll();
     }
@@ -68,8 +68,8 @@ public:
         \return the minimum size of this button
     */
     [[nodiscard]] Point getMinimumSize() const override {
-        if (pSymbolSurface) {
-            return Point((int32_t)pSymbolSurface->w + 5, (int32_t)pSymbolSurface->h + 5);
+        if (pSymbolSurface_) {
+            return {(int32_t)pSymbolSurface_->w + 5, (int32_t)pSymbolSurface_->h + 5};
         }
         return {0, 0};
     }
@@ -92,21 +92,21 @@ protected:
                 GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
             sdl2::surface_ptr pActive;
 
-            if (pSymbolSurface) {
-                SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface.get(), pUnpressed.get());
-                SDL_BlitSurface(pSymbolSurface.get(), nullptr, pUnpressed.get(), &dest);
+            if (pSymbolSurface_) {
+                SDL_Rect dest = calcAlignedDrawingRect(pSymbolSurface_.get(), pUnpressed.get());
+                SDL_BlitSurface(pSymbolSurface_.get(), nullptr, pUnpressed.get(), &dest);
 
                 dest.x++;
                 dest.y++;
-                SDL_BlitSurface(pActiveSymbolSurface ? pActiveSymbolSurface.get() : pSymbolSurface.get(), nullptr,
+                SDL_BlitSurface(pActiveSymbolSurface_ ? pActiveSymbolSurface_.get() : pSymbolSurface_.get(), nullptr,
                                 pPressed.get(), &dest);
             }
 
-            if (pActiveSymbolSurface) {
+            if (pActiveSymbolSurface_) {
                 pActive = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
 
-                SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface.get(), pActive.get());
-                SDL_BlitSurface(pActiveSymbolSurface.get(), nullptr, pActive.get(), &dest);
+                SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface_.get(), pActive.get());
+                SDL_BlitSurface(pActiveSymbolSurface_.get(), nullptr, pActive.get(), &dest);
             }
 
             Button::setSurfaces(std::move(pUnpressed), std::move(pPressed), std::move(pActive));
@@ -114,8 +114,8 @@ protected:
     }
 
 private:
-    sdl2::surface_unique_or_nonowning_ptr pSymbolSurface;
-    sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface;
+    sdl2::surface_unique_or_nonowning_ptr pSymbolSurface_;
+    sdl2::surface_unique_or_nonowning_ptr pActiveSymbolSurface_;
 };
 
 #endif // SYMBOLBUTTON_H

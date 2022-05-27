@@ -74,7 +74,7 @@ void RadarViewBase::calculateScaleAndOffsets(int MapSizeX, int MapSizeY, int& sc
     offsetY = (128 - (MapSizeY * scale)) / 2;
 }
 
-void RadarViewBase::handleMouseMovement(int32_t x, int32_t y, bool insideOverlay) {
+void RadarViewBase::handleMouseMovement(int32_t x, int32_t y, [[maybe_unused]] bool insideOverlay) {
     if (bRadarInteraction && isOnRadar(x, y)) {
         if (pOnRadarClick) {
             bRadarInteraction = pOnRadarClick(getWorldCoords(x, y), false, true);
