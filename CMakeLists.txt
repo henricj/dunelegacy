@@ -220,3 +220,9 @@ foreach(config ${build_list})
     message(STATUS "        CMAKE_CXX_FLAGS_${config}: ${CMAKE_CXX_FLAGS_${config}}")
     message(STATUS " CMAKE_EXE_LINKER_FLAGS_${config}: ${CMAKE_EXE_LINKER_FLAGS_${config}}")
 endforeach()
+
+get_directory_property(COMPILE_OPTIONS COMPILE_OPTIONS)
+get_directory_property(LINK_OPTIONS LINK_OPTIONS)
+
+message(STATUS "        COMPILE_OPTIONS: ${COMPILE_OPTIONS}")
+message(STATUS "           LINK_OPTIONS: ${LINK_OPTIONS}")
