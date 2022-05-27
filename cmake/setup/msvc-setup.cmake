@@ -1,7 +1,7 @@
 message(STATUS "Configuring MSVC")
 
 add_compile_options(/diagnostics:caret /GA /GS /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast)
-add_compile_options(/wd4267)
+add_compile_options(/W4 /wd4267)
 
 set(DUNE_MSVC_DEBUG_FLAGS "/ZI /Ob0 /Od /RTC1 /RTCs /JMC" CACHE STRING "Debug compiler flags")
 set(DUNE_MSVC_RELEASE_FLAGS "/EHsc /GF /Gy /Gw /Zi /O2 /Ob3 /Oi /DNDEBUG" CACHE STRING "Release compiler flags")
