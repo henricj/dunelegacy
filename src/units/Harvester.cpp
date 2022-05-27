@@ -39,7 +39,7 @@ namespace {
 inline constexpr auto HARVESTERDELAY = 30;
 
 /* how often to change harvester position while harvesting */
-inline constexpr auto RANDOMHARVESTMOVE = 500;
+// inline constexpr auto RANDOMHARVESTMOVE = 500;
 
 /* how much is the harvester movement slowed down when full  */
 inline constexpr auto MAXIMUMHARVESTERSLOWDOWN = 0.4_fix;
