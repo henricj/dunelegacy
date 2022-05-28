@@ -204,25 +204,27 @@ endif()
 
 include(CPack)
 
-message(STATUS "          CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
-message(STATUS "        CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
-message(STATUS " CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
-message(STATUS "   VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
+message(STATUS "              CMAKE_C_FLAGS: ${CMAKE_C_FLAGS}")
+message(STATUS "            CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+message(STATUS "     CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
+message(STATUS "       VCPKG_TARGET_TRIPLET: ${VCPKG_TARGET_TRIPLET}")
 
 if(CMAKE_MSVC_RUNTIME_LIBRARY)
-    message(STATUS "           MSVC Runtime: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
+    message(STATUS "               MSVC Runtime: ${CMAKE_MSVC_RUNTIME_LIBRARY}")
 endif()
 
 foreach(config ${build_list})
     string(TOUPPER "${config}" config)
 
-    message(STATUS "          CMAKE_C_FLAGS_${config}: ${CMAKE_C_FLAGS_${config}}")
-    message(STATUS "        CMAKE_CXX_FLAGS_${config}: ${CMAKE_CXX_FLAGS_${config}}")
-    message(STATUS " CMAKE_EXE_LINKER_FLAGS_${config}: ${CMAKE_EXE_LINKER_FLAGS_${config}}")
+    message(STATUS "              CMAKE_C_FLAGS_${config}: ${CMAKE_C_FLAGS_${config}}")
+    message(STATUS "            CMAKE_CXX_FLAGS_${config}: ${CMAKE_CXX_FLAGS_${config}}")
+    message(STATUS "     CMAKE_EXE_LINKER_FLAGS_${config}: ${CMAKE_EXE_LINKER_FLAGS_${config}}")
 endforeach()
 
 get_directory_property(COMPILE_OPTIONS COMPILE_OPTIONS)
 get_directory_property(LINK_OPTIONS LINK_OPTIONS)
 
-message(STATUS "        COMPILE_OPTIONS: ${COMPILE_OPTIONS}")
-message(STATUS "           LINK_OPTIONS: ${LINK_OPTIONS}")
+message(STATUS "            COMPILE_OPTIONS: ${COMPILE_OPTIONS}")
+message(STATUS "               LINK_OPTIONS: ${LINK_OPTIONS}")
+
+message(STATUS "  DUNE_TARGET_COMPILE_FLAGS: ${DUNE_TARGET_COMPILE_FLAGS}")
