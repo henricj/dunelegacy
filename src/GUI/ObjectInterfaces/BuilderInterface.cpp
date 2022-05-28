@@ -98,7 +98,7 @@ bool BuilderInterface::update() {
 
     if (pBuilder->isUpgrading()) {
         upgradeProgressBar.setProgress(
-            ((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toDouble());
+            ((pBuilder->getUpgradeProgress() * 100) / pBuilder->getUpgradeCost(context_)).toFloat());
     }
 
     if (pBuilder->getHealth() >= pBuilder->getMaxHealth()) {
