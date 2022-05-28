@@ -167,6 +167,8 @@ UnitInterface::UnitInterface(const GameContext& context, int objectID) : Default
     update();
 }
 
+UnitInterface::~UnitInterface() = default;
+
 void UnitInterface::OnSendToRepair() {
     auto* const pGroundUnit = context_.objectManager.getObject<GroundUnit>(objectID);
     if ((pGroundUnit != nullptr) && (pGroundUnit->getHealth() < pGroundUnit->getMaxHealth())) {

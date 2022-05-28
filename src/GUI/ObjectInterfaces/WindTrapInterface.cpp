@@ -39,6 +39,8 @@ WindTrapInterface::WindTrapInterface(const GameContext& context, int objectID)
     textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
 
+WindTrapInterface::~WindTrapInterface() = default;
+
 bool WindTrapInterface::update() {
     const auto* const pObject = context_.objectManager.getObject(objectID);
     if (pObject == nullptr)

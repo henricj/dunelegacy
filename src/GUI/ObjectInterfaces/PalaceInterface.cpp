@@ -8,12 +8,6 @@
 
 #include <structures/Palace.h>
 
-std::unique_ptr<PalaceInterface> PalaceInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<PalaceInterface> tmp{new PalaceInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, [[maybe_unused]] GeneratedPicture id) {
     auto* const deathHandSurface = surfaceLoader->getSmallDetailSurface(Picture_DeathHand);
 
@@ -48,6 +42,8 @@ PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
 
     weaponSelectButton.setOnClick([&] { onSpecial(context_); });
 }
+
+PalaceInterface::~PalaceInterface() = default;
 
 bool PalaceInterface::update() {
     auto* const pObject = context_.objectManager.getObject(objectID);

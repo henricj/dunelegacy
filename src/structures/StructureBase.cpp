@@ -171,9 +171,9 @@ void StructureBase::blitToScreen() {
 
 std::unique_ptr<ObjectInterface> StructureBase::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return DefaultStructureInterface::create(context, objectID_);
+        return Widget::create<DefaultStructureInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void StructureBase::drawSelectionBox() {

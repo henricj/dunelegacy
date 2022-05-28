@@ -30,6 +30,7 @@ class BuilderInterface final : public DefaultStructureInterface {
 
 public:
     BuilderInterface(const GameContext& context, int objectID);
+    ~BuilderInterface() override;
 
 protected:
     void onUpgrade() const;

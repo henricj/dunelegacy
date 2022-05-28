@@ -56,9 +56,9 @@ WindTrap::~WindTrap() = default;
 
 std::unique_ptr<ObjectInterface> WindTrap::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return WindTrapInterface::create(context, objectID_);
+        return Widget::create<WindTrapInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 bool WindTrap::update(const GameContext& context) {

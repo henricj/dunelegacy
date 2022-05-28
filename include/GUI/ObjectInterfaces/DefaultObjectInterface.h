@@ -31,13 +31,10 @@ class DefaultObjectInterface : public ObjectInterface {
     using parent = ObjectInterface;
 
 public:
-    static std::unique_ptr<DefaultObjectInterface> create(const GameContext& context, int objectID);
-
-    ~DefaultObjectInterface() override = default;
+    DefaultObjectInterface(const GameContext& context, int objectID);
+    ~DefaultObjectInterface() override;
 
 protected:
-    DefaultObjectInterface(const GameContext& context, int objectID);
-
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.

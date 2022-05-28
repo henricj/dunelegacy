@@ -33,6 +33,7 @@ class MultiUnitInterface final : public ObjectInterface {
 
 public:
     explicit MultiUnitInterface(const GameContext& context);
+    ~MultiUnitInterface() override;
 
 protected:
     void onReturn();

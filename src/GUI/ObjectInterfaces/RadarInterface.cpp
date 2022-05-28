@@ -23,12 +23,6 @@
 
 #include <House.h>
 
-std::unique_ptr<RadarInterface> RadarInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<RadarInterface> tmp{new RadarInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 RadarInterface::RadarInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     const auto house_id = static_cast<int>(dune::globals::pLocalHouse->getHouseID());
@@ -44,6 +38,8 @@ RadarInterface::RadarInterface(const GameContext& context, int objectID)
     textVBox.addWidget(&enemyUnitsLabel, 0.005);
     textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
+
+RadarInterface::~RadarInterface() = default;
 
 bool RadarInterface::update() {
     const auto* pObject = context_.objectManager.getObject(objectID);

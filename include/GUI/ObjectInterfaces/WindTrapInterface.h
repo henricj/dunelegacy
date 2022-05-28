@@ -28,6 +28,7 @@ class WindTrapInterface final : public DefaultStructureInterface {
 
 public:
     WindTrapInterface(const GameContext& context, int objectID);
+    ~WindTrapInterface() override;
 
 protected:
     /**

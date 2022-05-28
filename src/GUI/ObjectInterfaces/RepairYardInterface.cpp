@@ -33,6 +33,8 @@ RepairYardInterface::RepairYardInterface(const GameContext& context, int objectI
     mainHBox.addWidget(Widget::create<Spacer>().release());
 }
 
+RepairYardInterface::~RepairYardInterface() = default;
+
 bool RepairYardInterface::update() {
     auto* const pRepairYard = context_.objectManager.getObject<RepairYard>(objectID);
     if (pRepairYard == nullptr)

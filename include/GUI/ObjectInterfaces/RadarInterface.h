@@ -27,11 +27,10 @@ class RadarInterface final : public DefaultStructureInterface {
     using parent = DefaultStructureInterface;
 
 public:
-    static std::unique_ptr<RadarInterface> create(const GameContext& context, int objectID);
+    RadarInterface(const GameContext& context, int objectID);
+    ~RadarInterface() override;
 
 protected:
-    RadarInterface(const GameContext& context, int objectID);
-
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.

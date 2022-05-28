@@ -26,13 +26,12 @@ class PalaceInterface final : public DefaultStructureInterface {
     using parent = DefaultStructureInterface;
 
 public:
-    static std::unique_ptr<PalaceInterface> create(const GameContext& context, int objectID);
+    PalaceInterface(const GameContext& context, int objectID);
+    ~PalaceInterface() override;
 
     static sdl2::surface_ptr createSurface(SurfaceLoader* surfaceLoader, GeneratedPicture id);
 
 protected:
-    PalaceInterface(const GameContext& context, int objectID);
-
     /**
         This method updates the object interface.
         If the object doesn't exists anymore then update returns false.

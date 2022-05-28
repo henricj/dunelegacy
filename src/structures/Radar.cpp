@@ -56,9 +56,9 @@ Radar::~Radar() = default;
 
 std::unique_ptr<ObjectInterface> Radar::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return RadarInterface::create(context, objectID_);
+        return Widget::create<RadarInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void Radar::destroy(const GameContext& context) {

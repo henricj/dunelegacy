@@ -248,7 +248,7 @@ void ObjectBase::handleDamage([[maybe_unused]] const GameContext& context, int d
 void ObjectBase::handleInterfaceEvent([[maybe_unused]] SDL_Event* event) { }
 
 std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void ObjectBase::setDestination(int newX, int newY) {

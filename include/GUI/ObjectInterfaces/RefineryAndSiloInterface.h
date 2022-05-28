@@ -28,6 +28,7 @@ class RefineryAndSiloInterface final : public DefaultStructureInterface {
 
 public:
     RefineryAndSiloInterface(const GameContext& context, int objectID);
+    ~RefineryAndSiloInterface() override;
 
 protected:
     /**

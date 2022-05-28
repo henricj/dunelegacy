@@ -266,9 +266,9 @@ void UnitBase::blitToScreen() {
 
 std::unique_ptr<ObjectInterface> UnitBase::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_ && isRespondable()) || dune::globals::debug) {
-        return UnitInterface::create(context, objectID_);
+        return Widget::create<UnitInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 ANGLETYPE UnitBase::getCurrentAttackAngle() const {

@@ -19,12 +19,6 @@
 
 #include "GUI/Spacer.h"
 
-std::unique_ptr<DefaultObjectInterface> DefaultObjectInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<DefaultObjectInterface> tmp{new DefaultObjectInterface(context, objectID)};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
     const auto* const pObject = context_.objectManager.getObject(objectID);
     if (pObject == nullptr) {
@@ -47,6 +41,8 @@ DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int o
 
     topBoxHBox.addWidget(Widget::create<Spacer>().release());
 }
+
+DefaultObjectInterface::~DefaultObjectInterface() = default;
 
 bool DefaultObjectInterface::update() {
     const auto* const pObject = context_.objectManager.getObject(objectID);

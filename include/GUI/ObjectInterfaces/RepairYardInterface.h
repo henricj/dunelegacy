@@ -27,6 +27,7 @@ class RepairYardInterface final : public DefaultStructureInterface {
 
 public:
     RepairYardInterface(const GameContext& context, int objectID);
+    ~RepairYardInterface() override;
 
 protected:
     /**

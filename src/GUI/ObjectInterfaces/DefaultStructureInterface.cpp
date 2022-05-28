@@ -24,12 +24,6 @@
 
 #include <structures/StructureBase.h>
 
-std::unique_ptr<DefaultStructureInterface> DefaultStructureInterface::create(const GameContext& context, int objectID) {
-    std::unique_ptr<DefaultStructureInterface> tmp{new DefaultStructureInterface{context, objectID}};
-    tmp->pAllocated_ = true;
-    return tmp;
-}
-
 DefaultStructureInterface::DefaultStructureInterface(const GameContext& context, int objectID)
     : DefaultObjectInterface(context, objectID) {
     const auto* const gfx = dune::globals::pGFXManager.get();
@@ -45,6 +39,8 @@ DefaultStructureInterface::DefaultStructureInterface(const GameContext& context,
 
     topBox.addWidget(&repairButton, Point(2, 2), getTextureSize(pUIRepair));
 }
+
+DefaultStructureInterface::~DefaultStructureInterface() = default;
 
 void DefaultStructureInterface::OnRepair() {
     if (auto* pStructure = context_.objectManager.getObject<StructureBase>(objectID)) {

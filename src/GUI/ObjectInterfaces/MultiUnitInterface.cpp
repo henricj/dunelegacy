@@ -174,6 +174,8 @@ MultiUnitInterface::MultiUnitInterface(const GameContext& context) : context_{co
     update();
 }
 
+MultiUnitInterface::~MultiUnitInterface() = default;
+
 void MultiUnitInterface::onReturn() {
     const auto& [game, map, object_manager] = context_;
 

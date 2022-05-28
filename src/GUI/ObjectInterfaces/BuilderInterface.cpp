@@ -64,6 +64,8 @@ BuilderInterface::BuilderInterface(const GameContext& context, int objectID)
     mainHBox.addWidget(Widget::create<Spacer>().release());
 }
 
+BuilderInterface::~BuilderInterface() = default;
+
 void BuilderInterface::onUpgrade() const {
     auto* const pBuilder = context_.objectManager.getObject<BuilderBase>(objectID);
 

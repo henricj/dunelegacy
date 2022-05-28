@@ -140,9 +140,9 @@ void BuilderBase::save(OutputStream& stream) const {
 
 std::unique_ptr<ObjectInterface> BuilderBase::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return BuilderInterface::create(context, objectID_);
+        return Widget::create<BuilderInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void BuilderBase::insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price) {

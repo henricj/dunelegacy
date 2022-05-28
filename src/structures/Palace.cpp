@@ -86,9 +86,9 @@ void Palace::save(OutputStream& stream) const {
 
 std::unique_ptr<ObjectInterface> Palace::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return PalaceInterface::create(context, objectID_);
+        return Widget::create<PalaceInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void Palace::handleSpecialClick(const GameContext& context) {

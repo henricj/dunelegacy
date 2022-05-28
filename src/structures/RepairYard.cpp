@@ -87,9 +87,9 @@ void RepairYard::save(OutputStream& stream) const {
 
 std::unique_ptr<ObjectInterface> RepairYard::getInterfaceContainer(const GameContext& context) {
     if ((dune::globals::pLocalHouse == owner_) || (dune::globals::debug)) {
-        return RepairYardInterface::create(context, objectID_);
+        return Widget::create<RepairYardInterface>(context, objectID_);
     }
-    return DefaultObjectInterface::create(context, objectID_);
+    return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
 
 void RepairYard::deployRepairUnit(const GameContext& context, Carryall* pCarryall) {

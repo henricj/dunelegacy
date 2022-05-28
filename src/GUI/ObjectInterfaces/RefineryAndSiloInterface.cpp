@@ -39,6 +39,8 @@ RefineryAndSiloInterface::RefineryAndSiloInterface(const GameContext& context, i
     textVBox.addWidget(Widget::create<Spacer>().release(), 0.99);
 }
 
+RefineryAndSiloInterface::~RefineryAndSiloInterface() = default;
+
 bool RefineryAndSiloInterface::update() {
     const auto* pObject = context_.objectManager.getObject(objectID);
     if (pObject == nullptr)

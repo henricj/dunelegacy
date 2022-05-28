@@ -32,6 +32,7 @@ class UnitInterface final : public DefaultObjectInterface {
 
 public:
     UnitInterface(const GameContext& context, int objectID);
+    ~UnitInterface() override;
 
 protected:
     static void onMove() { dune::globals::currentGame->currentCursorMode = Game::CursorMode_Move; }
