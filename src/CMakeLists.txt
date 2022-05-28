@@ -69,7 +69,7 @@ endif()
 
 
 add_library(dune ${SOURCES} ${HEADERS})
-target_compile_options(dune PRIVATE ${DUNE_TARGET_COMPILE_FLAGS})
+target_compile_options(dune PRIVATE ${dune_flags})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
 target_link_libraries(dune PUBLIC git_version ${LIBS})
 
@@ -116,8 +116,11 @@ if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(dune PRIVATE stdafx.h)
 endif()
 
+set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
+separate_arguments(dune_flags)
+
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
-target_compile_options(dunelegacy PRIVATE ${DUNE_TARGET_COMPILE_FLAGS})
+target_compile_options(dunelegacy PRIVATE ${dune_flags})
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
 
 if(HAVE_CXXABI_H)

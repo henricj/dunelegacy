@@ -2,7 +2,9 @@ enable_testing()
 
 find_package(GTest CONFIG REQUIRED)
 
-add_compile_options(${DUNE_TARGET_COMPILE_FLAGS})
+set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
+separate_arguments(dune_flags)
+add_compile_options(${dune_flags})
 
 add_subdirectory(dune_misc)
 add_subdirectory(random)
