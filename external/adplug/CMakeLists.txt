@@ -75,6 +75,7 @@ set(SOURCES
 )
 
 set(HEADERS
+	adlib.h
 	${ADPLUG_GENERATED_INCLUDE}/version.h
 	adplug/src/a2m.h
 	adplug/src/adl.h
@@ -164,7 +165,6 @@ elseif(HAVE_STRCASECMP)
 endif()
 
 target_include_directories(adplug
-	INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include adplug/src
+	INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}
 	PRIVATE ${ADPLUG_GENERATED_INCLUDE}
 )
-
