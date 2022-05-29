@@ -152,8 +152,9 @@ uint16_t SeedRand() {
     uint8_t old_carry = 0;
 
     // little endian is more useful for this algorithm
-    Seed        = SDL_SwapLE32(Seed);
-    auto* pSeed = reinterpret_cast<uint8_t*>(&Seed);
+    std::array<uint8_t, sizeof Seed> pSeed{};
+    for (auto i = 0u; i < pSeed.size(); ++i)
+        pSeed[i] = static_cast<uint8_t>((Seed >> 8u * i) & 0xffU);
 
     // shift right
     a = pSeed[0];
@@ -191,8 +192,9 @@ uint16_t SeedRand() {
     // xor
     a = pSeed[0] ^ pSeed[1];
 
-    // convert back to native endianess
-    Seed = SDL_SwapLE32(Seed);
+    Seed = 0u;
+    for (auto i = 0u; i < pSeed.size(); ++i)
+        Seed |= pSeed[i] << (8u * i);
 
     return a;
 }
