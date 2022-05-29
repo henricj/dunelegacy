@@ -70,7 +70,7 @@ bool MenuBase::doEventsUntil(const dune::dune_clock::time_point until) {
 
 int MenuBase::showMenu(event_handler_type handler) {
     sdl_handler_         = handler;
-    auto cleanup_handler = gsl::finally([&] { sdl_handler_ = decltype(sdl_handler_){}; });
+    auto cleanup_handler = gsl::finally([&] { sdl_handler_ = {}; });
 
     return showMenuImpl();
 }
