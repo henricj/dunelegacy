@@ -241,7 +241,7 @@ void BuilderList::draw(Point position) {
         for (const auto& buildItem : pBuilder->getBuildList()) {
 
             if (i >= currentListPos && i < currentListPos + getNumButtons(getSize().y)) {
-                const auto* pTexture = resolveItemPicture(buildItem.itemID);
+                const auto* pTexture = resolveItemPicture(buildItem.itemID_);
 
                 const auto dest_x = position.x + getButtonPosition(i - currentListPos).x;
                 const auto dest_y = position.y + getButtonPosition(i - currentListPos).y;
@@ -252,13 +252,13 @@ void BuilderList::draw(Point position) {
                     pTexture->draw(renderer, dest.x, dest.y);
                 }
 
-                if (isStructure(buildItem.itemID)) {
+                if (isStructure(buildItem.itemID_)) {
                     if (const auto* const pLattice = dune::globals::pGFXManager->getUIGraphic(UI_StructureSizeLattice))
                         pLattice->draw(renderer, dest.x + 2, dest.y + 2);
 
                     if (const auto* const pConcrete = gfx->getUIGraphic(UI_StructureSizeConcrete)) {
-                        const SDL_Rect srcConcrete   = {0, 0, 1 + getStructureSize(buildItem.itemID).x * 6,
-                                                        1 + getStructureSize(buildItem.itemID).y * 6};
+                        const SDL_Rect srcConcrete   = {0, 0, 1 + getStructureSize(buildItem.itemID_).x * 6,
+                                                        1 + getStructureSize(buildItem.itemID_).y * 6};
                         const SDL_FRect destConcrete = {(dest.x + 2), (dest.y + 2), static_cast<float>(srcConcrete.w),
                                                         static_cast<float>(srcConcrete.h)};
                         Dune_RenderCopyF(renderer, pConcrete, &srcConcrete, &destConcrete);
@@ -269,7 +269,8 @@ void BuilderList::draw(Point position) {
 
                 // draw price
                 {
-                    auto pPriceTexture = gui.createText(renderer, fmt::sprintf("%d", buildItem.price), COLOR_WHITE, 12);
+                    auto pPriceTexture =
+                        gui.createText(renderer, fmt::sprintf("%d", buildItem.price_), COLOR_WHITE, 12);
 
                     pPriceTexture.draw(renderer, dest.x + 2.f, dest.y + BUILDERBTN_HEIGHT - pPriceTexture.height_ - 3);
 
@@ -277,7 +278,7 @@ void BuilderList::draw(Point position) {
                 }
 
                 if (pStarport != nullptr) {
-                    const auto bSoldOut = pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID) == 0;
+                    const auto bSoldOut = pStarport->getOwner()->getChoam().getNumAvailable(buildItem.itemID_) == 0;
 
                     if (!pStarport->okToOrder() || bSoldOut) {
                         SDL_FRect progressBar = {static_cast<float>(dest.x), static_cast<float>(dest.y),
@@ -295,7 +296,7 @@ void BuilderList::draw(Point position) {
                     }
 
                 } else if (currentGame->getGameInitSettings().getGameOptions().onlyOnePalace
-                           && buildItem.itemID == Structure_Palace
+                           && buildItem.itemID_ == Structure_Palace
                            && pBuilder->getOwner()->getNumItems(Structure_Palace) > 0) {
 
                     SDL_FRect progressBar = {dest.x, dest.y, BUILDERBTN_WIDTH, BUILDERBTN_HEIGHT};
@@ -305,9 +306,9 @@ void BuilderList::draw(Point position) {
                         calcDrawingRect(pAlreadyBuiltTextTexture, dest.x + BUILDERBTN_WIDTH / 2,
                                         dest.y + BUILDERBTN_HEIGHT / 2, HAlign::Center, VAlign::Center);
                     Dune_RenderCopyF(renderer, pAlreadyBuiltTextTexture.get(), nullptr, &drawLocationAlreadyBuilt);
-                } else if (buildItem.itemID == pBuilder->getCurrentProducedItem()) {
+                } else if (buildItem.itemID_ == pBuilder->getCurrentProducedItem()) {
                     const auto progress = pBuilder->getProductionProgress();
-                    const auto price    = buildItem.price;
+                    const auto price    = buildItem.price_;
 
                     auto max_x = (progress / price * BUILDERBTN_WIDTH).toFloat();
 
@@ -326,7 +327,7 @@ void BuilderList::draw(Point position) {
                             static_cast<float>(dest.y) + (BUILDERBTN_HEIGHT - pOnHoldTextTexture.height_) / 2;
 
                         pOnHoldTextTexture.draw(renderer, x, y);
-                    } else if (pBuilder->isUnitLimitReached(buildItem.itemID)) {
+                    } else if (pBuilder->isUnitLimitReached(buildItem.itemID_)) {
                         const auto x =
                             static_cast<float>(dest.x) + (BUILDERBTN_WIDTH - pUnitLimitReachedTextTexture.width_) / 2;
                         const auto y =
@@ -336,9 +337,9 @@ void BuilderList::draw(Point position) {
                     }
                 }
 
-                if (buildItem.num > 0) {
+                if (buildItem.num_ > 0) {
                     // draw number of this in build list
-                    auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num), COLOR_RED, 12);
+                    auto pNumberTexture = gui.createText(renderer, std::to_string(buildItem.num_), COLOR_RED, 12);
 
                     const auto x = dest.x + BUILDERBTN_WIDTH - 3 - pNumberTexture.width_;
                     const auto y = dest.y + BUILDERBTN_HEIGHT - 2 - pNumberTexture.height_;
@@ -393,9 +394,9 @@ void BuilderList::drawOverlay(Point position) {
 
         const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), btn);
 
-        auto text = resolveItemName(buildItemIter->itemID);
+        auto text = resolveItemName(buildItemIter->itemID_);
 
-        if (buildItemIter->itemID == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
+        if (buildItemIter->itemID_ == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
             text += " (Hotkey: P)";
         }
 
@@ -435,7 +436,7 @@ void BuilderList::resize(uint32_t width, uint32_t height) {
         const auto& buildList = pBuilder->getBuildList();
 
         const auto currentProducedItemIter = std::ranges::find_if(buildList, [pBuilder](const BuildItem& buildItem) {
-            return buildItem.itemID == pBuilder->getCurrentProducedItem();
+            return buildItem.itemID_ == pBuilder->getCurrentProducedItem();
         });
 
         if (currentProducedItemIter != buildList.end()) {
@@ -526,7 +527,7 @@ ItemID_enum BuilderList::getItemIDFromIndex(int i) const {
         if (pBuilder != nullptr) {
             const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), i);
             if (buildItemIter != pBuilder->getBuildList().end()) {
-                return buildItemIter->itemID;
+                return buildItemIter->itemID_;
             }
         }
     }

@@ -67,7 +67,7 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
         do {
             item2Produce =
                 std::next(buildList.begin(), context.game.randomGen.rand(0, static_cast<int32_t>(buildList.size()) - 1))
-                    ->itemID;
+                    ->itemID_;
         } while ((item2Produce == Unit_Harvester) || (item2Produce == Unit_MCV));
 
         doProduceItem(item2Produce);
@@ -75,7 +75,7 @@ void HeavyFactory::doBuildRandom(const GameContext& context) {
 }
 
 void HeavyFactory::updateStructureSpecificStuff([[maybe_unused]] const GameContext& context) {
-    if (deployTimer > 0) {
+    if (deployTimer_ > 0) {
         firstAnimFrame = 4;
         lastAnimFrame  = 5;
     } else {

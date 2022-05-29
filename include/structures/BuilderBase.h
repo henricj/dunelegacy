@@ -28,57 +28,36 @@
 
 class BuildItem final {
 public:
-    BuildItem() {
-        itemID = ItemID_Invalid;
-        price  = 0;
-        num    = 0;
-    }
+    BuildItem();
 
-    BuildItem(ItemID_enum itemID, int price) {
-        this->itemID = itemID;
-        this->price  = price;
-        num          = 0;
-    }
+    BuildItem(ItemID_enum itemID, int price);
 
-    BuildItem(InputStream& stream) { load(stream); }
+    BuildItem(InputStream& stream);
 
-    void save(OutputStream& stream) const {
-        stream.writeUint32(itemID);
-        stream.writeUint32(price);
-        stream.writeUint32(num);
-    }
+    void save(OutputStream& stream) const;
 
-    void load(InputStream& stream) {
-        itemID = static_cast<ItemID_enum>(stream.readUint32());
-        price  = stream.readUint32();
-        num    = stream.readUint32();
-    }
+    void load(InputStream& stream);
 
-    ItemID_enum itemID;
-    uint32_t price;
-    uint32_t num;
+    ItemID_enum itemID_ = ItemID_Invalid;
+    uint32_t price_     = 0;
+    uint32_t num_       = 0;
 };
 
 class ProductionQueueItem final {
 public:
-    ProductionQueueItem() : itemID(ItemID_enum::ItemID_Invalid), price(0) { }
+    ProductionQueueItem();
 
-    ProductionQueueItem(ItemID_enum _ItemID, uint32_t _price) : itemID(_ItemID), price(_price) { }
+    ProductionQueueItem(ItemID_enum ItemID, uint32_t price);
 
-    ProductionQueueItem(InputStream& stream) { load(stream); }
+    ProductionQueueItem(InputStream& stream);
 
-    void save(OutputStream& stream) const {
-        stream.writeUint32(itemID);
-        stream.writeUint32(price);
-    }
+    void save(OutputStream& stream) const;
 
-    void load(InputStream& stream) {
-        itemID = static_cast<ItemID_enum>(stream.readUint32());
-        price  = stream.readUint32();
-    }
+    void load(InputStream& stream);
 
-    ItemID_enum itemID;
-    uint32_t price;
+    ItemID_enum itemID_ = ItemID_Invalid;
+    ;
+    uint32_t price_ = 0;
 };
 
 class BuilderBaseConstants : public StructureBaseConstants {
@@ -110,8 +89,6 @@ public:
 
     std::unique_ptr<ObjectInterface> getInterfaceContainer(const GameContext& context) override;
 
-    void setOwner(House* no);
-
     void setOriginalHouseID(HOUSETYPE i) override {
         StructureBase::setOriginalHouseID(i);
         updateBuildList();
@@ -132,9 +109,9 @@ public:
     void setWaitingToPlace();
     void unSetWaitingToPlace();
 
-    int getBuildListSize() const { return buildList.size(); }
+    int getBuildListSize() const { return buildList_.size(); }
 
-    int getProductionQueueSize() const { return currentProductionQueue.size(); }
+    int getProductionQueueSize() const { return currentProductionQueue_.size(); }
 
     /**
         Updates this builder.
@@ -171,7 +148,7 @@ public:
         Sets the currently produced item on hold or continues production.
         \param  bOnHold         true = hold production; false = resume production
     */
-    void doSetOnHold(bool bOnHold) { bCurrentItemOnHold = bOnHold; }
+    void doSetOnHold(bool bOnHold) { bCurrentItemOnHold_ = bOnHold; }
 
     /**
         Start building a random item in this builder.
@@ -184,22 +161,22 @@ public:
         \param newBuildSpeedLimit   the new limit; must be between 0 and 1
     */
     void doSetBuildSpeedLimit(FixPoint newBuildSpeedLimit) {
-        buildSpeedLimit = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit));
+        buildSpeedLimit_ = std::max(0.0_fix, std::min(1.0_fix, newBuildSpeedLimit));
     }
 
-    bool isUpgrading() const noexcept { return upgrading; }
-    bool isAllowedToUpgrade() const { return (curUpgradeLev < getMaxUpgradeLevel()); }
-    int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev; }
+    bool isUpgrading() const noexcept { return upgrading_; }
+    bool isAllowedToUpgrade() const { return (curUpgradeLev_ < getMaxUpgradeLevel()); }
+    int getCurrentUpgradeLevel() const noexcept { return curUpgradeLev_; }
     int getUpgradeCost(const GameContext& context) const;
     void produce_item(const GameContext& context);
-    FixPoint getUpgradeProgress() const noexcept { return upgradeProgress; }
+    FixPoint getUpgradeProgress() const noexcept { return upgradeProgress_; }
 
-    ItemID_enum getCurrentProducedItem() const noexcept { return currentProducedItem; }
-    bool isOnHold() const noexcept { return bCurrentItemOnHold; }
+    ItemID_enum getCurrentProducedItem() const noexcept { return currentProducedItem_; }
+    bool isOnHold() const noexcept { return bCurrentItemOnHold_; }
     bool isWaitingToPlace() const;
     bool isUnitLimitReached(ItemID_enum itemID) const;
-    FixPoint getProductionProgress() const noexcept { return productionProgress; }
-    const auto& getBuildList() const noexcept { return buildList; }
+    FixPoint getProductionProgress() const noexcept { return productionProgress_; }
+    const auto& getBuildList() const noexcept { return buildList_; }
 
     virtual bool isAvailableToBuild(ItemID_enum itemID) const { return (getBuildItem(itemID) != nullptr); }
 
@@ -207,7 +184,7 @@ public:
         Get the current build speed limit.
         \return the current build speed limit
     */
-    FixPoint getBuildSpeedLimit() const { return buildSpeedLimit; }
+    FixPoint getBuildSpeedLimit() const { return buildSpeedLimit_; }
 
 protected:
     virtual void updateProductionProgress();
@@ -218,50 +195,36 @@ protected:
 
     void removeItem(build_list_type::iterator& iter, ItemID_enum item_id);
 
-    BuildItem* getBuildItem(ItemID_enum itemID) {
-        for (auto& buildItem : buildList) {
-            if (buildItem.itemID == itemID) {
-                return &buildItem;
-            }
-        }
-        return nullptr;
-    }
+    BuildItem* getBuildItem(ItemID_enum itemID);
 
-    const BuildItem* getBuildItem(ItemID_enum itemID) const {
-        for (const auto& buildItem : buildList) {
-            if (buildItem.itemID == itemID) {
-                return &buildItem;
-            }
-        }
-        return nullptr;
-    }
+    const BuildItem* getBuildItem(ItemID_enum itemID) const;
 
     void produceNextAvailableItem();
 
-    auto& getBuildList() noexcept { return buildList; }
+    auto& getBuildList() noexcept { return buildList_; }
 
 protected:
     static const ItemID_enum itemOrder[]; ///< the order in which items are in the build list
 
     // structure state
-    bool upgrading{};           ///< Currently upgrading?
-    FixPoint upgradeProgress{}; ///< The current state of the upgrade progress (measured in money spent)
-    uint8_t curUpgradeLev{};    ///< Current upgrade level
+    bool upgrading_{};           ///< Currently upgrading?
+    FixPoint upgradeProgress_{}; ///< The current state of the upgrade progress (measured in money spent)
+    uint8_t curUpgradeLev_{};    ///< Current upgrade level
 
-    bool bCurrentItemOnHold{};                        ///< Is the currently produced item on hold?
-    ItemID_enum currentProducedItem = ItemID_Invalid; ///< The ItemID of the currently produced item
-    FixPoint productionProgress{}; ///< The current state of the production progress (measured in money spent)
-    uint32_t deployTimer{};        ///< Timer for deploying a unit
+    bool bCurrentItemOnHold_{};                        ///< Is the currently produced item on hold?
+    ItemID_enum currentProducedItem_ = ItemID_Invalid; ///< The ItemID of the currently produced item
+    FixPoint productionProgress_{}; ///< The current state of the production progress (measured in money spent)
+    uint32_t deployTimer_{};        ///< Timer for deploying a unit
 
-    FixPoint buildSpeedLimit; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make it
-                              ///< weaker.
+    FixPoint buildSpeedLimit_; ///< Limit the build speed to that percentage [0;1]. This may be used by the AI to make
+                               ///< it weaker.
 
-    production_queue_type currentProductionQueue; ///< This list is the production queue (It contains the item
-                                                  ///< IDs of the units/structures to produce)
+    production_queue_type currentProductionQueue_; ///< This list is the production queue (It contains the item
+                                                   ///< IDs of the units/structures to produce)
 private:
     void init();
 
-    build_list_type buildList; ///< This list contains all the things that can be produced by this builder
+    build_list_type buildList_; ///< This list contains all the things that can be produced by this builder
 };
 
 template<>

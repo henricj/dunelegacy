@@ -36,8 +36,8 @@ void Choam::load(InputStream& stream) {
 
 int Choam::getPrice(ItemID_enum itemID) const {
     for (const BuildItem& buildItem : availableItems) {
-        if (buildItem.itemID == itemID) {
-            return buildItem.price;
+        if (buildItem.itemID_ == itemID) {
+            return buildItem.price_;
         }
     }
 
@@ -52,8 +52,8 @@ bool Choam::isCheap(ItemID_enum itemID) const {
 
 int Choam::getNumAvailable(ItemID_enum itemID) const {
     for (const BuildItem& buildItem : availableItems) {
-        if (buildItem.itemID == itemID) {
-            return buildItem.num;
+        if (buildItem.itemID_ == itemID) {
+            return buildItem.num_;
         }
     }
 
@@ -62,9 +62,9 @@ int Choam::getNumAvailable(ItemID_enum itemID) const {
 
 bool Choam::setNumAvailable(ItemID_enum itemID, int newValue) {
     for (BuildItem& buildItem : availableItems) {
-        if (buildItem.itemID == itemID) {
-            buildItem.num = newValue;
-            return (buildItem.num > 0);
+        if (buildItem.itemID_ == itemID) {
+            buildItem.num_ = newValue;
+            return (buildItem.num_ > 0);
         }
     }
 
@@ -73,8 +73,8 @@ bool Choam::setNumAvailable(ItemID_enum itemID, int newValue) {
 
 void Choam::addItem(ItemID_enum itemID, int num) {
     BuildItem tmp;
-    tmp.itemID = itemID;
-    tmp.num    = num;
+    tmp.itemID_ = itemID;
+    tmp.num_    = num;
     availableItems.push_back(tmp);
 }
 
@@ -86,13 +86,13 @@ void Choam::update(const GameContext& context) {
     auto& game = context.game;
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_AMOUNT) == 0) {
-        const int index           = game.randomGen.rand(0u, availableItems.size() - 1);
-        availableItems[index].num = std::min(availableItems[index].num + 1, 10u);
+        const int index            = game.randomGen.rand(0u, availableItems.size() - 1);
+        availableItems[index].num_ = std::min(availableItems[index].num_ + 1, 10u);
     }
 
     if ((game.getGameCycleCount() % CHOAM_CHANGE_PRICETIME) == 0) {
         for (BuildItem& buildItem : availableItems) {
-            int price = game.objectData.data[buildItem.itemID][static_cast<int>(house->getHouseID())].price;
+            int price = game.objectData.data[buildItem.itemID_][static_cast<int>(house->getHouseID())].price;
 
             constexpr int min_mod = 2;
             constexpr int max_mod = 8;
@@ -102,7 +102,7 @@ void Choam::update(const GameContext& context) {
 
             price = std::min((rand1 + rand2) * (price / 10), 999);
 
-            buildItem.price = price;
+            buildItem.price_ = price;
         }
 
         if ((dune::globals::pLocalHouse == house) && (house->hasStarPort())) {

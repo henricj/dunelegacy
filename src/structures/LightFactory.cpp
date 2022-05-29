@@ -54,7 +54,7 @@ void LightFactory::init() {
 LightFactory::~LightFactory() = default;
 
 void LightFactory::updateStructureSpecificStuff([[maybe_unused]] const GameContext& context) {
-    if (deployTimer > 0) {
+    if (deployTimer_ > 0) {
         firstAnimFrame = 4;
         lastAnimFrame  = 5;
     } else {
