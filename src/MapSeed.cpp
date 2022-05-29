@@ -19,8 +19,10 @@
 
 #include "MapSeed.h"
 
+namespace {
+
 // global seed value
-static uint32_t Seed;
+uint32_t Seed;
 
 // a point that has 2 coordinates
 typedef struct {
@@ -81,7 +83,7 @@ constexpr int8_t sinus[256] = {
     \param Ycoord   The coordinate in y-direction
     \return The 1-dimensional coordinate
 */
-static int16_t MapArray2DToMapArray1D(int16_t Xcoord, int16_t Ycoord) {
+int16_t MapArray2DToMapArray1D(int16_t Xcoord, int16_t Ycoord) {
     return Xcoord | (Ycoord << 6);
 }
 
@@ -92,7 +94,7 @@ static int16_t MapArray2DToMapArray1D(int16_t Xcoord, int16_t Ycoord) {
     \param Ycoord   The coordinate in y-direction
     \return The 1-dimensional coordinate
 */
-static int16_t MapArray2DToMapArray1D_OOB(int16_t Xcoord, int16_t Ycoord) {
+int16_t MapArray2DToMapArray1D_OOB(int16_t Xcoord, int16_t Ycoord) {
     return MapArray2DToMapArray1D(Xcoord & 0x3F, Ycoord);
 }
 
@@ -100,9 +102,8 @@ static int16_t MapArray2DToMapArray1D_OOB(int16_t Xcoord, int16_t Ycoord) {
     This function smooth the map in the local neighbourhood of index.
     \param  index       The position which should be smoothed
     \param  pMapArray   Pointer to the map that should be smoothed
-    \return none
 */
-static void SmoothNeighbourhood(int16_t index, uint32_t* pMapArray) {
+void SmoothNeighbourhood(int16_t index, uint32_t* pMapArray) {
     int16_t TileType = 0;
     int16_t Xcoord   = 0;
     int16_t Ycoord   = 0;
@@ -145,7 +146,7 @@ static void SmoothNeighbourhood(int16_t index, uint32_t* pMapArray) {
     Creates new random value.
     \return The new random value
 */
-static uint16_t SeedRand() {
+uint16_t SeedRand() {
     uint8_t a         = 0;
     uint8_t carry     = 0;
     uint8_t old_carry = 0;
@@ -195,6 +196,8 @@ static uint16_t SeedRand() {
 
     return a;
 }
+
+} // namespace
 
 /**
     Creates a random map.
