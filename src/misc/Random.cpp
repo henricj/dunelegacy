@@ -3,7 +3,17 @@
 #include "misc/SDL2pp.h"
 #include "misc/string_util.h"
 
+#if _MSC_VER
+#    pragma warning(push)
+#    pragma warning(disable : 4100)
+#    pragma warning(disable : 4458)
+#endif // _MSC_VER
+
 #include <digestpp/digestpp.hpp>
+
+#if _MSC_VER
+#    pragma warning(pop)
+#endif // _MSC_VER
 
 #include <array>
 #include <atomic>

@@ -111,11 +111,11 @@ LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
     enet_socket_destroy(announceSocket_);
 }
 
-void LANGameFinderAndAnnouncer::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
+void LANGameFinderAndAnnouncer::startAnnounce(std::string serverName, uint16_t serverPort, std::string mapName,
                                               uint8_t numPlayers, uint8_t maxPlayers) {
-    this->serverName_ = serverName;
+    this->serverName_ = std::move(serverName);
     this->serverPort_ = serverPort;
-    this->mapName_    = mapName;
+    this->mapName_    = std::move(mapName);
     this->numPlayers_ = numPlayers;
     this->maxPlayers_ = maxPlayers;
     lastAnnounce_     = dune::dune_clock::now();
@@ -263,11 +263,11 @@ void LANGameFinderAndAnnouncer::receivePackets() {
                    && (SDL_SwapLE32(announcePacket.magicNumber_) == LANGAME_ANNOUNCER_MAGICNUMBER)
                    && (announcePacket.type_ == NETWORKPACKET_REMOVEGAMEANNOUNCEMENT)) {
 
-            int serverPort_ = SDL_SwapLE16(announcePacket.serverPort_);
+            int serverPort = SDL_SwapLE16(announcePacket.serverPort_);
 
             auto iter = gameServerInfoList_.begin();
             while (iter != gameServerInfoList_.end()) {
-                if ((iter->serverAddress.host == senderAddress.host) && (iter->serverAddress.port == serverPort_)) {
+                if ((iter->serverAddress.host == senderAddress.host) && (iter->serverAddress.port == serverPort)) {
                     auto tmpGameServerInfo = *iter;
 
                     iter = gameServerInfoList_.erase(iter);

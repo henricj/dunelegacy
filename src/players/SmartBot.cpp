@@ -109,7 +109,7 @@ void SmartBot::onObjectWasBuilt([[maybe_unused]] const ObjectBase* pObject) { }
 
 void SmartBot::onDecrementStructures([[maybe_unused]] ItemID_enum itemID, [[maybe_unused]] const Coord& location) { }
 
-void SmartBot::onDamage(const ObjectBase* pObject, int damage, uint32_t damagerID) {
+void SmartBot::onDamage(const ObjectBase* pObject, [[maybe_unused]] int damage, uint32_t damagerID) {
     const auto* pDamager = getObject(damagerID);
 
     if (pDamager == nullptr || pDamager->getOwner() == getHouse()) {

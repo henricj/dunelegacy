@@ -277,7 +277,7 @@ void LoadSaveWindow::onDirectoryChange(int i) {
     updateEntries();
 }
 
-void LoadSaveWindow::onSelectionChange(bool bInteractive) {
+void LoadSaveWindow::onSelectionChange([[maybe_unused]] bool bInteractive) {
     if (!bSaveWindow_)
         return;
 

@@ -108,7 +108,7 @@ private:
     int ConvertFiletoList(IDataSource* source, bool is_xmi, first_state& fs);
 
     int ExtractTracksFromXmi(IDataSource* source);
-    int ExtractTracksFromMid(IDataSource* source, uint32_t ppqn, int num_tracks, bool type1);
+    int ExtractTracksFromMid(IDataSource* source, uint32_t ppqn, int num_tracks2, bool type1);
 
     int ExtractTracks(IDataSource* source);
 

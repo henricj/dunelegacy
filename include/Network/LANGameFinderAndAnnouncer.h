@@ -44,7 +44,7 @@ public:
     LANGameFinderAndAnnouncer& operator=(const LANGameFinderAndAnnouncer&) = delete;
     LANGameFinderAndAnnouncer& operator=(LANGameFinderAndAnnouncer&&)      = delete;
 
-    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
+    void startAnnounce(std::string serverName, uint16_t serverPort, std::string mapName, uint8_t numPlayers,
                        uint8_t maxPlayers);
 
     void updateAnnounce(uint8_t numPlayers);
@@ -87,7 +87,7 @@ private:
     void sendRemoveGameAnnouncement();
 
     std::string serverName_;
-    int serverPort_ = 0;
+    uint16_t serverPort_ = 0;
     std::string mapName_;
     uint8_t numPlayers_ = 0;
     uint8_t maxPlayers_ = 0;

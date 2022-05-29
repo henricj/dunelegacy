@@ -137,7 +137,7 @@ void AirUnit::blitToScreen() {
     }
 }
 
-void AirUnit::navigate(const GameContext& context) {
+void AirUnit::navigate([[maybe_unused]] const GameContext& context) {
     moving            = true;
     justStoppedMoving = false;
 }

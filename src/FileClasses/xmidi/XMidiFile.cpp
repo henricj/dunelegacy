@@ -1129,7 +1129,7 @@ int XMidiFile::ExtractTracksFromXmi(IDataSource* source) {
     return num;
 }
 
-int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, const int num_tracks, const bool type1) {
+int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, const int num_tracks2, const bool type1) {
     int num      = 0;
     uint32_t len = 0;
     std::array<char, 32> buf{};
@@ -1142,7 +1142,7 @@ int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, co
     x_patch_bank_first = nullptr;
     x_patch_bank_cur   = nullptr;
 
-    while (source->getAvail() > 0 && num != num_tracks) {
+    while (source->getAvail() > 0 && num != num_tracks2) {
         // Read first 4 bytes of name
         source->read(buf.data(), 4);
         len = source->read4high();
@@ -1184,7 +1184,7 @@ int XMidiFile::ExtractTracksFromMid(IDataSource* source, const uint32_t ppqn, co
         events[0]->branches     = branches;
         events[0]->chan_mask    = chan_mask;
         events[0]->x_patch_bank = x_patch_bank_first;
-        return num == num_tracks ? 1 : 0;
+        return num == num_tracks2 ? 1 : 0;
     }
 
     // Return how many were converted

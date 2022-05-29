@@ -46,17 +46,26 @@
 #include <SDL2/SDL_endian.h>
 #include <SDL2/SDL_mixer.h>
 
-#include <adl.h>
-#include <opl.h>
-#include <player.h>
-#include <surroundopl.h>
-#include <wemuopl.h>
+#if _MSC_VER
+#    pragma warning(push)
+#    pragma warning(disable : 4100)
+#endif // _MSC_VER
 
-#include <adplug.h>
+#include <adplug/src/adl.h>
+#include <adplug/src/opl.h>
+#include <adplug/src/player.h>
+#include <adplug/src/surroundopl.h>
+#include <adplug/src/wemuopl.h>
+
+#include <adplug/src/adplug.h>
+#include <adplug/src/fprovide.h>
 #include <binfile.h>
 #include <binio.h>
 #include <binstr.h>
-#include <fprovide.h>
+
+#if _MSC_VER
+#    pragma warning(pop)
+#endif // _MSC_VER
 
 #include <algorithm>
 #include <array>
