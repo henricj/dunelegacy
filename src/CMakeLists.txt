@@ -67,6 +67,8 @@ if(UNIX)
 	list(APPEND LIBS ${X11_LIBRARIES})
 endif()
 
+set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
+separate_arguments(dune_flags)
 
 add_library(dune STATIC ${SOURCES} ${HEADERS})
 target_compile_options(dune PRIVATE ${dune_flags})
@@ -115,9 +117,6 @@ endif()
 if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(dune PRIVATE stdafx.h)
 endif()
-
-set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
-separate_arguments(dune_flags)
 
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
