@@ -92,6 +92,7 @@ public:
 
     friend class INIMapLoader; // loading INI Maps is done with a INIMapLoader helper object
 
+private:
     /**
         This method processes all objects in the current game. It should be executed exactly once per game tick.
     */
@@ -107,6 +108,7 @@ public:
     */
     void doInput(const GameContext& context, SDL_Event& event);
 
+public:
     /**
         Returns the current game cycle number.
         \return the current game cycle
@@ -139,6 +141,7 @@ public:
         explosionList_.emplace_back(std::make_unique<Explosion>(std::forward<Args>(args)...));
     }
 
+private:
     [[nodiscard]] int getHouseIndex(HOUSETYPE houseID) const {
         const auto int_house = static_cast<int>(houseID);
 
@@ -148,6 +151,7 @@ public:
         return int_house;
     }
 
+public:
     /**
         Returns the house with the id houseID
         \param  houseID the id of the house to return
@@ -178,6 +182,7 @@ public:
         return nullptr;
     }
 
+public:
     Map* getMap() { return map_ ? map_.get() : dune::globals::currentGameMap; }
 
     /**
@@ -190,6 +195,7 @@ public:
     */
     void setGameLost();
 
+private:
     /**
         Draws the cursor.
     */
@@ -214,6 +220,7 @@ public:
     */
     bool loadSaveGame(InputStream& stream);
 
+public:
     /**
         This method saves the current running game.
         \param filename the name of the file to save to
@@ -228,11 +235,13 @@ public:
 
     void quitGame() { bQuitGame_ = true; }
 
+private:
     /**
         This method pauses the current game.
     */
     void pauseGame();
 
+public:
     /**
         This method resumes the current paused game.
     */
@@ -323,9 +332,11 @@ public:
         dune::globals::pLocalPlayer->onSelectionChanged(selectedList_);
     }
 
+private:
     void onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList,
                                 int groupListIndex);
 
+public:
     /**
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players
        per house). \return list of currently selected units/structures by the other player
@@ -337,11 +348,13 @@ public:
         return selectedByOtherPlayerList_;
     }
 
+private:
     /**
         Called when a peer disconnects the game.
     */
     void onPeerDisconnected(const std::string& name, bool bHost, int cause) const;
 
+public:
     /**
         Adds a new message to the news ticker.
         \param  text    the text to add
@@ -352,6 +365,7 @@ public:
         }
     }
 
+private:
     /**
         Adds an urgent message to the news ticker.
         \param  text    the text to add
@@ -362,6 +376,7 @@ public:
         }
     }
 
+public:
     /**
         This method returns whether the game is currently paused
         \return true, if paused, false otherwise
@@ -380,12 +395,14 @@ public:
     */
     [[nodiscard]] bool areCheatsEnabled() const noexcept { return bCheatsEnabled_; }
 
+private:
     /**
         Returns the name of the local player; this method should be used instead of using settings.general.playerName
        directly \return the local player name
     */
     [[nodiscard]] const std::string& getLocalPlayerName() const noexcept { return localPlayerName_; }
 
+public:
     /**
         Register a new player in this game.
         \param  player      the player to register
@@ -422,6 +439,7 @@ public:
         return nullptr;
     }
 
+private:
     /**
         Returns the player with the given id.
         \param  playerID  the name of the player
@@ -435,6 +453,7 @@ public:
         return nullptr;
     }
 
+public:
     /**
         This function is called when the user left clicks on the radar
         \param  worldPosition       position in world coordinates
@@ -444,6 +463,7 @@ public:
     */
     bool onRadarClick(const GameContext& context, Coord worldPosition, bool bRightMouseButton, bool bDrag);
 
+private:
     /**
         Request a screenshot
     */
