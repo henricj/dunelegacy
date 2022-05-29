@@ -224,7 +224,7 @@ public:
     /**
         This method starts the game. Will return when the game is finished or aborted.
     */
-    void runMainLoop(const GameContext& context);
+    void runMainLoop(const GameContext& context, MenuBase::event_handler_type handler);
 
     void quitGame() { bQuitGame_ = true; }
 
@@ -665,6 +665,7 @@ private:
 
     std::array<std::unique_ptr<House>, NUM_HOUSES> house_; ///< All the houses of this game, index by their houseID; has
                                                            ///< the size NUM_HOUSES; unused houses are nullptr
+    MenuBase::event_handler_type sdl_handler_;
 };
 
 #endif // GAME_H

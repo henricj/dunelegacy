@@ -893,6 +893,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         scrollRightMode_ = false;
         scrollUpMode_    = false;
     }
+
+    if (sdl_handler_ && Window::isBroadcastEventType(event.type))
+        sdl_handler_(event);
 }
 
 void Game::drawCursor(const SDL_Rect& map_rect) const {
@@ -1174,10 +1177,13 @@ void Game::doEventsUntil(const GameContext& context, const dune::dune_clock::tim
     }
 }
 
-void Game::runMainLoop(const GameContext& context) {
+void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type handler) {
     using namespace std::chrono_literals;
 
     sdl2::log_info("Starting game...");
+
+    sdl_handler_         = handler;
+    auto cleanup_handler = gsl::finally([&] { sdl_handler_ = {}; });
 
     // add interface
     if (pInterface_ == nullptr) {

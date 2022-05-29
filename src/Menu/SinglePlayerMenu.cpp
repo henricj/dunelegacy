@@ -125,7 +125,7 @@ void SinglePlayerMenu::onCampaign() {
         }
     });
 
-    startSinglePlayerGame(init);
+    startSinglePlayerGame(init, [&](const auto& e) { doInput(e); });
 
     quit();
 }
@@ -165,13 +165,13 @@ void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
         if (extension == "dls") {
 
             try {
-                startSinglePlayerGame(GameInitSettings(std::move(filename)));
+                startSinglePlayerGame(GameInitSettings(std::move(filename)), [&](const auto& e) { doInput(e); });
             } catch (std::exception& e) {
                 // most probably the savegame file is not valid or from a different dune legacy version
                 openWindow(MsgBox::create(e.what()));
             }
         } else if (extension == "rpl") {
-            startReplay(filename);
+            startReplay(filename, [&](const auto& e) { doInput(e); });
         }
     }
 }

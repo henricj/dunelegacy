@@ -619,7 +619,7 @@ FixPoint getDeviateWeakness(HOUSETYPE house) {
     Starts a game replay
     \param  filename    the filename of the replay file
 */
-void startReplay(const std::filesystem::path& filename) {
+void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_type handler) {
     sdl2::log_info("Initializing replay...");
 
     auto cleanup = gsl::finally([&] { dune::globals::currentGame.reset(); });
@@ -631,7 +631,7 @@ void startReplay(const std::filesystem::path& filename) {
     dune::globals::currentGame->initReplay(filename);
 
     const GameContext context{*game, *game->getMap(), game->getObjectManager()};
-    game->runMainLoop(context);
+    game->runMainLoop(context, handler);
 
     dune::globals::currentGame.reset();
 
@@ -644,7 +644,7 @@ void startReplay(const std::filesystem::path& filename) {
     this function. This is done until there is no more game to be started.
     \param init contains all the information to start the game
 */
-void startSinglePlayerGame(const GameInitSettings& init) {
+void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler_type handler) {
     auto currentGameInitInfo = init;
 
     auto cleanup = gsl::finally([&] { dune::globals::currentGame.reset(); });
@@ -668,7 +668,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
         currentGameInitInfo = game->getGameInitSettings();
 
         GameContext context{*game, *game->getMap(), game->getObjectManager()};
-        context.game.runMainLoop(context);
+        context.game.runMainLoop(context, handler);
 
         sdl2::log_info("Game completed after %.1f seconds", game->getGameTime() * (1.0 / 1000));
 
@@ -749,7 +749,7 @@ void startSinglePlayerGame(const GameInitSettings& init) {
     Starts a new multiplayer game.
     \param init contains all the information to start the game
 */
-void startMultiPlayerGame(const GameInitSettings& init) {
+void startMultiPlayerGame(const GameInitSettings& init, MenuBase::event_handler_type handler) {
     auto currentGameInitInfo = init;
 
     sdl2::log_info("Initializing game...");
@@ -765,7 +765,7 @@ void startMultiPlayerGame(const GameInitSettings& init) {
     currentGameInitInfo = game->getGameInitSettings();
 
     const GameContext context{*game, *game->getMap(), game->getObjectManager()};
-    game->runMainLoop(context);
+    game->runMainLoop(context, handler);
 
     if (game->whatNext() == GAME_CUSTOM_GAME_STATS) {
         sdl2::log_info("Game statistics...");

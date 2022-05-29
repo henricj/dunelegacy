@@ -469,7 +469,7 @@ void CustomGamePlayers::update() {
         }
 
         addAllPlayersToGameInitSettings();
-        startMultiPlayerGame(gameInitSettings);
+        startMultiPlayerGame(gameInitSettings, [&](const auto& e) { doInput(e); });
 
         quit(MENU_QUIT_GAME_FINISHED);
     } else {
@@ -727,7 +727,7 @@ void CustomGamePlayers::onNext() {
 
             disableAllDropDownBoxes();
         } else {
-            startSinglePlayerGame(gameInitSettings);
+            startSinglePlayerGame(gameInitSettings, [&](const auto& e) { doInput(e); });
 
             quit(MENU_QUIT_GAME_FINISHED);
         }

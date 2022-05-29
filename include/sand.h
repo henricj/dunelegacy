@@ -73,8 +73,8 @@ inline int missionNumberToLevelNumber(int missionNumber) {
     return 9;
 }
 
-void startReplay(const std::filesystem::path& filename);
-void startSinglePlayerGame(const GameInitSettings& init);
-void startMultiPlayerGame(const GameInitSettings& init);
+void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_type handler);
+void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler_type handler);
+void startMultiPlayerGame(const GameInitSettings& init, MenuBase::event_handler_type handler);
 
 #endif // SAND_H

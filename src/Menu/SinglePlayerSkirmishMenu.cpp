@@ -165,7 +165,7 @@ void SinglePlayerSkirmishMenu::onStart() {
         }
     }
 
-    startSinglePlayerGame(init);
+    startSinglePlayerGame(init, [&](const auto& e) { doInput(e); });
 
     quit();
 }
