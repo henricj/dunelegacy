@@ -874,7 +874,7 @@ bool run_game(int argc, char* argv[]) {
                 GlobalCleanup game_cleanup{dune::globals::currentGame};
                 GlobalCleanup border_cleanup{dune::globals::screenborder};
 
-                if (MainMenu().showMenu() == MENU_QUIT_DEFAULT) {
+                if (MainMenu().showMenu({}) == MENU_QUIT_DEFAULT) {
                     bExitGame = true;
                 }
             }

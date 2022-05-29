@@ -51,7 +51,7 @@ public:
 private:
     void onCampaign();
     void onCustom();
-    static void onSkirmish();
+    void onSkirmish();
     void onLoadSavegame();
     void onLoadReplay();
     void onCancel();

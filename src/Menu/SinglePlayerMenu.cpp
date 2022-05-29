@@ -80,7 +80,7 @@ SinglePlayerMenu::SinglePlayerMenu() {
     menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
 
     skirmishButton.setText(_("SKIRMISH"));
-    skirmishButton.setOnClick([] { onSkirmish(); });
+    skirmishButton.setOnClick([this] { onSkirmish(); });
     menuButtonsVBox.addWidget(&skirmishButton);
 
     menuButtonsVBox.addWidget(Widget::create<VSpacer>(3).release());
@@ -131,11 +131,11 @@ void SinglePlayerMenu::onCampaign() {
 }
 
 void SinglePlayerMenu::onCustom() {
-    CustomGameMenu(false).showMenu();
+    CustomGameMenu(false).showMenu(sdl_handler_);
 }
 
 void SinglePlayerMenu::onSkirmish() {
-    SinglePlayerSkirmishMenu().showMenu();
+    SinglePlayerSkirmishMenu().showMenu(sdl_handler_);
 }
 
 void SinglePlayerMenu::onLoadSavegame() {

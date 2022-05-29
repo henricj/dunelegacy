@@ -44,7 +44,7 @@ public:
     MenuBase& operator=(const MenuBase&) = delete;
     MenuBase& operator=(MenuBase&&)      = delete;
 
-    int showMenu(event_handler_type handler = {});
+    int showMenu(event_handler_type handler);
 
     virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
     virtual bool isQuitting() { return quitting; }
@@ -66,12 +66,13 @@ protected:
     virtual int showMenuImpl();
     virtual void doInputImpl(const SDL_Event& event);
 
+    event_handler_type sdl_handler_;
+
 private:
     bool bClearScreen   = true;
     bool bAllowQuitting = true;
     bool quitting       = false;
     int retVal{MENU_QUIT_DEFAULT};
-    event_handler_type sdl_handler_;
 };
 
 class DefaultWindowBase : public Window {

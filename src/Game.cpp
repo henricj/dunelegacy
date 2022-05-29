@@ -180,7 +180,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
                 && gameInitSettings_.getGameType() != GameType::CustomMultiplayer) {
                 /* do briefing */
                 sdl2::log_info("Briefing...");
-                BriefingMenu(gameInitSettings_.getHouseID(), gameInitSettings_.getMission(), BRIEFING).showMenu();
+                BriefingMenu(gameInitSettings_.getHouseID(), gameInitSettings_.getMission(), BRIEFING)
+                    .showMenu(sdl_handler_);
             }
         } break;
 
@@ -1547,7 +1548,7 @@ GameInitSettings Game::getNextGameInitSettings() {
                 // do map choice
                 sdl2::log_info("Map Choice...");
                 MapChoice mapChoice(gameInitSettings_.getHouseID(), currentMission, alreadyPlayedRegions);
-                mapChoice.showMenu();
+                mapChoice.showMenu(sdl_handler_);
                 nextMission          = mapChoice.getSelectedMission();
                 alreadyPlayedRegions = mapChoice.getAlreadyPlayedRegions();
             }

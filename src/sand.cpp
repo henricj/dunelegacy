@@ -680,13 +680,13 @@ void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler
                     { // Scope
                         BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
                                               DEBRIEFING_WIN};
-                        briefing.showMenu();
+                        briefing.showMenu(handler);
                     }
 
                     sdl2::log_info("Game statistics...");
                     { // Scope
                         CampaignStatsMenu campaignStats(missionNumberToLevelNumber(currentGameInitInfo.getMission()));
-                        campaignStats.showMenu();
+                        campaignStats.showMenu(handler);
                     }
 
                     const auto houseID = currentGameInitInfo.getHouseID();
@@ -718,13 +718,13 @@ void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler
                     sdl2::log_info("Debriefing...");
                     BriefingMenu briefing{currentGameInitInfo.getHouseID(), currentGameInitInfo.getMission(),
                                           DEBRIEFING_LOST};
-                    briefing.showMenu();
+                    briefing.showMenu(handler);
                 } break;
 
                 case GAME_CUSTOM_GAME_STATS: {
                     sdl2::log_info("Game statistics...");
                     CustomGameStatsMenu stats;
-                    stats.showMenu();
+                    stats.showMenu(handler);
                 } break;
 
                 case GAME_LOAD:
@@ -770,6 +770,6 @@ void startMultiPlayerGame(const GameInitSettings& init, MenuBase::event_handler_
     if (game->whatNext() == GAME_CUSTOM_GAME_STATS) {
         sdl2::log_info("Game statistics...");
         CustomGameStatsMenu stats;
-        stats.showMenu();
+        stats.showMenu(handler);
     }
 }

@@ -132,11 +132,11 @@ void MultiPlayerMenu::onChildWindowClose([[maybe_unused]] Window* pChildWindow) 
 }
 
 void MultiPlayerMenu::onCreateLANGame() {
-    CustomGameMenu(true, true).showMenu();
+    CustomGameMenu(true, true).showMenu(sdl_handler_);
 }
 
 void MultiPlayerMenu::onCreateInternetGame() {
-    CustomGameMenu(true, false).showMenu();
+    CustomGameMenu(true, false).showMenu(sdl_handler_);
 }
 
 void MultiPlayerMenu::onConnect() {
@@ -359,7 +359,7 @@ void MultiPlayerMenu::onReceiveGameInfo(const GameInitSettings& gameInitSettings
 
     auto pCustomGamePlayers = std::make_unique<CustomGamePlayers>(gameInitSettings, false);
     pCustomGamePlayers->onReceiveChangeEventList(changeEventList);
-    const int ret = pCustomGamePlayers->showMenu();
+    const int ret = pCustomGamePlayers->showMenu(sdl_handler_);
     pCustomGamePlayers.reset();
 
     switch (ret) {
