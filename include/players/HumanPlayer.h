@@ -103,7 +103,7 @@ public:
         \param  groupListIndex   which list should be returned
         \return the n-th list.
     */
-    Dune::selected_set_type& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; }
+    [[nodiscard]] Dune::selected_set_type& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; }
 
     /**
         Sets one of the 9 saved units lists
@@ -112,7 +112,6 @@ public:
     */
     void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
 
-public:
     uint32_t nextExpectedCommandsCycle{}; ///< The next cycle we expect commands for (using for network games)
 
     Dune::selected_set_type selectedLists[NUMSELECTEDLISTS]; ///< Sets of all the different groups on key 1 to 9

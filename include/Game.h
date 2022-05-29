@@ -304,7 +304,7 @@ public:
         Returns a list of all currently selected objects.
         \return list of currently selected units/structures
     */
-    Dune::selected_set_type& getSelectedList() noexcept { return selectedList_; }
+    [[nodiscard]] Dune::selected_set_type& getSelectedList() noexcept { return selectedList_; }
     [[nodiscard]] const Dune::selected_set_type& getSelectedList() const noexcept { return selectedList_; }
 
     /**
@@ -330,7 +330,9 @@ public:
         Returns a list of all currently by  the other player selected objects (Only in multiplayer with multiple players
        per house). \return list of currently selected units/structures by the other player
     */
-    Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept { return selectedByOtherPlayerList_; }
+    [[nodiscard]] Dune::selected_set_type& getSelectedByOtherPlayerList() noexcept {
+        return selectedByOtherPlayerList_;
+    }
     [[nodiscard]] const Dune::selected_set_type& getSelectedByOtherPlayerList() const noexcept {
         return selectedByOtherPlayerList_;
     }
