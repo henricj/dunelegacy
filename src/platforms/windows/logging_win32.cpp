@@ -127,8 +127,13 @@ void log_windows_version() {
         using RtlGetVersionType = NTSTATUS(WINAPI*)(LPOSVERSIONINFOEXW);
 
         if (const auto ntdll_module = GetModuleHandleA("ntdll")) {
+            // We disable C4191 here since GetProcAddress does return FARPROC, but the actual function really isn't
+            // FARPROC.
+#pragma warning(push)
+#pragma warning(disable : 4191)
             auto* const RtlGetVersion =
                 reinterpret_cast<RtlGetVersionType>(GetProcAddress(ntdll_module, "RtlGetVersion"));
+#pragma warning(pop)
 
             if (RtlGetVersion) {
                 RTL_OSVERSIONINFOEXW os_version{sizeof(os_version)};

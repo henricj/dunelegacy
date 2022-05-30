@@ -638,8 +638,12 @@ float physical_dpi(SDL_Window* sdl_window) {
 
     static auto shcore = LoadLibraryA("Shcore.dll");
 
+    // We disable C4191 here since GetProcAddress does return FARPROC, but the actual function really isn't FARPROC.
+#    pragma warning(push)
+#    pragma warning(disable : 4191)
     static auto get_dpi_for_monitor =
         nullptr == shcore ? nullptr : reinterpret_cast<fn_ptr>(GetProcAddress(shcore, "GetDpiForMonitor"));
+#    pragma warning(pop)
 
     if (!shcore)
         return default_dpi;
