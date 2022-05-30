@@ -186,8 +186,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
     std::filesystem::path output_path;
 
 #ifdef _WIN32
-    std::array<wchar_t, MAX_PATH> szPath;
-    std::array<wchar_t, MAX_PATH> buffer;
+    std::array<wchar_t, MAX_PATH> szPath{};
+    std::array<wchar_t, MAX_PATH> buffer{};
 
     /* save room for the null term char
      */

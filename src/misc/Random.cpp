@@ -135,7 +135,7 @@ constexpr char seed_stir[] = R"(
 } // namespace
 
 std::array<uint8_t, Random::state_bytes> Random::getState() const {
-    std::array<uint8_t, Random::state_bytes> state;
+    std::array<uint8_t, Random::state_bytes> state{};
 
     get_generator_state(generator_, state);
 
