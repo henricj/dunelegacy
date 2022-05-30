@@ -20,12 +20,69 @@
 #include <misc/IFileStream.h>
 #include <misc/IMemoryStream.h>
 #include <misc/exceptions.h>
-#include <misc/string_util.h>
-#include <mmath.h>
 
 #include <globals.h>
 
 #include "misc/Random.h"
+
+GameInitSettings::PlayerInfo::PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
+    : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) { }
+
+GameInitSettings::PlayerInfo::PlayerInfo(InputStream& stream) {
+    playerName  = stream.readString();
+    playerClass = stream.readString();
+}
+
+GameInitSettings::PlayerInfo::PlayerInfo(const PlayerInfo&) = default;
+
+GameInitSettings::PlayerInfo::PlayerInfo(PlayerInfo&&) noexcept = default;
+
+GameInitSettings::PlayerInfo& GameInitSettings::PlayerInfo::operator=(const PlayerInfo&) = default;
+
+GameInitSettings::PlayerInfo& GameInitSettings::PlayerInfo::operator=(PlayerInfo&&) noexcept = default;
+
+GameInitSettings::PlayerInfo::~PlayerInfo() = default;
+
+void GameInitSettings::PlayerInfo::save(OutputStream& stream) const {
+    stream.writeString(playerName);
+    stream.writeString(playerClass);
+}
+
+GameInitSettings::HouseInfo::HouseInfo(HOUSETYPE newHouseID, int newTeam) : houseID(newHouseID), team(newTeam) { }
+
+GameInitSettings::HouseInfo::HouseInfo(InputStream& stream) {
+    houseID = static_cast<HOUSETYPE>(stream.readSint32());
+    team    = stream.readSint32();
+
+    const auto numPlayerInfo = stream.readUint32();
+    for (auto i = 0U; i < numPlayerInfo; i++) {
+        playerInfoList.emplace_back(stream);
+    }
+}
+
+GameInitSettings::HouseInfo::HouseInfo(const HouseInfo&) = default;
+
+GameInitSettings::HouseInfo::HouseInfo(HouseInfo&&) noexcept = default;
+
+GameInitSettings::HouseInfo& GameInitSettings::HouseInfo::operator=(const HouseInfo&) = default;
+
+GameInitSettings::HouseInfo& GameInitSettings::HouseInfo::operator=(HouseInfo&&) noexcept = default;
+
+GameInitSettings::HouseInfo::~HouseInfo() = default;
+
+void GameInitSettings::HouseInfo::save(OutputStream& stream) const {
+    stream.writeSint32(static_cast<int32_t>(houseID));
+    stream.writeSint32(team);
+
+    stream.writeUint32(static_cast<uint32_t>(playerInfoList.size()));
+    for (const auto& playerInfo : playerInfoList) {
+        playerInfo.save(stream);
+    }
+}
+
+void GameInitSettings::HouseInfo::addPlayerInfo(PlayerInfo&& newPlayerInfo) {
+    playerInfoList.emplace_back(std::move(newPlayerInfo));
+}
 
 GameInitSettings::GameInitSettings() = default;
 
@@ -84,7 +141,7 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     randomSeed                = stream.readUint8Vector();
 
     multiplePlayersPerHouse                  = stream.readBool();
-    gameOptions.gameSpeed                    = stream.readUint32();
+    gameOptions.gameSpeed                    = static_cast<int>(stream.readUint32());
     gameOptions.concreteRequired             = stream.readBool();
     gameOptions.structuresDegradeOnConcrete  = stream.readBool();
     gameOptions.fogOfWar                     = stream.readBool();
@@ -98,10 +155,18 @@ GameInitSettings::GameInitSettings(InputStream& stream) {
     gameOptions.maximumNumberOfUnitsOverride = stream.readSint32();
 
     const auto numHouseInfo = stream.readUint32();
-    for (uint32_t i = 0; i < numHouseInfo; i++) {
-        houseInfoList.push_back(HouseInfo(stream));
+    for (auto i = 0U; i < numHouseInfo; i++) {
+        houseInfoList.emplace_back(stream);
     }
 }
+
+GameInitSettings::GameInitSettings(const GameInitSettings&) = default;
+
+GameInitSettings::GameInitSettings(GameInitSettings&&) noexcept = default;
+
+GameInitSettings& GameInitSettings::operator=(const GameInitSettings&) = default;
+
+GameInitSettings& GameInitSettings::operator=(GameInitSettings&&) noexcept = default;
 
 GameInitSettings::~GameInitSettings() = default;
 
@@ -132,7 +197,7 @@ void GameInitSettings::save(OutputStream& stream) const {
     stream.writeSint32(gameOptions.maximumNumberOfUnitsOverride);
 
     stream.writeUint32(houseInfoList.size());
-    for (const HouseInfo& houseInfo : houseInfoList) {
+    for (const auto& houseInfo : houseInfoList) {
         houseInfo.save(stream);
     }
 }

@@ -26,52 +26,43 @@
 #include <string>
 #include <utility>
 
-class GameInitSettings {
+class GameInitSettings final {
 public:
-    class PlayerInfo {
+    class PlayerInfo final {
     public:
-        PlayerInfo(std::string newPlayerName, std::string newPlayerClass)
-            : playerName(std::move(newPlayerName)), playerClass(std::move(newPlayerClass)) { }
+        PlayerInfo(std::string newPlayerName, std::string newPlayerClass);
 
-        explicit PlayerInfo(InputStream& stream) {
-            playerName  = stream.readString();
-            playerClass = stream.readString();
-        }
+        explicit PlayerInfo(InputStream& stream);
 
-        void save(OutputStream& stream) const {
-            stream.writeString(playerName);
-            stream.writeString(playerClass);
-        }
+        PlayerInfo(const PlayerInfo&);
+        PlayerInfo(PlayerInfo&&) noexcept;
+        PlayerInfo& operator=(const PlayerInfo&);
+        PlayerInfo& operator=(PlayerInfo&&) noexcept;
+
+        ~PlayerInfo();
+
+        void save(OutputStream& stream) const;
 
         std::string playerName;
         std::string playerClass;
     };
 
-    class HouseInfo {
+    class HouseInfo final {
     public:
-        HouseInfo(HOUSETYPE newHouseID, int newTeam) : houseID(newHouseID), team(newTeam) { }
+        HouseInfo(HOUSETYPE newHouseID, int newTeam);
 
-        explicit HouseInfo(InputStream& stream) {
-            houseID = static_cast<HOUSETYPE>(stream.readSint32());
-            team    = stream.readSint32();
+        explicit HouseInfo(InputStream& stream);
 
-            const auto numPlayerInfo = stream.readUint32();
-            for (uint32_t i = 0; i < numPlayerInfo; i++) {
-                playerInfoList.push_back(PlayerInfo(stream));
-            }
-        }
+        HouseInfo(const HouseInfo&);
+        HouseInfo(HouseInfo&&) noexcept;
+        HouseInfo& operator=(const HouseInfo&);
+        HouseInfo& operator=(HouseInfo&&) noexcept;
 
-        void save(OutputStream& stream) const {
-            stream.writeSint32(static_cast<int32_t>(houseID));
-            stream.writeSint32(team);
+        ~HouseInfo();
 
-            stream.writeUint32(playerInfoList.size());
-            for (const auto& playerInfo : playerInfoList) {
-                playerInfo.save(stream);
-            }
-        }
+        void save(OutputStream& stream) const;
 
-        void addPlayerInfo(PlayerInfo&& newPlayerInfo) { playerInfoList.emplace_back(std::move(newPlayerInfo)); }
+        void addPlayerInfo(PlayerInfo&& newPlayerInfo);
 
         typedef std::vector<PlayerInfo> PlayerInfoList;
 
@@ -156,6 +147,11 @@ public:
         \param  stream  the stream to load from
     */
     explicit GameInitSettings(InputStream& stream);
+
+    GameInitSettings(const GameInitSettings&);
+    GameInitSettings(GameInitSettings&&) noexcept;
+    GameInitSettings& operator=(const GameInitSettings&);
+    GameInitSettings& operator=(GameInitSettings&&) noexcept;
 
     ~GameInitSettings();
 
