@@ -81,7 +81,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     seedMapRadioButton.setTextColor(color);
     seedMapRadioButton.setOnClick([this] { onMapTypeChanged(2); });
     mapTypeHBox.addWidget(&seedMapRadioButton);
-    mapTypeRadioButtons.registerRadioButtons(3, &emptyMapRadioButton, &randomMapRadioButton, &seedMapRadioButton);
+    mapTypeRadioButtons.registerRadioButtons({&emptyMapRadioButton, &randomMapRadioButton, &seedMapRadioButton});
     mapTypeHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
     basicMapPropertiesVBox.addWidget(&mapTypeHBox);
 

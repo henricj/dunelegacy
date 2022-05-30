@@ -86,8 +86,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
             playerWidgets[i].houseRadioButton.setTextColor(currentColor);
             playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].houseRadioButton, 110);
 
-            playerWidgets[i].radioButtonManager.registerRadioButtons(2, &playerWidgets[i].anyHouseRadioButton,
-                                                                     &playerWidgets[i].houseRadioButton);
+            playerWidgets[i].radioButtonManager.registerRadioButtons(
+                {&playerWidgets[i].anyHouseRadioButton, &playerWidgets[i].houseRadioButton});
             if (playerInfo.bAnyHouse_) {
                 playerWidgets[i].anyHouseRadioButton.setChecked(true);
             } else {

@@ -18,6 +18,25 @@
 #include <GUI/RadioButton.h>
 #include <GUI/RadioButtonManager.h>
 
+#include <ranges>
+
+RadioButtonManager::RadioButtonManager() = default;
+
+RadioButtonManager::~RadioButtonManager() {
+    while (!radioButtonList.empty()) {
+        unregisterRadioButton(radioButtonList.front());
+    }
+}
+
+void RadioButtonManager::registerRadioButtons(std::initializer_list<RadioButton*> buttons) {
+    for (auto* pRadioButton : buttons)
+        registerRadioButton(pRadioButton);
+}
+
+bool RadioButtonManager::isRegistered(RadioButton* pRadioButton) {
+    return std::end(radioButtonList) != std::ranges::find(radioButtonList, pRadioButton);
+}
+
 void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
     if (!isRegistered(pRadioButton)) {
         radioButtonList.push_back(pRadioButton);
@@ -26,20 +45,19 @@ void RadioButtonManager::registerRadioButton(RadioButton* pRadioButton) {
 }
 
 void RadioButtonManager::unregisterRadioButton(RadioButton* pRadioButton) {
-    auto iter = radioButtonList.begin();
-    while (iter != radioButtonList.end()) {
+
+    for (auto iter = radioButtonList.begin(); iter != radioButtonList.end(); ++iter) {
         if (*iter == pRadioButton) {
             radioButtonList.erase(iter);
             break;
         }
-        ++iter;
     }
 
     pRadioButton->unregisterFromRadioButtonManager();
 }
 
 void RadioButtonManager::setChecked(RadioButton* pRadioButton) const {
-    for (RadioButton* pTmpRadioButton : radioButtonList) {
+    for (auto* pTmpRadioButton : radioButtonList) {
         if (pTmpRadioButton == pRadioButton) {
             pTmpRadioButton->Button::setToggleState(true);
         } else {

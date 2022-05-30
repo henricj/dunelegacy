@@ -27,39 +27,18 @@ class RadioButton;
 class RadioButtonManager final {
 public:
     /// Default constructor
-    RadioButtonManager() = default;
+    RadioButtonManager();
 
     /// destructor
-    virtual ~RadioButtonManager() {
-        while (!radioButtonList.empty()) {
-            unregisterRadioButton(*radioButtonList.begin());
-        }
-    }
+    virtual ~RadioButtonManager();
 
     void registerRadioButton(RadioButton* pRadioButton);
 
-    void registerRadioButtons(int numRadioButtons, ...) {
-        va_list valist;
-        va_start(valist, numRadioButtons);
-
-        for (int i = 0; i < numRadioButtons; i++) {
-            RadioButton* pRadioButton = va_arg(valist, RadioButton*);
-            registerRadioButton(pRadioButton);
-        }
-        va_end(valist);
-    }
+    void registerRadioButtons(std::initializer_list<RadioButton*> buttons);
 
     void unregisterRadioButton(RadioButton* pRadioButton);
 
-    bool isRegistered(RadioButton* pRadioButton) {
-        for (const RadioButton* pTmpRadioButton : radioButtonList) {
-            if (pTmpRadioButton == pRadioButton) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+    bool isRegistered(RadioButton* pRadioButton);
 
     void setChecked(RadioButton* pRadioButton) const;
 
