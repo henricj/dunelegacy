@@ -23,12 +23,10 @@
 
 #include <misc/exceptions.h>
 
-#include <globals.h>
-
 #include <algorithm>
-#include <cstdio>
+#include <limits>
 
-NetworkManager::NetworkManager(int port, const std::string& metaserver) {
+NetworkManager::NetworkManager(uint16_t port, std::string metaserver) {
 
     if (enet_initialize() != 0) {
         THROW(std::runtime_error, "NetworkManager: An error occurred while initializing ENet.");
@@ -51,7 +49,7 @@ NetworkManager::NetworkManager(int port, const std::string& metaserver) {
 
     try {
         pLANGameFinderAndAnnouncer_ = std::make_unique<LANGameFinderAndAnnouncer>();
-        pMetaServerClient_          = std::make_unique<MetaServerClient>(metaserver);
+        pMetaServerClient_          = std::make_unique<MetaServerClient>(std::move(metaserver));
     } catch (...) {
         enet_deinitialize();
         throw;
@@ -65,37 +63,50 @@ NetworkManager::~NetworkManager() {
     enet_deinitialize();
 }
 
-void NetworkManager::startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
+void NetworkManager::startServer(bool bLANServer, std::string serverName, std::string playerName,
                                  GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
-    const std::string map_name{reinterpret_cast<const char*>(pGameInitSettings->getFilename().u8string().c_str())};
+    if (numPlayers <= 0 || numPlayers > std::numeric_limits<uint8_t>::max() || maxPlayers <= 0
+        || maxPlayers > std::numeric_limits<uint8_t>::max())
+        THROW(std::invalid_argument, "Too many players (%d/%d)!", numPlayers, maxPlayers);
+
+    const auto numPlayers8 = static_cast<uint8_t>(numPlayers);
+    const auto maxPlayers8 = static_cast<uint8_t>(maxPlayers);
+
+    bIsServer_         = true;
+    bLANServer_        = bLANServer;
+    numPlayers_        = numPlayers;
+    maxPlayers_        = maxPlayers;
+    playerName_        = std::move(playerName);
+    pGameInitSettings_ = pGameInitSettings;
+
+    std::string map_name{reinterpret_cast<const char*>(pGameInitSettings->getFilename().u8string().c_str())};
 
     if (bLANServer) {
         if (pLANGameFinderAndAnnouncer_ != nullptr) {
-            pLANGameFinderAndAnnouncer_->startAnnounce(serverName, host_->address.port, map_name, numPlayers,
-                                                       maxPlayers);
+            pLANGameFinderAndAnnouncer_->startAnnounce(std::move(serverName), host_->address.port, std::move(map_name),
+                                                       numPlayers8, maxPlayers8);
         }
     } else {
         if (pMetaServerClient_ != nullptr) {
-            pMetaServerClient_->startAnnounce(serverName, host_->address.port, map_name, numPlayers, maxPlayers);
+            pMetaServerClient_->startAnnounce(std::move(serverName), host_->address.port, std::move(map_name),
+                                              numPlayers8, maxPlayers8);
         }
     }
-
-    bIsServer_               = true;
-    this->bLANServer_        = bLANServer;
-    this->numPlayers_        = numPlayers;
-    this->maxPlayers_        = maxPlayers;
-    this->playerName_        = playerName;
-    this->pGameInitSettings_ = pGameInitSettings;
 }
 
 void NetworkManager::updateServer(int numPlayers) {
+    if (numPlayers <= 0 || numPlayers > std::numeric_limits<uint8_t>::max())
+        THROW(std::invalid_argument, "Too many players (%d)!", numPlayers);
+
+    const auto numPlayers8 = static_cast<uint8_t>(numPlayers);
+
     if (bLANServer_) {
         if (pLANGameFinderAndAnnouncer_ != nullptr) {
-            pLANGameFinderAndAnnouncer_->updateAnnounce(numPlayers);
+            pLANGameFinderAndAnnouncer_->updateAnnounce(numPlayers8);
         }
     } else {
         if (pMetaServerClient_ != nullptr) {
-            pMetaServerClient_->updateAnnounce(numPlayers);
+            pMetaServerClient_->updateAnnounce(numPlayers8);
         }
     }
 
@@ -118,36 +129,36 @@ void NetworkManager::stopServer() {
     pGameInitSettings_ = nullptr;
 }
 
-void NetworkManager::connect(const std::string& hostname, int port, const std::string& playerName) {
+void NetworkManager::connect(const std::string& hostname, uint16_t port, std::string playerName) {
     ENetAddress address;
 
     if (enet_address_set_host(&address, hostname.c_str()) < 0) {
-        THROW(std::runtime_error, "NetworkManager: Resolving hostname '" + hostname + "' failed!");
+        THROW(std::runtime_error, "NetworkManager: Resolving hostname '%s' failed!", hostname);
     }
     address.port = port;
 
-    connect(address, playerName);
+    connect(address, std::move(playerName));
 }
 
-void NetworkManager::connect(ENetAddress address, const std::string& playerName) {
-    debugNetwork("Connecting to %s:%d\n", Address2String(address).c_str(), address.port);
+void NetworkManager::connect(ENetAddress address, std::string playerName) {
+    debugNetwork("Connecting to %s:%d\n", Address2String(address), address.port);
 
     connectPeer_ = enet_host_connect(host_, &address, 2, 0);
     if (connectPeer_ == nullptr) {
         THROW(std::runtime_error, "NetworkManager: No available peers for initiating a connection.");
     }
 
-    this->playerName_ = playerName;
+    this->playerName_ = std::move(playerName);
 
     connectPeer_->data = new PeerData(connectPeer_, PeerData::PeerState::WaitingForConnect);
     awaitingConnectionList_.push_back(connectPeer_);
 }
 
 void NetworkManager::disconnect() {
-    for (ENetPeer* pAwaitingConnectionPeer : awaitingConnectionList_) {
+    for (auto* pAwaitingConnectionPeer : awaitingConnectionList_) {
         enet_peer_disconnect_later(pAwaitingConnectionPeer, NETWORKDISCONNECT_QUIT);
     }
-    for (ENetPeer* pCurrentPeer : peerList_) {
+    for (auto* pCurrentPeer : peerList_) {
         enet_peer_disconnect_later(pCurrentPeer, NETWORKDISCONNECT_QUIT);
     }
 }
@@ -164,8 +175,8 @@ void NetworkManager::update() {
     if (bIsServer_) {
         // Check for timeout of one client
         if (!awaitingConnectionList_.empty()) {
-            ENetPeer* pCurrentPeer = awaitingConnectionList_.front();
-            auto* peerData         = static_cast<PeerData*>(pCurrentPeer->data);
+            auto* const pCurrentPeer = awaitingConnectionList_.front();
+            auto* const peerData     = static_cast<PeerData*>(pCurrentPeer->data);
 
             if (peerData->peerState_ == PeerData::PeerState::ReadyForOtherPeersToConnect) {
                 if (numPlayers_ >= maxPlayers_) {
@@ -252,13 +263,13 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_CONNECT: {
                 if (bIsServer_) {
                     // Server
-                    debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address).c_str(),
+                    debugNetwork("NetworkManager: %s:%u connected.\n", Address2String(peer->address),
                                  peer->address.port);
 
                     auto newPeerData      = std::make_unique<PeerData>(peer, PeerData::PeerState::WaitingForName);
                     newPeerData->timeout_ = dune::dune_clock::now() + AWAITING_CONNECTION_TIMEOUT;
 
-                    debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name_.c_str());
+                    debugNetwork("Adding '%s' to awaiting connection list\n", newPeerData->name_);
                     awaitingConnectionList_.push_back(peer);
 
                     // Send name
@@ -329,11 +340,10 @@ void NetworkManager::update() {
             case ENET_EVENT_TYPE_DISCONNECT: {
                 std::unique_ptr<PeerData> peerData{static_cast<PeerData*>(peer->data)};
 
-                const int disconnectCause = event.data;
+                const auto disconnectCause = event.data;
 
-                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address).c_str(),
-                             peer->address.port, (peerData != nullptr) ? peerData->name_.c_str() : "unknown",
-                             disconnectCause);
+                debugNetwork("NetworkManager: %s:%u (%s) disconnected (%d).\n", Address2String(peer->address),
+                             peer->address.port, (peerData != nullptr) ? peerData->name_ : "unknown", disconnectCause);
 
                 if (peerData != nullptr) {
                     if (std::ranges::find(awaitingConnectionList_, peer) != awaitingConnectionList_.end()) {
@@ -346,7 +356,7 @@ void NetworkManager::update() {
                             sendPacketToAllConnectedPeers(packetStream);
                         }
 
-                        debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name_.c_str());
+                        debugNetwork("Removing '%s' from awaiting connection list\n", peerData->name_);
                         awaitingConnectionList_.remove(peer);
                     }
 
@@ -666,17 +676,23 @@ void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int chann
         return;
     }
 
+    if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
+        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    if (enet_peer_send(connectPeer_, channel, enetPacket) < 0) {
+    if (enet_peer_send(connectPeer_, static_cast<enet_uint8>(channel), enetPacket) < 0) {
         sdl2::log_info("NetworkManager: Cannot send packet!");
     }
 }
 
 void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetStream, int channel) {
+    if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
+        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    if (enet_peer_send(peer, channel, enetPacket) < 0) {
+    if (enet_peer_send(peer, static_cast<enet_uint8>(channel), enetPacket) < 0) {
         sdl2::log_info("NetworkManager: Cannot send packet!");
     }
 
@@ -686,10 +702,13 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
 }
 
 void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel) {
+    if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
+        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+
     ENetPacket* enetPacket = packetStream.getPacket();
 
-    for (ENetPeer* pCurrentPeer : peerList_) {
-        if (enet_peer_send(pCurrentPeer, channel, enetPacket) < 0) {
+    for (auto* pCurrentPeer : peerList_) {
+        if (enet_peer_send(pCurrentPeer, static_cast<enet_uint8>(channel), enetPacket) < 0) {
             sdl2::log_info("NetworkManager: Cannot send packet!");
         }
     }
@@ -699,7 +718,7 @@ void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStre
     }
 }
 
-void NetworkManager::sendChatMessage(const std::string& message) {
+void NetworkManager::sendChatMessage(std::string_view message) {
     ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
     packetStream.writeUint32(NETWORKPACKET_CHATMESSAGE);
     packetStream.writeString(message);
@@ -745,6 +764,20 @@ void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedLis
     packetStream.writeUint32Set(selectedList);
 
     sendPacketToAllConnectedPeers(packetStream, 0);
+}
+
+std::vector<std::string> NetworkManager::getConnectedPeers() const {
+    std::vector<std::string> peerNameList;
+    peerNameList.reserve(peerList_.size());
+
+    for (const auto* pPeer : peerList_) {
+        const auto* peerData = static_cast<PeerData*>(pPeer->data);
+        if (peerData != nullptr) {
+            peerNameList.push_back(peerData->name_);
+        }
+    }
+
+    return peerNameList;
 }
 
 int NetworkManager::getMaxPeerRoundTripTime() const {

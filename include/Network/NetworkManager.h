@@ -59,7 +59,7 @@ class GameInitSettings;
 
 class NetworkManager {
 public:
-    NetworkManager(int port, const std::string& metaserver);
+    NetworkManager(uint16_t port, std::string metaserver);
     NetworkManager(const NetworkManager& o) = delete;
     NetworkManager(NetworkManager&& o)      = delete;
     ~NetworkManager();
@@ -69,19 +69,19 @@ public:
 
     [[nodiscard]] bool isServer() const noexcept { return bIsServer_; }
 
-    void startServer(bool bLANServer, const std::string& serverName, const std::string& playerName,
+    void startServer(bool bLANServer, std::string serverName, std::string playerName,
                      GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers);
     void updateServer(int numPlayers);
     void stopServer();
 
-    void connect(const std::string& hostname, int port, const std::string& playerName);
-    void connect(ENetAddress address, const std::string& playerName);
+    void connect(const std::string& hostname, uint16_t port, std::string playerName);
+    void connect(ENetAddress address, std::string playerName);
 
     void disconnect();
 
     void update();
 
-    void sendChatMessage(const std::string& message);
+    void sendChatMessage(std::string_view message);
 
     void sendChangeEventList(const ChangeEventList& changeEventList);
 
@@ -91,18 +91,7 @@ public:
 
     void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
 
-    [[nodiscard]] std::list<std::string> getConnectedPeers() const {
-        std::list<std::string> peerNameList;
-
-        for (const ENetPeer* pPeer : peerList_) {
-            auto* peerData = static_cast<PeerData*>(pPeer->data);
-            if (peerData != nullptr) {
-                peerNameList.push_back(peerData->name_);
-            }
-        }
-
-        return peerNameList;
-    }
+    [[nodiscard]] std::vector<std::string> getConnectedPeers() const;
 
     int getMaxPeerRoundTripTime() const;
 
@@ -229,7 +218,7 @@ private:
     std::function<void(const std::string&, const std::string&)> pOnReceiveChatMessage_;
     std::function<void(const GameInitSettings&, const ChangeEventList&)> pOnReceiveGameInfo_;
     std::function<void(const ChangeEventList&)> pOnReceiveChangeEventList_;
-    std::function<void(const std::string&, bool, int)> pOnPeerDisconnected_;
+    std::function<void(const std::string&, bool, uint32_t)> pOnPeerDisconnected_;
     std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback_;
     std::function<void(dune::dune_clock::duration)> pOnStartGame_;
     std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList_;

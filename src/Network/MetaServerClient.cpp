@@ -63,7 +63,7 @@ MetaServerClient::~MetaServerClient() {
     SDL_DestroySemaphore(availableMetaServerCommandsSemaphore_);
 }
 
-void MetaServerClient::startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName,
+void MetaServerClient::startAnnounce(std::string serverName, uint16_t serverPort, std::string mapName,
                                      uint8_t numPlayers, uint8_t maxPlayers) {
 
     stopAnnounce();
@@ -76,12 +76,12 @@ void MetaServerClient::startAnnounce(const std::string& serverName, int serverPo
     if (secret_key.size() > 16)
         secret_key.resize(16);
 
-    this->serverName_ = serverName;
-    this->serverPort_ = serverPort_;
-    this->secret_     = to_hex(secret_key);
-    this->mapName_    = mapName;
-    this->numPlayers_ = numPlayers;
-    this->maxPlayers_ = maxPlayers;
+    serverName_ = std::move(serverName);
+    serverPort_ = serverPort_;
+    secret_     = to_hex(secret_key);
+    mapName_    = std::move(mapName);
+    numPlayers_ = numPlayers;
+    maxPlayers_ = maxPlayers;
 
     enqueueMetaServerCommand(
         std::make_unique<MetaServerAdd>(serverName_, serverPort_, secret_, mapName_, numPlayers_, maxPlayers_));

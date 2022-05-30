@@ -110,7 +110,7 @@ public:
         currentPos += sizeof(uint64_t);
     }
 
-    void writeBool(bool x) override { writeUint8(x ? 1 : 0); }
+    void writeBool(bool x) override { writeUint8(x ? 1U : 0U); }
 
     void writeFloat(float x) override {
         uint32_t tmp = 0;

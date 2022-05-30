@@ -60,7 +60,7 @@ public:
         this->pOnMetaServerError_ = pOnMetaServerError;
     }
 
-    void startAnnounce(const std::string& serverName, int serverPort, const std::string& mapName, uint8_t numPlayers,
+    void startAnnounce(std::string serverName, uint16_t serverPort, std::string mapName, uint8_t numPlayers,
                        uint8_t maxPlayers);
 
     void updateAnnounce(uint8_t numPlayers);
@@ -130,12 +130,12 @@ private:
 
     // Non-Shared data (used only by main thread):
 
-    std::string serverName_; ///< The name of the game server
-    int serverPort_ = 0;     ///< The port of the game server
-    std::string secret_;     ///< The secret used for the metaserver updates
-    std::string mapName_;    ///< The name of the map for which a game is currently set up
-    uint8_t numPlayers_ = 0; ///< The current number of players in the currently set up game
-    uint8_t maxPlayers_ = 0; ///< The maximum number of players in the currently set up game
+    std::string serverName_;  ///< The name of the game server
+    uint16_t serverPort_ = 0; ///< The port of the game server
+    std::string secret_;      ///< The secret used for the metaserver updates
+    std::string mapName_;     ///< The name of the map for which a game is currently set up
+    uint8_t numPlayers_ = 0;  ///< The current number of players in the currently set up game
+    uint8_t maxPlayers_ = 0;  ///< The maximum number of players in the currently set up game
 
     dune::dune_clock::time_point lastAnnounceUpdate{}; ///< The last time the game was announced
     dune::dune_clock::time_point

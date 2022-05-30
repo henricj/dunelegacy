@@ -105,8 +105,9 @@ MultiPlayerMenu::MultiPlayerMenu() {
 
     // Start Network Manager
     sdl2::log_info("Starting network...");
-    const auto& network            = dune::globals::settings.network;
-    dune::globals::pNetworkManager = std::make_unique<NetworkManager>(network.serverPort, network.metaServer);
+    const auto& network = dune::globals::settings.network;
+    dune::globals::pNetworkManager =
+        std::make_unique<NetworkManager>(static_cast<uint16_t>(network.serverPort), network.metaServer);
     LANGameFinderAndAnnouncer* const pLANGFAA = dune::globals::pNetworkManager->getLANGameFinderAndAnnouncer();
     pLANGFAA->setOnNewServer([this](auto interactive) { onNewLANServer(interactive); });
     pLANGFAA->setOnUpdateServer([this](auto interactive) { onUpdateLANServer(interactive); });
@@ -142,7 +143,7 @@ void MultiPlayerMenu::onCreateInternetGame() {
 void MultiPlayerMenu::onConnect() {
     const std::string hostname{connectHostTextBox.getText()};
 
-    int port;
+    uint16_t port;
     const auto port_text = connectPortTextBox.getText();
     if (!parseString(port_text, port))
         THROW(std::invalid_argument, "NetworkManager: Invalid port '%s'!", port_text);
