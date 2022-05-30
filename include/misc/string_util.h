@@ -178,7 +178,10 @@ TValue parseStringThrows(std::string_view text) {
 }
 
 inline void convertToLower(std::string& str) {
-    std::ranges::transform(str, str.begin(), tolower);
+    std::ranges::transform(str, str.begin(), [](auto c) {
+        const auto uc = static_cast<unsigned char>(c);
+        return static_cast<char>(std::tolower(uc));
+    });
 }
 
 inline std::string strToLower(std::string_view str) {
@@ -188,7 +191,10 @@ inline std::string strToLower(std::string_view str) {
 }
 
 inline void convertToUpper(std::string& str) {
-    std::ranges::transform(str, str.begin(), toupper);
+    std::ranges::transform(str, str.begin(), [](auto c) {
+        const auto uc = static_cast<unsigned char>(c);
+        return static_cast<char>(std::toupper(uc));
+    });
 }
 
 inline std::string strToUpper(std::string_view str) {

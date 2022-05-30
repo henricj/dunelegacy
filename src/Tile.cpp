@@ -233,9 +233,9 @@ void Tile::assignAirUnit(uint32_t newObjectID) {
 
 void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position) {
 #if HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
-    deadUnits_.emplace_back(position, 2000, type, house, isSand() || isDunes());
+    deadUnits_.emplace_back(position, static_cast<uint16_t>(2000), type, house, isSand() || isDunes());
 #else
-    deadUnits_.push_back({position, 2000, type, house, isSand() || isDunes()});
+    deadUnits_.push_back({position, static_cast<uint16_t>(2000), type, house, isSand() || isDunes()});
 #endif
 }
 

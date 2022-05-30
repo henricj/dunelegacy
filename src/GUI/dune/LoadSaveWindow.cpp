@@ -271,7 +271,7 @@ void LoadSaveWindow::onCancel() {
 void LoadSaveWindow::onDirectoryChange(int i) {
     currentDirectoryIndex_ = i;
     for (auto j = 0U; j < directoryButtons.size(); ++j) {
-        directoryButtons[j].setToggleState(i == j);
+        directoryButtons[j].setToggleState(std::cmp_equal(i, j));
     }
 
     updateEntries();
