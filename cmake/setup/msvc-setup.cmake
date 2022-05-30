@@ -3,9 +3,12 @@ message(STATUS "Configuring MSVC")
 add_compile_options(/diagnostics:caret /GA /GS /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast)
 add_compile_options(/wd4267)
 
+# C4018 'token' : signed/unsigned mismatch
 # C4100 'identifier' : unreferenced formal parameter
+# C4389 'equality-operator' : signed/unsigned mismatch
+# C4456 declaration of 'identifier' hides previous local declaration
 # C4458 declaration of 'identifier' hides class member
-set(DUNE_TARGET_COMPILE_FLAGS "/W4 /we4100 /we4458" CACHE STRING "Dune compiler flags (not applied to external/*)")
+set(DUNE_TARGET_COMPILE_FLAGS "/W4 /we4018 /we4100 /we4389 /we4456 /we4458" CACHE STRING "Dune compiler flags (not applied to external/*)")
 
 set(DUNE_MSVC_DEBUG_FLAGS "/ZI /Ob0 /Od /RTC1 /RTCs /JMC" CACHE STRING "Debug compiler flags")
 set(DUNE_MSVC_RELEASE_FLAGS "/EHsc /GF /Gy /Gw /Zi /O2 /Ob3 /Oi /DNDEBUG" CACHE STRING "Release compiler flags")
