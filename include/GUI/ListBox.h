@@ -109,6 +109,8 @@ public:
     */
     void setActive() override;
 
+    using parent::setActive;
+
     /**
         Returns whether this widget can be set active.
         \return true = activatable, false = not activatable
