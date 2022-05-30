@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdio>
+#include <cwctype>
 #include <filesystem>
 
 #ifdef _WIN32
@@ -59,16 +60,22 @@ char32_t safe_tolower(char32_t c) {
     // See here for why what this code isn't right:
     //   https://stackoverflow.com/a/50407375
     // However, short of bringing in ICU, this is probably about as
-    // good as we can make things. Note that "std::tolower()" is
-    // undefined for anything that can't be represented by "unsigned
-    // char" or is EOF.
+    // good as we can make things. Note that "std::towlower()" is
+    // undefined for anything that can't be represented by "wchar_t"
+    // or WEOF.
     // https://en.cppreference.com/w/cpp/string/byte/tolower
-    using nlw = std::numeric_limits<wchar_t>;
 
-    if (c < nlw::min() || c > nlw::max())
-        return c;
+    if constexpr (sizeof(std::wint_t) < sizeof(char32_t)) {
+        using nlw = std::numeric_limits<wchar_t>;
 
-    return towlower(static_cast<wchar_t>(c));
+        const auto v = static_cast<std::uint_least32_t>(c);
+
+        if (std::cmp_less(v, static_cast<std::wint_t>(nlw::min()))
+            || std::cmp_greater(v, static_cast<std::wint_t>(nlw::max())))
+            return c;
+    }
+
+    return std::towlower(static_cast<std::wint_t>(c));
 }
 
 void safe_tolower_inplace(std::u32string& s32) {
