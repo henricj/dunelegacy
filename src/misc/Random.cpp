@@ -9,7 +9,8 @@
 #    pragma warning(disable : 4458)
 #endif // _MSC_VER
 
-#include <digestpp/digestpp.hpp>
+#include <digestpp/hasher.hpp>
+#include <digestpp/algorithm/kmac.hpp>
 
 #if _MSC_VER
 #    pragma warning(pop)
@@ -210,7 +211,7 @@ void RandomFactory::setSeed(std::span<const uint8_t> seed) {
     kmac.set_key(master_key, sizeof master_key);
     kmac.set_customization(&master_customization[0], sizeof master_customization);
 
-    kmac.absorb(&seed_[0], seed_.size());
+    kmac.absorb(seed_.data(), seed_.size());
 
     kmac.digest(key_.data(), key_.size());
 
@@ -267,11 +268,19 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     kmac.set_key(name.data(), name.size());
     kmac.set_customization(&create_customization[0], sizeof create_customization);
 
-    kmac.absorb(buffer.begin(), buffer.end());
+    auto absorb_buffer = [&]() {
+        const auto* const p                = static_cast<const void*>(buffer.data());
+        static constexpr auto element_size = sizeof decltype(buffer)::value_type;
+        const auto size_bytes              = buffer.size() * element_size;
+
+        kmac.absorb(static_cast<const char*>(p), size_bytes);
+    };
+
+    absorb_buffer();
 
     for (auto i = 0; i < 5; ++i) {
         std::ranges::generate(buffer, [&] { return rd(); });
-        kmac.absorb(buffer.begin(), buffer.end());
+        absorb_buffer();
         kmac.absorb(&seed_stir[0], sizeof seed_stir);
     }
 
