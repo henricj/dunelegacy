@@ -620,7 +620,7 @@ DuneSurfaceOwned DuneStyle::createButtonText(uint32_t width, uint32_t height, st
 
         SDL_Rect dest{x, y, text_surface->w, text_surface->h};
 
-        SDL_SetSurfaceBlendMode(shadow_surface.get(), SDL_BLENDMODE_BLEND);
+        SDL_SetSurfaceBlendMode(text_surface.get(), SDL_BLENDMODE_BLEND);
         SDL_BlitSurface(text_surface.get(), nullptr, surface.get(), &dest);
     }
 
