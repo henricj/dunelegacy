@@ -28,22 +28,22 @@
 
 WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
     WaitingForOtherPlayers::setWindowWidget(&vbox);
-    vbox.addWidget(Widget::create<VSpacer>(6).release());
+    vbox.addWidget(create<VSpacer>(6).release());
 
     vbox.addWidget(&textLabel);
-    vbox.addWidget(Widget::create<VSpacer>(3).release());
+    vbox.addWidget(create<VSpacer>(3).release());
     vbox.addWidget(&hbox);
-    vbox.addWidget(Widget::create<VSpacer>(6).release());
-    hbox.addWidget(Widget::create<Spacer>().release());
+    vbox.addWidget(create<VSpacer>(6).release());
+    hbox.addWidget(create<Spacer>().release());
     hbox.addWidget(&vbox2);
-    vbox2.addWidget(Widget::create<VSpacer>(4).release());
+    vbox2.addWidget(create<VSpacer>(4).release());
     removeButton.setText(_("Remove"));
     removeButton.setOnClick([] { onRemove(); });
     removeButton.setVisible(false);
     removeButton.setEnabled(false);
     vbox2.addWidget(&removeButton);
-    vbox2.addWidget(Widget::create<VSpacer>(4).release());
-    hbox.addWidget(Widget::create<Spacer>().release());
+    vbox2.addWidget(create<VSpacer>(4).release());
+    hbox.addWidget(create<Spacer>().release());
     textLabel.setAlignment(Alignment_HCenter);
 
     update();
