@@ -114,6 +114,10 @@ if(NOT HAVE_DOUBLE_FROM_CHARS)
 	target_compile_definitions(dune PUBLIC NEED_DOUBLE_FROM_CHARS)
 endif()
 
+if(HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
+	target_compile_definitions(dune PUBLIC HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
+endif()
+
 if(DUNE_PRECOMPILED_HEADERS)
 	target_precompile_headers(dune PRIVATE stdafx.h)
 endif()

@@ -232,7 +232,11 @@ void Tile::assignAirUnit(uint32_t newObjectID) {
 }
 
 void Tile::assignDeadUnit(uint8_t type, HOUSETYPE house, CoordF position) {
+#if HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
     deadUnits_.emplace_back(position, 2000, type, house, isSand() || isDunes());
+#else
+    deadUnits_.push_back({position, 2000, type, house, isSand() || isDunes()});
+#endif
 }
 
 void Tile::assignNonInfantryGroundObject(uint32_t newObjectID) {
@@ -541,7 +545,11 @@ void Tile::addDamage(Tile::TerrainDamage_enum damageType, int tile, Coord realPo
     if (damage_.size() >= DAMAGE_PER_TILE)
         return;
 
+#if HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
     damage_.emplace_back(damageType, tile, realPos);
+#else
+    damage_.push_back({damageType, tile, realPos});
+#endif
 }
 
 void Tile::update_impl() {

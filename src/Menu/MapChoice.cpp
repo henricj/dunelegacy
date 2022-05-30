@@ -538,10 +538,10 @@ void MapChoice::loadINI() {
                     continue;
             }
 
-#ifdef __clang__
-            group[i].text.push_back({std::move(str), j});
-#else
+#ifdef HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
             group[i].text.emplace_back(std::move(str), j);
+#else
+            group[i].text.push_back({std::move(str), j});
 #endif
         }
     }

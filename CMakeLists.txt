@@ -134,6 +134,16 @@ check_cxx_source_compiles(
     }"
     HAVE_DOUBLE_FROM_CHARS)
 
+check_cxx_source_compiles(
+    "#include <vector>
+    struct Foo { int a; double b; bool c; };
+    int main(int argc, char* argv[]) {
+        std::vector<Foo> v;
+        v.emplace_back(123, -3.456, false);
+        return 0;
+    }"
+    HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES)
+
 
 if(DUNE_TARGET_ARCHITECTURE)
     if (DUNE_TARGET_ARCHITECTURE STREQUAL "x64" OR DUNE_TARGET_ARCHITECTURE STREQUAL "x86_64")
