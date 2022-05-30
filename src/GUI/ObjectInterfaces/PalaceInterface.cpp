@@ -20,7 +20,7 @@ sdl2::surface_ptr PalaceInterface::createSurface(SurfaceLoader* surfaceLoader, [
     auto dest = calcAlignedDrawingRect(pText.get(), pReady.get());
     SDL_BlitSurface(pText.get(), nullptr, pReady.get(), &dest);
 
-    return std::move(pReady);
+    return pReady;
 }
 
 PalaceInterface::PalaceInterface(const GameContext& context, int objectID)
