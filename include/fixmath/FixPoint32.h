@@ -22,9 +22,6 @@
 
 #include <string>
 
-// we need to use a macro here as leading zeros in m are important: FixPt(1, 5) != FixPt(1, 05)
-#define FixPt32(i, m) (FixPoint32::FromRawValue(F32C(i, m)))
-
 class FixPoint32 final {
 public:
     constexpr FixPoint32() noexcept : value{0} { }
@@ -242,82 +239,82 @@ inline constexpr auto FixPt32_PI{FixPoint32::FromRawValue(fix32_pi)};
 inline constexpr auto FixPt32_E{FixPoint32::FromRawValue(fix32_e)};
 inline constexpr auto FixPt32_SQRT2{FixPoint32::FromRawValue(0x000000016A09E668LL)};
 
-static constexpr FixPoint32 operator+(int value, const FixPoint32& other) noexcept {
+constexpr FixPoint32 operator+(int value, FixPoint32 other) noexcept {
     return other + value;
 }
-static constexpr FixPoint32 operator+(unsigned int value, const FixPoint32& other) noexcept {
+constexpr FixPoint32 operator+(unsigned int value, FixPoint32 other) noexcept {
     return other + value;
 }
-static constexpr FixPoint32 operator-(int value, const FixPoint32& other) noexcept {
+constexpr FixPoint32 operator-(int value, FixPoint32 other) noexcept {
     return FixPoint32(value) - other;
 }
-static constexpr FixPoint32 operator-(unsigned int value, const FixPoint32& other) noexcept {
+constexpr FixPoint32 operator-(unsigned int value, FixPoint32 other) noexcept {
     return FixPoint32(value) - other;
 }
-static inline FixPoint32 operator*(int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator*(int value, FixPoint32 other) noexcept {
     return other * value;
 }
-static inline FixPoint32 operator*(unsigned int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator*(unsigned int value, FixPoint32 other) noexcept {
     return other * value;
 }
-static inline FixPoint32 operator/(int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator/(int value, FixPoint32 other) noexcept {
     return FixPoint32(value) / other;
 }
-static inline FixPoint32 operator/(unsigned int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator/(unsigned int value, FixPoint32 other) noexcept {
     return FixPoint32(value) / other;
 }
-static inline FixPoint32 operator%(int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator%(int value, FixPoint32 other) noexcept {
     return FixPoint32(value) % other;
 }
-static inline FixPoint32 operator%(unsigned int value, const FixPoint32& other) noexcept {
+inline FixPoint32 operator%(unsigned int value, FixPoint32 other) noexcept {
     return FixPoint32(value) % other;
 }
 
-static constexpr bool operator==(int value, const FixPoint32& other) noexcept {
+constexpr bool operator==(int value, FixPoint32 other) noexcept {
     return other.operator==(value);
 }
-static constexpr bool operator==(unsigned int value, const FixPoint32& other) noexcept {
+constexpr bool operator==(unsigned int value, FixPoint32 other) noexcept {
     return other.operator==(value);
 }
-static constexpr bool operator!=(int value, const FixPoint32& other) noexcept {
+constexpr bool operator!=(int value, FixPoint32 other) noexcept {
     return other.operator!=(value);
 }
-static constexpr bool operator!=(unsigned int value, const FixPoint32& other) noexcept {
+static constexpr bool operator!=(unsigned int value, FixPoint32 other) noexcept {
     return other.operator!=(value);
 }
 
-static constexpr bool operator<=(int value, const FixPoint32& other) noexcept {
+constexpr bool operator<=(int value, FixPoint32 other) noexcept {
     return other.operator>(value);
 }
-static constexpr bool operator<=(unsigned int value, const FixPoint32& other) noexcept {
+constexpr bool operator<=(unsigned int value, FixPoint32 other) noexcept {
     return other.operator>(value);
 }
-static constexpr bool operator>=(int value, const FixPoint32& other) noexcept {
+constexpr bool operator>=(int value, FixPoint32 other) noexcept {
     return other.operator<(value);
 }
-static constexpr bool operator>=(unsigned int value, const FixPoint32& other) noexcept {
+constexpr bool operator>=(unsigned int value, FixPoint32 other) noexcept {
     return other.operator<(value);
 }
-static constexpr bool operator<(int value, const FixPoint32& other) noexcept {
+constexpr bool operator<(int value, FixPoint32 other) noexcept {
     return other.operator>=(value);
 }
-static constexpr bool operator<(unsigned int value, const FixPoint32& other) noexcept {
+constexpr bool operator<(unsigned int value, FixPoint32 other) noexcept {
     return other.operator>=(value);
 }
-static constexpr bool operator>(int value, const FixPoint32& other) noexcept {
+constexpr bool operator>(int value, FixPoint32 other) noexcept {
     return other.operator<=(value);
 }
-static constexpr bool operator>(unsigned int value, const FixPoint32& other) noexcept {
+constexpr bool operator>(unsigned int value, FixPoint32 other) noexcept {
     return other.operator<=(value);
 }
 
-static inline int lround(const FixPoint32& value) {
+inline int lround(FixPoint32 value) {
     return value.lround();
 }
-static constexpr int floor(const FixPoint32& value) noexcept {
+constexpr int floor(FixPoint32 value) noexcept {
     return value.floor();
 }
-static constexpr int ceil(const FixPoint32& value) noexcept {
+constexpr int ceil(FixPoint32 value) noexcept {
     return value.ceil();
 }
 
