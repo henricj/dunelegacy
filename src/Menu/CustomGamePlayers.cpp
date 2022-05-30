@@ -40,6 +40,8 @@
 #include <globals.h>
 #include <sand.h>
 
+#include <utility>
+
 namespace {
 constexpr auto PLAYER_HUMAN  = 0;
 constexpr auto PLAYER_OPEN   = -1;
@@ -197,7 +199,7 @@ CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings
 
     const auto& playername = dune::globals::settings.general.playerName;
 
-    for (int i = 0; i < houseInfo.size(); i++) {
+    for (auto i = 0; std::cmp_less(i, houseInfo.size()); ++i) {
         auto& curHouseInfo = houseInfo[i];
 
         // set up header row with Label "House", DropDown for house selection and DropDown for team selection
@@ -562,31 +564,31 @@ void CustomGamePlayers::onReceiveChangeEventList(const ChangeEventList& changeEv
     }
 }
 
-ChangeEventList CustomGamePlayers::getChangeEventList() {
+ChangeEventList CustomGamePlayers::getChangeEventList() const {
     ChangeEventList changeEventList;
 
-    for (int i = 0; i < houseInfo.size(); i++) {
+    for (int i = 0; std::cmp_less(i, houseInfo.size()); ++i) {
         auto& curHouseInfo = houseInfo[i];
 
-        int houseID = curHouseInfo.houseDropDown.getSelectedEntryIntData();
-        int team    = curHouseInfo.teamDropDown.getSelectedEntryIntData();
-        int player1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
-        int player2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
+        auto houseID = curHouseInfo.houseDropDown.getSelectedEntryIntData();
+        auto team    = curHouseInfo.teamDropDown.getSelectedEntryIntData();
+        auto player1 = curHouseInfo.player1DropDown.getSelectedEntryIntData();
+        auto player2 = curHouseInfo.player2DropDown.getSelectedEntryIntData();
 
         changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeHouse, i, houseID);
         changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangeTeam, i, team);
 
         if (player1 == PLAYER_HUMAN) {
-            std::string playername = curHouseInfo.player1DropDown.getSelectedEntry();
-            changeEventList.changeEventList.emplace_back(2 * i, playername);
+            auto playername = curHouseInfo.player1DropDown.getSelectedEntry();
+            changeEventList.changeEventList.emplace_back(2 * i, std::move(playername));
         } else {
             changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer, 2 * i,
                                                          player1);
         }
 
         if (player2 == PLAYER_HUMAN) {
-            std::string playername = curHouseInfo.player2DropDown.getSelectedEntry();
-            changeEventList.changeEventList.emplace_back(2 * i + 1, playername);
+            auto playername = curHouseInfo.player2DropDown.getSelectedEntry();
+            changeEventList.changeEventList.emplace_back(2 * i + 1, std::move(playername));
         } else {
             changeEventList.changeEventList.emplace_back(ChangeEventList::ChangeEvent::EventType::ChangePlayer,
                                                          2 * i + 1, player2);

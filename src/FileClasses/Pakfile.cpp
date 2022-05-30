@@ -24,6 +24,8 @@
 
 #include "misc/BufferedReader.h"
 
+#include <utility>
+
 namespace {
 
 inline constexpr auto PAKFILE_RWOP_TYPE = 0x9a5f17ecU;
@@ -212,16 +214,16 @@ Pakfile::~Pakfile() = default;
 */
 sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) const {
     // find file
-    for (auto i = 0; i < fileEntries.size(); i++) {
+    for (auto i = 0U; i < fileEntries.size(); ++i) {
         if (filename == fileEntries[i].filename)
-            return openFile(i);
+            return openFile(static_cast<int>(i));
     }
 
     THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename);
 }
 
 sdl2::RWops_ptr Pakfile::openFile(int index) const {
-    if (index < 0 || index >= fileEntries.size())
+    if (index < 0 || std::cmp_greater_equal(index, fileEntries.size()))
         THROW(io_error, "Pakfile::openFile(): There is not file at index '%d' in this PAK file!", index);
 
     // alloc RWop

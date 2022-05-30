@@ -194,8 +194,8 @@ void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
     stream.writeSint32(destroyedStructureTile_);
 
     // clean-up tracksCreationTime to save space in the save game
-    std::array<uint32_t, NUM_ANGLES> tracksCreationTimeToSave;
-    for (int i = 0; i < tracksCreationTimeToSave.size(); i++) {
+    std::array<uint32_t, NUM_ANGLES> tracksCreationTimeToSave{};
+    for (auto i = 0U; i < tracksCreationTimeToSave.size(); ++i) {
         tracksCreationTimeToSave[i] =
             (tracksCreationTime_[i] + TRACKSTIME < gameCycleCount) ? 0 : tracksCreationTime_[i];
     }

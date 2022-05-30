@@ -30,6 +30,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <utility>
+
 PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
@@ -57,7 +59,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     mainVBox.addWidget(&centralVBox, 360);
 
     const auto& players = pMapEditor->getPlayers();
-    for (int i = 0; i < players.size(); i++) {
+    for (auto i = 0; std::cmp_less(i, players.size()); ++i) {
 
         const auto& playerInfo = players[i];
 
@@ -66,101 +68,101 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
-        playerWidgets[i].playerCheckbox.setTextColor(currentColor);
-        playerWidgets[i].playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
+        auto& pw = playerWidgets[i];
+
+        pw.playerCheckbox.setTextColor(currentColor);
+        pw.playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
         if (pMapEditor->getMapVersion() < 2) {
-            playerWidgets[i].playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i))
-                                                    + ":");
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 150);
+            pw.playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)) + ":");
+            pw.playerHBox.addWidget(&pw.playerCheckbox, 150);
         } else {
-            playerWidgets[i].playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].playerCheckbox, 0.22);
+            pw.playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
+            pw.playerHBox.addWidget(&pw.playerCheckbox, 0.22);
         }
 
         if (pMapEditor->getMapVersion() >= 2) {
-            playerWidgets[i].anyHouseRadioButton.setText(_("any"));
-            playerWidgets[i].anyHouseRadioButton.setTextColor(currentColor);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].anyHouseRadioButton);
+            pw.anyHouseRadioButton.setText(_("any"));
+            pw.anyHouseRadioButton.setTextColor(currentColor);
+            pw.playerHBox.addWidget(&pw.anyHouseRadioButton);
 
-            playerWidgets[i].houseRadioButton.setText(getHouseNameByNumber(playerInfo.house_));
-            playerWidgets[i].houseRadioButton.setTextColor(currentColor);
-            playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].houseRadioButton, 110);
+            pw.houseRadioButton.setText(getHouseNameByNumber(playerInfo.house_));
+            pw.houseRadioButton.setTextColor(currentColor);
+            pw.playerHBox.addWidget(&pw.houseRadioButton, 110);
 
-            playerWidgets[i].radioButtonManager.registerRadioButtons(
-                {&playerWidgets[i].anyHouseRadioButton, &playerWidgets[i].houseRadioButton});
+            pw.radioButtonManager.registerRadioButtons({&pw.anyHouseRadioButton, &pw.houseRadioButton});
             if (playerInfo.bAnyHouse_) {
-                playerWidgets[i].anyHouseRadioButton.setChecked(true);
+                pw.anyHouseRadioButton.setChecked(true);
             } else {
-                playerWidgets[i].houseRadioButton.setChecked(true);
+                pw.houseRadioButton.setChecked(true);
             }
         }
 
-        playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].spacer, 5.0);
+        pw.playerHBox.addWidget(&pw.spacer, 5.0);
 
-        playerWidgets[i].creditsLabel.setText(_("Credits") + ":");
-        playerWidgets[i].creditsLabel.setTextColor(currentColor);
-        playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsLabel);
+        pw.creditsLabel.setText(_("Credits") + ":");
+        pw.creditsLabel.setTextColor(currentColor);
+        pw.playerHBox.addWidget(&pw.creditsLabel);
 
-        playerWidgets[i].creditsTextBox.setMinMax(0, 100000);
-        playerWidgets[i].creditsTextBox.setValue(playerInfo.credits_);
-        playerWidgets[i].creditsTextBox.setIncrementValue(100);
-        playerWidgets[i].creditsTextBox.setColor(house, currentColor);
-        playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].creditsTextBox, 80);
+        pw.creditsTextBox.setMinMax(0, 100000);
+        pw.creditsTextBox.setValue(playerInfo.credits_);
+        pw.creditsTextBox.setIncrementValue(100);
+        pw.creditsTextBox.setColor(house, currentColor);
+        pw.playerHBox.addWidget(&pw.creditsTextBox, 80);
 
-        playerWidgets[i].playerHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
+        pw.playerHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
 
-        playerWidgets[i].teamLabel.setText(_("Team") + ":");
-        playerWidgets[i].teamLabel.setTextColor(currentColor);
-        playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].teamLabel);
+        pw.teamLabel.setText(_("Team") + ":");
+        pw.teamLabel.setTextColor(currentColor);
+        pw.playerHBox.addWidget(&pw.teamLabel);
 
         if (pMapEditor->getMapVersion() < 2) {
-            playerWidgets[i].teamDropDownBox.addEntry("Human", 0);
-            playerWidgets[i].teamDropDownBox.addEntry("CPU", 1);
+            pw.teamDropDownBox.addEntry("Human", 0);
+            pw.teamDropDownBox.addEntry("CPU", 1);
 
             if (playerInfo.brain_ == "Human") {
-                playerWidgets[i].teamDropDownBox.setSelectedItem(0);
+                pw.teamDropDownBox.setSelectedItem(0);
             } else {
-                playerWidgets[i].teamDropDownBox.setSelectedItem(1);
+                pw.teamDropDownBox.setSelectedItem(1);
             }
         } else {
-            playerWidgets[i].teamDropDownBox.addEntry("Team1", 0);
-            playerWidgets[i].teamDropDownBox.addEntry("Team2", 1);
-            playerWidgets[i].teamDropDownBox.addEntry("Team3", 2);
-            playerWidgets[i].teamDropDownBox.addEntry("Team4", 3);
-            playerWidgets[i].teamDropDownBox.addEntry("Team5", 4);
-            playerWidgets[i].teamDropDownBox.addEntry("Team6", 5);
+            pw.teamDropDownBox.addEntry("Team1", 0);
+            pw.teamDropDownBox.addEntry("Team2", 1);
+            pw.teamDropDownBox.addEntry("Team3", 2);
+            pw.teamDropDownBox.addEntry("Team4", 3);
+            pw.teamDropDownBox.addEntry("Team5", 4);
+            pw.teamDropDownBox.addEntry("Team6", 5);
 
             for (int j = 0; j < 6; j++) {
-                if (playerWidgets[i].teamDropDownBox.getEntry(j) == playerInfo.brain_) {
-                    playerWidgets[i].teamDropDownBox.setSelectedItem(j);
+                if (pw.teamDropDownBox.getEntry(j) == playerInfo.brain_) {
+                    pw.teamDropDownBox.setSelectedItem(j);
                     break;
                 }
             }
         }
 
-        playerWidgets[i].teamDropDownBox.setColor(currentColor);
-        playerWidgets[i].playerHBox.addWidget(&playerWidgets[i].teamDropDownBox, 65);
+        pw.teamDropDownBox.setColor(currentColor);
+        pw.playerHBox.addWidget(&pw.teamDropDownBox, 65);
 
         // prepare advanced widgets
-        playerWidgets[i].spiceQuotaLabel.setText(_("Quota") + ":");
-        playerWidgets[i].spiceQuotaLabel.setTextColor(currentColor);
+        pw.spiceQuotaLabel.setText(_("Quota") + ":");
+        pw.spiceQuotaLabel.setTextColor(currentColor);
 
-        playerWidgets[i].spiceQuotaTextBox.setMinMax(0, 99999);
-        playerWidgets[i].spiceQuotaTextBox.setValue(playerInfo.quota_);
-        playerWidgets[i].spiceQuotaTextBox.setIncrementValue(100);
-        playerWidgets[i].spiceQuotaTextBox.setColor(house, currentColor);
+        pw.spiceQuotaTextBox.setMinMax(0, 99999);
+        pw.spiceQuotaTextBox.setValue(playerInfo.quota_);
+        pw.spiceQuotaTextBox.setIncrementValue(100);
+        pw.spiceQuotaTextBox.setColor(house, currentColor);
 
-        playerWidgets[i].maxUnitsLabel.setText(_("Max Units") + ":");
-        playerWidgets[i].maxUnitsLabel.setTextColor(currentColor);
+        pw.maxUnitsLabel.setText(_("Max Units") + ":");
+        pw.maxUnitsLabel.setTextColor(currentColor);
 
-        playerWidgets[i].maxUnitsTextBox.setMinMax(0, 999);
-        playerWidgets[i].maxUnitsTextBox.setValue(playerInfo.maxunit_);
-        playerWidgets[i].maxUnitsTextBox.setColor(house, currentColor);
+        pw.maxUnitsTextBox.setMinMax(0, 999);
+        pw.maxUnitsTextBox.setValue(playerInfo.maxunit_);
+        pw.maxUnitsTextBox.setColor(house, currentColor);
 
-        centralVBox.addWidget(&playerWidgets[i].playerHBox);
+        centralVBox.addWidget(&pw.playerHBox);
 
         // activate first 4 players
-        playerWidgets[i].playerCheckbox.setChecked(playerInfo.bActive_);
+        pw.playerCheckbox.setChecked(playerInfo.bActive_);
         onPlayerCheckbox(i);
     }
 
@@ -243,37 +245,40 @@ void PlayerSettingsWindow::onOK() {
 
     pMapEditor->startOperation();
 
-    for (int i = 0; i < playerWidgets.size(); i++) {
-        const bool bActive = playerWidgets[i].playerCheckbox.isChecked();
-        const bool bAnyHouse =
-            pMapEditor->getMapVersion() < 2 ? false : playerWidgets[i].anyHouseRadioButton.isChecked();
-        const int credits       = playerWidgets[i].creditsTextBox.getValue();
-        const std::string brain = playerWidgets[i].teamDropDownBox.getSelectedEntry();
-        const int quota         = playerWidgets[i].spiceQuotaTextBox.getValue();
-        const int maxunit       = playerWidgets[i].maxUnitsTextBox.getValue();
+    for (auto i = 0; std::cmp_less(i, playerWidgets.size()); ++i) {
+        auto& pw = playerWidgets[i];
 
-        MapEditorChangePlayer changePlayerOperation(i, bActive, bAnyHouse, credits, brain, quota, maxunit);
+        const auto bActive   = pw.playerCheckbox.isChecked();
+        const auto bAnyHouse = pMapEditor->getMapVersion() < 2 ? false : pw.anyHouseRadioButton.isChecked();
+        const auto credits   = pw.creditsTextBox.getValue();
+        auto brain           = pw.teamDropDownBox.getSelectedEntry();
+        const auto quota     = pw.spiceQuotaTextBox.getValue();
+        const auto maxunit   = pw.maxUnitsTextBox.getValue();
+
+        MapEditorChangePlayer changePlayerOperation(i, bActive, bAnyHouse, credits, std::move(brain), quota, maxunit);
 
         pMapEditor->addUndoOperation(changePlayerOperation.perform(pMapEditor));
     }
 
-    auto* pParentWindow = dynamic_cast<Window*>(getParent());
+    auto* const pParentWindow = dynamic_cast<Window*>(getParent());
     if (pParentWindow != nullptr) {
         pParentWindow->closeChildWindow();
     }
 }
 
 void PlayerSettingsWindow::onPlayerCheckbox(int i) {
-    const bool bChecked = playerWidgets[i].playerCheckbox.isChecked();
+    auto& pw = playerWidgets.at(i);
 
-    playerWidgets[i].anyHouseRadioButton.setVisible(bChecked);
-    playerWidgets[i].houseRadioButton.setVisible(bChecked);
-    playerWidgets[i].creditsLabel.setVisible(bChecked);
-    playerWidgets[i].creditsTextBox.setVisible(bChecked);
-    playerWidgets[i].teamLabel.setVisible(bChecked);
-    playerWidgets[i].teamDropDownBox.setVisible(bChecked);
-    playerWidgets[i].spiceQuotaLabel.setVisible(bChecked);
-    playerWidgets[i].spiceQuotaTextBox.setVisible(bChecked);
-    playerWidgets[i].maxUnitsLabel.setVisible(bChecked);
-    playerWidgets[i].maxUnitsTextBox.setVisible(bChecked);
+    const bool bChecked = pw.playerCheckbox.isChecked();
+
+    pw.anyHouseRadioButton.setVisible(bChecked);
+    pw.houseRadioButton.setVisible(bChecked);
+    pw.creditsLabel.setVisible(bChecked);
+    pw.creditsTextBox.setVisible(bChecked);
+    pw.teamLabel.setVisible(bChecked);
+    pw.teamDropDownBox.setVisible(bChecked);
+    pw.spiceQuotaLabel.setVisible(bChecked);
+    pw.spiceQuotaTextBox.setVisible(bChecked);
+    pw.maxUnitsLabel.setVisible(bChecked);
+    pw.maxUnitsTextBox.setVisible(bChecked);
 }

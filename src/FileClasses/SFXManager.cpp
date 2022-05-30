@@ -29,6 +29,7 @@
 #include <adlib.h>
 
 #include <algorithm>
+#include <utility>
 
 // Not used:
 // - EXCANNON.VOC (same as EXSMALL.VOC)
@@ -68,7 +69,7 @@ Mix_Chunk* SFXManager::getVoice(Voice_enum id, HOUSETYPE house) const {
 Mix_Chunk* SFXManager::getSound(Sound_enum id) const {
     const auto sound_index = static_cast<int>(id);
 
-    if (sound_index < 0 || sound_index >= soundChunk.size())
+    if (sound_index < 0 || std::cmp_greater_equal(sound_index, soundChunk.size()))
         return nullptr;
 
     return soundChunk[sound_index].get();
@@ -261,7 +262,7 @@ void SFXManager::loadEnglishVoice() {
 Mix_Chunk* SFXManager::getEnglishVoice(Voice_enum id, HOUSETYPE house) const {
     const auto voice_index = static_cast<int>(id) * NUM_HOUSES + static_cast<int>(house);
 
-    if (voice_index < 0 || voice_index >= lngVoice.size())
+    if (voice_index < 0 || std::cmp_greater_equal(voice_index, lngVoice.size()))
         return nullptr;
 
     return lngVoice[voice_index].get();
@@ -408,7 +409,7 @@ void SFXManager::loadSounds() {
 Mix_Chunk* SFXManager::getNonEnglishVoice(Voice_enum id, [[maybe_unused]] HOUSETYPE house) const {
     const auto voice_index = static_cast<int>(id);
 
-    if (voice_index < 0 || voice_index >= lngVoice.size())
+    if (voice_index < 0 || std::cmp_greater_equal(voice_index, lngVoice.size()))
         return nullptr;
 
     return lngVoice[voice_index].get();

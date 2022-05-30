@@ -41,6 +41,7 @@
 #include <fmt/printf.h>
 
 #include <algorithm>
+#include <utility>
 
 OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOptions) {
     const auto& settings = dune::globals::settings;
@@ -247,7 +248,7 @@ void OptionsMenu::onChangeOption([[maybe_unused]] bool bInteractive) {
 
     bChanged |= settings.general.playerName != nameTextBox.getText();
     const int languageIndex = languageDropDownBox.getSelectedEntryIntData();
-    if (languageIndex >= 0 && languageIndex < availLanguages.size()) {
+    if (languageIndex >= 0 && std::cmp_less(languageIndex, availLanguages.size())) {
         const std::string languageFilename = availLanguages[languageIndex];
         bChanged |= settings.general.language != languageFilename.substr(languageFilename.size() - 5, 2);
     }
@@ -301,11 +302,12 @@ void OptionsMenu::onOptionsOK() {
 
     auto& settings = dune::globals::settings;
 
-    settings.general.playerName        = playername;
-    const auto selectedLanguage        = languageDropDownBox.getSelectedEntryIntData();
-    const std::string languageFilename = selectedLanguage < 0 || selectedLanguage >= availLanguages.size()
-                                           ? "English.en.po"
-                                           : availLanguages[selectedLanguage];
+    settings.general.playerName = playername;
+    const auto selectedLanguage = languageDropDownBox.getSelectedEntryIntData();
+    const std::string languageFilename =
+        selectedLanguage < 0 || std::cmp_greater_equal(selectedLanguage, availLanguages.size())
+            ? "English.en.po"
+            : availLanguages[selectedLanguage];
     settings.general.language          = languageFilename.substr(languageFilename.size() - 5, 2);
     settings.general.playIntro         = introCheckbox.isChecked();
     settings.general.showTutorialHints = showTutorialHintsCheckbox.isChecked();

@@ -51,7 +51,7 @@ TEST_P(LemireRandomTests, twoRng) {
     std::vector<int> histogram;
     histogram.resize(size);
 
-    for (auto i = 0; i < tries; ++i) {
+    for (auto i = 0U; i < tries; ++i) {
         const auto n = d(g);
 
         EXPECT_LE(0, n);

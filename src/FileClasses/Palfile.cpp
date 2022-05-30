@@ -57,7 +57,7 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         // colors[0].b = 0;
         // colors[0].a = 0;
 
-        for (int i = 0; i < numColors; i++) {
+        for (auto i = 0U; i < numColors; ++i) {
             auto& RESTRICT color = colors[i];
 
             color.r = static_cast<uint8_t>(*p++ * (255.0 / 63.0));
@@ -67,9 +67,9 @@ Palette LoadPalette_RW(SDL_RWops* rwop) {
         }
     }
 
-    const sdl2::palette_ptr sdl_palette{SDL_AllocPalette(numColors)};
+    const sdl2::palette_ptr sdl_palette{SDL_AllocPalette(static_cast<int>(numColors))};
 
-    SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, numColors);
+    SDL_SetPaletteColors(sdl_palette.get(), &colors[0], 0, static_cast<int>(numColors));
 
     return Palette{sdl_palette.get()};
 }

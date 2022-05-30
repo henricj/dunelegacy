@@ -27,9 +27,11 @@
 #include <globals.h>
 #include <sand.h>
 
-#include <algorithm>
-
 #include <gsl/gsl>
+
+#include <algorithm>
+#include <limits>
+#include <utility>
 
 using namespace std::literals;
 
@@ -265,9 +267,14 @@ void INIMapLoader::loadMap() {
                 continue;
             }
 
-            std::string rowString = inifile_->getStringValue("MAP", rowKey);
+            const auto rowString = inifile_->getStringValue("MAP", rowKey);
 
-            auto rowLength = rowString.size();
+            if (std::cmp_greater(rowString.size(), std::numeric_limits<int>::max())) {
+                logWarning(inifile_->getLineNumber("MAP"), "Map row too long!");
+                continue;
+            }
+
+            auto rowLength = static_cast<int>(rowString.size());
 
             if (rowLength < sizeX_) {
                 logWarning(inifile_->getLineNumber("MAP", rowKey), "Map row %d is not long enough!", y);
@@ -276,7 +283,7 @@ void INIMapLoader::loadMap() {
                 rowLength = sizeX_;
             }
 
-            for (int x = 0; x < rowLength; x++) {
+            for (auto x = 0; x < rowLength; ++x) {
                 auto type = Terrain_Sand;
 
                 switch (rowString.at(x)) {

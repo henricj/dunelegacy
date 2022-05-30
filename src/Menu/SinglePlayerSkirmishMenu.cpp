@@ -147,20 +147,20 @@ SinglePlayerSkirmishMenu::SinglePlayerSkirmishMenu() {
 SinglePlayerSkirmishMenu::~SinglePlayerSkirmishMenu() = default;
 
 void SinglePlayerSkirmishMenu::onStart() {
-    HOUSETYPE houseChoice = houseOrder[(currentHouseChoiceScrollPos + selectedButton) % houseOrder.size()];
+    const auto houseChoice = houseOrder[(currentHouseChoiceScrollPos + selectedButton) % houseOrder.size()];
 
     const auto& settings = dune::globals::settings;
 
     GameInitSettings init(houseChoice, mission, settings.gameOptions);
 
-    for (int houseID = 0; houseID < houseOrder.size(); houseID++) {
-        if (houseID == static_cast<int>(houseChoice)) {
+    for (const auto house : houseOrder) {
+        if (house == houseChoice) {
             GameInitSettings::HouseInfo humanHouseInfo(houseChoice, 1);
             humanHouseInfo.addPlayerInfo({settings.general.playerName, HUMANPLAYERCLASS});
             init.addHouseInfo(humanHouseInfo);
         } else {
-            GameInitSettings::HouseInfo aiHouseInfo(static_cast<HOUSETYPE>(houseID), 2);
-            aiHouseInfo.addPlayerInfo({getHouseNameByNumber(static_cast<HOUSETYPE>(houseID)), settings.ai.campaignAI});
+            GameInitSettings::HouseInfo aiHouseInfo(house, 2);
+            aiHouseInfo.addPlayerInfo({getHouseNameByNumber(house), settings.ai.campaignAI});
             init.addHouseInfo(aiHouseInfo);
         }
     }
