@@ -26,7 +26,7 @@ class Coord;
 #include <cmath>
 #include <fixmath/FixPoint.h>
 
-inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
+constexpr FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
 
     const FixPoint diffX = x2 - x1;
     const FixPoint diffY = -(y2 - y1); // flip y
@@ -44,7 +44,7 @@ inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPo
     return destAngle;
 }
 
-inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
+constexpr FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
     return destinationAngleRad(p1.x, p1.y, p2.x, p2.y);
 }
 
@@ -101,7 +101,7 @@ inline FixPoint distanceFrom(FixPoint x, FixPoint y, FixPoint to_x, FixPoint to_
     \return the distance
 */
 inline int maximumDistance(const Coord& p1, const Coord& p2) {
-    return std::max(abs(p1.x - p2.x), abs(p1.y - p2.y));
+    return std::max(std::abs(p1.x - p2.x), std::abs(p1.y - p2.y));
 }
 
 /**
@@ -111,8 +111,8 @@ inline int maximumDistance(const Coord& p1, const Coord& p2) {
     \return the distance
 */
 inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
-    const int diffX = abs(p1.x - p2.x);
-    const int diffY = abs(p1.y - p2.y);
+    const int diffX = std::abs(p1.x - p2.x);
+    const int diffY = std::abs(p1.y - p2.y);
 
     if (diffX > diffY) {
         return diffX + diffY * (FixPt_SQRT2 - 1);
@@ -125,8 +125,8 @@ inline FixPoint blockDistance(const Coord& p1, const Coord& p2) {
    diffY for diffX <= diffY \param  p1  first coordinate \param  p2  second coordinate \return the distance
 */
 inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
-    const int diffX = abs(p1.x - p2.x);
-    const int diffY = abs(p1.y - p2.y);
+    const int diffX = std::abs(p1.x - p2.x);
+    const int diffY = std::abs(p1.y - p2.y);
 
     if (diffX > diffY) {
         return ((diffX * 2 + diffY) + 1) / 2;
@@ -134,7 +134,7 @@ inline int blockDistanceApprox(const Coord& p1, const Coord& p2) {
     return ((diffX + diffY * 2) + 1) / 2;
 }
 
-inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
+constexpr ANGLETYPE normalizeAngle(ANGLETYPE angle) {
     const auto int_angle = static_cast<int>(angle);
 
     if (int_angle >= 0 && int_angle < NUM_ANGLES)
@@ -147,7 +147,7 @@ inline ANGLETYPE normalizeAngle(ANGLETYPE angle) {
     return static_cast<ANGLETYPE>(mod_angle);
 }
 
-inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
+constexpr ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
     angle = normalizeAngle(angle);
 
     // clang-format off
@@ -167,7 +167,7 @@ inline ANGLETYPE mirrorAngleHorizontal(ANGLETYPE angle) {
     // clang-format on
 }
 
-inline ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) {
+constexpr ANGLETYPE mirrorAngleVertical(ANGLETYPE angle) {
     angle = normalizeAngle(angle);
 
     // clang-format off
