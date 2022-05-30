@@ -119,7 +119,15 @@ bool Ornithopter::canPassTile(const Tile* pTile) const {
 FixPoint Ornithopter::getDestinationAngle() const {
     FixPoint angle;
 
-    if (timeLastShot > 0 && (dune::globals::currentGame->getGameCycleCount() - timeLastShot) < MILLI2CYCLES(1000)) {
+    auto fly_away = false;
+    if (timeLastShot > 0) {
+        const auto now = dune::globals::currentGame->getGameCycleCount();
+
+        if (now >= timeLastShot && static_cast<int>(now - timeLastShot) < MILLI2CYCLES(1000))
+            fly_away = true;
+    }
+
+    if (fly_away) {
         // we already shot at target and now want to fly in the opposite direction
         angle = destinationAngleRad(destination_.x * TILESIZE + TILESIZE / 2, destination_.y * TILESIZE + TILESIZE / 2,
                                     realX_, realY_);

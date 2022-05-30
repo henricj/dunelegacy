@@ -832,13 +832,13 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        uint32_t droptime = 0;
+        auto droptime = 0u;
         if (!parseString(strTime, droptime)) {
             logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
                        "Invalid drop time string: '" + strTime + "'!");
             continue;
         }
-        const auto dropCycle = MILLI2CYCLES(droptime * 60 * 1000);
+        const auto dropCycle = MILLI2CYCLES(droptime * 60U * 1000U);
 
         const auto bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
 

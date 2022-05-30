@@ -45,10 +45,10 @@ public:
 
 protected:
     // constant for all units of the same type
-    bool tracked_{};                 ///< Does this unit have tracks?
-    bool turreted_{};                ///< Does this unit have a turret?
     int numWeapons_{};               ///< How many weapons do we have?
     int bulletType_{Bullet_DRocket}; ///< Type of bullet to shot with
+    bool tracked_{};                 ///< Does this unit have tracks?
+    bool turreted_{};                ///< Does this unit have a turret?
 };
 
 class UnitBase : public ObjectBase {

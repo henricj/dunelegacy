@@ -82,16 +82,6 @@ struct codecvt final : std::codecvt<I, E, S> {
     ~codecvt() override = default;
 };
 
-std::string safe_tolower(std::string_view s) {
-    std::wstring_convert<codecvt<char32_t, char, mbstate_t>, char32_t> conv;
-
-    auto s32 = conv.from_bytes(s.data(), s.data() + s.size());
-
-    safe_tolower_inplace(s32);
-
-    return conv.to_bytes(s32);
-}
-
 } // namespace
 
 static bool cmp_Name_Asc(const FileInfo& a, const FileInfo& b) {

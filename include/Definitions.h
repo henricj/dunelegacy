@@ -47,6 +47,11 @@ constexpr auto MILLI2CYCLES(int milliseconds) {
     return milliseconds / GAMESPEED_DEFAULT;
 }
 
+constexpr auto MILLI2CYCLES(uint32_t milliseconds) {
+    // this is calculated in game milliseconds (dune 2 has about the same in game speed "fastest")
+    return milliseconds / static_cast<uint32_t>(GAMESPEED_DEFAULT);
+}
+
 inline constexpr auto VOLUME_MAX = 100;
 inline constexpr auto VOLUME_MIN = 0;
 

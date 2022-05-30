@@ -92,9 +92,8 @@ zoomable_texture GFXManager::getObjPic(ObjPic_enum id, HOUSETYPE house) const {
         THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
     }
 
-    return zoomable_texture{&duneTextures.get_object_picture(id, house, 0),
-                            &duneTextures.get_object_picture(id, house, 1),
-                            &duneTextures.get_object_picture(id, house, 2)};
+    return {&duneTextures.get_object_picture(id, house, 0), &duneTextures.get_object_picture(id, house, 1),
+            &duneTextures.get_object_picture(id, house, 2)};
 }
 
 const DuneTexture* GFXManager::getSmallDetailPic(SmallDetailPics_Enum id) const {

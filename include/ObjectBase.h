@@ -98,6 +98,8 @@ private:
 
 class ObjectBaseConstants {
 public:
+    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID{itemID} { }
+
     bool canAttack() const noexcept { return canAttackStuff_; }
     bool isAFlyingUnit() const noexcept { return aFlyingUnit_; }
     bool isAGroundUnit() const noexcept { return aGroundUnit_; }
@@ -105,8 +107,6 @@ public:
     bool isABuilder() const noexcept { return aBuilder_; }
     bool isInfantry() const noexcept { return infantry_; }
     bool isAUnit() const noexcept { return aUnit_; }
-
-    constexpr explicit ObjectBaseConstants(ItemID_enum itemID) : itemID{itemID} { }
 
     // constant for all objects of the same type
     const ItemID_enum itemID; ///< The ItemID of this object.

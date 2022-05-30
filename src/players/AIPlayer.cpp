@@ -484,7 +484,7 @@ void AIPlayer::build() {
                             && ((pBuilder->getCurrentUpgradeLevel() == 0) || (getHouse()->hasRadar()))
                             && (pBuilder->getHealth() >= pBuilder->getMaxHealth()) && (!pBuilder->isUpgrading())
                             && (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel())) {
-                            auto upgrading = doUpgrade(pBuilder);
+                            (void)doUpgrade(pBuilder);
                         }
 
                         if (!bConstructionYardChecked && !pBuilder->isUpgrading()) {

@@ -369,9 +369,9 @@ struct RhythmSetupData {
 inline constexpr uint32_t timbre_base     = 0x080000; // Note, these are 7 bit!
 inline constexpr uint32_t timbre_mem_size = 246;
 
-uint32_t timbre_mem_offset(uint32_t timbre_num) {
-    return timbre_num * 256;
-}
+// uint32_t timbre_mem_offset(uint32_t timbre_num) {
+//     return timbre_num * 256;
+// }
 
 //
 // Patch Memory Consts
@@ -1229,7 +1229,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
     // if (s == "---") config->value("config/audio/midi/gamma",s,"1");
     //  VolumeCurve.set_gamma (atof(s.c_str()));
     VolumeCurve.set_gamma(1.);
-    int igam = std::lround(VolumeCurve.get_gamma() * 10000);
+    // int igam = std::lround(VolumeCurve.get_gamma() * 10000);
     char buf[32];
     // snprintf (buf, 32, "%d.%04d", igam/10000, igam%10000);
     // config->set("config/audio/midi/volume_curve",buf,true);

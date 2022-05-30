@@ -320,7 +320,8 @@ void Tile::blitGround(Game* game) {
         const auto tracktime = static_cast<int>(gameCycleCount - tracksCreationTime_[i]);
         if ((tracksCreationTime_[i] != 0) && (tracktime < TRACKSTIME)) {
             source.x = ((10 - i) % 8) * zoomed_tilesize;
-            SDL_SetTextureAlphaMod(pTracks->texture_, std::min(255, 256 * (TRACKSTIME - tracktime) / TRACKSTIME));
+            SDL_SetTextureAlphaMod(pTracks->texture_,
+                                   static_cast<Uint8>(std::min(255, 256 * (TRACKSTIME - tracktime) / TRACKSTIME)));
             Dune_RenderCopyF(renderer, pTracks, &source, &pos);
             SDL_SetTextureAlphaMod(pTracks->texture_, 255);
         }
