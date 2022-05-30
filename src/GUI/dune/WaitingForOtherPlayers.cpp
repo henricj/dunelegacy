@@ -48,10 +48,12 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
 
     update();
 
-    const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
-    const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
+    const auto size = getSize();
 
-    WaitingForOtherPlayers::setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
+    const int xpos = std::max(0, (getRendererWidth() - size.x) / 2);
+    const int ypos = std::max(0, (getRendererHeight() - size.y) / 2);
+
+    WaitingForOtherPlayers::setCurrentPosition(xpos, ypos);
 }
 
 WaitingForOtherPlayers::~WaitingForOtherPlayers() = default;

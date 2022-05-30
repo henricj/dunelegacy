@@ -152,10 +152,12 @@ GameOptionsWindow::GameOptionsWindow(SettingsClass::GameOptionsClass& initialGam
     vboxRight.addWidget(&okbutton, 30);
     vboxRight.addWidget(Widget::create<VSpacer>(6).release());
 
-    const int xpos = std::max(0, (getRendererWidth() - getSize().x) / 2);
-    const int ypos = std::max(0, (getRendererHeight() - getSize().y) / 2);
+    const auto size = getSize();
 
-    GameOptionsWindow::setCurrentPosition(xpos, ypos, getSize().x, getSize().y);
+    const int xpos = std::max(0, (getRendererWidth() - size.x) / 2);
+    const int ypos = std::max(0, (getRendererHeight() - size.y) / 2);
+
+    GameOptionsWindow::setCurrentPosition(xpos, ypos);
 }
 
 GameOptionsWindow::~GameOptionsWindow() = default;

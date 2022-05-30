@@ -89,10 +89,17 @@ public:
         Sets the current window position and size.
         \param  x   x position of this window
         \param  y   y position of this window
+    */
+    virtual void setCurrentPosition(int32_t x, int32_t y);
+
+    /**
+        Sets the current window position and size.
+        \param  x   x position of this window
+        \param  y   y position of this window
         \param  w   width of this window
         \param  h   height of this window
     */
-    virtual void setCurrentPosition(uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+    virtual void setCurrentPosition(int32_t x, int32_t y, int32_t w, int32_t h);
 
     /**
         Sets the current window position and size.
