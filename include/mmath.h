@@ -26,7 +26,7 @@ class Coord;
 #include <cmath>
 #include <fixmath/FixPoint.h>
 
-constexpr FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
+inline FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, FixPoint y2) {
 
     const FixPoint diffX = x2 - x1;
     const FixPoint diffY = -(y2 - y1); // flip y
@@ -44,7 +44,7 @@ constexpr FixPoint destinationAngleRad(FixPoint x1, FixPoint y1, FixPoint x2, Fi
     return destAngle;
 }
 
-constexpr FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
+inline FixPoint destinationAngleRad(const Coord& p1, const Coord& p2) {
     return destinationAngleRad(p1.x, p1.y, p2.x, p2.y);
 }
 
