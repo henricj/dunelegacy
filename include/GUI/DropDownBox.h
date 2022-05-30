@@ -142,8 +142,8 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void addEntry(const std::string& text, int data = 0) {
-        listBox_.addEntry(text, data);
+    void addEntry(std::string text, int data = 0) {
+        listBox_.addEntry(std::move(text), data);
         resizeListBox();
     }
 
@@ -152,8 +152,8 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void addEntry(const std::string& text, void* data) {
-        listBox_.addEntry(text, data);
+    void addEntry(std::string text, void* data) {
+        listBox_.addEntry(std::move(text), data);
         resizeListBox();
     }
 

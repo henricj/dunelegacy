@@ -122,8 +122,8 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void addEntry(std::string_view text, int data = 0) {
-        entries_.emplace_back(text, data);
+    void addEntry(std::string text, int data = 0) {
+        entries_.emplace_back(std::move(text), data);
         updateList();
     }
 
@@ -132,8 +132,8 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void addEntry(std::string_view text, void* data) {
-        entries_.emplace_back(text, data);
+    void addEntry(std::string text, void* data) {
+        entries_.emplace_back(std::move(text), data);
         updateList();
     }
 
@@ -143,11 +143,11 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void insertEntry(int index, std::string_view text, int data = 0) {
+    void insertEntry(int index, std::string text, int data = 0) {
         if (index <= selectedElement_)
             selectedElement_++;
 
-        entries_.emplace(entries_.begin() + index, text, data);
+        entries_.emplace(entries_.begin() + index, std::move(text), data);
         updateList();
     }
 
