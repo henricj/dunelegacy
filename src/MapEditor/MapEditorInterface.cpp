@@ -655,8 +655,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     structureDetailsHBox.addWidget(&structureDetailsHealthLabel, 0.1);
 
     for (int i = 1; i <= 256; i++) {
-        structureDetailsHealthDropDownBox.addEntry(
-            std::to_string((i * 100) / 256) + "% (" + std::to_string(i) + "/256)", i);
+        structureDetailsHealthDropDownBox.addEntry(fmt::format("{} % ({}/256)", (i * 100) / 256, i), i);
     }
 
     structureDetailsHealthDropDownBox.setOnSelectionChange(
@@ -672,7 +671,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     unitDetailsHBox.addWidget(&unitDetailsHealthLabel, 0.1);
 
     for (int i = 1; i <= 256; i++) {
-        unitDetailsHealthDropDownBox.addEntry(std::to_string((i * 100) / 256) + "% (" + std::to_string(i) + "/256)", i);
+        unitDetailsHealthDropDownBox.addEntry(fmt::format("{} % ({}/256)", (i * 100) / 256, i), i);
     }
 
     unitDetailsHealthDropDownBox.setOnSelectionChange([this](auto interactive) { onUnitHealthDropDown(interactive); });
