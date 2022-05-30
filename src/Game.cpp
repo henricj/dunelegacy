@@ -2101,14 +2101,10 @@ bool Game::removeFromSelectionLists(ObjectBase* pObject) {
 
     const auto objectID = pObject->getObjectID();
 
-    auto changed = false;
+    assert(getSelectedList().contains(objectID) || getSelectedByOtherPlayerList().contains(objectID));
 
-    if (0 != getSelectedList().erase(objectID))
-        changed = true;
-    if (0 != getSelectedByOtherPlayerList().erase(objectID))
-        changed = true;
-
-    assert(changed);
+    getSelectedList().erase(objectID);
+    getSelectedByOtherPlayerList().erase(objectID);
 
     pObject->setSelected(false);
 
