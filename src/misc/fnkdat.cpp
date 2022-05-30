@@ -204,9 +204,9 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
      */
     if (dwFlags
         && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0), NULL,
-                                                SHGFP_TYPE_CURRENT, &szPath[0]))) {
+                                                SHGFP_TYPE_CURRENT, szPath.data()))) {
 
-        output_path = &szPath[0];
+        output_path = szPath.data();
         output_path /= L"" PACKAGE;
 
         /* We always compute the system conf and data directories
@@ -269,8 +269,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
             DWORD dwSize = buffer.size();
 
             /* Grab what windows thinks is the current user name */
-            if (GetUserNameW(&buffer[0], &dwSize) == TRUE) {
-                output_path /= &buffer[0];
+            if (GetUserNameW(buffer.data(), &dwSize) == TRUE) {
+                output_path /= buffer.data();
 
                 /* if that fails, make something up */
             } else {

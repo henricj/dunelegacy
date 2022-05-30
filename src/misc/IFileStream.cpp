@@ -69,7 +69,7 @@ std::string IFileStream::readString() {
 
     str.resize(length);
 
-    if (fread(&str[0], length, 1, fp) != 1) {
+    if (fread(str.data(), length, 1, fp) != 1) {
         if (feof(fp) != 0) {
             THROW(InputStream::eof, "IFileStream::readString(): End-of-File reached!");
         }
