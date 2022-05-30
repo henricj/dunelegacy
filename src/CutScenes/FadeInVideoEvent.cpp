@@ -40,7 +40,7 @@ int FadeInVideoEvent::draw() {
     const auto dest =
         calcAlignedDrawingRect(pTexture.get(), HAlign::Center, bCenterVertical ? VAlign::Center : VAlign::Top);
 
-    const int alpha = std::min(255, 255 * currentFrame / numFrames2FadeIn);
+    const auto alpha = static_cast<uint8_t>(std::min(255, 255 * currentFrame / numFrames2FadeIn));
     if (bFadeWhite) {
         // fade from white
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);

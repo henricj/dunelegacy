@@ -352,7 +352,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     }
 
     for (uint32_t i = RawData_Samples + NUM_SAMPLES_OF_SILENCE; i < RawData_Samples + 2 * NUM_SAMPLES_OF_SILENCE; i++) {
-        RawDataFloat[i] = 0.0;
+        RawDataFloat[i] = 0.0f;
     }
 
     RawDataUint8.reset();
@@ -373,22 +373,23 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
     // Convert to audio device frequency
     const auto ConversionRatio   = TargetFrequency / static_cast<double>(RawData_Frequency);
-    auto TargetDataFloat_Samples = static_cast<size_t>(RawData_Samples * ConversionRatio + 0.5);
+    auto TargetDataFloat_Samples = static_cast<size_t>(std::ceil(RawData_Samples * ConversionRatio));
     std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
     size_t odone;
 
     const auto* const serror =
-        soxr_oneshot(RawData_Frequency, TargetFrequency, 1, &RawDataFloat[0], RawData_Samples, nullptr,
-                     &TargetDataFloat[0], TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
+        soxr_oneshot(RawData_Frequency, TargetFrequency, 1, RawDataFloat.data(), RawData_Samples, nullptr,
+                     TargetDataFloat.data(), TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
 
     if (serror) {
         sdl2::log_error("Unable to resample from %g to %g: %s", RawData_Frequency, TargetFrequency, serror);
 
-        for (uint32_t x = 0; x < TargetDataFloat_Samples; x++) {
-            const auto pos     = x / ConversionRatio;
-            const auto i       = static_cast<int>(pos); // lrint(floor(pos));
-            TargetDataFloat[x] = RawDataFloat[i] * (i + 1 - pos) + RawDataFloat[i + 1] * (pos - i);
+        for (auto x = 0U; x < TargetDataFloat_Samples; ++x) {
+            const auto pos = x / ConversionRatio;
+            const auto i   = static_cast<int>(pos); // lrint(floor(pos));
+            TargetDataFloat[x] =
+                RawDataFloat[i] * static_cast<float>(i + 1 - pos) + RawDataFloat[i + 1] * static_cast<float>(pos - i);
         }
     } else {
         if (odone != TargetDataFloat.size())
@@ -396,7 +397,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
         TargetDataFloat_Samples = TargetDataFloat.size();
     }
 
-    uint32_t TargetData_Samples = TargetDataFloat_Samples;
+    auto TargetData_Samples = TargetDataFloat_Samples;
 
     RawDataFloat.clear();
 

@@ -299,6 +299,8 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
 
     const auto section_index = std::distance(lines_.begin(), section.begin());
 
+    assert(section_index >= 0);
+
     const auto was_last = section.end() == lines_.end();
 
     auto skip_section_header = section | std::views::drop(sectionname.empty() ? 0 : 1);
@@ -307,7 +309,7 @@ bool INIFile::clearSection(std::string_view sectionname, bool bBlankLineAtSectio
         lines_.erase(skip_section_header.begin(), skip_section_header.end());
 
     if (!sectionname.empty()) {
-        assert(section_index < lines_.size());
+        assert(static_cast<size_t>(section_index) < lines_.size());
 
         // Get the new iterator that points to our Section.
         auto section_header = lines_.begin();

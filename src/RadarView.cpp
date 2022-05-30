@@ -95,20 +95,20 @@ void RadarView::draw(Point position) {
             radarRect.h = static_cast<float>((screenborder->getBottom() - screenborder->getTop()) * scale)
                         / static_cast<float>(TILESIZE);
 
-            if (radarRect.x < offsetX) {
-                radarRect.x = offsetX;
+            if (radarRect.x < static_cast<float>(offsetX)) {
+                radarRect.x = static_cast<float>(offsetX);
             }
 
-            if (radarRect.y < offsetY) {
-                radarRect.y = offsetY;
+            if (radarRect.y < static_cast<float>(offsetY)) {
+                radarRect.y = static_cast<float>(offsetY);
             }
 
-            const auto offsetFromRightX = static_cast<float>(128 - mapSizeX * scale) - offsetX;
+            const auto offsetFromRightX = static_cast<float>(128 - mapSizeX * scale) - static_cast<float>(offsetX);
             if (radarRect.x + radarRect.w > static_cast<float>(radarPosition.w) - offsetFromRightX) {
                 radarRect.w = static_cast<float>(radarPosition.w) - offsetFromRightX - radarRect.x - 1;
             }
 
-            const auto offsetFromBottomY = static_cast<float>(128 - mapSizeY * scale) - offsetY;
+            const auto offsetFromBottomY = static_cast<float>(128 - mapSizeY * scale) - static_cast<float>(offsetY);
             if (radarRect.y + radarRect.h > static_cast<float>(radarPosition.h) - offsetFromBottomY) {
                 radarRect.h = static_cast<float>(radarPosition.h) - offsetFromBottomY - radarRect.y - 1;
             }

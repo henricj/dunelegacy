@@ -59,7 +59,7 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
 
     // load default structure values
     ObjectDataStruct structureDefaultData[NUM_HOUSES];
-    for (int h = 0; h < NUM_HOUSES; h++) {
+    for (auto h = 0; h < NUM_HOUSES; ++h) {
         structureDefaultData[h].enabled = loadBoolValue(objectDataFile, "default structure", "Enabled", houseChar[h]);
         structureDefaultData[h].hitpoints =
             loadIntValue(objectDataFile, "default structure", "HitPoints", houseChar[h]);
@@ -86,14 +86,14 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         structureDefaultData[h].prerequisiteStructuresSet =
             loadPrerequisiteStructuresSet(objectDataFile, "default structure", "Prerequisite", houseChar[h]);
         structureDefaultData[h].techLevel =
-            loadIntValue(objectDataFile, "default structure", "TechLevel", houseChar[h], -1);
+            static_cast<int8_t>(loadIntValue(objectDataFile, "default structure", "TechLevel", houseChar[h], -1));
         structureDefaultData[h].upgradeLevel =
-            loadIntValue(objectDataFile, "default structure", "UpgradeLevel", houseChar[h]);
+            static_cast<int8_t>(loadIntValue(objectDataFile, "default structure", "UpgradeLevel", houseChar[h]));
     }
 
     // load default unit values
     ObjectDataStruct unitDefaultData[NUM_HOUSES];
-    for (int h = 0; h < NUM_HOUSES; h++) {
+    for (auto h = 0; h < NUM_HOUSES; ++h) {
         unitDefaultData[h].enabled      = loadBoolValue(objectDataFile, "default unit", "Enabled", houseChar[h]);
         unitDefaultData[h].hitpoints    = loadIntValue(objectDataFile, "default unit", "HitPoints", houseChar[h]);
         unitDefaultData[h].price        = loadIntValue(objectDataFile, "default unit", "Price", houseChar[h]);
@@ -111,13 +111,15 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         unitDefaultData[h].builder      = loadItemID(objectDataFile, "default structure", "Builder", houseChar[h]);
         unitDefaultData[h].prerequisiteStructuresSet =
             loadPrerequisiteStructuresSet(objectDataFile, "default unit", "Prerequisite", houseChar[h]);
-        unitDefaultData[h].techLevel    = loadIntValue(objectDataFile, "default unit", "TechLevel", houseChar[h], -1);
-        unitDefaultData[h].upgradeLevel = loadIntValue(objectDataFile, "default unit", "UpgradeLevel", houseChar[h]);
+        unitDefaultData[h].techLevel =
+            static_cast<int8_t>(loadIntValue(objectDataFile, "default unit", "TechLevel", houseChar[h], -1));
+        unitDefaultData[h].upgradeLevel =
+            static_cast<int8_t>(loadIntValue(objectDataFile, "default unit", "UpgradeLevel", houseChar[h]));
     }
 
     // set default values
-    for (int i = 0; i < Num_ItemID; i++) {
-        for (int h = 0; h < NUM_HOUSES; h++) {
+    for (auto i = 0; i < Num_ItemID; ++i) {
+        for (auto h = 0; h < NUM_HOUSES; ++h) {
             if (isStructure(static_cast<ItemID_enum>(i))) {
                 data[i][h] = structureDefaultData[h];
             } else {
@@ -141,9 +143,8 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
         }
 
         for (int h = 0; h < NUM_HOUSES; h++) {
-            using dune::globals::houseChar;
 
-            const ObjectDataStruct& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
+            const auto& defaultData = isStructure(itemID) ? structureDefaultData[h] : unitDefaultData[h];
 
             data[itemID][h].enabled =
                 loadBoolValue(objectDataFile, sectionName, "Enabled", houseChar[h], defaultData.enabled);
@@ -173,10 +174,10 @@ void ObjectData::loadFromINIFile(const std::string& filename) {
                 loadItemID(objectDataFile, sectionName, "Builder", houseChar[h], defaultData.builder);
             data[itemID][h].prerequisiteStructuresSet = loadPrerequisiteStructuresSet(
                 objectDataFile, sectionName, "Prerequisite", houseChar[h], defaultData.prerequisiteStructuresSet);
-            data[itemID][h].techLevel =
-                loadIntValue(objectDataFile, sectionName, "TechLevel", houseChar[h], defaultData.techLevel);
-            data[itemID][h].upgradeLevel =
-                loadIntValue(objectDataFile, sectionName, "UpgradeLevel", houseChar[h], defaultData.upgradeLevel);
+            data[itemID][h].techLevel = static_cast<int8_t>(
+                loadIntValue(objectDataFile, sectionName, "TechLevel", houseChar[h], defaultData.techLevel));
+            data[itemID][h].upgradeLevel = static_cast<int8_t>(
+                loadIntValue(objectDataFile, sectionName, "UpgradeLevel", houseChar[h], defaultData.upgradeLevel));
         }
     }
 }
