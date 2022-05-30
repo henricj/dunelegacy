@@ -211,8 +211,8 @@ void INIMapEditorLoader::loadMap() {
                 rowLength = sizeX;
             }
 
-            for (int x = 0; x < rowLength; x++) {
-                TERRAINTYPE type = Terrain_Sand;
+            for (auto x = 0; x < rowLength; x++) {
+                auto type = Terrain_Sand;
 
                 switch (rowString.at(x)) {
                     case '-': {

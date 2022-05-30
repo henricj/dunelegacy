@@ -32,7 +32,7 @@ public:
 
     ~IMemoryStream() override;
 
-    void open(const char* data, int length) {
+    void open(const char* data, size_t length) {
         currentPos = 0;
         bufferSize = length;
         pBuffer    = data;

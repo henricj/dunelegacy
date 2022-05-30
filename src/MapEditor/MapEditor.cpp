@@ -104,7 +104,9 @@ void MapEditor::RunEditor(MenuBase::event_handler_type handler) {
             const auto frameDuration = dune::dune_clock::now() - frameStart;
             const auto frameTime     = dune::as_milliseconds(frameDuration);
 
-            if (frameTime >= 0 && frameTime < 32) {
+            static_assert(std::is_unsigned_v<decltype(frameTime)>);
+
+            if (frameTime < 32) {
                 SDL_Delay(32 - frameTime);
             }
         }

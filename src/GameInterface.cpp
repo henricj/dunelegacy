@@ -187,7 +187,7 @@ void GameInterface::draw(Point position) {
 
     for (int i = NumDigits - 1; i >= 0; i--) {
         auto source     = calcSpriteSourceRect(digitsTex, CreditsBuffer[i] - '0', 10);
-        const auto x    = renderer_width - left + 49 + (6 - NumDigits + i) * 10;
+        const auto x    = renderer_width - left + static_cast<float>(49 + (6 - NumDigits + i) * 10);
         const auto dest = calcSpriteDrawingRect(digitsTex, x, 135, 10);
         Dune_RenderCopyF(renderer, digitsTex, &source, &dest);
     }

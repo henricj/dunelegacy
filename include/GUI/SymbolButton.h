@@ -86,10 +86,10 @@ protected:
         if (!pUnpressedTexture_) {
             invalidateTextures();
 
-            sdl2::surface_ptr pUnpressed =
-                GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
-            sdl2::surface_ptr pPressed =
-                GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", true, true);
+            const auto size = getSize();
+
+            sdl2::surface_ptr pUnpressed = GUIStyle::getInstance().createButtonSurface(size.x, size.y, "", false, true);
+            sdl2::surface_ptr pPressed   = GUIStyle::getInstance().createButtonSurface(size.x, size.y, "", true, true);
             sdl2::surface_ptr pActive;
 
             if (pSymbolSurface_) {
@@ -103,7 +103,7 @@ protected:
             }
 
             if (pActiveSymbolSurface_) {
-                pActive = GUIStyle::getInstance().createButtonSurface(getSize().x, getSize().y, "", false, true);
+                pActive = GUIStyle::getInstance().createButtonSurface(size.x, size.y, "", false, true);
 
                 SDL_Rect dest = calcAlignedDrawingRect(pActiveSymbolSurface_.get(), pActive.get());
                 SDL_BlitSurface(pActiveSymbolSurface_.get(), nullptr, pActive.get(), &dest);

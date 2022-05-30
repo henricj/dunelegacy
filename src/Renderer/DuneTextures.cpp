@@ -757,7 +757,7 @@ std::vector<SDL_Color> get_colors_horizontal(SDL_Surface* surface) {
     std::vector<SDL_Color> colors;
     colors.reserve(surface->w);
 
-    sdl2::surface_lock lock{surface};
+    const sdl2::surface_lock lock{surface};
 
     const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
 

@@ -270,7 +270,7 @@ void LoadSaveWindow::onCancel() {
 
 void LoadSaveWindow::onDirectoryChange(int i) {
     currentDirectoryIndex_ = i;
-    for (auto j = 0; j < directoryButtons.size(); j++) {
+    for (auto j = 0U; j < directoryButtons.size(); ++j) {
         directoryButtons[j].setToggleState(i == j);
     }
 

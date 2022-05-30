@@ -1840,7 +1840,7 @@ bool Game::saveGame(const std::filesystem::path& filename) {
 
     // write some settings
     fs.writeSint8(static_cast<int8_t>(gameType));
-    fs.writeUint8(techLevel);
+    fs.writeUint8(static_cast<uint8_t>(techLevel));
     fs.writeUint8Vector(randomFactory.getSeed());
     fs.writeUint8Vector(randomGen.getState());
 

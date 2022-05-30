@@ -87,7 +87,7 @@ public:
             registerAllPlayers();
         }
 
-        for (auto& player_data : playerDataList) {
+        for (const auto& player_data : playerDataList) {
             if (player_data.getPlayerClass() == playerclass) {
                 return &player_data;
             }
@@ -101,9 +101,9 @@ public:
             registerAllPlayers();
         }
 
-        for (unsigned int i = 0; i < playerDataList.size(); i++) {
+        for (auto i = 0U; i < playerDataList.size(); i++) {
             if (playerDataList[i].getPlayerClass() == playerclass) {
-                return i;
+                return static_cast<int>(i);
             }
         }
 
