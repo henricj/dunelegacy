@@ -16,6 +16,8 @@
 #include <sand.h>
 
 #include <algorithm>
+#include <limits>
+#include <utility>
 
 using namespace std::literals;
 
@@ -195,7 +197,12 @@ void INIMapEditorLoader::loadMap() {
 
             const auto rowString = inifile_->getStringValue("MAP", rowKey);
 
-            auto rowLength = rowString.size();
+            if (std::cmp_greater(rowString.size(), std::numeric_limits<int>::max())) {
+                logWarning(inifile_->getLineNumber("MAP"), "Map row %d is too long!", y);
+                continue;
+            }
+
+            auto rowLength = static_cast<int>(rowString.size());
 
             if (rowLength < sizeX) {
                 logWarning(inifile_->getLineNumber("MAP", rowKey), "Map row %d is not long enough!", y);
