@@ -269,7 +269,7 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 
     auto absorb_buffer = [&]() {
         const auto* const p                = static_cast<const void*>(buffer.data());
-        static constexpr auto element_size = sizeof decltype(buffer)::value_type;
+        static constexpr auto element_size = sizeof(decltype(buffer)::value_type);
         const auto size_bytes              = buffer.size() * element_size;
 
         kmac.absorb(static_cast<const char*>(p), size_bytes);
