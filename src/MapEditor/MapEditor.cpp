@@ -1369,7 +1369,7 @@ void MapEditor::processInput(MenuBase::event_handler_type handler) {
             }
         }
 
-        if (handler && Window::isBroadcastEventType(event.type))
+        if (handler && Window::isBroadcastEvent(event))
             handler(event);
     }
 

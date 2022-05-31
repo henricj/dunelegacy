@@ -97,12 +97,21 @@ bool Window::processChildWindowOpenCloses() {
 }
 
 namespace {
-const auto event_type_filter =
-    std::unordered_set<Uint32>{SDL_WINDOWEVENT, SDL_DISPLAYEVENT_ORIENTATION, SDL_RENDER_DEVICE_RESET};
+const auto event_type_filter = std::unordered_set<Uint32>{SDL_DISPLAYEVENT_ORIENTATION, SDL_RENDER_DEVICE_RESET};
 }
 
-bool Window::isBroadcastEventType(Uint32 type) {
-    return event_type_filter.contains(type);
+bool Window::isBroadcastEvent(const SDL_Event& event) {
+    const auto type = event.type;
+
+    if (event_type_filter.contains(type))
+        return true;
+
+    if (SDL_WINDOWEVENT != type)
+        return false;
+
+    const auto& we = event.window;
+
+    return we.event == SDL_WINDOWEVENT_SIZE_CHANGED;
 }
 
 void Window::handleInput(const SDL_Event& event) {

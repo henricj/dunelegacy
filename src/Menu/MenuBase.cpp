@@ -208,7 +208,7 @@ bool MenuBase::doInput(const SDL_Event& event) {
 
     handleInput(event);
 
-    if (sdl_handler_ && isBroadcastEventType(event.type))
+    if (sdl_handler_ && isBroadcastEvent(event))
         sdl_handler_(event);
 
     return !quitting;

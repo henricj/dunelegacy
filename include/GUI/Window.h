@@ -226,7 +226,7 @@ public:
     */
     void resizeAll() override;
 
-    [[nodiscard]] static bool isBroadcastEventType(Uint32 type);
+    [[nodiscard]] static bool isBroadcastEvent(const SDL_Event& event);
 
 protected:
     bool processChildWindowOpenCloses();

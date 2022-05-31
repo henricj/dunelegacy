@@ -895,7 +895,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         scrollUpMode_    = false;
     }
 
-    if (sdl_handler_ && Window::isBroadcastEventType(event.type))
+    if (sdl_handler_ && Window::isBroadcastEvent(event))
         sdl_handler_(event);
 }
 
