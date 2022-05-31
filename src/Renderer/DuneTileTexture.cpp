@@ -4,16 +4,18 @@
 
 #include <span>
 #include <stdexcept>
+#include <utility>
 
 DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, std::span<const SDL_Rect> tiles)
-    : texture_{texture} {
+    : texture_{texture}, columns_{columns} {
     if (rows < 1)
         THROW(std::invalid_argument, "The rows argument is out of range (%d)", rows);
 
-    if (columns < 1 || columns > std::numeric_limits<decltype(columns_)>::max())
+    if (columns < 1)
         THROW(std::invalid_argument, "The columns argument is out of range (%d)", columns);
 
-    if (tiles.size() > std::numeric_limits<int>::max() || static_cast<int>(tiles.size()) != rows * columns)
+    if (std::cmp_greater(tiles.size(), std::numeric_limits<int>::max())
+        || static_cast<int>(tiles.size()) != rows * columns)
         THROW(std::invalid_argument, "The size of the tiles does not match the rows and columns (%d != %dx%d)",
               tiles.size(), columns, rows);
 
