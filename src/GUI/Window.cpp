@@ -78,9 +78,9 @@ bool Window::processChildWindowOpenCloses() {
     bool bClosed = false;
 
     while (closeChildWindowCounter_ > 0) {
+        closeChildWindowCounter_--;
         onChildWindowClose(pChildWindow_);
         pChildWindow_->destroy();
-        closeChildWindowCounter_--;
         bClosed = true;
 
         if (!queuedChildWindows_.empty()) {
