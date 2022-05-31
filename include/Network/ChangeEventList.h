@@ -22,8 +22,8 @@
 #include <misc/OutputStream.h>
 #include <misc/SDL2pp.h>
 
-#include <list>
-#include <utility>
+#include <string>
+#include <vector>
 
 class ChangeEventList final {
 public:
@@ -31,64 +31,35 @@ public:
     public:
         enum class EventType { ChangeHouse, ChangeTeam, ChangePlayer, SetHumanPlayer };
 
-        ChangeEvent(EventType eventType, uint32_t slot, uint32_t newValue)
-            : eventType(eventType), slot(slot), newValue(newValue) { }
+        ChangeEvent(EventType eventType, uint32_t slot, uint32_t newValue);
 
-        ChangeEvent(uint32_t slot, std::string newStringValue)
-            : eventType(EventType::SetHumanPlayer), slot(slot), newStringValue(std::move(newStringValue)) { }
+        ChangeEvent(uint32_t slot, std::string newStringValue);
 
-        explicit ChangeEvent(InputStream& stream) {
-            eventType = static_cast<EventType>(stream.readUint32());
-            slot      = stream.readUint32();
+        explicit ChangeEvent(InputStream& stream);
 
-            if (eventType == EventType::SetHumanPlayer) {
-                newStringValue = stream.readString();
-            } else {
-                newValue = stream.readUint32();
-            }
-        }
+        void save(OutputStream& stream) const;
 
-        void save(OutputStream& stream) const {
-            stream.writeUint32(static_cast<uint32_t>(eventType));
-            stream.writeUint32(slot);
-            if (eventType == EventType::SetHumanPlayer) {
-                stream.writeString(newStringValue);
-            } else {
-                stream.writeUint32(newValue);
-            }
-        }
-
-        EventType eventType;
-        uint32_t slot     = 0;
-        uint32_t newValue = 0;
-        std::string newStringValue;
+        EventType eventType_;
+        uint32_t slot_     = 0;
+        uint32_t newValue_ = 0;
+        std::string newStringValue_;
     };
 
-    ChangeEventList() = default;
+    ChangeEventList();
 
-    explicit ChangeEventList(InputStream& stream) {
-        const auto numChangeEvents = stream.readUint32();
-        for (uint32_t i = 0; i < numChangeEvents; i++) {
-            changeEventList.emplace_back(stream);
-        }
-    }
+    explicit ChangeEventList(InputStream& stream);
 
-    ChangeEventList(const ChangeEventList&) = default;
-    ChangeEventList(ChangeEventList&&)      = default;
+    ChangeEventList(const ChangeEventList&);
+    ChangeEventList(ChangeEventList&&) noexcept;
 
-    ~ChangeEventList() = default;
+    ~ChangeEventList();
 
-    ChangeEventList& operator=(const ChangeEventList&) = default;
-    ChangeEventList& operator=(ChangeEventList&&)      = default;
+    ChangeEventList& operator=(const ChangeEventList&);
+    ChangeEventList& operator=(ChangeEventList&&) noexcept;
 
-    void save(OutputStream& stream) const {
-        stream.writeUint32(changeEventList.size());
-        for (const ChangeEvent& changeEvent : changeEventList) {
-            changeEvent.save(stream);
-        }
-    }
+    void save(OutputStream& stream) const;
 
-    std::list<ChangeEvent> changeEventList;
+    std::vector<ChangeEvent> changeEventList_;
 };
 
 #endif // CHANGEEVENTLIST_H
