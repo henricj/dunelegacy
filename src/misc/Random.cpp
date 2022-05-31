@@ -9,7 +9,6 @@
 #    pragma warning(disable : 4458)
 #endif // _MSC_VER
 
-#include <digestpp/hasher.hpp>
 #include <digestpp/algorithm/kmac.hpp>
 
 #if _MSC_VER
