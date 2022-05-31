@@ -123,7 +123,8 @@ void Window::handleInput(const SDL_Event& event) {
             handleMouseMovement(0, 0);
         }
 
-        return;
+        if (!isBroadcastEvent(event))
+            return;
     }
 
     switch (event.type) {
