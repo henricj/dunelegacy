@@ -633,8 +633,6 @@ void startReplay(const std::filesystem::path& filename, MenuBase::event_handler_
     const GameContext context{*game, *game->getMap(), game->getObjectManager()};
     game->runMainLoop(context, handler);
 
-    dune::globals::currentGame.reset();
-
     // Change music to menu music
     dune::globals::musicPlayer->changeMusic(MUSIC_MENU);
 }
