@@ -70,6 +70,8 @@ endif()
 set(dune_flags ${DUNE_TARGET_COMPILE_FLAGS})
 separate_arguments(dune_flags)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 add_library(dune STATIC ${SOURCES} ${HEADERS})
 target_compile_options(dune PRIVATE ${dune_flags})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
