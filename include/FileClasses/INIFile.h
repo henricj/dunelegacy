@@ -22,6 +22,7 @@
 
 #include <array>
 #include <charconv>
+#include <deque>
 #include <filesystem>
 #include <ranges>
 #include <string>
