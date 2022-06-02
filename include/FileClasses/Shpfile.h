@@ -63,15 +63,16 @@ public:
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);
 
-    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, std::ranges::range auto... args) {
-        constexpr auto size = (std::tuple_size_v<std::decay_t<decltype(args)>> + ...);
-        std::array<int, size> buffer;
+    sdl2::surface_ptr
+    getPictureArray(unsigned int tilesX, unsigned int tilesY, const std::ranges::range auto&... tiles) {
+        constexpr auto size = (std::tuple_size_v<std::decay_t<decltype(tiles)>> + ...);
+        std::array<int, size> buffer{};
 
         auto it = buffer.begin();
 
         auto next_out = [](auto&& v) { return v.out; };
 
-        ((it = next_out(std::ranges::copy(args, it))), ...);
+        ((it = next_out(std::ranges::copy(tiles, it))), ...);
 
         assert(it == buffer.end());
 
@@ -79,8 +80,7 @@ public:
     }
 
     sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, std::integral auto... tiles) {
-        constexpr auto size = sizeof...(tiles);
-        std::array<int, size> buffer{tiles...};
+        std::array buffer{tiles...};
 
         return getPictureArrayImpl(tilesX, tilesY, buffer);
     }
