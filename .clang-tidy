@@ -1,11 +1,18 @@
 ---
-Checks:          'bugprone-*,clang-diagnostic-*,clang-analyzer-*,
-    cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-bounds-pointer-arithmetic,
+Checks: |
+    -*,
+    bugprone-*,
+    clang-diagnostic-*,
+    clang-analyzer-*,
+    cppcoreguidelines-*,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
     -cppcoreguidelines-avoid-non-const-global-variables,
-    modernize-*,-modernize-use-trailing-return-type
-    '
+    modernize-*,
+    -modernize-use-trailing-return-type
+
 WarningsAsErrors: ''
-HeaderFilterRegex: '^(include|src|tests)/'
+HeaderFilterRegex: '^((?!/external/).)*$'
 AnalyzeTemporaryDtors: false
 FormatStyle:     file
 CheckOptions:
