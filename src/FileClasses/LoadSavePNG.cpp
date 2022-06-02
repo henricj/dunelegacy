@@ -15,13 +15,14 @@
  *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Colors.h>
 #include <FileClasses/LoadSavePNG.h>
-#include <globals.h>
+
 #include <misc/draw_util.h>
 #include <misc/dune_localtime.h>
 #include <misc/exceptions.h>
 #include <misc/fnkdat.h>
+
+#include <globals.h>
 
 #include <lodepng.h>
 
