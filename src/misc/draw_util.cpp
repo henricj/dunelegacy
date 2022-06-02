@@ -23,12 +23,14 @@
 
 #include <globals.h>
 
+#include <cstddef>
 #include <mutex>
 
 uint32_t getPixel(SDL_Surface* surface, int x, int y) {
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
-    auto* const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
+    auto* const p = static_cast<uint8_t*>(surface->pixels) + static_cast<ptrdiff_t>(y) * surface->pitch
+                  + static_cast<ptrdiff_t>(x) * bpp;
 
     switch (bpp) {
         case 1: return *p;
@@ -64,7 +66,8 @@ void putPixel(SDL_Surface* surface, int x, int y, uint32_t color) {
 
     const int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel want to set */
-    auto* const p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch + x * bpp;
+    auto* const p = static_cast<uint8_t*>(surface->pixels) + static_cast<ptrdiff_t>(y) * surface->pitch
+                  + static_cast<ptrdiff_t>(x) * bpp;
 
     switch (bpp) {
         case 1: *p = color; break;
@@ -222,7 +225,7 @@ void mapColor(SDL_Surface* surface, const uint8_t colorMap[256]) {
     sdl2::surface_lock lock{surface};
 
     for (auto y = 0; y < surface->h; y++) {
-        uint8_t* RESTRICT p = static_cast<uint8_t*>(surface->pixels) + y * surface->pitch;
+        uint8_t* RESTRICT p = static_cast<uint8_t*>(surface->pixels) + static_cast<ptrdiff_t>(y) * surface->pitch;
 
         for (auto x = 0; x < surface->w; ++x, ++p) {
             *p = colorMap[*p];
@@ -500,7 +503,7 @@ sdl2::surface_ptr createShadowSurface(SDL_Surface* source) {
     auto* const pixels = static_cast<uint8_t*>(lock.pixels());
 
     for (auto j = 0; j < retPic->h; ++j) {
-        auto* const p = &pixels[j * lock.pitch()];
+        auto* const p = &pixels[static_cast<ptrdiff_t>(j * lock.pitch())];
         for (auto i = 0; i < retPic->w; ++i) {
             if (p[i] != PALCOLOR_TRANSPARENT) {
                 p[i] = PALCOLOR_BLACK;
@@ -532,7 +535,7 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
     auto* const pixels = static_cast<uint8_t*>(lock.pixels());
 
     for (auto y = 0; y < retPic->h; ++y) {
-        auto* p = &pixels[y * lock.pitch()];
+        auto* p = &pixels[static_cast<ptrdiff_t>(y * lock.pitch())];
         for (auto x = 0; x < retPic->w; ++x, ++p) {
             if (*p >= srcColor && *p < srcColor + 7)
                 *p -= srcColor - destColor;

@@ -30,6 +30,7 @@
 #include <units/UnitBase.h>
 
 #include <climits>
+#include <cstddef>
 #include <set>
 #include <stack>
 
@@ -37,7 +38,7 @@ Map::Map(Game& game, int xSize, int ySize)
     : sizeX(xSize), sizeY(ySize), lastSinglySelectedObject(nullptr),
       pathfinder_(this), random_{game.randomFactory.create("Map")} {
 
-    tiles.resize(sizeX * sizeY);
+    tiles.resize(static_cast<size_t>(sizeX) * sizeY);
 
     if (game.getGameInitSettings().getGameOptions().startWithExploredMap) {
         this->for_all([](auto& tile) {
@@ -59,7 +60,7 @@ void Map::load(InputStream& stream) {
     if (x != sizeX || y != sizeY)
         THROW(std::runtime_error, "Map load size mismatch (%d, %d) != (%d, %d)", x, y, sizeX, sizeY);
 
-    assert(tiles.size() == sizeX * sizeY);
+    assert(tiles.size() == static_cast<size_t>(sizeX) * sizeY);
 
     for (auto& tile : tiles)
         tile.load(stream);

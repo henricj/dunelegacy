@@ -25,6 +25,7 @@
 
 #include <SDL2/SDL_endian.h>
 #include <algorithm>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 
@@ -116,13 +117,13 @@ sdl2::surface_ptr Wsafile::getPicture(uint32_t frameNumber) const {
 
     dune::globals::palette.applyToSurface(pic.get());
 
-    const unsigned char* const RESTRICT pImage = &decodedFrames[frameNumber * sizeX * sizeY];
+    const unsigned char* const RESTRICT pImage = &decodedFrames[static_cast<size_t>(frameNumber) * sizeX * sizeY];
     auto* const RESTRICT pixels                = static_cast<unsigned char*>(pic->pixels);
 
     sdl2::surface_lock lock{pic.get()};
 
     // Now we can copy line by line
-    for (int y = 0; y < sizeY; ++y) {
+    for (auto y = ptrdiff_t{0}; y < static_cast<ptrdiff_t>(sizeY); ++y) {
         memcpy(pixels + y * pic->pitch, pImage + y * sizeX, sizeX);
     }
 
@@ -163,8 +164,9 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
                 &decodedFrames[i * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY)];
 
             // Now we can copy this frame line by line
-            for (int line = 0; line < sizeY; ++line) {
-                memcpy(pixels + (y * sizeY + line) * pic->pitch + x * sizeX, pImage + line * sizeX, sizeX);
+            for (auto line = ptrdiff_t{0}; line < ptrdiff_t{sizeY}; ++line) {
+                memcpy(pixels + (y * sizeY + line) * pic->pitch + x * static_cast<ptrdiff_t>(sizeX),
+                       pImage + line * sizeX, sizeX);
             }
         }
     }
@@ -205,8 +207,8 @@ Wsafile::getAnimation(unsigned int startindex, unsigned int endindex, bool bDoub
 */
 void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
                            unsigned char* pDecodedFrames, int x, int y) const {
-    for (int i = 0; i < numberOfFrames; ++i) {
-        auto dec80 = std::make_unique<unsigned char[]>(x * y * 2);
+    for (auto i = ptrdiff_t{0}; i < ptrdiff_t{numberOfFrames}; ++i) {
+        auto dec80 = std::make_unique<unsigned char[]>(static_cast<size_t>(x) * y * 2);
 
         decode80(pFiledata + SDL_SwapLE32(index[i]), dec80.get(), 0);
 
@@ -215,7 +217,7 @@ void Wsafile::decodeFrames(const unsigned char* pFiledata, uint32_t* index, int 
         dec80.reset();
 
         if (i < numberOfFrames - 1) {
-            memcpy(pDecodedFrames + (i + 1) * x * y, pDecodedFrames + i * x * y, x * y);
+            memcpy(pDecodedFrames + (i + 1) * x * y, pDecodedFrames + i * x * y, ptrdiff_t{x} * y);
         }
     }
 }
@@ -344,8 +346,8 @@ void Wsafile::readdata(int numFiles, va_list args) {
     decodedFrames.clear();
     decodedFrames.resize(static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY) * numFrames);
 
-    assert(decodedFrames.size() >= sizeX * sizeY);
-    decodeFrames(pFiledata[0].get(), index[0], numberOfFrames[0], &decodedFrames[0], sizeX, sizeY);
+    assert(decodedFrames.size() >= static_cast<size_t>(sizeX) * sizeY);
+    decodeFrames(pFiledata[0].get(), index[0], numberOfFrames[0], decodedFrames.data(), sizeX, sizeY);
     pFiledata[0].reset();
 
     if (numFiles > 1) {
@@ -358,9 +360,9 @@ void Wsafile::readdata(int numFiles, va_list args) {
                 memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY),
                        static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY));
             }
-            assert(nextFreeFrame + sizeX * sizeY <= &decodedFrames[decodedFrames.size() - 1]);
+            assert(nextFreeFrame + static_cast<ptrdiff_t>(sizeX) * sizeY <= &decodedFrames.back());
             decodeFrames(pFiledata[i].get(), index[i], numberOfFrames[i], nextFreeFrame, sizeX, sizeY);
-            nextFreeFrame += numberOfFrames[i] * sizeX * sizeY;
+            nextFreeFrame += static_cast<ptrdiff_t>(numberOfFrames[i]) * sizeX * sizeY;
             pFiledata[i].reset();
         }
     }

@@ -7,6 +7,7 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
+#include <cstddef>
 #include <span>
 #include <vector>
 
@@ -36,7 +37,7 @@ private:
         if (row < 0 || row * columns_ > source_.size())
             THROW(std::invalid_argument, "Row out of range (%d)!", column);
 #endif
-        return source_.at(column + row * columns_).as_sdl();
+        return source_.at(column + static_cast<size_t>(row) * columns_).as_sdl();
     }
 
     SDL_Texture* texture_{};

@@ -32,6 +32,8 @@
 
 #include <misc/draw_util.h>
 
+#include <cstddef>
+
 RadarView::RadarView()
     : currentRadarMode(RadarMode::RadarOff), animFrame(NUM_STATIC_FRAMES - 1), animCounter(NUM_STATIC_FRAME_TIME),
       radarStaticAnimation(dune::globals::pGFXManager->getUIGraphic(UI_RadarAnimation)) {
@@ -210,7 +212,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) const {
 
     const auto radar_on = currentRadarMode == RadarMode::RadarOn || currentRadarMode == RadarMode::AnimationRadarOff;
 
-    const auto pitch = radarSurface->pitch;
+    const auto pitch = static_cast<ptrdiff_t>(radarSurface->pitch);
 
     auto* const RESTRICT pixels = static_cast<uint8_t*>(radarSurface->pixels) + offsetY * pitch;
 
@@ -218,7 +220,7 @@ void RadarView::updateRadarSurface(int scale, int offsetX, int offsetY) const {
         auto color = t.getRadarColor(game, house, radar_on);
         color      = MapRGBA(radarSurface->format, color);
 
-        auto* const RESTRICT out = pixels + scale * t.getLocation().y * pitch;
+        auto* const RESTRICT out = pixels + pitch * scale * t.getLocation().y;
 
         const auto offset = offsetX + scale * t.getLocation().x;
 

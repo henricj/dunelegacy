@@ -28,6 +28,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <cstddef>
+
 static constexpr ItemID_enum choamUnits[] = {
     Unit_Carryall, Unit_Ornithopter, Unit_Harvester, Unit_MCV,        Unit_Trike,    Unit_RaiderTrike, Unit_Quad,
     Unit_Tank,     Unit_Launcher,    Unit_SiegeTank, Unit_Devastator, Unit_Deviator, Unit_SonicTank,   ItemID_Invalid};
@@ -68,7 +70,7 @@ ChoamWindow::ChoamWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     auto& choam = pMapEditor->getChoam();
 
-    for (int i = 0; i < 7; i++) {
+    for (auto i = ptrdiff_t{0}; i < 7; i++) {
 
         ItemID_enum unit1 = choamUnits[i * 2];
         ItemID_enum unit2 = choamUnits[i * 2 + 1];

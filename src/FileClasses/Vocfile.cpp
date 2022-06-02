@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -420,7 +421,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
 
     // Convert floats back to integers but leave out 3/4 of silence
     const auto ThreeQuaterSilenceLength = static_cast<int>(NUM_SAMPLES_OF_SILENCE * ConversionRatio * (3.0f / 4.0f));
-    TargetData_Samples -= 2 * ThreeQuaterSilenceLength;
+    TargetData_Samples -= static_cast<size_t>(2) * ThreeQuaterSilenceLength;
 
     auto myChunk = sdl2::mix_chunk_ptr{static_cast<Mix_Chunk*>(SDL_calloc(sizeof(Mix_Chunk), 1))};
     if (myChunk == nullptr) {

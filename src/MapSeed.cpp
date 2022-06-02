@@ -17,6 +17,8 @@
 
 #include <misc/SDL2pp.h>
 
+#include <cstddef>
+
 #include "MapSeed.h"
 
 namespace {
@@ -271,14 +273,16 @@ void createMapWithSeed(uint32_t Para_Seed, uint16_t* pResultMap) {
     for (Ycoord = 0; Ycoord < 64; Ycoord += 4) {
         for (Xcoord = 0; Xcoord < 64; Xcoord += 4) {
             for (i = (Xcoord % 8 == 0 ? 21 : 0); (Xcoord % 8 == 0 ? 21 : 0) + 21 > i; i++) {
-                Point1 = MapArray2DToMapArray1D(Xcoord + OffsetArray2[4 * i], Ycoord + OffsetArray2[4 * i + 1]);
+                Point1 = MapArray2DToMapArray1D(Xcoord + OffsetArray2[static_cast<ptrdiff_t>(4) * i],
+                                                Ycoord + OffsetArray2[4 * i + 1]);
                 Point2 = MapArray2DToMapArray1D(Xcoord + OffsetArray2[4 * i + 2], Ycoord + OffsetArray2[4 * i + 3]);
                 pos    = (Point1 + Point2) / 2;
 
                 if (pos >= 64 * 64)
                     continue;
 
-                Point1 = MapArray2DToMapArray1D_OOB(Xcoord + OffsetArray2[4 * i], Ycoord + OffsetArray2[4 * i + 1]);
+                Point1 = MapArray2DToMapArray1D_OOB(Xcoord + OffsetArray2[static_cast<ptrdiff_t>(4) * i],
+                                                    Ycoord + OffsetArray2[4 * i + 1]);
                 Point2 = MapArray2DToMapArray1D_OOB(Xcoord + OffsetArray2[4 * i + 2], Ycoord + OffsetArray2[4 * i + 3]);
 
                 MapArray[pos] = (MapArray[Point1] + MapArray[Point2] + 1) / 2;

@@ -33,6 +33,7 @@
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
+#include <cstddef>
 #include <memory>
 
 PictureFactory::PictureFactory() {
@@ -381,7 +382,7 @@ sdl2::surface_ptr PictureFactory::createPlacingGrid(int size, int color) {
     auto* const pixels = static_cast<uint8_t*>(placingGrid->pixels);
 
     for (auto y = 0; y < size; y++) {
-        auto* const RESTRICT out = pixels + y * placingGrid->pitch;
+        auto* const RESTRICT out = pixels + static_cast<ptrdiff_t>(y) * placingGrid->pitch;
         for (auto x = 0; x < size; x++) {
             if (x % 2 == y % 2) {
                 out[x] = static_cast<uint8_t>(color);

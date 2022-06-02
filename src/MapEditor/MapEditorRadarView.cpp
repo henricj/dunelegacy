@@ -28,6 +28,8 @@
 
 #include <misc/draw_util.h>
 
+#include <cstddef>
+
 MapEditorRadarView::MapEditorRadarView(MapEditor* pMapEditor) : pMapEditor(pMapEditor) {
     radarSurface =
         sdl2::surface_ptr{SDL_CreateRGBSurface(0, RADARWIDTH, RADARHEIGHT, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
@@ -151,8 +153,9 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
             const auto pitch   = radarSurface->pitch;
 
             for (int j = 0; j < scale; j++) {
-                auto* RESTRICT p = reinterpret_cast<uint32_t*>(radar_pixels + (offsetY + scale * y + j) * pitch)
-                                 + (offsetX + scale * x);
+                auto* RESTRICT p = reinterpret_cast<uint32_t*>(
+                                       radar_pixels + (offsetY + static_cast<ptrdiff_t>(scale) * y + j) * pitch)
+                                 + (offsetX + static_cast<ptrdiff_t>(scale) * x);
 
                 for (int i = 0; i < scale; i++, p++) {
                     // Do not use putPixel here to avoid overhead
@@ -162,7 +165,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
         }
     }
 
-    for (const MapEditor::Unit& unit : pMapEditor->getUnitList()) {
+    for (const auto& unit : pMapEditor->getUnitList()) {
         const auto house_id = static_cast<int>(unit.house_);
         const auto color    = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[house_id]]);
 

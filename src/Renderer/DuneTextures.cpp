@@ -23,6 +23,7 @@
 
 //#include "FileClasses/SaveTextureAsBmp.h"
 
+#include <cstddef>
 #include <set>
 
 DuneTextures::DuneTextures() = default;
@@ -785,7 +786,8 @@ std::vector<SDL_Color> get_colors_vertical(SDL_Surface* surface) {
 
     for (auto y = 0; y < surface->h; ++y) {
         Uint8 r, g, b, a;
-        SDL_GetRGBA(pixels[y * surface->pitch / sizeof(Uint32)], surface->format, &r, &g, &b, &a);
+        SDL_GetRGBA(pixels[y * static_cast<ptrdiff_t>(surface->pitch) / sizeof(Uint32)], surface->format, &r, &g, &b,
+                    &a);
 
 #ifdef HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
         colors.emplace_back(r, g, b, a);

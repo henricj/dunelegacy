@@ -25,6 +25,7 @@
 #include "globals.h"
 #include <Definitions.h>
 
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -66,8 +67,8 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
 
     const uint16_t PaletteSize = SDL_SwapLE16(*reinterpret_cast<uint16_t*>(pFiledata.get() + 8));
 
-    const auto pImageOut = std::make_unique<uint8_t[]>(SIZE_X * SIZE_Y);
-    memset(pImageOut.get(), 0, SIZE_X * SIZE_Y);
+    const auto pImageOut = std::make_unique<uint8_t[]>(static_cast<size_t>(SIZE_X) * SIZE_Y);
+    memset(pImageOut.get(), 0, static_cast<size_t>(SIZE_X) * SIZE_Y);
 
     if (decode80(pFiledata.get() + 10 + PaletteSize, pImageOut.get(), 0) == -2) {
         THROW(std::runtime_error, "LoadCPS_RW(): Decoding this *.cps-File failed!");
@@ -84,7 +85,7 @@ sdl2::surface_ptr LoadCPS_RW(SDL_RWops* RWop) {
 
     // Now we can copy line by line
     auto* const RESTRICT p = static_cast<char*>(pic->pixels);
-    for (int y = 0; y < SIZE_Y; ++y) {
+    for (auto y = ptrdiff_t{}; y < static_cast<ptrdiff_t>(SIZE_Y); ++y) {
         memcpy(p + y * pic->pitch, pImageOut.get() + y * SIZE_X, SIZE_X);
     }
 

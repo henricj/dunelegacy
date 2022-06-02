@@ -9,6 +9,7 @@
 #    pragma warning(disable : 4458)
 #endif // _MSC_VER
 
+#include <cstddef>
 #include <digestpp/algorithm/kmac.hpp>
 
 #if _MSC_VER
@@ -262,7 +263,7 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
     std::vector<unsigned char> output;
     output.reserve(seed_size);
 
-    digestpp::kmac256 kmac{8 * seed_size};
+    digestpp::kmac256 kmac{static_cast<size_t>(8) * seed_size};
 
     kmac.set_key(name.data(), name.size());
     kmac.set_customization(&create_customization[0], sizeof create_customization);

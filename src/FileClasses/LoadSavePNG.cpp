@@ -25,6 +25,7 @@
 
 #include <lodepng.h>
 
+#include <cstddef>
 #include <optional>
 
 struct free_deleter {
@@ -99,9 +100,9 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
             // Now we can copy pixel by pixel
             if (pic->pitch == static_cast<int>(width)) {
-                memcpy(pic_surface, image_out, height * width);
+                memcpy(pic_surface, image_out, static_cast<size_t>(height) * width);
             } else
-                for (unsigned int y = 0; y < height; y++) {
+                for (auto y = ptrdiff_t{0}; y < height; y++) {
                     const auto* const in = image_out + y * width;
                     auto* const out      = pic_surface + y * pic->pitch;
 
@@ -139,7 +140,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
                     *out++ = SDL_SwapLE32(*in++);
                 }
             } else
-                for (auto y = 0u; y < height; y++) {
+                for (auto y = size_t{0}; y < height; y++) {
                     const auto* in = image_out + y * width;
                     auto* out      = reinterpret_cast<uint32_t*>(pic_surface + y * pic->pitch);
                     for (auto x = 0u; x < width; ++x)

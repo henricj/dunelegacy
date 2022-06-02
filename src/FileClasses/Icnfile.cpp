@@ -25,6 +25,7 @@
 #include <Definitions.h>
 
 #include <SDL2/SDL_endian.h>
+#include <cstddef>
 #include <cstdio>
 #include <cstdlib>
 
@@ -192,8 +193,8 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
         THROW(std::runtime_error, "Icnfile::getPicture(): Invalid palette!");
     }
 
-    const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
-    const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
+    const uint8_t* const RESTRICT palettestart = RPAL + static_cast<ptrdiff_t>(16) * RTBL[indexOfFile];
+    const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (static_cast<size_t>(SIZE_X) * SIZE_Y / 2);
 
     // create new picture surface
     sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X, SIZE_Y, 8, 0, 0, 0, 0)};
@@ -338,12 +339,14 @@ sdl2::surface_ptr Icnfile::getPictureArray(uint32_t mapfileIndex, int tilesX, in
                     THROW(std::runtime_error, "Icnfile::getPictureArray(): Invalid palette!");
                 }
 
-                const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[IndexOfFile];
-                const uint8_t* const RESTRICT filestart    = SSET + IndexOfFile * (SIZE_X * SIZE_Y / 2);
+                const uint8_t* const RESTRICT palettestart = RPAL + static_cast<ptrdiff_t>(16) * RTBL[IndexOfFile];
+                const uint8_t* const RESTRICT filestart =
+                    SSET + IndexOfFile * (static_cast<ptrdiff_t>(SIZE_X) * SIZE_Y / 2);
 
                 // Now we can copy to surface
-                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + pic->pitch * tile_y * SIZE_Y
-                                             + (tile_x + n * tilesX) * SIZE_X;
+                unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels)
+                                             + static_cast<ptrdiff_t>(pic->pitch) * tile_y * SIZE_Y
+                                             + (tile_x + static_cast<ptrdiff_t>(n) * tilesX) * SIZE_X;
                 for (int y = 0; y < SIZE_Y; y++) {
                     for (int x = 0; x < SIZE_X; x += 2) {
                         const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
@@ -401,15 +404,16 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
                 THROW(std::runtime_error, "Icnfile::getPictureRow(): Invalid palette!");
             }
 
-            const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
-            const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
+            const uint8_t* const RESTRICT palettestart = RPAL + static_cast<ptrdiff_t>(16) * RTBL[indexOfFile];
+            const uint8_t* const RESTRICT filestart = SSET + indexOfFile * (static_cast<size_t>(SIZE_X) * SIZE_Y / 2);
 
             // Now we can copy to surface
-            unsigned char* RESTRICT dest =
-                static_cast<unsigned char*>(pic->pixels) + row * SIZE_Y * pic->pitch + col * SIZE_X;
+            unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels)
+                                         + row * static_cast<ptrdiff_t>(SIZE_Y) * pic->pitch
+                                         + static_cast<size_t>(col) * SIZE_X;
             for (int y = 0; y < SIZE_Y; ++y) {
                 for (int x = 0; x < SIZE_X; x += 2) {
-                    const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
+                    const unsigned char pixel = filestart[(y * static_cast<ptrdiff_t>(SIZE_X) + x) / 2];
 
                     dest[x]     = palettestart[pixel >> 4];
                     dest[x + 1] = palettestart[pixel & 0x0F];
@@ -461,14 +465,14 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
             THROW(std::runtime_error, "Icnfile::getPictureRow2(): Invalid palette!");
         }
 
-        const uint8_t* const RESTRICT palettestart = RPAL + 16 * RTBL[indexOfFile];
-        const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (SIZE_X * SIZE_Y / 2);
+        const uint8_t* const RESTRICT palettestart = RPAL + static_cast<ptrdiff_t>(16) * RTBL[indexOfFile];
+        const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (static_cast<size_t>(SIZE_X) * SIZE_Y / 2);
 
         // Now we can copy to surface
-        unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + i * SIZE_X;
+        unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + static_cast<size_t>(i) * SIZE_X;
         for (int y = 0; y < SIZE_Y; y++) {
             for (int x = 0; x < SIZE_X; x += 2) {
-                const unsigned char pixel = filestart[(y * SIZE_X + x) / 2];
+                const unsigned char pixel = filestart[(y * static_cast<ptrdiff_t>(SIZE_X) + x) / 2];
                 dest[x]                   = palettestart[pixel >> 4];
                 dest[x + 1]               = palettestart[pixel & 0x0F];
             }

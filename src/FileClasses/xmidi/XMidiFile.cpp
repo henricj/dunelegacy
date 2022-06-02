@@ -780,7 +780,7 @@ int XMidiFile::ConvertEvent(const int time, const unsigned char status, IDataSou
             current->data[0] = 0;
             current->data[1] = mt32asgs[data * 2 + 1];
 
-            data = mt32asgs[data * 2];
+            data = mt32asgs[static_cast<ptrdiff_t>(data) * 2];
 
             // Set the bank
             if (!fs.bank[status & 0xF] || fs.bank[status & 0xF]->time > time)

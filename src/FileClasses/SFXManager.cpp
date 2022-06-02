@@ -29,6 +29,7 @@
 #include <adlib.h>
 
 #include <algorithm>
+#include <cstddef>
 #include <utility>
 
 // Not used:
@@ -89,7 +90,7 @@ SFXManager::loadMixFromADL(const std::string& adlFile, int index, [[maybe_unused
 
 void SFXManager::loadEnglishVoice() {
     lngVoice.clear();
-    lngVoice.resize(static_cast<int>(Voice_enum::NUM_VOICE) * NUM_HOUSES);
+    lngVoice.resize(static_cast<size_t>(NUM_VOICE) * NUM_HOUSES);
 
     // now we can load
     for (auto house = 0; house < NUM_HOUSES; house++) {
