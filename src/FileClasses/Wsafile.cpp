@@ -43,7 +43,7 @@ Wsafile::Wsafile(SDL_RWops* rwop) {
 /**
     The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
    support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. Both animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+   the class. Both animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
 */
 Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1) {
@@ -54,7 +54,7 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1) {
 /**
     The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
    support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All three animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+   the class. All three animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
     \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
 */
@@ -66,7 +66,7 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2) {
 /**
     The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
    support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All four animations are concatinated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
+   the class. All four animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
     \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
     \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
     \param  rwop3   SDL_RWops for the forth wsa-File. (can be readonly)
@@ -79,7 +79,7 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops
 /**
     The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
    support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All animations are concatinated. \param  num     Number of Files \param  ...     SDL_RWops for each
+   the class. All animations are concatenated. \param  num     Number of Files \param  ...     SDL_RWops for each
    wsa-File. (can be readonly)
 */
 Wsafile::Wsafile(int num, ...) {
@@ -258,9 +258,9 @@ std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesiz
     return pFiledata;
 }
 
-/// Helper method for reading and concatinating various WSA-Files.
+/// Helper method for reading and concatenating various WSA-Files.
 /**
-    This methods reads from the RWops all data and concatinates all the frames to one animation. The SDL_RWops
+    This methods reads from the RWops all data and concatenates all the frames to one animation. The SDL_RWops
     can be readonly but must support seeking.
     \param  NumFiles    Number of SDL_RWops
     \param  ...         SDL_RWops for each wsa-File. (can be readonly)
@@ -272,9 +272,9 @@ void Wsafile::readdata(int numFiles, ...) {
     va_end(args);
 }
 
-/// Helper method for reading and concatinating various WSA-Files.
+/// Helper method for reading and concatenating various WSA-Files.
 /**
-    This methods reads from the RWops all data and concatinates all the frames to one animation. The SDL_RWops
+    This methods reads from the RWops all data and concatenates all the frames to one animation. The SDL_RWops
     can be readonly but must support seeking.
     \param  numFiles    Number of SDL_RWops
     \param  args        SDL_RWops for each wsa-File should be in this va_list. (can be readonly)
