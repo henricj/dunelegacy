@@ -23,8 +23,8 @@
 
 #include <array>
 #include <concepts>
+#include <ranges>
 #include <span>
-#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -63,9 +63,8 @@ public:
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);
 
-    template<typename... Args>
-    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, Args&&... args) {
-        constexpr auto size = (std::tuple_size_v<std::decay_t<Args>> + ...);
+    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, std::ranges::range auto... args) {
+        constexpr auto size = (std::tuple_size_v<std::decay_t<decltype(args)>> + ...);
         std::array<int, size> buffer;
 
         auto it = buffer.begin();
