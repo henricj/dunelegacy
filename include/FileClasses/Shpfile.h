@@ -21,6 +21,11 @@
 #include "Animation.h"
 #include <misc/SDL2pp.h>
 
+#include <array>
+#include <concepts>
+#include <span>
+#include <tuple>
+#include <utility>
 #include <vector>
 
 inline constexpr auto TILE_NORMAL = 0x00010000;
@@ -57,7 +62,30 @@ public:
     virtual ~Shpfile();
 
     sdl2::surface_ptr getPicture(uint32_t indexOfFile);
-    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, ...);
+
+    template<typename... Args>
+    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, Args&&... args) {
+        constexpr auto size = (std::tuple_size_v<std::decay_t<Args>> + ...);
+        std::array<int, size> buffer;
+
+        auto it = buffer.begin();
+
+        auto next_out = [](auto&& v) { return v.out; };
+
+        ((it = next_out(std::ranges::copy(args, it))), ...);
+
+        assert(it == buffer.end());
+
+        return getPictureArrayImpl(tilesX, tilesY, buffer);
+    }
+
+    sdl2::surface_ptr getPictureArray(unsigned int tilesX, unsigned int tilesY, std::integral auto... tiles) {
+        constexpr auto size = sizeof...(tiles);
+        std::array<int, size> buffer{tiles...};
+
+        return getPictureArrayImpl(tilesX, tilesY, buffer);
+    }
+
     std::unique_ptr<Animation> getAnimation(unsigned int startindex, unsigned int endindex, bool bDoublePic = true,
                                             bool bSetColorKey = true, bool bLoopRewindBackwards = false);
 
@@ -69,6 +97,8 @@ public:
     [[nodiscard]] int getNumFiles() const { return static_cast<int>(shpfileEntries.size()); }
 
 private:
+    sdl2::surface_ptr
+    getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span<const int> tile_index) const;
     void readIndex();
     static void shpCorrectLF(const unsigned char* in, unsigned char* out, int size);
     static void applyPalOffsets(const unsigned char* offsets, unsigned char* data, unsigned int length);

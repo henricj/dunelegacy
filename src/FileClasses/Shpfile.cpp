@@ -167,42 +167,38 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
     \endcode
     This example would create a surface with four pictures in it. From the left to the right there are
     picture 20,23,67 and 68. picture 23 is mirrored horizontally, 67 is rotated.<br><br>
-    \param  tilesX  how many pictures in one row
-    \param  tilesY  how many pictures in one column
-    \param ...
+    \param  tilesX      how many pictures in one row
+    \param  tilesY      how many pictures in one column
+    \param  tiles       how the pictures are arranged
     \return picture in this shp-File containing all specified pictures
 */
-sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int tilesY, ...) {
-    std::vector<uint32_t> tiles;
+sdl2::surface_ptr
+Shpfile::getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span<const int> tiles) const {
 
     if (tilesX == 0 || tilesY == 0) {
         THROW(std::invalid_argument,
               "Shpfile::getPictureArray(): Number of requested image rows or columns must not be 0!");
     }
 
-    tiles.resize(static_cast<size_t>(tilesX) * tilesY);
+    if (static_cast<size_t>(tilesX) * tilesY != tiles.size()) {
+        THROW(std::invalid_argument,
+              "Shpfile::getPictureArray(): Number of requested images must match the supplied indexes!");
+    }
 
-    va_list arg_ptr = nullptr;
-    va_start(arg_ptr, tilesY);
-
-    for (auto i = 0u; i < tilesX * tilesY; i++) {
-        tiles[i] = va_arg(arg_ptr, int);
-        if (TILE_GETINDEX(tiles[i]) >= shpfileEntries.size()) {
-            va_end(arg_ptr);
+    for (const auto tile : tiles) {
+        if (TILE_GETINDEX(tile) >= shpfileEntries.size()) {
             THROW(std::invalid_argument,
                   "Shpfile::getPictureArray(): Cannot read image %ud as there are only %ud images in this *.shp!",
-                  TILE_GETINDEX(tiles[i]), shpfileEntries.size());
+                  TILE_GETINDEX(tile), shpfileEntries.size());
         }
     }
 
-    va_end(arg_ptr);
-
     const auto* const pData = pFiledata.get();
 
-    const auto sizeY = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2];
-    const auto sizeX = (pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3];
+    const auto sizeY = static_cast<int>((pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[2]);
+    const auto sizeX = static_cast<int>((pData + shpfileEntries[TILE_GETINDEX(tiles[0])].startOffset)[3]);
 
-    for (auto i = 1u; i < tilesX * tilesY; i++) {
+    for (auto i = 1u; i < tiles.size(); i++) {
         if ((pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[2] != sizeY
             || (pData + shpfileEntries[TILE_GETINDEX(tiles[i])].startOffset)[3] != sizeX) {
             THROW(std::runtime_error, "Shpfile::getPictureArray(): Not all pictures have the same size!");
@@ -317,8 +313,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 default: {
                     THROW(std::invalid_argument,
-                          "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, TILE_FLIPH, "
-                          "TILE_FLIPV or TILE_ROTATE!",
+                          "Shpfile::getPictureArray(): Invalid tile type %ud; must be one of TILE_NORMAL, "
+                          "TILE_FLIPH, TILE_FLIPV or TILE_ROTATE!",
                           TILE_GETTYPE(tiles[i]));
                 }
             }

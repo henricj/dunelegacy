@@ -35,27 +35,45 @@
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
-#define GROUNDUNIT_ROW(i)                                                                                              \
-    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV,         \
-        (i + 3) | TILE_FLIPV, (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL
-#define AIRUNIT_ROW(i)                                                                                                 \
-    (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV,         \
-        (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH
-#define ORNITHOPTER_ROW(i)                                                                                             \
-    (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV,         \
-        (i + 3) | TILE_ROTATE, i | TILE_FLIPH, (i + 3) | TILE_FLIPH
-#define INFANTRY_ROW(i)      (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_NORMAL
-#define MULTIINFANTRY_ROW(i) (i + 4) | TILE_NORMAL, i | TILE_NORMAL, (i + 4) | TILE_FLIPV, (i + 8) | TILE_NORMAL
-#define HARVESTERSAND_ROW(i)                                                                                           \
-    (i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_FLIPV,         \
-        (i + 9) | TILE_FLIPV, (i + 12) | TILE_NORMAL, (i + 9) | TILE_NORMAL
-#define ROCKET_ROW(i)                                                                                                  \
-    (i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL, (i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL,       \
-        (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, (i + 4) | TILE_FLIPV, (i + 3) | TILE_ROTATE, \
-        (i + 2) | TILE_ROTATE, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH, (i + 2) | TILE_FLIPH,      \
-        (i + 3) | TILE_FLIPH
-
 namespace {
+
+constexpr auto GROUNDUNIT_ROW(int i) {
+    return std::to_array<int>({(i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV,
+                               (i + 2) | TILE_FLIPV, (i + 3) | TILE_FLIPV, (i + 4) | TILE_NORMAL,
+                               (i + 3) | TILE_NORMAL});
+}
+
+constexpr auto AIRUNIT_ROW(int i) {
+    return std::to_array<int>({(i + 2) | TILE_NORMAL, (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV,
+                               (i + 2) | TILE_FLIPV, (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH});
+}
+
+constexpr auto ORNITHOPTER_ROW(int i) {
+    return std::to_array<int>({(i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV,
+                               (i + 6) | TILE_FLIPV, (i + 3) | TILE_ROTATE, i | TILE_FLIPH, (i + 3) | TILE_FLIPH});
+}
+
+constexpr auto INFANTRY_ROW(int i) {
+    return std::to_array<int>({(i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV, (i + 6) | TILE_NORMAL});
+}
+constexpr auto MULTIINFANTRY_ROW(int i) {
+    return std::to_array<int>({(i + 4) | TILE_NORMAL, i | TILE_NORMAL, (i + 4) | TILE_FLIPV, (i + 8) | TILE_NORMAL});
+}
+
+constexpr auto HARVESTERSAND_ROW(int i) {
+    return std::to_array<int>({(i + 6) | TILE_NORMAL, (i + 3) | TILE_NORMAL, i | TILE_NORMAL, (i + 3) | TILE_FLIPV,
+                               (i + 6) | TILE_FLIPV, (i + 9) | TILE_FLIPV, (i + 12) | TILE_NORMAL,
+                               (i + 9) | TILE_NORMAL});
+}
+
+constexpr auto ROCKET_ROW(int i) {
+    return std::to_array<int>({(i + 4) | TILE_NORMAL, (i + 3) | TILE_NORMAL, (i + 2) | TILE_NORMAL,
+                               (i + 1) | TILE_NORMAL, i | TILE_NORMAL, (i + 1) | TILE_FLIPV, (i + 2) | TILE_FLIPV,
+                               (i + 3) | TILE_FLIPV, (i + 4) | TILE_FLIPV, (i + 3) | TILE_ROTATE, (i + 2) | TILE_ROTATE,
+                               (i + 1) | TILE_ROTATE, i | TILE_FLIPH, (i + 1) | TILE_FLIPH, (i + 2) | TILE_FLIPH,
+                               (i + 3) | TILE_FLIPH});
+}
+
 constexpr auto ObjPicNames = std::to_array<std::string_view>({"Tank_Base",
                                                               "Tank_Gun",
                                                               "Siegetank_Base",
