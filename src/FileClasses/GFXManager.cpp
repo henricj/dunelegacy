@@ -176,7 +176,7 @@ const DuneTexture* GFXManager::getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE 
 
 SDL_Texture* GFXManager::getTempStreamingTexture(SDL_Renderer* renderer, int width, int height) {
     for (const auto& texture : streamingTextureCache_) {
-        int w, h;
+        int w = 0, h = 0;
         SDL_QueryTexture(texture.get(), nullptr, nullptr, &w, &h);
         if (w == width && h == height)
             return texture.get();

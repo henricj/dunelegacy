@@ -55,8 +55,8 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, flo
 
 namespace dune {
 
-RenderClip::RenderClip(SDL_Renderer* renderer, const SDL_Rect& clip) : renderer_{renderer} {
-    was_clipping_ = SDL_RenderIsClipEnabled(renderer);
+RenderClip::RenderClip(SDL_Renderer* renderer, const SDL_Rect& clip)
+    : was_clipping_{SDL_RenderIsClipEnabled(renderer)}, renderer_{renderer} {
 
     if (was_clipping_)
         SDL_RenderGetClipRect(renderer, &old_clip);
@@ -162,7 +162,7 @@ void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const 
 void Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y) {
     DuneRendererImplementation::countRenderCopy(texture);
 
-    int w, h;
+    int w{}, h{};
     SDL_QueryTexture(texture, nullptr, nullptr, &w, &h);
 
     const SDL_FRect dest{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
@@ -192,7 +192,7 @@ void Dune_RenderDump() {
 
     for (const auto& it : render_textures) {
 
-        int h, w;
+        int h = 0, w = 0;
         if (SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h))
             continue;
 

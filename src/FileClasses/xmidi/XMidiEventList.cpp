@@ -67,9 +67,9 @@ int XMidiEventList::write(ODataSource* dest) {
 // Write a Conventional Variable Length Quantity
 //
 int XMidiEventList::putVLQ(ODataSource* dest, uint32_t value) {
-    int buffer;
-    int i  = 1;
-    buffer = value & 0x7F;
+    int buffer = 0;
+    int i      = 1;
+    buffer     = value & 0x7F;
     while (value >>= 7) {
         buffer <<= 8;
         buffer |= ((value & 0x7F) | 0x80);
@@ -89,14 +89,14 @@ int XMidiEventList::putVLQ(ODataSource* dest, uint32_t value) {
 // Returns bytes of the array
 // buf can be nullptr
 uint32_t XMidiEventList::convertListToMTrk(ODataSource* dest) {
-    int time     = 0;
-    int lasttime = 0;
-    XMidiEvent* event;
-    uint32_t delta;
+    int time                  = 0;
+    int lasttime              = 0;
+    XMidiEvent* event         = nullptr;
+    uint32_t delta            = 0;
     unsigned char last_status = 0;
     uint32_t i                = 8;
-    uint32_t j;
-    uint32_t size_pos = 0;
+    uint32_t j                = 0;
+    uint32_t size_pos         = 0;
 
     if (dest) {
         dest->write1('M');

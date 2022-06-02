@@ -377,7 +377,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
     auto TargetDataFloat_Samples = static_cast<size_t>(std::ceil(RawData_Samples * ConversionRatio));
     std::vector<float> TargetDataFloat(TargetDataFloat_Samples);
 
-    size_t odone;
+    size_t odone = 0;
 
     const auto* const serror =
         soxr_oneshot(RawData_Frequency, TargetFrequency, 1, RawDataFloat.data(), RawData_Samples, nullptr,

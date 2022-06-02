@@ -29,6 +29,7 @@
 #include <ObjectBase.h>
 #include <SoundPlayer.h>
 
+#include <math.h>
 #include <misc/draw_util.h>
 #include <misc/exceptions.h>
 
@@ -286,11 +287,11 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
         const auto shimmerOffsetIndex = ((cycleCount + getBulletID()) % 24) / 3;
         sx += shimmerOffset[shimmerOffsetIndex % 8] * 2;
 
-        uint32_t format;
-        int access, w, h;
+        uint32_t format = 0;
+        int access = 0, w = 0, h = 0;
         SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
 
-        float scaleX, scaleY;
+        float scaleX = NAN, scaleY = NAN;
         SDL_RenderGetScale(renderer, &scaleX, &scaleY);
 
         // Even after this scale adjustment, there is an unknown offset between the effective coordinates

@@ -89,7 +89,7 @@ protected:
     void updateStructureSpecificStuff(const GameContext& context) override;
 
     // constant for all turrets of the same type
-    Sound_enum attackSound; ///< The id of the sound to play when attack
+    Sound_enum attackSound = Sound_enum::Sound_Gun; ///< The id of the sound to play when attack
 
     // turret state
     int32_t findTargetTimer = 0; ///< Timer used for finding a new target

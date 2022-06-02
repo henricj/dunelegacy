@@ -511,9 +511,9 @@ void XMidiFile::CreateNewEvent(int time) {
 // Get a Conventional Variable Length Quantity
 //
 int XMidiFile::GetVLQ(IDataSource* source, uint32_t& quant) {
-    int i;
-    quant = 0;
-    unsigned int data;
+    int i             = 0;
+    quant             = 0;
+    unsigned int data = 0;
 
     for (i = 0; i < 4; i++) {
         data = source->read1();
@@ -534,7 +534,7 @@ int XMidiFile::GetVLQ(IDataSource* source, uint32_t& quant) {
 // Get a XMidiFile Variable Length Quantity
 //
 int XMidiFile::GetVLQ2(IDataSource* source, uint32_t& quant) {
-    int i;
+    int i    = 0;
     quant    = 0;
     int data = 0;
 
@@ -563,7 +563,7 @@ void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
         XMidiEvent* bank   = fs.bank[channel];
         XMidiEvent* reverb = nullptr;
         XMidiEvent* chorus = nullptr;
-        XMidiEvent* temp;
+        XMidiEvent* temp   = nullptr;
 
         // Got no patch change, return and don't try fixing it
         if (!patch || !(chan_mask & 1 << channel))
@@ -1006,7 +1006,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
 
     while (!end && source->getAvail() > 0) {
         if (!is_xmi) {
-            uint32_t data;
+            uint32_t data = 0;
             GetVLQ(source, data);
             time += data;
 
@@ -1017,7 +1017,7 @@ int XMidiFile::ConvertFiletoList(IDataSource* source, const bool is_xmi, first_s
             } else
                 source->skip(-1);
         } else {
-            uint32_t data;
+            uint32_t data = 0;
             GetVLQ2(source, data);
             time += data;
 

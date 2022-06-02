@@ -446,7 +446,7 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
     dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
-    va_list arg_ptr;
+    va_list arg_ptr = nullptr;
     va_start(arg_ptr, numTiles);
 
     for (unsigned int i = 0; i < numTiles; i++) {

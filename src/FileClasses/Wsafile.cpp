@@ -83,7 +83,7 @@ Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops
    wsa-File. (can be readonly)
 */
 Wsafile::Wsafile(int num, ...) {
-    va_list args;
+    va_list args = nullptr;
     va_start(args, num);
 
     readdata(num, args);
@@ -165,7 +165,8 @@ sdl2::surface_ptr Wsafile::getAnimationAsPictureRow(int numFramesX) const {
 
             // Now we can copy this frame line by line
             for (auto line = ptrdiff_t{0}; line < ptrdiff_t{sizeY}; ++line) {
-                memcpy(pixels + (y * sizeY + line) * pic->pitch + x * static_cast<ptrdiff_t>(sizeX),
+                memcpy(pixels + (static_cast<ptrdiff_t>(y) * sizeY + line) * pic->pitch
+                           + x * static_cast<ptrdiff_t>(sizeX),
                        pImage + line * sizeX, sizeX);
             }
         }
@@ -265,7 +266,7 @@ std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesiz
     \param  ...         SDL_RWops for each wsa-File. (can be readonly)
 */
 void Wsafile::readdata(int numFiles, ...) {
-    va_list args;
+    va_list args = nullptr;
     va_start(args, numFiles);
     readdata(numFiles, args);
     va_end(args);

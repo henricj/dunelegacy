@@ -48,8 +48,8 @@ constexpr auto PLAYER_OPEN   = -1;
 constexpr auto PLAYER_CLOSED = -2;
 } // namespace
 
-CustomGamePlayers::CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server, bool LANServer)
-    : gameInitSettings(newGameInitSettings), bServer(server), bLANServer(LANServer) {
+CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool server, bool LANServer)
+    : gameInitSettings(std::move(newGameInitSettings)), bServer(server), bLANServer(LANServer) {
 
     // set up window
 
@@ -1023,9 +1023,9 @@ void CustomGamePlayers::onChangeHousesDropDownBoxes(bool bInteractive, int house
         addToHouseDropDown(curHouseInfo.houseDropDown, HOUSETYPE::HOUSE_INVALID);
 
         for (int h = 0; h < NUM_HOUSES; h++) {
-            bool bAddHouse = 0;
+            bool bAddHouse = false;
 
-            bool bCheck = 0;
+            bool bCheck = false;
 
             if (house == HOUSETYPE::HOUSE_INVALID || isBoundedHouseOnMap(house)) {
                 bCheck = numUsedBoundHouses + numUsedRandomHouses - 1 >= numBoundHouses;

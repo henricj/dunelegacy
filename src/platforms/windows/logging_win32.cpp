@@ -48,7 +48,7 @@ constexpr auto scale_MiB = 1.0 / (1024 * 1024);
 constexpr auto scale_GiB = 1.0 / (1024 * 1024 * 1024);
 
 std::optional<HKEY> open_registry_key(HKEY root, const char* path) {
-    HKEY result;
+    HKEY result = nullptr;
     if (ERROR_SUCCESS != RegOpenKeyA(root, path, &result))
         return std::nullopt;
 
@@ -61,8 +61,8 @@ std::string read_registry_string(HKEY hKey, const char* name) {
 
     // Get the size...
 
-    DWORD type;
-    DWORD size;
+    DWORD type = 0;
+    DWORD size = 0;
 
     { // Scope
         const auto result = RegQueryValueExA(hKey, name, nullptr, &type, nullptr, &size);

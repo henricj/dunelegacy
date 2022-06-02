@@ -70,17 +70,17 @@ void Tile::load(InputStream& stream) {
 
     spice_ = stream.readFixPoint();
 
-    bool bHasDamage = 0;
+    bool bHasDamage = false;
 
-    bool bHasDeadUnits = 0;
+    bool bHasDeadUnits = false;
 
-    bool bHasAirUnits = 0;
+    bool bHasAirUnits = false;
 
-    bool bHasInfantry = 0;
+    bool bHasInfantry = false;
 
-    bool bHasUndergroundUnits = 0;
+    bool bHasUndergroundUnits = false;
 
-    bool bHasNonInfantryGroundObjects = 0;
+    bool bHasNonInfantryGroundObjects = false;
     stream.readBools(&bHasDamage, &bHasDeadUnits, &bHasAirUnits, &bHasInfantry, &bHasUndergroundUnits,
                      &bHasNonInfantryGroundObjects);
 

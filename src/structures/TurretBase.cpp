@@ -67,8 +67,8 @@ void TurretBase::updateStructureSpecificStuff(const GameContext& context) {
         if (!canAttack(target_.getObjPointer()) || !targetInWeaponRange()) {
             setTarget(nullptr);
         } else if (targetInWeaponRange()) {
-            const Coord closestPoint = target_.getObjPointer()->getClosestPoint(location_);
-            const auto wantedAngle   = destinationDrawnAngle(location_, closestPoint);
+            const auto closestPoint = target_.getObjPointer()->getClosestPoint(location_);
+            const auto wantedAngle  = destinationDrawnAngle(location_, closestPoint);
 
             if (angle_ != static_cast<int>(wantedAngle)) {
                 // turn
@@ -115,7 +115,7 @@ void TurretBase::handleActionCommand(const GameContext& context, int xPos, int y
     auto& [game, map, objectManager] = context;
 
     if (const auto* tile = map.tryGetTile(xPos, yPos)) {
-        const ObjectBase* tempTarget = tile->getObject(objectManager);
+        const auto* tempTarget = tile->getObject(objectManager);
         game.getCommandManager().addCommand(Command(dune::globals::pLocalPlayer->getPlayerID(),
                                                     CMDTYPE::CMD_TURRET_ATTACKOBJECT, objectID_,
                                                     tempTarget->getObjectID()));

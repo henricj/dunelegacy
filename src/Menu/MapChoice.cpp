@@ -478,7 +478,7 @@ void MapChoice::loadINI() {
                 const auto strRegions = splitStringToStringVector(strValue);
 
                 for (auto& strRegion : strRegions) {
-                    int value;
+                    int value = 0;
                     if (!parseString(strRegion, value))
                         THROW(std::runtime_error, "File '%s' contains invalid region value '%s' for section [%s]!",
                               filename, strRegion, strSection);

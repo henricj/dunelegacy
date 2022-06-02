@@ -48,7 +48,7 @@ class CustomGamePlayers final : public MainMenuBase {
     using parent = MainMenuBase;
 
 public:
-    CustomGamePlayers(const GameInitSettings& newGameInitSettings, bool server = true, bool LANServer = true);
+    CustomGamePlayers(GameInitSettings newGameInitSettings, bool server = true, bool LANServer = true);
     ~CustomGamePlayers() override;
 
     void onReceiveChangeEventList(const ChangeEventList& changeEventList);

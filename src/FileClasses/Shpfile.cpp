@@ -182,7 +182,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
     tiles.resize(static_cast<size_t>(tilesX) * tilesY);
 
-    va_list arg_ptr;
+    va_list arg_ptr = nullptr;
     va_start(arg_ptr, tilesY);
 
     for (auto i = 0u; i < tilesX * tilesY; i++) {
@@ -276,7 +276,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
             switch (TILE_GETTYPE(tiles[i])) {
                 case TILE_NORMAL: {
                     for (auto y = 0; y < sizeY; y++) {
-                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX
+                        memcpy(static_cast<char*>(pic->pixels) + static_cast<size_t>(i) * sizeX
                                    + (y + j * static_cast<size_t>(sizeY)) * pic->pitch,
                                ImageOut.get() + static_cast<ptrdiff_t>(y) * sizeX, sizeX);
                     }
@@ -284,7 +284,7 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 case TILE_FLIPH: {
                     for (auto y = 0; y < sizeY; y++) {
-                        memcpy(static_cast<char*>(pic->pixels) + i * sizeX
+                        memcpy(static_cast<char*>(pic->pixels) + static_cast<size_t>(i) * sizeX
                                    + (y + static_cast<size_t>(j) * sizeY) * pic->pitch,
                                ImageOut.get() + (static_cast<ptrdiff_t>(sizeY) - 1 - y) * sizeX, sizeX);
                     }
@@ -292,7 +292,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 case TILE_FLIPV: {
                     for (auto y = 0; y < sizeY; y++) {
-                        unsigned char* const RESTRICT out = static_cast<unsigned char*>(pic->pixels) + i * sizeX
+                        unsigned char* const RESTRICT out = static_cast<unsigned char*>(pic->pixels)
+                                                          + static_cast<size_t>(i) * sizeX
                                                           + (y + static_cast<size_t>(j) * sizeY) * pic->pitch;
                         const unsigned char* const RESTRICT in = ImageOut.get() + static_cast<ptrdiff_t>(y) * sizeX;
                         for (auto x = 0; x < sizeX; x++) {
@@ -303,7 +304,8 @@ sdl2::surface_ptr Shpfile::getPictureArray(unsigned int tilesX, unsigned int til
 
                 case TILE_ROTATE: {
                     for (auto y = 0; y < sizeY; y++) {
-                        unsigned char* const RESTRICT out = static_cast<unsigned char*>(pic->pixels) + i * sizeX
+                        unsigned char* const RESTRICT out = static_cast<unsigned char*>(pic->pixels)
+                                                          + static_cast<size_t>(i) * sizeX
                                                           + (y + static_cast<size_t>(j) * sizeY) * pic->pitch;
                         const unsigned char* const RESTRICT in =
                             ImageOut.get() + (static_cast<ptrdiff_t>(sizeY) - 1 - y) * sizeX;

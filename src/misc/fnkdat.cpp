@@ -203,8 +203,8 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
        is available.
      */
     if (dwFlags
-        && SUCCEEDED(hresult = SHGetFolderPathW(NULL, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0), NULL,
-                                                SHGFP_TYPE_CURRENT, szPath.data()))) {
+        && SUCCEEDED(hresult = SHGetFolderPathW(nullptr, dwFlags | ((flags & FNKDAT_CREAT) ? CSIDL_FLAG_CREATE : 0),
+                                                nullptr, SHGFP_TYPE_CURRENT, szPath.data()))) {
 
         output_path = szPath.data();
         output_path /= L"" PACKAGE;
@@ -229,7 +229,7 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
                || flags == (FNKDAT_VAR | FNKDAT_DATA)) {
         const wchar_t* szCommandLine = GetCommandLineW();
 
-        const wchar_t* command_end;
+        const wchar_t* command_end = nullptr;
 
         /* argv[0] may be quoted -- if so, skip the quote
            and whack everything after the end quote

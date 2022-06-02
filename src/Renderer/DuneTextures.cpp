@@ -763,7 +763,7 @@ std::vector<SDL_Color> get_colors_horizontal(SDL_Surface* surface) {
     const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
 
     for (auto x = 0; x < surface->w; ++x) {
-        Uint8 r, g, b, a;
+        Uint8 r = 0, g = 0, b = 0, a = 0;
         SDL_GetRGBA(pixels[x], surface->format, &r, &g, &b, &a);
 
 #ifdef HAVE_PARENTHESIZED_INITIALIZATION_OF_AGGREGATES
@@ -785,7 +785,7 @@ std::vector<SDL_Color> get_colors_vertical(SDL_Surface* surface) {
     const auto* const RESTRICT pixels = static_cast<Uint32*>(surface->pixels);
 
     for (auto y = 0; y < surface->h; ++y) {
-        Uint8 r, g, b, a;
+        Uint8 r = 0, g = 0, b = 0, a = 0;
         SDL_GetRGBA(pixels[y * static_cast<ptrdiff_t>(surface->pitch) / sizeof(Uint32)], surface->format, &r, &g, &b,
                     &a);
 

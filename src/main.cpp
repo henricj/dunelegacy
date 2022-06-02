@@ -41,6 +41,7 @@
 #include "ScreenBorder.h"
 #include "misc/dune_events.h"
 #include "misc/sdl_support.h"
+#include <math.h>
 #include <misc/FileSystem.h>
 #include <misc/SDL2pp.h>
 #include <misc/Scaler.h>
@@ -662,8 +663,8 @@ float physical_dpi(SDL_Window* sdl_window) {
     if (nullptr == monitor)
         return default_dpi;
 
-    UINT dpiX;
-    UINT dpiY;
+    UINT dpiX          = 0;
+    UINT dpiY          = 0;
     const auto hresult = get_dpi_for_monitor(monitor, MONITOR_DPI_TYPE::MDT_RAW_DPI, &dpiX, &dpiY);
 
     if (FAILED(hresult))
@@ -687,7 +688,7 @@ void update_display_scale(SDL_Window* sdl_window) {
     auto& gui = GUIStyle::getInstance();
 
     const auto displayIndex = SDL_GetWindowDisplayIndex(sdl_window);
-    float dpi;
+    float dpi               = NAN;
     if (0 != SDL_GetDisplayDPI(displayIndex, nullptr, &dpi, nullptr)) {
         dpi = 1;
     }
@@ -696,8 +697,8 @@ void update_display_scale(SDL_Window* sdl_window) {
 
     auto* sdl_renderer = SDL_GetRenderer(sdl_window);
 
-    float scaleX;
-    float scaleY;
+    float scaleX = NAN;
+    float scaleY = NAN;
     SDL_RenderGetScale(sdl_renderer, &scaleX, &scaleY);
 
     gui.setZoom(scaleX);
@@ -797,7 +798,7 @@ bool run_game(int argc, char* argv[]) {
             update_display_scale(dune::globals::window.get());
 
             { // Scope
-                int w, h;
+                int w = 0, h = 0;
                 SDL_GetRendererOutputSize(renderer, &w, &h);
                 GUIStyle::getInstance().setLogicalSize(renderer, w, h);
             }

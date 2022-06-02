@@ -271,7 +271,7 @@ void OptionsMenu::onChangeOption([[maybe_unused]] bool bInteractive) {
 
     bChanged |= settings.gameOptions != currentGameOptions;
 
-    int port;
+    int port = 0;
     if (parseString(portTextBox.getText(), port))
         bChanged |= settings.network.serverPort != port;
 

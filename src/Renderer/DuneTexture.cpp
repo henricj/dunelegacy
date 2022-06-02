@@ -33,7 +33,7 @@ DuneTexture::DuneTexture(SDL_Texture* texture)
         return;
     }
 
-    int w, h;
+    int w = 0, h = 0;
     SDL_QueryTexture(texture_, nullptr, nullptr, &w, &h);
     source_ = DuneTextureRect::create(0, 0, w, h);
 
@@ -97,7 +97,7 @@ DuneTextureOwned::DuneTextureOwned(sdl2::texture_ptr texture, float width, float
     if (width_ > 0.f && height_ > 0.f)
         return;
 
-    int w, h;
+    int w = 0, h = 0;
     SDL_QueryTexture(texture_.get(), nullptr, nullptr, &w, &h);
 
     width_  = width_ > 0.f ? width_ : static_cast<float>(w);

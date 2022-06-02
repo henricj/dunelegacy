@@ -46,7 +46,7 @@ BriefingMenu::BriefingMenu(HOUSETYPE newHouse, int mission, int type)
     repeatButton.setOnClick([&] { onRepeat(); });
     windowWidget.addWidget(&repeatButton, Point(500, 340), getTextureSize(pMentatRepeat));
 
-    int mission_number;
+    int mission_number = 0;
     if (mission != 22) {
         mission_number = (mission + 1) / 3 + 1;
     } else {

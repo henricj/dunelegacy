@@ -5,7 +5,7 @@
 #include <string>
 
 std::optional<std::tm> dune::dune_localtime() {
-    time_t raw_time;
+    time_t raw_time = 0;
     std::time(&raw_time);
 
     std::tm time_info{};

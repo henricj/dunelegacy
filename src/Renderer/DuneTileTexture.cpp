@@ -20,7 +20,7 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, st
               tiles.size(), columns, rows);
 
 #if _DEBUG
-    int w, h;
+    int w = 0, h = 0;
     if (SDL_QueryTexture(texture, nullptr, nullptr, &w, &h))
         THROW(std::invalid_argument, "Unable to query texture: %s", SDL_GetError());
 
