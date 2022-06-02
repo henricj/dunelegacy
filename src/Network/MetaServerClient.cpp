@@ -77,7 +77,7 @@ void MetaServerClient::startAnnounce(std::string serverName, uint16_t serverPort
         secret_key.resize(16);
 
     serverName_ = std::move(serverName);
-    serverPort_ = serverPort_;
+    serverPort_ = serverPort;
     secret_     = to_hex(secret_key);
     mapName_    = std::move(mapName);
     numPlayers_ = numPlayers;

@@ -17,6 +17,7 @@
 
 #include <misc/string_util.h>
 
+#include <array>
 #include <charconv>
 #include <regex>
 #include <vector>
@@ -49,7 +50,7 @@ std::string replaceAll(const std::string& str, const std::unordered_map<std::str
             const size_t nextPos = result.find(nextKey, currentPos);
 
             if (nextPos != std::string::npos
-                && (nextPos < bestNextPos || nextPos == bestNextPos && nextKey.length() > bestNextKey.length())) {
+                && (nextPos < bestNextPos || (nextPos == bestNextPos && nextKey.length() > bestNextKey.length()))) {
 
                 // best match so far (either smaller position or same position but longer match)
                 bestNextPos   = nextPos;
