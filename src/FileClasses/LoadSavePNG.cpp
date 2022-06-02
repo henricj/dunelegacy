@@ -102,7 +102,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             if (pic->pitch == static_cast<int>(width)) {
                 memcpy(pic_surface, image_out, static_cast<size_t>(height) * width);
             } else
-                for (auto y = ptrdiff_t{0}; y < height; y++) {
+                for (auto y = ptrdiff_t{0}; y < static_cast<ptrdiff_t>(height); y++) {
                     const auto* const in = image_out + y * width;
                     auto* const out      = pic_surface + y * pic->pitch;
 
