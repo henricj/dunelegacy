@@ -20,15 +20,17 @@
 
 #include <misc/SDL2pp.h>
 
+#include <cstdint>
+#include <initializer_list>
 #include <vector>
 
 /// A class for loading a *.ICN-File and the corresponding *.MAP-File.
 /**
     This class can read icn-Files and return the contained pictures as a SDL_Surface. An icn-File contains
     small 16x16 pixel tiles. The map-file contains the information how to build up a complete picture with
-    this small tiles.
+    these small tiles.
 */
-class Icnfile {
+class Icnfile final {
 private:
     /// Internal structure for the MAP-File.
     struct MapfileEntry {
@@ -46,7 +48,7 @@ public:
     sdl2::surface_ptr getPictureArray(uint32_t mapfileIndex, int tilesX = 0, int tilesY = 0, int tilesN = 0);
     [[nodiscard]] sdl2::surface_ptr
     getPictureRow(uint32_t startIndex, uint32_t endIndex, uint32_t maxRowLength = 0) const;
-    sdl2::surface_ptr getPictureRow2(unsigned int numTiles, ...) const;
+    sdl2::surface_ptr getPictureRow2(std::initializer_list<uint32_t> indexes) const;
 
     /// Returns the number of tiles
     /**

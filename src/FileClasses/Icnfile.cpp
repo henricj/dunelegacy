@@ -432,13 +432,15 @@ sdl2::surface_ptr Icnfile::getPictureRow(uint32_t startIndex, uint32_t endIndex,
 /**
     This method returns a SDL_Surface containing multiple tiles/pictures. The returned surface contains all
     tiles specified be the parameters.
-    \param  numTiles    the number of tiles that should be extrated.
+    \param  indexes    the indexes of the tiles to be extracted.
     \return the result surface with all specified tiles in a row.
 */
-sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
+sdl2::surface_ptr Icnfile::getPictureRow2(std::initializer_list<uint32_t> indexes) const {
+
+    const auto numTiles = indexes.size();
 
     // create new picture surface
-    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, SIZE_X * numTiles, SIZE_Y, 8, 0, 0, 0, 0)};
+    sdl2::surface_ptr pic{SDL_CreateRGBSurface(0, static_cast<int>(SIZE_X * numTiles), SIZE_Y, 8, 0, 0, 0, 0)};
     if (pic == nullptr) {
         THROW(std::runtime_error, "Icnfile::getPictureRow2(): Cannot create surface!");
     }
@@ -446,14 +448,10 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
     dune::globals::palette.applyToSurface(pic.get());
     sdl2::surface_lock lock{pic.get()};
 
-    va_list arg_ptr = nullptr;
-    va_start(arg_ptr, numTiles);
-
-    for (unsigned int i = 0; i < numTiles; i++) {
-        const auto indexOfFile = va_arg(arg_ptr, unsigned int);
+    auto i = size_t{0};
+    for (auto indexOfFile : indexes) {
 
         if (indexOfFile >= numFiles) {
-            va_end(arg_ptr);
             THROW(std::invalid_argument,
                   "Icnfile::getPictureRow2(): Specified index (%ud) is not valid for an icn file with %ud tiles!",
                   indexOfFile, numFiles);
@@ -461,7 +459,6 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
 
         // check if palette is in range
         if (RTBL[indexOfFile] >= RPAL_Length / 16) {
-            va_end(arg_ptr);
             THROW(std::runtime_error, "Icnfile::getPictureRow2(): Invalid palette!");
         }
 
@@ -469,7 +466,7 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
         const uint8_t* const RESTRICT filestart    = SSET + indexOfFile * (static_cast<size_t>(SIZE_X) * SIZE_Y / 2);
 
         // Now we can copy to surface
-        unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + static_cast<size_t>(i) * SIZE_X;
+        unsigned char* RESTRICT dest = static_cast<unsigned char*>(pic->pixels) + i * SIZE_X;
         for (int y = 0; y < SIZE_Y; y++) {
             for (int x = 0; x < SIZE_X; x += 2) {
                 const unsigned char pixel = filestart[(y * static_cast<ptrdiff_t>(SIZE_X) + x) / 2];
@@ -478,9 +475,9 @@ sdl2::surface_ptr Icnfile::getPictureRow2(unsigned int numTiles, ...) const {
             }
             dest += pic->pitch;
         }
-    }
 
-    va_end(arg_ptr);
+        ++i;
+    }
 
     return pic;
 }

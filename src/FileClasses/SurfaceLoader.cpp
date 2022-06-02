@@ -405,7 +405,7 @@ SurfaceLoader::SurfaceLoader() {
     objPic[ObjPic_SandwormShimmerTemp][harkIdx][0] = units1->getPicture(10);
     objPic[ObjPic_Terrain][harkIdx][0]             = icon->getPictureRow(124, 209, NUM_TERRAIN_TILES_X);
     objPic[ObjPic_DestroyedStructure][harkIdx][0] =
-        icon->getPictureRow2(14, 33, 125, 213, 214, 215, 223, 224, 225, 232, 233, 234, 240, 246, 247);
+        icon->getPictureRow2({33, 125, 213, 214, 215, 223, 224, 225, 232, 233, 234, 240, 246, 247});
     objPic[ObjPic_RockDamage][harkIdx][0]        = icon->getPictureRow(1, 6);
     objPic[ObjPic_SandDamage][harkIdx][0]        = icon->getPictureRow(7, 12);
     objPic[ObjPic_Terrain_Hidden][harkIdx][0]    = icon->getPictureRow(108, 123);
@@ -415,7 +415,7 @@ SurfaceLoader::SurfaceLoader() {
     objPic[ObjPic_Star][harkIdx][1]              = LoadPNG_RW(file_manager->openFile("Star7x7.png").get());
     objPic[ObjPic_Star][harkIdx][2]              = LoadPNG_RW(file_manager->openFile("Star11x11.png").get());
 
-    SDL_Color fogTransparent = {0, 0, 0, 96};
+    SDL_Color fogTransparent{0, 0, 0, 96};
     SDL_SetPaletteColors(objPic[ObjPic_Terrain_HiddenFog][harkIdx][0]->format->palette, &fogTransparent, PALCOLOR_BLACK,
                          1);
 
