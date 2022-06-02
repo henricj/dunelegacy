@@ -68,7 +68,7 @@ private:
 
     Coord findMcvPlaceLocation(const MCV* pMCV);
     Coord findPlaceLocation(ItemID_enum itemID);
-    Coord findSquadCenter(HOUSETYPE houseID);
+    Coord findSquadCenter(HOUSETYPE houseID) const;
     Coord findBaseCentre(HOUSETYPE houseID);
     Coord findSquadRallyLocation();
     Coord findSquadRetreatLocation();

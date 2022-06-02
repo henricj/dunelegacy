@@ -1218,12 +1218,14 @@ void QuantBot::build(int militaryValue) {
 
                     case Structure_ConstructionYard: {
 
-                        // If rocket turrets don't need power then let's build some for defense
-                        int rocketTurretValue = itemCount[Structure_RocketTurret] * 250;
+                        if constexpr (false) {
+                            // If rocket turrets don't need power then let's build some for defense
+                            int rocketTurretValue = itemCount[Structure_RocketTurret] * 250;
 
-                        // disable rocket turrets for now
-                        if (getGameInitSettings().getGameOptions().rocketTurretsNeedPower || true) {
-                            rocketTurretValue = 1000000; // If rocket turrets need power we don't want to build them
+                            // disable rocket turrets for now
+                            if (getGameInitSettings().getGameOptions().rocketTurretsNeedPower || true) {
+                                rocketTurretValue = 1000000; // If rocket turrets need power we don't want to build them
+                            }
                         }
 
                         const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
@@ -1257,7 +1259,7 @@ void QuantBot::build(int militaryValue) {
                                 } else if (pBuilder->getCurrentUpgradeLevel() < pBuilder->getMaxUpgradeLevel()
                                            && !pBuilder->isUpgrading() && itemCount[Unit_Harvester] >= harvesterLimit) {
 
-                                    doUpgrade(pBuilder);
+                                    (void)doUpgrade(pBuilder);
                                     logDebug("***CampAI Upgrade builder");
                                 } else if ((getHouse()->getProducedPower() < getHouse()->getPowerRequirement())
                                            && pBuilder->isAvailableToBuild(Structure_WindTrap)
@@ -1477,11 +1479,8 @@ void QuantBot::attack(int militaryValue) {
         return;
     }
 
-    switch (difficulty) {
-        case Difficulty::Defend: {
-            return;
-        }
-    }
+    if (difficulty == Difficulty::Defend)
+        return;
 
     logDebug("Attack: house: %d  dif: %d  mStr: %d  mLim: %d  attackTimer: %d",
              static_cast<int>(getHouse()->getHouseID()), static_cast<uint8_t>(difficulty), militaryValue,
@@ -1490,9 +1489,7 @@ void QuantBot::attack(int militaryValue) {
     // overwriting existing logic for the time being
     attackTimer = MILLI2CYCLES(40000);
 
-    Coord squadCenterLocation = findSquadCenter(getHouse()->getHouseID());
-
-    for (const UnitBase* pUnit : getUnitList()) {
+    for (const auto* pUnit : getUnitList()) {
         if (pUnit->isRespondable() && (pUnit->getOwner() == getHouse()) && pUnit->isActive()
             && pUnit->getItemID() != Unit_Harvester && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall && pUnit->getHealth() / pUnit->getMaxHealth() > 0.6_fix)
@@ -1582,13 +1579,13 @@ Coord QuantBot::findBaseCentre(HOUSETYPE houseID) {
     return baseCentreLocation;
 }
 
-Coord QuantBot::findSquadCenter(HOUSETYPE houseID) {
+Coord QuantBot::findSquadCenter(HOUSETYPE houseID) const {
     int squadSize = 0;
 
     int totalX = 0;
     int totalY = 0;
 
-    for (const UnitBase* pCurrentUnit : getUnitList()) {
+    for (const auto* pCurrentUnit : getUnitList()) {
         if (pCurrentUnit->getOwner()->getHouseID() == houseID && pCurrentUnit->getItemID() != Unit_Carryall
             && pCurrentUnit->getItemID() != Unit_Harvester && pCurrentUnit->getItemID() != Unit_Frigate
             && pCurrentUnit->getItemID() != Unit_MCV
