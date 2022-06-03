@@ -26,14 +26,21 @@
 
 #include <string>
 
-class CampaignStatsMenu final : public MenuBase {
-    using parent = MenuBase;
+class CampaignStatsMenu final : public TopMenuBase {
+    using parent = TopMenuBase;
 
 public:
     explicit CampaignStatsMenu(int level);
     ~CampaignStatsMenu() override;
 
     void drawSpecificStuff() override;
+
+    /**
+        This method resizes the window to width and height.
+        \param  width   the new width of this widget
+        \param  height  the new height of this widget
+    */
+    void resize(uint32_t width, uint32_t height) override;
 
 protected:
     int showMenuImpl() override;
@@ -100,22 +107,22 @@ private:
     ProgressBar buildingsEnemyProgressBar;
     Label buildingsEnemyLabel;
 
-    dune::dune_clock::time_point currentStateStartTime{};
-    CampaignStatsState currentState = CampaignStatsState::State_HumanSpice;
+    dune::dune_clock::time_point currentStateStartTime_{};
+    CampaignStatsState currentState_ = CampaignStatsState::State_HumanSpice;
 
-    int unitsDestroyedByHuman = 0;
-    int unitsDestroyedByAI    = 0;
+    int unitsDestroyedByHuman_ = 0;
+    int unitsDestroyedByAI_    = 0;
 
-    int structuresDestroyedByHuman = 0;
-    int structuresDestroyedByAI    = 0;
+    int structuresDestroyedByHuman_ = 0;
+    int structuresDestroyedByAI_    = 0;
 
-    float spiceHarvestedByHuman = 0;
-    float spiceHarvestedByAI    = 0;
+    float spiceHarvestedByHuman_ = 0;
+    float spiceHarvestedByAI_    = 0;
 
-    int totalTime  = 0;
-    int totalScore = 0;
+    int totalTime_  = 0;
+    int totalScore_ = 0;
 
-    std::string rank;
+    std::string rank_;
 };
 
 #endif // CAMPAIGNSTATSMENU_H
