@@ -60,5 +60,5 @@ foreach(config ${build_list})
     endif()
 
     add_compile_options("$<$<CONFIG:${config}>:${release_flags}>")
-    add_link_options(/OPT:REF,ICF=3 /MAP)
+    add_link_options(/OPT:REF,ICF=3)
 endforeach()
