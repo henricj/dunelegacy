@@ -46,13 +46,14 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
 
     calculateScore(level);
 
-    const auto colorYou = SDL2RGB(
-        dune::globals::palette
-            [dune::globals::houseToPaletteIndex[static_cast<int>(dune::globals::pLocalHouse->getHouseID())] + 1]);
+    const auto houseID = dune::globals::pLocalHouse->getHouseID();
+
+    const auto colorYou =
+        SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(houseID)] + 1]);
     const auto colorEnemy = SDL2RGB(dune::globals::palette[PALCOLOR_SARDAUKAR + 1]);
 
     // set up window
-    const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_GameStatsBackground);
+    const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_GameStatsBackground, houseID);
     setBackground(pBackground);
 
     CampaignStatsMenu::setWindowWidget(&windowWidget);
