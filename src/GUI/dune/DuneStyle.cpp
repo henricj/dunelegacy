@@ -146,9 +146,6 @@ DuneStyle::createLabelSurface(uint32_t width, uint32_t height, const std::vector
             auto textSurface2 = createSurfaceWithText(textLine, textcolor, fontSize);
 
             if (textSurface1 && textSurface2) {
-                SDL_SetSurfaceBlendMode(textSurface1.get(), SDL_BLENDMODE_NONE);
-                SDL_SetSurfaceBlendMode(textSurface2.get(), SDL_BLENDMODE_BLEND);
-
                 auto textRect1 = calcDrawingRect(textSurface1.get(), 0, textpos_y + 4);
                 auto textRect2 = calcDrawingRect(textSurface2.get(), 0, textpos_y + 3);
 
