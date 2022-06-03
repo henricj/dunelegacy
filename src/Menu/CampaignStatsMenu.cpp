@@ -115,7 +115,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     spiceYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     spiceYouLabel.setAlignment(Alignment_HCenter);
     spiceYouLabel.setVisible(false);
-    windowWidget.addWidget(&spiceYouLabel, size / 2 + Point(222, -20), Point(66, 21));
+    windowWidget.addWidget(&spiceYouLabel, size / 2 + Point(222, -20 + 1), Point(66, 21));
 
     enemy1Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy1Label.setAlignment(Alignment_Right);
@@ -133,7 +133,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     spiceEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     spiceEnemyLabel.setAlignment(Alignment_HCenter);
     spiceEnemyLabel.setVisible(false);
-    windowWidget.addWidget(&spiceEnemyLabel, size / 2 + Point(222, -2), Point(66, 21));
+    windowWidget.addWidget(&spiceEnemyLabel, size / 2 + Point(222, -2 + 1), Point(66, 21));
 
     // unit kill statistics
 
@@ -153,7 +153,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     unitsYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     unitsYouLabel.setAlignment(Alignment_HCenter);
     unitsYouLabel.setVisible(false);
-    windowWidget.addWidget(&unitsYouLabel, size / 2 + Point(222, 54), Point(66, 21));
+    windowWidget.addWidget(&unitsYouLabel, size / 2 + Point(222, 54 + 1), Point(66, 21));
 
     enemy2Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy2Label.setAlignment(Alignment_Right);
@@ -171,7 +171,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     unitsEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     unitsEnemyLabel.setAlignment(Alignment_HCenter);
     unitsEnemyLabel.setVisible(false);
-    windowWidget.addWidget(&unitsEnemyLabel, size / 2 + Point(222, 72), Point(66, 21));
+    windowWidget.addWidget(&unitsEnemyLabel, size / 2 + Point(222, 72 + 1), Point(66, 21));
 
     // buildings kill statistics
 
@@ -191,7 +191,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     buildingsYouLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     buildingsYouLabel.setAlignment(Alignment_HCenter);
     buildingsYouLabel.setVisible(false);
-    windowWidget.addWidget(&buildingsYouLabel, size / 2 + Point(222, 128), Point(66, 21));
+    windowWidget.addWidget(&buildingsYouLabel, size / 2 + Point(222, 128 + 1), Point(66, 21));
 
     enemy3Label.setTextColor(COLOR_WHITE, COLOR_BLACK);
     enemy3Label.setAlignment(Alignment_Right);
@@ -209,7 +209,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     buildingsEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     buildingsEnemyLabel.setAlignment(Alignment_HCenter);
     buildingsEnemyLabel.setVisible(false);
-    windowWidget.addWidget(&buildingsEnemyLabel, size / 2 + Point(222, 146), Point(66, 21));
+    windowWidget.addWidget(&buildingsEnemyLabel, size / 2 + Point(222, 146 + 1), Point(66, 21));
 }
 
 CampaignStatsMenu::~CampaignStatsMenu() = default;
@@ -272,7 +272,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&spiceYouProgressBar, {iWidth / 2 - 228, iHeight / 2 - 15});
 
-    windowWidget.setWidgetPosition(&spiceYouLabel, {iWidth / 2 + 222, iHeight / 2 - 20});
+    windowWidget.setWidgetPosition(&spiceYouLabel, {iWidth / 2 + 222, iHeight / 2 - 20 + 1});
 
     windowWidget.setWidgetPosition(&enemy1Label, {iWidth / 2 - 229 - enemy1Label.getSize().x, iHeight / 2 - 3});
 
@@ -280,7 +280,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&spiceEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 3});
 
-    windowWidget.setWidgetPosition(&spiceEnemyLabel, {iWidth / 2 + 222, iHeight / 2 - 2});
+    windowWidget.setWidgetPosition(&spiceEnemyLabel, {iWidth / 2 + 222, iHeight / 2 - 2 + 1});
 
     // unit kill statistics
 
@@ -290,7 +290,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&unitsYouProgressBar, {iWidth / 2 - 228, iHeight / 2 + 59});
 
-    windowWidget.setWidgetPosition(&unitsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 54});
+    windowWidget.setWidgetPosition(&unitsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 54 + 1});
 
     windowWidget.setWidgetPosition(&enemy2Label, {iWidth / 2 - 229 - enemy2Label.getSize().x, iHeight / 2 + 71});
 
@@ -298,7 +298,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&unitsEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 77});
 
-    windowWidget.setWidgetPosition(&unitsEnemyLabel, {iWidth / 2 + 222, iHeight / 2 + 72});
+    windowWidget.setWidgetPosition(&unitsEnemyLabel, {iWidth / 2 + 222, iHeight / 2 + 72 + 1});
 
     // buildings kill statistics
 
@@ -308,7 +308,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&buildingsYouProgressBar, {iWidth / 2 - 228, iHeight / 2 + 133});
 
-    windowWidget.setWidgetPosition(&buildingsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 128});
+    windowWidget.setWidgetPosition(&buildingsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 128 + 1});
 
     windowWidget.setWidgetPosition(&enemy3Label, {iWidth / 2 - 229 - enemy3Label.getSize().x, iHeight / 2 + 145});
 
@@ -316,7 +316,7 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&buildingsEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 151});
 
-    windowWidget.setWidgetPosition(&buildingsEnemyLabel, {iWidth / 2 + 222, iHeight / 2 + 146});
+    windowWidget.setWidgetPosition(&buildingsEnemyLabel, {iWidth / 2 + 222, iHeight / 2 + 146 + 1});
 }
 
 void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
