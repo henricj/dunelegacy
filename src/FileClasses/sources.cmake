@@ -12,6 +12,7 @@ add_sources(FILE_CLASSES_SOURCES
 	LoadSavePNG.cpp
 	MentatTextFile.cpp
 	Pakfile.cpp
+	Palette.cpp
 	Palfile.cpp
 	PictureFactory.cpp
 	POFile.cpp
