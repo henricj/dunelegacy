@@ -29,67 +29,6 @@
 #include <cstdio>
 #include <cstdlib>
 
-/// Constructor
-/**
-    The constructor reads from the RWop all data and saves them internal. The SDL_RWops can be readonly but must support
-    seeking. Immediately after the Wsafile-Object is constructed RWop can be closed. All data is saved in the class.
-    \param  rwop    SDL_RWops to the wsa-File. (can be readonly)
-*/
-Wsafile::Wsafile(SDL_RWops* rwop) {
-    readdata(1, rwop);
-}
-
-/// Constructor
-/**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
-   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. Both animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
-    \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
-*/
-Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1) {
-    readdata(2, rwop0, rwop1);
-}
-
-/// Constructor
-/**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
-   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All three animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
-    \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
-    \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
-*/
-Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2) {
-    readdata(3, rwop0, rwop1, rwop2);
-}
-
-/// Constructor
-/**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
-   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All four animations are concatenated. \param  rwop0   SDL_RWops for the first wsa-File. (can be readonly)
-    \param  rwop1   SDL_RWops for the second wsa-File. (can be readonly)
-    \param  rwop2   SDL_RWops for the third wsa-File. (can be readonly)
-    \param  rwop3   SDL_RWops for the forth wsa-File. (can be readonly)
-*/
-Wsafile::Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3) {
-    readdata(4, rwop0, rwop1, rwop2, rwop3);
-}
-
-/// Constructor
-/**
-    The constructor reads from the RWops all data and saves them internal. The SDL_RWops can be readonly but must
-   support seeking. Immediately after the Wsafile-Object is constructed both RWops can be closed. All data is saved in
-   the class. All animations are concatenated. \param  num     Number of Files \param  ...     SDL_RWops for each
-   wsa-File. (can be readonly)
-*/
-Wsafile::Wsafile(int num, ...) {
-    va_list args = nullptr;
-    va_start(args, num);
-
-    readdata(num, args);
-    va_end(args);
-}
-
 /// Destructor
 /**
     Frees all memory.
@@ -262,24 +201,11 @@ std::unique_ptr<unsigned char[]> Wsafile::readfile(SDL_RWops* rwop, int* filesiz
 /**
     This methods reads from the RWops all data and concatenates all the frames to one animation. The SDL_RWops
     can be readonly but must support seeking.
-    \param  NumFiles    Number of SDL_RWops
-    \param  ...         SDL_RWops for each wsa-File. (can be readonly)
+    \param  rwops        SDL_RWops for each wsa-File should be in this initializer list.
 */
-void Wsafile::readdata(int numFiles, ...) {
-    va_list args = nullptr;
-    va_start(args, numFiles);
-    readdata(numFiles, args);
-    va_end(args);
-}
+void Wsafile::readdata(const std::initializer_list<SDL_RWops*>& rwops) {
+    const auto numFiles = rwops.size();
 
-/// Helper method for reading and concatenating various WSA-Files.
-/**
-    This methods reads from the RWops all data and concatenates all the frames to one animation. The SDL_RWops
-    can be readonly but must support seeking.
-    \param  numFiles    Number of SDL_RWops
-    \param  args        SDL_RWops for each wsa-File should be in this va_list. (can be readonly)
-*/
-void Wsafile::readdata(int numFiles, va_list args) {
     std::vector<std::unique_ptr<unsigned char[]>> pFiledata(numFiles);
     std::vector<uint32_t*> index(numFiles);
     std::vector<uint16_t> numberOfFrames(numFiles);
@@ -288,9 +214,8 @@ void Wsafile::readdata(int numFiles, va_list args) {
     numFrames = 0;
     looped    = false;
 
-    for (int i = 0; i < numFiles; i++) {
+    for (auto i = size_t{0}; auto rwop : rwops) {
         int wsaFilesize   = 0;
-        auto* const rwop  = va_arg(args, SDL_RWops*);
         pFiledata[i]      = readfile(rwop, &wsaFilesize);
         numberOfFrames[i] = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get()));
 
@@ -313,7 +238,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
 
         if (index[i][0] == 0) {
             // extended animation
-            if (i == 0) {
+            if (i == 0U) {
                 sdl2::log_info("Extended WSA-File!");
             }
             index[i]++;
@@ -323,7 +248,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
             extended[i] = false;
         }
 
-        if (i == 0) {
+        if (i == 0U) {
             if (index[0][numberOfFrames[0] + 1] == 0) {
                 // index[numberOfFrames[0]] point to end of file
                 // => no loop
@@ -342,6 +267,7 @@ void Wsafile::readdata(int numFiles, va_list args) {
         }
 
         numFrames += numberOfFrames[i];
+        ++i;
     }
 
     decodedFrames.clear();

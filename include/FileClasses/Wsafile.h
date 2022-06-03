@@ -21,17 +21,26 @@
 #include "Animation.h"
 #include <misc/SDL2pp.h>
 
+#include <cstdint>
+#include <initializer_list>
+#include <memory>
+
 /// A class for loading a *.WSA-File.
 /**
     This class can read the animation in a *.WSA-File and return it as SDL_Surfaces.
 */
 class Wsafile final {
 public:
-    explicit Wsafile(SDL_RWops* rwop);
-    Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1);
-    Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2);
-    Wsafile(SDL_RWops* rwop0, SDL_RWops* rwop1, SDL_RWops* rwop2, SDL_RWops* rwop3);
-    Wsafile(int num, ...);
+    /**
+        The constructor reads from the RWops all data and saves them internally. The SDL_RWops can be readonly but must
+       support seeking. Immediately after the Wsafile-Object is constructed the RWops can be closed. All data is saved
+       in the class. All animations are concatenated.
+       \param  rwops     SDL_RWops for each wsa-File. (can be readonly)
+    */
+    explicit Wsafile(std::convertible_to<SDL_RWops*> auto... rwops) {
+        readdata(std::initializer_list<SDL_RWops*>{rwops...});
+    }
+
     Wsafile(const Wsafile& wsafile)            = delete;
     Wsafile(Wsafile&& wsafile)                 = delete;
     Wsafile& operator=(const Wsafile& wsafile) = delete;
@@ -73,8 +82,8 @@ private:
     void decodeFrames(const unsigned char* pFiledata, uint32_t* index, int numberOfFrames,
                       unsigned char* pDecodedFrames, int x, int y) const;
     std::unique_ptr<unsigned char[]> readfile(SDL_RWops* rwop, int* filesize) const;
-    void readdata(int numFiles, ...);
-    void readdata(int numFiles, va_list args);
+    void readdata(const std::initializer_list<SDL_RWops*>& rwops);
+
     std::vector<unsigned char> decodedFrames;
 
     uint16_t numFrames = 0;
