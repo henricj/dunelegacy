@@ -74,7 +74,7 @@ private:
 
     std::string getDescribingString(const AITeamInfo& aiteamInfo);
 
-    std::string getPlayerName(HOUSETYPE house) const;
+    [[nodiscard]] std::string getPlayerName(HOUSETYPE house) const;
 
     HBox mainHBox;
     VBox mainVBox;

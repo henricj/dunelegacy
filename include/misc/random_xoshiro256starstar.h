@@ -21,7 +21,7 @@ class xoshiro256starstar {
     static uint64_t rotl(const uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }
 
 public:
-    typedef uint64_t result_type;
+    using result_type = uint64_t;
 
     explicit xoshiro256starstar(unsigned int x = 1) { seed(x); }
 
@@ -76,7 +76,7 @@ public:
     static constexpr result_type max() { return numeric_limits<result_type>::max(); }
 
     static constexpr size_t state_words = 4;
-    typedef uint64_t state_type;
+    using state_type                    = uint64_t;
 
     void set_state(std::span<const state_type, state_words> s) noexcept {
         s0_ = s[0];

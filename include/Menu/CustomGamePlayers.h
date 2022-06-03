@@ -58,7 +58,7 @@ public:
     void update() override;
 
 private:
-    ChangeEventList getChangeEventList() const;
+    [[nodiscard]] ChangeEventList getChangeEventList() const;
 
     void onReceiveChatMessage(const std::string& name, const std::string& message);
     void onPeerDisconnected(const std::string& playername, bool bHost, int cause);

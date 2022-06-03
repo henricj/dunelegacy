@@ -93,7 +93,7 @@ public:
 
     [[nodiscard]] std::vector<std::string> getConnectedPeers() const;
 
-    int getMaxPeerRoundTripTime() const;
+    [[nodiscard]] int getMaxPeerRoundTripTime() const;
 
     LANGameFinderAndAnnouncer* getLANGameFinderAndAnnouncer() { return pLANGameFinderAndAnnouncer_.get(); }
 

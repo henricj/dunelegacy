@@ -29,7 +29,7 @@ public:
         canAttackStuff_ = true;
     }
 
-    BulletID_enum bulletType() const noexcept { return bulletType_; }
+    [[nodiscard]] BulletID_enum bulletType() const noexcept { return bulletType_; }
 
 private:
     // constant for all turrets of the same type

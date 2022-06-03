@@ -96,7 +96,7 @@ public:
         The number of the pressed button.
         \return the pressed button (either QSTBOX_BUTTON_INVALID, QSTBOX_BUTTON1 or QSTBOX_BUTTON2)
     */
-    int getPressedButtonID() const { return pressedButtonID; }
+    [[nodiscard]] int getPressedButtonID() const { return pressedButtonID; }
 
     /**
         This static method creates a dynamic question box object with Text as the text in the question box.

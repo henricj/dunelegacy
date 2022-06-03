@@ -27,10 +27,10 @@ namespace {
 uint32_t Seed;
 
 // a point that has 2 coordinates
-typedef struct {
+struct MapSeedPoint {
     uint16_t x;
     uint16_t y;
-} MapSeedPoint;
+};
 
 // some values
 constexpr uint8_t BoolArray[] = {0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0};

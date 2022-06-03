@@ -22,7 +22,7 @@
 
 class Wall final : public StructureBase {
 public:
-    typedef enum {
+    enum WALLTYPE {
         Wall_Standalone    = 1,
         Wall_LeftRight     = 2,
         Wall_UpRight       = 3,
@@ -35,7 +35,7 @@ public:
         Wall_UpDownLeft    = 10,
         Wall_DownLeftRight = 11,
         Wall_Full          = 12
-    } WALLTYPE;
+    };
 
     inline static constexpr ItemID_enum item_id = Structure_Wall;
     using parent                                = StructureBase;

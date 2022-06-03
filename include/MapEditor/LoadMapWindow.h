@@ -32,9 +32,9 @@ class LoadMapWindow final : public Window {
 public:
     explicit LoadMapWindow(Uint32 color = COLOR_DEFAULT);
 
-    const auto& getLoadMapFilepath() const { return loadMapFilepath; }
-    const auto& getLoadMapname() const { return loadMapname; }
-    bool isLoadMapSingleplayer() const { return loadMapSingleplayer; }
+    [[nodiscard]] const auto& getLoadMapFilepath() const { return loadMapFilepath; }
+    [[nodiscard]] const auto& getLoadMapname() const { return loadMapname; }
+    [[nodiscard]] bool isLoadMapSingleplayer() const { return loadMapSingleplayer; }
 
     bool handleKeyPress(const SDL_KeyboardEvent& key) override;
 

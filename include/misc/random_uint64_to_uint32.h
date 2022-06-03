@@ -14,7 +14,7 @@ class uint64_to_uint32 {
                   && Generator::max() == std::numeric_limits<uint64_t>::max());
 
 public:
-    typedef uint32_t result_type;
+    using result_type                         = uint32_t;
     static inline constexpr size_t seed_words = Generator::seed_words;
 
 private:

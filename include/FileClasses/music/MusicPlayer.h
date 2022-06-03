@@ -28,7 +28,7 @@
 
 //! \enum MUSICTYPE
 /*! Types of music available in the game*/
-typedef enum {
+enum MUSICTYPE {
     MUSIC_ATTACK = 0, /*!< Played when at least one of player's units was hit. */
     MUSIC_PEACE,      /*!< Played most of the time when the enemy is not attacking. */
     MUSIC_INTRO,      /*!< Background music for intro. */
@@ -48,19 +48,20 @@ typedef enum {
     MUSIC_FINALE_H,   /*!< Harkonnen finale cutscene background music. */
     MUSIC_FINALE_A,   /*!< Atreides finale cutscene background music. */
     MUSIC_FINALE_O,   /*!< Ordos finale cutscene background music. */
-    MUSIC_NUM_MUSIC_TYPES,
+    MUSIC_NUM_MUSIC_TYPES [[maybe_unused]],
 
     MUSIC_RANDOM = 0xFF /*!< Random music (attack music or peace music) */
-} MUSICTYPE;
+};
 
 class MusicPlayer {
-public:
+protected:
     MusicPlayer(bool bMusicOn, int newMusicVolume, std::string_view name)
         : musicOn(bMusicOn), musicVolume(newMusicVolume), thisMusicID(INVALID),
           currentMusicType(MUSIC_RANDOM), random_{RandomFactory{}.create(name)} {
         Mix_VolumeMusic(musicVolume);
     }
 
+public:
     virtual ~MusicPlayer() = default;
 
     /*!

@@ -20,12 +20,13 @@
 
 #include <DataTypes.h>
 
-typedef enum { MirrorModeNone, MirrorModeHorizontal, MirrorModeVertical, MirrorModeBoth, MirrorModePoint } MirrorMode;
+enum MirrorMode { MirrorModeNone, MirrorModeHorizontal, MirrorModeVertical, MirrorModeBoth, MirrorModePoint };
 
 class MapMirror {
-public:
+protected:
     MapMirror(int mapsizeX, int mapsizeY);
 
+public:
     virtual ~MapMirror();
 
     [[nodiscard]] virtual int getSize() const = 0;

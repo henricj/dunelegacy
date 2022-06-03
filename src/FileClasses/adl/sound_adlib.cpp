@@ -79,13 +79,13 @@
 #include <memory>
 #include <optional>
 
-typedef uint8_t uint8;
-typedef int8_t int8;
-typedef uint16_t uint16;
-typedef int16_t int16;
-typedef uint32_t uint32;
-typedef int32_t int32;
-typedef uint8_t byte;
+using uint8  = uint8_t;
+using int8   = int8_t;
+using uint16 = uint16_t;
+using int16  = int16_t;
+using uint32 = uint32_t;
+using int32  = int32_t;
+using byte   = uint8_t;
 
 CAdPlugDatabase* CAdPlug::database = nullptr;
 

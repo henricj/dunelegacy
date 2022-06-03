@@ -33,7 +33,7 @@ struct free_deleter {
     void operator()(void* p) const { std::free(p); }
 };
 
-typedef std::unique_ptr<unsigned char, free_deleter> lodepng_ptr;
+using lodepng_ptr = std::unique_ptr<unsigned char, free_deleter>;
 
 sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
     if (RWop == nullptr) {
