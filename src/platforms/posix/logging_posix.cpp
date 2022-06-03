@@ -49,7 +49,7 @@ void log_sdk_info() { }
 void log_capture_output(std::filesystem::path logfilePath) {
     auto* const pLogfilePath = logfilePath.c_str();
 
-    int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
     if (d < 0) {
         THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
     }
