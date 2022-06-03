@@ -106,6 +106,13 @@ public:
         \param size         the size
      */
     void setWidgetGeometry(Widget* pWidget, Point position, Point size);
+
+    /**
+        Update the given widget's position.
+        \param pWidget      the widget (must already be in the container)
+        \param position     the position
+     */
+    void setWidgetPosition(Widget* pWidget, Point position);
 };
 
 #endif // STATICCONTAINER_H

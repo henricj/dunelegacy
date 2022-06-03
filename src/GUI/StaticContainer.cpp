@@ -69,3 +69,11 @@ void StaticContainer::setWidgetGeometry(Widget* pWidget, Point position, Point s
 
     pWidget->resize(size.x, size.y);
 }
+
+void StaticContainer::setWidgetPosition(Widget* pWidget, Point position) {
+    auto* const pWidgetData = getWidgetDataFromWidget(pWidget);
+    if (pWidgetData == nullptr)
+        return;
+
+    pWidgetData->position = position;
+}
