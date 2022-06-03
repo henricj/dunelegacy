@@ -142,28 +142,28 @@ DuneStyle::createLabelSurface(uint32_t width, uint32_t height, const std::vector
 
     for (const auto& textLine : textLines) {
         if (!textLine.empty()) {
-            auto textSurface1 = createSurfaceWithText(textLine, textshadowcolor, fontSize);
-            auto textSurface2 = createSurfaceWithText(textLine, textcolor, fontSize);
+            auto shadowSurface = createSurfaceWithText(textLine, textshadowcolor, fontSize);
+            auto textSurface   = createSurfaceWithText(textLine, textcolor, fontSize);
 
-            if (textSurface1 && textSurface2) {
-                auto textRect1 = calcDrawingRect(textSurface1.get(), 0, textpos_y + 4);
-                auto textRect2 = calcDrawingRect(textSurface2.get(), 0, textpos_y + 3);
+            if (shadowSurface && textSurface) {
+                auto shadowRect = calcDrawingRect(shadowSurface.get(), 0, textpos_y + 4);
+                auto textRect   = calcDrawingRect(textSurface.get(), 0, textpos_y + 3);
 
                 if (alignment & Alignment_Left) {
-                    textRect1.x = 4;
-                    textRect2.x = 3;
+                    shadowRect.x = 4;
+                    textRect.x   = 3;
                 } else if (alignment & Alignment_Right) {
-                    textRect1.x = static_cast<int>(width) - textSurface1->w - 4;
-                    textRect2.x = static_cast<int>(width) - textSurface2->w - 3;
+                    shadowRect.x = static_cast<int>(width) - shadowSurface->w - 4;
+                    textRect.x   = static_cast<int>(width) - textSurface->w - 3;
                 } else {
                     // Alignment_HCenter
-                    textRect1.x = ((surface->w - textSurface1->w) / 2) + 3;
-                    textRect2.x = ((surface->w - textSurface2->w) / 2) + 2;
+                    shadowRect.x = ((surface->w - shadowSurface->w) / 2) + 3;
+                    textRect.x   = ((surface->w - textSurface->w) / 2) + 2;
                 }
 
-                SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
+                SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
 
-                SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
+                SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
             }
         }
 
@@ -246,16 +246,16 @@ DuneStyle::createCheckboxSurface(uint32_t width, uint32_t height, std::string_vi
     }
 
     if (!text.empty()) {
-        const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
-        SDL_Rect textRect1{box_x2 + scale_to_physical_integer(4 + 2),
-                           (surface->h - textSurface1->h) / 2 + scale_to_physical_integer(1), textSurface1->w,
-                           textSurface1->h};
-        SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
+        const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, 14);
+        SDL_Rect shadowRect{box_x2 + scale_to_physical_integer(4 + 2),
+                            (surface->h - shadowSurface->h) / 2 + scale_to_physical_integer(1), shadowSurface->w,
+                            shadowSurface->h};
+        SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
 
-        const auto textSurface2 = createSurfaceWithText(text, textcolor, 14);
-        SDL_Rect textRect2{box_x2 + scale_to_physical_integer(4 + 1), (surface->h - textSurface2->h) / 2,
-                           textSurface2->w, textSurface2->h};
-        SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
+        const auto textSurface = createSurfaceWithText(text, textcolor, 14);
+        SDL_Rect textRect{box_x2 + scale_to_physical_integer(4 + 1), (surface->h - textSurface->h) / 2, textSurface->w,
+                          textSurface->h};
+        SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
     }
 
     return DuneSurfaceOwned{std::move(surface), static_cast<float>(width), static_cast<float>(height)};
@@ -318,15 +318,15 @@ DuneSurfaceOwned DuneStyle::createRadioButtonSurface(uint32_t width, uint32_t he
     }
 
     if (text.empty()) {
-        const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, 14);
-        SDL_Rect textRect1 =
-            calcDrawingRect(textSurface1.get(), 8 + 2 + 15, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
-        SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
+        const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, 14);
+        auto shadowRect =
+            calcDrawingRect(shadowSurface.get(), 8 + 2 + 15, surface->h / 2 + 5, HAlign::Left, VAlign::Center);
+        SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
 
-        const auto textSurface2 = createSurfaceWithText(text, textcolor, 14);
-        SDL_Rect textRect2 =
-            calcDrawingRect(textSurface2.get(), 8 + 1 + 15, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
-        SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
+        const auto textSurface = createSurfaceWithText(text, textcolor, 14);
+        auto textRect =
+            calcDrawingRect(textSurface.get(), 8 + 1 + 15, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
+        SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
     }
 
     return DuneSurfaceOwned{std::move(surface), static_cast<float>(width), static_cast<float>(height)};
@@ -449,22 +449,19 @@ sdl2::surface_ptr DuneStyle::createButtonSurface(uint32_t width, uint32_t height
         textshadowcolor = defaultShadowColor;
 
     if (!text.empty()) {
-        const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, fontsize);
-        if (textSurface1) {
-            SDL_Rect textRect1 =
-                calcDrawingRect(textSurface1.get(), surface->w / 2 + 2 + (pressed ? 1 : 0),
-                                surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
-            SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
+        const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, fontsize);
+        if (shadowSurface) {
+            auto shadowRect = calcDrawingRect(shadowSurface.get(), surface->w / 2 + 2 + (pressed ? 1 : 0),
+                                              surface->h / 2 + 3 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+            SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
         }
 
-        const auto textSurface2 =
-            createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
+        const auto textSurface = createSurfaceWithText(text, (activated) ? brightenUp(textcolor) : textcolor, fontsize);
 
-        if (textSurface2) {
-            SDL_Rect textRect2 =
-                calcDrawingRect(textSurface2.get(), surface->w / 2 + 1 + (pressed ? 1 : 0),
-                                surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
-            SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
+        if (textSurface) {
+            auto textRect = calcDrawingRect(textSurface.get(), surface->w / 2 + 1 + (pressed ? 1 : 0),
+                                            surface->h / 2 + 2 + (pressed ? 1 : 0), HAlign::Center, VAlign::Center);
+            SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
         }
     }
 
@@ -660,33 +657,33 @@ DuneStyle::createTextBoxSurface(uint32_t width, uint32_t height, std::string_vie
 
     // create text in this text box
     if (!text.empty()) {
-        const auto textSurface1 = createSurfaceWithText(text, textshadowcolor, fontSize);
-        const auto textSurface2 = createSurfaceWithText(text, textcolor, fontSize);
-        SDL_Rect textRect1 = calcDrawingRect(textSurface1.get(), 0, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
-        SDL_Rect textRect2 = calcDrawingRect(textSurface2.get(), 0, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
+        const auto shadowSurface = createSurfaceWithText(text, textshadowcolor, fontSize);
+        const auto textSurface   = createSurfaceWithText(text, textcolor, fontSize);
+        auto shadowRect = calcDrawingRect(shadowSurface.get(), 0, surface->h / 2 + 4, HAlign::Left, VAlign::Center);
+        auto textRect   = calcDrawingRect(textSurface.get(), 0, surface->h / 2 + 3, HAlign::Left, VAlign::Center);
 
         if (alignment & Alignment_Left) {
-            textRect1.x = 6;
-            textRect2.x = 5;
+            shadowRect.x = 6;
+            textRect.x   = 5;
         } else if (alignment & Alignment_Right) {
-            textRect1.x = scaled_width - textSurface1->w - 5;
-            textRect2.x = scaled_width - textSurface2->w - 4;
+            shadowRect.x = scaled_width - shadowSurface->w - 5;
+            textRect.x   = scaled_width - textSurface->w - 4;
         } else {
             // Alignment_HCenter
-            textRect1.x = ((surface->w - textSurface1->w) / 2) + 3;
-            textRect2.x = ((surface->w - textSurface2->w) / 2) + 2;
+            shadowRect.x = ((surface->w - shadowSurface->w) / 2) + 3;
+            textRect.x   = ((surface->w - textSurface->w) / 2) + 2;
         }
 
-        if (textRect1.w > surface->w - 10) {
-            textRect1.x -= (textSurface1->w - (surface->w - 10));
-            textRect2.x -= (textSurface2->w - (surface->w - 10));
+        if (shadowRect.w > surface->w - 10) {
+            shadowRect.x -= (shadowSurface->w - (surface->w - 10));
+            textRect.x -= (textSurface->w - (surface->w - 10));
         }
 
-        cursorPos.x = textRect2.x + textSurface2->w + 2;
+        cursorPos.x = textRect.x + textSurface->w + 2;
 
-        SDL_BlitSurface(textSurface1.get(), nullptr, surface.get(), &textRect1);
+        SDL_BlitSurface(shadowSurface.get(), nullptr, surface.get(), &shadowRect);
 
-        SDL_BlitSurface(textSurface2.get(), nullptr, surface.get(), &textRect2);
+        SDL_BlitSurface(textSurface.get(), nullptr, surface.get(), &textRect);
 
         cursorPos.w = 1;
     } else {
