@@ -87,7 +87,7 @@ enum ObjPic_enum {
     ObjPic_Terrain_HiddenFog,
     ObjPic_Terrain_Tracks,
     ObjPic_Star,
-    NUM_OBJPICS [[notmaybe_unused]]
+    NUM_OBJPICS [[maybe_unused]]
 };
 
 // SmallDetailPics
@@ -179,7 +179,7 @@ enum TinyPicture_Enum {
     TinyPicture_Special          = 38,
     TinyPicture_Infantry         = 39,
     TinyPicture_Troopers         = 40,
-    NUM_TINYPICTURE [[notmaybe_unused]]
+    NUM_TINYPICTURE [[maybe_unused]]
 };
 
 // UI Graphics
@@ -381,7 +381,7 @@ enum UIGraphics_Enum {
     UI_MapEditor_Pen5x5,
     UI_Background_Tile,
     UI_Background_Logo,
-    NUM_UIGRAPHICS [[notmaybe_unused]]
+    NUM_UIGRAPHICS [[maybe_unused]]
 };
 
 enum class GeneratedPicture { PalaceReadyText };
