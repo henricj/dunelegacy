@@ -34,14 +34,14 @@ private:
 #if _DEBUG
         if (column < 0 || column >= columns_)
             THROW(std::invalid_argument, "Column out of range (%d)!", column);
-        if (row < 0 || row * columns_ > source_.size())
+        if (row < 0 || static_cast<size_t>(row) * columns_ > source_.size())
             THROW(std::invalid_argument, "Row out of range (%d)!", column);
 #endif
         return source_.at(column + static_cast<size_t>(row) * columns_).as_sdl();
     }
 
     SDL_Texture* texture_{};
-    int columns_;
+    int columns_{};
     std::vector<DuneTextureRect> source_;
 };
 

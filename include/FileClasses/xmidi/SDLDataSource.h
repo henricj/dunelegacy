@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <SDL2/SDL_rwops.h>
 
 inline uint8_t Read1(BufferedReader<>& reader) {
-    uint8_t value;
+    uint8_t value = 0;
     if (!reader.read_one(&value, 1))
         THROW(std::runtime_error, "Read failed");
 

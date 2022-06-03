@@ -142,7 +142,7 @@ T ReadNhigh(Source& in) {
 }
 
 inline int ReadInt(std::istream& in, int def = 0) {
-    int num;
+    int num = 0;
     if (in.eof())
         return def;
     in >> num;
@@ -153,7 +153,7 @@ inline int ReadInt(std::istream& in, int def = 0) {
 }
 
 inline unsigned int ReadUInt(std::istream& in, int def = 0) {
-    unsigned int num;
+    unsigned int num = 0;
     if (in.eof())
         return def;
     in >> num;
