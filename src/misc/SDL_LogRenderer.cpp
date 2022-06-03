@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#include <fmt/format.h>
+#include <fmt/core.h>
 
 template<typename... Args>
 static void
