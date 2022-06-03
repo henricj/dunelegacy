@@ -20,14 +20,16 @@
 #include "misc/SDL2pp.h"
 #include <SDL2/SDL.h>
 
-#include <fcntl.h>
+#include <gsl/gsl>
+
 #include <filesystem>
 #include <optional>
 #include <unordered_map>
 
+#include <fcntl.h>
 #include <pwd.h>
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -51,6 +53,9 @@ void log_capture_output(std::filesystem::path logfilePath) {
     if (d < 0) {
         THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
     }
+
+    auto cleanup_d = gsl::finally([d] { close(d); });
+
     // Hint: fileno(stdout) != STDOUT_FILENO on Win32
     if (dup2(d, fileno(stdout)) < 0) {
         THROW(io_error, "Redirecting stdout failed!");
