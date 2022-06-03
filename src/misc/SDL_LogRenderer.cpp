@@ -2,16 +2,22 @@
 
 #include <SDL2/SDL.h>
 
-static void
-SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char* text, size_t maxlen, SDL_PRINTF_FORMAT_STRING const char* fmt, ...) {
-    const size_t length = SDL_strlen(text);
-    va_list ap          = nullptr;
+#include <fmt/format.h>
 
-    va_start(ap, fmt);
+template<typename... Args>
+static void
+SDL_snprintfcat(SDL_OUT_Z_CAP(maxlen) char* text, size_t maxlen, fmt::format_string<Args...> fmt, Args&&... args) {
+    const size_t length = SDL_strlen(text);
+
+    if (length >= maxlen)
+        THROW(std::invalid_argument, "Output buffer overflow!");
+
     text += length;
     maxlen -= length;
-    SDL_vsnprintf(text, maxlen, fmt, ap);
-    va_end(ap);
+
+    auto [out, _] = fmt::format_to_n(text, maxlen - 1, fmt, std::forward<Args>(args)...);
+
+    *out = '\0';
 }
 
 static void SDLTest_PrintRendererFlag(char* text, size_t maxlen, uint32_t flag) {
@@ -20,7 +26,7 @@ static void SDLTest_PrintRendererFlag(char* text, size_t maxlen, uint32_t flag) 
         case SDL_RENDERER_ACCELERATED: SDL_snprintfcat(text, maxlen, "Accelerated"); break;
         case SDL_RENDERER_PRESENTVSYNC: SDL_snprintfcat(text, maxlen, "PresentVSync"); break;
         case SDL_RENDERER_TARGETTEXTURE: SDL_snprintfcat(text, maxlen, "TargetTexturesSupported"); break;
-        default: SDL_snprintfcat(text, maxlen, "0x%8.8x", flag); break;
+        default: SDL_snprintfcat(text, maxlen, "{:#08x}", flag); break;
     }
 }
 
@@ -64,34 +70,35 @@ static void SDLTest_PrintPixelFormat(char* text, size_t maxlen, uint32_t format)
 
 namespace sdl2 {
 void SDL_LogRenderer(const SDL_RendererInfo* info) {
-    char text[1024];
+    std::array<char, 1024> text{};
 
     sdl2::log_info("  Renderer %s:\n", info->name);
 
-    SDL_snprintf(text, sizeof text, "    Flags: 0x%8.8X", info->flags);
-    SDL_snprintfcat(text, sizeof text, " (");
+    SDL_snprintfcat(text.data(), text.size(), "    Flags: {:#08X}", info->flags);
+    SDL_snprintfcat(text.data(), text.size(), " (");
     int count = 0;
-    for (auto i = 0; i < sizeof info->flags * 8; ++i) {
-        const uint32_t flag = 1 << i;
+    for (auto i = 0U; i < 8U * sizeof info->flags; ++i) {
+        const auto flag = 1U << i;
         if (info->flags & flag) {
             if (count > 0) {
-                SDL_snprintfcat(text, sizeof text, " | ");
+                SDL_snprintfcat(text.data(), text.size(), " | ");
             }
-            SDLTest_PrintRendererFlag(text, sizeof text, flag);
+            SDLTest_PrintRendererFlag(text.data(), text.size(), flag);
             ++count;
         }
     }
-    SDL_snprintfcat(text, sizeof text, ")");
-    sdl2::log_info("%s\n", text);
+    SDL_snprintfcat(text.data(), text.size(), ")");
+    sdl2::log_info("%s\n", text.data());
 
-    SDL_snprintf(text, sizeof text, "    Texture formats (%d): ", info->num_texture_formats);
+    text[0] = '\0';
+    SDL_snprintfcat(text.data(), text.size(), "    Texture formats ({}): ", info->num_texture_formats);
     for (auto i = 0; i < static_cast<int>(info->num_texture_formats); ++i) {
         if (i > 0) {
-            SDL_snprintfcat(text, sizeof text, ", ");
+            SDL_snprintfcat(text.data(), text.size(), ", ");
         }
-        SDLTest_PrintPixelFormat(text, sizeof text, info->texture_formats[i]);
+        SDLTest_PrintPixelFormat(text.data(), text.size(), info->texture_formats[i]);
     }
-    sdl2::log_info("%s\n", text);
+    sdl2::log_info("%s\n", text.data());
 
     if (info->max_texture_width || info->max_texture_height) {
         sdl2::log_info("    Max Texture Size: %dx%d\n", info->max_texture_width, info->max_texture_height);
