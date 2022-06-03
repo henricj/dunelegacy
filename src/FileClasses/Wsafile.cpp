@@ -281,7 +281,7 @@ void Wsafile::readdata(const std::initializer_list<SDL_RWops*>& rwops) {
         auto* nextFreeFrame =
             &decodedFrames[(numberOfFrames[0] * static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY))];
 
-        for (int i = 1; i < numFiles; i++) {
+        for (auto i = 1U; i < numFiles; ++i) {
             if (extended[i]) {
                 // copy last frame
                 memcpy(nextFreeFrame, nextFreeFrame - static_cast<size_t>(sizeX) * static_cast<size_t>(sizeY),
