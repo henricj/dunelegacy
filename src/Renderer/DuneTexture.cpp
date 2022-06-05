@@ -142,18 +142,13 @@ private:
 DeferDestroy pending_textures;
 } // namespace
 
-extern "C" int dune_is_destroying_textures = 0;
-
 namespace dune {
-
 void defer_destroy_texture(sdl2::texture_ptr texture) {
     pending_textures.defer(std::move(texture));
 }
 
 void destroy_textures() {
-    dune_is_destroying_textures = 1;
     pending_textures.clear();
-    dune_is_destroying_textures = 0;
 }
 
 } // namespace dune
