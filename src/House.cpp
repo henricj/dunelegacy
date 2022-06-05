@@ -166,9 +166,12 @@ void House::addPlayer(std::unique_ptr<Player> newPlayer) {
     if (nullptr == pNewPlayer)
         THROW(std::invalid_argument, "House::addPlayer passed null newPlayer!");
 
-    players_.push_back(std::move(newPlayer));
+    const auto is_human  = dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr;
+    const auto all_human = is_human && players_.empty();
 
-    ai_ = !(dynamic_cast<HumanPlayer*>(pNewPlayer) != nullptr && players_.empty());
+    ai_ = !all_human;
+
+    players_.push_back(std::move(newPlayer));
 
     const auto newPlayerID =
         static_cast<uint8_t>((static_cast<uint8_t>(houseID_) << 4U) | static_cast<uint8_t>(players_.size()));
