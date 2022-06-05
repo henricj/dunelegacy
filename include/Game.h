@@ -359,9 +359,9 @@ public:
         Adds a new message to the news ticker.
         \param  text    the text to add
     */
-    void addToNewsTicker(const std::string& text) const {
+    void addToNewsTicker(std::string text) const {
         if (pInterface_ != nullptr) {
-            pInterface_->addToNewsTicker(text);
+            pInterface_->addToNewsTicker(std::move(text));
         }
     }
 
@@ -370,9 +370,9 @@ private:
         Adds an urgent message to the news ticker.
         \param  text    the text to add
     */
-    void addUrgentMessageToNewsTicker(const std::string& text) const {
+    void addUrgentMessageToNewsTicker(std::string text) const {
         if (pInterface_ != nullptr) {
-            pInterface_->addUrgentMessageToNewsTicker(text);
+            pInterface_->addUrgentMessageToNewsTicker(std::move(text));
         }
     }
 
