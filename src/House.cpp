@@ -48,7 +48,7 @@
 #include <numeric>
 #include <stdexcept>
 
-House::House(const GameContext& context) : ai_{true}, choam_(this), context_(context) { }
+House::House(const GameContext& context) : choam_(this), context_(context) { }
 
 House::~House() = default;
 

@@ -207,7 +207,7 @@ protected:
 
     std::vector<std::unique_ptr<Player>> players_; ///< List of associated players that control this house
 
-    bool ai_{}; ///< Is this an ai player?
+    bool ai_ = true; ///< Is this an ai player?
 
     HOUSETYPE houseID_{}; ///< The house number
     uint8_t teamID_{};    ///< The team number
