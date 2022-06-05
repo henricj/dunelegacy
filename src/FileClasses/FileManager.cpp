@@ -155,7 +155,7 @@ std::vector<std::filesystem::path> PakFileConfiguration::getMissingFiles(const C
         const auto path =
             cache.find(std::u8string{reinterpret_cast<const char8_t*>(fileName.c_str()), fileName.size()});
         if (!path.has_value())
-            missing.emplace_back(path.value());
+            missing.emplace_back(fileName);
     }
 
     return missing;
