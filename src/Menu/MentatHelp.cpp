@@ -79,7 +79,7 @@ MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatM
 MentatHelp::~MentatHelp() = default;
 
 void MentatHelp::drawSpecificStuff() {
-    MentatMenu::drawSpecificStuff();
+    parent::drawSpecificStuff();
 
     auto* const renderer = dune::globals::renderer.get();
 
@@ -115,7 +115,7 @@ void MentatHelp::doInputImpl(const SDL_Event& event) {
         return;
     }
 
-    MentatMenu::doInputImpl(event);
+    parent::doInputImpl(event);
 }
 
 void MentatHelp::onMentatTextFinished() {
