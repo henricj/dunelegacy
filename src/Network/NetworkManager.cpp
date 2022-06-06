@@ -781,6 +781,8 @@ std::vector<std::string> NetworkManager::getConnectedPeers() const {
 }
 
 int NetworkManager::getMaxPeerRoundTripTime() const {
+    if (peerList_.empty())
+        return 1; // No peers - RTT is not meaningful.
     const auto max_rtt =
         std::ranges::max(peerList_, {}, [](const auto* const p) { return p->roundTripTime; })->roundTripTime;
 
