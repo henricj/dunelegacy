@@ -582,8 +582,6 @@ void Game::drawScreen() {
 void Game::doInput(const GameContext& context, SDL_Event& event) {
     // check for a key press
 
-    auto* const screenborder = dune::globals::screenborder.get();
-
     // first of all update mouse
     if (event.type == SDL_MOUSEMOTION) {
         const SDL_MouseMotionEvent* mouse = &event.motion;
@@ -656,6 +654,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                     default: break;
                 }
+
+                auto* const screenborder = dune::globals::screenborder.get();
 
                 switch (mouse->button) {
 
@@ -784,6 +784,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         finalMouseY = topBarPos_.x + topBarPos_.h;
                     }
 
+                    auto* const screenborder = dune::globals::screenborder.get();
+
                     int rectFinishX = screenborder->screen2MapX(finalMouseX);
                     if (rectFinishX > (map_->getSizeX() - 1)) {
                         rectFinishX = map_->getSizeX() - 1;
@@ -872,6 +874,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         scrollRightMode_ =
             (dune::globals::drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
         scrollUpMode_ = (dune::globals::drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+
+        auto* const screenborder = dune::globals::screenborder.get();
 
         if (scrollLeftMode_ && scrollRightMode_) {
             // do nothing
