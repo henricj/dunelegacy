@@ -108,6 +108,11 @@ private:
     */
     void doInput(const GameContext& context, SDL_Event& event);
 
+    /**
+        Pans the in-game viewport based on mouse or keyboard control.
+    */
+    void scrollViewport();
+
 public:
     /**
         Returns the current game cycle number.
@@ -594,10 +599,11 @@ private:
     bool chatMode_ = false;         ///< chat mode on?
     std::string typingChatMessage_; ///< currently typed chat message
 
-    bool scrollDownMode_  = false; ///< currently scrolling the map down?
-    bool scrollLeftMode_  = false; ///< currently scrolling the map left?
-    bool scrollRightMode_ = false; ///< currently scrolling the map right?
-    bool scrollUpMode_    = false; ///< currently scrolling the map up?
+    int mapVerticalScroll_; ///< Specifies the speed at which map is being scrolled vertically (0: no scroll, +: scroll
+                            ///< down, -: scroll up)
+    int mapHorizontalScroll_; ///< Same for horizontal scrolling. Fast scrolling is performed with holding shift key down.
+    dune::dune_clock::time_point
+        lastScrollTime_; ///< Tracks the timestamp of when previous map scroll occurred. Used to pace scrolling speed.
 
     bool selectionMode_ = false; ///< currently selection multiple units with a selection rectangle?
     SDL_Rect selectionRect_{};   ///< the drawn rectangle while selection multiple units
