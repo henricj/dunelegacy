@@ -151,14 +151,12 @@ void setVideoMode(int displayIndex) {
     dune::globals::renderer.reset();
     dune::globals::window.reset();
 
-    int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI;
+    int videoFlags = SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE;
 
     auto& video = dune::globals::settings.video;
 
     if (video.fullscreen)
         videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else
-        videoFlags |= SDL_WINDOW_RESIZABLE;
 
     const SDL_DisplayMode targetDisplayMode{0, video.physicalWidth, video.physicalHeight, 0, nullptr};
 
