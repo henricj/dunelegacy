@@ -868,39 +868,62 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
         && (SDL_GetWindowFlags(dune::globals::window.get()) & SDL_WINDOW_INPUT_FOCUS)) {
 
         const auto* keystate = SDL_GetKeyboardState(nullptr);
-        scrollDownMode_ =
-            (dune::globals::drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_DOWN];
-        scrollLeftMode_ = (dune::globals::drawnMouseX <= SCROLLBORDER) || keystate[SDL_SCANCODE_LEFT];
-        scrollRightMode_ =
-            (dune::globals::drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER) || keystate[SDL_SCANCODE_RIGHT];
-        scrollUpMode_ = (dune::globals::drawnMouseY <= SCROLLBORDER) || keystate[SDL_SCANCODE_UP];
+        // Update map scrolling speed state. Using both keyboard and mouse to scroll at the same time is intended to
+        // accumulate together.
+        mapVerticalScroll_ = (dune::globals::drawnMouseY >= getRendererHeight() - 1 - SCROLLBORDER ? 1 : 0)
+                           + (keystate[SDL_SCANCODE_DOWN] ? 1 : 0)
+                           + (dune::globals::drawnMouseY <= SCROLLBORDER ? -1 : 0)
+                           + (keystate[SDL_SCANCODE_UP] ? -1 : 0);
+        mapHorizontalScroll_ = (dune::globals::drawnMouseX <= SCROLLBORDER ? -1 : 0)
+                             + (keystate[SDL_SCANCODE_LEFT] ? -1 : 0)
+                             + (dune::globals::drawnMouseX >= getRendererWidth() - 1 - SCROLLBORDER ? 1 : 0)
+                             + (keystate[SDL_SCANCODE_RIGHT] ? 1 : 0);
 
-        auto* const screenborder = dune::globals::screenborder.get();
-
-        if (scrollLeftMode_ && scrollRightMode_) {
-            // do nothing
-        } else if (scrollLeftMode_) {
-            scrollLeftMode_ = screenborder->scrollLeft();
-        } else if (scrollRightMode_) {
-            scrollRightMode_ = screenborder->scrollRight();
-        }
-
-        if (scrollDownMode_ && scrollUpMode_) {
-            // do nothing
-        } else if (scrollDownMode_) {
-            scrollDownMode_ = screenborder->scrollDown();
-        } else if (scrollUpMode_) {
-            scrollUpMode_ = screenborder->scrollUp();
+        // Holding down shift enables 3x fast speed scrolling.
+        if (keystate[SDL_SCANCODE_LSHIFT] || keystate[SDL_SCANCODE_RSHIFT]) {
+            mapVerticalScroll_ *= 3;
+            mapHorizontalScroll_ *= 3;
         }
     } else {
-        scrollDownMode_  = false;
-        scrollLeftMode_  = false;
-        scrollRightMode_ = false;
-        scrollUpMode_    = false;
+        mapVerticalScroll_ = mapHorizontalScroll_ = 0;
     }
 
     if (sdl_handler_ && Window::isBroadcastEvent(event))
         sdl_handler_(event);
+}
+
+void Game::scrollViewport() {
+    using namespace std::chrono_literals;
+
+    if (mapVerticalScroll_ || mapHorizontalScroll_) {
+        static constexpr auto scrollInterval = 60ms; // TODO: This might possibly go into an ingame menu setting.
+        const auto now                       = dune::dune_clock::now();
+
+        if (now > lastScrollTime_ + scrollInterval || lastScrollTime_ > now) {
+            auto* const screenborder = dune::globals::screenborder.get();
+
+            // N.b. Currently the game implements a "quantized" scrolling mode that is faithful to the original Dune 2
+            // game, i.e. the viewport will scroll by ~1 grid unit jumps, rather than in a smooth pixel perfect fashion.
+            // If smooth scrolling were to be desired, the above scrollInterval timer could be removed and instead the
+            // following functions could be adjusted to scroll the viewport by much smaller increments, resulting in a
+            // more modern style scrolling.
+            for (int i = 0; i < mapVerticalScroll_; ++i)
+                if (!screenborder->scrollDown())
+                    mapVerticalScroll_ = 0;
+            for (int i = 0; i > mapVerticalScroll_; --i)
+                if (!screenborder->scrollUp())
+                    mapVerticalScroll_ = 0;
+
+            for (int i = 0; i < mapHorizontalScroll_; ++i)
+                if (!screenborder->scrollRight())
+                    mapHorizontalScroll_ = 0;
+            for (int i = 0; i > mapHorizontalScroll_; --i)
+                if (!screenborder->scrollLeft())
+                    mapHorizontalScroll_ = 0;
+
+            lastScrollTime_ = now;
+        }
+    }
 }
 
 void Game::drawCursor(const SDL_Rect& map_rect) const {
@@ -914,20 +937,14 @@ void Game::drawCursor(const SDL_Rect& map_rect) const {
     const DuneTexture* pCursor  = nullptr;
     SDL_FRect dest{};
 
-    if (scrollLeftMode_ || scrollRightMode_ || scrollUpMode_ || scrollDownMode_) {
-        if (scrollLeftMode_ && !scrollRightMode_) {
-            hardware_cursor = gfx->getCursor(UI_CursorLeft);
-        } else if (scrollRightMode_ && !scrollLeftMode_) {
-            hardware_cursor = gfx->getCursor(UI_CursorRight);
-        } else {
-            if (scrollUpMode_ && !scrollDownMode_) {
-                hardware_cursor = gfx->getCursor(UI_CursorUp);
-            } else if (scrollDownMode_ && !scrollUpMode_) {
-                hardware_cursor = gfx->getCursor(UI_CursorDown);
-            } else {
-                hardware_cursor = gfx->getCursor(UI_CursorNormal);
-            }
-        }
+    if (mapHorizontalScroll_ < 0) {
+        hardware_cursor = gfx->getCursor(UI_CursorLeft);
+    } else if (mapHorizontalScroll_ > 0) {
+        hardware_cursor = gfx->getCursor(UI_CursorRight);
+    } else if (mapVerticalScroll_ < 0) {
+        hardware_cursor = gfx->getCursor(UI_CursorUp);
+    } else if (mapVerticalScroll_ > 0) {
+        hardware_cursor = gfx->getCursor(UI_CursorDown);
     } else {
         const SDL_Point mouse_point{dune::globals::drawnMouseX, dune::globals::drawnMouseY};
         if ((pInGameMenu_ != nullptr) || (pInGameMentat_ != nullptr) || (pWaitingForOtherPlayers_ != nullptr)
@@ -1449,6 +1466,9 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
 
         while (SDL_PollEvent(&event))
             doInput(context, event);
+
+        // Process ingame map scrolling.
+        scrollViewport();
 
         dune::globals::musicPlayer->musicCheck(); // if song has finished, start playing next one
 
