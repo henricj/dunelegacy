@@ -83,10 +83,13 @@ void MentatHelp::drawSpecificStuff() {
 
     auto* const renderer = dune::globals::renderer.get();
 
+    const auto iWidth = static_cast<int>(std::ceil(background_width_));
+    const auto iHeight = static_cast<int>(std::ceil(background_height_));
+
     const int x1 = getPosition().x;
-    const int x2 = getPosition().x + getSize().x - 1;
+    const int x2 = getPosition().x + iWidth - 1;
     const int y1 = getPosition().y;
-    const int y2 = getPosition().y + getSize().y - 1;
+    const int y2 = getPosition().y + iHeight - 1;
 
     renderDrawRect(renderer, x1, y1, x2, y2, DuneStyle::buttonBorderColor);
     renderDrawHLine(renderer, x1 + 1, y1 + 1, x2 - 1, DuneStyle::buttonEdgeTopLeftColor);
