@@ -162,7 +162,7 @@ void setVideoMode(int displayIndex) {
 
     const SDL_DisplayMode targetDisplayMode{0, video.physicalWidth, video.physicalHeight, 0, nullptr};
 
-    SDL_DisplayMode closestDisplayMode;
+    SDL_DisplayMode closestDisplayMode{};
 
     if (video.fullscreen) {
         if (SDL_GetClosestDisplayMode(displayIndex, &targetDisplayMode, &closestDisplayMode) == nullptr) {
@@ -178,7 +178,7 @@ void setVideoMode(int displayIndex) {
             video.height         = video.physicalHeight;
         }
     } else {
-        SDL_DisplayMode displayMode;
+        SDL_DisplayMode displayMode{};
         SDL_GetDesktopDisplayMode(currentDisplayIndex, &displayMode);
 
         if (video.physicalWidth > displayMode.w || video.physicalHeight > displayMode.h) {
