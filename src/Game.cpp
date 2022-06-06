@@ -2073,48 +2073,54 @@ bool Game::isOnRadarView(int mouseX, int mouseY) const {
                                                  mouseY - sideBarPos_.y);
 }
 
+namespace {
+// Cheats are available in singleplayer modes:
+constexpr auto CHEAT_MODE_ENABLE = std::to_array<unsigned char>(
+    {0xB8, 0x76, 0x6C, 0x8E, 0xC7, 0xA6, 0x10, 0x36, 0xB6, 0x98, 0x93, 0xFC, 0x17, 0xAA, 0xF2, 0x1E}); // "Let me cheat"
+constexpr auto CHEAT_WIN_GAME = std::to_array<unsigned char>(
+    {0x57, 0x58, 0x32, 0x91, 0xCB, 0x37, 0xF8, 0x16, 0x7E, 0xDB, 0x06, 0x11, 0xD8, 0xD1, 0x9E, 0x58}); // "Let me win"
+constexpr auto CHEAT_START_DEBUGGING = std::to_array<unsigned char>(
+    {0x1A, 0x12, 0xBE, 0x3D, 0xBE, 0x54, 0xC5, 0xA5, 0x04, 0xCA, 0xA6, 0xEE, 0x97, 0x82, 0xC1, 0xC8}); // "Start debugging"
+constexpr auto CHEAT_STOP_DEBUGGING = std::to_array<unsigned char>(
+    {0x54, 0xF6, 0x81, 0x55, 0xFC, 0x64, 0xA5, 0xBC, 0x66, 0xDC, 0xD5, 0x0C, 0x1E, 0x92, 0x5C, 0x0B}); // "Stop debugging"
+constexpr auto CHEAT_GIVE_CREDITS = std::to_array<unsigned char>(
+    {0xCE, 0xF1, 0xD2, 0x6C, 0xE4, 0xB1, 0x45, 0xDE, 0x98, 0x55, 0x03, 0xCA, 0x35, 0x23, 0x2E, 0xD8}); // "Give me some credits"
+}
+
 void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     if (keyboardEvent.keysym.sym == SDLK_ESCAPE) {
         chatMode_ = false;
     } else if (keyboardEvent.keysym.sym == SDLK_RETURN) {
         if (typingChatMessage_.length() > 0) {
-            unsigned char md5sum[16];
+            std::array<unsigned char, 16> md5sum;
 
-            md5(reinterpret_cast<const unsigned char*>(typingChatMessage_.c_str()), typingChatMessage_.size(), md5sum);
+            md5(reinterpret_cast<const unsigned char*>(typingChatMessage_.c_str()), typingChatMessage_.size(), md5sum.data());
 
-            std::stringstream md5stream;
-            md5stream << std::setfill('0') << std::hex << std::uppercase << "0x";
-            for (const int i : md5sum) {
-                md5stream << std::setw(2) << i;
-            }
-
-            const std::string md5string = md5stream.str();
-
-            if ((!bCheatsEnabled_) && (md5string == "0xB8766C8EC7A61036B69893FC17AAF21E")) {
+            if ((!bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_MODE_ENABLE))) {
                 bCheatsEnabled_ = true;
                 pInterface_->getChatManager().addInfoMessage("Cheat mode enabled");
-            } else if ((bCheatsEnabled_) && (md5string == "0xB8766C8EC7A61036B69893FC17AAF21E")) {
+            } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_MODE_ENABLE))) {
                 pInterface_->getChatManager().addInfoMessage("Cheat mode already enabled");
-            } else if ((bCheatsEnabled_) && (md5string == "0x57583291CB37F8167EDB0611D8D19E58")) {
+            } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_WIN_GAME))) {
                 if (gameType != GameType::CustomMultiplayer) {
                     pInterface_->getChatManager().addInfoMessage("You win this game");
                     setGameWon();
                 }
-            } else if ((bCheatsEnabled_) && (md5string == "0x1A12BE3DBE54C5A504CAA6EE9782C1C8")) {
+            } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_START_DEBUGGING))) {
                 if (dune::globals::debug) {
                     pInterface_->getChatManager().addInfoMessage("You are already in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface_->getChatManager().addInfoMessage("Debug mode enabled");
                     dune::globals::debug = true;
                 }
-            } else if ((bCheatsEnabled_) && (md5string == "0x54F68155FC64A5BC66DCD50C1E925C0B")) {
+            } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_STOP_DEBUGGING))) {
                 if (!dune::globals::debug) {
                     pInterface_->getChatManager().addInfoMessage("You are not in debug mode");
                 } else if (gameType != GameType::CustomMultiplayer) {
                     pInterface_->getChatManager().addInfoMessage("Debug mode disabled");
                     dune::globals::debug = false;
                 }
-            } else if ((bCheatsEnabled_) && (md5string == "0xCEF1D26CE4B145DE985503CA35232ED8")) {
+            } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_GIVE_CREDITS))) {
                 if (gameType != GameType::CustomMultiplayer) {
                     pInterface_->getChatManager().addInfoMessage("You got some credits");
                     dune::globals::pLocalHouse->returnCredits(10000);

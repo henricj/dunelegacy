@@ -161,6 +161,17 @@ Builds for Linux and other platforms with established package managers should be
 to resolve their dependencies from those packages managers instead of vcpkg.  Some
 enhancements to the CMake files will be needed to support this.
 
+### Developer Help / Cheat Codes
+
+While developing, it can be helpful to use the following cheat codes to advance in the game. The cheats
+are available in singleplayer modes by typing the following text in chat (case sensitive!):
+
+- "Let me cheat": Enables cheat mode, type this first to activate other cheats
+- "Let me win": Wins the current mission,
+- "Start debugging": Enables developer mode,
+- "Stop debugging": Disables developer mode,
+- "Give me some credits": Accumulates 10000 spice to the current player
+
 ---
 
 ## Original README
