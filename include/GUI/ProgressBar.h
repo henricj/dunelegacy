@@ -107,12 +107,20 @@ public:
     TextProgressBar(TextProgressBar&&)                 = delete;
     TextProgressBar& operator=(const TextProgressBar&) = delete;
     TextProgressBar& operator=(TextProgressBar&&)      = delete;
+
     /**
         This method sets a new text for this progress bar and resizes it
         to fit this text.
         \param  text The new text for this progress bar
     */
     virtual void setText(std::string text);
+
+    /**
+        This method sets a new text for this progress bar and resizes it
+        to fit this text.
+        \param  text The new text for this progress bar
+    */
+    virtual void setText(std::string_view text) { setText(std::string{text}); }
 
     /**
         Get the text of this progress bar.

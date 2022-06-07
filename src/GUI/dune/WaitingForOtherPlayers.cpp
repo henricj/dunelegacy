@@ -59,7 +59,7 @@ WaitingForOtherPlayers::WaitingForOtherPlayers() : Window(50, 50, 50, 50) {
 WaitingForOtherPlayers::~WaitingForOtherPlayers() = default;
 
 void WaitingForOtherPlayers::update() {
-    std::string text = _("Waiting for other players... ");
+    auto text = std::string{_("Waiting for other players... ")};
 
     // test if we need to wait for data to arrive
     for (const auto& playername : dune::globals::pNetworkManager->getConnectedPeers()) {
@@ -72,7 +72,7 @@ void WaitingForOtherPlayers::update() {
         }
     }
 
-    setText(text);
+    setText(std::move(text));
 }
 
 void WaitingForOtherPlayers::onRemove() {

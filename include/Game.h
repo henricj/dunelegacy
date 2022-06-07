@@ -364,6 +364,16 @@ public:
         Adds a new message to the news ticker.
         \param  text    the text to add
     */
+    void addToNewsTicker(std::string_view text) const {
+        if (pInterface_ != nullptr) {
+            pInterface_->addToNewsTicker(std::string{text});
+        }
+    }
+
+    /**
+        Adds a new message to the news ticker.
+        \param  text    the text to add
+    */
     void addToNewsTicker(std::string text) const {
         if (pInterface_ != nullptr) {
             pInterface_->addToNewsTicker(std::move(text));

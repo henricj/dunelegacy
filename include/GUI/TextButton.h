@@ -44,10 +44,17 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual void setText(const std::string& text) {
-        this->text = text;
+    virtual void setText(std::string text) {
+        this->text = std::move(text);
         resizeAll();
     }
+
+    /**
+        This method sets a new text for this button and resizes this button
+        to fit this text.
+        \param  text The new text for this button
+    */
+    void setText(std::string_view text) { setText(std::string{text}); }
 
     /**
         Get the text of this button.

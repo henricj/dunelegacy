@@ -40,6 +40,8 @@
 #include <globals.h>
 #include <sand.h>
 
+#include <fmt/core.h>
+
 #include <utility>
 
 namespace {
@@ -57,7 +59,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 32));
 
-    captionLabel.setText(reinterpret_cast<const char*>(gameInitSettings.getFilename().u8string().c_str()));
+    captionLabel.setText(std::string{reinterpret_cast<const char*>(gameInitSettings.getFilename().u8string().c_str())});
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
     mainVBox.addWidget(Widget::create<VSpacer>(24).release());
@@ -135,13 +137,13 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Size") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Size"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertySize);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Players") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Players"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyPlayers);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Author") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Author"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
-    mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("License"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
     rightVBox.addWidget(Widget::create<Spacer>().release());
 
@@ -236,7 +238,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
             if (i < static_cast<int>(houseInfoListSetup.size())) {
                 GameInitSettings::HouseInfo gisHouseInfo = houseInfoListSetup.at(i);
 
-                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + std::to_string(gisHouseInfo.team),
+                curHouseInfo.teamDropDown.addEntry(fmt::format("{} {}", _("Team"), gisHouseInfo.team),
                                                    gisHouseInfo.team);
                 curHouseInfo.teamDropDown.setSelectedItem(0);
             }
@@ -244,7 +246,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
             curHouseInfo.teamDropDown.setOnClickEnabled(false);
         } else {
             for (int team = 0; team < numHouses; team++) {
-                curHouseInfo.teamDropDown.addEntry(_("Team") + " " + std::to_string(team + 1), team + 1);
+                curHouseInfo.teamDropDown.addEntry(fmt::format("{} {}", _("Team"), team + 1), team + 1);
             }
             curHouseInfo.teamDropDown.setSelectedItem(slotToTeam[i]);
             curHouseInfo.teamDropDown.setEnabled(bServer);
@@ -260,7 +262,8 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         curHouseInfo.player1ArrowLabel.setTexture(
             dune::globals::pGFXManager->getUIGraphic(UI_CustomGamePlayersArrowNeutral));
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1ArrowLabel);
-        curHouseInfo.player1Label.setText(_("Player") + (gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
+        curHouseInfo.player1Label.setText(
+            fmt::format("{}{}", _("Player"), gameInitSettings.isMultiplePlayersPerHouse() ? " 1" : ""));
         curHouseInfo.player1Label.setTextFontSize(12);
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player1Label, 68);
 
@@ -318,7 +321,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         curHouseInfo.playerHBox.addWidget(Widget::create<HSpacer>(10).release());
 
         // add 2. player
-        curHouseInfo.player2Label.setText(_("Player") + " 2");
+        curHouseInfo.player2Label.setText(fmt::format("{} 2", _("Player")));
         curHouseInfo.player2Label.setTextFontSize(12);
         curHouseInfo.playerHBox.addWidget(&curHouseInfo.player2Label, 68);
 
@@ -1338,7 +1341,7 @@ void CustomGamePlayers::addToHouseDropDown(DropDownBox& houseDropDownBox, HOUSET
 
         if (house == HOUSETYPE::HOUSE_INVALID) {
             if (houseDropDownBox.getEntryIntData(0) != static_cast<int>(HOUSETYPE::HOUSE_INVALID)) {
-                houseDropDownBox.insertEntry(0, _("Random"), static_cast<int>(HOUSETYPE::HOUSE_INVALID));
+                houseDropDownBox.insertEntry(0, std::string{_("Random")}, static_cast<int>(HOUSETYPE::HOUSE_INVALID));
             }
 
             if (bSelect) {

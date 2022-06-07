@@ -45,10 +45,14 @@ public:
         to fit this text.
         \param  text The new text for this radio button
     */
-    virtual void setText(const std::string& text) {
-        this->text_ = text;
-        resizeAll();
-    }
+    virtual void setText(const std::string& text);
+
+    /**
+        This method sets a new text for this radio button and resizes it
+        to fit this text.
+        \param  text The new text for this radio button
+    */
+    virtual void setText(std::string_view text);
 
     /**
         Get the text of this radio button.

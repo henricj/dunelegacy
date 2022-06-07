@@ -142,20 +142,28 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void addEntry(std::string text, int data = 0) {
-        listBox_.addEntry(std::move(text), data);
-        resizeListBox();
-    }
+    void addEntry(std::string text, int data = 0);
 
     /**
         Adds a new entry to this dropdown box
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void addEntry(std::string text, void* data) {
-        listBox_.addEntry(std::move(text), data);
-        resizeListBox();
-    }
+    void addEntry(std::string text, void* data);
+
+    /**
+        Adds a new entry to this dropdown box
+        \param  text    the text to be added to the list
+        \param  data    an integer value that is assigned to this entry (see getEntryIntData)
+    */
+    void addEntry(std::string_view text, int data = 0) { addEntry(std::string{text}, data); }
+
+    /**
+        Adds a new entry to this dropdown box
+        \param  text    the text to be added to the list
+        \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
+    */
+    void addEntry(std::string_view text, void* data) { addEntry(std::string{text}, data); }
 
     /**
         Insert a new entry to this list box at the specified index
@@ -163,10 +171,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an integer value that is assigned to this entry (see getEntryIntData)
     */
-    void insertEntry(int index, const std::string& text, int data = 0) {
-        listBox_.insertEntry(index, text, data);
-        resizeListBox();
-    }
+    void insertEntry(int index, std::string text, int data = 0);
 
     /**
         Insert a new entry to this list box at the specified index
@@ -174,10 +179,7 @@ public:
         \param  text    the text to be added to the list
         \param  data    an pointer value that is assigned to this entry (see getEntryPtrData)
     */
-    void insertEntry(int index, std::string_view text, void* data) {
-        listBox_.insertEntry(index, text, data);
-        resizeListBox();
-    }
+    void insertEntry(int index, std::string text, void* data);
 
     /**
         Returns the number of entries in this dropdown box
@@ -197,11 +199,7 @@ public:
         \param  index   the zero-based index of the entry
         \param  text    the text to set
     */
-    void setEntry(unsigned int index, const std::string& text) {
-        listBox_.setEntry(index, text);
-        invalidateForeground();
-        resizeListBox();
-    }
+    void setEntry(unsigned int index, const std::string& text);
 
     /**
         Returns the data assigned to the entry specified by index.
@@ -272,22 +270,12 @@ public:
         Removes the entry which is specified by index
         \param  index   the zero-based index of the element to remove
     */
-    void removeEntry(int index) {
-        listBox_.removeEntry(index);
-        if (listBox_.getSelectedIndex() < 0) {
-            invalidateForeground();
-        }
-        resizeListBox();
-    }
+    void removeEntry(int index);
 
     /**
             Deletes all entries in the list.
     */
-    void clearAllEntries() {
-        listBox_.clearAllEntries();
-        invalidateForeground();
-        resizeListBox();
-    }
+    void clearAllEntries();
 
     /**
         Sets the function that should be called when the selection in this dropdown box changes.
@@ -310,32 +298,20 @@ public:
         Sets this widget active. The parent widgets are also activated and the
         currently active widget is set to inactive.
     */
-    void setActive() override {
-        openListBoxButton_.setActive();
-        Widget::setActive();
-    }
+    void setActive() override;
 
     /**
         Sets the color for this drop down box.
         \param  color   the color (COLOR_DEFAULT = default color)
     */
-    virtual void setColor(uint32_t color) {
-        this->color_ = color;
-        updateButtonSurface();
-        invalidateForeground();
-        listBox_.setColor(color);
-    }
+    virtual void setColor(uint32_t color);
 
     /**
         Enable or disable this widget. A disabled widget is not responding
         to clicks and key strokes and might look different.
         \param  bEnabled    true = enable widget, false = disable widget
     */
-    void setEnabled(bool bEnabled) override {
-        openListBoxButton_.setEnabled(bEnabled);
-
-        Widget::setEnabled(bEnabled);
-    }
+    void setEnabled(bool bEnabled) override;
 
     /**
         Enable or disable the onClick event for this dropdownbox.
@@ -355,11 +331,7 @@ public:
         add it to a container. If the container gets destroyed also this dropdown box will be freed.
         \return The new created dropdown box (will be automatically destroyed when it's parent widget is destroyed)
     */
-    static std::unique_ptr<DropDownBox> create() {
-        auto dropDownBox         = std::make_unique<DropDownBox>();
-        dropDownBox->pAllocated_ = true;
-        return dropDownBox;
-    }
+    static std::unique_ptr<DropDownBox> create();
 
 protected:
     /**

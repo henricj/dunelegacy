@@ -67,6 +67,12 @@ public:
     void setTooltipText(std::string text);
 
     /**
+        Sets a tooltip text. This text is shown when the mouse remains a short time over this button.
+        \param  text    The text for this tooltip
+    */
+    void setTooltipText(std::string_view text) { setTooltipText(std::string{text}); }
+
+    /**
         Returns the current tooltip text.
         \return the current tooltip text
     */

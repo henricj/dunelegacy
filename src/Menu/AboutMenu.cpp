@@ -22,7 +22,11 @@
 #include "misc/DrawingRectHelper.h"
 #include <FileClasses/GFXManager.h>
 
+#include <string_view>
+
 AboutMenu::AboutMenu() {
+    using namespace std::literals;
+
     // set up window
 
     AboutMenu::setWindowWidget(&windowWidget);
@@ -49,7 +53,7 @@ AboutMenu::AboutMenu() {
     windowWidget.addWidget(&buttonBorder, dest3);
 
     text.setText("Written by\n   Anthony Cole,\n      Richard Schaller,\n         Stefan van der Wel\n            and "
-                 "many others!\n");
+                 "many others!\n"sv);
     text.setAlignment(Alignment_Left);
     windowWidget.addWidget(&text, Point((getRendererWidth() - 160) / 2, getRendererHeight() / 2 + 70), Point(170, 110));
 }

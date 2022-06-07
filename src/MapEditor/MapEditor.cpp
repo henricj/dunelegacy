@@ -45,9 +45,11 @@
 
 #include <SDL2/SDL_render.h>
 
+#include <fmt/core.h>
 #include <fmt/printf.h>
 
 #include <algorithm>
+#include <string_view>
 #include <typeinfo>
 
 MapEditor::MapEditor() {
@@ -83,8 +85,7 @@ std::string MapEditor::generateMapname() {
     const auto numPlayers =
         std::ranges::count_if(players_, [](const MapEditor::Player& player) { return player.bActive_; });
 
-    return std::to_string(numPlayers) + "P - " + std::to_string(map_.getSizeX()) + "x" + std::to_string(map_.getSizeY())
-         + " - " + _("New Map");
+    return fmt::format("{}P - {}x{} - {}", numPlayers, map_.getSizeX(), map_.getSizeY(), _("New Map"));
 }
 
 void MapEditor::setMirrorMode(MirrorMode newMirrorMode) {
@@ -701,9 +702,9 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         angle_ = (((NUM_ANGLES - angle_) + 2) % NUM_ANGLES) * 32;
 
-        std::string unitValue = house2housename[static_cast<int>(unit.house_)] + "," + getItemNameByID(unit.itemID_)
-                              + "," + std::to_string(unit.health_) + "," + std::to_string(position) + ","
-                              + std::to_string(angle_) + "," + getAttackModeNameByMode(unit.attack_mode_);
+        const auto unitValue = fmt::format("{},{},{},{},{},{}", house2housename[static_cast<int>(unit.house_)],
+                                           getItemNameByID(unit.itemID_), unit.health_, position, angle_,
+                                           getAttackModeNameByMode(unit.attack_mode_));
 
         loadedINIFile_->setStringValue("UNITS", unitKey, unitValue, false);
     }
@@ -717,18 +718,17 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
             || (structure.itemID_ == Structure_Wall)) {
             std::string structureKey = fmt::sprintf("GEN%.3d", position);
 
-            std::string structureValue =
-                house2housename[static_cast<int>(structure.house_)] + "," + getItemNameByID(structure.itemID_);
+            const auto structureValue = fmt::format("{},{}", house2housename[static_cast<int>(structure.house_)],
+                                                    getItemNameByID(structure.itemID_));
 
             loadedINIFile_->setStringValue("STRUCTURES", structureKey, structureValue, false);
 
         } else {
 
-            std::string structureKey = fmt::sprintf("ID%.3d", structure.id_);
+            const auto structureKey = fmt::sprintf("ID%.3d", structure.id_);
 
-            std::string structureValue = house2housename[static_cast<int>(structure.house_)] + ","
-                                       + getItemNameByID(structure.itemID_) + "," + std::to_string(structure.health_)
-                                       + "," + std::to_string(position);
+            const auto structureValue = fmt::format("{},{},{},{}", house2housename[static_cast<int>(structure.house_)],
+                                                    getItemNameByID(structure.itemID_), structure.health_, position);
 
             loadedINIFile_->setStringValue("STRUCTURES", structureKey, structureValue, false);
         }
@@ -742,10 +742,9 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements_.size() >= 16)) ? 0 : 1;
         for (const ReinforcementInfo& reinforcement : reinforcements_) {
-            std::string value = house2housename[static_cast<int>(reinforcement.houseID)] + ","
-                              + getItemNameByID(reinforcement.unitID) + ","
-                              + getDropLocationNameByID(reinforcement.dropLocation) + ","
-                              + std::to_string(reinforcement.droptime);
+            auto value = fmt::format("{},{},{},{}", house2housename[static_cast<int>(reinforcement.houseID)],
+                                     getItemNameByID(reinforcement.unitID),
+                                     getDropLocationNameByID(reinforcement.dropLocation), reinforcement.droptime);
             if (reinforcement.bRepeat) {
                 value += ",+";
             }

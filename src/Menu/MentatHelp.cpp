@@ -30,6 +30,8 @@
 
 #include <Game.h>
 
+#include <string_view>
+
 MentatHelp::MentatHelp(HOUSETYPE newHouse, int techLevel, int mission) : MentatMenu(newHouse), mission(mission) {
 
     mentatEntries = dune::globals::pTextManager->getAllMentatEntries(newHouse, techLevel);
@@ -119,6 +121,8 @@ void MentatHelp::doInputImpl(const SDL_Event& event) {
 }
 
 void MentatHelp::onMentatTextFinished() {
+    using namespace std::literals;
+
     animation.setVisible(false);
     animation.setEnabled(false);
     itemDescriptionLabel.setVisible(false);
@@ -127,8 +131,8 @@ void MentatHelp::onMentatTextFinished() {
     exitButton.setVisible(true);
     exitButton.setEnabled(true);
 
-    setText("");
-    itemDescriptionLabel.setText("");
+    setText(""sv);
+    itemDescriptionLabel.setText(""sv);
 }
 
 void MentatHelp::onExit() {
@@ -174,8 +178,8 @@ void MentatHelp::onListBoxClick() {
     }
 
     animation.setAnimation(dune::globals::pGFXManager->getAnimation(animID));
-    setText(text);
-    itemDescriptionLabel.setText(name);
+    setText(std::move(text));
+    itemDescriptionLabel.setText(std::move(name));
 
     animation.setVisible(true);
     animation.setEnabled(true);

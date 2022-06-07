@@ -43,6 +43,8 @@
 #include <algorithm>
 #include <utility>
 
+using namespace std::literals;
+
 OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOptions) {
     const auto& settings = dune::globals::settings;
 
@@ -145,9 +147,9 @@ OptionsMenu::OptionsMenu() : currentGameOptions(dune::globals::settings.gameOpti
     resolutionDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&resolutionDropDownBox, 130);
     resolutionHBox.addWidget(Widget::create<Spacer>().release(), 5);
-    zoomlevelDropDownBox.addEntry("Zoom 1x", 0);
-    zoomlevelDropDownBox.addEntry("Zoom 2x", 1);
-    zoomlevelDropDownBox.addEntry("Zoom 3x", 2);
+    zoomlevelDropDownBox.addEntry("Zoom 1x"sv, 0);
+    zoomlevelDropDownBox.addEntry("Zoom 2x"sv, 1);
+    zoomlevelDropDownBox.addEntry("Zoom 3x"sv, 2);
     zoomlevelDropDownBox.setSelectedItem(settings.video.preferredZoomLevel);
     zoomlevelDropDownBox.setOnSelectionChange([this](auto interactive) { onChangeOption(interactive); });
     resolutionHBox.addWidget(&zoomlevelDropDownBox, 72);
@@ -281,7 +283,7 @@ void OptionsMenu::onChangeOption([[maybe_unused]] bool bInteractive) {
 }
 
 void OptionsMenu::onOptionsOK() {
-    const std::string playername{nameTextBox.getText()};
+    const auto playername{nameTextBox.getText()};
     if (playername.empty()) {
         openWindow(MsgBox::create(_("Please enter a Player Name.")));
         return;

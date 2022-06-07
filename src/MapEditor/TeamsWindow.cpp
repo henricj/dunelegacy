@@ -99,7 +99,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     centralVBox.addWidget(&hBox2);
 
-    playerLabel.setText(_("Player") + ":");
+    playerLabel.setText(fmt::format("{}:", _("Player")));
     playerLabel.setTextColor(color_);
     hBox2.addWidget(&playerLabel, 95);
     playerDropDownBox.setColor(color_);
@@ -115,7 +115,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
     hBox2.addWidget(Widget::create<Spacer>().release(), 5.0);
-    aiTeamBehaviorLabel.setText(_("Team Behavior") + ":");
+    aiTeamBehaviorLabel.setText(fmt::format("{}:", _("Team Behavior")));
     aiTeamBehaviorLabel.setTextColor(color_);
     hBox2.addWidget(&aiTeamBehaviorLabel, 120);
     aiTeamBehaviorDropDownBox.setColor(color_);
@@ -138,7 +138,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
 
     centralVBox.addWidget(&hBox3);
 
-    aiTeamTypeLabel.setText(_("Team Type") + ":");
+    aiTeamTypeLabel.setText(fmt::format("{}:", _("Team Type")));
     aiTeamTypeLabel.setTextColor(color_);
     hBox3.addWidget(&aiTeamTypeLabel, 95);
     aiTeamTypeDropDownBox.setColor(color_);
@@ -155,7 +155,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     aiTeamTypeDropDownBox.setSelectedItem(0);
     hBox3.addWidget(&aiTeamTypeDropDownBox, 260);
     hBox3.addWidget(Widget::create<Spacer>().release(), 5.0);
-    minUnitsLabel.setText(_("Units") + ":");
+    minUnitsLabel.setText(fmt::format("{}:", _("Units")));
     minUnitsLabel.setTextColor(color_);
     hBox3.addWidget(&minUnitsLabel);
     minUnitsTextBox.setColor(house_, color_);
@@ -369,7 +369,7 @@ std::string TeamsWindow::getPlayerName(HOUSETYPE house) const {
     for (const auto& player : pMapEditor->getPlayers()) {
         if (player.house_ == house) {
             return player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum)
-                                     : (_("House") + " " + player.name_);
+                                     : fmt::format("{} {}", _("House"), player.name_);
         }
 
         if (player.bActive_ && player.bAnyHouse_) {

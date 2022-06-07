@@ -805,7 +805,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         const auto* pHarvester = objectManager_.getObject<Harvester>(*selectedList_.begin());
                         if (pHarvester != nullptr && pHarvester->getOwner() == dune::globals::pLocalHouse) {
 
-                            auto harvesterMessage = _("@DUNE.ENG|226#Harvester");
+                            auto harvesterMessage = std::string{_("@DUNE.ENG|226#Harvester")};
 
                             const auto percent = lround(100 * pHarvester->getAmountOfSpice() / HARVESTERMAXSPICE);
                             if (percent > 0) {
@@ -1291,8 +1291,9 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
             // TODO: Report problem to user...?
             sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
 
-            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, _("Replay Log").c_str(),
-                                     _("Unable to open the replay log file.").c_str(), dune::globals::window.get());
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, std::string{_("Replay Log")}.c_str(),
+                                     std::string{_("Unable to open the replay log file.")}.c_str(),
+                                     dune::globals::window.get());
 
             quitGame();
         }
@@ -2255,7 +2256,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                     reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
-                addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2273,7 +2274,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                     sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
                                     reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
                 }
-                addToNewsTicker(fmt::sprintf(_("Game speed") + ": %d", settings.gameOptions.gameSpeed));
+                addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }
         } break;
 
@@ -2780,7 +2781,7 @@ void Game::saveScreenshot() {
 
     if (ok && path.has_value()) {
         const std::string filename{reinterpret_cast<const char*>(path.value().filename().u8string().c_str())};
-        dune::globals::currentGame->addToNewsTicker(_("Screenshot saved") + ": '" + filename + "'");
+        dune::globals::currentGame->addToNewsTicker(fmt::format("{}: '{}'", _("Screenshot saved"), filename));
     }
 }
 

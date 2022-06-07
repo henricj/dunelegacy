@@ -282,7 +282,7 @@ ItemID_enum getItemIDByName(std::string_view name) {
     \param itemID the id of the item (e.g. Unit_Sandworm)
     \return the name of the item (e.g. "Sandworm").
 */
-std::string getItemNameByID(ItemID_enum itemID) {
+std::string_view getItemNameByID(ItemID_enum itemID) {
     // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return "Barracks";
@@ -338,7 +338,7 @@ std::string getItemNameByID(ItemID_enum itemID) {
     \param itemID   the id of the item to resolve (e.g. Unit_Quad)
     \return the string corresponding.
 */
-std::string resolveItemName(ItemID_enum itemID) {
+std::string_view resolveItemName(ItemID_enum itemID) {
     // clang-format off
     switch(itemID) {
         case Structure_Barracks:            return _("@DUNE.ENG|253#Barracks");
@@ -497,7 +497,7 @@ DropLocation getDropLocationByName(std::string_view name) {
     return DropLocation::Drop_Invalid;
 }
 
-std::string getDropLocationNameByID(DropLocation dropLocation) {
+std::string_view getDropLocationNameByID(DropLocation dropLocation) {
     // clang-format off
     switch(dropLocation) {
         case DropLocation::Drop_North:     return "North";
@@ -514,7 +514,7 @@ std::string getDropLocationNameByID(DropLocation dropLocation) {
     // clang-format on
 }
 
-std::string resolveDropLocationName(DropLocation dropLocation) {
+std::string_view resolveDropLocationName(DropLocation dropLocation) {
     // clang-format off
     switch(dropLocation) {
         case DropLocation::Drop_North:     return _("top edge");

@@ -35,6 +35,8 @@
 
 #include <globals.h>
 
+#include <string_view>
+
 LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) {
 
     // set up window
@@ -94,16 +96,16 @@ LoadMapWindow::LoadMapWindow(uint32_t color) : Window(0, 0, 0, 0), color(color) 
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Size") + ":", color).release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Size")), color).release());
     mapPropertySize.setTextColor(color);
     mapPropertyValuesVBox.addWidget(&mapPropertySize);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Players") + ":", color).release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Players")), color).release());
     mapPropertyPlayers.setTextColor(color);
     mapPropertyValuesVBox.addWidget(&mapPropertyPlayers);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Author") + ":", color).release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Author")), color).release());
     mapPropertyAuthors.setTextColor(color);
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
-    mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":", color).release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("License")), color).release());
     mapPropertyLicense.setTextColor(color);
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
     rightVBox.addWidget(Widget::create<Spacer>().release());
@@ -250,11 +252,13 @@ void LoadMapWindow::onMapTypeChange(int buttonID) {
     if (mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
+        using namespace std::literals;
+
         minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("No map available"), true, false));
-        mapPropertySize.setText("");
-        mapPropertyPlayers.setText("");
-        mapPropertyAuthors.setText("");
-        mapPropertyLicense.setText("");
+        mapPropertySize.setText(""sv);
+        mapPropertyPlayers.setText(""sv);
+        mapPropertyAuthors.setText(""sv);
+        mapPropertyLicense.setText(""sv);
     }
 }
 

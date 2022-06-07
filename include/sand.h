@@ -18,6 +18,7 @@
 #ifndef SAND_H
 #define SAND_H
 
+#include "Menu/MenuBase.h"
 #include "data.h"
 #include <DataTypes.h>
 #include <fixmath/FixPoint.h>
@@ -36,14 +37,14 @@ extern sdl2::renderer_ptr renderer;
 
 void drawCursor();
 
-std::string resolveItemName(ItemID_enum itemID);
+std::string_view resolveItemName(ItemID_enum itemID);
 
 int getAnimByFilename(const std::string& filename);
 
 Coord getStructureSize(ItemID_enum itemID);
 
 ItemID_enum getItemIDByName(std::string_view name);
-std::string getItemNameByID(ItemID_enum itemID);
+std::string_view getItemNameByID(ItemID_enum itemID);
 const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house = HOUSETYPE::HOUSE_HARKONNEN);
 
 HOUSETYPE getHouseByName(std::string_view name);
@@ -53,8 +54,8 @@ ATTACKMODE getAttackModeByName(std::string_view name);
 std::string getAttackModeNameByMode(ATTACKMODE attackMode);
 
 DropLocation getDropLocationByName(std::string_view name);
-std::string getDropLocationNameByID(DropLocation dropLocation);
-std::string resolveDropLocationName(DropLocation dropLocation);
+std::string_view getDropLocationNameByID(DropLocation dropLocation);
+std::string_view resolveDropLocationName(DropLocation dropLocation);
 
 AITeamBehavior getAITeamBehaviorByName(const std::string& name);
 std::string getAITeamBehaviorNameByID(AITeamBehavior aiTeamBehavior);

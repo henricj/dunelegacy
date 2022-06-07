@@ -48,6 +48,19 @@ void RadioButton::unregisterFromRadioButtonManager() {
     }
 }
 
+void RadioButton::setText(const std::string& text) {
+    if (text == text_)
+        return;
+    this->text_ = text;
+    resizeAll();
+}
+
+void RadioButton::setText(std::string_view text) {
+    if (text == text_)
+        return;
+    setText(std::string{text});
+}
+
 void RadioButton::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
     this->text_color_        = textcolor;
     this->text_shadow_color_ = textshadowcolor;

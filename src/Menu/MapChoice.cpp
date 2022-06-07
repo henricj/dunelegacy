@@ -521,11 +521,11 @@ void MapChoice::loadINI() {
 
         // read text
         for (auto j = 1; j < 28; j++) {
-            auto key = _("LanguageFileExtension") + fmt::format("TXT{}", j);
+            auto key = fmt::format("{}TXT{}", _("LanguageFileExtension"), j);
 
             if (!RegionINI.hasKey(strSection, key)) {
                 // Workaround for bug in REGIONO.INI / GROUP1 / GERTXT 6: Add space after TXT
-                key = _("LanguageFileExtension") + fmt::format("TXT {}", j);
+                key = fmt::format("{}TXT {}", _("LanguageFileExtension"), j);
             }
 
             auto str = convertCP850ToUTF8(RegionINI.getStringValue(strSection, key));

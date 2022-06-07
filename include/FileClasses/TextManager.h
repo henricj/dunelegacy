@@ -34,7 +34,8 @@ inline constexpr auto MISSION_WIN         = 1;
 inline constexpr auto MISSION_LOSE        = 2;
 inline constexpr auto MISSION_ADVICE      = 3;
 
-class TextManager {
+class TextManager final {
+private:
 public:
     /**
         Default constructor
@@ -58,7 +59,7 @@ public:
         \param  house       the house to get the text from (only HOUSE_ATREIDES, HOUSE_ORDOS and HOUSE_HARKONNEN)
         \return the briefing text
     */
-    std::string getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house);
+    std::string_view getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house);
 
     /**
         This method returns all mentat entries for a specific house and up to the specified tech level.
@@ -73,8 +74,8 @@ public:
         \param  unlocalizedString   the string in English
         \return the localized version of unlocalizedString
     */
-    const std::string& getLocalized(const std::string& unlocalizedString) {
-        const std::string& localizedStringRaw = getLocalizedRaw(unlocalizedString);
+    std::string_view getLocalized(std::string_view unlocalizedString) {
+        const auto localizedStringRaw = getLocalizedRaw(unlocalizedString);
 
         if (!localizedStringRaw.empty() && localizedStringRaw[0] == '@') {
             // post-process
@@ -89,9 +90,9 @@ private:
         \param  unlocalizedString   the string in english
         \return the localized version of unlocalizedString
     */
-    const std::string& getLocalizedRaw(const std::string& unlocalizedString) const {
-        const auto iter = localizedString.find(unlocalizedString);
-        if ((iter != localizedString.end()) && !iter->second.empty()) {
+    std::string_view getLocalizedRaw(std::string_view unlocalizedString) const {
+        const auto iter = localizedString_.find(unlocalizedString);
+        if ((iter != localizedString_.end()) && !iter->second.empty()) {
             return iter->second;
         }
         return unlocalizedString;
@@ -106,20 +107,19 @@ private:
         \param  unprocessedString   the original string containing the @ at the start
         \return the processed string with data read from FILENAME.EXT
     */
-    const std::string& postProcessString(const std::string& unprocessedString);
+    std::string_view postProcessString(std::string_view unprocessedString);
 
     /**
         Add a original Dune 2 text file
     */
     void addOrigDuneText(std::string_view filename, bool bDecode = false);
 
-    std::array<std::unique_ptr<MentatTextFile>, 3> mentatStrings; ///< The MENTAT?.<EXTENSION> mentat menu texts
+    std::array<std::unique_ptr<MentatTextFile>, 3> mentatStrings_; ///< The MENTAT?.<EXTENSION> mentat menu texts
 
-    std::unordered_map<std::string, std::unique_ptr<IndexedTextFile>>
-        origDuneText; ///< This map contains all the loaded original Dune II (indexed) text files
+    dune::string_unordered_map<std::unique_ptr<IndexedTextFile>>
+        origDuneText_; ///< This map contains all the loaded original Dune II (indexed) text files
 
-    std::unordered_map<std::string, std::string>
-        localizedString; ///< The mapping between English text and localized text
+    dune::string_unordered_map<std::string> localizedString_; ///< The mapping between English text and localized text
 };
 
 #endif // TEXTMANAGER_H

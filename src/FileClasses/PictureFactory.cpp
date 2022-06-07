@@ -179,9 +179,9 @@ PictureFactory::PictureFactory() {
 
     messageBoxBorder = getSubPicture(ScreenPic.get(), 0, 17, 320, 22);
 
-    if (file_manager->exists("MISC." + _("LanguageFileExtension"))) {
+    if (file_manager->exists(fmt::format("MISC.{}", _("LanguageFileExtension")))) {
         mentatHouseChoiceQuestionSurface = Scaler::defaultDoubleSurface(
-            LoadCPS_RW(file_manager->openFile("MISC." + _("LanguageFileExtension")).get()).get());
+            LoadCPS_RW(file_manager->openFile(fmt::format("MISC.{}", _("LanguageFileExtension"))).get()).get());
     } else {
         mentatHouseChoiceQuestionSurface =
             Scaler::defaultDoubleSurface(LoadCPS_RW(file_manager->openFile("MISC.CPS").get()).get());

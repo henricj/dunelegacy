@@ -240,11 +240,75 @@ void DropDownBox::resize(uint32_t width, uint32_t height) {
     resizeListBox();
 }
 
+void DropDownBox::addEntry(std::string text, int data) {
+    listBox_.addEntry(std::move(text), data);
+    resizeListBox();
+}
+
+void DropDownBox::addEntry(std::string text, void* data) {
+    listBox_.addEntry(std::move(text), data);
+    resizeListBox();
+}
+
+void DropDownBox::insertEntry(int index, std::string text, int data) {
+    listBox_.insertEntry(index, std::move(text), data);
+    resizeListBox();
+}
+
+void DropDownBox::insertEntry(int index, std::string text, void* data) {
+    listBox_.insertEntry(index, std::move(text), data);
+    resizeListBox();
+}
+
+void DropDownBox::setEntry(unsigned index, const std::string& text) {
+    listBox_.setEntry(index, text);
+    invalidateForeground();
+    resizeListBox();
+}
+
+void DropDownBox::removeEntry(int index) {
+    listBox_.removeEntry(index);
+    if (listBox_.getSelectedIndex() < 0) {
+        invalidateForeground();
+    }
+    resizeListBox();
+}
+
+void DropDownBox::clearAllEntries() {
+    listBox_.clearAllEntries();
+    invalidateForeground();
+    resizeListBox();
+}
+
+void DropDownBox::setActive() {
+    openListBoxButton_.setActive();
+    parent::setActive();
+}
+
+void DropDownBox::setColor(uint32_t color) {
+    this->color_ = color;
+    updateButtonSurface();
+    invalidateForeground();
+    listBox_.setColor(color);
+}
+
+void DropDownBox::setEnabled(bool bEnabled) {
+    openListBoxButton_.setEnabled(bEnabled);
+
+    parent::setEnabled(bEnabled);
+}
+
 void DropDownBox::resizeListBox() {
     const int listBoxHeight =
         std::max(1, std::min(numVisibleEntries_, getNumEntries())) * GUIStyle::getInstance().getListBoxEntryHeight()
         + 2;
     listBox_.resize(getSize().x - 1, listBoxHeight);
+}
+
+std::unique_ptr<DropDownBox> DropDownBox::create() {
+    auto dropDownBox         = std::make_unique<DropDownBox>();
+    dropDownBox->pAllocated_ = true;
+    return dropDownBox;
 }
 
 void DropDownBox::setActive(bool bActive) {

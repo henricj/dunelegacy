@@ -34,6 +34,8 @@ public:
 
     void addMessage(std::string msg);
 
+    void addMessage(std::string_view msg) { addMessage(std::string{msg}); }
+
     /**
         Draws this button to screen. This method is called before drawOverlay().
         \param  position    Position to draw the button to

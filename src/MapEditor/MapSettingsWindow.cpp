@@ -31,6 +31,8 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <fmt/core.h>
+
 MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
 
@@ -62,7 +64,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     centralVBox.addWidget(&pictureHBox, 38);
 
     pictureHBox.addWidget(&winPictureVBox);
-    winPictureLabel.setText(_("Picture on winning") + ":");
+    winPictureLabel.setText(fmt::format("{}:", _("Picture on winning")));
     winPictureLabel.setTextColor(color);
     winPictureVBox.addWidget(&winPictureLabel);
     winPictureVBox.addWidget(Widget::create<VSpacer>(3).release());
@@ -88,7 +90,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     pictureHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     pictureHBox.addWidget(&losePictureVBox);
-    losePictureLabel.setText(_("Picture on losing") + ":");
+    losePictureLabel.setText(fmt::format("{}:", _("Picture on losing")));
     losePictureLabel.setTextColor(color);
     losePictureVBox.addWidget(&losePictureLabel);
     losePictureVBox.addWidget(Widget::create<VSpacer>(3).release());
@@ -114,7 +116,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     pictureHBox.addWidget(Widget::create<HSpacer>(8).release());
 
     pictureHBox.addWidget(&briefingPictureVBox);
-    briefingPictureLabel.setText(_("Picture for briefing") + ":");
+    briefingPictureLabel.setText(fmt::format("{}:", _("Picture for briefing")));
     briefingPictureLabel.setTextColor(color);
     briefingPictureVBox.addWidget(&briefingPictureLabel);
     briefingPictureVBox.addWidget(Widget::create<VSpacer>(3).release());
@@ -146,12 +148,12 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
-    gameFinishingConditionsLabel.setText(_("Conditions for finishing the game") + ":");
+    gameFinishingConditionsLabel.setText(fmt::format("{}:", _("Conditions for finishing the game")));
     gameFinishingConditionsLabel.setTextColor(color);
     centralVBox.addWidget(&gameFinishingConditionsLabel);
 
     centralVBox.addWidget(&winFlags1HBox);
-    winFlagsTimeoutCheckbox.setText(_("Timeout reached") + ":");
+    winFlagsTimeoutCheckbox.setText(fmt::format("{}:", _("Timeout reached")));
     winFlagsTimeoutCheckbox.setTextColor(color);
     winFlagsTimeoutCheckbox.setChecked(mapInfo.winFlags & WINLOSEFLAGS_TIMEOUT);
     winFlags1HBox.addWidget(&winFlagsTimeoutCheckbox, 0.0);
@@ -182,7 +184,8 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
 
     centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
-    gameWinningConditionsLabel.setText(_("Conditions for winning the game (in case it is finished)") + ":");
+    gameWinningConditionsLabel.setText(
+        fmt::format("{}:", _("Conditions for winning the game (in case it is finished)")));
     gameWinningConditionsLabel.setTextColor(color);
     centralVBox.addWidget(&gameWinningConditionsLabel);
 
@@ -215,7 +218,7 @@ MapSettingsWindow::MapSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHou
     centralVBox.addWidget(Widget::create<VSpacer>(15).release());
 
     centralVBox.addWidget(&techLevelHBox);
-    techLevelLabel.setText(_("Tech Level") + ":");
+    techLevelLabel.setText(fmt::format("{}:", _("Tech Level")));
     techLevelLabel.setTextColor(color);
     techLevelHBox.addWidget(&techLevelLabel, 95);
 

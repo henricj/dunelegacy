@@ -394,7 +394,7 @@ void BuilderList::drawOverlay(Point position) {
 
         const auto buildItemIter = std::next(pBuilder->getBuildList().begin(), btn);
 
-        auto text = resolveItemName(buildItemIter->itemID_);
+        auto text = std::string{resolveItemName(buildItemIter->itemID_)};
 
         if (buildItemIter->itemID_ == pBuilder->getCurrentProducedItem() && pBuilder->isWaitingToPlace()) {
             text += " (Hotkey: P)";

@@ -39,10 +39,14 @@ public:
         to fit this text.
         \param  text The new text for this checkbox
     */
-    virtual void setText(const std::string& text) {
-        this->text_ = text;
-        resizeAll();
-    }
+    virtual void setText(std::string text);
+
+    /**
+        This method sets a new text for this checkbox and resizes it
+        to fit this text.
+        \param  text The new text for this checkbox
+    */
+    virtual void setText(std::string_view text);
 
     /**
         Get the text of this checkbox.

@@ -114,13 +114,13 @@ CustomGameMenu::CustomGameMenu(bool multiplayer, bool LANServer)
     rightVBox.addWidget(&mapPropertiesHBox, 0.01);
     mapPropertiesHBox.addWidget(&mapPropertyNamesVBox, 75);
     mapPropertiesHBox.addWidget(&mapPropertyValuesVBox, 105);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Size") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Size"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertySize);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Players") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Players"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyPlayers);
-    mapPropertyNamesVBox.addWidget(Label::create(_("Author") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("Author"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyAuthors);
-    mapPropertyNamesVBox.addWidget(Label::create(_("License") + ":").release());
+    mapPropertyNamesVBox.addWidget(Label::create(fmt::format("{}:", _("License"))).release());
     mapPropertyValuesVBox.addWidget(&mapPropertyLicense);
     rightVBox.addWidget(Widget::create<Spacer>().release());
 
@@ -215,7 +215,7 @@ void CustomGameMenu::onCancel() {
 
 void CustomGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("mpsave/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls").release());
+    openWindow(LoadSaveWindow::create(false, std::string{_("Load Game")}, std::move(savepath), "dls").release());
 }
 
 void CustomGameMenu::onGameOptions() {
@@ -260,11 +260,13 @@ void CustomGameMenu::onMapTypeChange(int buttonID) {
     if (mapList.getNumEntries() > 0) {
         mapList.setSelectedItem(0);
     } else {
+        using namespace std::literals;
+
         minimap.setSurface(GUIStyle::getInstance().createButtonSurface(130, 130, _("No map available"), true, false));
-        mapPropertySize.setText("");
-        mapPropertyPlayers.setText("");
-        mapPropertyAuthors.setText("");
-        mapPropertyLicense.setText("");
+        mapPropertySize.setText(""sv);
+        mapPropertyPlayers.setText(""sv);
+        mapPropertyAuthors.setText(""sv);
+        mapPropertyLicense.setText(""sv);
     }
 }
 

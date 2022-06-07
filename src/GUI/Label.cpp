@@ -79,9 +79,9 @@ void Label::draw(Point position) {
 }
 
 std::unique_ptr<Label>
-Label::create(const std::string& text, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
+Label::create(std::string text, Uint32 textcolor, Uint32 textshadowcolor, Uint32 backgroundcolor) {
     auto label = std::make_unique<Label>();
-    label->setText(text);
+    label->setText(std::move(text));
     label->setTextColor(textcolor, textshadowcolor, backgroundcolor);
     label->pAllocated_ = true;
     return label;

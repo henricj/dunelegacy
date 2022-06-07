@@ -1,7 +1,24 @@
+/*
+ *  This file is part of Dune Legacy.
+ *
+ *  Dune Legacy is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Dune Legacy is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Dune Legacy.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <Menu/MultiPlayerMenu.h>
 
 #include <Menu/CustomGameMenu.h>
 #include <Menu/CustomGamePlayers.h>
-#include <Menu/MultiPlayerMenu.h>
 
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
@@ -10,10 +27,13 @@
 #include <Network/NetworkManager.h>
 
 #include <GUI/MsgBox.h>
+#include <GUI/Spacer.h>
 
 #include <globals.h>
 
 #include <misc/string_util.h>
+
+using namespace std::literals;
 
 MultiPlayerMenu::MultiPlayerMenu() {
     // set up window
@@ -22,16 +42,16 @@ MultiPlayerMenu::MultiPlayerMenu() {
 
     windowWidget.addWidget(&mainVBox, Point(24, 23), Point(getRendererWidth() - 48, getRendererHeight() - 46));
 
-    captionLabel.setText("Multiplayer Game");
+    captionLabel.setText("Multiplayer Game"sv);
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
     mainVBox.addWidget(Widget::create<VSpacer>(24).release());
 
-    connectHBox.addWidget(Label::create("Host:").release(), 50);
+    connectHBox.addWidget(Label::create("Host:"sv).release(), 50);
     connectHostTextBox.setText("localhost");
     connectHBox.addWidget(&connectHostTextBox);
     connectHBox.addWidget(Widget::create<HSpacer>(20).release());
-    connectHBox.addWidget(Label::create("Port:").release(), 50);
+    connectHBox.addWidget(Label::create("Port:"sv).release(), 50);
     connectPortTextBox.setText(std::to_string(DEFAULT_PORT));
     connectHBox.addWidget(&connectPortTextBox, 90);
     connectHBox.addWidget(Widget::create<HSpacer>(20).release());

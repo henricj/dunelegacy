@@ -18,11 +18,13 @@
 #ifndef POFILE_H
 #define POFILE_H
 
+#include <DataTypes.h>
+
 #include <misc/SDL2pp.h>
 
 #include <string>
 #include <unordered_map>
 
-std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename = "");
+dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename = "");
 
 #endif // POFILE_H

@@ -48,8 +48,8 @@ bool WindTrapInterface::update() {
 
     const House* pOwner = pObject->getOwner();
 
-    requiredEnergyLabel.setText(" " + _("Required") + ": " + std::to_string(pOwner->getPowerRequirement()));
-    producedEnergyLabel.setText(" " + _("Produced") + ": " + std::to_string(pOwner->getProducedPower()));
+    requiredEnergyLabel.setText(fmt::format(" {}: {}", _("Required"), pOwner->getPowerRequirement()));
+    producedEnergyLabel.setText(fmt::format(" {}: {}", _("Produced"), pOwner->getProducedPower()));
 
     return parent::update();
 }

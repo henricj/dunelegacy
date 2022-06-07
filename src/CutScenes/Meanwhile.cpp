@@ -33,6 +33,8 @@
 
 #include <misc/exceptions.h>
 
+#include <fmt/core.h>
+
 #include <string>
 
 Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
@@ -49,7 +51,8 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
     pMeanwhile = create_wsafile("MEANWHIL.WSA");
     pImperator = create_wsafile("EFINALA.WSA");
 
-    const IndexedTextFile dune_text{dune::globals::pFileManager->openFile("DUNE." + _("LanguageFileExtension")).get()};
+    const IndexedTextFile dune_text{
+        dune::globals::pFileManager->openFile(fmt::format("DUNE.{}", _("LanguageFileExtension"))).get()};
 
     auto textBaseIndex = MeanwhileText_Base + ((house_idx + 2) % 3) * MeanwhileText_NumTextsPerHouse;
 

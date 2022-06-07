@@ -41,27 +41,20 @@ public:
         This method sets a new text for this question box.
         \param  text The new text for this question box
     */
-    virtual void setText(const std::string& text) {
-        textLabel.setText(text);
-        resize(std::max(vbox.getMinimumSize().x, 120), vbox.getMinimumSize().y);
-    }
+    virtual void setText(std::string text);
 
     /**
         Get the text of this question box.
         \return the text of this question box
     */
-    const std::string& getText() { return textLabel.getText(); }
+    [[nodiscard]] const std::string& getText() const { return textLabel.getText(); }
 
     /**
         Sets the text color for this question box.
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        textLabel.setTextColor(textcolor, textshadowcolor);
-        button1.setTextColor(textcolor, textshadowcolor);
-        button2.setTextColor(textcolor, textshadowcolor);
-    }
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         This method resizes the question box to width and height. This method should only be
@@ -70,11 +63,7 @@ public:
         \param  width   the new width of this question box
         \param  height  the new height of this question box
     */
-    void resize(uint32_t width, uint32_t height) override {
-        Window::resize(width, height);
-        position_.x = (getRendererWidth() - getSize().x) / 2;
-        position_.y = (getRendererHeight() - getSize().y) / 2;
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     using parent::resize;
 
@@ -82,21 +71,13 @@ public:
         This method is called by the window widget if it requests a resizing of
         this window.
     */
-    void resizeAll() override {
-        // QstBox should get bigger if content changes
-        if (pWindowWidget_ != nullptr) {
-            Point newSize = pWindowWidget_->getMinimumSize();
-            newSize.x     = std::max(newSize.x, 120);
-            newSize.y     = std::max(newSize.y, 30);
-            resize(newSize.x, newSize.y);
-        }
-    }
+    void resizeAll() override;
 
     /**
         The number of the pressed button.
         \return the pressed button (either QSTBOX_BUTTON_INVALID, QSTBOX_BUTTON1 or QSTBOX_BUTTON2)
     */
-    [[nodiscard]] int getPressedButtonID() const { return pressedButtonID; }
+    [[nodiscard]] int getPressedButtonID() const;
 
     /**
         This static method creates a dynamic question box object with Text as the text in the question box.
@@ -108,11 +89,22 @@ public:
         \param  defaultFocus    Button which gets the focus on showing the question box
         \return The new question box (will be automatically destroyed when it's closed)
     */
-    static QstBox* create(const std::string& text, const std::string& button1Text = "Yes",
-                          const std::string& button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
-        auto* qstbox        = new QstBox(text, button1Text, button2Text, defaultFocus);
-        qstbox->pAllocated_ = true;
-        return qstbox;
+    static QstBox* create(std::string text, std::string button1Text = "Yes", std::string button2Text = "No",
+                          int defaultFocus = QSTBOX_BUTTON_INVALID);
+
+    /**
+        This static method creates a dynamic question box object with Text as the text in the question box.
+        The idea behind this method is to simply create a new question box on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  text            The question box text
+        \param  button1Text     Text of button 1
+        \param  button2Text     Text of button 2
+        \param  defaultFocus    Button which gets the focus on showing the question box
+        \return The new question box (will be automatically destroyed when it's closed)
+    */
+    static QstBox* create(std::string_view text, std::string_view button1Text = "Yes",
+                          std::string_view button2Text = "No", int defaultFocus = QSTBOX_BUTTON_INVALID) {
+        return create(std::string{text}, std::string{button1Text}, std::string{button2Text}, defaultFocus);
     }
 
 protected:
@@ -122,64 +114,16 @@ protected:
         \param  button2Text     Text of button 2
         \param  defaultFocus    Button which gets the focus on showing the question box
     */
-    QstBox(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus)
-        : Window(50, 50, 50, 50), pressedButtonID(QSTBOX_BUTTON_INVALID) {
-        init(text, button1Text, button2Text, defaultFocus);
-    }
+    QstBox(std::string text, std::string button1Text, std::string button2Text, int defaultFocus);
 
     /// destructor
-    ~QstBox() override = default;
+    ~QstBox() override;
 
 private:
     /**
-        Initialization helper method.
-        \param  text            Text of this question box
-        \param  button1Text     Text of button 1
-        \param  button2Text     Text of button 2
-        \param  defaultFocus    Button which gets the focus on showing the question box
-    */
-    void
-    init(const std::string& text, const std::string& button1Text, const std::string& button2Text, int defaultFocus) {
-        setWindowWidget(&vbox);
-        vbox.addWidget(Widget::create<VSpacer>(6).release());
-        vbox.addWidget(&textLabel);
-        vbox.addWidget(Widget::create<VSpacer>(3).release());
-        vbox.addWidget(&hbox);
-        vbox.addWidget(Widget::create<VSpacer>(6).release());
-        hbox.addWidget(Widget::create<Spacer>().release(), 0.2);
-        hbox.addWidget(&vbox2, 0.6);
-        vbox2.addWidget(Widget::create<VSpacer>(4).release());
-        button1.setText(button1Text);
-        button1.setOnClick([this] { onButton(QSTBOX_BUTTON1); });
-        hbox2.addWidget(&button1);
-        hbox2.addWidget(Widget::create<HSpacer>(6).release());
-        button2.setText(button2Text);
-        button2.setOnClick([this] { onButton(QSTBOX_BUTTON2); });
-        hbox2.addWidget(&button2);
-        vbox2.addWidget(&hbox2);
-        vbox2.addWidget(Widget::create<VSpacer>(4).release());
-        hbox.addWidget(Widget::create<Spacer>().release(), 0.2);
-        setText(text);
-        textLabel.setAlignment(Alignment_HCenter);
-
-        if (defaultFocus == QSTBOX_BUTTON1) {
-            button1.setActive();
-        } else if (defaultFocus == QSTBOX_BUTTON2) {
-            button2.setActive();
-        }
-    }
-
-    /**
         This method is called when one of the buttons is pressed.
     */
-    virtual void onButton(int btnID) {
-        pressedButtonID = btnID;
-
-        auto* pParentWindow = dynamic_cast<Window*>(getParent());
-        if (pParentWindow != nullptr) {
-            pParentWindow->closeChildWindow();
-        }
-    }
+    virtual void onButton(int btnID);
 
     VBox vbox;           ///< vertical box
     HBox hbox;           ///< horizontal box

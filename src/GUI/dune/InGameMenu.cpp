@@ -135,7 +135,7 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
                     game->setNextGameInitSettings(GameInitSettings(std::move(FileName)));
                 } catch (std::exception& e) {
                     // most probably the savegame file is not valid or from a different dune legacy version
-                    openWindow(MsgBox::create(e.what()));
+                    openWindow(MsgBox::create(std::string{e.what()}));
                 }
 
                 game->resumeGame();
@@ -176,12 +176,14 @@ void InGameMenu::onSettings() {
 
 void InGameMenu::onSave() {
     auto [ok, savepath] = fnkdat(bMultiplayer ? "mpsave/" : "save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(true, _("Save Game"), savepath, "dls", "", color).release());
+    openWindow(
+        LoadSaveWindow::create(true, std::string{_("Save Game")}, std::move(savepath), "dls", "", color).release());
 }
 
 void InGameMenu::onLoad() {
     auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls", "", color).release());
+    openWindow(
+        LoadSaveWindow::create(false, std::string{_("Load Game")}, std::move(savepath), "dls", "", color).release());
 }
 
 void InGameMenu::onRestart() {

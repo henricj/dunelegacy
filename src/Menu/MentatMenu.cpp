@@ -173,14 +173,14 @@ MentatMenu::MentatMenu(HOUSETYPE newHouse)
 
 MentatMenu::~MentatMenu() = default;
 
-void MentatMenu::setText(const std::string& text) {
+void MentatMenu::setText(std::string text) {
     using namespace std::chrono_literals;
 
     const std::regex rgx(R"([^\.\!\?]*[\.\!\?]\s?)");
     mentatTexts = std::vector<std::string>(std::sregex_token_iterator(text.begin(), text.end(), rgx),
                                            std::sregex_token_iterator());
     if (mentatTexts.empty()) {
-        mentatTexts.push_back(text);
+        mentatTexts.push_back(std::move(text));
     }
 
     mouthAnim.getAnimation()->setNumLoops(mentatTexts[0].empty() ? 0

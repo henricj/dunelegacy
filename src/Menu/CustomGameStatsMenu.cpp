@@ -46,8 +46,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
 
     auto* const game = dune::globals::currentGame.get();
 
-    captionLabel.setText(
-        reinterpret_cast<const char*>(getBasename(game->getGameInitSettings().getFilename(), true).u8string().c_str()));
+    captionLabel.setText(std::string{reinterpret_cast<const char*>(
+        getBasename(game->getGameInitSettings().getFilename(), true).u8string().c_str())});
     captionLabel.setTextColor(localHouseColor);
     captionLabel.setAlignment(Alignment_HCenter);
     mainVBox.addWidget(&captionLabel, 24);
@@ -96,7 +96,8 @@ CustomGameStatsMenu::CustomGameStatsMenu() {
         const auto textcolor     = SDL2RGB(dune::globals::palette[palette_index + 3]);
         const auto progresscolor = SDL2RGB(dune::globals::palette[palette_index + 1]);
 
-        curHouseStat.houseName.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)));
+        curHouseStat.houseName.setText(
+            fmt::format("{} {}", _("House"), getHouseNameByNumber(static_cast<HOUSETYPE>(i))));
         curHouseStat.houseName.setTextColor(textcolor);
         curHouseStat.houseHBox.addWidget(&curHouseStat.houseName, 145);
         curHouseStat.houseHBox.addWidget(Widget::create<Spacer>().release(), 5);

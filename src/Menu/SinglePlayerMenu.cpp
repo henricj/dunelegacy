@@ -140,12 +140,12 @@ void SinglePlayerMenu::onSkirmish() {
 
 void SinglePlayerMenu::onLoadSavegame() {
     auto [ok, savepath] = fnkdat("save/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Game"), savepath, "dls").release());
+    openWindow(LoadSaveWindow::create(false, std::string{_("Load Game")}, std::move(savepath), "dls").release());
 }
 
 void SinglePlayerMenu::onLoadReplay() {
     auto [ok, replaypath] = fnkdat("replay/", FNKDAT_USER | FNKDAT_CREAT);
-    openWindow(LoadSaveWindow::create(false, _("Load Replay"), replaypath, "rpl").release());
+    openWindow(LoadSaveWindow::create(false, std::string{_("Load Replay")}, std::move(replaypath), "rpl").release());
 }
 
 void SinglePlayerMenu::onCancel() {
@@ -168,7 +168,7 @@ void SinglePlayerMenu::onChildWindowClose(Window* pChildWindow) {
                 startSinglePlayerGame(GameInitSettings(std::move(filename)), [&](const auto& e) { doInput(e); });
             } catch (std::exception& e) {
                 // most probably the savegame file is not valid or from a different dune legacy version
-                openWindow(MsgBox::create(e.what()));
+                openWindow(MsgBox::create(std::string{e.what()}));
             }
         } else if (extension == "rpl") {
             startReplay(filename, [&](const auto& e) { doInput(e); });

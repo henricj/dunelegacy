@@ -256,26 +256,26 @@ SurfaceLoader::SurfaceLoader() {
 
     std::unique_ptr<Shpfile> choam;
 
-    if (file_manager->exists("CHOAM." + _("LanguageFileExtension"))) {
-        choam = loadShpfile("CHOAM." + _("LanguageFileExtension"));
+    if (file_manager->exists(fmt::format("CHOAM.{}", _("LanguageFileExtension")))) {
+        choam = loadShpfile(fmt::format("CHOAM.{}", _("LanguageFileExtension")));
     } else if (file_manager->exists("CHOAMSHP.SHP")) {
         choam = loadShpfile("CHOAMSHP.SHP");
     } else {
-        THROW(std::runtime_error,
-              "SurfaceLoader::SurfaceLoader(): Cannot open CHOAMSHP.SHP or CHOAM." + _("LanguageFileExtension") + "!");
+        THROW(std::runtime_error, "SurfaceLoader::SurfaceLoader(): Cannot open CHOAMSHP.SHP or CHOAM.{}!",
+              _("LanguageFileExtension"));
     }
 
     std::unique_ptr<Shpfile> bttn;
-    if (file_manager->exists("BTTN." + _("LanguageFileExtension"))) {
-        bttn = loadShpfile("BTTN." + _("LanguageFileExtension"));
+    if (file_manager->exists(fmt::format("BTTN.{}", _("LanguageFileExtension")))) {
+        bttn = loadShpfile(fmt::format("BTTN.{}", _("LanguageFileExtension")));
     } else {
         // The US-Version has the buttons in SHAPES.SHP
         // => bttn == nullptr
     }
 
     std::unique_ptr<Shpfile> mentat;
-    if (file_manager->exists("MENTAT." + _("LanguageFileExtension"))) {
-        mentat = loadShpfile("MENTAT." + _("LanguageFileExtension"));
+    if (file_manager->exists(fmt::format("MENTAT.{}", _("LanguageFileExtension")))) {
+        mentat = loadShpfile(fmt::format("MENTAT.{}", _("LanguageFileExtension")));
     } else {
         mentat = loadShpfile("MENTAT.SHP");
     }
@@ -758,8 +758,9 @@ SurfaceLoader::SurfaceLoader() {
 
     { // Scope
         sdl2::surface_ptr pHouseChoiceBackground;
-        if (file_manager->exists("HERALD." + _("LanguageFileExtension"))) {
-            pHouseChoiceBackground = LoadCPS_RW(file_manager->openFile("HERALD." + _("LanguageFileExtension")).get());
+        if (file_manager->exists(fmt::format("HERALD.{}", _("LanguageFileExtension")))) {
+            pHouseChoiceBackground =
+                LoadCPS_RW(file_manager->openFile(fmt::format("HERALD.{}", _("LanguageFileExtension"))).get());
         } else {
             pHouseChoiceBackground = LoadCPS_RW(file_manager->openFile("HERALD.CPS").get());
         }

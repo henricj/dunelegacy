@@ -23,6 +23,7 @@
 
 #include <sand.h>
 
+#include <fmt/core.h>
 #include <fmt/printf.h>
 
 #include <MapEditor/MapEditor.h>
@@ -30,7 +31,10 @@
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 
+#include <string_view>
 #include <utility>
+
+using namespace std::literals;
 
 PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     : Window(0, 0, 0, 0), pMapEditor(pMapEditor), house(currentHouse) {
@@ -73,7 +77,8 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         pw.playerCheckbox.setTextColor(currentColor);
         pw.playerCheckbox.setOnClick([this, i] { onPlayerCheckbox(i); });
         if (pMapEditor->getMapVersion() < 2) {
-            pw.playerCheckbox.setText(_("House") + " " + getHouseNameByNumber(static_cast<HOUSETYPE>(i)) + ":");
+            pw.playerCheckbox.setText(
+                fmt::format("{} {}:", _("House"), getHouseNameByNumber(static_cast<HOUSETYPE>(i))));
             pw.playerHBox.addWidget(&pw.playerCheckbox, 150);
         } else {
             pw.playerCheckbox.setText(fmt::sprintf(_("Player %d:"), i + 1));
@@ -99,7 +104,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         pw.playerHBox.addWidget(&pw.spacer, 5.0);
 
-        pw.creditsLabel.setText(_("Credits") + ":");
+        pw.creditsLabel.setText(fmt::format("{}:", _("Credits")));
         pw.creditsLabel.setTextColor(currentColor);
         pw.playerHBox.addWidget(&pw.creditsLabel);
 
@@ -111,13 +116,13 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
         pw.playerHBox.addWidget(Widget::create<Spacer>().release(), 5.0);
 
-        pw.teamLabel.setText(_("Team") + ":");
+        pw.teamLabel.setText(fmt::format("{}:", _("Team")));
         pw.teamLabel.setTextColor(currentColor);
         pw.playerHBox.addWidget(&pw.teamLabel);
 
         if (pMapEditor->getMapVersion() < 2) {
-            pw.teamDropDownBox.addEntry("Human", 0);
-            pw.teamDropDownBox.addEntry("CPU", 1);
+            pw.teamDropDownBox.addEntry("Human"sv, 0);
+            pw.teamDropDownBox.addEntry("CPU"sv, 1);
 
             if (playerInfo.brain_ == "Human") {
                 pw.teamDropDownBox.setSelectedItem(0);
@@ -125,12 +130,12 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
                 pw.teamDropDownBox.setSelectedItem(1);
             }
         } else {
-            pw.teamDropDownBox.addEntry("Team1", 0);
-            pw.teamDropDownBox.addEntry("Team2", 1);
-            pw.teamDropDownBox.addEntry("Team3", 2);
-            pw.teamDropDownBox.addEntry("Team4", 3);
-            pw.teamDropDownBox.addEntry("Team5", 4);
-            pw.teamDropDownBox.addEntry("Team6", 5);
+            pw.teamDropDownBox.addEntry("Team1"sv, 0);
+            pw.teamDropDownBox.addEntry("Team2"sv, 1);
+            pw.teamDropDownBox.addEntry("Team3"sv, 2);
+            pw.teamDropDownBox.addEntry("Team4"sv, 3);
+            pw.teamDropDownBox.addEntry("Team5"sv, 4);
+            pw.teamDropDownBox.addEntry("Team6"sv, 5);
 
             for (int j = 0; j < 6; j++) {
                 if (pw.teamDropDownBox.getEntry(j) == playerInfo.brain_) {
@@ -144,7 +149,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         pw.playerHBox.addWidget(&pw.teamDropDownBox, 65);
 
         // prepare advanced widgets
-        pw.spiceQuotaLabel.setText(_("Quota") + ":");
+        pw.spiceQuotaLabel.setText(fmt::format("{}:", _("Quota")));
         pw.spiceQuotaLabel.setTextColor(currentColor);
 
         pw.spiceQuotaTextBox.setMinMax(0, 99999);
@@ -152,7 +157,7 @@ PlayerSettingsWindow::PlayerSettingsWindow(MapEditor* pMapEditor, HOUSETYPE curr
         pw.spiceQuotaTextBox.setIncrementValue(100);
         pw.spiceQuotaTextBox.setColor(house, currentColor);
 
-        pw.maxUnitsLabel.setText(_("Max Units") + ":");
+        pw.maxUnitsLabel.setText(fmt::format("{}:", _("Max Units")));
         pw.maxUnitsLabel.setTextColor(currentColor);
 
         pw.maxUnitsTextBox.setMinMax(0, 999);

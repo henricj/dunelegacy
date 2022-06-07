@@ -42,7 +42,9 @@ public:
     MentatMenu& operator=(const MentatMenu&) = delete;
     MentatMenu& operator=(MentatMenu&&)      = delete;
 
-    void setText(const std::string& text);
+    void setText(std::string text);
+
+    void setText(std::string_view text) { setText(std::string{text}); }
 
     void drawSpecificStuff() override;
 

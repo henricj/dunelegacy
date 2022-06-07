@@ -37,13 +37,12 @@ namespace {
 inline constexpr auto invalid_chars = "?*:|<>/\\\"'`";
 }
 
-LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
-                               const std::vector<std::filesystem::path>& directories,
-                               const std::vector<std::string>& directoryTitles, std::string extension,
-                               int preselectedDirectoryIndex, const std::string& preselectedFile, uint32_t color)
-    : Window(0, 0, 0, 0), bSaveWindow_(bSave), directories_(directories), directoryTitles_(directoryTitles),
-      extension_(std::move(extension)), currentDirectoryIndex_(preselectedDirectoryIndex),
-      preselectedFile_(preselectedFile), color_(color) {
+LoadSaveWindow::LoadSaveWindow(bool bSave, std::string caption, std::vector<std::filesystem::path> directories,
+                               std::vector<std::string> directoryTitles, std::string extension,
+                               int preselectedDirectoryIndex, std::string preselectedFile, uint32_t color)
+    : Window(0, 0, 0, 0), bSaveWindow_(bSave), directories_(std::move(directories)),
+      directoryTitles_(std::move(directoryTitles)), extension_(std::move(extension)),
+      currentDirectoryIndex_(preselectedDirectoryIndex), preselectedFile_(preselectedFile), color_(color) {
 
     // set up window
     const auto* pBackground = dune::globals::pGFXManager->getUIGraphic(UI_LoadSaveWindow);
@@ -59,15 +58,15 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 
     titleLabel.setTextColor(COLOR_LIGHTYELLOW, COLOR_TRANSPARENT);
     titleLabel.setAlignment(static_cast<Alignment_Enum>(Alignment_HCenter | Alignment_VCenter));
-    titleLabel.setText(caption);
+    titleLabel.setText(std::move(caption));
     mainVBox.addWidget(&titleLabel);
 
     mainVBox.addWidget(Widget::create<VSpacer>(8).release());
 
-    if (directories.size() > 1) {
-        directoryButtons.reserve(directories.size());
+    if (directories_.size() > 1) {
+        directoryButtons.reserve(directories_.size());
 
-        for (const auto& title : directoryTitles) {
+        for (const auto& title : directoryTitles_) {
             auto& button = directoryButtons.emplace_back();
 
             button.setText(title);
@@ -81,7 +80,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
         mainVBox.addWidget(&directoryHBox, 20);
     }
 
-    mainVBox.addWidget(&fileListHBox, (bSave ? 121 : 151) - (directories.size() > 1 ? 20 : 0));
+    mainVBox.addWidget(&fileListHBox, (bSave ? 121 : 151) - (directories_.size() > 1 ? 20 : 0));
     fileList.setColor(color);
     fileList.setOnSelectionChange([this](bool bInteractive) { onSelectionChange(bInteractive); });
     fileList.setOnDoubleClick([this] { onOK(); });
@@ -115,7 +114,7 @@ LoadSaveWindow::LoadSaveWindow(bool bSave, const std::string& caption,
 
     mainVBox.addWidget(Widget::create<VSpacer>(10).release());
 
-    if (directories.size() > 1) {
+    if (directories_.size() > 1) {
         onDirectoryChange(currentDirectoryIndex_);
     } else {
         updateEntries();
@@ -212,22 +211,24 @@ void LoadSaveWindow::onChildWindowClose(Window* pChildWindow) {
 }
 
 std::unique_ptr<LoadSaveWindow>
-LoadSaveWindow::create(bool bSave, const std::string& caption, const std::filesystem::path& directory,
-                       const std::string& extension, const std::string& preselectedFile, Uint32 color) {
+LoadSaveWindow::create(bool bSave, std::string caption, std::filesystem::path directory, std::string extension,
+                       std::string preselectedFile, Uint32 color) {
     std::vector<std::filesystem::path> directories;
     directories.push_back(directory);
     std::vector<std::string> directoryTitles;
     directoryTitles.emplace_back();
 
-    return create(bSave, caption, directories, directoryTitles, extension, 0, preselectedFile, color);
+    return create(bSave, std::move(caption), std::move(directories), std::move(directoryTitles), std::move(extension),
+                  0, std::move(preselectedFile), color);
 }
 
 std::unique_ptr<LoadSaveWindow>
-LoadSaveWindow::create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories,
-                       const std::vector<std::string>& directoryTitles, const std::string& extension,
-                       int preselectedDirectoryIndex, const std::string& preselectedFile, Uint32 color) {
-    std::unique_ptr<LoadSaveWindow> dlg{new LoadSaveWindow(bSave, caption, directories, directoryTitles, extension,
-                                                           preselectedDirectoryIndex, preselectedFile, color)};
+LoadSaveWindow::create(bool bSave, std::string caption, std::vector<std::filesystem::path> directories,
+                       std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex,
+                       std::string preselectedFile, Uint32 color) {
+    std::unique_ptr<LoadSaveWindow> dlg{
+        new LoadSaveWindow(bSave, std::move(caption), std::move(directories), std::move(directoryTitles),
+                           std::move(extension), preselectedDirectoryIndex, std::move(preselectedFile), color)};
     dlg->pAllocated_ = true;
     return dlg;
 }

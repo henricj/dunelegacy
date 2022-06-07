@@ -64,7 +64,7 @@ TextManager::TextManager(std::string_view language) {
     sdl2::log_info("Loading localization from '%s'...",
                    reinterpret_cast<const char*>(language_path.u8string().c_str()));
     const auto rwops = openReadOnlyRWops(language_path.u8string());
-    localizedString  = loadPOFile(rwops.get(), reinterpret_cast<const char*>(language_file.u8string().c_str()));
+    localizedString_ = loadPOFile(rwops.get(), reinterpret_cast<const char*>(language_file.u8string().c_str()));
 }
 
 TextManager::~TextManager() = default;
@@ -72,24 +72,24 @@ TextManager::~TextManager() = default;
 void TextManager::loadData() {
     const auto ext = _("LanguageFileExtension");
 
-    addOrigDuneText("TEXTH." + ext, true);
-    addOrigDuneText("TEXTA." + ext, true);
-    addOrigDuneText("TEXTO." + ext, true);
-    addOrigDuneText("DUNE." + ext);
-    addOrigDuneText("MESSAGE." + ext);
+    addOrigDuneText(fmt::format("TEXTH.{}", ext), true);
+    addOrigDuneText(fmt::format("TEXTA.{}", ext), true);
+    addOrigDuneText(fmt::format("TEXTO.{}", ext), true);
+    addOrigDuneText(fmt::format("DUNE.{}", ext));
+    addOrigDuneText(fmt::format("MESSAGE.{}", ext));
 
     const auto* const file_manager = dune::globals::pFileManager.get();
 
     // load all mentat texts
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
-        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATH." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
-        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATA." + ext).get());
-    mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
-        std::make_unique<MentatTextFile>(file_manager->openFile("MENTATO." + ext).get());
+    mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] =
+        std::make_unique<MentatTextFile>(file_manager->openFile(fmt::format("MENTATH.{}", ext)).get());
+    mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)] =
+        std::make_unique<MentatTextFile>(file_manager->openFile(fmt::format("MENTATA.{}", ext)).get());
+    mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)] =
+        std::make_unique<MentatTextFile>(file_manager->openFile(fmt::format("MENTATO.{}", ext)).get());
 }
 
-std::string TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) {
+std::string_view TextManager::getBriefingText(unsigned int mission, unsigned int texttype, HOUSETYPE house) {
     // clang-format off
     switch(house) {
         case HOUSETYPE::HOUSE_HARKONNEN: {
@@ -520,34 +520,36 @@ TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const 
         case HOUSETYPE::HOUSE_HARKONNEN:
         case HOUSETYPE::HOUSE_SARDAUKAR:
         default: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries();
+            for (unsigned int i = 0; i < mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getNumEntries();
                  i++) {
-                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel
+                if (mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i).techLevel
                     <= techLevel) {
                     mentatEntries.push_back(
-                        mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
+                        mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)]->getMentatEntry(i));
                 }
             }
         } break;
 
         case HOUSETYPE::HOUSE_ATREIDES:
         case HOUSETYPE::HOUSE_FREMEN: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries();
+            for (unsigned int i = 0; i < mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getNumEntries();
                  i++) {
-                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel
+                if (mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i).techLevel
                     <= techLevel) {
                     mentatEntries.push_back(
-                        mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
+                        mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ATREIDES)]->getMentatEntry(i));
                 }
             }
         } break;
 
         case HOUSETYPE::HOUSE_ORDOS:
         case HOUSETYPE::HOUSE_MERCENARY: {
-            for (unsigned int i = 0; i < mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries();
+            for (unsigned int i = 0; i < mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getNumEntries();
                  i++) {
-                if (mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel <= techLevel) {
-                    mentatEntries.push_back(mentatStrings[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i));
+                if (mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i).techLevel
+                    <= techLevel) {
+                    mentatEntries.push_back(
+                        mentatStrings_[static_cast<int>(HOUSETYPE::HOUSE_ORDOS)]->getMentatEntry(i));
                 }
             }
         } break;
@@ -556,23 +558,23 @@ TextManager::getAllMentatEntries(HOUSETYPE house, unsigned int techLevel) const 
     return mentatEntries;
 }
 
-const std::string& TextManager::postProcessString(const std::string& unprocessedString) {
+std::string_view TextManager::postProcessString(std::string_view unprocessedString) {
     size_t commentStart = unprocessedString.find_first_of('#');
     if (commentStart == std::string::npos) {
         commentStart = unprocessedString.size();
     }
 
-    const std::string commandString = unprocessedString.substr(1, commentStart - 1);
+    const auto commandString = unprocessedString.substr(1, commentStart - 1);
 
-    const std::vector<std::string> commands = splitStringToStringVector(commandString, "\\|");
+    const auto commands = splitStringToStringVector(std::string{commandString}, "\\|");
 
     int index = -1;
     if (commands.size() < 2 || !parseString(commands[1], index)) {
         return unprocessedString;
     }
-    const auto iter = origDuneText.find(commands[0]);
+    const auto iter = origDuneText_.find(commands[0]);
 
-    if (iter != origDuneText.end()) {
+    if (iter != origDuneText_.end()) {
 
         const IndexedTextFile* pIndexedTextFile = iter->second.get();
 
@@ -592,16 +594,26 @@ const std::string& TextManager::postProcessString(const std::string& unprocessed
             mapping[parts[0]] = parts[1];
         }
 
-        auto& localized = localizedString[unprocessedString];
+        auto localized = replaceAll(pIndexedTextFile->getString(index), mapping);
 
-        localized = replaceAll(pIndexedTextFile->getString(index), mapping);
+        auto it = localizedString_.find(unprocessedString);
 
-        return localized;
+        if (it == localizedString_.end()) {
+            auto [it2, ok] = localizedString_.emplace(std::string{unprocessedString}, std::move(localized));
+
+            if (!ok)
+                THROW(std::runtime_error, "Unable to add localized string!");
+
+            it = it2;
+        } else
+            it->second = std::move(localized);
+
+        return it->second;
     }
     return unprocessedString;
 }
 
 void TextManager::addOrigDuneText(std::string_view filename, bool bDecode) {
-    origDuneText[std::string(filename)] =
-        std::make_unique<IndexedTextFile>(dune::globals::pFileManager->openFile(filename).get(), bDecode);
+    origDuneText_.insert({std::string{filename}, std::make_unique<IndexedTextFile>(
+                                                     dune::globals::pFileManager->openFile(filename).get(), bDecode)});
 }

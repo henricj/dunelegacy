@@ -93,8 +93,8 @@ Finale::Finale(HOUSETYPE house) {
         blowup  = getChunkFromFile("BLOWUP1.VOC");
     }
 
-    const auto pIntroText =
-        std::make_unique<IndexedTextFile>(file_manager->openFile("INTRO." + _("LanguageFileExtension")).get());
+    const auto pIntroText = std::make_unique<IndexedTextFile>(
+        file_manager->openFile(fmt::format("INTRO.{}", _("LanguageFileExtension"))).get());
 
     const auto& palette = dune::globals::palette;
 

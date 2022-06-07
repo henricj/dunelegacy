@@ -48,8 +48,8 @@ bool RefineryAndSiloInterface::update() {
 
     const House* pOwner = pObject->getOwner();
 
-    capacityLabel.setText(" " + _("Capacity") + ": " + std::to_string(pOwner->getCapacity()));
-    storedCreditsLabel.setText(" " + _("Stored") + ": " + std::to_string(lround(pOwner->getStoredCredits())));
+    capacityLabel.setText(fmt::format(" {}: {}", _("Capacity"), pOwner->getCapacity()));
+    storedCreditsLabel.setText(fmt::format(" {}: {}", _("Stored"), lround(pOwner->getStoredCredits())));
 
     return parent::update();
 }

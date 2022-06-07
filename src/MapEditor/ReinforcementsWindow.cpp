@@ -110,7 +110,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     centralVBox.addWidget(&hBox2);
 
-    playerLabel.setText(_("Player") + ":");
+    playerLabel.setText(fmt::format("{}:", _("Player")));
     playerLabel.setTextColor(color_);
     hBox2.addWidget(&playerLabel, 120);
     playerDropDownBox.setColor(color_);
@@ -118,15 +118,15 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
-        std::string entryName =
-            player.bActive_ ? (player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_)
-                            : ("(" + player.name_ + ")");
+        auto entryName = player.bActive_
+                           ? (player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_)
+                           : ("(" + player.name_ + ")");
         playerDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
     }
     playerDropDownBox.setSelectedItem(0);
     hBox2.addWidget(&playerDropDownBox, 120);
     hBox2.addWidget(Widget::create<HSpacer>(15).release());
-    unitLabel.setText(_("Unit") + ":");
+    unitLabel.setText(fmt::format("{}:", _("Unit")));
     unitLabel.setTextColor(color_);
     hBox2.addWidget(&unitLabel, 125);
     unitDropDownBox.setColor(color_);
@@ -144,7 +144,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     centralVBox.addWidget(&hBox3);
 
-    dropLocationLabel.setText(_("Drop Location") + ":");
+    dropLocationLabel.setText(fmt::format("{}:", _("Drop Location")));
     dropLocationLabel.setTextColor(color_);
     hBox3.addWidget(&dropLocationLabel, 120);
     dropLocationDropDownBox.setColor(color_);
@@ -168,7 +168,7 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
     dropLocationDropDownBox.setSelectedItem(7);
     hBox3.addWidget(&dropLocationDropDownBox, 120);
     hBox3.addWidget(Widget::create<HSpacer>(15).release());
-    timeLabel.setText(_("Time") + " (min):");
+    timeLabel.setText(fmt::format("{} (min):", _("Time")));
     timeLabel.setTextColor(color_);
     hBox3.addWidget(&timeLabel, 125);
     timeTextBox.setColor(house_, color_);
@@ -347,9 +347,10 @@ void ReinforcementsWindow::onEntryChange(bool bInteractive) {
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {
 
-    return getPlayerName(reinforcementInfo.houseID) + ", " + resolveItemName(reinforcementInfo.unitID) + ", "
-         + resolveDropLocationName(reinforcementInfo.dropLocation) + ", " + std::to_string(reinforcementInfo.droptime)
-         + " min" + (reinforcementInfo.bRepeat ? ", +" : "");
+    return fmt::format("{}, {}, {}, {} min{}", getPlayerName(reinforcementInfo.houseID),
+                       resolveItemName(reinforcementInfo.unitID),
+                       resolveDropLocationName(reinforcementInfo.dropLocation),
+                       std::to_string(reinforcementInfo.droptime), (reinforcementInfo.bRepeat ? ", +" : ""));
 }
 
 std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
@@ -357,7 +358,7 @@ std::string ReinforcementsWindow::getPlayerName(HOUSETYPE house) {
     for (const auto& player : pMapEditor_->getPlayers()) {
         if (player.house_ == house) {
             return player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum)
-                                     : (_("House") + " " + player.name_);
+                                     : fmt::format("{} {}", _("House"), player.name_);
         }
 
         if (player.bActive_ && player.bAnyHouse_) {

@@ -48,6 +48,12 @@
 #include <misc/SDL2pp.h>
 #include <misc/draw_util.h>
 
+#include <fmt/core.h>
+
+#include <string_view>
+
+using namespace std::literals;
+
 MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     : Window(0, 0, 0, 0), pMapEditor_(pMapEditor), radarView(pMapEditor), currentEditStructureID_(INVALID),
       currentEditUnitID_(INVALID), house_(HOUSETYPE::HOUSE_HARKONNEN) {
@@ -168,7 +174,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     mirrorModeNoneButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorNoneIcon));
     mirrorModeNoneButton.setToggleButton(true);
-    mirrorModeNoneButton.setTooltipText(_("Mirror mode") + ": " + _("Off"));
+    mirrorModeNoneButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Off")));
     mirrorModeNoneButton.setOnClick([this] { onMirrorModeButton(MirrorModeNone); });
     mirrorModeNoneButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeNoneButton, 24);
@@ -177,7 +183,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     mirrorModeHorizontalButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorHorizontalIcon));
     mirrorModeHorizontalButton.setToggleButton(true);
-    mirrorModeHorizontalButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal"));
+    mirrorModeHorizontalButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Horizontal")));
     mirrorModeHorizontalButton.setOnClick([this] { onMirrorModeButton(MirrorModeHorizontal); });
     mirrorModeHorizontalButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeHorizontalButton, 24);
@@ -186,7 +192,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     mirrorModeVerticalButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorVerticalIcon));
     mirrorModeVerticalButton.setToggleButton(true);
-    mirrorModeVerticalButton.setTooltipText(_("Mirror mode") + ": " + _("Vertical"));
+    mirrorModeVerticalButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Vertical")));
     mirrorModeVerticalButton.setOnClick([this] { onMirrorModeButton(MirrorModeVertical); });
     mirrorModeVerticalButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeVerticalButton, 24);
@@ -195,7 +201,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     mirrorModeBothButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorBothIcon));
     mirrorModeBothButton.setToggleButton(true);
-    mirrorModeBothButton.setTooltipText(_("Mirror mode") + ": " + _("Horizontal and vertical"));
+    mirrorModeBothButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Horizontal and vertical")));
     mirrorModeBothButton.setOnClick([this] { onMirrorModeButton(MirrorModeBoth); });
     mirrorModeBothButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModeBothButton, 24);
@@ -204,7 +210,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     mirrorModePointButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_MirrorPointIcon));
     mirrorModePointButton.setToggleButton(true);
-    mirrorModePointButton.setTooltipText(_("Mirror mode") + ": " + _("Inverse"));
+    mirrorModePointButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Inverse")));
     mirrorModePointButton.setOnClick([this] { onMirrorModeButton(MirrorModePoint); });
     mirrorModePointButton.setVisible((pMapEditor->getMapVersion() >= 2));
     topBarHBox.addWidget(&mirrorModePointButton, 24);
@@ -215,21 +221,21 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     windowWidget.addWidget(&editorModeChooserHBox, Point(getRendererWidth() - sideBar.getSize().x + 14, 148),
                            Point(sideBar.getSize().x - 15, 30));
 
-    terrainButton.setText("T");
+    terrainButton.setText("T"sv);
     terrainButton.setToggleButton(true);
     terrainButton.setOnClick([this] { onModeButton(1); });
     editorModeChooserHBox.addWidget(&terrainButton);
 
     editorModeChooserHBox.addWidget(Widget::create<HSpacer>(2).release());
 
-    structuresButton.setText("S");
+    structuresButton.setText("S"sv);
     structuresButton.setToggleButton(true);
     structuresButton.setOnClick([this] { onModeButton(2); });
     editorModeChooserHBox.addWidget(&structuresButton);
 
     editorModeChooserHBox.addWidget(Widget::create<HSpacer>(2).release());
 
-    unitsButton.setText("U");
+    unitsButton.setText("U"sv);
     unitsButton.setToggleButton(true);
     unitsButton.setOnClick([this] { onModeButton(3); });
     editorModeChooserHBox.addWidget(&unitsButton);
@@ -622,7 +628,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeUnits_HBox6.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeUnits_SpecialUnit.setToggleButton(true);
-    editorModeUnits_SpecialUnit.setTooltipText("Special");
+    editorModeUnits_SpecialUnit.setTooltipText("Special"sv);
     editorModeUnits_SpecialUnit.setOnClick([this] { onUnitButton(Unit_Special); });
     editorModeUnits_HBox6.addWidget(&editorModeUnits_SpecialUnit);
 
@@ -651,7 +657,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     // bottom bar (structure edit)
     structureDetailsHBox.addWidget(Widget::create<HSpacer>(4).release());
     structureDetailsHealthLabel.setTextFontSize(12);
-    structureDetailsHealthLabel.setText("Health:");
+    structureDetailsHealthLabel.setText("Health:"sv);
     structureDetailsHBox.addWidget(&structureDetailsHealthLabel, 0.1);
 
     for (int i = 1; i <= 256; i++) {
@@ -667,7 +673,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     // bottom bar (unit edit)
     unitDetailsHBox.addWidget(Widget::create<HSpacer>(5).release());
     unitDetailsHealthLabel.setTextFontSize(12);
-    unitDetailsHealthLabel.setText(_("Health") + ":");
+    unitDetailsHealthLabel.setText(fmt::format("{}:", _("Health")));
     unitDetailsHBox.addWidget(&unitDetailsHealthLabel, 0.1);
 
     for (int i = 1; i <= 256; i++) {
@@ -680,7 +686,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
 
     unitDetailsHBox.addWidget(Widget::create<HSpacer>(4).release());
     unitDetailsAttackModeLabel.setTextFontSize(12);
-    unitDetailsAttackModeLabel.setText(_("Attack mode") + ":");
+    unitDetailsAttackModeLabel.setText(fmt::format("{}:", _("Attack mode")));
     unitDetailsHBox.addWidget(&unitDetailsAttackModeLabel, 0.1);
 
     unitDetailsAttackModeDropDownBox.addEntry(getAttackModeNameByMode(GUARD), GUARD);
@@ -732,10 +738,9 @@ void MapEditorInterface::onHouseChanges() {
     int currentIndex     = 0;
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor_->getPlayers()) {
-        std::string entryName =
-            player.bActive_
-                ? (player.bAnyHouse_ ? (_("Player") + " " + std::to_string(currentPlayerNum++)) : player.name_)
-                : ("(" + player.name_ + ")");
+        const auto entryName =
+            player.bActive_ ? (player.bAnyHouse_ ? fmt::format("{} {}", _("Player"), currentPlayerNum++) : player.name_)
+                            : fmt::format("({})", player.name_);
 
         houseDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
 
@@ -868,11 +873,11 @@ void MapEditorInterface::onSave() {
 
     auto [ok, tmp] = fnkdat("maps/singleplayer/", FNKDAT_USER | FNKDAT_CREAT);
     mapDirectories.emplace_back(tmp);
-    directoryTitles.push_back(_("SP Maps"));
+    directoryTitles.push_back(std::string{_("SP Maps")});
 
     auto [ok2, tmp2] = fnkdat("maps/multiplayer/", FNKDAT_USER | FNKDAT_CREAT);
     mapDirectories.emplace_back(tmp2);
-    directoryTitles.push_back(_("MP Maps"));
+    directoryTitles.push_back(std::string{_("MP Maps")});
 
     const auto& lastSaveName = pMapEditor_->getLastSaveName();
     std::filesystem::path mapname;
@@ -892,9 +897,10 @@ void MapEditorInterface::onSave() {
         }
     }
 
-    openWindow(LoadSaveWindow::create(true, _("Save Map"), mapDirectories, directoryTitles,
-                                      pMapEditor_->getMapVersion() < 2 ? "INI" : "ini", lastSaveDirectoryIndex,
-                                      reinterpret_cast<const char*>(mapname.u8string().c_str()), color_)
+    openWindow(LoadSaveWindow::create(true, std::string{_("Save Map")}, std::move(mapDirectories),
+                                      std::move(directoryTitles), pMapEditor_->getMapVersion() < 2 ? "INI" : "ini",
+                                      lastSaveDirectoryIndex, reinterpret_cast<const char*>(mapname.u8string().c_str()),
+                                      color_)
                    .release());
 }
 

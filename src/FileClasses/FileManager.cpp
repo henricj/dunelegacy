@@ -132,13 +132,13 @@ std::vector<std::string> PakFileConfiguration::getNeededFiles() {
         "VOC.PAK",    "MERC.PAK",    "FINALE.PAK", "INTRO.PAK", "INTROVOC.PAK", "SOUND.PAK",
     };
 
-    auto LanguagePakFiles = dune::globals::pTextManager != nullptr ? _("LanguagePakFiles") : "";
+    auto LanguagePakFiles = std::string{dune::globals::pTextManager != nullptr ? _("LanguagePakFiles") : ""};
 
     if (LanguagePakFiles.empty()) {
         LanguagePakFiles = "ENGLISH.PAK,HARK.PAK,ATRE.PAK,ORDOS.PAK";
     }
 
-    std::vector<std::string> additionalPakFiles = splitStringToStringVector(LanguagePakFiles);
+    auto additionalPakFiles = splitStringToStringVector(LanguagePakFiles);
     fileList.insert(std::end(fileList), std::begin(additionalPakFiles), std::end(additionalPakFiles));
 
     std::ranges::sort(fileList);

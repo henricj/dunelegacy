@@ -46,10 +46,10 @@ std::string extractString(const std::string& str, const std::string& filename, i
 
 } // namespace
 
-std::unordered_map<std::string, std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
+dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::string& filename) {
     using namespace std::literals;
 
-    std::unordered_map<std::string, std::string> mapping;
+    dune::string_unordered_map<std::string> mapping;
 
     if (rwop == nullptr) {
         sdl2::log_info("%s: Cannot find this file!", filename.c_str());

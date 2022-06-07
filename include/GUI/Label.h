@@ -97,6 +97,18 @@ public:
     }
 
     /**
+        This method sets a new text for this label and resizes this label
+        to fit this text.
+        \param  text The new text for this button
+    */
+    virtual void setText(std::string text) {
+        if (text != this->text_) {
+            this->text_ = std::move(text);
+            resizeAll();
+        }
+    }
+
+    /**
         Get the text of this label.
         \return the text of this button
     */
@@ -136,8 +148,24 @@ public:
         \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
     */
     static std::unique_ptr<Label>
-    create(const std::string& text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+    create(std::string text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
            Uint32 backgroundcolor = COLOR_TRANSPARENT);
+
+    /**
+        This static method creates a dynamic label object with Text as the label text.
+        The idea behind this method is to simply create a new text label on the fly and
+        add it to a container. If the container gets destroyed also this label will be freed.
+        \param  text    The label text
+       \param   textcolor       the color of the text (COLOR_DEFAULT = default color)
+       \param   textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
+       \param  backgroundcolor the color of the label background (COLOR_TRANSPARENT = transparent)
+        \return The new created label (will be automatically destroyed when it's parent widget is destroyed)
+    */
+    static std::unique_ptr<Label>
+    create(std::string_view text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
+           Uint32 backgroundcolor = COLOR_TRANSPARENT) {
+        return create(text, textcolor, textshadowcolor, backgroundcolor);
+    }
 
 protected:
     /**

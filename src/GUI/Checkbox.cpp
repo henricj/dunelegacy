@@ -28,6 +28,20 @@ Checkbox::~Checkbox() {
     Checkbox::invalidateTextures();
 }
 
+void Checkbox::setText(std::string text) {
+    if (text == text_)
+        return;
+
+    this->text_ = std::move(text);
+    resizeAll();
+}
+void Checkbox::setText(std::string_view text) {
+    if (text == text_)
+        return;
+    this->text_ = std::string{text};
+    resizeAll();
+}
+
 void Checkbox::setTextColor(uint32_t textcolor, Uint32 textshadowcolor) {
     this->text_color_        = textcolor;
     this->text_shadow_color_ = textshadowcolor;

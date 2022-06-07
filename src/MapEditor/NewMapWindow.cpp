@@ -38,6 +38,8 @@
 
 #include <random>
 
+using namespace std::literals;
+
 NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(currentHouse) {
 
     color = SDL2RGB(dune::globals::palette[dune::globals::houseToPaletteIndex[static_cast<int>(house)] + 3]);
@@ -92,17 +94,17 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
     mapSizeXLabel.setText(_("Map Width:"));
     mapSizeXLabel.setTextColor(color);
     mapSizeXDropDownBox.setColor(color);
-    mapSizeXDropDownBox.addEntry("32", 32);
-    mapSizeXDropDownBox.addEntry("64", 64);
-    mapSizeXDropDownBox.addEntry("128", 128);
+    mapSizeXDropDownBox.addEntry("32"sv, 32);
+    mapSizeXDropDownBox.addEntry("64"sv, 64);
+    mapSizeXDropDownBox.addEntry("128"sv, 128);
     mapSizeXDropDownBox.setSelectedItem(2);
     mapSizeXDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
     mapSizeYLabel.setText(_("Map Height:"));
     mapSizeYLabel.setTextColor(color);
     mapSizeYDropDownBox.setColor(color);
-    mapSizeYDropDownBox.addEntry("32", 32);
-    mapSizeYDropDownBox.addEntry("64", 64);
-    mapSizeYDropDownBox.addEntry("128", 128);
+    mapSizeYDropDownBox.addEntry("32"sv, 32);
+    mapSizeYDropDownBox.addEntry("64"sv, 64);
+    mapSizeYDropDownBox.addEntry("128"sv, 128);
     mapSizeYDropDownBox.setSelectedItem(2);
     mapSizeYDropDownBox.setOnSelectionChange([this]([[maybe_unused]] auto flag) { onMapPropertiesChanged(); });
 
@@ -160,7 +162,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
 
     centralVBox.addWidget(Widget::create<VSpacer>(10).release());
 
-    mirrorModeLabel.setText(_("Mirror mode") + ":");
+    mirrorModeLabel.setText(fmt::format("{}:", _("Mirror mode")));
     mirrorModeLabel.setTextColor(color);
     mirrorModeHBox.addWidget(&mirrorModeLabel);
     mirrorModeDropDownBox.addEntry(_("Off"), MirrorModeNone);
@@ -213,7 +215,7 @@ NewMapWindow::NewMapWindow(HOUSETYPE currentHouse) : Window(0, 0, 0, 0), house(c
 
     buttonHBox.addWidget(Widget::create<HSpacer>(8).release());
 
-    loadButton.setText(_("Load Map") + "...");
+    loadButton.setText(fmt::format("{}...", _("Load Map")));
     loadButton.setTextColor(color);
     loadButton.setOnClick([this] { onLoad(); });
 

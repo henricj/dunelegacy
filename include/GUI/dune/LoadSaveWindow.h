@@ -31,10 +31,9 @@
 #include <vector>
 
 class LoadSaveWindow final : public Window {
-    LoadSaveWindow(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories,
-                   const std::vector<std::string>& directoryTitles, std::string extension,
-                   int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "",
-                   Uint32 color = COLOR_DEFAULT);
+    LoadSaveWindow(bool bSave, std::string caption, std::vector<std::filesystem::path> directories,
+                   std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0,
+                   std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
 
 public:
     ~LoadSaveWindow() override;
@@ -77,8 +76,8 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static std::unique_ptr<LoadSaveWindow>
-    create(bool bSave, const std::string& caption, const std::filesystem::path& directory, const std::string& extension,
-           const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    create(bool bSave, std::string caption, std::filesystem::path directory, std::string extension,
+           std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
 
     /**
         This static method creates a dynamic load/save window.
@@ -95,9 +94,9 @@ public:
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
     static std::unique_ptr<LoadSaveWindow>
-    create(bool bSave, const std::string& caption, const std::vector<std::filesystem::path>& directories,
-           const std::vector<std::string>& directoryTitles, const std::string& extension,
-           int preselectedDirectoryIndex = 0, const std::string& preselectedFile = "", Uint32 color = COLOR_DEFAULT);
+    create(bool bSave, std::string caption, std::vector<std::filesystem::path> directories,
+           std::vector<std::string> directoryTitles, std::string extension, int preselectedDirectoryIndex = 0,
+           std::string preselectedFile = "", Uint32 color = COLOR_DEFAULT);
 
 private:
     void onOK();

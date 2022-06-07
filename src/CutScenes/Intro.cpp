@@ -61,7 +61,7 @@ Intro::Intro() {
     pDestroyedTank = create_wsafile("INTRO5.WSA");
 
     const IndexedTextFile intro_text{
-        dune::globals::pFileManager->openFile("INTRO." + _("LanguageFileExtension")).get()};
+        dune::globals::pFileManager->openFile(fmt::format("INTRO.{}", _("LanguageFileExtension"))).get()};
 
     wind            = getChunkFromFile("WIND2BP.VOC");
     carryallLanding = getChunkFromFile("CLANK.VOC");

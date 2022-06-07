@@ -23,6 +23,8 @@
 
 #include <House.h>
 
+#include <fmt/core.h>
+
 RadarInterface::RadarInterface(const GameContext& context, int objectID)
     : DefaultStructureInterface(context, objectID) {
     const auto house_id = static_cast<int>(dune::globals::pLocalHouse->getHouseID());
@@ -48,8 +50,8 @@ bool RadarInterface::update() {
 
     const auto* pOwner = pObject->getOwner();
 
-    friendlyUnitsLabel.setText(" " + _("Friend") + ": " + std::to_string(pOwner->getNumVisibleFriendlyUnits()));
-    enemyUnitsLabel.setText(" " + _("Enemy") + ": " + std::to_string(pOwner->getNumVisibleEnemyUnits()));
+    friendlyUnitsLabel.setText(fmt::format(" {}: {}", _("Friend"), pOwner->getNumVisibleFriendlyUnits()));
+    enemyUnitsLabel.setText(fmt::format(" {}: {}", _("Enemy"), pOwner->getNumVisibleEnemyUnits()));
 
     return DefaultStructureInterface::update();
 }

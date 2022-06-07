@@ -88,7 +88,7 @@ bool BuilderInterface::update() {
             const auto seconds = ((arrivalTimer * 10) / (MILLI2CYCLES(30 * 1000))) + 1;
             starportTimerLabel.setText(std::to_string(seconds));
         } else {
-            starportTimerLabel.setText("");
+            starportTimerLabel.setText(std::string{});
         }
     }
 

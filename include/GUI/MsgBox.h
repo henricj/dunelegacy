@@ -18,17 +18,14 @@
 #ifndef MSGBOX_H
 #define MSGBOX_H
 
-#include "Button.h"
 #include "GUIStyle.h"
 #include "HBox.h"
 #include "Label.h"
-#include "Spacer.h"
 #include "VBox.h"
 #include "Widget.h"
 #include "Window.h"
-#include <misc/SDL2pp.h>
 
-#include <algorithm>
+#include <misc/SDL2pp.h>
 
 /// A simple class for a message box
 class MsgBox final : public Window {
@@ -39,10 +36,7 @@ public:
         This method sets a new text for this message box.
         \param  text The new text for this message box
     */
-    virtual void setText(const std::string& text) {
-        textLabel.setText(text);
-        resize(std::max(vbox.getMinimumSize().x, 120), vbox.getMinimumSize().y);
-    }
+    virtual void setText(std::string text);
 
     /**
         Get the text of this message box.
@@ -55,10 +49,7 @@ public:
         \param  textcolor       the color of the text (COLOR_DEFAULT = default color)
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
-    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        textLabel.setTextColor(textcolor, textshadowcolor);
-        okbutton.setTextColor(textcolor, textshadowcolor);
-    }
+    virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT);
 
     /**
         This method resizes the message box to width and height. This method should only be
@@ -67,11 +58,7 @@ public:
         \param  width   the new width of this message box
         \param  height  the new height of this message box
     */
-    void resize(uint32_t width, uint32_t height) override {
-        parent::resize(width, height);
-        position_.x = (getRendererWidth() - getSize().x) / 2;
-        position_.y = (getRendererHeight() - getSize().y) / 2;
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     using parent::resize;
 
@@ -79,15 +66,7 @@ public:
         This method is called by the window widget if it requests a resizing of
         this window.
     */
-    void resizeAll() override {
-        // MsgBox should get bigger if content changes
-        if (pWindowWidget_ != nullptr) {
-            Point newSize = pWindowWidget_->getMinimumSize();
-            newSize.x     = std::max(newSize.x, 120);
-            newSize.y     = std::max(newSize.y, 30);
-            resize(newSize.x, newSize.y);
-        }
-    }
+    void resizeAll() override;
 
     /**
         This static method creates a dynamic message box object with Text as the text in the message box.
@@ -96,55 +75,31 @@ public:
         \param  text    The message box text
         \return The new message box (will be automatically destroyed when it's closed)
     */
-    static MsgBox* create(const std::string& text) {
-        auto* msgbox        = new MsgBox(text);
-        msgbox->pAllocated_ = true;
-        return msgbox;
-    }
+    static MsgBox* create(std::string text);
+
+    /**
+        This static method creates a dynamic message box object with Text as the text in the message box.
+        The idea behind this method is to simply create a new message box on the fly and
+        add it as a child window of some other window. If the window gets closed it will be freed.
+        \param  text    The message box text
+        \return The new message box (will be automatically destroyed when it's closed)
+    */
+    static MsgBox* create(std::string_view text) { return create(std::string{text}); }
 
 protected:
     /** protected constructor (See create)
         \param  text    Text of this message box
     */
-    explicit MsgBox(const std::string& text) : Window(50, 50, 50, 50) { init(text); }
+    explicit MsgBox(std::string text);
 
     /// destructor
-    ~MsgBox() override = default;
+    ~MsgBox() override;
 
 private:
     /**
-        Initialization helper method.
-        \param  Text    Text of this message box
-    */
-    void init(const std::string& text) {
-        setWindowWidget(&vbox);
-        vbox.addWidget(Widget::create<VSpacer>(6).release());
-        vbox.addWidget(&textLabel);
-        vbox.addWidget(Widget::create<VSpacer>(3).release());
-        vbox.addWidget(&hbox);
-        vbox.addWidget(Widget::create<VSpacer>(6).release());
-        hbox.addWidget(Widget::create<Spacer>().release());
-        hbox.addWidget(&vbox2);
-        vbox2.addWidget(Widget::create<VSpacer>(4).release());
-        okbutton.setText("OK");
-        okbutton.setOnClick([this] { onOK(); });
-        vbox2.addWidget(&okbutton);
-        vbox2.addWidget(Widget::create<VSpacer>(4).release());
-        hbox.addWidget(Widget::create<Spacer>().release());
-        setText(text);
-        textLabel.setAlignment(Alignment_HCenter);
-        okbutton.setActive();
-    }
-
-    /**
         This method is called when the OK button is pressed.
     */
-    virtual void onOK() {
-        auto* pParentWindow = dynamic_cast<Window*>(getParent());
-        if (pParentWindow != nullptr) {
-            pParentWindow->closeChildWindow();
-        }
-    }
+    virtual void onOK();
 
     VBox vbox;           ///< vertical box
     HBox hbox;           ///< horizontal box
