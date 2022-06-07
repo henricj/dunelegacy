@@ -133,7 +133,7 @@ void HumanPlayer::onUnitDeployed(const UnitBase* pUnit) {
     }
 }
 
-void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObjectIDs) {
+void HumanPlayer::onSelectionChanged(const dune::selected_set_type& selectedObjectIDs) {
     if (!dune::globals::settings.general.showTutorialHints || (context_.game.gameState != GameState::Running)) {
         return;
     }
@@ -152,7 +152,7 @@ void HumanPlayer::onSelectionChanged(const Dune::selected_set_type& selectedObje
     }
 }
 
-void HumanPlayer::setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList) {
+void HumanPlayer::setGroupList(int groupListIndex, const dune::selected_set_type& newGroupList) {
     selectedLists[groupListIndex].clear();
 
     for (auto objectID : newGroupList) {

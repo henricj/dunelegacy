@@ -96,25 +96,25 @@ public:
         The set of selected units or structures has changed.
         \param  selectedObjectIDs   the new set of selected objects
     */
-    virtual void onSelectionChanged(const Dune::selected_set_type& selectedObjectIDs);
+    virtual void onSelectionChanged(const dune::selected_set_type& selectedObjectIDs);
 
     /**
         Returns one of the 9 saved units lists
         \param  groupListIndex   which list should be returned
         \return the n-th list.
     */
-    [[nodiscard]] Dune::selected_set_type& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; }
+    [[nodiscard]] dune::selected_set_type& getGroupList(int groupListIndex) { return selectedLists[groupListIndex]; }
 
     /**
         Sets one of the 9 saved units lists
         \param  groupListIndex     which list should be set
         \param  newGroupList        the new list to set
     */
-    void setGroupList(int groupListIndex, const Dune::selected_set_type& newGroupList);
+    void setGroupList(int groupListIndex, const dune::selected_set_type& newGroupList);
 
     uint32_t nextExpectedCommandsCycle{}; ///< The next cycle we expect commands for (using for network games)
 
-    Dune::selected_set_type selectedLists[NUMSELECTEDLISTS]; ///< Sets of all the different groups on key 1 to 9
+    dune::selected_set_type selectedLists[NUMSELECTEDLISTS]; ///< Sets of all the different groups on key 1 to 9
 
     uint32_t alreadyShownTutorialHints; ///< Contains flags for each tutorial hint (see enum TutorialHint)
 

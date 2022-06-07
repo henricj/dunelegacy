@@ -89,7 +89,7 @@ public:
 
     void sendCommandList(const CommandList& commandList);
 
-    void sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex = -1);
+    void sendSelectedList(const dune::selected_set_type& selectedList, int groupListIndex = -1);
 
     [[nodiscard]] std::vector<std::string> getConnectedPeers() const;
 
@@ -161,7 +161,7 @@ public:
         \param  pOnReceiveSelectionList function to call on receive
     */
     void setOnReceiveSelectionList(
-        std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList) {
+        std::function<void(const std::string&, const dune::selected_set_type&, int)> pOnReceiveSelectionList) {
         this->pOnReceiveSelectionList_ = pOnReceiveSelectionList;
     }
 
@@ -222,7 +222,7 @@ private:
     std::function<ChangeEventList(const std::string&)> pGetChangeEventListForNewPlayerCallback_;
     std::function<void(dune::dune_clock::duration)> pOnStartGame_;
     std::function<void(const std::string&, const CommandList&)> pOnReceiveCommandList_;
-    std::function<void(const std::string&, const Dune::selected_set_type&, int)> pOnReceiveSelectionList_;
+    std::function<void(const std::string&, const dune::selected_set_type&, int)> pOnReceiveSelectionList_;
 
     std::unique_ptr<LANGameFinderAndAnnouncer> pLANGameFinderAndAnnouncer_ = nullptr;
     std::unique_ptr<MetaServerClient> pMetaServerClient_                   = nullptr;

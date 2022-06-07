@@ -129,8 +129,8 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
                  uint32_t bulletID, FixPoint damage, int damageRadius, bool air) {
     const auto location = Coord(realPos.x / TILESIZE, realPos.y / TILESIZE);
 
-    std::vector<Dune::object_id_type> affectedAirUnits;
-    std::vector<Dune::object_id_type> affectedGroundAndUndergroundUnits;
+    std::vector<dune::object_id_type> affectedAirUnits;
+    std::vector<dune::object_id_type> affectedGroundAndUndergroundUnits;
 
     for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2, [&](Tile& t) {
         std::ranges::copy(t.getAirUnitList(), std::back_inserter(affectedAirUnits));

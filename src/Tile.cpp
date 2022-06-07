@@ -750,7 +750,7 @@ ObjectBase* Tile::getGroundObject(const ObjectManager& objectManager) const {
     return nullptr;
 }
 
-std::pair<bool, Dune::object_id_type> Tile::getGroundObjectID() const {
+std::pair<bool, dune::object_id_type> Tile::getGroundObjectID() const {
     if (hasANonInfantryGroundObject())
         return {true, assignedNonInfantryGroundObjectList_.front()};
     if (hasInfantry())

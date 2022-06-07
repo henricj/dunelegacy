@@ -371,9 +371,11 @@ enum class AITeamType {
     AITeamType_Harvester
 };
 
-namespace Dune {
+namespace dune {
+
 using object_id_type    = uint32_t;
 using selected_set_type = std::unordered_set<object_id_type>;
-} // namespace Dune
+
+} // namespace dune
 
 #endif // DATATYPES_H

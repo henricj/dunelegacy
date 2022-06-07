@@ -148,7 +148,7 @@ void UnitBase::save(OutputStream& stream) const {
     stream.writeSint32(nextSpot.x);
     stream.writeSint32(nextSpot.y);
     stream.writeUint32(pathList.size());
-    for (const auto& coord : Dune::reverse(pathList)) {
+    for (const auto& coord : dune::reverse(pathList)) {
         stream.writeSint32(coord.x);
         stream.writeSint32(coord.y);
     }

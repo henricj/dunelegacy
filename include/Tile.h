@@ -326,7 +326,7 @@ public:
         return dune_cast<ObjectType>(getGroundObject(objectManager));
     }
 
-    std::pair<bool, Dune::object_id_type> getGroundObjectID() const;
+    std::pair<bool, dune::object_id_type> getGroundObjectID() const;
 
     /*!
         returns a pointer to infantry object on this tile (if there's one)

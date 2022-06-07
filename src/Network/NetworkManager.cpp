@@ -757,7 +757,7 @@ void NetworkManager::sendCommandList(const CommandList& commandList) {
     sendPacketToAllConnectedPeers(packetStream, 1);
 }
 
-void NetworkManager::sendSelectedList(const Dune::selected_set_type& selectedList, int groupListIndex) {
+void NetworkManager::sendSelectedList(const dune::selected_set_type& selectedList, int groupListIndex) {
     ENetPacketOStream packetStream(ENET_PACKET_FLAG_RELIABLE);
     packetStream.writeUint32(NETWORKPACKET_SELECTIONLIST);
     packetStream.writeSint32(groupListIndex);

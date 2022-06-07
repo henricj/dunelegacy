@@ -123,7 +123,7 @@ public:
         Writes out a complete set of Uint32
         \param  dataSet   the set to write
     */
-    void writeUint32Set(const Dune::selected_set_type& dataSet);
+    void writeUint32Set(const dune::selected_set_type& dataSet);
 
     class exception : public std::exception {
     public:

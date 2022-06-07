@@ -47,7 +47,7 @@ void OutputStream::writeUint32Vector(std::span<const uint32_t> dataVector) {
     }
 }
 
-void OutputStream::writeUint32Set(const Dune::selected_set_type& dataSet) {
+void OutputStream::writeUint32Set(const dune::selected_set_type& dataSet) {
     writeUint32(static_cast<uint32_t>(dataSet.size()));
     for (const auto data : dataSet) {
         writeUint32(data);

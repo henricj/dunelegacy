@@ -1934,21 +1934,21 @@ void Game::saveObject(OutputStream& stream, ObjectBase* obj) {
     obj->save(stream);
 }
 
-void Game::selectAll(const Dune::selected_set_type& aList) const {
+void Game::selectAll(const dune::selected_set_type& aList) const {
     for (const auto objectID : aList) {
         if (auto* object = objectManager_.getObject(objectID))
             object->setSelected(true);
     }
 }
 
-void Game::unselectAll(const Dune::selected_set_type& aList) const {
+void Game::unselectAll(const dune::selected_set_type& aList) const {
     for (const auto objectID : aList) {
         if (auto* object = objectManager_.getObject(objectID))
             object->setSelected(false);
     }
 }
 
-void Game::onReceiveSelectionList(const std::string& name, const Dune::selected_set_type& newSelectionList,
+void Game::onReceiveSelectionList(const std::string& name, const dune::selected_set_type& newSelectionList,
                                   int groupListIndex) {
     auto* pHumanPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(name));
 
@@ -2398,14 +2398,14 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
 
         case SDLK_g: {
             // select next construction yard
-            Dune::selected_set_type itemIDs;
+            dune::selected_set_type itemIDs;
             itemIDs.insert(Structure_ConstructionYard);
             selectNextStructureOfType(itemIDs);
         } break;
 
         case SDLK_f: {
             // select next factory
-            Dune::selected_set_type itemIDs;
+            dune::selected_set_type itemIDs;
             itemIDs.insert(Structure_Barracks);
             itemIDs.insert(Structure_WOR);
             itemIDs.insert(Structure_LightFactory);
@@ -2784,7 +2784,7 @@ void Game::saveScreenshot() {
     }
 }
 
-void Game::selectNextStructureOfType(const Dune::selected_set_type& itemIDs) {
+void Game::selectNextStructureOfType(const dune::selected_set_type& itemIDs) {
     bool bSelectNext = true;
 
     if (selectedList_.size() == 1) {

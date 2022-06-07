@@ -146,7 +146,7 @@ public:
         Reads a set of Uint32 written by writeUint32Set().
         \return the read set
     */
-    Dune::selected_set_type readUint32Set();
+    dune::selected_set_type readUint32Set();
 
     class exception : public std::exception {
     public:

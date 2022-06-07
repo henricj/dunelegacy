@@ -77,8 +77,8 @@ std::vector<uint32_t> InputStream::readUint32Vector() {
     return vec;
 }
 
-Dune::selected_set_type InputStream::readUint32Set() {
-    Dune::selected_set_type retSet;
+dune::selected_set_type InputStream::readUint32Set() {
+    dune::selected_set_type retSet;
     const auto size = readUint32();
     for (auto i = decltype(size){0}; i < size; i++) {
         retSet.insert(readUint32());
