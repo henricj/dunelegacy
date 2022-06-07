@@ -83,7 +83,7 @@ void MentatHelp::drawSpecificStuff() {
 
     auto* const renderer = dune::globals::renderer.get();
 
-    const auto iWidth = static_cast<int>(std::ceil(background_width_));
+    const auto iWidth  = static_cast<int>(std::ceil(background_width_));
     const auto iHeight = static_cast<int>(std::ceil(background_height_));
 
     const int x1 = getPosition().x;
