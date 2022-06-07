@@ -109,7 +109,7 @@ void Map::createSandRegions() {
 
                 index_for_each_angle(pTile->location_.x, pTile->location_.y,
                                      [&]([[maybe_unused]] ANGLETYPE angle, int index) {
-                                         if (!visited[index])
+                                         if (visited[index])
                                              return;
 
                                          auto* const tile_angle = &tiles[index];
