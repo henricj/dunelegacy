@@ -46,11 +46,7 @@ public:
         \param  initialGameOptions the game options that will be shown on start of the dialog
         \return The new dialog box (will be automatically destroyed when it's closed)
     */
-    static GameOptionsWindow* create(SettingsClass::GameOptionsClass& initialGameOptions) {
-        auto* dlg        = new GameOptionsWindow(initialGameOptions);
-        dlg->pAllocated_ = true;
-        return dlg;
-    }
+    static GameOptionsWindow* create(SettingsClass::GameOptionsClass& initialGameOptions);
 
 private:
     void onGameSpeedMinus();

@@ -183,6 +183,12 @@ void GameOptionsWindow::onOK() {
     }
 }
 
+GameOptionsWindow* GameOptionsWindow::create(SettingsClass::GameOptionsClass& initialGameOptions) {
+    auto* dlg        = new GameOptionsWindow(initialGameOptions);
+    dlg->pAllocated_ = true;
+    return dlg;
+}
+
 void GameOptionsWindow::onGameSpeedMinus() {
     if (currentGameSpeed < GAMESPEED_MAX) {
         currentGameSpeed++;
