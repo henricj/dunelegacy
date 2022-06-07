@@ -471,8 +471,10 @@ public:
                 mask |= 1 << 3;
         }
 
-        if (AllTrueMask != 0x0f && 0x0f == mask)
-            return AllTrueMask;
+        if constexpr (AllTrueMask != 0x0f) {
+            if (0x0f == mask)
+                return AllTrueMask;
+        }
 
         return mask;
     }
