@@ -35,7 +35,7 @@ HouseChoiceMenu::HouseChoiceMenu() : currentHouseChoiceScrollPos(0) {
     const int xpos = std::max(0, (size.x - 640) / 2);
     const int ypos = std::max(0, (size.y - 400) / 2);
 
-    HouseChoiceMenu::setCurrentPosition(xpos, ypos, 640, 400);
+    HouseChoiceMenu::setCurrentPosition(xpos, ypos);
 
     HouseChoiceMenu::setTransparentBackground(true);
 
@@ -83,7 +83,7 @@ void HouseChoiceMenu::resize(uint32_t width, uint32_t height) {
     const int xpos = std::max(0, (size.x - 640) / 2);
     const int ypos = std::max(0, (size.y - 400) / 2);
 
-    HouseChoiceMenu::setCurrentPosition(xpos, ypos, 640, 400);
+    setCurrentPosition(xpos, ypos);
 }
 
 void HouseChoiceMenu::onHouseButton(int button) {
