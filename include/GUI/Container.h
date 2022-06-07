@@ -103,7 +103,9 @@ public:
 
         for (const auto& widgetData : containedWidgets) {
             const Point pos = getPosition(widgetData);
-            bWidgetFound |= widgetData.pWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
+            if (widgetData.pWidget->isEnabled() && widgetData.pWidget->isVisible()) {
+                bWidgetFound |= widgetData.pWidget->handleMouseLeft(x - pos.x, y - pos.y, pressed);
+            }
         }
 
         return bWidgetFound;
