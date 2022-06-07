@@ -100,7 +100,7 @@ private:
 
     void onModeButton(int button);
 
-    void onTerrainButton(int terrainType);
+    void onTerrainButton(TERRAINTYPE terrainType);
     void onTerrainPenButton(int pensize);
     void onSetTacticalPosition();
     void onStructButton(ItemID_enum structType);
@@ -267,8 +267,8 @@ private:
     SymbolButton unitDetailsRotateLeftButton;
     SymbolButton unitDetailsRotateRightButton;
 
-    int currentTerrainType_    = -1;
-    int currentTerrainPenSize_ = -1;
+    TERRAINTYPE currentTerrainType_ = TERRAINTYPE::Terrain_Sand;
+    int currentTerrainPenSize_      = -1;
 
     HOUSETYPE house_;
     uint32_t color_;

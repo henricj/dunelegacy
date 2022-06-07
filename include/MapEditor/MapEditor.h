@@ -86,7 +86,7 @@ public:
             EditorMode_TacticalPos
         } mode_{EditorMode_Selection};
 
-        TERRAINTYPE terrainType_ = Terrain_Sand;
+        TERRAINTYPE terrainType_ = TERRAINTYPE::Terrain_Sand;
         int pen_size_            = 0;
         HOUSETYPE house_         = HOUSETYPE::HOUSE_HARKONNEN;
         ANGLETYPE angle_         = static_cast<ANGLETYPE>(0);

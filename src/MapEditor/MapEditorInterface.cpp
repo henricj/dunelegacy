@@ -252,51 +252,51 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeTerrain_VBox.addWidget(&editorModeTerrain_HBox1);
 
     editorModeTerrain_Sand.setToggleButton(true);
-    editorModeTerrain_Sand.setOnClick([this] { onTerrainButton(Terrain_Sand); });
+    editorModeTerrain_Sand.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Sand); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_Sand);
 
     editorModeTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Dunes.setToggleButton(true);
-    editorModeTerrain_Dunes.setOnClick([this] { onTerrainButton(Terrain_Dunes); });
+    editorModeTerrain_Dunes.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Dunes); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_Dunes);
 
     editorModeTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_SpecialBloom.setToggleButton(true);
-    editorModeTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(Terrain_SpecialBloom); });
+    editorModeTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_SpecialBloom); });
     editorModeTerrain_HBox1.addWidget(&editorModeTerrain_SpecialBloom);
 
     editorModeTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
     editorModeTerrain_VBox.addWidget(&editorModeTerrain_HBox2);
 
     editorModeTerrain_Spice.setToggleButton(true);
-    editorModeTerrain_Spice.setOnClick([this] { onTerrainButton(Terrain_Spice); });
+    editorModeTerrain_Spice.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Spice); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_Spice);
 
     editorModeTerrain_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_ThickSpice.setToggleButton(true);
-    editorModeTerrain_ThickSpice.setOnClick([this] { onTerrainButton(Terrain_ThickSpice); });
+    editorModeTerrain_ThickSpice.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_ThickSpice); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_ThickSpice);
 
     editorModeTerrain_HBox2.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_SpiceBloom.setToggleButton(true);
-    editorModeTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(Terrain_SpiceBloom); });
+    editorModeTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_SpiceBloom); });
     editorModeTerrain_HBox2.addWidget(&editorModeTerrain_SpiceBloom);
 
     editorModeTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
     editorModeTerrain_VBox.addWidget(&editorModeTerrain_HBox3);
 
     editorModeTerrain_Rock.setToggleButton(true);
-    editorModeTerrain_Rock.setOnClick([this] { onTerrainButton(Terrain_Rock); });
+    editorModeTerrain_Rock.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Rock); });
     editorModeTerrain_HBox3.addWidget(&editorModeTerrain_Rock);
 
     editorModeTerrain_HBox3.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeTerrain_Mountain.setToggleButton(true);
-    editorModeTerrain_Mountain.setOnClick([this] { onTerrainButton(Terrain_Mountain); });
+    editorModeTerrain_Mountain.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Mountain); });
     editorModeTerrain_HBox3.addWidget(&editorModeTerrain_Mountain);
 
     editorModeTerrain_HBox3.addWidget(Widget::create<Spacer>().release());
@@ -328,19 +328,19 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     editorModeClassicTerrain_VBox.addWidget(&editorModeClassicTerrain_HBox1);
 
     editorModeClassicTerrain_SpiceBloom.setToggleButton(true);
-    editorModeClassicTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(Terrain_SpiceBloom); });
+    editorModeClassicTerrain_SpiceBloom.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_SpiceBloom); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpiceBloom);
 
     editorModeClassicTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeClassicTerrain_SpecialBloom.setToggleButton(true);
-    editorModeClassicTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(Terrain_SpecialBloom); });
+    editorModeClassicTerrain_SpecialBloom.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_SpecialBloom); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpecialBloom);
 
     editorModeClassicTerrain_HBox1.addWidget(Widget::create<HSpacer>(2).release());
 
     editorModeClassicTerrain_SpiceField.setToggleButton(true);
-    editorModeClassicTerrain_SpiceField.setOnClick([this] { onTerrainButton(Terrain_Spice); });
+    editorModeClassicTerrain_SpiceField.setOnClick([this] { onTerrainButton(TERRAINTYPE::Terrain_Spice); });
     editorModeClassicTerrain_HBox1.addWidget(&editorModeClassicTerrain_SpiceField);
 
     editorModeClassicTerrain_VBox.addWidget(Widget::create<VSpacer>(2).release());
@@ -773,7 +773,7 @@ void MapEditorInterface::deselectAll() {
 
     deselectObject();
 
-    onTerrainButton(-1);
+    onTerrainButton(TERRAINTYPE::Terrain_Invalid);
     onStructButton(ItemID_enum::ItemID_Invalid);
     onUnitButton(ItemID_enum::ItemID_Invalid);
 }
@@ -1006,25 +1006,24 @@ void MapEditorInterface::onModeButton(int button) {
     deselectAll();
 }
 
-void MapEditorInterface::onTerrainButton(int terrainType) {
+void MapEditorInterface::onTerrainButton(TERRAINTYPE terrainType) {
     currentTerrainType_ = terrainType;
 
-    editorModeTerrain_Sand.setToggleState((terrainType == Terrain_Sand));
-    editorModeTerrain_Dunes.setToggleState((terrainType == Terrain_Dunes));
-    editorModeTerrain_SpecialBloom.setToggleState((terrainType == Terrain_SpecialBloom));
-    editorModeTerrain_Spice.setToggleState((terrainType == Terrain_Spice));
-    editorModeTerrain_ThickSpice.setToggleState((terrainType == Terrain_ThickSpice));
-    editorModeTerrain_SpiceBloom.setToggleState((terrainType == Terrain_SpiceBloom));
-    editorModeTerrain_Rock.setToggleState((terrainType == Terrain_Rock));
-    editorModeTerrain_Mountain.setToggleState((terrainType == Terrain_Mountain));
+    editorModeTerrain_Sand.setToggleState((terrainType == TERRAINTYPE::Terrain_Sand));
+    editorModeTerrain_Dunes.setToggleState((terrainType == TERRAINTYPE::Terrain_Dunes));
+    editorModeTerrain_SpecialBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpecialBloom));
+    editorModeTerrain_Spice.setToggleState((terrainType == TERRAINTYPE::Terrain_Spice));
+    editorModeTerrain_ThickSpice.setToggleState((terrainType == TERRAINTYPE::Terrain_ThickSpice));
+    editorModeTerrain_SpiceBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpiceBloom));
+    editorModeTerrain_Rock.setToggleState((terrainType == TERRAINTYPE::Terrain_Rock));
+    editorModeTerrain_Mountain.setToggleState((terrainType == TERRAINTYPE::Terrain_Mountain));
 
-    editorModeClassicTerrain_SpiceBloom.setToggleState((terrainType == Terrain_SpiceBloom));
-    editorModeClassicTerrain_SpecialBloom.setToggleState((terrainType == Terrain_SpecialBloom));
-    editorModeClassicTerrain_SpiceField.setToggleState((terrainType == Terrain_Spice));
+    editorModeClassicTerrain_SpiceBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpiceBloom));
+    editorModeClassicTerrain_SpecialBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpecialBloom));
+    editorModeClassicTerrain_SpiceField.setToggleState((terrainType == TERRAINTYPE::Terrain_Spice));
 
-    if (currentTerrainType_ >= 0) {
-        pMapEditor_->setEditorMode(
-            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType_), currentTerrainPenSize_));
+    if (currentTerrainType_ > TERRAINTYPE::Terrain_Invalid) {
+        pMapEditor_->setEditorMode(MapEditor::EditorMode(currentTerrainType_, currentTerrainPenSize_));
     }
 }
 
@@ -1035,9 +1034,8 @@ void MapEditorInterface::onTerrainPenButton(int pensize) {
     editorModeTerrain_Pen3x3.setToggleState((pensize == 3));
     editorModeTerrain_Pen5x5.setToggleState((pensize == 5));
 
-    if (currentTerrainType_ >= 0) {
-        pMapEditor_->setEditorMode(
-            MapEditor::EditorMode(static_cast<TERRAINTYPE>(currentTerrainType_), currentTerrainPenSize_));
+    if (currentTerrainType_ > TERRAINTYPE::Terrain_Invalid) {
+        pMapEditor_->setEditorMode(MapEditor::EditorMode(currentTerrainType_, currentTerrainPenSize_));
     }
 }
 

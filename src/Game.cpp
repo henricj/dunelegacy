@@ -373,8 +373,9 @@ void Game::drawScreen() {
                 }
 
                 if (fogOfWar) {
-                    const auto fogTile =
-                        pTile->isFoggedByTeam(this, team_id) ? Terrain_HiddenFull : pTile->getFogTile(this, team_id);
+                    const auto fogTile = pTile->isFoggedByTeam(this, team_id)
+                                           ? static_cast<int>(HIDDENTYPE::Terrain_HiddenFull)
+                                           : pTile->getFogTile(this, team_id);
 
                     if (fogTile != 0) {
                         const SDL_Rect source{fogTile * zoomedTileSize, 0, zoomedTileSize, zoomedTileSize};

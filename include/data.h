@@ -102,8 +102,9 @@ enum ItemID_enum {
     Num_ItemID [[maybe_unused]]
 };
 
-enum TERRAINTYPE {
-    Terrain_Slab,
+enum class TERRAINTYPE {
+    Terrain_Invalid [[maybe_unused]] = -1,
+    Terrain_Slab                     = 0,
     Terrain_Sand,
     Terrain_Rock,
     Terrain_Dunes,
@@ -114,7 +115,9 @@ enum TERRAINTYPE {
     Terrain_SpecialBloom
 };
 
-enum HIDDENTYPE {
+inline constexpr auto NUM_TERRAINTYPES = 1 + static_cast<int>(TERRAINTYPE::Terrain_SpecialBloom);
+
+enum class HIDDENTYPE {
     Terrain_HiddenIsland    = 0x0,
     Terrain_HiddenUp        = 0x1,
     Terrain_HiddenRight     = 0x2,

@@ -616,7 +616,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
         case Structure_Slab1: {
 
             // Slabs are no normal buildings
-            tile->setType(context_, Terrain_Slab);
+            tile->setType(context_, TERRAINTYPE::Terrain_Slab);
             tile->setOwner(getHouseID());
             map.viewMap(getHouseID(), xPos, yPos,
                         game.objectData.data[Structure_Slab1][static_cast<int>(houseID_)].viewrange);
@@ -643,7 +643,7 @@ House::placeStructure(uint32_t builderID, ItemID_enum itemID, int xPos, int yPos
                 if (t.hasAGroundObject() || !t.isRock() || t.isMountain())
                     return;
 
-                t.setType(context_, Terrain_Slab);
+                t.setType(context_, TERRAINTYPE::Terrain_Slab);
                 t.setOwner(houseID_);
                 context_.map.viewMap(
                     getHouseID(), t.getLocation().x, t.getLocation().y,

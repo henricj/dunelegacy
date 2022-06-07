@@ -27,7 +27,7 @@ class MapData {
 public:
     MapData() : sizeX(0), sizeY(0) { }
 
-    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = Terrain_Sand) : sizeX(sizeX), sizeY(sizeY) {
+    MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = TERRAINTYPE::Terrain_Sand) : sizeX(sizeX), sizeY(sizeY) {
         if (sizeX <= 0 || sizeY <= 0)
             THROW(std::invalid_argument, "Invalid map size %dx%d!", sizeX, sizeY);
 

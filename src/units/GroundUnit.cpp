@@ -230,15 +230,15 @@ const UnitBase* GroundUnit::getCarrier() const {
 
 FixPoint GroundUnit::getTerrainDifficulty(TERRAINTYPE terrainType) const {
     switch (terrainType) {
-        case Terrain_Slab: return 1.0_fix;
-        case Terrain_Sand: return 1.375_fix;
-        case Terrain_Rock: return 1.5625_fix;
-        case Terrain_Dunes: return 1.375_fix;
-        case Terrain_Mountain: return 1.0_fix;
-        case Terrain_Spice: return 1.375_fix;
-        case Terrain_ThickSpice: return 1.375_fix;
-        case Terrain_SpiceBloom: return 1.375_fix;
-        case Terrain_SpecialBloom: return 1.375_fix;
+        case TERRAINTYPE::Terrain_Slab: return 1.0_fix;
+        case TERRAINTYPE::Terrain_Sand: return 1.375_fix;
+        case TERRAINTYPE::Terrain_Rock: return 1.5625_fix;
+        case TERRAINTYPE::Terrain_Dunes: return 1.375_fix;
+        case TERRAINTYPE::Terrain_Mountain: return 1.0_fix;
+        case TERRAINTYPE::Terrain_Spice: return 1.375_fix;
+        case TERRAINTYPE::Terrain_ThickSpice: return 1.375_fix;
+        case TERRAINTYPE::Terrain_SpiceBloom: return 1.375_fix;
+        case TERRAINTYPE::Terrain_SpecialBloom: return 1.375_fix;
         default: return 1.0_fix;
     }
 }

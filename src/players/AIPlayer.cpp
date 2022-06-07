@@ -616,11 +616,11 @@ void AIPlayer::build() {
                                                             && pBuilder->isAvailableToBuild(Structure_Slab4)
                                                             && (abs(i - location.x) < 2) && (abs(j - location.y) < 2)) {
                                                             if ((i == location.x) && (j == location.y)
-                                                                && pTile->getType() != Terrain_Slab) {
+                                                                && pTile->getType() != TERRAINTYPE::Terrain_Slab) {
                                                                 placeLocations.emplace_back(i, j);
                                                                 doProduceItem(pBuilder, Structure_Slab4);
                                                             }
-                                                        } else if (pTile->getType() != Terrain_Slab) {
+                                                        } else if (pTile->getType() != TERRAINTYPE::Terrain_Slab) {
                                                             placeLocations.emplace_back(i, j);
                                                             doProduceItem(pBuilder, Structure_Slab1);
                                                         }

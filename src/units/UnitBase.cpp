@@ -622,8 +622,9 @@ void UnitBase::bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistance
     auto* const map = dune::globals::currentGameMap;
 
     if (hasBumpyMovementOnRock()
-        && (map->getTile(location_)->getType() == Terrain_Rock || map->getTile(location_)->getType() == Terrain_Mountain
-            || map->getTile(location_)->getType() == Terrain_ThickSpice)) {
+        && (map->getTile(location_)->getType() == TERRAINTYPE::Terrain_Rock
+            || map->getTile(location_)->getType() == TERRAINTYPE::Terrain_Mountain
+            || map->getTile(location_)->getType() == TERRAINTYPE::Terrain_ThickSpice)) {
         // bumping effect
 
         const FixPoint epsilon     = 0.005_fix;

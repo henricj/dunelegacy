@@ -212,54 +212,54 @@ void INIMapEditorLoader::loadMap() {
             }
 
             for (auto x = 0; x < rowLength; x++) {
-                auto type = Terrain_Sand;
+                auto type = TERRAINTYPE::Terrain_Sand;
 
                 switch (rowString.at(x)) {
                     case '-': {
                         // Normal sand
-                        type = Terrain_Sand;
+                        type = TERRAINTYPE::Terrain_Sand;
                     } break;
 
                     case '^': {
                         // Sand dunes
-                        type = Terrain_Dunes;
+                        type = TERRAINTYPE::Terrain_Dunes;
                     } break;
 
                     case '~': {
                         // Spice
-                        type = Terrain_Spice;
+                        type = TERRAINTYPE::Terrain_Spice;
                     } break;
 
                     case '+': {
                         // Thick spice
-                        type = Terrain_ThickSpice;
+                        type = TERRAINTYPE::Terrain_ThickSpice;
                     } break;
 
                     case '%': {
                         // Rock
-                        type = Terrain_Rock;
+                        type = TERRAINTYPE::Terrain_Rock;
                     } break;
 
                     case '@': {
                         // Mountain
-                        type = Terrain_Mountain;
+                        type = TERRAINTYPE::Terrain_Mountain;
                     } break;
 
                     case 'O': {
                         // Spice Bloom
-                        type = Terrain_SpiceBloom;
+                        type = TERRAINTYPE::Terrain_SpiceBloom;
                     } break;
 
                     case 'Q': {
                         // Special Bloom
-                        type = Terrain_SpecialBloom;
+                        type = TERRAINTYPE::Terrain_SpecialBloom;
                     } break;
 
                     default: {
                         logWarning(inifile_->getLineNumber("MAP", rowKey),
                                    std::string("Unknown map tile type '") + rowString.at(x) + "' in map tile ("
                                        + std::to_string(x) + ", " + std::to_string(y) + ")!");
-                        type = Terrain_Sand;
+                        type = TERRAINTYPE::Terrain_Sand;
                     } break;
                 }
 

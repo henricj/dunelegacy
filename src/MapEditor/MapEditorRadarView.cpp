@@ -115,7 +115,7 @@ void MapEditorRadarView::updateRadarSurface(const MapData& map, int scale, int o
 
             uint32_t color = getColorByTerrainType(map(x, y));
 
-            if (map(x, y) == Terrain_Sand) {
+            if (map(x, y) == TERRAINTYPE::Terrain_Sand) {
                 std::vector<Coord>& spiceFields = pMapEditor->getSpiceFields();
 
                 for (auto& spiceField : spiceFields) {

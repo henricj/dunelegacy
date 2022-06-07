@@ -309,7 +309,7 @@ void NewMapWindow::onMapPropertiesChanged() {
         const int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();
 
         mapSeed = INVALID;
-        mapdata = MapData(sizeX, sizeY, Terrain_Sand);
+        mapdata = MapData(sizeX, sizeY, TERRAINTYPE::Terrain_Sand);
     } else if (randomMapRadioButton.isChecked()) {
         const int sizeX = mapSizeXDropDownBox.getSelectedEntryIntData();
         const int sizeY = mapSizeYDropDownBox.getSelectedEntryIntData();

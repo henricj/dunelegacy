@@ -135,28 +135,28 @@ void INIMapLoader::loadMap() {
 
         for (int j = 0; j < map->getSizeY(); j++) {
             for (int i = 0; i < map->getSizeX(); i++) {
-                auto type = Terrain_Sand;
+                auto type = TERRAINTYPE::Terrain_Sand;
                 const auto seedmaptype =
                     static_cast<uint8_t>(SeedMap[(j + logicalOffsetY_) * 64 + i + logicalOffsetX_] >> 4u);
                 switch (seedmaptype) {
 
-                    case 0x7: /* Sand */ type = Terrain_Sand; break;
+                    case 0x7: /* Sand */ type = TERRAINTYPE::Terrain_Sand; break;
 
                     case 0x2: /* Building */
-                    case 0x8: /* Rock */ type = Terrain_Rock; break;
+                    case 0x8: /* Rock */ type = TERRAINTYPE::Terrain_Rock; break;
 
-                    case 0x9: /* Dunes */ type = Terrain_Dunes; break;
+                    case 0x9: /* Dunes */ type = TERRAINTYPE::Terrain_Dunes; break;
 
-                    case 0xa: /* Mountain */ type = Terrain_Mountain; break;
+                    case 0xa: /* Mountain */ type = TERRAINTYPE::Terrain_Mountain; break;
 
-                    case 0xb: /* Spice */ type = Terrain_Spice; break;
+                    case 0xb: /* Spice */ type = TERRAINTYPE::Terrain_Spice; break;
 
-                    case 0xc: /* ThickSpice */ type = Terrain_ThickSpice; break;
+                    case 0xc: /* ThickSpice */ type = TERRAINTYPE::Terrain_ThickSpice; break;
 
                     default:
                         logWarning(inifile_->getLineNumber("MAP", "Seed"), "Unknown map type '%d' for tile (%d, %d)!",
                                    seedmaptype, i, j);
-                        type = Terrain_Sand;
+                        type = TERRAINTYPE::Terrain_Sand;
                         break;
                 }
 
@@ -178,7 +178,7 @@ void INIMapLoader::loadMap() {
                     int ypos   = getYPos(BloomPos);
                     auto* tile = map->tryGetTile(xpos, ypos);
                     if (tile) {
-                        tile->setType(context, Terrain_SpiceBloom);
+                        tile->setType(context, TERRAINTYPE::Terrain_SpiceBloom);
                     } else {
                         logWarning(inifile_->getLineNumber("MAP", "Bloom"),
                                    "Spice bloom position '" + BloomPosition + "' outside map!");
@@ -200,7 +200,7 @@ void INIMapLoader::loadMap() {
                 if (parseString(SpecialPosition, SpecialPos)) {
                     int xpos = getXPos(SpecialPos);
                     int ypos = getYPos(SpecialPos);
-                    if (!map->trySetTileType(context, xpos, ypos, Terrain_SpecialBloom)) {
+                    if (!map->trySetTileType(context, xpos, ypos, TERRAINTYPE::Terrain_SpecialBloom)) {
                         logWarning(inifile_->getLineNumber("MAP", "Special"),
                                    "Special bloom position '" + SpecialPosition + "' outside map!");
                     }
@@ -284,53 +284,53 @@ void INIMapLoader::loadMap() {
             }
 
             for (auto x = 0; x < rowLength; ++x) {
-                auto type = Terrain_Sand;
+                auto type = TERRAINTYPE::Terrain_Sand;
 
                 switch (rowString.at(x)) {
                     case '-': {
                         // Normal sand
-                        type = Terrain_Sand;
+                        type = TERRAINTYPE::Terrain_Sand;
                     } break;
 
                     case '^': {
                         // Sand dunes
-                        type = Terrain_Dunes;
+                        type = TERRAINTYPE::Terrain_Dunes;
                     } break;
 
                     case '~': {
                         // Spice
-                        type = Terrain_Spice;
+                        type = TERRAINTYPE::Terrain_Spice;
                     } break;
 
                     case '+': {
                         // Thick spice
-                        type = Terrain_ThickSpice;
+                        type = TERRAINTYPE::Terrain_ThickSpice;
                     } break;
 
                     case '%': {
                         // Rock
-                        type = Terrain_Rock;
+                        type = TERRAINTYPE::Terrain_Rock;
                     } break;
 
                     case '@': {
                         // Mountain
-                        type = Terrain_Mountain;
+                        type = TERRAINTYPE::Terrain_Mountain;
                     } break;
 
                     case 'O': {
                         // Spice Bloom
-                        type = Terrain_SpiceBloom;
+                        type = TERRAINTYPE::Terrain_SpiceBloom;
                     } break;
 
                     case 'Q': {
                         // Special Bloom
-                        type = Terrain_SpecialBloom;
+                        type = TERRAINTYPE::Terrain_SpecialBloom;
                     } break;
 
                     default: {
                         logWarning(inifile_->getLineNumber("MAP", rowKey),
                                    "Unknown map tile type '%s' in map tile (%d, %d)!", rowString.at(x), x, y);
-                        type = Terrain_Sand;
+                        type = TERRAINTYPE::Terrain_Sand;
                     } break;
                 }
 

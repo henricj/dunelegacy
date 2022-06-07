@@ -40,10 +40,7 @@ namespace {
 inline constexpr auto FOGTIME = MILLI2CYCLES(10 * 1000);
 }
 
-Tile::Tile() : type_(Terrain_Sand) {
-
-    sprite_ = dune::globals::pGFXManager->getObjPic(ObjPic_Terrain);
-}
+Tile::Tile() : sprite_{dune::globals::pGFXManager->getObjPic(ObjPic_Terrain)} { }
 
 Tile::~Tile() = default;
 
@@ -146,7 +143,7 @@ void Tile::load(InputStream& stream) {
 }
 
 void Tile::save(OutputStream& stream, uint32_t gameCycleCount) const {
-    stream.writeUint32(type_);
+    stream.writeUint32(static_cast<Uint32>(type_));
 
     stream.writeBools(explored_[0], explored_[1], explored_[2], explored_[3], explored_[4], explored_[5], explored_[6]);
 
@@ -567,7 +564,8 @@ void Tile::clearTerrain() {
 }
 
 void Tile::setTrack(ANGLETYPE direction, uint32_t gameCycleCounter) {
-    if (type_ == Terrain_Sand || type_ == Terrain_Dunes || type_ == Terrain_Spice || type_ == Terrain_ThickSpice) {
+    if (type_ == TERRAINTYPE::Terrain_Sand || type_ == TERRAINTYPE::Terrain_Dunes || type_ == TERRAINTYPE::Terrain_Spice
+        || type_ == TERRAINTYPE::Terrain_ThickSpice) {
         tracksCreationTime_[static_cast<int>(direction)] = gameCycleCounter;
     }
 }
@@ -626,11 +624,11 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
     map.for_each_neighbor(location_.x, location_.y,
                           [](Tile& t) { t.terrainTile_ = TERRAINTILETYPE::TerrainTile_Invalid; });
 
-    if (type_ == Terrain_Spice) {
+    if (type_ == TERRAINTYPE::Terrain_Spice) {
         spice_ = game.randomGen.rand(RANDOMSPICEMIN, RANDOMSPICEMAX);
-    } else if (type_ == Terrain_ThickSpice) {
+    } else if (type_ == TERRAINTYPE::Terrain_ThickSpice) {
         spice_ = game.randomGen.rand(RANDOMTHICKSPICEMIN, RANDOMTHICKSPICEMAX);
-    } else if (type_ == Terrain_Dunes) {
+    } else if (type_ == TERRAINTYPE::Terrain_Dunes) {
     } else {
         spice_ = 0;
 
@@ -650,7 +648,7 @@ void Tile::setType(const GameContext& context, TERRAINTYPE newType) {
                 }
             }
 
-            if (type_ == Terrain_Mountain) {
+            if (type_ == TERRAINTYPE::Terrain_Mountain) {
                 if (hasANonInfantryGroundObject()) {
                     auto units = std::move(assignedNonInfantryGroundObjectList_);
                     assignedNonInfantryGroundObjectList_.clear();
@@ -715,11 +713,11 @@ FixPoint Tile::harvestSpice(const GameContext& context) {
     }
 
     if (oldSpice >= RANDOMTHICKSPICEMIN && spice_ < RANDOMTHICKSPICEMIN) {
-        setType(context, Terrain_Spice);
+        setType(context, TERRAINTYPE::Terrain_Spice);
     }
 
     if (oldSpice > 0 && spice_ == 0) {
-        setType(context, Terrain_Sand);
+        setType(context, TERRAINTYPE::Terrain_Sand);
     }
 
     return (oldSpice - spice_);
@@ -727,11 +725,11 @@ FixPoint Tile::harvestSpice(const GameContext& context) {
 
 void Tile::setSpice(FixPoint newSpice) {
     if (newSpice <= 0) {
-        type_ = Terrain_Sand;
+        type_ = TERRAINTYPE::Terrain_Sand;
     } else if (newSpice >= RANDOMTHICKSPICEMIN) {
-        type_ = Terrain_ThickSpice;
+        type_ = TERRAINTYPE::Terrain_ThickSpice;
     } else {
-        type_ = Terrain_Spice;
+        type_ = TERRAINTYPE::Terrain_Spice;
     }
     spice_ = newSpice;
 }
@@ -857,7 +855,7 @@ void Tile::triggerSpiceBloom(const GameContext& context, House* pTrigger) {
         dune::globals::soundPlayer->playVoice(Voice_enum::BloomLocated, house->getHouseID());
     }
 
-    setType(context, Terrain_Spice); // Set this tile to spice first
+    setType(context, TERRAINTYPE::Terrain_Spice); // Set this tile to spice first
     context.map.createSpiceField(context, location_, 5);
 
     const auto realLocation = location_ * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
@@ -878,7 +876,7 @@ void Tile::triggerSpecialBloom(const GameContext& context, House* pTrigger) {
     if (!isSpecialBloom())
         return;
 
-    setType(context, Terrain_Sand);
+    setType(context, TERRAINTYPE::Terrain_Sand);
 
     const auto& [game, map, objectManager] = context;
 
@@ -1084,7 +1082,7 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
     const auto x = location_.x;
     const auto y = location_.y;
 
-    if (terrainType == Terrain_ThickSpice) {
+    if (terrainType == TERRAINTYPE::Terrain_ThickSpice) {
         // check if we are surrounded by spice/thick spice
         const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isSpice(); });
 
@@ -1104,7 +1102,7 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
             return TERRAINTILETYPE::TerrainTile_Sand;
         }
 
-        case Terrain_Rock: {
+        case TERRAINTYPE::Terrain_Rock: {
             // determine which surrounding tiles are rock
             const auto mask = map->get_neighbor_mask(x, y, [](const Tile& t) { return t.isRock(); });
 
@@ -1135,8 +1133,8 @@ Tile::TERRAINTILETYPE Tile::getTerrainTileImpl() const {
 
         case TERRAINTYPE::Terrain_ThickSpice: {
             // determine which surrounding tiles are thick spice
-            const auto mask =
-                map->get_neighbor_mask(x, y, [](const Tile& t) { return t.getType() == Terrain_ThickSpice; });
+            const auto mask = map->get_neighbor_mask(
+                x, y, [](const Tile& t) { return t.getType() == TERRAINTYPE::Terrain_ThickSpice; });
 
             return static_cast<TERRAINTILETYPE>(static_cast<int>(TERRAINTILETYPE::TerrainTile_ThickSpice) + mask);
         }

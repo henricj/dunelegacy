@@ -62,15 +62,15 @@ public:
 
     FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override {
         switch (terrainType) {
-            case Terrain_Slab: return 1.0_fix;
-            case Terrain_Sand: return 1.25_fix;
-            case Terrain_Rock: return 1.0_fix;
-            case Terrain_Dunes: return 1.25_fix;
-            case Terrain_Mountain: return 1.0_fix;
-            case Terrain_Spice: return 1.25_fix;
-            case Terrain_ThickSpice: return 1.25_fix;
-            case Terrain_SpiceBloom: return 1.25_fix;
-            case Terrain_SpecialBloom: return 1.25_fix;
+            case TERRAINTYPE::Terrain_Slab: return 1.0_fix;
+            case TERRAINTYPE::Terrain_Sand: return 1.25_fix;
+            case TERRAINTYPE::Terrain_Rock: return 1.0_fix;
+            case TERRAINTYPE::Terrain_Dunes: return 1.25_fix;
+            case TERRAINTYPE::Terrain_Mountain: return 1.0_fix;
+            case TERRAINTYPE::Terrain_Spice: return 1.25_fix;
+            case TERRAINTYPE::Terrain_ThickSpice: return 1.25_fix;
+            case TERRAINTYPE::Terrain_SpiceBloom: return 1.25_fix;
+            case TERRAINTYPE::Terrain_SpecialBloom: return 1.25_fix;
             default: return 1.0_fix;
         }
     }

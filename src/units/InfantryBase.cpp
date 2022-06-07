@@ -137,7 +137,7 @@ bool InfantryBase::canPassTile(const Tile* pTile) const {
     bool passable = false;
 
     if (!pTile->hasAGroundObject()) {
-        if (pTile->getType() != Terrain_Mountain) {
+        if (pTile->getType() != TERRAINTYPE::Terrain_Mountain) {
             passable = true;
         } else {
             /* if this unit is infantry so can climb, and tile can take more infantry */

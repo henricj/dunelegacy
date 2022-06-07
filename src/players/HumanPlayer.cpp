@@ -316,7 +316,7 @@ bool HumanPlayer::hasConcreteAtPositionOfSize(const Coord& pos, const Coord& con
             if (nullptr == pTile)
                 return false;
 
-            if ((pTile->getType() != Terrain_Slab) || (pTile->getOwner() != getHouse()->getHouseID())
+            if ((pTile->getType() != TERRAINTYPE::Terrain_Slab) || (pTile->getOwner() != getHouse()->getHouseID())
                 || pTile->isBlocked()) {
                 return false;
             }

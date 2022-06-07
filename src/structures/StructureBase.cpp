@@ -116,7 +116,7 @@ void StructureBase::assignToMap(const GameContext& context, const Coord& pos) {
                 setHealth(getHealth() - FixPoint(getMaxHealth()) / (2 * getStructureSizeX() * getStructureSizeY()));
             }
         }
-        t.setType(context, Terrain_Rock);
+        t.setType(context, TERRAINTYPE::Terrain_Rock);
         t.setOwner(getOwner()->getHouseID());
 
         setVisible(VIS_ALL, true);

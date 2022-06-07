@@ -444,7 +444,7 @@ private:
 
     TERRAINTILETYPE getTerrainTileImpl() const;
 
-    TERRAINTYPE type_; ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
+    TERRAINTYPE type_ = TERRAINTYPE::Terrain_Sand; ///< the type of the tile (Terrain_Sand, Terrain_Rock, ...)
 
     uint32_t fogColor_{COLOR_BLACK}; ///< remember last color (radar)
 

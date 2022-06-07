@@ -603,14 +603,14 @@ bool Map::findSpice(Coord& destination, const Coord& origin) {
 void Map::spiceRemoved(const GameContext& context, const Coord& coord) {
     const auto* const pCenterTile = tryGetTile(coord.x, coord.y);
 
-    if (!pCenterTile || pCenterTile->getType() != Terrain_Sand)
+    if (!pCenterTile || pCenterTile->getType() != TERRAINTYPE::Terrain_Sand)
         return;
 
     // thickspice tiles can't handle non-(thick)spice tiles next to them, if this happens after changes, make it non
     // thick only check tile right, up, left and down of this one
     for_each_neighbor(coord.x, coord.y, [&](Tile& t) {
         if (t.isThickSpice())
-            t.setType(context, Terrain_Spice);
+            t.setType(context, TERRAINTYPE::Terrain_Spice);
     });
 }
 
@@ -652,8 +652,8 @@ void Map::createSpiceField(const GameContext& context, Coord location, int radiu
         },
         [&](Tile& t) {
             if (t.isSand()) {
-                const auto terrain =
-                    centerIsThickSpice && (t.location_ == location) ? Terrain_ThickSpice : Terrain_Spice;
+                const auto terrain = centerIsThickSpice && (t.location_ == location) ? TERRAINTYPE::Terrain_ThickSpice
+                                                                                     : TERRAINTYPE::Terrain_Spice;
 
                 t.setType(context, terrain);
             }

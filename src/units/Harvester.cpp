@@ -422,9 +422,9 @@ void Harvester::move(const GameContext& context) {
 
                     if (tile->hasSpice()) {
 
-                        const int beforeTileType = tile->getType();
+                        const auto beforeTileType = tile->getType();
                         spice += tile->harvestSpice(context);
-                        const int afterTileType = tile->getType();
+                        const auto afterTileType = tile->getType();
 
                         if (beforeTileType != afterTileType) {
                             context.map.spiceRemoved(context, location_);

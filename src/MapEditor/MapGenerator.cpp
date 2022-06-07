@@ -50,11 +50,11 @@ public:
             const int spotX = randGen.rand(0, map.getSizeX() - 1);
             const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            makeSpot(spotX, spotY, Terrain_Rock);
+            makeSpot(spotX, spotY, TERRAINTYPE::Terrain_Rock);
         }
 
         for (int i = 0; i < ROCKFILLER; i++) {
-            thickSpots(Terrain_Rock); // SPOT ROCK
+            thickSpots(TERRAINTYPE::Terrain_Rock); // SPOT ROCK
         }
 
         // Spice fields
@@ -62,11 +62,11 @@ public:
             const int spotX = randGen.rand(0, map.getSizeX() - 1);
             const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            makeSpot(spotX, spotY, Terrain_Spice);
+            makeSpot(spotX, spotY, TERRAINTYPE::Terrain_Spice);
         }
 
         for (int i = 0; i < SPICEFILLER; i++) {
-            thickSpots(Terrain_Spice);
+            thickSpots(TERRAINTYPE::Terrain_Spice);
         }
 
         for (int i = 0; i < SPICEFILLER; i++) {
@@ -78,11 +78,11 @@ public:
             const int spotX = randGen.rand(0, map.getSizeX() - 1);
             const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            makeSpot(spotX, spotY, Terrain_Dunes);
+            makeSpot(spotX, spotY, TERRAINTYPE::Terrain_Dunes);
         }
 
         for (int i = 0; i < DUNESFILLER; i++) {
-            thickSpots(Terrain_Dunes);
+            thickSpots(TERRAINTYPE::Terrain_Dunes);
         }
 
         addRockBits(randGen.rand(0, 9));
@@ -230,25 +230,26 @@ private:
         for (int i = 0; i < map.getSizeX(); i++) {
             for (int j = 0; j < map.getSizeY(); j++) {
 
-                const int numSpiceTiles = side4(i, j, Terrain_Spice) + side4(i, j, Terrain_ThickSpice);
+                const int numSpiceTiles =
+                    side4(i, j, TERRAINTYPE::Terrain_Spice) + side4(i, j, TERRAINTYPE::Terrain_ThickSpice);
 
-                if (map(i, j) != Terrain_ThickSpice && (numSpiceTiles >= 4)) {
+                if (map(i, j) != TERRAINTYPE::Terrain_ThickSpice && (numSpiceTiles >= 4)) {
                     // Found something else than what thickining
 
-                    if (side4(i, j, Terrain_ThickSpice) >= 3) {
+                    if (side4(i, j, TERRAINTYPE::Terrain_ThickSpice) >= 3) {
                         // Seems enough of ThickSpice around it so make this also ThickSpice
                         for (int m = 0; m < mapMirror->getSize(); m++) {
                             const Coord position        = mapMirror->getCoord(Coord(i, j), m);
-                            map(position.x, position.y) = Terrain_ThickSpice;
+                            map(position.x, position.y) = TERRAINTYPE::Terrain_ThickSpice;
                         }
                     }
 
-                    if (side4(i, j, Terrain_ThickSpice) == 2) {
+                    if (side4(i, j, TERRAINTYPE::Terrain_ThickSpice) == 2) {
                         // Gamble, fifty fifty... set this to ThickSpice or not?
                         if (randGen.rand(0, 1) == 1) {
                             for (int m = 0; m < mapMirror->getSize(); m++) {
                                 const Coord position        = mapMirror->getCoord(Coord(i, j), m);
-                                map(position.x, position.y) = Terrain_ThickSpice;
+                                map(position.x, position.y) = TERRAINTYPE::Terrain_ThickSpice;
                             }
                         }
                     }
@@ -277,28 +278,29 @@ private:
 
             fixTileCoordinate(x, y);
 
-            TERRAINTYPE type2Place = type;
+            auto type2Place = type;
 
-            if (type == Terrain_Spice) {
-                if (map(x, y) == Terrain_Rock) {
+            if (type == TERRAINTYPE::Terrain_Spice) {
+                if (map(x, y) == TERRAINTYPE::Terrain_Rock) {
                     // Do not place the spice spot, priority is ROCK!
                     continue;
                 }
-                if ((map(x, y) == Terrain_Spice)
-                    && ((side4(x, y, Terrain_Spice) + side4(x, y, Terrain_ThickSpice)) >= 4)) {
+                if ((map(x, y) == TERRAINTYPE::Terrain_Spice)
+                    && ((side4(x, y, TERRAINTYPE::Terrain_Spice) + side4(x, y, TERRAINTYPE::Terrain_ThickSpice))
+                        >= 4)) {
 
                     // "upgrade" spice to thick spice
 
-                    type2Place = Terrain_ThickSpice;
+                    type2Place = TERRAINTYPE::Terrain_ThickSpice;
 
-                } else if (map(x, y) == Terrain_ThickSpice) {
+                } else if (map(x, y) == TERRAINTYPE::Terrain_ThickSpice) {
 
                     // do not "downgrade" thick spice to spice
 
-                    type2Place = Terrain_ThickSpice;
+                    type2Place = TERRAINTYPE::Terrain_ThickSpice;
                 }
-            } else if (type == Terrain_Dunes) {
-                if (map(x, y) != Terrain_Sand) {
+            } else if (type == TERRAINTYPE::Terrain_Dunes) {
+                if (map(x, y) != TERRAINTYPE::Terrain_Sand) {
                     // Do not place the dunes spot, priority is ROCK and SPICE!
                     continue;
                 }
@@ -321,10 +323,10 @@ private:
             const int spotX = randGen.rand(0, map.getSizeX() - 1);
             const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            if (map(spotX, spotY) == Terrain_Sand) {
+            if (map(spotX, spotY) == TERRAINTYPE::Terrain_Sand) {
                 for (int m = 0; m < mapMirror->getSize(); m++) {
                     const Coord position        = mapMirror->getCoord(Coord(spotX, spotY), m);
-                    map(position.x, position.y) = Terrain_Rock;
+                    map(position.x, position.y) = TERRAINTYPE::Terrain_Rock;
                 }
                 done++;
             }
@@ -341,10 +343,10 @@ private:
             const int spotX = randGen.rand(0, map.getSizeX() - 1);
             const int spotY = randGen.rand(0, map.getSizeY() - 1);
 
-            if (map(spotX, spotY) == Terrain_Sand) {
+            if (map(spotX, spotY) == TERRAINTYPE::Terrain_Sand) {
                 for (int m = 0; m < mapMirror->getSize(); m++) {
                     const Coord position        = mapMirror->getCoord(Coord(spotX, spotY), m);
-                    map(position.x, position.y) = Terrain_SpiceBloom;
+                    map(position.x, position.y) = TERRAINTYPE::Terrain_SpiceBloom;
                 }
                 done++;
             }

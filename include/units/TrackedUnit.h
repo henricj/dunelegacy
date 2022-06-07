@@ -55,14 +55,14 @@ public:
         \return Returns a speed factor. Higher values mean slower.
     */
     FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override {
-        if (terrainType < 0 || terrainType > Terrain_SpecialBloom)
+        if (terrainType < TERRAINTYPE::Terrain_Slab || terrainType > TERRAINTYPE::Terrain_SpecialBloom)
             return 1_fix;
 
-        return terrain_difficulty[terrainType];
+        return terrain_difficulty[static_cast<int>(terrainType)];
     }
 
 private:
-    static const std::array<FixPoint, Terrain_SpecialBloom + 1> terrain_difficulty; // TODO:: get better constant...
+    static const std::array<FixPoint, NUM_TERRAINTYPES> terrain_difficulty; // TODO:: get better constant...
 };
 
 #endif // TRACKEDUNIT_H

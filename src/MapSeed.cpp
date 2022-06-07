@@ -530,40 +530,40 @@ MapData createMapWithSeed(uint32_t Para_Seed, int mapscale) {
     for (int y = 0; y < sizeY; y++) {
         for (int x = 0; x < sizeX; x++) {
 
-            TERRAINTYPE terrainType = Terrain_Sand;
+            auto terrainType = TERRAINTYPE::Terrain_Sand;
 
             const auto seedmaptype =
                 static_cast<uint8_t>(SeedMap[(y + logicalOffsetY) * 64 + x + logicalOffsetX] >> 4u);
             switch (seedmaptype) {
                 case 0x7: {
                     // Normal sand
-                    terrainType = Terrain_Sand;
+                    terrainType = TERRAINTYPE::Terrain_Sand;
                 } break;
 
                 case 0x2:
                 case 0x8: {
                     // Rock or building
-                    terrainType = Terrain_Rock;
+                    terrainType = TERRAINTYPE::Terrain_Rock;
                 } break;
 
                 case 0x9: {
                     // Sand dunes
-                    terrainType = Terrain_Dunes;
+                    terrainType = TERRAINTYPE::Terrain_Dunes;
                 } break;
 
                 case 0xa: {
                     // Mountain
-                    terrainType = Terrain_Mountain;
+                    terrainType = TERRAINTYPE::Terrain_Mountain;
                 } break;
 
                 case 0xb: {
                     // Spice
-                    terrainType = Terrain_Spice;
+                    terrainType = TERRAINTYPE::Terrain_Spice;
                 } break;
 
                 case 0xc: {
                     // Thick spice
-                    terrainType = Terrain_ThickSpice;
+                    terrainType = TERRAINTYPE::Terrain_ThickSpice;
                 } break;
             }
 

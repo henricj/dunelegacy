@@ -69,7 +69,7 @@ MapEditor::MapEditor() {
 
     dune::globals::screenborder = std::make_unique<ScreenBorder>(gameBoardRect);
 
-    setMap(MapData(128, 128, Terrain_Sand), MapInfo());
+    setMap(MapData(128, 128, TERRAINTYPE::Terrain_Sand), MapInfo());
     setMirrorMode(MirrorModeNone);
 
     pInterface_ = std::make_unique<MapEditorInterface>(this);
@@ -559,42 +559,42 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
             for (int x = 0; x < map_.getSizeX(); x++) {
                 switch (map_(x, y)) {
 
-                    case Terrain_Dunes: {
+                    case TERRAINTYPE::Terrain_Dunes: {
                         // Sand dunes
                         row += '^';
                     } break;
 
-                    case Terrain_Spice: {
+                    case TERRAINTYPE::Terrain_Spice: {
                         // Spice
                         row += '~';
                     } break;
 
-                    case Terrain_ThickSpice: {
+                    case TERRAINTYPE::Terrain_ThickSpice: {
                         // Thick spice
                         row += '+';
                     } break;
 
-                    case Terrain_Rock: {
+                    case TERRAINTYPE::Terrain_Rock: {
                         // Rock
                         row += '%';
                     } break;
 
-                    case Terrain_Mountain: {
+                    case TERRAINTYPE::Terrain_Mountain: {
                         // Mountain
                         row += '@';
                     } break;
 
-                    case Terrain_SpiceBloom: {
+                    case TERRAINTYPE::Terrain_SpiceBloom: {
                         // Spice Bloom
                         row += 'O';
                     } break;
 
-                    case Terrain_SpecialBloom: {
+                    case TERRAINTYPE::Terrain_SpecialBloom: {
                         // Special Bloom
                         row += 'Q';
                     } break;
 
-                    case Terrain_Sand:
+                    case TERRAINTYPE::Terrain_Sand:
                     default: {
                         // Normal sand
                         row += '-';
@@ -774,20 +774,20 @@ void MapEditor::performMapEdit(int xpos, int ypos, bool bRepeated) {
             if (getMapVersion() < 2) {
                 // classic map
                 if (!bRepeated && map_.isInsideMap(xpos, ypos)) {
-                    const TERRAINTYPE terrainType = currentEditorMode_.terrainType_;
+                    const auto terrainType = currentEditorMode_.terrainType_;
 
                     switch (terrainType) {
-                        case Terrain_SpiceBloom: {
+                        case TERRAINTYPE::Terrain_SpiceBloom: {
                             MapEditorTerrainAddSpiceBloomOperation editOperation(xpos, ypos);
                             addUndoOperation(editOperation.perform(this));
                         } break;
 
-                        case Terrain_SpecialBloom: {
+                        case TERRAINTYPE::Terrain_SpecialBloom: {
                             MapEditorTerrainAddSpecialBloomOperation editOperation(xpos, ypos);
                             addUndoOperation(editOperation.perform(this));
                         } break;
 
-                        case Terrain_Spice: {
+                        case TERRAINTYPE::Terrain_Spice: {
                             MapEditorTerrainAddSpiceFieldOperation editOperation(xpos, ypos);
                             addUndoOperation(editOperation.perform(this));
                         } break;
@@ -944,75 +944,79 @@ void MapEditor::performTerrainChange(int x, int y, TERRAINTYPE terrainType) {
     addUndoOperation(editOperation.perform(this));
 
     switch (terrainType) {
-        case Terrain_Mountain: {
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) != Terrain_Mountain) && (map_(x - 1, y) != Terrain_Rock))
-                performTerrainChange(x - 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) != Terrain_Mountain) && (map_(x, y - 1) != Terrain_Rock))
-                performTerrainChange(x, y - 1, Terrain_Rock);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) != Terrain_Mountain) && (map_(x + 1, y) != Terrain_Rock))
-                performTerrainChange(x + 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) != Terrain_Mountain) && (map_(x, y + 1) != Terrain_Rock))
-                performTerrainChange(x, y + 1, Terrain_Rock);
+        case TERRAINTYPE::Terrain_Mountain: {
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) != TERRAINTYPE::Terrain_Mountain)
+                && (map_(x - 1, y) != TERRAINTYPE::Terrain_Rock))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) != TERRAINTYPE::Terrain_Mountain)
+                && (map_(x, y - 1) != TERRAINTYPE::Terrain_Rock))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) != TERRAINTYPE::Terrain_Mountain)
+                && (map_(x + 1, y) != TERRAINTYPE::Terrain_Rock))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) != TERRAINTYPE::Terrain_Mountain)
+                && (map_(x, y + 1) != TERRAINTYPE::Terrain_Rock))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Rock);
         } break;
 
-        case Terrain_ThickSpice: {
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) != Terrain_ThickSpice)
-                && (map_(x - 1, y) != Terrain_Spice))
-                performTerrainChange(x - 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) != Terrain_ThickSpice)
-                && (map_(x, y - 1) != Terrain_Spice))
-                performTerrainChange(x, y - 1, Terrain_Spice);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) != Terrain_ThickSpice)
-                && (map_(x + 1, y) != Terrain_Spice))
-                performTerrainChange(x + 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) != Terrain_ThickSpice)
-                && (map_(x, y + 1) != Terrain_Spice))
-                performTerrainChange(x, y + 1, Terrain_Spice);
+        case TERRAINTYPE::Terrain_ThickSpice: {
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) != TERRAINTYPE::Terrain_ThickSpice)
+                && (map_(x - 1, y) != TERRAINTYPE::Terrain_Spice))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) != TERRAINTYPE::Terrain_ThickSpice)
+                && (map_(x, y - 1) != TERRAINTYPE::Terrain_Spice))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) != TERRAINTYPE::Terrain_ThickSpice)
+                && (map_(x + 1, y) != TERRAINTYPE::Terrain_Spice))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) != TERRAINTYPE::Terrain_ThickSpice)
+                && (map_(x, y + 1) != TERRAINTYPE::Terrain_Spice))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Spice);
         } break;
 
-        case Terrain_Rock: {
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == Terrain_ThickSpice))
-                performTerrainChange(x - 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == Terrain_ThickSpice))
-                performTerrainChange(x, y - 1, Terrain_Spice);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == Terrain_ThickSpice))
-                performTerrainChange(x + 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == Terrain_ThickSpice))
-                performTerrainChange(x, y + 1, Terrain_Spice);
+        case TERRAINTYPE::Terrain_Rock: {
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Spice);
         } break;
 
-        case Terrain_Spice: {
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == Terrain_Mountain))
-                performTerrainChange(x - 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == Terrain_Mountain))
-                performTerrainChange(x, y - 1, Terrain_Rock);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == Terrain_Mountain))
-                performTerrainChange(x + 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == Terrain_Mountain))
-                performTerrainChange(x, y + 1, Terrain_Rock);
+        case TERRAINTYPE::Terrain_Spice: {
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Rock);
         } break;
 
-        case Terrain_Sand:
-        case Terrain_Dunes:
-        case Terrain_SpiceBloom:
-        case Terrain_SpecialBloom: {
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == Terrain_Mountain))
-                performTerrainChange(x - 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == Terrain_Mountain))
-                performTerrainChange(x, y - 1, Terrain_Rock);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == Terrain_Mountain))
-                performTerrainChange(x + 1, y, Terrain_Rock);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == Terrain_Mountain))
-                performTerrainChange(x, y + 1, Terrain_Rock);
+        case TERRAINTYPE::Terrain_Sand:
+        case TERRAINTYPE::Terrain_Dunes:
+        case TERRAINTYPE::Terrain_SpiceBloom:
+        case TERRAINTYPE::Terrain_SpecialBloom: {
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Rock);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == TERRAINTYPE::Terrain_Mountain))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Rock);
 
-            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == Terrain_ThickSpice))
-                performTerrainChange(x - 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == Terrain_ThickSpice))
-                performTerrainChange(x, y - 1, Terrain_Spice);
-            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == Terrain_ThickSpice))
-                performTerrainChange(x + 1, y, Terrain_Spice);
-            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == Terrain_ThickSpice))
-                performTerrainChange(x, y + 1, Terrain_Spice);
+            if (map_.isInsideMap(x - 1, y) && (map_(x - 1, y) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x - 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y - 1) && (map_(x, y - 1) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x, y - 1, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x + 1, y) && (map_(x + 1, y) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x + 1, y, TERRAINTYPE::Terrain_Spice);
+            if (map_.isInsideMap(x, y + 1) && (map_(x, y + 1) == TERRAINTYPE::Terrain_ThickSpice))
+                performTerrainChange(x, y + 1, TERRAINTYPE::Terrain_Spice);
         } break;
 
         default: {
@@ -1467,23 +1471,23 @@ void MapEditor::drawCursor() {
 TERRAINTYPE MapEditor::getTerrain(int x, int y) const {
     TERRAINTYPE terrainType = map_(x, y);
 
-    if (map_(x, y) == Terrain_Sand) {
+    if (map_(x, y) == TERRAINTYPE::Terrain_Sand) {
         if (std::ranges::find(spiceFields_, Coord{x, y}) != spiceFields_.end()) {
-            terrainType = Terrain_ThickSpice;
+            terrainType = TERRAINTYPE::Terrain_ThickSpice;
         } else if (std::ranges::any_of(spiceFields_, [center = Coord(x, y)](const auto& coord) {
                        return distanceFrom(center, coord) < 5;
                    })) {
-            terrainType = Terrain_Spice;
+            terrainType = TERRAINTYPE::Terrain_Spice;
         }
     }
 
     // check for classic map items (spice blooms, special blooms)
     if (std::ranges::find(spiceBlooms_, Coord(x, y)) != spiceBlooms_.end()) {
-        terrainType = Terrain_SpiceBloom;
+        terrainType = TERRAINTYPE::Terrain_SpiceBloom;
     }
 
     if (std::ranges::find(specialBlooms_, Coord(x, y)) != specialBlooms_.end()) {
-        terrainType = Terrain_SpecialBloom;
+        terrainType = TERRAINTYPE::Terrain_SpecialBloom;
     }
 
     return terrainType;
@@ -1513,85 +1517,91 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
             int tile = 0;
 
             switch (getTerrain(x, y)) {
-                case Terrain_Slab: {
+                case TERRAINTYPE::Terrain_Slab: {
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Slab);
                 } break;
 
-                case Terrain_Sand: {
+                case TERRAINTYPE::Terrain_Sand: {
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Sand);
                 } break;
 
-                case Terrain_Rock: {
+                case TERRAINTYPE::Terrain_Rock: {
                     // determine which surrounding tiles are rock
-                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Rock)
-                                || (getTerrain(x, y - 1) == Terrain_Slab) || (getTerrain(x, y - 1) == Terrain_Mountain);
-                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Rock)
-                                   || (getTerrain(x + 1, y) == Terrain_Slab)
-                                   || (getTerrain(x + 1, y) == Terrain_Mountain);
-                    const int down = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Rock)
-                                  || (getTerrain(x, y + 1) == Terrain_Slab)
-                                  || (getTerrain(x, y + 1) == Terrain_Mountain);
-                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Rock)
-                                  || (getTerrain(x - 1, y) == Terrain_Slab)
-                                  || (getTerrain(x - 1, y) == Terrain_Mountain);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Rock)
+                                || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Slab)
+                                || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Mountain);
+                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Rock)
+                                   || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Slab)
+                                   || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Mountain);
+                    const int down = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Rock)
+                                  || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Slab)
+                                  || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Mountain);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Rock)
+                                  || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Slab)
+                                  || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Mountain);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Rock)
                          + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
-                case Terrain_Dunes: {
+                case TERRAINTYPE::Terrain_Dunes: {
                     // determine which surrounding tiles are dunes
-                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Dunes);
-                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Dunes);
-                    const int down  = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Dunes);
-                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Dunes);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Dunes);
+                    const int right =
+                        (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Dunes);
+                    const int down = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Dunes);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Dunes);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Dunes)
                          + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
-                case Terrain_Mountain: {
+                case TERRAINTYPE::Terrain_Mountain: {
                     // determine which surrounding tiles are mountains
-                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Mountain);
-                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Mountain);
-                    const int down  = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Mountain);
-                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Mountain);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Mountain);
+                    const int right =
+                        (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Mountain);
+                    const int down =
+                        (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Mountain);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Mountain);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Mountain)
                          + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
-                case Terrain_Spice: {
+                case TERRAINTYPE::Terrain_Spice: {
                     // determine which surrounding tiles are spice
-                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_Spice)
-                                || (getTerrain(x, y - 1) == Terrain_ThickSpice);
-                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == Terrain_Spice)
-                                   || (getTerrain(x + 1, y) == Terrain_ThickSpice);
-                    const int down = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == Terrain_Spice)
-                                  || (getTerrain(x, y + 1) == Terrain_ThickSpice);
-                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_Spice)
-                                  || (getTerrain(x - 1, y) == Terrain_ThickSpice);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_Spice)
+                                || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_Spice)
+                                   || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int down = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_Spice)
+                                  || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_Spice)
+                                  || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_ThickSpice);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_Spice)
                          + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
-                case Terrain_ThickSpice: {
+                case TERRAINTYPE::Terrain_ThickSpice: {
                     // determine which surrounding tiles are thick spice
-                    const int up    = (y - 1 < 0) || (getTerrain(x, y - 1) == Terrain_ThickSpice);
-                    const int right = (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == Terrain_ThickSpice);
-                    const int down  = (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == Terrain_ThickSpice);
-                    const int left  = (x - 1 < 0) || (getTerrain(x - 1, y) == Terrain_ThickSpice);
+                    const int up = (y - 1 < 0) || (getTerrain(x, y - 1) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int right =
+                        (x + 1 >= map_.getSizeX()) || (getTerrain(x + 1, y) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int down =
+                        (y + 1 >= map_.getSizeY()) || (getTerrain(x, y + 1) == TERRAINTYPE::Terrain_ThickSpice);
+                    const int left = (x - 1 < 0) || (getTerrain(x - 1, y) == TERRAINTYPE::Terrain_ThickSpice);
 
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_ThickSpice)
                          + (up | (right << 1) | (down << 2) | (left << 3));
                 } break;
 
-                case Terrain_SpiceBloom: {
+                case TERRAINTYPE::Terrain_SpiceBloom: {
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_SpiceBloom);
                 } break;
 
-                case Terrain_SpecialBloom: {
+                case TERRAINTYPE::Terrain_SpecialBloom: {
                     tile = static_cast<int>(Tile::TERRAINTILETYPE::TerrainTile_SpecialBloom);
                 } break;
 
@@ -1948,7 +1958,7 @@ void MapEditor::drawMap(ScreenBorder* pScreenborder, bool bCompleteMap) const {
                             if (!map_.isInsideMap(pos.x, pos.y)
                                 || isTileBlocked(pos.x, pos.y, true, (currentEditorMode_.itemID_ != Structure_Slab1))) {
                                 image = invalidPlace;
-                            } else if ((image != invalidPlace) && (map_(pos.x, pos.y) != Terrain_Rock)) {
+                            } else if ((image != invalidPlace) && (map_(pos.x, pos.y) != TERRAINTYPE::Terrain_Rock)) {
                                 image = greyPlace;
                             }
                         }
