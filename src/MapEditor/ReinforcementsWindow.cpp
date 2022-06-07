@@ -329,20 +329,21 @@ void ReinforcementsWindow::onSelectionChange([[maybe_unused]] bool bInteractive)
 }
 
 void ReinforcementsWindow::onEntryChange(bool bInteractive) {
-    if (bInteractive) {
-        const int index = reinforcementsListBox.getSelectedIndex();
+    if (!bInteractive)
+        return;
 
-        if (index >= 0) {
-            ReinforcementInfo& reinforcementInfo = reinforcements.at(index);
-            reinforcementInfo.houseID            = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.unitID             = static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.dropLocation =
-                static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData());
-            reinforcementInfo.droptime = timeTextBox.getValue();
-            reinforcementInfo.bRepeat  = repeatCheckbox.isChecked();
-            reinforcementsListBox.setEntry(index, getDescribingString(reinforcementInfo));
-        }
-    }
+    const int index = reinforcementsListBox.getSelectedIndex();
+
+    if (index < 0)
+        return;
+
+    auto& reinforcementInfo        = reinforcements.at(index);
+    reinforcementInfo.houseID      = static_cast<HOUSETYPE>(playerDropDownBox.getSelectedEntryIntData());
+    reinforcementInfo.unitID       = static_cast<ItemID_enum>(unitDropDownBox.getSelectedEntryIntData());
+    reinforcementInfo.dropLocation = static_cast<DropLocation>(dropLocationDropDownBox.getSelectedEntryIntData());
+    reinforcementInfo.droptime     = timeTextBox.getValue();
+    reinforcementInfo.bRepeat      = repeatCheckbox.isChecked();
+    reinforcementsListBox.setEntry(index, getDescribingString(reinforcementInfo));
 }
 
 std::string ReinforcementsWindow::getDescribingString(const ReinforcementInfo& reinforcementInfo) {

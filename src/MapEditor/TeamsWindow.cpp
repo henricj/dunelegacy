@@ -24,6 +24,7 @@
 
 #include <sand.h>
 
+#include <fmt/core.h>
 #include <fmt/printf.h>
 
 #include <MapEditor/MapEditor.h>
@@ -108,7 +109,7 @@ TeamsWindow::TeamsWindow(MapEditor* pMapEditor, HOUSETYPE currentHouse)
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
         if (player.bActive_) {
-            std::string entryName = player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_;
+            auto entryName = player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_;
             playerDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
         }
     }

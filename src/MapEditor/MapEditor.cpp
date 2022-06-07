@@ -690,7 +690,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     loadedINIFile_->clearSection("UNITS");
-    for (const Unit& unit : units_) {
+    for (const auto& unit : units_) {
         if (unit.itemID_ < ItemID_enum::ItemID_FirstID || unit.itemID_ > ItemID_enum::ItemID_LastID)
             continue;
 
@@ -710,7 +710,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     loadedINIFile_->clearSection("STRUCTURES");
-    for (const Structure& structure : structures_) {
+    for (const auto& structure : structures_) {
         int position =
             (logicalOffsetY + structure.position_.y) * logicalSizeX + (logicalOffsetX + structure.position_.x);
 
@@ -741,7 +741,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
 
         // we start at 0 for version 1 maps if we have 16 entries to not overflow the table
         int currentIndex = ((getMapVersion() < 2) && (reinforcements_.size() >= 16)) ? 0 : 1;
-        for (const ReinforcementInfo& reinforcement : reinforcements_) {
+        for (const auto& reinforcement : reinforcements_) {
             auto value = fmt::format("{},{},{},{}", house2housename[static_cast<int>(reinforcement.houseID)],
                                      getItemNameByID(reinforcement.unitID),
                                      getDropLocationNameByID(reinforcement.dropLocation), reinforcement.droptime);

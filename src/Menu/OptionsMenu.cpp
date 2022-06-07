@@ -254,7 +254,7 @@ void OptionsMenu::onChangeOption([[maybe_unused]] bool bInteractive) {
         const std::string languageFilename = availLanguages[languageIndex];
         bChanged |= settings.general.language != languageFilename.substr(languageFilename.size() - 5, 2);
     }
-    const PlayerFactory::PlayerData* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
+    const auto* pPlayerData = PlayerFactory::getByIndex(aiDropDownBox.getSelectedEntryIntData());
     bChanged |= pPlayerData == nullptr || settings.ai.campaignAI != pPlayerData->getPlayerClass();
     bChanged |= settings.general.playIntro != introCheckbox.isChecked();
     bChanged |= settings.general.showTutorialHints != showTutorialHintsCheckbox.isChecked();
