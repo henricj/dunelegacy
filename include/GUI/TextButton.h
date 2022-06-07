@@ -31,10 +31,10 @@ public:
     /// Default constructor
     TextButton();
 
-    TextButton(const TextButton&)            = delete;
-    TextButton(TextButton&&)                 = default;
+    TextButton(const TextButton&) = delete;
+    TextButton(TextButton&&);
     TextButton& operator=(const TextButton&) = delete;
-    TextButton& operator=(TextButton&&)      = default;
+    TextButton& operator=(TextButton&&);
 
     /// destructor
     ~TextButton() override;
@@ -44,23 +44,20 @@ public:
         to fit this text.
         \param  text The new text for this button
     */
-    virtual void setText(std::string text) {
-        this->text = std::move(text);
-        resizeAll();
-    }
+    virtual void setText(std::string text);
 
     /**
         This method sets a new text for this button and resizes this button
         to fit this text.
         \param  text The new text for this button
     */
-    void setText(std::string_view text) { setText(std::string{text}); }
+    void setText(std::string_view text);
 
     /**
         Get the text of this button.
         \return the text of this button
     */
-    [[nodiscard]] const std::string& getText() const noexcept { return text; }
+    [[nodiscard]] const std::string& getText() const noexcept { return text_; }
 
     /**
         Sets the text color for this button.
@@ -68,8 +65,8 @@ public:
         \param  textshadowcolor the color of the shadow of the text (COLOR_DEFAULT = default color)
     */
     virtual void setTextColor(uint32_t textcolor, Uint32 textshadowcolor = COLOR_DEFAULT) {
-        this->textcolor       = textcolor;
-        this->textshadowcolor = textshadowcolor;
+        this->textcolor_       = textcolor;
+        this->textshadowcolor_ = textshadowcolor;
         invalidateTextures();
     }
 
@@ -79,10 +76,7 @@ public:
         \param  width   the new width of this button
         \param  height  the new height of this button
     */
-    void resize(uint32_t width, uint32_t height) override {
-        invalidateTextures();
-        parent::resize(width, height);
-    }
+    void resize(uint32_t width, uint32_t height) override;
 
     using parent::resize;
 
@@ -91,7 +85,7 @@ public:
         resized to a size smaller than this.
         \return the minimum size of this button
     */
-    [[nodiscard]] Point getMinimumSize() const override { return GUIStyle::getInstance().getMinimumButtonSize(text); }
+    [[nodiscard]] Point getMinimumSize() const override { return GUIStyle::getInstance().getMinimumButtonSize(text_); }
 
 protected:
     /**
@@ -102,10 +96,10 @@ protected:
     void updateTextures() override;
 
 private:
-    uint32_t textcolor       = COLOR_DEFAULT;
-    uint32_t textshadowcolor = COLOR_DEFAULT;
+    uint32_t textcolor_       = COLOR_DEFAULT;
+    uint32_t textshadowcolor_ = COLOR_DEFAULT;
 
-    std::string text; ///< Text of this button
+    std::string text_; ///< Text of this button
 };
 
 #endif // TEXTBUTTON_H
