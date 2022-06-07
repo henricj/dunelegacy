@@ -32,14 +32,6 @@
 #endif
 #define _(msgid) getLocalized(msgid)
 
-namespace {
-struct FilePtrCloser {
-    void operator()(FILE* fp) const { fclose(fp); }
-};
-} // namespace
-
-using file_ptr = std::unique_ptr<FILE*, FilePtrCloser>;
-
 sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
     const auto normal = path.lexically_normal();
 
