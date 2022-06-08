@@ -164,7 +164,7 @@ public:
     static std::unique_ptr<Label>
     create(std::string_view text, Uint32 textcolor = COLOR_DEFAULT, Uint32 textshadowcolor = COLOR_DEFAULT,
            Uint32 backgroundcolor = COLOR_TRANSPARENT) {
-        return create(text, textcolor, textshadowcolor, backgroundcolor);
+        return create(std::string{text}, textcolor, textshadowcolor, backgroundcolor);
     }
 
 protected:
