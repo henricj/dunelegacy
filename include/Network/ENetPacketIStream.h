@@ -39,6 +39,8 @@ public:
         }
     }
 
+    long bytesLeft() const override { return packet->dataLength - currentPos; }
+
     ENetPacketIStream& operator=(const ENetPacketIStream& p) {
         if (this != &p) {
             ENetPacket* packetCopy = enet_packet_create(p.packet->data, p.packet->dataLength, p.packet->flags);

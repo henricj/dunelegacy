@@ -59,11 +59,13 @@ void CommandManager::save(OutputStream& stream) const {
 
 void CommandManager::load(InputStream& stream) {
     try {
-        while (true) {
+        while (stream.bytesLeft() > 0) {
             const auto cycle = stream.readUint32();
             addCommand(Command{stream}, cycle);
         }
-    } catch (InputStream::exception&) { }
+    } catch (InputStream::exception& e) {
+        sdl2::log_info("Warning: Unexpected input stream exception in CommandManager::load: %s", e.what());
+    }
 }
 
 void CommandManager::update() {

@@ -47,6 +47,10 @@ public:
     virtual bool readBool()       = 0;
     virtual float readFloat()     = 0;
 
+    // Returns the number of bytes available in the stream before EOF.
+    // Attempting to read more than this many bytes will throw an EOF exception.
+    virtual long bytesLeft() const = 0;
+
     /**
         Reads in a Sint8 value.
         \return the read value

@@ -30,7 +30,7 @@
 #    include <Windows.h>
 #endif
 
-IFileStream::IFileStream() : fp(nullptr) { }
+IFileStream::IFileStream() : fp(nullptr), sizeBytes_(0), bytePos_(0) { }
 
 IFileStream::~IFileStream() {
     close();
@@ -47,13 +47,20 @@ bool IFileStream::open(const std::filesystem::path& filename) {
     fp = fopen(normal.c_str(), "rb");
 #endif
 
+    fseek(fp, 0, SEEK_END);
+    sizeBytes_ = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    bytePos_ = 0;
+
     return fp != nullptr;
 }
 
 void IFileStream::close() {
     if (fp != nullptr) {
         fclose(fp);
-        fp = nullptr;
+        fp         = nullptr;
+        sizeBytes_ = 0;
+        bytePos_   = 0;
     }
 }
 
@@ -76,6 +83,8 @@ std::string IFileStream::readString() {
         THROW(InputStream::error, "IFileStream::readString(): An I/O-Error occurred!");
     }
 
+    bytePos_ += length;
+
     return str;
 }
 
@@ -87,6 +96,8 @@ uint8_t IFileStream::readUint8() {
         }
         THROW(InputStream::error, "IFileStream::readUint8(): An I/O-Error occurred!");
     }
+
+    bytePos_ += sizeof(uint8_t);
 
     return tmp;
 }
@@ -100,6 +111,8 @@ uint16_t IFileStream::readUint16() {
         THROW(InputStream::error, "IFileStream::readUint16(): An I/O-Error occurred!");
     }
 
+    bytePos_ += sizeof(uint16_t);
+
     return SDL_SwapLE16(tmp);
 }
 
@@ -112,6 +125,8 @@ uint32_t IFileStream::readUint32() {
         THROW(InputStream::error, "IFileStream::readUint32(): An I/O-Error occurred!");
     }
 
+    bytePos_ += sizeof(uint32_t);
+
     return SDL_SwapLE32(tmp);
 }
 
@@ -123,6 +138,9 @@ uint64_t IFileStream::readUint64() {
         }
         THROW(InputStream::error, "IFileStream::readUint64(): An I/O-Error occurred!");
     }
+
+    bytePos_ += sizeof(uint64_t);
+
     return SDL_SwapLE64(tmp);
 }
 
