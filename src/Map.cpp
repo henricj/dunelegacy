@@ -93,9 +93,12 @@ void Map::createSandRegions() {
     std::stack<Tile*> tileQueue;
     std::vector<bool> visited(tiles.size());
 
+    // Perform a flood fill of all sand tiles on the map to generate connected and disjoint
+    // sand regions that are used later to check the areas that sand worms can reach.
     for (auto& tile : tiles)
         tile.setSandRegion(NONE_ID);
 
+    uint32_t numTilesInRegion = 0;
     uint32_t region = 0;
     for (auto& tile : tiles) {
         if (!tile.isRock() && !visited[tile_index(tile.location_.x, tile.location_.y)]) {
@@ -105,6 +108,12 @@ void Map::createSandRegions() {
                 auto* const pTile = tileQueue.top();
                 tileQueue.pop();
 
+                auto const root_index = tile_index(pTile->location_.x, pTile->location_.y);
+                if (visited[root_index])
+                    continue;
+                visited[root_index] = true;
+
+                ++numTilesInRegion;
                 pTile->setSandRegion(region);
 
                 index_for_each_angle(pTile->location_.x, pTile->location_.y,
@@ -116,10 +125,11 @@ void Map::createSandRegions() {
 
                                          if (!tile_angle->isRock()) {
                                              tileQueue.push(tile_angle);
-                                             visited[index] = true;
                                          }
                                      });
             }
+            sdl2::log_info("Generated Sand Region ID=%u with %u tiles in it.", region, numTilesInRegion);
+            numTilesInRegion = 0;
             region++;
         }
     }
