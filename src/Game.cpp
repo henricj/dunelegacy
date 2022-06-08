@@ -173,7 +173,8 @@ void Game::initGame(const GameInitSettings& newGameInitSettings) {
 
             INIMapLoader loader{this, gameInitSettings_.getFilename(), gameInitSettings_.getFiledata()};
 
-            map_                          = loader.load();
+            map_ = loader.load();
+
             dune::globals::currentGameMap = map_.get();
 
             if (!bReplay_ && gameInitSettings_.getGameType() != GameType::CustomGame
@@ -327,7 +328,7 @@ void Game::drawScreen() {
 
     // draw the gathering point line if a structure is selected
     if (selectedList_.size() == 1) {
-        auto* const pStructure = dynamic_cast<StructureBase*>(getObjectManager().getObject(*selectedList_.begin()));
+        auto* const pStructure = getObjectManager().getObject<StructureBase>(*selectedList_.begin());
         if (pStructure != nullptr) {
             pStructure->drawGatheringPointLine();
         }
@@ -405,9 +406,9 @@ void Game::drawScreen() {
             const int yPos = screenborder->screen2MapY(dune::globals::drawnMouseY);
 
             if (selectedList_.size() == 1) {
-                if (auto* pBuilder = dune_cast<BuilderBase>(objectManager_.getObject(*selectedList_.begin()))) {
+                if (auto* pBuilder = objectManager_.getObject<BuilderBase>(*selectedList_.begin())) {
                     const auto placeItem = pBuilder->getCurrentProducedItem();
-                    Coord structureSize  = getStructureSize(placeItem);
+                    auto structureSize   = getStructureSize(placeItem);
 
                     bool withinRange = false;
                     for (int i = xPos; i < (xPos + structureSize.x); i++) {
@@ -1759,8 +1760,7 @@ bool Game::loadSaveGame(InputStream& stream) {
                         if (playerInfo.playerClass == HUMANPLAYERCLASS) {
                             while (playerIter != players.cend()) {
 
-                                auto* const pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get());
-                                if (pHumanPlayer) {
+                                if (auto* const pHumanPlayer = dynamic_cast<HumanPlayer*>(playerIter->get())) {
                                     // we have actually found a human player and now assign the first unused
                                     // name to it
                                     unregisterPlayer(pHumanPlayer);
@@ -2437,9 +2437,9 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
             } else {
                 // Place structure
                 if (selectedList_.size() == 1) {
-                    ConstructionYard* pConstructionYard =
-                        dynamic_cast<ConstructionYard*>(objectManager_.getObject(*selectedList_.begin()));
-                    if (pConstructionYard != nullptr) {
+                    const auto object_id = *selectedList_.begin();
+
+                    if (auto* const pConstructionYard = objectManager_.getObject<ConstructionYard>(object_id)) {
                         if (currentCursorMode == CursorMode_Placing) {
                             currentCursorMode = CursorMode_Normal;
                         } else if (pConstructionYard->isWaitingToPlace()) {
@@ -2538,7 +2538,7 @@ bool Game::handlePlacementClick(const GameContext& context, int xPos, int yPos) 
     const BuilderBase* pBuilder = nullptr;
 
     if (selectedList_.size() == 1) {
-        pBuilder = dynamic_cast<BuilderBase*>(objectManager_.getObject(*selectedList_.begin()));
+        pBuilder = objectManager_.getObject<BuilderBase>(*selectedList_.begin());
     }
 
     if (!pBuilder) {
