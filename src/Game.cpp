@@ -545,9 +545,11 @@ void Game::drawScreen() {
         SDL_RenderFillRectsF(renderer, rects.data(), rects.size());
     } else if (gameCycleCount_ < skipToGameCycle_) {
         // Cache this texture...
-        const auto pTexture = gui.createText(renderer, ">>", COLOR_RGBA(0, 242, 0, 128), 48);
+        auto pTexture = gui.createText(renderer, ">>", COLOR_RGBA(0, 242, 0, 128), 48);
 
         pTexture.draw(renderer, 10.f, renderer_height - pTexture.height_ - 12);
+
+        dune::defer_destroy_texture(std::move(pTexture));
     }
 
     if (finished_) {
@@ -559,12 +561,14 @@ void Game::drawScreen() {
             message = _("You Have Failed Your Mission.");
         }
 
-        const auto pFinishMessageTexture = gui.createText(renderer, message, COLOR_WHITE, 28);
+        auto pFinishMessageTexture = gui.createText(renderer, message, COLOR_WHITE, 28);
 
         const auto x = (sideBarPos_.x - pFinishMessageTexture.width_) / 2;
         const auto y = topBarPos_.h + (renderer_height - topBarPos_.h - pFinishMessageTexture.height_) / 2;
 
         pFinishMessageTexture.draw(renderer, x, y);
+
+        dune::defer_destroy_texture(std::move(pFinishMessageTexture));
     }
 
     if (pWaitingForOtherPlayers_ != nullptr) {
