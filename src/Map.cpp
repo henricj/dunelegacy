@@ -99,7 +99,7 @@ void Map::createSandRegions() {
         tile.setSandRegion(NONE_ID);
 
     uint32_t numTilesInRegion = 0;
-    uint32_t region = 0;
+    uint32_t region           = 0;
     for (auto& tile : tiles) {
         if (!tile.isRock() && !visited[tile_index(tile.location_.x, tile.location_.y)]) {
             tileQueue.push(&tile);
