@@ -658,6 +658,9 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                 auto* const screenborder = dune::globals::screenborder.get();
 
+                const auto mouseX = static_cast<float>(mouse->x);
+                const auto mouseY = static_cast<float>(mouse->y);
+
                 switch (mouse->button) {
 
                     case SDL_BUTTON_LEFT: {
@@ -665,45 +668,44 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         switch (currentCursorMode) {
 
                             case CursorMode_Placing: {
-                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handlePlacementClick(context, screenborder->screen2MapX(mouse->x),
-                                                         screenborder->screen2MapY(mouse->y));
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    handlePlacementClick(context, screenborder->screen2MapX(mouseX),
+                                                         screenborder->screen2MapY(mouseY));
                                 }
                             } break;
 
                             case CursorMode_Attack: {
 
-                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouse->x),
-                                                                     screenborder->screen2MapY(mouse->y));
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    handleSelectedObjectsAttackClick(context, screenborder->screen2MapX(mouseX),
+                                                                     screenborder->screen2MapY(mouseY));
                                 }
 
                             } break;
 
                             case CursorMode_Move: {
 
-                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouse->x),
-                                                                   screenborder->screen2MapY(mouse->y));
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    handleSelectedObjectsMoveClick(context, screenborder->screen2MapX(mouseX),
+                                                                   screenborder->screen2MapY(mouseY));
                                 }
 
                             } break;
 
                             case CursorMode_CarryallDrop: {
 
-                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsRequestCarryallDropClick(context,
-                                                                                  screenborder->screen2MapX(mouse->x),
-                                                                                  screenborder->screen2MapY(mouse->y));
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    handleSelectedObjectsRequestCarryallDropClick(
+                                        context, screenborder->screen2MapX(mouseX), screenborder->screen2MapY(mouseY));
                                 }
 
                             } break;
 
                             case CursorMode_Capture: {
 
-                                if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                    handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouse->x),
-                                                                      screenborder->screen2MapY(mouse->y));
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    handleSelectedObjectsCaptureClick(context, screenborder->screen2MapX(mouseX),
+                                                                      screenborder->screen2MapY(mouseY));
                                 }
 
                             } break;
@@ -711,14 +713,14 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                             case CursorMode_Normal:
                             default: {
 
-                                if (mouse->x < sideBarPos_.x && mouse->y >= topBarPos_.h) {
+                                if (mouseX < sideBarPos_.x && mouseY >= topBarPos_.h) {
                                     // it isn't on the gamebar
 
                                     if (!selectionMode_) {
                                         // if we have started the selection rectangle
                                         // the starting point of the selection rectangle
-                                        selectionRect_.x = screenborder->screen2worldX(mouse->x);
-                                        selectionRect_.y = screenborder->screen2worldY(mouse->y);
+                                        selectionRect_.x = screenborder->screen2worldX(mouseX);
+                                        selectionRect_.y = screenborder->screen2worldY(mouseY);
                                     }
                                     selectionMode_ = true;
                                 }
@@ -774,8 +776,8 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
 
                 if (selectionMode_ && (mouse->button == SDL_BUTTON_LEFT)) {
                     // this keeps the box on the map, and not over game bar
-                    int finalMouseX = mouse->x;
-                    int finalMouseY = mouse->y;
+                    auto finalMouseX = static_cast<float>(mouse->x);
+                    auto finalMouseY = static_cast<float>(mouse->y);
 
                     if (finalMouseX >= sideBarPos_.x) {
                         finalMouseX = sideBarPos_.x - 1;
