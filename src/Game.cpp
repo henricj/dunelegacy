@@ -738,18 +738,26 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         if (currentCursorMode != CursorMode_Normal) {
                             // cancel special cursor mode
                             currentCursorMode = CursorMode_Normal;
-                        } else if ((!selectedList_.empty()
-                                    && (((objectManager_.getObject(*selectedList_.begin()))->getOwner()
-                                         == dune::globals::pLocalHouse))
-                                    && (((objectManager_.getObject(*selectedList_.begin()))->isRespondable())))) {
-                            // if user has a controllable unit selected
 
-                            if (screenborder->isScreenCoordInsideMap(mouse->x, mouse->y)) {
-                                if (handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouse->x),
-                                                                     screenborder->screen2MapY(mouse->y))) {
-                                    indicatorFrame_      = 0;
-                                    indicatorPosition_.x = screenborder->screen2worldX(mouse->x);
-                                    indicatorPosition_.y = screenborder->screen2worldY(mouse->y);
+                            break;
+                        }
+
+                        if (selectedList_.empty())
+                            break;
+
+                        const auto object_id = *selectedList_.begin();
+
+                        if (const auto* const object = objectManager_.getObject(object_id)) {
+                            if (object->getOwner() == dune::globals::pLocalHouse && object->isRespondable()) {
+                                // if user has a controllable unit selected
+
+                                if (screenborder->isScreenCoordInsideMap(mouseX, mouseY)) {
+                                    if (handleSelectedObjectsActionClick(context, screenborder->screen2MapX(mouseX),
+                                                                         screenborder->screen2MapY(mouseY))) {
+                                        indicatorFrame_      = 0;
+                                        indicatorPosition_.x = screenborder->screen2worldX(mouseX);
+                                        indicatorPosition_.y = screenborder->screen2worldY(mouseY);
+                                    }
                                 }
                             }
                         }
