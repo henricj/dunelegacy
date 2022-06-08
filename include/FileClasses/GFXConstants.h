@@ -77,7 +77,7 @@ enum ObjPic_enum {
     ObjPic_DeadInfantry,
     ObjPic_DeadAirUnit,
     ObjPic_Smoke,
-    ObjPic_SandwormShimmerMask,
+    ObjPic_SandwormSegment,
     ObjPic_SandwormShimmerTemp,
     ObjPic_Terrain,
     ObjPic_DestroyedStructure,

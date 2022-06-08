@@ -507,7 +507,7 @@ const std::set<uint32_t> ObjectPicturePacker::harkonnen_only_ = {
     ObjPic_ExplosionSmallUnit,
     ObjPic_ExplosionFlames,
     ObjPic_ExplosionSpiceBloom,
-    ObjPic_SandwormShimmerMask,
+    ObjPic_SandwormSegment,
     ObjPic_Terrain,
     ObjPic_DestroyedStructure,
     ObjPic_RockDamage,

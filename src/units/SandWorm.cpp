@@ -133,7 +133,7 @@ void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
 }
 
 void Sandworm::blitToScreen() {
-    static constexpr int shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
+    static constexpr auto shimmerOffset = std::to_array<int>({1, 3, 2, 5, 4, 3, 2, 1});
 
     auto* const renderer           = dune::globals::renderer.get();
     const auto* const screenborder = dune::globals::screenborder.get();
@@ -144,9 +144,9 @@ void Sandworm::blitToScreen() {
 
         auto* const gfx = dune::globals::pGFXManager.get();
 
-        auto* const shimmerMaskSurface = gfx->getZoomedObjSurface(ObjPic_SandwormShimmerMask, zoom);
-        const auto* shimmerMaskTex     = gfx->getZoomedObjPic(ObjPic_SandwormShimmerMask, zoom);
-        auto* shimmerTex = gfx->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
+        const auto* shimmerMaskTex = gfx->getZoomedObjPic(ObjPic_SandwormSegment, zoom);
+
+        CoordF previous{};
 
         for (int i = 0; i < SANDWORM_SEGMENTS; i++) {
             const auto& loc = lastLocs_[i];
@@ -154,88 +154,33 @@ void Sandworm::blitToScreen() {
                 continue;
             }
 
-            auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(loc.x),
-                                        screenborder->world2screenY(loc.y), HAlign::Center, VAlign::Center);
+            const auto offset = static_cast<float>(shimmerOffset[(shimmerOffsetIndex_ + i) % shimmerOffset.size()] * 2);
 
-            auto [sx, sy, sw, sh] = dest;
+            const auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(loc.x),
+                                              screenborder->world2screenY(loc.y), HAlign::Center, VAlign::Center);
 
-            sx += static_cast<float>(shimmerOffset[(shimmerOffsetIndex_ + i) % 8] * 2);
+            SDL_SetTextureAlphaMod(shimmerMaskTex->texture_, 4);
+            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_ADD);
 
-            uint32_t format = 0;
-            int access = 0, w = 0, h = 0;
-            SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
+            const CoordF current{dest.x + offset, dest.y};
 
-            float scaleX = NAN, scaleY = NAN;
-            SDL_RenderGetScale(renderer, &scaleX, &scaleY);
+            if (i > 0) {
+                static constexpr auto steps = 8;
 
-            // Even after this scale adjustment, there is an unknown offset between the effective coordinates
-            // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
-            // Note also that if we are partly off the screen, we will get the mask's black appearing in the
-            // transparent areas of surface_copy.
-            const SDL_Rect scaled_source{static_cast<int>(lround(sx * scaleX)), static_cast<int>(lround(sy * scaleY)),
-                                         static_cast<int>(lround(static_cast<float>(w) * scaleX)),
-                                         static_cast<int>(lround(static_cast<float>(h) * scaleY))};
+                for (auto j = 1; j < steps; ++j) {
+                    const auto p =
+                        previous * static_cast<float>(j) / steps + current * static_cast<float>(steps - j) / steps;
 
-            const sdl2::surface_ptr screen_copy{SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h,
-                                                                               SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
-
-            { // Scope
-                const sdl2::surface_lock lock{screen_copy.get()};
-
-                if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
-                                         lock.pitch())) {
-                    sdl2::log_error("SandWorm render read pixels failed: %s!", SDL_GetError());
+                    shimmerMaskTex->draw(renderer, p.x, p.y, i * 11.0 + j * 3.0);
                 }
             }
 
-            const sdl2::surface_ptr shimmer_work{
-                SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+            shimmerMaskTex->draw(renderer, dest.x + offset, dest.y, i * 11.0);
 
-            SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
+            previous = current;
 
-            SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BlendMode::SDL_BLENDMODE_NONE);
-            if (0 != SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr))
-                sdl2::log_error("SandWorm draw failed to copy surface: %s!", SDL_GetError());
-            if (0 != SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BlendMode::SDL_BLENDMODE_ADD))
-                sdl2::log_error("SandWorm draw failed to set surface blend mode: %s!", SDL_GetError());
-            if (0 != SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr))
-                sdl2::log_error("SandWorm draw failed copy surface: %s!", SDL_GetError());
-
-            { // Scope
-                const sdl2::surface_lock src{shimmer_work.get()};
-
-                if (0 != SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch()))
-                    sdl2::log_error("Bullet draw failed: %s!", SDL_GetError());
-            }
-
-#if 0
-            // switch to texture 'shimmerTex' for rendering
-            SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
-            SDL_SetRenderTarget(renderer, shimmerTex);
-
-            // copy complete mask
-            // contains solid black (0,0,0,255) for pixels to take from screen
-            // and transparent (0,0,0,0) for pixels that should not be copied over
-            SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_NONE);
-            Dune_RenderCopy(renderer, shimmerMaskTex, nullptr, nullptr);
+            SDL_SetTextureAlphaMod(shimmerMaskTex->texture_, 255);
             SDL_SetTextureBlendMode(shimmerMaskTex->texture_, SDL_BLENDMODE_BLEND);
-
-            auto* const screen_texture = dune::globals::screenTexture.get();
-
-            // now copy r,g,b colors from screen but don't change alpha values in mask
-            SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_ADD);
-            auto source = as_rect(dest);
-            source.x += shimmerOffset[(shimmerOffsetIndex_ + i) % 8] * 2;
-            Dune_RenderCopyF(renderer, screen_texture, &source, nullptr);
-            SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_NONE);
-
-            // switch back to old rendering target (from texture 'shimmerTex')
-            SDL_SetRenderTarget(renderer, oldRenderTarget);
-#endif // 0
-
-            // now blend shimmerTex to screen (= make use of alpha values in mask)
-            SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
-            Dune_RenderCopyF(renderer, shimmerTex, nullptr, &dest);
         }
     }
 

@@ -400,8 +400,8 @@ SurfaceLoader::SurfaceLoader() {
     objPic[ObjPic_DeadAirUnit][harkIdx][0]  = icon->getPictureArray(3, 1, 1, 6);
     objPic[ObjPic_Smoke][harkIdx][0] =
         units1->getPictureArray(3, 1, 29 | TILE_NORMAL, 30 | TILE_NORMAL, 31 | TILE_NORMAL);
-    objPic[ObjPic_SandwormShimmerMask][harkIdx][0] = units1->getPicture(10);
-    replaceColor(objPic[ObjPic_SandwormShimmerMask][harkIdx][0].get(), PALCOLOR_WHITE, PALCOLOR_BLACK);
+    objPic[ObjPic_SandwormSegment][harkIdx][0] = units1->getPicture(10);
+    replaceColor(objPic[ObjPic_SandwormSegment][harkIdx][0].get(), PALCOLOR_WHITE, PALCOLOR_DESERTSAND);
     objPic[ObjPic_SandwormShimmerTemp][harkIdx][0] = units1->getPicture(10);
     objPic[ObjPic_Terrain][harkIdx][0]             = icon->getPictureRow(124, 209, NUM_TERRAIN_TILES_X);
     objPic[ObjPic_DestroyedStructure][harkIdx][0] =
