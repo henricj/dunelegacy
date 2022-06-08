@@ -52,6 +52,8 @@ public:
 
     float readFloat() override;
 
+    long bytesLeft() const override { return bufferSize - currentPos; }
+
 private:
     size_t currentPos{};
     size_t bufferSize{};

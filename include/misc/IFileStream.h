@@ -40,8 +40,12 @@ public:
     bool readBool() override;
     float readFloat() override;
 
+    long bytesLeft() const override { return sizeBytes_ - bytePos_; }
+
 private:
     FILE* fp;
+    long sizeBytes_;
+    long bytePos_;
 };
 
 #endif // IFILESTREAM_H
