@@ -237,7 +237,7 @@ static_assert(std::tuple_size_v<decltype(objPicTiles)> == NUM_OBJPICS);
 
 } // namespace
 
-SurfaceLoader::SurfaceLoader() {
+SurfaceLoader::SurfaceLoader(int width, int height) {
 
     const auto start = std::chrono::steady_clock::now();
 
@@ -604,7 +604,7 @@ SurfaceLoader::SurfaceLoader() {
     uiGraphic[UI_SendToRepairIcon][harkIdx] = LoadPNG_RW(file_manager->openFile("SendToRepair.png").get());
     SDL_SetColorKey(uiGraphic[UI_SendToRepairIcon][harkIdx].get(), SDL_TRUE, 0);
 
-    PictureFactory picFactory;
+    PictureFactory picFactory{width, height};
 
     uiGraphic[UI_CreditsDigits][harkIdx] = shapes->getPictureArray(
         10, 1, 2 | TILE_NORMAL, 3 | TILE_NORMAL, 4 | TILE_NORMAL, 5 | TILE_NORMAL, 6 | TILE_NORMAL, 7 | TILE_NORMAL,

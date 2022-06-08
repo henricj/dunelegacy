@@ -36,7 +36,7 @@
 
 class GFXManager final {
 public:
-    GFXManager();
+    GFXManager(SDL_Renderer* renderer, int width, int height);
     ~GFXManager();
 
     GFXManager(const GFXManager&)            = delete;

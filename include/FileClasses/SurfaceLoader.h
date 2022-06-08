@@ -35,7 +35,7 @@
 
 class SurfaceLoader final {
 public:
-    SurfaceLoader();
+    SurfaceLoader(int width, int height);
     ~SurfaceLoader();
 
     SurfaceLoader(const SurfaceLoader&)            = delete;

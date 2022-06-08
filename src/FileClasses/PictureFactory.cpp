@@ -36,7 +36,7 @@
 #include <cstddef>
 #include <memory>
 
-PictureFactory::PictureFactory() {
+PictureFactory::PictureFactory(int width, int height) : width_{width}, height_{height} {
     const auto* const file_manager = dune::globals::pFileManager.get();
 
     const auto ScreenPic = LoadCPS_RW(file_manager->openFile("SCREEN.CPS").get());
@@ -58,9 +58,7 @@ PictureFactory::PictureFactory() {
 
     backgroundTile = createBackgroundTile(FamePic.get());
 
-    const auto& video = dune::globals::settings.video;
-
-    background = createBackground(video.width, video.height);
+    background = createBackground(width_, height_);
 
     // decoration border
     decorationBorder.ball    = getSubPicture(ScreenPic.get(), 241, 124, 12, 11);
@@ -247,7 +245,7 @@ PictureFactory::PictureFactory() {
 PictureFactory::~PictureFactory() = default;
 
 sdl2::surface_ptr PictureFactory::createTopBar() const {
-    auto topBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
+    auto topBar = getSubPicture(background.get(), 0, 0, width_ - SIDEBARWIDTH, 32 + 12);
 
     const SDL_Rect dest1{0, 31, getWidth(topBar.get()), 12};
     SDL_FillRect(topBar.get(), &dest1, COLOR_TRANSPARENT);
@@ -269,7 +267,7 @@ sdl2::surface_ptr PictureFactory::createTopBar() const {
 }
 
 sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
-    auto sideBar = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, dune::globals::settings.video.height);
+    auto sideBar = getSubPicture(background.get(), 0, 0, SIDEBARWIDTH, height_);
 
     const SDL_Rect dest1{0, 0, 13, getHeight(sideBar.get())};
     SDL_FillRect(sideBar.get(), &dest1, COLOR_TRANSPARENT);
@@ -350,7 +348,7 @@ sdl2::surface_ptr PictureFactory::createSideBar(bool bEditor) const {
 }
 
 sdl2::surface_ptr PictureFactory::createBottomBar() const {
-    auto BottomBar = getSubPicture(background.get(), 0, 0, dune::globals::settings.video.width - SIDEBARWIDTH, 32 + 12);
+    auto BottomBar = getSubPicture(background.get(), 0, 0, width_ - SIDEBARWIDTH, 32 + 12);
     const SDL_Rect dest1{0, 0, getWidth(BottomBar.get()), 13};
     SDL_FillRect(BottomBar.get(), &dest1, COLOR_TRANSPARENT);
 

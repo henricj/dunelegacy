@@ -818,9 +818,12 @@ bool run_game(int argc, char* argv[]) {
 #endif
 
             GlobalCleanup gfx_cleanup{dune::globals::pGFXManager};
-            const auto start           = std::chrono::steady_clock::now();
-            dune::globals::pGFXManager = std::make_unique<GFXManager>();
-            const auto elapsed         = std::chrono::steady_clock::now() - start;
+            const auto start = std::chrono::steady_clock::now();
+            { // Scope
+                const auto size            = getRendererSizePoint();
+                dune::globals::pGFXManager = std::make_unique<GFXManager>(renderer, size.x, size.y);
+            }
+            const auto elapsed = std::chrono::steady_clock::now() - start;
 
             sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
 

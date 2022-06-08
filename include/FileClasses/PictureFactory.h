@@ -26,7 +26,7 @@
 
 class PictureFactory {
 public:
-    PictureFactory();
+    PictureFactory(int width, int height);
     ~PictureFactory();
 
     PictureFactory(const PictureFactory&)            = delete;
@@ -98,6 +98,9 @@ public:
 
 private:
     [[nodiscard]] sdl2::surface_ptr createBackgroundTile(SDL_Surface* fame_pic) const;
+
+    int width_{};
+    int height_{};
 
     sdl2::surface_ptr background;
     sdl2::surface_ptr gameStatsBackground;
