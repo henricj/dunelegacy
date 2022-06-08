@@ -532,10 +532,12 @@ sdl2::surface_ptr mapSurfaceColorRange(SDL_Surface* source, int srcColor, int de
 
     const sdl2::surface_lock lock{retPic.get()};
 
-    auto* const pixels = static_cast<uint8_t*>(lock.pixels());
+    const auto pitch            = static_cast<ptrdiff_t>(lock.pitch());
+    auto* const RESTRICT pixels = static_cast<uint8_t*>(lock.pixels());
 
     for (auto y = 0; y < retPic->h; ++y) {
-        auto* p = &pixels[static_cast<ptrdiff_t>(y * lock.pitch())];
+        auto* RESTRICT p = &pixels[y * pitch];
+
         for (auto x = 0; x < retPic->w; ++x, ++p) {
             if (*p >= srcColor && *p < srcColor + 7)
                 *p -= srcColor - destColor;
