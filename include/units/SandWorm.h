@@ -54,26 +54,13 @@ public:
 
     bool canAttack(const ObjectBase* object) const override;
     bool canPassTile(const Tile* pTile) const override;
-    int getSleepTimer() const noexcept { return sleepTimer; }
+    int getSleepTimer() const noexcept { return sleepTimer_; }
 
     ANGLETYPE getCurrentAttackAngle() const override;
 
     void playAttackSound() override;
 
-    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override {
-        switch (terrainType) {
-            case TERRAINTYPE::Terrain_Slab: return 1.0_fix;
-            case TERRAINTYPE::Terrain_Sand: return 1.25_fix;
-            case TERRAINTYPE::Terrain_Rock: return 1.0_fix;
-            case TERRAINTYPE::Terrain_Dunes: return 1.25_fix;
-            case TERRAINTYPE::Terrain_Mountain: return 1.0_fix;
-            case TERRAINTYPE::Terrain_Spice: return 1.25_fix;
-            case TERRAINTYPE::Terrain_ThickSpice: return 1.25_fix;
-            case TERRAINTYPE::Terrain_SpiceBloom: return 1.25_fix;
-            case TERRAINTYPE::Terrain_SpecialBloom: return 1.25_fix;
-            default: return 1.0_fix;
-        }
-    }
+    FixPoint getTerrainDifficulty(TERRAINTYPE terrainType) const override;
 
     bool isEating() const noexcept { return (drawnFrame != INVALID); }
 
@@ -87,15 +74,15 @@ private:
     void init();
 
     // sandworm state
-    int32_t kills            = 0; ///< How many units does this sandworm alreay killed?
-    int32_t attackFrameTimer = 0; ///< When to show the next attack frame
-    int32_t sleepTimer       = 0; ///< How long has this sandworm slept?
-    uint8_t warningWormSignPlayedFlags =
+    int32_t kills_            = 0; ///< How many units does this sandworm already killed?
+    int32_t attackFrameTimer_ = 0; ///< When to show the next attack frame
+    int32_t sleepTimer_       = 0; ///< How long has this sandworm slept?
+    uint8_t warningWormSignPlayedFlags_ =
         0; ///< Was the "Worm Sign" warning played? If yes, the corresponding flag is the for the local house
 
     // drawing information
-    int32_t shimmerOffsetIndex = -1;
-    Coord lastLocs[SANDWORM_SEGMENTS]; ///< Last locations of the sandworm
+    int32_t shimmerOffsetIndex_ = -1;
+    std::array<Coord, SANDWORM_SEGMENTS> lastLocs_; ///< Last locations of the sandworm
 };
 
 #endif // SANDWORM_H

@@ -53,7 +53,7 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectInitializer& initializer)
 
     respondable_ = false;
 
-    for (auto& lastLoc : lastLocs) {
+    for (auto& lastLoc : lastLocs_) {
         lastLoc.invalidate();
     }
 }
@@ -65,12 +65,12 @@ Sandworm::Sandworm(uint32_t objectID, const ObjectStreamInitializer& initializer
 
     auto& stream = initializer.stream();
 
-    kills                      = stream.readSint32();
-    attackFrameTimer           = stream.readSint32();
-    sleepTimer                 = stream.readSint32();
-    warningWormSignPlayedFlags = stream.readUint8();
-    shimmerOffsetIndex         = stream.readSint32();
-    for (auto& lastLoc : lastLocs) {
+    kills_                      = stream.readSint32();
+    attackFrameTimer_           = stream.readSint32();
+    sleepTimer_                 = stream.readSint32();
+    warningWormSignPlayedFlags_ = stream.readUint8();
+    shimmerOffsetIndex_         = stream.readSint32();
+    for (auto& lastLoc : lastLocs_) {
         lastLoc.x = stream.readSint32();
         lastLoc.y = stream.readSint32();
     }
@@ -94,12 +94,12 @@ Sandworm::~Sandworm() = default;
 void Sandworm::save(OutputStream& stream) const {
     GroundUnit::save(stream);
 
-    stream.writeSint32(kills);
-    stream.writeSint32(attackFrameTimer);
-    stream.writeSint32(sleepTimer);
-    stream.writeUint8(warningWormSignPlayedFlags);
-    stream.writeSint32(shimmerOffsetIndex);
-    for (const auto lastLoc : lastLocs) {
+    stream.writeSint32(kills_);
+    stream.writeSint32(attackFrameTimer_);
+    stream.writeSint32(sleepTimer_);
+    stream.writeUint8(warningWormSignPlayedFlags_);
+    stream.writeSint32(shimmerOffsetIndex_);
+    for (const auto lastLoc : lastLocs_) {
         stream.writeSint32(lastLoc.x);
         stream.writeSint32(lastLoc.y);
     }
@@ -118,7 +118,7 @@ bool Sandworm::attack([[maybe_unused]] const GameContext& context) {
         if (target_) {
             dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location_);
             drawnFrame         = 0;
-            attackFrameTimer   = SANDWORM_ATTACKFRAMETIME;
+            attackFrameTimer_  = SANDWORM_ATTACKFRAMETIME;
             primaryWeaponTimer = getWeaponReloadTime();
             return true;
         }
@@ -135,26 +135,81 @@ void Sandworm::deploy(const GameContext& context, const Coord& newLocation) {
 void Sandworm::blitToScreen() {
     static constexpr int shimmerOffset[] = {1, 3, 2, 5, 4, 3, 2, 1};
 
-    using dune::globals::currentZoomlevel;
     auto* const renderer           = dune::globals::renderer.get();
     const auto* const screenborder = dune::globals::screenborder.get();
+    const auto* const map          = dune::globals::currentGameMap;
+    const auto zoom                = dune::globals::currentZoomlevel;
 
-    if (shimmerOffsetIndex >= 0) {
+    if (shimmerOffsetIndex_ >= 0) {
         // render sandworm's shimmer
 
         auto* const gfx = dune::globals::pGFXManager.get();
 
-        const auto* shimmerMaskTex = gfx->getZoomedObjPic(ObjPic_SandwormShimmerMask, currentZoomlevel);
+        auto* const shimmerMaskSurface = gfx->getZoomedObjSurface(ObjPic_SandwormShimmerMask, zoom);
+        const auto* shimmerMaskTex     = gfx->getZoomedObjPic(ObjPic_SandwormShimmerMask, zoom);
         auto* shimmerTex = gfx->getTempStreamingTexture(renderer, shimmerMaskTex->source_.w, shimmerMaskTex->source_.h);
 
         for (int i = 0; i < SANDWORM_SEGMENTS; i++) {
-            if (lastLocs[i].isInvalid()) {
+            const auto& loc = lastLocs_[i];
+            if (loc.isInvalid()) {
                 continue;
             }
 
-            auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(lastLocs[i].x),
-                                        screenborder->world2screenY(lastLocs[i].y), HAlign::Center, VAlign::Center);
+            auto dest = calcDrawingRect(shimmerMaskTex, screenborder->world2screenX(loc.x),
+                                        screenborder->world2screenY(loc.y), HAlign::Center, VAlign::Center);
 
+            auto [sx, sy, sw, sh] = dest;
+
+            sx += static_cast<float>(shimmerOffset[(shimmerOffsetIndex_ + i) % 8] * 2);
+
+            uint32_t format = 0;
+            int access = 0, w = 0, h = 0;
+            SDL_QueryTexture(shimmerTex, &format, &access, &w, &h);
+
+            float scaleX = NAN, scaleY = NAN;
+            SDL_RenderGetScale(renderer, &scaleX, &scaleY);
+
+            // Even after this scale adjustment, there is an unknown offset between the effective coordinates
+            // used to read the pixels compared to the coordinates used to copy the final texture to the screen.
+            // Note also that if we are partly off the screen, we will get the mask's black appearing in the
+            // transparent areas of surface_copy.
+            const SDL_Rect scaled_source{static_cast<int>(lround(sx * scaleX)), static_cast<int>(lround(sy * scaleY)),
+                                         static_cast<int>(lround(static_cast<float>(w) * scaleX)),
+                                         static_cast<int>(lround(static_cast<float>(h) * scaleY))};
+
+            const sdl2::surface_ptr screen_copy{SDL_CreateRGBSurfaceWithFormat(0, scaled_source.w, scaled_source.h,
+                                                                               SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+
+            { // Scope
+                const sdl2::surface_lock lock{screen_copy.get()};
+
+                if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
+                                         lock.pitch())) {
+                    sdl2::log_error("SandWorm render read pixels failed: %s!", SDL_GetError());
+                }
+            }
+
+            const sdl2::surface_ptr shimmer_work{
+                SDL_CreateRGBSurfaceWithFormat(0, w, h, SDL_BITSPERPIXEL(32), SCREEN_FORMAT)};
+
+            SDL_SetSurfaceBlendMode(shimmer_work.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
+
+            SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BlendMode::SDL_BLENDMODE_NONE);
+            if (0 != SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr))
+                sdl2::log_error("SandWorm draw failed to copy surface: %s!", SDL_GetError());
+            if (0 != SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BlendMode::SDL_BLENDMODE_ADD))
+                sdl2::log_error("SandWorm draw failed to set surface blend mode: %s!", SDL_GetError());
+            if (0 != SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr))
+                sdl2::log_error("SandWorm draw failed copy surface: %s!", SDL_GetError());
+
+            { // Scope
+                const sdl2::surface_lock src{shimmer_work.get()};
+
+                if (0 != SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch()))
+                    sdl2::log_error("Bullet draw failed: %s!", SDL_GetError());
+            }
+
+#if 0
             // switch to texture 'shimmerTex' for rendering
             SDL_Texture* oldRenderTarget = SDL_GetRenderTarget(renderer);
             SDL_SetRenderTarget(renderer, shimmerTex);
@@ -171,12 +226,13 @@ void Sandworm::blitToScreen() {
             // now copy r,g,b colors from screen but don't change alpha values in mask
             SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_ADD);
             auto source = as_rect(dest);
-            source.x += shimmerOffset[(shimmerOffsetIndex + i) % 8] * 2;
+            source.x += shimmerOffset[(shimmerOffsetIndex_ + i) % 8] * 2;
             Dune_RenderCopyF(renderer, screen_texture, &source, nullptr);
             SDL_SetTextureBlendMode(screen_texture, SDL_BLENDMODE_NONE);
 
             // switch back to old rendering target (from texture 'shimmerTex')
             SDL_SetRenderTarget(renderer, oldRenderTarget);
+#endif // 0
 
             // now blend shimmerTex to screen (= make use of alpha values in mask)
             SDL_SetTextureBlendMode(shimmerTex, SDL_BLENDMODE_BLEND);
@@ -185,11 +241,13 @@ void Sandworm::blitToScreen() {
     }
 
     if (drawnFrame != INVALID) {
-        const auto dest   = calcSpriteDrawingRect(graphic_[currentZoomlevel], screenborder->world2screenX(realX_),
-                                                  screenborder->world2screenY(realY_), numImagesX_, numImagesY_,
-                                                  HAlign::Center, VAlign::Center);
-        const auto source = calcSpriteSourceRect(graphic_[currentZoomlevel], 0, numImagesX_, drawnFrame, numImagesY_);
-        Dune_RenderCopyF(renderer, graphic_[currentZoomlevel], &source, &dest);
+        const auto* graphic = graphic_[zoom];
+
+        const auto dest =
+            calcSpriteDrawingRect(graphic, screenborder->world2screenX(realX_), screenborder->world2screenY(realY_),
+                                  numImagesX_, numImagesY_, HAlign::Center, VAlign::Center);
+        const auto source = calcSpriteSourceRect(graphic, 0, numImagesX_, drawnFrame, numImagesY_);
+        Dune_RenderCopyF(renderer, graphic, &source, &dest);
     }
 }
 
@@ -257,19 +315,19 @@ void Sandworm::setLocation(const GameContext& context, int xPos, int yPos) {
     Put sandworm to sleep for a while
 */
 void Sandworm::sleep(const GameContext& context) {
-    sleepTimer = context.game.randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
+    sleepTimer_ = context.game.randomGen.rand(MIN_SANDWORMSLEEPTIME, MAX_SANDWORMSLEEPTIME);
     setActive(false);
     setVisible(VIS_ALL, false);
     setForced(false);
     context.map.removeObjectFromMap(getObjectID()); // no map point will reference now
     setLocation(context, INVALID_POS, INVALID_POS);
     setHealth(getMaxHealth());
-    kills                      = 0;
-    warningWormSignPlayedFlags = 0;
-    drawnFrame                 = INVALID;
-    attackFrameTimer           = 0;
-    shimmerOffsetIndex         = -1;
-    for (auto& lastLoc : lastLocs) {
+    kills_                      = 0;
+    warningWormSignPlayedFlags_ = 0;
+    drawnFrame                  = INVALID;
+    attackFrameTimer_           = 0;
+    shimmerOffsetIndex_         = -1;
+    for (auto& lastLoc : lastLocs_) {
         lastLoc.invalidate();
     }
 }
@@ -296,11 +354,11 @@ void Sandworm::setTarget(const ObjectBase* newTarget) {
     const auto* const house = dune::globals::pLocalHouse;
 
     if (newTarget == nullptr || newTarget->getOwner() != house
-        || (warningWormSignPlayedFlags & 1 << static_cast<int>(house->getHouseID())) != 0)
+        || (warningWormSignPlayedFlags_ & 1 << static_cast<int>(house->getHouseID())) != 0)
         return;
 
     dune::globals::soundPlayer->playVoice(Voice_enum::WarningWormSign, house->getHouseID());
-    warningWormSignPlayedFlags |= (1 << static_cast<int>(house->getHouseID()));
+    warningWormSignPlayedFlags_ |= (1 << static_cast<int>(house->getHouseID()));
 }
 
 void Sandworm::handleDamage(const GameContext& context, int damage, uint32_t damagerID, House* damagerOwner) {
@@ -324,32 +382,32 @@ bool Sandworm::update(const GameContext& context) {
 
         if (isActive() && (moving || justStoppedMoving) && !game.isGamePaused() && !game.isGameFinished()) {
             const Coord realLocation = getLocation() * TILESIZE + Coord(TILESIZE / 2, TILESIZE / 2);
-            if (lastLocs[1] != realLocation) {
+            if (lastLocs_[1] != realLocation) {
                 for (int i = (SANDWORM_SEGMENTS - 1); i > 0; i--) {
-                    lastLocs[i] = lastLocs[i - 1];
+                    lastLocs_[i] = lastLocs_[i - 1];
                 }
-                lastLocs[1] = realLocation;
+                lastLocs_[1] = realLocation;
             }
-            lastLocs[0].x      = lround(realX_);
-            lastLocs[0].y      = lround(realY_);
-            shimmerOffsetIndex = ((game.getGameCycleCount() + getObjectID()) % 48) / 6;
+            lastLocs_[0].x      = lround(realX_);
+            lastLocs_[0].y      = lround(realY_);
+            shimmerOffsetIndex_ = ((game.getGameCycleCount() + getObjectID()) % 48) / 6;
         }
 
-        if (attackFrameTimer > 0) {
-            attackFrameTimer--;
+        if (attackFrameTimer_ > 0) {
+            attackFrameTimer_--;
 
             // death frame has started
-            if (attackFrameTimer == 0) {
+            if (attackFrameTimer_ == 0) {
                 drawnFrame++;
                 if (drawnFrame >= 9) {
                     drawnFrame = INVALID;
-                    if (kills >= 3) {
+                    if (kills_ >= 3) {
                         if (!sleepOrDie(context)) {
                             return false;
                         }
                     }
                 } else {
-                    attackFrameTimer = SANDWORM_ATTACKFRAMETIME;
+                    attackFrameTimer_ = SANDWORM_ATTACKFRAMETIME;
                     if (drawnFrame == 1) {
                         // the close mouth bit of graphic is currently shown => eat unit
                         if (target_) {
@@ -365,7 +423,7 @@ bool Sandworm::update(const GameContext& context) {
                                 // method?
                                 if (wasAlive && target_
                                     && (!target_.getObjPointer()->isVisible(getOwner()->getTeamID()))) {
-                                    kills++;
+                                    kills_++;
                                 }
                             }
                         }
@@ -374,10 +432,10 @@ bool Sandworm::update(const GameContext& context) {
             }
         }
 
-        if (sleepTimer > 0) {
-            sleepTimer--;
+        if (sleepTimer_ > 0) {
+            sleepTimer_--;
 
-            if (sleepTimer == 0) {
+            if (sleepTimer_ == 0) {
                 // awaken the worm!
 
                 for (int tries = 0; tries < 1000; tries++) {
@@ -454,4 +512,19 @@ ANGLETYPE Sandworm::getCurrentAttackAngle() const {
 
 void Sandworm::playAttackSound() {
     dune::globals::soundPlayer->playSoundAt(Sound_enum::Sound_WormAttack, location_);
+}
+
+FixPoint Sandworm::getTerrainDifficulty(TERRAINTYPE terrainType) const {
+    switch (terrainType) {
+        case TERRAINTYPE::Terrain_Slab: return 1.0_fix;
+        case TERRAINTYPE::Terrain_Sand: return 1.25_fix;
+        case TERRAINTYPE::Terrain_Rock: return 1.0_fix;
+        case TERRAINTYPE::Terrain_Dunes: return 1.25_fix;
+        case TERRAINTYPE::Terrain_Mountain: return 1.0_fix;
+        case TERRAINTYPE::Terrain_Spice: return 1.25_fix;
+        case TERRAINTYPE::Terrain_ThickSpice: return 1.25_fix;
+        case TERRAINTYPE::Terrain_SpiceBloom: return 1.25_fix;
+        case TERRAINTYPE::Terrain_SpecialBloom: return 1.25_fix;
+        default: return 1.0_fix;
+    }
 }
