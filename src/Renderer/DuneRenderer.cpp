@@ -33,23 +33,33 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, flo
     const auto zoom = dune::globals::currentZoomlevel;
 
     // now draw the box with parts at all corners
-    for (auto i = 0; i <= zoom; i++) {
+    for (auto i = 0; i <= zoom; ++i) {
         const auto offset = static_cast<float>(zoom + 1) * 3.f;
         const auto fi     = static_cast<float>(i);
 
         // top left bit
-        DuneDrawLines(renderer, {{x + fi, y + offset}, {x + fi, y + fi}, {x + offset, y + fi}});
+        const auto ret1 = DuneDrawLines(renderer, {{x + fi, y + offset}, {x + fi, y + fi}, {x + offset, y + fi}});
+        if (0 != ret1)
+            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
 
         // top right bit
-        DuneDrawLines(renderer, {{x + w - 1 - fi, y + offset}, {x + w - 1 - fi, y + fi}, {x + w - 1 - offset, y + fi}});
+        const auto ret2 = DuneDrawLines(
+            renderer, {{x + w - 1 - fi, y + offset}, {x + w - 1 - fi, y + fi}, {x + w - 1 - offset, y + fi}});
+        if (0 != ret2)
+            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
 
         // bottom left bit
-        DuneDrawLines(renderer, {{x + fi, y + h - 1 - offset}, {x + fi, y + h - fi}, {x + offset, y + h - fi}});
+        const auto ret3 =
+            DuneDrawLines(renderer, {{x + fi, y + h - 1 - offset}, {x + fi, y + h - fi}, {x + offset, y + h - fi}});
+        if (0 != ret3)
+            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
 
         // bottom right bit
-        DuneDrawLines(renderer, {{x + w - 1 - offset, y + h - 1 - fi},
-                                 {x + w - 1 - fi, y + h - 1 - fi},
-                                 {x + w - 1 - fi, y + h - 1 - offset}});
+        const auto ret4 = DuneDrawLines(renderer, {{x + w - 1 - offset, y + h - 1 - fi},
+                                                   {x + w - 1 - fi, y + h - 1 - fi},
+                                                   {x + w - 1 - fi, y + h - 1 - offset}});
+        if (0 != ret4)
+            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
     }
 }
 
@@ -131,10 +141,12 @@ void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const S
 
         const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
-        SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect);
+        if (0 != SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect))
+            sdl2::log_error("RenderCopy failed: %s", SDL_GetError());
     } else {
         const auto src = texture->source_.as_sdl();
-        SDL_RenderCopy(renderer, texture->texture_, &src, dstrect);
+        if (0 != SDL_RenderCopy(renderer, texture->texture_, &src, dstrect))
+            sdl2::log_error("RenderCopy failed: %s", SDL_GetError());
     }
 }
 
@@ -152,10 +164,12 @@ void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const 
 
         const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
-        SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect);
+        if (0 != SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect))
+            sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
     } else {
         const auto src = texture->source_.as_sdl();
-        SDL_RenderCopyF(renderer, texture->texture_, &src, dstrect);
+        if (0 != SDL_RenderCopyF(renderer, texture->texture_, &src, dstrect))
+            sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
     }
 }
 
@@ -167,7 +181,8 @@ void Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y)
 
     const SDL_FRect dest{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
-    SDL_RenderCopyF(renderer, texture, nullptr, &dest);
+    if (0 != SDL_RenderCopyF(renderer, texture, nullptr, &dest))
+        sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
 }
 
 #if _DEBUG
