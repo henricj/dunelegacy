@@ -1034,9 +1034,9 @@ House* INIMapLoader::getOrCreateHouse(const GameContext& context, HOUSETYPE hous
 HOUSETYPE INIMapLoader::getHouseID(std::string_view name) {
     const auto lowerName = strToLower(name);
 
-    if (!housename2house.empty()) {
-        return housename2house[lowerName];
-    }
+    const auto it = housename2house.find(lowerName);
+    if (it != housename2house.end())
+        return it->second;
 
     return getHouseByName(lowerName);
 }
