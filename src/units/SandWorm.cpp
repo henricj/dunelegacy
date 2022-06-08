@@ -137,7 +137,6 @@ void Sandworm::blitToScreen() {
 
     auto* const renderer           = dune::globals::renderer.get();
     const auto* const screenborder = dune::globals::screenborder.get();
-    const auto* const map          = dune::globals::currentGameMap;
     const auto zoom                = dune::globals::currentZoomlevel;
 
     if (shimmerOffsetIndex_ >= 0) {
