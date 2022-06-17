@@ -1319,8 +1319,8 @@ void CustomGamePlayers::checkPlayerBoxes() {
         }
     }
 
-    if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
-        if (bServer)
+    if (bServer && numPlayers > 0) {
+        if (auto* const network_manager = dune::globals::pNetworkManager.get())
             network_manager->updateServer(numPlayers);
     }
 }
