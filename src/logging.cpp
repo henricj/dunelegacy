@@ -123,7 +123,7 @@ void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int cat
 #ifdef _WIN32
     OutputDebugStringA(output.c_str());
 #endif
-    fmt::fprintf(stderr, output);
+    fwrite(output.data(), output.size(), 1, stderr);
     fflush(stderr);
 }
 
