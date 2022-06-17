@@ -42,7 +42,6 @@ void PlayerFactory::registerAllPlayers() {
     add<QuantBot>("qBotVeryEasy", "qBotVeryEasy", QuantBot::Difficulty::Defend);
     add<QuantBot>("qBotEasy", "qBotEasy", QuantBot::Difficulty::Easy);
     add<QuantBot>("qBotMedium", "qBotMedium", QuantBot::Difficulty::Medium);
-    add<QuantBot>("qBotEasy", "qBotEasy", QuantBot::Difficulty::Easy);
     add<QuantBot>("qBotHard", "qBotHard", QuantBot::Difficulty::Hard);
     add<QuantBot>("qBotBrutal", "qBotBrutal", QuantBot::Difficulty::Brutal);
     add<SmartBot>("SmartBot", "SmartBot", SmartBot::Difficulty::Normal);
