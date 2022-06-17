@@ -373,8 +373,13 @@ void House::decrementUnits(ItemID_enum itemID) {
         lossValue_ += context_.game.objectData.data[itemID][static_cast<int>(houseID_)].price;
     }
 
-    if (!isAlive())
-        lose();
+    // If this was the last unit of this house, mark this house lost (and trigger win/lose conditions)
+    // However if the last unit was an AI controlled Sandworm (in campaigns these will be marked to the
+    // Fremen NPC house), do not advertise the house having lost.
+    if (!isAlive()) {
+        const bool silentLoss = ai_ && itemID == Unit_Sandworm;
+        lose(silentLoss);
+    }
 }
 
 void House::incrementStructures(ItemID_enum itemID) {
