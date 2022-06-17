@@ -2075,26 +2075,32 @@ bool Game::isOnRadarView(int mouseX, int mouseY) const {
 
 namespace {
 // Cheats are available in singleplayer modes:
+// "Let me cheat"
 constexpr auto CHEAT_MODE_ENABLE = std::to_array<unsigned char>(
-    {0xB8, 0x76, 0x6C, 0x8E, 0xC7, 0xA6, 0x10, 0x36, 0xB6, 0x98, 0x93, 0xFC, 0x17, 0xAA, 0xF2, 0x1E}); // "Let me cheat"
+    {0xB8, 0x76, 0x6C, 0x8E, 0xC7, 0xA6, 0x10, 0x36, 0xB6, 0x98, 0x93, 0xFC, 0x17, 0xAA, 0xF2, 0x1E});
+// "Let me win"
 constexpr auto CHEAT_WIN_GAME = std::to_array<unsigned char>(
-    {0x57, 0x58, 0x32, 0x91, 0xCB, 0x37, 0xF8, 0x16, 0x7E, 0xDB, 0x06, 0x11, 0xD8, 0xD1, 0x9E, 0x58}); // "Let me win"
+    {0x57, 0x58, 0x32, 0x91, 0xCB, 0x37, 0xF8, 0x16, 0x7E, 0xDB, 0x06, 0x11, 0xD8, 0xD1, 0x9E, 0x58});
+// "Start debugging"
 constexpr auto CHEAT_START_DEBUGGING = std::to_array<unsigned char>(
-    {0x1A, 0x12, 0xBE, 0x3D, 0xBE, 0x54, 0xC5, 0xA5, 0x04, 0xCA, 0xA6, 0xEE, 0x97, 0x82, 0xC1, 0xC8}); // "Start debugging"
+    {0x1A, 0x12, 0xBE, 0x3D, 0xBE, 0x54, 0xC5, 0xA5, 0x04, 0xCA, 0xA6, 0xEE, 0x97, 0x82, 0xC1, 0xC8});
+// "Stop debugging"
 constexpr auto CHEAT_STOP_DEBUGGING = std::to_array<unsigned char>(
-    {0x54, 0xF6, 0x81, 0x55, 0xFC, 0x64, 0xA5, 0xBC, 0x66, 0xDC, 0xD5, 0x0C, 0x1E, 0x92, 0x5C, 0x0B}); // "Stop debugging"
+    {0x54, 0xF6, 0x81, 0x55, 0xFC, 0x64, 0xA5, 0xBC, 0x66, 0xDC, 0xD5, 0x0C, 0x1E, 0x92, 0x5C, 0x0B});
+// "Give me some credits"
 constexpr auto CHEAT_GIVE_CREDITS = std::to_array<unsigned char>(
-    {0xCE, 0xF1, 0xD2, 0x6C, 0xE4, 0xB1, 0x45, 0xDE, 0x98, 0x55, 0x03, 0xCA, 0x35, 0x23, 0x2E, 0xD8}); // "Give me some credits"
-}
+    {0xCE, 0xF1, 0xD2, 0x6C, 0xE4, 0xB1, 0x45, 0xDE, 0x98, 0x55, 0x03, 0xCA, 0x35, 0x23, 0x2E, 0xD8});
+} // namespace
 
 void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_KeyboardEvent& keyboardEvent) {
     if (keyboardEvent.keysym.sym == SDLK_ESCAPE) {
         chatMode_ = false;
     } else if (keyboardEvent.keysym.sym == SDLK_RETURN) {
         if (typingChatMessage_.length() > 0) {
-            std::array<unsigned char, 16> md5sum;
+            std::array<unsigned char, 16> md5sum{};
 
-            md5(reinterpret_cast<const unsigned char*>(typingChatMessage_.c_str()), typingChatMessage_.size(), md5sum.data());
+            const auto* const code = reinterpret_cast<const unsigned char*>(typingChatMessage_.data());
+            md5(code, typingChatMessage_.size(), md5sum.data());
 
             if ((!bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_MODE_ENABLE))) {
                 bCheatsEnabled_ = true;
@@ -2123,7 +2129,7 @@ void Game::handleChatInput([[maybe_unused]] const GameContext& context, SDL_Keyb
             } else if ((bCheatsEnabled_) && (std::ranges::equal(md5sum, CHEAT_GIVE_CREDITS))) {
                 if (gameType != GameType::CustomMultiplayer) {
                     pInterface_->getChatManager().addInfoMessage("You got some credits");
-                    dune::globals::pLocalHouse->returnCredits(10000);
+                    dune::globals::pLocalHouse->returnCredits(10000_fix);
                 }
             } else {
                 if (auto* const network_manager = dune::globals::pNetworkManager.get()) {
