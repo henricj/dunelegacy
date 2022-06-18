@@ -268,12 +268,12 @@ void LANGameFinderAndAnnouncer::receivePackets() {
             auto iter = gameServerInfoList_.begin();
             while (iter != gameServerInfoList_.end()) {
                 if ((iter->serverAddress.host == senderAddress.host) && (iter->serverAddress.port == serverPort)) {
-                    auto tmpGameServerInfo = *iter;
+                    auto tmpGameServerInfo = std::move(*iter);
 
                     iter = gameServerInfoList_.erase(iter);
 
                     if (pOnRemoveServer_) {
-                        pOnRemoveServer_(tmpGameServerInfo);
+                        pOnRemoveServer_(std::move(tmpGameServerInfo));
                     }
                 } else {
                     ++iter;
