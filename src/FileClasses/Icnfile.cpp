@@ -226,9 +226,9 @@ sdl2::surface_ptr Icnfile::getPicture(uint32_t indexOfFile) const {
 /// Returns an array of pictures in the icn-File
 /**
     This method returns a SDL_Surface containing multiple tiles/pictures. Which tiles to include is specified by
-   MapfileIndex. The MapfileIndex specifies the tileset. One tileset constists of multiple tiles of the icn-File. The
+   MapfileIndex. The MapfileIndex specifies the tileset. One tileset consists of multiple tiles of the icn-File. The
    last 3 parameters specify how to arrange the tiles:
-     - If all 3 parameters are 0 then a "random" layout is choosen, which should look good.
+     - If all 3 parameters are 0 then a "random" layout is chosen, which should look good.
      - If tilesX and tilesY is set to non-zero values then the result surface contains tilesX*tilesY tiles and this
    tilesN-times side by side.
      - If all there parameters are non-zero then the result surface is exactly in this arrangement.
