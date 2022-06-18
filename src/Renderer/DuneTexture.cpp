@@ -56,14 +56,15 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y) const noexcept 
     const SDL_FRect dst{x, y, width_, height_};
 
     if (SDL_RenderCopyF(renderer, texture_, &src, &dst))
-        sdl2::log_info("SDL_RenderCopy failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTexture::draw() SDL_RenderCopyF failed: %s", SDL_GetError());
 }
 
 void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect& source) const noexcept {
     DuneRendererImplementation::countRenderCopy(texture_);
 
     if (source.x < 0 || source.y < 0 || source.w < 1 || source.h < 1) {
-        sdl2::log_info("The source rectangle is invalid (%dx%d at %dx%d)", source.w, source.h, source.x, source.y);
+        sdl2::log_error("DuneTexture::draw() The source rectangle is invalid (%dx%d at %dx%d)", source.w, source.h,
+                        source.x, source.y);
         return;
     }
 
@@ -71,12 +72,12 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, const SDL_Rect&
     const SDL_FRect dst{x, y, width_, height_};
 
     if (src.x + src.w > source_.x + source_.w || src.y + src.h > source_.y + source_.h) {
-        sdl2::log_info("source rectangle out of bounds");
+        sdl2::log_error("DuneTexture::draw() source rectangle out of bounds");
         return;
     }
 
     if (SDL_RenderCopyF(renderer, texture_, &src, &dst))
-        sdl2::log_info("SDL_RenderCopyF failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTexture::draw() SDL_RenderCopyF failed: %s", SDL_GetError());
 }
 
 void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, double angle) const noexcept {
@@ -86,7 +87,7 @@ void DuneTexture::draw(SDL_Renderer* renderer, float x, float y, double angle) c
     const SDL_FRect dst{x, y, width_, height_};
 
     if (SDL_RenderCopyExF(renderer, texture_, &src, &dst, angle, nullptr, SDL_RendererFlip::SDL_FLIP_NONE))
-        sdl2::log_info("SDL_RenderCopyEx failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTexture::draw() SDL_RenderCopyExF failed: %s", SDL_GetError());
 }
 
 DuneTextureOwned::DuneTextureOwned(sdl2::texture_ptr texture, float width, float height)
@@ -126,7 +127,7 @@ void DuneTextureOwned::draw(SDL_Renderer* renderer, float x, float y) const noex
     const SDL_FRect dst{x, y, width_, height_};
 
     if (SDL_RenderCopyF(renderer, texture_.get(), nullptr, &dst))
-        sdl2::log_info("SDL_RenderCopyF failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTextureOwned::draw() SDL_RenderCopyF failed: %s", SDL_GetError());
 }
 
 namespace {
