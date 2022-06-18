@@ -77,33 +77,27 @@ private:
     // spice statistics
     Label spiceHarvestedByLabel;
     Label you1Label;
-    ProgressBar spiceYouShadowProgressBar;
     ProgressBar spiceYouProgressBar;
     Label spiceYouLabel;
     Label enemy1Label;
-    ProgressBar spiceEnemyShadowProgressBar;
     ProgressBar spiceEnemyProgressBar;
     Label spiceEnemyLabel;
 
     // units statistics
     Label unitsDestroyedByLabel;
     Label you2Label;
-    ProgressBar unitsYouShadowProgressBar;
     ProgressBar unitsYouProgressBar;
     Label unitsYouLabel;
     Label enemy2Label;
-    ProgressBar unitsEnemyShadowProgressBar;
     ProgressBar unitsEnemyProgressBar;
     Label unitsEnemyLabel;
 
     // buildings statistics
     Label buildingsDestroyedByLabel;
     Label you3Label;
-    ProgressBar buildingsYouShadowProgressBar;
     ProgressBar buildingsYouProgressBar;
     Label buildingsYouLabel;
     Label enemy3Label;
-    ProgressBar buildingsEnemyShadowProgressBar;
     ProgressBar buildingsEnemyProgressBar;
     Label buildingsEnemyLabel;
 

@@ -105,10 +105,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     you1Label.setText(_("@DUNE.ENG|329#You:"));
     windowWidget.addWidget(&you1Label, size / 2 + Point(-229 - you1Label.getSize().x, -21), you1Label.getSize());
 
-    spiceYouShadowProgressBar.setColor(COLOR_BLACK);
-    spiceYouShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&spiceYouShadowProgressBar, size / 2 + Point(-228 + 2, -15 + 2), Point(440, 12));
-
+    spiceYouProgressBar.setDrawShadow(true);
     spiceYouProgressBar.setColor(colorYou);
     spiceYouProgressBar.setProgress(0.0);
     windowWidget.addWidget(&spiceYouProgressBar, size / 2 + Point(-228, -15), Point(440, 12));
@@ -123,13 +120,10 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy1Label.setText(_("@DUNE.ENG|330#Enemy:"));
     windowWidget.addWidget(&enemy1Label, size / 2 + Point(-229 - enemy1Label.getSize().x, -3), enemy1Label.getSize());
 
-    spiceEnemyShadowProgressBar.setColor(COLOR_BLACK);
-    spiceEnemyShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&spiceEnemyShadowProgressBar, size / 2 + Point(-228 + 2, 3 + 2), Point(440, 12));
-
+    spiceEnemyProgressBar.setDrawShadow(true);
     spiceEnemyProgressBar.setColor(colorEnemy);
     spiceEnemyProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&spiceEnemyProgressBar, size / 2 + Point(-228, 3), Point(440, 12));
+    windowWidget.addWidget(&spiceEnemyProgressBar, size / 2 + Point(-228, 3), Point(440, 12.));
 
     spiceEnemyLabel.setTextColor(COLOR_WHITE, COLOR_BLACK);
     spiceEnemyLabel.setAlignment(Alignment_HCenter);
@@ -143,10 +137,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     you2Label.setText(_("@DUNE.ENG|329#You:"));
     windowWidget.addWidget(&you2Label, size / 2 + Point(-229 - you2Label.getSize().x, 53), you2Label.getSize());
 
-    unitsYouShadowProgressBar.setColor(COLOR_BLACK);
-    unitsYouShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&unitsYouShadowProgressBar, size / 2 + Point(-228 + 2, 59 + 2), Point(440, 12));
-
+    unitsYouProgressBar.setDrawShadow(true);
     unitsYouProgressBar.setColor(colorYou);
     unitsYouProgressBar.setProgress(0.0);
     windowWidget.addWidget(&unitsYouProgressBar, size / 2 + Point(-228, 59), Point(440, 12));
@@ -161,10 +152,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy2Label.setText(_("@DUNE.ENG|330#Enemy:"));
     windowWidget.addWidget(&enemy2Label, size / 2 + Point(-229 - enemy2Label.getSize().x, 71), enemy2Label.getSize());
 
-    unitsEnemyShadowProgressBar.setColor(COLOR_BLACK);
-    unitsEnemyShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&unitsEnemyShadowProgressBar, size / 2 + Point(-228 + 2, 77 + 2), Point(440, 12));
-
+    unitsEnemyProgressBar.setDrawShadow(true);
     unitsEnemyProgressBar.setColor(colorEnemy);
     unitsEnemyProgressBar.setProgress(0.0);
     windowWidget.addWidget(&unitsEnemyProgressBar, size / 2 + Point(-228, 77), Point(440, 12));
@@ -181,10 +169,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     you3Label.setText(_("@DUNE.ENG|329#You:"));
     windowWidget.addWidget(&you3Label, size / 2 + Point(-229 - you3Label.getSize().x, 127), you3Label.getSize());
 
-    buildingsYouShadowProgressBar.setColor(COLOR_BLACK);
-    buildingsYouShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&buildingsYouShadowProgressBar, size / 2 + Point(-228 + 2, 133 + 2), Point(440, 12));
-
+    buildingsYouProgressBar.setDrawShadow(true);
     buildingsYouProgressBar.setColor(colorYou);
     buildingsYouProgressBar.setProgress(0.0);
     windowWidget.addWidget(&buildingsYouProgressBar, size / 2 + Point(-228, 133), Point(440, 12));
@@ -199,10 +184,7 @@ CampaignStatsMenu::CampaignStatsMenu(int level) {
     enemy3Label.setText(_("@DUNE.ENG|330#Enemy:"));
     windowWidget.addWidget(&enemy3Label, size / 2 + Point(-229 - enemy3Label.getSize().x, 145), enemy3Label.getSize());
 
-    buildingsEnemyShadowProgressBar.setColor(COLOR_BLACK);
-    buildingsEnemyShadowProgressBar.setProgress(0.0);
-    windowWidget.addWidget(&buildingsEnemyShadowProgressBar, size / 2 + Point(-228 + 2, 151 + 2), Point(440, 12));
-
+    buildingsEnemyProgressBar.setDrawShadow(true);
     buildingsEnemyProgressBar.setColor(colorEnemy);
     buildingsEnemyProgressBar.setProgress(0.0);
     windowWidget.addWidget(&buildingsEnemyProgressBar, size / 2 + Point(-228, 151), Point(440, 12));
@@ -269,15 +251,13 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&you1Label, {iWidth / 2 - 229 - you1Label.getSize().x, iHeight / 2 - 21});
 
-    windowWidget.setWidgetPosition(&spiceYouShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 - 15 + 2});
+    // windowWidget.setWidgetPosition(&spiceYouShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 - 15 + 2});
 
     windowWidget.setWidgetPosition(&spiceYouProgressBar, {iWidth / 2 - 228, iHeight / 2 - 15});
 
     windowWidget.setWidgetPosition(&spiceYouLabel, {iWidth / 2 + 222, iHeight / 2 - 20 + 1});
 
     windowWidget.setWidgetPosition(&enemy1Label, {iWidth / 2 - 229 - enemy1Label.getSize().x, iHeight / 2 - 3});
-
-    windowWidget.setWidgetPosition(&spiceEnemyShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 + 3 + 2});
 
     windowWidget.setWidgetPosition(&spiceEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 3});
 
@@ -287,15 +267,11 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&you2Label, {iWidth / 2 - 229 - you2Label.getSize().x, iHeight / 2 + 53});
 
-    windowWidget.setWidgetPosition(&unitsYouShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 + 59 + 2});
-
     windowWidget.setWidgetPosition(&unitsYouProgressBar, {iWidth / 2 - 228, iHeight / 2 + 59});
 
     windowWidget.setWidgetPosition(&unitsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 54 + 1});
 
     windowWidget.setWidgetPosition(&enemy2Label, {iWidth / 2 - 229 - enemy2Label.getSize().x, iHeight / 2 + 71});
-
-    windowWidget.setWidgetPosition(&unitsEnemyShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 + 77 + 2});
 
     windowWidget.setWidgetPosition(&unitsEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 77});
 
@@ -305,15 +281,11 @@ void CampaignStatsMenu::resize(uint32_t width, uint32_t height) {
 
     windowWidget.setWidgetPosition(&you3Label, {iWidth / 2 - 229 - you3Label.getSize().x, iHeight / 2 + 127});
 
-    windowWidget.setWidgetPosition(&buildingsYouShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 + 133 + 2});
-
     windowWidget.setWidgetPosition(&buildingsYouProgressBar, {iWidth / 2 - 228, iHeight / 2 + 133});
 
     windowWidget.setWidgetPosition(&buildingsYouLabel, {iWidth / 2 + 222, iHeight / 2 + 128 + 1});
 
     windowWidget.setWidgetPosition(&enemy3Label, {iWidth / 2 - 229 - enemy3Label.getSize().x, iHeight / 2 + 145});
-
-    windowWidget.setWidgetPosition(&buildingsEnemyShadowProgressBar, {iWidth / 2 - 228 + 2, iHeight / 2 + 151 + 2});
 
     windowWidget.setWidgetPosition(&buildingsEnemyProgressBar, {iWidth / 2 - 228, iHeight / 2 + 151});
 
@@ -343,7 +315,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             spiceYouLabel.setVisible(true);
             spiceYouProgressBar.setProgress(Human_PercentSpiceComplete);
-            spiceYouShadowProgressBar.setProgress(Human_PercentSpiceComplete);
         } break;
 
         case CampaignStatsState::State_Between_HumanSpice_and_AISpice: {
@@ -372,7 +343,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             spiceEnemyLabel.setVisible(true);
             spiceEnemyProgressBar.setProgress(AI_PercentSpiceComplete);
-            spiceEnemyShadowProgressBar.setProgress(AI_PercentSpiceComplete);
         } break;
 
         case CampaignStatsState::State_Between_AISpice_and_HumanUnits:
@@ -401,7 +371,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             unitsYouLabel.setVisible(true);
             unitsYouProgressBar.setProgress(Human_PercentUnitsComplete);
-            unitsYouShadowProgressBar.setProgress(Human_PercentUnitsComplete);
         } break;
 
         case CampaignStatsState::State_Between_HumanUnits_and_AIUnits:
@@ -430,7 +399,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             unitsEnemyLabel.setVisible(true);
             unitsEnemyProgressBar.setProgress(AI_PercentUnitsComplete);
-            unitsEnemyShadowProgressBar.setProgress(AI_PercentUnitsComplete);
         } break;
 
         case CampaignStatsState::State_Between_AIUnits_and_HumanBuildings:
@@ -459,7 +427,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             buildingsYouLabel.setVisible(true);
             buildingsYouProgressBar.setProgress(Human_PercentBuildingsComplete);
-            buildingsYouShadowProgressBar.setProgress(Human_PercentBuildingsComplete);
         } break;
 
         case CampaignStatsState::State_Between_HumanBuildings_and_AIBuildings:
@@ -489,7 +456,6 @@ void CampaignStatsMenu::doState(dune::dune_clock::duration elapsedTime) {
 
             buildingsEnemyLabel.setVisible(true);
             buildingsEnemyProgressBar.setProgress(AI_PercentBuildingsComplete);
-            buildingsEnemyShadowProgressBar.setProgress(AI_PercentBuildingsComplete);
         } break;
 
         case CampaignStatsState::State_Finished:
