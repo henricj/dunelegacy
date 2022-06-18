@@ -62,26 +62,26 @@ void ProgressBar::draw(Point position) {
         const SDL_FRect dest2{static_cast<float>(position.x + 2), static_cast<float>(position.y + 2),
                               percent_ * 0.01f * static_cast<float>(size.x), static_cast<float>(size.y)};
         renderFillRectF(renderer, &dest2, COLOR_BLACK);
+    } else {
+        const auto render_button = [&](const DuneTexture* foreground) {
+            gui.RenderButton(renderer,
+                             {static_cast<float>(position.x), static_cast<float>(position.y),
+                              static_cast<float>(size.x), static_cast<float>(size.y)},
+                             foreground, true);
+        };
+
+        if (std::holds_alternative<DuneTextureOwned>(pContent_)) {
+            const auto foreground = std::get<DuneTextureOwned>(pContent_).as_dune_texture();
+
+            render_button(foreground ? &foreground : nullptr);
+        } else if (std::holds_alternative<const DuneTexture*>(pContent_)) {
+            const auto* foreground = std::get<const DuneTexture*>(pContent_);
+
+            foreground->draw(renderer, static_cast<float>(position.x), static_cast<float>(position.y));
+
+        } else
+            render_button(nullptr);
     }
-
-    const auto render_button = [&](const DuneTexture* foreground) {
-        gui.RenderButton(renderer,
-                         {static_cast<float>(position.x), static_cast<float>(position.y), static_cast<float>(size.x),
-                          static_cast<float>(size.y)},
-                         foreground, true);
-    };
-
-    if (std::holds_alternative<DuneTextureOwned>(pContent_)) {
-        const auto foreground = std::get<DuneTextureOwned>(pContent_).as_dune_texture();
-
-        render_button(foreground ? &foreground : nullptr);
-    } else if (std::holds_alternative<const DuneTexture*>(pContent_)) {
-        const auto* foreground = std::get<const DuneTexture*>(pContent_);
-
-        foreground->draw(renderer, position.x, position.y);
-
-    } else
-        render_button(nullptr);
 
     if (color_ == COLOR_DEFAULT) {
         // default color
