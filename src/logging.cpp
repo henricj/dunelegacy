@@ -123,8 +123,8 @@ void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int cat
 #ifdef _WIN32
     OutputDebugStringA(output.c_str());
 #endif
-    fwrite(output.data(), output.size(), 1, stderr);
-    fflush(stderr);
+    (void)fwrite(output.data(), output.size(), 1, stderr);
+    (void)fflush(stderr);
 }
 
 } // namespace
