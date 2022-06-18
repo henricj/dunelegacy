@@ -24,7 +24,11 @@
 //#include "FileClasses/SaveTextureAsBmp.h"
 
 #include <cstddef>
-#include <set>
+#include <tuple>
+#include <type_traits>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 DuneTextures::DuneTextures() = default;
 
@@ -494,11 +498,11 @@ private:
     textures_type dune_textures_;
 
     // There is only one kind of these items, stored in the Harkonnen slot.
-    static const std::set<uint32_t> harkonnen_only_;
+    static const std::unordered_set<uint32_t> harkonnen_only_;
 };
 
 // There is only one kind of these items, stored in the Harkonnen slot.
-const std::set<uint32_t> ObjectPicturePacker::harkonnen_only_ = {
+const std::unordered_set<uint32_t> ObjectPicturePacker::harkonnen_only_ = {
     ObjPic_ExplosionSmall,
     ObjPic_ExplosionMedium1,
     ObjPic_ExplosionMedium2,
