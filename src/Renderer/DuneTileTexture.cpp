@@ -6,8 +6,9 @@
 #include <stdexcept>
 #include <utility>
 
-DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, std::span<const SDL_Rect> tiles)
-    : texture_{texture}, columns_{columns} {
+DuneTileTexture::DuneTileTexture(SDL_Texture* texture, float tile_width, float tile_height, int rows, int columns,
+                                 std::span<const SDL_Rect> tiles)
+    : texture_{texture}, columns_{columns}, tile_width_(tile_width), tile_height_(tile_height) {
     if (rows < 1)
         THROW(std::invalid_argument, "The rows argument is out of range (%d)", rows);
 
@@ -33,4 +34,20 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, int rows, int columns, st
 
     source_.reserve(tiles.size());
     std::ranges::transform(tiles, std::back_inserter(source_), [](const auto& tile) { return DuneTextureRect{tile}; });
+}
+
+void DuneTileTexture::draw(SDL_Renderer* renderer, float x, float y, int column, int row) const noexcept {
+    const auto src = source_rect(column, row);
+    const SDL_FRect dst{x, y, tile_width_, tile_height_};
+
+    if (SDL_RenderCopyF(renderer, texture_, &src, &dst))
+        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyF failed: %s", SDL_GetError());
+}
+
+void DuneTileTexture::draw(SDL_Renderer* renderer, float x, float y, double angle, int column, int row) const noexcept {
+    const auto src = source_rect(column, row);
+    const SDL_FRect dst{x, y, tile_width_, tile_height_};
+
+    if (SDL_RenderCopyExF(renderer, texture_, &src, &dst, angle, nullptr, SDL_RendererFlip::SDL_FLIP_NONE))
+        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyExF failed: %s", SDL_GetError());
 }

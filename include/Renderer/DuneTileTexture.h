@@ -17,7 +17,8 @@ public:
     DuneTileTexture(const DuneTileTexture&) = default;
     DuneTileTexture(DuneTileTexture&&)      = default;
 
-    DuneTileTexture(SDL_Texture* texture, int rows, int columns, std::span<const SDL_Rect> tiles);
+    DuneTileTexture(SDL_Texture* texture, float tile_width, float tile_height, int rows, int columns,
+                    std::span<const SDL_Rect> tiles);
 
     ~DuneTileTexture() = default;
 
@@ -26,8 +27,8 @@ public:
 
     operator bool() const noexcept { return nullptr != texture_; }
 
-    void draw(SDL_Renderer* renderer, int x, int y, int column, int row = 0) const noexcept;
-    void draw(SDL_Renderer* renderer, int x, int y, double angle, int column, int row = 0) const noexcept;
+    void draw(SDL_Renderer* renderer, float x, float y, int column, int row = 0) const noexcept;
+    void draw(SDL_Renderer* renderer, float x, float y, double angle, int column, int row = 0) const noexcept;
 
 private:
     [[nodiscard]] SDL_Rect source_rect(int column, int row = 0) const {
@@ -42,6 +43,8 @@ private:
 
     SDL_Texture* texture_{};
     int columns_{};
+    float tile_width_;
+    float tile_height_;
     std::vector<DuneTextureRect> source_;
 };
 
