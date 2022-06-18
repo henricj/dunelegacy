@@ -566,6 +566,10 @@ void INIMapEditorLoader::loadReinforcements() {
         std::string strTime;
         std::string strPlus;
 
+        // N.b. valid reinforcements strings are of one of:
+        // "3=Sardaukar,Troopers,Enemybase,20" (nonrepeating reinforcement at 20 minutes mark)
+        // "3=Sardaukar,Troopers,Enemybase,20+" (repeating reinforcement every 20 minutes)
+        // "3=Sardaukar,Troopers,Enemybase,20,+" (same as above, just with an alternate syntax)
         if (!splitString(key.getStringView(), strHouseName, strUnitName, strDropLocation, strTime)) {
             if (!splitString(key.getStringView(), strHouseName, strUnitName, strDropLocation, strTime, strPlus)) {
                 logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
@@ -599,14 +603,18 @@ void INIMapEditorLoader::loadReinforcements() {
             dropLocation = DropLocation::Drop_Homebase;
         }
 
+        auto bRepeat = (strPlus == "+");
+        if (strTime.rfind('+') == (strTime.length() - 1)) {
+            strTime.resize(strTime.length() - 1);
+            bRepeat = true;
+        }
+
         auto droptime = 0;
         if (!parseString(strTime, droptime)) {
             logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
                        "Invalid drop time string: '" + strTime + "'!");
             continue;
         }
-
-        auto bRepeat = (strTime.rfind('+') == (strTime.length() - 1)) || (strPlus == "+");
 
         pMapEditor_->getReinforcements().emplace_back(houseID, unitID, dropLocation, droptime, bRepeat);
     }
