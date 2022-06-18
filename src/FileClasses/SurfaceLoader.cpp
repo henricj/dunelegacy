@@ -311,7 +311,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
     objPic[ObjPic_Trike][harkIdx][0]                       = units->getPictureArray(8, 1, GROUNDUNIT_ROW(5));
     objPic[ObjPic_Harvester][harkIdx][0]                   = units->getPictureArray(8, 1, GROUNDUNIT_ROW(10));
     { // Scope
-        SDL_Color shadowTransparent = {0, 0, 0, 96};
+        static constexpr SDL_Color shadowTransparent{0, 0, 0, 96};
         SDL_SetPaletteColors(objPic[ObjPic_Harvester][harkIdx][0]->format->palette, &shadowTransparent, PALCOLOR_SHADOW,
                              1);
         SDL_SetSurfaceBlendMode(objPic[ObjPic_Harvester][harkIdx][0].get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
@@ -321,7 +321,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
         units1->getPictureArray(8, 3, HARVESTERSAND_ROW(72), HARVESTERSAND_ROW(73), HARVESTERSAND_ROW(74));
     objPic[ObjPic_MCV][harkIdx][0] = units->getPictureArray(8, 1, GROUNDUNIT_ROW(15));
     { // Scope
-        SDL_Color shadowTransparent = {0, 0, 0, 96};
+        static constexpr SDL_Color shadowTransparent{0, 0, 0, 96};
         SDL_SetPaletteColors(objPic[ObjPic_MCV][harkIdx][0]->format->palette, &shadowTransparent, PALCOLOR_SHADOW, 1);
         SDL_SetSurfaceBlendMode(objPic[ObjPic_MCV][harkIdx][0].get(), SDL_BlendMode::SDL_BLENDMODE_BLEND);
     }
@@ -613,7 +613,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
     uiGraphic[UI_Indicator][harkIdx] =
         units1->getPictureArray(3, 1, 8 | TILE_NORMAL, 9 | TILE_NORMAL, 10 | TILE_NORMAL);
     SDL_SetColorKey(uiGraphic[UI_Indicator][harkIdx].get(), SDL_TRUE, 0);
-    SDL_Color indicatorTransparent = {255, 255, 255, 48};
+    static constexpr SDL_Color indicatorTransparent{255, 255, 255, 48};
     SDL_SetPaletteColors(uiGraphic[UI_Indicator][harkIdx]->format->palette, &indicatorTransparent, PALCOLOR_WHITE, 1);
     uiGraphic[UI_InvalidPlace_Zoomlevel0][harkIdx] = PictureFactory::createPlacingGrid(16, PALCOLOR_LIGHTRED);
     uiGraphic[UI_InvalidPlace_Zoomlevel1][harkIdx] = PictureFactory::createPlacingGrid(32, PALCOLOR_LIGHTRED);
@@ -1046,7 +1046,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
         objPic[ObjPic_ConstructionYard][harkIdx][0].get(), 2 * 2 * D2_TILESIZE, 0, 2 * D2_TILESIZE, 2 * D2_TILESIZE);
     uiGraphic[UI_MapEditor_Windtrap][harkIdx] = getSubPicture(objPic[ObjPic_Windtrap][harkIdx][0].get(),
                                                               2 * 2 * D2_TILESIZE, 0, 2 * D2_TILESIZE, 2 * D2_TILESIZE);
-    SDL_Color windtrapColor                   = {70, 70, 70, 255};
+    static constexpr SDL_Color windtrapColor{70, 70, 70, 255};
     SDL_SetPaletteColors(uiGraphic[UI_MapEditor_Windtrap][harkIdx]->format->palette, &windtrapColor,
                          PALCOLOR_WINDTRAP_COLORCYCLE, 1);
     uiGraphic[UI_MapEditor_Radar][harkIdx] =
@@ -1549,7 +1549,7 @@ sdl2::surface_ptr SurfaceLoader::generateWindtrapAnimationFrames(SDL_Surface* wi
     SDL_SetSurfaceBlendMode(returnPic.get(), SDL_BLENDMODE_NONE);
 
     // copy building phase
-    SDL_Rect src  = {0, 0, 2 * windtrapSize, windtrapSize};
+    SDL_Rect src{0, 0, 2 * windtrapSize, windtrapSize};
     SDL_Rect dest = src;
     SDL_BlitSurface(windtrapPic, &src, returnPic.get(), &dest);
 
@@ -1595,7 +1595,7 @@ sdl2::surface_ptr SurfaceLoader::generateMapChoiceArrowFrames(SDL_Surface* arrow
     sdl2::surface_ptr returnPic{
         SDL_CreateRGBSurface(0, arrowPic->w * 4, arrowPic->h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
 
-    SDL_Rect dest = {0, 0, arrowPic->w, arrowPic->h};
+    SDL_Rect dest{0, 0, arrowPic->w, arrowPic->h};
 
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 4; k++) {
