@@ -365,30 +365,21 @@ void INIMapLoader::loadHouses(const GameContext& context) {
     // find unbounded houses
     std::vector<HOUSETYPE> unboundedHouses;
 
-    for (int h = 0; h < NUM_HOUSES; h++) {
-        bool bFound = false;
-        for (const auto& houseInfo : houseInfoList) {
-            if (houseInfo.houseID == static_cast<HOUSETYPE>(h)) {
-                bFound = true;
-                break;
-            }
+    for_each_housetype([&](auto h) {
+        const auto houseName = getHouseNameByNumber(h);
+
+        // init housename2house mapping with every house section marked as unused
+        const auto lowerHouseName = strToLower(houseName);
+        if (inifile_->hasSection(lowerHouseName)) {
+            housename2house[lowerHouseName] = HOUSETYPE::HOUSE_UNUSED;
         }
 
-        const auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(h));
-        if ((!bFound) && (inifile_->hasSection(houseName) || (!playerSectionsOnMap.empty()))) {
-            unboundedHouses.push_back(static_cast<HOUSETYPE>(h));
-        }
-    }
+        if (std::ranges::any_of(houseInfoList, [h](auto& houseInfo) { return houseInfo.houseID == h; }))
+            return;
 
-    // init housename2house mapping with every house section marked as unused
-    for (int i = 0; i < NUM_HOUSES; i++) {
-        auto houseName = getHouseNameByNumber(static_cast<HOUSETYPE>(i));
-        convertToLower(houseName);
-
-        if (inifile_->hasSection(houseName)) {
-            housename2house[houseName] = HOUSETYPE::HOUSE_UNUSED;
-        }
-    }
+        if (inifile_->hasSection(houseName) || !playerSectionsOnMap.empty())
+            unboundedHouses.push_back(h);
+    });
 
     // init housename2house mapping with every player section on map marked as unused
     for (const auto& playSection : playerSectionsOnMap) {
@@ -396,7 +387,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
     }
 
     // now set up all the houses
-    for (const GameInitSettings::HouseInfo& houseInfo : houseInfoList) {
+    for (const auto& houseInfo : houseInfoList) {
         HOUSETYPE houseID;
 
         pGame->houseInfoListSetup_.push_back(houseInfo);
@@ -416,7 +407,7 @@ void INIMapLoader::loadHouses(const GameContext& context) {
             houseID = houseInfo.houseID;
         }
 
-        std::string houseName = getHouseNameByNumber(houseID);
+        auto houseName = getHouseNameByNumber(houseID);
         convertToLower(houseName);
 
         if (!inifile_->hasSection(houseName)) {
@@ -518,7 +509,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
         return;
     }
 
-    std::array<bool, NUM_HOUSES> nextSpecialUnitIsSonicTank;
+    std::array<bool, NUM_HOUSES> nextSpecialUnitIsSonicTank{};
     std::ranges::fill(nextSpecialUnitIsSonicTank, true);
 
     for (const auto& key : inifile_->keys(sectionname)) {
