@@ -369,6 +369,15 @@ public:
         explored_[house_id]   = true;
     }
 
+    /**
+        Sets this tile as explored for this house.
+        \param  cycle   the cycle this happens (normally the current game cycle)
+    */
+    void setAllExplored(uint32_t cycle) {
+        lastAccess_.fill(cycle);
+        explored_.fill(true);
+    }
+
     void setOwner(HOUSETYPE newOwner) noexcept { owner_ = newOwner; }
     void setSandRegion(uint32_t newSandRegion) noexcept { sandRegion_ = newSandRegion; }
     void setDestroyedStructureTile(int newDestroyedStructureTile) noexcept {

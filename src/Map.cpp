@@ -41,10 +41,7 @@ Map::Map(Game& game, int xSize, int ySize)
     tiles.resize(static_cast<size_t>(sizeX) * sizeY);
 
     if (game.getGameInitSettings().getGameOptions().startWithExploredMap) {
-        this->for_all([](auto& tile) {
-            for (auto h = 0; h < NUM_TEAMS; ++h)
-                tile.setExplored(static_cast<HOUSETYPE>(h), true);
-        });
+        this->for_all([](auto& tile) { tile.setAllExplored(0); });
     }
 
     init_tile_location();
