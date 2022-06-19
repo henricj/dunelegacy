@@ -609,9 +609,10 @@ private:
     bool chatMode_ = false;         ///< chat mode on?
     std::string typingChatMessage_; ///< currently typed chat message
 
-    int mapVerticalScroll_; ///< Specifies the speed at which map is being scrolled vertically (0: no scroll, +: scroll
-                            ///< down, -: scroll up)
-    int mapHorizontalScroll_; ///< Same for horizontal scrolling. Fast scrolling is performed with holding shift key down.
+    int mapVerticalScroll_{};   ///< Specifies the speed at which map is being scrolled vertically (0: no scroll, +:
+                                ///< scroll down, -: scroll up)
+    int mapHorizontalScroll_{}; ///< Same for horizontal scrolling. Fast scrolling is performed with holding shift key
+                                ///< down.
     dune::dune_clock::time_point
         lastScrollTime_; ///< Tracks the timestamp of when previous map scroll occurred. Used to pace scrolling speed.
 
