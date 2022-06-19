@@ -21,6 +21,14 @@
 
 #include <filesystem>
 
+#ifndef _WIN32
+#    include <cstring>
+#    include <sys/types.h>
+
+#    include <pwd.h>
+#    include <unistd.h>
+#endif // _WIN32
+
 std::filesystem::path getConfigFilepath() {
     // determine path to config file
     auto [ok, tmp] = fnkdat(CONFIGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
@@ -120,11 +128,9 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
 
 #ifdef _WIN32
     DWORD playernameLength = MAX_PLAYERNAMELENGTH + 1;
-    GetUserName(playername, &playernameLength);
+    GetUserNameA(playername, &playernameLength);
 #else
-    struct passwd* pwent = getpwuid(getuid());
-
-    if (pwent != nullptr) {
+    if (auto* const pwent = getpwuid(getuid())) {
         strncpy(playername, pwent->pw_name, MAX_PLAYERNAMELENGTH + 1);
         playername[MAX_PLAYERNAMELENGTH] = '\0';
     }
