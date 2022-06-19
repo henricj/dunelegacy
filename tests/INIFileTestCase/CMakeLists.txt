@@ -26,7 +26,7 @@ set(INI_FILES
 
 add_custom_command(
         TARGET INIFileTestCase POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
                 ${INI_FILES}
                 ${CMAKE_CURRENT_BINARY_DIR})
 
