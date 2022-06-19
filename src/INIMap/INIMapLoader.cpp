@@ -844,9 +844,9 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-        auto bRepeat = (strPlus == "+");
-        if (strTime.rfind('+') == (strTime.length() - 1)) {
             strTime.resize(strTime.length() - 1);
+        auto bRepeat = strPlus == "+";
+        if (!strTime.empty() && '+' == strTime.back()) {
             bRepeat = true;
         }
 
