@@ -786,11 +786,11 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
     }
 
     for (const auto& key : inifile_->keys(sectionname)) {
-        std::string strHouseName;
-        std::string strUnitName;
-        std::string strDropLocation;
-        std::string strTime;
-        std::string strPlus;
+        std::string_view strHouseName;
+        std::string_view strUnitName;
+        std::string_view strDropLocation;
+        std::string_view strTime;
+        std::string_view strPlus;
 
         // N.b. valid reinforcements strings are of one of:
         // "3=Sardaukar,Troopers,Enemybase,20" (nonrepeating reinforcement at 20 minutes mark)
@@ -844,9 +844,9 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
             dropLocation = DropLocation::Drop_Homebase;
         }
 
-            strTime.resize(strTime.length() - 1);
         auto bRepeat = strPlus == "+";
         if (!strTime.empty() && '+' == strTime.back()) {
+            strTime = strTime.substr(0, strTime.length() - 1);
             bRepeat = true;
         }
 
