@@ -263,7 +263,7 @@ void INIMapLoader::loadMap() {
             const auto rowKey = fmt::sprintf("%.3d", y);
 
             if (!inifile_->hasKey("MAP", rowKey)) {
-                logWarning(inifile_->getLineNumber("MAP"), "Map row " + std::to_string(y) + " does not exist!");
+                logWarning(inifile_->getLineNumber("MAP"), "Map row %d does not exist!", y);
                 continue;
             }
 
@@ -839,8 +839,8 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
 
         auto dropLocation = getDropLocationByName(strDropLocation);
         if (dropLocation == DropLocation::Drop_Invalid) {
-            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                       "Invalid drop location string: '" + strDropLocation + "'!");
+            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid drop location string: '%s'!",
+                       strDropLocation);
             dropLocation = DropLocation::Drop_Homebase;
         }
 
@@ -852,8 +852,8 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
 
         auto droptime = 0u;
         if (!parseString(strTime, droptime)) {
-            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                       "Invalid drop time string: '" + strTime + "'!");
+            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid drop time string: '%s'!",
+                       strTime);
             continue;
         }
         const auto dropCycle = MILLI2CYCLES(droptime * 60U * 1000U);
