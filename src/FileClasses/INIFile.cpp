@@ -436,7 +436,7 @@ INIFile::getStringValue(std::string_view section, std::string_view key, std::str
 int INIFile::getIntValue(std::string_view section, std::string_view key, int defaultValue) const {
     const auto* const curKey = getKey(section, key);
 
-    return curKey ? curKey->getIntValue(defaultValue) : defaultValue;
+    return curKey ? curKey->getValue(defaultValue) : defaultValue;
 }
 
 /// Reads the boolean that is addressed by the section/key pair.
@@ -456,22 +456,6 @@ bool INIFile::getBoolValue(std::string_view section, std::string_view key, bool 
     return curKey ? curKey->getBoolValue(defaultValue) : defaultValue;
 }
 
-/// Reads the float that is addressed by the section/key pair.
-/**
-    Returns the value that is addressed by the section/key pair as a double. If the key could not be found in
-    this section defaultValue is returned. If no defaultValue is specified then 0.0f is returned. If the value
-    could not be converted to an float 0.0f is returned.
-    \param  section         sectionname
-    \param  key             keyname
-    \param  defaultValue    default value for defaultValue is 0.0f
-    \return The read number, defaultValue or 0.0f
-*/
-float INIFile::getFloatValue(std::string_view section, std::string_view key, float defaultValue) const {
-    const auto* const curKey = getKey(section, key);
-
-    return curKey ? curKey->getFloatValue(defaultValue) : defaultValue;
-}
-
 /// Reads the double that is addressed by the section/key pair.
 /**
     Returns the value that is addressed by the section/key pair as a double. If the key could not be found in
@@ -485,7 +469,7 @@ float INIFile::getFloatValue(std::string_view section, std::string_view key, flo
 double INIFile::getDoubleValue(std::string_view section, std::string_view key, double defaultValue) const {
     const auto* const curKey = getKey(section, key);
 
-    return curKey ? curKey->getDoubleValue(defaultValue) : defaultValue;
+    return curKey ? curKey->getValue(defaultValue) : defaultValue;
 }
 
 /// Sets the string that is addressed by the section/key pair.

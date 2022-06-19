@@ -493,7 +493,7 @@ void INIMapLoader::loadChoam() {
             continue;
         }
 
-        auto num = key.getIntValue(-2);
+        auto num = key.getValue(-2);
         if (num == -2) {
             logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid choam number!");
             continue;

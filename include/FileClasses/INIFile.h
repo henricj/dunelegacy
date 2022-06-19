@@ -109,8 +109,7 @@ public:
 
         [[nodiscard]] bool getBoolValue(bool defaultValue = false) const;
 
-        template<typename T>
-        [[nodiscard]] T getValue(T defaultValue = T{}) const noexcept {
+        [[nodiscard]] auto getValue(auto defaultValue = {}) const noexcept {
             auto value = getStringView();
             if (value.empty())
                 return defaultValue;
@@ -165,21 +164,10 @@ public:
         }
 #endif
 
-        [[nodiscard]] int getIntValue(int defaultValue = 0) const noexcept {
-            return getValue(defaultValue);
-        }
-        [[nodiscard]] float getFloatValue(float defaultValue = 0.0f) const noexcept {
-            return getValue(defaultValue);
-        }
-        [[nodiscard]] double getDoubleValue(double defaultValue = 0.0) const noexcept {
-            return getValue(defaultValue);
-        }
-
         void setStringValue(std::string_view newValue, bool bEscapeIfNeeded = true);
         void setBoolValue(bool newValue);
 
-        template<typename T>
-        void setValue(T newValue) {
+        void setValue(auto newValue) {
             std::array<char, 128> buffer{};
             const auto [ptr, ec] = std::to_chars(buffer.data(), buffer.data() + buffer.size(), newValue);
 
@@ -201,13 +189,6 @@ public:
             setStringValue(str);
         }
 #endif
-
-        void setIntValue(int newValue) {
-            setValue(newValue);
-        }
-        void setDoubleValue(double newValue) {
-            setValue(newValue);
-        }
 
     protected:
         static bool escapingValueNeeded(std::string_view value);
@@ -262,7 +243,6 @@ public:
     getStringValue(std::string_view section, std::string_view key, std::string_view defaultValue = {}) const;
     [[nodiscard]] int getIntValue(std::string_view section, std::string_view key, int defaultValue = 0) const;
     [[nodiscard]] bool getBoolValue(std::string_view section, std::string_view key, bool defaultValue = false) const;
-    [[nodiscard]] float getFloatValue(std::string_view section, std::string_view key, float defaultValue = 0.0f) const;
     [[nodiscard]] double
     getDoubleValue(std::string_view section, std::string_view key, double defaultValue = 0.0) const;
 
