@@ -19,11 +19,11 @@
 
 #include <globals.h>
 
+#include "misc/Fullscreen.h"
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <Game.h>
 #include <GameInitSettings.h>
-#include <main.h>
 #include <misc/fnkdat.h>
 
 #include <GUI/MsgBox.h>

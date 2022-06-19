@@ -20,52 +20,14 @@
 
 #include <misc/SDL2pp.h>
 
-#include <filesystem>
 #include <string>
 
 class CaseInsensitiveFileSystemCache;
 
 /**
-    Return an appropriate factor between logical and physical resolution.
-    \param  physicalWidth   the physical width of the display
-    \param  physicalHeight  the physical height of the display
-    \return the factor between logical and physical resolution, e.g. 1 for physical resolution below 1280x960
-*/
-int getLogicalToPhysicalResolutionFactor(int physicalWidth, int physicalHeight);
-
-/**
     This functions sets the video mode according to the settings
 */
 void setVideoMode();
-
-/**
-    Toggles fullscreen and windowed mode
-*/
-void toggleFullscreen();
-
-/**
-    Toggles fullscreen and windowed mode
-*/
-void updateFullscreen();
-
-/**
-    This function returns the configfile path
-    \return the full path to the config file
-*/
-std::filesystem::path getConfigFilepath();
-
-/**
-    This function returns the logfile path
-    \return the full path to the logfile
-*/
-std::filesystem::path getLogFilepath();
-
-/**
-    This function creates a new default config file.
-    \param configfilepath the path to the config file
-    \param language the language to use as default (e.g. en, de, fr)
-*/
-void createDefaultConfigFile(std::filesystem::path configfilepath, const std::string& language);
 
 /**
     This function is used by SDL to write out log messages

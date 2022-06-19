@@ -6,6 +6,7 @@ add_sources(MISC_SOURCES
 	dune_events.cpp
 	FileSystem.cpp
 	fnkdat.cpp
+	Fullscreen.cpp
 	IFileStream.cpp
 	IMemoryStream.cpp
 	InputStream.cpp

@@ -24,8 +24,7 @@
 #include <GUI/Spacer.h>
 #include <GUI/dune/GameOptionsWindow.h>
 
-#include <main.h>
-
+#include <FileClasses/DuneConfig.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/INIFile.h>
 #include <FileClasses/TextManager.h>

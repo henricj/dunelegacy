@@ -30,6 +30,7 @@ add_sources(HEADERS
 	FileClasses/Animation.h
 	FileClasses/Cpsfile.h
 	FileClasses/Decode.h
+	FileClasses/DuneConfig.h
 	FileClasses/FileManager.h
 	FileClasses/Font.h
 	FileClasses/FontManager.h
@@ -185,6 +186,7 @@ add_sources(HEADERS
 	misc/exceptions.h
 	misc/FileSystem.h
 	misc/fnkdat.h
+	misc/Fullscreen.h
 	misc/generator.h
 	misc/IFileStream.h
 	misc/IMemoryStream.h

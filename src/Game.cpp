@@ -19,8 +19,9 @@
 
 #include <config.h>
 #include <globals.h>
-#include <main.h>
 
+#include "FileClasses/DuneConfig.h"
+#include "misc/Fullscreen.h"
 #include <FileClasses/FileManager.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>

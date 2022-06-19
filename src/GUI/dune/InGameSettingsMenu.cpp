@@ -19,12 +19,13 @@
 
 #include <globals.h>
 
+#include "misc/Fullscreen.h"
+#include <FileClasses/DuneConfig.h>
 #include <FileClasses/GFXManager.h>
 #include <FileClasses/TextManager.h>
 #include <FileClasses/music/MusicPlayer.h>
 #include <House.h>
 #include <SoundPlayer.h>
-#include <main.h>
 
 #include <GUI/Spacer.h>
 

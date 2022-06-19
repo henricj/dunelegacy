@@ -22,13 +22,13 @@
 #include "FileClasses/LoadSavePNG.h"
 #include "GUI/GUIStyle.h"
 #include "misc/DrawingRectHelper.h"
+#include "misc/Fullscreen.h"
 #include "misc/draw_util.h"
 #include "misc/dune_clock.h"
 #include "misc/dune_events.h"
 
 #include <globals.h>
 
-#include <main.h>
 #include <sand.h>
 
 #include <gsl/gsl>

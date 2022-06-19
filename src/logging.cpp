@@ -20,6 +20,8 @@
 #include "config.h"
 #include "dune_version.h"
 
+#include "FileClasses/DuneConfig.h"
+
 #include "misc/SDL2pp.h"
 #include "misc/fnkdat.h"
 
@@ -94,17 +96,6 @@ void log_build_info() {
 #if defined(ENET_VERSION_MAJOR) && defined(ENET_VERSION_MINOR) && defined(ENET_VERSION_PATCH)
     sdl2::log_info("enet %d.%d.%d", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 #endif
-}
-
-std::filesystem::path getLogFilepath() {
-    // determine path to config file
-    auto [ok, tmp] = fnkdat(LOGFILENAME, FNKDAT_USER | FNKDAT_CREAT);
-
-    if (!ok) {
-        THROW(std::runtime_error, "fnkdat() failed!");
-    }
-
-    return tmp;
 }
 
 void logOutputFunction([[maybe_unused]] void* userdata, [[maybe_unused]] int category, SDL_LogPriority priority,

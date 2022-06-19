@@ -2,6 +2,7 @@ add_sources(FILE_CLASSES_SOURCES
 	Animation.cpp
 	Cpsfile.cpp
 	Decode.cpp
+	DuneConfig.cpp
 	FileManager.cpp
 	Font.cpp
 	FontManager.cpp

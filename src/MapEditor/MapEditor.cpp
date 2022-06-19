@@ -31,13 +31,13 @@
 #include <structures/Wall.h>
 
 #include "misc/DrawingRectHelper.h"
+#include "misc/Fullscreen.h"
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
 
 #include "ScreenBorder.h"
 #include <Tile.h>
 #include <globals.h>
-#include <main.h>
 #include <mmath.h>
 #include <sand.h>
 
