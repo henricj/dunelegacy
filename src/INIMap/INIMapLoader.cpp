@@ -342,7 +342,8 @@ void INIMapLoader::loadMap() {
         map->createSandRegions();
     }
 
-    dune::globals::screenborder->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
+    if (auto* const screen_border = dune::globals::screenborder.get())
+        screen_border->adjustScreenBorderToMapsize(map->getSizeX(), map->getSizeY());
 }
 
 /**
@@ -964,7 +965,8 @@ void INIMapLoader::loadView(const GameContext& context) {
                        "Invalid TacticalPos: '" + std::to_string(tacticalPosInt) + "'!");
             context.game.setupView(context);
         } else {
-            dune::globals::screenborder->setNewScreenCenter(tacticalPos * TILESIZE);
+            if (auto* const screen_border = dune::globals::screenborder.get())
+                screen_border->setNewScreenCenter(tacticalPos * TILESIZE);
         }
     } else {
         context.game.setupView(context);

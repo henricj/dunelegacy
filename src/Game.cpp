@@ -1112,7 +1112,8 @@ void Game::setupView(const GameContext& context) const {
         j = j * TILESIZE / count;
     }
 
-    dune::globals::screenborder->setNewScreenCenter(Coord(i, j));
+    if (auto* const screen_border = dune::globals::screenborder.get())
+        screen_border->setNewScreenCenter(Coord(i, j));
 }
 
 void Game::serviceNetwork(bool& bWaitForNetwork) {
