@@ -278,8 +278,6 @@ private:
     void flush() const;
     void readfile(SDL_RWops* file);
 
-    void insertSection(Section* newSection);
-
     [[nodiscard]] lines_type::iterator findSectionInternal(std::string_view sectionname);
     [[nodiscard]] lines_type::const_iterator findSectionInternal(std::string_view sectionname) const;
 
