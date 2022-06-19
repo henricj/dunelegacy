@@ -858,7 +858,7 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
         }
         const auto dropCycle = MILLI2CYCLES(droptime * 60U * 1000U);
 
-        for (auto i = 0; i < Num2Drop; i++) {
+        { // Scope
             // check if there is a similar trigger at the same time
 
             bool bInserted = false;
@@ -870,7 +870,9 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
                     && pReinforcementTrigger->getDropLocation() == dropLocation) {
 
                     // add the new reinforcement to this reinforcement (call only one carryall)
-                    pReinforcementTrigger->addUnit(itemID);
+                    for (auto i = 0; i < Num2Drop; i++)
+                        pReinforcementTrigger->addUnit(itemID);
+
                     bInserted = true;
                     break;
                 }
@@ -878,8 +880,14 @@ void INIMapLoader::loadReinforcements(const GameContext& context) {
 
             if (!bInserted) {
                 getOrCreateHouse(context, houseID); // create house if not yet available
-                pGame->getTriggerManager().addTrigger(
-                    std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle));
+                auto pReinforcementTrigger =
+                    std::make_unique<ReinforcementTrigger>(houseID, itemID, dropLocation, bRepeat, dropCycle);
+
+                // Add one less than Num2Drop since we already added one when creating the trigger.
+                for (auto i = 1; i < Num2Drop; i++)
+                    pReinforcementTrigger->addUnit(itemID);
+
+                pGame->getTriggerManager().addTrigger(std::move(pReinforcementTrigger));
             }
         }
     }
