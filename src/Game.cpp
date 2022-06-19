@@ -81,7 +81,8 @@ Game::Game() : localPlayerName_(dune::globals::settings.general.playerName) {
     dune::globals::structureList.clear(); // all the structures
     dune::globals::bulletList.clear();
 
-    dune::globals::musicPlayer->changeMusic(MUSIC_PEACE);
+    if (auto* const music_player = dune::globals::musicPlayer.get())
+        music_player->changeMusic(MUSIC_PEACE);
 
     dune::globals::debug = false;
 
@@ -115,6 +116,9 @@ Game::~Game() {
 
 void Game::resize() {
     const auto* const gfx = dune::globals::pGFXManager.get();
+
+    if (nullptr == gfx)
+        return;
 
     sideBarPos_ = calcAlignedDrawingRect(gfx->getUIGraphic(UI_SideBar), HAlign::Right, VAlign::Top);
     topBarPos_  = calcAlignedDrawingRect(gfx->getUIGraphic(UI_TopBar), HAlign::Left, VAlign::Top);
