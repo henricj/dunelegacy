@@ -146,17 +146,25 @@ if(DUNE_PRECOMPILED_HEADERS)
 	endif()
 endif()
 
-add_custom_command(
-        TARGET dunelegacy POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/data/locale
-                ${CMAKE_CURRENT_BINARY_DIR}/locale)
+add_custom_target(copy_locale_and_maps ALL)
 
 add_custom_command(
-        TARGET dunelegacy POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/data/maps
-                ${CMAKE_CURRENT_BINARY_DIR}/maps)
+    TARGET copy_locale_and_maps POST_BUILD
+	COMMENT "Copying locale"
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+            "${CMAKE_SOURCE_DIR}/data/locale"
+            "${CMAKE_CURRENT_BINARY_DIR}/locale"
+    VERBATIM
+)
+
+add_custom_command(
+    TARGET copy_locale_and_maps POST_BUILD
+	COMMENT "Copying maps"
+    COMMAND "${CMAKE_COMMAND}" -E copy_directory
+            "${CMAKE_SOURCE_DIR}/data/maps"
+            "${CMAKE_CURRENT_BINARY_DIR}/maps"
+    VERBATIM
+)
 
 if(WIN32)
    set_target_properties(dunelegacy PROPERTIES WIN32_EXECUTABLE ON)

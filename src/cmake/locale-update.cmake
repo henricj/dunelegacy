@@ -23,9 +23,11 @@ function(generate_po po_name pot_file output_dir output_po_var)
 
     add_custom_command(
         OUTPUT "${_output_po}"
+        COMMENT "Generating ${_output_po}"
         COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --quiet -o "${_output_po_native}" "${_po_file_native}" "${pot_file_native}"
         DEPENDS "${pot_file}" "${_po_file}"
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        VERBATIM
     )
 
     set(${output_po_var} "${_output_po}" PARENT_SCOPE)
@@ -86,6 +88,8 @@ if(GETTEXT_FOUND)
             COMMAND ${GETTEXT_XGETTEXT_EXECUTABLE} ${XGETTEXT_OPTIONS} -o "${generated_pot_native}" ${XGETTEXT_SOURCES}
             DEPENDS ${XGETTEXT_ABSOLUTE_SOURCES}
             WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+            COMMENT "Generating ${generated_pot}"
+            VERBATIM
         )
 
         ##########
@@ -111,9 +115,11 @@ if(GETTEXT_FOUND)
 
         add_custom_command(
             OUTPUT "${generated_english_po}"
+            COMMENT "Generating ${generated_english_po}"
             COMMAND ${GETTEXT_MSGATTRIB_EXECUTABLE} --translated --no-fuzzy -o "${generated_english_po_native}" "${intermediate_english_po_native}"
             DEPENDS "${intermediate_english_po}"
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            VERBATIM
         )
 
         list(APPEND generated_po_files "${generated_english_po}")
@@ -145,6 +151,7 @@ if(GETTEXT_FOUND)
             COMMAND ${CMAKE_COMMAND} -E touch "${_update_stamp}"
             DEPENDS generate_locale
             COMMENT "Updating locale"
+            VERBATIM
         )
 
         message(STATUS "Adding update_locale target")

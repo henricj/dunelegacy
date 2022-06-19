@@ -79,8 +79,8 @@ set(PAK_FILES
 set(INPUT_FILES ${INI_FILES} ${PAK_FILES})
 
 foreach(f ${INPUT_FILES})
-    get_filename_component(name ${f} NAME)
-    list(APPEND OUTPUT_FILES ${name})
+    get_filename_component(name "${f}" NAME)
+    list(APPEND OUTPUT_FILES "${name}")
 endforeach()
 
 add_custom_target(copy_for_ini_tests ALL DEPENDS ${OUTPUT_FILES})
@@ -88,7 +88,8 @@ add_custom_target(copy_for_ini_tests ALL DEPENDS ${OUTPUT_FILES})
 add_custom_command(
     DEPENDS ${INPUT_FILES}
     OUTPUT ${OUTPUT_FILES}
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    COMMENT "Copying INI test files"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different
             ${INPUT_FILES}
             ${CMAKE_CURRENT_BINARY_DIR}
     VERBATIM
