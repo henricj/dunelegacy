@@ -48,12 +48,11 @@
     \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited
    substrings).
 */
-template<class... Args>
-bool splitString(std::string_view parseString, std::string& arg0, Args&... args) {
-    std::array<std::string*, sizeof...(Args) + 1> pStrings = {&arg0, &args...};
+bool splitString(std::string_view parseString, std::string& arg0, std::convertible_to<std::string> auto&... args) {
+    const auto pStrings = std::initializer_list<std::string*>{&arg0, &args...};
 
-    auto** p                 = &pStrings[0];
-    auto** const strings_end = p + pStrings.size();
+    auto p                 = pStrings.begin();
+    const auto strings_end = pStrings.end();
 
     for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
          current != end && previous != end; previous = current + 1) {
@@ -78,15 +77,12 @@ bool splitString(std::string_view parseString, std::string& arg0, Args&... args)
     \return true if successful, false otherwise (e.g. a mismatch between the number of args and the number of delimited
    substrings).
 */
-template<class... Args>
-bool splitString(std::string_view parseString, std::string_view* arg0, Args*... args) {
-    std::array<std::string_view*, sizeof...(Args) + 1> pStrings = {arg0, args...};
+bool splitString(std::string_view parseString, std::string_view& arg0,
+                 std::convertible_to<std::string_view> auto&... args) {
+    const auto pStrings = std::initializer_list<std::string_view*>{&arg0, &args...};
 
-    if (pStrings.empty())
-        return true;
-
-    auto** p                 = &pStrings[0];
-    auto** const strings_end = p + pStrings.size();
+    auto p                 = pStrings.begin();
+    const auto strings_end = pStrings.end();
 
     for (auto previous = parseString.data(), current = previous, end = previous + parseString.size();
          current != end && previous != end; previous = current + 1) {

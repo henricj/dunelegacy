@@ -526,7 +526,7 @@ void INIMapLoader::loadUnits(const GameContext& context) {
             const auto keyView = key.getStringView();
 
             std::string_view HouseStr, UnitStr, health, PosStr, rotation, mode;
-            if (!splitString(keyView, &HouseStr, &UnitStr, &health, &PosStr, &rotation, &mode)) {
+            if (!splitString(keyView, HouseStr, UnitStr, health, PosStr, rotation, mode)) {
                 logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
                            fmt::format("Invalid unit string '{}'!", key.getStringView()));
                 continue;
