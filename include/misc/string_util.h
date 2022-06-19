@@ -62,7 +62,7 @@ bool splitString(std::string_view parseString, std::string& arg0, Args&... args)
         if (previous != current) {
             **p = std::string{previous, static_cast<std::string::size_type>(current - previous)};
             if (++p == strings_end)
-                return true;
+                return end == current;
         }
     }
 
@@ -95,7 +95,7 @@ bool splitString(std::string_view parseString, std::string_view* arg0, Args*... 
         if (previous != current) {
             **p = std::string_view{previous, static_cast<std::string::size_type>(current - previous)};
             if (++p == strings_end)
-                return true;
+                return end == current;
         }
     }
 
