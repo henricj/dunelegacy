@@ -73,8 +73,6 @@
 #include <fmt/format.h>
 
 #include <algorithm>
-#include <iomanip>
-#include <sstream>
 
 Game::Game() : localPlayerName_(dune::globals::settings.general.playerName) {
     dune::globals::currentZoomlevel = dune::globals::settings.video.preferredZoomLevel;
