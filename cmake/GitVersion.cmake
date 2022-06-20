@@ -16,8 +16,9 @@ if(NOT DUNE_VERSION_EXECUTE)
         add_custom_command(
         OUTPUT ${DUNE_GENERATED_INCLUDE_DIR}/dune_version.h
                ${DUNE_GENERATED_TMP_DIR}/_dune_version.h
+        COMMENT "Generating dune_version.h"
         COMMAND
-            ${CMAKE_COMMAND}
+            "${CMAKE_COMMAND}"
                     -D GIT=${GIT_EXECUTABLE}
                     -D DUNE_GENERATED_TMP_DIR=${DUNE_GENERATED_TMP_DIR}
 		            -D DUNE_GENERATED_INCLUDE_DIR=${DUNE_GENERATED_INCLUDE_DIR}

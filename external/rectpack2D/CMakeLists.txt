@@ -24,12 +24,11 @@ endforeach()
 add_custom_command(
     DEPENDS ${SOURCES}
     OUTPUT ${output_headers}
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${header_dir}/rectpack2D"
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${SOURCES} "${header_dir}/rectpack2D/"
+    COMMENT "Copying rectpack2D headers"
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "${header_dir}/rectpack2D"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SOURCES} "${header_dir}/rectpack2D/"
 )
 
 add_custom_target(rectpack2D_copy DEPENDS ${output_headers})
 
 add_dependencies(rectpack2D rectpack2D_copy)
-
-
