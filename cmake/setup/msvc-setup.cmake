@@ -11,7 +11,7 @@ add_compile_options(/wd4267)
 # C4702 unreachable code
 # C4458 declaration of 'identifier' hides class member
 # C5222 'attribute-name': all unscoped attribute names are reserved for future standardization
-set(DUNE_TARGET_COMPILE_FLAGS "/external:templates- /W4 /we4018 /we4100 /we4127 /we4389 /we4456 /we4458 /we4702 /we5222" CACHE STRING "Dune compiler flags (not applied to external/*)")
+set(DUNE_TARGET_COMPILE_FLAGS "/W4 /we4018 /we4100 /we4127 /we4389 /we4456 /we4458 /we4702 /we5222" CACHE STRING "Dune compiler flags (not applied to external/*)")
 
 set(DUNE_MSVC_DEBUG_FLAGS "/ZI /Ob0 /Od /RTC1 /RTCs /JMC" CACHE STRING "Debug compiler flags")
 set(DUNE_MSVC_RELEASE_FLAGS "/Zi /EHsc /O2 /Ob3 /Gw" CACHE STRING "Release compiler flags")
