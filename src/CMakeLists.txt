@@ -25,7 +25,7 @@ set(SOURCES
 )
 
 find_package(SDL2 CONFIG REQUIRED)
-find_package(sdl2-mixer CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
 find_package(sdl2-ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
@@ -44,7 +44,7 @@ find_library(SOXR_LIBRARY_DIR soxr)
 
 set(LIBS
 	SDL2::SDL2
-	SDL2::SDL2_mixer
+	SDL2_mixer::SDL2_mixer
 	SDL2::SDL2_ttf
 	fmt::fmt
 	lodepng
