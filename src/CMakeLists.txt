@@ -42,9 +42,16 @@ endif()
 find_path(SOXR_INCLUDE_DIR soxr.h)
 find_library(SOXR_LIBRARY_DIR soxr)
 
+
+string(FIND ${VCPKG_TARGET_TRIPLET} "-static" DUNE_STATIC_VCPKG_TRIPLET_POSITION)
+
+if(NOT DUNE_STATIC_VCPKG_TRIPLET_POSITION EQUAL -1)
+	set(DUNE_LIBRARY_POSTFIX "-static")
+endif()
+
 set(LIBS
 	SDL2::SDL2
-	SDL2_mixer::SDL2_mixer
+	SDL2_mixer::SDL2_mixer${DUNE_LIBRARY_POSTFIX}
 	SDL2::SDL2_ttf
 	fmt::fmt
 	lodepng
