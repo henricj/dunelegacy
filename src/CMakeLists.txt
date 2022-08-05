@@ -26,7 +26,7 @@ set(SOURCES
 
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_mixer CONFIG REQUIRED)
-find_package(sdl2-ttf CONFIG REQUIRED)
+find_package(SDL2_ttf CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 find_package(lodepng CONFIG REQUIRED)
 find_package(Microsoft.GSL CONFIG REQUIRED)
@@ -55,7 +55,7 @@ endif()
 set(LIBS
 	SDL2::SDL2
 	SDL2_mixer::SDL2_mixer${DUNE_LIBRARY_POSTFIX}
-	SDL2::SDL2_ttf
+	SDL2_ttf::SDL2_ttf${DUNE_LIBRARY_POSTFIX}
 	fmt::fmt
 	lodepng
 	Microsoft.GSL::GSL
