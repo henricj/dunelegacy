@@ -292,10 +292,11 @@ std::tuple<bool, std::filesystem::path> fnkdat(const std::filesystem::path& targ
 
     if (rawflags == FNKDAT_USER) {
 
-        std::array<char, 1536> buffer;
-
 #    ifdef __APPLE__
+
         {
+            std::array<char, 1536> buffer;
+
             getMacApplicationSupportFolder(&buffer[0], buffer.size());
 
             output_path = buffer;

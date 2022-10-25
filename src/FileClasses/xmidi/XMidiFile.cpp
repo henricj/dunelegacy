@@ -1412,8 +1412,6 @@ int XMidiFile::ExtractTracksFromXMIDIMT(IDataSource* source) {
     int time                       = 0;
     static constexpr auto time_inc = 32;
 
-    first_state fs{};
-
     list     = nullptr;
     branches = nullptr;
 
