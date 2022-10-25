@@ -268,7 +268,7 @@ public:
     }
 
     void add_duplicate(int key, Identifier identifier) {
-        assert(key >= 0 && key < surfaces_.size());
+        assert(key >= 0 && size_t(key) < surfaces_.size());
 
         duplicates_.emplace_back(key, identifier);
     }

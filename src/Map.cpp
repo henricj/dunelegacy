@@ -692,7 +692,7 @@ Map::BoxOffsets::BoxOffsets(int size, Coord box) {
             set.emplace_back(i, depth + box.y - 1); // Bottom
         }
 
-        assert(border_length == set.size());
+        assert(size_t(border_length) == set.size());
     }
 }
 
