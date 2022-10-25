@@ -493,6 +493,7 @@ void InfantryBase::setSpeeds(const GameContext& context) {
             case ANGLETYPE::LEFTDOWN:  dx -= TILESIZE; dy += TILESIZE; break;
             case ANGLETYPE::DOWN:                      dy += TILESIZE; break;
             case ANGLETYPE::RIGHTDOWN: dx += TILESIZE; dy += TILESIZE; break;
+            default: break;
         }
         // clang-format on
 

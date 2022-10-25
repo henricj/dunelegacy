@@ -1265,6 +1265,7 @@ void UnitBase::setSpeeds(const GameContext& context) {
         case ANGLETYPE::RIGHTDOWN: xSpeed = speed*DIAGONALSPEEDCONST;  ySpeed = xSpeed;    break;
         case ANGLETYPE::DOWN:      xSpeed = 0;                         ySpeed = speed;     break;
         case ANGLETYPE::LEFTDOWN:  xSpeed = -speed*DIAGONALSPEEDCONST; ySpeed = -xSpeed;   break;
+        default: break;
     }
     // clang-format on
 }

@@ -106,6 +106,7 @@ int BriefingMenu::showMenuImpl() {
                 case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_WIN_O);
                 } break;
+                default : break;
             }
         } break;
 
@@ -125,6 +126,7 @@ int BriefingMenu::showMenuImpl() {
                 case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_LOSE_O);
                 } break;
+                default : break;
             }
         } break;
 
@@ -144,6 +146,7 @@ int BriefingMenu::showMenuImpl() {
                 case HOUSETYPE::HOUSE_MERCENARY: {
                     musicPlayer->changeMusic(MUSIC_BRIEFING_O);
                 } break;
+                default : break;
             }
         } break;
     }

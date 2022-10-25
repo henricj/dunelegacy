@@ -470,6 +470,7 @@ void MapChoice::loadINI() {
                     break;
                 case HOUSETYPE::HOUSE_MERCENARY: key = "MER";
                     break;
+                default: break;
             }
             // clang-format on
 
