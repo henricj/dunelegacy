@@ -1217,17 +1217,6 @@ void QuantBot::build(int militaryValue) {
                     } break;
 
                     case Structure_ConstructionYard: {
-
-                        if constexpr (false) {
-                            // If rocket turrets don't need power then let's build some for defense
-                            int rocketTurretValue = itemCount[Structure_RocketTurret] * 250;
-
-                            // disable rocket turrets for now
-                            if (getGameInitSettings().getGameOptions().rocketTurretsNeedPower || true) {
-                                rocketTurretValue = 1000000; // If rocket turrets need power we don't want to build them
-                            }
-                        }
-
                         const auto* const pConstYard = dune_cast<ConstructionYard>(pBuilder);
 
                         if (!pBuilder->isUpgrading() && getHouse()->getCredits() > 100
