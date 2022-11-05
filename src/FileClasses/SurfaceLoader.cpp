@@ -379,7 +379,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
     objPic[ObjPic_Hit_ShellMedium][harkIdx][0] = units1->getPicture(3);
     objPic[ObjPic_Hit_ShellLarge][harkIdx][0]  = units1->getPicture(4);
     objPic[ObjPic_ExplosionSmall][harkIdx][0]  = units1->getPictureArray(
-         5, 1, 32 | TILE_NORMAL, 33 | TILE_NORMAL, 34 | TILE_NORMAL, 35 | TILE_NORMAL, 36 | TILE_NORMAL);
+        5, 1, 32 | TILE_NORMAL, 33 | TILE_NORMAL, 34 | TILE_NORMAL, 35 | TILE_NORMAL, 36 | TILE_NORMAL);
     objPic[ObjPic_ExplosionMedium1][harkIdx][0] = units1->getPictureArray(
         5, 1, 47 | TILE_NORMAL, 48 | TILE_NORMAL, 49 | TILE_NORMAL, 50 | TILE_NORMAL, 51 | TILE_NORMAL);
     objPic[ObjPic_ExplosionMedium2][harkIdx][0] = units1->getPictureArray(
@@ -390,10 +390,10 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
         5, 1, 42 | TILE_NORMAL, 43 | TILE_NORMAL, 44 | TILE_NORMAL, 45 | TILE_NORMAL, 46 | TILE_NORMAL);
     objPic[ObjPic_ExplosionSmallUnit][harkIdx][0] = units1->getPictureArray(2, 1, 0 | TILE_NORMAL, 1 | TILE_NORMAL);
     objPic[ObjPic_ExplosionFlames][harkIdx][0]    = units1->getPictureArray(
-           21, 1, 11 | TILE_NORMAL, 12 | TILE_NORMAL, 13 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-           19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-           19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
-           19 | TILE_NORMAL, 20 | TILE_NORMAL, 21 | TILE_NORMAL, 22 | TILE_NORMAL);
+        21, 1, 11 | TILE_NORMAL, 12 | TILE_NORMAL, 13 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+        19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+        19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL, 19 | TILE_NORMAL, 17 | TILE_NORMAL, 18 | TILE_NORMAL,
+        19 | TILE_NORMAL, 20 | TILE_NORMAL, 21 | TILE_NORMAL, 22 | TILE_NORMAL);
     objPic[ObjPic_ExplosionSpiceBloom][harkIdx][0] =
         units1->getPictureArray(3, 1, 7 | TILE_NORMAL, 6 | TILE_NORMAL, 5 | TILE_NORMAL);
     objPic[ObjPic_DeadInfantry][harkIdx][0] = icon->getPictureArray(4, 1, 1, 6);

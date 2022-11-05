@@ -21,7 +21,7 @@
 #include <GUI/ObjectInterfaces/PalaceInterface.h>
 #include <rectpack2D/finders_interface.h>
 
-//#include "FileClasses/SaveTextureAsBmp.h"
+// #include "FileClasses/SaveTextureAsBmp.h"
 
 #include <cstddef>
 #include <tuple>

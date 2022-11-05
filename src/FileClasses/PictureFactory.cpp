@@ -728,13 +728,13 @@ sdl2::surface_ptr PictureFactory::createMapChoiceScreen(HOUSETYPE House) const {
     if (language == "de") {
         auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 120, 303, 23);
         tmp      = copySurface(
-                 tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
+            tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_Rect dest{8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
     } else if (language == "fr") {
         auto tmp = getSubPicture(pMapChoiceScreen.get(), 8, 96, 303, 23);
         tmp      = copySurface(
-                 tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
+            tmp.get()); // Workaround: SDL2 leaks memory when blitting from A to B and afterwards from B to A
         SDL_Rect dest{8, 0, 303, 23};
         SDL_BlitSurface(tmp.get(), nullptr, pMapChoiceScreen.get(), &dest);
     } else {

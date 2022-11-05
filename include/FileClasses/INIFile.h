@@ -224,9 +224,7 @@ public:
     INIFile(INIFile&&)      = delete;
     ~INIFile();
 
-    auto lines() const {
-        return lines_.size();
-    }
+    auto lines() const { return lines_.size(); }
 
     [[nodiscard]] size_t getLineNumber(std::string_view sectionname) const;
     [[nodiscard]] size_t getLineNumber(std::string_view sectionname, std::string_view keyname) const;

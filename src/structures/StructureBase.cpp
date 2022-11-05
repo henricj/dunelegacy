@@ -397,8 +397,8 @@ void StructureBase::destroy(const GameContext& context) {
                                                           Destroyed2x2Structure_BottomLeft,
                                                           Destroyed2x2Structure_BottomRight};
     static constexpr int DestroyedStructureTiles3x2[]  = {
-         Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
-         Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
+        Destroyed3x2Structure_TopLeft,    Destroyed3x2Structure_TopCenter,    Destroyed3x2Structure_TopRight,
+        Destroyed3x2Structure_BottomLeft, Destroyed3x2Structure_BottomCenter, Destroyed3x2Structure_BottomRight};
     static constexpr int DestroyedStructureTiles3x3[] = {
         Destroyed3x3Structure_TopLeft,    Destroyed3x3Structure_TopCenter,    Destroyed3x3Structure_TopRight,
         Destroyed3x3Structure_CenterLeft, Destroyed3x3Structure_CenterCenter, Destroyed3x3Structure_CenterRight,

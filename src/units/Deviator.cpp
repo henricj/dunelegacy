@@ -83,9 +83,9 @@ void Deviator::blitToScreen() {
 
     const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle_), numImagesX_);
     const auto dest2   = calcSpriteDrawingRect(
-          pTurretGraphic, screenborder->world2screenX(realX_ + deviatorTurretOffset[static_cast<int>(drawnAngle_)].x),
-          screenborder->world2screenY(realY_ + deviatorTurretOffset[static_cast<int>(drawnAngle_)].y), numImagesX_, 1,
-          HAlign::Center, VAlign::Center);
+        pTurretGraphic, screenborder->world2screenX(realX_ + deviatorTurretOffset[static_cast<int>(drawnAngle_)].x),
+        screenborder->world2screenY(realY_ + deviatorTurretOffset[static_cast<int>(drawnAngle_)].y), numImagesX_, 1,
+        HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pTurretGraphic, &source2, &dest2);
 

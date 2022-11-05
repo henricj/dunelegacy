@@ -35,6 +35,8 @@
 #include <misc/FileSystem.h>
 #include <misc/draw_util.h>
 
+#include "Renderer/DuneRenderer.h"
+
 #include "ScreenBorder.h"
 #include <Tile.h>
 #include <globals.h>

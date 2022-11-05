@@ -34,6 +34,8 @@
 
 #include <misc/draw_util.h>
 
+#include "Renderer/DuneRenderer.h"
+
 namespace {
 /* how often is the same sandframe redrawn */
 inline constexpr auto HARVESTERDELAY = 30;
