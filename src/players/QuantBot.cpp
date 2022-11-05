@@ -1228,7 +1228,7 @@ void QuantBot::build(int militaryValue) {
                             }
                         }
 
-                        const auto* pConstYard = static_cast<const ConstructionYard*>(pBuilder);
+                        const auto* const pConstYard = dune_cast<ConstructionYard>(pBuilder);
 
                         if (!pBuilder->isUpgrading() && getHouse()->getCredits() > 100
                             && (pBuilder->getProductionQueueSize() < 1) && pBuilder->getBuildListSize()) {
