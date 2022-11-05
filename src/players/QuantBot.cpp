@@ -1428,6 +1428,9 @@ void QuantBot::build(int militaryValue) {
                             }
                         }
                     } break;
+                    default: {
+                        assert(0);
+                    } break;
                 }
             }
         }
