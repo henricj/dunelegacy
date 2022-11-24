@@ -189,7 +189,7 @@ private:
     SDL_RWops* rwop_;
     bool eof_{};
     std::span<char> pending_;
-    std::array<char, BufferSize> buffer_;
+    std::array<char, BufferSize> buffer_{};
 };
 
 template<int BufferSize = 32768>

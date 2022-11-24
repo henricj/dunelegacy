@@ -9,7 +9,7 @@ namespace dune {
 
 inline std::string string_error(int errnum) {
 #if defined(HAVE_STRERROR_S) || defined(HAVE_STRERROR_R) || defined(HAVE_GNU_STRERROR_R)
-    std::array<char, 256> buffer;
+    std::array<char, 256> buffer{};
 #endif
 
 #if HAVE_STRERROR_S
