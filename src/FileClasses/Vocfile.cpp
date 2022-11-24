@@ -95,17 +95,17 @@ uint32_t getSampleRateFromVOCRate(uint8_t vocSR) {
 sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t& rate) {
     using namespace std::literals;
 
-    BufferedReader<> buffer{rwop};
+    const auto buffer = std::make_unique<BufferedReader<>>(rwop);
 
     static constexpr auto creative_voice_file = "Creative Voice File"sv;
 
-    std::array<uint8_t, creative_voice_file.size() + 1> description;
+    std::array<uint8_t, creative_voice_file.size() + 1> description{};
 
     uint16_t offset  = 0;
     uint16_t version = 0;
     uint16_t id      = 0;
 
-    if (!buffer.read_one(description.data(), description.size())) {
+    if (!buffer->read_one(description.data(), description.size())) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
@@ -117,17 +117,17 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
 
-    if (!buffer.read_type(offset)) {
+    if (!buffer->read_type(offset)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     offset = SDL_SwapLE16(offset);
 
-    if (!buffer.read_type(version)) {
+    if (!buffer->read_type(version)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     version = SDL_SwapLE16(version);
 
-    if (!buffer.read_type(id)) {
+    if (!buffer->read_type(id)) {
         THROW(std::runtime_error, "LoadVOC_RW(): Invalid header!");
     }
     id = SDL_SwapLE16(id);
@@ -153,28 +153,28 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
     uint8_t code = 0;
     rate         = 0;
 
-    while (buffer.read_type(code)) {
+    while (buffer->read_type(code)) {
         if (code == VOC_CODE_TERM) {
             return ret_sound;
         }
 
         uint8_t tmp[3];
-        if (!buffer.read_one(tmp, sizeof tmp)) {
+        if (!buffer->read_one(tmp, sizeof tmp)) {
             THROW(std::runtime_error, "LoadVOC_RW(): Invalid block length!");
         }
         size_t len = tmp[0];
-        len |= static_cast<uint32_t>(tmp[1]) << 8U;
-        len |= static_cast<uint32_t>(tmp[2]) << 16U;
+        len |= static_cast<size_t>(tmp[1]) << 8U;
+        len |= static_cast<size_t>(tmp[2]) << 16U;
 
         switch (code) {
             case VOC_CODE_DATA: {
                 uint8_t time_constant = 0;
-                if (!buffer.read_type(time_constant)) {
+                if (!buffer->read_type(time_constant)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 
                 uint8_t packing = 0;
-                if (!buffer.read_type(packing)) {
+                if (!buffer->read_type(packing)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read packing!");
                 }
                 len -= 2;
@@ -196,7 +196,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
                     ret_sound.release();
                     ret_sound.reset(tmp_ret_sound);
 
-                    if (!buffer.read_one(ret_sound.get() + decsize, len)) {
+                    if (!buffer->read_one(ret_sound.get() + decsize, len)) {
                         THROW(std::runtime_error, "LoadVOC_RW(): Cannot read data!");
                     }
 
@@ -208,13 +208,13 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
 
             case VOC_CODE_SILENCE: {
                 uint16_t SilenceLength = 0;
-                if (!buffer.read_type(SilenceLength)) {
+                if (!buffer->read_type(SilenceLength)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read silence length!");
                 }
                 SilenceLength = SDL_SwapLE16(SilenceLength);
 
                 uint8_t time_constant = 0;
-                if (!buffer.read_type(time_constant)) {
+                if (!buffer->read_type(time_constant)) {
                     THROW(std::runtime_error, "LoadVOC_RW(): Cannot read time constant!");
                 }
 

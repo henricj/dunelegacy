@@ -65,7 +65,7 @@ dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::s
     int lineNum    = 0;
     bool bFinished = false;
 
-    SimpleBufferedReader<> pending{rwop};
+    const auto pending = std::make_unique<SimpleBufferedReader<128 * 1024>>(rwop);
 
     std::string completeLine;
     completeLine.reserve(128);
@@ -76,7 +76,7 @@ dune::string_unordered_map<std::string> loadPOFile(SDL_RWops* rwop, const std::s
         completeLine.clear();
 
         while (true) {
-            const auto tmp = pending.getch();
+            const auto tmp = pending->getch();
             if (!tmp.has_value()) {
                 bFinished = true;
                 break;
