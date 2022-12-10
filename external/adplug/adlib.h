@@ -7,7 +7,11 @@
 #    pragma warning(disable : 4458)
 #endif // _MSC_VER
 
-#include "adplug/src/adlib.h"
+#include "adplug/src/adl.h"
+
+#if DEBUG
+#include "adplug/src/debug.h"
+#endif
 
 #if _MSC_VER
 #    pragma warning(pop)
