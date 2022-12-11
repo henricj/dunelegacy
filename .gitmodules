@@ -15,4 +15,4 @@
 	url = https://github.com/adplug/libbinio.git
 [submodule "external/adplug/adplug"]
 	path = external/adplug/adplug
-	url = https://github.com/adplug/adplug.git
+	url = https://github.com/henricj/adplug.git

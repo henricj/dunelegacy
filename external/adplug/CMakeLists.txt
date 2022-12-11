@@ -20,7 +20,7 @@ set(SOURCES
 	adplug/src/cff.cpp
 	adplug/src/cmf.cpp
 	adplug/src/cmfmcsop.cpp
-	#adplug/src/coktel.cpp
+	adplug/src/coktel.cpp
 	adplug/src/composer.cpp
 	adplug/src/d00.cpp
 	adplug/src/database.cpp
@@ -145,7 +145,7 @@ set(HEADERS
 	adplug/src/mus.h
 	adplug/src/mdi.h
 	adplug/src/cmfmcsop.h
-	#adplug/src/coktel.h
+	adplug/src/coktel.h
 	adplug/src/composer.h
 	adplug/src/vgm.h
 	adplug/src/sop.h
