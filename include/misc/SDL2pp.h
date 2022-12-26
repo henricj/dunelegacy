@@ -22,10 +22,10 @@
 #include <assert.h>
 #include <misc/exceptions.h>
 #include <misc/unique_or_nonowning_ptr.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_endian.h>
-#include <SDL2/SDL_rwops.h>
-#include <SDL2/SDL_mixer.h>
+#include <SDL.h>
+#include <SDL_endian.h>
+#include <SDL_rwops.h>
+#include <SDL_mixer.h>
 
 namespace sdl2
 {

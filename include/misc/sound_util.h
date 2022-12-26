@@ -20,7 +20,7 @@
 
 #include <misc/SDL2pp.h>
 #include <string>
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 sdl2::mix_chunk_ptr create_chunk();
 sdl2::mix_chunk_ptr concat2Chunks(Mix_Chunk* sound1, Mix_Chunk* sound2);

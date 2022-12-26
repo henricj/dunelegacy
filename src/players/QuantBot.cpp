@@ -259,11 +259,16 @@ void QuantBot::update() {
         // Calculate the total military value of the player
         initialMilitaryValue = 0;
         for (Uint32 i = Unit_FirstID; i <= Unit_LastID; i++) {
-            if (i != Unit_Carryall && i != Unit_Harvester) {
+            if (i != Unit_Carryall 
+                && i != Unit_Harvester 
+                && i != Unit_MCV 
+                && i != Unit_Sandworm) {
                 // Used for campaign mode.
                 initialMilitaryValue += initialItemCount[i] * currentGame->objectData.data[i][getHouse()->getHouseID()].price;
             }
         }
+        
+
 
         switch (gameMode) {
         case GameMode::Campaign: {
@@ -324,7 +329,13 @@ void QuantBot::update() {
         } break;
 
         case GameMode::Custom: {
-            // add a unit ratio based on map size
+            // set initial unit position
+            findSquadRallyLocation();
+            retreatAllUnits();
+
+
+            
+            // add a unit ratio based on map size          
             double ratio = 0.0;
             int mapsize = currentGameMap->getSizeX() * currentGameMap->getSizeY();
             if (mapsize <= 1024) {
@@ -408,7 +419,10 @@ void QuantBot::update() {
     // Calculate the total military value of the player
     int militaryValue = 0;
     for(Uint32 i = Unit_FirstID; i <= Unit_LastID; i++){
-        if(i != Unit_Carryall && i != Unit_Harvester){
+        if(i != Unit_Carryall 
+            && i != Unit_Harvester
+            && i != Unit_MCV
+            && i != Unit_Sandworm){
             militaryValue += getHouse()->getNumItems(i) * currentGame->objectData.data[i][getHouse()->getHouseID()].price;
         }
     }
@@ -425,7 +439,7 @@ void QuantBot::update() {
     if(attackTimer <= 0) {
         attack(militaryValue);
     } 
-    /* turning this off for now, not sure it works
+    
     else if (attackTimer > MILLI2CYCLES(100000) ) {
         // If we have taken substantial losses then retreat
         attackTimer = MILLI2CYCLES(90000);
@@ -434,7 +448,7 @@ void QuantBot::update() {
         if(retreatTimer < 0){
             retreatAllUnits();
         } 
-    } */
+    } 
     else {
         attackTimer -= AIUPDATEINTERVAL;
         retreatTimer -= AIUPDATEINTERVAL;
@@ -455,6 +469,7 @@ void QuantBot::onDecrementUnits(int itemID) {
     if(itemID != Unit_Trooper && itemID != Unit_Infantry) {
         attackTimer += MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 30 / (static_cast<Uint8>(difficulty)+1) );
         //logDebug("loss ");
+        retreatTimer -= MILLI2CYCLES(currentGame->objectData.data[itemID][getHouse()->getHouseID()].price * 20);
     }
 }
 
@@ -466,6 +481,7 @@ void QuantBot::onIncrementUnitKills(int itemID) {
         //logDebug("kill ");
     }
 }
+
 void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID) {
     const ObjectBase* pDamager = getObject(damagerID);
 
@@ -526,8 +542,9 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
                 scrambleUnitsAndDefend(pDamager, numHarvesterDefenders);
                 doReturn(pHarvester);
             }
-        } else if ((pGroundUnit->getItemID() == Unit_Launcher || pGroundUnit->getItemID() == Unit_Deviator)
-                    && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal) ) {
+        } else if ((pGroundUnit->getItemID() == Unit_Launcher 
+                    || pGroundUnit->getItemID() == Unit_Deviator)
+                    && (difficulty != Difficulty::Easy) ) {
             // Always keep Launchers away from harm
 
             doSetAttackMode(pGroundUnit, AREAGUARD);
@@ -560,15 +577,20 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
         // If the unit is at 60% health or less and is not being forced to move anywhere
         // repair them, if they are eligible to be repaired
-        if(difficulty == Difficulty::Brutal) {
-            if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 60
+        if(difficulty != Difficulty::Easy) {
+            if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 80
                 && !pGroundUnit->isInfantry()
                 && pGroundUnit->isVisible()) {
 
-                if(getHouse()->hasRepairYard()){
+                // Rotate unit backwards if it is taking damage
+                doSetAttackMode(pGroundUnit, AREAGUARD);
+                doMove2Pos(pGroundUnit, squadCenterLocation.x, squadCenterLocation.y, true);
+
+                // If unit isn't an infrantry then heal it once it is below 2/3 health
+                if(getHouse()->hasRepairYard()
+                    && (pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 65
+                    ){
                     doRepair(pGroundUnit);
-                } else if(gameMode == GameMode::Custom && pGroundUnit->getItemID() != Unit_Devastator && squadRetreatLocation.isValid()){
-                    doSetAttackMode(pGroundUnit, RETREAT);
                 }
             }
         }
@@ -1325,6 +1347,12 @@ void QuantBot::build(int militaryValue) {
                                     itemCount[Structure_Refinery]++;
                                 } else if(itemCount[Structure_StarPort] == 0 && pBuilder->isAvailableToBuild(Structure_StarPort) && findPlaceLocation(Structure_StarPort).isValid()) {
                                     itemID = Structure_StarPort;
+                                } else if (itemCount[Structure_Refinery] < 4 
+                                            && pBuilder->isAvailableToBuild(Structure_Refinery) 
+                                            && money < 4000) {
+                                    itemID = Structure_Refinery;
+                                    itemCount[Unit_Harvester]++;
+                                    itemCount[Structure_Refinery]++;
                                 } else if (itemCount[Structure_LightFactory] == 0 && pBuilder->isAvailableToBuild(Structure_LightFactory) && ((itemCount[Unit_Harvester] > 4 && money > 1500) || money > 3000)) {
                                     itemID = Structure_LightFactory;
                                 } else if (itemCount[Structure_Radar] == 0 && pBuilder->isAvailableToBuild(Structure_Radar) && ((itemCount[Unit_Harvester] > 4 && money > 1500 || money > 3000))) {
@@ -1468,6 +1496,11 @@ void QuantBot::attack(int militaryValue) {
         return;
     }
 
+    // Don't attack if you don't yet have a repair yard, if you are at least tech 5
+    if (getHouse()->getNumItems(Structure_RepairYard) == 0 && currentGame->techLevel > 4) {
+        return;
+    }
+
     switch(difficulty) {
         case Difficulty::Defend: {
             return;
@@ -1489,6 +1522,7 @@ void QuantBot::attack(int militaryValue) {
             && pUnit->getItemID() != Unit_Harvester
             && pUnit->getItemID() != Unit_MCV
             && pUnit->getItemID() != Unit_Carryall
+            && pUnit->getItemID() != Unit_Sandworm
             && pUnit->getHealth() / pUnit->getMaxHealth() > 0.6_fix)
 
         {
@@ -1633,7 +1667,7 @@ void QuantBot::retreatAllUnits() {
     squadRetreatLocation = findSquadRetreatLocation();
 
     // turning this off fow now
-    //retreatTimer = MILLI2CYCLES(90000); 
+    retreatTimer = MILLI2CYCLES(90000); 
 
     // If no base exists yet, there is no retreat location
     if(squadRallyLocation.isValid() && squadRetreatLocation.isValid()) {
@@ -1742,7 +1776,7 @@ void QuantBot::checkAllUnits() {
                             }
                         }
                     } else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator)
-                                && pUnit->hasATarget() && (difficulty == Difficulty::Hard || difficulty == Difficulty::Brutal)) {
+                                && pUnit->hasATarget() && (difficulty != Difficulty::Medium)) {
                         // Special logic to keep launchers away from harm
                         if(pUnit->getTarget() != nullptr){
                             if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 6 && pUnit->getTarget()->getItemID() != Unit_Ornithopter) {

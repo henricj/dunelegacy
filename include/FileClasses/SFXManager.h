@@ -18,7 +18,7 @@
 #ifndef SFXMANAGER_H
 #define SFXMANAGER_H
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 #include <DataTypes.h>
 #include <misc/sound_util.h>
 

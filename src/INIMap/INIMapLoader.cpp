@@ -917,7 +917,7 @@ House* INIMapLoader::getOrCreateHouse(int houseID) {
         if(currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride >= 0) {
             maxUnits = currentGame->getGameInitSettings().getGameOptions().maximumNumberOfUnitsOverride;
         } else {
-            maxUnits = std::max(25, 25*(currentGameMap->getSizeX()*currentGameMap->getSizeY())/(64*64));
+            maxUnits = std::min(40, 20 * (currentGameMap->getSizeX() * currentGameMap->getSizeY()) / (32 * 32));
         }
         auto pNewHouse = std::make_unique<House>(houseID, 0, maxUnits, team, 0);
 

@@ -19,7 +19,7 @@
 
 #include <misc/exceptions.h>
 
-#include <SDL2/SDL_endian.h>
+#include <SDL_endian.h>
 
 #ifdef _WIN32
     #include <windows.h>

@@ -22,7 +22,7 @@
 #include <FileClasses/music/MusicPlayer.h>
 
 #include <vector>
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 // Forward declarations
 class SoundAdlibPC;

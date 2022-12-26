@@ -44,7 +44,7 @@
 
 #include <misc/SDL2pp.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 #include <inttypes.h>
 #include <vector>
 

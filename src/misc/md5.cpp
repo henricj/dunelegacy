@@ -33,7 +33,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <SDL2/SDL_rwops.h>
+#include <SDL_rwops.h>
 
 /*
  * 32-bit integer manipulation macros (little endian)

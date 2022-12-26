@@ -939,11 +939,11 @@
     <ClInclude Include="..\..\include\misc\sdl_support.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\SDL2\include\SDL2\begin_code.h">
+    <ClInclude Include="..\..\include\misc\SDL2pp.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\SDL2\include\SDL2\close_code.h">
-      <Filter>include</Filter>
+    <ClInclude Include="..\..\include\FileClasses\TTFFont.h">
+      <Filter>include\FileClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1573,5 +1573,9 @@
     <ResourceCompile Include="..\..\resource.rc">
       <Filter>res</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="..\..\dunelegacy.nsi" />
   </ItemGroup>
 </Project>

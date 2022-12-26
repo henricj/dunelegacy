@@ -21,7 +21,7 @@
 
 #include <Definitions.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 //! \enum MUSICTYPE
 /*! Types of music available in the game*/

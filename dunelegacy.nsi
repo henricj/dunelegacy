@@ -6,16 +6,16 @@ SetCompressor /SOLID lzma
 Name "Dune Legacy"
 BrandingText " http://dunelegacy.sourceforge.net"
 !define INSTALLATIONNAME "Dune Legacy"
-OutFile "Dune Legacy Setup.exe"
+OutFile "Dune Legacy 0.97.01 Setup.exe"
 InstallDir "$PROGRAMFILES\${INSTALLATIONNAME}"
 
 RequestExecutionLevel admin
 
 !define MUI_ICON "dunelegacy.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "nsis-background1.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "nsis-background1.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "modern-wizard.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "modern-wizard.bmp"
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "nsis-background2.bmp"
+!define MUI_HEADERIMAGE_BITMAP "modern-header.bmp"
 
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "COPYING"
@@ -143,25 +143,33 @@ FunctionEnd
 
 Section ""
   SetOutPath $INSTDIR\maps\singleplayer
-  File "data\maps\singleplayer\*.ini"
+  File "data\maps\singleplayer\*.*"
 
   SetOutPath $INSTDIR\maps\multiplayer
   File "data\maps\multiplayer\*.ini"
+
+
 
   SetOutPath $INSTDIR\locale
   File "data\locale\*.po"
 
   SetOutPath $INSTDIR
   ${If} ${RunningX64}
-    File build\x64\dunelegacy.exe
-    File build\x64\SDL2.dll
-    File build\x64\SDL2_mixer.dll
+    File bin\Release-x64\dunelegacy.exe
+    File bin\Release-x64\SDL2.dll
+    File bin\Release-x64\SDL2_mixer.dll
+    File bin\Release-x64\SDL2_ttf.dll
+
+    /* Not sure what these are for anymore but probably not required
     File build\x64\libogg-0.dll
     File build\x64\libvorbis-0.dll
     File build\x64\libvorbisfile-3.dll
     File build\x64\libmodplug-1.dll
     File build\x64\libFLAC-8.dll
     File build\x64\smpeg2.dll
+    */
+
+  /* commenting this out until 32bit release set
   ${Else}
     File build\x86\dunelegacy.exe
     File build\x86\SDL2.dll
@@ -172,6 +180,7 @@ Section ""
     File build\x86\libmodplug-1.dll
     File build\x86\libFLAC-8.dll
     File build\x86\smpeg2.dll
+  */  
   ${EndIf}
   File data\LEGACY.PAK
   File data\OPENSD2.PAK

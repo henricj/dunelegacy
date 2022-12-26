@@ -9,7 +9,7 @@
 
 #include <globals.h>
 
-#include <SDL2/SDL_mixer.h>
+#include <SDL_mixer.h>
 
 sdl2::mix_chunk_ptr create_chunk()
 {
