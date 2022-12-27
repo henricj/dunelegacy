@@ -440,11 +440,11 @@ void QuantBot::update() {
         attack(militaryValue);
     } 
     
-    else if (attackTimer > MILLI2CYCLES(100000) ) {
+
+    else if (attackTimer > MILLI2CYCLES(100000) && (gameMode != GameMode::Campaign || campaignAIAttackFlag == true)) {
         // If we have taken substantial losses then retreat
         attackTimer = MILLI2CYCLES(90000);
 
-        
         if(retreatTimer < 0){
             retreatAllUnits();
         } 
@@ -575,12 +575,17 @@ void QuantBot::onDamage(const ObjectBase* pObject, int damage, Uint32 damagerID)
 
         }
 
+        // If unit is below 80% then rotate them
         // If the unit is at 60% health or less and is not being forced to move anywhere
+        // only do these acitons for vehicles and not when fighting turrets
         // repair them, if they are eligible to be repaired
         if(difficulty != Difficulty::Easy) {
             if((pGroundUnit->getHealth() * 100) / pGroundUnit->getMaxHealth() < 80
                 && !pGroundUnit->isInfantry()
-                && pGroundUnit->isVisible()) {
+                && pGroundUnit->isVisible()
+                && (pDamager->getItemID() != Structure_GunTurret
+                    && pDamager->getItemID() != Structure_RocketTurret)
+                ) {
 
                 // Rotate unit backwards if it is taking damage
                 doSetAttackMode(pGroundUnit, AREAGUARD);
@@ -1776,10 +1781,11 @@ void QuantBot::checkAllUnits() {
                             }
                         }
                     } else if((pUnit->getItemID() == Unit_Launcher || pUnit->getItemID() == Unit_Deviator)
-                                && pUnit->hasATarget() && (difficulty != Difficulty::Medium)) {
+                                && pUnit->hasATarget() && (difficulty != Difficulty::Easy)) {
                         // Special logic to keep launchers away from harm
                         if(pUnit->getTarget() != nullptr){
                             if(blockDistance(pUnit->getLocation(), pUnit->getTarget()->getLocation()) <= 6 && pUnit->getTarget()->getItemID() != Unit_Ornithopter) {
+                                doSetAttackMode(pUnit, AREAGUARD); // Change mode to stop launchers freezing
                                 doMove2Pos(pUnit, squadCenterLocation.x, squadCenterLocation.y, true );
                             }
                         }
