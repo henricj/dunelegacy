@@ -27,3 +27,4 @@ IDE/VC/*.out?
 *.TMP
 /out/
 /.vs/
+.sarif/
