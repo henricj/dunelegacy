@@ -59,8 +59,8 @@ set(LIBS
 	fmt::fmt
 	lodepng
 	Microsoft.GSL::GSL
-	adplug
-	libbinio
+	adplug::adplug
+	libbinio::libbinio
 	digestpp
 	rectpack2D
 	${SOXR_LIBRARY_DIR}

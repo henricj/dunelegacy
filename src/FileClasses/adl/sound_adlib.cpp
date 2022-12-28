@@ -51,14 +51,14 @@
 #    pragma warning(disable : 4100)
 #endif // _MSC_VER
 
-#include <adplug/src/adl.h>
-#include <adplug/src/opl.h>
-#include <adplug/src/player.h>
-#include <adplug/src/surroundopl.h>
-#include <adplug/src/wemuopl.h>
+#include <adplug/adl.h>
+#include <adplug/opl.h>
+#include <adplug/player.h>
+#include <adplug/surroundopl.h>
+#include <adplug/wemuopl.h>
 
-#include <adplug/src/adplug.h>
-#include <adplug/src/fprovide.h>
+#include <adplug/adplug.h>
+#include <adplug/fprovide.h>
 #include <binfile.h>
 #include <binio.h>
 #include <binstr.h>

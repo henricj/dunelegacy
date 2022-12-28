@@ -12,7 +12,7 @@
 	url = https://github.com/TeamHypersomnia/rectpack2D.git
 [submodule "external/libbinio/libbinio"]
 	path = external/libbinio/libbinio
-	url = https://github.com/adplug/libbinio.git
+	url = https://github.com/henricj/libbinio.git
 [submodule "external/adplug/adplug"]
 	path = external/adplug/adplug
-	url = https://github.com/adplug/adplug.git
+	url = https://github.com/henricj/adplug.git

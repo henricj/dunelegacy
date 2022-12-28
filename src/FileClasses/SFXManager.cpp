@@ -26,8 +26,6 @@
 #include <misc/exceptions.h>
 #include <misc/sound_util.h>
 
-#include <adlib.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <utility>
