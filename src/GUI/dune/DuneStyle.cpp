@@ -20,7 +20,7 @@
 #include <misc/draw_util.h>
 
 #include "Renderer/DuneSurface.h"
-#include "dune_version.h"
+#include <dune_gitversion.h>
 #include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>
@@ -945,7 +945,7 @@ void DuneStyle::drawMainBackground(SDL_Renderer* renderer, const SDL_FRect& rect
     if (ordos)
         ordos->draw(renderer, 11, rect.h - 11 - ordos->height_);
 
-    auto version = createText(renderer, DUNE_GIT_DESCRIBE, COLOR_BLACK, 12);
+    auto version = createText(renderer, DUNE_GITVERSION_DESCRIBE, COLOR_BLACK, 12);
 
     if (!version)
         return;

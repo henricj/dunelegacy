@@ -17,7 +17,7 @@
 
 #include "logging.h"
 
-#include "dune_version.h"
+#include <dune_gitversion.h>
 
 #include "misc/SDL2pp.h"
 #include "misc/string_util.h"

@@ -1,7 +1,12 @@
-cmake_minimum_required(VERSION 3.16..3.22)
+cmake_minimum_required(VERSION 3.16..3.25)
 
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+include(GitVersion)
+
+gitversion_set_version(DUNE_VERSION v)
 
 project(dunelegacy VERSION 0.96.4)
 
@@ -21,8 +26,6 @@ elseif(CMAKE_CONFIGURATION_TYPES)
 endif()
 
 add_compile_definitions($<$<CONFIG:Debug>:DEBUG>)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 option(DUNE_PRECOMPILED_HEADERS "Use precompiled headers" ON)
 if(DUNE_PRECOMPILED_HEADERS)
@@ -178,28 +181,36 @@ endif()
 
 include(AddSources)
 
-find_package(Git)
+# googletest and the #define "new" used for heap debugging don't get along.
 
-include(GitVersion)
+if(DUNE_CRT_HEAP_DEBUG)
+    set(ENABLE_TESTS OFF)
+else()
+    set(ENABLE_TESTS ON)
+endif()
 
-create_git_version_target()
+option(DUNE_ENABLE_TESTS "Enable tests" "${ENABLE_TESTS}")
+
+if(DUNE_ENABLE_TESTS)
+    message(STATUS "Enabling tests")
+    enable_testing()
+else()
+    message(STATUS "Skipping tests")
+endif()
+
+if(COMMAND gitversion_create_target)
+  gitversion_create_target(dune_gitversion)
+endif()
 
 add_subdirectory(external)
 add_subdirectory(src)
 add_subdirectory(data)
 
-install(FILES README DESTINATION .)
-
-# googletest and the #define "new" used for heap debugging don't get along.
-if(DUNE_CRT_HEAP_DEBUG)
-    message(STATUS "Skipping tests")
-else()
-    message(STATUS "Enabling tests")
-
-    enable_testing()
-
+if(DUNE_ENABLE_TESTS)
     add_subdirectory(tests)
 endif()
+
+install(FILES README DESTINATION .)
 
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY OFF)
 

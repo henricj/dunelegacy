@@ -85,7 +85,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_library(dune STATIC ${SOURCES} ${HEADERS})
 target_compile_options(dune PRIVATE ${dune_flags})
 target_include_directories(dune PUBLIC ../include PRIVATE ../external/enet/include ${SOXR_INCLUDE_DIR})
-target_link_libraries(dune PUBLIC git_version ${LIBS})
+target_link_libraries(dune PUBLIC ${LIBS})
+
+if(TARGET dune_gitversion)
+  target_link_libraries(dune PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
+endif()
 
 if(DUNE_CRT_HEAP_DEBUG)
 	target_compile_definitions(dune PUBLIC DUNE_CRT_HEAP_DEBUG)
@@ -137,6 +141,10 @@ endif()
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
 target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
+
+if(TARGET dune_gitversion)
+  target_link_libraries(dunelegacy PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
+endif()
 
 if(HAVE_CXXABI_H)
 	target_compile_definitions(dunelegacy PUBLIC HAVE_CXXABI_H)

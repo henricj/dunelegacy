@@ -18,7 +18,7 @@
 #include "logging.h"
 
 #include "config.h"
-#include "dune_version.h"
+#include <dune_gitversion.h>
 
 #include "FileClasses/DuneConfig.h"
 
