@@ -20,6 +20,10 @@ env:
   # Path to the CMake build directory.
   build: '${{ github.workspace }}/build'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -37,27 +41,21 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Export Environment
-        id: export
-        run: |
-          function Export-WorkflowValue ([string]$name, [string]$value) {
-            Write-Output "$name=$value" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          }
-          $vs = Get-VSSetupInstance | Select-VSSetupInstance -Latest -Require @('Microsoft.VisualStudio.Component.VC.Tools.x86.x64', 'Microsoft.VisualStudio.Component.VC.Tools.ARM64', 'Microsoft.VisualStudio.Component.VC.CMake.Project')
-          $vsdevcmd_path = (Resolve-Path -LiteralPath (Join-Path $vs.InstallationPath -ChildPath 'Common7/Tools/VsDevCmd.bat')).Path
-          Export-WorkflowValue 'VSDEVCMD_PATH' $vsdevcmd_path
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Find MSVC (on Windows)
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Configure CMake
         shell: cmd
         run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=x64 -startdir=none
-          cmake --preset=windows-x64-release -B ${{ env.build }}
+          cmake --preset=windows-x64-release -B "${{ env.build }}"
 
       - name: Generate files with CMake
         shell: cmd
         run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=x64 -startdir=none
-          cmake --build ${{ env.build }} --target generated/include/dune_version.h rectpack2D_copy
+          cmake --build "${{ env.build }}" --target rectpack2D_copy adplug_headers dune_gitversion_intermediate libbinio_gitversion_intermediate adplug_gitversion_intermediate
 
       - name: Initialize MSVC Code Analysis
         uses: microsoft/msvc-code-analysis-action@v0.1.1

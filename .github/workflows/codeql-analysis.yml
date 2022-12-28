@@ -24,6 +24,10 @@ env:
   CC: gcc-11
   CXX: g++-11
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   analyze:
     name: Analyze
@@ -41,12 +45,15 @@ jobs:
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
     steps:
+    - name: Get cmake and ninja
+      uses: lukka/get-cmake@latest
+
     - name: "apt-get"
       run: |
         #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
         sudo apt-get dist-upgrade -y
-        sudo apt-get install -y gcc-11 g++-11 gettext ninja-build
+        sudo apt-get install -y gcc-11 g++-11 gettext
           
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -81,14 +88,10 @@ jobs:
     #   make release
 
     - name: Build
-      uses: ashutoshvarma/action-cmake-build@master
+      uses: lukka/run-cmake@v10
       with:
-        build-dir: ${{ runner.workspace }}/build
-        cc: gcc-11
-        cxx: g++-11
-        configure-options: -G Ninja -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
-        build-type: Release
-        parallel: 8
+        configurePreset: linux-release
+        buildPresetCmdString: "['--build', 'out/build/linux-release']"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

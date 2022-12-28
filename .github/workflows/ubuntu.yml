@@ -3,17 +3,17 @@ name: Ubuntu
 on:
   push:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "apt-get"
-        run: |
-          #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-          sudo apt-get update
-          sudo apt-get dist-upgrade -y
-          sudo apt-get install -y gcc-11 g++-11 gettext ninja-build
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@latest
 
       - name: Fetch repo
         uses: actions/checkout@v3
@@ -21,15 +21,27 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: external/vcpkg/vcpkg
+          vcpkgJsonGlob: cmake/vcpkg.json
+          prependedCacheKey: Ubuntu
+
       - name: Build
         uses: ashutoshvarma/action-cmake-build@master
         with:
-          build-dir: ${{ runner.workspace }}/build
           cc: gcc-11
           cxx: g++-11
+          build-dir: build
           configure-options: --preset=linux-release
           build-type: Release
 
+      - name: Block cache on failure
+        if: ${{ failure() || cancelled() }}
+        shell: bash
+        run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
+
       - name: Test
-        working-directory: "${{ runner.workspace }}/build"
+        working-directory: build
         run: ctest

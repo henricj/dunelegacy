@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: windows-latest
@@ -16,16 +20,20 @@ jobs:
         include:
           - name: Windows x64
             platform: x64
+            arch: amd64
             preset: windows-x64-release
           - name: Windows x64-avx2
             platform: x64
+            arch: amd64
             name_postfix: "-avx2"
             preset: windows-x64-avx2-release
           - name: Windows x86
             platform: x86
+            arch: amd64_x86
             preset: windows-x86-release
           - name: Windows ARM64
             platform: arm64
+            arch: amd64_arm64
             preset: windows-arm64-release
     steps:
       - name: Fetch repo
@@ -33,11 +41,14 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
-          path: source
 
-      #- name: Install Ninja
-      #  shell: cmd
-      #  run: choco install --yes ninja
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Find MSVC (on Windows)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{matrix.arch}}
 
       - name: Export Environment
         id: export
@@ -57,7 +68,7 @@ jobs:
           Export-OutputValue 'is_release' $is_release
           $platform = '${{matrix.platform}}${{matrix.name_postfix}}'
           $root = (Resolve-Path -LiteralPath $Env:GITHUB_WORKSPACE).Path
-          $source = (Resolve-Path -LiteralPath (Join-Path $root -ChildPath 'source')).Path
+          $source = (Resolve-Path -LiteralPath $root).Path
           cd $source
           $git_origin_url = (git config --get remote.origin.url)
           $git_master_ref = (git ls-remote "$git_origin_url" master) -split '\s+' | select -First 1
@@ -97,26 +108,36 @@ jobs:
           $vsdevcmd_path = (Resolve-Path -LiteralPath (Join-Path $vs.InstallationPath -ChildPath 'Common7/Tools/VsDevCmd.bat')).Path
           Export-WorkflowValue 'VSDEVCMD_PATH' $vsdevcmd_path
 
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: external/vcpkg/vcpkg
+          vcpkgJsonGlob: cmake/vcpkg.json
+          prependedCacheKey: 'Windows/${{ matrix.platform }}${{ matrix.name_postfix }}'
+
       - name: Compile
         shell: cmd
+        working-directory: '${{ env.PROJECT_BUILD }}'
         run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
-          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B "%PROJECT_BUILD%"
-          cmake --build "%PROJECT_BUILD%"
+          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B .
+          cmake --build .
+
+      - name: Block cache on failure
+        if: ${{ failure() || cancelled() }}
+        shell: bash
+        run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
 
       - name: Test
         shell: cmd
         if: matrix.platform != 'arm64'
+        working-directory: '${{ env.PROJECT_BUILD }}'
         run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
-          cd "%PROJECT_BUILD%"
           ctest
 
       - name: Build Installer
         shell: cmd
+        working-directory: '${{ env.PROJECT_BUILD }}'
         run: |
-          call "%VSDEVCMD_PATH%" -host_arch=x64 -arch=${{matrix.platform}} -startdir=none
-          cd "%PROJECT_BUILD%"
           cpack -G ZIP -v
 
       - name: Upload Binaries Artifact

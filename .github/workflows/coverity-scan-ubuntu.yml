@@ -5,37 +5,39 @@ on:
   push:
     branches: [modernize]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   coverity:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-
     - name: Tools
       run: |
         #sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
         sudo apt-get dist-upgrade -y
-        sudo apt-get install -y gcc-11 g++-11 gettext ninja-build
+        sudo apt-get install -y gcc-11 g++-11 gettext
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 50
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 50
 
+    - name: Get cmake and ninja
+      uses: lukka/get-cmake@latest
+
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
     - name: Configure
       run: |
-        mkdir build
-        cd build
-        cmake --preset=linux-release -B . -S ..
+        cmake --preset=linux-release -B build -S .
 
     - name: Coverity Scan
       uses: vapier/coverity-scan-action@v1
       with:
-        working-directory: ${{ github.workspace }}/build
+        working-directory: build
         command: cmake --build .
         email: ${{ secrets.COVERITY_SCAN_EMAIL }}
         token: ${{ secrets.COVERITY_SCAN_TOKEN }}
-
-    - name: Debug Dump
-      run: cat build/cov-int/build-log.txt
