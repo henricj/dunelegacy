@@ -1,3 +1,9 @@
+option(DUNE_FIND_rectpack2D "Use find_package() for rectpack2D" OFF)
+
+if(DUNE_FIND_rectpack2D)
+	find_package(rectpack2D REQUIRED)
+	return()
+endif()
 
 get_filename_component(header_dir "include" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
