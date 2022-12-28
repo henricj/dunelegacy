@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.16..3.22)
 
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
 
-include(cmake/vcpkg-configuration.cmake)
 
 project(dunelegacy VERSION 0.96.4)
 

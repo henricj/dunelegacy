@@ -11,7 +11,11 @@
       "hidden": true,
       "displayName": "Default Config",
       "description": "Default build using Ninja generator",
-      "generator": "Ninja"
+      "generator": "Ninja",
+      "cacheVariables": {
+        "VCPKG_MANIFEST_DIR": "${sourceDir}/cmake",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/external/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
     },
     {
       "name": "windows-base",
@@ -20,6 +24,7 @@
       "displayName": "Windows default",
       "description": "Default Windows build",
       "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "cacheVariables": { "VCPKG_TARGET_TRIPLET":  "x64-windows" },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
           "hostOS": [
