@@ -14,6 +14,7 @@ jobs:
 
     outputs:
       is_release: ${{ steps.export.outputs.is_release }}
+      project_name: ${{ steps.export.outputs.output_name }}
     strategy:
       #fail-fast: false
       matrix:
@@ -92,6 +93,7 @@ jobs:
           $zip_name =   $output_name + '.zip'
           $msi_zip_name =   'MSI-' + $output_name + '.zip'
           $exe_zip_name =   'Setup-' + $output_name + '.zip'
+          Export-OutputValue 'output_name' $output_name
           Export-WorkflowValue 'PROJECT_OUTPUT_NAME' $output_name
           Export-WorkflowValue 'PROJECT_ZIP' (Join-Path $build -ChildPath $zip_name)
           Export-WorkflowValue 'PROJECT_ZIP_RELATIVE_UNIX' ($build_relative_unix + "/" + $zip_name)
@@ -152,22 +154,9 @@ jobs:
           #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
           #path: ${{env.PROJECT_INSTALLER}}
 
-      - name: Create Release
-        if: contains(github.ref, 'modernize')
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{env.PROJECT_LATEST_TAG}}
-          title: ${{env.PROJECT_OUTPUT_NAME}}
-          draft: false
-          prerelease: true
-          files: |
-            ${{env.PROJECT_ZIP_RELATIVE_UNIX}}
-
   release:
     needs: build
-    if: needs.build.outputs.is_release == 'True'
-    runs-on: windows-2022
+    runs-on: windows-latest
 
     steps:
       - name: Collect artifacts
@@ -175,7 +164,20 @@ jobs:
         with:
           path: .
 
+      - name: Create Prerelease
+        if: contains(github.ref, 'modernize')
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest-windows
+          title: '${{needs.build.outputs.project_name}}'
+          draft: false
+          prerelease: true
+          files: |
+            **/*.zip
+
       - name: Create Release
+        if: needs.build.outputs.is_release == 'True'
         uses: softprops/action-gh-release@v1
         with:
           files: |
