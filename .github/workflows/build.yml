@@ -1,0 +1,74 @@
+name: Build
+
+on: [ push, pull_request, workflow_dispatch ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - name: Windows
+          os: windows-latest
+          preset: windows-x64-release
+        - name: Linux
+          os: ubuntu-latest
+          preset: linux-release
+        #- name: macOS
+        #  os: macos-12
+        #  preset: macos-x64-release
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Get cmake and ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Find MSVC (Windows)
+        uses: ilammy/msvc-dev-cmd@v1
+
+#      - name: Setup gcc (macOS)
+#        if: runner.os == 'macOS'
+#        run: |
+#          echo CC=gcc-11 >> $GITHUB_ENV
+#          echo CXX=g++-11 >> $GITHUB_ENV
+
+      - name: Setup clang (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install llvm@15
+          base=$(brew --prefix llvm@15)
+          echo "Found LLVM: ${base}"
+          echo CC=${base}/bin/clang >> $GITHUB_ENV
+          echo CXX=${base}/bin/clang++ >> $GITHUB_ENV
+          echo CPPFLAGS="-I${base}/include" >> $GITHUB_ENV
+          echo LDFLAGS="-L${base}/lib/c++ -Wl,-rpath,${base}/lib/c++" >> $GITHUB_ENV
+
+      - name: Fetch repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: external/vcpkg/vcpkg
+          vcpkgJsonGlob: cmake/vcpkg.json
+          prependedCacheKey: 'build/${{ matrix.preset }}'
+
+      - name: Build
+        uses: lukka/run-cmake@v10
+        with:
+          configurePreset: '${{ matrix.preset }}'
+          buildPreset: '${{ matrix.preset }}'
+          testPreset: '${{ matrix.preset }}'
+
+      - name: Block cache on failure
+        if: ${{ failure() || cancelled() }}
+        shell: bash
+        run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
