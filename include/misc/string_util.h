@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <charconv>
 #include <functional>
+#include <ranges>
 #include <span>
 #include <string>
 #include <unordered_map>

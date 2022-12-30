@@ -20,6 +20,7 @@
 
 #include <misc/SDL2pp.h>
 
+#include <algorithm>
 #include <array>
 #include <charconv>
 #include <deque>

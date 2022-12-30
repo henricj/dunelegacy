@@ -20,6 +20,8 @@
 
 #include "Widget.h"
 
+#include <algorithm>
+#include <ranges>
 #include <vector>
 
 /// The abstract base class for container widgets

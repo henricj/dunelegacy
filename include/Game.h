@@ -36,8 +36,10 @@
 
 #include <string>
 
+#include <algorithm>
 #include <array>
 #include <filesystem>
+#include <ranges>
 #include <unordered_set>
 #include <utility>
 
