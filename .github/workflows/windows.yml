@@ -2,15 +2,21 @@ name: Windows
 
 on:
   push:
-  pull_request:
+    branches: [modernize]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions: {}
+
 jobs:
   build:
     runs-on: windows-latest
+
+    permissions:
+      contents: read
 
     outputs:
       is_release: ${{ steps.export.outputs.is_release }}
@@ -115,11 +121,11 @@ jobs:
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
           vcpkgJsonGlob: cmake/vcpkg.json
-          prependedCacheKey: 'Windows/${{ matrix.platform }}${{ matrix.name_postfix }}'
+          prependedCacheKey: "Windows/${{ matrix.platform }}${{ matrix.name_postfix }}"
 
       - name: Compile
         shell: cmd
-        working-directory: '${{ env.PROJECT_BUILD }}'
+        working-directory: "${{ env.PROJECT_BUILD }}"
         run: |
           cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B .
           cmake --build .
@@ -132,13 +138,13 @@ jobs:
       - name: Test
         shell: cmd
         if: matrix.platform != 'arm64'
-        working-directory: '${{ env.PROJECT_BUILD }}'
+        working-directory: "${{ env.PROJECT_BUILD }}"
         run: |
           ctest
 
       - name: Build Installer
         shell: cmd
-        working-directory: '${{ env.PROJECT_BUILD }}'
+        working-directory: "${{ env.PROJECT_BUILD }}"
         run: |
           cpack -G ZIP -v
 
@@ -149,14 +155,18 @@ jobs:
           path: ${{env.PROJECT_ZIP}}
 
       #- name: Upload Installer Artifact
-        #uses: actions/upload-artifact@v3
-        #with:
-          #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
-          #path: ${{env.PROJECT_INSTALLER}}
+      #uses: actions/upload-artifact@v3
+      #with:
+      #name: Setup ${{env.PROJECT_OUTPUT_NAME}}
+      #path: ${{env.PROJECT_INSTALLER}}
 
   release:
     needs: build
+
     runs-on: windows-latest
+
+    permissions:
+      contents: write
 
     steps:
       - name: Collect artifacts
@@ -168,9 +178,9 @@ jobs:
         if: contains(github.ref, 'modernize')
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: latest-windows
-          title: '${{needs.build.outputs.project_name}}'
+          title: "${{needs.build.outputs.project_name}}"
           draft: false
           prerelease: true
           files: |
@@ -184,4 +194,3 @@ jobs:
             **/*.zip
           draft: true
           prerelease: false
-

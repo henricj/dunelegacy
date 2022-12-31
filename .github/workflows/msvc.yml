@@ -10,30 +10,29 @@ name: Microsoft C++ Code Analysis
 
 on:
   push:
-    branches: [ modernize, master ]
+    branches: [modernize, master]
   pull_request:
-    branches: [ modernize ]
+    branches: [modernize]
   schedule:
-    - cron: '41 21 * * 1'
+    - cron: "41 21 * * 1"
 
 env:
   # Path to the CMake build directory.
-  build: '${{ github.workspace }}/build'
+  build: "${{ github.workspace }}/build"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   analyze:
+    name: Analyze
+    runs-on: windows-latest
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-    name: Analyze
-    runs-on: windows-latest
 
     steps:
       - name: Checkout repository
