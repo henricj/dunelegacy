@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: dunelegacy 0.96.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-19 17:01-0700\n"
+"POT-Creation-Date: 2022-12-30 23:16-0700\n"
 "PO-Revision-Date: 2012-08-31 01:41+0200\n"
 "Last-Translator: Richard Schaller <richard.schaller@gmx.de>\n"
 "Language-Team: English <>\n"
@@ -25,8 +25,8 @@ msgstr ""
 #: src/FileClasses/SurfaceLoader.cpp:269 src/FileClasses/SurfaceLoader.cpp:270
 #: src/FileClasses/SurfaceLoader.cpp:277 src/FileClasses/SurfaceLoader.cpp:278
 #: src/FileClasses/SurfaceLoader.cpp:761 src/FileClasses/SurfaceLoader.cpp:763
-#: src/FileClasses/TextManager.cpp:65 src/Menu/MapChoice.cpp:524
-#: src/Menu/MapChoice.cpp:528 src/main.cpp:406
+#: src/FileClasses/TextManager.cpp:65 src/Menu/MapChoice.cpp:527
+#: src/Menu/MapChoice.cpp:531 src/main.cpp:406
 #, c-format
 msgid "LanguageFileExtension"
 msgstr "ENG"
