@@ -7,16 +7,12 @@
 | [Workflow](../../actions) | Status |
 |------------|------------|
 |   [Windows](../../actions/workflows/windows.yml)  | [![Windows](../../actions/workflows/windows.yml/badge.svg)](../../actions/workflows/windows.yml) |
-|   [Ubuntu](../../actions/workflows/ubuntu.yml)    | [![Ubuntu](../../actions/workflows/ubuntu.yml/badge.svg)](../../actions/workflows/ubuntu.yml) |
+|   [Ubuntu](../../actions/workflows/build.yml)    | [![Ubuntu](../../actions/workflows/build.yml/badge.svg)](../../actions/workflows/build.yml) |
 
 ### Binaries
 
 Binaries are built automatically from the latest source and can be found here:
-
-**[Windows arm64](../../releases/tag/latest-arm64)**  
-**[Windows x86](../../releases/tag/latest-x86)**  
-**[Windows x64](../../releases/tag/latest-x64)**  
-**[Windows x64/avx2](../../releases/tag/latest-x64-avx2)**  
+**[Windows](../../releases/tag/latest-windows)**  
 
 ### Summary
 
