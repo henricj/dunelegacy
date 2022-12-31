@@ -126,7 +126,7 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: latest-windows
-          title: "Latest Windows dunelegacy ${{needs.build.outputs.git_describe}}"
+          title: "Latest CI/canary Windows dunelegacy ${{needs.build.outputs.git_describe}}"
           draft: false
           prerelease: true
           files: |
