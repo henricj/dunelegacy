@@ -13,7 +13,7 @@
       "description": "Default build using Ninja generator",
       "generator": "Ninja",
       "cacheVariables": {
-        "VCPKG_MANIFEST_DIR": "${sourceDir}/cmake",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}/external/vcpkg/config",
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/external/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
       }
     },

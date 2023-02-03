@@ -1,6 +1,6 @@
 [submodule "external/vcpkg/vcpkg"]
 	path = external/vcpkg/vcpkg
-	url = https://github.com/henricj/vcpkg-ltcg.git
+	url = https://github.com/microsoft/vcpkg.git
 [submodule "external/enet"]
 	path = external/enet/enet
 	url = https://github.com/lsalzman/enet.git

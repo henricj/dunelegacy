@@ -66,14 +66,18 @@ jobs:
         uses: lukka/run-vcpkg@v10
         with:
           vcpkgDirectory: external/vcpkg/vcpkg
-          vcpkgJsonGlob: cmake/vcpkg.json
+          vcpkgJsonGlob: external/vcpkg/config/vcpkg.json
           prependedCacheKey: "Windows/${{ matrix.platform }}${{ matrix.name_postfix }}"
+
+      - name: Configure
+        shell: cmd
+        run: |
+          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B "${{env.PROJECT_BUILD}}"
 
       - name: Compile
         shell: cmd
         working-directory: "${{ env.PROJECT_BUILD }}"
         run: |
-          cmake -G Ninja --preset "${{matrix.preset}}" "-DTARGET_MSI_NAME=%PROJECT_OUTPUT_NAME%" -S "%PROJECT_SOURCE%" -B .
           cmake --build .
 
       - name: Block cache on failure
@@ -86,7 +90,7 @@ jobs:
         if: matrix.platform != 'arm64'
         working-directory: "${{ env.PROJECT_BUILD }}"
         run: |
-          ctest
+          cmake --build . --target test
 
       - name: Build Installer
         shell: cmd
