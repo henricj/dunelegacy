@@ -1,7 +1,11 @@
 message(STATUS "Configuring MSVC")
 
-add_compile_options(/diagnostics:caret /GA /GS /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast)
+add_compile_options(/diagnostics:caret /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast)
 add_compile_options(/wd4267)
+
+# Optimize for Windows Application (i.e., not a DLL)
+# https://learn.microsoft.com/en-us/cpp/build/reference/ga-optimize-for-windows-application
+add_compile_options(/GA)
 
 # C4018 'token' : signed/unsigned mismatch
 # C4100 'identifier' : unreferenced formal parameter
@@ -52,6 +56,14 @@ separate_arguments(release_flags)
 set(debug_flags ${DUNE_MSVC_DEBUG_FLAGS})
 separate_arguments(debug_flags)
 
+add_compile_options("$<$<CONFIG:DEBUG>:${debug_flags}>")
+add_compile_options("$<$<NOT:$<CONFIG:DEBUG>>:${release_flags}>")
+add_link_options("$<$<NOT:$<CONFIG:DEBUG>>:/OPT:REF,ICF=3>")
+
+if(DUNE_TARGET_ARCHITECTURE STREQUAL "arm64")
+    add_link_options("$<$<NOT:$<CONFIG:DEBUG>>:/OPT:LBR>")
+endif()
+
 # Strip out options we want to set ourselves
 function(strip_msvc_debug_compiler_options OPTIONS_VAR)
     string(REGEX REPLACE "/Zi" "" local_options_var "${${OPTIONS_VAR}}")
@@ -61,14 +73,12 @@ endfunction()
 function(strip_msvc_release_compiler_options OPTIONS_VAR)
     string(REGEX REPLACE "/O2" "" local_options_var "${${OPTIONS_VAR}}")
     string(REGEX REPLACE "/Ob1" "" local_options_var "${local_options_var}")
+    string(REGEX REPLACE "/Ob2" "" local_options_var "${local_options_var}")
     set(${OPTIONS_VAR} "${local_options_var}" PARENT_SCOPE)
 endfunction()
 
 foreach(config ${build_list})
     string(TOUPPER "${config}" upper_config)
-
-    message(STATUS "config: ${config}")
-    message(STATUS "upper_config: ${upper_config}")
 
     if(upper_config STREQUAL "DEBUG")
         strip_msvc_debug_compiler_options(CMAKE_CXX_FLAGS)
@@ -76,8 +86,6 @@ foreach(config ${build_list})
 
         strip_msvc_debug_compiler_options(CMAKE_CXX_FLAGS_${upper_config})
         strip_msvc_debug_compiler_options(CMAKE_C_FLAGS_${upper_config})
-
-        add_compile_options("$<$<CONFIG:${config}>:${debug_flags}>")
     else()
         strip_msvc_release_compiler_options(CMAKE_CXX_FLAGS)
         strip_msvc_release_compiler_options(CMAKE_C_FLAGS)
@@ -85,7 +93,5 @@ foreach(config ${build_list})
         strip_msvc_release_compiler_options(CMAKE_CXX_FLAGS_${upper_config})
         strip_msvc_release_compiler_options(CMAKE_C_FLAGS_${upper_config})
 
-        add_compile_options("$<$<CONFIG:${config}>:${release_flags}>")
-        add_link_options("$<$<CONFIG:${config}>:/OPT:REF,ICF=3>")
     endif()
 endforeach()
