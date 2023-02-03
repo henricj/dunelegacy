@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16..3.25)
+cmake_minimum_required(VERSION 3.16...3.25)
 
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)   # Respect CMAKE_MSVC_RUNTIME_LIBRARY
 
