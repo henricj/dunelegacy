@@ -62,7 +62,7 @@
       "inherits": "windows-x64",
       "displayName": "Windows x64 Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "x64-windows-ltcg-static"
       }
     },
@@ -73,6 +73,7 @@
       "cacheVariables": {
         "DUNE_ASAN": true,
         "DUNE_CRT_HEAP_DEBUG": true,
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "VCPKG_TARGET_TRIPLET": "x64-windows-asan"
       },
       "environment": {
@@ -96,7 +97,7 @@
       "displayName": "Windows x64 AVX2 Release",
       "inherits": "windows-x64",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "DUNE_TARGET_ARCHITECTURE_EXTENSION": "avx2",
         "VCPKG_TARGET_TRIPLET": "x64-avx2-windows-ltcg-static"
       }
@@ -129,7 +130,7 @@
       "inherits": "windows-arm64",
       "displayName": "Windows arm64 Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "arm64-windows-ltcg-static"
       }
     },
@@ -161,7 +162,7 @@
       "displayName": "Windows x86 Release",
       "inherits": "windows-x86",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "x86-windows-ltcg-static"
       }
     },
@@ -199,7 +200,7 @@
       "inherits": "windows-clang-x64",
       "displayName": "Windows Clang x64 Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "DUNE_MSVC_RUNTIME_LIBRARY": "MultiThreadedDLL"
       }
     },
@@ -269,7 +270,7 @@
       "inherits": "linux-base",
       "displayName": "Linux Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "x64-linux-release"
       }
     },
@@ -288,12 +289,13 @@
       "displayName": "Linux ASAN Release",
       "cacheVariables": {
         "DUNE_ASAN": true,
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "VCPKG_TARGET_TRIPLET": "x64-linux-asan"
       }
     },
     {
       "name": "linux-ubsan-debug",
-      "displayName": "Linux UBAN Debug",
+      "displayName": "Linux UBSAN Debug",
       "inherits": "linux-debug",
       "cacheVariables": {
         "DUNE_UBSAN": true,
@@ -302,10 +304,11 @@
     },
     {
       "name": "linux-ubsan-release",
-      "displayName": "Linux UBAN Release",
+      "displayName": "Linux UBSAN Release",
       "inherits": "linux-release",
       "cacheVariables": {
         "DUNE_UBSAN": true,
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "VCPKG_TARGET_TRIPLET": "x64-linux-ubsan"
       }
     },
@@ -314,7 +317,7 @@
       "inherits": "linux-base",
       "displayName": "x64 macOS Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "x64-osx-release"
       }
     },
@@ -323,7 +326,7 @@
       "inherits": "linux-base",
       "displayName": "arm64 macOS Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "CMAKE_BUILD_TYPE": "Release",
         "VCPKG_TARGET_TRIPLET": "arm64-osx-release"
       }
     }
