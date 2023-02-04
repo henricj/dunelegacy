@@ -8,7 +8,10 @@ include(GitVersion)
 
 gitversion_set_version(DUNE_VERSION v)
 
-project(dunelegacy VERSION 0.96.4)
+project(dunelegacy
+	VERSION 0.96.4
+	LANGUAGES CXX C
+)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
