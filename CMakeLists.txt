@@ -57,6 +57,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU
     include(setup/clang-gcc-setup)
 endif()
 
+include(create-harden-interface)
+
 include(CheckSymbolExists)
 include(CheckCXXSourceCompiles)
 

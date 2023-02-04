@@ -62,7 +62,9 @@ set(LIBS
 	digestpp
 	rectpack2D
 	${SOXR_LIBRARY_DIR}
-	enet)
+	enet
+	harden_interface
+)
 
 
 if(WIN32)
@@ -138,7 +140,7 @@ endif()
 
 add_executable(dunelegacy ${EXE_SOURCES} ${EXE_HEADERS})
 target_compile_options(dunelegacy PRIVATE ${dune_flags})
-target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main)
+target_link_libraries(dunelegacy PRIVATE dune SDL2::SDL2main harden_interface)
 
 if(TARGET dune_gitversion)
   target_link_libraries(dunelegacy PRIVATE "$<BUILD_INTERFACE:dune_gitversion>")
