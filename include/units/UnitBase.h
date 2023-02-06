@@ -93,27 +93,27 @@ public:
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleAttackClick(const GameContext& context, int xPos, int yPos);
+    void handleAttackClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit is ordered to move
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleMoveClick(const GameContext& context, int xPos, int yPos);
+    void handleMoveClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit is ordered to be in a new attack mode
         \param  newAttackMode   the new attack mode the unit is put in.
     */
-    virtual void handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode);
+    void handleSetAttackModeClick(const GameContext& context, ATTACKMODE newAttackMode);
 
     /**
         This method is called when an unit is ordered to request a carryall drop
         \param  xPos    the x position on the map
         \param  yPos    the y position on the map
     */
-    virtual void handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
+    void handleRequestCarryallDropClick(const GameContext& context, int xPos, int yPos);
 
     /**
         This method is called when an unit should move to (xPos,yPos)
@@ -121,26 +121,26 @@ public:
         \param  yPos    the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doMove2Pos(const GameContext& context, int xPos, int yPos, bool bForced);
+    void doMove2Pos(const GameContext& context, int xPos, int yPos, bool bForced);
 
     /**
         This method is called when an unit should move to coord
         \param  coord   the position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doMove2Pos(const GameContext& context, const Coord& coord, bool bForced);
+    void doMove2Pos(const GameContext& context, const Coord& coord, bool bForced);
 
     /**
         This method is called when an unit should move to another unit/structure
         \param  TargetObjectID  the ID of the other unit/structure
     */
-    virtual void doMove2Object(const GameContext& context, uint32_t TargetObjectID);
+    void doMove2Object(const GameContext& context, uint32_t TargetObjectID);
 
     /**
         This method is called when an unit should move to another unit/structure
         \param  pTargetObject   the other unit/structure
     */
-    virtual void doMove2Object(const GameContext& context, const ObjectBase* pTargetObject);
+    void doMove2Object(const GameContext& context, const ObjectBase* pTargetObject);
 
     /**
         This method is called when an unit should attack a position
@@ -148,21 +148,21 @@ public:
         \param  yPos    the y position on the map
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackPos(const GameContext& context, int xPos, int yPos, bool bForced);
+    void doAttackPos(const GameContext& context, int xPos, int yPos, bool bForced);
 
     /**
         This method is called when an unit should attack to another unit/structure
         \param  pTargetObject   the target unit/structure
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced);
+    void doAttackObject(const GameContext& context, const ObjectBase* pTargetObject, bool bForced);
 
     /**
         This method is called when an unit should attack to another unit/structure
         \param  TargetObjectID  the ID of the other unit/structure
         \param  bForced true, if the unit should ignore everything else
     */
-    virtual void doAttackObject(const GameContext& context, uint32_t TargetObjectID, bool bForced);
+    void doAttackObject(const GameContext& context, uint32_t TargetObjectID, bool bForced);
 
     /**
         This method is called when an unit should change it's current attack mode
@@ -283,7 +283,7 @@ protected:
     virtual void engageTarget(const GameContext& context);
     virtual void move(const GameContext& context);
 
-    virtual void
+    void
     bumpyMovementOnRock(FixPoint fromDistanceX, FixPoint fromDistanceY, FixPoint toDistanceX, FixPoint toDistanceY);
 
     virtual void navigate(const GameContext& context);
