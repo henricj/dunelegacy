@@ -178,7 +178,7 @@ public:
     FixPoint getProductionProgress() const noexcept { return productionProgress_; }
     const auto& getBuildList() const noexcept { return buildList_; }
 
-    virtual bool isAvailableToBuild(ItemID_enum itemID) const { return (getBuildItem(itemID) != nullptr); }
+    bool isAvailableToBuild(ItemID_enum itemID) const { return (getBuildItem(itemID) != nullptr); }
 
     /**
         Get the current build speed limit.
@@ -187,11 +187,11 @@ public:
     FixPoint getBuildSpeedLimit() const { return buildSpeedLimit_; }
 
 protected:
-    virtual void updateProductionProgress();
+    void updateProductionProgress();
 
     void removeBuiltItemFromProductionQueue();
 
-    virtual void insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price = -1);
+    void insertItem(build_list_type::iterator& iter, ItemID_enum item_id, int price = -1);
 
     void removeItem(build_list_type::iterator& iter, ItemID_enum item_id);
 

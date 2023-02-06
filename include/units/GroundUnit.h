@@ -62,7 +62,7 @@ public:
     /**
         This method is called when the user clicks on the repair button for this unit
     */
-    virtual void handleSendToRepairClick();
+    void handleSendToRepairClick();
 
     void doRepair(const GameContext& context) noexcept override;
 

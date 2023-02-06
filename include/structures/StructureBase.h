@@ -108,7 +108,7 @@ public:
     /**
         This method is called when the user clicks on the repair button for this building
     */
-    virtual void handleRepairClick();
+    void handleRepairClick();
 
     /**
         Set the deploy position of this structure. Units produced in this structure will move directly to
@@ -116,7 +116,7 @@ public:
         \param  x           the x coordinate (in tile coordinates)
         \param  y           the y coordinate (in tile coordinates)
     */
-    virtual void doSetDeployPosition(int xPos, int yPos);
+    void doSetDeployPosition(int xPos, int yPos);
 
     /**
         Start repairing this structure.
