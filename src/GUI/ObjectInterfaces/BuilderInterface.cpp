@@ -18,6 +18,7 @@
 #include "GUI/ObjectInterfaces/BuilderInterface.h"
 
 #include "GUI/Spacer.h"
+#include "GUI/dune/BuilderList.h"
 
 #include <FileClasses/TextManager.h>
 
