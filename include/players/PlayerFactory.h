@@ -115,7 +115,7 @@ private:
 
     template<typename PlayerType, typename... Args>
     static void add(std::string&& playerclass, std::string&& name, Args&&... args) {
-        static_assert(std::is_base_of<Player, PlayerType>::value, "The PlayerType must be derived from Player");
+        static_assert(std::is_base_of_v<Player, PlayerType>, "The PlayerType must be derived from Player");
 
         playerDataList.emplace_back(
             std::move(playerclass), std::move(name),

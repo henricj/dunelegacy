@@ -538,11 +538,11 @@ int ObjectBase::getInfSpawnProp() const {
 namespace {
 template<typename ObjectType, typename... Args>
 std::unique_ptr<ObjectBase> makeObject(Args&&... args) {
-    static_assert(std::is_constructible<ObjectType, Args...>::value, "ObjectType is not constructible");
-    static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
-    static_assert(std::is_base_of<ObjectBase, typename ObjectType::parent>::value,
+    static_assert(std::is_constructible_v<ObjectType, Args...>, "ObjectType is not constructible");
+    static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
+    static_assert(std::is_base_of_v<ObjectBase, typename ObjectType::parent>,
                   "ObjectType's parent is not derived from ObjectBase");
-    static_assert(std::is_base_of<typename ObjectType::parent, ObjectType>::value,
+    static_assert(std::is_base_of_v<typename ObjectType::parent, ObjectType>,
                   "ObjectType's parent is not a base class");
 
     return std::make_unique<ObjectType>(std::forward<Args>(args)...);

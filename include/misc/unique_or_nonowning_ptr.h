@@ -52,7 +52,7 @@ public:
 
     unique_or_nonowning_ptr(unique_or_nonowning_ptr&& u) noexcept : ptr(std::move(u.ptr)) { }
 
-    template<typename = std::enable_if<std::is_pointer<deleter>::value>, int>
+    template<typename = std::enable_if<std::is_pointer_v<deleter>>, int>
     unique_or_nonowning_ptr(std::unique_ptr<T, deleter>&& u) noexcept
         : ptr(internal_ptr_type(u.release(), u.get_deleter())) { }
 
@@ -74,7 +74,7 @@ public:
         return *this;
     }
 
-    template<typename = std::enable_if<std::is_pointer<deleter>::value>, int>
+    template<typename = std::enable_if<std::is_pointer_v<deleter>>, int>
     unique_or_nonowning_ptr& operator=(std::unique_ptr<T, deleter>&& u) noexcept {
         ptr = internal_ptr_type(u.release(), u.get_deleter());
         return *this;
@@ -88,7 +88,7 @@ public:
     unique_or_nonowning_ptr(const unique_or_nonowning_ptr&)            = delete;
     unique_or_nonowning_ptr& operator=(const unique_or_nonowning_ptr&) = delete;
 
-    typename std::add_lvalue_reference<T>::type operator*() const { return ptr.get(); }
+    std::add_lvalue_reference_t<T> operator*() const { return ptr.get(); }
 
     pointer operator->() const noexcept { return ptr.operator->(); }
 

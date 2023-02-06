@@ -26,7 +26,7 @@
 template<typename TException, typename... Args>
 TException
 dune_exception(std::string_view file, int line, std::string_view func, std::string_view format, Args&&... args) {
-    static_assert(std::is_base_of<std::exception, TException>::value);
+    static_assert(std::is_base_of_v<std::exception, TException>);
 
     return TException{
         fmt::sprintf("%s:%d (%s): %s", file, line, func, fmt::sprintf(format, std::forward<Args>(args)...))};

@@ -170,7 +170,7 @@ public:
 protected:
     template<typename F>
     void location_for_each(int x1, int y1, int x2, int y2, F&& f) const {
-        static_assert(std::is_invocable<F, int, int>::value, "The function must be of the form void F(int, int)");
+        static_assert(std::is_invocable_v<F, int, int>, "The function must be of the form void F(int, int)");
 
         if (x1 < 0)
             x1 = 0;
@@ -194,7 +194,7 @@ protected:
 
     template<typename Predicate>
     bool location_find(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
-        static_assert(std::is_invocable_r<bool, Predicate, int, int>::value,
+        static_assert(std::is_invocable_r_v<bool, Predicate, int, int>,
                       "The Predicate must be of the form bool Predicate(int, int)");
 
         if (x1 < 0)
@@ -266,14 +266,14 @@ public:
 
     template<typename Predicate>
     bool find(int x1, int y1, int x2, int y2, Predicate&& predicate) const {
-        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value,
+        static_assert(std::is_invocable_r_v<bool, Predicate, Tile&>,
                       "The Predicate must of the form bool Predicate(const Tile&)");
         return index_find(x1, y1, x2, y2, [&](int index) { return predicate(tiles[index]); });
     }
 
     template<typename Predicate>
     bool find(int x1, int y1, int x2, int y2, Predicate&& predicate) {
-        static_assert(std::is_invocable_r<bool, Predicate, Tile&>::value,
+        static_assert(std::is_invocable_r_v<bool, Predicate, Tile&>,
                       "The Predicate must of the form bool Predicate(Tile&)");
         return index_find(x1, y1, x2, y2, [&](int index) { return predicate(tiles[index]); });
     }
@@ -529,8 +529,8 @@ public:
 
     template<typename ObjectType>
     ObjectType* getGroundObject(const GameContext& context, int x, int y) const {
-        static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
-        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+        static_assert(!std::is_abstract_v<ObjectType>, "ObjectType is abstract");
+        static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
 
         auto* const object = getGroundObject(context, x, y);
         if (!object)
@@ -544,8 +544,8 @@ public:
 
     template<typename ObjectType>
     [[nodiscard]] bool hasAGroundObject(const GameContext& context, int x, int y) const {
-        static_assert(!std::is_abstract<ObjectType>::value, "ObjectType is abstract");
-        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+        static_assert(!std::is_abstract_v<ObjectType>, "ObjectType is abstract");
+        static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
 
         const auto* const tile = tryGetTile(x, y);
         if (!tile)

@@ -109,7 +109,7 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromItemId(ItemID_enum itemID, const ObjectInitializer& initializer) {
-        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+        static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
 
         auto object = ObjectBase::createObject(itemID, nextFreeObjectID, initializer);
         if (!object) {
@@ -136,9 +136,9 @@ public:
 
     template<typename ObjectType>
     ObjectType* createObjectFromType(const ObjectInitializer& initializer) {
-        static_assert(std::is_constructible<ObjectType, uint32_t, const ObjectInitializer&>::value,
+        static_assert(std::is_constructible_v<ObjectType, uint32_t, const ObjectInitializer&>,
                       "ObjectType is not constructible");
-        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+        static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
 
         return createObjectFromItemId<ObjectType>(ObjectType::item_id, initializer);
     }

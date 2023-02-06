@@ -250,7 +250,7 @@ public:
 
     template<typename Predicate>
     PackableSet create_packer_set(Packer& packer, Predicate&& predicate) {
-        static_assert(std::is_invocable_r<bool, Predicate, Identifier, SDL_Surface*>::value);
+        static_assert(std::is_invocable_r_v<bool, Predicate, Identifier, SDL_Surface*>);
 
         PackableSet::packer_set_type output;
         for (auto i = 0u; i < surfaces_.size(); ++i) {
@@ -284,7 +284,7 @@ public:
 
     template<typename Lookup>
     void update_duplicates(Lookup&& lookup) {
-        static_assert(std::is_invocable_r<DuneTexture&, Lookup, const Identifier&>::value);
+        static_assert(std::is_invocable_r_v<DuneTexture&, Lookup, const Identifier&>);
         for (const auto& duplicate : duplicates_) {
             const auto& [s_idx, identifier] = duplicate;
 
@@ -399,7 +399,7 @@ public:
 
     template<typename Identifier, typename Lookup>
     void update(int key, SDL_Texture* texture, Lookup&& lookup) {
-        static_assert(std::is_invocable_r<const DuneTexture&, Lookup, int>::value);
+        static_assert(std::is_invocable_r_v<const DuneTexture&, Lookup, int>);
 
         const auto& set = surface_sets_.at(key);
 
@@ -720,7 +720,7 @@ public:
     }
 
 private:
-    std::array<sdl2::surface_ptr, std::tuple_size<textures_type>::value> generated_;
+    std::array<sdl2::surface_ptr, std::tuple_size_v<textures_type>> generated_;
 };
 
 class DecorationBorderPicturesPacker final : public PackerBase<DuneTextures::decoration_border_type, int> {
