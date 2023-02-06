@@ -30,16 +30,16 @@ struct XMidiEvent;
 class XMidiEventList;
 
 // Conversion types for Midi files
-inline static constexpr auto XMIDIFILE_CONVERT_NOCONVERSION  = 4;
-inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GM    = 1;
-inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS    = 2;
-inline static constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS127 = 3;
-inline static constexpr auto XMIDIFILE_CONVERT_GM_TO_MT32    = 0;
+inline constexpr auto XMIDIFILE_CONVERT_NOCONVERSION  = 4;
+inline constexpr auto XMIDIFILE_CONVERT_MT32_TO_GM    = 1;
+inline constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS    = 2;
+inline constexpr auto XMIDIFILE_CONVERT_MT32_TO_GS127 = 3;
+inline constexpr auto XMIDIFILE_CONVERT_GM_TO_MT32    = 0;
 
-inline static constexpr auto XMIDIFILE_CONVERT_GS127_TO_GS = 5;
-inline static constexpr auto XMIDIFILE_HINT_XMIDI_MT_FILE  = 7;
-inline static constexpr auto XMIDIFILE_HINT_SYX_FILE       = 8;
-inline static constexpr auto XMIDIFILE_HINT_SYSEX_IN_MID   = 9;
+inline constexpr auto XMIDIFILE_CONVERT_GS127_TO_GS = 5;
+inline constexpr auto XMIDIFILE_HINT_XMIDI_MT_FILE  = 7;
+inline constexpr auto XMIDIFILE_HINT_SYX_FILE       = 8;
+inline constexpr auto XMIDIFILE_HINT_SYSEX_IN_MID   = 9;
 
 class XMidiFile {
 protected:
