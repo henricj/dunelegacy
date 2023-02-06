@@ -167,7 +167,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     teamsButton.setSymbol(gfx->getUIGraphicSurface(UI_MapEditor_TeamsIcon));
     teamsButton.setTooltipText(_("Teams"));
     teamsButton.setOnClick([this] { onTeams(); });
-    teamsButton.setVisible((pMapEditor->getMapVersion() < 2));
+    teamsButton.setVisible(pMapEditor->getMapVersion() < 2);
     topBarHBox.addWidget(&teamsButton, 24);
 
     topBarHBox.addWidget(Widget::create<HSpacer>(10).release());
@@ -176,7 +176,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeNoneButton.setToggleButton(true);
     mirrorModeNoneButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Off")));
     mirrorModeNoneButton.setOnClick([this] { onMirrorModeButton(MirrorModeNone); });
-    mirrorModeNoneButton.setVisible((pMapEditor->getMapVersion() >= 2));
+    mirrorModeNoneButton.setVisible(pMapEditor->getMapVersion() >= 2);
     topBarHBox.addWidget(&mirrorModeNoneButton, 24);
 
     topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
@@ -185,7 +185,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeHorizontalButton.setToggleButton(true);
     mirrorModeHorizontalButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Horizontal")));
     mirrorModeHorizontalButton.setOnClick([this] { onMirrorModeButton(MirrorModeHorizontal); });
-    mirrorModeHorizontalButton.setVisible((pMapEditor->getMapVersion() >= 2));
+    mirrorModeHorizontalButton.setVisible(pMapEditor->getMapVersion() >= 2);
     topBarHBox.addWidget(&mirrorModeHorizontalButton, 24);
 
     topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
@@ -194,7 +194,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeVerticalButton.setToggleButton(true);
     mirrorModeVerticalButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Vertical")));
     mirrorModeVerticalButton.setOnClick([this] { onMirrorModeButton(MirrorModeVertical); });
-    mirrorModeVerticalButton.setVisible((pMapEditor->getMapVersion() >= 2));
+    mirrorModeVerticalButton.setVisible(pMapEditor->getMapVersion() >= 2);
     topBarHBox.addWidget(&mirrorModeVerticalButton, 24);
 
     topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
@@ -203,7 +203,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModeBothButton.setToggleButton(true);
     mirrorModeBothButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Horizontal and vertical")));
     mirrorModeBothButton.setOnClick([this] { onMirrorModeButton(MirrorModeBoth); });
-    mirrorModeBothButton.setVisible((pMapEditor->getMapVersion() >= 2));
+    mirrorModeBothButton.setVisible(pMapEditor->getMapVersion() >= 2);
     topBarHBox.addWidget(&mirrorModeBothButton, 24);
 
     topBarHBox.addWidget(Widget::create<HSpacer>(1).release());
@@ -212,7 +212,7 @@ MapEditorInterface::MapEditorInterface(MapEditor* pMapEditor)
     mirrorModePointButton.setToggleButton(true);
     mirrorModePointButton.setTooltipText(fmt::format("{}: {}", _("Mirror mode"), _("Inverse")));
     mirrorModePointButton.setOnClick([this] { onMirrorModeButton(MirrorModePoint); });
-    mirrorModePointButton.setVisible((pMapEditor->getMapVersion() >= 2));
+    mirrorModePointButton.setVisible(pMapEditor->getMapVersion() >= 2);
     topBarHBox.addWidget(&mirrorModePointButton, 24);
 
     topBarHBox.addWidget(Widget::create<Spacer>().release(), 0.5);
@@ -760,13 +760,13 @@ void MapEditorInterface::onNewMap() {
 
     onMirrorModeButton(0);
 
-    teamsButton.setVisible((pMapEditor_->getMapVersion() < 2));
-    mirrorModeNoneButton.setVisible((pMapEditor_->getMapVersion() >= 2));
-    mirrorModeHorizontalButton.setVisible((pMapEditor_->getMapVersion() >= 2));
-    mirrorModeVerticalButton.setVisible((pMapEditor_->getMapVersion() >= 2));
-    mirrorModeBothButton.setVisible((pMapEditor_->getMapVersion() >= 2));
-    mirrorModePointButton.setVisible((pMapEditor_->getMapVersion() >= 2));
-    editorModeUnits_SpecialUnit.setVisible((pMapEditor_->getMapVersion() >= 2));
+    teamsButton.setVisible(pMapEditor_->getMapVersion() < 2);
+    mirrorModeNoneButton.setVisible(pMapEditor_->getMapVersion() >= 2);
+    mirrorModeHorizontalButton.setVisible(pMapEditor_->getMapVersion() >= 2);
+    mirrorModeVerticalButton.setVisible(pMapEditor_->getMapVersion() >= 2);
+    mirrorModeBothButton.setVisible(pMapEditor_->getMapVersion() >= 2);
+    mirrorModePointButton.setVisible(pMapEditor_->getMapVersion() >= 2);
+    editorModeUnits_SpecialUnit.setVisible(pMapEditor_->getMapVersion() >= 2);
 }
 
 void MapEditorInterface::deselectAll() {
@@ -961,9 +961,9 @@ void MapEditorInterface::onHouseDropDownChanged(bool bInteractive) {
 }
 
 void MapEditorInterface::onModeButton(int button) {
-    terrainButton.setToggleState((button == 1));
-    structuresButton.setToggleState((button == 2));
-    unitsButton.setToggleState((button == 3));
+    terrainButton.setToggleState(button == 1);
+    structuresButton.setToggleState(button == 2);
+    unitsButton.setToggleState(button == 3);
 
     windowWidget.removeChildWidget(&editorModeTerrainVBox);
     windowWidget.removeChildWidget(&editorModeClassicTerrain_MainVBox);
@@ -1009,18 +1009,18 @@ void MapEditorInterface::onModeButton(int button) {
 void MapEditorInterface::onTerrainButton(TERRAINTYPE terrainType) {
     currentTerrainType_ = terrainType;
 
-    editorModeTerrain_Sand.setToggleState((terrainType == TERRAINTYPE::Terrain_Sand));
-    editorModeTerrain_Dunes.setToggleState((terrainType == TERRAINTYPE::Terrain_Dunes));
-    editorModeTerrain_SpecialBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpecialBloom));
-    editorModeTerrain_Spice.setToggleState((terrainType == TERRAINTYPE::Terrain_Spice));
-    editorModeTerrain_ThickSpice.setToggleState((terrainType == TERRAINTYPE::Terrain_ThickSpice));
-    editorModeTerrain_SpiceBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpiceBloom));
-    editorModeTerrain_Rock.setToggleState((terrainType == TERRAINTYPE::Terrain_Rock));
-    editorModeTerrain_Mountain.setToggleState((terrainType == TERRAINTYPE::Terrain_Mountain));
+    editorModeTerrain_Sand.setToggleState(terrainType == TERRAINTYPE::Terrain_Sand);
+    editorModeTerrain_Dunes.setToggleState(terrainType == TERRAINTYPE::Terrain_Dunes);
+    editorModeTerrain_SpecialBloom.setToggleState(terrainType == TERRAINTYPE::Terrain_SpecialBloom);
+    editorModeTerrain_Spice.setToggleState(terrainType == TERRAINTYPE::Terrain_Spice);
+    editorModeTerrain_ThickSpice.setToggleState(terrainType == TERRAINTYPE::Terrain_ThickSpice);
+    editorModeTerrain_SpiceBloom.setToggleState(terrainType == TERRAINTYPE::Terrain_SpiceBloom);
+    editorModeTerrain_Rock.setToggleState(terrainType == TERRAINTYPE::Terrain_Rock);
+    editorModeTerrain_Mountain.setToggleState(terrainType == TERRAINTYPE::Terrain_Mountain);
 
-    editorModeClassicTerrain_SpiceBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpiceBloom));
-    editorModeClassicTerrain_SpecialBloom.setToggleState((terrainType == TERRAINTYPE::Terrain_SpecialBloom));
-    editorModeClassicTerrain_SpiceField.setToggleState((terrainType == TERRAINTYPE::Terrain_Spice));
+    editorModeClassicTerrain_SpiceBloom.setToggleState(terrainType == TERRAINTYPE::Terrain_SpiceBloom);
+    editorModeClassicTerrain_SpecialBloom.setToggleState(terrainType == TERRAINTYPE::Terrain_SpecialBloom);
+    editorModeClassicTerrain_SpiceField.setToggleState(terrainType == TERRAINTYPE::Terrain_Spice);
 
     if (currentTerrainType_ > TERRAINTYPE::Terrain_Invalid) {
         pMapEditor_->setEditorMode(MapEditor::EditorMode(currentTerrainType_, currentTerrainPenSize_));
@@ -1030,9 +1030,9 @@ void MapEditorInterface::onTerrainButton(TERRAINTYPE terrainType) {
 void MapEditorInterface::onTerrainPenButton(int pensize) {
     currentTerrainPenSize_ = pensize;
 
-    editorModeTerrain_Pen1x1.setToggleState((pensize == 1));
-    editorModeTerrain_Pen3x3.setToggleState((pensize == 3));
-    editorModeTerrain_Pen5x5.setToggleState((pensize == 5));
+    editorModeTerrain_Pen1x1.setToggleState(pensize == 1);
+    editorModeTerrain_Pen3x3.setToggleState(pensize == 3);
+    editorModeTerrain_Pen5x5.setToggleState(pensize == 5);
 
     if (currentTerrainType_ > TERRAINTYPE::Terrain_Invalid) {
         pMapEditor_->setEditorMode(MapEditor::EditorMode(currentTerrainType_, currentTerrainPenSize_));
@@ -1045,24 +1045,24 @@ void MapEditorInterface::onSetTacticalPosition() {
 }
 
 void MapEditorInterface::onStructButton(ItemID_enum structType) {
-    editorModeStructs_Slab1.setToggleState((structType == Structure_Slab1));
-    editorModeStructs_Wall.setToggleState((structType == Structure_Wall));
-    editorModeStructs_GunTurret.setToggleState((structType == Structure_GunTurret));
-    editorModeStructs_RocketTurret.setToggleState((structType == Structure_RocketTurret));
-    editorModeStructs_ConstructionYard.setToggleState((structType == Structure_ConstructionYard));
-    editorModeStructs_Windtrap.setToggleState((structType == Structure_WindTrap));
-    editorModeStructs_Radar.setToggleState((structType == Structure_Radar));
-    editorModeStructs_Silo.setToggleState((structType == Structure_Silo));
-    editorModeStructs_IX.setToggleState((structType == Structure_IX));
-    editorModeStructs_Barracks.setToggleState((structType == Structure_Barracks));
-    editorModeStructs_WOR.setToggleState((structType == Structure_WOR));
-    editorModeStructs_LightFactory.setToggleState((structType == Structure_LightFactory));
-    editorModeStructs_Refinery.setToggleState((structType == Structure_Refinery));
-    editorModeStructs_HighTechFactory.setToggleState((structType == Structure_HighTechFactory));
-    editorModeStructs_HeavyFactory.setToggleState((structType == Structure_HeavyFactory));
-    editorModeStructs_RepairYard.setToggleState((structType == Structure_RepairYard));
-    editorModeStructs_Starport.setToggleState((structType == Structure_StarPort));
-    editorModeStructs_Palace.setToggleState((structType == Structure_Palace));
+    editorModeStructs_Slab1.setToggleState(structType == Structure_Slab1);
+    editorModeStructs_Wall.setToggleState(structType == Structure_Wall);
+    editorModeStructs_GunTurret.setToggleState(structType == Structure_GunTurret);
+    editorModeStructs_RocketTurret.setToggleState(structType == Structure_RocketTurret);
+    editorModeStructs_ConstructionYard.setToggleState(structType == Structure_ConstructionYard);
+    editorModeStructs_Windtrap.setToggleState(structType == Structure_WindTrap);
+    editorModeStructs_Radar.setToggleState(structType == Structure_Radar);
+    editorModeStructs_Silo.setToggleState(structType == Structure_Silo);
+    editorModeStructs_IX.setToggleState(structType == Structure_IX);
+    editorModeStructs_Barracks.setToggleState(structType == Structure_Barracks);
+    editorModeStructs_WOR.setToggleState(structType == Structure_WOR);
+    editorModeStructs_LightFactory.setToggleState(structType == Structure_LightFactory);
+    editorModeStructs_Refinery.setToggleState(structType == Structure_Refinery);
+    editorModeStructs_HighTechFactory.setToggleState(structType == Structure_HighTechFactory);
+    editorModeStructs_HeavyFactory.setToggleState(structType == Structure_HeavyFactory);
+    editorModeStructs_RepairYard.setToggleState(structType == Structure_RepairYard);
+    editorModeStructs_Starport.setToggleState(structType == Structure_StarPort);
+    editorModeStructs_Palace.setToggleState(structType == Structure_Palace);
 
     if (structType >= 0) {
         const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
@@ -1071,26 +1071,26 @@ void MapEditorInterface::onStructButton(ItemID_enum structType) {
 }
 
 void MapEditorInterface::onUnitButton(ItemID_enum unitType) {
-    editorModeUnits_Soldier.setToggleState((unitType == Unit_Soldier));
-    editorModeUnits_Trooper.setToggleState((unitType == Unit_Trooper));
-    editorModeUnits_Harvester.setToggleState((unitType == Unit_Harvester));
-    editorModeUnits_Infantry.setToggleState((unitType == Unit_Infantry));
-    editorModeUnits_Troopers.setToggleState((unitType == Unit_Troopers));
-    editorModeUnits_MCV.setToggleState((unitType == Unit_MCV));
-    editorModeUnits_Trike.setToggleState((unitType == Unit_Trike));
-    editorModeUnits_Raider.setToggleState((unitType == Unit_RaiderTrike));
-    editorModeUnits_Quad.setToggleState((unitType == Unit_Quad));
-    editorModeUnits_Tank.setToggleState((unitType == Unit_Tank));
-    editorModeUnits_SiegeTank.setToggleState((unitType == Unit_SiegeTank));
-    editorModeUnits_Launcher.setToggleState((unitType == Unit_Launcher));
-    editorModeUnits_Devastator.setToggleState((unitType == Unit_Devastator));
-    editorModeUnits_SonicTank.setToggleState((unitType == Unit_SonicTank));
-    editorModeUnits_Deviator.setToggleState((unitType == Unit_Deviator));
-    editorModeUnits_Saboteur.setToggleState((unitType == Unit_Saboteur));
-    editorModeUnits_Sandworm.setToggleState((unitType == Unit_Sandworm));
-    editorModeUnits_SpecialUnit.setToggleState((unitType == Unit_Special));
-    editorModeUnits_Carryall.setToggleState((unitType == Unit_Carryall));
-    editorModeUnits_Ornithopter.setToggleState((unitType == Unit_Ornithopter));
+    editorModeUnits_Soldier.setToggleState(unitType == Unit_Soldier);
+    editorModeUnits_Trooper.setToggleState(unitType == Unit_Trooper);
+    editorModeUnits_Harvester.setToggleState(unitType == Unit_Harvester);
+    editorModeUnits_Infantry.setToggleState(unitType == Unit_Infantry);
+    editorModeUnits_Troopers.setToggleState(unitType == Unit_Troopers);
+    editorModeUnits_MCV.setToggleState(unitType == Unit_MCV);
+    editorModeUnits_Trike.setToggleState(unitType == Unit_Trike);
+    editorModeUnits_Raider.setToggleState(unitType == Unit_RaiderTrike);
+    editorModeUnits_Quad.setToggleState(unitType == Unit_Quad);
+    editorModeUnits_Tank.setToggleState(unitType == Unit_Tank);
+    editorModeUnits_SiegeTank.setToggleState(unitType == Unit_SiegeTank);
+    editorModeUnits_Launcher.setToggleState(unitType == Unit_Launcher);
+    editorModeUnits_Devastator.setToggleState(unitType == Unit_Devastator);
+    editorModeUnits_SonicTank.setToggleState(unitType == Unit_SonicTank);
+    editorModeUnits_Deviator.setToggleState(unitType == Unit_Deviator);
+    editorModeUnits_Saboteur.setToggleState(unitType == Unit_Saboteur);
+    editorModeUnits_Sandworm.setToggleState(unitType == Unit_Sandworm);
+    editorModeUnits_SpecialUnit.setToggleState(unitType == Unit_Special);
+    editorModeUnits_Carryall.setToggleState(unitType == Unit_Carryall);
+    editorModeUnits_Ornithopter.setToggleState(unitType == Unit_Ornithopter);
 
     if (unitType >= 0) {
         const auto house = static_cast<HOUSETYPE>(houseDropDownBox.getSelectedEntryIntData());
@@ -1349,9 +1349,9 @@ void MapEditorInterface::changeInterfaceColor(HOUSETYPE newHouse) {
 void MapEditorInterface::onMirrorModeButton(int mode) {
     pMapEditor_->setMirrorMode(static_cast<MirrorMode>(mode));
 
-    mirrorModeNoneButton.setToggleState((mode == MirrorModeNone));
-    mirrorModeHorizontalButton.setToggleState((mode == MirrorModeHorizontal));
-    mirrorModeVerticalButton.setToggleState((mode == MirrorModeVertical));
-    mirrorModeBothButton.setToggleState((mode == MirrorModeBoth));
-    mirrorModePointButton.setToggleState((mode == MirrorModePoint));
+    mirrorModeNoneButton.setToggleState(mode == MirrorModeNone);
+    mirrorModeHorizontalButton.setToggleState(mode == MirrorModeHorizontal);
+    mirrorModeVerticalButton.setToggleState(mode == MirrorModeVertical);
+    mirrorModeBothButton.setToggleState(mode == MirrorModeBoth);
+    mirrorModePointButton.setToggleState(mode == MirrorModePoint);
 }
