@@ -66,6 +66,30 @@ void ObjectManager::load(InputStream& stream) {
     }
 }
 
+ObjectBase* ObjectManager::getObject(uint32_t objectID) const {
+    const auto iter = objectMap.find(objectID);
+
+    if (iter == objectMap.end())
+        return nullptr;
+
+    assert(objectID == iter->second->getObjectID());
+
+    return iter->second.get();
+}
+
+bool ObjectManager::removeObject(uint32_t objectID) {
+    const auto iter = objectMap.find(objectID);
+
+    if (iter == objectMap.end())
+        return false;
+
+    pendingDelete.push(std::move(iter->second));
+
+    objectMap.erase(iter);
+
+    return true;
+}
+
 bool ObjectManager::addObject(std::unique_ptr<ObjectBase> object) {
     const auto& [_, ok] = objectMap.emplace(nextFreeObjectID, std::move(object));
 

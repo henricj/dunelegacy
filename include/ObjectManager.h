@@ -67,16 +67,7 @@ public:
         \param  objectID        ID of the object to search for
         \return Pointer to this object (nullptr if not found)
     */
-    [[nodiscard]] ObjectBase* getObject(uint32_t objectID) const {
-        const auto iter = objectMap.find(objectID);
-
-        if (iter == objectMap.end())
-            return nullptr;
-
-        assert(objectID == iter->second->getObjectID());
-
-        return iter->second.get();
-    }
+    [[nodiscard]] ObjectBase* getObject(uint32_t objectID) const;
 
     /**
         This method searches for the object with ObjectID.
@@ -85,7 +76,7 @@ public:
     */
     template<typename ObjectType>
     [[nodiscard]] ObjectType* getObject(uint32_t objectID) const {
-        static_assert(std::is_base_of<ObjectBase, ObjectType>::value, "ObjectType not derived from ObjectBase");
+        static_assert(std::is_base_of_v<ObjectBase, ObjectType>, "ObjectType not derived from ObjectBase");
 
         return dune_cast<ObjectType>(getObject(objectID));
     }
@@ -95,18 +86,7 @@ public:
         \param  objectID        ID of the object to remove
         \return false if there was no object with this ObjectID, true if it could be removed
     */
-    bool removeObject(uint32_t objectID) {
-        const auto iter = objectMap.find(objectID);
-
-        if (iter == objectMap.end())
-            return false;
-
-        pendingDelete.push(std::move(iter->second));
-
-        objectMap.erase(iter);
-
-        return true;
-    }
+    bool removeObject(uint32_t objectID);
 
     template<typename F>
     void consume_pending_deletes(F&& f) {
