@@ -59,12 +59,12 @@ public:
         Opens a child window. The new window is drawn above this window.
         \param  pChildWindow    new window
     */
-    virtual void openWindow(Window* pChildWindow);
+    void openWindow(Window* pChildWindow);
 
     /**
         Closes the child window.
     */
-    virtual void closeChildWindow();
+    void closeChildWindow();
 
     /**
         This method is called, when the child window is about to be closed.
@@ -90,7 +90,7 @@ public:
         \param  x   x position of this window
         \param  y   y position of this window
     */
-    virtual void setCurrentPosition(int32_t x, int32_t y);
+    void setCurrentPosition(int32_t x, int32_t y);
 
     /**
         Sets the current window position and size.
@@ -99,19 +99,19 @@ public:
         \param  w   width of this window
         \param  h   height of this window
     */
-    virtual void setCurrentPosition(int32_t x, int32_t y, int32_t w, int32_t h);
+    void setCurrentPosition(int32_t x, int32_t y, int32_t w, int32_t h);
 
     /**
         Sets the current window position and size.
         \param  rect    position of this window
     */
-    virtual void setCurrentPosition(const SDL_Rect& rect) { setCurrentPosition(rect.x, rect.y, rect.w, rect.h); }
+    void setCurrentPosition(const SDL_Rect& rect) { setCurrentPosition(rect.x, rect.y, rect.w, rect.h); }
 
     /**
         Sets the current window position and size.
         \param  rect    position of this window
     */
-    virtual void setCurrentPosition(const SDL_FRect& rect) {
+    void setCurrentPosition(const SDL_FRect& rect) {
         setCurrentPosition(std::floor(rect.x), std::floor(rect.y), std::ceil(rect.w), std::ceil(rect.h));
     }
 
@@ -120,7 +120,7 @@ public:
         be called.
         \param  event   SDL_Event that occurs.
     */
-    virtual void handleInput(const SDL_Event& event);
+    void handleInput(const SDL_Event& event);
 
     /**
         Handles a mouse movement.
@@ -188,7 +188,7 @@ public:
         This method draws the parts of this window that must be drawn after all the other
         widgets are drawn (e.g. tooltips). This method is called after draw().
     */
-    virtual void drawOverlay() { drawOverlay(Point(0, 0)); }
+    void drawOverlay() { drawOverlay(Point(0, 0)); }
 
     /**
         This method draws the parts of this window that must be drawn after all the other
@@ -202,13 +202,13 @@ public:
         The window itself can contain only one widget.
         \param  widget   The only widget that this window contains
     */
-    virtual void setWindowWidget(Widget* widget);
+    void setWindowWidget(Widget* widget);
 
     /**
         Returns the current window widget.
         \return the current window widget
     */
-    virtual Widget* getWindowWidget() { return pWindowWidget_; }
+    Widget* getWindowWidget() { return pWindowWidget_; }
 
     /**
         This method resizes the window to width and height.

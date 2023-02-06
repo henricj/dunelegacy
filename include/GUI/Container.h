@@ -75,7 +75,7 @@ public:
         This method will remove all contained widgets in this container. Everything
         will be resized afterwards.
     */
-    virtual void removeAllChildWidgets() { clearWidgetList(); }
+    void removeAllChildWidgets() { clearWidgetList(); }
 
     /**
         Handles a mouse movement.
@@ -358,7 +358,7 @@ public:
         \param widget   the widget data to get the position from.
         \return The position of the left upper corner of widget or (-1,-1) if widget cannot be found in this container
     */
-    virtual Point getWidgetPosition(const Widget* widget) {
+    Point getWidgetPosition(const Widget* widget) {
         auto* widgetData = getWidgetDataFromWidget(widget);
         if (widgetData == nullptr)
             return {-1, -1};

@@ -46,8 +46,8 @@ public:
 
     int showMenu(event_handler_type handler);
 
-    virtual void quit(int returnVal = MENU_QUIT_DEFAULT);
-    virtual bool isQuitting() { return quitting; }
+    void quit(int returnVal = MENU_QUIT_DEFAULT);
+    bool isQuitting() { return quitting; }
     void disableQuitting(bool disable) { bAllowQuitting = !disable; }
 
     virtual void update() { }

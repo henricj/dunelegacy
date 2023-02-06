@@ -43,7 +43,7 @@ public:
         This method sets a transparent background for this widget.
         \param bTransparent true = the background is transparent, false = the background is not transparent
     */
-    virtual void setTransparentBackground(bool bTransparent);
+    void setTransparentBackground(bool bTransparent);
 
     void setBackground(const DuneTexture* pBackground);
     void setBackground(DuneTextureOwned background);
@@ -82,7 +82,7 @@ protected:
 
     void setBackground(SDL_Surface* surface);
 
-    virtual DuneSurfaceOwned createBackground();
+    DuneSurfaceOwned createBackground();
 
     void setCenterBackground(bool value) { center_background_ = value; }
     bool getCenterBackground() const { return center_background_; }

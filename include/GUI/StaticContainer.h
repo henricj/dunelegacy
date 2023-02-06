@@ -56,7 +56,7 @@ public:
         \param position     Position of the new Widget
         \param size         Size of the new widget
     */
-    virtual void addWidget(Widget* newWidget, Point position, Point size);
+    void addWidget(Widget* newWidget, Point position, Point size);
 
     /**
         This method adds a new widget to this container.

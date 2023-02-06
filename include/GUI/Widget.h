@@ -175,7 +175,7 @@ public:
         responding to clicks and key presses.
         \return bVisible    true = visible, false = invisible
     */
-    virtual void setVisible(bool bVisible) { visible_ = bVisible; }
+    void setVisible(bool bVisible) { visible_ = bVisible; }
 
     /**
         Returns whether this widget is visible or not.
@@ -394,7 +394,7 @@ public:
         the widget was created via a named constructor (static create method) then this
         method automatically frees the memory of this object.
     */
-    virtual void destroy();
+    void destroy();
 
     /**
         Sets the function that should be called when this widget gains focus.
@@ -440,7 +440,7 @@ protected:
         \param  bResizeX    true = resizing in x direction allowed, false = resizing in x direction not allowed
         \param  bResizeY    true = resizing in y direction allowed, false = resizing in y direction not allowed
     */
-    virtual void enableResizing(bool bResizeX, bool bResizeY) {
+    void enableResizing(bool bResizeX, bool bResizeY) {
         resizeX_ = bResizeX;
         resizeY_ = bResizeY;
     }
