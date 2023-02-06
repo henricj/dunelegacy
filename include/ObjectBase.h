@@ -176,8 +176,6 @@ public:
 
     virtual void doRepair(const GameContext& context) = 0;
 
-    virtual void handleInterfaceEvent(SDL_Event* event);
-
     virtual void playSelectSound()  = 0;
     virtual void playConfirmSound() = 0;
 

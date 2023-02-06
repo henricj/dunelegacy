@@ -245,8 +245,6 @@ void ObjectBase::handleDamage([[maybe_unused]] const GameContext& context, int d
     getOwner()->noteDamageLocation(this, damage, damagerID);
 }
 
-void ObjectBase::handleInterfaceEvent([[maybe_unused]] SDL_Event* event) { }
-
 std::unique_ptr<ObjectInterface> ObjectBase::getInterfaceContainer(const GameContext& context) {
     return Widget::create<DefaultObjectInterface>(context, objectID_);
 }
