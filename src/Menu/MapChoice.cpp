@@ -146,7 +146,7 @@ int MapChoice::getSelectedMission() const {
     } else if (lastScenario == 8) {
         newMission = (lastScenario - 1) * 3 - 1 + 2 + regionIndex;
     } else {
-        THROW(std::runtime_error, "lastScenario = %u is no valid scenario number!", lastScenario);
+        THROW(std::runtime_error, "lastScenario = {} is no valid scenario number!", lastScenario);
     }
     return newMission;
 }
@@ -437,7 +437,7 @@ void MapChoice::loadINI() {
         std::string strYPos;
 
         if (!splitString(entry, strXPos, strYPos)) {
-            THROW(std::runtime_error, "File '%s' contains invalid value for key '%d'", filename, i);
+            THROW(std::runtime_error, "File '{}' contains invalid value for key '{}'", filename, i);
         }
 
         auto& coord = piecePosition[i];
@@ -483,7 +483,7 @@ void MapChoice::loadINI() {
                 for (auto& strRegion : strRegions) {
                     int value = 0;
                     if (!parseString(strRegion, value))
-                        THROW(std::runtime_error, "File '%s' contains invalid region value '%s' for section [%s]!",
+                        THROW(std::runtime_error, "File '{}' contains invalid region value '{}' for section [{}]!",
                               filename, strRegion, strSection);
 
                     group[i].newRegion[static_cast<int>(h)].push_back(static_cast<UIGraphics_Enum>(value));

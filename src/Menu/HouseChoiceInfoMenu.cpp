@@ -41,7 +41,7 @@ HouseChoiceInfoMenu::HouseChoiceInfoMenu(HOUSETYPE newHouse) : MentatMenu(HOUSET
         case HOUSETYPE::HOUSE_SARDAUKAR:    anim = gfx->getAnimation(Anim_SardaukarPlanet); break;
         case HOUSETYPE::HOUSE_MERCENARY:    anim = gfx->getAnimation(Anim_MercenaryPlanet); break;
         default: {
-            THROW(std::invalid_argument, "HouseChoiceInfoMenu::HouseChoiceInfoMenu(): Invalid house id '%d'.", static_cast<int>(newHouse));
+            THROW(std::invalid_argument, "HouseChoiceInfoMenu::HouseChoiceInfoMenu(): Invalid house id '{}'.", static_cast<int>(newHouse));
         }
     }
     // clang-format on

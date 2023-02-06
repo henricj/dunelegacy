@@ -87,7 +87,7 @@ public:
 
     [[nodiscard]] int getKey(int xPos, int yPos) const {
         if (!tileExists(xPos, yPos))
-            THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
+            THROW(std::out_of_range, "Tile ({}, {}) does not exist!", xPos, yPos);
 
         return tile_index(xPos, yPos);
     }
@@ -116,7 +116,7 @@ public:
         const auto* const tile = tryGetTile(xPos, yPos);
 
         if (!tile)
-            THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
+            THROW(std::out_of_range, "Tile ({}, {}) does not exist!", xPos, yPos);
 
         return tile;
     }
@@ -125,7 +125,7 @@ public:
         auto* const tile = tryGetTile(xPos, yPos);
 
         if (!tile)
-            THROW(std::out_of_range, "Tile (%d, %d) does not exist!", xPos, yPos);
+            THROW(std::out_of_range, "Tile ({}, {}) does not exist!", xPos, yPos);
 
         return tile;
     }

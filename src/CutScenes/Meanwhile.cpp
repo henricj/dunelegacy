@@ -42,11 +42,11 @@ Meanwhile::Meanwhile(HOUSETYPE house, bool firstMeanwhile) {
     const auto house_idx = static_cast<int>(house);
 
     if (house != HOUSETYPE::HOUSE_HARKONNEN && house != HOUSETYPE::HOUSE_ATREIDES && house != HOUSETYPE::HOUSE_ORDOS) {
-        THROW(std::invalid_argument, "Invalid house number %d!", house_idx);
+        THROW(std::invalid_argument, "Invalid house number {}!", house_idx);
     }
 
     if (house_idx < 0 || house_idx >= 3)
-        THROW(std::invalid_argument, "Invalid house number %d!", house_idx);
+        THROW(std::invalid_argument, "Invalid house number {}!", house_idx);
 
     pMeanwhile = create_wsafile("MEANWHIL.WSA");
     pImperator = create_wsafile("EFINALA.WSA");

@@ -114,7 +114,7 @@ void Explosion::init() {
         } break;
 
         default: {
-            THROW(std::invalid_argument, "Unknown explosion type %d", explosionID);
+            THROW(std::invalid_argument, "Unknown explosion type {}", explosionID);
         }
     }
 }

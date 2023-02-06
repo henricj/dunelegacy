@@ -221,7 +221,7 @@ void Bullet::init() {
         }
 
         default: {
-            THROW(std::domain_error, "Unknown Bullet type %d!", bulletID_);
+            THROW(std::domain_error, "Unknown Bullet type {}!", bulletID_);
         }
     }
 }

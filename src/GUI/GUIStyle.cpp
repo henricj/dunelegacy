@@ -25,14 +25,14 @@ GUIStyle::~GUIStyle() = default;
 
 void GUIStyle::setZoom(float zoom) {
     if (zoom < 0.01f || zoom > 100)
-        THROW(std::invalid_argument, "GUIStyle scale out of range %f", zoom);
+        THROW(std::invalid_argument, "GUIStyle scale out of range {}", zoom);
 
     zoom_ = zoom;
 }
 
 void GUIStyle::setDisplayDpi(float ratio) {
     if (ratio < 0.01f || ratio > 100)
-        THROW(std::invalid_argument, "GUIStyle scale out of range %f", ratio);
+        THROW(std::invalid_argument, "GUIStyle scale out of range {}", ratio);
 
     dpi_ratio_ = ratio;
 }

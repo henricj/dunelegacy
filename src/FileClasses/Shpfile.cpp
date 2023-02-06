@@ -125,7 +125,7 @@ sdl2::surface_ptr Shpfile::getPicture(uint32_t indexOfFile) {
         } break;
 
         default: {
-            THROW(std::runtime_error, "Shpfile::getPicture(): Type %d in SHP-Files not supported!", type);
+            THROW(std::runtime_error, "Shpfile::getPicture(): Type {} in SHP-Files not supported!", type);
         }
     }
 
@@ -264,7 +264,7 @@ Shpfile::getPictureArrayImpl(unsigned int tilesX, unsigned int tilesY, std::span
                 } break;
 
                 default: {
-                    THROW(std::runtime_error, "Shpfile::getPictureArray(): Type %d in SHP-Files not supported!", type);
+                    THROW(std::runtime_error, "Shpfile::getPictureArray(): Type {} in SHP-Files not supported!", type);
                 }
             }
 

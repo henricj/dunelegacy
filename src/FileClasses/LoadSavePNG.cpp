@@ -64,7 +64,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
         auto error = lodepng_inspect(&width, &height, &lodePNGState, pFiledata.get(), filesize);
         if (error != 0) {
             THROW(std::runtime_error,
-                  "LoadPNG_RW(): Inspecting this *.png-File failed: " + std::string(lodepng_error_text(error)));
+                  "LoadPNG_RW(): Inspecting this *.png-File failed: {}", lodepng_error_text(error));
         }
 
         if (lodePNGState.info_png.color.colortype == LCT_PALETTE && lodePNGState.info_png.color.bitdepth == 8) {
@@ -79,8 +79,8 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             unsigned char* lode_out = nullptr;
             error = lodepng_decode(&lode_out, &width, &height, &lodePNGState, pFiledata.get(), filesize);
             if (error != 0) {
-                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this palletized *.png-File failed: "
-                                              + std::string(lodepng_error_text(error)));
+                THROW(std::runtime_error, "LoadPNG_RW(): Decoding this palletized *.png-File failed: {}",
+                                              lodepng_error_text(error));
             }
 
             const lodepng_ptr pImageOut{lode_out};
@@ -117,7 +117,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
             error                   = lodepng_decode32(&lode_out, &width, &height, pFiledata.get(), filesize);
             if (error != 0) {
                 THROW(std::runtime_error,
-                      "LoadPNG_RW(): Decoding this *.png-File failed: " + std::string(lodepng_error_text(error)));
+                      "LoadPNG_RW(): Decoding this *.png-File failed: {}", lodepng_error_text(error));
             }
 
             const lodepng_ptr pImageOut{lode_out};

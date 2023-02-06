@@ -826,7 +826,7 @@ void DuneStyle::drawFrame(SDL_Renderer* renderer, DecorationFrame decorationType
     const auto type = static_cast<int>(decorationType);
 
     if (type < 0 || type > NUM_DECORATIONFRAMES)
-        THROW(std::invalid_argument, "DuneStyle::drawFrame: Invalid frame type (%d)!", type);
+        THROW(std::invalid_argument, "DuneStyle::drawFrame: Invalid frame type ({})!", type);
 
     const auto& frame = dune::globals::pGFXManager->getBorderStyle(decorationType);
 

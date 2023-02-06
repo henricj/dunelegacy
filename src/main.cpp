@@ -175,7 +175,7 @@ void setVideoMode(int displayIndex) {
                                              video.physicalHeight, videoFlags)};
 
     if (!window)
-        THROW(sdl_error, "Unable to create window: %s!", SDL_GetError());
+        THROW(sdl_error, "Unable to create window: {}!", SDL_GetError());
 
     SDL_SetWindowMinimumSize(window.get(), GUIStyle::MINIMUM_WIDTH, GUIStyle::MINIMUM_HEIGHT);
 
@@ -223,7 +223,7 @@ void setVideoMode(int displayIndex) {
         SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE)};
 
     if (!renderer)
-        THROW(sdl_error, "Unable to create renderer: %s!", SDL_GetError());
+        THROW(sdl_error, "Unable to create renderer: {}!", SDL_GetError());
 
     { // Scope
         SDL_RendererInfo info;
@@ -596,7 +596,7 @@ bool run_game(int argc, char* argv[]) {
                 sdl2::log_info("Initializing audio...");
                 if (Mix_OpenAudio(AUDIO_FREQUENCY, AUDIO_S16SYS, 2, 1024) < 0) {
                     // SDL_Quit();
-                    // THROW(sdl_error, "Couldn't set %d Hz 16-bit audio. Reason: %s!", AUDIO_FREQUENCY,
+                    // THROW(sdl_error, "Couldn't set {} Hz 16-bit audio. Reason: {}!", AUDIO_FREQUENCY,
                     // SDL_GetError());
                 } else {
                     sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
@@ -712,7 +712,7 @@ bool run_game(int argc, char* argv[]) {
                     sdl2::log_info("Starting XMI music player...");
                     dune::globals::musicPlayer = std::make_unique<XMIPlayer>();
                 } else {
-                    THROW(std::runtime_error, "Invalid music type: '%'", settings.audio.musicType);
+                    THROW(std::runtime_error, "Invalid music type: '{}'", settings.audio.musicType);
                 }
 
                 // musicPlayer->changeMusic(MUSIC_INTRO);
@@ -781,7 +781,7 @@ struct DuneHeapDebug { };
 struct SDL_handle final {
     SDL_handle(Uint32 flags) {
         if (SDL_Init(flags) < 0)
-            THROW(sdl_error, "Couldn't initialize SDL: %s!", SDL_GetError());
+            THROW(sdl_error, "Couldn't initialize SDL: {}!", SDL_GetError());
     }
     ~SDL_handle() { SDL_Quit(); }
 };
@@ -789,7 +789,7 @@ struct SDL_handle final {
 struct TTF_handle final {
     TTF_handle() {
         if (TTF_Init() < 0)
-            THROW(sdl_error, "Couldn't initialize SDL2_ttf: %s!", TTF_GetError());
+            THROW(sdl_error, "Couldn't initialize SDL2_ttf: {}!", TTF_GetError());
     }
     ~TTF_handle() { TTF_Quit(); }
 };

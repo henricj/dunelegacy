@@ -29,7 +29,7 @@ public:
 
     MapData(int sizeX, int sizeY, TERRAINTYPE terrainType = TERRAINTYPE::Terrain_Sand) : sizeX(sizeX), sizeY(sizeY) {
         if (sizeX <= 0 || sizeY <= 0)
-            THROW(std::invalid_argument, "Invalid map size %dx%d!", sizeX, sizeY);
+            THROW(std::invalid_argument, "Invalid map size {}x{}!", sizeX, sizeY);
 
         data.resize(static_cast<decltype(data)::size_type>(sizeX) * sizeY, terrainType);
     }

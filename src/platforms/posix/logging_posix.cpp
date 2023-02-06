@@ -51,7 +51,7 @@ void log_capture_output(std::filesystem::path logfilePath) {
 
     int d = open(pLogfilePath, O_WRONLY | O_CREAT | O_TRUNC | O_APPEND, 0644);
     if (d < 0) {
-        THROW(io_error, "Opening logfile '%s' failed!", pLogfilePath);
+        THROW(io_error, "Opening logfile '{}' failed!", pLogfilePath);
     }
 
     auto cleanup_d = gsl::finally([d] { close(d); });

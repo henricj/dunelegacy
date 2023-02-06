@@ -17,12 +17,13 @@
 
 #include "GUI/ObjectInterfaces/DefaultObjectInterface.h"
 
+#include "sand.h"
 #include "GUI/Spacer.h"
 
 DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
     const auto* const pObject = context_.objectManager.getObject(objectID);
     if (pObject == nullptr) {
-        THROW(std::invalid_argument, "Failed to resolve ObjectID %d!", objectID);
+        THROW(std::invalid_argument, "Failed to resolve ObjectID {}!", objectID);
     }
 
     this->objectID = objectID;

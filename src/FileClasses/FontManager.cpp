@@ -49,14 +49,14 @@ std::unique_ptr<Font> FontManager::loadFont(unsigned int fontSize) const {
 std::vector<char> FontManager::loadImage(std::filesystem::path font_path) {
     const auto file = dune::globals::pFileManager->openFile(std::move(font_path));
     if (!file)
-        THROW(std::runtime_error, "Unable to open font because %s!", SDL_GetError());
+        THROW(std::runtime_error, "Unable to open font because {}!", SDL_GetError());
 
     const auto size = SDL_RWsize(file.get());
 
     std::vector<char> buffer(size);
 
     if (1 != SDL_RWread(file.get(), buffer.data(), buffer.size(), 1))
-        THROW(std::runtime_error, "Unable to load font because %s!", SDL_GetError());
+        THROW(std::runtime_error, "Unable to load font because {}!", SDL_GetError());
 
     return buffer;
 }

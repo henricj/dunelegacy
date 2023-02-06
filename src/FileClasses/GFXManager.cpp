@@ -89,7 +89,7 @@ const DuneTexture* GFXManager::getZoomedObjPic(ObjPic_enum id, HOUSETYPE house, 
 
 zoomable_texture GFXManager::getObjPic(ObjPic_enum id, HOUSETYPE house) const {
     if (id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID %u is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getObjPic(): Unit Picture with ID {} is not available!", id);
     }
 
     return {&duneTextures.get_object_picture(id, house, 0), &duneTextures.get_object_picture(id, house, 1),
@@ -149,7 +149,7 @@ SDL_Cursor* GFXManager::getCursor(UIGraphics_Enum id) const {
 
 const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house) const {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID %u is not available!", id);
+        THROW(std::invalid_argument, "GFXManager::getUIGraphic(): UI Graphic with ID {} is not available!", id);
     }
 
     const auto& texture = duneTextures.get_ui_graphic(id, house);
@@ -162,7 +162,7 @@ const DuneTexture* GFXManager::getUIGraphic(UIGraphics_Enum id, HOUSETYPE house)
 
 const DuneTexture* GFXManager::getMapChoicePiece(UIGraphics_Enum num, HOUSETYPE house) const {
     if (num >= NUM_MAPCHOICEPIECES) {
-        THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number %u is not available!",
+        THROW(std::invalid_argument, "GFXManager::getMapChoicePiece(): Map Piece with number {} is not available!",
               num);
     }
 

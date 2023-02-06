@@ -33,7 +33,7 @@ TTFFont::TTFFont(sdl2::RWops_ptr pRWOP, int fontsize) {
 
     pTTFFont = font_ptr{TTF_OpenFontRW(pRWOP.release(), 1, fontsize)};
     if (!pTTFFont) {
-        THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: %s!", TTF_GetError());
+        THROW(std::invalid_argument, "TTFFont::TTFFont(): TTF_OpenFontRW() failed: {}!", TTF_GetError());
     }
 
     characterHeight = TTF_FontLineSkip(pTTFFont.get());
@@ -64,7 +64,7 @@ int TTFFont::getTextWidth(std::string_view text) const {
 
     int width = 0;
     if (TTF_SizeUTF8(pTTFFont.get(), std::string{text}.c_str(), &width, nullptr) < 0) {
-        THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeUTF8() failed: %s!", TTF_GetError());
+        THROW(std::invalid_argument, "TTFFont::getTextWidth(): TTF_SizeUTF8() failed: {}!", TTF_GetError());
     }
 
     return width;

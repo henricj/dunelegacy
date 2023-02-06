@@ -237,7 +237,7 @@ sdl2::surface_ptr copySurface(SDL_Surface* inSurface) {
     sdl2::surface_ptr surface{SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags)};
     if (surface == nullptr) {
         THROW(std::invalid_argument,
-              std::string("copySurface(): SDL_ConvertSurface() failed: ") + std::string(SDL_GetError()));
+              "copySurface(): SDL_ConvertSurface() failed: {}", SDL_GetError());
     }
 
     copySurfaceAttributes(surface.get(), inSurface);
@@ -249,8 +249,8 @@ sdl2::surface_ptr convertSurfaceToDisplayFormat(SDL_Surface* inSurface) {
 
     sdl2::surface_ptr pSurface{SDL_ConvertSurfaceFormat(inSurface, SCREEN_FORMAT, 0)};
     if (pSurface == nullptr) {
-        THROW(std::invalid_argument, std::string("convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ")
-                                         + std::string(SDL_GetError()));
+        THROW(std::invalid_argument, "convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ",
+                                         SDL_GetError());
     }
 
     return pSurface;
@@ -274,8 +274,8 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     sdl2::texture_ptr pTexture{SDL_CreateTextureFromSurface(dune::globals::renderer.get(), inSurface)};
 
     if (pTexture == nullptr) {
-        THROW(std::invalid_argument, std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ")
-                                         + std::string(SDL_GetError()));
+        THROW(std::invalid_argument, "convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: {}",
+                                         SDL_GetError());
     }
 
     SDL_BlendMode blendMode;
@@ -286,9 +286,8 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
 
     if (blendMode != SDL_BlendMode::SDL_BLENDMODE_NONE) {
         if (SDL_SetTextureBlendMode(pTexture.get(), blendMode)) {
-            THROW(std::invalid_argument,
-                  std::string("convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: ")
-                      + std::string(SDL_GetError()));
+            THROW(std::invalid_argument, "convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: {}",
+                      SDL_GetError());
         }
     }
 
@@ -300,7 +299,7 @@ void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
         if (SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0,
                                  source->format->palette->ncolors)) {
             THROW(std::runtime_error,
-                  "copySurfaceAttributes(): unable to copy palette: " + std::string(SDL_GetError()));
+                  "copySurfaceAttributes(): unable to copy palette: {}", SDL_GetError());
         }
     }
 
@@ -308,12 +307,12 @@ void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
         uint32_t ckey = 0;
         if (SDL_GetColorKey(source, &ckey)) {
             THROW(std::runtime_error,
-                  "copySurfaceAttributes(): SDL_GetColorKey() failed: " + std::string(SDL_GetError()));
+                  "copySurfaceAttributes(): SDL_GetColorKey() failed: {}", SDL_GetError());
         }
 
         if (SDL_SetColorKey(target, SDL_TRUE, ckey)) {
             THROW(std::runtime_error,
-                  "copySurfaceAttributes(): SDL_SetColorKey() failed: " + std::string(SDL_GetError()));
+                  "copySurfaceAttributes(): SDL_SetColorKey() failed: {}", SDL_GetError());
         }
     }
 

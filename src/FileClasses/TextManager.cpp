@@ -38,7 +38,7 @@ sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
     auto* const rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
 
     if (!rwops)
-        THROW(sdl_error, "Opening file '%s' failed: %s!", reinterpret_cast<const char*>(normal.u8string().c_str()),
+        THROW(sdl_error, "Opening file '{}' failed: {}!", reinterpret_cast<const char*>(normal.u8string().c_str()),
               SDL_GetError());
 
     return sdl2::RWops_ptr{rwops};

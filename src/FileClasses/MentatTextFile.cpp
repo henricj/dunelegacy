@@ -83,7 +83,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         const uint16_t techLevel = p[entryLength - 1];
 
         if (entryContentOffset >= mentatTextFilesize) {
-            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset 0x%X beyond file end!",
+            THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Entry offset {:#X} beyond file end!",
                   entryContentOffset);
         }
 

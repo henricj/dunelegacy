@@ -55,7 +55,7 @@ void Map::load(InputStream& stream) {
     const auto y = stream.readSint32();
 
     if (x != sizeX || y != sizeY)
-        THROW(std::runtime_error, "Map load size mismatch (%d, %d) != (%d, %d)", x, y, sizeX, sizeY);
+        THROW(std::runtime_error, "Map load size mismatch ({}, {}) != ({}, {})", x, y, sizeX, sizeY);
 
     assert(tiles.size() == static_cast<size_t>(sizeX) * sizeY);
 

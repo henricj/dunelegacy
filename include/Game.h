@@ -153,7 +153,7 @@ private:
         const auto int_house = static_cast<int>(houseID);
 
         if (int_house < 0 || int_house >= house_.size())
-            THROW(std::invalid_argument, "Invalid house index %d!", int_house);
+            THROW(std::invalid_argument, "Invalid house index {}!", int_house);
 
         return int_house;
     }

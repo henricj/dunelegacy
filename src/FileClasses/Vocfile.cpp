@@ -139,7 +139,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
     // 0x100 is an invalid VOC version used by German version of DOTT (Disk) and
     // French version of Simon the Sorcerer 2 (CD)
     if (!(version == 0x010A || version == 0x0114 || version == 0x0100)) {
-        THROW(std::runtime_error, "LoadVOC_RW(): Invalid version (0x%X) in header!", version);
+        THROW(std::runtime_error, "LoadVOC_RW(): Invalid version ({:#X}) in header!", version);
     }
 
     if (id != ~version + 0x1234) {
@@ -191,7 +191,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
                 if (packing == 0) {
                     auto* tmp_ret_sound = static_cast<uint8_t*>(SDL_realloc(ret_sound.get(), decsize + len));
                     if (tmp_ret_sound == nullptr) {
-                        THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
+                        THROW(std::runtime_error, "LoadVOC_RW(): {}", dune::string_error(errno));
                     }
                     ret_sound.release();
                     ret_sound.reset(tmp_ret_sound);
@@ -202,7 +202,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
 
                     decsize += len;
                 } else {
-                    THROW(std::runtime_error, "LoadVOC_RW(): VOC file packing %d unsupported!", packing);
+                    THROW(std::runtime_error, "LoadVOC_RW(): VOC file packing {} unsupported!", packing);
                 }
             } break;
 
@@ -234,7 +234,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
 
                 auto* tmp_ret_sound = static_cast<uint8_t*>(SDL_realloc(ret_sound.get(), decsize + length));
                 if (tmp_ret_sound == nullptr) {
-                    THROW(std::runtime_error, "LoadVOC_RW(): %s", dune::string_error(errno));
+                    THROW(std::runtime_error, "LoadVOC_RW(): {}", dune::string_error(errno));
                 }
                 ret_sound.release();
                 ret_sound.reset(tmp_ret_sound);
@@ -252,7 +252,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
             case VOC_CODE_LOOPEND:
             case VOC_CODE_EXTENDED:
             case VOC_CODE_DATA_16:
-            default: THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : %d", code);
+            default: THROW(std::runtime_error, "LoadVOC_RW(): Unsupported code in VOC file : {}", code);
         }
     }
     return ret_sound;

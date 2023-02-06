@@ -67,7 +67,7 @@ void NetworkManager::startServer(bool bLANServer, std::string serverName, std::s
                                  GameInitSettings* pGameInitSettings, int numPlayers, int maxPlayers) {
     if (numPlayers <= 0 || numPlayers > std::numeric_limits<uint8_t>::max() || maxPlayers <= 0
         || maxPlayers > std::numeric_limits<uint8_t>::max())
-        THROW(std::invalid_argument, "Too many players (%d/%d)!", numPlayers, maxPlayers);
+        THROW(std::invalid_argument, "Too many players ({}/{})!", numPlayers, maxPlayers);
 
     const auto numPlayers8 = static_cast<uint8_t>(numPlayers);
     const auto maxPlayers8 = static_cast<uint8_t>(maxPlayers);
@@ -96,7 +96,7 @@ void NetworkManager::startServer(bool bLANServer, std::string serverName, std::s
 
 void NetworkManager::updateServer(int numPlayers) {
     if (numPlayers <= 0 || numPlayers > std::numeric_limits<uint8_t>::max())
-        THROW(std::invalid_argument, "Too many players (%d)!", numPlayers);
+        THROW(std::invalid_argument, "Too many players ({})!", numPlayers);
 
     const auto numPlayers8 = static_cast<uint8_t>(numPlayers);
 
@@ -133,7 +133,7 @@ void NetworkManager::connect(const std::string& hostname, uint16_t port, std::st
     ENetAddress address;
 
     if (enet_address_set_host(&address, hostname.c_str()) < 0) {
-        THROW(std::runtime_error, "NetworkManager: Resolving hostname '%s' failed!", hostname);
+        THROW(std::runtime_error, "NetworkManager: Resolving hostname '{}' failed!", hostname);
     }
     address.port = port;
 
@@ -677,7 +677,7 @@ void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int chann
     }
 
     if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
-        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+        THROW(std::invalid_argument, "Invalid channel ({})!", channel);
 
     ENetPacket* enetPacket = packetStream.getPacket();
 
@@ -688,7 +688,7 @@ void NetworkManager::sendPacketToHost(ENetPacketOStream& packetStream, int chann
 
 void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetStream, int channel) {
     if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
-        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+        THROW(std::invalid_argument, "Invalid channel ({})!", channel);
 
     ENetPacket* enetPacket = packetStream.getPacket();
 
@@ -703,7 +703,7 @@ void NetworkManager::sendPacketToPeer(ENetPeer* peer, ENetPacketOStream& packetS
 
 void NetworkManager::sendPacketToAllConnectedPeers(ENetPacketOStream& packetStream, int channel) {
     if (channel < 0 || channel >= std::numeric_limits<enet_uint8>::max())
-        THROW(std::invalid_argument, "Invalid channel (%d)!", channel);
+        THROW(std::invalid_argument, "Invalid channel ({})!", channel);
 
     ENetPacket* enetPacket = packetStream.getPacket();
 

@@ -250,7 +250,7 @@ void log_capture_output(const std::filesystem::path logfilePath) {
 
     if (log_handle == INVALID_HANDLE_VALUE) {
         // use stdout in this error case as stderr is not yet ready
-        THROW(io_error, "Opening logfile '%s' as stdout failed!",
+        THROW(io_error, "Opening logfile '{}' as stdout failed!",
               reinterpret_cast<const char*>(logfilePath.u8string().c_str()));
     }
 

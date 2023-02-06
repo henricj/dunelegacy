@@ -65,7 +65,7 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
 
     const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
     if (!file) {
-        THROW(sdl_error, "Opening config file failed: %s!", SDL_GetError());
+        THROW(sdl_error, "Opening config file failed: {}!", SDL_GetError());
     }
 
     // clang-format off
@@ -142,6 +142,6 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
     const std::string strConfigfile = fmt::sprintf(configfile, playername, language, DEFAULT_PORT, DEFAULT_METASERVER);
 
     if (SDL_RWwrite(file.get(), strConfigfile.c_str(), 1, strConfigfile.length()) == 0) {
-        THROW(sdl_error, "Writing config file failed: %s!", SDL_GetError());
+        THROW(sdl_error, "Writing config file failed: {}!", SDL_GetError());
     }
 }

@@ -28,6 +28,8 @@
 #include <misc/SDL2pp.h>
 #include <misc/string_util.h>
 
+#include <fmt/printf.h>
+
 #include <memory>
 #include <string>
 
@@ -65,7 +67,7 @@ protected:
         with error as the exception message
         \param  error the error message
     */
-    void logError(const std::string& error) const { THROW(std::runtime_error, "%s: %s", mapname_, error); }
+    void logError(const std::string& error) const { THROW(std::runtime_error, "{}: {}", mapname_, error); }
 
     /**
         Log an error while reading the scenario file. This method throws an std::runtime_error exception
@@ -76,7 +78,7 @@ protected:
     */
     template<typename... Args>
     void logError(size_t line, std::string_view format, Args&&... args) const {
-        THROW(std::runtime_error, "%s:%d: %s", mapname_, line, fmt::sprintf(format, std::forward<Args>(args)...));
+        THROW(std::runtime_error, "{}:{}: {}", mapname_, line, fmt::sprintf(format, std::forward<Args>(args)...));
     }
 
     /**

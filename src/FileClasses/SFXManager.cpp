@@ -49,7 +49,7 @@ SFXManager::SFXManager() {
 
     for (int i = 0; i < static_cast<int>(Sound_enum::NUM_SOUNDCHUNK); i++) {
         if (soundChunk[i] == nullptr) {
-            THROW(std::runtime_error, "Not all sounds could be loaded: soundChunk[%d] == nullptr!", i);
+            THROW(std::runtime_error, "Not all sounds could be loaded: soundChunk[{}] == nullptr!", i);
         }
     }
 }
@@ -251,7 +251,7 @@ void SFXManager::loadEnglishVoice() {
     const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
 
     if (bad_voice != lngVoice.cend()) {
-        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!",
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[{}] == nullptr!",
               static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 
@@ -354,7 +354,7 @@ void SFXManager::loadNonEnglishVoice(const std::string& languagePrefix) {
     const auto bad_voice = std::find(lngVoice.cbegin(), lngVoice.cend(), nullptr);
 
     if (bad_voice != lngVoice.cend()) {
-        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[%d] == nullptr!",
+        THROW(std::runtime_error, "Not all voice sounds could be loaded: lngVoice[{}] == nullptr!",
               static_cast<int>(bad_voice - lngVoice.cbegin()));
     }
 

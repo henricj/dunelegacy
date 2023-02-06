@@ -260,7 +260,7 @@ const INIFile::Section& INIFile::getSection(std::string_view sectionname) const 
     const auto curSection = findSectionInternal(sectionname);
 
     if (curSection == lines_.end()) {
-        THROW(std::out_of_range, "There is no section '%s' in this INI file", sectionname);
+        THROW(std::out_of_range, "There is no section '{}' in this INI file", sectionname);
     }
 
     assert(std::holds_alternative<Section>(*curSection));

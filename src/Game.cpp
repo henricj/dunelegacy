@@ -200,7 +200,7 @@ void Game::initReplay(const std::filesystem::path& filename) {
     IFileStream fs;
 
     if (!fs.open(filename)) {
-        THROW(io_error, "Error while opening '%s'!", filename.string());
+        THROW(io_error, "Error while opening '{}'!", filename.string());
     }
 
     // override local player name as it was when the replay was created

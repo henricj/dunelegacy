@@ -171,7 +171,7 @@ TValue parseStringThrows(std::string_view text) {
     if (ec == std::errc{} && ptr == last)
         return value;
 
-    THROW(std::invalid_argument, "Unable to parse '%s'.", text);
+    THROW(std::invalid_argument, "Unable to parse '{}'.", text);
 }
 
 inline void convertToLower(std::string& str) {

@@ -125,7 +125,7 @@ std::string loadFromHttp(const std::string& url, const std::map<std::string, std
 std::string loadFromHttp(const std::string& domain, const std::string& filepath, unsigned short port) {
     ENetAddress address;
     if (enet_address_set_host(&address, domain.c_str()) < 0) {
-        THROW(std::runtime_error, "Cannot resolve '" + domain + "'");
+        THROW(std::runtime_error, "Cannot resolve '{}'", domain);
     }
 
     address.port = port;
@@ -136,7 +136,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     }
 
     if (enet_socket_connect(httpSocket, &address) < 0) {
-        THROW(std::runtime_error, "Unable to connect to '" + domain + "'");
+        THROW(std::runtime_error, "Unable to connect to '{}'", domain);
     }
 
     const std::string newline       = "\x0D\x0A";
@@ -148,7 +148,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     sendBuffer.dataLength = request.size();
 
     if (enet_socket_send(httpSocket, nullptr, &sendBuffer, 1) < 0) {
-        THROW(std::runtime_error, "Error while sending HTTP request to '" + domain + "'");
+        THROW(std::runtime_error, "Error while sending HTTP request to '{}'", domain);
     }
 
     std::string result;
@@ -164,7 +164,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
         const int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
 
         if (receiveLength < 0) {
-            THROW(std::runtime_error, "Error while receiving from '" + domain + "'");
+            THROW(std::runtime_error, "Error while receiving from '{}'",  domain);
         }
 
         result.append(resultBuffer, receiveLength);
@@ -177,8 +177,8 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     enet_socket_destroy(httpSocket);
 
     if (result.substr(9, 3) != "200") {
-        THROW(std::runtime_error, "Server Error: Received status code '" + result.substr(9, 3) + "' from " + domain
-                                      + ": " + result.substr(0, result.find(newline)));
+        THROW(std::runtime_error, "Server Error: Received status code '{}' from {}: {}",
+              result.substr(9, 3), domain, result.substr(0, result.find(newline)));
     }
 
     const size_t contentStart = result.find(doubleNewline);

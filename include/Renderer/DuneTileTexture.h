@@ -34,9 +34,9 @@ private:
     [[nodiscard]] SDL_Rect source_rect(int column, int row = 0) const {
 #if _DEBUG
         if (column < 0 || column >= columns_)
-            THROW(std::invalid_argument, "Column out of range (%d)!", column);
+            THROW(std::invalid_argument, "Column out of range ({})!", column);
         if (row < 0 || static_cast<size_t>(row) * columns_ > source_.size())
-            THROW(std::invalid_argument, "Row out of range (%d)!", column);
+            THROW(std::invalid_argument, "Row out of range ({})!", column);
 #endif
         return source_.at(column + static_cast<size_t>(row) * columns_).as_sdl();
     }

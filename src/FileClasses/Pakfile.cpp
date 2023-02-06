@@ -44,7 +44,7 @@ BasePakfile::~BasePakfile() = default;
 */
 const std::string& BasePakfile::getFilename(unsigned int index) const {
     if (index >= fileEntries.size()) {
-        THROW(std::invalid_argument, "Pakfile::getFilename(%ud): This Pakfile has only %ud entries!", index,
+        THROW(std::invalid_argument, "Pakfile::getFilename({}): This Pakfile has only {} entries!", index,
               fileEntries.size());
     }
 
@@ -189,7 +189,7 @@ Pakfile::Pakfile(const std::filesystem::path& pakfilename) : BasePakfile{pakfile
     sdl2::RWops_ptr file{SDL_RWFromFile(filename_.u8string(), "rb")};
 
     if (file == nullptr) {
-        THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
+        THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open {}!", pakfilename.string());
     }
 
     fPakFile = std::move(file);
@@ -219,19 +219,19 @@ sdl2::RWops_ptr Pakfile::openFile(const std::string& filename) const {
             return openFile(static_cast<int>(i));
     }
 
-    THROW(io_error, "Pakfile::openFile(): Cannot find file with name '%s' in this PAK file!", filename);
+    THROW(io_error, "Pakfile::openFile(): Cannot find file with name '{}' in this PAK file!", filename);
 }
 
 sdl2::RWops_ptr Pakfile::openFile(int index) const {
     if (index < 0 || std::cmp_greater_equal(index, fileEntries.size()))
-        THROW(io_error, "Pakfile::openFile(): There is not file at index '%d' in this PAK file!", index);
+        THROW(io_error, "Pakfile::openFile(): There is not file at index '{}' in this PAK file!", index);
 
     // alloc RWop
 
     sdl2::RWops_ptr pRWop{SDL_AllocRW()};
 
     if (!pRWop) {
-        THROW(io_error, "Pakfile::openFile(): Cannot open file at index '%d' in this PAK file!", index);
+        THROW(io_error, "Pakfile::openFile(): Cannot open file at index '{}' in this PAK file!", index);
     }
 
     // alloc RWopData
@@ -314,7 +314,7 @@ OutPakfile::OutPakfile(const std::filesystem::path& pakfilename) : BasePakfile{p
     fPakFile = sdl2::RWops_ptr{SDL_RWFromFile(filename_.u8string().c_str(), "wb")};
 
     if (!fPakFile) {
-        THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open " + pakfilename.string() + "!");
+        THROW(std::invalid_argument, "Pakfile::Pakfile(): Cannot open {}!", pakfilename.string());
     }
 }
 

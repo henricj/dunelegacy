@@ -63,7 +63,7 @@ public:
             const auto tell = SDL_RWtell(rwop);
 
             if (tell < 0)
-                THROW(std::runtime_error, "Unable to get the current position: %S!", SDL_GetError());
+                THROW(std::runtime_error, "Unable to get the current position: {}!", SDL_GetError());
 
             return static_cast<size_t>(tell);
         }();
@@ -141,7 +141,7 @@ private:
         const auto buffer_size  = buffer_.size();
 
         if (pending_size >= buffer_size)
-            THROW(std::runtime_error, "The buffer is already full (%d >= %d)!", pending_size, buffer_size);
+            THROW(std::runtime_error, "The buffer is already full ({} >= {})!", pending_size, buffer_size);
 
         const auto remaining = buffer_size - pending_size;
 

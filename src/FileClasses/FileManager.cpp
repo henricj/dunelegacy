@@ -53,8 +53,7 @@ PakFileManager::loadPakFiles(const CaseInsensitiveFilesystemCache& cache, std::s
                            reinterpret_cast<const char*>(filepath.u8string().c_str()));
             pakFiles.emplace_back(std::make_unique<Pakfile>(filepath));
         } catch (std::exception& e) {
-            THROW(io_error, "Error while opening '%s': %s!", reinterpret_cast<const char*>(filepath.u8string().c_str()),
-                  e.what());
+            THROW(io_error, "Error while opening '{}': {}!", filepath.string(), e.what());
         }
     }
 
@@ -179,7 +178,7 @@ sdl2::RWops_ptr FileManager::openFile(std::filesystem::path filename) const {
             return pPakFile->openFile(index);
     }
 
-    THROW(io_error, "Cannot find '%s'!", filename.string());
+    THROW(io_error, "Cannot find '{}'!", filename.string());
 }
 
 bool FileManager::exists(std::filesystem::path filename) const {
@@ -244,7 +243,7 @@ std::string PakFileManager::md5FromFilename(std::filesystem::path filename) {
     const auto path = filename.lexically_normal().make_preferred().u8string();
 
     if (md5_file(reinterpret_cast<const char*>(path.c_str()), md5sum.data()) != 0)
-        THROW(io_error, "Cannot open or read '%s'!", filename.string());
+        THROW(io_error, "Cannot open or read '{}'!", filename.string());
 
     return to_hex(md5sum, 0);
 }

@@ -1204,8 +1204,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
             replaceColor(display_surface.get(), oldColor, newColor);
 
             if (SDL_SetSurfaceBlendMode(display_surface.get(), SDL_BlendMode::SDL_BLENDMODE_BLEND))
-                THROW(std::runtime_error,
-                      std::string("SurfaceLoader(): SDL_SetSurfaceBlendMode() failed: ") + std::string(SDL_GetError()));
+                THROW(std::runtime_error, "SurfaceLoader(): SDL_SetSurfaceBlendMode() failed: {}", SDL_GetError());
 
             objPic[static_cast<int>(id)][static_cast<int>(house)][zoom] = std::move(display_surface);
         };
@@ -1230,8 +1229,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
                 auto& windtrap = objPic[ObjPic_Windtrap][h][zoom];
 
                 if (!windtrap)
-                    THROW(std::runtime_error,
-                          fmt::format("SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom));
+                    THROW(std::runtime_error, "SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom);
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 windtrap = generateWindtrapAnimationFrames(windtrap.get());
@@ -1254,7 +1252,7 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
                     source = std::move(surface);
 
                 if (!source)
-                    THROW(std::runtime_error, "No source surface for generating id %d for house %d",
+                    THROW(std::runtime_error, "No source surface for generating id {} for house {}",
                           static_cast<int>(id), static_cast<int>(house));
 
                 assert(!surface);
@@ -1274,7 +1272,7 @@ SurfaceLoader::~SurfaceLoader() = default;
 
 SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house, unsigned int z) {
     if (id >= NUM_OBJPICS) {
-        THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurface(): Unit Picture with ID %u is not available!",
+        THROW(std::invalid_argument, "SurfaceLoader::getZoomedObjSurface(): Unit Picture with ID {} is not available!",
               id);
     }
 
@@ -1287,7 +1285,7 @@ SDL_Surface* SurfaceLoader::getZoomedObjSurface(unsigned int id, HOUSETYPE house
 
         // remap to this color
         if (objPic[id][harkonnen][z] == nullptr) {
-            THROW(std::runtime_error, "SurfaceLoader::getZoomedObjPic(): Unit Picture with ID %u is not loaded!", id);
+            THROW(std::runtime_error, "SurfaceLoader::getZoomedObjPic(): Unit Picture with ID {} is not loaded!", id);
         }
 
         surface = mapSurfaceColorRange(objPic[id][harkonnen][z].get(), PALCOLOR_HARKONNEN,
@@ -1313,7 +1311,7 @@ SDL_Surface* SurfaceLoader::getTinyPictureSurface(unsigned int id) {
 
 SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house) {
     if (id >= NUM_UIGRAPHICS) {
-        THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not available!",
+        THROW(std::invalid_argument, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID {} is not available!",
               id);
     }
 
@@ -1323,7 +1321,7 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
         auto* const harkonnen = uiGraphic[id][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)].get();
 
         if (harkonnen == nullptr) {
-            THROW(std::runtime_error, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID %u is not loaded!", id);
+            THROW(std::runtime_error, "SurfaceLoader::getUIGraphicSurface(): UI Graphic with ID {} is not loaded!", id);
         }
 
         // remap to this color
@@ -1337,14 +1335,14 @@ SDL_Surface* SurfaceLoader::getUIGraphicSurface(unsigned int id, HOUSETYPE house
 SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE house) {
     if (num >= NUM_MAPCHOICEPIECES) {
         THROW(std::invalid_argument,
-              "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not available!", num);
+              "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number {} is not available!", num);
     }
 
     if (mapChoicePieces[num][static_cast<int>(house)] == nullptr) {
         // remap to this color
         if (mapChoicePieces[num][static_cast<int>(HOUSETYPE::HOUSE_HARKONNEN)] == nullptr) {
             THROW(std::runtime_error,
-                  "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number %u is not loaded!", num);
+                  "SurfaceLoader::getMapChoicePieceSurface(): Map Piece with number {} is not loaded!", num);
         }
 
         mapChoicePieces[num][static_cast<int>(house)] =
@@ -1357,7 +1355,7 @@ SDL_Surface* SurfaceLoader::getMapChoicePieceSurface(unsigned int num, HOUSETYPE
 
 Animation* SurfaceLoader::getAnimation(unsigned int id) {
     if (id >= NUM_ANIMATION) {
-        THROW(std::invalid_argument, "SurfaceLoader::getAnimation(): Animation with ID %u is not available!", id);
+        THROW(std::invalid_argument, "SurfaceLoader::getAnimation(): Animation with ID {} is not available!", id);
     }
 
     if (animation[id] == nullptr) {
@@ -1451,7 +1449,7 @@ Animation* SurfaceLoader::getAnimation(unsigned int id) {
             case Anim_Slab4: animation[Anim_Slab4] = loadAnimationFromWsa("4SLAB.WSA"); break;
 
             default: {
-                THROW(std::runtime_error, "SurfaceLoader::getAnimation(): Invalid animation ID %u", id);
+                THROW(std::runtime_error, "SurfaceLoader::getAnimation(): Invalid animation ID {}", id);
             }
         }
 
@@ -1467,7 +1465,7 @@ std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename)
     try {
         return std::make_unique<Shpfile>(dune::globals::pFileManager->openFile(filename).get());
     } catch (std::exception& e) {
-        THROW(std::runtime_error, "Error in file \"" + filename + "\":" + e.what());
+        THROW(std::runtime_error, "Error in file \"{}\": {}", filename,  e.what());
     }
 }
 
@@ -1475,7 +1473,7 @@ std::unique_ptr<Wsafile> SurfaceLoader::loadWsafile(const std::string& filename)
     try {
         return std::make_unique<Wsafile>(dune::globals::pFileManager->openFile(filename).get());
     } catch (std::exception& e) {
-        THROW(std::runtime_error, std::string("Error in file \"" + filename + "\":") + e.what());
+        THROW(std::runtime_error, "Error in file \"{}\": {}", filename, e.what());
     }
 }
 
@@ -1484,7 +1482,7 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 
     // create new picture surface
     if (pSurface == nullptr) {
-        THROW(sdl_error, "Cannot create new surface: %s!", SDL_GetError());
+        THROW(sdl_error, "Cannot create new surface: {}!", SDL_GetError());
     }
 
     { // Scope
@@ -1492,11 +1490,11 @@ sdl2::surface_ptr SurfaceLoader::extractSmallDetailPic(const std::string& filena
 
         const sdl2::surface_ptr tmp{myWsafile->getPicture(0)};
         if (tmp == nullptr) {
-            THROW(std::runtime_error, "Cannot decode first frame in file '%s'!", filename);
+            THROW(std::runtime_error, "Cannot decode first frame in file '{}'!", filename);
         }
 
         if (tmp->w != 184 || tmp->h != 112) {
-            THROW(std::runtime_error, "Picture '%s' is not of size 184x112!", filename);
+            THROW(std::runtime_error, "Picture '{}' is not of size 184x112!", filename);
         }
 
         dune::globals::palette.applyToSurface(pSurface.get());

@@ -10,24 +10,24 @@ DuneTileTexture::DuneTileTexture(SDL_Texture* texture, float tile_width, float t
                                  std::span<const SDL_Rect> tiles)
     : texture_{texture}, columns_{columns}, tile_width_(tile_width), tile_height_(tile_height) {
     if (rows < 1)
-        THROW(std::invalid_argument, "The rows argument is out of range (%d)", rows);
+        THROW(std::invalid_argument, "The rows argument is out of range ({})", rows);
 
     if (columns < 1)
-        THROW(std::invalid_argument, "The columns argument is out of range (%d)", columns);
+        THROW(std::invalid_argument, "The columns argument is out of range ({})", columns);
 
     if (std::cmp_greater(tiles.size(), std::numeric_limits<int>::max())
         || static_cast<int>(tiles.size()) != rows * columns)
-        THROW(std::invalid_argument, "The size of the tiles does not match the rows and columns (%d != %dx%d)",
+        THROW(std::invalid_argument, "The size of the tiles does not match the rows and columns ({} != {}x{})",
               tiles.size(), columns, rows);
 
 #if _DEBUG
     int w = 0, h = 0;
     if (SDL_QueryTexture(texture, nullptr, nullptr, &w, &h))
-        THROW(std::invalid_argument, "Unable to query texture: %s", SDL_GetError());
+        THROW(std::invalid_argument, "Unable to query texture: {}", SDL_GetError());
 
     for (const auto& tile : tiles) {
         if (tile.x + tile.w > w || tile.y + tile.h > h)
-            THROW(std::invalid_argument, "The tile (%dx%d at %dx%d) must be inside the texture (%dx%d)", tile.w, tile.h,
+            THROW(std::invalid_argument, "The tile ({}x{} at {}x{}) must be inside the texture ({}x{})", tile.w, tile.h,
                   tile.x, tile.x, w, h);
     }
 #endif

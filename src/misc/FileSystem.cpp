@@ -355,7 +355,7 @@ std::filesystem::path getDuneLegacyDataDir() {
             const sdl2::sdl_ptr<char> basePath{SDL_GetBasePath()};
 
             if (basePath == nullptr) {
-                THROW(sdl_error, "SDL_GetBasePath() failed: %s!", SDL_GetError());
+                THROW(sdl_error, "SDL_GetBasePath() failed: {}!", SDL_GetError());
             }
             dataDir = basePath.get();
         }

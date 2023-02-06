@@ -19,20 +19,19 @@
 #define EXCEPTIONS_H
 
 #include <exception>
+#include <fmt/compile.h>
 #include <fmt/format.h>
-#include <fmt/printf.h>
 #include <stdexcept>
 
 template<typename TException, typename... Args>
-TException
-dune_exception(std::string_view file, int line, std::string_view func, std::string_view format, Args&&... args) {
+TException dune_exception(fmt::format_string<Args...> format, Args&&... args) {
     static_assert(std::is_base_of_v<std::exception, TException>);
 
-    return TException{
-        fmt::sprintf("%s:%d (%s): %s", file, line, func, fmt::sprintf(format, std::forward<Args>(args)...))};
+    return TException{fmt::format(format, std::forward<decltype(args)>(args)...)};
 }
 
-#define THROW(TException, ...) throw dune_exception<TException>(__FILE__, __LINE__, __func__, __VA_ARGS__)
+#define THROW(TException, format, ...)                                                                                 \
+    throw dune_exception<TException>("{}:{} ({}): " format, __FILE__, __LINE__, __func__ __VA_OPT__(, ) __VA_ARGS__)
 
 class io_error : public std::runtime_error {
     using std::runtime_error::runtime_error;

@@ -118,7 +118,7 @@ const DuneTexture* resolveItemPicture(ItemID_enum itemID, HOUSETYPE house) {
         } break;
 
         default:
-            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID " + std::to_string(itemID) + "!");
+            THROW(std::invalid_argument, "resolveItemPicture(): Invalid item ID {}!", itemID);
     }
     // clang-format on
 
@@ -422,7 +422,7 @@ std::string getHouseNameByNumber(HOUSETYPE house) {
     if (const auto idx = static_cast<decltype(houseName)::size_type>(house); idx < houseName.size())
         return houseName[idx];
 
-    THROW(std::invalid_argument, "Invalid house number %d!", static_cast<int>(house));
+    THROW(std::invalid_argument, "Invalid house number {}!", static_cast<int>(house));
 }
 
 ATTACKMODE getAttackModeByName(std::string_view name) {
