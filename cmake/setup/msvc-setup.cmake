@@ -1,6 +1,8 @@
 message(STATUS "Configuring MSVC")
 
-add_compile_options(/diagnostics:caret /utf-8 /volatile:iso /permissive- /Zc:__cplusplus /Zc:inline /fp:fast)
+add_compile_options(/diagnostics:caret /utf-8 /volatile:iso
+    /permissive- /Zc:__cplusplus /Zc:inline /Zc:preprocessor )
+add_compile_options(/fp:fast)
 add_compile_options(/wd4267)
 
 # Optimize for Windows Application (i.e., not a DLL)
