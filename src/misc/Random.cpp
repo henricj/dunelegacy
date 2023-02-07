@@ -140,13 +140,13 @@ std::array<uint8_t, Random::state_bytes> Random::getState() const {
 
     get_generator_state(generator_, state);
 
-    sdl2::log_info("Getting state %s", to_hex(state));
+    sdl2::log_info("Getting state {}", to_hex(state));
 
     return state;
 }
 
 void Random::setState(const std::span<const uint8_t> state) {
-    sdl2::log_info("Setting state %s", to_hex(state));
+    sdl2::log_info("Setting state {}", to_hex(state));
 
     set_generator_state(generator_, state);
 }
@@ -199,7 +199,7 @@ void Random::get_generator_state(const generator_type& generator, std::span<uint
 }
 
 void RandomFactory::setSeed(std::span<const uint8_t> seed) {
-    sdl2::log_info("Setting RandomFactory seed to %s", to_hex(seed));
+    sdl2::log_info("Setting RandomFactory seed to {}", to_hex(seed));
 
     seed_.clear();
     seed_.reserve(seed.size());
@@ -226,7 +226,7 @@ std::vector<uint8_t> RandomFactory::getSeed() const {
     seed.reserve(seed_.size());
     std::ranges::copy(seed_, std::back_inserter(seed));
 
-    sdl2::log_info("Getting RandomFactory seed %s", to_hex(seed));
+    sdl2::log_info("Getting RandomFactory seed {}", to_hex(seed));
 
     return seed;
 }
@@ -286,7 +286,7 @@ std::vector<uint8_t> RandomFactory::createRandomSeed(std::string_view name) {
 
     kmac.digest(std::back_inserter(output));
 
-    sdl2::log_info("Created seed for \"%s\": %s", name, to_hex(output));
+    sdl2::log_info("Created seed for \"{}\": {}", name, to_hex(output));
 
     return output;
 }
@@ -309,7 +309,7 @@ Random RandomFactory::create(std::string_view name) const {
 
     kmac.digest(std::back_inserter(buffer));
 
-    sdl2::log_info("Created state for \"%s\": %s (from %s)", name, to_hex(buffer), to_hex(seed_));
+    sdl2::log_info("Created state for \"{}\": {} (from {})", name, to_hex(buffer), to_hex(seed_));
 
     return Random::create(std::span<const uint8_t, Random::state_bytes>{buffer});
 }

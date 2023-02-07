@@ -140,7 +140,7 @@ int decode80(const unsigned char* image_in, unsigned char* image_out, unsigned c
             // 10cccccc (1)
             //
             const unsigned count = readp[0] & 0x3f;
-            // sdl2::log_info("Cmd 1, count: %d", count);
+            // sdl2::log_info("Cmd 1, count: {}", count);
             megacounta += count;
             if (!count) {
                 break;

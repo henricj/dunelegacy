@@ -25,7 +25,7 @@ void INIMap::checkFeatures() const {
 
     for (const auto& key : inifile_->keys("FEATURES")) {
         if (key.getBoolValue(true)) {
-            logError(inifile_->getLineNumber("FEATURES", key.getKeyName()), "Unsupported feature \"%s\"!",
+            logError(inifile_->getLineNumber("FEATURES", key.getKeyName()), "Unsupported feature \"{}\"!",
                      key.getKeyName());
             return;
         }

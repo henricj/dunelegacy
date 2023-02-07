@@ -509,7 +509,7 @@ void MapChoice::loadINI() {
 
                 if (strAttackRegion.size() < 4) {
                     THROW(std::runtime_error,
-                          "File '%s' contains invalid value for key [%s]/%s; it has to consist of 4 numbers!", filename,
+                          "File '{}' contains invalid value for key [{}]/{}; it has to consist of 4 numbers!", filename,
                           strSection, strKey);
                 }
 

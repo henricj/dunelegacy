@@ -35,11 +35,11 @@ XMIPlayer::XMIPlayer()
 
 #if SDL_VERSIONNUM(SDL_MIXER_MAJOR_VERSION, SDL_MIXER_MINOR_VERSION, SDL_MIXER_PATCHLEVEL) >= SDL_VERSIONNUM(2, 0, 2)
     if ((Mix_Init(MIX_INIT_MID) & MIX_INIT_MID) == 0) {
-        sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
+        sdl2::log_info("XMIPlayer: Failed to init required midi support: {}", SDL_GetError());
     }
 #else
     if ((Mix_Init(MIX_INIT_FLUIDSYNTH) & MIX_INIT_FLUIDSYNTH) == 0) {
-        sdl2::log_info("XMIPlayer: Failed to init required midi support: %s", SDL_GetError());
+        sdl2::log_info("XMIPlayer: Failed to init required midi support: {}", SDL_GetError());
     }
 #endif
 }
@@ -313,7 +313,7 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
             const auto event_list = myXMIDI.GetEventList(musicNum);
 
             if (nullptr == event_list) {
-                sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
+                sdl2::log_info("XMIPlayer: Playing music failed: {}", SDL_GetError());
                 return;
             }
 
@@ -333,13 +333,13 @@ void XMIPlayer::changeMusic(MUSICTYPE musicType) {
             music = sdl2::mix_music_ptr{Mix_LoadMUSType_RW(midi_rwops.get(), MUS_MID, 0)};
             if (music != nullptr) {
                 if (Mix_PlayMusic(music.get(), 1) == 1) {
-                    sdl2::log_info("XMIPlayer: Playing music failed: %s", SDL_GetError());
+                    sdl2::log_info("XMIPlayer: Playing music failed: {}", SDL_GetError());
                 } else {
                     Mix_VolumeMusic(musicVolume);
-                    sdl2::log_info("Now playing %s!", filename);
+                    sdl2::log_info("Now playing {}!", filename);
                 }
             } else {
-                sdl2::log_info("Unable to play %s: %s!", filename, Mix_GetError());
+                sdl2::log_info("Unable to play {}: {}!", filename, Mix_GetError());
             }
         }
     }

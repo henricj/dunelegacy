@@ -33,7 +33,7 @@ public:
     MapGenerator(int sizeX, int sizeY, const Random& random, int rockfields = ROCKFIELDS, int spicefields = SPICEFIELDS,
                  MirrorMode mirrorMode = MirrorModeNone)
         : map(sizeX, sizeY), randGen{random}, rockfields(rockfields), spicefields(spicefields) {
-        sdl2::log_info("Using random %s", to_hex(randGen.getState()));
+        sdl2::log_info("Using random {}", to_hex(randGen.getState()));
 
         mapMirror = MapMirror::createMapMirror(mirrorMode, sizeX, sizeY);
     }

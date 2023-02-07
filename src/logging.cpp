@@ -53,7 +53,7 @@ void log_git_info() {
 void log_build_info() {
     dune::log_compiler_info();
 
-    sdl2::log_info("   %d bit build, C++ standard %d", 8 * sizeof(void*), __cplusplus);
+    sdl2::log_info("   {} bit build, C++ standard {}", 8 * sizeof(void*), __cplusplus);
 
 #if defined(DEBUG)
     sdl2::log_info("   *** DEBUG build " __DATE__ " " __TIME__);
@@ -88,13 +88,13 @@ void log_build_info() {
     dune::log_sdk_info();
 
 #if defined(FMT_VERSION)
-    sdl2::log_info("fmt %d.%d.%d", FMT_VERSION / 10000, FMT_VERSION / 100 % 100, FMT_VERSION % 100);
+    sdl2::log_info("fmt {}.{}.{}", FMT_VERSION / 10000, FMT_VERSION / 100 % 100, FMT_VERSION % 100);
 #endif
 
-    sdl2::log_info("lodepng %s", LODEPNG_VERSION_STRING);
+    sdl2::log_info("lodepng {}", LODEPNG_VERSION_STRING);
 
 #if defined(ENET_VERSION_MAJOR) && defined(ENET_VERSION_MINOR) && defined(ENET_VERSION_PATCH)
-    sdl2::log_info("enet %d.%d.%d", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
+    sdl2::log_info("enet {}.{}.{}", ENET_VERSION_MAJOR, ENET_VERSION_MINOR, ENET_VERSION_PATCH);
 #endif
 }
 
@@ -136,7 +136,7 @@ void logging_configure(bool capture_output) {
         log_capture_output(logfilePath);
     }
 
-    sdl2::log_info("Starting Dune Legacy %s on %s", VERSION, SDL_GetPlatform());
+    sdl2::log_info("Starting Dune Legacy {} on {}", VERSION, SDL_GetPlatform());
 
     log_computer_info();
 

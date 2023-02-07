@@ -155,7 +155,7 @@ sdl2::surface_ptr LoadPNG_RW(SDL_RWops* RWop) {
 
         return pic;
     } catch (std::exception& e) {
-        sdl2::log_info("%s", e.what());
+        sdl2::log_info("{}", e.what());
 
         return nullptr;
     }
@@ -186,7 +186,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
         const auto error = lodepng_encode32(&ppngFile, &pngFileSize, static_cast<const unsigned char*>(surface->pixels),
                                             width, height);
         if (error != 0) {
-            sdl2::log_info("%s", lodepng_error_text(error));
+            sdl2::log_info("{}", lodepng_error_text(error));
             free(ppngFile);
             return -1;
         }
@@ -195,7 +195,7 @@ int SavePNG_RW(SDL_Surface* surface, SDL_RWops* RWop) {
     const lodepng_ptr ppngFile_ptr{ppngFile};
 
     if (SDL_RWwrite(RWop, ppngFile_ptr.get(), 1, pngFileSize) != pngFileSize) {
-        sdl2::log_info("%s", SDL_GetError());
+        sdl2::log_info("{}", SDL_GetError());
         return -1;
     }
 
@@ -244,9 +244,9 @@ std::tuple<bool, std::optional<std::filesystem::path>> SaveScreenshot() {
         const auto saved_ok = 0 == SavePNG(pCurrentScreen.get(), path);
 
         if (saved_ok)
-            sdl2::log_info("Saving screenshot to %s", reinterpret_cast<const char*>(path.u8string().c_str()));
+            sdl2::log_info("Saving screenshot to {}", path.string());
         else
-            sdl2::log_warn("Saving screenshot to %s failed", reinterpret_cast<const char*>(path.u8string().c_str()));
+            sdl2::log_warn("Saving screenshot to {} failed", path.string());
 
         return {saved_ok, path};
     }

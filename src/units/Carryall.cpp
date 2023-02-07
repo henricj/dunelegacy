@@ -227,7 +227,7 @@ void Carryall::deployUnit(const GameContext& context, uint32_t unitID) {
     if (auto* const tile = context.map.tryGetTile(location_.x, location_.y))
         deployUnit(context, tile, pUnit);
     else
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location %d, %d", location_.x,
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Carryall deploy failed for location {}, {}", location_.x,
                         location_.y);
 
     post_deployUnits();

@@ -77,7 +77,7 @@ void StructureBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer
         dune::globals::structureList.remove(this);
         owner_->decrementStructures(itemID_, location_);
     } catch (std::exception& e) {
-        sdl2::log_info("StructureBase::cleanup(): %s", e.what());
+        sdl2::log_info("StructureBase::cleanup(): {}", e.what());
     }
 
     parent::cleanup(context, humanPlayer);

@@ -116,7 +116,7 @@ void UnitBase::cleanup(const GameContext& context, HumanPlayer* humanPlayer) {
 
         dune::globals::unitList.remove(this);
     } catch (std::exception& e) {
-        sdl2::log_info("UnitBase::cleanup(): %s", e.what());
+        sdl2::log_info("UnitBase::cleanup(): {}", e.what());
     }
 
     parent::cleanup(context, humanPlayer);

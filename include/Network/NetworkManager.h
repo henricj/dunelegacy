@@ -167,7 +167,7 @@ public:
 
 private:
     template<typename... Args>
-    void debugNetwork(std::string_view format, Args&&... args) {
+    void debugNetwork(fmt::format_string<Args...> format, Args&&... args) {
         sdl2::log_info(format, std::forward<Args>(args)...);
     }
 

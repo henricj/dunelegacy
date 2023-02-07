@@ -71,7 +71,7 @@ void GUIStyle::setLogicalSize(SDL_Renderer* renderer, int physical_width, int ph
 
     SDL_RenderSetLogicalSize(renderer, w, h);
 
-    sdl2::log_info("Setting logical size %dx%d (%dx%d) with scale %f", w, h, physical_width, physical_height, scale);
+    sdl2::log_info("Setting logical size {}x{} ({}x{}) with scale {}", w, h, physical_width, physical_height, scale);
 }
 
 sdl2::surface_ptr

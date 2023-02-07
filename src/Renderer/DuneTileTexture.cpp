@@ -41,7 +41,7 @@ void DuneTileTexture::draw(SDL_Renderer* renderer, float x, float y, int column,
     const SDL_FRect dst{x, y, tile_width_, tile_height_};
 
     if (SDL_RenderCopyF(renderer, texture_, &src, &dst))
-        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyF failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyF failed: {}", SDL_GetError());
 }
 
 void DuneTileTexture::draw(SDL_Renderer* renderer, float x, float y, double angle, int column, int row) const noexcept {
@@ -49,5 +49,5 @@ void DuneTileTexture::draw(SDL_Renderer* renderer, float x, float y, double angl
     const SDL_FRect dst{x, y, tile_width_, tile_height_};
 
     if (SDL_RenderCopyExF(renderer, texture_, &src, &dst, angle, nullptr, SDL_RendererFlip::SDL_FLIP_NONE))
-        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyExF failed: %s", SDL_GetError());
+        sdl2::log_error("DuneTileTexture::draw() SDL_RenderCopyExF failed: {}", SDL_GetError());
 }

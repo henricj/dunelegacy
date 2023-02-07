@@ -28,15 +28,15 @@ void log_clang() {
 #elif defined(__GNUC_PATCHLEVEL__)
 void log_gcc() {
 #    ifdef __MINGW32__
-    sdl2::log_info("Compiler: MinGW %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    sdl2::log_info("Compiler: MinGW {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #    else
-    sdl2::log_info("Compiler: GCC %d.%d.%d", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    sdl2::log_info("Compiler: GCC {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #    endif
 }
 #elif defined(_MSC_VER)
 void log_msvc() {
 #    if defined(_MSC_FULL_VER)
-    sdl2::log_info("Compiler: MSVC %d.%d.%d.%d", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000, _MSC_BUILD);
+    sdl2::log_info("Compiler: MSVC {}.{}.{}.{}", _MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 100000, _MSC_BUILD);
 
     sdl2::log_info("   MSVC runtime: "
 #        if defined(_MT)

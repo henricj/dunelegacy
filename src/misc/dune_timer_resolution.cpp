@@ -30,7 +30,7 @@ void DuneTimerResolution::suspend() {
 
     const auto time_end_period = timeEndPeriod(target_ms_);
     if (TIMERR_NOERROR != time_end_period)
-        sdl2::log_error("Unable to cleanup multimedia timer (%d)", time_end_period);
+        sdl2::log_error("Unable to cleanup multimedia timer ({})", time_end_period);
 
     active_ = false;
 }

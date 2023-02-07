@@ -138,7 +138,7 @@ void log_windows_version() {
             if (RtlGetVersion) {
                 RTL_OSVERSIONINFOEXW os_version{sizeof(os_version)};
                 if (NT_SUCCESS(RtlGetVersion(&os_version))) {
-                    sdl2::log_info("System: %s (%d.%d.%d)", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
+                    sdl2::log_info("System: {} ({}.{}.{})", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
                                    os_version.dwBuildNumber);
                     return;
                 }
@@ -150,7 +150,7 @@ void log_windows_version() {
 	{ // Scope
         OSVERSIONINFOEX os_version{sizeof(OSVERSIONINFOEX)};
         if (GetVersionExA(reinterpret_cast<OSVERSIONINFO*>(&os_version))) {
-            sdl2::log_info("System %s (%d.%d.%d)", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
+            sdl2::log_info("System {} ({}.{}.{})", name, os_version.dwMajorVersion, os_version.dwMinorVersion,
                            os_version.dwBuildNumber);
             return;
         }
@@ -158,7 +158,7 @@ void log_windows_version() {
 
 #endif // 0
 
-    sdl2::log_info("System %s", name);
+    sdl2::log_info("System {}", name);
 }
 
 } // namespace
@@ -173,7 +173,7 @@ void log_computer_info() {
         SYSTEM_INFO system_info;
         GetNativeSystemInfo(&system_info);
 
-        sdl2::log_info("       %d core %s", system_info.dwNumberOfProcessors,
+        sdl2::log_info("       {} core {}", system_info.dwNumberOfProcessors,
                        get_processor_type(system_info.wProcessorArchitecture));
     }
 
@@ -183,7 +183,7 @@ void log_computer_info() {
 
         const auto free_GIB  = static_cast<double>(memory_status.ullAvailPhys) * scale_GiB;
         const auto total_GiB = static_cast<double>(memory_status.ullTotalPhys) * scale_GiB;
-        sdl2::log_info("       %.1f GiB free of %.1f GiB total memory", free_GIB, total_GiB);
+        sdl2::log_info("       {:.1f} GiB free of {:.1f} GiB total memory", free_GIB, total_GiB);
     }
 
     { // Scope
@@ -201,7 +201,7 @@ void log_process_info() {
         const auto working_set_MiB     = pmc.WorkingSetSize * scale_MiB;
         const auto working_set_max_MiB = pmc.PeakWorkingSetSize * scale_MiB;
 
-        sdl2::log_info("Process: working set %.f MiB of %.f MiB maximum", working_set_MiB, working_set_max_MiB);
+        sdl2::log_info("Process: working set {} MiB of {} MiB maximum", working_set_MiB, working_set_max_MiB);
     } else
         sdl2::log_info("Process: working set unknown");
 
@@ -213,20 +213,20 @@ void log_process_info() {
         const auto user_duration   = convert_to_file_time_duration(user_time);
         const auto kernel_duration = convert_to_file_time_duration(kernel_time);
 
-        sdl2::log_info("        cpu time %s user %s kernel", format_duration(user_duration),
+        sdl2::log_info("        cpu time {} user {} kernel", format_duration(user_duration),
                        format_duration(kernel_duration));
     }
 }
 
 void log_sdk_info() {
 #ifdef DUNE_WINDOWS_SDK_VERSION
-    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " (%d.%d.%d.%d)", OSVER(WDK_NTDDI_VERSION) >> 24,
+    sdl2::log_info("   Windows SDK " DUNE_WINDOWS_SDK_VERSION " ({}.{}.{}.{})", OSVER(WDK_NTDDI_VERSION) >> 24,
                    0xff & OSVER(WDK_NTDDI_VERSION) >> 16, SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
 #else
-    sdl2::log_info("   Windows SDK %d.%d.%d.%d", OSVER(WDK_NTDDI_VERSION) >> 24,
+    sdl2::log_info("   Windows SDK {}.{}.{}.{}", OSVER(WDK_NTDDI_VERSION) >> 24,
                    0xff & (OSVER(WDK_NTDDI_VERSION) >> 16), SPVER(WDK_NTDDI_VERSION), SUBVER(WDK_NTDDI_VERSION));
 #endif
-    sdl2::log_info("   Minimum Windows %d.%d.%d.%d", OSVER(NTDDI_VERSION) >> 24, 0xff & OSVER(NTDDI_VERSION) >> 16,
+    sdl2::log_info("   Minimum Windows {}.{}.{}.{}", OSVER(NTDDI_VERSION) >> 24, 0xff & OSVER(NTDDI_VERSION) >> 16,
                    SPVER(NTDDI_VERSION), SUBVER(NTDDI_VERSION));
 }
 

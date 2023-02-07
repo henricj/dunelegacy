@@ -403,8 +403,7 @@ void OptionsMenu::saveConfiguration2File() {
     myINIFile.setStringValue("Network", "MetaServer", settings.network.metaServer);
 
     if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                        reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
+        sdl2::log_error("Unable to save configuration file {}", getConfigFilepath().string());
     }
 }
 

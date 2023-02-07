@@ -64,7 +64,7 @@ void CommandManager::load(InputStream& stream) {
             addCommand(Command{stream}, cycle);
         }
     } catch (InputStream::exception& e) {
-        sdl2::log_info("Warning: Unexpected input stream exception in CommandManager::load: %s", e.what());
+        sdl2::log_info("Warning: Unexpected input stream exception in CommandManager::load: {}", e.what());
     }
 }
 
@@ -109,7 +109,7 @@ void CommandManager::addCommandList(const std::string& playername, const Command
 
         for (const auto& command : commandListEntry.commands) {
             if (command.getPlayerID() != pPlayer->getPlayerID()) {
-                sdl2::log_info("Warning: Player '%s' send a command which he is not allowed to give!", playername);
+                sdl2::log_info("Warning: Player '{}' send a command which he is not allowed to give!", playername);
             }
 
             addCommand(command, commandListEntry.cycle);

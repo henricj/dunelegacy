@@ -167,7 +167,7 @@ void setVideoMode(int displayIndex) {
         video.height = video.physicalHeight;
     }
 
-    sdl2::log_info("Creating %dx%d for %dx%d window with flags %08x", video.physicalWidth, video.physicalHeight,
+    sdl2::log_info("Creating {}x{} for {}x{} window with flags {:#08x}", video.physicalWidth, video.physicalHeight,
                    video.width, video.height, videoFlags);
 
     sdl2::window_ptr window{SDL_CreateWindow("Dune Legacy", SDL_WINDOWPOS_CENTERED_DISPLAY(displayIndex),
@@ -182,7 +182,7 @@ void setVideoMode(int displayIndex) {
     { // Scope
         const auto screen_format = SDL_GetWindowPixelFormat(window.get());
 
-        sdl2::log_info("The window is using pixel format %s and the default format is %s",
+        sdl2::log_info("The window is using pixel format {} and the default format is {}",
                        SDL_GetPixelFormatName(screen_format), SDL_GetPixelFormatName(SCREEN_FORMAT));
     }
 
@@ -194,7 +194,7 @@ void setVideoMode(int displayIndex) {
         for (auto i = 0; i < n; ++i) {
             SDL_RendererInfo info;
             if (0 == SDL_GetRenderDriverInfo(i, &info))
-                sdl2::log_info("   %s", info.name);
+                sdl2::log_info("   {}", info.name);
         }
     }
 
@@ -217,7 +217,7 @@ void setVideoMode(int displayIndex) {
 
     // Scope
     if (const auto* const render_driver_hint = SDL_GetHint(SDL_HINT_RENDER_DRIVER))
-        sdl2::log_info("   requested render driver: %s", render_driver_hint);
+        sdl2::log_info("   requested render driver: {}", render_driver_hint);
 
     sdl2::renderer_ptr renderer{
         SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE)};
@@ -240,7 +240,7 @@ void setVideoMode(int displayIndex) {
         } else {
             const auto* const error = SDL_GetError();
 
-            sdl2::log_error(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: %s", error);
+            sdl2::log_error(SDL_LOG_CATEGORY_RENDER, "Unable to get render info: {}", error);
         }
     }
 
@@ -251,7 +251,7 @@ void setVideoMode(int displayIndex) {
     int screen_access      = 0;
     if (0 == SDL_QueryTexture(screenTexture.get(), &screen_format, &screen_access, nullptr, nullptr)) {
         if (screen_format != SCREEN_FORMAT)
-            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: %s", SDL_GetPixelFormatName(screen_format));
+            sdl2::log_warn(SDL_LOG_CATEGORY_RENDER, "Actual screen format: {}", SDL_GetPixelFormatName(screen_format));
     }
 
     dune::globals::window        = std::move(window);
@@ -267,20 +267,20 @@ void showMissingFilesMessageBox(const CaseInsensitiveFilesystemCache& filesystem
 
     for (const auto& missingFile : PakFileConfiguration::getMissingFiles(filesystemCache)) {
         instruction += fmt::sprintf(" %s\n", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
-        sdl2::log_error("missing required %s", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
+        sdl2::log_error("missing required {}", reinterpret_cast<const char*>(missingFile.u8string().c_str()));
     }
 
     instruction += "\nPut them in one of the following directories and restart Dune Legacy:\n";
     for (const auto& searchPath : FileManager::getSearchPath()) {
         instruction += fmt::sprintf(" %s\n", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
-        sdl2::log_info("search path %s", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
+        sdl2::log_info("search path {}", reinterpret_cast<const char*>(searchPath.u8string().c_str()));
     }
 
     instruction += "\nYou may want to add GERMAN.PAK or FRENCH.PAK for playing in these languages.";
 
     if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy", instruction.c_str(), nullptr)) {
         const auto error = SDL_GetError();
-        sdl2::log_error("message box failed: %s", error);
+        sdl2::log_error("message box failed: {}", error);
 
         fprintf(stderr, "%s\n", instruction.c_str());
     }
@@ -315,7 +315,7 @@ std::string getUserLanguage() {
     }
 #endif
 
-    sdl2::log_info("User locale is '%s'", pLang);
+    sdl2::log_info("User locale is '{}'", pLang);
 
     if (strlen(pLang) < 2) {
         return "";
@@ -416,7 +416,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         settings.general.language = "en";
         myINIFile.setStringValue("General", "Language", settings.general.language);
         if (!myINIFile.saveChangesTo(config_filepath)) {
-            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file {}",
                             reinterpret_cast<const char*>(config_filepath.u8string().c_str()));
         }
 
@@ -461,7 +461,7 @@ bool configure_game(int argc, char* argv[], bool bFirstInit) {
         myINIFile.setIntValue("Video", "Preferred Zoom Level", 1);
 
         if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
+            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file {}",
                             reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
         }
     }
@@ -599,14 +599,14 @@ bool run_game(int argc, char* argv[]) {
                     // THROW(sdl_error, "Couldn't set {} Hz 16-bit audio. Reason: {}!", AUDIO_FREQUENCY,
                     // SDL_GetError());
                 } else {
-                    sdl2::log_info("%d audio channels were allocated.", Mix_AllocateChannels(28));
+                    sdl2::log_info("{} audio channels were allocated.", Mix_AllocateChannels(28));
 
                     SDL_version compiledVersion{};
                     SDL_MIXER_VERSION(&compiledVersion)
                     const auto* const linkedVersion = Mix_Linked_Version();
-                    sdl2::log_info("SDL Mixer runtime v%d.%d.%d", linkedVersion->major, linkedVersion->minor,
+                    sdl2::log_info("SDL Mixer runtime v{}.{}.{}", linkedVersion->major, linkedVersion->minor,
                                    linkedVersion->patch);
-                    sdl2::log_info("SDL Mixer compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
+                    sdl2::log_info("SDL Mixer compile-time v{}.{}.{}", compiledVersion.major, compiledVersion.minor,
                                    compiledVersion.patch);
                 }
             }
@@ -630,7 +630,7 @@ bool run_game(int argc, char* argv[]) {
 
             SDL_RendererInfo rendererInfo;
             SDL_GetRendererInfo(renderer, &rendererInfo);
-            sdl2::log_info("Renderer: %s (max texture size: %dx%d)", rendererInfo.name, rendererInfo.max_texture_width,
+            sdl2::log_info("Renderer: {} (max texture size: {}x{})", rendererInfo.name, rendererInfo.max_texture_width,
                            rendererInfo.max_texture_height);
 
             static constexpr auto video_default_typeface = "Philosopher-Bold.ttf";
@@ -639,7 +639,7 @@ bool run_game(int argc, char* argv[]) {
                                     ? video_default_typeface
                                     : settings.video.typeface;
 
-            sdl2::log_info("Loading fonts from typeface %s...", typeface);
+            sdl2::log_info("Loading fonts from typeface {}...", typeface);
             GlobalCleanup font_cleanup{dune::globals::pFontManager};
             dune::globals::pFontManager = std::make_unique<FontManager>(typeface);
 
@@ -677,7 +677,7 @@ bool run_game(int argc, char* argv[]) {
             }
             const auto elapsed = std::chrono::steady_clock::now() - start;
 
-            sdl2::log_info("GFXManager time: %f", std::chrono::duration<double>(elapsed).count());
+            sdl2::log_info("GFXManager time: {}", std::chrono::duration<double>(elapsed).count());
 
             const auto* const pGFXManager = dune::globals::pGFXManager.get();
 
@@ -688,7 +688,7 @@ bool run_game(int argc, char* argv[]) {
             try {
                 auto sfxResult             = sfxManagerFut.get();
                 dune::globals::pSFXManager = std::move(sfxResult.first);
-                sdl2::log_info("SFXManager time: %f", std::chrono::duration<double>(sfxResult.second).count());
+                sdl2::log_info("SFXManager time: {}", std::chrono::duration<double>(sfxResult.second).count());
             } catch (const std::exception& e) {
                 dune::globals::pSFXManager.reset();
                 const auto message = fmt::sprintf("The sound manager was unable to initialize: '%s' was "
@@ -770,7 +770,7 @@ struct DuneHeapDebug final {
         // tmpDbgFlag |= _CRTDBG_CHECK_EVERY_1024_DF;
         _CrtSetDbgFlag(tmpDbgFlag);
 
-        sdl2::log_info("Enabling CRT heap debugging (%x)", tmpDbgFlag);
+        sdl2::log_info("Enabling CRT heap debugging ({})", tmpDbgFlag);
     }
     ~DuneHeapDebug() { _CrtDumpMemoryLeaks(); }
 };
@@ -862,8 +862,8 @@ int main(int argc, char* argv[]) {
         SDL_version linkedVersion;
         SDL_VERSION(&compiledVersion)
         SDL_GetVersion(&linkedVersion);
-        sdl2::log_info("SDL runtime v%d.%d.%d", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
-        sdl2::log_info("SDL compile-time v%d.%d.%d", compiledVersion.major, compiledVersion.minor,
+        sdl2::log_info("SDL runtime v{}.{}.{}", linkedVersion.major, linkedVersion.minor, linkedVersion.patch);
+        sdl2::log_info("SDL compile-time v{}.{}.{}", compiledVersion.major, compiledVersion.minor,
                        compiledVersion.patch);
 
         TTF_handle ttf_handle;
@@ -871,9 +871,9 @@ int main(int argc, char* argv[]) {
         SDL_version TTFCompiledVersion{};
         SDL_TTF_VERSION(&TTFCompiledVersion);
         const SDL_version* pTTFLinkedVersion = TTF_Linked_Version();
-        sdl2::log_info("SDL2_ttf runtime v%d.%d.%d", pTTFLinkedVersion->major, pTTFLinkedVersion->minor,
+        sdl2::log_info("SDL2_ttf runtime v{}.{}.{}", pTTFLinkedVersion->major, pTTFLinkedVersion->minor,
                        pTTFLinkedVersion->patch);
-        sdl2::log_info("SDL2_ttf compile-time v%d.%d.%d", TTFCompiledVersion.major, TTFCompiledVersion.minor,
+        sdl2::log_info("SDL2_ttf compile-time v{}.{}.{}", TTFCompiledVersion.major, TTFCompiledVersion.minor,
                        TTFCompiledVersion.patch);
 
         // Look out for windows DPI messages.
@@ -894,7 +894,7 @@ int main(int argc, char* argv[]) {
         const auto message = fmt::format("An unhandled exception of type \'{}\' was thrown:\n\n"
                                          "{}\n\nDune Legacy will now be terminated!",
                                          demangleSymbol(typeid(e).name()), e.what());
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: %s", message);
+        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Dune Legacy: Unrecoverable error: {}", message);
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Dune Legacy: Unrecoverable error", message.c_str(), nullptr);
 
         return EXIT_FAILURE;

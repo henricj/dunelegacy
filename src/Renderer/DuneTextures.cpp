@@ -84,15 +84,15 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
         return {false, rectpack2D::rect_wh{}};
     }
 
-    sdl2::log_info("Packed in %dx%d", result_size.w, result_size.h);
+    sdl2::log_info("Packed in {}x{}", result_size.w, result_size.h);
 
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
-    sdl2::log_info(fmt::format("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
-                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h)));
+    sdl2::log_info("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
+                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h));
 
     // for(const auto& r : rectangles) {
-    //    sdl2::log_info(fmt::format("   {}x{} at {}x{}", r.w, r.h, r.x, r.y));
+    //    sdl2::log_info("   {}x{} at {}x{}", r.w, r.h, r.x, r.y);
     //}
 
 #if _DEBUG
@@ -332,12 +332,12 @@ public:
                 const sdl2::surface_ptr copy{SDL_ConvertSurfaceFormat(surface, format, 0)};
 
                 if (!copy) {
-                    sdl2::log_warn("Unable to copy surface: %s", SDL_GetError());
+                    sdl2::log_warn("Unable to copy surface: {}", SDL_GetError());
                     return false;
                 }
 
                 if (!drawSurface(copy.get(), nullptr, atlas_surface.get(), &atlas_rect)) {
-                    sdl2::log_warn("Unable to draw object %u for house %d");
+                    sdl2::log_warn("Unable to draw object");
                     return false;
                 }
             }
@@ -676,7 +676,7 @@ public:
             auto* surface = surfaceLoader->getTinyPictureSurface(id);
 
             if (!surface) {
-                sdl2::log_warn("No surface available for tiny picture %d", id);
+                sdl2::log_warn("No surface available for tiny picture {}", id);
                 continue;
             }
 
@@ -692,7 +692,7 @@ public:
             auto* surface = surfaceLoader->getSmallDetailSurface(id);
 
             if (!surface) {
-                sdl2::log_warn("No surface available for small detail %d", id);
+                sdl2::log_warn("No surface available for small detail {}", id);
                 continue;
             }
 
@@ -711,7 +711,7 @@ public:
             auto* surface = generated_.at(id).get();
 
             if (!surface) {
-                sdl2::log_warn("No surface available for generated picture %d", id);
+                sdl2::log_warn("No surface available for generated picture {}", id);
                 continue;
             }
 

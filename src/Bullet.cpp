@@ -310,7 +310,7 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
 
             if (SDL_RenderReadPixels(renderer, &scaled_source, screen_copy->format->format, lock.pixels(),
                                      lock.pitch())) {
-                sdl2::log_error("Bullet render pixels failed: %s!", SDL_GetError());
+                sdl2::log_error("Bullet render pixels failed: {}!", SDL_GetError());
             }
         }
 
@@ -322,17 +322,17 @@ void Bullet::blitToScreen(uint32_t cycleCount) const {
 
         SDL_SetSurfaceBlendMode(shimmerMaskSurface, SDL_BlendMode::SDL_BLENDMODE_NONE);
         if (0 != SDL_BlitSurface(shimmerMaskSurface, nullptr, shimmer_work.get(), nullptr))
-            sdl2::log_error("Bullet draw failed to copy surface: %s!", SDL_GetError());
+            sdl2::log_error("Bullet draw failed to copy surface: {}!", SDL_GetError());
         if (0 != SDL_SetSurfaceBlendMode(screen_copy.get(), SDL_BlendMode::SDL_BLENDMODE_ADD))
-            sdl2::log_error("Bullet draw failed to set surface blend mode: %s!", SDL_GetError());
+            sdl2::log_error("Bullet draw failed to set surface blend mode: {}!", SDL_GetError());
         if (0 != SDL_BlitSurface(screen_copy.get(), nullptr, shimmer_work.get(), nullptr))
-            sdl2::log_error("Bullet draw failed copy surface: %s!", SDL_GetError());
+            sdl2::log_error("Bullet draw failed copy surface: {}!", SDL_GetError());
 
         { // Scope
             const sdl2::surface_lock src{shimmer_work.get()};
 
             if (0 != SDL_UpdateTexture(shimmerTex, nullptr, src.pixels(), src.pitch()))
-                sdl2::log_error("Bullet draw failed: %s!", SDL_GetError());
+                sdl2::log_error("Bullet draw failed: {}!", SDL_GetError());
         }
 
 #if 0

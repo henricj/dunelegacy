@@ -97,13 +97,13 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
         uint32_t magicNum = memStream.readUint32();
         if (magicNum != SAVEMAGIC) {
-            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC,
+            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number {:#08X}, but got {:#08X}!", SAVEMAGIC,
                            magicNum);
         }
 
         uint32_t savegameVersion = memStream.readUint32();
         if (savegameVersion != SAVEGAMEVERSION) {
-            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected savegame version %d, but got %d!",
+            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected savegame version {}, but got {}!",
                            SAVEGAMEVERSION, savegameVersion);
         }
 
@@ -447,7 +447,7 @@ CustomGamePlayers::~CustomGamePlayers() {
         try {
             network_manager->stopServer();
         } catch (std::exception& e) {
-            sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): %s", e.what());
+            sdl2::log_info("CustomGamePlayers::~CustomGamePlayers(): {}", e.what());
         }
     }
 }

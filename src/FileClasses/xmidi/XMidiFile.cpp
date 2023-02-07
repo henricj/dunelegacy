@@ -1301,7 +1301,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
 
             // Not an XMID
             if (memcmp(buf, "CAT ", 4) != 0) {
-                sdl2::log_error("Not a recognised XMID (%c%c%c%c) should be (CAT )", buf[0], buf[1], buf[2], buf[3]);
+                sdl2::log_error("Not a recognised XMID ({}{}{}{}) should be (CAT )", buf[0], buf[1], buf[2], buf[3]);
                 return 0;
             }
 
@@ -1314,7 +1314,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
 
             // Not an XMID
             if (memcmp(buf, "XMID", 4) != 0) {
-                sdl2::log_error("Not a recognised XMID (%c%c%c%c) should be (XMID)", buf[0], buf[1], buf[2], buf[3]);
+                sdl2::log_error("Not a recognised XMID ({}{}{}{}) should be (XMID)", buf[0], buf[1], buf[2], buf[3]);
                 return 0;
             }
         }
@@ -1324,7 +1324,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
         int count = ExtractTracksFromXmi(source);
 
         if (count != num_tracks) {
-            sdl2::log_error("Error: unable to extract all (%d) tracks specified from XMidiFile. Only (%d)", num_tracks,
+            sdl2::log_error("Error: unable to extract all ({}) tracks specified from XMidiFile. Only ({})", num_tracks,
                             count);
             DestroyEventList();
             return 0;
@@ -1356,7 +1356,7 @@ int XMidiFile::ExtractTracks(IDataSource* source) {
         const int count = ExtractTracksFromMid(source, ppqn, actual_num, type == 1);
 
         if (count != num_tracks) {
-            sdl2::log_error("Error: unable to extract all (%d) tracks specified from MIDI. Only (%d)", num_tracks,
+            sdl2::log_error("Error: unable to extract all ({}) tracks specified from MIDI. Only ({})", num_tracks,
                             count);
             DestroyEventList();
             return 0;

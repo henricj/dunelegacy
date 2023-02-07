@@ -163,13 +163,13 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
     auto w = 0;
     auto h = 0;
     if (SDL_GetRendererOutputSize(renderer, &w, &h)) {
-        sdl2::log_warn("Warning: renderReadSurface() output size failed: %s", SDL_GetError());
+        sdl2::log_warn("Warning: renderReadSurface() output size failed: {}", SDL_GetError());
         return nullptr;
     }
 
     sdl2::surface_ptr pScreen{SDL_CreateRGBSurface(0, w, h, SCREEN_BPP, RMASK, GMASK, BMASK, AMASK)};
     if (pScreen == nullptr) {
-        sdl2::log_warn("Warning: renderReadSurface() create surface failed: %s", SDL_GetError());
+        sdl2::log_warn("Warning: renderReadSurface() create surface failed: {}", SDL_GetError());
         return nullptr;
     }
 
@@ -177,7 +177,7 @@ sdl2::surface_ptr renderReadSurface(SDL_Renderer* renderer) {
         sdl2::surface_lock lock{pScreen.get()};
 
         if (0 != SDL_RenderReadPixels(renderer, nullptr, pScreen->format->format, pScreen->pixels, pScreen->pitch)) {
-            sdl2::log_warn("Warning: renderReadSurface() copy failed: %s", SDL_GetError());
+            sdl2::log_warn("Warning: renderReadSurface() copy failed: {}", SDL_GetError());
             return nullptr;
         }
     }
@@ -266,7 +266,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     }
 
     if (inSurface->w > 2048 || inSurface->h > 2048) {
-        sdl2::log_info("Warning: Size of texture created in convertSurfaceToTexture is %dx%d; may exceed hardware "
+        sdl2::log_info("Warning: Size of texture created in convertSurfaceToTexture is {}x{}; may exceed hardware "
                        "limits on older GPUs!",
                        inSurface->w, inSurface->h);
     }
@@ -555,7 +555,7 @@ bool drawSurface(SDL_Surface* src, const SDL_Rect* srcrect, SDL_Surface* dst, SD
     const auto ret = SDL_BlitSurface(src, srcrect, dst, dstrect);
 
     if (ret)
-        sdl2::log_warn("drawSurface was unable to blit surface: %s", SDL_GetError());
+        sdl2::log_warn("drawSurface was unable to blit surface: {}", SDL_GetError());
 
     SDL_SetSurfaceBlendMode(src, oldBlendMode);
 

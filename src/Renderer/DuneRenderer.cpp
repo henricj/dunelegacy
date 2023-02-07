@@ -40,26 +40,26 @@ void DuneDrawSelectionBox(SDL_Renderer* renderer, float x, float y, float w, flo
         // top left bit
         const auto ret1 = DuneDrawLines(renderer, {{x + fi, y + offset}, {x + fi, y + fi}, {x + offset, y + fi}});
         if (0 != ret1)
-            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
+            sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
 
         // top right bit
         const auto ret2 = DuneDrawLines(
             renderer, {{x + w - 1 - fi, y + offset}, {x + w - 1 - fi, y + fi}, {x + w - 1 - offset, y + fi}});
         if (0 != ret2)
-            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
+            sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
 
         // bottom left bit
         const auto ret3 =
             DuneDrawLines(renderer, {{x + fi, y + h - 1 - offset}, {x + fi, y + h - fi}, {x + offset, y + h - fi}});
         if (0 != ret3)
-            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
+            sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
 
         // bottom right bit
         const auto ret4 = DuneDrawLines(renderer, {{x + w - 1 - offset, y + h - 1 - fi},
                                                    {x + w - 1 - fi, y + h - 1 - fi},
                                                    {x + w - 1 - fi, y + h - 1 - offset}});
         if (0 != ret4)
-            sdl2::log_error("DuneDrawLines failed: %s", SDL_GetError());
+            sdl2::log_error("DuneDrawLines failed: {}", SDL_GetError());
     }
 }
 
@@ -142,11 +142,11 @@ void Dune_RenderCopy(SDL_Renderer* renderer, const DuneTexture* texture, const S
         const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
         if (0 != SDL_RenderCopy(renderer, texture->texture_, &offset, dstrect))
-            sdl2::log_error("RenderCopy failed: %s", SDL_GetError());
+            sdl2::log_error("RenderCopy failed: {}", SDL_GetError());
     } else {
         const auto src = texture->source_.as_sdl();
         if (0 != SDL_RenderCopy(renderer, texture->texture_, &src, dstrect))
-            sdl2::log_error("RenderCopy failed: %s", SDL_GetError());
+            sdl2::log_error("RenderCopy failed: {}", SDL_GetError());
     }
 }
 
@@ -165,11 +165,11 @@ void Dune_RenderCopyF(SDL_Renderer* renderer, const DuneTexture* texture, const 
         const SDL_Rect offset{texture->source_.x + srcrect->x, texture->source_.y + srcrect->y, srcrect->w, srcrect->h};
 
         if (0 != SDL_RenderCopyF(renderer, texture->texture_, &offset, dstrect))
-            sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
+            sdl2::log_error("RenderCopyF failed: {}", SDL_GetError());
     } else {
         const auto src = texture->source_.as_sdl();
         if (0 != SDL_RenderCopyF(renderer, texture->texture_, &src, dstrect))
-            sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
+            sdl2::log_error("RenderCopyF failed: {}", SDL_GetError());
     }
 }
 
@@ -182,7 +182,7 @@ void Dune_RenderCopy(SDL_Renderer* renderer, SDL_Texture* texture, int x, int y)
     const SDL_FRect dest{static_cast<float>(x), static_cast<float>(y), static_cast<float>(w), static_cast<float>(h)};
 
     if (0 != SDL_RenderCopyF(renderer, texture, nullptr, &dest))
-        sdl2::log_error("RenderCopyF failed: %s", SDL_GetError());
+        sdl2::log_error("RenderCopyF failed: {}", SDL_GetError());
 }
 
 #if _DEBUG
@@ -199,7 +199,7 @@ void DuneRendererImplementation::countRenderCopy(SDL_Texture* texture) {
 void Dune_RenderDump() {
     using namespace DuneRendererImplementation;
 
-    sdl2::log_info("present calls: %d, copy calls: %d, texture changes: %d", render_presents, render_copies,
+    sdl2::log_info("present calls: {}, copy calls: {}, texture changes: {}", render_presents, render_copies,
                    render_texture_changes);
 
     auto max_w = 0, max_h = 0;
@@ -211,7 +211,7 @@ void Dune_RenderDump() {
         if (SDL_QueryTexture(it.first, nullptr, nullptr, &w, &h))
             continue;
 
-        sdl2::log_info("texture %x of size %dx%d rendered %d times", reinterpret_cast<intptr_t>(it.first), w, h,
+        sdl2::log_info("texture {} of size {}x{} rendered {} times", reinterpret_cast<intptr_t>(it.first), w, h,
                        it.second);
 
         if (w > max_w)
@@ -224,7 +224,7 @@ void Dune_RenderDump() {
 
     const auto square = static_cast<int>(std::ceil(std::sqrt(pixels)));
 
-    sdl2::log_info("%ld textures max_w=%d max_h=%d pixels=%d (%dx%d)", render_textures.size(), max_w, max_h, pixels,
+    sdl2::log_info("{} textures max_w={} max_h={} pixels={} ({}x{})", render_textures.size(), max_w, max_h, pixels,
                    square, square);
 }
 

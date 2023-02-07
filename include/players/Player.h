@@ -321,14 +321,14 @@ template<typename... Args>
 void Player::logDebug(std::string_view fmt, Args&&... args) const {
 #ifdef DEBUG_AI
     const auto house = getHouseNameByNumber(pHouse->getHouseID());
-    sdl2::log_info("%s (%s):   %s", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
+    sdl2::log_info("{} ({}):   {}", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
 #endif
 }
 
 template<typename... Args>
 void Player::logWarn(std::string_view fmt, Args&&... args) const {
     const auto house = getHouseNameByNumber(pHouse->getHouseID());
-    sdl2::log_warn("%s (%s):   %s", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
+    sdl2::log_warn("{} ({}):   {}", playername, house, fmt::sprintf(fmt, std::forward<Args>(args)...));
 }
 
 #endif // PLAYER_H

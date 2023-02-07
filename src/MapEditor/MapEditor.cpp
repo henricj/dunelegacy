@@ -756,8 +756,7 @@ void MapEditor::saveMap(const std::filesystem::path& filepath) {
     }
 
     if (!loadedINIFile_->saveChangesTo(filepath, getMapVersion() < 2)) {
-        sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                        reinterpret_cast<const char*>(filepath.u8string().c_str()));
+        sdl2::log_error("Unable to save configuration file {}", filepath.string());
     }
 
     lastSaveName_          = filepath;
@@ -2080,14 +2079,14 @@ void MapEditor::saveMapshot() {
     const auto renderTarget =
         sdl2::texture_ptr{SDL_CreateTexture(renderer, SCREEN_FORMAT, SDL_TEXTUREACCESS_TARGET, sizeX, sizeY)};
     if (renderTarget == nullptr) {
-        sdl2::log_info("SDL_CreateTexture() failed: %s", SDL_GetError());
+        sdl2::log_info("SDL_CreateTexture() failed: {}", SDL_GetError());
         dune::globals::currentZoomlevel = oldCurrentZoomlevel;
         return;
     }
 
     auto* const oldRenderTarget = SDL_GetRenderTarget(renderer);
     if (SDL_SetRenderTarget(renderer, renderTarget.get()) != 0) {
-        sdl2::log_info("SDL_SetRenderTarget() failed: %s", SDL_GetError());
+        sdl2::log_info("SDL_SetRenderTarget() failed: {}", SDL_GetError());
         SDL_SetRenderTarget(renderer, oldRenderTarget);
         dune::globals::currentZoomlevel = oldCurrentZoomlevel;
         return;

@@ -239,7 +239,7 @@ void GameInterface::updateObjectInterface() {
 
         auto* pObject = game->getObjectManager().getObject(selected_object_id);
         if (!pObject) {
-            sdl2::log_error("The selected object %d cannot be found!", selected_object_id);
+            sdl2::log_error("The selected object {} cannot be found!", selected_object_id);
             game->clearSelectedList();
             return;
         }

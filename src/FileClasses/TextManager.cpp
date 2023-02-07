@@ -53,8 +53,8 @@ TextManager::TextManager(std::string_view language) {
     const auto language_file = languages.empty() ? std::filesystem::path{"English.en.po"} : languages.front();
 
     const auto language_path = locale_directory / language_file;
-    sdl2::log_info("Loading localization from '%s'...",
-                   reinterpret_cast<const char*>(language_path.u8string().c_str()));
+    sdl2::log_info("Loading localization from '{}'...",
+                   language_path.string());
     const auto rwops = openReadOnlyRWops(language_path.u8string());
     localizedString_ = loadPOFile(rwops.get(), reinterpret_cast<const char*>(language_file.u8string().c_str()));
 }

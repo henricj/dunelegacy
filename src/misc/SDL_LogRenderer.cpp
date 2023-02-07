@@ -94,7 +94,7 @@ namespace sdl2 {
 void SDL_LogRenderer(const SDL_RendererInfo* info) {
     std::array<char, 1024> text{};
 
-    sdl2::log_info("  Renderer %s:\n", info->name);
+    sdl2::log_info("  Renderer {}:\n", info->name);
 
     SDL_snprintfcat(text.data(), text.size(), "    Flags: {:#08X}", info->flags);
     SDL_snprintfcat(text.data(), text.size(), " (");
@@ -110,7 +110,7 @@ void SDL_LogRenderer(const SDL_RendererInfo* info) {
         }
     }
     SDL_snprintfcat(text.data(), text.size(), ")");
-    sdl2::log_info("%s\n", text.data());
+    sdl2::log_info("{}\n", text.data());
 
     text[0] = '\0';
     SDL_snprintfcat(text.data(), text.size(), "    Texture formats ({}): ", info->num_texture_formats);
@@ -120,10 +120,10 @@ void SDL_LogRenderer(const SDL_RendererInfo* info) {
         }
         SDLTest_PrintPixelFormat(text.data(), text.size(), info->texture_formats[i]);
     }
-    sdl2::log_info("%s\n", text.data());
+    sdl2::log_info("{}\n", text.data());
 
     if (info->max_texture_width || info->max_texture_height) {
-        sdl2::log_info("    Max Texture Size: %dx%d\n", info->max_texture_width, info->max_texture_height);
+        sdl2::log_info("    Max Texture Size: {}x{}\n", info->max_texture_width, info->max_texture_height);
     }
 }
 } // namespace sdl2

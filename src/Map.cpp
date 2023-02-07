@@ -125,7 +125,7 @@ void Map::createSandRegions() {
                                          }
                                      });
             }
-            sdl2::log_info("Generated Sand Region ID=%u with %u tiles in it.", region, numTilesInRegion);
+            sdl2::log_info("Generated Sand Region ID={} with {} tiles in it.", region, numTilesInRegion);
             numTilesInRegion = 0;
             region++;
         }

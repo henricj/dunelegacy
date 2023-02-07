@@ -1126,7 +1126,7 @@ void Game::serviceNetwork(bool& bWaitForNetwork) {
         const auto* const pPlayer = dynamic_cast<HumanPlayer*>(getPlayerByName(playername));
         if (pPlayer != nullptr) {
             if (pPlayer->nextExpectedCommandsCycle <= gameCycleCount_) {
-                // sdl2::log_info("Cycle %d: Waiting for player '%s' to send data for cycle %d...", GameCycleCount,
+                // sdl2::log_info("Cycle {}: Waiting for player '{}' to send data for cycle {}...", GameCycleCount,
                 // pPlayer->getPlayername(), pPlayer->nextExpectedCommandsCycle);
                 bWaitForNetwork = true;
                 break;
@@ -1162,7 +1162,7 @@ void Game::updateGame(const GameContext& context) {
     pInterface_->getRadarView().update();
     cmdManager_.executeCommands(context, gameCycleCount_);
 
-    // sdl2::log_info("cycle %d : %d", gameCycleCount, context.game.randomGen.getSeed());
+    // sdl2::log_info("cycle {} : {}", gameCycleCount, context.game.randomGen.getSeed());
 
 #ifdef TEST_SYNC
     // add every gamecycles one test sync command
@@ -1242,7 +1242,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
         }
     }
 
-    sdl2::log_info("Sizes: Tile %d UnitBase %d StructureBase %d Harvester %d ConstructionYard %d Palace %d",
+    sdl2::log_info("Sizes: Tile {} UnitBase {} StructureBase {} Harvester {} ConstructionYard {} Palace {}",
                    sizeof(Tile), sizeof(UnitBase), sizeof(StructureBase), sizeof(Harvester), sizeof(ConstructionYard),
                    sizeof(Palace));
 
@@ -1271,7 +1271,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
         if (!isOpen) {
             const std::error_code replay_error{errno, std::generic_category()};
 
-            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the default replay file: %s  Retrying...",
+            sdl2::log_error("Unable to open the default replay file: {}  Retrying...",
                             replay_error.message());
 
             auto& uiRandom = dune::globals::pGFXManager->random();
@@ -1287,8 +1287,8 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
 
                 const std::error_code replay2_error{errno, std::generic_category()};
 
-                sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay file %s: %s",
-                                reinterpret_cast<const char*>(replayname2.filename().u8string().c_str()),
+                sdl2::log_error("Unable to open the replay file {}: {}",
+                                replayname2.filename().string(),
                                 replay2_error.message());
             }
         }
@@ -1309,7 +1309,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
         } else {
             // This can happen if another instance of the game is running or if the disk is full.
             // TODO: Report problem to user...?
-            sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to open the replay log file.");
+            sdl2::log_error("Unable to open the replay log file.");
 
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, std::string{_("Replay Log")}.c_str(),
                                      std::string{_("Unable to open the replay log file.")}.c_str(),
@@ -1352,8 +1352,6 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
     auto previousFrameStart = gameStart;
 
     SDL_Event event;
-
-    // sdl2::log_info("Random Seed (GameCycle %d): 0x%0X", GameCycleCount, RandomGen.getSeed());
 
     dune::DuneTimerResolution timer_handle;
 
@@ -1689,14 +1687,14 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     uint32_t magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
-        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number %.8X, but got %.8X!", SAVEMAGIC,
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number {:#8X}, but got {:#8X}!", SAVEMAGIC,
                        magicNum);
         return false;
     }
 
     uint32_t savegameVersion = stream.readUint32();
     if (savegameVersion != SAVEGAMEVERSION) {
-        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version %d, but got %d!",
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected savegame version {}, but got {}!",
                        SAVEGAMEVERSION, savegameVersion);
         return false;
     }
@@ -1791,7 +1789,7 @@ bool Game::loadSaveGame(InputStream& stream) {
         const auto localPlayerID    = stream.readUint8();
         dune::globals::pLocalPlayer = dynamic_cast<HumanPlayer*>(getPlayerByID(localPlayerID));
         if (!dune::globals::pLocalPlayer) {
-            sdl2::log_info("Game::loadSaveGame(): No invalid playerID (%d)!", localPlayerID);
+            sdl2::log_info("Game::loadSaveGame(): No invalid playerID ({})!", localPlayerID);
 
             return false;
         }
@@ -1854,7 +1852,7 @@ bool Game::saveGame(const std::filesystem::path& filename) {
     OFileStream fs;
 
     if (!fs.open(filename)) {
-        sdl2::log_info("Game::saveGame(): %s", dune::string_error(errno));
+        sdl2::log_info("Game::saveGame(): {}", dune::string_error(errno));
         dune::globals::currentGame->addToNewsTicker(std::string("Game NOT saved: Cannot open \"")
                                                     + reinterpret_cast<const char*>(filename.u8string().c_str())
                                                     + "\".");
@@ -2284,8 +2282,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                    reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
+                    sdl2::log_error("Unable to save configuration file {}",
+                                    getConfigFilepath().string());
                 }
                 addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }
@@ -2302,8 +2300,8 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    sdl2::log_error(SDL_LOG_CATEGORY_APPLICATION, "Unable to save configuration file %s",
-                                    reinterpret_cast<const char*>(getConfigFilepath().u8string().c_str()));
+                    sdl2::log_error("Unable to save configuration file {}",
+                                    getConfigFilepath().string());
                 }
                 addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }

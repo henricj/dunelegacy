@@ -668,7 +668,7 @@ void startSinglePlayerGame(const GameInitSettings& init, MenuBase::event_handler
         GameContext context{*game, *game->getMap(), game->getObjectManager()};
         context.game.runMainLoop(context, handler);
 
-        sdl2::log_info("Game completed after %.1f seconds", game->getGameTime() * (1.0 / 1000));
+        sdl2::log_info("Game completed after {:.1f} seconds", game->getGameTime() * (1.0 / 1000));
 
         bool bGetNext = true;
         while (bGetNext) {

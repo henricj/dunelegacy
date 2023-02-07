@@ -186,7 +186,7 @@ sdl2::sdl_ptr<uint8_t[]> LoadVOC_RW(SDL_RWops* rwop, uint32_t& decsize, uint32_t
                 }
                 rate = tmp_rate;
 
-                // sdl2::log_info("VOC Data Block: Rate: %d, Packing: %d, Length: %d", rate, packing, len);
+                // sdl2::log_info("VOC Data Block: Rate: {}, Packing: {}, Length: {}", rate, packing, len);
 
                 if (packing == 0) {
                     auto* tmp_ret_sound = static_cast<uint8_t*>(SDL_realloc(ret_sound.get(), decsize + len));
@@ -384,7 +384,7 @@ sdl2::mix_chunk_ptr LoadVOC_RW(SDL_RWops* rwop) {
                      TargetDataFloat.data(), TargetDataFloat.size(), &odone, nullptr, nullptr, nullptr);
 
     if (serror) {
-        sdl2::log_error("Unable to resample from %g to %g: %s", RawData_Frequency, TargetFrequency, serror);
+        sdl2::log_error("Unable to resample from {} to {}: {}", RawData_Frequency, TargetFrequency, serror);
 
         for (auto x = 0U; x < TargetDataFloat_Samples; ++x) {
             const auto pos = x / ConversionRatio;

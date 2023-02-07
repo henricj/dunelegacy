@@ -26,8 +26,11 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_rwops.h>
 
+#include <fmt/printf.h>
+
 #include <cassert>
 #include <memory>
+#include <string_view>
 
 namespace sdl2 {
 class texture_lock final {
@@ -187,43 +190,44 @@ using mix_chunk_ptr = implementation::unique_ptr_deleter<Mix_Chunk, Mix_FreeChun
 using mix_music_ptr = implementation::unique_ptr_deleter<Mix_Music, Mix_FreeMusic>;
 
 template<typename... Args>
-void log_message(int category, SDL_LogPriority priority, std::string_view format, Args&&... args) {
-    SDL_LogMessage(category, priority, "%s", fmt::sprintf(format, std::forward<Args>(args)...).c_str());
+void log_message_args_category(SDL_LogCategory category, SDL_LogPriority priority, fmt::format_string<Args...> format,
+                               Args&&... args) {
+    SDL_LogMessage(category, priority, "%s", fmt::format(format, std::forward<Args>(args)...).c_str());
 }
 
 template<typename... Args>
-void log_message(SDL_LogPriority priority, std::string_view format, Args&&... args) {
-    log_message(SDL_LOG_CATEGORY_APPLICATION, priority, format, std::forward<Args>(args)...);
+void log_message_args(SDL_LogPriority priority, fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args_category(SDL_LOG_CATEGORY_APPLICATION, priority, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_info(int category, std::string_view format, Args&&... args) {
-    log_message(category, SDL_LOG_PRIORITY_INFO, format, std::forward<Args>(args)...);
+void log_info(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args_category(category, SDL_LOG_PRIORITY_INFO, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_info(std::string_view format, Args&&... args) {
-    log_info(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+void log_info(fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args(SDL_LOG_PRIORITY_INFO, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_warn(int category, std::string_view format, Args&&... args) {
-    log_message(category, SDL_LOG_PRIORITY_WARN, format, std::forward<Args>(args)...);
+void log_warn(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args_category(category, SDL_LOG_PRIORITY_WARN, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_warn(std::string_view format, Args&&... args) {
-    log_warn(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+void log_warn(fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args(SDL_LOG_PRIORITY_WARN, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_error(int category, std::string_view format, Args&&... args) {
-    log_message(category, SDL_LOG_PRIORITY_ERROR, format, std::forward<Args>(args)...);
+void log_error(SDL_LogCategory category, fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args_category(category, SDL_LOG_PRIORITY_ERROR, format, std::forward<decltype(args)>(args)...);
 }
 
 template<typename... Args>
-void log_error(std::string_view format, Args&&... args) {
-    log_error(SDL_LOG_CATEGORY_APPLICATION, format, std::forward<Args>(args)...);
+void log_error(fmt::format_string<Args...> format, Args&&... args) {
+    log_message_args(SDL_LOG_PRIORITY_ERROR, format, std::forward<decltype(args)>(args)...);
 }
 
 } // namespace sdl2

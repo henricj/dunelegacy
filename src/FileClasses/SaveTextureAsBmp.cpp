@@ -44,7 +44,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
 
     /* Get information about texture we want to save */
     if (SDL_QueryTexture(texture, &format, nullptr, &w, &h)) {
-        sdl2::log_info("Failed querying texture: %s\n", SDL_GetError());
+        sdl2::log_info("Failed querying texture: {}\n", SDL_GetError());
         return {};
     }
 
@@ -55,7 +55,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
 
     const auto ren_tex = sdl2::texture_ptr{SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, w, h)};
     if (!ren_tex) {
-        sdl2::log_info("Failed creating render texture: %s\n", SDL_GetError());
+        sdl2::log_info("Failed creating render texture: {}\n", SDL_GetError());
         return {};
     }
 
@@ -66,7 +66,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
      * can access
      */
     if (SDL_SetRenderTarget(renderer, ren_tex.get())) {
-        sdl2::log_info("Failed setting render target: %s\n", SDL_GetError());
+        sdl2::log_info("Failed setting render target: {}\n", SDL_GetError());
         return {};
     }
 
@@ -78,7 +78,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
 
     if (SDL_RenderCopy(renderer, texture, src, nullptr)) {
-        sdl2::log_info("Failed copying texture data: %s\n", SDL_GetError());
+        sdl2::log_info("Failed copying texture data: {}\n", SDL_GetError());
         return {};
     }
 
@@ -90,7 +90,7 @@ sdl2::surface_ptr CreateSurfaceFromTexture(SDL_Renderer* renderer, SDL_Texture* 
         const sdl2::surface_lock lock{surface.get()};
 
         if (SDL_RenderReadPixels(renderer, nullptr, format, lock.pixels(), lock.pitch())) {
-            sdl2::log_info("Failed reading pixel data: %s\n", SDL_GetError());
+            sdl2::log_info("Failed reading pixel data: {}\n", SDL_GetError());
             return {};
         }
     }
@@ -106,11 +106,11 @@ void SaveTextureAsBmp(SDL_Renderer* renderer, SDL_Texture* texture, std::filesys
 
     /* Save result to an image */
     if (SDL_SaveBMP(surface.get(), filename.u8string())) {
-        sdl2::log_info("Failed saving image: %s\n", SDL_GetError());
+        sdl2::log_info("Failed saving image: {}\n", SDL_GetError());
         return;
     }
 
-    sdl2::log_info("Saved texture as BMP to \"%s\"\n", reinterpret_cast<const char*>(filename.u8string().c_str()));
+    sdl2::log_info("Saved texture as BMP to \"{}\"\n", filename.string());
 }
 
 void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, std::filesystem::path filename) {
@@ -121,9 +121,9 @@ void SaveTextureAsPng(SDL_Renderer* renderer, SDL_Texture* texture, std::filesys
 
     /* Save result to an image */
     if (SavePNG(surface.get(), filename)) {
-        sdl2::log_info("Failed saving image: %s\n", SDL_GetError());
+        sdl2::log_info("Failed saving image: {}\n", SDL_GetError());
         return;
     }
 
-    sdl2::log_info("Saved texture as PNG to \"%s\"\n", reinterpret_cast<const char*>(filename.u8string().c_str()));
+    sdl2::log_info("Saved texture as PNG to \"{}\"\n", filename.string());
 }

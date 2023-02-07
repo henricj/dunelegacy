@@ -290,7 +290,7 @@ void ADLPlayer::changeMusic(MUSICTYPE musicType) {
 
         Mix_HookMusic(SoundAdlibPC::callback, pSoundAdlibPC.get());
 
-        sdl2::log_info("Now playing %s!", filename.c_str());
+        sdl2::log_info("Now playing {}!", filename);
     }
 }
 

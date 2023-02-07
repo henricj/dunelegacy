@@ -105,7 +105,7 @@ LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer() {
         try {
             stopAnnounce();
         } catch (std::exception& e) {
-            sdl2::log_info("LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer(): %s", e.what());
+            sdl2::log_info("LANGameFinderAndAnnouncer::~LANGameFinderAndAnnouncer(): {}", e.what());
         }
     }
     enet_socket_destroy(announceSocket_);

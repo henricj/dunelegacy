@@ -659,14 +659,14 @@ void NetworkManager::handlePacket(ENetPeer* peer, ENetPacketIStream& packetStrea
             } break;
 
             default: {
-                sdl2::log_info("NetworkManager: Unknown packet type %d", packetType);
+                sdl2::log_info("NetworkManager: Unknown packet type {}", packetType);
             }
         }
 
     } catch (InputStream::eof&) {
         sdl2::log_info("NetworkManager: Received packet is too small");
     } catch (std::exception& e) {
-        sdl2::log_info("NetworkManager: %s", e.what());
+        sdl2::log_info("NetworkManager: {}", e.what());
     }
 }
 

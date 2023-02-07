@@ -49,8 +49,7 @@ PakFileManager::loadPakFiles(const CaseInsensitiveFilesystemCache& cache, std::s
         auto& filepath = filepath0.value();
 
         try {
-            sdl2::log_info("%s  %s", md5FromFilename(filepath),
-                           reinterpret_cast<const char*>(filepath.u8string().c_str()));
+            sdl2::log_info("{}  {}", md5FromFilename(filepath), filepath.string());
             pakFiles.emplace_back(std::make_unique<Pakfile>(filepath));
         } catch (std::exception& e) {
             THROW(io_error, "Error while opening '{}': {}!", filepath.string(), e.what());
