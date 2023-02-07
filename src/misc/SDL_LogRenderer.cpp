@@ -90,8 +90,7 @@ static void SDLTest_PrintPixelFormat(char* text, size_t maxlen, uint32_t format)
     }
 }
 
-namespace sdl2 {
-void SDL_LogRenderer(const SDL_RendererInfo* info) {
+void sdl2::SDL_LogRenderer(const SDL_RendererInfo* info) {
     std::array<char, 1024> text{};
 
     sdl2::log_info("  Renderer {}:\n", info->name);
@@ -126,4 +125,3 @@ void SDL_LogRenderer(const SDL_RendererInfo* info) {
         sdl2::log_info("    Max Texture Size: {}x{}\n", info->max_texture_width, info->max_texture_height);
     }
 }
-} // namespace sdl2
