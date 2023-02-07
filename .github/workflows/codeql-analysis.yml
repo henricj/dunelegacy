@@ -67,8 +67,20 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgDirectory: external/vcpkg/vcpkg
+          vcpkgJsonGlob: cmake/vcpkg.json
+          prependedCacheKey: "build-${{ runner.os }}-release"
+
       - name: Configure
         run: cmake --preset=release
+
+      - name: Block cache on failure
+        if: ${{ failure() || cancelled() }}
+        shell: bash
+        run: echo "RUNVCPKG_NO_CACHE=1" >> $GITHUB_ENV
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
