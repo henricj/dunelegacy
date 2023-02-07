@@ -290,9 +290,8 @@ protected:
     const ItemID_enum itemID_ = ItemID_Invalid; ///< The ItemID of this object.
 
     // object state/properties
-    const uint32_t objectID_;   ///< The unique object ID of this object
-    HOUSETYPE originalHouseID_; ///< for takeover/deviation, we still want to keep track of what the original house was
-    House* owner_;              ///< The owner of this object
+    const uint32_t objectID_; ///< The unique object ID of this object
+    House* owner_;            ///< The owner of this object
 
     Coord location_;    ///< The current position of this object in tile coordinates
     Coord oldLocation_; ///< The previous position of this object in tile coordinates (used when moving from one tile to
@@ -301,8 +300,14 @@ protected:
     FixPoint realX_;    ///< The x-coordinate of this object in world coordinates
     FixPoint realY_;    ///< The y-coordinate of this object in world coordinates
 
-    FixPoint angle_;       ///< The current angle of this unit/structure (8 = 360°)
-    ANGLETYPE drawnAngle_; ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
+    FixPoint angle_; ///< The current angle of this unit/structure (8 = 360°)
+
+    std::bitset<NUM_TEAMS> visible_; ///< To which teams is this unit visible?
+
+    ObjectPointer target_; ///< The target to attack or move to
+    bool targetFriendly_;  ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
+
+    HOUSETYPE originalHouseID_; ///< for takeover/deviation, we still want to keep track of what the original house was
 
     bool active_;      ///< Is this unit/structure active?
     bool respondable_; ///< Is this unit/structure respondable to commands?
@@ -311,20 +316,18 @@ protected:
     bool selectedByOtherPlayer_; ///< This is only used in multiplayer games where two players control one house
 
     bool forced_; ///< Is this unit/structure forced to do what it currently does or did the micro-AI decide to do that?
-    bool targetFriendly_;   ///< Is the current target a friendly unit/structure to follow/move to instead to attack?
-    ObjectPointer target_;  ///< The target to attack or move to
     ATTACKMODE attackMode_; ///< The attack mode of this unit/structure
-
-    std::bitset<NUM_TEAMS> visible_; ///< To which teams is this unit visible?
 
     // drawing information
     bool badlyDamaged_; ///< Is the health below 50%?
 
-    zoomable_texture graphic_{}; ///< The graphic for this object
+    ANGLETYPE drawnAngle_; ///< The angle this unit/structure is drawn with. (e.g. 0 to 7)
+
     ObjPic_enum graphicID_ = static_cast<ObjPic_enum>(
         -1); ///< The id of the graphic (needed if we want to reload the graphic, e.g. when a unit is deviated)
-    int numImagesX_ = 0; ///< The number of images in x direction
-    int numImagesY_ = 0; ///< The number of images in y direction
+    zoomable_texture graphic_{}; ///< The graphic for this object
+    int numImagesX_ = 0;         ///< The number of images in x direction
+    int numImagesY_ = 0;         ///< The number of images in y direction
 
 private:
     FixPoint health_; ///< The health of this object

@@ -54,9 +54,9 @@ public:
 
 private:
     // constants for each bullet type
+    FixPoint speed_;               ///< The speed of this bullet
     int damageRadius_;             ///< The radius of the bullet
     bool explodesAtGroundObjects_; ///< false = bullet goes through objects, true = bullet explodes at ground objects
-    FixPoint speed_;               ///< The speed of this bullet
     int8_t detonationTimer_;       ///< How long is this bullet alive before it explodes
 
     // bullet state
