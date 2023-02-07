@@ -6,6 +6,14 @@ if (MSVC)
   return()
 endif ()
 
+set(HARDEN_GCC_ORIGINAL_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Werror=unused-command-line-argument")
+
+set(HARDEN_GCC_ORIGINAL_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=unused-command-line-argument")
+
+set(HARDEN_GCC_ORIGINAL_C_FLAGS "${CMAKE_C_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror=unused-command-line-argument")
 
 option(HARDEN_USE_VISIBILITY "Use the -fvisibility flag (required for CFI)" OFF)
 
@@ -79,3 +87,7 @@ else ()
   harden_add_compile_option("-Wl,-z,relro" HARDEN_LINK_Z_RELRO FALSE)
   harden_add_compile_option("-Wl,-z,now" HARDEN_LINK_Z_NOW FALSE)
 endif ()
+
+set(CMAKE_C_FLAGS "${HARDEN_GCC_ORIGINAL_C_FLAGS}")
+set(CMAKE_CXX_FLAGS "${HARDEN_GCC_ORIGINAL_CXX_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${HARDEN_GCC_ORIGINAL_EXE_LINKER_FLAGS}")
