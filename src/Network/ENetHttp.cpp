@@ -153,9 +153,8 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
 
     std::string result;
 
-    char resultBuffer[1024];
-
     while (true) {
+        char resultBuffer[1024];
 
         ENetBuffer receiveBuffer{};
         receiveBuffer.data       = resultBuffer;
