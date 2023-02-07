@@ -17,6 +17,9 @@
 
 #include <MapEditor/MapGenerator.h>
 
+#include "MapEditor/MapData.h"
+#include "MapEditor/MapMirror.h"
+
 #include <globals.h>
 
 #include "misc/string_util.h"

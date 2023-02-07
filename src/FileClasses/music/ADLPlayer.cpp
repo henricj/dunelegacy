@@ -20,6 +20,8 @@
 #include <globals.h>
 
 #include "FileClasses/adl/sound_adlib.h"
+#include "FileClasses/music/MusicPlayer.h"
+
 #include <FileClasses/FileManager.h>
 
 ADLPlayer::ADLPlayer()
