@@ -1229,7 +1229,8 @@ SurfaceLoader::SurfaceLoader(int width, int height) {
                 auto& windtrap = objPic[ObjPic_Windtrap][h][zoom];
 
                 if (!windtrap)
-                    THROW(std::runtime_error, "SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h, zoom);
+                    THROW(std::runtime_error, "SurfaceLoader(): Windtrap for house {} and zoom {} does not exist!", h,
+                          zoom);
 
                 // Windtrap uses palette animation on PALCOLOR_WINDTRAP_COLORCYCLE; fake this
                 windtrap = generateWindtrapAnimationFrames(windtrap.get());
@@ -1465,7 +1466,7 @@ std::unique_ptr<Shpfile> SurfaceLoader::loadShpfile(const std::string& filename)
     try {
         return std::make_unique<Shpfile>(dune::globals::pFileManager->openFile(filename).get());
     } catch (std::exception& e) {
-        THROW(std::runtime_error, "Error in file \"{}\": {}", filename,  e.what());
+        THROW(std::runtime_error, "Error in file \"{}\": {}", filename, e.what());
     }
 }
 

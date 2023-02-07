@@ -236,8 +236,7 @@ void mapColor(SDL_Surface* surface, const uint8_t colorMap[256]) {
 sdl2::surface_ptr copySurface(SDL_Surface* inSurface) {
     sdl2::surface_ptr surface{SDL_ConvertSurface(inSurface, inSurface->format, inSurface->flags)};
     if (surface == nullptr) {
-        THROW(std::invalid_argument,
-              "copySurface(): SDL_ConvertSurface() failed: {}", SDL_GetError());
+        THROW(std::invalid_argument, "copySurface(): SDL_ConvertSurface() failed: {}", SDL_GetError());
     }
 
     copySurfaceAttributes(surface.get(), inSurface);
@@ -249,8 +248,8 @@ sdl2::surface_ptr convertSurfaceToDisplayFormat(SDL_Surface* inSurface) {
 
     sdl2::surface_ptr pSurface{SDL_ConvertSurfaceFormat(inSurface, SCREEN_FORMAT, 0)};
     if (pSurface == nullptr) {
-        THROW(std::invalid_argument, "convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ",
-                                         SDL_GetError());
+        THROW(std::invalid_argument,
+              "convertSurfaceToDisplayFormat(): SDL_ConvertSurfaceFormat() failed: ", SDL_GetError());
     }
 
     return pSurface;
@@ -275,7 +274,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
 
     if (pTexture == nullptr) {
         THROW(std::invalid_argument, "convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: {}",
-                                         SDL_GetError());
+              SDL_GetError());
     }
 
     SDL_BlendMode blendMode;
@@ -287,7 +286,7 @@ sdl2::texture_ptr convertSurfaceToTexture(SDL_Surface* inSurface) {
     if (blendMode != SDL_BlendMode::SDL_BLENDMODE_NONE) {
         if (SDL_SetTextureBlendMode(pTexture.get(), blendMode)) {
             THROW(std::invalid_argument, "convertSurfaceToTexture(): SDL_CreateTextureFromSurface() failed: {}",
-                      SDL_GetError());
+                  SDL_GetError());
         }
     }
 
@@ -298,21 +297,18 @@ void copySurfaceAttributes(SDL_Surface* target, SDL_Surface* source) {
     if (source->format->BitsPerPixel == 8 && target->format->BitsPerPixel == 8 && source->format->palette) {
         if (SDL_SetPaletteColors(target->format->palette, source->format->palette->colors, 0,
                                  source->format->palette->ncolors)) {
-            THROW(std::runtime_error,
-                  "copySurfaceAttributes(): unable to copy palette: {}", SDL_GetError());
+            THROW(std::runtime_error, "copySurfaceAttributes(): unable to copy palette: {}", SDL_GetError());
         }
     }
 
     if (const auto has_ckey = SDL_HasColorKey(source)) {
         uint32_t ckey = 0;
         if (SDL_GetColorKey(source, &ckey)) {
-            THROW(std::runtime_error,
-                  "copySurfaceAttributes(): SDL_GetColorKey() failed: {}", SDL_GetError());
+            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_GetColorKey() failed: {}", SDL_GetError());
         }
 
         if (SDL_SetColorKey(target, SDL_TRUE, ckey)) {
-            THROW(std::runtime_error,
-                  "copySurfaceAttributes(): SDL_SetColorKey() failed: {}", SDL_GetError());
+            THROW(std::runtime_error, "copySurfaceAttributes(): SDL_SetColorKey() failed: {}", SDL_GetError());
         }
     }
 

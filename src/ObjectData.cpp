@@ -281,7 +281,8 @@ ItemID_enum ObjectData::loadItemID(const INIFile& objectDataFile, std::string_vi
     const ItemID_enum itemID = getItemIDByName(strItem);
 
     if (itemID == ItemID_Invalid) {
-        sdl2::log_info("Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure/unit name!",
+        sdl2::log_info(
+            "Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure/unit name!",
             section, key, strItem);
         return defaultValue;
     }
@@ -309,7 +310,8 @@ ObjectData::loadPrerequisiteStructuresSet(const INIFile& objectDataFile, std::st
 
         const auto itemID = getItemIDByName(strItem2);
         if (itemID == ItemID_Invalid || !isStructure(itemID)) {
-            sdl2::log_info("Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure name!",
+            sdl2::log_info(
+                "Warning: Cannot read object data from section '{}', key '{}': '{}' is no valid structure name!",
                 section, key, strItem2);
             return defaultValue;
         }

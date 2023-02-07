@@ -1271,8 +1271,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
         if (!isOpen) {
             const std::error_code replay_error{errno, std::generic_category()};
 
-            sdl2::log_error("Unable to open the default replay file: {}  Retrying...",
-                            replay_error.message());
+            sdl2::log_error("Unable to open the default replay file: {}  Retrying...", replay_error.message());
 
             auto& uiRandom = dune::globals::pGFXManager->random();
 
@@ -1287,8 +1286,7 @@ void Game::runMainLoop(const GameContext& context, MenuBase::event_handler_type 
 
                 const std::error_code replay2_error{errno, std::generic_category()};
 
-                sdl2::log_error("Unable to open the replay file {}: {}",
-                                replayname2.filename().string(),
+                sdl2::log_error("Unable to open the replay file {}: {}", replayname2.filename().string(),
                                 replay2_error.message());
             }
         }
@@ -1687,8 +1685,8 @@ bool Game::loadSaveGame(InputStream& stream) {
 
     uint32_t magicNum = stream.readUint32();
     if (magicNum != SAVEMAGIC) {
-        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number {:#8X}, but got {:#8X}!", SAVEMAGIC,
-                       magicNum);
+        sdl2::log_info("Game::loadSaveGame(): No valid savegame! Expected magic number {:#8X}, but got {:#8X}!",
+                       SAVEMAGIC, magicNum);
         return false;
     }
 
@@ -2282,8 +2280,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    sdl2::log_error("Unable to save configuration file {}",
-                                    getConfigFilepath().string());
+                    sdl2::log_error("Unable to save configuration file {}", getConfigFilepath().string());
                 }
                 addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }
@@ -2300,8 +2297,7 @@ void Game::handleKeyInput(const GameContext& context, SDL_KeyboardEvent& keyboar
                 INIFile myINIFile(getConfigFilepath());
                 myINIFile.setIntValue("Game Options", "Game Speed", settings.gameOptions.gameSpeed);
                 if (!myINIFile.saveChangesTo(getConfigFilepath())) {
-                    sdl2::log_error("Unable to save configuration file {}",
-                                    getConfigFilepath().string());
+                    sdl2::log_error("Unable to save configuration file {}", getConfigFilepath().string());
                 }
                 addToNewsTicker(fmt::format("{}: {}", _("Game speed"), settings.gameOptions.gameSpeed));
             }

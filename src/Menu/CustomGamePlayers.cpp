@@ -97,8 +97,8 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
 
         uint32_t magicNum = memStream.readUint32();
         if (magicNum != SAVEMAGIC) {
-            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number {:#08X}, but got {:#08X}!", SAVEMAGIC,
-                           magicNum);
+            sdl2::log_info("CustomGamePlayers: No valid savegame! Expected magic number {:#08X}, but got {:#08X}!",
+                           SAVEMAGIC, magicNum);
         }
 
         uint32_t savegameVersion = memStream.readUint32();
@@ -118,8 +118,7 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
         }
 
         const auto file_data = tmpGameInitSettings.getFiledata();
-        auto RWops        = sdl2::RWops_ptr{
-            SDL_RWFromConstMem(file_data.data(), file_data.size())};
+        auto RWops           = sdl2::RWops_ptr{SDL_RWFromConstMem(file_data.data(), file_data.size())};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);

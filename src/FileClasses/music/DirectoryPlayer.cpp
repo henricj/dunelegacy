@@ -113,8 +113,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
             Mix_PlayMusic(music, -1);
             Mix_VolumeMusic(musicVolume);
         } else {
-            sdl2::log_info("Unable to play {}: {}!", filename.string(),
-                           Mix_GetError());
+            sdl2::log_info("Unable to play {}: {}!", filename.string(), Mix_GetError());
         }
     }
 }

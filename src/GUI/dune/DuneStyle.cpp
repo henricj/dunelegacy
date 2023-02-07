@@ -20,10 +20,10 @@
 #include <misc/draw_util.h>
 
 #include "Renderer/DuneSurface.h"
-#include <dune_gitversion.h>
 #include <FileClasses/Font.h>
 #include <FileClasses/FontManager.h>
 #include <FileClasses/GFXManager.h>
+#include <dune_gitversion.h>
 
 #include <globals.h>
 

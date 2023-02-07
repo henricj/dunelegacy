@@ -17,8 +17,8 @@
 
 #include "GUI/ObjectInterfaces/DefaultObjectInterface.h"
 
-#include "sand.h"
 #include "GUI/Spacer.h"
+#include "sand.h"
 
 DefaultObjectInterface::DefaultObjectInterface(const GameContext& context, int objectID) : context_{context} {
     const auto* const pObject = context_.objectManager.getObject(objectID);

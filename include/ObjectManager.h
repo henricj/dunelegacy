@@ -113,8 +113,7 @@ public:
 
         auto object = ObjectBase::createObject(itemID, nextFreeObjectID, initializer);
         if (!object) {
-            sdl2::log_error("createObjectFromItemId() could not build item type {}",
-                            itemID);
+            sdl2::log_error("createObjectFromItemId() could not build item type {}", itemID);
             return nullptr;
         }
 

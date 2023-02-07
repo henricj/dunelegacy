@@ -89,7 +89,7 @@ std::tuple<bool, rectpack2D::rect_wh> packRectangles(const int max_side, std::ve
     const auto side = static_cast<int>(ceil(sqrt(total_pixels)));
 
     sdl2::log_info("Pixels {0} ({1}x{1}) for efficiency {2:.1f}", total_pixels, side,
-                               100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h));
+                   100 * static_cast<double>(total_pixels) / (result_size.w * result_size.h));
 
     // for(const auto& r : rectangles) {
     //    sdl2::log_info("   {}x{} at {}x{}", r.w, r.h, r.x, r.y);

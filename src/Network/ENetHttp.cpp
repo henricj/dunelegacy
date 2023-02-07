@@ -163,7 +163,7 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
         const int receiveLength = enet_socket_receive(httpSocket, nullptr, &receiveBuffer, 1);
 
         if (receiveLength < 0) {
-            THROW(std::runtime_error, "Error while receiving from '{}'",  domain);
+            THROW(std::runtime_error, "Error while receiving from '{}'", domain);
         }
 
         result.append(resultBuffer, receiveLength);
@@ -176,8 +176,8 @@ std::string loadFromHttp(const std::string& domain, const std::string& filepath,
     enet_socket_destroy(httpSocket);
 
     if (result.substr(9, 3) != "200") {
-        THROW(std::runtime_error, "Server Error: Received status code '{}' from {}: {}",
-              result.substr(9, 3), domain, result.substr(0, result.find(newline)));
+        THROW(std::runtime_error, "Server Error: Received status code '{}' from {}: {}", result.substr(9, 3), domain,
+              result.substr(0, result.find(newline)));
     }
 
     const size_t contentStart = result.find(doubleNewline);

@@ -397,8 +397,8 @@ void INIMapEditorLoader::loadUnits() {
 
             int int_angle = 0;
             if (!parseString(rotation, int_angle) || (int_angle < 0) || (int_angle > 255)) {
-                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                           "Invalid rotation string: '{}'!", rotation);
+                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid rotation string: '{}'!",
+                           rotation);
                 int_angle = 64;
             }
             int_angle  = (int_angle + 16) / 32;
@@ -407,22 +407,22 @@ void INIMapEditorLoader::loadUnits() {
 
             ItemID_enum itemID = getItemIDByName(UnitStr);
             if ((itemID == ItemID_Invalid) || !isUnit(itemID)) {
-                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                           "Invalid unit string: '{}'!", UnitStr);
+                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid unit string: '{}'!",
+                           UnitStr);
                 continue;
             }
 
             int iHealth = 0;
             if (!parseString(health, iHealth) || (iHealth < 0) || (iHealth > 256)) {
-                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                           "Invalid health string: '{}'!", health);
+                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid health string: '{}'!",
+                           health);
                 iHealth = 256;
             }
 
             ATTACKMODE attackmode = getAttackModeByName(mode);
             if (attackmode == ATTACKMODE_INVALID) {
-                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                           "Invalid attackmode string: '{}'!", mode);
+                logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid attackmode string: '{}'!",
+                           mode);
                 attackmode = AREAGUARD;
             }
 
@@ -610,8 +610,8 @@ void INIMapEditorLoader::loadReinforcements() {
 
         auto droptime = 0;
         if (!parseString(strTime, droptime)) {
-            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()),
-                       "Invalid drop time string: '{}'!", strTime);
+            logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid drop time string: '{}'!",
+                       strTime);
             continue;
         }
 
