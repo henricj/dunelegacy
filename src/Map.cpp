@@ -139,7 +139,7 @@ void Map::damage(const GameContext& context, uint32_t damagerID, House* damagerO
     std::vector<dune::object_id_type> affectedAirUnits;
     std::vector<dune::object_id_type> affectedGroundAndUndergroundUnits;
 
-    for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2, [&](Tile& t) {
+    for_each(location.x - 2, location.y - 2, location.x + 2, location.y + 2, [&](const Tile& t) {
         std::ranges::copy(t.getAirUnitList(), std::back_inserter(affectedAirUnits));
         std::ranges::copy(t.getInfantryList(), std::back_inserter(affectedGroundAndUndergroundUnits));
         std::ranges::copy(t.getUndergroundUnitList(), std::back_inserter(affectedGroundAndUndergroundUnits));
