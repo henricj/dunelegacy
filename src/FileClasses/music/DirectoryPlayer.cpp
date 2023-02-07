@@ -107,7 +107,7 @@ void DirectoryPlayer::changeMusic(MUSICTYPE musicType) {
             music = nullptr;
         }
 
-        music = Mix_LoadMUS(reinterpret_cast<const char*>(filename.u8string().c_str()));
+        music = Mix_LoadMUS(filename.string().c_str());
         if (music != nullptr) {
             sdl2::log_info("Now playing {}!", filename.string());
             Mix_PlayMusic(music, -1);

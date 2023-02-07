@@ -35,10 +35,10 @@
 sdl2::RWops_ptr openReadOnlyRWops(const std::filesystem::path& path) {
     const auto normal = path.lexically_normal();
 
-    auto* const rwops = SDL_RWFromFile(normal.u8string().c_str(), "r");
+    auto* const rwops = SDL_RWFromFile(normal.u8string(), "r");
 
     if (!rwops)
-        THROW(sdl_error, "Opening file '{}' failed: {}!", reinterpret_cast<const char*>(normal.u8string().c_str()),
+        THROW(sdl_error, "Opening file '{}' failed: {}!", normal.string(),
               SDL_GetError());
 
     return sdl2::RWops_ptr{rwops};
@@ -55,8 +55,8 @@ TextManager::TextManager(std::string_view language) {
     const auto language_path = locale_directory / language_file;
     sdl2::log_info("Loading localization from '{}'...",
                    language_path.string());
-    const auto rwops = openReadOnlyRWops(language_path.u8string());
-    localizedString_ = loadPOFile(rwops.get(), reinterpret_cast<const char*>(language_file.u8string().c_str()));
+    const auto rwops = openReadOnlyRWops(language_path);
+    localizedString_ = loadPOFile(rwops.get(), language_file.string());
 }
 
 TextManager::~TextManager() = default;

@@ -63,7 +63,7 @@ void createDefaultConfigFile(std::filesystem::path configfilepath, const std::st
 
     sdl2::log_info("Creating config file '{}'", configfilepath.string());
 
-    const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string().c_str(), "w")};
+    const auto file = sdl2::RWops_ptr{SDL_RWFromFile(configfilepath.u8string(), "w")};
     if (!file) {
         THROW(sdl_error, "Opening config file failed: {}!", SDL_GetError());
     }

@@ -117,8 +117,9 @@ CustomGamePlayers::CustomGamePlayers(GameInitSettings newGameInitSettings, bool 
             houseInfoListSetup.push_back(GameInitSettings::HouseInfo(memStream));
         }
 
-        auto RWops = sdl2::RWops_ptr{
-            SDL_RWFromConstMem(tmpGameInitSettings.getFiledata().c_str(), tmpGameInitSettings.getFiledata().size())};
+        const auto file_data = tmpGameInitSettings.getFiledata();
+        auto RWops        = sdl2::RWops_ptr{
+            SDL_RWFromConstMem(file_data.data(), file_data.size())};
 
         INIFile inimap(RWops.get());
         extractMapInfo(&inimap);
