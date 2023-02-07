@@ -12,9 +12,26 @@
       "displayName": "Default Config",
       "description": "Default build using Ninja generator",
       "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
         "VCPKG_MANIFEST_DIR": "${sourceDir}/external/vcpkg/config",
         "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/external/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "displayName": "Release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
+      "displayName": "Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
       }
     },
     {
@@ -23,7 +40,6 @@
       "inherits": "default",
       "displayName": "Windows default",
       "description": "Default Windows build",
-      "binaryDir": "${sourceDir}/out/build/${presetName}",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows"
       },
@@ -278,8 +294,7 @@
       "hidden": true,
       "inherits": "default",
       "displayName": "Linux default",
-      "description": "Default Linux build",
-      "binaryDir": "${sourceDir}/out/build/${presetName}"
+      "description": "Default Linux build"
     },
     {
       "name": "linux-debug",
