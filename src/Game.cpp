@@ -138,7 +138,7 @@ void Game::resize() {
         dune::globals::screenborder->adjustScreenBorderToMapsize(map_->getSizeX(), map_->getSizeY());
 
     if (pInterface_)
-        pInterface_->resize(renderer_width, renderer_height);
+        pInterface_->resize(static_cast<uint32_t>(renderer_width), static_cast<uint32_t>(renderer_height));
 }
 
 void Game::initGame(const GameInitSettings& newGameInitSettings) {

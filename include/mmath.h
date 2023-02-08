@@ -203,6 +203,13 @@ int world2zoomedWorld(float x);
 
 /**
     This method converts between world coordinates and zoomed world coordinates.
+    \param  x   a coordinate in world coordinates
+    \return a coordinate which is converted by the current zoom level
+*/
+float world2zoomedWorldF(float x);
+
+/**
+    This method converts between world coordinates and zoomed world coordinates.
     \param  coord   a coordinate in world coordinates
     \return a coordinate which is converted by the current zoom level
 */
@@ -214,6 +221,20 @@ Coord world2zoomedWorld(const Coord& coord);
     \return a coordinate which is converted by the current zoom level
 */
 int zoomedWorld2world(int x);
+
+/**
+    This method converts between world coordinates and zoomed world coordinates.
+    \param  x   a coordinate in world coordinates
+    \return a coordinate which is converted by the current zoom level
+*/
+int zoomedWorld2world(float x);
+
+/**
+    This method converts between world coordinates and zoomed world coordinates.
+    \param  x   a coordinate in world coordinates
+    \return a coordinate which is converted by the current zoom level
+*/
+float zoomedWorld2worldF(float x);
 
 /**
     This method converts between world coordinates and zoomed world coordinates.

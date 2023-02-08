@@ -76,22 +76,22 @@ void Devastator::blitToScreen() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const int x1 = screenborder->world2screenX(realX_);
-    const int y1 = screenborder->world2screenY(realY_);
+    const auto x1 = screenborder->world2screenX(realX_);
+    const auto y1 = screenborder->world2screenY(realY_);
 
     const auto* const pUnitGraphic = graphic_[zoom];
     const auto source1             = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);
-    const auto dest1 = calcSpriteDrawingRect(pUnitGraphic, x1, y1, numImagesX_, 1, HAlign::Center, VAlign::Center);
+    const auto dest1 = calcSpriteDrawingRectF(pUnitGraphic, x1, y1, numImagesX_, 1, HAlign::Center, VAlign::Center);
 
     Dune_RenderCopyF(renderer, pUnitGraphic, &source1, &dest1);
 
-    constexpr auto devastatorTurretOffset =
+    static constexpr auto devastatorTurretOffset =
         std::to_array<Coord>({{8, -16}, {-4, -12}, {0, -16}, {4, -12}, {-8, -16}, {0, -12}, {-4, -12}, {0, -12}});
 
     const auto* const pTurretGraphic = turretGraphic[zoom];
 
     const auto source2 = calcSpriteSourceRect(pTurretGraphic, static_cast<int>(drawnAngle_), numImagesX_);
-    const auto dest2   = calcSpriteDrawingRect(
+    const auto dest2   = calcSpriteDrawingRectF(
         pTurretGraphic, screenborder->world2screenX(realX_ + devastatorTurretOffset[static_cast<int>(drawnAngle_)].x),
         screenborder->world2screenY(realY_ + devastatorTurretOffset[static_cast<int>(drawnAngle_)].y), numImagesX_, 1,
         HAlign::Center, VAlign::Center);

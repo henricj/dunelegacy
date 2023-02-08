@@ -51,11 +51,41 @@ int world2zoomedWorld(float x) {
     }
 }
 
+float world2zoomedWorldF(float x) {
+    switch (dune::globals::currentZoomlevel) {
+        case 0: return x * 0.25f;
+        case 1: return x * 0.5f;
+        case 2: return x * 0.75f;
+        case 3:
+        default: return x;
+    }
+}
+
 Coord world2zoomedWorld(const Coord& coord) {
     return {world2zoomedWorld(coord.x), world2zoomedWorld(coord.y)};
 }
 
 int zoomedWorld2world(int x) {
+    switch (dune::globals::currentZoomlevel) {
+        case 0: return x * 4;
+        case 1: return x * 2;
+        case 2: return (x * 4) / 3;
+        case 3:
+        default: return x;
+    }
+}
+
+int zoomedWorld2world(float x) {
+    switch (dune::globals::currentZoomlevel) {
+        case 0: return lround(x * 4);
+        case 1: return lround(x * 2);
+        case 2: return lround((x * 4) / 3);
+        case 3:
+        default: return lround(x);
+    }
+}
+
+float zoomedWorld2worldF(float x) {
     switch (dune::globals::currentZoomlevel) {
         case 0: return x * 4;
         case 1: return x * 2;

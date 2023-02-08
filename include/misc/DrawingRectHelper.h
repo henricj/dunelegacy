@@ -519,6 +519,22 @@ calcDrawingRectF(const DuneTexture* pTexture, int x, int y, HAlign halign = HAli
 }
 
 /**
+    Calculates the drawing rectangle for drawing pTexture at (x,y). The parameters halign and valign determine which
+   coordinate in pTexture is drawn at (x,y), e.g. if they are HAlign::Right and VAlign::Bottom the bottom right corner
+   of pTexture is drawn at position (x,y)
+   \param  pTexture    the texture to calculate the rect for
+   \param  x           the x-coordinate
+   \param  y           the y-coordinate
+   \param  halign      the horizontal alignment of pTexture (default is HAlign::Left)
+   \param  valign      the vertical alignment of pTexture (default is VAlign::Top)
+   \return the rectangle for drawing pTexture at the specified position when passed to SDL_RenderCopy
+*/
+constexpr auto
+calcDrawingRectF(const DuneTexture* pTexture, float x, float y, HAlign halign = HAlign::Left, VAlign valign = VAlign::Top) {
+    return calcSpriteDrawingRectF(pTexture, x, y, 1, 1, halign, valign);
+}
+
+/**
     Returns size of the rendering target.
     \return a point describing the size (w,h) of the rendering target (x and y are always zero)
 */

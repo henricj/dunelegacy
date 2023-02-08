@@ -99,8 +99,8 @@ void Harvester::blitToScreen() {
     auto* const renderer           = dune::globals::renderer.get();
     const auto zoom                = dune::globals::currentZoomlevel;
 
-    const int x = screenborder->world2screenX(realX_);
-    const int y = screenborder->world2screenY(realY_);
+    const auto x = screenborder->world2screenX(realX_);
+    const auto y = screenborder->world2screenY(realY_);
 
     const auto* pUnitGraphic = graphic_[zoom];
     const auto source        = calcSpriteSourceRect(pUnitGraphic, static_cast<int>(drawnAngle_), numImagesX_);

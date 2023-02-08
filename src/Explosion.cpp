@@ -121,8 +121,8 @@ void Explosion::init() {
 
 void Explosion::save(OutputStream& stream) const {
     stream.writeUint32(explosionID);
-    stream.writeSint16(position.x);
-    stream.writeSint16(position.y);
+    stream.writeSint16(static_cast<int16_t>(position.x));
+    stream.writeSint16(static_cast<int16_t>(position.y));
     stream.writeUint32(static_cast<uint32_t>(house));
     stream.writeSint32(frameTimer);
     stream.writeSint32(currentFrame);
@@ -132,8 +132,8 @@ void Explosion::blitToScreen() const {
     const auto zoom                = dune::globals::currentZoomlevel;
     const auto* const screenborder = dune::globals::screenborder.get();
 
-    const uint16_t width  = getWidth(graphic[zoom]) / numFrames;
-    const uint16_t height = getHeight(graphic[zoom]);
+    const uint16_t width  = static_cast<int16_t>(getWidth(graphic[zoom]) / numFrames);
+    const uint16_t height = static_cast<int16_t>(getHeight(graphic[zoom]));
 
     if (screenborder->isInsideScreen(position, Coord(width, height))) {
         const auto dest   = calcSpriteDrawingRect(graphic[zoom], screenborder->world2screenX(position.x),

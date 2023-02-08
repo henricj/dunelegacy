@@ -12,7 +12,7 @@ static char* itoa_loop(char* buf, uint32_t scale, uint32_t value, bool skip) {
 
         if (!skip || digit || scale == 1) {
             skip   = false;
-            *buf++ = '0' + digit;
+            *buf++ = (char)('0' + digit);
             value %= scale;
         }
 
