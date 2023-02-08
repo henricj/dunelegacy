@@ -91,7 +91,7 @@ struct CaseInsensitiveHash {
         auto sum = v.size();
 
         // Force "c" to be "unsigned char" or std::tolower()'s behavior is undefined.
-        for (unsigned char c : v)
+        for (const unsigned char c : v)
             sum = sum * 101 + std::tolower(c);
 
         return sum;

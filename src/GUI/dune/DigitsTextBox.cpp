@@ -147,7 +147,7 @@ void DigitsTextBox::onDecrement() {
 }
 
 void DigitsTextBox::updateSurfaces() {
-    auto* const gfx = dune::globals::pGFXManager.get();
+    const auto* const gfx = dune::globals::pGFXManager.get();
 
     plusButton_.setTextures(gfx->getUIGraphic(UI_Plus, house_), gfx->getUIGraphic(UI_Plus_Pressed, house_),
                             gfx->getUIGraphic(UI_Plus_Active, house_));

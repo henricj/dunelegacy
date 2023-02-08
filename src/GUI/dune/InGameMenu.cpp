@@ -148,7 +148,7 @@ void InGameMenu::onChildWindowClose(Window* pChildWindow) {
                 game->resumeGame();
             }
         }
-    } else if (auto* const pQstBox = dynamic_cast<QstBox*>(pChildWindow)) {
+    } else if (const auto* const pQstBox = dynamic_cast<QstBox*>(pChildWindow)) {
         if (pQstBox->getPressedButtonID() == QSTBOX_BUTTON1) {
             if (pQstBox->getText() == _("Do you really want to quit this game?")) {
                 // quit

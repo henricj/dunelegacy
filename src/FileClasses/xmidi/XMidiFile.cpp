@@ -557,13 +557,13 @@ int XMidiFile::GetVLQ2(IDataSource* source, uint32_t& quant) {
 //
 void XMidiFile::ApplyFirstState(first_state& fs, int chan_mask) {
     for (int channel = 0; channel < 16; channel++) {
-        XMidiEvent* patch  = fs.patch[channel];
-        XMidiEvent* vol    = fs.vol[channel];
-        XMidiEvent* pan    = fs.pan[channel];
-        XMidiEvent* bank   = fs.bank[channel];
-        XMidiEvent* reverb = nullptr;
-        XMidiEvent* chorus = nullptr;
-        XMidiEvent* temp   = nullptr;
+        XMidiEvent* patch      = fs.patch[channel];
+        XMidiEvent* vol        = fs.vol[channel];
+        XMidiEvent* pan        = fs.pan[channel];
+        XMidiEvent* bank       = fs.bank[channel];
+        XMidiEvent* reverb     = nullptr;
+        XMidiEvent* chorus     = nullptr;
+        const XMidiEvent* temp = nullptr;
 
         // Got no patch change, return and don't try fixing it
         if (!patch || !(chan_mask & 1 << channel))

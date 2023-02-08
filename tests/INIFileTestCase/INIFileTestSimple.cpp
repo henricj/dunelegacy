@@ -34,7 +34,7 @@ TEST(INIFileSimple, set_bool) {
 }
 
 TEST(INIFileSimple, get_nonexistent_bool) {
-    INIFile file(true, {});
+    const INIFile file(true, {});
 
     const auto value = file.getBoolValue({}, "Key1");
 

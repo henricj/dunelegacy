@@ -91,7 +91,7 @@ int XMidiEventList::putVLQ(ODataSource* dest, uint32_t value) {
 uint32_t XMidiEventList::convertListToMTrk(ODataSource* dest) {
     int time                  = 0;
     int lasttime              = 0;
-    XMidiEvent* event         = nullptr;
+    const XMidiEvent* event   = nullptr;
     uint32_t delta            = 0;
     unsigned char last_status = 0;
     uint32_t i                = 8;
@@ -190,7 +190,7 @@ uint32_t XMidiEventList::convertListToMTrk(ODataSource* dest) {
     i += 2 + putVLQ(dest, 0);
 
     if (dest) {
-        int cur_pos = dest->getPos();
+        const int cur_pos = dest->getPos();
         dest->seek(size_pos);
         dest->write4high(i - 8);
         dest->seek(cur_pos);

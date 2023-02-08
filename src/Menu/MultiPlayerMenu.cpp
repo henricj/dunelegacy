@@ -223,10 +223,10 @@ void MultiPlayerMenu::onGameTypeChange(int buttonID) {
         InternetGameList.clear();
 
         for (GameServerInfo& gameServerInfo : LANGameList) {
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
-                                    + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
-                                    + std::to_string(gameServerInfo.maxPlayers) + ")";
+            const std::string description =
+                gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : "
+                + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " ("
+                + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &gameServerInfo);
         }
 
@@ -330,10 +330,10 @@ void MultiPlayerMenu::onGameServerInfoList(const std::list<GameServerInfo>& game
         if (oldListIndex >= InternetGameList.size()) {
             // not found => add at the end
             InternetGameList.push_back(gameServerInfo);
-            std::string description = gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress)
-                                    + " : " + std::to_string(gameServerInfo.serverAddress.port) + ") - "
-                                    + gameServerInfo.mapName + " (" + std::to_string(gameServerInfo.numPlayers) + "/"
-                                    + std::to_string(gameServerInfo.maxPlayers) + ")";
+            const std::string description =
+                gameServerInfo.serverName + " (" + Address2String(gameServerInfo.serverAddress) + " : "
+                + std::to_string(gameServerInfo.serverAddress.port) + ") - " + gameServerInfo.mapName + " ("
+                + std::to_string(gameServerInfo.numPlayers) + "/" + std::to_string(gameServerInfo.maxPlayers) + ")";
             gameList.addEntry(description, &InternetGameList.back());
         } else {
             // found => update

@@ -142,7 +142,7 @@ void Sandworm::blitToScreen() {
     if (shimmerOffsetIndex_ >= 0) {
         // render sandworm's shimmer
 
-        auto* const gfx = dune::globals::pGFXManager.get();
+        const auto* const gfx = dune::globals::pGFXManager.get();
 
         const auto* shimmerMaskTex = gfx->getZoomedObjPic(ObjPic_SandwormSegment, zoom);
 

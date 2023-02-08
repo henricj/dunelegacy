@@ -30,12 +30,12 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::invalid_argument, "MentatTextFile:MentatTextFile(): rwop == nullptr!");
     }
 
-    int64_t endOffset = SDL_RWsize(rwop);
+    const int64_t endOffset = SDL_RWsize(rwop);
     if (endOffset < 0) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Cannot determine size of this file!");
     }
 
-    auto mentatTextFilesize = static_cast<size_t>(endOffset);
+    const auto mentatTextFilesize = static_cast<size_t>(endOffset);
 
     if (mentatTextFilesize < 20) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): No valid mentat textfile: File too small!");
@@ -51,7 +51,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile! Must start with 'FORM'");
     }
 
-    Uint32 formSectionSize = SDL_SwapBE32(reinterpret_cast<Uint32*>(filedata.data())[1]);
+    const Uint32 formSectionSize = SDL_SwapBE32(reinterpret_cast<Uint32*>(filedata.data())[1]);
 
     if (formSectionSize + 8 != mentatTextFilesize) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
@@ -62,7 +62,7 @@ MentatTextFile::MentatTextFile(SDL_RWops* rwop) {
         THROW(std::runtime_error, "MentatTextFile:MentatTextFile(): Invalid mentat textfile!");
     }
 
-    auto mentnameSectionSize = SDL_SwapBE32(reinterpret_cast<const Uint32*>(filedata.data())[4]);
+    const auto mentnameSectionSize = SDL_SwapBE32(reinterpret_cast<const Uint32*>(filedata.data())[4]);
 
     const auto* const pMentNameSection = filedata.data() + 20;
 

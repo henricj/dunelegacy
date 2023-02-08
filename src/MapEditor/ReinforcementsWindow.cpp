@@ -118,9 +118,9 @@ ReinforcementsWindow::ReinforcementsWindow(MapEditor* pMapEditor, HOUSETYPE curr
 
     int currentPlayerNum = 1;
     for (const auto& player : pMapEditor->getPlayers()) {
-        auto entryName = player.bActive_
-                           ? (player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_)
-                           : ("(" + player.name_ + ")");
+        const auto entryName = player.bActive_
+                                 ? (player.bAnyHouse_ ? fmt::sprintf(_("Player %d"), currentPlayerNum++) : player.name_)
+                                 : ("(" + player.name_ + ")");
         playerDropDownBox.addEntry(entryName, static_cast<int>(player.house_));
     }
     playerDropDownBox.setSelectedItem(0);

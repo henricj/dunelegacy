@@ -230,7 +230,7 @@ size_t CaseInsensitiveFilesystemCache::CaseInsensitiveHash::operator()(const std
     auto sum = value.size();
 
     // Force "c" to be "unsigned char" or std::tolower()'s behavior is undefined.
-    for (unsigned char c : value)
+    for (const unsigned char c : value)
         sum = sum * 101 + std::tolower(c);
 
     return sum;

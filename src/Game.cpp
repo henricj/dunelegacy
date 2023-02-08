@@ -664,7 +664,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                     default: break;
                 }
 
-                auto* const screenborder = dune::globals::screenborder.get();
+                const auto* const screenborder = dune::globals::screenborder.get();
 
                 const auto mouseX = static_cast<float>(mouse->x);
                 const auto mouseY = static_cast<float>(mouse->y);
@@ -803,7 +803,7 @@ void Game::doInput(const GameContext& context, SDL_Event& event) {
                         finalMouseY = topBarPos_.x + topBarPos_.h;
                     }
 
-                    auto* const screenborder = dune::globals::screenborder.get();
+                    const auto* const screenborder = dune::globals::screenborder.get();
 
                     int rectFinishX = screenborder->screen2MapX(finalMouseX);
                     if (rectFinishX > (map_->getSizeX() - 1)) {

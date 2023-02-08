@@ -551,7 +551,7 @@ public:
         if (!tile)
             return false;
 
-        auto* const object = tile->getGroundObject(context.objectManager);
+        const auto* const object = tile->getGroundObject(context.objectManager);
         if (!object)
             return false;
 

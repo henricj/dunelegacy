@@ -214,7 +214,7 @@ void Wsafile::readdata(const std::initializer_list<SDL_RWops*>& rwops) {
     numFrames = 0;
     looped    = false;
 
-    for (auto i = size_t{0}; auto rwop : rwops) {
+    for (auto i = size_t{0}; const auto rwop : rwops) {
         int wsaFilesize   = 0;
         pFiledata[i]      = readfile(rwop, &wsaFilesize);
         numberOfFrames[i] = SDL_SwapLE16(*reinterpret_cast<Uint16*>(pFiledata[i].get()));

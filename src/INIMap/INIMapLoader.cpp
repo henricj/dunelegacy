@@ -737,9 +737,9 @@ void INIMapLoader::loadStructures(const GameContext& context) {
                            health);
                 iHealth = 256;
             }
-            FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
+            const FixPoint percentHealth = std::min(FixPoint(iHealth) / 256, FixPoint(1));
 
-            ItemID_enum itemID = getItemIDByName(BuildingStr);
+            const ItemID_enum itemID = getItemIDByName(BuildingStr);
 
             if ((itemID == ItemID_Invalid) || !isStructure(itemID)) {
                 logWarning(inifile_->getLineNumber(sectionname, key.getKeyName()), "Invalid building string: '{}'!",

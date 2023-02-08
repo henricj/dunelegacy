@@ -312,7 +312,7 @@ void BuilderList::draw(Point position) {
                     const auto progress = pBuilder->getProductionProgress();
                     const auto price    = buildItem.price_;
 
-                    auto max_x = (progress / price * BUILDERBTN_WIDTH).toFloat();
+                    const auto max_x = (progress / price * BUILDERBTN_WIDTH).toFloat();
 
                     SDL_FRect progressBar{dest.x, dest.y, max_x, BUILDERBTN_HEIGHT};
                     renderFillRectF(renderer, &progressBar, COLOR_HALF_TRANSPARENT);

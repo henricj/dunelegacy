@@ -60,8 +60,8 @@ inline uint8_t Read1(const uint8_t*& in) {
 
 template<typename Source>
 uint16_t Read2(Source& in) {
-    uint16_t b0 = Read1(in);
-    uint16_t b1 = Read1(in);
+    const uint16_t b0 = Read1(in);
+    const uint16_t b1 = Read1(in);
     return (b1 << 8) | b0;
 }
 
@@ -71,8 +71,8 @@ uint16_t Read2(Source& in) {
 
 template<typename Source>
 uint16_t Read2high(Source& in) {
-    uint16_t b0 = Read1(in);
-    uint16_t b1 = Read1(in);
+    const uint16_t b0 = Read1(in);
+    const uint16_t b1 = Read1(in);
     return (b0 << 8) | b1;
 }
 
@@ -82,10 +82,10 @@ uint16_t Read2high(Source& in) {
 
 template<typename Source>
 uint32_t Read4(Source& in) {
-    uint32_t b0 = Read1(in);
-    uint32_t b1 = Read1(in);
-    uint32_t b2 = Read1(in);
-    uint32_t b3 = Read1(in);
+    const uint32_t b0 = Read1(in);
+    const uint32_t b1 = Read1(in);
+    const uint32_t b2 = Read1(in);
+    const uint32_t b3 = Read1(in);
     return (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
 }
 
@@ -94,10 +94,10 @@ uint32_t Read4(Source& in) {
  */
 template<typename Source>
 uint32_t Read4high(Source& in) {
-    uint32_t b0 = Read1(in);
-    uint32_t b1 = Read1(in);
-    uint32_t b2 = Read1(in);
-    uint32_t b3 = Read1(in);
+    const uint32_t b0 = Read1(in);
+    const uint32_t b1 = Read1(in);
+    const uint32_t b2 = Read1(in);
+    const uint32_t b3 = Read1(in);
     return (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
 }
 
@@ -214,8 +214,8 @@ inline uint8_t MRead1(uint8_t*& in) {
  */
 
 inline uint16_t MRead2(uint8_t*& in) {
-    uint16_t b0 = MRead1(in);
-    uint16_t b1 = MRead1(in);
+    const uint16_t b0 = MRead1(in);
+    const uint16_t b1 = MRead1(in);
     return (b1 << 8) | b0;
 }
 
@@ -315,7 +315,7 @@ inline size_t get_file_size(std::istream& in) {
     const auto start = in.tellg();
     in.seekg(0);
     in.ignore(std::numeric_limits<std::streamsize>::max());
-    size_t len = in.gcount();
+    const size_t len = in.gcount();
     in.seekg(start);
     return len;
 }
