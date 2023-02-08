@@ -2,6 +2,7 @@ add_sources(GUI_SOURCES
 	BuilderList.cpp
 	ChatManager.cpp
 	DigitsCounter.cpp
+	DigitsTextBox.cpp
 	DuneStyle.cpp
 	GameOptionsWindow.cpp
 	InGameMenu.cpp
